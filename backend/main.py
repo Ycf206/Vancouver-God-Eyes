@@ -60,8 +60,9 @@ async def fetch_translink_realtime():
                     v = entity.vehicle
                     route_id = v.trip.route_id
                     
-                    # 這裡我們先只過濾 SkyTrain，未來可以把巴士也放進來
-                    if route_id in SKYTRAIN_ROUTES:
+                    # TransLink 的即時車輛 API 主要提供巴士資料
+                    # 為了不讓前端 React 過載，我們最多只傳送前 500 台公車
+                    if len(vehicles) < 500:
                         vehicles.append({
                             "id": v.vehicle.id,
                             "route_id": route_id,
