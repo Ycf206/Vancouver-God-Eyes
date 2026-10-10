@@ -4,13 +4,14 @@ import io
 import json
 
 zip_path = 'google_transit.zip'
-skytrain_route_ids = {'30053', '30052', '13686'} # Expo, Millennium, Canada
+skytrain_route_ids = {'30053', '30052', '13686', '6771'} # Expo, Millennium, Canada, SeaBus
 
 # Colors mapping
 route_colors = {
-    '30053': '#0033a0', # Expo Line
+    '30053': '#00a4e4', # Expo Line
     '30052': '#ffcd00', # Millennium Line
-    '13686': '#00b5e2'  # Canada Line (淺藍色)
+    '13686': '#00b5e2', # Canada Line
+    '6771': '#f58220'   # SeaBus
 }
 
 print("Parsing GTFS Zip...")
