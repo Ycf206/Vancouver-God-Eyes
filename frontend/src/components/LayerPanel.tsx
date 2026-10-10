@@ -105,12 +105,9 @@ export default function LayerPanel() {
         <div className="grid grid-cols-[60px_1fr] gap-3 items-center">
           <div className="text-[11px] font-bold text-blue-400 tracking-wider">天車</div>
           <div className="grid grid-cols-3 gap-1.5">
-            <div className="col-start-2">
-              <LayerButton layerKey="skytrainRoutes" label="路線" icon={Train} colorClass="text-blue-400" activeBg="bg-[#1a2436]" activeBorder="border-blue-500/50" activeShadow="shadow-[0_0_8px_rgba(59,130,246,0.1)]" />
-            </div>
-            <div className="col-start-3">
-              <LayerButton layerKey="skytrainStops" label="車站" icon={CircleDot} colorClass="text-blue-400" activeBg="bg-[#1a2436]" activeBorder="border-blue-500/50" />
-            </div>
+            <div></div>
+            <LayerButton layerKey="skytrainRoutes" label="路線" icon={Route} colorClass="text-blue-400" activeBg="bg-[#1a2436]" activeBorder="border-blue-500/50" activeShadow="shadow-[0_0_8px_rgba(59,130,246,0.1)]" />
+            <LayerButton layerKey="skytrainStops" label="車站" icon={CircleDot} colorClass="text-blue-400" activeBg="bg-[#1a2436]" activeBorder="border-blue-500/50" />
           </div>
         </div>
 
@@ -121,6 +118,16 @@ export default function LayerPanel() {
             <LayerButton layerKey="seabusVehicles" label="船隻" icon={Ship} colorClass="text-[#d8baaa]" activeBg="bg-[#2a221f]" activeBorder="border-[#8b786d]/50" activeShadow="shadow-[0_0_8px_rgba(139,120,109,0.2)]" />
             <LayerButton layerKey="seabusRoutes" label="路線" icon={Route} colorClass="text-[#d8baaa]" activeBg="bg-[#2a221f]" activeBorder="border-[#8b786d]/50" />
             <LayerButton layerKey="seabusStops" label="車站" icon={CircleDot} colorClass="text-[#d8baaa]" activeBg="bg-[#2a221f]" activeBorder="border-[#8b786d]/50" />
+          </div>
+        </div>
+
+        {/* BC Ferries Row */}
+        <div className="grid grid-cols-[60px_1fr] gap-3 items-center">
+          <div className="text-[10px] font-bold text-[#0060a9] tracking-wider leading-tight">卑詩渡輪</div>
+          <div className="grid grid-cols-3 gap-1.5">
+            <LayerButton layerKey="bcferriesVehicles" label="動態" icon={Ship} colorClass="text-[#3399ff]" activeBg="bg-[#0f1b2e]" activeBorder="border-[#0060a9]/50" activeShadow="shadow-[0_0_8px_rgba(0,96,169,0.2)]" />
+            <LayerButton layerKey="bcferriesRoutes" label="航線" icon={Route} colorClass="text-[#3399ff]" activeBg="bg-[#0f1b2e]" activeBorder="border-[#0060a9]/50" />
+            <LayerButton layerKey="bcferriesTerminals" label="碼頭" icon={CircleDot} colorClass="text-[#3399ff]" activeBg="bg-[#0f1b2e]" activeBorder="border-[#0060a9]/50" />
           </div>
         </div>
 

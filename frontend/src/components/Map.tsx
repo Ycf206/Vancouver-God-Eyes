@@ -222,8 +222,41 @@ export default function AppMap() {
       });
     }
 
+
+    // BC Ferries Routes
+    if (layers.bcferriesRoutes) {
+      style.sources['bc-ferries-routes'] = { type: 'geojson', data: '/bc_ferries_routes.geojson' };
+      style.layers.push({
+        id: 'bc-ferries-routes-layer',
+        type: 'line',
+        source: 'bc-ferries-routes',
+        paint: {
+          'line-color': '#3399ff',
+          'line-width': 2,
+          'line-dasharray': [4, 4],
+          'line-opacity': 0.7
+        }
+      });
+    }
+
+    // BC Ferries Terminals
+    if (layers.bcferriesTerminals) {
+      style.sources['bc-ferries-terminals'] = { type: 'geojson', data: '/bc_ferries_terminals_points.geojson' };
+      style.layers.push({
+        id: 'bc-ferries-terminals-layer',
+        type: 'circle',
+        source: 'bc-ferries-terminals',
+        paint: {
+          'circle-radius': 6,
+          'circle-color': '#0060a9',
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+    }
+
     return style;
-  }, [layers.skytrainRoutes, layers.skytrainStops, layers.busRoutes, layers.busStops, layers.seabusRoutes, layers.seabusStops, mapStyleType]);
+  }, [layers.skytrainRoutes, layers.skytrainStops, layers.busRoutes, layers.busStops, layers.seabusRoutes, layers.seabusStops, layers.bcferriesRoutes, layers.bcferriesTerminals, mapStyleType]);
 
   return (
     <div className="w-full h-full absolute inset-0 z-0 pt-[60px]">

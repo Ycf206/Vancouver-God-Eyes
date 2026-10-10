@@ -16,6 +16,9 @@ export interface UIState {
     seabusVehicles: boolean;
     seabusRoutes: boolean;
     seabusStops: boolean;
+    bcferriesVehicles: boolean;
+    bcferriesRoutes: boolean;
+    bcferriesTerminals: boolean;
   };
   toggleLayer: (layer: keyof UIState['layers']) => void;
 }
@@ -35,6 +38,9 @@ export const useUIStore = create<UIState>()(
         seabusVehicles: true,
         seabusRoutes: true,
         seabusStops: true,
+        bcferriesVehicles: true,
+        bcferriesRoutes: true,
+        bcferriesTerminals: true,
       },
       toggleLayer: (layer) =>
         set((state) => ({

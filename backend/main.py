@@ -40,6 +40,108 @@ async def websocket_endpoint(websocket: WebSocket):
     except WebSocketDisconnect:
         active_connections.remove(websocket)
 
+
+async def fetch_bcferries_realtime():
+    while True:
+        try:
+            if not active_connections:
+                await asyncio.sleep(5)
+                continue
+
+            r = requests.get('https://www.bcferriesapi.ca/v2/', timeout=10)
+            data = r.json()
+            
+            terminals = {
+                'TSA': [-123.129, 49.002], # Roughly
+                'SWB': [-123.410, 48.688],
+                'HSB': [-123.272, 49.375],
+                'DUK': [-123.890, 49.163],
+                'LNG': [-123.471, 49.434],
+                'NAN': [-123.955, 49.195],
+                'FUL': [-123.453, 48.766],
+                'BOW': [-123.332, 49.381]
+            }
+
+            # I actually generated precise terminals in frontend earlier. 
+            # Let's just use exact coordinates if possible, or approximate is fine since it's just a straight line interpolation.
+            # To be very precise, let's read the GeoJSON!
+            import json
+            import os
+            try:
+                terminals_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'frontend', 'public', 'bc_ferries_terminals_points.geojson')
+                points_data = json.load(open(terminals_path, 'r', encoding='utf-8'))
+                for f in points_data['features']:
+                    terminals[f['properties']['code']] = f['geometry']['coordinates']
+            except Exception as e:
+                print(f"Could not load terminals geojson: {e}")
+
+            vehicles = []
+            
+            for route in data.get('capacityRoutes', []):
+                dep_code = route.get('fromTerminalCode')
+                arr_code = route.get('toTerminalCode')
+                
+                if dep_code not in terminals or arr_code not in terminals:
+                    continue
+                    
+                dep_coord = terminals[dep_code]
+                arr_coord = terminals[arr_code]
+                
+                for sailing in route.get('sailings', []):
+                    # sailingStatus: 'past', 'current', 'future'
+                    # Actually, some sailings just have 'time' and 'arrivalTime'
+                    # We can simulate based on current time
+                    import datetime
+                    now = datetime.datetime.now()
+                    
+                    time_str = sailing.get('time', '')
+                    arr_time_str = sailing.get('arrivalTime', '')
+                    if not time_str or not arr_time_str: continue
+                    
+                    try:
+                        # Parse "7:00 am" format
+                        dep_time = datetime.datetime.strptime(time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm'), '%I:%M %p')
+                        dep_time = now.replace(hour=dep_time.hour, minute=dep_time.minute, second=0, microsecond=0)
+                        
+                        arr_time = datetime.datetime.strptime(arr_time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm'), '%I:%M %p')
+                        arr_time = now.replace(hour=arr_time.hour, minute=arr_time.minute, second=0, microsecond=0)
+                        
+                        if arr_time < dep_time:
+                            arr_time += datetime.timedelta(days=1)
+                        
+                        if dep_time <= now <= arr_time:
+                            # It is currently sailing!
+                            total_seconds = (arr_time - dep_time).total_seconds()
+                            elapsed = (now - dep_time).total_seconds()
+                            progress = elapsed / total_seconds
+                            
+                            # Interpolate linear position
+                            lon = dep_coord[0] + (arr_coord[0] - dep_coord[0]) * progress
+                            lat = dep_coord[1] + (arr_coord[1] - dep_coord[1]) * progress
+                            
+                            vehicles.append({
+                                'id': f"bcferries_{sailing.get('vesselName', '').replace(' ', '_')}_{time_str}",
+                                'route_id': f"{dep_code}-{arr_code}",
+                                'is_bcferries': True,
+                                'vessel_name': sailing.get('vesselName', 'BC Ferries'),
+                                'lat': lat,
+                                'lon': lon,
+                                'bearing': 0 # We could calculate bearing between two points
+                            })
+                    except Exception as e:
+                        print(f"Error parsing times for {sailing}: {e}")
+            
+            if vehicles:
+                message = {"type": "vehicles_update", "data": vehicles}
+                for connection in active_connections:
+                    await connection.send_json(message)
+                    
+        except Exception as e:
+            print(f"Error in BC Ferries fetch: {e}")
+            
+        await asyncio.sleep(15)
+
+
 async def fetch_translink_realtime():
     """Fetches VehiclePositions"""
     TRANSLINK_API_KEY = os.getenv("TRANSLINK_API_KEY", "OAsdtyJoPO0odcN6Ivhy")
@@ -192,6 +294,7 @@ async def fetch_translink_trip_updates():
 @app.on_event("startup")
 async def startup_event():
     asyncio.create_task(fetch_translink_realtime())
+    asyncio.create_task(fetch_bcferries_realtime())
     asyncio.create_task(fetch_translink_trip_updates())
 
 @app.get("/")
