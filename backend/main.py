@@ -40,7 +40,7 @@ async def websocket_endpoint(websocket: WebSocket):
 async def fetch_translink_realtime():
     """背景常駐排程：每 15 秒抓取一次 TransLink API 並透過 WebSocket 廣播"""
     TRANSLINK_API_KEY = os.getenv("TRANSLINK_API_KEY", "OAsdtyJoPO0odcN6Ivhy")
-    url = f"https://gtfs.translink.ca/v2/position?apikey={TRANSLINK_API_KEY}"
+    url = f"https://gtfsapi.translink.ca/v3/gtfsposition?apikey={TRANSLINK_API_KEY}"
     
     # SkyTrain 的 Route IDs (Expo, Millennium, Canada)
     SKYTRAIN_ROUTES = {'30053', '30052', '13686'}
