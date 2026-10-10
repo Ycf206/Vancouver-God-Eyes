@@ -103,8 +103,40 @@ export default function AppMap() {
 
     style.sources['skytrain-tracks'] = { type: 'geojson', data: '/skytrain_tracks.json' };
     style.sources['skytrain-stops'] = { type: 'geojson', data: '/skytrain_stops.json' };
+    style.sources['bus-tracks'] = { type: 'geojson', data: '/bus_tracks.json' };
+    style.sources['bus-stops'] = { type: 'geojson', data: '/bus_stops.json' };
 
-    if (layers.skytrain) {
+    // Bus Routes
+    if (layers.busRoutes) {
+      style.layers.push({
+        id: 'bus-tracks-layer',
+        type: 'line',
+        source: 'bus-tracks',
+        paint: {
+          'line-color': ['get', 'color'],
+          'line-width': 3,
+          'line-opacity': 0.8
+        }
+      });
+    }
+
+    // Bus Stops
+    if (layers.busStops) {
+      style.layers.push({
+        id: 'bus-stops-layer',
+        type: 'circle',
+        source: 'bus-stops',
+        paint: {
+          'circle-radius': 3.5,
+          'circle-color': '#ffffff',
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#222222'
+        }
+      });
+    }
+
+    // SkyTrain Routes
+    if (layers.skytrainRoutes) {
       style.layers.push({
         id: 'skytrain-tracks-layer',
         type: 'line',
@@ -117,8 +149,8 @@ export default function AppMap() {
       });
     }
 
-    // Currently all generated stops are in skytrain-stops. In the future we can filter them.
-    if (layers.skytrainStops || layers.busStops) {
+    // SkyTrain Stops
+    if (layers.skytrainStops) {
       style.layers.push({
         id: 'skytrain-stops-layer',
         type: 'circle',
@@ -143,7 +175,7 @@ export default function AppMap() {
     }
 
     return style;
-  }, [layers.skytrain, layers.skytrainStops, layers.busStops, mapStyleType]);
+  }, [layers.skytrainRoutes, layers.skytrainStops, layers.busRoutes, layers.busStops, mapStyleType]);
 
   return (
     <div className="w-full h-full absolute inset-0 z-0 pt-[60px]">
