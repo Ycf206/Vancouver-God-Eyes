@@ -8,7 +8,7 @@ import io
 import requests
 from sqlalchemy.orm import Session
 from database import SessionLocal, engine
-from models import Base, TransitRoute, TransitStop, TransitShape
+from models import Base, TransitRoute, TransitStop, TransitShape, SeaBusSchedule
 
 def import_gtfs():
     Base.metadata.create_all(bind=engine)
@@ -171,7 +171,7 @@ def import_gtfs():
             db.commit()
 
             print("Extracting SeaBus Schedule for simulation...")
-            db.query(models.SeaBusSchedule).delete()
+            db.query(SeaBusSchedule).delete()
             
             seabus_trip_details = {}
             with z.open('trips.txt') as f:
@@ -196,7 +196,7 @@ def import_gtfs():
             for tid, times in seabus_times.items():
                 times.sort(key=lambda x: int(x['stop_sequence']))
                 if len(times) >= 2:
-                    db.add(models.SeaBusSchedule(
+                    db.add(SeaBusSchedule(
                         trip_id=tid,
                         direction_id=seabus_trip_details[tid]['direction_id'],
                         departure_time=times[0]['departure_time'],
