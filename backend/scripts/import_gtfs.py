@@ -17,7 +17,7 @@ def import_gtfs():
     zip_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'google_transit.zip')
     
     print("Downloading latest GTFS from TransLink...")
-    url = "https://ns.translink.ca/gtfs/google_transit.zip"
+    url = "https://gtfs-static.translink.ca/gtfs/google_transit.zip"
     response = requests.get(url, verify=False)
     with open(zip_path, 'wb') as f:
         f.write(response.content)
