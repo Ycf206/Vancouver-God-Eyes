@@ -31,12 +31,22 @@ interface StopInfo {
 export default function AppMap() {
   const { layers, mapStyleType } = useUIStore();
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [ferryTerminals, setFerryTerminals] = useState<any[]>([]);
   
   // States for Popup
   const [selectedStop, setSelectedStop] = useState<StopInfo | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [arrivals, setArrivals] = useState<any[]>([]);
   const [loadingArrivals, setLoadingArrivals] = useState(false);
+
+  
+  useEffect(() => {
+    fetch('/bc_ferries_terminals_points.geojson')
+      .then(r => r.json())
+      .then(data => {
+         if(data && data.features) setFerryTerminals(data.features);
+      }).catch(e => console.error(e));
+  }, []);
 
   useEffect(() => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:8000` : 'http://localhost:8000');
@@ -239,21 +249,7 @@ export default function AppMap() {
       });
     }
 
-    // BC Ferries Terminals
-    if (layers.bcferriesTerminals) {
-      style.sources['bc-ferries-terminals'] = { type: 'geojson', data: '/bc_ferries_terminals_points.geojson' };
-      style.layers.push({
-        id: 'bc-ferries-terminals-layer',
-        type: 'circle',
-        source: 'bc-ferries-terminals',
-        paint: {
-          'circle-radius': 6,
-          'circle-color': '#0060a9',
-          'circle-stroke-width': 2,
-          'circle-stroke-color': '#ffffff'
-        }
-      });
-    }
+
 
     return style;
   }, [layers.skytrainRoutes, layers.skytrainStops, layers.busRoutes, layers.busStops, layers.seabusRoutes, layers.seabusStops, layers.bcferriesRoutes, layers.bcferriesTerminals, mapStyleType]);

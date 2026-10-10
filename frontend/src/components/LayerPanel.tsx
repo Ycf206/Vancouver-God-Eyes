@@ -125,7 +125,7 @@ export default function LayerPanel() {
         <div className="grid grid-cols-[60px_1fr] gap-3 items-center">
           <div className="text-[10px] font-bold text-[#0060a9] tracking-wider leading-tight">卑詩渡輪</div>
           <div className="grid grid-cols-3 gap-1.5">
-            <LayerButton layerKey="bcferriesVehicles" label="動態" icon={Ship} colorClass="text-[#3399ff]" activeBg="bg-[#0f1b2e]" activeBorder="border-[#0060a9]/50" activeShadow="shadow-[0_0_8px_rgba(0,96,169,0.2)]" />
+            <LayerButton layerKey="bcferriesVehicles" label="渡輪" icon={Ship} colorClass="text-[#3399ff]" activeBg="bg-[#0f1b2e]" activeBorder="border-[#0060a9]/50" activeShadow="shadow-[0_0_8px_rgba(0,96,169,0.2)]" />
             <LayerButton layerKey="bcferriesRoutes" label="航線" icon={Route} colorClass="text-[#3399ff]" activeBg="bg-[#0f1b2e]" activeBorder="border-[#0060a9]/50" />
             <LayerButton layerKey="bcferriesTerminals" label="碼頭" icon={CircleDot} colorClass="text-[#3399ff]" activeBg="bg-[#0f1b2e]" activeBorder="border-[#0060a9]/50" />
           </div>

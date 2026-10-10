@@ -91,8 +91,18 @@ async def fetch_bcferries_realtime():
                     # sailingStatus: 'past', 'current', 'future'
                     # Actually, some sailings just have 'time' and 'arrivalTime'
                     # We can simulate based on current time
+
                     import datetime
-                    now = datetime.datetime.now()
+                    try:
+                        from zoneinfo import ZoneInfo
+                        now = datetime.datetime.now(ZoneInfo("America/Vancouver"))
+                    except ImportError:
+                        # Fallback if zoneinfo not available (should be on Python 3.11)
+                        now = datetime.datetime.utcnow() - datetime.timedelta(hours=7) # Approx PT
+                    
+                    # Also strip timezone info for naive comparison if needed, or make the parsed times timezone-aware
+                    now_naive = now.replace(tzinfo=None)
+
                     
                     time_str = sailing.get('time', '')
                     arr_time_str = sailing.get('arrivalTime', '')
@@ -101,18 +111,18 @@ async def fetch_bcferries_realtime():
                     try:
                         # Parse "7:00 am" format
                         dep_time = datetime.datetime.strptime(time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm'), '%I:%M %p')
-                        dep_time = now.replace(hour=dep_time.hour, minute=dep_time.minute, second=0, microsecond=0)
+                        dep_time = now_naive.replace(hour=dep_time.hour, minute=dep_time.minute, second=0, microsecond=0)
                         
                         arr_time = datetime.datetime.strptime(arr_time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm'), '%I:%M %p')
-                        arr_time = now.replace(hour=arr_time.hour, minute=arr_time.minute, second=0, microsecond=0)
+                        arr_time = now_naive.replace(hour=arr_time.hour, minute=arr_time.minute, second=0, microsecond=0)
                         
                         if arr_time < dep_time:
                             arr_time += datetime.timedelta(days=1)
                         
-                        if dep_time <= now <= arr_time:
+                        if dep_time <= now_naive <= arr_time:
                             # It is currently sailing!
                             total_seconds = (arr_time - dep_time).total_seconds()
-                            elapsed = (now - dep_time).total_seconds()
+                            elapsed = (now_naive - dep_time).total_seconds()
                             progress = elapsed / total_seconds
                             
                             # Interpolate linear position
@@ -183,11 +193,18 @@ async def fetch_translink_realtime():
                         })
             
             seabus_simulated = []
-            now = datetime.now()
+
+            try:
+                from zoneinfo import ZoneInfo
+                now_seabus = datetime.now(ZoneInfo("America/Vancouver"))
+            except:
+                now_seabus = datetime.utcnow() - datetime.timedelta(hours=7)
+                
             # Handle GTFS >24h time format
-            current_time_str = f"{now.hour:02d}:{now.minute:02d}:{now.second:02d}"
-            if now.hour < 3: # If after midnight, could be represented as 24+
-                current_time_str = f"{now.hour + 24:02d}:{now.minute:02d}:{now.second:02d}"
+            current_time_str = f"{now_seabus.hour:02d}:{now_seabus.minute:02d}:{now_seabus.second:02d}"
+            if now_seabus.hour < 3: # If after midnight, could be represented as 24+
+                current_time_str = f"{now_seabus.hour + 24:02d}:{now_seabus.minute:02d}:{now_seabus.second:02d}"
+
 
             db = database.SessionLocal()
             try:
