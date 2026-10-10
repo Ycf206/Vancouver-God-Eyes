@@ -2,13 +2,15 @@
 
 import * as React from 'react';
 import { useState, useEffect, useMemo } from 'react';
+import { setWorkerUrl } from 'maplibre-gl';
 import Map, { NavigationControl, Marker } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useUIStore } from '@/store/useUIStore';
 
-// 直接 Import 靜態資料，完全避開 Browser 網路載入失敗的問題
-import tracksData from '../../public/skytrain_tracks.json';
-import stopsData from '../../public/skytrain_stops.json';
+// Fix Next.js App Router Web Worker crash
+if (typeof window !== 'undefined') {
+  setWorkerUrl('/maplibre-gl-worker.mjs');
+}
 
 interface Vehicle {
   id: string;
@@ -76,8 +78,8 @@ export default function AppMap() {
     };
 
     if (layers.transit) {
-      style.sources['skytrain-tracks'] = { type: 'geojson', data: tracksData };
-      style.sources['skytrain-stops'] = { type: 'geojson', data: stopsData };
+      style.sources['skytrain-tracks'] = { type: 'geojson', data: '/skytrain_tracks.json' };
+      style.sources['skytrain-stops'] = { type: 'geojson', data: '/skytrain_stops.json' };
 
       style.layers.push({
         id: 'skytrain-tracks-layer',
