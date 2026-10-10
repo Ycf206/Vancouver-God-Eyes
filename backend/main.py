@@ -48,8 +48,8 @@ async def fetch_translink_realtime():
     while True:
         try:
             loop = asyncio.get_event_loop()
-            # requests.get 是同步的，放在 executor 避免阻塞 FastAPI
-            response = await loop.run_in_executor(None, requests.get, url)
+            headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
+            response = await loop.run_in_executor(None, lambda: requests.get(url, headers=headers))
             
             feed = gtfs_realtime_pb2.FeedMessage()
             feed.ParseFromString(response.content)
