@@ -12,6 +12,8 @@ interface UIState {
     busStops: boolean;
     skytrainRoutes: boolean;
     skytrainStops: boolean;
+    seabusRoutes: boolean;
+    seabusStops: boolean;
   };
   toggleLayer: (layer: keyof UIState['layers']) => void;
 }
@@ -26,6 +28,8 @@ export const useUIStore = create<UIState>((set) => ({
     busStops: false,
     skytrainRoutes: true,
     skytrainStops: true,
+    seabusRoutes: true,
+    seabusStops: true,
   },
   toggleLayer: (layer) =>
     set((state) => ({

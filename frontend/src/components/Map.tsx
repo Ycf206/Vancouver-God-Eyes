@@ -118,6 +118,8 @@ export default function AppMap() {
     style.sources['skytrain-stops'] = { type: 'geojson', data: '/skytrain_stops.json' };
     style.sources['bus-tracks'] = { type: 'geojson', data: '/bus_tracks.json' };
     style.sources['bus-stops'] = { type: 'geojson', data: '/bus_stops.json' };
+    style.sources['seabus-tracks'] = { type: 'geojson', data: '/seabus_tracks.json' };
+    style.sources['seabus-stops'] = { type: 'geojson', data: '/seabus_stops.json' };
 
     // Bus Routes
     if (layers.busRoutes) {
@@ -177,6 +179,36 @@ export default function AppMap() {
       });
     }
 
+    // SeaBus Routes
+    if (layers.seabusRoutes) {
+      style.layers.push({
+        id: 'seabus-tracks-layer',
+        type: 'line',
+        source: 'seabus-tracks',
+        paint: {
+          'line-color': ['get', 'color'],
+          'line-width': 3,
+          'line-opacity': 0.8,
+          'line-dasharray': [2, 2] // Dash line for ferries!
+        }
+      });
+    }
+
+    // SeaBus Stops
+    if (layers.seabusStops) {
+      style.layers.push({
+        id: 'seabus-stops-layer',
+        type: 'circle',
+        source: 'seabus-stops',
+        paint: {
+          'circle-radius': 4.5,
+          'circle-color': '#ffffff',
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#8b786d'
+        }
+      });
+    }
+
     if (labelTiles.length > 0) {
       style.layers.push({
         id: 'esri-labels-layer',
@@ -188,7 +220,7 @@ export default function AppMap() {
     }
 
     return style;
-  }, [layers.skytrainRoutes, layers.skytrainStops, layers.busRoutes, layers.busStops, mapStyleType]);
+  }, [layers.skytrainRoutes, layers.skytrainStops, layers.busRoutes, layers.busStops, layers.seabusRoutes, layers.seabusStops, mapStyleType]);
 
   return (
     <div className="w-full h-full absolute inset-0 z-0 pt-[60px]">
@@ -196,10 +228,10 @@ export default function AppMap() {
         initialViewState={{ longitude: -122.95, latitude: 49.25, zoom: 11, pitch: 45, bearing: -17.6 }}
         mapStyle={mapStyle}
         style={{ width: '100%', height: '100%' }}
-        interactiveLayerIds={['bus-stops-layer', 'skytrain-stops-layer']}
+        interactiveLayerIds={['bus-stops-layer', 'skytrain-stops-layer', 'seabus-stops-layer']}
         onClick={(e) => {
           const feature = e.features?.[0];
-          if (feature && (feature.layer.id === 'bus-stops-layer' || feature.layer.id === 'skytrain-stops-layer')) {
+          if (feature && (feature.layer.id === 'bus-stops-layer' || feature.layer.id === 'skytrain-stops-layer' || feature.layer.id === 'seabus-stops-layer')) {
             const stopId = feature.properties?.stop_id;
             const stopName = feature.properties?.name;
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -229,10 +261,15 @@ export default function AppMap() {
         {/* 即時車輛位置 (Bus Layer) */}
         {layers.bus && vehicles.map(v => (
           <Marker key={v.id} longitude={v.lon} latitude={v.lat} anchor="center">
-            <div className="relative flex items-center justify-center w-4 h-4 cursor-pointer tooltip" title={`Route: ${v.route_id}`}>
-              <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 shadow-[0_0_8px_rgba(52,211,153,1)]"></span>
-            </div>
+            {v.route_id === '6771' ? (
+              <div className="relative flex items-center justify-center w-7 h-7 bg-[#8b786d] rounded-full cursor-pointer tooltip border-2 border-white shadow-lg" title={`SeaBus`}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-white"><path d="M2 21c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1 .6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M19.38 20A11.6 11.6 0 0 0 21 14l-9-4-9 4c0 2.9.94 5.34 2.81 7.76"/><path d="M19 13V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6"/></svg>
+              </div>
+            ) : (
+              <div className="relative flex items-center justify-center w-7 h-7 bg-emerald-500 rounded-full cursor-pointer tooltip border-2 border-white shadow-lg" title={`Route: ${v.route_id}`}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-white"><path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/></svg>
+              </div>
+            )}
           </Marker>
         ))}
 
