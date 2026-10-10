@@ -406,13 +406,13 @@ export default function AppMap() {
             offset={[0, -10]}
           >
             <div className="p-3 min-w-[280px] max-h-[300px] overflow-y-auto">
-              <h3 className="font-bold text-gray-800 text-lg mb-1 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 bg-[#0060a9] rounded-full inline-block"></span>
-                  {selectedTerminal.properties?.name}
+              <div className="flex items-start justify-between mb-2">
+                <div className="flex items-start gap-2 pt-0.5">
+                  <span className="w-2 h-2 bg-[#0060a9] rounded-full flex-shrink-0 mt-2"></span>
+                  <h3 className="font-bold text-gray-800 text-lg leading-tight pr-2">{selectedTerminal.properties?.name}</h3>
                 </div>
-                <button onClick={() => setSelectedTerminal(null)} className="text-gray-400 hover:text-gray-800 text-xl font-normal leading-none px-1">&times;</button>
-              </h3>
+                <button onClick={() => setSelectedTerminal(null)} className="text-gray-400 hover:text-gray-800 text-2xl font-normal leading-none px-1 pb-1 flex-shrink-0 focus:outline-none">&times;</button>
+              </div>
               
               <div className="mt-3">
                 <h4 className="text-xs font-semibold text-gray-500 mb-2 border-b pb-1">今日班次 (Today&apos;s Sailings)</h4>
@@ -428,7 +428,7 @@ export default function AppMap() {
                     {terminalSchedule.map((sailing, i) => (
                       <div key={i} className="flex flex-col gap-1 text-sm bg-gray-50 p-2 rounded border border-gray-100">
                         <div className="flex justify-between items-center">
-                          <span className="font-bold text-[#0060a9]">{sailing.time} ➝ {sailing.arrival_time}</span>
+                          <span className="font-bold text-[#0060a9]">{sailing.time} {sailing.arrival_time ? `➝ ${sailing.arrival_time}` : ""}</span>
                           <span className={`text-xs px-1.5 py-0.5 rounded ${
                             sailing.status === 'past' ? 'bg-gray-200 text-gray-600' : 
                             sailing.status === 'current' ? 'bg-green-100 text-green-700 font-bold' : 
@@ -438,7 +438,7 @@ export default function AppMap() {
                           </span>
                         </div>
                         <div className="flex justify-between items-center text-xs text-gray-600">
-                          <span className="font-medium truncate max-w-[140px]">{sailing.vessel_name || 'BC Ferries'}</span>
+                          <span className="font-medium truncate max-w-[140px]">{sailing.vessel_name || '渡輪 (航線營運中)'}</span>
                           <span>開往: {sailing.destination}</span>
                         </div>
                         {sailing.status !== 'past' && sailing.fill > 0 && (

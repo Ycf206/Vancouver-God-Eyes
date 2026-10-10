@@ -52,7 +52,7 @@ async def fetch_bcferries_realtime():
             data = r.json()
             
             terminals = {
-                'TSA': [-123.129, 49.002], # Roughly
+                'TSA': [-123.129, 49.002],
                 'SWB': [-123.410, 48.688],
                 'HSB': [-123.272, 49.375],
                 'DUK': [-123.890, 49.163],
@@ -62,9 +62,6 @@ async def fetch_bcferries_realtime():
                 'BOW': [-123.332, 49.381]
             }
 
-            # I actually generated precise terminals in frontend earlier. 
-            # Let's just use exact coordinates if possible, or approximate is fine since it's just a straight line interpolation.
-            # To be very precise, let's read the GeoJSON!
             import json
             import os
             try:
@@ -73,11 +70,22 @@ async def fetch_bcferries_realtime():
                 for f in points_data['features']:
                     terminals[f['properties']['code']] = f['geometry']['coordinates']
             except Exception as e:
-                print(f"Could not load terminals geojson: {e}")
+                pass
 
             vehicles = []
             
-            for route in data.get('capacityRoutes', []):
+            import datetime
+            try:
+                from zoneinfo import ZoneInfo
+                now = datetime.datetime.now(ZoneInfo("America/Vancouver"))
+            except ImportError:
+                now = datetime.datetime.utcnow() - datetime.timedelta(hours=7)
+            
+            now_naive = now.replace(tzinfo=None)
+
+            all_routes = data.get('capacityRoutes', []) + data.get('nonCapacityRoutes', [])
+            
+            for route in all_routes:
                 dep_code = route.get('fromTerminalCode')
                 arr_code = route.get('toTerminalCode')
                 
@@ -88,58 +96,49 @@ async def fetch_bcferries_realtime():
                 arr_coord = terminals[arr_code]
                 
                 for sailing in route.get('sailings', []):
-                    # sailingStatus: 'past', 'current', 'future'
-                    # Actually, some sailings just have 'time' and 'arrivalTime'
-                    # We can simulate based on current time
-
-                    import datetime
-                    try:
-                        from zoneinfo import ZoneInfo
-                        now = datetime.datetime.now(ZoneInfo("America/Vancouver"))
-                    except ImportError:
-                        # Fallback if zoneinfo not available (should be on Python 3.11)
-                        now = datetime.datetime.utcnow() - datetime.timedelta(hours=7) # Approx PT
+                    # Simply use sailingStatus == 'current' if available, otherwise fallback to time math
+                    status = sailing.get('sailingStatus')
                     
-                    # Also strip timezone info for naive comparison if needed, or make the parsed times timezone-aware
-                    now_naive = now.replace(tzinfo=None)
-
+                    is_sailing = False
+                    progress = 0.5
                     
                     time_str = sailing.get('time', '')
                     arr_time_str = sailing.get('arrivalTime', '')
-                    if not time_str or not arr_time_str: continue
                     
                     try:
-                        # Parse "7:00 am" format
-                        dep_time = datetime.datetime.strptime(time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm'), '%I:%M %p')
-                        dep_time = now_naive.replace(hour=dep_time.hour, minute=dep_time.minute, second=0, microsecond=0)
-                        
-                        arr_time = datetime.datetime.strptime(arr_time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm'), '%I:%M %p')
-                        arr_time = now_naive.replace(hour=arr_time.hour, minute=arr_time.minute, second=0, microsecond=0)
-                        
-                        if arr_time < dep_time:
-                            arr_time += datetime.timedelta(days=1)
-                        
-                        if dep_time <= now_naive <= arr_time:
-                            # It is currently sailing!
-                            total_seconds = (arr_time - dep_time).total_seconds()
-                            elapsed = (now_naive - dep_time).total_seconds()
-                            progress = elapsed / total_seconds
+                        if time_str and arr_time_str and time_str.lower() != 'variable' and arr_time_str.lower() != 'variable':
+                            dep_time = datetime.datetime.strptime(time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower(), '%I:%M %p')
+                            dep_time = now_naive.replace(hour=dep_time.hour, minute=dep_time.minute, second=0, microsecond=0)
                             
-                            # Interpolate linear position
-                            lon = dep_coord[0] + (arr_coord[0] - dep_coord[0]) * progress
-                            lat = dep_coord[1] + (arr_coord[1] - dep_coord[1]) * progress
+                            arr_time = datetime.datetime.strptime(arr_time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower(), '%I:%M %p')
+                            arr_time = now_naive.replace(hour=arr_time.hour, minute=arr_time.minute, second=0, microsecond=0)
                             
-                            vehicles.append({
-                                'id': f"bcferries_{sailing.get('vesselName', '').replace(' ', '_')}_{time_str}",
-                                'route_id': f"{dep_code}-{arr_code}",
-                                'is_bcferries': True,
-                                'vessel_name': sailing.get('vesselName', 'BC Ferries'),
-                                'lat': lat,
-                                'lon': lon,
-                                'bearing': 0 # We could calculate bearing between two points
-                            })
+                            if arr_time < dep_time:
+                                arr_time += datetime.timedelta(days=1)
+                            
+                            if dep_time <= now_naive <= arr_time:
+                                is_sailing = True
+                                total_seconds = (arr_time - dep_time).total_seconds()
+                                elapsed = (now_naive - dep_time).total_seconds()
+                                progress = elapsed / total_seconds
                     except Exception as e:
-                        print(f"Error parsing times for {sailing}: {e}")
+                        pass
+                        
+                    if status == 'current' or is_sailing:
+                        lon = dep_coord[0] + (arr_coord[0] - dep_coord[0]) * progress
+                        lat = dep_coord[1] + (arr_coord[1] - dep_coord[1]) * progress
+                        
+                        vehicles.append({
+                            'id': f"bcferries_{sailing.get('vesselName', 'ship').replace(' ', '_')}_{time_str}",
+                            'route_id': f"{dep_code}-{arr_code}",
+                            'is_bcferries': True,
+                            'vessel_name': sailing.get('vesselName', 'BC Ferries'),
+                            'lat': lat,
+                            'lon': lon,
+                            'bearing': 0
+                        })
+            
+            print(f"[BC Ferries] Found {len(vehicles)} ships currently sailing.")
             
             if vehicles:
                 message = {"type": "bc_ferries_update", "data": vehicles}
@@ -330,7 +329,8 @@ async def get_ferry_terminal_schedule(terminal_code: str):
         data = r.json()
         
         schedule = []
-        for route in data.get('capacityRoutes', []):
+        all_routes = data.get('capacityRoutes', []) + data.get('nonCapacityRoutes', [])
+        for route in all_routes:
             if route.get('fromTerminalCode') == terminal_code:
                 arr_code = route.get('toTerminalCode')
                 for sailing in route.get('sailings', []):
