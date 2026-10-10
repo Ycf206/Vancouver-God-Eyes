@@ -17,17 +17,12 @@ def import_gtfs():
     db: Session = SessionLocal()
     
     # Path to google_transit.zip in the root of the project
-    project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    zip_path = os.path.join(project_root, 'google_transit.zip')
+    zip_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'google_transit.zip')
     
     if not os.path.exists(zip_path):
         print("Downloading GTFS from TransLink...")
-        # Note: Depending on TransLink's portal, the URL might need an API key. 
-        # For this script, we'll assume the zip is downloaded via curl/wget in a cron script, 
-        # or we can use a direct link if one is available.
-        # This is a placeholder direct URL; if it fails, please place google_transit.zip in root manually.
-        url = "https://gtfs.translink.ca/v2/gtfsdata"
-        response = requests.get(url)
+        url = "https://ns.translink.ca/gtfs/google_transit.zip"
+        response = requests.get(url, verify=False)
         with open(zip_path, 'wb') as f:
             f.write(response.content)
 
