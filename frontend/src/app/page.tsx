@@ -13,7 +13,7 @@ export default function Home() {
           VANCOUVER
         </h1>
         <h2 className="text-xl font-bold tracking-[0.3em] text-emerald-400 mt-[-4px] drop-shadow-[0_0_8px_rgba(52,211,153,0.6)]">
-          GOD'S EYE
+          GOD&apos;S EYE
         </h2>
         <div className="flex items-center gap-2 mt-3 bg-black/40 backdrop-blur-sm border border-white/10 px-3 py-1.5 rounded-full w-fit">
           <span className="relative flex h-2.5 w-2.5">
