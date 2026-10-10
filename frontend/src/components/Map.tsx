@@ -31,7 +31,7 @@ interface StopInfo {
 export default function AppMap() {
   const { layers, mapStyleType } = useUIStore();
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
-  const [ferryTerminals, setFerryTerminals] = useState<any[]>([]);
+  const [ferryTerminals, setFerryTerminals] = useState<Array<{geometry: {coordinates: number[]}, properties: {name?: string}}>>([]);
   
   // States for Popup
   const [selectedStop, setSelectedStop] = useState<StopInfo | null>(null);
@@ -252,7 +252,7 @@ export default function AppMap() {
 
 
     return style;
-  }, [layers.skytrainRoutes, layers.skytrainStops, layers.busRoutes, layers.busStops, layers.seabusRoutes, layers.seabusStops, layers.bcferriesRoutes, layers.bcferriesTerminals, mapStyleType]);
+  }, [layers.skytrainRoutes, layers.skytrainStops, layers.busRoutes, layers.busStops, layers.seabusRoutes, layers.seabusStops, layers.bcferriesRoutes, mapStyleType]);
 
   return (
     <div className="w-full h-full absolute inset-0 z-0 pt-[60px]">
@@ -351,6 +351,28 @@ export default function AppMap() {
             </div>
           </Popup>
         )}
+
+        {/* BC Ferries Terminals */}
+        {layers.bcferriesTerminals && ferryTerminals.map((t, i) => (
+          <Marker 
+            key={`term-${i}`} 
+            longitude={t.geometry.coordinates[0]} 
+            latitude={t.geometry.coordinates[1]}
+            anchor="center"
+          >
+            <div 
+              className="w-6 h-6 bg-[#0060a9] rounded-md flex items-center justify-center border-[1.5px] border-white shadow-md cursor-pointer hover:bg-[#004080] transition-colors tooltip"
+              title={t.properties?.name || 'Ferry Terminal'}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="5" r="3"/>
+                <line x1="12" y1="22" x2="12" y2="8"/>
+                <path d="M5 12H2a10 10 0 0 0 20 0h-3"/>
+              </svg>
+            </div>
+          </Marker>
+        ))}
+
       </Map>
     </div>
   );
