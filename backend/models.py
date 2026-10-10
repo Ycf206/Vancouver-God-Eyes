@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, Boolean
+from sqlalchemy import Column, Integer, String, DateTime, Boolean, Float
 from geoalchemy2 import Geometry
 from datetime import datetime
 from database import Base
@@ -29,3 +29,33 @@ class Alert(Base):
     severity = Column(String)             # 'info', 'warning', 'critical'
     active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+
+class TransitRoute(Base):
+    """Static Data: Transit Routes"""
+    __tablename__ = "transit_routes"
+    
+    route_id = Column(String, primary_key=True, index=True)
+    short_name = Column(String)
+    long_name = Column(String)
+    route_group = Column(String, index=True) # 'skytrain', 'bus', 'seabus'
+    color = Column(String)
+
+class TransitStop(Base):
+    """Static Data: Transit Stops"""
+    __tablename__ = "transit_stops"
+    
+    stop_id = Column(String, primary_key=True, index=True)
+    name = Column(String)
+    lat = Column(Float)
+    lon = Column(Float)
+    stop_group = Column(String, index=True) # 'skytrain', 'bus', 'seabus'
+    location = Column(Geometry(geometry_type='POINT', srid=4326))
+
+class TransitShape(Base):
+    """Static Data: Pre-compiled Route Shapes (Lines)"""
+    __tablename__ = "transit_shapes"
+    
+    shape_id = Column(String, primary_key=True, index=True)
+    route_id = Column(String)
+    route_group = Column(String, index=True)
+    geom = Column(Geometry(geometry_type='LINESTRING', srid=4326))

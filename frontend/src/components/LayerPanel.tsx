@@ -118,12 +118,9 @@ export default function LayerPanel() {
         <div className="grid grid-cols-[60px_1fr] gap-3 items-center">
           <div className="text-[10px] font-bold text-[#8b786d] tracking-wider">海上巴士</div>
           <div className="grid grid-cols-3 gap-1.5">
-            <div className="col-start-2">
-              <LayerButton layerKey="seabusRoutes" label="路線" icon={Ship} colorClass="text-[#d8baaa]" activeBg="bg-[#2a221f]" activeBorder="border-[#8b786d]/50" activeShadow="shadow-[0_0_8px_rgba(139,120,109,0.2)]" />
-            </div>
-            <div className="col-start-3">
-              <LayerButton layerKey="seabusStops" label="車站" icon={CircleDot} colorClass="text-[#d8baaa]" activeBg="bg-[#2a221f]" activeBorder="border-[#8b786d]/50" />
-            </div>
+            <LayerButton layerKey="seabusVehicles" label="船隻" icon={Ship} colorClass="text-[#d8baaa]" activeBg="bg-[#2a221f]" activeBorder="border-[#8b786d]/50" activeShadow="shadow-[0_0_8px_rgba(139,120,109,0.2)]" />
+            <LayerButton layerKey="seabusRoutes" label="路線" icon={Route} colorClass="text-[#d8baaa]" activeBg="bg-[#2a221f]" activeBorder="border-[#8b786d]/50" />
+            <LayerButton layerKey="seabusStops" label="車站" icon={CircleDot} colorClass="text-[#d8baaa]" activeBg="bg-[#2a221f]" activeBorder="border-[#8b786d]/50" />
           </div>
         </div>
 

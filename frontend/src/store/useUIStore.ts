@@ -12,6 +12,7 @@ interface UIState {
     busStops: boolean;
     skytrainRoutes: boolean;
     skytrainStops: boolean;
+    seabusVehicles: boolean;
     seabusRoutes: boolean;
     seabusStops: boolean;
   };
@@ -28,6 +29,7 @@ export const useUIStore = create<UIState>((set) => ({
     busStops: false,
     skytrainRoutes: true,
     skytrainStops: true,
+    seabusVehicles: true,
     seabusRoutes: true,
     seabusStops: true,
   },
