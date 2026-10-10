@@ -42,8 +42,10 @@ async def fetch_translink_realtime():
     TRANSLINK_API_KEY = os.getenv("TRANSLINK_API_KEY", "OAsdtyJoPO0odcN6Ivhy")
     url = f"https://gtfsapi.translink.ca/v3/gtfsposition?apikey={TRANSLINK_API_KEY}"
     
-    # SkyTrain 的 Route IDs (Expo, Millennium, Canada)
+    # SkyTrain 的 Route IDs (雖然即時資料目前不提供，但留著以防萬一)
     SKYTRAIN_ROUTES = {'30053', '30052', '13686'}
+    # SeaBus 航線 (6771) 與大溫哥華「菁英公車」(99, 95/R5, 96/R1)
+    ELITE_BUSES = {'6771', '6641', '6653', '22143'}
     
     while True:
         try:
@@ -60,9 +62,8 @@ async def fetch_translink_realtime():
                     v = entity.vehicle
                     route_id = v.trip.route_id
                     
-                    # TransLink 的即時車輛 API 主要提供巴士資料
-                    # 為了不讓前端 React 過載，我們最多只傳送前 500 台公車
-                    if len(vehicles) < 500:
+                    # 只顯示 SkyTrain, SeaBus 以及指定的 Elite Buses
+                    if route_id in SKYTRAIN_ROUTES or route_id in ELITE_BUSES:
                         vehicles.append({
                             "id": v.vehicle.id,
                             "route_id": route_id,
