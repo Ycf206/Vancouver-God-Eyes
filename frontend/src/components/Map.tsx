@@ -295,12 +295,21 @@ export default function AppMap() {
 
         {/* 即時車輛位置 (Live Vehicles) */}
         {vehicles.map(v => {
-          if (v.is_seabus) {
+          if (v.is_bcferries) {
+            if (!layers.bcferriesVehicles) return null;
+            return (
+              <Marker key={v.id} longitude={v.lon} latitude={v.lat} anchor="center">
+                <div className="relative flex items-center justify-center w-8 h-8 bg-[#0060a9]/90 rounded-full cursor-pointer tooltip border-2 border-white shadow-lg backdrop-blur-sm transition-transform hover:scale-110" title={v.vessel_name || 'BC Ferries'}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12h20"/><path d="M6 12l2-4h8l2 4"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </div>
+              </Marker>
+            );
+          } else if (v.is_seabus) {
             if (!layers.seabusVehicles) return null;
             return (
               <Marker key={v.id} longitude={v.lon} latitude={v.lat} anchor="center">
-                <div className="relative flex items-center justify-center w-6 h-6 bg-[#8b786d]/80 rounded-full cursor-pointer tooltip border border-white/50 shadow-md backdrop-blur-sm" title={`SeaBus`}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-white"><path d="M2 21c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1 .6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M19.38 20A11.6 11.6 0 0 0 21 14l-9-4-9 4c0 2.9.94 5.34 2.81 7.76"/><path d="M19 13V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6"/></svg>
+                <div className="relative flex items-center justify-center w-6 h-6 bg-[#8b786d]/90 rounded-full cursor-pointer tooltip border-[1.5px] border-white shadow-md backdrop-blur-sm transition-transform hover:scale-110" title={`SeaBus`}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12h20"/><path d="M6 12l2-4h8l2 4"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                 </div>
               </Marker>
             );
@@ -308,8 +317,8 @@ export default function AppMap() {
             if (!layers.bus) return null;
             return (
               <Marker key={v.id} longitude={v.lon} latitude={v.lat} anchor="center">
-                <div className="relative flex items-center justify-center w-5 h-5 bg-emerald-500/80 rounded-full cursor-pointer tooltip border border-white/60 shadow-md backdrop-blur-sm" title={`Route: ${v.route_id}`}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-white"><path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/></svg>
+                <div className="relative flex items-center justify-center w-5 h-5 bg-emerald-500/80 rounded-full cursor-pointer tooltip border border-white/60 shadow-md backdrop-blur-sm hover:scale-110 transition-transform" title={`Route: ${v.route_id}`}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/></svg>
                 </div>
               </Marker>
             );
@@ -405,7 +414,7 @@ export default function AppMap() {
             className="z-50"
             offset={[0, -10]}
           >
-            <div className="p-3 min-w-[280px] max-h-[300px] overflow-y-auto">
+            <div className="p-3 min-w-[280px] w-[300px]">
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-start gap-2 pt-0.5">
                   <span className="w-2 h-2 bg-[#0060a9] rounded-full flex-shrink-0 mt-2"></span>
@@ -424,7 +433,7 @@ export default function AppMap() {
                 ) : terminalSchedule.length === 0 ? (
                   <div className="text-sm text-gray-500 py-2">目前沒有即將開航的班次。</div>
                 ) : (
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-col gap-2 max-h-[280px] overflow-y-auto pr-2 pb-2">
                     {terminalSchedule.map((sailing, i) => (
                       <div key={i} className="flex flex-col gap-1 text-sm bg-gray-50 p-2 rounded border border-gray-100">
                         <div className="flex justify-between items-center">

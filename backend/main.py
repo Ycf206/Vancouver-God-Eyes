@@ -329,27 +329,86 @@ async def get_ferry_terminal_schedule(terminal_code: str):
         data = r.json()
         
         schedule = []
+        import datetime
+        try:
+            from zoneinfo import ZoneInfo
+            now = datetime.datetime.now(ZoneInfo("America/Vancouver"))
+        except ImportError:
+            now = datetime.datetime.utcnow() - datetime.timedelta(hours=7)
+        now_naive = now.replace(tzinfo=None)
+        
+        # We should use a dict to avoid duplicates. Key: (destination, time)
+        seen = {}
+        
         all_routes = data.get('capacityRoutes', []) + data.get('nonCapacityRoutes', [])
         for route in all_routes:
             if route.get('fromTerminalCode') == terminal_code:
                 arr_code = route.get('toTerminalCode')
                 for sailing in route.get('sailings', []):
-                    schedule.append({
+                    time_str = sailing.get('time')
+                    arr_time_str = sailing.get('arrivalTime')
+                    
+                    status = sailing.get('sailingStatus')
+                    fill = sailing.get('fill', 0)
+                    
+                                        # Calculate status based on time to ensure it is always accurate
+                    if time_str and arr_time_str and time_str.lower() != 'variable' and arr_time_str.lower() != 'variable':
+                        try:
+                            dep_time = datetime.datetime.strptime(time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower(), '%I:%M %p')
+                            dep_time = now_naive.replace(hour=dep_time.hour, minute=dep_time.minute, second=0, microsecond=0)
+                            
+                            arr_time = datetime.datetime.strptime(arr_time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower(), '%I:%M %p')
+                            arr_time = now_naive.replace(hour=arr_time.hour, minute=arr_time.minute, second=0, microsecond=0)
+                            
+                            if arr_time < dep_time:
+                                arr_time += datetime.timedelta(days=1)
+                                
+                            if now_naive > arr_time:
+                                status = 'past'
+                            elif dep_time <= now_naive <= arr_time:
+                                status = 'current'
+                                total_seconds = (arr_time - dep_time).total_seconds()
+                                elapsed = (now_naive - dep_time).total_seconds()
+                                # simulate fill progress if no capacity data is provided, or use it as a journey progress bar instead!
+                                # Since users think it's a journey progress bar, let's just make it a journey progress bar for 'current' sailings!
+                                fill = int((elapsed / total_seconds) * 100)
+                            else:
+                                status = 'future'
+                                fill = 0 # Future journey progress is 0
+                        except:
+                            if not status: status = 'future'
+                            
+                    if not status:
+                        status = 'future'
+                    
+                    key = f"{arr_code}_{time_str}"
+                    # If duplicate, prefer the one with a vessel name or real capacity
+                    if key in seen:
+                        existing = seen[key]
+                        if sailing.get('vesselName') and not existing.get('vessel_name'):
+                            existing['vessel_name'] = sailing.get('vesselName')
+                        if fill > 0 and existing.get('fill') == 0:
+                            existing['fill'] = fill
+                        if status != 'future' and existing.get('status') == 'future':
+                            existing['status'] = status
+                        continue
+
+                    entry = {
                         "destination": arr_code,
-                        "time": sailing.get('time'),
-                        "arrival_time": sailing.get('arrivalTime'),
+                        "time": time_str,
+                        "arrival_time": arr_time_str,
                         "vessel_name": sailing.get('vesselName'),
-                        "status": sailing.get('sailingStatus'),
-                        "fill": sailing.get('fill', 0)
-                    })
+                        "status": status,
+                        "fill": fill
+                    }
+                    seen[key] = entry
+                    schedule.append(entry)
                     
         # Sort by time
-        import datetime
         def parse_time(t_str):
             if not t_str or t_str.lower() == 'variable' or t_str.lower() == 'cancelled':
-                return datetime.datetime(2000, 1, 1) # put at top or bottom? let's just leave it
+                return datetime.datetime(2000, 1, 1) # put at top
             try:
-                # Parse 7:00 am
                 return datetime.datetime.strptime(t_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower(), '%I:%M %p')
             except:
                 return datetime.datetime(2000, 1, 1)
