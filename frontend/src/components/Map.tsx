@@ -19,24 +19,22 @@ export default function AppMap() {
         mapStyle={{
           version: 8,
           sources: {
-            'carto-dark': {
+            'esri-dark': {
               type: 'raster',
               tiles: [
-                'https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
-                'https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
-                'https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'
+                'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}'
               ],
               tileSize: 256,
-              attribution: '&copy; CARTO, &copy; OpenStreetMap contributors'
+              attribution: '&copy; Esri, HERE, Garmin, &copy; OpenStreetMap contributors'
             }
           },
           layers: [
             {
-              id: 'carto-dark-layer',
+              id: 'esri-dark-layer',
               type: 'raster',
-              source: 'carto-dark',
+              source: 'esri-dark',
               minzoom: 0,
-              maxzoom: 22
+              maxzoom: 16
             }
           ]
         }}
