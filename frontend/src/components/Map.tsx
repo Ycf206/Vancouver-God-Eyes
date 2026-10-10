@@ -38,6 +38,9 @@ export default function AppMap() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [arrivals, setArrivals] = useState<any[]>([]);
   const [loadingArrivals, setLoadingArrivals] = useState(false);
+    const [selectedTerminal, setSelectedTerminal] = useState<any>(null);
+    const [terminalSchedule, setTerminalSchedule] = useState<any[]>([]);
+    const [loadingSchedule, setLoadingSchedule] = useState(false);
 
   
   useEffect(() => {
@@ -363,6 +366,22 @@ export default function AppMap() {
             <div 
               className="w-6 h-6 bg-[#0060a9] rounded-md flex items-center justify-center border-[1.5px] border-white shadow-md cursor-pointer hover:bg-[#004080] transition-colors tooltip"
               title={t.properties?.name || 'Ferry Terminal'}
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedTerminal(t);
+                setLoadingSchedule(true);
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:8000` : 'http://localhost:8000');
+                fetch(`${apiUrl}/api/ferries/terminals/${t.properties.code}/schedule`)
+                  .then(r => r.json())
+                  .then(data => {
+                    setTerminalSchedule(data.schedule || []);
+                    setLoadingSchedule(false);
+                  })
+                  .catch(err => {
+                    console.error(err);
+                    setLoadingSchedule(false);
+                  });
+              }}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="5" r="3"/>

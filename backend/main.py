@@ -142,7 +142,7 @@ async def fetch_bcferries_realtime():
                         print(f"Error parsing times for {sailing}: {e}")
             
             if vehicles:
-                message = {"type": "vehicles_update", "data": vehicles}
+                message = {"type": "bc_ferries_update", "data": vehicles}
                 for connection in active_connections:
                     await connection.send_json(message)
                     
@@ -254,7 +254,7 @@ async def fetch_translink_realtime():
             vehicles.extend(seabus_simulated)
             
             if active_connections:
-                message = {"type": "vehicles_update", "data": vehicles}
+                message = {"type": "bc_ferries_update", "data": vehicles}
                 for connection in active_connections:
                     await connection.send_json(message)
                     
@@ -321,6 +321,32 @@ async def root():
 @app.get("/health")
 async def health_check():
     return {"status": "ok"}
+
+
+@app.get("/api/ferries/terminals/{terminal_code}/schedule")
+async def get_ferry_terminal_schedule(terminal_code: str):
+    try:
+        r = requests.get('https://www.bcferriesapi.ca/v2/', timeout=10)
+        data = r.json()
+        
+        schedule = []
+        for route in data.get('capacityRoutes', []):
+            if route.get('fromTerminalCode') == terminal_code:
+                arr_code = route.get('toTerminalCode')
+                for sailing in route.get('sailings', []):
+                    schedule.append({
+                        "destination": arr_code,
+                        "time": sailing.get('time'),
+                        "arrival_time": sailing.get('arrivalTime'),
+                        "vessel_name": sailing.get('vesselName'),
+                        "status": sailing.get('sailingStatus'),
+                        "fill": sailing.get('fill', 0)
+                    })
+                    
+        # Sort by time
+        return {"terminal": terminal_code, "schedule": schedule}
+    except Exception as e:
+        return {"error": str(e)}
 
 @app.get("/api/stops/{stop_id}/arrivals")
 async def get_stop_arrivals(stop_id: str):
