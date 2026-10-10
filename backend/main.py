@@ -254,7 +254,7 @@ async def fetch_translink_realtime():
             vehicles.extend(seabus_simulated)
             
             if active_connections:
-                message = {"type": "bc_ferries_update", "data": vehicles}
+                message = {"type": "vehicles_update", "data": vehicles}
                 for connection in active_connections:
                     await connection.send_json(message)
                     
