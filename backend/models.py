@@ -59,3 +59,14 @@ class TransitShape(Base):
     route_id = Column(String)
     route_group = Column(String, index=True)
     geom = Column(Geometry(geometry_type='LINESTRING', srid=4326))
+
+class SeaBusSchedule(Base):
+    """Simulated Live Positions using static schedule"""
+    __tablename__ = "seabus_schedules"
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    trip_id = Column(String, index=True)
+    direction_id = Column(Integer) # 0 or 1
+    departure_time = Column(String) # "HH:MM:SS"
+    arrival_time = Column(String) # "HH:MM:SS"
+    shape_id = Column(String)

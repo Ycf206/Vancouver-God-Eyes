@@ -8,6 +8,7 @@ from google.transit import gtfs_realtime_pb2
 import database
 import models
 import os
+from datetime import datetime
 
 try:
     models.Base.metadata.create_all(bind=database.engine)
@@ -78,6 +79,60 @@ async def fetch_translink_realtime():
                             "lon": v.position.longitude,
                             "bearing": v.position.bearing,
                         })
+            
+            seabus_simulated = []
+            now = datetime.now()
+            # Handle GTFS >24h time format
+            current_time_str = f"{now.hour:02d}:{now.minute:02d}:{now.second:02d}"
+            if now.hour < 3: # If after midnight, could be represented as 24+
+                current_time_str = f"{now.hour + 24:02d}:{now.minute:02d}:{now.second:02d}"
+
+            db = database.SessionLocal()
+            try:
+                # Calculate active seabus trips
+                active_seabus = db.query(models.SeaBusSchedule).filter(
+                    models.SeaBusSchedule.departure_time <= current_time_str,
+                    models.SeaBusSchedule.arrival_time >= current_time_str
+                ).all()
+                
+                for trip in active_seabus:
+                    dep_h, dep_m, dep_s = map(int, trip.departure_time.split(':'))
+                    arr_h, arr_m, arr_s = map(int, trip.arrival_time.split(':'))
+                    curr_h, curr_m, curr_s = map(int, current_time_str.split(':'))
+                    
+                    dep_sec = dep_h * 3600 + dep_m * 60 + dep_s
+                    arr_sec = arr_h * 3600 + arr_m * 60 + arr_s
+                    curr_sec = curr_h * 3600 + curr_m * 60 + curr_s
+                    
+                    if arr_sec > dep_sec:
+                        progress = (curr_sec - dep_sec) / (arr_sec - dep_sec)
+                        
+                        # Get shape geometry to interpolate
+                        shape = db.query(models.TransitShape).filter(models.TransitShape.shape_id == trip.shape_id).first()
+                        if shape:
+                            # We can just fetch the LineString coordinates using PostGIS ST_PointN or ST_LineInterpolatePoint
+                            point_result = db.query(
+                                func.ST_X(func.ST_LineInterpolatePoint(shape.geom, progress)).label('lon'),
+                                func.ST_Y(func.ST_LineInterpolatePoint(shape.geom, progress)).label('lat')
+                            ).first()
+                            
+                            if point_result:
+                                # Bearing logic: Waterfront to Lonsdale is roughly 15 degrees, Lonsdale to Waterfront is roughly 195 degrees
+                                bearing = 15 if trip.direction_id == 0 else 195
+                                seabus_simulated.append({
+                                    "id": f"seabus_sim_{trip.trip_id}",
+                                    "route_id": "6771", # Or dynamically get the first seabus_id
+                                    "is_seabus": True,
+                                    "lat": point_result.lat,
+                                    "lon": point_result.lon,
+                                    "bearing": bearing,
+                                })
+            except Exception as e:
+                print(f"Error simulating SeaBus: {e}")
+            finally:
+                db.close()
+
+            vehicles.extend(seabus_simulated)
             
             if active_connections:
                 message = {"type": "vehicles_update", "data": vehicles}

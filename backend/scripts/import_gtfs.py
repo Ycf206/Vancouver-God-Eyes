@@ -170,6 +170,41 @@ def import_gtfs():
                 db.add(shape)
             db.commit()
 
+            print("Extracting SeaBus Schedule for simulation...")
+            db.query(models.SeaBusSchedule).delete()
+            
+            seabus_trip_details = {}
+            with z.open('trips.txt') as f:
+                reader = csv.DictReader(io.TextIOWrapper(f, 'utf-8-sig'))
+                for row in reader:
+                    if row['route_id'] in found_seabus_ids:
+                        seabus_trip_details[row['trip_id']] = {
+                            'direction_id': int(row['direction_id']),
+                            'shape_id': row['shape_id']
+                        }
+            
+            seabus_times = {}
+            with z.open('stop_times.txt') as f:
+                reader = csv.DictReader(io.TextIOWrapper(f, 'utf-8-sig'))
+                for row in reader:
+                    tid = row['trip_id']
+                    if tid in seabus_trip_details:
+                        if tid not in seabus_times:
+                            seabus_times[tid] = []
+                        seabus_times[tid].append(row)
+            
+            for tid, times in seabus_times.items():
+                times.sort(key=lambda x: int(x['stop_sequence']))
+                if len(times) >= 2:
+                    db.add(models.SeaBusSchedule(
+                        trip_id=tid,
+                        direction_id=seabus_trip_details[tid]['direction_id'],
+                        departure_time=times[0]['departure_time'],
+                        arrival_time=times[-1]['arrival_time'],
+                        shape_id=seabus_trip_details[tid]['shape_id']
+                    ))
+            db.commit()
+
         print("✅ GTFS Static Import Completed Successfully!")
         
     except Exception as e:
