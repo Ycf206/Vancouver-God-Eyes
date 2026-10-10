@@ -21,8 +21,10 @@ export default function TopBar() {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     
-    // 取得時區名稱 (例如 Asia/Taipei 或是 America/Vancouver)
-    const tzName = Intl.DateTimeFormat().resolvedOptions().timeZone.split('/').pop()?.replace('_', ' ');
+    // 取得短時區代號 (例如 PST / PDT)
+    const tzParts = date.toLocaleTimeString('en-US', { timeZoneName: 'short' }).split(' ');
+    const tzName = tzParts[tzParts.length - 1];
+    
     return `${year}年${month}月${day}日 ${tzName}`;
   };
 

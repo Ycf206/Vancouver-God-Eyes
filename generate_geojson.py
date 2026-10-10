@@ -10,7 +10,7 @@ skytrain_route_ids = {'30053', '30052', '13686'} # Expo, Millennium, Canada
 route_colors = {
     '30053': '#0033a0', # Expo Line
     '30052': '#ffcd00', # Millennium Line
-    '13686': '#007c9f'  # Canada Line
+    '13686': '#00b5e2'  # Canada Line (淺藍色)
 }
 
 print("Parsing GTFS Zip...")
