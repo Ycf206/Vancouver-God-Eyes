@@ -1,0 +1,28 @@
+# Node & Next.js
+node_modules/
+.next/
+out/
+build/
+.env*.local
+
+# Python & FastAPI
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+.env
+
+# Database Data (Docker Volumes if mapped locally)
+postgres_data/
+redis_data/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
