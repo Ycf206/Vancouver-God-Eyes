@@ -35,8 +35,15 @@ services:
       - REDIS_URL=redis://redis:6379/0
     restart: unless-stopped
 
-  # Frontend will be run locally during development via npm run dev
-  # but can be containerized here later for deployment
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    restart: unless-stopped
 
 volumes:
   postgres_data:
