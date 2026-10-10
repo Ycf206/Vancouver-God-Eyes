@@ -56,6 +56,7 @@ export default function AppMap() {
 
   // 動態建立 MapStyle 物件，確保 GeoJSON 和圖層順序正確載入
   const mapStyle = useMemo(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const style: any = {
       version: 8,
       sources: {
