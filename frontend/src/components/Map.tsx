@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import Map from 'react-map-gl/maplibre';
+import Map, { NavigationControl } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 export default function AppMap() {
@@ -39,7 +39,9 @@ export default function AppMap() {
           ]
         }}
         style={{ width: '100%', height: '100%' }}
-      />
+      >
+        <NavigationControl position="bottom-right" visualizePitch={true} />
+      </Map>
     </div>
   );
 }
