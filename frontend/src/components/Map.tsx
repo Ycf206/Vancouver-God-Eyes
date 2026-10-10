@@ -228,7 +228,7 @@ export default function AppMap() {
   return (
     <div className="w-full h-full absolute inset-0 z-0 pt-[60px]">
       <Map
-        initialViewState={{ longitude: -122.95, latitude: 49.25, zoom: 11, pitch: 45, bearing: -17.6 }}
+        initialViewState={{ longitude: -123.05, latitude: 49.25, zoom: 11, pitch: 45, bearing: 0 }}
         mapStyle={mapStyle}
         style={{ width: '100%', height: '100%' }}
         interactiveLayerIds={['bus-stops-layer', 'skytrain-stops-layer', 'seabus-stops-layer']}
