@@ -6,3 +6,5 @@ geoalchemy2
 redis
 asyncpg
 websockets
+gtfs-realtime-bindings
+requests
