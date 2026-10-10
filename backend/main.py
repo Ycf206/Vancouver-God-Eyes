@@ -344,6 +344,17 @@ async def get_ferry_terminal_schedule(terminal_code: str):
                     })
                     
         # Sort by time
+        import datetime
+        def parse_time(t_str):
+            if not t_str or t_str.lower() == 'variable' or t_str.lower() == 'cancelled':
+                return datetime.datetime(2000, 1, 1) # put at top or bottom? let's just leave it
+            try:
+                # Parse 7:00 am
+                return datetime.datetime.strptime(t_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower(), '%I:%M %p')
+            except:
+                return datetime.datetime(2000, 1, 1)
+                
+        schedule.sort(key=lambda x: parse_time(x['time']))
         return {"terminal": terminal_code, "schedule": schedule}
     except Exception as e:
         return {"error": str(e)}

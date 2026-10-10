@@ -324,7 +324,7 @@ export default function AppMap() {
             anchor="bottom"
             onClose={() => setSelectedStop(null)}
             closeButton={true}
-            closeOnClick={false}
+              closeOnClick={false}
           >
             <div className="p-1 min-w-[200px] text-gray-800">
               <h3 className="font-bold text-sm mb-2 pb-1 border-b">{selectedStop.name} <span className="text-xs text-gray-400">({selectedStop.id})</span></h3>
@@ -401,13 +401,17 @@ export default function AppMap() {
             anchor="bottom"
             onClose={() => setSelectedTerminal(null)}
             closeOnClick={false}
+            closeButton={false}
             className="z-50"
             offset={[0, -10]}
           >
             <div className="p-3 min-w-[280px] max-h-[300px] overflow-y-auto">
-              <h3 className="font-bold text-gray-800 text-lg mb-1 flex items-center gap-2">
-                <span className="w-2 h-2 bg-[#0060a9] rounded-full inline-block"></span>
-                {selectedTerminal.properties?.name}
+              <h3 className="font-bold text-gray-800 text-lg mb-1 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 bg-[#0060a9] rounded-full inline-block"></span>
+                  {selectedTerminal.properties?.name}
+                </div>
+                <button onClick={() => setSelectedTerminal(null)} className="text-gray-400 hover:text-gray-800 text-xl font-normal leading-none px-1">&times;</button>
               </h3>
               
               <div className="mt-3">
