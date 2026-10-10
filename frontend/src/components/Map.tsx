@@ -6,6 +6,10 @@ import Map, { NavigationControl, Marker } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useUIStore } from '@/store/useUIStore';
 
+// 直接 Import 靜態資料，完全避開 Browser 網路載入失敗的問題
+import tracksData from '../../public/skytrain_tracks.json';
+import stopsData from '../../public/skytrain_stops.json';
+
 interface Vehicle {
   id: string;
   route_id: string;
@@ -17,15 +21,6 @@ interface Vehicle {
 export default function AppMap() {
   const { layers } = useUIStore();
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [tracks, setTracks] = useState<any>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [stops, setStops] = useState<any>(null);
-
-  useEffect(() => {
-    fetch('/skytrain_tracks.geojson').then(res => res.json()).then(setTracks).catch(console.error);
-    fetch('/skytrain_stops.geojson').then(res => res.json()).then(setStops).catch(console.error);
-  }, []);
 
   useEffect(() => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:8000` : 'http://localhost:8000');
@@ -80,9 +75,9 @@ export default function AppMap() {
       ]
     };
 
-    if (layers.transit && tracks && stops) {
-      style.sources['skytrain-tracks'] = { type: 'geojson', data: tracks };
-      style.sources['skytrain-stops'] = { type: 'geojson', data: stops };
+    if (layers.transit) {
+      style.sources['skytrain-tracks'] = { type: 'geojson', data: tracksData };
+      style.sources['skytrain-stops'] = { type: 'geojson', data: stopsData };
 
       style.layers.push({
         id: 'skytrain-tracks-layer',
@@ -116,7 +111,7 @@ export default function AppMap() {
     });
 
     return style;
-  }, [layers.transit, tracks, stops]);
+  }, [layers.transit]);
 
   return (
     <div className="w-full h-full absolute inset-0 z-0 pt-[60px]">
@@ -127,7 +122,7 @@ export default function AppMap() {
       >
         <NavigationControl position="bottom-right" visualizePitch={true} />
 
-        {/* 即時車輛位置 (不再限制為 SkyTrain) */}
+        {/* 即時車輛位置 */}
         {layers.transit && vehicles.map(v => (
           <Marker key={v.id} longitude={v.lon} latitude={v.lat} anchor="center">
             <div className="relative flex items-center justify-center w-4 h-4">

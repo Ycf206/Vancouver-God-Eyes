@@ -4,14 +4,19 @@ import io
 import json
 
 zip_path = 'google_transit.zip'
-skytrain_route_ids = {'30053', '30052', '13686', '6771'} # Expo, Millennium, Canada, SeaBus
+# 30053=Expo, 30052=Millennium, 13686=Canada, 6771=SeaBus
+# 6641=99 B-Line, 6653=095 (R5), 22143=096 (R1)
+skytrain_route_ids = {'30053', '30052', '13686', '6771', '6641', '6653', '22143'}
 
 # Colors mapping
 route_colors = {
-    '30053': '#00a4e4', # Expo Line
-    '30052': '#ffcd00', # Millennium Line
-    '13686': '#00b5e2', # Canada Line
-    '6771': '#f58220'   # SeaBus
+    '30053': '#00a4e4',
+    '30052': '#ffcd00',
+    '13686': '#00b5e2',
+    '6771': '#f58220',
+    '6641': '#22c55e', # 99 B-Line (Green)
+    '6653': '#22c55e', # R5
+    '22143': '#22c55e' # R1
 }
 
 print("Parsing GTFS Zip...")
@@ -22,7 +27,6 @@ stops_set = set()
 shape_points = {}
 
 with zipfile.ZipFile(zip_path, 'r') as z:
-    print("Reading trips.txt...")
     with z.open('trips.txt') as f:
         reader = csv.DictReader(io.TextIOWrapper(f, 'utf-8-sig'))
         for row in reader:
@@ -31,14 +35,12 @@ with zipfile.ZipFile(zip_path, 'r') as z:
                 if row['shape_id'] not in shape_to_route:
                     shape_to_route[row['shape_id']] = row['route_id']
                 
-    print("Reading stop_times.txt...")
     with z.open('stop_times.txt') as f:
         reader = csv.DictReader(io.TextIOWrapper(f, 'utf-8-sig'))
         for row in reader:
             if row['trip_id'] in trips_to_route:
                 stops_set.add(row['stop_id'])
                 
-    print("Reading shapes.txt...")
     with z.open('shapes.txt') as f:
         reader = csv.DictReader(io.TextIOWrapper(f, 'utf-8-sig'))
         for row in reader:
@@ -52,7 +54,6 @@ with zipfile.ZipFile(zip_path, 'r') as z:
                     'lon': float(row['shape_pt_lon'])
                 })
                 
-    print("Reading stops.txt...")
     stops_features = []
     with z.open('stops.txt') as f:
         reader = csv.DictReader(io.TextIOWrapper(f, 'utf-8-sig'))
@@ -70,8 +71,6 @@ with zipfile.ZipFile(zip_path, 'r') as z:
                     }
                 })
 
-# Build tracks GeoJSON
-print("Building Tracks GeoJSON...")
 tracks_features = []
 for sid, points in shape_points.items():
     points.sort(key=lambda x: x['pt_sequence'])
@@ -85,7 +84,7 @@ for sid, points in shape_points.items():
         "properties": {
             "shape_id": sid,
             "route_id": shape_to_route[sid],
-            "color": route_colors[shape_to_route[sid]]
+            "color": route_colors.get(shape_to_route[sid], '#ffffff')
         }
     })
 
@@ -93,17 +92,15 @@ tracks_geojson = {
     "type": "FeatureCollection",
     "features": tracks_features
 }
-
 stops_geojson = {
     "type": "FeatureCollection",
     "features": stops_features
 }
 
-print("Saving to frontend/public...")
-with open('frontend/public/skytrain_tracks.geojson', 'w', encoding='utf-8') as f:
+with open('frontend/public/skytrain_tracks.json', 'w', encoding='utf-8') as f:
     json.dump(tracks_geojson, f)
     
-with open('frontend/public/skytrain_stops.geojson', 'w', encoding='utf-8') as f:
+with open('frontend/public/skytrain_stops.json', 'w', encoding='utf-8') as f:
     json.dump(stops_geojson, f)
     
 print("Done!")
