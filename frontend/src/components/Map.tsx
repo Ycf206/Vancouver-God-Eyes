@@ -67,20 +67,34 @@ export default function AppMap() {
         mapStyle={{
           version: 8,
           sources: {
-            'esri-dark': {
+            'esri-dark-base': {
               type: 'raster',
               tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}'],
               tileSize: 256,
               attribution: '&copy; Esri, HERE, Garmin, &copy; OpenStreetMap contributors'
+            },
+            'esri-dark-labels': {
+              type: 'raster',
+              tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}'],
+              tileSize: 256
             }
           },
-          layers: [{
-            id: 'esri-dark-layer',
-            type: 'raster',
-            source: 'esri-dark',
-            minzoom: 0,
-            maxzoom: 16
-          }]
+          layers: [
+            {
+              id: 'esri-dark-base-layer',
+              type: 'raster',
+              source: 'esri-dark-base',
+              minzoom: 0,
+              maxzoom: 16
+            },
+            {
+              id: 'esri-dark-labels-layer',
+              type: 'raster',
+              source: 'esri-dark-labels',
+              minzoom: 0,
+              maxzoom: 16
+            }
+          ]
         }}
         style={{ width: '100%', height: '100%' }}
       >
