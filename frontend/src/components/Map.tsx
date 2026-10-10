@@ -15,6 +15,7 @@ if (typeof window !== 'undefined') {
 interface Vehicle {
   id: string;
   route_id: string;
+  is_seabus?: boolean;
   lat: number;
   lon: number;
   bearing: number;
@@ -262,7 +263,7 @@ export default function AppMap() {
 
         {/* 即時車輛位置 (Live Vehicles) */}
         {vehicles.map(v => {
-          if (v.route_id === '6771') {
+          if (v.is_seabus) {
             if (!layers.seabusVehicles) return null;
             return (
               <Marker key={v.id} longitude={v.lon} latitude={v.lat} anchor="center">

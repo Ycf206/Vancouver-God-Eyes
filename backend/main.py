@@ -44,15 +44,18 @@ async def fetch_translink_realtime():
     TRANSLINK_API_KEY = os.getenv("TRANSLINK_API_KEY", "OAsdtyJoPO0odcN6Ivhy")
     url = f"https://gtfsapi.translink.ca/v3/gtfsposition?apikey={TRANSLINK_API_KEY}"
     
-    SKYTRAIN_ROUTES = {'30053', '30052', '13686'}
-    ELITE_BUSES = {
-        '6771', '6641', '6653', '22143',
-        '39304', '46099', '37809', '39307', '40855', '37810', 
-        '36799', '48855', '37808', '37807', '38311', '46604'
-    }
-    
     while True:
         try:
+            # Query the DB for the current active IDs!
+            db = database.SessionLocal()
+            try:
+                # We need all the route_ids that are currently stored in our DB
+                valid_routes = db.query(models.TransitRoute).all()
+                valid_route_ids = {r.route_id for r in valid_routes}
+                seabus_ids = {r.route_id for r in valid_routes if r.route_group == 'seabus'}
+            finally:
+                db.close()
+                
             loop = asyncio.get_event_loop()
             headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
             response = await loop.run_in_executor(None, lambda: requests.get(url, headers=headers))
@@ -66,10 +69,11 @@ async def fetch_translink_realtime():
                     v = entity.vehicle
                     route_id = v.trip.route_id
                     
-                    if route_id in SKYTRAIN_ROUTES or route_id in ELITE_BUSES:
+                    if route_id in valid_route_ids:
                         vehicles.append({
                             "id": v.vehicle.id,
                             "route_id": route_id,
+                            "is_seabus": route_id in seabus_ids,
                             "lat": v.position.latitude,
                             "lon": v.position.longitude,
                             "bearing": v.position.bearing,

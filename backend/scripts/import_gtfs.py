@@ -1,6 +1,5 @@
 import sys
 import os
-# Add backend to path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import zipfile
@@ -12,11 +11,9 @@ from database import SessionLocal, engine
 from models import Base, TransitRoute, TransitStop, TransitShape
 
 def import_gtfs():
-    # Ensure tables exist
     Base.metadata.create_all(bind=engine)
     db: Session = SessionLocal()
     
-    # Path to google_transit.zip in the root of the project
     zip_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'google_transit.zip')
     
     if not os.path.exists(zip_path):
@@ -28,16 +25,15 @@ def import_gtfs():
 
     print("Parsing GTFS Zip...")
     
-    # We must use stable route_short_name or route_long_name because route_ids change every season!
-    target_short_names = {'99', 'R1', 'R2', 'R3', 'R4', 'R5', 'R6'}
-    target_long_names = {'expo line', 'canada line', 'millennium line', 'seabus'}
+    # Use exact route_short_name as found in Translink GTFS
+    target_short_names = {'099', 'R1', 'R2', 'R3', 'R4', 'R5', 'R6'}
     
     route_colors_mapping = {
         'expo line': '#1d2c59', 
         'millennium line': '#ffcd00', 
         'canada line': '#00a4e4',
         'seabus': '#8b786d', 
-        '99': '#f58220', 
+        '099': '#f58220', 
         'R1': '#22c55e',
         'R2': '#22c55e', 
         'R3': '#22c55e', 
@@ -47,7 +43,6 @@ def import_gtfs():
     }
 
     try:
-        # Clear old data
         print("Clearing old static data from database...")
         db.query(TransitShape).delete()
         db.query(TransitStop).delete()
@@ -59,7 +54,6 @@ def import_gtfs():
         stop_set = {}
         shape_points = {}
         
-        # We will collect the actual ephemeral route_ids dynamically
         found_skytrain_ids = set()
         found_seabus_ids = set()
         found_bus_ids = set()
@@ -88,6 +82,10 @@ def import_gtfs():
                         color_key = next((k for k in ['expo line', 'millennium line', 'canada line', 'seabus'] if k in long_name), short_name)
                         color = route_colors_mapping.get(color_key, '#ffffff')
                         
+                        # Fix SeaBus route short name if it's missing so we can render nicely
+                        if is_seabus and not short_name:
+                            short_name = 'SeaBus'
+                            
                         route = TransitRoute(
                             route_id=rid,
                             short_name=short_name,
@@ -98,16 +96,17 @@ def import_gtfs():
                         db.add(route)
             db.commit()
             
-            all_route_ids = found_skytrain_ids.union(found_bus_ids).union(found_seabus_ids)
+            print(f"Found {len(found_bus_ids)} Bus routes, {len(found_skytrain_ids)} SkyTrain, {len(found_seabus_ids)} SeaBus.")
 
             print("Parsing Trips and Shapes...")
             with z.open('trips.txt') as f:
                 reader = csv.DictReader(io.TextIOWrapper(f, 'utf-8-sig'))
                 for row in reader:
-                    if row['route_id'] in all_route_ids:
-                        trips_to_route[row['trip_id']] = row['route_id']
+                    rid = row['route_id']
+                    if rid in found_skytrain_ids or rid in found_bus_ids or rid in found_seabus_ids:
+                        trips_to_route[row['trip_id']] = rid
                         if row['shape_id'] not in shape_to_route:
-                            shape_to_route[row['shape_id']] = row['route_id']
+                            shape_to_route[row['shape_id']] = rid
                         
             print("Finding Stops for filtered routes...")
             with z.open('stop_times.txt') as f:
@@ -118,8 +117,6 @@ def import_gtfs():
                         route_id = trips_to_route[trip_id]
                         stop_id = row['stop_id']
                         group = 'skytrain' if route_id in found_skytrain_ids else ('seabus' if route_id in found_seabus_ids else 'bus')
-                        # Note: A stop could serve both Bus and SkyTrain (e.g. Commercial-Broadway), 
-                        # so we prioritize keeping it as SkyTrain if there's a conflict
                         if stop_id not in stop_set or group == 'skytrain':
                             stop_set[stop_id] = group
 
@@ -131,7 +128,6 @@ def import_gtfs():
                     if stop_id in stop_set:
                         lat = float(row['stop_lat'])
                         lon = float(row['stop_lon'])
-                        # WKT Format for PostGIS geometry
                         point_wkt = f"SRID=4326;POINT({lon} {lat})"
                         stop = TransitStop(
                             stop_id=stop_id,
@@ -163,7 +159,6 @@ def import_gtfs():
                 route_id = shape_to_route[sid]
                 group = 'skytrain' if route_id in found_skytrain_ids else ('seabus' if route_id in found_seabus_ids else 'bus')
                 
-                # Construct PostGIS LineString WKT
                 coord_str = ", ".join([f"{p['lon']} {p['lat']}" for p in points])
                 linestring_wkt = f"SRID=4326;LINESTRING({coord_str})"
                 
