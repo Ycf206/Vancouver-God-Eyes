@@ -31,15 +31,15 @@ interface StopInfo {
 export default function AppMap() {
   const { layers, mapStyleType } = useUIStore();
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
-  const [ferryTerminals, setFerryTerminals] = useState<Array<{geometry: {coordinates: number[]}, properties: {name?: string}}>>([]);
+  const [ferryTerminals, setFerryTerminals] = useState<Array<{geometry: {coordinates: number[]}, properties: {name?: string, code: string}}>>([]);
   
   // States for Popup
   const [selectedStop, setSelectedStop] = useState<StopInfo | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [arrivals, setArrivals] = useState<any[]>([]);
   const [loadingArrivals, setLoadingArrivals] = useState(false);
-    const [selectedTerminal, setSelectedTerminal] = useState<any>(null);
-    const [terminalSchedule, setTerminalSchedule] = useState<any[]>([]);
+    const [selectedTerminal, setSelectedTerminal] = useState<{geometry: {coordinates: number[]}, properties: {name?: string, code: string}} | null>(null);
+    const [terminalSchedule, setTerminalSchedule] = useState<Array<{destination: string, time: string, arrival_time: string, vessel_name: string, status: string, fill: number}>>([]);
     const [loadingSchedule, setLoadingSchedule] = useState(false);
 
   
@@ -391,6 +391,65 @@ export default function AppMap() {
             </div>
           </Marker>
         ))}
+
+
+        {/* Terminal Popup */}
+        {selectedTerminal && (
+          <Popup
+            longitude={selectedTerminal.geometry.coordinates[0]}
+            latitude={selectedTerminal.geometry.coordinates[1]}
+            anchor="bottom"
+            onClose={() => setSelectedTerminal(null)}
+            closeOnClick={false}
+            className="z-50"
+            offset={[0, -10]}
+          >
+            <div className="p-3 min-w-[280px] max-h-[300px] overflow-y-auto">
+              <h3 className="font-bold text-gray-800 text-lg mb-1 flex items-center gap-2">
+                <span className="w-2 h-2 bg-[#0060a9] rounded-full inline-block"></span>
+                {selectedTerminal.properties?.name}
+              </h3>
+              
+              <div className="mt-3">
+                <h4 className="text-xs font-semibold text-gray-500 mb-2 border-b pb-1">今日班次 (Today&apos;s Sailings)</h4>
+                
+                {loadingSchedule ? (
+                  <div className="flex justify-center py-4">
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#0060a9]"></div>
+                  </div>
+                ) : terminalSchedule.length === 0 ? (
+                  <div className="text-sm text-gray-500 py-2">目前沒有即將開航的班次。</div>
+                ) : (
+                  <div className="flex flex-col gap-2">
+                    {terminalSchedule.map((sailing, i) => (
+                      <div key={i} className="flex flex-col gap-1 text-sm bg-gray-50 p-2 rounded border border-gray-100">
+                        <div className="flex justify-between items-center">
+                          <span className="font-bold text-[#0060a9]">{sailing.time} ➝ {sailing.arrival_time}</span>
+                          <span className={`text-xs px-1.5 py-0.5 rounded ${
+                            sailing.status === 'past' ? 'bg-gray-200 text-gray-600' : 
+                            sailing.status === 'current' ? 'bg-green-100 text-green-700 font-bold' : 
+                            'bg-blue-100 text-blue-700'
+                          }`}>
+                            {sailing.status === 'past' ? '已開航' : sailing.status === 'current' ? '航行中' : '即將開航'}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center text-xs text-gray-600">
+                          <span className="font-medium truncate max-w-[140px]">{sailing.vessel_name || 'BC Ferries'}</span>
+                          <span>開往: {sailing.destination}</span>
+                        </div>
+                        {sailing.status !== 'past' && sailing.fill > 0 && (
+                          <div className="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                            <div className="bg-[#0060a9] h-1.5 rounded-full" style={{ width: `${sailing.fill}%` }}></div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </Popup>
+        )}
 
       </Map>
     </div>
