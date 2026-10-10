@@ -1,9 +1,14 @@
 import { create } from 'zustand';
 
+export type MapStyleType = 'street' | 'satellite' | 'light' | 'dark';
+
 interface UIState {
+  mapStyleType: MapStyleType;
+  setMapStyleType: (type: MapStyleType) => void;
   layers: {
     traffic: boolean;
     transit: boolean;
+    bus: boolean;
     ferries: boolean;
     weather: boolean;
     parking: boolean;
@@ -12,9 +17,12 @@ interface UIState {
 }
 
 export const useUIStore = create<UIState>((set) => ({
+  mapStyleType: 'dark',
+  setMapStyleType: (type) => set({ mapStyleType: type }),
   layers: {
     traffic: true,
     transit: true,
+    bus: true,
     ferries: false,
     weather: false,
     parking: false,

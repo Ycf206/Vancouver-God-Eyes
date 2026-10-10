@@ -21,7 +21,7 @@ interface Vehicle {
 }
 
 export default function AppMap() {
-  const { layers } = useUIStore();
+  const { layers, mapStyleType } = useUIStore();
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
 
   useEffect(() => {
@@ -50,32 +50,50 @@ export default function AppMap() {
   }, []);
 
   const mapStyle = useMemo(() => {
+    // Determine Base and Label Tiles based on mapStyleType
+    let baseTiles = ['https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}'];
+    let labelTiles = ['https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}'];
+    
+    if (mapStyleType === 'light') {
+      baseTiles = ['https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}'];
+      labelTiles = ['https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}'];
+    } else if (mapStyleType === 'street') {
+      baseTiles = ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}'];
+      labelTiles = []; // Street map already has labels
+    } else if (mapStyleType === 'satellite') {
+      baseTiles = ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'];
+      labelTiles = ['https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}'];
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const style: any = {
       version: 8,
       sources: {
-        'esri-dark-base': {
+        'esri-base': {
           type: 'raster',
-          tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}'],
+          tiles: baseTiles,
           tileSize: 256,
-          attribution: '&copy; Esri, HERE, Garmin, &copy; OpenStreetMap contributors'
-        },
-        'esri-dark-labels': {
-          type: 'raster',
-          tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}'],
-          tileSize: 256
+          attribution: '&copy; Esri'
         }
       },
       layers: [
         {
-          id: 'esri-dark-base-layer',
+          id: 'esri-base-layer',
           type: 'raster',
-          source: 'esri-dark-base',
+          source: 'esri-base',
           minzoom: 0,
           maxzoom: 16
         }
       ]
     };
+
+    if (labelTiles.length > 0) {
+      style.sources['esri-labels'] = {
+        type: 'raster',
+        tiles: labelTiles,
+        tileSize: 256
+      };
+    }
 
     if (layers.transit) {
       style.sources['skytrain-tracks'] = { type: 'geojson', data: '/skytrain_tracks.json' };
@@ -104,16 +122,18 @@ export default function AppMap() {
       });
     }
 
-    style.layers.push({
-      id: 'esri-dark-labels-layer',
-      type: 'raster',
-      source: 'esri-dark-labels',
-      minzoom: 0,
-      maxzoom: 16
-    });
+    if (labelTiles.length > 0) {
+      style.layers.push({
+        id: 'esri-labels-layer',
+        type: 'raster',
+        source: 'esri-labels',
+        minzoom: 0,
+        maxzoom: 16
+      });
+    }
 
     return style;
-  }, [layers.transit]);
+  }, [layers.transit, mapStyleType]);
 
   return (
     <div className="w-full h-full absolute inset-0 z-0 pt-[60px]">
@@ -124,10 +144,10 @@ export default function AppMap() {
       >
         <NavigationControl position="bottom-right" visualizePitch={true} />
 
-        {/* 即時車輛位置 */}
-        {layers.transit && vehicles.map(v => (
+        {/* 即時車輛位置 (Bus Layer) */}
+        {layers.bus && vehicles.map(v => (
           <Marker key={v.id} longitude={v.lon} latitude={v.lat} anchor="center">
-            <div className="relative flex items-center justify-center w-4 h-4">
+            <div className="relative flex items-center justify-center w-4 h-4 cursor-pointer tooltip" title={`Route: ${v.route_id}`}>
               <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 shadow-[0_0_8px_rgba(52,211,153,1)]"></span>
             </div>
