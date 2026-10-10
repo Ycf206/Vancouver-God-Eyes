@@ -30,6 +30,9 @@ services:
     depends_on:
       - db
       - redis
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
     environment:
       - DATABASE_URL=postgresql://gods_eye_user:password@db:5432/gods_eye
       - REDIS_URL=redis://redis:6379/0
