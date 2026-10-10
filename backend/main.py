@@ -28,49 +28,52 @@ app.add_middleware(
 # WebSocket connection manager
 active_connections: list[WebSocket] = []
 stop_arrivals = {}
+cached_translink_vehicles: list[dict] = []
+cached_bcferries_vehicles: list[dict] = []
+
+import math
+def calculate_bearing(p1, p2):
+    lon1, lat1 = math.radians(p1[0]), math.radians(p1[1])
+    lon2, lat2 = math.radians(p2[0]), math.radians(p2[1])
+    dlon = lon2 - lon1
+    y = math.sin(dlon) * math.cos(lat2)
+    x = math.cos(lat1) * math.sin(lat2) - math.sin(lat1) * math.cos(lat2) * math.cos(dlon)
+    return round((math.degrees(math.atan2(y, x)) + 360) % 360, 1)
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     active_connections.append(websocket)
     try:
+        # Instantly send cached vehicles upon connection so map is never empty
+        if cached_translink_vehicles:
+            await websocket.send_json({"type": "vehicles_update", "data": cached_translink_vehicles})
+        if cached_bcferries_vehicles:
+            await websocket.send_json({"type": "bc_ferries_update", "data": cached_bcferries_vehicles})
+
         while True:
-            # Just keep connection open
             await websocket.receive_text()
     except WebSocketDisconnect:
         active_connections.remove(websocket)
 
 
 async def fetch_bcferries_realtime():
+    global cached_bcferries_vehicles
     while True:
         try:
-            if not active_connections:
-                await asyncio.sleep(5)
-                continue
-
             r = requests.get('https://www.bcferriesapi.ca/v2/', timeout=10)
             data = r.json()
             
             terminals = {
-                'TSA': [-123.129, 49.002],
-                'SWB': [-123.410, 48.688],
-                'HSB': [-123.272, 49.375],
-                'DUK': [-123.890, 49.163],
-                'LNG': [-123.471, 49.434],
-                'NAN': [-123.955, 49.195],
-                'FUL': [-123.453, 48.766],
-                'BOW': [-123.332, 49.381]
+                'TSA': [-123.1317, 49.0064],
+                'SWB': [-123.4107, 48.6868],
+                'HSB': [-123.2741, 49.3693],
+                'DUK': [-123.8912, 49.1606],
+                'LNG': [-123.4723, 49.4339],
+                'NAN': [-123.9554, 49.1935],
+                'FUL': [-123.4511, 48.7694],
+                'BOW': [-123.3313, 49.3795]
             }
-
-            import json
-            import os
-            try:
-                terminals_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'frontend', 'public', 'bc_ferries_terminals_points.geojson')
-                points_data = json.load(open(terminals_path, 'r', encoding='utf-8'))
-                for f in points_data['features']:
-                    terminals[f['properties']['code']] = f['geometry']['coordinates']
-            except Exception as e:
-                pass
 
             vehicles = []
             
@@ -84,6 +87,7 @@ async def fetch_bcferries_realtime():
             now_naive = now.replace(tzinfo=None)
 
             all_routes = data.get('capacityRoutes', []) + data.get('nonCapacityRoutes', [])
+            seen_trips = set()
             
             for route in all_routes:
                 dep_code = route.get('fromTerminalCode')
@@ -94,16 +98,20 @@ async def fetch_bcferries_realtime():
                     
                 dep_coord = terminals[dep_code]
                 arr_coord = terminals[arr_code]
+                bearing = calculate_bearing(dep_coord, arr_coord)
                 
                 for sailing in route.get('sailings', []):
-                    # Simply use sailingStatus == 'current' if available, otherwise fallback to time math
                     status = sailing.get('sailingStatus')
+                    time_str = sailing.get('time', '')
+                    arr_time_str = sailing.get('arrivalTime', '')
+                    vessel_name = sailing.get('vesselName') or 'BC Ferries'
+                    
+                    trip_key = f"{dep_code}_{arr_code}_{time_str}"
+                    if trip_key in seen_trips:
+                        continue
                     
                     is_sailing = False
                     progress = 0.5
-                    
-                    time_str = sailing.get('time', '')
-                    arr_time_str = sailing.get('arrivalTime', '')
                     
                     try:
                         if time_str and arr_time_str and time_str.lower() != 'variable' and arr_time_str.lower() != 'variable':
@@ -120,30 +128,36 @@ async def fetch_bcferries_realtime():
                                 is_sailing = True
                                 total_seconds = (arr_time - dep_time).total_seconds()
                                 elapsed = (now_naive - dep_time).total_seconds()
-                                progress = elapsed / total_seconds
+                                if total_seconds > 0:
+                                    progress = max(0.02, min(0.98, elapsed / total_seconds))
                     except Exception as e:
                         pass
                         
                     if status == 'current' or is_sailing:
+                        seen_trips.add(trip_key)
                         lon = dep_coord[0] + (arr_coord[0] - dep_coord[0]) * progress
                         lat = dep_coord[1] + (arr_coord[1] - dep_coord[1]) * progress
                         
                         vehicles.append({
-                            'id': f"bcferries_{sailing.get('vesselName', 'ship').replace(' ', '_')}_{time_str}",
-                            'route_id': f"{dep_code}-{arr_code}",
+                            'id': f"bcferries_{vessel_name.replace(' ', '_')}_{dep_code}_{arr_code}_{time_str}",
+                            'route_id': f"{dep_code} ➝ {arr_code}",
                             'is_bcferries': True,
-                            'vessel_name': sailing.get('vesselName', 'BC Ferries'),
+                            'vessel_name': vessel_name,
                             'lat': lat,
                             'lon': lon,
-                            'bearing': 0
+                            'bearing': bearing
                         })
             
+            cached_bcferries_vehicles = vehicles
             print(f"[BC Ferries] Found {len(vehicles)} ships currently sailing.")
             
-            if vehicles:
+            if active_connections:
                 message = {"type": "bc_ferries_update", "data": vehicles}
-                for connection in active_connections:
-                    await connection.send_json(message)
+                for connection in list(active_connections):
+                    try:
+                        await connection.send_json(message)
+                    except Exception:
+                        pass
                     
         except Exception as e:
             print(f"Error in BC Ferries fetch: {e}")
@@ -251,11 +265,15 @@ async def fetch_translink_realtime():
                 db.close()
 
             vehicles.extend(seabus_simulated)
+            cached_translink_vehicles = vehicles
             
             if active_connections:
                 message = {"type": "vehicles_update", "data": vehicles}
-                for connection in active_connections:
-                    await connection.send_json(message)
+                for connection in list(active_connections):
+                    try:
+                        await connection.send_json(message)
+                    except Exception:
+                        pass
                     
         except Exception as e:
             print(f"Error fetching TransLink data: {e}")
@@ -348,10 +366,11 @@ async def get_ferry_terminal_schedule(terminal_code: str):
                     time_str = sailing.get('time')
                     arr_time_str = sailing.get('arrivalTime')
                     
+                    # Get true deck capacity fill rate (Option B)
+                    fill = sailing.get('fill') or sailing.get('carFill') or 0
                     status = sailing.get('sailingStatus')
-                    fill = sailing.get('fill', 0)
                     
-                                        # Calculate status based on time to ensure it is always accurate
+                    # Calculate status based on time to ensure past/current/future are always accurate
                     if time_str and arr_time_str and time_str.lower() != 'variable' and arr_time_str.lower() != 'variable':
                         try:
                             dep_time = datetime.datetime.strptime(time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower(), '%I:%M %p')
@@ -367,15 +386,9 @@ async def get_ferry_terminal_schedule(terminal_code: str):
                                 status = 'past'
                             elif dep_time <= now_naive <= arr_time:
                                 status = 'current'
-                                total_seconds = (arr_time - dep_time).total_seconds()
-                                elapsed = (now_naive - dep_time).total_seconds()
-                                # simulate fill progress if no capacity data is provided, or use it as a journey progress bar instead!
-                                # Since users think it's a journey progress bar, let's just make it a journey progress bar for 'current' sailings!
-                                fill = int((elapsed / total_seconds) * 100)
                             else:
                                 status = 'future'
-                                fill = 0 # Future journey progress is 0
-                        except:
+                        except Exception:
                             if not status: status = 'future'
                             
                     if not status:
@@ -385,7 +398,7 @@ async def get_ferry_terminal_schedule(terminal_code: str):
                     # If duplicate, prefer the one with a vessel name or real capacity
                     if key in seen:
                         existing = seen[key]
-                        if sailing.get('vesselName') and not existing.get('vessel_name'):
+                        if sailing.get('vesselName') and (not existing.get('vessel_name') or existing.get('vessel_name') == 'BC Ferries'):
                             existing['vessel_name'] = sailing.get('vesselName')
                         if fill > 0 and existing.get('fill') == 0:
                             existing['fill'] = fill
