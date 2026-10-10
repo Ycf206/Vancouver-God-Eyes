@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useUIStore, MapStyleType } from '@/store/useUIStore';
-import { Map, Satellite, Sun, Moon, Bus, Layers, Train, CircleDot, Route, Ship } from 'lucide-react';
+import { Map, Satellite, Sun, Moon, Bus, Layers, CircleDot, Route, Ship } from 'lucide-react';
 
 export default function LayerPanel() {
   const { mapStyleType, setMapStyleType, layers, toggleLayer } = useUIStore();
