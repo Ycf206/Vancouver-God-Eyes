@@ -101,10 +101,10 @@ export default function AppMap() {
       };
     }
 
-    if (layers.transit) {
-      style.sources['skytrain-tracks'] = { type: 'geojson', data: '/skytrain_tracks.json' };
-      style.sources['skytrain-stops'] = { type: 'geojson', data: '/skytrain_stops.json' };
+    style.sources['skytrain-tracks'] = { type: 'geojson', data: '/skytrain_tracks.json' };
+    style.sources['skytrain-stops'] = { type: 'geojson', data: '/skytrain_stops.json' };
 
+    if (layers.skytrain) {
       style.layers.push({
         id: 'skytrain-tracks-layer',
         type: 'line',
@@ -115,6 +115,10 @@ export default function AppMap() {
           'line-opacity': 0.8
         }
       });
+    }
+
+    // Currently all generated stops are in skytrain-stops. In the future we can filter them.
+    if (layers.skytrainStops || layers.busStops) {
       style.layers.push({
         id: 'skytrain-stops-layer',
         type: 'circle',
@@ -139,7 +143,7 @@ export default function AppMap() {
     }
 
     return style;
-  }, [layers.transit, mapStyleType]);
+  }, [layers.skytrain, layers.skytrainStops, layers.busStops, mapStyleType]);
 
   return (
     <div className="w-full h-full absolute inset-0 z-0 pt-[60px]">

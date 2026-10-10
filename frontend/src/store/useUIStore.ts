@@ -7,8 +7,11 @@ interface UIState {
   setMapStyleType: (type: MapStyleType) => void;
   layers: {
     traffic: boolean;
-    transit: boolean;
+    transit: boolean; // deprecated, use fine-grained
     bus: boolean;
+    busStops: boolean;
+    skytrain: boolean;
+    skytrainStops: boolean;
     ferries: boolean;
     weather: boolean;
     parking: boolean;
@@ -23,6 +26,9 @@ export const useUIStore = create<UIState>((set) => ({
     traffic: true,
     transit: true,
     bus: true,
+    busStops: false,
+    skytrain: true,
+    skytrainStops: true,
     ferries: false,
     weather: false,
     parking: false,
