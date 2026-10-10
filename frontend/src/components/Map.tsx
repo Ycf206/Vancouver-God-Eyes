@@ -11,8 +11,8 @@ export default function AppMap() {
   const [vehicles, setVehicles] = useState<any[]>([]);
 
   useEffect(() => {
-    // 自動判斷 WebSocket 網址
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    // 自動判斷 WebSocket 網址 (動態抓取當前瀏覽器的 IP，指向 8000 port)
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:8000` : 'http://localhost:8000');
     const wsUrl = apiUrl.replace('http', 'ws') + '/ws';
     
     let ws: WebSocket;
