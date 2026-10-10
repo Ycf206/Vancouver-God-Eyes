@@ -6,9 +6,17 @@ import Map, { NavigationControl, Source, Layer, Marker } from 'react-map-gl/mapl
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useUIStore } from '@/store/useUIStore';
 
+interface Vehicle {
+  id: string;
+  route_id: string;
+  lat: number;
+  lon: number;
+  bearing: number;
+}
+
 export default function AppMap() {
   const { layers } = useUIStore();
-  const [vehicles, setVehicles] = useState<any[]>([]);
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
 
   useEffect(() => {
     // 自動判斷 WebSocket 網址 (動態抓取當前瀏覽器的 IP，指向 8000 port)
