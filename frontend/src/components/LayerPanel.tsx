@@ -91,24 +91,24 @@ export default function LayerPanel() {
         {/* Divider */}
         <div className="w-full h-px bg-[#2d2e32]"></div>
 
-        {/* Traffic Row (Bus) */}
+        {/* Traffic Row */}
         <div className="flex flex-col gap-2">
           <div className="text-[10px] font-bold text-emerald-500 tracking-wider">交通</div>
-          <div className="flex flex-col gap-1.5">
+          
+          {/* Bus Grid */}
+          <div className="grid grid-cols-3 gap-1.5">
             <LayerButton layerKey="bus" label="巴士" icon={Bus} colorClass="text-emerald-400" activeBg="bg-[#1a2e23]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_8px_rgba(16,185,129,0.1)]" />
             <LayerButton layerKey="busRoutes" label="路線" icon={Route} colorClass="text-emerald-400" activeBg="bg-[#1a2e23]" activeBorder="border-emerald-500/50" />
             <LayerButton layerKey="busStops" label="車站" icon={CircleDot} colorClass="text-emerald-400" activeBg="bg-[#1a2e23]" activeBorder="border-emerald-500/50" />
           </div>
-        </div>
 
-        {/* Divider */}
-        <div className="w-full h-px bg-[#2d2e32]"></div>
-
-        {/* SkyTrain Row */}
-        <div className="flex flex-col gap-2">
-          <div className="text-[10px] font-bold text-blue-400 tracking-wider">天車</div>
-          <div className="flex flex-col gap-1.5">
-            <LayerButton layerKey="skytrainRoutes" label="路線" icon={Train} colorClass="text-blue-400" activeBg="bg-[#1a2436]" activeBorder="border-blue-500/50" activeShadow="shadow-[0_0_8px_rgba(59,130,246,0.1)]" />
+          {/* SkyTrain Grid */}
+          <div className="grid grid-cols-3 gap-1.5 mt-1">
+            <div className="flex items-center gap-3 px-3 py-2 rounded-md border border-transparent text-xs text-blue-400/50 bg-[#1a2436]/30 cursor-not-allowed">
+              <Train className="w-4 h-4" />
+              <span className="font-medium">天車</span>
+            </div>
+            <LayerButton layerKey="skytrainRoutes" label="路線" icon={Route} colorClass="text-blue-400" activeBg="bg-[#1a2436]" activeBorder="border-blue-500/50" activeShadow="shadow-[0_0_8px_rgba(59,130,246,0.1)]" />
             <LayerButton layerKey="skytrainStops" label="車站" icon={CircleDot} colorClass="text-blue-400" activeBg="bg-[#1a2436]" activeBorder="border-blue-500/50" />
           </div>
         </div>

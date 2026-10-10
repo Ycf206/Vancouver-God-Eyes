@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 import asyncio
 import requests
+import time
 from google.transit import gtfs_realtime_pb2
 import database
 import models
@@ -25,6 +26,7 @@ app.add_middleware(
 
 # WebSocket connection manager
 active_connections: list[WebSocket] = []
+stop_arrivals = {}
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
@@ -38,16 +40,13 @@ async def websocket_endpoint(websocket: WebSocket):
         active_connections.remove(websocket)
 
 async def fetch_translink_realtime():
-    """背景常駐排程：每 15 秒抓取一次 TransLink API 並透過 WebSocket 廣播"""
+    """Fetches VehiclePositions"""
     TRANSLINK_API_KEY = os.getenv("TRANSLINK_API_KEY", "OAsdtyJoPO0odcN6Ivhy")
     url = f"https://gtfsapi.translink.ca/v3/gtfsposition?apikey={TRANSLINK_API_KEY}"
     
-    # SkyTrain 的 Route IDs (雖然即時資料目前不提供，但留著以防萬一)
     SKYTRAIN_ROUTES = {'30053', '30052', '13686'}
-    # SeaBus 航線 (6771) 與大溫哥華「菁英公車」(99, 95/R5, 96/R1)
     ELITE_BUSES = {
         '6771', '6641', '6653', '22143',
-        # 以下是即時資料中新出現的重要快線 (R1~R5) 或特快車
         '39304', '46099', '37809', '39307', '40855', '37810', 
         '36799', '48855', '37808', '37807', '38311', '46604'
     }
@@ -67,7 +66,6 @@ async def fetch_translink_realtime():
                     v = entity.vehicle
                     route_id = v.trip.route_id
                     
-                    # 只顯示 SkyTrain, SeaBus 以及指定的 Elite Buses
                     if route_id in SKYTRAIN_ROUTES or route_id in ELITE_BUSES:
                         vehicles.append({
                             "id": v.vehicle.id,
@@ -77,7 +75,6 @@ async def fetch_translink_realtime():
                             "bearing": v.position.bearing,
                         })
             
-            # 若有連線，則廣播給所有前端
             if active_connections:
                 message = {"type": "vehicles_update", "data": vehicles}
                 for connection in active_connections:
@@ -86,12 +83,57 @@ async def fetch_translink_realtime():
         except Exception as e:
             print(f"Error fetching TransLink data: {e}")
             
-        await asyncio.sleep(15) # 每 15 秒更新一次
+        await asyncio.sleep(15)
+
+async def fetch_translink_trip_updates():
+    """Polls GTFS-RT TripUpdates every 30 seconds to provide arrival times."""
+    TRANSLINK_API_KEY = os.getenv("TRANSLINK_API_KEY", "OAsdtyJoPO0odcN6Ivhy")
+    url = f"https://gtfsapi.translink.ca/v3/gtfsrealtime?apikey={TRANSLINK_API_KEY}"
+    
+    while True:
+        try:
+            loop = asyncio.get_event_loop()
+            headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
+            response = await loop.run_in_executor(None, lambda: requests.get(url, headers=headers))
+            
+            feed = gtfs_realtime_pb2.FeedMessage()
+            feed.ParseFromString(response.content)
+            
+            new_arrivals = {}
+            current_time = time.time()
+            
+            for entity in feed.entity:
+                if entity.HasField('trip_update'):
+                    tu = entity.trip_update
+                    route_id = tu.trip.route_id
+                    for stu in tu.stop_time_update:
+                        stop_id = stu.stop_id
+                        if stu.HasField('arrival') and stu.arrival.time > current_time:
+                            if stop_id not in new_arrivals:
+                                new_arrivals[stop_id] = []
+                            new_arrivals[stop_id].append({
+                                "route_id": route_id,
+                                "arrival_time": stu.arrival.time,
+                                "minutes": int((stu.arrival.time - current_time) / 60)
+                            })
+                            
+            # Sort arrivals by time
+            for stop_id in new_arrivals:
+                new_arrivals[stop_id].sort(key=lambda x: x["arrival_time"])
+                
+            global stop_arrivals
+            stop_arrivals = new_arrivals
+            print(f"✅ Updated TripUpdates for {len(stop_arrivals)} stops")
+            
+        except Exception as e:
+            print(f"Error fetching TripUpdates: {e}")
+            
+        await asyncio.sleep(30)
 
 @app.on_event("startup")
 async def startup_event():
-    # 啟動背景抓取資料的 Task
     asyncio.create_task(fetch_translink_realtime())
+    asyncio.create_task(fetch_translink_trip_updates())
 
 @app.get("/")
 async def root():
@@ -100,3 +142,7 @@ async def root():
 @app.get("/health")
 async def health_check():
     return {"status": "ok"}
+
+@app.get("/api/stops/{stop_id}/arrivals")
+async def get_stop_arrivals(stop_id: str):
+    return {"stop_id": stop_id, "arrivals": stop_arrivals.get(stop_id, [])[:10]}

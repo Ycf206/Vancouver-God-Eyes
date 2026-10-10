@@ -6,8 +6,8 @@ import json
 zip_path = 'google_transit.zip'
 # 30053=Expo, 30052=Millennium, 13686=Canada, 6771=SeaBus
 skytrain_ids = {'30053', '30052', '13686', '6771'}
-# 6641=99 B-Line (now Orange), 6653=095 (R5), 22143=096 (R1), 6681=239 (R2), 6749=701 (R3), 6634=043 (R4)
-bus_ids = {'6641', '6653', '22143', '6681', '6749', '6634'}
+# 99=6641, R1=37808, R2=38311, R3=37809, R4=37810, R5=37807, R6=46604
+bus_ids = {'6641', '37808', '38311', '37809', '37810', '37807', '46604'}
 all_route_ids = skytrain_ids.union(bus_ids)
 
 # Colors mapping
@@ -17,11 +17,12 @@ route_colors = {
     '13686': '#00a4e4', # Canada Line (Light Blue)
     '6771': '#8b786d',  # SeaBus (Brown/Taupe from image)
     '6641': '#f58220',  # 99 B-Line (Orange)
-    '6653': '#22c55e',  # R5
-    '22143': '#22c55e', # R1
-    '6681': '#22c55e',  # R2 (239)
-    '6749': '#22c55e',  # R3 (701)
-    '6634': '#22c55e'   # R4 (043)
+    '37808': '#22c55e', # R1
+    '38311': '#22c55e', # R2
+    '37809': '#22c55e', # R3
+    '37810': '#22c55e', # R4
+    '37807': '#22c55e', # R5
+    '46604': '#22c55e', # R6
 }
 
 print("Parsing GTFS Zip...")
