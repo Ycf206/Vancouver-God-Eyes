@@ -202,3 +202,17 @@ def get_tracks_geojson(group: str, db: Session = Depends(database.get_db)):
                 }
             })
     return {"type": "FeatureCollection", "features": features}
+
+@app.get("/api/debug/counts")
+def get_debug_counts(db: Session = Depends(database.get_db)):
+    return {
+        "routes": {
+            "bus": db.query(models.TransitRoute).filter(models.TransitRoute.route_group == 'bus').count(),
+            "skytrain": db.query(models.TransitRoute).filter(models.TransitRoute.route_group == 'skytrain').count(),
+        },
+        "shapes": {
+            "bus": db.query(models.TransitShape).filter(models.TransitShape.route_group == 'bus').count(),
+            "skytrain": db.query(models.TransitShape).filter(models.TransitShape.route_group == 'skytrain').count(),
+        },
+        "bus_routes_list": [r.short_name for r in db.query(models.TransitRoute).filter(models.TransitRoute.route_group == 'bus').all()]
+    }
