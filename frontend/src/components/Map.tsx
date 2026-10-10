@@ -53,16 +53,20 @@ export default function AppMap() {
     // Determine Base and Label Tiles based on mapStyleType
     let baseTiles = ['https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}'];
     let labelTiles = ['https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}'];
+    let sourceMaxZoom = 16;
     
     if (mapStyleType === 'light') {
       baseTiles = ['https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}'];
       labelTiles = ['https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}'];
+      sourceMaxZoom = 16;
     } else if (mapStyleType === 'street') {
       baseTiles = ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}'];
       labelTiles = []; // Street map already has labels
+      sourceMaxZoom = 19;
     } else if (mapStyleType === 'satellite') {
       baseTiles = ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'];
       labelTiles = ['https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}'];
+      sourceMaxZoom = 19;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -73,6 +77,7 @@ export default function AppMap() {
           type: 'raster',
           tiles: baseTiles,
           tileSize: 256,
+          maxzoom: sourceMaxZoom,
           attribution: '&copy; Esri'
         }
       },
@@ -91,7 +96,8 @@ export default function AppMap() {
       style.sources['esri-labels'] = {
         type: 'raster',
         tiles: labelTiles,
-        tileSize: 256
+        tileSize: 256,
+        maxzoom: sourceMaxZoom
       };
     }
 
