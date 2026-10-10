@@ -105,6 +105,8 @@ export default function AppMap() {
       ]
     };
 
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:8000` : 'http://localhost:8000');
+    
     if (labelTiles.length > 0) {
       style.sources['esri-labels'] = {
         type: 'raster',
@@ -114,12 +116,12 @@ export default function AppMap() {
       };
     }
 
-    style.sources['skytrain-tracks'] = { type: 'geojson', data: '/skytrain_tracks.json' };
-    style.sources['skytrain-stops'] = { type: 'geojson', data: '/skytrain_stops.json' };
-    style.sources['bus-tracks'] = { type: 'geojson', data: '/bus_tracks.json' };
-    style.sources['bus-stops'] = { type: 'geojson', data: '/bus_stops.json' };
-    style.sources['seabus-tracks'] = { type: 'geojson', data: '/seabus_tracks.json' };
-    style.sources['seabus-stops'] = { type: 'geojson', data: '/seabus_stops.json' };
+    style.sources['skytrain-tracks'] = { type: 'geojson', data: `${apiUrl}/api/geojson/tracks/skytrain` };
+    style.sources['skytrain-stops'] = { type: 'geojson', data: `${apiUrl}/api/geojson/stops/skytrain` };
+    style.sources['bus-tracks'] = { type: 'geojson', data: `${apiUrl}/api/geojson/tracks/bus` };
+    style.sources['bus-stops'] = { type: 'geojson', data: `${apiUrl}/api/geojson/stops/bus` };
+    style.sources['seabus-tracks'] = { type: 'geojson', data: `${apiUrl}/api/geojson/tracks/seabus` };
+    style.sources['seabus-stops'] = { type: 'geojson', data: `${apiUrl}/api/geojson/stops/seabus` };
 
     // Bus Routes
     if (layers.busRoutes) {

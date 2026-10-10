@@ -146,3 +146,55 @@ async def health_check():
 @app.get("/api/stops/{stop_id}/arrivals")
 async def get_stop_arrivals(stop_id: str):
     return {"stop_id": stop_id, "arrivals": stop_arrivals.get(stop_id, [])[:10]}
+
+import json
+from sqlalchemy import func
+
+@app.get("/api/geojson/stops/{group}")
+def get_stops_geojson(group: str, db: Session = Depends(database.get_db)):
+    """group can be 'bus', 'skytrain', or 'seabus'"""
+    stops = db.query(models.TransitStop).filter(models.TransitStop.stop_group == group).all()
+    
+    features = []
+    for stop in stops:
+        features.append({
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [stop.lon, stop.lat]
+            },
+            "properties": {
+                "stop_id": stop.stop_id,
+                "name": stop.name
+            }
+        })
+    return {"type": "FeatureCollection", "features": features}
+
+@app.get("/api/geojson/tracks/{group}")
+def get_tracks_geojson(group: str, db: Session = Depends(database.get_db)):
+    """group can be 'bus', 'skytrain', or 'seabus'"""
+    results = db.query(
+        models.TransitShape.shape_id,
+        models.TransitShape.route_id,
+        models.TransitRoute.color,
+        func.ST_AsGeoJSON(models.TransitShape.geom).label('geojson')
+    ).join(
+        models.TransitRoute, models.TransitShape.route_id == models.TransitRoute.route_id
+    ).filter(
+        models.TransitShape.route_group == group
+    ).all()
+    
+    features = []
+    for row in results:
+        geometry = json.loads(row.geojson) if row.geojson else None
+        if geometry:
+            features.append({
+                "type": "Feature",
+                "geometry": geometry,
+                "properties": {
+                    "shape_id": row.shape_id,
+                    "route_id": row.route_id,
+                    "color": row.color
+                }
+            })
+    return {"type": "FeatureCollection", "features": features}
