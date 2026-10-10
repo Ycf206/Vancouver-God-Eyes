@@ -2,6 +2,7 @@ fastapi
 uvicorn
 psycopg2-binary
 sqlalchemy
+geoalchemy2
 redis
 asyncpg
 websockets
