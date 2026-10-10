@@ -216,3 +216,20 @@ def get_debug_counts(db: Session = Depends(database.get_db)):
         },
         "bus_routes_list": [r.short_name for r in db.query(models.TransitRoute).filter(models.TransitRoute.route_group == 'bus').all()]
     }
+
+@app.get("/api/debug/gtfs_routes")
+def get_debug_gtfs_routes():
+    import zipfile, csv, io, os
+    zip_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'google_transit.zip')
+    if not os.path.exists(zip_path):
+        return {"error": "google_transit.zip not found"}
+    routes = []
+    try:
+        with zipfile.ZipFile(zip_path, 'r') as z:
+            with z.open('routes.txt') as f:
+                reader = csv.DictReader(io.TextIOWrapper(f, 'utf-8-sig'))
+                for row in reader:
+                    routes.append(row.get('route_short_name', ''))
+    except Exception as e:
+        return {"error": str(e)}
+    return {"total": len(routes), "route_short_names": list(set(routes))}
