@@ -1,11 +1,11 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Search, Settings, ChevronDown, Map as MapIcon, X, Loader2 } from 'lucide-react';
+import { Search, Settings, ChevronDown, Map as MapIcon, X, Loader2, Layers } from 'lucide-react';
 import { useUIStore, SearchTarget } from '@/store/useUIStore';
 
 export default function TopBar() {
-  const { setSearchTarget, enableLayer } = useUIStore();
+  const { setSearchTarget, enableLayer, isLayerPanelOpen, toggleLayerPanel } = useUIStore();
   const [time, setTime] = useState<Date | null>(null);
 
   // 搜尋狀態
@@ -96,12 +96,26 @@ export default function TopBar() {
     <div className="absolute top-0 left-0 w-full h-[60px] bg-[#1a1b1e] border-b border-[#2d2e32] flex items-center px-4 z-50 text-white shadow-lg">
       
       {/* 標誌區域 */}
-      <div className="flex flex-col justify-center mr-2">
-        <span className="text-[10px] font-bold text-gray-400 leading-none mb-1">VANCOUVER</span>
-        <span className="text-sm font-bold leading-none tracking-wider">即時交通</span>
+      <div className="flex flex-col justify-center mr-3 select-none shrink-0">
+        <span className="text-[11px] font-bold text-emerald-400 tracking-wider leading-none mb-1">溫哥華</span>
+        <span className="text-sm font-extrabold leading-none tracking-widest text-white">上帝之眼</span>
       </div>
 
-      <div className="h-8 w-px bg-gray-700 mx-3"></div>
+      {/* 圖層控制切換按鈕 (便於一鍵展開/收合左側欄) */}
+      <button 
+        onClick={toggleLayerPanel}
+        className={`flex items-center gap-1.5 px-2.5 h-8 rounded-md border text-xs font-medium transition-all mr-1 shrink-0 ${
+          isLayerPanelOpen 
+            ? 'bg-[#25262b] border-[#373a40] text-gray-300 hover:text-white hover:bg-[#2c2d33]' 
+            : 'bg-emerald-500/15 border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/25 shadow-[0_0_8px_rgba(16,185,129,0.2)]'
+        }`}
+        title={isLayerPanelOpen ? '收合左側圖層面板' : '展開左側圖層面板'}
+      >
+        <Layers className="w-3.5 h-3.5 text-emerald-500" />
+        <span className="hidden sm:inline">圖層</span>
+      </button>
+
+      <div className="h-8 w-px bg-gray-700/60 mx-2"></div>
 
       {/* 時間與狀態 */}
       <div className="flex flex-col justify-center mx-2 min-w-[150px]">

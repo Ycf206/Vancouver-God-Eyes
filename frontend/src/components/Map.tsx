@@ -59,8 +59,16 @@ interface RoadFacilityInfo {
 }
 
 export default function AppMap() {
-  const { layers, mapStyleType, searchTarget } = useUIStore();
+  const { layers, mapStyleType, searchTarget, isLayerPanelOpen } = useUIStore();
   const mapRef = useRef<MapRef>(null);
+
+  // Resize map canvas smoothly when side panel toggles
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      mapRef.current?.resize();
+    }, 220);
+    return () => clearTimeout(timer);
+  }, [isLayerPanelOpen]);
 
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [ferryVehicles, setFerryVehicles] = useState<FerryVehicle[]>([]);
@@ -781,7 +789,11 @@ export default function AppMap() {
   ]);
 
   return (
-    <div className="w-full h-full absolute inset-0 z-0 pt-[60px]">
+    <div 
+      className={`h-full absolute top-[60px] bottom-0 right-0 z-0 transition-[left,width] duration-200 ${
+        isLayerPanelOpen ? 'left-[240px] w-[calc(100%-240px)]' : 'left-0 w-full'
+      }`}
+    >
       <Map
         ref={mapRef}
         initialViewState={{ longitude: -123.05, latitude: 49.25, zoom: 11, pitch: 0, bearing: 0 }}

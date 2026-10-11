@@ -50,6 +50,9 @@ export interface UIState {
   enableLayer: (layer: keyof UIState['layers']) => void;
   searchTarget: SearchTarget | null;
   setSearchTarget: (target: SearchTarget | null) => void;
+  isLayerPanelOpen: boolean;
+  toggleLayerPanel: () => void;
+  setLayerPanelOpen: (open: boolean) => void;
 }
 
 export const useUIStore = create<UIState>()(
@@ -98,12 +101,16 @@ export const useUIStore = create<UIState>()(
         })),
       searchTarget: null,
       setSearchTarget: (target) => set({ searchTarget: target }),
+      isLayerPanelOpen: true,
+      toggleLayerPanel: () => set((state) => ({ isLayerPanelOpen: !state.isLayerPanelOpen })),
+      setLayerPanelOpen: (open) => set({ isLayerPanelOpen: open }),
     }),
     {
       name: 'vancouver-gods-eye-ui-storage',
       partialize: (state) => ({
         mapStyleType: state.mapStyleType,
         layers: state.layers,
+        isLayerPanelOpen: state.isLayerPanelOpen,
       }),
     }
   )
