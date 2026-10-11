@@ -9,3 +9,4 @@ websockets
 gtfs-realtime-bindings
 requests
 psycopg[binary]
+beautifulsoup4

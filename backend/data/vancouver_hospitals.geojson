@@ -1,0 +1,140 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "hosp_vgh",
+      "properties": {
+        "id": "hosp_vgh",
+        "facility_type": "hospitals",
+        "name": "Vancouver General Hospital",
+        "chinese_name": "溫哥華綜合醫院 (VGH)",
+        "short_name": "VGH",
+        "local_area": "Fairview",
+        "address": "899 W 12th Ave, Vancouver, BC V5Z 1M9",
+        "phone": "+1-604-875-4111",
+        "operator": "Vancouver Coastal Health (VCH)",
+        "emergency": "yes",
+        "hours": "24/7 全天候急診 (Adult Level 1 Trauma)",
+        "website": "https://www.vch.ca/en/location/vancouver-general-hospital",
+        "erstat_name": "Vancouver General Hospital",
+        "erstat_url": "https://erstat.ca/hospitals/bc/vancouver-general-hospital"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.123,
+          49.2614
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "hosp_sph",
+      "properties": {
+        "id": "hosp_sph",
+        "facility_type": "hospitals",
+        "name": "St. Paul's Hospital",
+        "chinese_name": "聖保祿醫院 (SPH)",
+        "short_name": "SPH",
+        "local_area": "Downtown",
+        "address": "1081 Burrard St, Vancouver, BC V6Z 1Y6",
+        "phone": "+1-604-682-2344",
+        "operator": "Providence Health Care",
+        "emergency": "yes",
+        "hours": "24/7 全天候急診",
+        "website": "https://www.providencehealthcare.org/locations/st-pauls-hospital",
+        "erstat_name": "St. Paul's Hospital",
+        "erstat_url": "https://erstat.ca/hospitals/bc/st-pauls-hospital"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1285,
+          49.2807
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "hosp_msj",
+      "properties": {
+        "id": "hosp_msj",
+        "facility_type": "hospitals",
+        "name": "Mount Saint Joseph Hospital",
+        "chinese_name": "聖若瑟醫院 (MSJ)",
+        "short_name": "MSJ",
+        "local_area": "Mount Pleasant",
+        "address": "3080 Prince Edward St, Vancouver, BC V5T 3N4",
+        "phone": "+1-604-874-1141",
+        "operator": "Providence Health Care",
+        "emergency": "yes",
+        "hours": "08:00 - 20:00 (急診日間門診)",
+        "website": "https://www.providencehealthcare.org/locations/mount-saint-joseph-hospital",
+        "erstat_name": "Mount Saint Joseph Hospital",
+        "erstat_url": "https://erstat.ca/hospitals/bc/providence-health-care-mount-saint-joseph-hospital"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.095,
+          49.258
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "hosp_bcch",
+      "properties": {
+        "id": "hosp_bcch",
+        "facility_type": "hospitals",
+        "name": "BC Children's Hospital",
+        "chinese_name": "卑詩省兒童醫院 (BC Children)",
+        "short_name": "BCCH",
+        "local_area": "South Cambie",
+        "address": "4480 Oak St (Entrance 55), Vancouver, BC V6H 3V4",
+        "phone": "+1-604-875-2345",
+        "operator": "Provincial Health Services Authority (PHSA)",
+        "emergency": "yes",
+        "hours": "24/7 全天候兒科專門急診 (Paediatric Emergency)",
+        "website": "http://www.bcchildrens.ca",
+        "erstat_name": "BC Children's Hospital",
+        "erstat_url": "https://erstat.ca/hospitals/bc/bc-childrens-hospital"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1236,
+          49.2455
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "hosp_ubc",
+      "properties": {
+        "id": "hosp_ubc",
+        "facility_type": "hospitals",
+        "name": "UBC Hospital",
+        "chinese_name": "卑詩大學醫院 (UBC Hospital)",
+        "short_name": "UBCH",
+        "local_area": "University Endowment Lands",
+        "address": "2211 Wesbrook Mall, Vancouver, BC V6T 2B5",
+        "phone": "+1-604-822-7121",
+        "operator": "Vancouver Coastal Health (VCH)",
+        "emergency": "yes",
+        "hours": "08:00 - 20:00 (Urgent Care 急症醫療中心)",
+        "website": "https://www.vch.ca/en/location/ubc-hospital",
+        "erstat_name": "Ubc Hospital",
+        "erstat_url": "https://erstat.ca/hospitals/bc/ubc-hospital"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.2458,
+          49.2644
+        ]
+      }
+    }
+  ]
+}

@@ -43,6 +43,7 @@ export interface UIState {
     safetyCameras: boolean;
     fireHalls: boolean;
     communityCentres: boolean;
+    hospitals: boolean;
   };
   toggleLayer: (layer: keyof UIState['layers']) => void;
   enableLayer: (layer: keyof UIState['layers']) => void;
@@ -77,6 +78,7 @@ export const useUIStore = create<UIState>()(
         safetyCameras: false,
         fireHalls: false,
         communityCentres: false,
+        hospitals: false,
       },
       toggleLayer: (layer) =>
         set((state) => ({

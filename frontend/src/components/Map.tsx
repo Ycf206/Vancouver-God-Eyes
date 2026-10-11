@@ -105,6 +105,30 @@ export default function AppMap() {
     }
   }, [selectedFacility, webcamRefreshKey]);
 
+  // States for Hospital ER Wait Times
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [hospitalWaitTimes, setHospitalWaitTimes] = useState<Record<string, any>>({});
+  const [loadingWaitTimes, setLoadingWaitTimes] = useState(false);
+  const [hospitalRefreshKey, setHospitalRefreshKey] = useState(0);
+
+  // Fetch ER wait times when a hospital is selected
+  useEffect(() => {
+    if (selectedFacility && selectedFacility.facility_type === 'hospitals') {
+      setLoadingWaitTimes(true);
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:8000` : 'http://localhost:8000');
+      fetch(`${apiUrl}/api/hospitals/waittimes`)
+        .then(res => res.json())
+        .then(data => {
+          setHospitalWaitTimes(data.hospitals || {});
+          setLoadingWaitTimes(false);
+        })
+        .catch(err => {
+          console.error('Hospital wait times fetch error:', err);
+          setLoadingWaitTimes(false);
+        });
+    }
+  }, [selectedFacility, hospitalRefreshKey]);
+
   // 響應全域搜尋項目選取 (FlyTo & 自動打開詳細資訊卡片)
   useEffect(() => {
     if (!searchTarget) return;
@@ -159,7 +183,7 @@ export default function AppMap() {
           setLoadingArrivals(false);
         });
     } else if (
-      ['fire_halls', 'community_centres', 'ev_charging', 'escooter', 'traffic_cameras', 'parking_meters', 'accessible_parking', 'motorcycle_parking'].includes(searchTarget.category)
+      ['fire_halls', 'community_centres', 'ev_charging', 'escooter', 'traffic_cameras', 'safety_cameras', 'parking_meters', 'accessible_parking', 'motorcycle_parking', 'hospitals'].includes(searchTarget.category)
     ) {
       setSelectedTerminal(null);
       setSelectedStop(null);
@@ -279,6 +303,7 @@ export default function AppMap() {
     style.sources['community-centres'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/community_centres` };
     style.sources['traffic-cameras'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/traffic_cameras` };
     style.sources['safety-cameras'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/safety_cameras` };
+    style.sources['hospitals'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/hospitals` };
 
     // Bus Routes
     if (layers.busRoutes) {
@@ -671,6 +696,36 @@ export default function AppMap() {
       });
     }
 
+    // Government Facilities: Hospitals (急診醫院)
+    if (layers.hospitals) {
+      style.layers.push({
+        id: 'hospitals-layer',
+        type: 'circle',
+        source: 'hospitals',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3, 14, 5.5, 15, 9.5, 17, 13],
+          'circle-color': '#10b981',
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'hospitals-symbol-layer',
+        type: 'symbol',
+        source: 'hospitals',
+        minzoom: 15,
+        layout: {
+          'text-field': '🏥',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 15, 11, 17, 15],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+    }
+
     return style;
   }, [
     layers.skytrainRoutes, 
@@ -689,6 +744,7 @@ export default function AppMap() {
     layers.safetyCameras,
     layers.fireHalls,
     layers.communityCentres,
+    layers.hospitals,
     mapStyleType
   ]);
 
@@ -721,7 +777,9 @@ export default function AppMap() {
           'fire-halls-layer',
           'fire-halls-symbol-layer',
           'community-centres-layer',
-          'community-centres-symbol-layer'
+          'community-centres-symbol-layer',
+          'hospitals-layer',
+          'hospitals-symbol-layer'
         ]}
         onClick={(e) => {
           const feature = e.features?.[0];
@@ -763,7 +821,8 @@ export default function AppMap() {
             layerId.startsWith('traffic-cameras') ||
             layerId.startsWith('safety-cameras') ||
             layerId.startsWith('fire-halls') ||
-            layerId.startsWith('community-centres')
+            layerId.startsWith('community-centres') ||
+            layerId.startsWith('hospitals')
           ) {
             setSelectedStop(null);
             const props = feature.properties || {};
@@ -1093,9 +1152,9 @@ export default function AppMap() {
             closeButton={false}
             className="z-50"
             offset={[0, -10]}
-            maxWidth={selectedFacility.facility_type === 'traffic_cameras' ? '400px' : selectedFacility.facility_type === 'safety_cameras' ? '360px' : '320px'}
+            maxWidth={selectedFacility.facility_type === 'traffic_cameras' ? '400px' : (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals') ? '360px' : '320px'}
           >
-            <div className={`p-3.5 ${selectedFacility.facility_type === 'traffic_cameras' ? 'w-[360px]' : selectedFacility.facility_type === 'safety_cameras' ? 'w-[330px]' : 'w-[290px]'} max-w-[90vw] text-gray-800`}>
+            <div className={`p-3.5 ${selectedFacility.facility_type === 'traffic_cameras' ? 'w-[360px]' : (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals') ? 'w-[330px]' : 'w-[290px]'} max-w-[90vw] text-gray-800`}>
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
                 <div className="flex items-center gap-2">
                   <span className={`w-3 h-3 rounded-full flex-shrink-0 ${
@@ -1106,6 +1165,7 @@ export default function AppMap() {
                     selectedFacility.facility_type === 'escooter' ? 'bg-lime-500' :
                     selectedFacility.facility_type === 'traffic_cameras' ? 'bg-cyan-500' :
                     selectedFacility.facility_type === 'safety_cameras' ? 'bg-rose-600' :
+                    selectedFacility.facility_type === 'hospitals' ? 'bg-emerald-500' :
                     selectedFacility.facility_type === 'fire_halls' ? 'bg-rose-500' : 'bg-violet-500'
                   }`}></span>
                   <div>
@@ -1332,16 +1392,24 @@ export default function AppMap() {
                     <div className="grid grid-cols-2 gap-1.5 pt-1">
                       {webcamImages.map((img, idx) => {
                         const hourlyTimestamp = Math.floor(Date.now() / 3600000);
-                        const imgSrc = `${img.url}?t=${hourlyTimestamp}_${webcamRefreshKey}`;
+                        const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:8000` : 'http://localhost:8000');
+                        const proxySrc = `${apiUrl}/api/webcam/proxy?url=${encodeURIComponent(img.url)}&t=${hourlyTimestamp}_${webcamRefreshKey}`;
+                        const directSrc = `${img.url}?t=${hourlyTimestamp}_${webcamRefreshKey}`;
                         return (
                           <div key={idx} className="relative rounded overflow-hidden border border-gray-200 bg-black aspect-[4/3] group shadow-sm">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
-                              src={imgSrc}
+                              src={proxySrc}
                               alt={img.alt || img.direction}
                               referrerPolicy="no-referrer"
                               className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
                               loading="lazy"
+                              onError={(e) => {
+                                const target = e.currentTarget;
+                                if (target.src !== directSrc) {
+                                  target.src = directSrc;
+                                }
+                              }}
                             />
                             <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-1 pt-3 text-[10px] font-medium text-white truncate text-center">
                               {img.direction}
@@ -1435,6 +1503,146 @@ export default function AppMap() {
                   </div>
                 </div>
               )}
+
+              {/* Hospitals Details & Live ER Wait Times */}
+              {selectedFacility.facility_type === 'hospitals' && (() => {
+                const hName = (selectedFacility.name || '').toLowerCase();
+                const erKey = (selectedFacility.properties?.erstat_name || '').toLowerCase();
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                let waitInfo: any = hospitalWaitTimes[hName] || hospitalWaitTimes[erKey];
+                if (!waitInfo) {
+                  for (const [k, v] of Object.entries(hospitalWaitTimes)) {
+                    if (hName.includes(k) || k.includes(hName) || (erKey && k.includes(erKey))) {
+                      waitInfo = v;
+                      break;
+                    }
+                  }
+                }
+
+                const waitTime = waitInfo?.wait_time || '--';
+                const status = waitInfo?.status || 'normal';
+                const isPredicted = waitInfo?.is_predicted;
+
+                let statusBg = 'bg-emerald-50 border-emerald-200 text-emerald-900';
+                let badgeBg = 'bg-emerald-600 text-white';
+                let statusText = '迅速 (Quick)';
+                if (status === 'packed') {
+                  statusBg = 'bg-rose-50 border-rose-200 text-rose-900';
+                  badgeBg = 'bg-rose-600 text-white';
+                  statusText = '壅塞 (Packed)';
+                } else if (status === 'moderate') {
+                  statusBg = 'bg-amber-50 border-amber-200 text-amber-900';
+                  badgeBg = 'bg-amber-600 text-white';
+                  statusText = '適中 (Moderate)';
+                } else if (status === 'quick') {
+                  statusBg = 'bg-emerald-50 border-emerald-200 text-emerald-900';
+                  badgeBg = 'bg-emerald-600 text-white';
+                  statusText = '迅速 (Quick)';
+                } else {
+                  statusBg = 'bg-blue-50 border-blue-200 text-blue-900';
+                  badgeBg = 'bg-blue-600 text-white';
+                  statusText = '正常 (Normal)';
+                }
+
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    {/* Live ER Wait Time Card */}
+                    <div className={`p-2.5 rounded-lg border flex flex-col gap-1.5 ${statusBg}`}>
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-xs flex items-center gap-1.5">
+                          <span>⏱️</span>
+                          <span>急診預估等候時間</span>
+                        </span>
+                        <div className="flex items-center gap-1.5">
+                          {loadingWaitTimes ? (
+                            <span className="text-[10px] text-gray-500 animate-pulse">載入中...</span>
+                          ) : (
+                            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${badgeBg}`}>
+                              {statusText}
+                            </span>
+                          )}
+                          <button
+                            onClick={() => setHospitalRefreshKey(k => k + 1)}
+                            className="px-1.5 py-0.5 bg-white/80 border border-gray-300 hover:bg-white rounded text-[10px] text-gray-700 transition-colors"
+                            title="重新整理等候時間"
+                          >
+                            🔄
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="flex items-baseline justify-between pt-1 border-t border-black/10">
+                        <span className="text-2xl font-black tracking-tight">
+                          {loadingWaitTimes ? '...' : waitTime}
+                        </span>
+                        <span className="text-[10px] text-gray-500 font-medium">
+                          {isPredicted ? '（模型預估）' : '（官方即時回報）'} · 每 1 小時更新
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Hospital Info Card */}
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                      {selectedFacility.properties?.chinese_name && (
+                        <div className="flex justify-between items-center text-gray-700 font-semibold">
+                          <span>中文名稱</span>
+                          <span className="text-gray-900">{selectedFacility.properties.chinese_name}</span>
+                        </div>
+                      )}
+                      {selectedFacility.properties?.hours && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>急診門診時間</span>
+                          <span className="font-medium text-emerald-700">{selectedFacility.properties.hours}</span>
+                        </div>
+                      )}
+                      {selectedFacility.properties?.address && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>醫院地址</span>
+                          <span className="font-medium text-gray-800 text-right truncate max-w-[170px]">
+                            {selectedFacility.properties.address}
+                          </span>
+                        </div>
+                      )}
+                      {selectedFacility.properties?.phone && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>總機電話</span>
+                          <a href={`tel:${selectedFacility.properties.phone}`} className="font-bold text-blue-600 hover:underline">
+                            {selectedFacility.properties.phone}
+                          </a>
+                        </div>
+                      )}
+                      {selectedFacility.properties?.operator && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>營運機構</span>
+                          <span className="font-medium text-gray-800">{selectedFacility.properties.operator}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Action Links */}
+                    <div className="flex flex-col gap-1 pt-1 border-t border-gray-100">
+                      <a
+                        href={waitInfo?.url || selectedFacility.properties?.erstat_url || "https://erstat.ca/hospitals/bc/vancouver"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
+                      >
+                        前往 ERstat 查看急診即時數據 ↗
+                      </a>
+                      {selectedFacility.properties?.website && (
+                        <a
+                          href={selectedFacility.properties.website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center justify-center w-full py-1 px-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded font-medium text-[11px] transition-colors text-center"
+                        >
+                          前往醫院官方網站 ↗
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
           </Popup>
         )}

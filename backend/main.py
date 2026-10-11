@@ -711,10 +711,20 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                 icon = "🚨"
                 layer_key = "safetyCameras"
                 zoom = 16
+            elif ftype == 'hospitals':
+                badge = "醫院"
+                icon = "🏥"
+                layer_key = "hospitals"
+                zoom = 15
 
             sub_parts = [badge]
             if ftype == 'safety_cameras' and f.details and isinstance(f.details, dict) and f.details.get('camera_type'):
                 sub_parts.append(str(f.details.get('camera_type')))
+            elif ftype == 'hospitals' and f.details and isinstance(f.details, dict):
+                if f.details.get('chinese_name'):
+                    sub_parts.append(str(f.details.get('chinese_name')))
+                elif f.local_area:
+                    sub_parts.append(f.local_area)
             elif f.local_area:
                 sub_parts.append(f.local_area)
             if f.details and isinstance(f.details, dict):
@@ -746,6 +756,16 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
 
     return {"results": results[:25]}
 
+from html.parser import HTMLParser
+
+class ImgTagParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.tags = []
+    def handle_starttag(self, tag, attrs):
+        if tag.lower() == 'img':
+            self.tags.append(dict(attrs))
+
 webcam_images_cache = {}
 
 @app.get("/api/webcam/images")
@@ -755,22 +775,33 @@ def get_webcam_images(url: str):
     """
     if not url:
         return {"images": []}
-        
+
+    url = url.strip()
+    if url.startswith("http://"):
+        url = "https://" + url[7:]
+
     now = time.time()
     if url in webcam_images_cache:
         cached_time, cached_data = webcam_images_cache[url]
         if now - cached_time < 300: # 5分鐘快取
             return {"images": cached_data}
-            
+
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    }
     try:
-        from bs4 import BeautifulSoup
-        resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=6)
+        resp = requests.get(url, headers=headers, timeout=12)
         if resp.status_code != 200:
+            print(f"Webcam page returned status {resp.status_code} for {url}")
             return {"images": []}
-            
-        soup = BeautifulSoup(resp.text, 'html.parser')
+
+        # Parse with standard library HTMLParser (zero external dependency)
+        parser = ImgTagParser()
+        parser.feed(resp.text)
+        img_tags = parser.tags
+
         images = []
-        for img in soup.find_all('img'):
+        for img in img_tags:
             src = img.get('src', '')
             alt = img.get('alt', '')
             if 'cameraimages' in src or (src.endswith('.jpg') and 'city-emblem' not in src and 'favicon' not in src):
@@ -795,12 +826,129 @@ def get_webcam_images(url: str):
                     "direction": direction,
                     "alt": alt
                 })
-                
+
         webcam_images_cache[url] = (now, images)
         return {"images": images}
     except Exception as e:
         print(f"Error fetching webcam images for {url}: {e}")
         return {"images": []}
+
+from fastapi import Response
+
+@app.get("/api/webcam/proxy")
+def proxy_webcam_image(url: str):
+    """
+    代理交通攝影機圖片，避免瀏覽器跨域 (CORS) 或 Referrer 限制
+    """
+    if not url:
+        return Response(status_code=400)
+    try:
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Referer": "https://trafficcams.vancouver.ca/"
+        }
+        r = requests.get(url, headers=headers, timeout=10)
+        return Response(content=r.content, media_type=r.headers.get("content-type", "image/jpeg"))
+    except Exception as e:
+        print(f"Webcam proxy error for {url}: {e}")
+        return Response(status_code=404)
+
+hospital_waittimes_cache = {"timestamp": 0, "data": {}}
+
+@app.get("/api/hospitals/waittimes")
+def get_hospital_waittimes():
+    """
+    獲取溫哥華各大醫院急診即時預估等候時間 (erstat.ca)
+    每 1 小時自動快取更新一次
+    """
+    now = time.time()
+    if now - hospital_waittimes_cache["timestamp"] < 3600 and hospital_waittimes_cache["data"]:
+        return {
+            "cached": True,
+            "last_updated": hospital_waittimes_cache.get("updated_at_str", ""),
+            "hospitals": hospital_waittimes_cache["data"]
+        }
+
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    }
+
+    try:
+        url = "https://erstat.ca/hospitals/bc/vancouver"
+        resp = requests.get(url, headers=headers, timeout=12)
+        if resp.status_code == 200:
+            hosp_map = {}
+            html = resp.text
+            try:
+                from bs4 import BeautifulSoup
+                soup = BeautifulSoup(html, 'html.parser')
+                for a in soup.find_all('a', class_='hospital-row'):
+                    h3 = a.find('h3')
+                    if not h3: continue
+                    name = h3.get_text(strip=True)
+                    p = a.find('p')
+                    meta_text = p.get_text(' ', strip=True) if p else ''
+                    wait_div = a.find('div', class_='hospital-row-wait')
+                    wait_time = wait_div.get_text(strip=True) if wait_div else 'N/A'
+                    classes = wait_div.get('class', []) if wait_div else []
+                    href = a.get('href', '')
+
+                    status = 'normal'
+                    if 'packed' in classes: status = 'packed'
+                    elif 'moderate' in classes: status = 'moderate'
+                    elif 'quick' in classes: status = 'quick'
+
+                    full_url = f"https://erstat.ca{href}" if href.startswith('/') else href
+
+                    hosp_map[name.lower()] = {
+                        "name": name,
+                        "meta": meta_text,
+                        "wait_time": wait_time,
+                        "status": status,
+                        "is_predicted": 'predicted' in classes,
+                        "url": full_url
+                    }
+            except Exception:
+                import re
+                row_pattern = re.compile(r'<a\s+[^>]*?href=[\"|\']([^\"\']+)[\"|\'][^>]*?class=[\"|\']hospital-row[\"|\'][^>]*?>(.*?)</a>', re.S | re.I)
+                for m in row_pattern.finditer(html):
+                    href, block = m.group(1), m.group(2)
+                    name_m = re.search(r'<h3>([^<]+)</h3>', block, re.I)
+                    wait_m = re.search(r'<div\s+[^>]*?class=[\"|\']hospital-row-wait([^\"\']*)[\"|\'][^>]*?>([^<]+)</div>', block, re.I)
+                    if name_m and wait_m:
+                        name = name_m.group(1).strip()
+                        classes = wait_m.group(1)
+                        wait_time = wait_m.group(2).strip()
+                        status = 'packed' if 'packed' in classes else ('moderate' if 'moderate' in classes else ('quick' if 'quick' in classes else 'normal'))
+                        hosp_map[name.lower()] = {
+                            "name": name,
+                            "wait_time": wait_time,
+                            "status": status,
+                            "is_predicted": 'predicted' in classes,
+                            "url": f"https://erstat.ca{href}" if href.startswith('/') else href
+                        }
+
+            if hosp_map:
+                now_str = datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
+                hospital_waittimes_cache["timestamp"] = now
+                hospital_waittimes_cache["updated_at_str"] = now_str
+                hospital_waittimes_cache["data"] = hosp_map
+                return {
+                    "cached": False,
+                    "last_updated": now_str,
+                    "hospitals": hosp_map
+                }
+    except Exception as e:
+        print(f"Error fetching hospital wait times: {e}")
+
+    if hospital_waittimes_cache["data"]:
+        return {
+            "cached": True,
+            "last_updated": hospital_waittimes_cache.get("updated_at_str", ""),
+            "hospitals": hospital_waittimes_cache["data"]
+        }
+
+    return {"cached": False, "last_updated": "", "hospitals": {}}
 
 import json
 from sqlalchemy import func
@@ -820,6 +968,12 @@ def get_road_facilities_geojson(facility_type: str, db: Session = Depends(databa
             facilities = db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).all()
         except Exception as e:
             print(f"Auto-import error for {facility_type}: {e}")
+
+    if not facilities and facility_type == "hospitals":
+        geojson_path = os.path.join(os.path.dirname(__file__), "data", "vancouver_hospitals.geojson")
+        if os.path.exists(geojson_path):
+            with open(geojson_path, "r", encoding="utf-8") as f:
+                return json.load(f)
             
     features = []
     for f in facilities:
