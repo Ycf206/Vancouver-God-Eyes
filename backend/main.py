@@ -686,6 +686,11 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                 icon = "🛴"
                 layer_key = "escooter"
                 zoom = 17
+            elif ftype == 'shared_bikes':
+                badge = "共享單車"
+                icon = "🚲"
+                layer_key = "sharedBikes"
+                zoom = 16
             elif ftype == 'parking_meters':
                 badge = "收費錶"
                 icon = "🅿️"
@@ -725,6 +730,12 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                     sub_parts.append(str(f.details.get('chinese_name')))
                 elif f.local_area:
                     sub_parts.append(f.local_area)
+            elif ftype == 'shared_bikes' and f.details and isinstance(f.details, dict):
+                sub_parts.append("Mobi")
+                if f.details.get('station_id'):
+                    sub_parts.append(f"#{f.details.get('station_id')}")
+                if f.details.get('capacity'):
+                    sub_parts.append(f"{f.details.get('capacity')} 柱")
             elif f.local_area:
                 sub_parts.append(f.local_area)
             if f.details and isinstance(f.details, dict):

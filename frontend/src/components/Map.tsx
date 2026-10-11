@@ -299,6 +299,7 @@ export default function AppMap() {
     style.sources['motorcycle-parking'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/motorcycle_parking` };
     style.sources['ev-charging'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/ev_charging` };
     style.sources['escooter'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/escooter` };
+    style.sources['shared-bikes'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/shared_bikes` };
     style.sources['fire-halls'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/fire_halls` };
     style.sources['community-centres'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/community_centres` };
     style.sources['traffic-cameras'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/traffic_cameras` };
@@ -571,6 +572,36 @@ export default function AppMap() {
       });
     }
 
+    // Road Facilities: Shared Bikes (Mobi by Rogers)
+    if (layers.sharedBikes) {
+      style.layers.push({
+        id: 'shared-bikes-layer',
+        type: 'circle',
+        source: 'shared-bikes',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 5.5, 15, 8.5, 17, 11],
+          'circle-color': '#10b981',
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'shared-bikes-symbol-layer',
+        type: 'symbol',
+        source: 'shared-bikes',
+        minzoom: 15,
+        layout: {
+          'text-field': '🚲',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 15, 11, 17, 14],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+    }
+
     // Government Facilities: Fire Halls
     if (layers.fireHalls) {
       style.layers.push({
@@ -740,6 +771,7 @@ export default function AppMap() {
     layers.motorcycleParking, 
     layers.evCharging, 
     layers.escooter,
+    layers.sharedBikes,
     layers.trafficCameras,
     layers.safetyCameras,
     layers.fireHalls,
@@ -770,6 +802,8 @@ export default function AppMap() {
           'ev-charging-symbol-layer',
           'escooter-layer',
           'escooter-symbol-layer',
+          'shared-bikes-layer',
+          'shared-bikes-symbol-layer',
           'traffic-cameras-layer',
           'traffic-cameras-symbol-layer',
           'safety-cameras-layer',
@@ -818,6 +852,7 @@ export default function AppMap() {
             layerId.startsWith('motorcycle-parking') || 
             layerId.startsWith('ev-charging') ||
             layerId.startsWith('escooter') ||
+            layerId.startsWith('shared-bikes') ||
             layerId.startsWith('traffic-cameras') ||
             layerId.startsWith('safety-cameras') ||
             layerId.startsWith('fire-halls') ||
@@ -1163,6 +1198,7 @@ export default function AppMap() {
                     selectedFacility.facility_type === 'motorcycle_parking' ? 'bg-orange-500' :
                     selectedFacility.facility_type === 'ev_charging' ? 'bg-emerald-500' :
                     selectedFacility.facility_type === 'escooter' ? 'bg-lime-500' :
+                    selectedFacility.facility_type === 'shared_bikes' ? 'bg-emerald-500' :
                     selectedFacility.facility_type === 'traffic_cameras' ? 'bg-cyan-500' :
                     selectedFacility.facility_type === 'safety_cameras' ? 'bg-rose-600' :
                     selectedFacility.facility_type === 'hospitals' ? 'bg-emerald-500' :
@@ -1315,6 +1351,61 @@ export default function AppMap() {
                       <span>{String(selectedFacility.properties.installation_date).slice(0, 10)}</span>
                     </div>
                   )}
+                </div>
+              )}
+
+              {/* Shared Bikes (Mobi by Rogers) Station Details */}
+              {selectedFacility.facility_type === 'shared_bikes' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="p-2.5 rounded bg-emerald-50 border border-emerald-100 flex flex-col gap-1">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-emerald-900 flex items-center gap-1.5">
+                        <span>🚲</span>
+                        <span>Mobi by Rogers</span>
+                      </span>
+                      {selectedFacility.properties.station_id && (
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-600 text-white">
+                          #{selectedFacility.properties.station_id}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex justify-between items-baseline pt-1 border-t border-emerald-200/60">
+                      <span className="text-gray-600 text-[11px]">車柱容量 (Docks)</span>
+                      <span className="font-bold text-emerald-800 text-sm">
+                        {selectedFacility.properties.capacity ? `${selectedFacility.properties.capacity} 格` : '未標明'}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-2 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                    <div className="flex justify-between items-center text-gray-600">
+                      <span>營運系統</span>
+                      <span className="font-semibold text-gray-800">溫哥華公共共享單車</span>
+                    </div>
+                    {selectedFacility.properties.operator && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>營運單位</span>
+                        <span className="font-medium text-gray-800">{selectedFacility.properties.operator}</span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.covered && selectedFacility.properties.covered !== '未標明' && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>遮雨頂棚</span>
+                        <span className="font-medium text-gray-800">{selectedFacility.properties.covered}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="pt-1 border-t border-gray-100">
+                    <a
+                      href={selectedFacility.properties.website || "https://www.mobibikes.ca"}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
+                    >
+                      前往 Mobi 官方網站 / 租借資訊 ↗
+                    </a>
+                  </div>
                 </div>
               )}
 

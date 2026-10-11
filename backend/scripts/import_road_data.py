@@ -115,6 +115,10 @@ def import_single_facility_type(facility_type, db=None):
             from scripts.import_hospitals import import_hospitals
             return import_hospitals(db)
 
+        if facility_type == "shared_bikes":
+            from scripts.import_shared_bikes import import_shared_bikes
+            return import_shared_bikes(db)
+
         conf = next((c for c in DATASETS if c["facility_type"] == facility_type), None)
         if not conf:
             print(f"Unknown facility type: {facility_type}")

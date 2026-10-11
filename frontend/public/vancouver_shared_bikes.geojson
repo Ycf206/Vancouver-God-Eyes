@@ -1,0 +1,6332 @@
+{
+  "type": "FeatureCollection",
+  "generator": "VancouverGodsEye",
+  "total_stations": 253,
+  "features": [
+    {
+      "type": "Feature",
+      "id": "mobi_0012",
+      "properties": {
+        "id": "mobi_0012",
+        "facility_type": "shared_bikes",
+        "name": "Dunsmuir & Richards",
+        "station_id": "0012",
+        "capacity": "34",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/406355328",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1141798,
+          49.2822201
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0027",
+      "properties": {
+        "id": "mobi_0027",
+        "facility_type": "shared_bikes",
+        "name": "Beatty & Nelson",
+        "station_id": "0027",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1380353249",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1168564,
+          49.275735
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0088",
+      "properties": {
+        "id": "mobi_0088",
+        "facility_type": "shared_bikes",
+        "name": "Harwood & Bute",
+        "station_id": "0088",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1384799083",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1352288,
+          49.2802607
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0119",
+      "properties": {
+        "id": "mobi_0119",
+        "facility_type": "shared_bikes",
+        "name": "Quebec & 3rd",
+        "station_id": "0119",
+        "capacity": "19",
+        "network": "Mobi",
+        "operator": "CycleHop",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1385918383",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1026754,
+          49.2684794
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0197",
+      "properties": {
+        "id": "mobi_0197",
+        "facility_type": "shared_bikes",
+        "name": "1st & Scotia",
+        "station_id": "0197",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1385918405",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0976187,
+          49.2685875
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0235",
+      "properties": {
+        "id": "mobi_0235",
+        "facility_type": "shared_bikes",
+        "name": "Charles & Commercial",
+        "station_id": "0235",
+        "capacity": "22",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1388398987",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0699438,
+          49.2731006
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0354",
+      "properties": {
+        "id": "mobi_0354",
+        "facility_type": "shared_bikes",
+        "name": "Station & Terminal",
+        "station_id": "0354",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "CycleHop",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1388894192",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0979779,
+          49.272127
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0287",
+      "properties": {
+        "id": "mobi_0287",
+        "facility_type": "shared_bikes",
+        "name": "Carolina & Great Northern Way",
+        "station_id": "0287",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1388920625",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0907557,
+          49.2674995
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0212",
+      "properties": {
+        "id": "mobi_0212",
+        "facility_type": "shared_bikes",
+        "name": "Union & Dunlevy",
+        "station_id": "0212",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1389127293",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0958831,
+          49.2776215
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0198",
+      "properties": {
+        "id": "mobi_0198",
+        "facility_type": "shared_bikes",
+        "name": "5th & Main",
+        "station_id": "0198",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1389339001",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1003194,
+          49.2664521
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0078",
+      "properties": {
+        "id": "mobi_0078",
+        "facility_type": "shared_bikes",
+        "name": "Nelson & Mainland",
+        "station_id": "0078",
+        "capacity": "30",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1393935164",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1187758,
+          49.2764713
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0096",
+      "properties": {
+        "id": "mobi_0096",
+        "facility_type": "shared_bikes",
+        "name": "Nicola & Robson",
+        "station_id": "0096",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1394068393",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1320197,
+          49.2881406
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0028",
+      "properties": {
+        "id": "mobi_0028",
+        "facility_type": "shared_bikes",
+        "name": "Davie & Beach",
+        "station_id": "0028",
+        "capacity": "30",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1394376095",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1421039,
+          49.2875089
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0242",
+      "properties": {
+        "id": "mobi_0242",
+        "facility_type": "shared_bikes",
+        "name": "8th & Commercial",
+        "station_id": "0242",
+        "capacity": "38",
+        "network": "Mobi",
+        "operator": "CycleHop",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1394559139",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0705297,
+          49.2632449
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0244",
+      "properties": {
+        "id": "mobi_0244",
+        "facility_type": "shared_bikes",
+        "name": "10th & Commercial",
+        "station_id": "0244",
+        "capacity": "26",
+        "network": "Mobi",
+        "operator": "CycleHop",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1394559141",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0702141,
+          49.2614041
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0186",
+      "properties": {
+        "id": "mobi_0186",
+        "facility_type": "shared_bikes",
+        "name": "10th & Kingsway",
+        "station_id": "0186",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1396024477",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0974104,
+          49.2619794
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0077",
+      "properties": {
+        "id": "mobi_0077",
+        "facility_type": "shared_bikes",
+        "name": "Vanier Park",
+        "station_id": "0077",
+        "capacity": "28",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1410217314",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1426018,
+          49.2757079
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0107",
+      "properties": {
+        "id": "mobi_0107",
+        "facility_type": "shared_bikes",
+        "name": "8th & Ontario",
+        "station_id": "0107",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1411616555",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1052011,
+          49.2638217
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0108",
+      "properties": {
+        "id": "mobi_0108",
+        "facility_type": "shared_bikes",
+        "name": "1st & Chestnut",
+        "station_id": "0108",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1411936459",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1462306,
+          49.2707255
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0026",
+      "properties": {
+        "id": "mobi_0026",
+        "facility_type": "shared_bikes",
+        "name": "Beatty & Robson",
+        "station_id": "0026",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1413139903",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.114267,
+          49.2774581
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0255",
+      "properties": {
+        "id": "mobi_0255",
+        "facility_type": "shared_bikes",
+        "name": "18th & Main",
+        "station_id": "0255",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1416842516",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.101315,
+          49.2546723
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0192",
+      "properties": {
+        "id": "mobi_0192",
+        "facility_type": "shared_bikes",
+        "name": "7th & Alder",
+        "station_id": "0192",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1420316185",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1309661,
+          49.2651967
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0258",
+      "properties": {
+        "id": "mobi_0258",
+        "facility_type": "shared_bikes",
+        "name": "13th & St George",
+        "station_id": "0258",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1449925462",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0927875,
+          49.2588092
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0285",
+      "properties": {
+        "id": "mobi_0285",
+        "facility_type": "shared_bikes",
+        "name": "Commercial & Pandora",
+        "station_id": "0285",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1451548793",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.070442,
+          49.283281
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0283",
+      "properties": {
+        "id": "mobi_0283",
+        "facility_type": "shared_bikes",
+        "name": "15th & Knight",
+        "station_id": "0283",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "CycleHop",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1462975757",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0753692,
+          49.2564926
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0026",
+      "properties": {
+        "id": "mobi_0026",
+        "facility_type": "shared_bikes",
+        "name": "14th & Watson",
+        "station_id": "0026",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1524227447",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1003193,
+          49.258442
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0159",
+      "properties": {
+        "id": "mobi_0159",
+        "facility_type": "shared_bikes",
+        "name": "Vine & 4th",
+        "station_id": "0159",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca/",
+        "covered": "未標明",
+        "osm_id": "way/1531708302",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1574553,
+          49.2684409
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0250",
+      "properties": {
+        "id": "mobi_0250",
+        "facility_type": "shared_bikes",
+        "name": "Woodland & 4th",
+        "station_id": "0250",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "CycleHop",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1532077596",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0735013,
+          49.2667172
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0211",
+      "properties": {
+        "id": "mobi_0211",
+        "facility_type": "shared_bikes",
+        "name": "14th & Alder",
+        "station_id": "0211",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1534126282",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1312372,
+          49.2588272
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0166",
+      "properties": {
+        "id": "mobi_0166",
+        "facility_type": "shared_bikes",
+        "name": "Alder & 11th",
+        "station_id": "0166",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1534294467",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1314996,
+          49.2617772
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0254",
+      "properties": {
+        "id": "mobi_0254",
+        "facility_type": "shared_bikes",
+        "name": "Grandview & Commercial",
+        "station_id": "0254",
+        "capacity": "13",
+        "network": "Mobi",
+        "operator": "CycleHop",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1549579786",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0702007,
+          49.2638318
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0274",
+      "properties": {
+        "id": "mobi_0274",
+        "facility_type": "shared_bikes",
+        "name": "Victoria & 10th",
+        "station_id": "0274",
+        "capacity": "12",
+        "network": "Mobi",
+        "operator": "CycleHop",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1549579787",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0660173,
+          49.2611799
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0249",
+      "properties": {
+        "id": "mobi_0249",
+        "facility_type": "shared_bikes",
+        "name": "7th & Woodland",
+        "station_id": "0249",
+        "capacity": "12",
+        "network": "Mobi",
+        "operator": "CycleHop",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1549579788",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0738543,
+          49.2642514
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0278",
+      "properties": {
+        "id": "mobi_0278",
+        "facility_type": "shared_bikes",
+        "name": "15th & Victoria (Trout Lake)",
+        "station_id": "0278",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "CycleHop",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1549579789",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0656408,
+          49.2567787
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0252",
+      "properties": {
+        "id": "mobi_0252",
+        "facility_type": "shared_bikes",
+        "name": "Woodland & Graveley",
+        "station_id": "0252",
+        "capacity": "12",
+        "network": "Mobi",
+        "operator": "CycleHop",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1549579790",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0735423,
+          49.2707127
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0245",
+      "properties": {
+        "id": "mobi_0245",
+        "facility_type": "shared_bikes",
+        "name": "Woodland & 10th",
+        "station_id": "0245",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "CycleHop",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "way/1549579791",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0737174,
+          49.2612303
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0011",
+      "properties": {
+        "id": "mobi_0011",
+        "facility_type": "shared_bikes",
+        "name": "Ontario & Seawall",
+        "station_id": "0011",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4280582288",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1042968,
+          49.2716914
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0009",
+      "properties": {
+        "id": "mobi_0009",
+        "facility_type": "shared_bikes",
+        "name": "Spyglass & Seawall",
+        "station_id": "0009",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4280583689",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1150229,
+          49.270861
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0001",
+      "properties": {
+        "id": "mobi_0001",
+        "facility_type": "shared_bikes",
+        "name": "10th & Cambie",
+        "station_id": "0001",
+        "capacity": "36",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4280583690",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1142145,
+          49.2622822
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0002",
+      "properties": {
+        "id": "mobi_0002",
+        "facility_type": "shared_bikes",
+        "name": "Burrard Station (Melville & Dunsmuir)",
+        "station_id": "0002",
+        "capacity": "46",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4306881751",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1209655,
+          49.2857921
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0089",
+      "properties": {
+        "id": "mobi_0089",
+        "facility_type": "shared_bikes",
+        "name": "Burrard & Drake",
+        "station_id": "0089",
+        "capacity": "24",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4306881752",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1305274,
+          49.2781301
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0037",
+      "properties": {
+        "id": "mobi_0037",
+        "facility_type": "shared_bikes",
+        "name": "Hornby & Nelson",
+        "station_id": "0037",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4306881790",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1247883,
+          49.2806397
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0129",
+      "properties": {
+        "id": "mobi_0129",
+        "facility_type": "shared_bikes",
+        "name": "Richards & Robson",
+        "station_id": "0129",
+        "capacity": "26",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4310365116",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1175441,
+          49.2802801
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0039",
+      "properties": {
+        "id": "mobi_0039",
+        "facility_type": "shared_bikes",
+        "name": "Helmcken & Burrard",
+        "station_id": "0039",
+        "capacity": "15",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4312118483",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1274469,
+          49.2799185
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0005",
+      "properties": {
+        "id": "mobi_0005",
+        "facility_type": "shared_bikes",
+        "name": "Dunsmuir & Beatty",
+        "station_id": "0005",
+        "capacity": "26",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4312120452",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1100831,
+          49.2797102
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0048",
+      "properties": {
+        "id": "mobi_0048",
+        "facility_type": "shared_bikes",
+        "name": "Comox & Broughton",
+        "station_id": "0048",
+        "capacity": "12",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4312153326",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.134325,
+          49.2853146
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0047",
+      "properties": {
+        "id": "mobi_0047",
+        "facility_type": "shared_bikes",
+        "name": "Chilco & Beach",
+        "station_id": "0047",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4313831603",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1440153,
+          49.289712
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0031",
+      "properties": {
+        "id": "mobi_0031",
+        "facility_type": "shared_bikes",
+        "name": "Morton & Denman",
+        "station_id": "0031",
+        "capacity": "26",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4313831742",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1420794,
+          49.2880013
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0032",
+      "properties": {
+        "id": "mobi_0032",
+        "facility_type": "shared_bikes",
+        "name": "Comox & Denman",
+        "station_id": "0032",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4313831743",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1393327,
+          49.2885183
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0024",
+      "properties": {
+        "id": "mobi_0024",
+        "facility_type": "shared_bikes",
+        "name": "Hornby & Pender",
+        "station_id": "0024",
+        "capacity": "22",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4314685793",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.116602,
+          49.2860026
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0030",
+      "properties": {
+        "id": "mobi_0030",
+        "facility_type": "shared_bikes",
+        "name": "Abbott & Cordova",
+        "station_id": "0030",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4319939378",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.107005,
+          49.2826816
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0014",
+      "properties": {
+        "id": "mobi_0014",
+        "facility_type": "shared_bikes",
+        "name": "Canada Place",
+        "station_id": "0014",
+        "capacity": "22",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4324653295",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1129258,
+          49.2871914
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0025",
+      "properties": {
+        "id": "mobi_0025",
+        "facility_type": "shared_bikes",
+        "name": "Homer & Robson (Vancouver Public Library)",
+        "station_id": "0025",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4327258587",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1162932,
+          49.2796591
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0050",
+      "properties": {
+        "id": "mobi_0050",
+        "facility_type": "shared_bikes",
+        "name": "Bute & Comox",
+        "station_id": "0050",
+        "capacity": "22",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4345324009",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1310401,
+          49.2833805
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0057",
+      "properties": {
+        "id": "mobi_0057",
+        "facility_type": "shared_bikes",
+        "name": "Marinaside & Cooperage",
+        "station_id": "0057",
+        "capacity": "26",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4346611613",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.114558,
+          49.2738549
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0007",
+      "properties": {
+        "id": "mobi_0007",
+        "facility_type": "shared_bikes",
+        "name": "12th & Yukon (City Hall)",
+        "station_id": "0007",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4346611615",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1134246,
+          49.2606046
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0066",
+      "properties": {
+        "id": "mobi_0066",
+        "facility_type": "shared_bikes",
+        "name": "Anderson & 2nd",
+        "station_id": "0066",
+        "capacity": "28",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4346611808",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1378336,
+          49.2695442
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0064",
+      "properties": {
+        "id": "mobi_0064",
+        "facility_type": "shared_bikes",
+        "name": "Expo & Smithe",
+        "station_id": "0064",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "CycleHop",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4346800491",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1144863,
+          49.2761637
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0082",
+      "properties": {
+        "id": "mobi_0082",
+        "facility_type": "shared_bikes",
+        "name": "Richards & Davie",
+        "station_id": "0082",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4346800493",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1243609,
+          49.2757543
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0015",
+      "properties": {
+        "id": "mobi_0015",
+        "facility_type": "shared_bikes",
+        "name": "Granville & Georgia",
+        "station_id": "0015",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4347696030",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1185854,
+          49.2823937
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0054",
+      "properties": {
+        "id": "mobi_0054",
+        "facility_type": "shared_bikes",
+        "name": "Expo & Carrall",
+        "station_id": "0054",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4348123815",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1057008,
+          49.2780481
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0053",
+      "properties": {
+        "id": "mobi_0053",
+        "facility_type": "shared_bikes",
+        "name": "Keefer & Abbott",
+        "station_id": "0053",
+        "capacity": "28",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4348124591",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1079267,
+          49.2797995
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0109",
+      "properties": {
+        "id": "mobi_0109",
+        "facility_type": "shared_bikes",
+        "name": "7th & Arbutus",
+        "station_id": "0109",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4349324141",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1525342,
+          49.2656102
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0081",
+      "properties": {
+        "id": "mobi_0081",
+        "facility_type": "shared_bikes",
+        "name": "7th & Heather",
+        "station_id": "0081",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4349324142",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1194282,
+          49.2650786
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0076",
+      "properties": {
+        "id": "mobi_0076",
+        "facility_type": "shared_bikes",
+        "name": "Cypress & 4th",
+        "station_id": "0076",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4349328093",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1478672,
+          49.2682673
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0008",
+      "properties": {
+        "id": "mobi_0008",
+        "facility_type": "shared_bikes",
+        "name": "7th & Ash",
+        "station_id": "0008",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Mobi by Shaw",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4349328095",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1169935,
+          49.2649618
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0010",
+      "properties": {
+        "id": "mobi_0010",
+        "facility_type": "shared_bikes",
+        "name": "Stamps Landing",
+        "station_id": "0010",
+        "capacity": "12",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4349328096",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1180979,
+          49.268926
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0072",
+      "properties": {
+        "id": "mobi_0072",
+        "facility_type": "shared_bikes",
+        "name": "14th & Cambie",
+        "station_id": "0072",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4349328200",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1152956,
+          49.2587688
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0115",
+      "properties": {
+        "id": "mobi_0115",
+        "facility_type": "shared_bikes",
+        "name": "Cypress & 16th",
+        "station_id": "0115",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4349328322",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1484736,
+          49.2575397
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0041",
+      "properties": {
+        "id": "mobi_0041",
+        "facility_type": "shared_bikes",
+        "name": "Cardero & Robson",
+        "station_id": "0041",
+        "capacity": "26",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4350339513",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1326555,
+          49.2892686
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0079",
+      "properties": {
+        "id": "mobi_0079",
+        "facility_type": "shared_bikes",
+        "name": "Nelson & Richards",
+        "station_id": "0079",
+        "capacity": "30",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4357869579",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1209553,
+          49.2778573
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0073",
+      "properties": {
+        "id": "mobi_0073",
+        "facility_type": "shared_bikes",
+        "name": "Ontario & 5th",
+        "station_id": "0073",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "CycleHop",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4358246393",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1047506,
+          49.2668059
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0137",
+      "properties": {
+        "id": "mobi_0137",
+        "facility_type": "shared_bikes",
+        "name": "Beach & Seymour",
+        "station_id": "0137",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4382756797",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1299041,
+          49.2735492
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0093",
+      "properties": {
+        "id": "mobi_0093",
+        "facility_type": "shared_bikes",
+        "name": "Chilco & Robson",
+        "station_id": "0093",
+        "capacity": "22",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4384665135",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1386077,
+          49.2932024
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0052",
+      "properties": {
+        "id": "mobi_0052",
+        "facility_type": "shared_bikes",
+        "name": "Cambie & Water",
+        "station_id": "0052",
+        "capacity": "32",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4384665137",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1086152,
+          49.2846283
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0092",
+      "properties": {
+        "id": "mobi_0092",
+        "facility_type": "shared_bikes",
+        "name": "Chilco & Barclay",
+        "station_id": "0092",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4384665253",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1407852,
+          49.2918468
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0114",
+      "properties": {
+        "id": "mobi_0114",
+        "facility_type": "shared_bikes",
+        "name": "Cypress & 14th",
+        "station_id": "0114",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4386255089",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1482565,
+          49.2592367
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0113",
+      "properties": {
+        "id": "mobi_0113",
+        "facility_type": "shared_bikes",
+        "name": "Arbutus & 16th",
+        "station_id": "0113",
+        "capacity": "40",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4386255090",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1532696,
+          49.2576909
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0017",
+      "properties": {
+        "id": "mobi_0017",
+        "facility_type": "shared_bikes",
+        "name": "Marinaside & Davie",
+        "station_id": "0017",
+        "capacity": "22",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4392917596",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1179519,
+          49.2735635
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0060",
+      "properties": {
+        "id": "mobi_0060",
+        "facility_type": "shared_bikes",
+        "name": "Bidwell & Burnaby",
+        "station_id": "0060",
+        "capacity": "26",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4392992657",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1417873,
+          49.285273
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0065",
+      "properties": {
+        "id": "mobi_0065",
+        "facility_type": "shared_bikes",
+        "name": "Cypress & Cornwall",
+        "station_id": "0065",
+        "capacity": "22",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4395519395",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1477349,
+          49.2728075
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0044",
+      "properties": {
+        "id": "mobi_0044",
+        "facility_type": "shared_bikes",
+        "name": "Pacific & Richards",
+        "station_id": "0044",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4404884732",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1270617,
+          49.2736703
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0069",
+      "properties": {
+        "id": "mobi_0069",
+        "facility_type": "shared_bikes",
+        "name": "7th & Granville",
+        "station_id": "0069",
+        "capacity": "24",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4406353763",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1381984,
+          49.2652855
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0133",
+      "properties": {
+        "id": "mobi_0133",
+        "facility_type": "shared_bikes",
+        "name": "Ontario & 16th",
+        "station_id": "0133",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4406353764",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1051257,
+          49.2568643
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0174",
+      "properties": {
+        "id": "mobi_0174",
+        "facility_type": "shared_bikes",
+        "name": "1st & Manitoba",
+        "station_id": "0174",
+        "capacity": "32",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4406353765",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.106335,
+          49.2702382
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0134",
+      "properties": {
+        "id": "mobi_0134",
+        "facility_type": "shared_bikes",
+        "name": "14th & Main",
+        "station_id": "0134",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4406354309",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1018039,
+          49.2584469
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0173",
+      "properties": {
+        "id": "mobi_0173",
+        "facility_type": "shared_bikes",
+        "name": "Columbia & 1st",
+        "station_id": "0173",
+        "capacity": "24",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4406354312",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1095854,
+          49.2699811
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0150",
+      "properties": {
+        "id": "mobi_0150",
+        "facility_type": "shared_bikes",
+        "name": "Alexander & Main",
+        "station_id": "0150",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4426815002",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0999589,
+          49.2841519
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0071",
+      "properties": {
+        "id": "mobi_0071",
+        "facility_type": "shared_bikes",
+        "name": "14th & Granville",
+        "station_id": "0071",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4428165265",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1393495,
+          49.2589687
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0138",
+      "properties": {
+        "id": "mobi_0138",
+        "facility_type": "shared_bikes",
+        "name": "Richards & Helmcken",
+        "station_id": "0138",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4428166137",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1225069,
+          49.2771762
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0016",
+      "properties": {
+        "id": "mobi_0016",
+        "facility_type": "shared_bikes",
+        "name": "Pender & Burrard",
+        "station_id": "0016",
+        "capacity": "26",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4437226610",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1186171,
+          49.2871315
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0112",
+      "properties": {
+        "id": "mobi_0112",
+        "facility_type": "shared_bikes",
+        "name": "Oak & 10th",
+        "station_id": "0112",
+        "capacity": "30",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4447006770",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12616,
+          49.2622734
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0130",
+      "properties": {
+        "id": "mobi_0130",
+        "facility_type": "shared_bikes",
+        "name": "Heather & 16th",
+        "station_id": "0130",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4447006771",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1200251,
+          49.25676
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0147",
+      "properties": {
+        "id": "mobi_0147",
+        "facility_type": "shared_bikes",
+        "name": "Chestnut & McNicoll",
+        "station_id": "0147",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4467253656",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1460073,
+          49.2759635
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0063",
+      "properties": {
+        "id": "mobi_0063",
+        "facility_type": "shared_bikes",
+        "name": "Robson & Granville",
+        "station_id": "0063",
+        "capacity": "32",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4469433643",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1201536,
+          49.2815126
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0167",
+      "properties": {
+        "id": "mobi_0167",
+        "facility_type": "shared_bikes",
+        "name": "Cordova & Columbia",
+        "station_id": "0167",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4469433644",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1019125,
+          49.2823821
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0083",
+      "properties": {
+        "id": "mobi_0083",
+        "facility_type": "shared_bikes",
+        "name": "Aquatic Centre",
+        "station_id": "0083",
+        "capacity": "36",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "否",
+        "osm_id": "node/4477798231",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1369457,
+          49.2781965
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0006",
+      "properties": {
+        "id": "mobi_0006",
+        "facility_type": "shared_bikes",
+        "name": "Olympic Village Station",
+        "station_id": "0006",
+        "capacity": "26",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4479894506",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1161009,
+          49.266316
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0068",
+      "properties": {
+        "id": "mobi_0068",
+        "facility_type": "shared_bikes",
+        "name": "Cypress & 10th",
+        "station_id": "0068",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4479897938",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1481066,
+          49.2629028
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0019",
+      "properties": {
+        "id": "mobi_0019",
+        "facility_type": "shared_bikes",
+        "name": "Robson & Hornby",
+        "station_id": "0019",
+        "capacity": "30",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4487920856",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1220614,
+          49.2827328
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0110",
+      "properties": {
+        "id": "mobi_0110",
+        "facility_type": "shared_bikes",
+        "name": "5th & Arbutus",
+        "station_id": "0110",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4491734820",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1531863,
+          49.267233
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0004",
+      "properties": {
+        "id": "mobi_0004",
+        "facility_type": "shared_bikes",
+        "name": "Yaletown-Roundhouse Station",
+        "station_id": "0004",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4531145817",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1217156,
+          49.2744594
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0055",
+      "properties": {
+        "id": "mobi_0055",
+        "facility_type": "shared_bikes",
+        "name": "Keefer & Columbia",
+        "station_id": "0055",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4535171376",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1016344,
+          49.2793384
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0070",
+      "properties": {
+        "id": "mobi_0070",
+        "facility_type": "shared_bikes",
+        "name": "10th & Granville",
+        "station_id": "0070",
+        "capacity": "4",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4536537804",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13888,
+          49.2625924
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0172",
+      "properties": {
+        "id": "mobi_0172",
+        "facility_type": "shared_bikes",
+        "name": "10th & Columbia",
+        "station_id": "0172",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4536553367",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1093161,
+          49.2622196
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0201",
+      "properties": {
+        "id": "mobi_0201",
+        "facility_type": "shared_bikes",
+        "name": "Rogers Tower",
+        "station_id": "0201",
+        "capacity": "22",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4554645718",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1182129,
+          49.2886688
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0187",
+      "properties": {
+        "id": "mobi_0187",
+        "facility_type": "shared_bikes",
+        "name": "Bute & Davie",
+        "station_id": "0187",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4559406071",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1330451,
+          49.2820425
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0106",
+      "properties": {
+        "id": "mobi_0106",
+        "facility_type": "shared_bikes",
+        "name": "Heather & 14th",
+        "station_id": "0106",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4597143538",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.120086,
+          49.2592543
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0154",
+      "properties": {
+        "id": "mobi_0154",
+        "facility_type": "shared_bikes",
+        "name": "Kitsilano Beach Park",
+        "station_id": "0154",
+        "capacity": "36",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4608888186",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1545317,
+          49.2733557
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0176",
+      "properties": {
+        "id": "mobi_0176",
+        "facility_type": "shared_bikes",
+        "name": "10th & Ontario",
+        "station_id": "0176",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4686167150",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1047007,
+          49.2620546
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0204",
+      "properties": {
+        "id": "mobi_0204",
+        "facility_type": "shared_bikes",
+        "name": "York & Yew",
+        "station_id": "0204",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4693006065",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1554804,
+          49.2717489
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0152",
+      "properties": {
+        "id": "mobi_0152",
+        "facility_type": "shared_bikes",
+        "name": "Arbutus Greenway & 14th",
+        "station_id": "0152",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4778024236",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.152613,
+          49.2589484
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0132",
+      "properties": {
+        "id": "mobi_0132",
+        "facility_type": "shared_bikes",
+        "name": "14th & Ontario",
+        "station_id": "0132",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4778027949",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1048152,
+          49.2584988
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0205",
+      "properties": {
+        "id": "mobi_0205",
+        "facility_type": "shared_bikes",
+        "name": "Pine & 10th",
+        "station_id": "0205",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4824169873",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1433487,
+          49.2629314
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0208",
+      "properties": {
+        "id": "mobi_0208",
+        "facility_type": "shared_bikes",
+        "name": "Arbutus Greenway & Broadway",
+        "station_id": "0208",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4824171059",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1523941,
+          49.2636229
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0206",
+      "properties": {
+        "id": "mobi_0206",
+        "facility_type": "shared_bikes",
+        "name": "8th & Scotia",
+        "station_id": "0206",
+        "capacity": "12",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4890776379",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.099236,
+          49.2636196
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0209",
+      "properties": {
+        "id": "mobi_0209",
+        "facility_type": "shared_bikes",
+        "name": "Stanley Park - Information Booth",
+        "station_id": "0209",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "City of Vancouver",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4894508596",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1306813,
+          49.2979505
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0105",
+      "properties": {
+        "id": "mobi_0105",
+        "facility_type": "shared_bikes",
+        "name": "Stanley Park - Totem Poles",
+        "station_id": "0105",
+        "capacity": "22",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4894508597",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1212092,
+          49.2986558
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0101",
+      "properties": {
+        "id": "mobi_0101",
+        "facility_type": "shared_bikes",
+        "name": "Stanley Park - Vancouver Aquarium",
+        "station_id": "0101",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4894508598",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1303286,
+          49.2992547
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0104",
+      "properties": {
+        "id": "mobi_0104",
+        "facility_type": "shared_bikes",
+        "name": "Stanley Park - Second Beach South",
+        "station_id": "0104",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4894508599",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1487139,
+          49.2943135
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0102",
+      "properties": {
+        "id": "mobi_0102",
+        "facility_type": "shared_bikes",
+        "name": "Stanley Park - Second Beach North",
+        "station_id": "0102",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4894508600",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1506391,
+          49.2952659
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0140",
+      "properties": {
+        "id": "mobi_0140",
+        "facility_type": "shared_bikes",
+        "name": "Burrard & 7th",
+        "station_id": "0140",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4914081070",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1458088,
+          49.2652965
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0153",
+      "properties": {
+        "id": "mobi_0153",
+        "facility_type": "shared_bikes",
+        "name": "Arbutus Greenway & Fir",
+        "station_id": "0153",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4914085221",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1411494,
+          49.2667647
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0087",
+      "properties": {
+        "id": "mobi_0087",
+        "facility_type": "shared_bikes",
+        "name": "Broughton & Davie",
+        "station_id": "0087",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Shaw",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4949496890",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1360038,
+          49.2837789
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0218",
+      "properties": {
+        "id": "mobi_0218",
+        "facility_type": "shared_bikes",
+        "name": "Carrall & Seawall",
+        "station_id": "0218",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/4949496891",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1065646,
+          49.2762901
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0099",
+      "properties": {
+        "id": "mobi_0099",
+        "facility_type": "shared_bikes",
+        "name": "šxʷƛ̓ənəq Xwtl'e7énḵ Square - Vancouver Art Gallery",
+        "station_id": "0099",
+        "capacity": "28",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5239985745",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1204825,
+          49.2831979
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0136",
+      "properties": {
+        "id": "mobi_0136",
+        "facility_type": "shared_bikes",
+        "name": "David Lam Park",
+        "station_id": "0136",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5240815608",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1259935,
+          49.2709252
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0139",
+      "properties": {
+        "id": "mobi_0139",
+        "facility_type": "shared_bikes",
+        "name": "Burrard & 4th",
+        "station_id": "0139",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5298708521",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1457589,
+          49.2677813
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0143",
+      "properties": {
+        "id": "mobi_0143",
+        "facility_type": "shared_bikes",
+        "name": "Charleson Park",
+        "station_id": "0143",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5483845609",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1277051,
+          49.2676184
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0260",
+      "properties": {
+        "id": "mobi_0260",
+        "facility_type": "shared_bikes",
+        "name": "10th & Fraser",
+        "station_id": "0260",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5555410111",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0893354,
+          49.2615005
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0236",
+      "properties": {
+        "id": "mobi_0236",
+        "facility_type": "shared_bikes",
+        "name": "Keith & 6th",
+        "station_id": "0236",
+        "capacity": "28",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5555411056",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0794519,
+          49.2649223
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0265",
+      "properties": {
+        "id": "mobi_0265",
+        "facility_type": "shared_bikes",
+        "name": "St Catherines & 10th",
+        "station_id": "0265",
+        "capacity": "12",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5555411057",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0852922,
+          49.2613191
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0246",
+      "properties": {
+        "id": "mobi_0246",
+        "facility_type": "shared_bikes",
+        "name": "Glen & Broadway",
+        "station_id": "0246",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5555411149",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0814508,
+          49.2621862
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0248",
+      "properties": {
+        "id": "mobi_0248",
+        "facility_type": "shared_bikes",
+        "name": "St George & Broadway",
+        "station_id": "0248",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5555411150",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0930671,
+          49.2623071
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0239",
+      "properties": {
+        "id": "mobi_0239",
+        "facility_type": "shared_bikes",
+        "name": "Grant & Commercial",
+        "station_id": "0239",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5567982962",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0693525,
+          49.2713808
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0241",
+      "properties": {
+        "id": "mobi_0241",
+        "facility_type": "shared_bikes",
+        "name": "4th & Commercial",
+        "station_id": "0241",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "CycleHop",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5567983927",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0700235,
+          49.2669734
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0231",
+      "properties": {
+        "id": "mobi_0231",
+        "facility_type": "shared_bikes",
+        "name": "Napier & Commercial",
+        "station_id": "0231",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5567984327",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0692936,
+          49.274881
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0240",
+      "properties": {
+        "id": "mobi_0240",
+        "facility_type": "shared_bikes",
+        "name": "2nd & Commercial",
+        "station_id": "0240",
+        "capacity": "22",
+        "network": "Mobi",
+        "operator": "CycleHop",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5567984328",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0700509,
+          49.2686186
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0190",
+      "properties": {
+        "id": "mobi_0190",
+        "facility_type": "shared_bikes",
+        "name": "Melville & Bute",
+        "station_id": "0190",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5618677182",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1239048,
+          49.2877533
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0223",
+      "properties": {
+        "id": "mobi_0223",
+        "facility_type": "shared_bikes",
+        "name": "Commercial & Adanac",
+        "station_id": "0223",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5621036160",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0704165,
+          49.2773948
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0222",
+      "properties": {
+        "id": "mobi_0222",
+        "facility_type": "shared_bikes",
+        "name": "Adanac & McLean",
+        "station_id": "0222",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5621038440",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0735579,
+          49.2776591
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0098",
+      "properties": {
+        "id": "mobi_0098",
+        "facility_type": "shared_bikes",
+        "name": "Carrall & Hastings",
+        "station_id": "0098",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5621043574",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1044111,
+          49.2810403
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0161",
+      "properties": {
+        "id": "mobi_0161",
+        "facility_type": "shared_bikes",
+        "name": "Alexander & Dunlevy",
+        "station_id": "0161",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5625229806",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.095047,
+          49.2840577
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0230",
+      "properties": {
+        "id": "mobi_0230",
+        "facility_type": "shared_bikes",
+        "name": "Alexander & Railway",
+        "station_id": "0230",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5625229807",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0911062,
+          49.2839923
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0221",
+      "properties": {
+        "id": "mobi_0221",
+        "facility_type": "shared_bikes",
+        "name": "Glen & Union",
+        "station_id": "0221",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5636471859",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0812952,
+          49.2775071
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0229",
+      "properties": {
+        "id": "mobi_0229",
+        "facility_type": "shared_bikes",
+        "name": "Keefer & Princess",
+        "station_id": "0229",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5636472424",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0909562,
+          49.2793622
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0261",
+      "properties": {
+        "id": "mobi_0261",
+        "facility_type": "shared_bikes",
+        "name": "8th & Fraser",
+        "station_id": "0261",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5650752405",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0888362,
+          49.2634568
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0232",
+      "properties": {
+        "id": "mobi_0232",
+        "facility_type": "shared_bikes",
+        "name": "Britannia Parking Lot",
+        "station_id": "0232",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5710152021",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0718716,
+          49.2758909
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0148",
+      "properties": {
+        "id": "mobi_0148",
+        "facility_type": "shared_bikes",
+        "name": "Creekside Park North",
+        "station_id": "0148",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5742677667",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.102698,
+          49.2756105
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0199",
+      "properties": {
+        "id": "mobi_0199",
+        "facility_type": "shared_bikes",
+        "name": "Georgia & Main",
+        "station_id": "0199",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5767236985",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1000524,
+          49.2785197
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0021",
+      "properties": {
+        "id": "mobi_0021",
+        "facility_type": "shared_bikes",
+        "name": "Cordova & Granville",
+        "station_id": "0021",
+        "capacity": "22;20",
+        "network": "Mobi",
+        "operator": "CycleHop",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5780659495",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1126312,
+          49.2856012
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0074",
+      "properties": {
+        "id": "mobi_0074",
+        "facility_type": "shared_bikes",
+        "name": "10th & Main",
+        "station_id": "0074",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5791365318",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1018465,
+          49.2620812
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0213",
+      "properties": {
+        "id": "mobi_0213",
+        "facility_type": "shared_bikes",
+        "name": "Pender & Gore",
+        "station_id": "0213",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5805917917",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0970897,
+          49.2802712
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0227",
+      "properties": {
+        "id": "mobi_0227",
+        "facility_type": "shared_bikes",
+        "name": "Campbell & Hastings",
+        "station_id": "0227",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5805917918",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.084749,
+          49.2806434
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0253",
+      "properties": {
+        "id": "mobi_0253",
+        "facility_type": "shared_bikes",
+        "name": "Charles & Woodland",
+        "station_id": "0253",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5805917919",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0731844,
+          49.2731187
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0266",
+      "properties": {
+        "id": "mobi_0266",
+        "facility_type": "shared_bikes",
+        "name": "St Catherines & 7th",
+        "station_id": "0266",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5805917921",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0851365,
+          49.2644331
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0262",
+      "properties": {
+        "id": "mobi_0262",
+        "facility_type": "shared_bikes",
+        "name": "8th & Prince Edward",
+        "station_id": "0262",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5805917922",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0956253,
+          49.2635225
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0202",
+      "properties": {
+        "id": "mobi_0202",
+        "facility_type": "shared_bikes",
+        "name": "14th & Oak",
+        "station_id": "0202",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5805917925",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1271099,
+          49.258781
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0207",
+      "properties": {
+        "id": "mobi_0207",
+        "facility_type": "shared_bikes",
+        "name": "Alberni & Jervis",
+        "station_id": "0207",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5805917926",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1272215,
+          49.2876362
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0273",
+      "properties": {
+        "id": "mobi_0273",
+        "facility_type": "shared_bikes",
+        "name": "Victoria & 4th",
+        "station_id": "0273",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "CycleHop",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5816964370",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.065885,
+          49.2666686
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0272",
+      "properties": {
+        "id": "mobi_0272",
+        "facility_type": "shared_bikes",
+        "name": "Pender & Victoria",
+        "station_id": "0272",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5816964371",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0659455,
+          49.2801953
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0224",
+      "properties": {
+        "id": "mobi_0224",
+        "facility_type": "shared_bikes",
+        "name": "Pender & Commercial",
+        "station_id": "0224",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5816964471",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0700656,
+          49.2803186
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0126",
+      "properties": {
+        "id": "mobi_0126",
+        "facility_type": "shared_bikes",
+        "name": "Thurlow & Pendrell",
+        "station_id": "0126",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5825910223",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.130541,
+          49.2808952
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0280",
+      "properties": {
+        "id": "mobi_0280",
+        "facility_type": "shared_bikes",
+        "name": "Triumph & Victoria",
+        "station_id": "0280",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5835729858",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.065167,
+          49.283984
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0034",
+      "properties": {
+        "id": "mobi_0034",
+        "facility_type": "shared_bikes",
+        "name": "Cordova & Bute",
+        "station_id": "0034",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5855832456",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.121827,
+          49.2890985
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0193",
+      "properties": {
+        "id": "mobi_0193",
+        "facility_type": "shared_bikes",
+        "name": "Science World",
+        "station_id": "0193",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5864652343",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1022542,
+          49.2736718
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0225",
+      "properties": {
+        "id": "mobi_0225",
+        "facility_type": "shared_bikes",
+        "name": "McLean & Pender",
+        "station_id": "0225",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5864652344",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0740356,
+          49.2804441
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0233",
+      "properties": {
+        "id": "mobi_0233",
+        "facility_type": "shared_bikes",
+        "name": "Thornton & National",
+        "station_id": "0233",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5864653242",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0927082,
+          49.2737663
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0256",
+      "properties": {
+        "id": "mobi_0256",
+        "facility_type": "shared_bikes",
+        "name": "Prince Edward & 16th",
+        "station_id": "0256",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5864740723",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0965455,
+          49.2567266
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0298",
+      "properties": {
+        "id": "mobi_0298",
+        "facility_type": "shared_bikes",
+        "name": "6th & Carolina",
+        "station_id": "0298",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5864740945",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0906761,
+          49.2652155
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0257",
+      "properties": {
+        "id": "mobi_0257",
+        "facility_type": "shared_bikes",
+        "name": "Prince Edward & 14th",
+        "station_id": "0257",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5864741511",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0963714,
+          49.2580644
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0297",
+      "properties": {
+        "id": "mobi_0297",
+        "facility_type": "shared_bikes",
+        "name": "6th & Prince Edward",
+        "station_id": "0297",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/5864741512",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0954559,
+          49.2652349
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0179",
+      "properties": {
+        "id": "mobi_0179",
+        "facility_type": "shared_bikes",
+        "name": "11th & Kingsway",
+        "station_id": "0179",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/6431944130",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0974796,
+          49.2611603
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0177",
+      "properties": {
+        "id": "mobi_0177",
+        "facility_type": "shared_bikes",
+        "name": "Quebec & 1st",
+        "station_id": "0177",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Shaw",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/6543616507",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1027341,
+          49.2703309
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0180",
+      "properties": {
+        "id": "mobi_0180",
+        "facility_type": "shared_bikes",
+        "name": "Columbia & 14th",
+        "station_id": "0180",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/6546655553",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1095676,
+          49.2589114
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0191",
+      "properties": {
+        "id": "mobi_0191",
+        "facility_type": "shared_bikes",
+        "name": "7th & Laurel",
+        "station_id": "0191",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/6546674495",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1237691,
+          49.2650434
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0281",
+      "properties": {
+        "id": "mobi_0281",
+        "facility_type": "shared_bikes",
+        "name": "Windsor & 14th",
+        "station_id": "0281",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/6571708483",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0833488,
+          49.2580237
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0282",
+      "properties": {
+        "id": "mobi_0282",
+        "facility_type": "shared_bikes",
+        "name": "14th & Fraser",
+        "station_id": "0282",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/6571720143",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0895274,
+          49.2579521
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0103",
+      "properties": {
+        "id": "mobi_0103",
+        "facility_type": "shared_bikes",
+        "name": "Stanley Park - Third Beach Parking Lot",
+        "station_id": "0103",
+        "capacity": "28",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/6663046515",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1556398,
+          49.3026103
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0219",
+      "properties": {
+        "id": "mobi_0219",
+        "facility_type": "shared_bikes",
+        "name": "Hawks & Union",
+        "station_id": "0219",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/6821503058",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0873497,
+          49.2772762
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0228",
+      "properties": {
+        "id": "mobi_0228",
+        "facility_type": "shared_bikes",
+        "name": "Keefer & Hawks",
+        "station_id": "0228",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/6821527269",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0874912,
+          49.2792153
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0045",
+      "properties": {
+        "id": "mobi_0045",
+        "facility_type": "shared_bikes",
+        "name": "Beach & Hornby",
+        "station_id": "0045",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/7073766819",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.133002,
+          49.2754641
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0215",
+      "properties": {
+        "id": "mobi_0215",
+        "facility_type": "shared_bikes",
+        "name": "Princess & Union",
+        "station_id": "0215",
+        "capacity": "12",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/7092087336",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0917253,
+          49.2777049
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0300",
+      "properties": {
+        "id": "mobi_0300",
+        "facility_type": "shared_bikes",
+        "name": "Bute & Barclay",
+        "station_id": "0300",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/7246742050",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.128767,
+          49.2848699
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0217",
+      "properties": {
+        "id": "mobi_0217",
+        "facility_type": "shared_bikes",
+        "name": "Smithe & Burrard",
+        "station_id": "0217",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/7246760802",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1246795,
+          49.2825174
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0124",
+      "properties": {
+        "id": "mobi_0124",
+        "facility_type": "shared_bikes",
+        "name": "Richards & Cordova",
+        "station_id": "0124",
+        "capacity": "24",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/7884886196",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1112193,
+          49.2844786
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0305",
+      "properties": {
+        "id": "mobi_0305",
+        "facility_type": "shared_bikes",
+        "name": "Georgia & Homer",
+        "station_id": "0305",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/9177375430",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1153534,
+          49.2809374
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0189",
+      "properties": {
+        "id": "mobi_0189",
+        "facility_type": "shared_bikes",
+        "name": "Granville Island",
+        "station_id": "0189",
+        "capacity": "32",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/9225765442",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1349844,
+          49.2702636
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0142",
+      "properties": {
+        "id": "mobi_0142",
+        "facility_type": "shared_bikes",
+        "name": "Beach & Cardero",
+        "station_id": "0142",
+        "capacity": "22",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/9627729263",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1422531,
+          49.2832577
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0561",
+      "properties": {
+        "id": "mobi_0561",
+        "facility_type": "shared_bikes",
+        "name": "20th & Main",
+        "station_id": "0561",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "CycleHop",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/9856611354",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1012489,
+          49.2526779
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0122",
+      "properties": {
+        "id": "mobi_0122",
+        "facility_type": "shared_bikes",
+        "name": "Haro & Denman",
+        "station_id": "0122",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/9877768831",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.136222,
+          49.2905224
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0058",
+      "properties": {
+        "id": "mobi_0058",
+        "facility_type": "shared_bikes",
+        "name": "Richards & Smithe",
+        "station_id": "0058",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/9956044564",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.119232,
+          49.2791766
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0040",
+      "properties": {
+        "id": "mobi_0040",
+        "facility_type": "shared_bikes",
+        "name": "Cardero & Davie",
+        "station_id": "0040",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/10013695142",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.138385,
+          49.2855326
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0035",
+      "properties": {
+        "id": "mobi_0035",
+        "facility_type": "shared_bikes",
+        "name": "Hastings & Broughton",
+        "station_id": "0035",
+        "capacity": "24",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/10050139173",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12703,
+          49.2901111
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0352",
+      "properties": {
+        "id": "mobi_0352",
+        "facility_type": "shared_bikes",
+        "name": "Commercial & 20th",
+        "station_id": "0352",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "CycleHop",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/10119844505",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0679613,
+          49.2526888
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0532",
+      "properties": {
+        "id": "mobi_0532",
+        "facility_type": "shared_bikes",
+        "name": "22nd & Cambie",
+        "station_id": "0532",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "CycleHop",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/10119996110",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.115664,
+          49.2513632
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0311",
+      "properties": {
+        "id": "mobi_0311",
+        "facility_type": "shared_bikes",
+        "name": "13th & Cambie",
+        "station_id": "0311",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/10148370381",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.114742,
+          49.2595423
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0524",
+      "properties": {
+        "id": "mobi_0524",
+        "facility_type": "shared_bikes",
+        "name": "King Edward & Cambie",
+        "station_id": "0524",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/10148385167",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1161503,
+          49.249185
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0557",
+      "properties": {
+        "id": "mobi_0557",
+        "facility_type": "shared_bikes",
+        "name": "30th & Ontario",
+        "station_id": "0557",
+        "capacity": "22",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/10148396657",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.104914,
+          49.2433945
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0526",
+      "properties": {
+        "id": "mobi_0526",
+        "facility_type": "shared_bikes",
+        "name": "29th & Cambie",
+        "station_id": "0526",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/10148404239",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1162559,
+          49.2451129
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0531",
+      "properties": {
+        "id": "mobi_0531",
+        "facility_type": "shared_bikes",
+        "name": "18th & Cambie",
+        "station_id": "0531",
+        "capacity": "24",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/10148406205",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1148079,
+          49.2548234
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0554",
+      "properties": {
+        "id": "mobi_0554",
+        "facility_type": "shared_bikes",
+        "name": "Ontario & 23rd",
+        "station_id": "0554",
+        "capacity": "12",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/10148421788",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1050223,
+          49.249712
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0171",
+      "properties": {
+        "id": "mobi_0171",
+        "facility_type": "shared_bikes",
+        "name": "Yukon & 6th",
+        "station_id": "0171",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/10684379400",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.113084,
+          49.2660412
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0511",
+      "properties": {
+        "id": "mobi_0511",
+        "facility_type": "shared_bikes",
+        "name": "Heather & 18th",
+        "station_id": "0511",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/10793458438",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1202069,
+          49.2549154
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0210",
+      "properties": {
+        "id": "mobi_0210",
+        "facility_type": "shared_bikes",
+        "name": "Burrard & 14th",
+        "station_id": "0210",
+        "capacity": "17",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/10872744817",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1456168,
+          49.2594325
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0400",
+      "properties": {
+        "id": "mobi_0400",
+        "facility_type": "shared_bikes",
+        "name": "Jericho Beach",
+        "station_id": "0400",
+        "capacity": "26",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/10885438194",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1915178,
+          49.2710514
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0200",
+      "properties": {
+        "id": "mobi_0200",
+        "facility_type": "shared_bikes",
+        "name": "Cardero & Bayshore",
+        "station_id": "0200",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/10944498296",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1291772,
+          49.2915667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0310",
+      "properties": {
+        "id": "mobi_0310",
+        "facility_type": "shared_bikes",
+        "name": "Jervis & Robson",
+        "station_id": "0310",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/10959901629",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1289011,
+          49.2868529
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0084",
+      "properties": {
+        "id": "mobi_0084",
+        "facility_type": "shared_bikes",
+        "name": "Beach & Broughton",
+        "station_id": "0084",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/11051990295",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1391364,
+          49.2812911
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_1002",
+      "properties": {
+        "id": "mobi_1002",
+        "facility_type": "shared_bikes",
+        "name": "PNE - Hastings & Windermere",
+        "station_id": "1002",
+        "capacity": "40",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/11293702848",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0358795,
+          49.2809692
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0563",
+      "properties": {
+        "id": "mobi_0563",
+        "facility_type": "shared_bikes",
+        "name": "22nd & Main",
+        "station_id": "0563",
+        "capacity": "9",
+        "network": "Mobi",
+        "operator": "CycleHop",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/11759301488",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1012728,
+          49.2509251
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0165",
+      "properties": {
+        "id": "mobi_0165",
+        "facility_type": "shared_bikes",
+        "name": "Columbia & 5th",
+        "station_id": "0165",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "CycleHop",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/12178688767",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1093966,
+          49.2663876
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0013",
+      "properties": {
+        "id": "mobi_0013",
+        "facility_type": "shared_bikes",
+        "name": "Maple Tree Square",
+        "station_id": "0013",
+        "capacity": "25",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/12214884772",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1035738,
+          49.2834816
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0516",
+      "properties": {
+        "id": "mobi_0516",
+        "facility_type": "shared_bikes",
+        "name": "Heather & 29th",
+        "station_id": "0516",
+        "capacity": "21",
+        "network": "Mobi",
+        "operator": "Vancouver Bike Share / Mobi by Rogers",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/12242824348",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1205664,
+          49.2454836
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0505",
+      "properties": {
+        "id": "mobi_0505",
+        "facility_type": "shared_bikes",
+        "name": "28th & Willow",
+        "station_id": "0505",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/12244546078",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1242881,
+          49.2462064
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0121",
+      "properties": {
+        "id": "mobi_0121",
+        "facility_type": "shared_bikes",
+        "name": "Heather & 10th",
+        "station_id": "0121",
+        "capacity": "22",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/12948743325",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1198564,
+          49.2621906
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0565",
+      "properties": {
+        "id": "mobi_0565",
+        "facility_type": "shared_bikes",
+        "name": "26th & Main",
+        "station_id": "0565",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13016452284",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1014391,
+          49.2479403
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0452",
+      "properties": {
+        "id": "mobi_0452",
+        "facility_type": "shared_bikes",
+        "name": "8th & Macdonald",
+        "station_id": "0452",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13093258716",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1682456,
+          49.2649422
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0314",
+      "properties": {
+        "id": "mobi_0314",
+        "facility_type": "shared_bikes",
+        "name": "Rolston & Granville",
+        "station_id": "0314",
+        "capacity": "22",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13124123056",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1301488,
+          49.2741803
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0144",
+      "properties": {
+        "id": "mobi_0144",
+        "facility_type": "shared_bikes",
+        "name": "Wylie & 2nd",
+        "station_id": "0144",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13265749175",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1131023,
+          49.2677337
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0313",
+      "properties": {
+        "id": "mobi_0313",
+        "facility_type": "shared_bikes",
+        "name": "Nelson & Denman",
+        "station_id": "0313",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13819304379",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.138402,
+          49.2890764
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0431",
+      "properties": {
+        "id": "mobi_0431",
+        "facility_type": "shared_bikes",
+        "name": "Blenheim & 4th",
+        "station_id": "0431",
+        "capacity": "23",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13819306647",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1776246,
+          49.2688485
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0308",
+      "properties": {
+        "id": "mobi_0308",
+        "facility_type": "shared_bikes",
+        "name": "Seymour & Cordova",
+        "station_id": "0308",
+        "capacity": "19",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13819306747",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1123967,
+          49.2851185
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0155",
+      "properties": {
+        "id": "mobi_0155",
+        "facility_type": "shared_bikes",
+        "name": "McNicoll & Arbutus",
+        "station_id": "0155",
+        "capacity": "30",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13819306893",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1505893,
+          49.2763238
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0460",
+      "properties": {
+        "id": "mobi_0460",
+        "facility_type": "shared_bikes",
+        "name": "Trafalgar & Cornwall",
+        "station_id": "0460",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13819306894",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1643135,
+          49.2729722
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0443",
+      "properties": {
+        "id": "mobi_0443",
+        "facility_type": "shared_bikes",
+        "name": "Balaclava & 6th",
+        "station_id": "0443",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13819307972",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1738427,
+          49.2669277
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0036",
+      "properties": {
+        "id": "mobi_0036",
+        "facility_type": "shared_bikes",
+        "name": "Bute & Robson",
+        "station_id": "0036",
+        "capacity": "24",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13819321537",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1267478,
+          49.286149
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0440",
+      "properties": {
+        "id": "mobi_0440",
+        "facility_type": "shared_bikes",
+        "name": "Point Grey & Blenheim",
+        "station_id": "0440",
+        "capacity": "14",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13819321866",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1772974,
+          49.2714667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0470",
+      "properties": {
+        "id": "mobi_0470",
+        "facility_type": "shared_bikes",
+        "name": "Balsam & Cornwall",
+        "station_id": "0470",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13819322596",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1596612,
+          49.2730116
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0450",
+      "properties": {
+        "id": "mobi_0450",
+        "facility_type": "shared_bikes",
+        "name": "Point Grey & Bayswater",
+        "station_id": "0450",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13819322665",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1706496,
+          49.2710345
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0319",
+      "properties": {
+        "id": "mobi_0319",
+        "facility_type": "shared_bikes",
+        "name": "Pacific & Rolston",
+        "station_id": "0319",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13819325935",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.128964,
+          49.2749129
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0196",
+      "properties": {
+        "id": "mobi_0196",
+        "facility_type": "shared_bikes",
+        "name": "Hornby & Drake",
+        "station_id": "0196",
+        "capacity": "24",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13819327202",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1299967,
+          49.27719
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0318",
+      "properties": {
+        "id": "mobi_0318",
+        "facility_type": "shared_bikes",
+        "name": "Granville & Neon",
+        "station_id": "0318",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13819327314",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1288098,
+          49.2755049
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0414",
+      "properties": {
+        "id": "mobi_0414",
+        "facility_type": "shared_bikes",
+        "name": "Dunbar & 6th",
+        "station_id": "0414",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13819327362",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1836516,
+          49.266652
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0716",
+      "properties": {
+        "id": "mobi_0716",
+        "facility_type": "shared_bikes",
+        "name": "Sasamat & 10th",
+        "station_id": "0716",
+        "capacity": "22",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13819327407",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.2091869,
+          49.2640248
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0181",
+      "properties": {
+        "id": "mobi_0181",
+        "facility_type": "shared_bikes",
+        "name": "Denman & Bayshore",
+        "station_id": "0181",
+        "capacity": "22",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13819331134",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1328535,
+          49.2932665
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0415",
+      "properties": {
+        "id": "mobi_0415",
+        "facility_type": "shared_bikes",
+        "name": "Dunbar & Broadway",
+        "station_id": "0415",
+        "capacity": "26",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13819334506",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1837334,
+          49.264581
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0464",
+      "properties": {
+        "id": "mobi_0464",
+        "facility_type": "shared_bikes",
+        "name": "Trafalgar & Broadway",
+        "station_id": "0464",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13819334655",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1647185,
+          49.2643276
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0715",
+      "properties": {
+        "id": "mobi_0715",
+        "facility_type": "shared_bikes",
+        "name": "Trimble & 8th",
+        "station_id": "0715",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13819335215",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.2059568,
+          49.2658005
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0444",
+      "properties": {
+        "id": "mobi_0444",
+        "facility_type": "shared_bikes",
+        "name": "Balaclava & Broadway",
+        "station_id": "0444",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13819335665",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1739339,
+          49.2645211
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0621",
+      "properties": {
+        "id": "mobi_0621",
+        "facility_type": "shared_bikes",
+        "name": "Lakewood & Oxford",
+        "station_id": "0621",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "CycleHop",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13819335672",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0615851,
+          49.2855622
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0801",
+      "properties": {
+        "id": "mobi_0801",
+        "facility_type": "shared_bikes",
+        "name": "Spanish Banks East",
+        "station_id": "0801",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13819335902",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.2148296,
+          49.2759546
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0480",
+      "properties": {
+        "id": "mobi_0480",
+        "facility_type": "shared_bikes",
+        "name": "Arbutus & Nanton",
+        "station_id": "0480",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13819335944",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1534123,
+          49.2478508
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0631",
+      "properties": {
+        "id": "mobi_0631",
+        "facility_type": "shared_bikes",
+        "name": "Lakewood & Triumph",
+        "station_id": "0631",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13819335949",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0616087,
+          49.2841283
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0075",
+      "properties": {
+        "id": "mobi_0075",
+        "facility_type": "shared_bikes",
+        "name": "Arbutus & 10th",
+        "station_id": "0075",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13819336209",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1526171,
+          49.2628293
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0617",
+      "properties": {
+        "id": "mobi_0617",
+        "facility_type": "shared_bikes",
+        "name": "Adanac & Lakewood",
+        "station_id": "0617",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13819336210",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0614246,
+          49.2775426
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0642",
+      "properties": {
+        "id": "mobi_0642",
+        "facility_type": "shared_bikes",
+        "name": "Franklin & Nanaimo",
+        "station_id": "0642",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13819336859",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0569132,
+          49.2821209
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0410",
+      "properties": {
+        "id": "mobi_0410",
+        "facility_type": "shared_bikes",
+        "name": "Alma & Point Grey",
+        "station_id": "0410",
+        "capacity": "24",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13819340201",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1856418,
+          49.2724844
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0484",
+      "properties": {
+        "id": "mobi_0484",
+        "facility_type": "shared_bikes",
+        "name": "Yew & Broadway",
+        "station_id": "0484",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13819340956",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1552738,
+          49.263526
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0611",
+      "properties": {
+        "id": "mobi_0611",
+        "facility_type": "shared_bikes",
+        "name": "Wall & Eton",
+        "station_id": "0611",
+        "capacity": "18",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13819340961",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0607581,
+          49.2874576
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0482",
+      "properties": {
+        "id": "mobi_0482",
+        "facility_type": "shared_bikes",
+        "name": "East Blvd & 37th",
+        "station_id": "0482",
+        "capacity": "16",
+        "network": "Mobi",
+        "operator": "Mobi",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/13819345014",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1551866,
+          49.2381865
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0403",
+      "properties": {
+        "id": "mobi_0403",
+        "facility_type": "shared_bikes",
+        "name": "Highbury & 8th",
+        "station_id": "0403",
+        "capacity": "20",
+        "network": "Mobi",
+        "operator": "CycleHop",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/14145222570",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1876964,
+          49.2654466
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mobi_0645",
+      "properties": {
+        "id": "mobi_0645",
+        "facility_type": "shared_bikes",
+        "name": "Pandora & Renfrew",
+        "station_id": "0645",
+        "capacity": "24",
+        "network": "Mobi",
+        "operator": "CycleHop",
+        "system_name": "Mobi by Rogers (溫哥華公共共享單車)",
+        "website": "https://www.mobibikes.ca",
+        "covered": "未標明",
+        "osm_id": "node/14145224336",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0445247,
+          49.2830179
+        ]
+      }
+    }
+  ]
+}
