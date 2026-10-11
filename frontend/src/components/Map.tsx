@@ -278,6 +278,7 @@ export default function AppMap() {
     style.sources['fire-halls'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/fire_halls` };
     style.sources['community-centres'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/community_centres` };
     style.sources['traffic-cameras'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/traffic_cameras` };
+    style.sources['safety-cameras'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/safety_cameras` };
 
     // Bus Routes
     if (layers.busRoutes) {
@@ -635,6 +636,41 @@ export default function AppMap() {
       });
     }
 
+    // Road Facilities: Intersection Safety Cameras (Red Light & Speed Enforcement)
+    if (layers.safetyCameras) {
+      style.layers.push({
+        id: 'safety-cameras-layer',
+        type: 'circle',
+        source: 'safety-cameras',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3, 14, 5.5, 15, 9, 17, 12],
+          'circle-color': [
+            'case',
+            ['boolean', ['get', 'has_speed'], false],
+            '#e11d48',
+            '#f97316'
+          ],
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'safety-cameras-symbol-layer',
+        type: 'symbol',
+        source: 'safety-cameras',
+        minzoom: 15,
+        layout: {
+          'text-field': '🚨',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 15, 11, 17, 14],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+    }
+
     return style;
   }, [
     layers.skytrainRoutes, 
@@ -650,6 +686,7 @@ export default function AppMap() {
     layers.evCharging, 
     layers.escooter,
     layers.trafficCameras,
+    layers.safetyCameras,
     layers.fireHalls,
     layers.communityCentres,
     mapStyleType
@@ -679,6 +716,8 @@ export default function AppMap() {
           'escooter-symbol-layer',
           'traffic-cameras-layer',
           'traffic-cameras-symbol-layer',
+          'safety-cameras-layer',
+          'safety-cameras-symbol-layer',
           'fire-halls-layer',
           'fire-halls-symbol-layer',
           'community-centres-layer',
@@ -722,6 +761,7 @@ export default function AppMap() {
             layerId.startsWith('ev-charging') ||
             layerId.startsWith('escooter') ||
             layerId.startsWith('traffic-cameras') ||
+            layerId.startsWith('safety-cameras') ||
             layerId.startsWith('fire-halls') ||
             layerId.startsWith('community-centres')
           ) {
@@ -1053,9 +1093,9 @@ export default function AppMap() {
             closeButton={false}
             className="z-50"
             offset={[0, -10]}
-            maxWidth={selectedFacility.facility_type === 'traffic_cameras' ? '400px' : '320px'}
+            maxWidth={selectedFacility.facility_type === 'traffic_cameras' ? '400px' : selectedFacility.facility_type === 'safety_cameras' ? '360px' : '320px'}
           >
-            <div className={`p-3.5 ${selectedFacility.facility_type === 'traffic_cameras' ? 'w-[360px]' : 'w-[290px]'} max-w-[90vw] text-gray-800`}>
+            <div className={`p-3.5 ${selectedFacility.facility_type === 'traffic_cameras' ? 'w-[360px]' : selectedFacility.facility_type === 'safety_cameras' ? 'w-[330px]' : 'w-[290px]'} max-w-[90vw] text-gray-800`}>
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
                 <div className="flex items-center gap-2">
                   <span className={`w-3 h-3 rounded-full flex-shrink-0 ${
@@ -1065,6 +1105,7 @@ export default function AppMap() {
                     selectedFacility.facility_type === 'ev_charging' ? 'bg-emerald-500' :
                     selectedFacility.facility_type === 'escooter' ? 'bg-lime-500' :
                     selectedFacility.facility_type === 'traffic_cameras' ? 'bg-cyan-500' :
+                    selectedFacility.facility_type === 'safety_cameras' ? 'bg-rose-600' :
                     selectedFacility.facility_type === 'fire_halls' ? 'bg-rose-500' : 'bg-violet-500'
                   }`}></span>
                   <div>
@@ -1327,6 +1368,71 @@ export default function AppMap() {
                       </a>
                     </div>
                   )}
+                </div>
+              )}
+
+              {/* Intersection Safety Cameras Details */}
+              {selectedFacility.facility_type === 'safety_cameras' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className={`p-2.5 rounded-lg border flex flex-col gap-1.5 ${
+                    selectedFacility.properties.has_speed
+                      ? 'bg-rose-50/90 border-rose-200 text-rose-950'
+                      : 'bg-amber-50/90 border-amber-200 text-amber-950'
+                  }`}>
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-xs flex items-center gap-1.5">
+                        <span>{selectedFacility.properties.has_speed ? '🚨' : '🛑'}</span>
+                        <span>{selectedFacility.properties.camera_type || '路口安全攝影機'}</span>
+                      </span>
+                      <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${
+                        selectedFacility.properties.has_speed ? 'bg-rose-600 text-white' : 'bg-amber-600 text-white'
+                      }`}>
+                        {selectedFacility.properties.has_speed ? '雙向取締' : '闖紅燈取締'}
+                      </span>
+                    </div>
+                    
+                    <div className="text-[11px] leading-relaxed pt-1 border-t border-rose-200/60 font-medium">
+                      {selectedFacility.properties.has_speed ? (
+                        <span>此路口同時具備<strong>闖紅燈照相</strong>與<strong>超速自動取締</strong>功能。</span>
+                      ) : (
+                        <span>此路口具備<strong>闖紅燈自動照相取締</strong>功能。</span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1 text-[11px]">
+                    <div className="flex justify-between items-center text-gray-600">
+                      <span>官方路口名稱</span>
+                      <span className="font-semibold text-gray-800 text-right truncate max-w-[170px]">
+                        {selectedFacility.properties.official_intersection || selectedFacility.name}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-gray-600">
+                      <span>所屬行政區</span>
+                      <span className="font-semibold text-gray-800">溫哥華市 (City of Vancouver)</span>
+                    </div>
+                    <div className="flex justify-between items-center text-gray-600">
+                      <span>執法主管機關</span>
+                      <span className="font-semibold text-gray-800">RoadSafetyBC / ICBC / VPD</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-slate-50 p-2 rounded text-[11px] text-gray-600 flex flex-col gap-0.5">
+                    <span className="font-semibold text-gray-700">⚖️ BC 省法定裁罰標準：</span>
+                    <span>• 闖紅燈違規：罰款 $167 CAD 並記扣 3 點</span>
+                    <span>• 超速違規：依超速區間罰款 $138 ~ $483 CAD 及記扣點數</span>
+                  </div>
+
+                  <div className="pt-1 border-t border-gray-100">
+                    <a
+                      href="https://www2.gov.bc.ca/gov/content/transportation/driving-and-cycling/roadsafetybc/intersection-safety-cameras/where-the-cameras-are"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-rose-600 hover:bg-rose-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
+                    >
+                      查看 BC 省道路安全局官方清單 ↗
+                    </a>
+                  </div>
                 </div>
               )}
             </div>

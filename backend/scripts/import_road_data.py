@@ -107,6 +107,10 @@ def import_single_facility_type(facility_type, db=None):
         should_close = True
         
     try:
+        if facility_type == "safety_cameras":
+            from scripts.import_safety_cameras import import_safety_cameras
+            return import_safety_cameras(db)
+
         conf = next((c for c in DATASETS if c["facility_type"] == facility_type), None)
         if not conf:
             print(f"Unknown facility type: {facility_type}")

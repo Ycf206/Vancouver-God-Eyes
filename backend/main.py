@@ -706,13 +706,20 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                 icon = "📷"
                 layer_key = "trafficCameras"
                 zoom = 16
+            elif ftype == 'safety_cameras':
+                badge = "路口安全相機"
+                icon = "🚨"
+                layer_key = "safetyCameras"
+                zoom = 16
 
             sub_parts = [badge]
-            if f.local_area:
+            if ftype == 'safety_cameras' and f.details and isinstance(f.details, dict) and f.details.get('camera_type'):
+                sub_parts.append(str(f.details.get('camera_type')))
+            elif f.local_area:
                 sub_parts.append(f.local_area)
             if f.details and isinstance(f.details, dict):
                 addr = f.details.get('address') or f.details.get('location') or f.details.get('street')
-                if addr:
+                if addr and str(addr) != f.name:
                     sub_parts.append(str(addr))
 
             results.append({

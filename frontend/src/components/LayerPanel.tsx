@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useUIStore, MapStyleType } from '@/store/useUIStore';
-import { Map, Satellite, Sun, Moon, Bus, Layers, CircleDot, Route, Ship, CircleDollarSign, Accessibility, Bike, Zap, Scooter, Camera, Flame, Building2 } from 'lucide-react';
+import { Map, Satellite, Sun, Moon, Bus, Layers, CircleDot, Route, Ship, CircleDollarSign, Accessibility, Bike, Zap, Scooter, Camera, Siren, Flame, Building2 } from 'lucide-react';
 
 export default function LayerPanel() {
   const { mapStyleType, setMapStyleType, layers, toggleLayer } = useUIStore();
@@ -27,12 +27,30 @@ export default function LayerPanel() {
   };
 
   // Helper component for horizontal Layer buttons
-  const LayerButton = ({ layerKey, label, icon: Icon, colorClass = 'text-blue-400', activeBg = 'bg-[#1a1f2e]', activeBorder = 'border-blue-500/50', activeShadow = 'shadow-[0_0_8px_rgba(59,130,246,0.1)]' }: { layerKey: keyof typeof layers, label: string, icon: React.ElementType, colorClass?: string, activeBg?: string, activeBorder?: string, activeShadow?: string }) => {
+  const LayerButton = ({ 
+    layerKey, 
+    label, 
+    icon: Icon, 
+    colorClass = 'text-blue-400', 
+    activeBg = 'bg-[#1a1f2e]', 
+    activeBorder = 'border-blue-500/50', 
+    activeShadow = 'shadow-[0_0_8px_rgba(59,130,246,0.1)]',
+    className = ''
+  }: { 
+    layerKey: keyof typeof layers, 
+    label: string, 
+    icon: React.ElementType, 
+    colorClass?: string, 
+    activeBg?: string, 
+    activeBorder?: string, 
+    activeShadow?: string,
+    className?: string
+  }) => {
     const isActive = layers[layerKey];
     return (
       <button
         onClick={() => toggleLayer(layerKey)}
-        className={`flex items-center gap-2 px-2 py-1.5 rounded-md border text-[11px] transition-all duration-200 justify-center ${
+        className={`flex items-center gap-2 px-2 py-1.5 rounded-md border text-[11px] transition-all duration-200 justify-center ${className} ${
           isActive 
             ? `${activeBg} ${activeBorder} ${colorClass} ${activeShadow}` 
             : 'bg-[#1c1d21] border-[#2d2e32] text-gray-400 hover:bg-[#25262b] hover:text-gray-200'
@@ -142,8 +160,9 @@ export default function LayerPanel() {
             <LayerButton layerKey="accessibleParking" label="無障礙停車位" icon={Accessibility} colorClass="text-sky-400" activeBg="bg-[#182633]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_8px_rgba(56,189,248,0.15)]" />
             <LayerButton layerKey="motorcycleParking" label="摩托車停車位" icon={Bike} colorClass="text-orange-400" activeBg="bg-[#2c1d18]" activeBorder="border-orange-500/50" activeShadow="shadow-[0_0_8px_rgba(251,146,60,0.15)]" />
             <LayerButton layerKey="evCharging" label="電動車充電站" icon={Zap} colorClass="text-emerald-400" activeBg="bg-[#14291f]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_8px_rgba(52,211,153,0.15)]" />
-            <LayerButton layerKey="escooter" label="共享電動滑板車" icon={Scooter} colorClass="text-lime-400" activeBg="bg-[#1e2a14]" activeBorder="border-lime-500/50" activeShadow="shadow-[0_0_8px_rgba(132,204,22,0.15)]" />
+            <LayerButton layerKey="escooter" label="共享電動滑板車" icon={Scooter} colorClass="text-lime-400" activeBg="bg-[#1e2a14]" activeBorder="border-lime-500/50" activeShadow="shadow-[0_0_8px_rgba(132,204,22,0.15)]" className="col-span-2" />
             <LayerButton layerKey="trafficCameras" label="交通攝影機" icon={Camera} colorClass="text-cyan-400" activeBg="bg-[#14262b]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_8px_rgba(6,182,212,0.15)]" />
+            <LayerButton layerKey="safetyCameras" label="路口安全攝影機" icon={Siren} colorClass="text-rose-400" activeBg="bg-[#2b171c]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_8px_rgba(244,63,94,0.15)]" />
           </div>
         </div>
 
