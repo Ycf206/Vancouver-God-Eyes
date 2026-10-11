@@ -721,6 +721,31 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                 icon = "🏥"
                 layer_key = "hospitals"
                 zoom = 15
+            elif ftype == 'parks':
+                badge = "公園"
+                icon = "🌲"
+                layer_key = "parks"
+                zoom = 15
+            elif ftype == 'parks_facilities':
+                badge = "休憩設施"
+                icon = "🛝"
+                layer_key = "parksFacilities"
+                zoom = 16
+            elif ftype == 'community_gardens':
+                badge = "社區花園"
+                icon = "🌻"
+                layer_key = "communityGardens"
+                zoom = 16
+            elif ftype == 'drinking_fountains':
+                badge = "飲水器"
+                icon = "💧"
+                layer_key = "drinkingFountains"
+                zoom = 17
+            elif ftype == 'public_washrooms':
+                badge = "公共廁所"
+                icon = "🚻"
+                layer_key = "publicWashrooms"
+                zoom = 17
 
             sub_parts = [badge]
             if ftype == 'safety_cameras' and f.details and isinstance(f.details, dict) and f.details.get('camera_type'):
@@ -736,6 +761,31 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                     sub_parts.append(f"#{f.details.get('station_id')}")
                 if f.details.get('capacity'):
                     sub_parts.append(f"{f.details.get('capacity')} 柱")
+            elif ftype == 'parks' and f.details and isinstance(f.details, dict):
+                if f.details.get('neighbourhood'):
+                    sub_parts.append(str(f.details.get('neighbourhood')))
+                if f.details.get('hectare'):
+                    sub_parts.append(f"{f.details.get('hectare')} 公頃")
+            elif ftype == 'parks_facilities' and f.details and isinstance(f.details, dict):
+                if f.details.get('park_name'):
+                    sub_parts.append(str(f.details.get('park_name')))
+                if f.details.get('facility_type_name'):
+                    sub_parts.append(str(f.details.get('facility_type_name')))
+            elif ftype == 'community_gardens' and f.details and isinstance(f.details, dict):
+                if f.details.get('plots'):
+                    sub_parts.append(f"{f.details.get('plots')} 區劃")
+                elif f.local_area:
+                    sub_parts.append(f.local_area)
+            elif ftype == 'drinking_fountains' and f.details and isinstance(f.details, dict):
+                if f.details.get('in_operation'):
+                    sub_parts.append(str(f.details.get('in_operation')))
+                if f.details.get('location'):
+                    sub_parts.append(str(f.details.get('location')))
+            elif ftype == 'public_washrooms' and f.details and isinstance(f.details, dict):
+                if f.details.get('washroom_type'):
+                    sub_parts.append(str(f.details.get('washroom_type')))
+                if f.details.get('wheelchair_access'):
+                    sub_parts.append(str(f.details.get('wheelchair_access')))
             elif f.local_area:
                 sub_parts.append(f.local_area)
             if f.details and isinstance(f.details, dict):

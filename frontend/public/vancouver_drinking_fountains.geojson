@@ -1,0 +1,6401 @@
+{
+  "type": "FeatureCollection",
+  "generator": "VancouverGodsEye",
+  "total_count": 278,
+  "features": [
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0004",
+      "properties": {
+        "id": "fountain_DFPB0004",
+        "facility_type": "drinking_fountains",
+        "name": "Almond Park 飲水機",
+        "park_or_site": "Almond Park",
+        "mapid": "DFPB0004",
+        "location": "S-side of playground",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1847445,
+          49.2610857
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0008",
+      "properties": {
+        "id": "fountain_DFPB0008",
+        "facility_type": "drinking_fountains",
+        "name": "Arbutus Village Park 飲水機",
+        "park_or_site": "Arbutus Village Park",
+        "mapid": "DFPB0008",
+        "location": "S-side of playground",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Arbutus-Ridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1579764,
+          49.2487845
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0053",
+      "properties": {
+        "id": "fountain_DFPB0053",
+        "facility_type": "drinking_fountains",
+        "name": "George Park 飲水機",
+        "park_or_site": "George Park",
+        "mapid": "DFPB0053",
+        "location": "southeast corner of park",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Sunset"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0935871,
+          49.2125218
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0055",
+      "properties": {
+        "id": "fountain_DFPB0055",
+        "facility_type": "drinking_fountains",
+        "name": "Grandview Park - West of Stage 飲水機",
+        "park_or_site": "Grandview Park - West of Stage",
+        "mapid": "DFPB0055",
+        "location": "Close to the Stage",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0707953,
+          49.273678
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0058",
+      "properties": {
+        "id": "fountain_DFPB0058",
+        "facility_type": "drinking_fountains",
+        "name": "Grays Park 飲水機",
+        "park_or_site": "Grays Park",
+        "mapid": "DFPB0058",
+        "location": "front of wading pool",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0849789,
+          49.2410823
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0085",
+      "properties": {
+        "id": "fountain_DFPB0085",
+        "facility_type": "drinking_fountains",
+        "name": "Langara Golf Course - servive yard 飲水機",
+        "park_or_site": "Langara Golf Course - servive yard",
+        "mapid": "DFPB0085",
+        "location": "servive yard",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1117064,
+          49.218272
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0097",
+      "properties": {
+        "id": "fountain_DFPB0097",
+        "facility_type": "drinking_fountains",
+        "name": "McCleery Golf Course - 5th tee 飲水機",
+        "park_or_site": "McCleery Golf Course - 5th tee",
+        "mapid": "DFPB0097",
+        "location": "5th tee",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kerrisdale"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1708805,
+          49.2204827
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0101",
+      "properties": {
+        "id": "fountain_DFPB0101",
+        "facility_type": "drinking_fountains",
+        "name": "Melbourne Park 飲水機",
+        "park_or_site": "Melbourne Park",
+        "mapid": "DFPB0101",
+        "location": "front of tennis courts",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0290916,
+          49.2365293
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0190",
+      "properties": {
+        "id": "fountain_DFPB0190",
+        "facility_type": "drinking_fountains",
+        "name": "Park Site On South East False Creek 飲水機",
+        "park_or_site": "Park Site On South East False Creek",
+        "mapid": "DFPB0190",
+        "location": "NE side of the park",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1094136,
+          49.2723424
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0126",
+      "properties": {
+        "id": "fountain_DFPB0126",
+        "facility_type": "drinking_fountains",
+        "name": "Quilchena Park 飲水機",
+        "park_or_site": "Quilchena Park",
+        "mapid": "DFPB0126",
+        "location": "W-side of fieldhouse",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Arbutus-Ridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1488133,
+          49.2447254
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0127",
+      "properties": {
+        "id": "fountain_DFPB0127",
+        "facility_type": "drinking_fountains",
+        "name": "Renfrew Community Park 飲水機",
+        "park_or_site": "Renfrew Community Park",
+        "mapid": "DFPB0127",
+        "location": "adjacent to wading pool",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0420706,
+          49.2522156
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0135",
+      "properties": {
+        "id": "fountain_DFPB0135",
+        "facility_type": "drinking_fountains",
+        "name": "Rupert Park 飲水機",
+        "park_or_site": "Rupert Park",
+        "mapid": "DFPB0135",
+        "location": "E-side of playground",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0330635,
+          49.271226
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0139",
+      "properties": {
+        "id": "fountain_DFPB0139",
+        "facility_type": "drinking_fountains",
+        "name": "Slocan Park 飲水機",
+        "park_or_site": "Slocan Park",
+        "mapid": "DFPB0139",
+        "location": "near playground",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0483577,
+          49.2443994
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0140",
+      "properties": {
+        "id": "fountain_DFPB0140",
+        "facility_type": "drinking_fountains",
+        "name": "Spanish Banks Beach Park 飲水機",
+        "park_or_site": "Spanish Banks Beach Park",
+        "mapid": "DFPB0140",
+        "location": "on north wall of washrooms",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "West Point Grey"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.2223817,
+          49.2775901
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0142",
+      "properties": {
+        "id": "fountain_DFPB0142",
+        "facility_type": "drinking_fountains",
+        "name": "Stanley Park - Lumbermen's Arch 飲水機",
+        "park_or_site": "Stanley Park - Lumbermen's Arch",
+        "mapid": "DFPB0142",
+        "location": "Lumbermen's Arch",
+        "maintainer": "Parks",
+        "in_operation": "year-round",
+        "pet_friendly": "一般飲水",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1306801,
+          49.3031066
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0186",
+      "properties": {
+        "id": "fountain_DFPB0186",
+        "facility_type": "drinking_fountains",
+        "name": "Stanley Park - North east of Rose and Perennial Ga 飲水機",
+        "park_or_site": "Stanley Park - North east of Rose and Perennial Ga",
+        "mapid": "DFPB0186",
+        "location": "",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1341446,
+          49.2991305
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0152",
+      "properties": {
+        "id": "fountain_DFPB0152",
+        "facility_type": "drinking_fountains",
+        "name": "Stanley Park - Second Beach Pool 飲水機",
+        "park_or_site": "Stanley Park - Second Beach Pool",
+        "mapid": "DFPB0152",
+        "location": "Second Beach pool deck",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1510412,
+          49.2955737
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0144",
+      "properties": {
+        "id": "fountain_DFPB0144",
+        "facility_type": "drinking_fountains",
+        "name": "Stanley Park - South west of playground 飲水機",
+        "park_or_site": "Stanley Park - South west of playground",
+        "mapid": "DFPB0144",
+        "location": "Rose Garden playground",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.148332,
+          49.310653
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0150",
+      "properties": {
+        "id": "fountain_DFPB0150",
+        "facility_type": "drinking_fountains",
+        "name": "Stanley Park - West of Shore to Shore sculpture 飲水機",
+        "park_or_site": "Stanley Park - West of Shore to Shore sculpture",
+        "mapid": "DFPB0150",
+        "location": "Totem poles",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1206751,
+          49.2990579
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0066",
+      "properties": {
+        "id": "fountain_DFPB0066",
+        "facility_type": "drinking_fountains",
+        "name": "Sunset Beach 飲水機",
+        "park_or_site": "Sunset Beach",
+        "mapid": "DFPB0066",
+        "location": "on building wall",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1380052,
+          49.2790021
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0182",
+      "properties": {
+        "id": "fountain_DFPB0182",
+        "facility_type": "drinking_fountains",
+        "name": "West Point Grey Park - lawn bowling court 飲水機",
+        "park_or_site": "West Point Grey Park - lawn bowling court",
+        "mapid": "DFPB0182",
+        "location": "In lawn bowling court",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "West Point Grey"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.2051468,
+          49.2669594
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0184",
+      "properties": {
+        "id": "fountain_DFPB0184",
+        "facility_type": "drinking_fountains",
+        "name": "Winona Park 飲水機",
+        "park_or_site": "Winona Park",
+        "mapid": "DFPB0184",
+        "location": "near playground",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1130442,
+          49.2159438
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0806",
+      "properties": {
+        "id": "fountain_DFENG0806",
+        "facility_type": "drinking_fountains",
+        "name": "Temporary Misting Station location: Andy Livingston Park 飲水機",
+        "park_or_site": "Temporary Misting Station location: Andy Livingston Park",
+        "mapid": "DFENG0806",
+        "location": "NW corner of Andy Livingston Park",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.105654,
+          49.279211
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0802",
+      "properties": {
+        "id": "fountain_DFENG0802",
+        "facility_type": "drinking_fountains",
+        "name": "Temporary Misting Station location: Robson & Cardero 飲水機",
+        "park_or_site": "Temporary Misting Station location: Robson & Cardero",
+        "mapid": "DFENG0802",
+        "location": "SW corner of Robson St & Cardero St",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.132493,
+          49.289447
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0808",
+      "properties": {
+        "id": "fountain_DFENG0808",
+        "facility_type": "drinking_fountains",
+        "name": "Temporary Misting Station location: West Blvd & W 45th 飲水機",
+        "park_or_site": "Temporary Misting Station location: West Blvd & W 45th",
+        "mapid": "DFENG0808",
+        "location": "SE corner of West Boulevard & W 45th Ave",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kerrisdale"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.155629,
+          49.230778
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0500",
+      "properties": {
+        "id": "fountain_DFENG0500",
+        "facility_type": "drinking_fountains",
+        "name": "Bottle Filling Station location: \nCharleson Park Pumping Station 飲水機",
+        "park_or_site": "Bottle Filling Station location: \nCharleson Park Pumping Station",
+        "mapid": "DFENG0500",
+        "location": "North side of sewage pumping station 900 Charleson",
+        "maintainer": "Engineering",
+        "in_operation": "Year Round",
+        "pet_friendly": "一般飲水",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.125914,
+          49.2663411
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0501",
+      "properties": {
+        "id": "fountain_DFENG0501",
+        "facility_type": "drinking_fountains",
+        "name": "Bottle Filling Station location: \nGrandview Hwy Pumping Station 飲水機",
+        "park_or_site": "Bottle Filling Station location: \nGrandview Hwy Pumping Station",
+        "mapid": "DFENG0501",
+        "location": "",
+        "maintainer": "Engineering",
+        "in_operation": "Year Round",
+        "pet_friendly": "一般飲水",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.041381,
+          49.257924
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0054",
+      "properties": {
+        "id": "fountain_DFENG0054",
+        "facility_type": "drinking_fountains",
+        "name": "Fountain location : E 30th Ave & Gladstone St 飲水機",
+        "park_or_site": "Fountain location : E 30th Ave & Gladstone St",
+        "mapid": "DFENG0054",
+        "location": "East Side corner Gladstone at E 30th Ave",
+        "maintainer": "Engineering",
+        "in_operation": "Year Round",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0624878,
+          49.242966
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0001",
+      "properties": {
+        "id": "fountain_DFENG0001",
+        "facility_type": "drinking_fountains",
+        "name": "28th & Main 飲水機",
+        "park_or_site": "28th & Main",
+        "mapid": "DFENG0001",
+        "location": "Northeast corner of 28th & Main",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Riley Park"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10102,
+          49.245762
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0013",
+      "properties": {
+        "id": "fountain_DFENG0013",
+        "facility_type": "drinking_fountains",
+        "name": "37th & Ontario 飲水機",
+        "park_or_site": "37th & Ontario",
+        "mapid": "DFENG0013",
+        "location": "Northwest corner of 37th & Ontario",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Riley Park"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.105647,
+          49.237446
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0022",
+      "properties": {
+        "id": "fountain_DFENG0022",
+        "facility_type": "drinking_fountains",
+        "name": "Ashburn & Elliot 飲水機",
+        "park_or_site": "Ashburn & Elliot",
+        "mapid": "DFENG0022",
+        "location": "Northwest corner of Ashburn & Elliot",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Victoria-Fraserview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.055044,
+          49.2187548
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0030",
+      "properties": {
+        "id": "fountain_DFENG0030",
+        "facility_type": "drinking_fountains",
+        "name": "Union & Hawks 飲水機",
+        "park_or_site": "Union & Hawks",
+        "mapid": "DFENG0030",
+        "location": "In mini park at Union & Hawks",
+        "maintainer": "Engineering",
+        "in_operation": "Year Round",
+        "pet_friendly": "一般飲水",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.087389,
+          49.2775724
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0050",
+      "properties": {
+        "id": "fountain_DFENG0050",
+        "facility_type": "drinking_fountains",
+        "name": "Fountain location: 10th & Kingsway 飲水機",
+        "park_or_site": "Fountain location: 10th & Kingsway",
+        "mapid": "DFENG0050",
+        "location": "Northwest corner of 10th & Kingsway",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.098912,
+          49.261984
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0047",
+      "properties": {
+        "id": "fountain_DFENG0047",
+        "facility_type": "drinking_fountains",
+        "name": "Fountain location: 4963 Cambie St 飲水機",
+        "park_or_site": "Fountain location: 4963 Cambie St",
+        "mapid": "DFENG0047",
+        "location": "Northwest corner of Cambie and W 35th",
+        "maintainer": "Engineering",
+        "in_operation": "Year Round",
+        "pet_friendly": "一般飲水",
+        "local_area": "South Cambie"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.117008,
+          49.238962
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0037",
+      "properties": {
+        "id": "fountain_DFENG0037",
+        "facility_type": "drinking_fountains",
+        "name": "Fountain location: Oak & 46th 飲水機",
+        "park_or_site": "Fountain location: Oak & 46th",
+        "mapid": "DFENG0037",
+        "location": "Northeast corner of Oak & 46th",
+        "maintainer": "Engineering",
+        "in_operation": "Year Round",
+        "pet_friendly": "一般飲水",
+        "local_area": "Oakridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.127987,
+          49.229344
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0035",
+      "properties": {
+        "id": "fountain_DFENG0035",
+        "facility_type": "drinking_fountains",
+        "name": "Fountian Location: Fraser & Broadway 飲水機",
+        "park_or_site": "Fountian Location: Fraser & Broadway",
+        "mapid": "DFENG0035",
+        "location": "Northwest corner of Fraser & Broadway",
+        "maintainer": "Engineering",
+        "in_operation": "Year Round",
+        "pet_friendly": "一般飲水",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.089225,
+          49.262628
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0708",
+      "properties": {
+        "id": "fountain_DFENG0708",
+        "facility_type": "drinking_fountains",
+        "name": "Temporary Fountain location: London Drugs 飲水機",
+        "park_or_site": "Temporary Fountain location: London Drugs",
+        "mapid": "DFENG0708",
+        "location": "733 Granville St",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.118113,
+          49.282333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0605",
+      "properties": {
+        "id": "fountain_DFENG0605",
+        "facility_type": "drinking_fountains",
+        "name": "Temporary Handwashing Station location: 15 E Hastings 飲水機",
+        "park_or_site": "Temporary Handwashing Station location: 15 E Hastings",
+        "mapid": "DFENG0605",
+        "location": "15 E Hastings St",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.104022,
+          49.281473
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0006",
+      "properties": {
+        "id": "fountain_DFPB0006",
+        "facility_type": "drinking_fountains",
+        "name": "Andy Livingstone Park - South of soccer fields 飲水機",
+        "park_or_site": "Andy Livingstone Park - South of soccer fields",
+        "mapid": "DFPB0006",
+        "location": "north side of fieldhouse",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1035599,
+          49.2780571
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0007",
+      "properties": {
+        "id": "fountain_DFPB0007",
+        "facility_type": "drinking_fountains",
+        "name": "Arbutus Greenway Park 飲水機",
+        "park_or_site": "Arbutus Greenway Park",
+        "mapid": "DFPB0007",
+        "location": "S-side of playground",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1553033,
+          49.2622338
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0012",
+      "properties": {
+        "id": "fountain_DFPB0012",
+        "facility_type": "drinking_fountains",
+        "name": "Bobolink Park 飲水機",
+        "park_or_site": "Bobolink Park",
+        "mapid": "DFPB0012",
+        "location": "in front of wading pool",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Victoria-Fraserview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0560918,
+          49.2156258
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0132",
+      "properties": {
+        "id": "fountain_DFPB0132",
+        "facility_type": "drinking_fountains",
+        "name": "Brewers Park 飲水機",
+        "park_or_site": "Brewers Park",
+        "mapid": "DFPB0132",
+        "location": "S-side of wading pool",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0662108,
+          49.2475555
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0026",
+      "properties": {
+        "id": "fountain_DFPB0026",
+        "facility_type": "drinking_fountains",
+        "name": "Connaught Park - North of playground 飲水機",
+        "park_or_site": "Connaught Park - North of playground",
+        "mapid": "DFPB0026",
+        "location": "",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1614154,
+          49.2618734
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0047",
+      "properties": {
+        "id": "fountain_DFPB0047",
+        "facility_type": "drinking_fountains",
+        "name": "Fraserview Golf Course - West of kerr st. 飲水機",
+        "park_or_site": "Fraserview Golf Course - West of kerr st.",
+        "mapid": "DFPB0047",
+        "location": "West of kerr st.",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0422677,
+          49.2114009
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0050",
+      "properties": {
+        "id": "fountain_DFPB0050",
+        "facility_type": "drinking_fountains",
+        "name": "Fraserview Golf Course - driving range 飲水機",
+        "park_or_site": "Fraserview Golf Course - driving range",
+        "mapid": "DFPB0050",
+        "location": "driving range",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0513798,
+          49.2124969
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0073",
+      "properties": {
+        "id": "fountain_DFPB0073",
+        "facility_type": "drinking_fountains",
+        "name": "Jericho Beach Park 飲水機",
+        "park_or_site": "Jericho Beach Park",
+        "mapid": "DFPB0073",
+        "location": "",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "West Point Grey"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1917215,
+          49.2720144
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0088",
+      "properties": {
+        "id": "fountain_DFPB0088",
+        "facility_type": "drinking_fountains",
+        "name": "Langara Golf Course - clubhouse building 飲水機",
+        "park_or_site": "Langara Golf Course - clubhouse building",
+        "mapid": "DFPB0088",
+        "location": "clubhouse building",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Oakridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1125281,
+          49.2238901
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0090",
+      "properties": {
+        "id": "fountain_DFPB0090",
+        "facility_type": "drinking_fountains",
+        "name": "MacDonald Park 飲水機",
+        "park_or_site": "MacDonald Park",
+        "mapid": "DFPB0090",
+        "location": "near NW corner of tennis court",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Sunset"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.098496,
+          49.2300751
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0107",
+      "properties": {
+        "id": "fountain_DFPB0107",
+        "facility_type": "drinking_fountains",
+        "name": "Morton Park 飲水機",
+        "park_or_site": "Morton Park",
+        "mapid": "DFPB0107",
+        "location": "",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1422492,
+          49.2875353
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0117",
+      "properties": {
+        "id": "fountain_DFPB0117",
+        "facility_type": "drinking_fountains",
+        "name": "Oak Park - East of fieldhouse 飲水機",
+        "park_or_site": "Oak Park - East of fieldhouse",
+        "mapid": "DFPB0117",
+        "location": "East side of fieldhouse",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1281403,
+          49.2169868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0129",
+      "properties": {
+        "id": "fountain_DFPB0129",
+        "facility_type": "drinking_fountains",
+        "name": "Riverfront Park - West of tennis courts 飲水機",
+        "park_or_site": "Riverfront Park - West of tennis courts",
+        "mapid": "DFPB0129",
+        "location": "w-side of tennis courts",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0509658,
+          49.2058436
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0141",
+      "properties": {
+        "id": "fountain_DFPB0141",
+        "facility_type": "drinking_fountains",
+        "name": "Stanley Park - Prospect Point Lookout 飲水機",
+        "park_or_site": "Stanley Park - Prospect Point Lookout",
+        "mapid": "DFPB0141",
+        "location": "Prospect Point viewing",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1424377,
+          49.3134893
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0164",
+      "properties": {
+        "id": "fountain_DFPB0164",
+        "facility_type": "drinking_fountains",
+        "name": "Strathcona Park - besides baseball diamond 飲水機",
+        "park_or_site": "Strathcona Park - besides baseball diamond",
+        "mapid": "DFPB0164",
+        "location": "besides baseball diamond",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0866738,
+          49.2749331
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0176",
+      "properties": {
+        "id": "fountain_DFPB0176",
+        "facility_type": "drinking_fountains",
+        "name": "Vanier Park (Burrard Civic Marina) 飲水機",
+        "park_or_site": "Vanier Park (Burrard Civic Marina)",
+        "mapid": "DFPB0176",
+        "location": "",
+        "maintainer": "Parks",
+        "in_operation": "year-round",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1397542,
+          49.275218
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0811",
+      "properties": {
+        "id": "fountain_DFENG0811",
+        "facility_type": "drinking_fountains",
+        "name": "Temporary Misting Station Location: Oppenheimer Park 飲水機",
+        "park_or_site": "Temporary Misting Station Location: Oppenheimer Park",
+        "mapid": "DFENG0811",
+        "location": "NE Corner of Oppenheimer Park",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.093796,
+          49.282808
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0810",
+      "properties": {
+        "id": "fountain_DFENG0810",
+        "facility_type": "drinking_fountains",
+        "name": "Temporary Misting Station location: W 70th Ave & Hudson St 飲水機",
+        "park_or_site": "Temporary Misting Station location: W 70th Ave & Hudson St",
+        "mapid": "DFENG0810",
+        "location": "W 70th Ave & Hudson St",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.134724,
+          49.208585
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0503",
+      "properties": {
+        "id": "fountain_DFENG0503",
+        "facility_type": "drinking_fountains",
+        "name": "Bottle Filling Station location: \nGranville St Pumping Station 飲水機",
+        "park_or_site": "Bottle Filling Station location: \nGranville St Pumping Station",
+        "mapid": "DFENG0503",
+        "location": "North side of sewage pumping station under Granville Bridge on bike route",
+        "maintainer": "Engineering",
+        "in_operation": "Year Round",
+        "pet_friendly": "一般飲水",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.131579,
+          49.2733345
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0505",
+      "properties": {
+        "id": "fountain_DFENG0505",
+        "facility_type": "drinking_fountains",
+        "name": "Bottle Filling Station location: \nThornton Park Pumping Station 飲水機",
+        "park_or_site": "Bottle Filling Station location: \nThornton Park Pumping Station",
+        "mapid": "DFENG0505",
+        "location": "West side of sewage pumping station on w/s/ 1200 Station St",
+        "maintainer": "Engineering",
+        "in_operation": "Year Round",
+        "pet_friendly": "一般飲水",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.098886,
+          49.2730368
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0002",
+      "properties": {
+        "id": "fountain_DFENG0002",
+        "facility_type": "drinking_fountains",
+        "name": "39th & Nanaimo 飲水機",
+        "park_or_site": "39th & Nanaimo",
+        "mapid": "DFENG0002",
+        "location": "Southwest corner of 39th & Nanaimo",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.058912,
+          49.234752
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0028",
+      "properties": {
+        "id": "fountain_DFENG0028",
+        "facility_type": "drinking_fountains",
+        "name": "Gilford & Comox 飲水機",
+        "park_or_site": "Gilford & Comox",
+        "mapid": "DFENG0028",
+        "location": "Northwest corner of Gilford & Comox",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1412866,
+          49.289777
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0006",
+      "properties": {
+        "id": "fountain_DFENG0006",
+        "facility_type": "drinking_fountains",
+        "name": "Gilford & Nelson 飲水機",
+        "park_or_site": "Gilford & Nelson",
+        "mapid": "DFENG0006",
+        "location": "Northwest corner of Gilford & Nelson",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1402252,
+          49.2904987
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0053",
+      "properties": {
+        "id": "fountain_DFENG0053",
+        "facility_type": "drinking_fountains",
+        "name": "Fountain location: Gilford St & Haro St 飲水機",
+        "park_or_site": "Fountain location: Gilford St & Haro St",
+        "mapid": "DFENG0053",
+        "location": "Gilford mini park",
+        "maintainer": "Engineering",
+        "in_operation": "Year Round",
+        "pet_friendly": "一般飲水",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.138092,
+          49.291825
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0043",
+      "properties": {
+        "id": "fountain_DFENG0043",
+        "facility_type": "drinking_fountains",
+        "name": "Fountain location: Ormidale St & Vanness Avenue 飲水機",
+        "park_or_site": "Fountain location: Ormidale St & Vanness Avenue",
+        "mapid": "DFENG0043",
+        "location": "Southeast corner of Ormidale St & Vanness Avenue",
+        "maintainer": "Engineering",
+        "in_operation": "Year Round",
+        "pet_friendly": "一般飲水",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.024717,
+          49.234702
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0705",
+      "properties": {
+        "id": "fountain_DFENG0705",
+        "facility_type": "drinking_fountains",
+        "name": "Temporary Fountain location: Commercial & E Broadway 飲水機",
+        "park_or_site": "Temporary Fountain location: Commercial & E Broadway",
+        "mapid": "DFENG0705",
+        "location": "NE corner of Commercial Drive & East Broadway",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.069471,
+          49.262436
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0707",
+      "properties": {
+        "id": "fountain_DFENG0707",
+        "facility_type": "drinking_fountains",
+        "name": "Temporary Fountain location: Powell & Jackson 飲水機",
+        "park_or_site": "Temporary Fountain location: Powell & Jackson",
+        "mapid": "DFENG0707",
+        "location": "477 Powell St",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.093446,
+          49.283174
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0609",
+      "properties": {
+        "id": "fountain_DFENG0609",
+        "facility_type": "drinking_fountains",
+        "name": "Temporary Handwashing Station location: 384 Main 飲水機",
+        "park_or_site": "Temporary Handwashing Station location: 384 Main",
+        "mapid": "DFENG0609",
+        "location": "384 Main St",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.097359,
+          49.281754
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0607",
+      "properties": {
+        "id": "fountain_DFENG0607",
+        "facility_type": "drinking_fountains",
+        "name": "Temporary Handwashing Station location: ICBC 999 Kingsway 飲水機",
+        "park_or_site": "Temporary Handwashing Station location: ICBC 999 Kingsway",
+        "mapid": "DFENG0607",
+        "location": "999 Kingsway",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.085449,
+          49.254676
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0002",
+      "properties": {
+        "id": "fountain_DFPB0002",
+        "facility_type": "drinking_fountains",
+        "name": "Adanac Park 飲水機",
+        "park_or_site": "Adanac Park",
+        "mapid": "DFPB0002",
+        "location": "SW side of Field house",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0241254,
+          49.2759641
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0019",
+      "properties": {
+        "id": "fountain_DFPB0019",
+        "facility_type": "drinking_fountains",
+        "name": "China Creek South Park 飲水機",
+        "park_or_site": "China Creek South Park",
+        "mapid": "DFPB0019",
+        "location": "S-side of skate park",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0790458,
+          49.2617498
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0022",
+      "properties": {
+        "id": "fountain_DFPB0022",
+        "facility_type": "drinking_fountains",
+        "name": "Clinton Park - North side of ball diamond 飲水機",
+        "park_or_site": "Clinton Park - North side of ball diamond",
+        "mapid": "DFPB0022",
+        "location": "N-side of B-ball diamond",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0516706,
+          49.271387
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0031",
+      "properties": {
+        "id": "fountain_DFPB0031",
+        "facility_type": "drinking_fountains",
+        "name": "Creekside Park 飲水機",
+        "park_or_site": "Creekside Park",
+        "mapid": "DFPB0031",
+        "location": "",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1029941,
+          49.2743696
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0041",
+      "properties": {
+        "id": "fountain_DFPB0041",
+        "facility_type": "drinking_fountains",
+        "name": "English Bay Beach Park - Davie st entrance 飲水機",
+        "park_or_site": "English Bay Beach Park - Davie st entrance",
+        "mapid": "DFPB0041",
+        "location": "Davie st entrance",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1425582,
+          49.2875253
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0052",
+      "properties": {
+        "id": "fountain_DFPB0052",
+        "facility_type": "drinking_fountains",
+        "name": "Gaston Park 飲水機",
+        "park_or_site": "Gaston Park",
+        "mapid": "DFPB0052",
+        "location": "near basketball court",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0313956,
+          49.2366033
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0061",
+      "properties": {
+        "id": "fountain_DFPB0061",
+        "facility_type": "drinking_fountains",
+        "name": "Harbour Green Park - foot of Jervis Mews 飲水機",
+        "park_or_site": "Harbour Green Park - foot of Jervis Mews",
+        "mapid": "DFPB0061",
+        "location": "foot of Jervis Mews",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.123165,
+          49.2906454
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0064",
+      "properties": {
+        "id": "fountain_DFPB0064",
+        "facility_type": "drinking_fountains",
+        "name": "Hastings Community Park - SE of tennis courts 飲水機",
+        "park_or_site": "Hastings Community Park - SE of tennis courts",
+        "mapid": "DFPB0064",
+        "location": "besides path leading to spray",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0406085,
+          49.2804752
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0065",
+      "properties": {
+        "id": "fountain_DFPB0065",
+        "facility_type": "drinking_fountains",
+        "name": "Hastings Park - Italian gardens 飲水機",
+        "park_or_site": "Hastings Park - Italian gardens",
+        "mapid": "DFPB0065",
+        "location": "near skate park",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0429435,
+          49.2832502
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0070",
+      "properties": {
+        "id": "fountain_DFPB0070",
+        "facility_type": "drinking_fountains",
+        "name": "Hastings Park -Plateau Sport Parks / Empire Fields 飲水機",
+        "park_or_site": "Hastings Park -Plateau Sport Parks / Empire Fields",
+        "mapid": "DFPB0070",
+        "location": "empire field - soccer fields",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.034264,
+          49.282563
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0074",
+      "properties": {
+        "id": "fountain_DFPB0074",
+        "facility_type": "drinking_fountains",
+        "name": "John Hendry (Trout Lake) Park 飲水機",
+        "park_or_site": "John Hendry (Trout Lake) Park",
+        "mapid": "DFPB0074",
+        "location": "nearby beach",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0619707,
+          49.2540346
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0077",
+      "properties": {
+        "id": "fountain_DFPB0077",
+        "facility_type": "drinking_fountains",
+        "name": "Kensington Park 飲水機",
+        "park_or_site": "Kensington Park",
+        "mapid": "DFPB0077",
+        "location": "between baseball diamond and parking lots",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0742749,
+          49.2382433
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0081",
+      "properties": {
+        "id": "fountain_DFPB0081",
+        "facility_type": "drinking_fountains",
+        "name": "Kingcrest Park 飲水機",
+        "park_or_site": "Kingcrest Park",
+        "mapid": "DFPB0081",
+        "location": "E-side of washroom",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0745638,
+          49.2474305
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0098",
+      "properties": {
+        "id": "fountain_DFPB0098",
+        "facility_type": "drinking_fountains",
+        "name": "McCleery Golf Course - clubhouse building 飲水機",
+        "park_or_site": "McCleery Golf Course - clubhouse building",
+        "mapid": "DFPB0098",
+        "location": "clubhouse building",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kerrisdale"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1678485,
+          49.22106
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0099",
+      "properties": {
+        "id": "fountain_DFPB0099",
+        "facility_type": "drinking_fountains",
+        "name": "McCleery Golf Course - driving range 飲水機",
+        "park_or_site": "McCleery Golf Course - driving range",
+        "mapid": "DFPB0099",
+        "location": "driving range",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kerrisdale"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1696135,
+          49.2206956
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0108",
+      "properties": {
+        "id": "fountain_DFPB0108",
+        "facility_type": "drinking_fountains",
+        "name": "Mosaic Creek Park 飲水機",
+        "park_or_site": "Mosaic Creek Park",
+        "mapid": "DFPB0108",
+        "location": "near children's play area",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0742018,
+          49.273298
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0125",
+      "properties": {
+        "id": "fountain_DFPB0125",
+        "facility_type": "drinking_fountains",
+        "name": "Queen Elizabeth Park - At Conservatory 飲水機",
+        "park_or_site": "Queen Elizabeth Park - At Conservatory",
+        "mapid": "DFPB0125",
+        "location": "At Conservatory",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Riley Park"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1135281,
+          49.2423804
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0130",
+      "properties": {
+        "id": "fountain_DFPB0130",
+        "facility_type": "drinking_fountains",
+        "name": "Robson Park 飲水機",
+        "park_or_site": "Robson Park",
+        "mapid": "DFPB0130",
+        "location": "N-side of wading pool",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0918969,
+          49.2578977
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0158",
+      "properties": {
+        "id": "fountain_DFPB0158",
+        "facility_type": "drinking_fountains",
+        "name": "Stanley Park - Brockton Point Viewpoint 飲水機",
+        "park_or_site": "Stanley Park - Brockton Point Viewpoint",
+        "mapid": "DFPB0158",
+        "location": "Brockton point - lighthouse",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.148332,
+          49.310653
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0147",
+      "properties": {
+        "id": "fountain_DFPB0147",
+        "facility_type": "drinking_fountains",
+        "name": "Stanley Park - Prospect Point Washrooms 飲水機",
+        "park_or_site": "Stanley Park - Prospect Point Washrooms",
+        "mapid": "DFPB0147",
+        "location": "prospect point washrooms",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1427156,
+          49.3124945
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0148",
+      "properties": {
+        "id": "fountain_DFPB0148",
+        "facility_type": "drinking_fountains",
+        "name": "Stanley Park - West side of Stanley Park Train 飲水機",
+        "park_or_site": "Stanley Park - West side of Stanley Park Train",
+        "mapid": "DFPB0148",
+        "location": "",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1345141,
+          49.3016682
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0163",
+      "properties": {
+        "id": "fountain_DFPB0163",
+        "facility_type": "drinking_fountains",
+        "name": "Strathcona Park - North west of basketball court 飲水機",
+        "park_or_site": "Strathcona Park - North west of basketball court",
+        "mapid": "DFPB0163",
+        "location": "besides basketball court",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0855621,
+          49.2760157
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0171",
+      "properties": {
+        "id": "fountain_DFPB0171",
+        "facility_type": "drinking_fountains",
+        "name": "Tisdall Park 飲水機",
+        "park_or_site": "Tisdall Park",
+        "mapid": "DFPB0171",
+        "location": "near North baseball diamond",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Oakridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1182512,
+          49.2284761
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0502",
+      "properties": {
+        "id": "fountain_DFENG0502",
+        "facility_type": "drinking_fountains",
+        "name": "Bottle Filling Station location: \nGranville Island Pumping Station 飲水機",
+        "park_or_site": "Bottle Filling Station location: \nGranville Island Pumping Station",
+        "mapid": "DFENG0502",
+        "location": "North side of sewage pumping station on seawall east of the granville island entrance",
+        "maintainer": "Engineering",
+        "in_operation": "Year Round",
+        "pet_friendly": "一般飲水",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.136177,
+          49.269566
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0032",
+      "properties": {
+        "id": "fountain_DFENG0032",
+        "facility_type": "drinking_fountains",
+        "name": "Broadway & Stephens 飲水機",
+        "park_or_site": "Broadway & Stephens",
+        "mapid": "DFENG0032",
+        "location": "Northwest corner of Broadway & Stephens",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1666474,
+          49.2642351
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0021",
+      "properties": {
+        "id": "fountain_DFENG0021",
+        "facility_type": "drinking_fountains",
+        "name": "Commercial & 3rd 飲水機",
+        "park_or_site": "Commercial & 3rd",
+        "mapid": "DFENG0021",
+        "location": "Northeast corner of Commercial & 3rd",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0693907,
+          49.2678194
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0031",
+      "properties": {
+        "id": "fountain_DFENG0031",
+        "facility_type": "drinking_fountains",
+        "name": "Fountain location: Cambie & 10th 飲水機",
+        "park_or_site": "Fountain location: Cambie & 10th",
+        "mapid": "DFENG0031",
+        "location": "Northeast corner of Cambie & 10th",
+        "maintainer": "Engineering",
+        "in_operation": "Year Round",
+        "pet_friendly": "一般飲水",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.114544,
+          49.262294
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0005",
+      "properties": {
+        "id": "fountain_DFPB0005",
+        "facility_type": "drinking_fountains",
+        "name": "Andy Livingstone Park - North of basketball court 飲水機",
+        "park_or_site": "Andy Livingstone Park - North of basketball court",
+        "mapid": "DFPB0005",
+        "location": "by amphitheatre steps near bas",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.106179,
+          49.2789171
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0192",
+      "properties": {
+        "id": "fountain_DFPB0192",
+        "facility_type": "drinking_fountains",
+        "name": "Cedar Cottage Park 飲水機",
+        "park_or_site": "Cedar Cottage Park",
+        "mapid": "DFPB0192",
+        "location": "Near Sport courts",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0767725,
+          49.2608975
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0024",
+      "properties": {
+        "id": "fountain_DFPB0024",
+        "facility_type": "drinking_fountains",
+        "name": "Collingwood Park 飲水機",
+        "park_or_site": "Collingwood Park",
+        "mapid": "DFPB0024",
+        "location": "in front of wading pool",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0363646,
+          49.2370513
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0027",
+      "properties": {
+        "id": "fountain_DFPB0027",
+        "facility_type": "drinking_fountains",
+        "name": "Connaught Park - East side of fieldhouse 飲水機",
+        "park_or_site": "Connaught Park - East side of fieldhouse",
+        "mapid": "DFPB0027",
+        "location": "near fieldhouse",
+        "maintainer": "Parks",
+        "in_operation": "year-round",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1593213,
+          49.2629748
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0048",
+      "properties": {
+        "id": "fountain_DFPB0048",
+        "facility_type": "drinking_fountains",
+        "name": "Fraserview Golf Course - clubhouse building 飲水機",
+        "park_or_site": "Fraserview Golf Course - clubhouse building",
+        "mapid": "DFPB0048",
+        "location": "clubhouse building",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0515178,
+          49.2140395
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0051",
+      "properties": {
+        "id": "fountain_DFPB0051",
+        "facility_type": "drinking_fountains",
+        "name": "Garden Park 飲水機",
+        "park_or_site": "Garden Park",
+        "mapid": "DFPB0051",
+        "location": "N-side of field house",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0584127,
+          49.2684949
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0054",
+      "properties": {
+        "id": "fountain_DFPB0054",
+        "facility_type": "drinking_fountains",
+        "name": "George Wainborn Park 飲水機",
+        "park_or_site": "George Wainborn Park",
+        "mapid": "DFPB0054",
+        "location": "NE corner near seawall",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1297781,
+          49.271908
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0087",
+      "properties": {
+        "id": "fountain_DFPB0087",
+        "facility_type": "drinking_fountains",
+        "name": "Langara Golf Course - East of tennis courts 飲水機",
+        "park_or_site": "Langara Golf Course - East of tennis courts",
+        "mapid": "DFPB0087",
+        "location": "56th and Ontario",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Oakridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1063201,
+          49.2195106
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0096",
+      "properties": {
+        "id": "fountain_DFPB0096",
+        "facility_type": "drinking_fountains",
+        "name": "McBride Park 飲水機",
+        "park_or_site": "McBride Park",
+        "mapid": "DFPB0096",
+        "location": "S of playground",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1801195,
+          49.2680289
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0105",
+      "properties": {
+        "id": "fountain_DFPB0105",
+        "facility_type": "drinking_fountains",
+        "name": "Moberly Park - West of tennis courts 飲水機",
+        "park_or_site": "Moberly Park - West of tennis courts",
+        "mapid": "DFPB0105",
+        "location": "in front of tennis courts",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Sunset"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.084584,
+          49.2149328
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0113",
+      "properties": {
+        "id": "fountain_DFPB0113",
+        "facility_type": "drinking_fountains",
+        "name": "New Brighton Park - South of pool 飲水機",
+        "park_or_site": "New Brighton Park - South of pool",
+        "mapid": "DFPB0113",
+        "location": "S-side of pool",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0366505,
+          49.2893744
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0136",
+      "properties": {
+        "id": "fountain_DFPB0136",
+        "facility_type": "drinking_fountains",
+        "name": "Rupert Park - East of fieldhouse 飲水機",
+        "park_or_site": "Rupert Park - East of fieldhouse",
+        "mapid": "DFPB0136",
+        "location": "E-side of Field house",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0306115,
+          49.270254
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0155",
+      "properties": {
+        "id": "fountain_DFPB0155",
+        "facility_type": "drinking_fountains",
+        "name": "Stanley Park - Brockton Oval Fieldhouse 飲水機",
+        "park_or_site": "Stanley Park - Brockton Oval Fieldhouse",
+        "mapid": "DFPB0155",
+        "location": "brockton oval",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1261385,
+          49.299756
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0145",
+      "properties": {
+        "id": "fountain_DFPB0145",
+        "facility_type": "drinking_fountains",
+        "name": "Stanley Park - Ceperley Washrooms 飲水機",
+        "park_or_site": "Stanley Park - Ceperley Washrooms",
+        "mapid": "DFPB0145",
+        "location": "Ceperley washrooms",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1487068,
+          49.2937517
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0157",
+      "properties": {
+        "id": "fountain_DFPB0157",
+        "facility_type": "drinking_fountains",
+        "name": "Stanley Park - Stanley Park Pavilion 飲水機",
+        "park_or_site": "Stanley Park - Stanley Park Pavilion",
+        "mapid": "DFPB0157",
+        "location": "pavillion outside washrooms",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13379,
+          49.2996062
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0146",
+      "properties": {
+        "id": "fountain_DFPB0146",
+        "facility_type": "drinking_fountains",
+        "name": "Stanley Park - West of Restaurant 飲水機",
+        "park_or_site": "Stanley Park - West of Restaurant",
+        "mapid": "DFPB0146",
+        "location": "W - side of Fish House",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1469852,
+          49.2923454
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0167",
+      "properties": {
+        "id": "fountain_DFPB0167",
+        "facility_type": "drinking_fountains",
+        "name": "Sunset Park 飲水機",
+        "park_or_site": "Sunset Park",
+        "mapid": "DFPB0167",
+        "location": "front of wading pool",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Sunset"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0964672,
+          49.2229543
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0169",
+      "properties": {
+        "id": "fountain_DFPB0169",
+        "facility_type": "drinking_fountains",
+        "name": "Tea Swamp Park 飲水機",
+        "park_or_site": "Tea Swamp Park",
+        "mapid": "DFPB0169",
+        "location": "NE corner of park",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.098575,
+          49.2574617
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0187",
+      "properties": {
+        "id": "fountain_DFPB0187",
+        "facility_type": "drinking_fountains",
+        "name": "Vancouver Technical HS 飲水機",
+        "park_or_site": "Vancouver Technical HS",
+        "mapid": "DFPB0187",
+        "location": "NE of the sport field",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0501195,
+          49.2606249
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0174",
+      "properties": {
+        "id": "fountain_DFPB0174",
+        "facility_type": "drinking_fountains",
+        "name": "Vandusen Botanical Garden - upper gardens 飲水機",
+        "park_or_site": "Vandusen Botanical Garden - upper gardens",
+        "mapid": "DFPB0174",
+        "location": "upper gardens",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Shaughnessy"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1299242,
+          49.2387207
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0178",
+      "properties": {
+        "id": "fountain_DFPB0178",
+        "facility_type": "drinking_fountains",
+        "name": "Victory Square 飲水機",
+        "park_or_site": "Victory Square",
+        "mapid": "DFPB0178",
+        "location": "south corner of park",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.110051,
+          49.2819512
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0016",
+      "properties": {
+        "id": "fountain_DFENG0016",
+        "facility_type": "drinking_fountains",
+        "name": "Broadway & Victoria 飲水機",
+        "park_or_site": "Broadway & Victoria",
+        "mapid": "DFENG0016",
+        "location": "Southeast corner of Broadway & Victoria",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.065619,
+          49.262066
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0026",
+      "properties": {
+        "id": "fountain_DFENG0026",
+        "facility_type": "drinking_fountains",
+        "name": "Comox & Chilco 飲水機",
+        "park_or_site": "Comox & Chilco",
+        "mapid": "DFENG0026",
+        "location": "In mini park at Comox & Chilco",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1426469,
+          49.2906741
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0019",
+      "properties": {
+        "id": "fountain_DFENG0019",
+        "facility_type": "drinking_fountains",
+        "name": "Granville & Robson 飲水機",
+        "park_or_site": "Granville & Robson",
+        "mapid": "DFENG0019",
+        "location": "Northwest corner of Granville & Robson",
+        "maintainer": "Engineering",
+        "in_operation": "Year Round",
+        "pet_friendly": "一般飲水",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.119937,
+          49.281542
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0045",
+      "properties": {
+        "id": "fountain_DFENG0045",
+        "facility_type": "drinking_fountains",
+        "name": "Fountain location: 2001 W 10th Avenue 飲水機",
+        "park_or_site": "Fountain location: 2001 W 10th Avenue",
+        "mapid": "DFENG0045",
+        "location": "North side of 10th Avenue",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.152238,
+          49.262911
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0052",
+      "properties": {
+        "id": "fountain_DFENG0052",
+        "facility_type": "drinking_fountains",
+        "name": "Fountain location: 8683 Kerr 飲水機",
+        "park_or_site": "Fountain location: 8683 Kerr",
+        "mapid": "DFENG0052",
+        "location": "Southwest side of Kerr",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.042394,
+          49.20577
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0603",
+      "properties": {
+        "id": "fountain_DFENG0603",
+        "facility_type": "drinking_fountains",
+        "name": "Temporary Handwashing Station location: Evelyne Saller Centre 飲水機",
+        "park_or_site": "Temporary Handwashing Station location: Evelyne Saller Centre",
+        "mapid": "DFENG0603",
+        "location": "320 Alexander  St",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.097629,
+          49.284006
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0011",
+      "properties": {
+        "id": "fountain_DFPB0011",
+        "facility_type": "drinking_fountains",
+        "name": "Beaconsfield Park 飲水機",
+        "park_or_site": "Beaconsfield Park",
+        "mapid": "DFPB0011",
+        "location": "adjacent to field house",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0500557,
+          49.2552967
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0021",
+      "properties": {
+        "id": "fountain_DFPB0021",
+        "facility_type": "drinking_fountains",
+        "name": "Clinton Park - East side of wading pool 飲水機",
+        "park_or_site": "Clinton Park - East side of wading pool",
+        "mapid": "DFPB0021",
+        "location": "E-side of wading pool",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0501216,
+          49.270805
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0023",
+      "properties": {
+        "id": "fountain_DFPB0023",
+        "facility_type": "drinking_fountains",
+        "name": "Coal Harbour Park 飲水機",
+        "park_or_site": "Coal Harbour Park",
+        "mapid": "DFPB0023",
+        "location": "near playground",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1253701,
+          49.2899774
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0033",
+      "properties": {
+        "id": "fountain_DFPB0033",
+        "facility_type": "drinking_fountains",
+        "name": "David Lam Park - South west of playgrounds 飲水機",
+        "park_or_site": "David Lam Park - South west of playgrounds",
+        "mapid": "DFPB0033",
+        "location": "E area, near playground",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1232741,
+          49.2725
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0038",
+      "properties": {
+        "id": "fountain_DFPB0038",
+        "facility_type": "drinking_fountains",
+        "name": "Elm Park 飲水機",
+        "park_or_site": "Elm Park",
+        "mapid": "DFPB0038",
+        "location": "N-side of field house",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kerrisdale"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1633864,
+          49.2335892
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0072",
+      "properties": {
+        "id": "fountain_DFPB0072",
+        "facility_type": "drinking_fountains",
+        "name": "Hillcrest Park - East side 飲水機",
+        "park_or_site": "Hillcrest Park - East side",
+        "mapid": "DFPB0072",
+        "location": "",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Riley Park"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1069541,
+          49.245768
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0082",
+      "properties": {
+        "id": "fountain_DFPB0082",
+        "facility_type": "drinking_fountains",
+        "name": "Kitsilano Beach Park - washroom wall 飲水機",
+        "park_or_site": "Kitsilano Beach Park - washroom wall",
+        "mapid": "DFPB0082",
+        "location": "opposite washrooms",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.153805,
+          49.2744826
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0086",
+      "properties": {
+        "id": "fountain_DFPB0086",
+        "facility_type": "drinking_fountains",
+        "name": "Langara Golf Course - cambie pathway 飲水機",
+        "park_or_site": "Langara Golf Course - cambie pathway",
+        "mapid": "DFPB0086",
+        "location": "cambie pathway",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Oakridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1163212,
+          49.2231802
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0091",
+      "properties": {
+        "id": "fountain_DFPB0091",
+        "facility_type": "drinking_fountains",
+        "name": "Maclean Park 飲水機",
+        "park_or_site": "Maclean Park",
+        "mapid": "DFPB0091",
+        "location": "",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0894269,
+          49.2789483
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0092",
+      "properties": {
+        "id": "fountain_DFPB0092",
+        "facility_type": "drinking_fountains",
+        "name": "Major Matthews Park 飲水機",
+        "park_or_site": "Major Matthews Park",
+        "mapid": "DFPB0092",
+        "location": "",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.106994,
+          49.2616811
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0094",
+      "properties": {
+        "id": "fountain_DFPB0094",
+        "facility_type": "drinking_fountains",
+        "name": "Maple Grove Park - East of pool 飲水機",
+        "park_or_site": "Maple Grove Park - East of pool",
+        "mapid": "DFPB0094",
+        "location": "E-side of pool",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kerrisdale"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1596874,
+          49.2232849
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0114",
+      "properties": {
+        "id": "fountain_DFPB0114",
+        "facility_type": "drinking_fountains",
+        "name": "New Brighton Park - South west of playground 飲水機",
+        "park_or_site": "New Brighton Park - South west of playground",
+        "mapid": "DFPB0114",
+        "location": "SW of playground",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0386755,
+          49.2895374
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0112",
+      "properties": {
+        "id": "fountain_DFPB0112",
+        "facility_type": "drinking_fountains",
+        "name": "New Brighton Park - West of tennis courts 飲水機",
+        "park_or_site": "New Brighton Park - West of tennis courts",
+        "mapid": "DFPB0112",
+        "location": "W-side of tennis courts",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0355155,
+          49.2896964
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0123",
+      "properties": {
+        "id": "fountain_DFPB0123",
+        "facility_type": "drinking_fountains",
+        "name": "Queen Elizabeth Park - Pitch and Putt Course 飲水機",
+        "park_or_site": "Queen Elizabeth Park - Pitch and Putt Course",
+        "mapid": "DFPB0123",
+        "location": "Pitch and Putt Course",
+        "maintainer": "Parks",
+        "in_operation": "year-round",
+        "pet_friendly": "一般飲水",
+        "local_area": "Riley Park"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1115271,
+          49.2392723
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0128",
+      "properties": {
+        "id": "fountain_DFPB0128",
+        "facility_type": "drinking_fountains",
+        "name": "Riverfront Park - East of washrooms 飲水機",
+        "park_or_site": "Riverfront Park - East of washrooms",
+        "mapid": "DFPB0128",
+        "location": "E-side of washrooms",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0518018,
+          49.2058596
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0189",
+      "properties": {
+        "id": "fountain_DFPB0189",
+        "facility_type": "drinking_fountains",
+        "name": "Seawall - Creekside 飲水機",
+        "park_or_site": "Seawall - Creekside",
+        "mapid": "DFPB0189",
+        "location": "Seawall - in front of Creekside Community Recreation Centre",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1057388,
+          49.2721829
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0162",
+      "properties": {
+        "id": "fountain_DFPB0162",
+        "facility_type": "drinking_fountains",
+        "name": "Stanley Park - Admin building 飲水機",
+        "park_or_site": "Stanley Park - Admin building",
+        "mapid": "DFPB0162",
+        "location": "Park Board Office",
+        "maintainer": "Parks",
+        "in_operation": "year-round",
+        "pet_friendly": "一般飲水",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.148332,
+          49.310653
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0149",
+      "properties": {
+        "id": "fountain_DFPB0149",
+        "facility_type": "drinking_fountains",
+        "name": "Stanley Park - Putting Green 飲水機",
+        "park_or_site": "Stanley Park - Putting Green",
+        "mapid": "DFPB0149",
+        "location": "Pitch and Putt Course",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1464722,
+          49.2931134
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0151",
+      "properties": {
+        "id": "fountain_DFPB0151",
+        "facility_type": "drinking_fountains",
+        "name": "Stanley Park - Second Beach 飲水機",
+        "park_or_site": "Stanley Park - Second Beach",
+        "mapid": "DFPB0151",
+        "location": "Second Beach",
+        "maintainer": "Parks",
+        "in_operation": "year-round",
+        "pet_friendly": "一般飲水",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1500126,
+          49.2949854
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0165",
+      "properties": {
+        "id": "fountain_DFPB0165",
+        "facility_type": "drinking_fountains",
+        "name": "Sunrise Park 飲水機",
+        "park_or_site": "Sunrise Park",
+        "mapid": "DFPB0165",
+        "location": "N-side of wading pool",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0356535,
+          49.2669989
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0175",
+      "properties": {
+        "id": "fountain_DFPB0175",
+        "facility_type": "drinking_fountains",
+        "name": "Vandusen Botanical Garden 飲水機",
+        "park_or_site": "Vandusen Botanical Garden",
+        "mapid": "DFPB0175",
+        "location": "near reflecting pond",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Shaughnessy"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1294242,
+          49.2395066
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0803",
+      "properties": {
+        "id": "fountain_DFENG0803",
+        "facility_type": "drinking_fountains",
+        "name": "Temporary Misting Station location: Granville & W 10th 飲水機",
+        "park_or_site": "Temporary Misting Station location: Granville & W 10th",
+        "mapid": "DFENG0803",
+        "location": "NE corner of Granville St & W 10th Ave",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.138411,
+          49.262698
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0005",
+      "properties": {
+        "id": "fountain_DFENG0005",
+        "facility_type": "drinking_fountains",
+        "name": "Cardero & Burnaby 飲水機",
+        "park_or_site": "Cardero & Burnaby",
+        "mapid": "DFENG0005",
+        "location": "In the mini park at Cardero & Burnaby",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1395544,
+          49.2845199
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0033",
+      "properties": {
+        "id": "fountain_DFENG0033",
+        "facility_type": "drinking_fountains",
+        "name": "Denman & Nelson 飲水機",
+        "park_or_site": "Denman & Nelson",
+        "mapid": "DFENG0033",
+        "location": "Southwest corner of Denman & Nelson",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1385485,
+          49.2892248
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0017",
+      "properties": {
+        "id": "fountain_DFENG0017",
+        "facility_type": "drinking_fountains",
+        "name": "Elgin & 37th 飲水機",
+        "park_or_site": "Elgin & 37th",
+        "mapid": "DFENG0017",
+        "location": "Northwest corner of Elgin & 37th",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.084037,
+          49.2365274
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0029",
+      "properties": {
+        "id": "fountain_DFENG0029",
+        "facility_type": "drinking_fountains",
+        "name": "Granville & 59th 飲水機",
+        "park_or_site": "Granville & 59th",
+        "mapid": "DFENG0029",
+        "location": "Northeast corner of Granville & 59th",
+        "maintainer": "Engineering",
+        "in_operation": "Year Round",
+        "pet_friendly": "一般飲水",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.139586,
+          49.2173117
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0010",
+      "properties": {
+        "id": "fountain_DFENG0010",
+        "facility_type": "drinking_fountains",
+        "name": "Robson & Chilco 飲水機",
+        "park_or_site": "Robson & Chilco",
+        "mapid": "DFENG0010",
+        "location": "In mini park at Robson & Chilco",
+        "maintainer": "Engineering",
+        "in_operation": "Year Round",
+        "pet_friendly": "一般飲水",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13827,
+          49.2934572
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0039",
+      "properties": {
+        "id": "fountain_DFENG0039",
+        "facility_type": "drinking_fountains",
+        "name": "Fountain location: Davie & Bute (Jim Deva Plaza) 飲水機",
+        "park_or_site": "Fountain location: Davie & Bute (Jim Deva Plaza)",
+        "mapid": "DFENG0039",
+        "location": "1200 Davie Street",
+        "maintainer": "Engineering",
+        "in_operation": "Year Round",
+        "pet_friendly": "一般飲水",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.133952,
+          49.281882
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0040",
+      "properties": {
+        "id": "fountain_DFENG0040",
+        "facility_type": "drinking_fountains",
+        "name": "Fountain location: Point Grey Road & Waterloo 飲水機",
+        "park_or_site": "Fountain location: Point Grey Road & Waterloo",
+        "mapid": "DFENG0040",
+        "location": "1600 Waterloo St",
+        "maintainer": "Engineering",
+        "in_operation": "Year Round",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.179475,
+          49.271936
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0041",
+      "properties": {
+        "id": "fountain_DFENG0041",
+        "facility_type": "drinking_fountains",
+        "name": "Fountain location: River District Crossing & E Kent Ave North 飲水機",
+        "park_or_site": "Fountain location: River District Crossing & E Kent Ave North",
+        "mapid": "DFENG0041",
+        "location": "Northeast corner of River District Crossing & E Kent Ave North",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.031131,
+          49.205331
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0702",
+      "properties": {
+        "id": "fountain_DFENG0702",
+        "facility_type": "drinking_fountains",
+        "name": "Temporary Fountain location: 2067 W 15th Ave 飲水機",
+        "park_or_site": "Temporary Fountain location: 2067 W 15th Ave",
+        "mapid": "DFENG0702",
+        "location": "NE corner of 2000 W 15th Ave at Arbutus Greenway",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.152452,
+          49.25823
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0602",
+      "properties": {
+        "id": "fountain_DFENG0602",
+        "facility_type": "drinking_fountains",
+        "name": "Temporary Handwashing Station location: E Hastings & Columbia 飲水機",
+        "park_or_site": "Temporary Handwashing Station location: E Hastings & Columbia",
+        "mapid": "DFENG0602",
+        "location": "101 E Hastings St",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.102144,
+          49.281547
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0606",
+      "properties": {
+        "id": "fountain_DFENG0606",
+        "facility_type": "drinking_fountains",
+        "name": "Temporary Handwashing Station location: The Gathering Place 飲水機",
+        "park_or_site": "Temporary Handwashing Station location: The Gathering Place",
+        "mapid": "DFENG0606",
+        "location": "609 Helmcken St",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.123678,
+          49.277664
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0030",
+      "properties": {
+        "id": "fountain_DFPB0030",
+        "facility_type": "drinking_fountains",
+        "name": "CRAB Park at Portside 飲水機",
+        "park_or_site": "CRAB Park at Portside",
+        "mapid": "DFPB0030",
+        "location": "",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1018059,
+          49.28476
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0017",
+      "properties": {
+        "id": "fountain_DFPB0017",
+        "facility_type": "drinking_fountains",
+        "name": "Charleson Park 飲水機",
+        "park_or_site": "Charleson Park",
+        "mapid": "DFPB0017",
+        "location": "N of school off of seawall",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1258861,
+          49.2681179
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0018",
+      "properties": {
+        "id": "fountain_DFPB0018",
+        "facility_type": "drinking_fountains",
+        "name": "China Creek North Park 飲水機",
+        "park_or_site": "China Creek North Park",
+        "mapid": "DFPB0018",
+        "location": "S central side along jogging c",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0831189,
+          49.2644778
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0025",
+      "properties": {
+        "id": "fountain_DFPB0025",
+        "facility_type": "drinking_fountains",
+        "name": "Columbia Park 飲水機",
+        "park_or_site": "Columbia Park",
+        "mapid": "DFPB0025",
+        "location": "in front of wading pool",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Oakridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1129901,
+          49.2319301
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0032",
+      "properties": {
+        "id": "fountain_DFPB0032",
+        "facility_type": "drinking_fountains",
+        "name": "David Lam Park - South west of basketball courts 飲水機",
+        "park_or_site": "David Lam Park - South west of basketball courts",
+        "mapid": "DFPB0032",
+        "location": "near playground and tennis court",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1257051,
+          49.271738
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0034",
+      "properties": {
+        "id": "fountain_DFPB0034",
+        "facility_type": "drinking_fountains",
+        "name": "Devonian Harbour Park 飲水機",
+        "park_or_site": "Devonian Harbour Park",
+        "mapid": "DFPB0034",
+        "location": "near Stanley Park entrance",
+        "maintainer": "Parks",
+        "in_operation": "year-round",
+        "pet_friendly": "一般飲水",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1359861,
+          49.2950915
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0035",
+      "properties": {
+        "id": "fountain_DFPB0035",
+        "facility_type": "drinking_fountains",
+        "name": "Douglas Park - Right side of wading pool 飲水機",
+        "park_or_site": "Douglas Park - Right side of wading pool",
+        "mapid": "DFPB0035",
+        "location": "in front of wading pool",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "South Cambie"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1223021,
+          49.2531946
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0042",
+      "properties": {
+        "id": "fountain_DFPB0042",
+        "facility_type": "drinking_fountains",
+        "name": "English Bay Beach Park - West of bath-house 飲水機",
+        "park_or_site": "English Bay Beach Park - West of bath-house",
+        "mapid": "DFPB0042",
+        "location": "opposite entrance to bathhouse",
+        "maintainer": "Parks",
+        "in_operation": "year-round",
+        "pet_friendly": "一般飲水",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1430202,
+          49.2861333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0043",
+      "properties": {
+        "id": "fountain_DFPB0043",
+        "facility_type": "drinking_fountains",
+        "name": "English Bay Beach Park - concessions 飲水機",
+        "park_or_site": "English Bay Beach Park - concessions",
+        "mapid": "DFPB0043",
+        "location": "concessions",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1379202,
+          49.2790068
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0045",
+      "properties": {
+        "id": "fountain_DFPB0045",
+        "facility_type": "drinking_fountains",
+        "name": "Fraser River Park - South west 飲水機",
+        "park_or_site": "Fraser River Park - South west",
+        "mapid": "DFPB0045",
+        "location": "",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kerrisdale"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1507934,
+          49.2065246
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0057",
+      "properties": {
+        "id": "fountain_DFPB0057",
+        "facility_type": "drinking_fountains",
+        "name": "Granville Loop Park 飲水機",
+        "park_or_site": "Granville Loop Park",
+        "mapid": "DFPB0057",
+        "location": "",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1377412,
+          49.2672334
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0059",
+      "properties": {
+        "id": "fountain_DFPB0059",
+        "facility_type": "drinking_fountains",
+        "name": "Guelph Park 飲水機",
+        "park_or_site": "Guelph Park",
+        "mapid": "DFPB0059",
+        "location": "w-side of tennis courts",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0955599,
+          49.2643258
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0060",
+      "properties": {
+        "id": "fountain_DFPB0060",
+        "facility_type": "drinking_fountains",
+        "name": "Harbour Green Park - Viewpoint 飲水機",
+        "park_or_site": "Harbour Green Park - Viewpoint",
+        "mapid": "DFPB0060",
+        "location": "west, by seawall",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.123255,
+          49.2913344
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0066",
+      "properties": {
+        "id": "fountain_DFPB0066",
+        "facility_type": "drinking_fountains",
+        "name": "Hastings Park -Plateau Sport Parks / Empire Fields 飲水機",
+        "park_or_site": "Hastings Park -Plateau Sport Parks / Empire Fields",
+        "mapid": "DFPB0066",
+        "location": "field house at empire field",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0342485,
+          49.2826692
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0067",
+      "properties": {
+        "id": "fountain_DFPB0067",
+        "facility_type": "drinking_fountains",
+        "name": "Hastings Park -Plateau Sport Parks / Empire Fields 飲水機",
+        "park_or_site": "Hastings Park -Plateau Sport Parks / Empire Fields",
+        "mapid": "DFPB0067",
+        "location": "north of empire field",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0333751,
+          49.2838145
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0075",
+      "properties": {
+        "id": "fountain_DFPB0075",
+        "facility_type": "drinking_fountains",
+        "name": "Jonathan Rogers Park 飲水機",
+        "park_or_site": "Jonathan Rogers Park",
+        "mapid": "DFPB0075",
+        "location": "E-side of wading pool",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.107499,
+          49.2642698
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0080",
+      "properties": {
+        "id": "fountain_DFPB0080",
+        "facility_type": "drinking_fountains",
+        "name": "Killarney Park - E 45th Ave. @ Killarney St. 飲水機",
+        "park_or_site": "Killarney Park - E 45th Ave. @ Killarney St.",
+        "mapid": "DFPB0080",
+        "location": "north plaza",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0453277,
+          49.2293001
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0083",
+      "properties": {
+        "id": "fountain_DFPB0083",
+        "facility_type": "drinking_fountains",
+        "name": "Kitsilano Beach Park - South of playground 飲水機",
+        "park_or_site": "Kitsilano Beach Park - South of playground",
+        "mapid": "DFPB0083",
+        "location": "besides playground",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1531867,
+          49.2747875
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0089",
+      "properties": {
+        "id": "fountain_DFPB0089",
+        "facility_type": "drinking_fountains",
+        "name": "Locarno Beach Park 飲水機",
+        "park_or_site": "Locarno Beach Park",
+        "mapid": "DFPB0089",
+        "location": "near concessions",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "West Point Grey"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.2071496,
+          49.275075
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0093",
+      "properties": {
+        "id": "fountain_DFPB0093",
+        "facility_type": "drinking_fountains",
+        "name": "Maple Grove Park - South of baseball diamond 飲水機",
+        "park_or_site": "Maple Grove Park - South of baseball diamond",
+        "mapid": "DFPB0093",
+        "location": "S-side of baseball diamond",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kerrisdale"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1608165,
+          49.223612
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0095",
+      "properties": {
+        "id": "fountain_DFPB0095",
+        "facility_type": "drinking_fountains",
+        "name": "Marpole Park 飲水機",
+        "park_or_site": "Marpole Park",
+        "mapid": "DFPB0095",
+        "location": "west entrance to playground",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1389434,
+          49.2057286
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0116",
+      "properties": {
+        "id": "fountain_DFPB0116",
+        "facility_type": "drinking_fountains",
+        "name": "Oak Park - North west of field hockey 飲水機",
+        "park_or_site": "Oak Park - North west of field hockey",
+        "mapid": "DFPB0116",
+        "location": "Near parking lot",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1291073,
+          49.2167118
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0121",
+      "properties": {
+        "id": "fountain_DFPB0121",
+        "facility_type": "drinking_fountains",
+        "name": "Park Site On South East False Creek - Hinge 飲水機",
+        "park_or_site": "Park Site On South East False Creek - Hinge",
+        "mapid": "DFPB0121",
+        "location": "",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.110191,
+          49.2711567
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0124",
+      "properties": {
+        "id": "fountain_DFPB0124",
+        "facility_type": "drinking_fountains",
+        "name": "Queen Elizabeth Park - 37th and Ontario 飲水機",
+        "park_or_site": "Queen Elizabeth Park - 37th and Ontario",
+        "mapid": "DFPB0124",
+        "location": "37th and Ontario",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Riley Park"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1056061,
+          49.2375253
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0188",
+      "properties": {
+        "id": "fountain_DFPB0188",
+        "facility_type": "drinking_fountains",
+        "name": "Riley Park 飲水機",
+        "park_or_site": "Riley Park",
+        "mapid": "DFPB0188",
+        "location": "West side of the park",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Riley Park"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1047923,
+          49.2426881
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0137",
+      "properties": {
+        "id": "fountain_DFPB0137",
+        "facility_type": "drinking_fountains",
+        "name": "Seaforth Peace Park 飲水機",
+        "park_or_site": "Seaforth Peace Park",
+        "mapid": "DFPB0137",
+        "location": "S end plaza",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1461902,
+          49.271096
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0159",
+      "properties": {
+        "id": "fountain_DFPB0159",
+        "facility_type": "drinking_fountains",
+        "name": "Stanley Park - Brockton Cricket Pavilion 飲水機",
+        "park_or_site": "Stanley Park - Brockton Cricket Pavilion",
+        "mapid": "DFPB0159",
+        "location": "Brockton Clubhouse",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.148332,
+          49.310653
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0143",
+      "properties": {
+        "id": "fountain_DFPB0143",
+        "facility_type": "drinking_fountains",
+        "name": "Stanley Park - Tennis Courts 飲水機",
+        "park_or_site": "Stanley Park - Tennis Courts",
+        "mapid": "DFPB0143",
+        "location": "near Tennis Courts & Fish House",
+        "maintainer": "Parks",
+        "in_operation": "year-round",
+        "pet_friendly": "一般飲水",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1459977,
+          49.292326
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0153",
+      "properties": {
+        "id": "fountain_DFPB0153",
+        "facility_type": "drinking_fountains",
+        "name": "Stanley Park - Third Beach Seawall 飲水機",
+        "park_or_site": "Stanley Park - Third Beach Seawall",
+        "mapid": "DFPB0153",
+        "location": "Third beach seawall",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1563202,
+          49.3032626
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0172",
+      "properties": {
+        "id": "fountain_DFPB0172",
+        "facility_type": "drinking_fountains",
+        "name": "Trafalgar Park 飲水機",
+        "park_or_site": "Trafalgar Park",
+        "mapid": "DFPB0172",
+        "location": "E-side of wading pool",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Arbutus-Ridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1638224,
+          49.2513785
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0179",
+      "properties": {
+        "id": "fountain_DFPB0179",
+        "facility_type": "drinking_fountains",
+        "name": "W.C. Shelly Park 飲水機",
+        "park_or_site": "W.C. Shelly Park",
+        "mapid": "DFPB0179",
+        "location": "",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0730928,
+          49.2631538
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0804",
+      "properties": {
+        "id": "fountain_DFENG0804",
+        "facility_type": "drinking_fountains",
+        "name": "Temporary Misting Station location: Commercial & E 10th 飲水機",
+        "park_or_site": "Temporary Misting Station location: Commercial & E 10th",
+        "mapid": "DFENG0804",
+        "location": "NE corner of Commercial St & E 10th Ave",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.069583,
+          49.261443
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0011",
+      "properties": {
+        "id": "fountain_DFENG0011",
+        "facility_type": "drinking_fountains",
+        "name": "1650 W 7th 飲水機",
+        "park_or_site": "1650 W 7th",
+        "mapid": "DFENG0011",
+        "location": "Midblock, outside of 1650 W 7th",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.142081,
+          49.265329
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0014",
+      "properties": {
+        "id": "fountain_DFENG0014",
+        "facility_type": "drinking_fountains",
+        "name": "7th & Yukon 飲水機",
+        "park_or_site": "7th & Yukon",
+        "mapid": "DFENG0014",
+        "location": "Southwest corner of 7th & Yukon",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.112967,
+          49.2646599
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0015",
+      "properties": {
+        "id": "fountain_DFENG0015",
+        "facility_type": "drinking_fountains",
+        "name": "Broadway & Ontario 飲水機",
+        "park_or_site": "Broadway & Ontario",
+        "mapid": "DFENG0015",
+        "location": "Southwest corner of Broadway & Ontario",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.105026,
+          49.262875
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0046",
+      "properties": {
+        "id": "fountain_DFENG0046",
+        "facility_type": "drinking_fountains",
+        "name": "Fountain location: 733 W 14th Avenue 飲水機",
+        "park_or_site": "Fountain location: 733 W 14th Avenue",
+        "mapid": "DFENG0046",
+        "location": "North side of 14th Avenue",
+        "maintainer": "Engineering",
+        "in_operation": "Year Round",
+        "pet_friendly": "一般飲水",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.121414,
+          49.258738
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0044",
+      "properties": {
+        "id": "fountain_DFENG0044",
+        "facility_type": "drinking_fountains",
+        "name": "Fountain location: Cambie & 29th Avenue 飲水機",
+        "park_or_site": "Fountain location: Cambie & 29th Avenue",
+        "mapid": "DFENG0044",
+        "location": "Southwest corner of Cambie & 29th Avenue",
+        "maintainer": "Engineering",
+        "in_operation": "Year Round",
+        "pet_friendly": "一般飲水",
+        "local_area": "South Cambie"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.116339,
+          49.245083
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0608",
+      "properties": {
+        "id": "fountain_DFENG0608",
+        "facility_type": "drinking_fountains",
+        "name": "Temporary Handwashing Station location: 201 Central 飲水機",
+        "park_or_site": "Temporary Handwashing Station location: 201 Central",
+        "mapid": "DFENG0608",
+        "location": "201 Central St",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.099444,
+          49.271398
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0009",
+      "properties": {
+        "id": "fountain_DFPB0009",
+        "facility_type": "drinking_fountains",
+        "name": "Art Phillips Park (Discovery Square) 飲水機",
+        "park_or_site": "Art Phillips Park (Discovery Square)",
+        "mapid": "DFPB0009",
+        "location": "NW plaza",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.120924,
+          49.2860253
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0010",
+      "properties": {
+        "id": "fountain_DFPB0010",
+        "facility_type": "drinking_fountains",
+        "name": "Balaclava Park 飲水機",
+        "park_or_site": "Balaclava Park",
+        "mapid": "DFPB0010",
+        "location": "W of wading pool",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Dunbar-Southlands"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1753275,
+          49.2457194
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0013",
+      "properties": {
+        "id": "fountain_DFPB0013",
+        "facility_type": "drinking_fountains",
+        "name": "Burrard View Park 飲水機",
+        "park_or_site": "Burrard View Park",
+        "mapid": "DFPB0013",
+        "location": "N-side of wading pool",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0504676,
+          49.2905214
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0016",
+      "properties": {
+        "id": "fountain_DFPB0016",
+        "facility_type": "drinking_fountains",
+        "name": "Chaldecott Park 飲水機",
+        "park_or_site": "Chaldecott Park",
+        "mapid": "DFPB0016",
+        "location": "W-side of spray park",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Dunbar-Southlands"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1916736,
+          49.2496905
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0020",
+      "properties": {
+        "id": "fountain_DFPB0020",
+        "facility_type": "drinking_fountains",
+        "name": "Clark Park 飲水機",
+        "park_or_site": "Clark Park",
+        "mapid": "DFPB0020",
+        "location": "",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0730918,
+          49.2568517
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0028",
+      "properties": {
+        "id": "fountain_DFPB0028",
+        "facility_type": "drinking_fountains",
+        "name": "Coopers' Park 飲水機",
+        "park_or_site": "Coopers' Park",
+        "mapid": "DFPB0028",
+        "location": "",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.113042,
+          49.2739146
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0029",
+      "properties": {
+        "id": "fountain_DFPB0029",
+        "facility_type": "drinking_fountains",
+        "name": "Coopers' Park - underneath bridge, near basket 飲水機",
+        "park_or_site": "Coopers' Park - underneath bridge, near basket",
+        "mapid": "DFPB0029",
+        "location": "underneath bridge, near basket",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.114634,
+          49.272904
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0037",
+      "properties": {
+        "id": "fountain_DFPB0037",
+        "facility_type": "drinking_fountains",
+        "name": "Ebisu Park 飲水機",
+        "park_or_site": "Ebisu Park",
+        "mapid": "DFPB0037",
+        "location": "near playground",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1328343,
+          49.2055106
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0044",
+      "properties": {
+        "id": "fountain_DFPB0044",
+        "facility_type": "drinking_fountains",
+        "name": "Falaise Park 飲水機",
+        "park_or_site": "Falaise Park",
+        "mapid": "DFPB0044",
+        "location": "in front of wading pool",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0299635,
+          49.2549477
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0049",
+      "properties": {
+        "id": "fountain_DFPB0049",
+        "facility_type": "drinking_fountains",
+        "name": "Fraserview Golf Course - 6th tee 飲水機",
+        "park_or_site": "Fraserview Golf Course - 6th tee",
+        "mapid": "DFPB0049",
+        "location": "6th tee",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0456798,
+          49.2083153
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0069",
+      "properties": {
+        "id": "fountain_DFPB0069",
+        "facility_type": "drinking_fountains",
+        "name": "Hastings Park -Plateau Sport Parks / Empire Fields 飲水機",
+        "park_or_site": "Hastings Park -Plateau Sport Parks / Empire Fields",
+        "mapid": "DFPB0069",
+        "location": "East of playgrounds",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0344851,
+          49.2829983
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0103",
+      "properties": {
+        "id": "fountain_DFPB0103",
+        "facility_type": "drinking_fountains",
+        "name": "Memorial South Park - West of wading pool 飲水機",
+        "park_or_site": "Memorial South Park - West of wading pool",
+        "mapid": "DFPB0103",
+        "location": "W-side of wading pool",
+        "maintainer": "Parks",
+        "in_operation": "year-round",
+        "pet_friendly": "一般飲水",
+        "local_area": "Sunset"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0869073,
+          49.231446
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0119",
+      "properties": {
+        "id": "fountain_DFPB0119",
+        "facility_type": "drinking_fountains",
+        "name": "Oppenheimer Park 飲水機",
+        "park_or_site": "Oppenheimer Park",
+        "mapid": "DFPB0119",
+        "location": "",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0940419,
+          49.2830072
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0160",
+      "properties": {
+        "id": "fountain_DFPB0160",
+        "facility_type": "drinking_fountains",
+        "name": "Stanley Park - Lawn Bowling Club 飲水機",
+        "park_or_site": "Stanley Park - Lawn Bowling Club",
+        "mapid": "DFPB0160",
+        "location": "Lawn Bowling",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.148332,
+          49.310653
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0154",
+      "properties": {
+        "id": "fountain_DFPB0154",
+        "facility_type": "drinking_fountains",
+        "name": "Stanley Park - Legends Of The Moon Washroom 飲水機",
+        "park_or_site": "Stanley Park - Legends Of The Moon Washroom",
+        "mapid": "DFPB0154",
+        "location": "Legends Of The Moon - Washroom",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1212851,
+          49.2996344
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0177",
+      "properties": {
+        "id": "fountain_DFPB0177",
+        "facility_type": "drinking_fountains",
+        "name": "Victoria Park 飲水機",
+        "park_or_site": "Victoria Park",
+        "mapid": "DFPB0177",
+        "location": "adjacent to children's play area",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.066747,
+          49.271719
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0180",
+      "properties": {
+        "id": "fountain_DFPB0180",
+        "facility_type": "drinking_fountains",
+        "name": "West End minipark 飲水機",
+        "park_or_site": "West End minipark",
+        "mapid": "DFPB0180",
+        "location": "Bute & Haro",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1280301,
+          49.2852963
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0185",
+      "properties": {
+        "id": "fountain_DFPB0185",
+        "facility_type": "drinking_fountains",
+        "name": "Woodland Park 飲水機",
+        "park_or_site": "Woodland Park",
+        "mapid": "DFPB0185",
+        "location": "in front of wading pool",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0734088,
+          49.2785481
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0801",
+      "properties": {
+        "id": "fountain_DFENG0801",
+        "facility_type": "drinking_fountains",
+        "name": "Temporary Misting Station location: Columbia & Powell 飲水機",
+        "park_or_site": "Temporary Misting Station location: Columbia & Powell",
+        "mapid": "DFENG0801",
+        "location": "NE corner of Columbia St & Powell St",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.102033,
+          49.283301
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0809",
+      "properties": {
+        "id": "fountain_DFENG0809",
+        "facility_type": "drinking_fountains",
+        "name": "Temporary Misting Station location: Main St & 14th Ave 飲水機",
+        "park_or_site": "Temporary Misting Station location: Main St & 14th Ave",
+        "mapid": "DFENG0809",
+        "location": "Main st & 14th Ave",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.100806,
+          49.258476
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0805",
+      "properties": {
+        "id": "fountain_DFENG0805",
+        "facility_type": "drinking_fountains",
+        "name": "Temporary Misting Station location: Thornton Park 飲水機",
+        "park_or_site": "Temporary Misting Station location: Thornton Park",
+        "mapid": "DFENG0805",
+        "location": "East side of Thornton Park across from Pacific Central",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.098856,
+          49.273801
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0004",
+      "properties": {
+        "id": "fountain_DFENG0004",
+        "facility_type": "drinking_fountains",
+        "name": "56th & Ontario 飲水機",
+        "park_or_site": "56th & Ontario",
+        "mapid": "DFENG0004",
+        "location": "Northwest corner of 56th & Ontario",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Oakridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.106415,
+          49.219505
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0025",
+      "properties": {
+        "id": "fountain_DFENG0025",
+        "facility_type": "drinking_fountains",
+        "name": "Comox & Cardero 飲水機",
+        "park_or_site": "Comox & Cardero",
+        "mapid": "DFENG0025",
+        "location": "Northeast corner of Comox & Cardero",
+        "maintainer": "Engineering",
+        "in_operation": "Year Round",
+        "pet_friendly": "一般飲水",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.136516,
+          49.2867384
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0027",
+      "properties": {
+        "id": "fountain_DFENG0027",
+        "facility_type": "drinking_fountains",
+        "name": "Comox & Denman 飲水機",
+        "park_or_site": "Comox & Denman",
+        "mapid": "DFENG0027",
+        "location": "Northwest corner of Comox & Denman",
+        "maintainer": "Engineering",
+        "in_operation": "Year Round",
+        "pet_friendly": "一般飲水",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13969,
+          49.2887857
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0023",
+      "properties": {
+        "id": "fountain_DFENG0023",
+        "facility_type": "drinking_fountains",
+        "name": "Main & 11th 飲水機",
+        "park_or_site": "Main & 11th",
+        "mapid": "DFENG0023",
+        "location": "Southeast corner of Main & 11th",
+        "maintainer": "Engineering",
+        "in_operation": "Year Round",
+        "pet_friendly": "一般飲水",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.100784,
+          49.2610594
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0007",
+      "properties": {
+        "id": "fountain_DFENG0007",
+        "facility_type": "drinking_fountains",
+        "name": "Nelson & Broughton 飲水機",
+        "park_or_site": "Nelson & Broughton",
+        "mapid": "DFENG0007",
+        "location": "In mini park at Nelson & Broughton",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1333367,
+          49.2857102
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0051",
+      "properties": {
+        "id": "fountain_DFENG0051",
+        "facility_type": "drinking_fountains",
+        "name": "Fountain location: 10th & Willow 飲水機",
+        "park_or_site": "Fountain location: 10th & Willow",
+        "mapid": "DFENG0051",
+        "location": "Northwest corner of 10th & Willow",
+        "maintainer": "Engineering",
+        "in_operation": "Year Round",
+        "pet_friendly": "一般飲水",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.122156,
+          49.262387
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0049",
+      "properties": {
+        "id": "fountain_DFENG0049",
+        "facility_type": "drinking_fountains",
+        "name": "Fountain location: 11th & Prince Edward 飲水機",
+        "park_or_site": "Fountain location: 11th & Prince Edward",
+        "mapid": "DFENG0049",
+        "location": "Northeast corner of 11th & Prince Edward",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09634,
+          49.261036
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0048",
+      "properties": {
+        "id": "fountain_DFENG0048",
+        "facility_type": "drinking_fountains",
+        "name": "Fountain location: 375 W 59th Avenue 飲水機",
+        "park_or_site": "Fountain location: 375 W 59th Avenue",
+        "mapid": "DFENG0048",
+        "location": "Northeast corner of Alberta St and W 59th Ave",
+        "maintainer": "Engineering",
+        "in_operation": "Year Round",
+        "pet_friendly": "一般飲水",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11323,
+          49.217003
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0711",
+      "properties": {
+        "id": "fountain_DFENG0711",
+        "facility_type": "drinking_fountains",
+        "name": "Temporary Fountain location: E Hastings & Heatley 飲水機",
+        "park_or_site": "Temporary Fountain location: E Hastings & Heatley",
+        "mapid": "DFENG0711",
+        "location": "NE corner of E Hastings St and Heatley Ave",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.089387,
+          49.281264
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0710",
+      "properties": {
+        "id": "fountain_DFENG0710",
+        "facility_type": "drinking_fountains",
+        "name": "Temporary Fountain location: Wessex & Kingsway 飲水機",
+        "park_or_site": "Temporary Fountain location: Wessex & Kingsway",
+        "mapid": "DFENG0710",
+        "location": "3357 Kingsway",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.034049,
+          49.233332
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0601",
+      "properties": {
+        "id": "fountain_DFENG0601",
+        "facility_type": "drinking_fountains",
+        "name": "Temporary Handwashing Station location: Union Gospel Mission 飲水機",
+        "park_or_site": "Temporary Handwashing Station location: Union Gospel Mission",
+        "mapid": "DFENG0601",
+        "location": "601 E Hastings St",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.091297,
+          49.281446
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0001",
+      "properties": {
+        "id": "fountain_DFPB0001",
+        "facility_type": "drinking_fountains",
+        "name": "Aberdeen Park 飲水機",
+        "park_or_site": "Aberdeen Park",
+        "mapid": "DFPB0001",
+        "location": "plaza",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0272386,
+          49.2350522
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0003",
+      "properties": {
+        "id": "fountain_DFPB0003",
+        "facility_type": "drinking_fountains",
+        "name": "Alexandra Park 飲水機",
+        "park_or_site": "Alexandra Park",
+        "mapid": "DFPB0003",
+        "location": "west plaza gateway",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1423772,
+          49.2856603
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0040",
+      "properties": {
+        "id": "fountain_DFPB0040",
+        "facility_type": "drinking_fountains",
+        "name": "Emery Barnes Park - South west of playground 飲水機",
+        "park_or_site": "Emery Barnes Park - South west of playground",
+        "mapid": "DFPB0040",
+        "location": "",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1242671,
+          49.276642
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0056",
+      "properties": {
+        "id": "fountain_DFPB0056",
+        "facility_type": "drinking_fountains",
+        "name": "Grandview Park - South of playground 飲水機",
+        "park_or_site": "Grandview Park - South of playground",
+        "mapid": "DFPB0056",
+        "location": "By the Playground",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0698519,
+          49.2738481
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0062",
+      "properties": {
+        "id": "fountain_DFPB0062",
+        "facility_type": "drinking_fountains",
+        "name": "Harbour Green Park - In front of washrooms 飲水機",
+        "park_or_site": "Harbour Green Park - In front of washrooms",
+        "mapid": "DFPB0062",
+        "location": "near spray pool",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.121679,
+          49.2901074
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0068",
+      "properties": {
+        "id": "fountain_DFPB0068",
+        "facility_type": "drinking_fountains",
+        "name": "Hastings Park -Plateau Sport Parks / Empire Fields 飲水機",
+        "park_or_site": "Hastings Park -Plateau Sport Parks / Empire Fields",
+        "mapid": "DFPB0068",
+        "location": "East of basketball courts",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.034264,
+          49.282563
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0071",
+      "properties": {
+        "id": "fountain_DFPB0071",
+        "facility_type": "drinking_fountains",
+        "name": "Hillcrest Park - North of playground 飲水機",
+        "park_or_site": "Hillcrest Park - North of playground",
+        "mapid": "DFPB0071",
+        "location": "",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Riley Park"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.106969,
+          49.2456626
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0079",
+      "properties": {
+        "id": "fountain_DFPB0079",
+        "facility_type": "drinking_fountains",
+        "name": "Killarney Park - East of wading pool 飲水機",
+        "park_or_site": "Killarney Park - East of wading pool",
+        "mapid": "DFPB0079",
+        "location": "in front of wading pool",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0418667,
+          49.2271641
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0100",
+      "properties": {
+        "id": "fountain_DFPB0100",
+        "facility_type": "drinking_fountains",
+        "name": "McCleery Golf Course - servive yard 飲水機",
+        "park_or_site": "McCleery Golf Course - servive yard",
+        "mapid": "DFPB0100",
+        "location": "servive yard",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kerrisdale"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1707254,
+          49.2207377
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0106",
+      "properties": {
+        "id": "fountain_DFPB0106",
+        "facility_type": "drinking_fountains",
+        "name": "Moberly Park - Arts & Cultural Centre 飲水機",
+        "park_or_site": "Moberly Park - Arts & Cultural Centre",
+        "mapid": "DFPB0106",
+        "location": "",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Sunset"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.087185,
+          49.2154434
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0110",
+      "properties": {
+        "id": "fountain_DFPB0110",
+        "facility_type": "drinking_fountains",
+        "name": "Nanaimo Park 飲水機",
+        "park_or_site": "Nanaimo Park",
+        "mapid": "DFPB0110",
+        "location": "in front of wading pool",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Victoria-Fraserview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0569048,
+          49.2283821
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0111",
+      "properties": {
+        "id": "fountain_DFPB0111",
+        "facility_type": "drinking_fountains",
+        "name": "Nelson Park 飲水機",
+        "park_or_site": "Nelson Park",
+        "mapid": "DFPB0111",
+        "location": "middle of park",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1299661,
+          49.2829442
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0115",
+      "properties": {
+        "id": "fountain_DFPB0115",
+        "facility_type": "drinking_fountains",
+        "name": "Norquay Park 飲水機",
+        "park_or_site": "Norquay Park",
+        "mapid": "DFPB0115",
+        "location": "front of wading pool",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0508127,
+          49.2382783
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0118",
+      "properties": {
+        "id": "fountain_DFPB0118",
+        "facility_type": "drinking_fountains",
+        "name": "Oak Park - East of spray park 飲水機",
+        "park_or_site": "Oak Park - East of spray park",
+        "mapid": "DFPB0118",
+        "location": "In spray park",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1273723,
+          49.2166898
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0120",
+      "properties": {
+        "id": "fountain_DFPB0120",
+        "facility_type": "drinking_fountains",
+        "name": "Pandora Park 飲水機",
+        "park_or_site": "Pandora Park",
+        "mapid": "DFPB0120",
+        "location": "N-side of wading pool",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0573907,
+          49.2824194
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0122",
+      "properties": {
+        "id": "fountain_DFPB0122",
+        "facility_type": "drinking_fountains",
+        "name": "Pioneer Place (Pigeon Park) 飲水機",
+        "park_or_site": "Pioneer Place (Pigeon Park)",
+        "mapid": "DFPB0122",
+        "location": "",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1044899,
+          49.2817691
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0131",
+      "properties": {
+        "id": "fountain_DFPB0131",
+        "facility_type": "drinking_fountains",
+        "name": "Ross Park 飲水機",
+        "park_or_site": "Ross Park",
+        "mapid": "DFPB0131",
+        "location": "near shelter",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Sunset"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.08262,
+          49.2170518
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0134",
+      "properties": {
+        "id": "fountain_DFPB0134",
+        "facility_type": "drinking_fountains",
+        "name": "Rupert Park - South of golf entrance booth 飲水機",
+        "park_or_site": "Rupert Park - South of golf entrance booth",
+        "mapid": "DFPB0134",
+        "location": "S-side of golf entrance booth",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0306205,
+          49.273177
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0161",
+      "properties": {
+        "id": "fountain_DFPB0161",
+        "facility_type": "drinking_fountains",
+        "name": "Stanley Park - Dog Off-leash area 飲水機",
+        "park_or_site": "Stanley Park - Dog Off-leash area",
+        "mapid": "DFPB0161",
+        "location": "Beside Dog off-leash area",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.148332,
+          49.310653
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0156",
+      "properties": {
+        "id": "fountain_DFPB0156",
+        "facility_type": "drinking_fountains",
+        "name": "Stanley Park - Prospect Point Picnic Site 飲水機",
+        "park_or_site": "Stanley Park - Prospect Point Picnic Site",
+        "mapid": "DFPB0156",
+        "location": "Prospect Point picnic area",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1481884,
+          49.3107247
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0168",
+      "properties": {
+        "id": "fountain_DFPB0168",
+        "facility_type": "drinking_fountains",
+        "name": "Sutcliffe Park 飲水機",
+        "park_or_site": "Sutcliffe Park",
+        "mapid": "DFPB0168",
+        "location": "S-side of false creek communit",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1340162,
+          49.2692269
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0170",
+      "properties": {
+        "id": "fountain_DFPB0170",
+        "facility_type": "drinking_fountains",
+        "name": "Tecumseh Park 飲水機",
+        "park_or_site": "Tecumseh Park",
+        "mapid": "DFPB0170",
+        "location": "middle of park",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Victoria-Fraserview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0701759,
+          49.2297128
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0173",
+      "properties": {
+        "id": "fountain_DFPB0173",
+        "facility_type": "drinking_fountains",
+        "name": "Trillium Park 飲水機",
+        "park_or_site": "Trillium Park",
+        "mapid": "DFPB0173",
+        "location": "on west side of building",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0931069,
+          49.2750664
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0183",
+      "properties": {
+        "id": "fountain_DFPB0183",
+        "facility_type": "drinking_fountains",
+        "name": "West Point Grey Park - North of wading pool 飲水機",
+        "park_or_site": "West Point Grey Park - North of wading pool",
+        "mapid": "DFPB0183",
+        "location": "N-side of wading pool",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "West Point Grey"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.2052476,
+          49.2661268
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0504",
+      "properties": {
+        "id": "fountain_DFENG0504",
+        "facility_type": "drinking_fountains",
+        "name": "Bottle Filling Station location: \nKitsilano Pumping Station 飲水機",
+        "park_or_site": "Bottle Filling Station location: \nKitsilano Pumping Station",
+        "mapid": "DFENG0504",
+        "location": "North side of sewage pumping station on w/s/ 1300 Arbutus",
+        "maintainer": "Engineering",
+        "in_operation": "Year Round",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1527806,
+          49.2737142
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0003",
+      "properties": {
+        "id": "fountain_DFENG0003",
+        "facility_type": "drinking_fountains",
+        "name": "4th & Arbutus 飲水機",
+        "park_or_site": "4th & Arbutus",
+        "mapid": "DFENG0003",
+        "location": "Northeast corner of 4th & Arbutus",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.152706,
+          49.2682278
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0024",
+      "properties": {
+        "id": "fountain_DFENG0024",
+        "facility_type": "drinking_fountains",
+        "name": "Burrard & Davie 飲水機",
+        "park_or_site": "Burrard & Davie",
+        "mapid": "DFENG0024",
+        "location": "Northwest corner of Burrard & Davie",
+        "maintainer": "Engineering",
+        "in_operation": "Year Round",
+        "pet_friendly": "一般飲水",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1292321,
+          49.2792475
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0034",
+      "properties": {
+        "id": "fountain_DFENG0034",
+        "facility_type": "drinking_fountains",
+        "name": "Hastings & Kamloops 飲水機",
+        "park_or_site": "Hastings & Kamloops",
+        "mapid": "DFENG0034",
+        "location": "Northeast corner of Hastings & Kamloops",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.054448,
+          49.280998
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0008",
+      "properties": {
+        "id": "fountain_DFENG0008",
+        "facility_type": "drinking_fountains",
+        "name": "Nicola & Beach 飲水機",
+        "park_or_site": "Nicola & Beach",
+        "mapid": "DFENG0008",
+        "location": "Northeast corner of Nicola & Beach",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.140508,
+          49.282385
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0042",
+      "properties": {
+        "id": "fountain_DFENG0042",
+        "facility_type": "drinking_fountains",
+        "name": "Fountain location: W 63rd Avenue & Yukon Street 飲水機",
+        "park_or_site": "Fountain location: W 63rd Avenue & Yukon Street",
+        "mapid": "DFENG0042",
+        "location": "Southeast corner of W 63rd Avenue & Yukon Street",
+        "maintainer": "Engineering",
+        "in_operation": "Year Round",
+        "pet_friendly": "一般飲水",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.114629,
+          49.213173
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0038",
+      "properties": {
+        "id": "fountain_DFENG0038",
+        "facility_type": "drinking_fountains",
+        "name": "Fountain location:Nelson & Howe 飲水機",
+        "park_or_site": "Fountain location:Nelson & Howe",
+        "mapid": "DFENG0038",
+        "location": "Southeast corner of Nelson & Howe",
+        "maintainer": "Engineering",
+        "in_operation": "Year Round",
+        "pet_friendly": "一般飲水",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.123513,
+          49.279672
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0703",
+      "properties": {
+        "id": "fountain_DFENG0703",
+        "facility_type": "drinking_fountains",
+        "name": "Temporary Fountain location: Main & E Hastings 飲水機",
+        "park_or_site": "Temporary Fountain location: Main & E Hastings",
+        "mapid": "DFENG0703",
+        "location": "NW corner of E Hastings St and Main St",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.099907,
+          49.281431
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0706",
+      "properties": {
+        "id": "fountain_DFENG0706",
+        "facility_type": "drinking_fountains",
+        "name": "Temporary Fountain location: Powell & Gore 飲水機",
+        "park_or_site": "Temporary Fountain location: Powell & Gore",
+        "mapid": "DFENG0706",
+        "location": "SW corner of Powell St and Gore Ave",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.097852,
+          49.283263
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0014",
+      "properties": {
+        "id": "fountain_DFPB0014",
+        "facility_type": "drinking_fountains",
+        "name": "Carnarvon Park 飲水機",
+        "park_or_site": "Carnarvon Park",
+        "mapid": "DFPB0014",
+        "location": "S-side of wading pool",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Arbutus-Ridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1724994,
+          49.2570316
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0036",
+      "properties": {
+        "id": "fountain_DFPB0036",
+        "facility_type": "drinking_fountains",
+        "name": "Douglas Park (community centre) 飲水機",
+        "park_or_site": "Douglas Park (community centre)",
+        "mapid": "DFPB0036",
+        "location": "exterior of building",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "South Cambie"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1224871,
+          49.2520416
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0039",
+      "properties": {
+        "id": "fountain_DFPB0039",
+        "facility_type": "drinking_fountains",
+        "name": "Emery Barnes Park - Dog off-leash area 飲水機",
+        "park_or_site": "Emery Barnes Park - Dog off-leash area",
+        "mapid": "DFPB0039",
+        "location": "",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1237811,
+          49.2770971
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0046",
+      "properties": {
+        "id": "fountain_DFPB0046",
+        "facility_type": "drinking_fountains",
+        "name": "Fraser River Park - park entrance by Angus Dr 飲水機",
+        "park_or_site": "Fraser River Park - park entrance by Angus Dr",
+        "mapid": "DFPB0046",
+        "location": "near park entrance by Angus Dr",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kerrisdale"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1493224,
+          49.2072346
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0063",
+      "properties": {
+        "id": "fountain_DFPB0063",
+        "facility_type": "drinking_fountains",
+        "name": "Hastings Community Park - South of wading pool 飲水機",
+        "park_or_site": "Hastings Community Park - South of wading pool",
+        "mapid": "DFPB0063",
+        "location": "besides wading pool",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0382055,
+          49.2804852
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0076",
+      "properties": {
+        "id": "fountain_DFPB0076",
+        "facility_type": "drinking_fountains",
+        "name": "Kaslo Park 飲水機",
+        "park_or_site": "Kaslo Park",
+        "mapid": "DFPB0076",
+        "location": "SE corner of tennis courts",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0451366,
+          49.2640598
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0078",
+      "properties": {
+        "id": "fountain_DFPB0078",
+        "facility_type": "drinking_fountains",
+        "name": "Kerrisdale Centennial Park 飲水機",
+        "park_or_site": "Kerrisdale Centennial Park",
+        "mapid": "DFPB0078",
+        "location": "2nd N-side entrance",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kerrisdale"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1571854,
+          49.2334362
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0084",
+      "properties": {
+        "id": "fountain_DFPB0084",
+        "facility_type": "drinking_fountains",
+        "name": "Kitsilano Beach Park - North of parking lot 飲水機",
+        "park_or_site": "Kitsilano Beach Park - North of parking lot",
+        "mapid": "DFPB0084",
+        "location": "besides parking lot",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1517283,
+          49.2768451
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0102",
+      "properties": {
+        "id": "fountain_DFPB0102",
+        "facility_type": "drinking_fountains",
+        "name": "Memorial South Park - West of Softball Diamond 飲水機",
+        "park_or_site": "Memorial South Park - West of Softball Diamond",
+        "mapid": "DFPB0102",
+        "location": "",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Sunset"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0847573,
+          49.2316281
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0104",
+      "properties": {
+        "id": "fountain_DFPB0104",
+        "facility_type": "drinking_fountains",
+        "name": "Memorial West Park 飲水機",
+        "park_or_site": "Memorial West Park",
+        "mapid": "DFPB0104",
+        "location": "S of tennis courts",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Dunbar-Southlands"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1872816,
+          49.2434634
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0109",
+      "properties": {
+        "id": "fountain_DFPB0109",
+        "facility_type": "drinking_fountains",
+        "name": "Mount Pleasant Park 飲水機",
+        "park_or_site": "Mount Pleasant Park",
+        "mapid": "DFPB0109",
+        "location": "S-side of wading pool",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.106431,
+          49.2569707
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0133",
+      "properties": {
+        "id": "fountain_DFPB0133",
+        "facility_type": "drinking_fountains",
+        "name": "Ross Park 飲水機",
+        "park_or_site": "Ross Park",
+        "mapid": "DFPB0133",
+        "location": "in front of wading pool",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Sunset"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.082419,
+          49.2169158
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0191",
+      "properties": {
+        "id": "fountain_DFPB0191",
+        "facility_type": "drinking_fountains",
+        "name": "Shannon Mews Park 飲水機",
+        "park_or_site": "Shannon Mews Park",
+        "mapid": "DFPB0191",
+        "location": "",
+        "maintainer": "Parks",
+        "in_operation": "開放中",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kerrisdale"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1414767,
+          49.2197027
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0138",
+      "properties": {
+        "id": "fountain_DFPB0138",
+        "facility_type": "drinking_fountains",
+        "name": "Slocan Greenway 飲水機",
+        "park_or_site": "Slocan Greenway",
+        "mapid": "DFPB0138",
+        "location": "12th and slocan",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0497357,
+          49.25836
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFPB0181",
+      "properties": {
+        "id": "fountain_DFPB0181",
+        "facility_type": "drinking_fountains",
+        "name": "West End minipark - JERVIS ST @ BURNABY ST 飲水機",
+        "park_or_site": "West End minipark - JERVIS ST @ BURNABY ST",
+        "mapid": "DFPB0181",
+        "location": "north end",
+        "maintainer": "Parks",
+        "in_operation": "春季至秋季開放",
+        "pet_friendly": "一般飲水",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1360371,
+          49.2820932
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0807",
+      "properties": {
+        "id": "fountain_DFENG0807",
+        "facility_type": "drinking_fountains",
+        "name": "Temporary Misting Station location: Nelson Park 飲水機",
+        "park_or_site": "Temporary Misting Station location: Nelson Park",
+        "mapid": "DFENG0807",
+        "location": "NW corner of Thurlow St & Comox St",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.129159,
+          49.281931
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0012",
+      "properties": {
+        "id": "fountain_DFENG0012",
+        "facility_type": "drinking_fountains",
+        "name": "37th & Oak 飲水機",
+        "park_or_site": "37th & Oak",
+        "mapid": "DFENG0012",
+        "location": "Southeast corner of 37th & Oak",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "South Cambie"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.127384,
+          49.237587
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0018",
+      "properties": {
+        "id": "fountain_DFENG0018",
+        "facility_type": "drinking_fountains",
+        "name": "37th & Prince Edward 飲水機",
+        "park_or_site": "37th & Prince Edward",
+        "mapid": "DFENG0018",
+        "location": "Northwest corner of 37th & Prince Edward",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Riley Park"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0972829,
+          49.2371952
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0020",
+      "properties": {
+        "id": "fountain_DFENG0020",
+        "facility_type": "drinking_fountains",
+        "name": "Hastings & Gore 飲水機",
+        "park_or_site": "Hastings & Gore",
+        "mapid": "DFENG0020",
+        "location": "Northeast corner of Hastings & Gore",
+        "maintainer": "Engineering",
+        "in_operation": "Year Round",
+        "pet_friendly": "一般飲水",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.097231,
+          49.281386
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0036",
+      "properties": {
+        "id": "fountain_DFENG0036",
+        "facility_type": "drinking_fountains",
+        "name": "Fountain location:Pt.Grey & MacDonald 飲水機",
+        "park_or_site": "Fountain location:Pt.Grey & MacDonald",
+        "mapid": "DFENG0036",
+        "location": "Northwest corner of Pt. Grey & MacDonald",
+        "maintainer": "Engineering",
+        "in_operation": "Year Round",
+        "pet_friendly": "一般飲水",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.167863,
+          49.271674
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fountain_DFENG0604",
+      "properties": {
+        "id": "fountain_DFENG0604",
+        "facility_type": "drinking_fountains",
+        "name": "Temporary Handwashing Station location: Dunlevy & E Cordova 飲水機",
+        "park_or_site": "Temporary Handwashing Station location: Dunlevy & E Cordova",
+        "mapid": "DFENG0604",
+        "location": "255 Dunlevy Av",
+        "maintainer": "Engineering",
+        "in_operation": "May-October",
+        "pet_friendly": "一般飲水",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.095427,
+          49.282337
+        ]
+      }
+    }
+  ]
+}

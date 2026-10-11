@@ -1,0 +1,5675 @@
+{
+  "type": "FeatureCollection",
+  "generator": "VancouverGodsEye",
+  "total_count": 218,
+  "features": [
+    {
+      "type": "Feature",
+      "id": "park_1",
+      "properties": {
+        "id": "park_1",
+        "facility_type": "parks",
+        "name": "Arbutus Village Park",
+        "parkid": 1,
+        "street_address": "4202 Valley Drive",
+        "intersection": "King Edward Avenue & Valley Drive",
+        "neighbourhood": "Arbutus-Ridge",
+        "hectare": 1.41,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Arbutus-Ridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.15525,
+          49.249783
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_8",
+      "properties": {
+        "id": "park_8",
+        "facility_type": "parks",
+        "name": "Trafalgar Park",
+        "parkid": 8,
+        "street_address": "2610 W 23rd Avenue",
+        "intersection": "W 23rd Avenue & Valley Drive",
+        "neighbourhood": "Arbutus-Ridge",
+        "hectare": 4.85,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Arbutus-Ridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.161879,
+          49.25046
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_14",
+      "properties": {
+        "id": "park_14",
+        "facility_type": "parks",
+        "name": "Coopers' Park",
+        "parkid": 14,
+        "street_address": "1020 Marinaside Crescent",
+        "intersection": "Nelson Street & Marinaside Crescent",
+        "neighbourhood": "Downtown",
+        "hectare": 1.71,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "Y",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1139,
+          49.273253
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_18",
+      "properties": {
+        "id": "park_18",
+        "facility_type": "parks",
+        "name": "Devonian Harbour Park",
+        "parkid": 18,
+        "street_address": "1929 W Georgia Street",
+        "intersection": "W Georgia Street & Denman Street",
+        "neighbourhood": "Downtown",
+        "hectare": 4.42,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "Y",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.134654,
+          49.294353
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_20",
+      "properties": {
+        "id": "park_20",
+        "facility_type": "parks",
+        "name": "Emery Barnes Park",
+        "parkid": 20,
+        "street_address": "1170 Richards Street",
+        "intersection": "Davie Street & Richards Street",
+        "neighbourhood": "Downtown",
+        "hectare": 0.85,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.123995,
+          49.276458
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_32",
+      "properties": {
+        "id": "park_32",
+        "facility_type": "parks",
+        "name": "Wendy Poole Park",
+        "parkid": 32,
+        "street_address": "199 Alexander Street",
+        "intersection": "Alexander Street & Main Street",
+        "neighbourhood": "Downtown",
+        "hectare": 0.04,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.099666,
+          49.284296
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_38",
+      "properties": {
+        "id": "park_38",
+        "facility_type": "parks",
+        "name": "Deering Island Park",
+        "parkid": 38,
+        "street_address": "3530 Deering Island Pl.",
+        "intersection": "Deering Island Place & Carrington Street",
+        "neighbourhood": "Dunbar-Southlands",
+        "hectare": 0.74,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Dunbar-Southlands"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.184356,
+          49.218288
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_42",
+      "properties": {
+        "id": "park_42",
+        "facility_type": "parks",
+        "name": "Valdez Park",
+        "parkid": 42,
+        "street_address": "3210 W 22nd Avenue",
+        "intersection": "W 22nd Avenue & Balaclava Street",
+        "neighbourhood": "Dunbar-Southlands",
+        "hectare": 0.77,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Dunbar-Southlands"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1764,
+          49.252391
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_48",
+      "properties": {
+        "id": "park_48",
+        "facility_type": "parks",
+        "name": "Willow Park",
+        "parkid": 48,
+        "street_address": "802 W 7th Avenue",
+        "intersection": "W 7th Avenue & Willow Street",
+        "neighbourhood": "Fairview",
+        "hectare": 0.07,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.122031,
+          49.264868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_49",
+      "properties": {
+        "id": "park_49",
+        "facility_type": "parks",
+        "name": "Alice Townley Park",
+        "parkid": 49,
+        "street_address": "1775 Woodland Drive",
+        "intersection": "E 2nd Avenue & Woodland Drive",
+        "neighbourhood": "Grandview-Woodland",
+        "hectare": 0.22,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.073923,
+          49.268974
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_50",
+      "properties": {
+        "id": "park_50",
+        "facility_type": "parks",
+        "name": "Cambridge Park",
+        "parkid": 50,
+        "street_address": "2099 Wall Street",
+        "intersection": "Cambridge Street & Wall Street",
+        "neighbourhood": "Grandview-Woodland",
+        "hectare": 0.19,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.062784,
+          49.286753
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_54",
+      "properties": {
+        "id": "park_54",
+        "facility_type": "parks",
+        "name": "McSpadden Park",
+        "parkid": 54,
+        "street_address": "2125 Victoria Drive",
+        "intersection": "E 5th Avenue & Victoria Drive",
+        "neighbourhood": "Grandview-Woodland",
+        "hectare": 1.62,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.066601,
+          49.265936
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_55",
+      "properties": {
+        "id": "park_55",
+        "facility_type": "parks",
+        "name": "Mosaic Creek Park",
+        "parkid": 55,
+        "street_address": "1475 Charles Street",
+        "intersection": "Charles Street & McLean Drive",
+        "neighbourhood": "Grandview-Woodland",
+        "hectare": 0.11,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.074121,
+          49.273323
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_58",
+      "properties": {
+        "id": "park_58",
+        "facility_type": "parks",
+        "name": "Salsbury Park",
+        "parkid": 58,
+        "street_address": "1806 Adanac Street",
+        "intersection": "Adanac Street & Salsbury Drive",
+        "neighbourhood": "Grandview-Woodland",
+        "hectare": 0.17,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.067926,
+          49.277291
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_62",
+      "properties": {
+        "id": "park_62",
+        "facility_type": "parks",
+        "name": "Victoria Park",
+        "parkid": 62,
+        "street_address": "1425 Victoria Drive",
+        "intersection": "Kitchener Street & Victoria Drive",
+        "neighbourhood": "Grandview-Woodland",
+        "hectare": 0.89,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.06673,
+          49.271694
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_63",
+      "properties": {
+        "id": "park_63",
+        "facility_type": "parks",
+        "name": "W.C. Shelly Park",
+        "parkid": 63,
+        "street_address": "1500 E 8th Avenue",
+        "intersection": "E 8th Avenue & Woodland Drive",
+        "neighbourhood": "Grandview-Woodland",
+        "hectare": 0.3,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.072931,
+          49.263034
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_67",
+      "properties": {
+        "id": "park_67",
+        "facility_type": "parks",
+        "name": "Burrard View Park",
+        "parkid": 67,
+        "street_address": "650 North Penticton Street",
+        "intersection": "Wall Street & N Penticton Street",
+        "neighbourhood": "Hastings-Sunrise",
+        "hectare": 2.76,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.050513,
+          49.291253
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_68",
+      "properties": {
+        "id": "park_68",
+        "facility_type": "parks",
+        "name": "Callister Park",
+        "parkid": 68,
+        "street_address": "2875 Oxford Street",
+        "intersection": "Oxford Street & Renfrew Street",
+        "neighbourhood": "Hastings-Sunrise",
+        "hectare": 1.45,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.045363,
+          49.286214
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_73",
+      "properties": {
+        "id": "park_73",
+        "facility_type": "parks",
+        "name": "Hastings Community Park",
+        "parkid": 73,
+        "street_address": "3000 E Pender Street",
+        "intersection": "E Pender Street & E Hastings Street",
+        "neighbourhood": "Hastings-Sunrise",
+        "hectare": 4.19,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.038884,
+          49.280637
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_74",
+      "properties": {
+        "id": "park_74",
+        "facility_type": "parks",
+        "name": "Kaslo Park",
+        "parkid": 74,
+        "street_address": "2851 E 7th Avenue",
+        "intersection": "E 7th Avenue & Kaslo Street",
+        "neighbourhood": "Hastings-Sunrise",
+        "hectare": 0.45,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.046012,
+          49.264099
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_77",
+      "properties": {
+        "id": "park_77",
+        "facility_type": "parks",
+        "name": "Sunrise Park",
+        "parkid": 77,
+        "street_address": "1950 Windermere Street",
+        "intersection": "E 5th Avenue & Windermere Street",
+        "neighbourhood": "Hastings-Sunrise",
+        "hectare": 3.18,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.035037,
+          49.266612
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_79",
+      "properties": {
+        "id": "park_79",
+        "facility_type": "parks",
+        "name": "Brewers Park",
+        "parkid": 79,
+        "street_address": "4175 Victoria Drive",
+        "intersection": "E 26th Avenue & Victoria Drive",
+        "neighbourhood": "Kensington-Cedar Cottage",
+        "hectare": 1.38,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.066461,
+          49.247695
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_81",
+      "properties": {
+        "id": "park_81",
+        "facility_type": "parks",
+        "name": "Clark Park",
+        "parkid": 81,
+        "street_address": "1500 E 14th Avenue",
+        "intersection": "E 14th Avenue & Commercial Drive",
+        "neighbourhood": "Kensington-Cedar Cottage",
+        "hectare": 4.28,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.072405,
+          49.257142
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_83",
+      "properties": {
+        "id": "park_83",
+        "facility_type": "parks",
+        "name": "Glen Park",
+        "parkid": 83,
+        "street_address": "3999 Glen Drive",
+        "intersection": "E 24th Avenue & Glen Drive",
+        "neighbourhood": "Kensington-Cedar Cottage",
+        "hectare": 1.09,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.082823,
+          49.249576
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_86",
+      "properties": {
+        "id": "park_86",
+        "facility_type": "parks",
+        "name": "Jones Park",
+        "parkid": 86,
+        "street_address": "5350 Commercial Street",
+        "intersection": "E 38th Avenue & Commercial Street",
+        "neighbourhood": "Kensington-Cedar Cottage",
+        "hectare": 1.42,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.067051,
+          49.235945
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_89",
+      "properties": {
+        "id": "park_89",
+        "facility_type": "parks",
+        "name": "Sunnyside Park",
+        "parkid": 89,
+        "street_address": "1100 E 17th Avenue",
+        "intersection": "E 17th Avenue & Inverness Street",
+        "neighbourhood": "Kensington-Cedar Cottage",
+        "hectare": 0.97,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.080752,
+          49.254924
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_95",
+      "properties": {
+        "id": "park_95",
+        "facility_type": "parks",
+        "name": "Malkin Park",
+        "parkid": 95,
+        "street_address": "6001 Balaclava Street",
+        "intersection": "W 44th Avenue & Balaclava Street",
+        "neighbourhood": "Kerrisdale",
+        "hectare": 2.42,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kerrisdale"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.176845,
+          49.231959
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_97",
+      "properties": {
+        "id": "park_97",
+        "facility_type": "parks",
+        "name": "McCleery Park",
+        "parkid": 97,
+        "street_address": "6501 Marine Crescent",
+        "intersection": "W 49th Avenue & Marine Crescent",
+        "neighbourhood": "Kerrisdale",
+        "hectare": 0.25,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kerrisdale"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.164155,
+          49.226973
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_98",
+      "properties": {
+        "id": "park_98",
+        "facility_type": "parks",
+        "name": "McCleery Golf Course",
+        "parkid": 98,
+        "street_address": "7188 Macdonald Street",
+        "intersection": "W 55th Avenue & MacDonald Street",
+        "neighbourhood": "Kerrisdale",
+        "hectare": 48.57,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kerrisdale"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.170066,
+          49.220813
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_101",
+      "properties": {
+        "id": "park_101",
+        "facility_type": "parks",
+        "name": "Everett Crowley Park",
+        "parkid": 101,
+        "street_address": "8200 Kerr Street",
+        "intersection": "SE Marine Drive & Kerr Street",
+        "neighbourhood": "Killarney",
+        "hectare": 38.08,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.036321,
+          49.210985
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_103",
+      "properties": {
+        "id": "park_103",
+        "facility_type": "parks",
+        "name": "Killarney Park",
+        "parkid": 103,
+        "street_address": "6205 Kerr Street",
+        "intersection": "Waverley Street & Kerr Street",
+        "neighbourhood": "Killarney",
+        "hectare": 13.36,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.04413,
+          49.227998
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_104",
+      "properties": {
+        "id": "park_104",
+        "facility_type": "parks",
+        "name": "Kinross Ravine Park",
+        "parkid": 104,
+        "street_address": "3350 SE Marine Drive",
+        "intersection": "3350 SE Marine Drive & Kinross Street",
+        "neighbourhood": "Killarney",
+        "hectare": 1.2,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.036128,
+          49.207509
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_106",
+      "properties": {
+        "id": "park_106",
+        "facility_type": "parks",
+        "name": "Almond Park",
+        "parkid": 106,
+        "street_address": "3600 W 12th Avenue",
+        "intersection": "W 12th Avenue & Dunbar Street",
+        "neighbourhood": "Kitsilano",
+        "hectare": 1.61,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.184543,
+          49.261014
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_108",
+      "properties": {
+        "id": "park_108",
+        "facility_type": "parks",
+        "name": "Connaught Park",
+        "parkid": 108,
+        "street_address": "2390 W 10th Avenue",
+        "intersection": "W 10th Avenue & Vine Street",
+        "neighbourhood": "Kitsilano",
+        "hectare": 5.98,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.160025,
+          49.262026
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_109",
+      "properties": {
+        "id": "park_109",
+        "facility_type": "parks",
+        "name": "Delamont Park",
+        "parkid": 109,
+        "street_address": "2091 W 7th Avenue",
+        "intersection": "W 7th Avenue & Arbutus Street",
+        "neighbourhood": "Kitsilano",
+        "hectare": 0.22,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.152426,
+          49.265808
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_114",
+      "properties": {
+        "id": "park_114",
+        "facility_type": "parks",
+        "name": "McBride Park",
+        "parkid": 114,
+        "street_address": "3350 W 4th Avenue",
+        "intersection": "W 4th Avenue & Waterloo Street",
+        "neighbourhood": "Kitsilano",
+        "hectare": 1.71,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.179732,
+          49.268073
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_115",
+      "properties": {
+        "id": "park_115",
+        "facility_type": "parks",
+        "name": "Point Grey Park Site at Musqueamview Street",
+        "parkid": 115,
+        "street_address": "3215 Point Grey Road",
+        "intersection": "Point Grey Road & Musqueamview Street",
+        "neighbourhood": "Kitsilano",
+        "hectare": 0.22,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.17617,
+          49.271658
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_126",
+      "properties": {
+        "id": "park_126",
+        "facility_type": "parks",
+        "name": "Oak Park",
+        "parkid": 126,
+        "street_address": "900 W 59th Avenue",
+        "intersection": "W 59th Avenue & Oak Street",
+        "neighbourhood": "Marpole",
+        "hectare": 5.25,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.128319,
+          49.215497
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_127",
+      "properties": {
+        "id": "park_127",
+        "facility_type": "parks",
+        "name": "Riverview Park",
+        "parkid": 127,
+        "street_address": "1751 W 66th Avenue",
+        "intersection": "W 66th Avenue & Angus Drive",
+        "neighbourhood": "Marpole",
+        "hectare": 2.38,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.147342,
+          49.212238
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_131",
+      "properties": {
+        "id": "park_131",
+        "facility_type": "parks",
+        "name": "Winona Park",
+        "parkid": 131,
+        "street_address": "7575 Columbia Street",
+        "intersection": "W 59th Avenue & Columbia Street",
+        "neighbourhood": "Marpole",
+        "hectare": 5.31,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.114024,
+          49.215431
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_136",
+      "properties": {
+        "id": "park_136",
+        "facility_type": "parks",
+        "name": "Guelph Park",
+        "parkid": 136,
+        "street_address": "2390 Brunswick Street",
+        "intersection": "E 7th Avenue & Brunswick Street",
+        "neighbourhood": "Mount Pleasant",
+        "hectare": 1.04,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.095837,
+          49.263965
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_137",
+      "properties": {
+        "id": "park_137",
+        "facility_type": "parks",
+        "name": "Jonathan Rogers Park",
+        "parkid": 137,
+        "street_address": "110 W 7th Avenue",
+        "intersection": "W 7th Avenue & Manitoba Street",
+        "neighbourhood": "Mount Pleasant",
+        "hectare": 1.4,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.108174,
+          49.264334
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_140",
+      "properties": {
+        "id": "park_140",
+        "facility_type": "parks",
+        "name": "Robson Park",
+        "parkid": 140,
+        "street_address": "599 Kingsway",
+        "intersection": "Kingsway & St. George Street",
+        "neighbourhood": "Mount Pleasant",
+        "hectare": 1.56,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.091798,
+          49.258229
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_142",
+      "properties": {
+        "id": "park_142",
+        "facility_type": "parks",
+        "name": "Cambie Park",
+        "parkid": 142,
+        "street_address": "500 W 54th Avenue",
+        "intersection": "W 54th Avenue & Cambie Street",
+        "neighbourhood": "Oakridge",
+        "hectare": 0.93,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Oakridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.117988,
+          49.221411
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_143",
+      "properties": {
+        "id": "park_143",
+        "facility_type": "parks",
+        "name": "Columbia Park",
+        "parkid": 143,
+        "street_address": "5908 Alberta Street",
+        "intersection": "W 42nd Avenue & Alberta Street",
+        "neighbourhood": "Oakridge",
+        "hectare": 2.78,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Oakridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.111978,
+          49.231521
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_147",
+      "properties": {
+        "id": "park_147",
+        "facility_type": "parks",
+        "name": "Tisdall Park",
+        "parkid": 147,
+        "street_address": "6210 Tisdall Street",
+        "intersection": "W 49th Avenue & Tisdall Street",
+        "neighbourhood": "Oakridge",
+        "hectare": 5.02,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "Y",
+        "local_area": "Oakridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.119693,
+          49.227725
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_148",
+      "properties": {
+        "id": "park_148",
+        "facility_type": "parks",
+        "name": "Beaconsfield Park",
+        "parkid": 148,
+        "street_address": "3215 Slocan Street",
+        "intersection": "E 15th Avenue & Slocan Street",
+        "neighbourhood": "Renfrew-Collingwood",
+        "hectare": 4.43,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.051302,
+          49.255546
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_151",
+      "properties": {
+        "id": "park_151",
+        "facility_type": "parks",
+        "name": "Collingwood Park",
+        "parkid": 151,
+        "street_address": "5275 McKinnon Street",
+        "intersection": "Euclid Street & McKinnon Street",
+        "neighbourhood": "Renfrew-Collingwood",
+        "hectare": 1.27,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.036887,
+          49.237066
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_157",
+      "properties": {
+        "id": "park_157",
+        "facility_type": "parks",
+        "name": "Norquay Park",
+        "parkid": 157,
+        "street_address": "5050 Wales Street",
+        "intersection": "Kingsway & Wales Street",
+        "neighbourhood": "Renfrew-Collingwood",
+        "hectare": 2.26,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.051061,
+          49.237098
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_159",
+      "properties": {
+        "id": "park_159",
+        "facility_type": "parks",
+        "name": "Renfrew Community Park",
+        "parkid": 159,
+        "street_address": "2929 E 22nd Avenue",
+        "intersection": "E 22nd Avenue & Renfrew Street",
+        "neighbourhood": "Renfrew-Collingwood",
+        "hectare": 5.0,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.042896,
+          49.252129
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_160",
+      "properties": {
+        "id": "park_160",
+        "facility_type": "parks",
+        "name": "Renfrew Ravine Park",
+        "parkid": 160,
+        "street_address": "3900 Renfrew Street",
+        "intersection": "E 24th Avenue & Renfrew Street",
+        "neighbourhood": "Renfrew-Collingwood",
+        "hectare": 5.89,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.044111,
+          49.247166
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_161",
+      "properties": {
+        "id": "park_161",
+        "facility_type": "parks",
+        "name": "Slocan Park",
+        "parkid": 161,
+        "street_address": "2750 E 29th Avenue",
+        "intersection": "E 29th Avenue & Slocan Street",
+        "neighbourhood": "Renfrew-Collingwood",
+        "hectare": 4.14,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.047574,
+          49.243921
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_163",
+      "properties": {
+        "id": "park_163",
+        "facility_type": "parks",
+        "name": "Grimmett Park",
+        "parkid": 163,
+        "street_address": "169 E 19th Avenue",
+        "intersection": "E 19th Avenue & Quebec Street",
+        "neighbourhood": "Riley Park",
+        "hectare": 0.24,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Riley Park"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.102003,
+          49.253954
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_164",
+      "properties": {
+        "id": "park_164",
+        "facility_type": "parks",
+        "name": "Hillcrest Park",
+        "parkid": 164,
+        "street_address": "4501 Clancy Loranger Way",
+        "intersection": "Midlothian Avenue & Clancy Loranger Way",
+        "neighbourhood": "Riley Park",
+        "hectare": 7.51,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Riley Park"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.108417,
+          49.244734
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_167",
+      "properties": {
+        "id": "park_167",
+        "facility_type": "parks",
+        "name": "Queen Elizabeth Park",
+        "parkid": 167,
+        "street_address": "4600 Cambie Street",
+        "intersection": "W 29th Avenue & Cambie Street",
+        "neighbourhood": "Riley Park",
+        "hectare": 52.98,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Riley Park"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.112028,
+          49.240978
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_168",
+      "properties": {
+        "id": "park_168",
+        "facility_type": "parks",
+        "name": "Riley Park",
+        "parkid": 168,
+        "street_address": "50 E 30th Avenue",
+        "intersection": "E 30th Avenue & Ontario Street",
+        "neighbourhood": "Riley Park",
+        "hectare": 2.7,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Riley Park"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.104361,
+          49.241987
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_171",
+      "properties": {
+        "id": "park_171",
+        "facility_type": "parks",
+        "name": "Kerrisdale Park",
+        "parkid": 171,
+        "street_address": "5670 E Boulevard",
+        "intersection": "W 39th Avenue & East Boulevard",
+        "neighbourhood": "Shaughnessy",
+        "hectare": 2.99,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Shaughnessy"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.152674,
+          49.235725
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_173",
+      "properties": {
+        "id": "park_173",
+        "facility_type": "parks",
+        "name": "VanDusen Botanical Garden",
+        "parkid": 173,
+        "street_address": "5251 Oak Street",
+        "intersection": "W 37th Avenue & Oak Street",
+        "neighbourhood": "Shaughnessy",
+        "hectare": 22.29,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Shaughnessy"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.131293,
+          49.239181
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_181",
+      "properties": {
+        "id": "park_181",
+        "facility_type": "parks",
+        "name": "Strathcona Park",
+        "parkid": 181,
+        "street_address": "857 Malkin Avenue",
+        "intersection": "Malkin Avenue & Hawks Avenue",
+        "neighbourhood": "Strathcona",
+        "hectare": 10.07,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.084674,
+          49.275276
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_183",
+      "properties": {
+        "id": "park_183",
+        "facility_type": "parks",
+        "name": "Thornton Park",
+        "parkid": 183,
+        "street_address": "1166 Main Street",
+        "intersection": "Terminal Avenue & Main Street",
+        "neighbourhood": "Strathcona",
+        "hectare": 1.49,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.099212,
+          49.273946
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_184",
+      "properties": {
+        "id": "park_184",
+        "facility_type": "parks",
+        "name": "George Park",
+        "parkid": 184,
+        "street_address": "500 E 63rd Avenue",
+        "intersection": "E 63rd Avenue & St. George Street",
+        "neighbourhood": "Sunset",
+        "hectare": 1.43,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Sunset"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.094228,
+          49.212608
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_186",
+      "properties": {
+        "id": "park_186",
+        "facility_type": "parks",
+        "name": "Memorial South Park",
+        "parkid": 186,
+        "street_address": "5955 Ross Street",
+        "intersection": "E 41st Avenue & Ross Street",
+        "neighbourhood": "Sunset",
+        "hectare": 13.59,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Sunset"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.085138,
+          49.230901
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_187",
+      "properties": {
+        "id": "park_187",
+        "facility_type": "parks",
+        "name": "Moberly Park",
+        "parkid": 187,
+        "street_address": "7646 Prince Albert Street",
+        "intersection": "E 59th Avenue & Prince Albert Street",
+        "neighbourhood": "Sunset",
+        "hectare": 3.6,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Sunset"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.086219,
+          49.215602
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_188",
+      "properties": {
+        "id": "park_188",
+        "facility_type": "parks",
+        "name": "Ross Park",
+        "parkid": 188,
+        "street_address": "7402 Ross Street",
+        "intersection": "E 59th Avenue & Ross Street",
+        "neighbourhood": "Sunset",
+        "hectare": 1.51,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Sunset"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.082351,
+          49.217276
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_192",
+      "properties": {
+        "id": "park_192",
+        "facility_type": "parks",
+        "name": "Fraserview Park",
+        "parkid": 192,
+        "street_address": "7595 Victoria Drive",
+        "intersection": "E 61st Avenue & Victoria Drive",
+        "neighbourhood": "Victoria-Fraserview",
+        "hectare": 1.27,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "Y",
+        "local_area": "Victoria-Fraserview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.067572,
+          49.215398
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_194",
+      "properties": {
+        "id": "park_194",
+        "facility_type": "parks",
+        "name": "Gordon Park",
+        "parkid": 194,
+        "street_address": "6675 Commercial Street",
+        "intersection": "E 49th Avenue & Commercial Street",
+        "neighbourhood": "Victoria-Fraserview",
+        "hectare": 6.51,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Victoria-Fraserview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.070491,
+          49.22338
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_199",
+      "properties": {
+        "id": "park_199",
+        "facility_type": "parks",
+        "name": "Alexandra Park",
+        "parkid": 199,
+        "street_address": "1755 Beach Avenue",
+        "intersection": "Beach Avenue & Bidwell Street",
+        "neighbourhood": "West End",
+        "hectare": 0.55,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14223,
+          49.28546
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_200",
+      "properties": {
+        "id": "park_200",
+        "facility_type": "parks",
+        "name": "Barclay Heritage Square",
+        "parkid": 200,
+        "street_address": "1433 Barclay Street",
+        "intersection": "Barclay Street & Nicola Street",
+        "neighbourhood": "West End",
+        "hectare": 0.56,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.132167,
+          49.28718
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_204",
+      "properties": {
+        "id": "park_204",
+        "facility_type": "parks",
+        "name": "Rosemont Park",
+        "parkid": 204,
+        "street_address": "3101 Rosemont Drive",
+        "intersection": "Rosemont Drive & Kerr Street",
+        "neighbourhood": "Killarney",
+        "hectare": 1.36,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.040816,
+          49.215746
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_209",
+      "properties": {
+        "id": "park_209",
+        "facility_type": "parks",
+        "name": "Langara Park",
+        "parkid": 209,
+        "street_address": "200 W 49th Avenue",
+        "intersection": "W 49th Avenue & Columbia Street",
+        "neighbourhood": "Oakridge",
+        "hectare": 1.21,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Oakridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.111506,
+          49.225093
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_213",
+      "properties": {
+        "id": "park_213",
+        "facility_type": "parks",
+        "name": "Park Site on Shaughnessy Street",
+        "parkid": 213,
+        "street_address": "9250 Shaughnessy Street",
+        "intersection": "Shaughnessy Street & None",
+        "neighbourhood": "Marpole",
+        "hectare": 0.56,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.125036,
+          49.202224
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_217",
+      "properties": {
+        "id": "park_217",
+        "facility_type": "parks",
+        "name": "Hastings Mill Park",
+        "parkid": 217,
+        "street_address": "1575 Alma Street",
+        "intersection": "Point Grey Road & Alma Street",
+        "neighbourhood": "West Point Grey",
+        "hectare": 1.23,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "West Point Grey"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.186689,
+          49.27279
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_222",
+      "properties": {
+        "id": "park_222",
+        "facility_type": "parks",
+        "name": "Westmount Park",
+        "parkid": 222,
+        "street_address": "4651 W 2nd Avenue",
+        "intersection": "W 2nd Avenue & Blanca Street",
+        "neighbourhood": "West Point Grey",
+        "hectare": 0.4,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "West Point Grey"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.214423,
+          49.271852
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_233",
+      "properties": {
+        "id": "park_233",
+        "facility_type": "parks",
+        "name": "Arbutus Greenway Park",
+        "parkid": 233,
+        "street_address": "2205 W11th Avenue",
+        "intersection": "W 11th Avenue & Arbutus Street",
+        "neighbourhood": "Kitsilano",
+        "hectare": 1.08,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.154927,
+          49.262283
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_235",
+      "properties": {
+        "id": "park_235",
+        "facility_type": "parks",
+        "name": "Granville Island Water Park",
+        "parkid": 235,
+        "street_address": "1348 Cartwright Street",
+        "intersection": "None & None",
+        "neighbourhood": "Fairview",
+        "hectare": 0.0,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.135064,
+          49.26955
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_237",
+      "properties": {
+        "id": "park_237",
+        "facility_type": "parks",
+        "name": "Yaletown Park",
+        "parkid": 237,
+        "street_address": "901 Mainland Street",
+        "intersection": "Mainland Street & Nelson Street",
+        "neighbourhood": "Downtown",
+        "hectare": 0.17,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.118921,
+          49.277042
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_238",
+      "properties": {
+        "id": "park_238",
+        "facility_type": "parks",
+        "name": "Carolina Park",
+        "parkid": 238,
+        "street_address": "2100 Carolina Street",
+        "intersection": "E 5th Avenue & Carolina Street",
+        "neighbourhood": "Mount Pleasant",
+        "hectare": 0.08,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.090778,
+          49.266401
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_241",
+      "properties": {
+        "id": "park_241",
+        "facility_type": "parks",
+        "name": "Habitat Island",
+        "parkid": 241,
+        "street_address": "1616 Columbia Street",
+        "intersection": "None & None",
+        "neighbourhood": "Mount Pleasant",
+        "hectare": 0.6,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.110791,
+          49.27221
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_244",
+      "properties": {
+        "id": "park_244",
+        "facility_type": "parks",
+        "name": "Fraser River Trail",
+        "parkid": 244,
+        "street_address": "9149 Hudson Street",
+        "intersection": "SW Marine Drive & Hudson Street",
+        "neighbourhood": "Marpole",
+        "hectare": 0.35,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.135862,
+          49.200357
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_2",
+      "properties": {
+        "id": "park_2",
+        "facility_type": "parks",
+        "name": "Carnarvon Park",
+        "parkid": 2,
+        "street_address": "2995 W 19th Avenue",
+        "intersection": "W 19th Avenue & Mackenzie Street",
+        "neighbourhood": "Arbutus-Ridge",
+        "hectare": 3.79,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Arbutus-Ridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.171406,
+          49.256555
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_13",
+      "properties": {
+        "id": "park_13",
+        "facility_type": "parks",
+        "name": "Coal Harbour Park",
+        "parkid": 13,
+        "street_address": "480 Broughton Street",
+        "intersection": "W Hastings Street & Broughton Street",
+        "neighbourhood": "Downtown",
+        "hectare": 0.95,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.125015,
+          49.289981
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_16",
+      "properties": {
+        "id": "park_16",
+        "facility_type": "parks",
+        "name": "David Lam Park",
+        "parkid": 16,
+        "street_address": "1300 Pacific Boulevard",
+        "intersection": "Drake Street & Pacific Boulevard",
+        "neighbourhood": "Downtown",
+        "hectare": 4.34,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "Y",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.124145,
+          49.272569
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_25",
+      "properties": {
+        "id": "park_25",
+        "facility_type": "parks",
+        "name": "May & Lorne Brown Park",
+        "parkid": 25,
+        "street_address": "801 Beach Avenue",
+        "intersection": "Beach Avenue & Hornby Street",
+        "neighbourhood": "Downtown",
+        "hectare": 0.25,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.132046,
+          49.275188
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_26",
+      "properties": {
+        "id": "park_26",
+        "facility_type": "parks",
+        "name": "Pioneer Place (Pigeon Park)",
+        "parkid": 26,
+        "street_address": "399 Carrall Street",
+        "intersection": "W Hastings Street & Carrall Street",
+        "neighbourhood": "Downtown",
+        "hectare": 0.03,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.104588,
+          49.281699
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_27",
+      "properties": {
+        "id": "park_27",
+        "facility_type": "parks",
+        "name": "Portal Park",
+        "parkid": 27,
+        "street_address": "1099 W Hastings Street",
+        "intersection": "W Hastings Street & Thurlow Street",
+        "neighbourhood": "Downtown",
+        "hectare": 0.1,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.119169,
+          49.288042
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_28",
+      "properties": {
+        "id": "park_28",
+        "facility_type": "parks",
+        "name": "CRAB Park at Portside",
+        "parkid": 28,
+        "street_address": "101 E Waterfront Road",
+        "intersection": "E Waterfront Road & Main Street",
+        "neighbourhood": "Downtown",
+        "hectare": 3.31,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.102377,
+          49.284942
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_29",
+      "properties": {
+        "id": "park_29",
+        "facility_type": "parks",
+        "name": "Roundhouse Turntable Plaza",
+        "parkid": 29,
+        "street_address": "181 Roundhouse Mews",
+        "intersection": "Roundhouse Mews & Pacific Boulevard",
+        "neighbourhood": "Downtown",
+        "hectare": 0.91,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.121603,
+          49.273379
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_34",
+      "properties": {
+        "id": "park_34",
+        "facility_type": "parks",
+        "name": "Balaclava Park",
+        "parkid": 34,
+        "street_address": "4594 Balaclava Street",
+        "intersection": "W 29th Avenue & Balaclava Street",
+        "neighbourhood": "Dunbar-Southlands",
+        "hectare": 5.0,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Dunbar-Southlands"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.175247,
+          49.244951
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_37",
+      "properties": {
+        "id": "park_37",
+        "facility_type": "parks",
+        "name": "Chaldecott Park",
+        "parkid": 37,
+        "street_address": "4175 Wallace Street",
+        "intersection": "King Edward Avenue & Wallace Street",
+        "neighbourhood": "Dunbar-Southlands",
+        "hectare": 3.45,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Dunbar-Southlands"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.192177,
+          49.249092
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_40",
+      "properties": {
+        "id": "park_40",
+        "facility_type": "parks",
+        "name": "Musqueam Park",
+        "parkid": 40,
+        "street_address": "4000 SW Marine Drive",
+        "intersection": "SW Marine Drive & Crown Street",
+        "neighbourhood": "Dunbar-Southlands",
+        "hectare": 22.05,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Dunbar-Southlands"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.18998,
+          49.229331
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_43",
+      "properties": {
+        "id": "park_43",
+        "facility_type": "parks",
+        "name": "Charleson Park",
+        "parkid": 43,
+        "street_address": "999 Charleson Street",
+        "intersection": "Charleson Street & Laurel Street",
+        "neighbourhood": "Fairview",
+        "hectare": 7.14,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "Y",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1242,
+          49.266995
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_44",
+      "properties": {
+        "id": "park_44",
+        "facility_type": "parks",
+        "name": "Granville Park",
+        "parkid": 44,
+        "street_address": "3001 Fir Street",
+        "intersection": "W 14th Avenue & Fir Street",
+        "neighbourhood": "Fairview",
+        "hectare": 1.96,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.142395,
+          49.258105
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_45",
+      "properties": {
+        "id": "park_45",
+        "facility_type": "parks",
+        "name": "Granville Loop Park",
+        "parkid": 45,
+        "street_address": "1435 W 5th Avenue",
+        "intersection": "W 5th Avenue & Granville Street",
+        "neighbourhood": "Fairview",
+        "hectare": 1.05,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13754,
+          49.267284
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_51",
+      "properties": {
+        "id": "park_51",
+        "facility_type": "parks",
+        "name": "Garden Park",
+        "parkid": 51,
+        "street_address": "1851 Garden Drive",
+        "intersection": "E 3rd Avenue & Garden Drive",
+        "neighbourhood": "Grandview-Woodland",
+        "hectare": 0.97,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.058994,
+          49.268159
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_52",
+      "properties": {
+        "id": "park_52",
+        "facility_type": "parks",
+        "name": "Grandview Park",
+        "parkid": 52,
+        "street_address": "1255 Commercial Drive",
+        "intersection": "Charles Street & Commercial Drive",
+        "neighbourhood": "Grandview-Woodland",
+        "hectare": 0.89,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.070469,
+          49.273511
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_53",
+      "properties": {
+        "id": "park_53",
+        "facility_type": "parks",
+        "name": "McGill Park",
+        "parkid": 53,
+        "street_address": "2305 McGill Street",
+        "intersection": "McGill Street & Garden Drive",
+        "neighbourhood": "Grandview-Woodland",
+        "hectare": 0.19,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.057154,
+          49.288668
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_56",
+      "properties": {
+        "id": "park_56",
+        "facility_type": "parks",
+        "name": "Oxford Park",
+        "parkid": 56,
+        "street_address": "2050 Wall Street",
+        "intersection": "Oxford Street & Wall Street",
+        "neighbourhood": "Grandview-Woodland",
+        "hectare": 0.22,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.062223,
+          49.286172
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_64",
+      "properties": {
+        "id": "park_64",
+        "facility_type": "parks",
+        "name": "Woodland Park",
+        "parkid": 64,
+        "street_address": "705 Woodland Drive",
+        "intersection": "Adanac Street & Woodland Drive",
+        "neighbourhood": "Grandview-Woodland",
+        "hectare": 1.58,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.073387,
+          49.278526
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_65",
+      "properties": {
+        "id": "park_65",
+        "facility_type": "parks",
+        "name": "Adanac Park",
+        "parkid": 65,
+        "street_address": "1025 Boundary Road",
+        "intersection": "Adanac Street & Boundary Road",
+        "neighbourhood": "Hastings-Sunrise",
+        "hectare": 4.17,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.025811,
+          49.276381
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_66",
+      "properties": {
+        "id": "park_66",
+        "facility_type": "parks",
+        "name": "Bates Park",
+        "parkid": 66,
+        "street_address": "669 Fellowes Street",
+        "intersection": "Fellowes Street & High Road",
+        "neighbourhood": "Hastings-Sunrise",
+        "hectare": 0.3,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.024336,
+          49.292443
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_70",
+      "properties": {
+        "id": "park_70",
+        "facility_type": "parks",
+        "name": "Clinton Park",
+        "parkid": 70,
+        "street_address": "2690 Grant Street",
+        "intersection": "Grant Street & Slocan Street",
+        "neighbourhood": "Hastings-Sunrise",
+        "hectare": 3.04,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0509,
+          49.270355
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_71",
+      "properties": {
+        "id": "park_71",
+        "facility_type": "parks",
+        "name": "Dusty Greenwell Park",
+        "parkid": 71,
+        "street_address": "2799 Wall Street",
+        "intersection": "Wall Street & North Kaslo Street",
+        "neighbourhood": "Hastings-Sunrise",
+        "hectare": 0.44,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.047643,
+          49.292113
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_72",
+      "properties": {
+        "id": "park_72",
+        "facility_type": "parks",
+        "name": "Hastings Park",
+        "parkid": 72,
+        "street_address": "2901 E Hastings",
+        "intersection": "E Hastings Street & Renfrew Street",
+        "neighbourhood": "Hastings-Sunrise",
+        "hectare": 62.0,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.039776,
+          49.282256
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_75",
+      "properties": {
+        "id": "park_75",
+        "facility_type": "parks",
+        "name": "New Brighton Park",
+        "parkid": 75,
+        "street_address": "3201 New Brighton Road",
+        "intersection": "New Brighton Road & N Windermere Street",
+        "neighbourhood": "Hastings-Sunrise",
+        "hectare": 10.0,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.037888,
+          49.290122
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_76",
+      "properties": {
+        "id": "park_76",
+        "facility_type": "parks",
+        "name": "Rupert Park",
+        "parkid": 76,
+        "street_address": "1600 Rupert Street",
+        "intersection": "E 1st Avenue & Rupert Street",
+        "neighbourhood": "Hastings-Sunrise",
+        "hectare": 11.43,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.031384,
+          49.271629
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_84",
+      "properties": {
+        "id": "park_84",
+        "facility_type": "parks",
+        "name": "Grays Park",
+        "parkid": 84,
+        "street_address": "4850 St. Catherines Street",
+        "intersection": "E 33rd Avenue & St. Catherines Street",
+        "neighbourhood": "Kensington-Cedar Cottage",
+        "hectare": 1.61,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.084974,
+          49.241136
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_85",
+      "properties": {
+        "id": "park_85",
+        "facility_type": "parks",
+        "name": "John Hendry (Trout Lake) Park",
+        "parkid": 85,
+        "street_address": "3300 Victoria Drive",
+        "intersection": "E 15th Avenue & Victoria Drive",
+        "neighbourhood": "Kensington-Cedar Cottage",
+        "hectare": 27.31,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.062242,
+          49.255808
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_90",
+      "properties": {
+        "id": "park_90",
+        "facility_type": "parks",
+        "name": "Arbutus Park",
+        "parkid": 90,
+        "street_address": "7601 Arbutus Street",
+        "intersection": "SW Marine Drive & Arbutus Street",
+        "neighbourhood": "Kerrisdale",
+        "hectare": 0.74,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kerrisdale"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.15513,
+          49.21659
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_91",
+      "properties": {
+        "id": "park_91",
+        "facility_type": "parks",
+        "name": "Elm Park",
+        "parkid": 91,
+        "street_address": "5800 Elm Street",
+        "intersection": "W 41st Avenue & Elm Street",
+        "neighbourhood": "Kerrisdale",
+        "hectare": 1.49,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kerrisdale"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.163488,
+          49.233847
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_96",
+      "properties": {
+        "id": "park_96",
+        "facility_type": "parks",
+        "name": "Maple Grove Park",
+        "parkid": 96,
+        "street_address": "6875 Yew Street",
+        "intersection": "W 51st Avenue & Yew Street",
+        "neighbourhood": "Kerrisdale",
+        "hectare": 4.2,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kerrisdale"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.16013,
+          49.223703
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_99",
+      "properties": {
+        "id": "park_99",
+        "facility_type": "parks",
+        "name": "Captain Cook Park",
+        "parkid": 99,
+        "street_address": "3398 E 54th Avenue",
+        "intersection": "E 54th Avenue & Champlain Crescent",
+        "neighbourhood": "Killarney",
+        "hectare": 5.49,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.033713,
+          49.21912
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_100",
+      "properties": {
+        "id": "park_100",
+        "facility_type": "parks",
+        "name": "Champlain Heights Park",
+        "parkid": 100,
+        "street_address": "3351 Maquinna Drive",
+        "intersection": "Maquinna Drive & Champlain Crescent",
+        "neighbourhood": "Killarney",
+        "hectare": 7.84,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.032545,
+          49.215527
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_102",
+      "properties": {
+        "id": "park_102",
+        "facility_type": "parks",
+        "name": "Fraserview Golf Course",
+        "parkid": 102,
+        "street_address": "7800 Vivian Drive",
+        "intersection": "E 54th Avenue & Vivian Drive",
+        "neighbourhood": "Killarney",
+        "hectare": 84.34,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.047869,
+          49.212251
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_105",
+      "properties": {
+        "id": "park_105",
+        "facility_type": "parks",
+        "name": "Sparwood Park",
+        "parkid": 105,
+        "street_address": "6998 Arlington Street",
+        "intersection": "Whithorn Court & Arlington Street",
+        "neighbourhood": "Killarney",
+        "hectare": 3.6,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.028777,
+          49.220024
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_110",
+      "properties": {
+        "id": "park_110",
+        "facility_type": "parks",
+        "name": "Hadden Park",
+        "parkid": 110,
+        "street_address": "1905 Ogden Avenue",
+        "intersection": "Ogden Avenue & Cypress Street",
+        "neighbourhood": "Kitsilano",
+        "hectare": 2.92,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "Y",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.152513,
+          49.275353
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_112",
+      "properties": {
+        "id": "park_112",
+        "facility_type": "parks",
+        "name": "Kitsilano Beach Park",
+        "parkid": 112,
+        "street_address": "1499 Arbutus Street",
+        "intersection": "Cornwall Avenue & Arbutus Street",
+        "neighbourhood": "Kitsilano",
+        "hectare": 13.47,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "Y",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.153901,
+          49.273431
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_116",
+      "properties": {
+        "id": "park_116",
+        "facility_type": "parks",
+        "name": "Point Grey Park Site at Stephens Street",
+        "parkid": 116,
+        "street_address": "2699 Point Grey Road",
+        "intersection": "Point Grey Road & Stephens Street",
+        "neighbourhood": "Kitsilano",
+        "hectare": 0.23,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.166128,
+          49.272583
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_117",
+      "properties": {
+        "id": "park_117",
+        "facility_type": "parks",
+        "name": "Point Grey Park Site at Trafalgar Street",
+        "parkid": 117,
+        "street_address": "2601 Point Grey Road",
+        "intersection": "Point Grey Road & Trafalgar Street",
+        "neighbourhood": "Kitsilano",
+        "hectare": 0.22,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.164637,
+          49.273329
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_118",
+      "properties": {
+        "id": "park_118",
+        "facility_type": "parks",
+        "name": "Seaforth Peace Park",
+        "parkid": 118,
+        "street_address": "1620 Chestnut Street",
+        "intersection": "Cornwall Avenue & Chestnut Street",
+        "neighbourhood": "Kitsilano",
+        "hectare": 0.74,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.145967,
+          49.271554
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_134",
+      "properties": {
+        "id": "park_134",
+        "facility_type": "parks",
+        "name": "China Creek South Park",
+        "parkid": 134,
+        "street_address": "1255 E 10th Avenue",
+        "intersection": "E 10th Avenue & Clark Drive",
+        "neighbourhood": "Mount Pleasant",
+        "hectare": 1.47,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.079352,
+          49.261581
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_138",
+      "properties": {
+        "id": "park_138",
+        "facility_type": "parks",
+        "name": "Major Matthews Park",
+        "parkid": 138,
+        "street_address": "2627 Manitoba Street",
+        "intersection": "W 11th Avenue & Manitoba Street",
+        "neighbourhood": "Mount Pleasant",
+        "hectare": 0.06,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.107238,
+          49.26158
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_141",
+      "properties": {
+        "id": "park_141",
+        "facility_type": "parks",
+        "name": "Tea Swamp Park",
+        "parkid": 141,
+        "street_address": "266 E 15th Avenue",
+        "intersection": "E 15th Avenue & Sophia Street",
+        "neighbourhood": "Mount Pleasant",
+        "hectare": 0.09,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.098595,
+          49.257091
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_145",
+      "properties": {
+        "id": "park_145",
+        "facility_type": "parks",
+        "name": "Langara Golf Course",
+        "parkid": 145,
+        "street_address": "6706 Alberta Street",
+        "intersection": "W 49th Avenue & Alberta Street",
+        "neighbourhood": "South Cambie",
+        "hectare": 48.57,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "South Cambie"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11211,
+          49.221371
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_150",
+      "properties": {
+        "id": "park_150",
+        "facility_type": "parks",
+        "name": "Carleton Park",
+        "parkid": 150,
+        "street_address": "3450 Price Street",
+        "intersection": "Price Street & Joyce Street",
+        "neighbourhood": "Renfrew-Collingwood",
+        "hectare": 0.68,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.030451,
+          49.242002
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_152",
+      "properties": {
+        "id": "park_152",
+        "facility_type": "parks",
+        "name": "Earles Park",
+        "parkid": 152,
+        "street_address": "2801 E 41st Avenue",
+        "intersection": "E 41st Avenue & Earles Street",
+        "neighbourhood": "Renfrew-Collingwood",
+        "hectare": 1.59,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.047702,
+          49.233476
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_153",
+      "properties": {
+        "id": "park_153",
+        "facility_type": "parks",
+        "name": "Falaise Park",
+        "parkid": 153,
+        "street_address": "3434 Falaise Avenue",
+        "intersection": "Worthington Drive & Falaise Avenue",
+        "neighbourhood": "Renfrew-Collingwood",
+        "hectare": 7.57,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.031631,
+          49.256485
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_155",
+      "properties": {
+        "id": "park_155",
+        "facility_type": "parks",
+        "name": "Gaston Park",
+        "parkid": 155,
+        "street_address": "3470 Crowley Drive",
+        "intersection": "Crowley Drive & Tyne Street",
+        "neighbourhood": "Renfrew-Collingwood",
+        "hectare": 1.5,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.031094,
+          49.236117
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_166",
+      "properties": {
+        "id": "park_166",
+        "facility_type": "parks",
+        "name": "Prince Edward Park",
+        "parkid": 166,
+        "street_address": "3773 Prince Edward Street",
+        "intersection": "E 21st Avenue & Prince Edward Street",
+        "neighbourhood": "Riley Park",
+        "hectare": 1.21,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Riley Park"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.097024,
+          49.251692
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_169",
+      "properties": {
+        "id": "park_169",
+        "facility_type": "parks",
+        "name": "Angus Park",
+        "parkid": 169,
+        "street_address": "3600 Angus Drive",
+        "intersection": "Alexandra Street & Angus Drive",
+        "neighbourhood": "Shaughnessy",
+        "hectare": 1.0,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Shaughnessy"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.143816,
+          49.253932
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_170",
+      "properties": {
+        "id": "park_170",
+        "facility_type": "parks",
+        "name": "Devonshire Park",
+        "parkid": 170,
+        "street_address": "1250 Devonshire Crescent",
+        "intersection": "Devonshire Crescent & Selkirk Street",
+        "neighbourhood": "Shaughnessy",
+        "hectare": 1.53,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Shaughnessy"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13364,
+          49.24502
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_172",
+      "properties": {
+        "id": "park_172",
+        "facility_type": "parks",
+        "name": "Shaughnessy Park",
+        "parkid": 172,
+        "street_address": "1300 The Crescent",
+        "intersection": "The Crescent & Hudson Street",
+        "neighbourhood": "Shaughnessy",
+        "hectare": 1.45,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Shaughnessy"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.135068,
+          49.255715
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_177",
+      "properties": {
+        "id": "park_177",
+        "facility_type": "parks",
+        "name": "Heather Park",
+        "parkid": 177,
+        "street_address": "702 W 18th Avenue",
+        "intersection": "W 18th Avenue & Heather Street",
+        "neighbourhood": "South Cambie",
+        "hectare": 0.98,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "South Cambie"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.121103,
+          49.254765
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_193",
+      "properties": {
+        "id": "park_193",
+        "facility_type": "parks",
+        "name": "Gladstone-Riverside Park",
+        "parkid": 193,
+        "street_address": "2500 E Kent Street S",
+        "intersection": "E Kent Street S & Nanaimo Street",
+        "neighbourhood": "Victoria-Fraserview",
+        "hectare": 1.07,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Victoria-Fraserview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.056883,
+          49.205532
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_195",
+      "properties": {
+        "id": "park_195",
+        "facility_type": "parks",
+        "name": "Humm Park",
+        "parkid": 195,
+        "street_address": "7250 Humm Street",
+        "intersection": "Upland Drive & Humm Street",
+        "neighbourhood": "Victoria-Fraserview",
+        "hectare": 0.47,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Victoria-Fraserview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.063266,
+          49.218698
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_196",
+      "properties": {
+        "id": "park_196",
+        "facility_type": "parks",
+        "name": "Nanaimo Park",
+        "parkid": 196,
+        "street_address": "2390 E 46th Avenue",
+        "intersection": "E 46th Avenue & Nanaimo Street",
+        "neighbourhood": "Victoria-Fraserview",
+        "hectare": 2.91,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Victoria-Fraserview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.057508,
+          49.227724
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_197",
+      "properties": {
+        "id": "park_197",
+        "facility_type": "parks",
+        "name": "Riverfront Park",
+        "parkid": 197,
+        "street_address": "2750 E Kent Ave S",
+        "intersection": "E Kent Ave S & Elliott Street",
+        "neighbourhood": "Killarney",
+        "hectare": 4.01,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.04575,
+          49.205951
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_198",
+      "properties": {
+        "id": "park_198",
+        "facility_type": "parks",
+        "name": "Tecumseh Park",
+        "parkid": 198,
+        "street_address": "1751 E 45th Avenue",
+        "intersection": "E 45th Avenue & Bruce Street",
+        "neighbourhood": "Victoria-Fraserview",
+        "hectare": 2.09,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Victoria-Fraserview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.069846,
+          49.229752
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_202",
+      "properties": {
+        "id": "park_202",
+        "facility_type": "parks",
+        "name": "Morton Park",
+        "parkid": 202,
+        "street_address": "1800 Morton Avenue",
+        "intersection": "Morton Avenue & Denman Street",
+        "neighbourhood": "West End",
+        "hectare": 0.22,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.141955,
+          49.28768
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_203",
+      "properties": {
+        "id": "park_203",
+        "facility_type": "parks",
+        "name": "Nelson Park",
+        "parkid": 203,
+        "street_address": "1030 Bute Street",
+        "intersection": "Nelson Street & Bute Street",
+        "neighbourhood": "West End",
+        "hectare": 1.16,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.129558,
+          49.282855
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_207",
+      "properties": {
+        "id": "park_207",
+        "facility_type": "parks",
+        "name": "Sunset Beach Park",
+        "parkid": 207,
+        "street_address": "1204 Beach Avenue",
+        "intersection": "Beach Avenue & Bute Street",
+        "neighbourhood": "West End",
+        "hectare": 3.61,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "Y",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.139681,
+          49.281211
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_220",
+      "properties": {
+        "id": "park_220",
+        "facility_type": "parks",
+        "name": "Spanish Banks Beach Park",
+        "parkid": 220,
+        "street_address": "4801 NW Marine Drive",
+        "intersection": "NW Marine Drive & Blanca Street",
+        "neighbourhood": "West Point Grey",
+        "hectare": 6.53,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "Y",
+        "local_area": "West Point Grey"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.216909,
+          49.277063
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_221",
+      "properties": {
+        "id": "park_221",
+        "facility_type": "parks",
+        "name": "West Point Grey Park",
+        "parkid": 221,
+        "street_address": "2250 Trimble Street",
+        "intersection": "W 8th Avenue & Trimble Street",
+        "neighbourhood": "West Point Grey",
+        "hectare": 3.4,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "West Point Grey"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.204312,
+          49.266301
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_224",
+      "properties": {
+        "id": "park_224",
+        "facility_type": "parks",
+        "name": "Choklit Park",
+        "parkid": 224,
+        "street_address": "2400 Spruce Street",
+        "intersection": "W 7th Avenue & Spruce Street",
+        "neighbourhood": "Fairview",
+        "hectare": 0.07,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.128905,
+          49.265482
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_225",
+      "properties": {
+        "id": "park_225",
+        "facility_type": "parks",
+        "name": "George Wainborn Park",
+        "parkid": 225,
+        "street_address": "450 Beach Crescent",
+        "intersection": "Beach Crescent & None",
+        "neighbourhood": "Downtown",
+        "hectare": 2.49,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "Y",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.129311,
+          49.272541
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_231",
+      "properties": {
+        "id": "park_231",
+        "facility_type": "parks",
+        "name": "Camosun",
+        "parkid": 231,
+        "street_address": "4102 W 16th Avenue",
+        "intersection": "W 16th Avenue & Discovery Street",
+        "neighbourhood": "Dunbar-Southlands",
+        "hectare": 0.0,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Dunbar-Southlands"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.201329,
+          49.257423
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_246",
+      "properties": {
+        "id": "park_246",
+        "facility_type": "parks",
+        "name": "Creekway Park",
+        "parkid": 246,
+        "street_address": "2901 E Hastings Street",
+        "intersection": "McGill Street & None",
+        "neighbourhood": "Hastings-Sunrise",
+        "hectare": 8.0,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.036982,
+          49.288336
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_249",
+      "properties": {
+        "id": "park_249",
+        "facility_type": "parks",
+        "name": "Shannon Mews",
+        "parkid": 249,
+        "street_address": "1551 W 57th Ave",
+        "intersection": "W 57th Ave & Granville Street",
+        "neighbourhood": "Kerrisdale",
+        "hectare": 0.69,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kerrisdale"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1419607,
+          49.2197839
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_3",
+      "properties": {
+        "id": "park_3",
+        "facility_type": "parks",
+        "name": "Prince of Wales Park",
+        "parkid": 3,
+        "street_address": "4780 Haggart Street",
+        "intersection": "W 32nd Avenue & Haggart Street",
+        "neighbourhood": "Arbutus-Ridge",
+        "hectare": 2.89,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Arbutus-Ridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.156429,
+          49.244397
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_4",
+      "properties": {
+        "id": "park_4",
+        "facility_type": "parks",
+        "name": "Park Site on Puget Drive",
+        "parkid": 4,
+        "street_address": "4309 Puget Drive",
+        "intersection": "Puget Drive & MacDonald Street",
+        "neighbourhood": "Arbutus-Ridge",
+        "hectare": 0.09,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Arbutus-Ridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.168194,
+          49.247723
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_5",
+      "properties": {
+        "id": "park_5",
+        "facility_type": "parks",
+        "name": "Park Site on Quesnel Drive",
+        "parkid": 5,
+        "street_address": "4301 Quesnel Drive",
+        "intersection": "Quesnel Drive & MacKenzie Street",
+        "neighbourhood": "Arbutus-Ridge",
+        "hectare": 0.03,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Arbutus-Ridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.169948,
+          49.247623
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_6",
+      "properties": {
+        "id": "park_6",
+        "facility_type": "parks",
+        "name": "Quilchena Park",
+        "parkid": 6,
+        "street_address": "4590 Magnolia Street",
+        "intersection": "W 33rd Avenue & Magnolia Street",
+        "neighbourhood": "Arbutus-Ridge",
+        "hectare": 7.67,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "Y",
+        "local_area": "Arbutus-Ridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.148865,
+          49.24369
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_7",
+      "properties": {
+        "id": "park_7",
+        "facility_type": "parks",
+        "name": "Ravine Park",
+        "parkid": 7,
+        "street_address": "2159 W 36th Avenue",
+        "intersection": "W 36th Avenue & Arbutus Street",
+        "neighbourhood": "Arbutus-Ridge",
+        "hectare": 0.72,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Arbutus-Ridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.155935,
+          49.240902
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_9",
+      "properties": {
+        "id": "park_9",
+        "facility_type": "parks",
+        "name": "Park Site on Trafalgar Street",
+        "parkid": 9,
+        "street_address": "4600 Trafalgar Street",
+        "intersection": "W 31st Avenue & Trafalgar Street",
+        "neighbourhood": "Arbutus-Ridge",
+        "hectare": 0.14,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Arbutus-Ridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.165105,
+          49.244396
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_10",
+      "properties": {
+        "id": "park_10",
+        "facility_type": "parks",
+        "name": "Andy Livingstone Park",
+        "parkid": 10,
+        "street_address": "89 Expo Boulevard",
+        "intersection": "Expo Boulevard & Carrall Street",
+        "neighbourhood": "Downtown",
+        "hectare": 4.21,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1055,
+          49.278923
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_11",
+      "properties": {
+        "id": "park_11",
+        "facility_type": "parks",
+        "name": "Cardero Park",
+        "parkid": 11,
+        "street_address": "1601 Bayshore Drive",
+        "intersection": "Bayshore Drive & Cardero Street",
+        "neighbourhood": "West End",
+        "hectare": 0.33,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "Y",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.128206,
+          49.292211
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_12",
+      "properties": {
+        "id": "park_12",
+        "facility_type": "parks",
+        "name": "Cathedral Square",
+        "parkid": 12,
+        "street_address": "566 Richards Street",
+        "intersection": "Dunsmuir Street & Richards Street",
+        "neighbourhood": "Downtown",
+        "hectare": 0.27,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.113877,
+          49.282084
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_15",
+      "properties": {
+        "id": "park_15",
+        "facility_type": "parks",
+        "name": "Creekside Park",
+        "parkid": 15,
+        "street_address": "1455 Quebec Street",
+        "intersection": "Terminal Avenue & Quebec Street",
+        "neighbourhood": "Downtown",
+        "hectare": 2.53,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "Y",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.102924,
+          49.274415
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_19",
+      "properties": {
+        "id": "park_19",
+        "facility_type": "parks",
+        "name": "Art Phillips Park",
+        "parkid": 19,
+        "street_address": "625 Burrard Street",
+        "intersection": "Melville Street & Burrard Street",
+        "neighbourhood": "Downtown",
+        "hectare": 0.1,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.120948,
+          49.285911
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_21",
+      "properties": {
+        "id": "park_21",
+        "facility_type": "parks",
+        "name": "Harbour Green Park",
+        "parkid": 21,
+        "street_address": "1199 W Cordova Street",
+        "intersection": "W Cordova Street & Bute Street",
+        "neighbourhood": "Downtown",
+        "hectare": 3.1,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "Y",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.121924,
+          49.290263
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_23",
+      "properties": {
+        "id": "park_23",
+        "facility_type": "parks",
+        "name": "Helmcken Park",
+        "parkid": 23,
+        "street_address": "1103 Pacific Boulevard",
+        "intersection": "Helmcken Street & Pacific Boulevard",
+        "neighbourhood": "Downtown",
+        "hectare": 0.17,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.119555,
+          49.274814
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_24",
+      "properties": {
+        "id": "park_24",
+        "facility_type": "parks",
+        "name": "Marina Square",
+        "parkid": 24,
+        "street_address": "1675 Bayshore Drive",
+        "intersection": "Bayshore Drive & Denman Street",
+        "neighbourhood": "Downtown",
+        "hectare": 0.63,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "Y",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.131296,
+          49.292334
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_30",
+      "properties": {
+        "id": "park_30",
+        "facility_type": "parks",
+        "name": "Sun Yat-Sen Gardens",
+        "parkid": 30,
+        "street_address": "578 Carrall Street",
+        "intersection": "Keefer Street & Carrall Street",
+        "neighbourhood": "Downtown",
+        "hectare": 0.83,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.104233,
+          49.279691
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_31",
+      "properties": {
+        "id": "park_31",
+        "facility_type": "parks",
+        "name": "Victory Square",
+        "parkid": 31,
+        "street_address": "200 W Hastings Street",
+        "intersection": "W Hastings Street & Cambie Street",
+        "neighbourhood": "Downtown",
+        "hectare": 0.39,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.110133,
+          49.282218
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_35",
+      "properties": {
+        "id": "park_35",
+        "facility_type": "parks",
+        "name": "Park Site on Blenheim",
+        "parkid": 35,
+        "street_address": "3500 Quadra Street",
+        "intersection": "W 19th Avenue & Quadra Street",
+        "neighbourhood": "Arbutus-Ridge",
+        "hectare": 0.07,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Arbutus-Ridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.178934,
+          49.255575
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_39",
+      "properties": {
+        "id": "park_39",
+        "facility_type": "parks",
+        "name": "Memorial West Park",
+        "parkid": 39,
+        "street_address": "4747 Dunbar Street",
+        "intersection": "W 31st Avenue & Dunbar Street",
+        "neighbourhood": "Dunbar-Southlands",
+        "hectare": 7.49,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Dunbar-Southlands"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.188166,
+          49.243326
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_41",
+      "properties": {
+        "id": "park_41",
+        "facility_type": "parks",
+        "name": "Quadra West Park",
+        "parkid": 41,
+        "street_address": "3250 Quadra Street",
+        "intersection": "W 17th Avenue & Quadra Street",
+        "neighbourhood": "Dunbar-Southlands",
+        "hectare": 0.17,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Dunbar-Southlands"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.180696,
+          49.257112
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_47",
+      "properties": {
+        "id": "park_47",
+        "facility_type": "parks",
+        "name": "Sutcliffe Park",
+        "parkid": 47,
+        "street_address": "1318 Cartwright Street",
+        "intersection": "Island Park Walk & Old Bridge Walk",
+        "neighbourhood": "Fairview",
+        "hectare": 2.88,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "Y",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.134832,
+          49.268871
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_57",
+      "properties": {
+        "id": "park_57",
+        "facility_type": "parks",
+        "name": "Pandora Park",
+        "parkid": 57,
+        "street_address": "2325 Franklin Street",
+        "intersection": "Franklin Street & Garden Drive",
+        "neighbourhood": "Grandview-Woodland",
+        "hectare": 1.66,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.058045,
+          49.282533
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_60",
+      "properties": {
+        "id": "park_60",
+        "facility_type": "parks",
+        "name": "Templeton Park",
+        "parkid": 60,
+        "street_address": "700 Templeton Drive",
+        "intersection": "Adanac Street & Templeton Drive",
+        "neighbourhood": "Grandview-Woodland",
+        "hectare": 1.93,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.058646,
+          49.278279
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_61",
+      "properties": {
+        "id": "park_61",
+        "facility_type": "parks",
+        "name": "Park Site on Trinity Street",
+        "parkid": 61,
+        "street_address": "2303 Wall Street",
+        "intersection": "Trinity Street & Wall Street",
+        "neighbourhood": "Hastings-Sunrise",
+        "hectare": 0.1,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.059459,
+          49.289561
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_69",
+      "properties": {
+        "id": "park_69",
+        "facility_type": "parks",
+        "name": "Charles Park",
+        "parkid": 69,
+        "street_address": "3400 Charles Street",
+        "intersection": "Charles Street & Kootenay Street",
+        "neighbourhood": "Hastings-Sunrise",
+        "hectare": 1.55,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.027661,
+          49.273407
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_78",
+      "properties": {
+        "id": "park_78",
+        "facility_type": "parks",
+        "name": "Thunderbird Park",
+        "parkid": 78,
+        "street_address": "3485 E 2nd Avenue",
+        "intersection": "E 2nd Avenue & Skeena Street",
+        "neighbourhood": "Hastings-Sunrise",
+        "hectare": 0.89,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.028552,
+          49.268829
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_80",
+      "properties": {
+        "id": "park_80",
+        "facility_type": "parks",
+        "name": "Cedar Cottage Park",
+        "parkid": 80,
+        "street_address": "2650 Clark Drive",
+        "intersection": "E 11th Avenue & Clark Drive",
+        "neighbourhood": "Kensington-Cedar Cottage",
+        "hectare": 0.47,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.076605,
+          49.260807
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_82",
+      "properties": {
+        "id": "park_82",
+        "facility_type": "parks",
+        "name": "General Brock Park",
+        "parkid": 82,
+        "street_address": "2301 Brock Street",
+        "intersection": "Brock Street & Baldwin Street",
+        "neighbourhood": "Kensington-Cedar Cottage",
+        "hectare": 2.11,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.058517,
+          49.244757
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_87",
+      "properties": {
+        "id": "park_87",
+        "facility_type": "parks",
+        "name": "Kensington Park",
+        "parkid": 87,
+        "street_address": "5175 Dumfries Street",
+        "intersection": "E 37th Avenue & Dumfries Street",
+        "neighbourhood": "Kensington-Cedar Cottage",
+        "hectare": 5.84,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.075308,
+          49.238478
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_88",
+      "properties": {
+        "id": "park_88",
+        "facility_type": "parks",
+        "name": "Kingcrest Park",
+        "parkid": 88,
+        "street_address": "4150 Knight Street",
+        "intersection": "E 26th Avenue & Knight Street",
+        "neighbourhood": "Kensington-Cedar Cottage",
+        "hectare": 2.41,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.074674,
+          49.247499
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_92",
+      "properties": {
+        "id": "park_92",
+        "facility_type": "parks",
+        "name": "Fraser River Park",
+        "parkid": 92,
+        "street_address": "8705 Angus Drive",
+        "intersection": "W 75th Avenue & Angus Drive",
+        "neighbourhood": "Kerrisdale",
+        "hectare": 9.1,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kerrisdale"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.150862,
+          49.207915
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_93",
+      "properties": {
+        "id": "park_93",
+        "facility_type": "parks",
+        "name": "Kerrisdale Centennial Park",
+        "parkid": 93,
+        "street_address": "5898 Yew Street",
+        "intersection": "W 42nd Avenue & Yew Street",
+        "neighbourhood": "Kerrisdale",
+        "hectare": 1.53,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kerrisdale"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.158043,
+          49.233094
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_111",
+      "properties": {
+        "id": "park_111",
+        "facility_type": "parks",
+        "name": "Jean Beaty Park",
+        "parkid": 111,
+        "street_address": "3393 Point Grey Road",
+        "intersection": "Point Grey Road & Waterloo Street",
+        "neighbourhood": "West Point Grey",
+        "hectare": 0.04,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "West Point Grey"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.179433,
+          49.271913
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_113",
+      "properties": {
+        "id": "park_113",
+        "facility_type": "parks",
+        "name": "Margaret Pigott Park",
+        "parkid": 113,
+        "street_address": "2743 Point Grey Road",
+        "intersection": "Point Grey Road & Macdonald Street",
+        "neighbourhood": "Kitsilano",
+        "hectare": 0.38,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.167454,
+          49.272089
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_119",
+      "properties": {
+        "id": "park_119",
+        "facility_type": "parks",
+        "name": "Tatlow Park",
+        "parkid": 119,
+        "street_address": "2845 W 3rd Avenue",
+        "intersection": "Point Grey Road & Point Grey Road",
+        "neighbourhood": "Kitsilano",
+        "hectare": 1.4,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.169609,
+          49.270068
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_120",
+      "properties": {
+        "id": "park_120",
+        "facility_type": "parks",
+        "name": "Vanier Park",
+        "parkid": 120,
+        "street_address": "1000 Chestnut Street",
+        "intersection": "Whyte Avenue & Chestnut Street",
+        "neighbourhood": "Kitsilano",
+        "hectare": 16.95,
+        "facilities": "無",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "Y",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.143159,
+          49.277049
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_121",
+      "properties": {
+        "id": "park_121",
+        "facility_type": "parks",
+        "name": "Volunteer Park",
+        "parkid": 121,
+        "street_address": "2855 Point Grey Road",
+        "intersection": "Point Grey Road & Macdonald Street",
+        "neighbourhood": "Kitsilano",
+        "hectare": 0.72,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.169243,
+          49.271635
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_122",
+      "properties": {
+        "id": "park_122",
+        "facility_type": "parks",
+        "name": "Ash Park",
+        "parkid": 122,
+        "street_address": "8288 Ash Street",
+        "intersection": "W 68th Avenue & Ash Street",
+        "neighbourhood": "Marpole",
+        "hectare": 0.51,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.119435,
+          49.210597
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_123",
+      "properties": {
+        "id": "park_123",
+        "facility_type": "parks",
+        "name": "Eburne Park",
+        "parkid": 123,
+        "street_address": "950 W 71st Avenue",
+        "intersection": "W 71st Avenue & Oak Street",
+        "neighbourhood": "Marpole",
+        "hectare": 0.9,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.129241,
+          49.206517
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_124",
+      "properties": {
+        "id": "park_124",
+        "facility_type": "parks",
+        "name": "Marpole Park",
+        "parkid": 124,
+        "street_address": "1410 W 72nd Avenue",
+        "intersection": "W 72nd Avenue & Cartier Street",
+        "neighbourhood": "Marpole",
+        "hectare": 0.27,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.138307,
+          49.205507
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_128",
+      "properties": {
+        "id": "park_128",
+        "facility_type": "parks",
+        "name": "Shannon Park",
+        "parkid": 128,
+        "street_address": "1575 W 62nd Avenue",
+        "intersection": "W 62nd Avenue & Adera Street",
+        "neighbourhood": "Marpole",
+        "hectare": 0.94,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.142529,
+          49.215457
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_130",
+      "properties": {
+        "id": "park_130",
+        "facility_type": "parks",
+        "name": "William Mackie Park",
+        "parkid": 130,
+        "street_address": "1592 W 71st Avenue",
+        "intersection": "W 71st Avenue & SW Marine Drive",
+        "neighbourhood": "Marpole",
+        "hectare": 0.37,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.142733,
+          49.206787
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_133",
+      "properties": {
+        "id": "park_133",
+        "facility_type": "parks",
+        "name": "China Creek North Park",
+        "parkid": 133,
+        "street_address": "1001 E 7th Avenue",
+        "intersection": "E 7th Avenue & Glen Drive",
+        "neighbourhood": "Mount Pleasant",
+        "hectare": 3.16,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.083355,
+          49.264901
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_139",
+      "properties": {
+        "id": "park_139",
+        "facility_type": "parks",
+        "name": "Mount Pleasant Park",
+        "parkid": 139,
+        "street_address": "3161 Ontario Street",
+        "intersection": "W 16th Avenue & Ontario Street",
+        "neighbourhood": "Mount Pleasant",
+        "hectare": 1.12,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.106743,
+          49.25696
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_146",
+      "properties": {
+        "id": "park_146",
+        "facility_type": "parks",
+        "name": "Montgomery Park",
+        "parkid": 146,
+        "street_address": "1040 W 43rd Avenue",
+        "intersection": "W 43rd Avenue & Montgomery Street",
+        "neighbourhood": "Oakridge",
+        "hectare": 4.02,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Oakridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.130776,
+          49.231291
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_149",
+      "properties": {
+        "id": "park_149",
+        "facility_type": "parks",
+        "name": "Cariboo Park",
+        "parkid": 149,
+        "street_address": "3450 E 29th Avenue",
+        "intersection": "E 29th Avenue & Cariboo Street",
+        "neighbourhood": "Renfrew-Collingwood",
+        "hectare": 0.77,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.028792,
+          49.244232
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_154",
+      "properties": {
+        "id": "park_154",
+        "facility_type": "parks",
+        "name": "Foster Park",
+        "parkid": 154,
+        "street_address": "5501 Aberdeen Street",
+        "intersection": "Foster Avenue & Aberdeen Street",
+        "neighbourhood": "Renfrew-Collingwood",
+        "hectare": 0.29,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.028741,
+          49.234046
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_156",
+      "properties": {
+        "id": "park_156",
+        "facility_type": "parks",
+        "name": "Melbourne Park",
+        "parkid": 156,
+        "street_address": "3530 Vanness Avenue",
+        "intersection": "Vanness Avenue & Melbourne Street",
+        "neighbourhood": "Renfrew-Collingwood",
+        "hectare": 0.49,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.029179,
+          49.236236
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_158",
+      "properties": {
+        "id": "park_158",
+        "facility_type": "parks",
+        "name": "Price Park",
+        "parkid": 158,
+        "street_address": "3650 Price Street",
+        "intersection": "Price Street & Boundary Road",
+        "neighbourhood": "Renfrew-Collingwood",
+        "hectare": 0.35,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.097564,
+          49.251572
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_162",
+      "properties": {
+        "id": "park_162",
+        "facility_type": "parks",
+        "name": "Cartier Park",
+        "parkid": 162,
+        "street_address": "390 E 36th Avenue",
+        "intersection": "E 36th Avenue & Prince Edward Street",
+        "neighbourhood": "Riley Park",
+        "hectare": 0.37,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Riley Park"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.097473,
+          49.237598
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_165",
+      "properties": {
+        "id": "park_165",
+        "facility_type": "parks",
+        "name": "Nat Bailey Stadium",
+        "parkid": 165,
+        "street_address": "4601 Ontario Street",
+        "intersection": "W 30th Avenue & Ontario Street",
+        "neighbourhood": "Riley Park",
+        "hectare": 6.21,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Riley Park"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.106679,
+          49.242653
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_174",
+      "properties": {
+        "id": "park_174",
+        "facility_type": "parks",
+        "name": "Braemar Park",
+        "parkid": 174,
+        "street_address": "895 W 27th Avenue",
+        "intersection": "W 27th Avenue & Willow Street",
+        "neighbourhood": "South Cambie",
+        "hectare": 1.26,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "South Cambie"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12363,
+          49.247615
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_175",
+      "properties": {
+        "id": "park_175",
+        "facility_type": "parks",
+        "name": "Douglas Park",
+        "parkid": 175,
+        "street_address": "801 W 22nd Avenue",
+        "intersection": "W 22nd Avenue & Heather Street",
+        "neighbourhood": "South Cambie",
+        "hectare": 5.32,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "South Cambie"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.122225,
+          49.252493
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_179",
+      "properties": {
+        "id": "park_179",
+        "facility_type": "parks",
+        "name": "MacLean Park",
+        "parkid": 179,
+        "street_address": "710 Keefer Street",
+        "intersection": "Keefer Street & Heatley Avenue",
+        "neighbourhood": "Strathcona",
+        "hectare": 1.21,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.088396,
+          49.278838
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_180",
+      "properties": {
+        "id": "park_180",
+        "facility_type": "parks",
+        "name": "Oppenheimer Park",
+        "parkid": 180,
+        "street_address": "488 Powell Street",
+        "intersection": "Powell Street & Jackson Street",
+        "neighbourhood": "Strathcona",
+        "hectare": 1.0,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "Y",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.094313,
+          49.282645
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_182",
+      "properties": {
+        "id": "park_182",
+        "facility_type": "parks",
+        "name": "Strathcona Linear Park",
+        "parkid": 182,
+        "street_address": "787 Prior Street",
+        "intersection": "Prior Street & Hawks Avenue",
+        "neighbourhood": "Strathcona",
+        "hectare": 0.3,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.087485,
+          49.276983
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_185",
+      "properties": {
+        "id": "park_185",
+        "facility_type": "parks",
+        "name": "MacDonald Park",
+        "parkid": 185,
+        "street_address": "300 E 44th Avenue",
+        "intersection": "E 44th Avenue & Prince Edward Street",
+        "neighbourhood": "Sunset",
+        "hectare": 1.05,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Sunset"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.098396,
+          49.229748
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_189",
+      "properties": {
+        "id": "park_189",
+        "facility_type": "parks",
+        "name": "Sunset Park",
+        "parkid": 189,
+        "street_address": "404 E 51st Avenue",
+        "intersection": "E 51st Avenue & Prince Edward Street",
+        "neighbourhood": "Sunset",
+        "hectare": 3.42,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Sunset"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.096916,
+          49.222561
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_191",
+      "properties": {
+        "id": "park_191",
+        "facility_type": "parks",
+        "name": "Bobolink Park",
+        "parkid": 191,
+        "street_address": "2510 Hoylake Avenue",
+        "intersection": "Hoylake Avenue & Muirfield Drive",
+        "neighbourhood": "Victoria-Fraserview",
+        "hectare": 3.82,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Victoria-Fraserview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.057615,
+          49.215075
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_201",
+      "properties": {
+        "id": "park_201",
+        "facility_type": "parks",
+        "name": "English Bay Beach Park",
+        "parkid": 201,
+        "street_address": "1700 Beach Avenue",
+        "intersection": "Beach Avenue & Bidwell Street",
+        "neighbourhood": "West End",
+        "hectare": 9.83,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "Y",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.143317,
+          49.287118
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_206",
+      "properties": {
+        "id": "park_206",
+        "facility_type": "parks",
+        "name": "Stanley Park",
+        "parkid": 206,
+        "street_address": "2000 W Georgia Street",
+        "intersection": "W Georgia Street & Chilco Street",
+        "neighbourhood": "West End",
+        "hectare": 400.0,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "Y",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.144307,
+          49.302701
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_208",
+      "properties": {
+        "id": "park_208",
+        "facility_type": "parks",
+        "name": "Rosemary Brown Park",
+        "parkid": 208,
+        "street_address": "2299 Redbud Lane",
+        "intersection": "W 11th Avenue & Vine Street",
+        "neighbourhood": "Kitsilano",
+        "hectare": 0.12,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.157388,
+          49.261821
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_212",
+      "properties": {
+        "id": "park_212",
+        "facility_type": "parks",
+        "name": "Sahalli Park",
+        "parkid": 212,
+        "street_address": "2300 Fraser Street",
+        "intersection": "E 7th Avenue & Fraser Street",
+        "neighbourhood": "Mount Pleasant",
+        "hectare": 0.06,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.089121,
+          49.263885
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_218",
+      "properties": {
+        "id": "park_218",
+        "facility_type": "parks",
+        "name": "Jericho Beach Park",
+        "parkid": 218,
+        "street_address": "3941 Point Grey Road",
+        "intersection": "Point Grey Road & Wallace Street",
+        "neighbourhood": "West Point Grey",
+        "hectare": 46.71,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "West Point Grey"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.197415,
+          49.271513
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_219",
+      "properties": {
+        "id": "park_219",
+        "facility_type": "parks",
+        "name": "Locarno Park",
+        "parkid": 219,
+        "street_address": "4445 NW Marine Drive",
+        "intersection": "NW Marine Drive & Trimble Street",
+        "neighbourhood": "West Point Grey",
+        "hectare": 19.0,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "West Point Grey"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.207284,
+          49.273015
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_228",
+      "properties": {
+        "id": "park_228",
+        "facility_type": "parks",
+        "name": "Oak Meadows Park",
+        "parkid": 228,
+        "street_address": "899 W 37th Avenue",
+        "intersection": "W 37th Avenue & Oak Street",
+        "neighbourhood": "South Cambie",
+        "hectare": 5.0,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "Y",
+        "local_area": "South Cambie"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.125795,
+          49.238445
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_234",
+      "properties": {
+        "id": "park_234",
+        "facility_type": "parks",
+        "name": "Aberdeen Park",
+        "parkid": 234,
+        "street_address": "3525 Foster Avenue",
+        "intersection": "Foster Avenue & Aberdeen Street",
+        "neighbourhood": "Renfrew-Collingwood",
+        "hectare": 1.0,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.027446,
+          49.234765
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_236",
+      "properties": {
+        "id": "park_236",
+        "facility_type": "parks",
+        "name": "Ebisu Park",
+        "parkid": 236,
+        "street_address": "8805 Olser Street",
+        "intersection": "W 72nd Avenue & Olser Street",
+        "neighbourhood": "Marpole",
+        "hectare": 0.4,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.132836,
+          49.205468
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_240",
+      "properties": {
+        "id": "park_240",
+        "facility_type": "parks",
+        "name": "Hinge Park",
+        "parkid": 240,
+        "street_address": "215 W 1st Avenue",
+        "intersection": "W 1st Avenue & Columbia Street",
+        "neighbourhood": "Mount Pleasant",
+        "hectare": 0.95,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.110533,
+          49.270869
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_245",
+      "properties": {
+        "id": "park_245",
+        "facility_type": "parks",
+        "name": "Trillium Park",
+        "parkid": 245,
+        "street_address": "600 National Avenue",
+        "intersection": "National Avenue & Thornton Street",
+        "neighbourhood": "Strathcona",
+        "hectare": 3.05,
+        "facilities": "有",
+        "washrooms": "有",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.093116,
+          49.275015
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_247",
+      "properties": {
+        "id": "park_247",
+        "facility_type": "parks",
+        "name": "McAuley Park",
+        "parkid": 247,
+        "street_address": "699 Kingsway",
+        "intersection": "Kingsway & Fraser Street",
+        "neighbourhood": "Mount Pleasant",
+        "hectare": 0.0,
+        "facilities": "無",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09,
+          49.256978
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "park_248",
+      "properties": {
+        "id": "park_248",
+        "facility_type": "parks",
+        "name": "s??q?lxen?m'ts'exwts'a?xwi7",
+        "parkid": 248,
+        "street_address": "860 Richards Street",
+        "intersection": "Richards Street & Smithe Street",
+        "neighbourhood": "Downtown",
+        "hectare": 0.32,
+        "facilities": "有",
+        "washrooms": "無",
+        "advisories": "N",
+        "specialfeatures": "N",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11862,
+          49.28477
+        ]
+      }
+    }
+  ]
+}

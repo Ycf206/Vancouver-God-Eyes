@@ -5,7 +5,8 @@ import { useUIStore, MapStyleType } from '@/store/useUIStore';
 import { 
   Map, Satellite, Sun, Moon, Bus, Layers, CircleDot, Route, Ship, 
   CircleDollarSign, Accessibility, Bike, Zap, Scooter, Camera, Siren, 
-  Flame, Building2, Hospital, ChevronLeft
+  Flame, Building2, Hospital, ChevronLeft, Trees, Footprints, Flower2, 
+  Droplets, Bath, Leaf, Landmark
 } from 'lucide-react';
 
 export default function LayerPanel() {
@@ -198,18 +199,39 @@ export default function LayerPanel() {
         {/* Divider */}
         <div className="w-full h-px bg-[#26282d]"></div>
 
-        {/* Government Row */}
+        {/* Nature Row (自然) */}
+        <div className="flex flex-col gap-1.5">
+          <div className="text-[10px] font-bold text-emerald-400 tracking-wider flex items-center justify-between">
+            <div className="flex items-center gap-1">
+              <Leaf className="w-3 h-3 text-emerald-400" />
+              <span>自然</span>
+            </div>
+            <span className="text-[9px] text-emerald-500/70 font-mono">NATURE</span>
+          </div>
+          <div className="grid grid-cols-2 gap-1">
+            <LayerButton layerKey="parks" label="公園" icon={Trees} colorClass="text-emerald-400" activeBg="bg-[#14291f]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
+            <LayerButton layerKey="parksFacilities" label="休憩設施" icon={Footprints} colorClass="text-teal-400" activeBg="bg-[#122826]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
+            <LayerButton layerKey="communityGardens" label="社區花園" icon={Flower2} colorClass="text-lime-400" activeBg="bg-[#1e2a14]" activeBorder="border-lime-500/50" activeShadow="shadow-[0_0_6px_rgba(132,204,22,0.15)]" />
+            <LayerButton layerKey="communityCentres" label="社區中心" icon={Building2} colorClass="text-violet-400" activeBg="bg-[#211a2f]" activeBorder="border-violet-500/50" activeShadow="shadow-[0_0_6px_rgba(139,92,246,0.15)]" />
+            <LayerButton layerKey="drinkingFountains" label="飲水器" icon={Droplets} colorClass="text-sky-400" activeBg="bg-[#142533]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(56,189,248,0.15)]" />
+            <LayerButton layerKey="publicWashrooms" label="公共廁所" icon={Bath} colorClass="text-cyan-400" activeBg="bg-[#13272e]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.15)]" />
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div className="w-full h-px bg-[#26282d]"></div>
+
+        {/* Government Row (政府) */}
         <div className="flex flex-col gap-1.5 pb-2">
           <div className="text-[10px] font-bold text-rose-400 tracking-wider flex items-center justify-between">
             <div className="flex items-center gap-1">
-              <Building2 className="w-3 h-3 text-rose-400" />
-              <span>市政與機構</span>
+              <Landmark className="w-3 h-3 text-rose-400" />
+              <span>政府</span>
             </div>
             <span className="text-[9px] text-rose-400/70 font-mono">GOVERNMENT</span>
           </div>
           <div className="grid grid-cols-2 gap-1">
             <LayerButton layerKey="fireHalls" label="消防局" icon={Flame} colorClass="text-rose-400" activeBg="bg-[#2a171a]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.15)]" />
-            <LayerButton layerKey="communityCentres" label="社區中心" icon={Building2} colorClass="text-violet-400" activeBg="bg-[#211a2f]" activeBorder="border-violet-500/50" activeShadow="shadow-[0_0_6px_rgba(139,92,246,0.15)]" />
             <LayerButton layerKey="hospitals" label="醫院" icon={Hospital} colorClass="text-emerald-400" activeBg="bg-[#13271d]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
           </div>
         </div>

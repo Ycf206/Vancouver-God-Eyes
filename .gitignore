@@ -26,3 +26,11 @@ redis_data/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Scratch and temporary scripts
+*.zip
+fix_*.py
+scratch_*.py
+add_api.py
+generate_bc_ferries.py
+bcferries.json

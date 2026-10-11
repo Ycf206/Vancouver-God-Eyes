@@ -313,6 +313,11 @@ export default function AppMap() {
     style.sources['traffic-cameras'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/traffic_cameras` };
     style.sources['safety-cameras'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/safety_cameras` };
     style.sources['hospitals'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/hospitals` };
+    style.sources['parks'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/parks` };
+    style.sources['parks-facilities'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/parks_facilities` };
+    style.sources['community-gardens'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/community_gardens` };
+    style.sources['drinking-fountains'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/drinking_fountains` };
+    style.sources['public-washrooms'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/public_washrooms` };
 
     // Bus Routes
     if (layers.busRoutes) {
@@ -765,6 +770,156 @@ export default function AppMap() {
       });
     }
 
+    // Nature Facilities: Parks (公園)
+    if (layers.parks) {
+      style.layers.push({
+        id: 'parks-layer',
+        type: 'circle',
+        source: 'parks',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3, 14, 5.5, 15, 9, 17, 13],
+          'circle-color': '#16a34a',
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'parks-symbol-layer',
+        type: 'symbol',
+        source: 'parks',
+        minzoom: 15,
+        layout: {
+          'text-field': '🌲',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 15, 11, 17, 15],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+    }
+
+    // Nature Facilities: Parks Facilities (休憩設施)
+    if (layers.parksFacilities) {
+      style.layers.push({
+        id: 'parks-facilities-layer',
+        type: 'circle',
+        source: 'parks-facilities',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 5, 15, 8, 17, 11],
+          'circle-color': '#0d9488',
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'parks-facilities-symbol-layer',
+        type: 'symbol',
+        source: 'parks-facilities',
+        minzoom: 15,
+        layout: {
+          'text-field': '🛝',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 15, 10, 17, 13],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+    }
+
+    // Nature Facilities: Community Gardens (社區花園)
+    if (layers.communityGardens) {
+      style.layers.push({
+        id: 'community-gardens-layer',
+        type: 'circle',
+        source: 'community-gardens',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 5, 15, 8.5, 17, 11],
+          'circle-color': '#65a30d',
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'community-gardens-symbol-layer',
+        type: 'symbol',
+        source: 'community-gardens',
+        minzoom: 15,
+        layout: {
+          'text-field': '🌻',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 15, 11, 17, 14],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+    }
+
+    // Nature Facilities: Drinking Fountains (飲水器)
+    if (layers.drinkingFountains) {
+      style.layers.push({
+        id: 'drinking-fountains-layer',
+        type: 'circle',
+        source: 'drinking-fountains',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 11],
+          'circle-color': '#0284c7',
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'drinking-fountains-symbol-layer',
+        type: 'symbol',
+        source: 'drinking-fountains',
+        minzoom: 15,
+        layout: {
+          'text-field': '💧',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 15, 10, 17, 13],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+    }
+
+    // Nature Facilities: Public Washrooms (公共廁所)
+    if (layers.publicWashrooms) {
+      style.layers.push({
+        id: 'public-washrooms-layer',
+        type: 'circle',
+        source: 'public-washrooms',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 5, 15, 8.5, 17, 11],
+          'circle-color': '#06b6d4',
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'public-washrooms-symbol-layer',
+        type: 'symbol',
+        source: 'public-washrooms',
+        minzoom: 15,
+        layout: {
+          'text-field': '🚻',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 15, 11, 17, 14],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+    }
+
     return style;
   }, [
     layers.skytrainRoutes, 
@@ -785,6 +940,11 @@ export default function AppMap() {
     layers.fireHalls,
     layers.communityCentres,
     layers.hospitals,
+    layers.parks,
+    layers.parksFacilities,
+    layers.communityGardens,
+    layers.drinkingFountains,
+    layers.publicWashrooms,
     mapStyleType
   ]);
 
@@ -825,7 +985,17 @@ export default function AppMap() {
           'community-centres-layer',
           'community-centres-symbol-layer',
           'hospitals-layer',
-          'hospitals-symbol-layer'
+          'hospitals-symbol-layer',
+          'parks-layer',
+          'parks-symbol-layer',
+          'parks-facilities-layer',
+          'parks-facilities-symbol-layer',
+          'community-gardens-layer',
+          'community-gardens-symbol-layer',
+          'drinking-fountains-layer',
+          'drinking-fountains-symbol-layer',
+          'public-washrooms-layer',
+          'public-washrooms-symbol-layer'
         ]}
         onClick={(e) => {
           const feature = e.features?.[0];
@@ -869,7 +1039,11 @@ export default function AppMap() {
             layerId.startsWith('safety-cameras') ||
             layerId.startsWith('fire-halls') ||
             layerId.startsWith('community-centres') ||
-            layerId.startsWith('hospitals')
+            layerId.startsWith('hospitals') ||
+            layerId.startsWith('parks') ||
+            layerId.startsWith('community-gardens') ||
+            layerId.startsWith('drinking-fountains') ||
+            layerId.startsWith('public-washrooms')
           ) {
             setSelectedStop(null);
             const props = feature.properties || {};
@@ -1214,7 +1388,12 @@ export default function AppMap() {
                     selectedFacility.facility_type === 'traffic_cameras' ? 'bg-cyan-500' :
                     selectedFacility.facility_type === 'safety_cameras' ? 'bg-rose-600' :
                     selectedFacility.facility_type === 'hospitals' ? 'bg-emerald-500' :
-                    selectedFacility.facility_type === 'fire_halls' ? 'bg-rose-500' : 'bg-violet-500'
+                    selectedFacility.facility_type === 'fire_halls' ? 'bg-rose-500' :
+                    selectedFacility.facility_type === 'parks' ? 'bg-emerald-600' :
+                    selectedFacility.facility_type === 'parks_facilities' ? 'bg-teal-600' :
+                    selectedFacility.facility_type === 'community_gardens' ? 'bg-lime-600' :
+                    selectedFacility.facility_type === 'drinking_fountains' ? 'bg-sky-500' :
+                    selectedFacility.facility_type === 'public_washrooms' ? 'bg-cyan-500' : 'bg-violet-500'
                   }`}></span>
                   <div>
                     <h3 className="font-bold text-gray-900 text-sm leading-tight">{selectedFacility.name}</h3>
@@ -1746,6 +1925,244 @@ export default function AppMap() {
                   </div>
                 );
               })()}
+
+              {/* Parks Details */}
+              {selectedFacility.facility_type === 'parks' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-emerald-50/80 p-2.5 rounded border border-emerald-100 flex flex-col gap-1 text-[11px]">
+                    {selectedFacility.properties.street_address && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>公園地址</span>
+                        <span className="font-semibold text-gray-800 text-right truncate max-w-[170px]">{selectedFacility.properties.street_address}</span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.intersection && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>鄰近路口</span>
+                        <span className="font-medium text-gray-700 text-right truncate max-w-[170px]">{selectedFacility.properties.intersection}</span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.hectare != null && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>綠地面積</span>
+                        <span className="font-bold text-emerald-800">{selectedFacility.properties.hectare} 公頃 (ha)</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-1.5 text-[11px]">
+                    <div className="bg-gray-50 p-2 rounded border border-gray-100 flex items-center justify-between">
+                      <span className="text-gray-500">休閒設施</span>
+                      <span className={`font-semibold ${selectedFacility.properties.facilities === '有' ? 'text-emerald-700' : 'text-gray-400'}`}>
+                        {selectedFacility.properties.facilities === '有' ? '✅ 配備設施' : '無'}
+                      </span>
+                    </div>
+                    <div className="bg-gray-50 p-2 rounded border border-gray-100 flex items-center justify-between">
+                      <span className="text-gray-500">園區洗手間</span>
+                      <span className={`font-semibold ${selectedFacility.properties.washrooms === '有' ? 'text-cyan-700' : 'text-gray-400'}`}>
+                        {selectedFacility.properties.washrooms === '有' ? '🚻 有洗手間' : '無'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {selectedFacility.properties.specialfeatures && selectedFacility.properties.specialfeatures !== 'N' && (
+                    <div className="bg-amber-50/70 p-2 rounded text-[11px] text-amber-900 border border-amber-200/60">
+                      <span className="font-semibold block mb-0.5">🌟 特色設施與景觀：</span>
+                      <span>{selectedFacility.properties.specialfeatures}</span>
+                    </div>
+                  )}
+
+                  <div className="pt-1 border-t border-gray-100">
+                    <a
+                      href={`https://vancouver.ca/parks-recreation-culture/find-a-park.aspx`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
+                    >
+                      前往溫哥華公園局官方頁面 ↗
+                    </a>
+                  </div>
+                </div>
+              )}
+
+              {/* Parks Facilities Details */}
+              {selectedFacility.facility_type === 'parks_facilities' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-teal-50/80 p-2.5 rounded border border-teal-100 flex flex-col gap-1.5 text-[11px]">
+                    <div className="flex justify-between items-center text-teal-900">
+                      <span className="font-medium text-gray-600">設施類別</span>
+                      <span className="font-bold text-teal-800 text-xs px-1.5 py-0.5 bg-teal-100/70 rounded">
+                        {selectedFacility.properties.facility_type_name || selectedFacility.name}
+                      </span>
+                    </div>
+                    {selectedFacility.properties.facility_count != null && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>設施數量 / 規模</span>
+                        <span className="font-bold text-gray-800">{selectedFacility.properties.facility_count} 座</span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.park_name && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>所在公園</span>
+                        <span className="font-semibold text-emerald-800">{selectedFacility.properties.park_name}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {selectedFacility.properties.facility_url && (
+                    <div className="pt-1 border-t border-gray-100">
+                      <a
+                        href={selectedFacility.properties.facility_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-teal-600 hover:bg-teal-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
+                      >
+                        查看設施預約與使用指南 ↗
+                      </a>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Community Gardens Details */}
+              {selectedFacility.facility_type === 'community_gardens' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-lime-50/80 p-2.5 rounded border border-lime-200 flex flex-col gap-1 text-[11px]">
+                    {selectedFacility.properties.address && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>花園地址</span>
+                        <span className="font-semibold text-gray-800 text-right truncate max-w-[170px]">{selectedFacility.properties.address}</span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.managing_org && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>營運/認養組織</span>
+                        <span className="font-medium text-lime-900 text-right truncate max-w-[170px]">{selectedFacility.properties.managing_org}</span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.year_created && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>成立年份</span>
+                        <span className="font-medium text-gray-800">{selectedFacility.properties.year_created} 年</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-1.5 text-[11px]">
+                    <div className="bg-gray-50 p-2 rounded border border-gray-100 flex items-center justify-between">
+                      <span className="text-gray-500">耕作畦位</span>
+                      <span className="font-bold text-lime-800">{selectedFacility.properties.plots != null ? `${selectedFacility.properties.plots} 格` : '未載明'}</span>
+                    </div>
+                    <div className="bg-gray-50 p-2 rounded border border-gray-100 flex items-center justify-between">
+                      <span className="text-gray-500">社區果樹</span>
+                      <span className="font-bold text-emerald-800">{selectedFacility.properties.food_trees != null ? `${selectedFacility.properties.food_trees} 棵` : '無'}</span>
+                    </div>
+                  </div>
+
+                  {selectedFacility.properties.food_tree_varieties && (
+                    <div className="bg-emerald-50/60 p-2 rounded text-[11px] text-emerald-900 border border-emerald-100">
+                      <span className="font-semibold block mb-0.5">🍎 果樹品種：</span>
+                      <span>{selectedFacility.properties.food_tree_varieties}</span>
+                    </div>
+                  )}
+
+                  {selectedFacility.properties.website && (
+                    <div className="pt-1 border-t border-gray-100">
+                      <a
+                        href={selectedFacility.properties.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-lime-600 hover:bg-lime-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
+                      >
+                        前往社區花園官方網頁 ↗
+                      </a>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Drinking Fountains Details */}
+              {selectedFacility.facility_type === 'drinking_fountains' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-sky-50/80 p-2.5 rounded border border-sky-200 flex flex-col gap-1.5 text-[11px]">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">開放營運</span>
+                      <span className="font-bold text-sky-800 bg-sky-100/70 px-1.5 py-0.5 rounded">
+                        {selectedFacility.properties.in_operation || '全年開放'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">寵物友善</span>
+                      <span className={`font-semibold ${selectedFacility.properties.pet_friendly?.includes('寵物') ? 'text-emerald-700' : 'text-gray-600'}`}>
+                        {selectedFacility.properties.pet_friendly || '一般飲水'}
+                      </span>
+                    </div>
+                    {selectedFacility.properties.park_or_site && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>所屬場域</span>
+                        <span className="font-medium text-gray-800 text-right truncate max-w-[170px]">{selectedFacility.properties.park_or_site}</span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.location && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>具體位置</span>
+                        <span className="font-medium text-gray-800 text-right truncate max-w-[170px]">{selectedFacility.properties.location}</span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.maintainer && (
+                      <div className="flex justify-between items-center text-gray-500 text-[10px] pt-1 border-t border-sky-100">
+                        <span>管理維護單位</span>
+                        <span className="font-medium text-gray-700">{selectedFacility.properties.maintainer}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Public Washrooms Details */}
+              {selectedFacility.facility_type === 'public_washrooms' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-cyan-50/80 p-2.5 rounded border border-cyan-200 flex flex-col gap-1.5 text-[11px]">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">公廁類型</span>
+                      <span className="font-bold text-cyan-900 bg-cyan-100/80 px-1.5 py-0.5 rounded">
+                        {selectedFacility.properties.washroom_type || '公共洗手間'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">無障礙規格</span>
+                      <span className={`font-bold ${selectedFacility.properties.wheelchair_access?.includes('無障礙') ? 'text-blue-700' : 'text-gray-600'}`}>
+                        {selectedFacility.properties.wheelchair_access || '一般規格'}
+                      </span>
+                    </div>
+                    {selectedFacility.properties.summer_hours && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>夏季開放時間</span>
+                        <span className="font-semibold text-emerald-800">{selectedFacility.properties.summer_hours}</span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.winter_hours && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>冬季開放時間</span>
+                        <span className="font-medium text-gray-700">{selectedFacility.properties.winter_hours}</span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.location && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>所在位置</span>
+                        <span className="font-medium text-gray-800 text-right truncate max-w-[170px]">{selectedFacility.properties.location}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {selectedFacility.properties.notes && (
+                    <div className="bg-gray-50 p-2 rounded text-[11px] text-gray-600 border border-gray-100">
+                      <span className="font-semibold block mb-0.5 text-gray-700">備註說明：</span>
+                      <span>{selectedFacility.properties.notes}</span>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </Popup>
         )}

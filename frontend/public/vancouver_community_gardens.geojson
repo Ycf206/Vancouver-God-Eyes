@@ -1,0 +1,4401 @@
+{
+  "type": "FeatureCollection",
+  "generator": "VancouverGodsEye",
+  "total_count": 169,
+  "features": [
+    {
+      "type": "Feature",
+      "id": "garden_FA002",
+      "properties": {
+        "id": "garden_FA002",
+        "facility_type": "community_gardens",
+        "name": "15th Avenue Coop",
+        "mapid": "FA002",
+        "year_created": "2014",
+        "address": "1255 E 15th Av, Vancouver, BC",
+        "plots": 8,
+        "food_trees": 0,
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0788387,
+          49.2571193
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA006",
+      "properties": {
+        "id": "garden_FA006",
+        "facility_type": "community_gardens",
+        "name": "Adanac Park Community Garden",
+        "mapid": "FA006",
+        "year_created": "2011",
+        "address": "1025 Boundary Road, Vancouver, BC",
+        "plots": 50,
+        "food_trees": "8",
+        "managing_org": "Adanac Community Garden Society",
+        "website": "http://adanacparkcommunitygarden.blogspot.ca/",
+        "food_tree_varieties": "1 Early McIntosh Apple; 1 Jonagold apple; 2 italian plum; 2 dwarf anjou pear; 1 hardy evans cherry; 1 hardy juliet cherry",
+        "notes": "Some plots are accessible",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0243945,
+          49.2755823
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA008",
+      "properties": {
+        "id": "garden_FA008",
+        "facility_type": "community_gardens",
+        "name": "Arbutus Village Park",
+        "mapid": "FA008",
+        "year_created": "",
+        "address": "4202 Valley Drive, Vancouver, BC",
+        "plots": 0,
+        "food_trees": "9",
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "Crabapple",
+        "notes": "",
+        "local_area": "Arbutus Ridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1549951,
+          49.2507172
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA010",
+      "properties": {
+        "id": "garden_FA010",
+        "facility_type": "community_gardens",
+        "name": "Barclay Heritage Square",
+        "mapid": "FA010",
+        "year_created": "",
+        "address": "1433 Barclay St, Vancouver, BC",
+        "plots": 0,
+        "food_trees": "2",
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "Apple",
+        "notes": "",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.132845,
+          49.2873875
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA023",
+      "properties": {
+        "id": "garden_FA023",
+        "facility_type": "community_gardens",
+        "name": "Champlain Place Community Garden",
+        "mapid": "FA023",
+        "year_created": "2010",
+        "address": "3347 E 58th Av, Vancouver, BC",
+        "plots": 8,
+        "food_trees": 0,
+        "managing_org": "BC Housing",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0352463,
+          49.2167296
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA024",
+      "properties": {
+        "id": "garden_FA024",
+        "facility_type": "community_gardens",
+        "name": "Charles Park",
+        "mapid": "FA024",
+        "year_created": "",
+        "address": "3400 Charles St, Vancouver, BC",
+        "plots": 0,
+        "food_trees": "1",
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "Crabapple",
+        "notes": "",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0308947,
+          49.2732079
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA027",
+      "properties": {
+        "id": "garden_FA027",
+        "facility_type": "community_gardens",
+        "name": "Cheyenne Community Garden",
+        "mapid": "FA027",
+        "year_created": "2010",
+        "address": "2755 Cheyenne Av, Vancouver, BC",
+        "plots": 35,
+        "food_trees": "5",
+        "managing_org": "Collingwood Neighbourhood House Society",
+        "website": "http://rcfsi.blogspot.ca",
+        "food_tree_varieties": "Plums, heritage apples",
+        "notes": "inc by 3 plots in 2016",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0480587,
+          49.2414955
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA030",
+      "properties": {
+        "id": "garden_FA030",
+        "facility_type": "community_gardens",
+        "name": "China Creek Housing Co-op",
+        "mapid": "FA030",
+        "year_created": "1993",
+        "address": "1230 E  8th  Av, Vancouver, BC",
+        "plots": 30,
+        "food_trees": 0,
+        "managing_org": "China Creek Housing Co-op",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0832689,
+          49.2643106
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA038",
+      "properties": {
+        "id": "garden_FA038",
+        "facility_type": "community_gardens",
+        "name": "Clark Park Orchard",
+        "mapid": "FA038",
+        "year_created": "2014",
+        "address": "1500 E 15th Av, Vancouver, BC",
+        "plots": 0,
+        "food_trees": "9",
+        "managing_org": "Trout Lake Vancouver Community Centre Association",
+        "website": "https://clarkparkorchard.wordpress.com/",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.073727,
+          49.257484
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA044",
+      "properties": {
+        "id": "garden_FA044",
+        "facility_type": "community_gardens",
+        "name": "Cypress Community Garden",
+        "mapid": "FA044",
+        "year_created": "1995",
+        "address": "1800 W 6th Av, Vancouver, BC",
+        "plots": 55,
+        "food_trees": "15",
+        "managing_org": "",
+        "website": "http://www.cypresscommunitygarden.ca/",
+        "food_tree_varieties": "Clapp's Favourite Pear, dwarf",
+        "notes": "",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1456636,
+          49.2662772
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA046",
+      "properties": {
+        "id": "garden_FA046",
+        "facility_type": "community_gardens",
+        "name": "Delamont Park",
+        "mapid": "FA046",
+        "year_created": "",
+        "address": "2091 W 7th Av, Vancouver, BC",
+        "plots": 0,
+        "food_trees": "8",
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "Cherry, Asian pear, plum, hazelnut",
+        "notes": "",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.152619,
+          49.2658197
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA051",
+      "properties": {
+        "id": "garden_FA051",
+        "facility_type": "community_gardens",
+        "name": "Dundee Community Garden",
+        "mapid": "FA051",
+        "year_created": "2013",
+        "address": "5395 Dundee St, Vancouver, BC",
+        "plots": 23,
+        "food_trees": "4",
+        "managing_org": "Dundee Court Housing Co-op",
+        "website": "",
+        "food_tree_varieties": "Apple",
+        "notes": "",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0479743,
+          49.2357653
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA053",
+      "properties": {
+        "id": "garden_FA053",
+        "facility_type": "community_gardens",
+        "name": "Emma G Coop",
+        "mapid": "FA053",
+        "year_created": "2013",
+        "address": "2250 Fraser St, Vancouver, BC",
+        "plots": 8,
+        "food_trees": 0,
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.088762,
+          49.264569
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA059",
+      "properties": {
+        "id": "garden_FA059",
+        "facility_type": "community_gardens",
+        "name": "Fraserview Golf Course",
+        "mapid": "FA059",
+        "year_created": "2010",
+        "address": "7800 Vivian Drive, Vancouver, BC",
+        "plots": 0,
+        "food_trees": "30",
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "Apple, cherry",
+        "notes": "",
+        "local_area": "Victoria-Fraserview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0539872,
+          49.2134354
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA062",
+      "properties": {
+        "id": "garden_FA062",
+        "facility_type": "community_gardens",
+        "name": "Garden of Eatin'",
+        "mapid": "FA062",
+        "year_created": "2009",
+        "address": "2670 Victoria Drive, Vancouver, BC",
+        "plots": 26,
+        "food_trees": "2",
+        "managing_org": "First Christian Reformed Church",
+        "website": "http://van1crc.org/the-garden/",
+        "food_tree_varieties": "apple trees, plums, blueberries and raspberries",
+        "notes": "",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0658918,
+          49.2606376
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA063",
+      "properties": {
+        "id": "garden_FA063",
+        "facility_type": "community_gardens",
+        "name": "Gaston Park",
+        "mapid": "FA063",
+        "year_created": "2011",
+        "address": "3470 Crowley  Drive, Vancouver, BC",
+        "plots": 0,
+        "food_trees": "11",
+        "managing_org": "Renfrew Collingwood Food Security Institute",
+        "website": "https://rcfood.wordpress.com/",
+        "food_tree_varieties": "quince, Asian pear, Saskatoon berry, Italian prune plum",
+        "notes": "",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0311899,
+          49.2362316
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA066",
+      "properties": {
+        "id": "garden_FA066",
+        "facility_type": "community_gardens",
+        "name": "Grandview Elementary Community Garden",
+        "mapid": "FA066",
+        "year_created": "pre 2000",
+        "address": "2055 Woodland Drive, Vancouver, BC",
+        "plots": 24,
+        "food_trees": "5",
+        "managing_org": "Grandview Garden Coordinator (VCH SMART funding)",
+        "website": "",
+        "food_tree_varieties": "yes",
+        "notes": "3mx3m community plots in addition to school garden",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.07831,
+          49.265917
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA067",
+      "properties": {
+        "id": "garden_FA067",
+        "facility_type": "community_gardens",
+        "name": "Grandview Park",
+        "mapid": "FA067",
+        "year_created": "2011",
+        "address": "1657 Charles St, Vancouver, BC",
+        "plots": 0,
+        "food_trees": "yes",
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "Plum espalier",
+        "notes": "",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0705385,
+          49.2735193
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA079",
+      "properties": {
+        "id": "garden_FA079",
+        "facility_type": "community_gardens",
+        "name": "Kaslo Gardens Community Vegetable Garden",
+        "mapid": "FA079",
+        "year_created": "2009",
+        "address": "2765 Cooperative Way, Vancouver, BC",
+        "plots": 16,
+        "food_trees": 0,
+        "managing_org": "Kaslo Gardens Housing Cooperative",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0490748,
+          49.257436
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA081",
+      "properties": {
+        "id": "garden_FA081",
+        "facility_type": "community_gardens",
+        "name": "Kingscrest Park Community Garden",
+        "mapid": "FA081",
+        "year_created": "2014",
+        "address": "4150 Knight St, Vancouver, BC",
+        "plots": 20,
+        "food_trees": 0,
+        "managing_org": "Cedar Cottage Food Network Society",
+        "website": "https://cedarcottagefoodnetwork.com/",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0743322,
+          49.2470092
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA083",
+      "properties": {
+        "id": "garden_FA083",
+        "facility_type": "community_gardens",
+        "name": "16th & Pine Community Garden",
+        "mapid": "FA083",
+        "year_created": "2008",
+        "address": "1708 W 16th Av, Vancouver, BC",
+        "plots": 16,
+        "food_trees": 0,
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1437758,
+          49.2570894
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA085",
+      "properties": {
+        "id": "garden_FA085",
+        "facility_type": "community_gardens",
+        "name": "Kitsilano Community Garden",
+        "mapid": "FA085",
+        "year_created": "1986",
+        "address": "2027 W 6th Av, Vancouver, BC",
+        "plots": 55,
+        "food_trees": "15",
+        "managing_org": "Kitsilano Community Garden Association",
+        "website": "http://kitsilanocommunitygarden.blogspot.ca/",
+        "food_tree_varieties": "Apple (2), Pear (2), Cheery (2), Plum (4), Apricot (1), Hazelnut (1), Fig (1), Apple/Pear (2)",
+        "notes": "",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1510237,
+          49.2666159
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA087",
+      "properties": {
+        "id": "garden_FA087",
+        "facility_type": "community_gardens",
+        "name": "Kiwassa Neighbourhood House Community Garden",
+        "mapid": "FA087",
+        "year_created": "2009",
+        "address": "2425 Oxford St, Vancouver, BC",
+        "plots": 11,
+        "food_trees": 0,
+        "managing_org": "Kiwassa Neighbourhood House",
+        "website": "http://www.kiwassa.ca/",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05605,
+          49.2857204
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA088",
+      "properties": {
+        "id": "garden_FA088",
+        "facility_type": "community_gardens",
+        "name": "Ladybug Garden",
+        "mapid": "FA088",
+        "year_created": "2010",
+        "address": "1688 E 8th Av, Vancouver, BC",
+        "plots": 48,
+        "food_trees": "7",
+        "managing_org": "The Britannia Community Services Centre Society",
+        "website": "http://facebook.com/ladybugcommunitygarden",
+        "food_tree_varieties": "plum, apple, crab apple, fig",
+        "notes": "6",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0703978,
+          49.2629678
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA090",
+      "properties": {
+        "id": "garden_FA090",
+        "facility_type": "community_gardens",
+        "name": "Langara College Community Garden",
+        "mapid": "FA090",
+        "year_created": "2011",
+        "address": "6648 Ontario St, Vancouver, BC",
+        "plots": 26,
+        "food_trees": 0,
+        "managing_org": "Langara Community Garden Society",
+        "website": "https://courseweb.langara.bc.ca/langaracommunitygarden/",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Sunset"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.105789,
+          49.2245248
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA094",
+      "properties": {
+        "id": "garden_FA094",
+        "facility_type": "community_gardens",
+        "name": "Marpole Family Place",
+        "mapid": "FA094",
+        "year_created": "2012",
+        "address": "1305 W 70th Av, Vancouver, BC",
+        "plots": 8,
+        "food_trees": 0,
+        "managing_org": "Marpole Family Place",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1347288,
+          49.2087963
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA098",
+      "properties": {
+        "id": "garden_FA098",
+        "facility_type": "community_gardens",
+        "name": "McSpadden Park Community Garden",
+        "mapid": "FA098",
+        "year_created": "1996",
+        "address": "2125 Victoria  Drive, Vancouver, BC",
+        "plots": 18,
+        "food_trees": 0,
+        "managing_org": "McSpadden Agricultural Project Society",
+        "website": "http://mcspaddengarden.blogspot.ca/",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.066446,
+          49.2665135
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA103",
+      "properties": {
+        "id": "garden_FA103",
+        "facility_type": "community_gardens",
+        "name": "MOBY Community Garden",
+        "mapid": "FA103",
+        "year_created": "2006",
+        "address": "1737 E 11th Av, Vancouver, BC",
+        "plots": 45,
+        "food_trees": 0,
+        "managing_org": "My Own Back Yard",
+        "website": "http://mobygarden.wordpress.com/",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0688879,
+          49.2604731
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA105",
+      "properties": {
+        "id": "garden_FA105",
+        "facility_type": "community_gardens",
+        "name": "Mount Pleasant Community Garden",
+        "mapid": "FA105",
+        "year_created": "2012",
+        "address": "3161 Ontario St, Vancouver, BC",
+        "plots": 30,
+        "food_trees": "16",
+        "managing_org": "Urban Diggers Society",
+        "website": "https://www.facebook.com/MountPleasantCommunityGarden/",
+        "food_tree_varieties": "1 early macintosh apple; 1 fuji red sport apple; 2 italian plum; 1 lapins cherry; 1 stella cherry; 1 anjou pear dwarf; 1 red sensation pear dwarf; 1 persimmon fuju (espalier), lemon, Jonamac, Shamrock, Stella Cherry, Golden Russet",
+        "notes": "",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1056415,
+          49.2573957
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA107",
+      "properties": {
+        "id": "garden_FA107",
+        "facility_type": "community_gardens",
+        "name": "New Brighton Park",
+        "mapid": "FA107",
+        "year_created": "2008",
+        "address": "3201 New Brighton Road, Vancouver, BC",
+        "plots": 0,
+        "food_trees": "50",
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "Apple, pear, cherry",
+        "notes": "",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0361825,
+          49.288757
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA108",
+      "properties": {
+        "id": "garden_FA108",
+        "facility_type": "community_gardens",
+        "name": "Norquay Community Learning Orchard",
+        "mapid": "FA108",
+        "year_created": "2011",
+        "address": "2732 Horley St, Vancouver, BC",
+        "plots": 0,
+        "food_trees": "8",
+        "managing_org": "Collingwood Neighbourhood House Society",
+        "website": "https://rcfood.wordpress.com/norquay-orchard/",
+        "food_tree_varieties": "Heritage apples, pears, Asian pear, cherry, plums, fig, garry oak",
+        "notes": "",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0491218,
+          49.2403942
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA113",
+      "properties": {
+        "id": "garden_FA113",
+        "facility_type": "community_gardens",
+        "name": "Pine St. Community Garden",
+        "mapid": "FA113",
+        "year_created": "2006",
+        "address": "1605 W 6th Av, Vancouver, BC",
+        "plots": 40,
+        "food_trees": 0,
+        "managing_org": "Pine Community Garden Association",
+        "website": "http://pinestreetgardens.org/",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1413634,
+          49.266421
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA127",
+      "properties": {
+        "id": "garden_FA127",
+        "facility_type": "community_gardens",
+        "name": "SPEC Cambie Communal Garden",
+        "mapid": "FA127",
+        "year_created": "2006",
+        "address": "2615 Cambie St, Vancouver, BC",
+        "plots": 17,
+        "food_trees": 0,
+        "managing_org": "SPEC",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1155183,
+          49.2615932
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA135",
+      "properties": {
+        "id": "garden_FA135",
+        "facility_type": "community_gardens",
+        "name": "Tea Swamp Community Garden",
+        "mapid": "FA135",
+        "year_created": "2002",
+        "address": "255 E 16th Av, Vancouver, BC",
+        "plots": 20,
+        "food_trees": "4",
+        "managing_org": "Urban Diggers Society",
+        "website": "http://dig.vcn.bc.ca/teaswampgarden",
+        "food_tree_varieties": "2 apple, 2 fig, raspberry canes, blueberry, grape",
+        "notes": "",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0990112,
+          49.2569353
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA139",
+      "properties": {
+        "id": "garden_FA139",
+        "facility_type": "community_gardens",
+        "name": "The Rise on Cambie",
+        "mapid": "FA139",
+        "year_created": "2008",
+        "address": "485 W 8th Av, Vancouver, BC",
+        "plots": 18,
+        "food_trees": 0,
+        "managing_org": "Strata Council",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1144868,
+          49.2640067
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA140",
+      "properties": {
+        "id": "garden_FA140",
+        "facility_type": "community_gardens",
+        "name": "Trillium Park North Artists Garden",
+        "mapid": "FA140",
+        "year_created": "2014",
+        "address": "580 Malkin Av, Vancouver, BC",
+        "plots": 4,
+        "food_trees": 0,
+        "managing_org": "Earthand Gleaners Society",
+        "website": "https://earthand.com/category/trillium-north-park/",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.092694,
+          49.2752874
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA142",
+      "properties": {
+        "id": "garden_FA142",
+        "facility_type": "community_gardens",
+        "name": "UP! Elgin community garden",
+        "mapid": "FA142",
+        "year_created": "2010",
+        "address": "5332 Windsor St, Vancouver, BC",
+        "plots": 24,
+        "food_trees": "3",
+        "managing_org": "Fraser Kensington Community Garden Society",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.084388,
+          49.2365575
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA144",
+      "properties": {
+        "id": "garden_FA144",
+        "facility_type": "community_gardens",
+        "name": "Valdez Park",
+        "mapid": "FA144",
+        "year_created": "pre-1970",
+        "address": "3210 W 22nd Av, Vancouver, BC",
+        "plots": 0,
+        "food_trees": "6",
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "Apple",
+        "notes": "",
+        "local_area": "Dunbar-Southlands"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1764742,
+          49.2524296
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA149",
+      "properties": {
+        "id": "garden_FA149",
+        "facility_type": "community_gardens",
+        "name": "Woodland Park Community Garden",
+        "mapid": "FA149",
+        "year_created": "2013",
+        "address": "705 Woodland Drive, Vancouver, BC",
+        "plots": 64,
+        "food_trees": "3",
+        "managing_org": "Village Vancouver Transition Society",
+        "website": "http://woodlandcommunitygarden.wordpress.com",
+        "food_tree_varieties": "Jonamac Apple, Italian Prune, Pacific Crabapple",
+        "notes": "",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0738382,
+          49.2784536
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA151",
+      "properties": {
+        "id": "garden_FA151",
+        "facility_type": "community_gardens",
+        "name": "Deeper Roots Seniors Community Garden",
+        "mapid": "FA151",
+        "year_created": "2016",
+        "address": "5350 Baillie St, Vancouver, BC",
+        "plots": 10,
+        "food_trees": 0,
+        "managing_org": "Oakridge Adventist Church",
+        "website": "http://deeproots.ca",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "South Cambie"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1218448,
+          49.2369358
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA156",
+      "properties": {
+        "id": "garden_FA156",
+        "facility_type": "community_gardens",
+        "name": "Pender Community Garden",
+        "mapid": "FA156",
+        "year_created": "2016",
+        "address": "2595 E Pender St, Vancouver, BC",
+        "plots": 0,
+        "food_trees": 0,
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.052293,
+          49.28068
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA159",
+      "properties": {
+        "id": "garden_FA159",
+        "facility_type": "community_gardens",
+        "name": "4th and MacDonald",
+        "mapid": "FA159",
+        "year_created": "2017",
+        "address": "None None",
+        "plots": 100,
+        "food_trees": 0,
+        "managing_org": "Shifting Growth",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.167928,
+          49.268683
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA165",
+      "properties": {
+        "id": "garden_FA165",
+        "facility_type": "community_gardens",
+        "name": "Dunbar and 39th",
+        "mapid": "FA165",
+        "year_created": "2017",
+        "address": "None None",
+        "plots": 100,
+        "food_trees": 0,
+        "managing_org": "Shifting Growth",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Dunbar-Southlands"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.18568,
+          49.236212
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA167",
+      "properties": {
+        "id": "garden_FA167",
+        "facility_type": "community_gardens",
+        "name": "Mount Pleasant Demonstration Garden",
+        "mapid": "FA167",
+        "year_created": "2017",
+        "address": "24 W 16th Av, Vancouver, BC",
+        "plots": 8,
+        "food_trees": 0,
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Riley Park"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.105469,
+          49.256471
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA168",
+      "properties": {
+        "id": "garden_FA168",
+        "facility_type": "community_gardens",
+        "name": "Oak and 41st",
+        "mapid": "FA168",
+        "year_created": "2017",
+        "address": "None None",
+        "plots": 100,
+        "food_trees": 0,
+        "managing_org": "Shifting Growth",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Oakridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.128507,
+          49.233617
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA170",
+      "properties": {
+        "id": "garden_FA170",
+        "facility_type": "community_gardens",
+        "name": "Brightside Home Foundation - Wallace Wilson",
+        "mapid": "FA170",
+        "year_created": "2018",
+        "address": "1620 E 6th Av, Vancouver, BC",
+        "plots": 3,
+        "food_trees": 0,
+        "managing_org": "Brightside Community Homes Foundation",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.071167,
+          49.264956
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA171",
+      "properties": {
+        "id": "garden_FA171",
+        "facility_type": "community_gardens",
+        "name": "Chinatown Peace Church",
+        "mapid": "FA171",
+        "year_created": "2018",
+        "address": "375 E Pender St, Vancouver, BC",
+        "plots": 10,
+        "food_trees": 0,
+        "managing_org": "Chinatown Peace Church",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.095684,
+          49.280471
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA173",
+      "properties": {
+        "id": "garden_FA173",
+        "facility_type": "community_gardens",
+        "name": "Our Lady of Sorrows Convent",
+        "mapid": "FA173",
+        "year_created": "2018",
+        "address": "2811 Venables St, Vancouver, BC",
+        "plots": 9,
+        "food_trees": 0,
+        "managing_org": "Franciscan Sisters of the Eucharist",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.045928,
+          49.276969
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA176",
+      "properties": {
+        "id": "garden_FA176",
+        "facility_type": "community_gardens",
+        "name": "John Hendry (Trout Lake) Park",
+        "mapid": "FA176",
+        "year_created": "",
+        "address": "3300 Victoria Drive, Vancouver, BC",
+        "plots": 4,
+        "food_trees": 0,
+        "managing_org": "",
+        "website": "https://cedarcottagefoodnetwork.com/projects-events/medicine-wheel-garden-at-john-henry-park/",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0636787,
+          49.255098
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA178",
+      "properties": {
+        "id": "garden_FA178",
+        "facility_type": "community_gardens",
+        "name": "Nicholson Towers",
+        "mapid": "FA178",
+        "year_created": "1985",
+        "address": "1115 Nelson St, Vancouver, BC",
+        "plots": 28,
+        "food_trees": 0,
+        "managing_org": "Bloomgroup",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1279113,
+          49.2828118
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA181",
+      "properties": {
+        "id": "garden_FA181",
+        "facility_type": "community_gardens",
+        "name": "Still Creek Community Garden",
+        "mapid": "FA181",
+        "year_created": "2018",
+        "address": "2750 E 29th Av, Vancouver, BC",
+        "plots": 45,
+        "food_trees": 0,
+        "managing_org": "Collingwood Neighbourhood House Society",
+        "website": "https://rcfood.wordpress.com/",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.045562,
+          49.243584
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA183",
+      "properties": {
+        "id": "garden_FA183",
+        "facility_type": "community_gardens",
+        "name": "221A",
+        "mapid": "FA183",
+        "year_created": "2019",
+        "address": "271 Union St, Vancouver, BC",
+        "plots": 10,
+        "food_trees": 0,
+        "managing_org": "",
+        "website": "http://semi-public.com",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.097379,
+          49.2778879
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA186",
+      "properties": {
+        "id": "garden_FA186",
+        "facility_type": "community_gardens",
+        "name": "FSE Herb Garden (Fransiscan Sister of the Eucharist)",
+        "mapid": "FA186",
+        "year_created": "2020",
+        "address": "2811 Venables St, Vancouver, BC",
+        "plots": 5,
+        "food_trees": 0,
+        "managing_org": "Franciscan Sisters of the Eucharist",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.046256,
+          49.276805
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA187",
+      "properties": {
+        "id": "garden_FA187",
+        "facility_type": "community_gardens",
+        "name": "Centrepoint Gardens",
+        "mapid": "FA187",
+        "year_created": "2020",
+        "address": "2990 Quebec St, Vancouver, BC",
+        "plots": 20,
+        "food_trees": 0,
+        "managing_org": "Centrepoint Development",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.102952,
+          49.258797
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA190",
+      "properties": {
+        "id": "garden_FA190",
+        "facility_type": "community_gardens",
+        "name": "P'ipa:m Lelum Indigenous Garden",
+        "mapid": "FA190",
+        "year_created": "2021",
+        "address": "2690 Grant St, Vancouver, BC",
+        "plots": 1,
+        "food_trees": "0",
+        "managing_org": "Frog Hollow Neighbourhood House",
+        "website": "https://www.froghollow.bc.ca/waacus-salee-programs-indigenous-garden/",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0497156,
+          49.2712182
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA192",
+      "properties": {
+        "id": "garden_FA192",
+        "facility_type": "community_gardens",
+        "name": "Cedar Cottage Community Garden",
+        "mapid": "FA192",
+        "year_created": "2008",
+        "address": "2021 Stainsbury  Av, Vancouver, BC",
+        "plots": 61,
+        "food_trees": "13",
+        "managing_org": "Cedar Cottage Garden Society",
+        "website": "http://www.cedarcottagegarden.org",
+        "food_tree_varieties": "EARLY MCINTOSH; GOLDEN DELICIOUS SMOOTHEE APPLE; SHAMROCK APPLE; CRIMSON PASSION CHERRY; RAINIER CHERRY; SKEENA CHERRY; DAMSON PLUM; ITALIAN PLUM; REDGLOW PLUM - HARDY; PERSIMMON, plums, fig, pear",
+        "notes": "",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0642552,
+          49.251444
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA194",
+      "properties": {
+        "id": "garden_FA194",
+        "facility_type": "community_gardens",
+        "name": "East Broadway Community Garden",
+        "mapid": "FA194",
+        "year_created": "2025",
+        "address": "731 E Broadway, Vancouver, BC",
+        "plots": 26,
+        "food_trees": 0,
+        "managing_org": "Community Garden Roots",
+        "website": "https://cgr-phabc.ca/gardens/",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0882234,
+          49.2627775
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA196",
+      "properties": {
+        "id": "garden_FA196",
+        "facility_type": "community_gardens",
+        "name": "Skeena Community Garden",
+        "mapid": "FA196",
+        "year_created": "1962",
+        "address": "2202 Cassiar St, Vancouver, BC",
+        "plots": 16,
+        "food_trees": 0,
+        "managing_org": "BC Housing (People, Plants and Homes)",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0305079,
+          49.264126
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA003",
+      "properties": {
+        "id": "garden_FA003",
+        "facility_type": "community_gardens",
+        "name": "16 Oaks",
+        "mapid": "FA003",
+        "year_created": "2008",
+        "address": "1018 W 16th Av, Vancouver, BC",
+        "plots": 55,
+        "food_trees": 0,
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Shaughnessy"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1276645,
+          49.2567482
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA004",
+      "properties": {
+        "id": "garden_FA004",
+        "facility_type": "community_gardens",
+        "name": "1755 West 14th - Private apartment building garden",
+        "mapid": "FA004",
+        "year_created": "2007",
+        "address": "1755 W 14th Av, Vancouver, BC",
+        "plots": 0,
+        "food_trees": 0,
+        "managing_org": "Apartment residents",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1448703,
+          49.2590496
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA009",
+      "properties": {
+        "id": "garden_FA009",
+        "facility_type": "community_gardens",
+        "name": "Atira Community Garden",
+        "mapid": "FA009",
+        "year_created": "2010",
+        "address": "400 Hawks Av, Vancouver, BC",
+        "plots": 15,
+        "food_trees": 0,
+        "managing_org": "Atira Community Resources",
+        "website": "http://www.atira.bc.ca/community-garden-kitchens",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0871212,
+          49.2810913
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA011",
+      "properties": {
+        "id": "garden_FA011",
+        "facility_type": "community_gardens",
+        "name": "BC Seniors Living Assoc. Garden",
+        "mapid": "FA011",
+        "year_created": "2015",
+        "address": "3355 E  5 th Av, Vancouver, BC",
+        "plots": 11,
+        "food_trees": 0,
+        "managing_org": "BC Seniors Living Assoc. Beulah Homes Society",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.032578,
+          49.266474
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA013",
+      "properties": {
+        "id": "garden_FA013",
+        "facility_type": "community_gardens",
+        "name": "Brewery Creek Community Garden",
+        "mapid": "FA013",
+        "year_created": "2012",
+        "address": "2390 Brunswick St, Vancouver, BC",
+        "plots": 40,
+        "food_trees": "11",
+        "managing_org": "Urban Diggers Society",
+        "website": "http://brewerycreekgarden.wix.com/home",
+        "food_tree_varieties": "Bramley's seedling apple; cortland apple; early macintosh apple; Jonafree apple; Jonagold apple; Lodi apple; Nova Mac apple; Evans cherry - hardy; Juliet cherry - hardy; Persimmon fuju; van cherry",
+        "notes": "",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0957332,
+          49.2641649
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA017",
+      "properties": {
+        "id": "garden_FA017",
+        "facility_type": "community_gardens",
+        "name": "Carnarvon Park",
+        "mapid": "FA017",
+        "year_created": "",
+        "address": "2995 W 19th Av, Vancouver, BC",
+        "plots": 0,
+        "food_trees": "15",
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "Apple",
+        "notes": "",
+        "local_area": "Arbutus Ridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.171486,
+          49.2565789
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA018",
+      "properties": {
+        "id": "garden_FA018",
+        "facility_type": "community_gardens",
+        "name": "Cartier Park",
+        "mapid": "FA018",
+        "year_created": "2011",
+        "address": "390 E 36th Av, Vancouver, BC",
+        "plots": 0,
+        "food_trees": "6",
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "Apple",
+        "notes": "",
+        "local_area": "Riley Park"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0975115,
+          49.2376052
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA022",
+      "properties": {
+        "id": "garden_FA022",
+        "facility_type": "community_gardens",
+        "name": "Champlain Heights Park",
+        "mapid": "FA022",
+        "year_created": "",
+        "address": "3351 Maquinna  Drive, Vancouver, BC",
+        "plots": 0,
+        "food_trees": "1",
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "Apple",
+        "notes": "",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0326603,
+          49.2164913
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA026",
+      "properties": {
+        "id": "garden_FA026",
+        "facility_type": "community_gardens",
+        "name": "Chester's Field Garden",
+        "mapid": "FA026",
+        "year_created": "2009",
+        "address": "5333 Chester  St, Vancouver, BC",
+        "plots": 11,
+        "food_trees": "3",
+        "managing_org": "Fraser Kensington Community Garden Society",
+        "website": "",
+        "food_tree_varieties": "anjou dwarf pear; conference dwarf pear",
+        "notes": "",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0896066,
+          49.236648
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA028",
+      "properties": {
+        "id": "garden_FA028",
+        "facility_type": "community_gardens",
+        "name": "Cambridge Community Garden",
+        "mapid": "FA028",
+        "year_created": "2009",
+        "address": "2050 Wall St, Vancouver, BC",
+        "plots": 5,
+        "food_trees": 0,
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.062203,
+          49.2854905
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA029",
+      "properties": {
+        "id": "garden_FA029",
+        "facility_type": "community_gardens",
+        "name": "China Creek Community Garden",
+        "mapid": "FA029",
+        "year_created": "2008",
+        "address": "1255 E 10th Av, Vancouver, BC",
+        "plots": 23,
+        "food_trees": "3",
+        "managing_org": "Urban Diggers Society",
+        "website": "",
+        "food_tree_varieties": "2 apple, 1 plum, and raspberry bushes",
+        "notes": "",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0788681,
+          49.2619932
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA032",
+      "properties": {
+        "id": "garden_FA032",
+        "facility_type": "community_gardens",
+        "name": "Church of the Good Sheppard",
+        "mapid": "FA032",
+        "year_created": "2013",
+        "address": "189 W 11th Av, Vancouver, BC",
+        "plots": 8,
+        "food_trees": 0,
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1089655,
+          49.2614867
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA040",
+      "properties": {
+        "id": "garden_FA040",
+        "facility_type": "community_gardens",
+        "name": "Copley Community Orchard",
+        "mapid": "FA040",
+        "year_created": "2012",
+        "address": "3590 Copley St, Vancouver, BC",
+        "plots": 3,
+        "food_trees": "100",
+        "managing_org": "Copley Community Orchard Society",
+        "website": "http://www.copleycommunityorchard.com",
+        "food_tree_varieties": "range of varieties of perenial fruit and vegetables",
+        "notes": "",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0578738,
+          49.2498017
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA041",
+      "properties": {
+        "id": "garden_FA041",
+        "facility_type": "community_gardens",
+        "name": "Cottonwood Community Garden",
+        "mapid": "FA041",
+        "year_created": "1992",
+        "address": "857 Malkin Av, Vancouver, BC",
+        "plots": 119,
+        "food_trees": "30",
+        "managing_org": "Strathcona Community Gardeners Society",
+        "website": "https://cottonwood-community-garden.webnode.page/",
+        "food_tree_varieties": "Apple, cherry, plum, fig, Asian pear, hazelnut, Saskatoon, Satsuma Plum, Pacific Crabapple, Heritage Apples",
+        "notes": "Expansion in 2010 - 50 beds with improved accessibility",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0837543,
+          49.2737986
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA047",
+      "properties": {
+        "id": "garden_FA047",
+        "facility_type": "community_gardens",
+        "name": "Douglas Park",
+        "mapid": "FA047",
+        "year_created": "2006",
+        "address": "801 W 22nd Av, Vancouver, BC",
+        "plots": 0,
+        "food_trees": "13",
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "Pear, apple, plum, cherry",
+        "notes": "",
+        "local_area": "South Cambie"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1222139,
+          49.2516505
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA052",
+      "properties": {
+        "id": "garden_FA052",
+        "facility_type": "community_gardens",
+        "name": "Elisabeth Rogers Community Garden",
+        "mapid": "FA052",
+        "year_created": "1996",
+        "address": "110 W 7th  Av, Vancouver, BC",
+        "plots": 56,
+        "food_trees": "12",
+        "managing_org": "Urban Diggers Society",
+        "website": "http://dig.vcn.bc.ca/Elizabeth_Rogers",
+        "food_tree_varieties": "Fuji (red sport), Jonagold, Nova Mac, Italian plum, Damson plum, Dwarf Comice pear, Dwarf Red Sensation pear, dwarf Sierra Pear",
+        "notes": "",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1072231,
+          49.2645081
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA055",
+      "properties": {
+        "id": "garden_FA055",
+        "facility_type": "community_gardens",
+        "name": "Everett Crowley Park",
+        "mapid": "FA055",
+        "year_created": "",
+        "address": "8200 Kerr St, Vancouver, BC",
+        "plots": 0,
+        "food_trees": "2",
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "Cherry, pear",
+        "notes": "",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0380764,
+          49.2111116
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA056",
+      "properties": {
+        "id": "garden_FA056",
+        "facility_type": "community_gardens",
+        "name": "Falaise Park",
+        "mapid": "FA056",
+        "year_created": "2010",
+        "address": "3434 Falaise Av, Vancouver, BC",
+        "plots": 0,
+        "food_trees": "25",
+        "managing_org": "Vancouver Christian School",
+        "website": "",
+        "food_tree_varieties": "Apple, cherry, plum, pear, peach",
+        "notes": "",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0300574,
+          49.2550923
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA064",
+      "properties": {
+        "id": "garden_FA064",
+        "facility_type": "community_gardens",
+        "name": "Grace Memorial Church",
+        "mapid": "FA064",
+        "year_created": "2012",
+        "address": "803 E 16th Av, Vancouver, BC",
+        "plots": 15,
+        "food_trees": 0,
+        "managing_org": "Grace Memorial Church",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0874186,
+          49.2564075
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA070",
+      "properties": {
+        "id": "garden_FA070",
+        "facility_type": "community_gardens",
+        "name": "Habitat Villa - Metro Housing",
+        "mapid": "FA070",
+        "year_created": "2009",
+        "address": "3859 W 2nd Av, Vancouver, BC",
+        "plots": 4,
+        "food_trees": 0,
+        "managing_org": "Habitat Villa/Metro Housing",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "West Point Grey"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1903871,
+          49.2704557
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA072",
+      "properties": {
+        "id": "garden_FA072",
+        "facility_type": "community_gardens",
+        "name": "Hastings St Folk Garden",
+        "mapid": "FA072",
+        "year_created": "2008",
+        "address": "117 E Hastings St, Vancouver, BC",
+        "plots": 150,
+        "food_trees": 0,
+        "managing_org": "Portland Housing Society",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1015964,
+          49.2814414
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA073",
+      "properties": {
+        "id": "garden_FA073",
+        "facility_type": "community_gardens",
+        "name": "Hemlock Court",
+        "mapid": "FA073",
+        "year_created": "2010",
+        "address": "1411 E 17th Av, Vancouver, BC",
+        "plots": 4,
+        "food_trees": 0,
+        "managing_org": "Hemlock Court Housing/Metro Housing",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0754088,
+          49.2557102
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA078",
+      "properties": {
+        "id": "garden_FA078",
+        "facility_type": "community_gardens",
+        "name": "John McBride Community Garden",
+        "mapid": "FA078",
+        "year_created": "2010",
+        "address": "1850 Spyglass Place, Vancouver, BC",
+        "plots": 46,
+        "food_trees": 0,
+        "managing_org": "Creek Community Gardeners (under  False Creek South Neig'd  Assoc.)",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1152216,
+          49.2696835
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA080",
+      "properties": {
+        "id": "garden_FA080",
+        "facility_type": "community_gardens",
+        "name": "Kerrisdale Community Garden",
+        "mapid": "FA080",
+        "year_created": "2010",
+        "address": "7500 Angus Drive, Vancouver, BC",
+        "plots": 22,
+        "food_trees": "4",
+        "managing_org": "Kerrisdale Community Garden Committee (under Kerrisdale Community Centre Society)",
+        "website": "http://kerrisdalecommunitygarden.com",
+        "food_tree_varieties": "anjou dwarf pear, compact stella, shamrock, persimmon",
+        "notes": "",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1482727,
+          49.2177463
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA082",
+      "properties": {
+        "id": "garden_FA082",
+        "facility_type": "community_gardens",
+        "name": "Kits Village Collaborative Garden",
+        "mapid": "FA082",
+        "year_created": "2011",
+        "address": "1407 Laburnum St, Vancouver, BC",
+        "plots": 0,
+        "food_trees": "5",
+        "managing_org": "Village Vancouver",
+        "website": "",
+        "food_tree_varieties": "Cortland apple; Golden Reinette Apple; dwaf Anjou pear; dwarf Red Sensation pear; Persimmon Fuju",
+        "notes": "",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1514277,
+          49.273327
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA086",
+      "properties": {
+        "id": "garden_FA086",
+        "facility_type": "community_gardens",
+        "name": "Kitsilano Neighbourhood House",
+        "mapid": "FA086",
+        "year_created": "2008",
+        "address": "3683 W 4th Av, Vancouver, BC",
+        "plots": 5,
+        "food_trees": 0,
+        "managing_org": "Kitsilano Neighbourhood House",
+        "website": "http://www.kitshouse.org",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1852422,
+          49.2686566
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA092",
+      "properties": {
+        "id": "garden_FA092",
+        "facility_type": "community_gardens",
+        "name": "Maclean Housing",
+        "mapid": "FA092",
+        "year_created": "2013",
+        "address": "705 Jackson Av, Vancouver, BC",
+        "plots": 65,
+        "food_trees": 0,
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0935914,
+          49.2784286
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA093",
+      "properties": {
+        "id": "garden_FA093",
+        "facility_type": "community_gardens",
+        "name": "Maple Community Garden",
+        "mapid": "FA093",
+        "year_created": "1996",
+        "address": "1900 W 6th Av, Vancouver, BC",
+        "plots": 53,
+        "food_trees": "5",
+        "managing_org": "None",
+        "website": "http://maplecommunitygarden.ca/",
+        "food_tree_varieties": "Fig, Apple, Plum",
+        "notes": "",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.148045,
+          49.2663131
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA100",
+      "properties": {
+        "id": "garden_FA100",
+        "facility_type": "community_gardens",
+        "name": "Memorial West Park",
+        "mapid": "FA100",
+        "year_created": "2011",
+        "address": "4701 Dunbar St, Vancouver, BC",
+        "plots": 0,
+        "food_trees": "15",
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "Apple, pear, cherry",
+        "notes": "",
+        "local_area": "Dunbar-Southlands"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1852852,
+          49.2442721
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA104",
+      "properties": {
+        "id": "garden_FA104",
+        "facility_type": "community_gardens",
+        "name": "Mole Hill Community Gardens",
+        "mapid": "FA104",
+        "year_created": "2003",
+        "address": "1100 block of Jepson-Young Lane, Vancouver, BC",
+        "plots": 70,
+        "food_trees": "1",
+        "managing_org": "Mole Hill Community Housing Society",
+        "website": "https://www.mole-hill.ca/mole-hill-community-garden/",
+        "food_tree_varieties": "Italian Prune Plum",
+        "notes": "",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.130556,
+          49.282056
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA111",
+      "properties": {
+        "id": "garden_FA111",
+        "facility_type": "community_gardens",
+        "name": "Farmers at 57th",
+        "mapid": "FA111",
+        "year_created": "2009",
+        "address": "700 W 57th St, Vancouver, BC",
+        "plots": 32,
+        "food_trees": 0,
+        "managing_org": "Farmers on 57th",
+        "website": "http://www.farmerson57th.ca",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Oakridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1169049,
+          49.219033
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA112",
+      "properties": {
+        "id": "garden_FA112",
+        "facility_type": "community_gardens",
+        "name": "Pine  St. Community Orchard",
+        "mapid": "FA112",
+        "year_created": "2007",
+        "address": "1708 W 6th Av, Vancouver, BC",
+        "plots": 47,
+        "food_trees": 0,
+        "managing_org": "Pine Community Garden Association",
+        "website": "http://pinestreetgardens.org/",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1435022,
+          49.2662399
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA115",
+      "properties": {
+        "id": "garden_FA115",
+        "facility_type": "community_gardens",
+        "name": "Briarpatch Garden",
+        "mapid": "FA115",
+        "year_created": "2014",
+        "address": "248 Princess Av, Vancouver, BC",
+        "plots": 20,
+        "food_trees": 0,
+        "managing_org": "Neighbours",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.091439,
+          49.282147
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA117",
+      "properties": {
+        "id": "garden_FA117",
+        "facility_type": "community_gardens",
+        "name": "Robson Park Community Garden",
+        "mapid": "FA117",
+        "year_created": "1996",
+        "address": "565 Kingsway , Vancouver, BC",
+        "plots": 44,
+        "food_trees": 0,
+        "managing_org": "Urban Diggers Society",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0923187,
+          49.2586747
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA119",
+      "properties": {
+        "id": "garden_FA119",
+        "facility_type": "community_gardens",
+        "name": "Rooted for Life Garden",
+        "mapid": "FA119",
+        "year_created": "2015",
+        "address": "1415 Barclay St, Vancouver, BC",
+        "plots": 0,
+        "food_trees": 0,
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.132872,
+          49.287355
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA120",
+      "properties": {
+        "id": "garden_FA120",
+        "facility_type": "community_gardens",
+        "name": "Ross Park",
+        "mapid": "FA120",
+        "year_created": "2011",
+        "address": "7402 Ross St, Vancouver, BC",
+        "plots": 0,
+        "food_trees": "15",
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "Apple, pear, cherry",
+        "notes": "",
+        "local_area": "Sunset"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0817007,
+          49.2161584
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA125",
+      "properties": {
+        "id": "garden_FA125",
+        "facility_type": "community_gardens",
+        "name": "South Vancouver Youth Centre Day Program",
+        "mapid": "FA125",
+        "year_created": "2008",
+        "address": "4866 Fraser St, Vancouver, BC",
+        "plots": 3,
+        "food_trees": 0,
+        "managing_org": "South Van Youth Ctr Day Program",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0902841,
+          49.2406636
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA126",
+      "properties": {
+        "id": "garden_FA126",
+        "facility_type": "community_gardens",
+        "name": "Sparwood Park",
+        "mapid": "FA126",
+        "year_created": "1978",
+        "address": "6998 Arlington St, Vancouver, BC",
+        "plots": 0,
+        "food_trees": "17",
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "Crabapple, hazelnut",
+        "notes": "",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0293224,
+          49.220271
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA128",
+      "properties": {
+        "id": "garden_FA128",
+        "facility_type": "community_gardens",
+        "name": "SPEC Rooftop Garden",
+        "mapid": "FA128",
+        "year_created": "2012",
+        "address": "535 Hornby St, Vancouver, BC",
+        "plots": 9,
+        "food_trees": 0,
+        "managing_org": "SPEC",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1178337,
+          49.2857348
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA130",
+      "properties": {
+        "id": "garden_FA130",
+        "facility_type": "community_gardens",
+        "name": "St. Augustines Anglican Church",
+        "mapid": "FA130",
+        "year_created": "2015",
+        "address": "8680 Hudson  St, Vancouver, BC",
+        "plots": 8,
+        "food_trees": 0,
+        "managing_org": "St. Augustines Anglican Church",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.134266,
+          49.207178
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA133",
+      "properties": {
+        "id": "garden_FA133",
+        "facility_type": "community_gardens",
+        "name": "Strathcona Community Garden",
+        "mapid": "FA133",
+        "year_created": "1985",
+        "address": "857 Malkin Av, Vancouver, BC",
+        "plots": 200,
+        "food_trees": "104",
+        "managing_org": "Strathcona Community Gardeners Soc.",
+        "website": "http://strathconagardens.ca/",
+        "food_tree_varieties": "Bramley's seedling apple; cannor select; cortland; golden delicious smoothee; jonafree; nova mac; shamrock; flemish beauty; hosui; golden spice (hardy); ure pear (hardy); italian plum; pembina plum (hardy); redglow plum (hardy); compact stella cherry; lapin cherry; schatten morello cherry; van cherry; conference dwarf pear; flemish beauty dwarf pear; highland dwarf pear; red sensation dwarf pear; sierra dwarf pear; persimmon fuju and more, Satsuma Plum, Jonamac Apple, Shamrock Apple, Northern Spy Apple, Meteor cherry",
+        "notes": "",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0879718,
+          49.2760031
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA136",
+      "properties": {
+        "id": "garden_FA136",
+        "facility_type": "community_gardens",
+        "name": "Tenth Church",
+        "mapid": "FA136",
+        "year_created": "2012",
+        "address": "11 W 10th Av, Vancouver, BC",
+        "plots": 10,
+        "food_trees": 0,
+        "managing_org": "Tenth Church",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1058605,
+          49.2623383
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA148",
+      "properties": {
+        "id": "garden_FA148",
+        "facility_type": "community_gardens",
+        "name": "Westmount Park",
+        "mapid": "FA148",
+        "year_created": "",
+        "address": "4651 W 2nd Av, Vancouver, BC",
+        "plots": 0,
+        "food_trees": "2",
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "Apple",
+        "notes": "",
+        "local_area": "West Point Grey"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.2144218,
+          49.2718445
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA152",
+      "properties": {
+        "id": "garden_FA152",
+        "facility_type": "community_gardens",
+        "name": "Aberthau Garden Project",
+        "mapid": "FA152",
+        "year_created": "2016",
+        "address": "4397 W 2nd Av, Vancouver, BC",
+        "plots": 10,
+        "food_trees": 0,
+        "managing_org": "",
+        "website": "http://www.villagevancouver.ca/page/aberthau-garden-project-1",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "West Point Grey"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.2047777,
+          49.2721428
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA155",
+      "properties": {
+        "id": "garden_FA155",
+        "facility_type": "community_gardens",
+        "name": "Vera Community Garden",
+        "mapid": "FA155",
+        "year_created": "2016",
+        "address": "575 SW Marine Drive, Vancouver, BC",
+        "plots": 12,
+        "food_trees": 0,
+        "managing_org": "",
+        "website": "http://www.communityalternativescoop.com",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.119179,
+          49.209683
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA157",
+      "properties": {
+        "id": "garden_FA157",
+        "facility_type": "community_gardens",
+        "name": "City Heights",
+        "mapid": "FA157",
+        "year_created": "2016",
+        "address": "155 E 37 Av, Vancouver, BC",
+        "plots": 0,
+        "food_trees": 0,
+        "managing_org": "City Heights",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Sunset"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.102833,
+          49.232228
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA161",
+      "properties": {
+        "id": "garden_FA161",
+        "facility_type": "community_gardens",
+        "name": "Broadway and Alma",
+        "mapid": "FA161",
+        "year_created": "2017",
+        "address": "None None",
+        "plots": 100,
+        "food_trees": 0,
+        "managing_org": "Shifting Growth",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.185381,
+          49.264105
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA179",
+      "properties": {
+        "id": "garden_FA179",
+        "facility_type": "community_gardens",
+        "name": "Nicholson Towers",
+        "mapid": "FA179",
+        "year_created": "2019",
+        "address": "548 E 28th Av, Vancouver, BC",
+        "plots": 3,
+        "food_trees": 0,
+        "managing_org": "Inner Hope Youth Ministries",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Riley Park"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0929942,
+          49.2455678
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA182",
+      "properties": {
+        "id": "garden_FA182",
+        "facility_type": "community_gardens",
+        "name": "Macleod Manor Community Garden",
+        "mapid": "FA182",
+        "year_created": "2019",
+        "address": "8725 French St, Vancouver, BC",
+        "plots": 5,
+        "food_trees": 0,
+        "managing_org": "Brightside Community Homes Foundation",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1396302,
+          49.2069012
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA184",
+      "properties": {
+        "id": "garden_FA184",
+        "facility_type": "community_gardens",
+        "name": "Van Tech secondary school",
+        "mapid": "FA184",
+        "year_created": "",
+        "address": "2600 E Broadway , Vancouver, BC",
+        "plots": 0,
+        "food_trees": "5",
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.051705,
+          49.261776
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA188",
+      "properties": {
+        "id": "garden_FA188",
+        "facility_type": "community_gardens",
+        "name": "Colonial Arms Vegetable Garden",
+        "mapid": "FA188",
+        "year_created": "2020",
+        "address": "8680 Fremlin St, Vancouver, BC",
+        "plots": 15,
+        "food_trees": 0,
+        "managing_org": "Colonial Arms Apartments",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.127177,
+          49.207365
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA189",
+      "properties": {
+        "id": "garden_FA189",
+        "facility_type": "community_gardens",
+        "name": "City Farmer Compost Demonstration Centre",
+        "mapid": "FA189",
+        "year_created": "1978",
+        "address": "2150 Maple St, Vancouver, BC",
+        "plots": 1,
+        "food_trees": 0,
+        "managing_org": "City Farmer",
+        "website": "https://cityfarmer.info/",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1497228,
+          49.2666997
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA191",
+      "properties": {
+        "id": "garden_FA191",
+        "facility_type": "community_gardens",
+        "name": "Chen Chen Stway at Oxford Park",
+        "mapid": "FA191",
+        "year_created": "2022",
+        "address": "None Wall",
+        "plots": 0,
+        "food_trees": 0,
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0624406,
+          49.2854433
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA195",
+      "properties": {
+        "id": "garden_FA195",
+        "facility_type": "community_gardens",
+        "name": "W 65th Community Garden",
+        "mapid": "FA195",
+        "year_created": "2025",
+        "address": "540 W 65th Av, Vancouver, BC",
+        "plots": 100,
+        "food_trees": 0,
+        "managing_org": "Tzu Chi Canada",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1179788,
+          49.2109844
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA007",
+      "properties": {
+        "id": "garden_FA007",
+        "facility_type": "community_gardens",
+        "name": "East Boulevard Allotment Plots",
+        "mapid": "FA007",
+        "year_created": "1942",
+        "address": "7176 E  Boulevard, Vancouver, BC",
+        "plots": 71,
+        "food_trees": 0,
+        "managing_org": "City of Vancouver",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Kerrisdale"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1505481,
+          49.2209834
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA014",
+      "properties": {
+        "id": "garden_FA014",
+        "facility_type": "community_gardens",
+        "name": "Burrard View Park",
+        "mapid": "FA014",
+        "year_created": "",
+        "address": "650 N Penticton St, Vancouver, BC",
+        "plots": 0,
+        "food_trees": "1",
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "Cherry",
+        "notes": "",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0519175,
+          49.2912065
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA015",
+      "properties": {
+        "id": "garden_FA015",
+        "facility_type": "community_gardens",
+        "name": "Callister Park",
+        "mapid": "FA015",
+        "year_created": "pre-1970",
+        "address": "2875 Oxford St, Vancouver, BC",
+        "plots": 0,
+        "food_trees": "4",
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "Apple",
+        "notes": "",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0453833,
+          49.28618
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA016",
+      "properties": {
+        "id": "garden_FA016",
+        "facility_type": "community_gardens",
+        "name": "Cambie Park Community Garden",
+        "mapid": "FA016",
+        "year_created": "2013",
+        "address": "500 W 54th Av, Vancouver, BC",
+        "plots": 30,
+        "food_trees": 0,
+        "managing_org": "Cambie Park Community Gardening Society",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Oakridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1186284,
+          49.2213085
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA021",
+      "properties": {
+        "id": "garden_FA021",
+        "facility_type": "community_gardens",
+        "name": "Cedar Cottage Neighourhood House Edible Garden",
+        "mapid": "FA021",
+        "year_created": "2013",
+        "address": "4065 Victoria Drive, Vancouver, BC",
+        "plots": 12,
+        "food_trees": 0,
+        "managing_org": "Cedar Cottage Neighbourhood House",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0651476,
+          49.2488871
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA025",
+      "properties": {
+        "id": "garden_FA025",
+        "facility_type": "community_gardens",
+        "name": "Charleson Park Community Garden",
+        "mapid": "FA025",
+        "year_created": "2013",
+        "address": "999 Charleson St, Vancouver, BC",
+        "plots": 38,
+        "food_trees": 0,
+        "managing_org": "False Creek South Neighbourhood Association",
+        "website": "http://www.charlesongarden.ca/",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.125738,
+          49.2677648
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA031",
+      "properties": {
+        "id": "garden_FA031",
+        "facility_type": "community_gardens",
+        "name": "China Creek North Park",
+        "mapid": "FA031",
+        "year_created": "2006",
+        "address": "1001 E 7th Av, Vancouver, BC",
+        "plots": 0,
+        "food_trees": "38",
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "Apple, cherry, pear, plum",
+        "notes": "",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.07798,
+          49.2611153
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA034",
+      "properties": {
+        "id": "garden_FA034",
+        "facility_type": "community_gardens",
+        "name": "City Hall expansion",
+        "mapid": "FA034",
+        "year_created": "2013",
+        "address": "453 W 12th Av, Vancouver, BC",
+        "plots": 10,
+        "food_trees": 0,
+        "managing_org": "Vancouver City Hall Community Garden Association",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1139357,
+          49.2613159
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA035",
+      "properties": {
+        "id": "garden_FA035",
+        "facility_type": "community_gardens",
+        "name": "City Hall Lawn Garden",
+        "mapid": "FA035",
+        "year_created": "2009",
+        "address": "453 W 12th Av, Vancouver, BC",
+        "plots": 38,
+        "food_trees": "5",
+        "managing_org": "Vancouver City Hall Community Garden Association",
+        "website": "",
+        "food_tree_varieties": "Apple",
+        "notes": "",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1139357,
+          49.2613159
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA036",
+      "properties": {
+        "id": "garden_FA036",
+        "facility_type": "community_gardens",
+        "name": "Cityview Baptist Church",
+        "mapid": "FA036",
+        "year_created": "2008",
+        "address": "4370 Sophia  St, Vancouver, BC",
+        "plots": 6,
+        "food_trees": "1",
+        "managing_org": "Neighbours",
+        "website": "http://cityviewchurch.ca/",
+        "food_tree_varieties": "Heritage apple",
+        "notes": "",
+        "local_area": "Riley Park"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.099148,
+          49.2459664
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA039",
+      "properties": {
+        "id": "garden_FA039",
+        "facility_type": "community_gardens",
+        "name": "Collingwood Community Gardens",
+        "mapid": "FA039",
+        "year_created": "2006",
+        "address": "3100 Vanness Av, Vancouver, BC",
+        "plots": 30,
+        "food_trees": 0,
+        "managing_org": "Renfrew Collingwood Food Security Institute",
+        "website": "http://rcfsi.blogspot.ca",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0302,
+          49.23774
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA042",
+      "properties": {
+        "id": "garden_FA042",
+        "facility_type": "community_gardens",
+        "name": "Creekside Community Garden",
+        "mapid": "FA042",
+        "year_created": "2014",
+        "address": "1 Athletes Way, Vancouver, BC",
+        "plots": 23,
+        "food_trees": "10",
+        "managing_org": "Creekside Community Garden",
+        "website": "http://www.creeksidecommunitygarden.com",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1035861,
+          49.272222
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA043",
+      "properties": {
+        "id": "garden_FA043",
+        "facility_type": "community_gardens",
+        "name": "CROWS Point Community Garden",
+        "mapid": "FA043",
+        "year_created": "2009",
+        "address": "2299 E 24th Av, Vancouver, BC",
+        "plots": 37,
+        "food_trees": "3",
+        "managing_org": "CROWS Point Community Garden Society",
+        "website": "https://www.facebook.com/crowspoint/",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0579937,
+          49.2488724
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA048",
+      "properties": {
+        "id": "garden_FA048",
+        "facility_type": "community_gardens",
+        "name": "Downtown Intercultural Gardeners Society (DIGS)",
+        "mapid": "FA048",
+        "year_created": "2011",
+        "address": "1081 Burrard St, Vancouver, BC",
+        "plots": 46,
+        "food_trees": 0,
+        "managing_org": "Downtown Intercultural Gardeners Society",
+        "website": "https://sites.google.com/view/digsvancouver",
+        "food_tree_varieties": "",
+        "notes": "corrected from 120 to 46 (28 plots + 18 planters) in 2016",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1290006,
+          49.2805963
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA057",
+      "properties": {
+        "id": "garden_FA057",
+        "facility_type": "community_gardens",
+        "name": "Fraser River Park",
+        "mapid": "FA057",
+        "year_created": "1986",
+        "address": "8705 Angus Drive, Vancouver, BC",
+        "plots": 0,
+        "food_trees": "36",
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "Native Crabapple",
+        "notes": "",
+        "local_area": "Kerrisdale"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1518406,
+          49.2082762
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA058",
+      "properties": {
+        "id": "garden_FA058",
+        "facility_type": "community_gardens",
+        "name": "Fraserlands Community Garden (Riverfront Park)",
+        "mapid": "FA058",
+        "year_created": "2014",
+        "address": "2750 E South Kent St, Vancouver, BC",
+        "plots": 38,
+        "food_trees": 0,
+        "managing_org": "South Vancouver Neighbourhood House",
+        "website": "https://www.facebook.com/FraserlandsCommunityGardening/",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0506545,
+          49.2058768
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA060",
+      "properties": {
+        "id": "garden_FA060",
+        "facility_type": "community_gardens",
+        "name": "Frog Hollow Neighbourhood House Garden 1",
+        "mapid": "FA060",
+        "year_created": "2007",
+        "address": "2690 Grant Street, Vancouver, BC",
+        "plots": 5,
+        "food_trees": 0,
+        "managing_org": "Frog Hollow Neighbourhood House",
+        "website": "http://www.froghollow.bc.ca",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0497336,
+          49.2712026
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA061",
+      "properties": {
+        "id": "garden_FA061",
+        "facility_type": "community_gardens",
+        "name": "Frog Hollow Neighbourhood House Garden 2",
+        "mapid": "FA061",
+        "year_created": "2007",
+        "address": "2131 Renfrew  St, Vancouver, BC",
+        "plots": 6,
+        "food_trees": 0,
+        "managing_org": "Frog Hollow Neighbourhood House",
+        "website": "http://www.froghollow.bc.ca",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.044393,
+          49.2654085
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA068",
+      "properties": {
+        "id": "garden_FA068",
+        "facility_type": "community_gardens",
+        "name": "Grandview Terrace",
+        "mapid": "FA068",
+        "year_created": "2011",
+        "address": "2075 Woodland Drive, Vancouver, BC",
+        "plots": 12,
+        "food_trees": 0,
+        "managing_org": "BC Housing",
+        "website": "http://gwfoodconnection.wordpress.com/",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0736131,
+          49.2662333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA071",
+      "properties": {
+        "id": "garden_FA071",
+        "facility_type": "community_gardens",
+        "name": "Hastings Community Centre Learning Garden",
+        "mapid": "FA071",
+        "year_created": "2012",
+        "address": "3096 E Hastings St, Vancouver, BC",
+        "plots": 25,
+        "food_trees": 0,
+        "managing_org": "Seasons of Food",
+        "website": "https://www.facebook.com/SeasonssOfFoodVancouver/",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0394317,
+          49.2803744
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA074",
+      "properties": {
+        "id": "garden_FA074",
+        "facility_type": "community_gardens",
+        "name": "Beaconsfield Park Community Garden",
+        "mapid": "FA074",
+        "year_created": "2015",
+        "address": "3215 Slocan St, Vancouver, BC",
+        "plots": 40,
+        "food_trees": "40",
+        "managing_org": "Beaconsfield Garden Society",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0506062,
+          49.2556387
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA084",
+      "properties": {
+        "id": "garden_FA084",
+        "facility_type": "community_gardens",
+        "name": "Kitsilano Community Centre Garden",
+        "mapid": "FA084",
+        "year_created": "2014",
+        "address": "2690 Larch St, Vancouver, BC",
+        "plots": 15,
+        "food_trees": 0,
+        "managing_org": "Kitsilano Community Centre Association",
+        "website": "https://kitscc.com/facilities/collaborative-community-garden/",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1620757,
+          49.2619681
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA091",
+      "properties": {
+        "id": "garden_FA091",
+        "facility_type": "community_gardens",
+        "name": "Let’s Grow Together! Community Garden",
+        "mapid": "FA091",
+        "year_created": "2015",
+        "address": "2475 Franklin St, Vancouver, BC",
+        "plots": 6,
+        "food_trees": 0,
+        "managing_org": "St. David of Wales Angclican Church",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05491,
+          49.282211
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA095",
+      "properties": {
+        "id": "garden_FA095",
+        "facility_type": "community_gardens",
+        "name": "Marpole Place expansion",
+        "mapid": "FA095",
+        "year_created": "2013",
+        "address": "1305 W 70th Av, Vancouver, BC",
+        "plots": 6,
+        "food_trees": 0,
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1347288,
+          49.2087963
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA096",
+      "properties": {
+        "id": "garden_FA096",
+        "facility_type": "community_gardens",
+        "name": "Matheson Heights Housing Coop",
+        "mapid": "FA096",
+        "year_created": "2013",
+        "address": "3554 Sparrow Place, Vancouver, BC",
+        "plots": 16,
+        "food_trees": 0,
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0257105,
+          49.2131744
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA097",
+      "properties": {
+        "id": "garden_FA097",
+        "facility_type": "community_gardens",
+        "name": "McCleery Golf Course",
+        "mapid": "FA097",
+        "year_created": "2009",
+        "address": "7188 Macdonald  St, Vancouver, BC",
+        "plots": 0,
+        "food_trees": "5",
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "Cherry, apple",
+        "notes": "",
+        "local_area": "Kerrisdale"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1683146,
+          49.221493
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA099",
+      "properties": {
+        "id": "garden_FA099",
+        "facility_type": "community_gardens",
+        "name": "Means of Production Garden",
+        "mapid": "FA099",
+        "year_created": "2006",
+        "address": "1001 E 7th Av, Vancouver, BC",
+        "plots": 20,
+        "food_trees": "25",
+        "managing_org": "Environmental Youth Alliance",
+        "website": "https://moparrc.com/",
+        "food_tree_varieties": "Mix of cherry, plum, apple",
+        "notes": "",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0850195,
+          49.2655009
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA101",
+      "properties": {
+        "id": "garden_FA101",
+        "facility_type": "community_gardens",
+        "name": "Menno Simmons centre",
+        "mapid": "FA101",
+        "year_created": "2013",
+        "address": "4000 W 11th Av, Vancouver, BC",
+        "plots": 10,
+        "food_trees": 0,
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "West Point Grey"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1939437,
+          49.2626337
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA106",
+      "properties": {
+        "id": "garden_FA106",
+        "facility_type": "community_gardens",
+        "name": "Nelson Park Community Garden",
+        "mapid": "FA106",
+        "year_created": "2008",
+        "address": "1020 Bute St, Vancouver, BC",
+        "plots": 38,
+        "food_trees": "yes",
+        "managing_org": "Nelson Park Community Garden Society",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "Expansion in 2014 - 35 beds including accessible ones",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1302275,
+          49.2830897
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA110",
+      "properties": {
+        "id": "garden_FA110",
+        "facility_type": "community_gardens",
+        "name": "Pandora Park Community Garden",
+        "mapid": "FA110",
+        "year_created": "2009",
+        "address": "2325 Franklin St, Vancouver, BC",
+        "plots": 66,
+        "food_trees": "4",
+        "managing_org": "Pandora Park Community Garden Society",
+        "website": "http://pandoraparkgarden.wordpress.com/",
+        "food_tree_varieties": "2 apple, 2 plum",
+        "notes": "",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0593773,
+          49.2823919
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA114",
+      "properties": {
+        "id": "garden_FA114",
+        "facility_type": "community_gardens",
+        "name": "Pine Street Community Garden (6th and Fir Park)",
+        "mapid": "FA114",
+        "year_created": "2015",
+        "address": "1605 W 6th Av, Vancouver, BC",
+        "plots": 16,
+        "food_trees": "16",
+        "managing_org": "Pine Street Community Garden Society",
+        "website": "http://pinestreetgardens.org/",
+        "food_tree_varieties": "Apple, pear, plum, cherry",
+        "notes": "",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1420846,
+          49.2663396
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA118",
+      "properties": {
+        "id": "garden_FA118",
+        "facility_type": "community_gardens",
+        "name": "Robson Park Coop",
+        "mapid": "FA118",
+        "year_created": "2011",
+        "address": "234 E 15th Av, Vancouver, BC",
+        "plots": 40,
+        "food_trees": 0,
+        "managing_org": "Robson Park Co-op",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.099907,
+          49.2572409
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA121",
+      "properties": {
+        "id": "garden_FA121",
+        "facility_type": "community_gardens",
+        "name": "Sahalli  Community Garden",
+        "mapid": "FA121",
+        "year_created": "1988",
+        "address": "2398 Fraser St, Vancouver, BC",
+        "plots": 54,
+        "food_trees": 0,
+        "managing_org": "Urban Diggers Society",
+        "website": "http://dig.vcn.bc.ca/",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0885931,
+          49.2636848
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA123",
+      "properties": {
+        "id": "garden_FA123",
+        "facility_type": "community_gardens",
+        "name": "South Vancouver Family Place 1",
+        "mapid": "FA123",
+        "year_created": "2008",
+        "address": "7710 Nanaimo St, Vancouver, BC",
+        "plots": 8,
+        "food_trees": 0,
+        "managing_org": "South Vancouver Family Place",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Victoria-Fraserview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0593383,
+          49.2143436
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA124",
+      "properties": {
+        "id": "garden_FA124",
+        "facility_type": "community_gardens",
+        "name": "South Vancouver Family Place 2",
+        "mapid": "FA124",
+        "year_created": "2011",
+        "address": "7715 Muirfield Drive, Vancouver, BC",
+        "plots": 3,
+        "food_trees": 0,
+        "managing_org": "South Vancouver Family Place",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Victoria-Fraserview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.056519,
+          49.2141567
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA129",
+      "properties": {
+        "id": "garden_FA129",
+        "facility_type": "community_gardens",
+        "name": "Vancouver Compost Demonstration Garden",
+        "mapid": "FA129",
+        "year_created": "1990",
+        "address": "2150 Maple St, Vancouver, BC",
+        "plots": 0,
+        "food_trees": 0,
+        "managing_org": "SPEC",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1503918,
+          49.2666383
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA131",
+      "properties": {
+        "id": "garden_FA131",
+        "facility_type": "community_gardens",
+        "name": "Stanley Park Community Garden",
+        "mapid": "FA131",
+        "year_created": "2003",
+        "address": "975 Lagoon Drive, Vancouver, BC",
+        "plots": 32,
+        "food_trees": 0,
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1385546,
+          49.2936717
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA134",
+      "properties": {
+        "id": "garden_FA134",
+        "facility_type": "community_gardens",
+        "name": "Sunset Park",
+        "mapid": "FA134",
+        "year_created": "2009",
+        "address": "404 E 51st Av, Vancouver, BC",
+        "plots": 0,
+        "food_trees": "29",
+        "managing_org": "",
+        "website": "https://mysunset.net/",
+        "food_tree_varieties": "Fruit",
+        "notes": "",
+        "local_area": "Sunset"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0979536,
+          49.2223539
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA138",
+      "properties": {
+        "id": "garden_FA138",
+        "facility_type": "community_gardens",
+        "name": "The James Garden & Social Community",
+        "mapid": "FA138",
+        "year_created": "2015",
+        "address": "288 W 1st  Av, Vancouver, BC",
+        "plots": 12,
+        "food_trees": 0,
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.111763,
+          49.269003
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA141",
+      "properties": {
+        "id": "garden_FA141",
+        "facility_type": "community_gardens",
+        "name": "Tupper Neighbourhood Greenway",
+        "mapid": "FA141",
+        "year_created": "2011",
+        "address": "400 E 23rd Av, Vancouver, BC",
+        "plots": 0,
+        "food_trees": "6",
+        "managing_org": "Tupper Greenway Urban Orchard Project",
+        "website": "",
+        "food_tree_varieties": "apple trees, berry bushes and fruit vines",
+        "notes": "",
+        "local_area": "Riley Park"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.093947,
+          49.250166
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA143",
+      "properties": {
+        "id": "garden_FA143",
+        "facility_type": "community_gardens",
+        "name": "Urban Acres",
+        "mapid": "FA143",
+        "year_created": "2007",
+        "address": "1601 W 1st  Av, Vancouver, BC",
+        "plots": 30,
+        "food_trees": 0,
+        "managing_org": "Urban Acres",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1410769,
+          49.270591
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA145",
+      "properties": {
+        "id": "garden_FA145",
+        "facility_type": "community_gardens",
+        "name": "Van Dusen Botanical Gardens",
+        "mapid": "FA145",
+        "year_created": "",
+        "address": "5251 Oak St, Vancouver, BC",
+        "plots": 0,
+        "food_trees": "yes",
+        "managing_org": "Van Dusen Botanical Garden Association",
+        "website": "",
+        "food_tree_varieties": "Heritage apple",
+        "notes": "",
+        "local_area": "Shaughnessy"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1280384,
+          49.2375047
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA146",
+      "properties": {
+        "id": "garden_FA146",
+        "facility_type": "community_gardens",
+        "name": "Village on False Creek",
+        "mapid": "FA146",
+        "year_created": "2011",
+        "address": "215 W 1st  Av, Vancouver, BC",
+        "plots": 47,
+        "food_trees": "0",
+        "managing_org": "Village on False Creek Community Gardens Society",
+        "website": "http://villagecommunitygardens.com/",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1105912,
+          49.2708223
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA147",
+      "properties": {
+        "id": "garden_FA147",
+        "facility_type": "community_gardens",
+        "name": "Wall Street Community Garden",
+        "mapid": "FA147",
+        "year_created": "1999",
+        "address": "2099 Wall St, Vancouver, BC",
+        "plots": 42,
+        "food_trees": 0,
+        "managing_org": "Kiwassa Neighbourhood Services Association",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0618695,
+          49.2865697
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA154",
+      "properties": {
+        "id": "garden_FA154",
+        "facility_type": "community_gardens",
+        "name": "Community Alternatives Coop Community Garden",
+        "mapid": "FA154",
+        "year_created": "2016",
+        "address": "1937 W 2nd Av, Vancouver, BC",
+        "plots": 20,
+        "food_trees": 0,
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.149194,
+          49.270065
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA158",
+      "properties": {
+        "id": "garden_FA158",
+        "facility_type": "community_gardens",
+        "name": "Moberley Cultural Herb Garden",
+        "mapid": "FA158",
+        "year_created": "2010",
+        "address": "7646 Prince Albert St, Vancouver, BC",
+        "plots": 5,
+        "food_trees": 0,
+        "managing_org": "Moberly Arts and Cultural Centre",
+        "website": "https://moberlyartscentre.ca/artists-residencies/",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Sunset"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0868568,
+          49.2149675
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA160",
+      "properties": {
+        "id": "garden_FA160",
+        "facility_type": "community_gardens",
+        "name": "Alma and 10th",
+        "mapid": "FA160",
+        "year_created": "2017",
+        "address": "None None",
+        "plots": 100,
+        "food_trees": 0,
+        "managing_org": "Shifting Growth",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.185464,
+          49.26324
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA162",
+      "properties": {
+        "id": "garden_FA162",
+        "facility_type": "community_gardens",
+        "name": "Broadway and Victoria",
+        "mapid": "FA162",
+        "year_created": "2017",
+        "address": "None None",
+        "plots": 100,
+        "food_trees": 0,
+        "managing_org": "Shifting Growth",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.064979,
+          49.262089
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA164",
+      "properties": {
+        "id": "garden_FA164",
+        "facility_type": "community_gardens",
+        "name": "Chilean Housing Coop",
+        "mapid": "FA164",
+        "year_created": "2017",
+        "address": "3390 School Av, Vancouver, BC",
+        "plots": 10,
+        "food_trees": 0,
+        "managing_org": "Chilean Housing Coop",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.032907,
+          49.23112
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA166",
+      "properties": {
+        "id": "garden_FA166",
+        "facility_type": "community_gardens",
+        "name": "HFBC Housing Foundation",
+        "mapid": "FA166",
+        "year_created": "2017",
+        "address": "2085 W 5th Av, Vancouver, BC",
+        "plots": 12,
+        "food_trees": 0,
+        "managing_org": "",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.152475,
+          49.267434
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA169",
+      "properties": {
+        "id": "garden_FA169",
+        "facility_type": "community_gardens",
+        "name": "Brightside Home Foundation - King's Daughters",
+        "mapid": "FA169",
+        "year_created": "2018",
+        "address": "1400 E 11th Av, Vancouver, BC",
+        "plots": 3,
+        "food_trees": 0,
+        "managing_org": "Brightside Community Homes Foundation",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.075082,
+          49.260319
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA174",
+      "properties": {
+        "id": "garden_FA174",
+        "facility_type": "community_gardens",
+        "name": "HFBC Housing Foundation",
+        "mapid": "FA174",
+        "year_created": "2016",
+        "address": "2924 Venables St, Vancouver, BC",
+        "plots": 12,
+        "food_trees": 0,
+        "managing_org": "HFBC Housing Foundation",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.043281,
+          49.276211
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA175",
+      "properties": {
+        "id": "garden_FA175",
+        "facility_type": "community_gardens",
+        "name": "HFBC Housing Foundation",
+        "mapid": "FA175",
+        "year_created": "2016",
+        "address": "2950 Euclid St, Vancouver, BC",
+        "plots": 12,
+        "food_trees": 0,
+        "managing_org": "HFBC Housing Foundation",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.043697,
+          49.240111
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA177",
+      "properties": {
+        "id": "garden_FA177",
+        "facility_type": "community_gardens",
+        "name": "Riley Park",
+        "mapid": "FA177",
+        "year_created": "2018",
+        "address": "50 E 30th Av, Vancouver, BC",
+        "plots": 20,
+        "food_trees": 0,
+        "managing_org": "",
+        "website": "https://www.rileyparkgarden.org/",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Riley Park"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1044869,
+          49.2429849
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA180",
+      "properties": {
+        "id": "garden_FA180",
+        "facility_type": "community_gardens",
+        "name": "Dany Guincher House",
+        "mapid": "FA180",
+        "year_created": "2019",
+        "address": "475 E Broadway , Vancouver, BC",
+        "plots": 3,
+        "food_trees": 0,
+        "managing_org": "Jewish Family Services",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0935368,
+          49.2625681
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA185",
+      "properties": {
+        "id": "garden_FA185",
+        "facility_type": "community_gardens",
+        "name": "Astoria Community Garden",
+        "mapid": "FA185",
+        "year_created": "2020",
+        "address": "369 Hawks Av, Vancouver, BC",
+        "plots": 138,
+        "food_trees": 0,
+        "managing_org": "managed by DTES NH House",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.087377,
+          49.28134
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "garden_FA193",
+      "properties": {
+        "id": "garden_FA193",
+        "facility_type": "community_gardens",
+        "name": "Marpole Community Garden",
+        "mapid": "FA193",
+        "year_created": "2024",
+        "address": "8655 Granville St, Vancouver, BC",
+        "plots": 42,
+        "food_trees": "0",
+        "managing_org": "inCAN Developments",
+        "website": "",
+        "food_tree_varieties": "",
+        "notes": "",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14096,
+          49.2078
+        ]
+      }
+    }
+  ]
+}
