@@ -361,7 +361,7 @@ async def fetch_flights_realtime():
             live = await loop.run_in_executor(None, flights.fetch_live_flights)
             if live:
                 cached_flights = live
-                cached_flight_schedules = flights.generate_flight_schedules(live)
+                cached_flight_schedules = flights.generate_flight_schedules(live, allow_api_call=False)
                 if active_connections:
                     message = {"type": "flights_update", "data": cached_flights}
                     for connection in list(active_connections):
@@ -390,9 +390,11 @@ def get_live_flights():
 
 @app.get("/api/flights/schedules")
 def get_flight_schedules():
-    if not cached_flight_schedules:
-        return flights.generate_flight_schedules(cached_flights)
-    return cached_flight_schedules
+    global cached_flight_schedules
+    schedules = flights.generate_flight_schedules(cached_flights, allow_api_call=True)
+    if schedules:
+        cached_flight_schedules = schedules
+    return cached_flight_schedules or schedules
 
 @app.get("/api/geojson/airports")
 def get_airports_geojson():

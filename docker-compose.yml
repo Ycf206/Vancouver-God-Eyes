@@ -36,6 +36,8 @@ services:
     environment:
       - DATABASE_URL=postgresql://gods_eye_user:password@db:5432/gods_eye
       - REDIS_URL=redis://redis:6379/0
+      - FLIGHTAWARE_API_KEY=${FLIGHTAWARE_API_KEY:-}
+      - FLIGHTAWARE_MAX_MONTHLY_CALLS=${FLIGHTAWARE_MAX_MONTHLY_CALLS:-480}
     restart: unless-stopped
 
   frontend:

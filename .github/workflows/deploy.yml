@@ -13,17 +13,36 @@ jobs:
     steps:
     - name: Execute SSH commands on OCI VM
       uses: appleboy/ssh-action@v1.0.3
+      env:
+        FLIGHTAWARE_API_KEY: ${{ secrets.FLIGHTAWARE_API_KEY }}
       with:
         host: ${{ secrets.OCI_HOST_IP }}
         username: ubuntu
         key: ${{ secrets.OCI_SSH_KEY }}
-        # 如果您的防線有設定 port，可以使用 port: ${{ secrets.OCI_SSH_PORT }}，預設為 22
+        envs: FLIGHTAWARE_API_KEY
         script: |
-          # 嘗試進入資料夾 (根據您截圖中的資料夾名稱)
           cd ~/Vancouver-God-Eyes || cd ~/vancouver-gods-eye
           
           # 更新程式碼
           git pull
+          
+          # 如果 GitHub Secrets 有設定 FLIGHTAWARE_API_KEY，自動同步至 backend/.env 與根目錄 .env
+          if [ -n "$FLIGHTAWARE_API_KEY" ]; then
+            mkdir -p backend
+            touch backend/.env
+            if grep -q "^FLIGHTAWARE_API_KEY=" backend/.env 2>/dev/null; then
+              sed -i "s|^FLIGHTAWARE_API_KEY=.*|FLIGHTAWARE_API_KEY=$FLIGHTAWARE_API_KEY|" backend/.env
+            else
+              echo "FLIGHTAWARE_API_KEY=$FLIGHTAWARE_API_KEY" >> backend/.env
+            fi
+            touch .env
+            if grep -q "^FLIGHTAWARE_API_KEY=" .env 2>/dev/null; then
+              sed -i "s|^FLIGHTAWARE_API_KEY=.*|FLIGHTAWARE_API_KEY=$FLIGHTAWARE_API_KEY|" .env
+            else
+              echo "FLIGHTAWARE_API_KEY=$FLIGHTAWARE_API_KEY" >> .env
+            fi
+            echo "✅ FLIGHTAWARE_API_KEY successfully synced from GitHub Secrets"
+          fi
           
           # 重新建置並啟動 Docker 容器
           docker compose up -d --build

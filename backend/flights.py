@@ -14,14 +14,49 @@ VANCOUVER_BBOX = {
     "lomax": -122.6
 }
 
-# Quota file for FlightAware
+# Quota file and Dynamic Routes cache for FlightAware
 FLIGHTAWARE_QUOTA_FILE = os.path.join(os.path.dirname(__file__), "data", "flightaware_quota.json")
+FLIGHTAWARE_ROUTES_CACHE_FILE = os.path.join(os.path.dirname(__file__), "data", "dynamic_yvr_routes.json")
 
 # In-memory cache for FlightAware responses
 _flightaware_cache = {
     "timestamp": 0,
     "data": None
 }
+
+# Dynamic route mapping accumulated from FlightAware live data
+_dynamic_flight_routes: Dict[str, Any] = {}
+if os.path.exists(FLIGHTAWARE_ROUTES_CACHE_FILE):
+    try:
+        with open(FLIGHTAWARE_ROUTES_CACHE_FILE, "r", encoding="utf-8") as _f:
+            _dynamic_flight_routes = json.load(_f)
+    except Exception:
+        _dynamic_flight_routes = {}
+
+def get_flightaware_api_key() -> str | None:
+    """Robustly retrieves FlightAware API key from env or .env file."""
+    key = os.getenv("FLIGHTAWARE_API_KEY") or os.getenv("AEROAPI_KEY")
+    if key and key.strip():
+        return key.strip()
+
+    # Search local backend/.env or root .env
+    env_paths = [
+        os.path.join(os.path.dirname(__file__), ".env"),
+        os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
+    ]
+    for p in env_paths:
+        if os.path.exists(p):
+            try:
+                with open(p, "r", encoding="utf-8") as f:
+                    for line in f:
+                        line = line.strip()
+                        if line.startswith("FLIGHTAWARE_API_KEY=") or line.startswith("AEROAPI_KEY="):
+                            parts = line.split("=", 1)
+                            if len(parts) == 2 and parts[1].strip():
+                                return parts[1].strip().strip('"').strip("'")
+            except Exception:
+                pass
+    return None
 
 def get_vancouver_now() -> datetime:
     """Returns current datetime in Vancouver timezone (PDT: UTC-7 / PST: UTC-8)."""
@@ -189,14 +224,21 @@ def parse_callsign(raw_callsign: str, country: str) -> Dict[str, Any]:
     prefix3 = cs[:3]
     num_part = cs[3:].lstrip("0") or cs[3:]
     
-    # Check known YVR routes table first (e.g. AC63, AC64, CX888)
+    # Check dynamic FlightAware route cache first, then static routes table
     if prefix3 in AIRLINES_INFO:
         info = AIRLINES_INFO[prefix3]
         short_code = info["code"]
         normalized_flight_key = f"{short_code}{num_part}"
         flight_no = f"{short_code} {num_part}".strip()
         
-        matched_route = KNOWN_YVR_ROUTES.get(normalized_flight_key)
+        # 1. First priority: Real-time route from FlightAware AeroAPI
+        # 2. Second priority: Known verified routes table
+        matched_route = (
+            _dynamic_flight_routes.get(normalized_flight_key) or
+            _dynamic_flight_routes.get(cs) or
+            _dynamic_flight_routes.get(flight_no.replace(" ", "")) or
+            KNOWN_YVR_ROUTES.get(normalized_flight_key)
+        )
         
         if matched_route:
             is_dom = not matched_route["intl"]
@@ -341,22 +383,29 @@ def fetch_live_flights() -> List[Dict[str, Any]]:
         print(f"Error fetching OpenSky flights: {e}")
         return []
 
-def fetch_flightaware_schedules() -> Dict[str, Any] | None:
+def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any] | None:
     """
-    Fetches official YVR arrivals and departures from FlightAware AeroAPI
-    strictly protected with 60-minute in-memory caching and 420-query monthly hard limit.
+    Fetches official YVR arrivals and departures from FlightAware AeroAPI.
+    Strictly protected with 40-minute in-memory caching and 480-query monthly hard limit (safety buffer for 500 free tier).
+    Only triggers HTTP calls when allow_api_call=True (on-demand when users view the schedule).
     """
-    api_key = os.getenv("FLIGHTAWARE_API_KEY") or os.getenv("AEROAPI_KEY")
+    global _dynamic_flight_routes
+    api_key = get_flightaware_api_key()
     if not api_key:
-        return None
+        return _flightaware_cache.get("data")
 
     now_ts = time.time()
-    # Check 60-minute cache
-    if _flightaware_cache["data"] and (now_ts - _flightaware_cache["timestamp"] < 3600):
+    # Check 40-minute cache (2400 seconds)
+    if _flightaware_cache["data"] and (now_ts - _flightaware_cache["timestamp"] < 2400):
         return _flightaware_cache["data"]
 
-    # Check monthly quota to prevent ANY extra charge
+    # If background radar update (not user on-demand request), do not consume API quota
+    if not allow_api_call:
+        return _flightaware_cache.get("data")
+
+    # Check monthly quota to prevent ANY extra charge (Default 480 calls, leaving 20 buffer below 500)
     current_month = datetime.now(timezone.utc).strftime("%Y-%m")
+    max_monthly_calls = int(os.getenv("FLIGHTAWARE_MAX_MONTHLY_CALLS", "480"))
     quota_count = 0
     try:
         if os.path.exists(FLIGHTAWARE_QUOTA_FILE):
@@ -367,8 +416,8 @@ def fetch_flightaware_schedules() -> Dict[str, Any] | None:
     except Exception:
         pass
 
-    if quota_count >= 420:
-        print("⚠️ FlightAware Monthly Quota Circuit Breaker active (>= 420 calls). Serving cache.")
+    if quota_count >= max_monthly_calls:
+        print(f"⚠️ FlightAware Monthly Quota Circuit Breaker active (>= {max_monthly_calls} calls). Seamlessly switching to OpenSky + cached route fallback.")
         return _flightaware_cache.get("data")
 
     try:
@@ -376,15 +425,15 @@ def fetch_flightaware_schedules() -> Dict[str, Any] | None:
         headers = {"x-apikey": api_key, "User-Agent": "VancouverGodsEye/1.0"}
         resp = requests.get(url, headers=headers, timeout=10)
         
-        # Increment quota tracker
+        if resp.status_code != 200:
+            print(f"FlightAware API error status: {resp.status_code} ({resp.text[:100]})")
+            return _flightaware_cache.get("data")
+
+        # Increment quota tracker on successful call
         quota_count += 1
         os.makedirs(os.path.dirname(FLIGHTAWARE_QUOTA_FILE), exist_ok=True)
         with open(FLIGHTAWARE_QUOTA_FILE, "w") as f:
             json.dump({"month": current_month, "count": quota_count, "last_call": datetime.now(timezone.utc).isoformat()}, f)
-
-        if resp.status_code != 200:
-            print(f"FlightAware API error status: {resp.status_code}")
-            return None
 
         fa_data = resp.json()
         van_now = get_vancouver_now()
@@ -408,7 +457,7 @@ def fetch_flightaware_schedules() -> Dict[str, Any] | None:
                 except Exception:
                     pass
 
-            arrivals.append({
+            item = {
                 "id": f"fa_arr_{flight.get('fa_flight_id') or ident}",
                 "flight_no": ident,
                 "airline": flight.get("operator") or "客運航空",
@@ -421,7 +470,19 @@ def fetch_flightaware_schedules() -> Dict[str, Any] | None:
                 "status": flight.get("status") or "預計抵達",
                 "status_code": "scheduled",
                 "is_live": False
-            })
+            }
+            arrivals.append(item)
+
+            # Accumulate dynamic route for live radar map matching
+            clean_ident = ident.replace(" ", "").upper()
+            if clean_ident:
+                _dynamic_flight_routes[clean_ident] = {
+                    "city": item["city"],
+                    "intl": not is_dom,
+                    "type": "arr",
+                    "terminal": item["terminal"],
+                    "gate": item["gate"]
+                }
 
         departures = []
         for flight in fa_data.get("departures", []) + fa_data.get("scheduled_departures", []):
@@ -441,7 +502,7 @@ def fetch_flightaware_schedules() -> Dict[str, Any] | None:
                 except Exception:
                     pass
 
-            departures.append({
+            item = {
                 "id": f"fa_dep_{flight.get('fa_flight_id') or ident}",
                 "flight_no": ident,
                 "airline": flight.get("operator") or "客運航空",
@@ -454,7 +515,27 @@ def fetch_flightaware_schedules() -> Dict[str, Any] | None:
                 "status": flight.get("status") or "準時",
                 "status_code": "scheduled",
                 "is_live": False
-            })
+            }
+            departures.append(item)
+
+            # Accumulate dynamic route for live radar map matching
+            clean_ident = ident.replace(" ", "").upper()
+            if clean_ident:
+                _dynamic_flight_routes[clean_ident] = {
+                    "city": item["city"],
+                    "intl": not is_dom,
+                    "type": "dep",
+                    "terminal": item["terminal"],
+                    "gate": item["gate"]
+                }
+
+        # Save accumulated dynamic routes to persistent disk file
+        try:
+            os.makedirs(os.path.dirname(FLIGHTAWARE_ROUTES_CACHE_FILE), exist_ok=True)
+            with open(FLIGHTAWARE_ROUTES_CACHE_FILE, "w", encoding="utf-8") as rf:
+                json.dump(_dynamic_flight_routes, rf, ensure_ascii=False)
+        except Exception:
+            pass
 
         result = {
             "airport": "YVR",
@@ -468,20 +549,20 @@ def fetch_flightaware_schedules() -> Dict[str, Any] | None:
         }
         _flightaware_cache["timestamp"] = now_ts
         _flightaware_cache["data"] = result
-        print(f"✅ Successfully refreshed FlightAware YVR schedule (Count: {quota_count}/420 calls this month).")
+        print(f"✅ Successfully refreshed FlightAware YVR schedule (Count: {quota_count}/{max_monthly_calls} calls this month).")
         return result
     except Exception as e:
         print(f"Error querying FlightAware AeroAPI: {e}")
-        return None
+        return _flightaware_cache.get("data")
 
-def generate_flight_schedules(live_flights: List[Dict[str, Any]]) -> Dict[str, Any]:
+def generate_flight_schedules(live_flights: List[Dict[str, Any]], allow_api_call: bool = False) -> Dict[str, Any]:
     """
     Generates rich, real-time YVR Flight Schedules (Arrivals & Departures) in Vancouver Timezone.
-    First tries official FlightAware AeroAPI if configured; otherwise merges live aircraft
-    with authentic YVR routes database.
+    First tries official FlightAware AeroAPI (with on-demand caching & 480 monthly calls circuit breaker);
+    Otherwise seamlessly falls back to OpenSky ADS-B + dynamic route cache database.
     """
     # 1. Try official FlightAware first if API Key is configured
-    fa_schedules = fetch_flightaware_schedules()
+    fa_schedules = fetch_flightaware_schedules(allow_api_call=allow_api_call)
     if fa_schedules:
         # Link live airborne aircraft to FlightAware list
         fa_arr = fa_schedules["arrivals"]
