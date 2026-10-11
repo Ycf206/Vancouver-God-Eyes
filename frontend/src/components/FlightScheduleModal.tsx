@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useUIStore } from '@/store/useUIStore';
+import { getApiUrl } from '@/utils/api';
 import { 
   X, Plane, PlaneTakeoff, PlaneLanding, Search, RefreshCw, 
   MapPin, Activity
@@ -49,7 +50,7 @@ export default function FlightScheduleModal() {
 
   const fetchSchedules = () => {
     setLoading(true);
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:8000` : 'http://localhost:8000');
+    const apiUrl = getApiUrl();
     fetch(`${apiUrl}/api/flights/schedules`)
       .then(res => res.json())
       .then(json => {

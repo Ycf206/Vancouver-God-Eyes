@@ -6,6 +6,7 @@ import { setWorkerUrl } from 'maplibre-gl';
 import Map, { NavigationControl, Marker, Popup, MapRef } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useUIStore } from '@/store/useUIStore';
+import { getApiUrl, getWsUrl } from '@/utils/api';
 
 // Fix Next.js App Router Web Worker crash
 if (typeof window !== 'undefined') {
@@ -275,9 +276,16 @@ export default function AppMap() {
       .then(r => r.json())
       .then(data => {
          if(data && data.features) setAirports(data.features);
-      }).catch(e => console.error(e));
+      }).catch(e => {
+        console.error(e);
+        const apiUrl = getApiUrl();
+        fetch(`${apiUrl}/api/geojson/airports`)
+          .then(r => r.json())
+          .then(d => { if (d && d.features) setAirports(d.features); })
+          .catch(err => console.error(err));
+      });
 
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:8000` : 'http://localhost:8000');
+    const apiUrl = getApiUrl();
     const fetchLiveFlights = () => {
       fetch(`${apiUrl}/api/flights/live`)
         .then(r => r.json())
@@ -295,8 +303,7 @@ export default function AppMap() {
   }, []);
 
   useEffect(() => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:8000` : 'http://localhost:8000');
-    const wsUrl = apiUrl.replace('http', 'ws') + '/ws';
+    const wsUrl = getWsUrl();
     let ws: WebSocket;
     
     const connect = () => {

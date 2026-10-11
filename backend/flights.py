@@ -17,12 +17,41 @@ VANCOUVER_BBOX = {
 # Quota file and Dynamic Routes cache for FlightAware
 FLIGHTAWARE_QUOTA_FILE = os.path.join(os.path.dirname(__file__), "data", "flightaware_quota.json")
 FLIGHTAWARE_ROUTES_CACHE_FILE = os.path.join(os.path.dirname(__file__), "data", "dynamic_yvr_routes.json")
+LIVE_FLIGHTS_CACHE_FILE = os.path.join(os.path.dirname(__file__), "data", "cached_live_flights.json")
 
-# In-memory cache for FlightAware responses
+# In-memory cache for FlightAware responses and live aircraft
 _flightaware_cache = {
     "timestamp": 0,
     "data": None
 }
+_mem_cached_live_flights: List[Dict[str, Any]] = []
+
+def _save_cached_live_flights(flights_data: List[Dict[str, Any]]):
+    global _mem_cached_live_flights
+    if not flights_data:
+        return
+    _mem_cached_live_flights = flights_data
+    try:
+        os.makedirs(os.path.dirname(LIVE_FLIGHTS_CACHE_FILE), exist_ok=True)
+        with open(LIVE_FLIGHTS_CACHE_FILE, "w", encoding="utf-8") as f:
+            json.dump(flights_data, f, ensure_ascii=False)
+    except Exception:
+        pass
+
+def _load_cached_live_flights() -> List[Dict[str, Any]]:
+    global _mem_cached_live_flights
+    if _mem_cached_live_flights:
+        return _mem_cached_live_flights
+    if os.path.exists(LIVE_FLIGHTS_CACHE_FILE):
+        try:
+            with open(LIVE_FLIGHTS_CACHE_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                if isinstance(data, list) and data:
+                    _mem_cached_live_flights = data
+                    return data
+        except Exception:
+            pass
+    return []
 
 # Dynamic route mapping accumulated from FlightAware live data
 _dynamic_flight_routes: Dict[str, Any] = {}
@@ -339,87 +368,96 @@ def fetch_live_flights() -> List[Dict[str, Any]]:
     headers = {"User-Agent": "VancouverGodsEye/1.0 (+https://github.com/Ycf206/Vancouver-God-Eyes)"}
 
     try:
-        resp = requests.get(url, headers=headers, timeout=8)
-        if resp.status_code != 200:
-            return []
+        resp = requests.get(url, headers=headers, timeout=10)
+        if resp.status_code == 200:
+            data = resp.json()
+            states = data.get("states", [])
+            if states:
+                flights = []
+                for s in states:
+                    icao = s[0]
+                    raw_cs = s[1]
+                    country = s[2] or ""
+                    lon = s[5]
+                    lat = s[6]
 
-        data = resp.json()
-        states = data.get("states", [])
-        if not states:
-            return []
+                    if lon is None or lat is None:
+                        continue
 
-        flights = []
-        for s in states:
-            icao = s[0]
-            raw_cs = s[1]
-            country = s[2] or ""
-            lon = s[5]
-            lat = s[6]
+                    alt_m = s[7]
+                    on_ground = bool(s[8])
+                    vel_ms = s[9]
+                    track_deg = s[10] or 0.0
+                    vert_rate_ms = s[11]
 
-            if lon is None or lat is None:
-                continue
+                    # Conversions
+                    alt_ft = round(alt_m * 3.28084) if alt_m is not None else 0
+                    speed_kts = round(vel_ms * 1.94384) if vel_ms is not None else 0
+                    vert_rate_fpm = round(vert_rate_ms * 196.85) if vert_rate_ms is not None else 0
 
-            alt_m = s[7]
-            on_ground = bool(s[8])
-            vel_ms = s[9]
-            track_deg = s[10] or 0.0
-            vert_rate_ms = s[11]
+                    # Decode airline, verified route & domestic/international
+                    parsed = parse_callsign(raw_cs, country)
 
-            # Conversions
-            alt_ft = round(alt_m * 3.28084) if alt_m is not None else 0
-            speed_kts = round(vel_ms * 1.94384) if vel_ms is not None else 0
-            vert_rate_fpm = round(vert_rate_ms * 196.85) if vert_rate_ms is not None else 0
+                    # Determine flight phase
+                    if on_ground or alt_ft < 150:
+                        status = "已降落 / 地面滑行"
+                        status_code = "landed"
+                        status_badge = "🛬 已降落"
+                    elif vert_rate_fpm < -250 and alt_ft < 9000:
+                        status = f"進場降落中 ({alt_ft:,} ft)"
+                        status_code = "approaching"
+                        status_badge = "⬇️ 進場降落"
+                    elif vert_rate_fpm > 250 and alt_ft < 9000:
+                        status = f"起飛爬升中 ({alt_ft:,} ft)"
+                        status_code = "climbing"
+                        status_badge = "⬆️ 起飛爬升"
+                    else:
+                        status = f"巡航飛行中 ({alt_ft:,} ft)"
+                        status_code = "cruising"
+                        status_badge = "✈️ 巡航中"
 
-            # Decode airline, verified route & domestic/international
-            parsed = parse_callsign(raw_cs, country)
+                    flights.append({
+                        "id": f"flight_{icao}",
+                        "icao24": icao,
+                        "callsign": (raw_cs or "").strip(),
+                        "flight_no": parsed["flight_no"],
+                        "airline": parsed["airline"],
+                        "short_airline": parsed.get("short_airline", ""),
+                        "category": parsed["category"],
+                        "is_domestic": parsed["is_domestic"],
+                        "badge": parsed["badge"],
+                        "country": country,
+                        "lon": round(lon, 5),
+                        "lat": round(lat, 5),
+                        "altitude_ft": alt_ft,
+                        "speed_kts": speed_kts,
+                        "bearing": round(track_deg, 1),
+                        "vertical_rate_fpm": vert_rate_fpm,
+                        "on_ground": on_ground,
+                        "status": status,
+                        "status_code": status_code,
+                        "status_badge": status_badge,
+                        "matched_route": parsed.get("matched_route"),
+                        "updated_at": datetime.now(timezone.utc).isoformat() + "Z"
+                    })
 
-            # Determine flight phase
-            if on_ground or alt_ft < 150:
-                status = "已降落 / 地面滑行"
-                status_code = "landed"
-                status_badge = "🛬 已降落"
-            elif vert_rate_fpm < -250 and alt_ft < 9000:
-                status = f"進場降落中 ({alt_ft:,} ft)"
-                status_code = "approaching"
-                status_badge = "⬇️ 進場降落"
-            elif vert_rate_fpm > 250 and alt_ft < 9000:
-                status = f"起飛爬升中 ({alt_ft:,} ft)"
-                status_code = "climbing"
-                status_badge = "⬆️ 起飛爬升"
-            else:
-                status = f"巡航飛行中 ({alt_ft:,} ft)"
-                status_code = "cruising"
-                status_badge = "✈️ 巡航中"
-
-            flights.append({
-                "id": f"flight_{icao}",
-                "icao24": icao,
-                "callsign": (raw_cs or "").strip(),
-                "flight_no": parsed["flight_no"],
-                "airline": parsed["airline"],
-                "short_airline": parsed.get("short_airline", ""),
-                "category": parsed["category"],
-                "is_domestic": parsed["is_domestic"],
-                "badge": parsed["badge"],
-                "country": country,
-                "lon": round(lon, 5),
-                "lat": round(lat, 5),
-                "altitude_ft": alt_ft,
-                "speed_kts": speed_kts,
-                "bearing": round(track_deg, 1),
-                "vertical_rate_fpm": vert_rate_fpm,
-                "on_ground": on_ground,
-                "status": status,
-                "status_code": status_code,
-                "status_badge": status_badge,
-                "matched_route": parsed.get("matched_route"),
-                "updated_at": datetime.now(timezone.utc).isoformat() + "Z"
-            })
-
-        return flights
+                if flights:
+                    _save_cached_live_flights(flights)
+                    return flights
+        else:
+            print(f"⚠️ OpenSky API returned status {resp.status_code}. Using cached live radar data.")
     except Exception as e:
-        print(f"Error fetching OpenSky flights: {e}")
-        return []
+        print(f"⚠️ Error querying OpenSky: {e}. Falling back to cached live radar data.")
+
+    # Fallback to last cached radar flights with smooth time updates
+    cached = _load_cached_live_flights()
+    if cached:
+        now_iso = datetime.now(timezone.utc).isoformat() + "Z"
+        for f in cached:
+            f["updated_at"] = now_iso
+        return cached
+
+    return []
 
 def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any] | None:
     """
@@ -477,7 +515,7 @@ def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any] |
         van_now = get_vancouver_now()
         
         arrivals = []
-        for flight in fa_data.get("arrivals", []) + fa_data.get("scheduled_arrivals", []):
+        for flight in fa_data.get("enroute", []) + fa_data.get("arrivals", []) + fa_data.get("scheduled_arrivals", []):
             ident = flight.get("ident") or flight.get("ident_iata") or "N/A"
             origin_info = flight.get("origin") or {}
             orig_city = origin_info.get("city") or origin_info.get("code_iata") or "起飛地"
@@ -608,20 +646,25 @@ def generate_flight_schedules(live_flights: List[Dict[str, Any]], allow_api_call
         
         # Cross-reference live flights with FA schedule (Matching ICAO/IATA callsigns & numbers)
         for f in live_flights:
-            f_no_clean = f["flight_no"].replace(" ", "").upper()
+            f_no_clean = f.get("flight_no", "").replace(" ", "").upper()
+            f_cs = (f.get("callsign") or "").replace(" ", "").upper()
             f_raw = f.get("id", "").upper().replace("FLIGHT_", "")
-            f_digits = "".join(filter(str.isdigit, f_no_clean))
+            f_digits = "".join(filter(str.isdigit, f_no_clean)) or "".join(filter(str.isdigit, f_cs))
 
             for item in fa_arr + fa_dep:
                 item_no = item["flight_no"].replace(" ", "").upper()
                 item_digits = "".join(filter(str.isdigit, item_no))
 
-                # Check exact match OR matching flight digits with same carrier code
-                is_match = (item_no == f_no_clean) or (item_no == f_raw) or (
-                    f_digits and item_digits and (f_digits == item_digits) and (
+                # Check exact callsign match OR exact flight_no match OR carrier digits match
+                is_match = (
+                    (f_cs and item_no == f_cs) or
+                    (item_no == f_no_clean) or
+                    (item_no == f_raw) or
+                    (f_digits and item_digits and (f_digits == item_digits) and (
                         f_no_clean[:2] in item_no or item_no[:2] in f_no_clean or
-                        f_no_clean[:3] in item_no or item_no[:3] in f_no_clean
-                    )
+                        f_no_clean[:3] in item_no or item_no[:3] in f_no_clean or
+                        (f_cs and (f_cs[:3] in item_no or item_no[:3] in f_cs))
+                    ))
                 )
                 if is_match:
                     item["is_live"] = True

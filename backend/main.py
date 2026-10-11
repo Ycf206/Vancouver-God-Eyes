@@ -353,7 +353,7 @@ async def fetch_translink_trip_updates():
         await asyncio.sleep(30)
 
 async def fetch_flights_realtime():
-    """Polls OpenSky Network every 12 seconds for real-time aircraft over Vancouver."""
+    """Polls OpenSky Network every 20 seconds for real-time aircraft over Vancouver."""
     global cached_flights, cached_flight_schedules
     while True:
         try:
@@ -371,10 +371,19 @@ async def fetch_flights_realtime():
                             pass
         except Exception as e:
             print(f"Error in fetch_flights_realtime: {e}")
-        await asyncio.sleep(12)
+        await asyncio.sleep(20)
 
 @app.on_event("startup")
 async def startup_event():
+    # Warm up live flights cache immediately
+    try:
+        global cached_flights
+        init_flights = flights.fetch_live_flights()
+        if init_flights:
+            cached_flights = init_flights
+    except Exception as e:
+        print(f"Error initializing flights cache: {e}")
+
     asyncio.create_task(fetch_translink_realtime())
     asyncio.create_task(fetch_bcferries_realtime())
     asyncio.create_task(fetch_translink_trip_updates())
@@ -382,6 +391,11 @@ async def startup_event():
 
 @app.get("/api/flights/live")
 def get_live_flights():
+    global cached_flights
+    if not cached_flights:
+        live = flights.fetch_live_flights()
+        if live:
+            cached_flights = live
     return {
         "count": len(cached_flights),
         "updated_at": datetime.utcnow().isoformat() + "Z",
@@ -390,7 +404,11 @@ def get_live_flights():
 
 @app.get("/api/flights/schedules")
 def get_flight_schedules():
-    global cached_flight_schedules
+    global cached_flights, cached_flight_schedules
+    if not cached_flights:
+        live = flights.fetch_live_flights()
+        if live:
+            cached_flights = live
     schedules = flights.generate_flight_schedules(cached_flights, allow_api_call=True)
     if schedules:
         cached_flight_schedules = schedules
