@@ -6,11 +6,13 @@ import {
   Map, Satellite, Sun, Moon, Bus, Layers, CircleDot, Route, Ship, 
   CircleDollarSign, Accessibility, Bike, Zap, Scooter, Camera, Siren, 
   Flame, Building2, Hospital, ChevronLeft, Trees, Footprints, Flower2, 
-  Droplets, Bath, Leaf, Landmark, GraduationCap, BookOpen, UtensilsCrossed, Bed, Heart
+  Droplets, Bath, Leaf, Landmark, GraduationCap, BookOpen, UtensilsCrossed, Bed, Heart,
+  Plane, PlaneTakeoff, Calendar
 } from 'lucide-react';
 
 export default function LayerPanel() {
-  const { mapStyleType, setMapStyleType, layers, toggleLayer, isLayerPanelOpen, toggleLayerPanel } = useUIStore();
+  const { mapStyleType, setMapStyleType, layers, toggleLayer, isLayerPanelOpen, toggleLayerPanel, toggleFlightSchedule } = useUIStore();
+
 
   // Helper component for Style buttons (Icon only)
   const StyleButton = ({ type, icon: Icon, title }: { type: MapStyleType, icon: React.ElementType, title: string }) => {
@@ -174,6 +176,36 @@ export default function LayerPanel() {
 
         {/* Divider */}
         <div className="w-full h-px bg-[#26282d]"></div>
+
+        {/* Aviation Row (航空) */}
+        <div className="flex flex-col gap-1.5">
+          <div className="text-[10px] font-bold text-sky-400 tracking-wider flex items-center justify-between">
+            <div className="flex items-center gap-1">
+              <Plane className="w-3 h-3 text-sky-400" />
+              <span>航空</span>
+            </div>
+            <span className="text-[9px] text-sky-500/70 font-mono">AVIATION · YVR</span>
+          </div>
+          <div className="grid grid-cols-2 gap-1">
+            <LayerButton layerKey="airports" label="機場" icon={PlaneTakeoff} colorClass="text-sky-400" activeBg="bg-[#102336]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(56,189,248,0.15)]" />
+            <button
+              onClick={() => toggleFlightSchedule()}
+              className="flex items-center justify-center gap-1 px-1.5 py-1 rounded text-[11px] border transition-all truncate text-left select-none bg-[#1c1d21] border-[#2d2e32] text-amber-300 hover:bg-[#2e2618] hover:border-amber-500/50 hover:text-amber-200 font-medium shadow-[0_0_4px_rgba(245,158,11,0.1)] active:scale-[0.98]"
+              title="查看 YVR 航班即時看板 (到港/離港)"
+            >
+              <Calendar className="w-3 h-3 text-amber-400 shrink-0" />
+              <span className="truncate">航班班次</span>
+            </button>
+          </div>
+          <div className="grid grid-cols-2 gap-1 mt-0.5">
+            <LayerButton layerKey="domesticFlights" label="國內航班" icon={Plane} colorClass="text-emerald-400" activeBg="bg-[#12281d]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
+            <LayerButton layerKey="intlFlights" label="國際航班" icon={Plane} colorClass="text-amber-400" activeBg="bg-[#292215]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div className="w-full h-px bg-[#26282d]"></div>
+
 
         {/* Road Infrastructure Row */}
         <div className="flex flex-col gap-1.5">

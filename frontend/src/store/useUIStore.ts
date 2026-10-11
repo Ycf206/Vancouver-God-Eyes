@@ -54,6 +54,9 @@ export interface UIState {
     libraries: boolean;
     foodVendors: boolean;
     homelessShelters: boolean;
+    airports: boolean;
+    domesticFlights: boolean;
+    intlFlights: boolean;
   };
   toggleLayer: (layer: keyof UIState['layers']) => void;
   enableLayer: (layer: keyof UIState['layers']) => void;
@@ -62,7 +65,13 @@ export interface UIState {
   isLayerPanelOpen: boolean;
   toggleLayerPanel: () => void;
   setLayerPanelOpen: (open: boolean) => void;
+  isFlightScheduleOpen: boolean;
+  toggleFlightSchedule: () => void;
+  setFlightScheduleOpen: (open: boolean) => void;
+  selectedFlightId: string | null;
+  setSelectedFlightId: (id: string | null) => void;
 }
+
 
 export const useUIStore = create<UIState>()(
   persist(
@@ -102,6 +111,9 @@ export const useUIStore = create<UIState>()(
         libraries: false,
         foodVendors: false,
         homelessShelters: false,
+        airports: true,
+        domesticFlights: true,
+        intlFlights: true,
       },
       toggleLayer: (layer) =>
         set((state) => ({
@@ -122,7 +134,13 @@ export const useUIStore = create<UIState>()(
       isLayerPanelOpen: true,
       toggleLayerPanel: () => set((state) => ({ isLayerPanelOpen: !state.isLayerPanelOpen })),
       setLayerPanelOpen: (open) => set({ isLayerPanelOpen: open }),
+      isFlightScheduleOpen: false,
+      toggleFlightSchedule: () => set((state) => ({ isFlightScheduleOpen: !state.isFlightScheduleOpen })),
+      setFlightScheduleOpen: (open) => set({ isFlightScheduleOpen: open }),
+      selectedFlightId: null,
+      setSelectedFlightId: (id) => set({ selectedFlightId: id }),
     }),
+
     {
       name: 'vancouver-gods-eye-ui-storage',
       partialize: (state) => ({

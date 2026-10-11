@@ -1,0 +1,105 @@
+{
+  "type": "FeatureCollection",
+  "generator": "VancouverGodsEye",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "airport_yvr_main",
+      "properties": {
+        "id": "airport_yvr_main",
+        "facility_type": "airports",
+        "sub_type": "international_airport",
+        "name": "溫哥華國際機場 (YVR) · 主航廈",
+        "name_en": "Vancouver International Airport (YVR) - Main Terminal",
+        "iata": "YVR",
+        "icao": "CYVR",
+        "badge": "國際機場",
+        "icon": "🛫",
+        "terminal": "Main Terminal (Domestic & International)",
+        "address": "3211 Grant McConachie Way, Richmond, BC",
+        "transit_access": "Canada Line · YVR-Airport Station",
+        "local_area": "Richmond / Sea Island",
+        "elevation_ft": 14,
+        "runways": "08L/26R (3,029m), 08R/26L (3,353m), 13/31 (2,225m)",
+        "wiki_url": "https://en.wikipedia.org/wiki/Vancouver_International_Airport"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.184444, 49.193889]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "airport_yvr_south",
+      "properties": {
+        "id": "airport_yvr_south",
+        "facility_type": "airports",
+        "sub_type": "south_terminal",
+        "name": "YVR 南航廈與水上飛機碼頭",
+        "name_en": "YVR South Terminal & Floatplane Facility",
+        "iata": "YVR",
+        "icao": "CYVR",
+        "badge": "支線/水上飛機",
+        "icon": "🛩️",
+        "terminal": "South Terminal",
+        "address": "4440 Cowley Crescent, Richmond, BC",
+        "transit_access": "YVR Airport South Shuttle / TransLink 412",
+        "local_area": "Richmond / Fraser River",
+        "operators": "Pacific Coastal Airlines, Seair Seaplanes, Corilair",
+        "wiki_url": "https://en.wikipedia.org/wiki/Vancouver_International_Airport#South_Terminal"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.1610, 49.1795]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "airport_coal_harbour",
+      "properties": {
+        "id": "airport_coal_harbour",
+        "facility_type": "airports",
+        "sub_type": "seaplane_base",
+        "name": "溫哥華海港水上機場 (煤港)",
+        "name_en": "Vancouver Harbour Flight Centre (Coal Harbour)",
+        "iata": "CXH",
+        "icao": "CYHC",
+        "badge": "市中心水上機場",
+        "icon": "🛩️",
+        "terminal": "Coal Harbour Seaplane Terminal",
+        "address": "1055 Canada Place, Vancouver, BC",
+        "transit_access": "Waterfront Station (Skytrain / SeaBus / West Coast Express)",
+        "local_area": "Downtown Vancouver / Coal Harbour",
+        "operators": "Harbour Air, Seair Seaplanes, Helijet",
+        "destinations": "Victoria Harbour, Nanaimo Harbour, Gulf Islands, Seattle",
+        "wiki_url": "https://en.wikipedia.org/wiki/Vancouver_Harbour_Flight_Centre"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.1147, 49.2894]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "spot_flight_path_park",
+      "properties": {
+        "id": "spot_flight_path_park",
+        "facility_type": "airports",
+        "sub_type": "flight_watching",
+        "name": "飛機迷賞機公園 (Flight Path Park)",
+        "name_en": "Larry Berg Flight Path Park",
+        "badge": "最佳賞機點",
+        "icon": "📸",
+        "address": "Russ Baker Way, Richmond, BC",
+        "transit_access": "Templeton Station (步行約 15 分鐘)",
+        "local_area": "Richmond / Sea Island",
+        "highlights": "位於 YVR 26L/26R 跑道正下方，近距離感受巨無霸波音 777、空巴 A350 降落震撼風壓，設有飛機跑道造景與航空資訊牌",
+        "wiki_url": "https://www.yvr.ca/en/passengers/community-and-environment/flight-path-park"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.1558, 49.2016]
+      }
+    }
+  ]
+}

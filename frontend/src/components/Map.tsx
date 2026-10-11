@@ -73,6 +73,14 @@ export default function AppMap() {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [ferryVehicles, setFerryVehicles] = useState<FerryVehicle[]>([]);
   const [ferryTerminals, setFerryTerminals] = useState<Array<{geometry: {coordinates: number[]}, properties: {name?: string, code: string}}>>([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [flights, setFlights] = useState<any[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [selectedFlight, setSelectedFlight] = useState<any | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [airports, setAirports] = useState<any[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [selectedAirport, setSelectedAirport] = useState<any | null>(null);
   
   // States for Popup
   const [selectedStop, setSelectedStop] = useState<StopInfo | null>(null);
@@ -84,6 +92,7 @@ export default function AppMap() {
   const [loadingSchedule, setLoadingSchedule] = useState(false);
   const [selectedFerry, setSelectedFerry] = useState<FerryVehicle | null>(null);
   const [selectedFacility, setSelectedFacility] = useState<RoadFacilityInfo | null>(null);
+
 
   // States for Traffic Camera Images
   const [webcamImages, setWebcamImages] = useState<Array<{url: string, direction: string, alt: string}>>([]);
@@ -190,11 +199,28 @@ export default function AppMap() {
           console.error(err);
           setLoadingArrivals(false);
         });
+    } else if (searchTarget.category === 'airports') {
+      setSelectedTerminal(null);
+      setSelectedStop(null);
+      setSelectedFacility(null);
+      setSelectedFlight(null);
+      setSelectedAirport({
+        geometry: { coordinates: [searchTarget.lon, searchTarget.lat] },
+        properties: { name: searchTarget.title, ...(searchTarget.meta || {}) }
+      });
+    } else if (searchTarget.category === 'domestic_flight' || searchTarget.category === 'intl_flight') {
+      setSelectedTerminal(null);
+      setSelectedStop(null);
+      setSelectedFacility(null);
+      setSelectedAirport(null);
+      setSelectedFlight(searchTarget.meta);
     } else if (
       ['fire_halls', 'community_centres', 'ev_charging', 'escooter', 'traffic_cameras', 'safety_cameras', 'parking_meters', 'accessible_parking', 'motorcycle_parking', 'hospitals'].includes(searchTarget.category)
     ) {
       setSelectedTerminal(null);
       setSelectedStop(null);
+      setSelectedFlight(null);
+      setSelectedAirport(null);
       setSelectedFacility({
         id: searchTarget.id,
         facility_type: searchTarget.category,
@@ -213,6 +239,19 @@ export default function AppMap() {
       .then(data => {
          if(data && data.features) setFerryTerminals(data.features);
       }).catch(e => console.error(e));
+
+    fetch('/vancouver_airports.geojson')
+      .then(r => r.json())
+      .then(data => {
+         if(data && data.features) setAirports(data.features);
+      }).catch(e => console.error(e));
+
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:8000` : 'http://localhost:8000');
+    fetch(`${apiUrl}/api/flights/live`)
+      .then(r => r.json())
+      .then(data => {
+        if (data && data.flights) setFlights(data.flights);
+      }).catch(e => console.error(e));
   }, []);
 
   useEffect(() => {
@@ -230,6 +269,8 @@ export default function AppMap() {
             setVehicles(message.data);
           } else if (message.type === 'bc_ferries_update') {
             setFerryVehicles(message.data);
+          } else if (message.type === 'flights_update') {
+            setFlights(message.data);
           }
         } catch (e) {
           console.error('Error parsing websocket message', e);
@@ -241,6 +282,7 @@ export default function AppMap() {
     connect();
     return () => { if (ws) ws.close(); };
   }, []);
+
 
   const mapStyle = useMemo(() => {
     // Determine Base and Label Tiles based on mapStyleType
@@ -1498,6 +1540,246 @@ export default function AppMap() {
                   </div>
                 </div>
               )}
+            </div>
+          </Popup>
+        )}
+
+        {/* 機場與水上飛機場標記 (Airports & Seaplane Bases) */}
+        {layers.airports && airports.map((ap, i) => {
+          const coords = ap.geometry?.coordinates;
+          if (!coords || coords.length < 2) return null;
+          const props = ap.properties || {};
+          const isMain = props.sub_type === 'international_airport';
+          const isSeaplane = props.sub_type === 'seaplane_base' || props.sub_type === 'south_terminal';
+
+          return (
+            <Marker key={props.id || `ap-${i}`} longitude={coords[0]} latitude={coords[1]} anchor="center">
+              <div
+                className={`relative flex items-center gap-1.5 px-2 py-1 rounded-full border-2 border-white shadow-xl cursor-pointer backdrop-blur-md transition-all hover:scale-110 z-35 select-none ${
+                  isMain 
+                    ? 'bg-sky-600 text-white font-bold ring-2 ring-sky-400/50' 
+                    : isSeaplane 
+                    ? 'bg-teal-600 text-white font-semibold' 
+                    : 'bg-emerald-600 text-white font-medium'
+                }`}
+                title={props.name}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedAirport(ap);
+                }}
+              >
+                <span className="text-xs">{props.icon || '🛫'}</span>
+                <span className="text-[11px] whitespace-nowrap pr-0.5">{isMain ? 'YVR 國際機場' : isSeaplane ? (props.iata === 'CXH' ? '煤港水上機場' : 'YVR 南航廈') : '賞機公園'}</span>
+              </div>
+            </Marker>
+          );
+        })}
+
+        {/* 即時航班飛機位置 (Live Aircraft Markers) */}
+        {flights.map((f) => {
+          const showDomestic = f.is_domestic && layers.domesticFlights;
+          const showIntl = !f.is_domestic && layers.intlFlights;
+          if (!showDomestic && !showIntl) return null;
+
+          return (
+            <Marker key={f.id} longitude={f.lon} latitude={f.lat} anchor="center">
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedFlight(f);
+                }}
+                className="cursor-pointer group flex flex-col items-center z-30 transition-transform duration-300 select-none"
+                title={`${f.flight_no} · ${f.airline} (${f.status})`}
+              >
+                {/* 順應航向旋轉的飛機圖示 */}
+                <div
+                  style={{ transform: `rotate(${f.bearing || 0}deg)` }}
+                  className={`relative flex items-center justify-center w-7 h-7 rounded-full border-[1.5px] border-white shadow-lg backdrop-blur-sm transition-transform duration-300 group-hover:scale-125 ${
+                    f.is_domestic
+                      ? 'bg-sky-500 shadow-[0_0_10px_rgba(14,165,233,0.5)] ring-1 ring-sky-300/60'
+                      : 'bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.5)] ring-1 ring-amber-300/60'
+                  }`}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="white">
+                    <path d="M10.18 9 L2.5 12.5 L2.5 14.5 L10.18 12.5 L10.18 19 L7.5 21 L7.5 22.5 L12 21 L16.5 22.5 L16.5 21 L13.82 19 L13.82 12.5 L21.5 14.5 L21.5 12.5 L13.82 9 L13.82 3 C13.82 1.9 12.92 1 12 1 C11.08 1 10.18 1.9 10.18 3 Z"/>
+                  </svg>
+                </div>
+                {/* 航班呼號標籤 */}
+                <span className="mt-0.5 px-1 py-0.2 rounded text-[9px] font-mono font-bold bg-[#14161a]/90 text-gray-200 border border-[#2b303c] whitespace-nowrap shadow-sm group-hover:scale-110 group-hover:border-sky-400">
+                  {f.flight_no}
+                </span>
+              </div>
+            </Marker>
+          );
+        })}
+
+        {/* Airport Detail Popup */}
+        {selectedAirport && (
+          <Popup
+            longitude={selectedAirport.geometry.coordinates[0]}
+            latitude={selectedAirport.geometry.coordinates[1]}
+            anchor="bottom"
+            onClose={() => setSelectedAirport(null)}
+            closeOnClick={false}
+            closeButton={false}
+            className="z-50"
+            offset={[0, -12]}
+            maxWidth="360px"
+          >
+            <div className="p-3.5 w-[320px] sm:w-[350px] max-w-[88vw] text-gray-800">
+              <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">{selectedAirport.properties?.icon || '🛫'}</span>
+                  <div>
+                    <h3 className="font-bold text-gray-900 text-sm leading-tight">
+                      {selectedAirport.properties?.name}
+                    </h3>
+                    <span className="text-[10px] text-gray-500 font-mono">
+                      {selectedAirport.properties?.name_en || ''}
+                    </span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setSelectedAirport(null)}
+                  className="text-gray-400 hover:text-gray-700 text-2xl font-light leading-none px-1 py-0.5 -mt-1"
+                >
+                  &times;
+                </button>
+              </div>
+
+              <div className="flex flex-col gap-1.5 text-xs">
+                {selectedAirport.properties?.iata && (
+                  <div className="flex justify-between items-center py-0.5 border-b border-gray-50">
+                    <span className="text-gray-500">機場代碼</span>
+                    <span className="font-mono font-bold text-sky-700">
+                      IATA: {selectedAirport.properties.iata} / ICAO: {selectedAirport.properties.icao}
+                    </span>
+                  </div>
+                )}
+                {selectedAirport.properties?.address && (
+                  <div className="flex justify-between items-start py-0.5 border-b border-gray-50">
+                    <span className="text-gray-500 shrink-0">地址</span>
+                    <span className="text-right text-gray-700">{selectedAirport.properties.address}</span>
+                  </div>
+                )}
+                {selectedAirport.properties?.transit_access && (
+                  <div className="flex justify-between items-start py-0.5 border-b border-gray-50">
+                    <span className="text-gray-500 shrink-0">大眾交通</span>
+                    <span className="text-right font-medium text-emerald-700">{selectedAirport.properties.transit_access}</span>
+                  </div>
+                )}
+                {selectedAirport.properties?.runways && (
+                  <div className="flex justify-between items-start py-0.5 border-b border-gray-50">
+                    <span className="text-gray-500 shrink-0">跑道長度</span>
+                    <span className="text-right text-gray-600 font-mono text-[11px]">{selectedAirport.properties.runways}</span>
+                  </div>
+                )}
+                {selectedAirport.properties?.operators && (
+                  <div className="flex justify-between items-start py-0.5 border-b border-gray-50">
+                    <span className="text-gray-500 shrink-0">主要航司</span>
+                    <span className="text-right text-gray-700">{selectedAirport.properties.operators}</span>
+                  </div>
+                )}
+                {selectedAirport.properties?.highlights && (
+                  <div className="mt-1 p-2 bg-emerald-50 rounded-lg text-[11px] text-emerald-800 border border-emerald-100">
+                    {selectedAirport.properties.highlights}
+                  </div>
+                )}
+              </div>
+            </div>
+          </Popup>
+        )}
+
+        {/* Live Flight Detail Popup */}
+        {selectedFlight && (
+          <Popup
+            longitude={selectedFlight.lon}
+            latitude={selectedFlight.lat}
+            anchor="bottom"
+            onClose={() => setSelectedFlight(null)}
+            closeOnClick={false}
+            closeButton={false}
+            className="z-50"
+            offset={[0, -14]}
+            maxWidth="350px"
+          >
+            <div className="p-3.5 w-[310px] sm:w-[330px] max-w-[88vw] text-gray-800">
+              {/* Header */}
+              <div className="flex items-start justify-between pb-2 mb-2.5 border-b border-gray-100">
+                <div className="flex items-center gap-2.5">
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-white shadow-sm flex-shrink-0 ${
+                    selectedFlight.is_domestic ? 'bg-sky-500' : 'bg-amber-500'
+                  }`}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="white">
+                      <path d="M10.18 9 L2.5 12.5 L2.5 14.5 L10.18 12.5 L10.18 19 L7.5 21 L7.5 22.5 L12 21 L16.5 22.5 L16.5 21 L13.82 19 L13.82 12.5 L21.5 14.5 L21.5 12.5 L13.82 9 L13.82 3 C13.82 1.9 12.92 1 12 1 C11.08 1 10.18 1.9 10.18 3 Z"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      <h3 className="font-bold text-gray-900 text-base font-mono">{selectedFlight.flight_no}</h3>
+                      <span className={`px-1.5 py-0.2 rounded text-[9px] font-semibold ${
+                        selectedFlight.is_domestic 
+                          ? 'bg-sky-100 text-sky-800 border border-sky-200' 
+                          : 'bg-amber-100 text-amber-800 border border-amber-200'
+                      }`}>
+                        {selectedFlight.is_domestic ? '🇨🇦 國內航班' : '🌐 國際航班'}
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-600 font-medium truncate max-w-[190px]">
+                      {selectedFlight.airline}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setSelectedFlight(null)}
+                  className="text-gray-400 hover:text-gray-700 text-2xl font-light leading-none px-1 py-0.5 -mt-1"
+                >
+                  &times;
+                </button>
+              </div>
+
+              {/* Status Badge */}
+              <div className="mb-2.5 flex items-center justify-between bg-gray-50 px-2.5 py-1.5 rounded-lg border border-gray-100">
+                <span className="text-[11px] text-gray-500">飛行狀態</span>
+                <span className="text-xs font-bold text-sky-700 flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-sky-500 animate-ping"></span>
+                  {selectedFlight.status}
+                </span>
+              </div>
+
+              {/* Telemetry Grid */}
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="p-2 rounded-lg bg-gray-50/80 border border-gray-100">
+                  <span className="text-[10px] text-gray-500 block">✈️ 飛行高度</span>
+                  <span className="font-bold text-sm text-gray-900 font-mono">
+                    {selectedFlight.altitude_ft ? `${selectedFlight.altitude_ft.toLocaleString()} ft` : '地面滑行'}
+                  </span>
+                </div>
+                <div className="p-2 rounded-lg bg-gray-50/80 border border-gray-100">
+                  <span className="text-[10px] text-gray-500 block">⚡ 飛行空速</span>
+                  <span className="font-bold text-sm text-gray-900 font-mono">
+                    {selectedFlight.speed_kts} kts
+                  </span>
+                </div>
+                <div className="p-2 rounded-lg bg-gray-50/80 border border-gray-100">
+                  <span className="text-[10px] text-gray-500 block">🧭 航向角</span>
+                  <span className="font-bold text-sm text-gray-900 font-mono">
+                    {selectedFlight.bearing}°
+                  </span>
+                </div>
+                <div className="p-2 rounded-lg bg-gray-50/80 border border-gray-100">
+                  <span className="text-[10px] text-gray-500 block">↕️ 升降率</span>
+                  <span className="font-bold text-sm text-gray-900 font-mono">
+                    {selectedFlight.vertical_rate_fpm} ft/m
+                  </span>
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="mt-2.5 pt-2 border-t border-gray-100 text-[10px] text-gray-400 flex items-center justify-between">
+                <span>ICAO: {selectedFlight.icao24}</span>
+                <span>雷達來源: OpenSky ADS-B</span>
+              </div>
             </div>
           </Popup>
         )}

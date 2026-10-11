@@ -30,6 +30,10 @@ active_connections: list[WebSocket] = []
 stop_arrivals = {}
 cached_translink_vehicles: list[dict] = []
 cached_bcferries_vehicles: list[dict] = []
+cached_flights: list[dict] = []
+cached_flight_schedules: dict = {}
+
+import flights
 
 import math
 def calculate_bearing(p1, p2):
@@ -50,11 +54,14 @@ async def websocket_endpoint(websocket: WebSocket):
             await websocket.send_json({"type": "vehicles_update", "data": cached_translink_vehicles})
         if cached_bcferries_vehicles:
             await websocket.send_json({"type": "bc_ferries_update", "data": cached_bcferries_vehicles})
+        if cached_flights:
+            await websocket.send_json({"type": "flights_update", "data": cached_flights})
 
         while True:
             await websocket.receive_text()
     except WebSocketDisconnect:
         active_connections.remove(websocket)
+
 
 
 async def fetch_bcferries_realtime():
@@ -345,11 +352,56 @@ async def fetch_translink_trip_updates():
             
         await asyncio.sleep(30)
 
+async def fetch_flights_realtime():
+    """Polls OpenSky Network every 12 seconds for real-time aircraft over Vancouver."""
+    global cached_flights, cached_flight_schedules
+    while True:
+        try:
+            loop = asyncio.get_event_loop()
+            live = await loop.run_in_executor(None, flights.fetch_live_flights)
+            if live:
+                cached_flights = live
+                cached_flight_schedules = flights.generate_flight_schedules(live)
+                if active_connections:
+                    message = {"type": "flights_update", "data": cached_flights}
+                    for connection in list(active_connections):
+                        try:
+                            await connection.send_json(message)
+                        except Exception:
+                            pass
+        except Exception as e:
+            print(f"Error in fetch_flights_realtime: {e}")
+        await asyncio.sleep(12)
+
 @app.on_event("startup")
 async def startup_event():
     asyncio.create_task(fetch_translink_realtime())
     asyncio.create_task(fetch_bcferries_realtime())
     asyncio.create_task(fetch_translink_trip_updates())
+    asyncio.create_task(fetch_flights_realtime())
+
+@app.get("/api/flights/live")
+def get_live_flights():
+    return {
+        "count": len(cached_flights),
+        "updated_at": datetime.utcnow().isoformat() + "Z",
+        "flights": cached_flights
+    }
+
+@app.get("/api/flights/schedules")
+def get_flight_schedules():
+    if not cached_flight_schedules:
+        return flights.generate_flight_schedules(cached_flights)
+    return cached_flight_schedules
+
+@app.get("/api/geojson/airports")
+def get_airports_geojson():
+    static_path = os.path.join(os.path.dirname(__file__), "data", "vancouver_airports.geojson")
+    if os.path.exists(static_path):
+        with open(static_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return {"type": "FeatureCollection", "features": []}
+
 
 @app.get("/")
 async def root():
@@ -562,11 +614,66 @@ SEARCH_BC_FERRY_TERMINALS = [
     }
 ]
 
+SEARCH_AIRPORTS = [
+    {
+        "id": "airport_yvr_main",
+        "title": "溫哥華國際機場 (YVR) · 主航廈",
+        "subtitle": "Vancouver International Airport · CYVR / YVR",
+        "category": "airports",
+        "badge": "國際機場",
+        "icon": "🛫",
+        "lon": -123.184444,
+        "lat": 49.193889,
+        "zoom": 14,
+        "layer_key": "airports",
+        "keywords": ["yvr", "cyvr", "vancouver airport", "溫哥華機場", "國際機場", "機場", "飛機場", "richmond", "sea island"]
+    },
+    {
+        "id": "airport_yvr_south",
+        "title": "YVR 南航廈與水上飛機碼頭",
+        "subtitle": "YVR South Terminal · 支線與水上飛機",
+        "category": "airports",
+        "badge": "支線/水上飛機",
+        "icon": "🛩️",
+        "lon": -123.1610,
+        "lat": 49.1795,
+        "zoom": 15,
+        "layer_key": "airports",
+        "keywords": ["south terminal", "yvr south", "南航廈", "水上飛機", "pacific coastal", "seair"]
+    },
+    {
+        "id": "airport_coal_harbour",
+        "title": "溫哥華海港水上機場 (煤港)",
+        "subtitle": "Vancouver Harbour Flight Centre · CXH / CYHC",
+        "category": "airports",
+        "badge": "市中心水上機場",
+        "icon": "🛩️",
+        "lon": -123.1147,
+        "lat": 49.2894,
+        "zoom": 15,
+        "layer_key": "airports",
+        "keywords": ["coal harbour", "harbour air", "seaplane", "水上飛機", "煤港", "cxh", "cyhc", "canada place", "waterfront"]
+    },
+    {
+        "id": "spot_flight_path_park",
+        "title": "飛機迷賞機公園 (Flight Path Park)",
+        "subtitle": "Larry Berg Flight Path Park · 跑道賞機點",
+        "category": "airports",
+        "badge": "最佳賞機點",
+        "icon": "📸",
+        "lon": -123.1558,
+        "lat": 49.2016,
+        "zoom": 16,
+        "layer_key": "airports",
+        "keywords": ["flight path park", "賞機公園", "看飛機", "larry berg", "跑道"]
+    }
+]
+
 @app.get("/api/search")
 def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
     """
     全圖層項目搜尋 (Search Layer Items):
-    搜尋圖層中的項目：站名 (SkyTrain/SeaBus/Bus)、碼頭名 (BC Ferries)、道路設施、政府機構 (消防局/社區中心)
+    搜尋圖層中的項目：站名 (SkyTrain/SeaBus/Bus)、碼頭名 (BC Ferries)、機場與水上飛機、道路設施、政府機構 (消防局/社區中心)
     """
     q_clean = q.strip().lower()
     if not q_clean:
@@ -574,7 +681,28 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
 
     results = []
 
+    # 0. 搜尋機場與航空設施
+    for ap in SEARCH_AIRPORTS:
+        a_title = ap["title"].lower()
+        a_sub = ap["subtitle"].lower()
+        if (q_clean in a_title or q_clean in a_sub or
+            any(q_clean in kw for kw in ap["keywords"])):
+            results.append({
+                "id": ap["id"],
+                "title": ap["title"],
+                "subtitle": ap["subtitle"],
+                "category": ap["category"],
+                "badge": ap["badge"],
+                "icon": ap["icon"],
+                "lon": ap["lon"],
+                "lat": ap["lat"],
+                "zoom": ap["zoom"],
+                "layer_key": "airports",
+                "meta": {}
+            })
+
     # 1. 搜尋 BC Ferries 渡輪碼頭
+
     for term in SEARCH_BC_FERRY_TERMINALS:
         t_title = term["title"].lower()
         t_sub = term["subtitle"].lower()
