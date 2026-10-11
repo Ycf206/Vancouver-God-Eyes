@@ -37,7 +37,24 @@ jobs:
           git add backend/data/*.geojson frontend/public/*.geojson backend/data/last_open_data_update.json
           if git diff --staged --quiet; then
             echo "No dataset updates detected from Vancouver Open Data API."
+            echo "has_changes=false" >> $GITHUB_OUTPUT
           else
             git commit -m "chore(data): auto-update semi-annual open datasets (6-month cron) [skip ci]"
             git push origin main
+            echo "has_changes=true" >> $GITHUB_OUTPUT
           fi
+        id: git_push
+
+      - name: Sync Updated GeoJSON to OCI VM
+        if: steps.git_push.outputs.has_changes == 'true'
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.OCI_HOST_IP }}
+          username: ubuntu
+          key: ${{ secrets.OCI_SSH_KEY }}
+          script: |
+            echo "🔄 同步最新 GeoJSON 資料至 OCI 伺服器..."
+            cd ~/Vancouver-God-Eyes || cd ~/vancouver-gods-eye
+            git pull
+            echo "✅ OCI 伺服器資料檔案同步完成！"
+

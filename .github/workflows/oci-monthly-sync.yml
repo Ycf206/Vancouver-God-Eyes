@@ -1,0 +1,66 @@
+name: Monthly OCI Database Sync (每月 1 號伺服器資料庫維護)
+
+on:
+  schedule:
+    # 每月 1 號凌晨 03:00 UTC (溫哥華時間前一天晚上 20:00/19:00) 自動執行
+    - cron: '0 3 1 * *'
+  workflow_dispatch: # 支援在 GitHub 網頁介面隨時手動一鍵觸發
+    inputs:
+      target:
+        description: '選擇要執行的維護任務'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all (全部執行：GTFS 靜態班表 + 道路設施)
+          - gtfs (僅更新大眾運輸 GTFS 靜態班表與路線)
+          - road_data (僅更新道路設施：收費錶/充電站/滑板車/消防局等)
+          - safety_cameras (僅更新路口安全攝影機)
+
+jobs:
+  oci-sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Execute Maintenance Tasks on OCI VM via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.OCI_HOST_IP }}
+          username: ubuntu
+          key: ${{ secrets.OCI_SSH_KEY }}
+          script: |
+            set -e
+            echo "🚀 連線至 OCI VM..."
+            cd ~/Vancouver-God-Eyes || cd ~/vancouver-gods-eye
+            
+            TARGET="${{ github.event.inputs.target || 'all' }}"
+            echo "🎯 執行任務選項: $TARGET"
+            
+            # 1. 大眾運輸 GTFS 靜態路線與站牌更新
+            if [[ "$TARGET" == "all"* ]] || [[ "$TARGET" == "gtfs"* ]]; then
+              echo "=========================================="
+              echo "🚆 正在更新大眾運輸 GTFS 靜態路線與站牌資料..."
+              echo "=========================================="
+              docker compose exec -T backend python /app/scripts/import_gtfs.py
+              echo "✅ GTFS 路線與站牌更新完成！"
+            fi
+            
+            # 2. 道路設施更新 (停車收費錶、充電站、滑板車、消防局、社區中心等)
+            if [[ "$TARGET" == "all"* ]] || [[ "$TARGET" == "road_data"* ]]; then
+              echo "=========================================="
+              echo "🚦 正在更新道路設施 (收費錶、充電站、滑板車、消防局等)..."
+              echo "=========================================="
+              docker compose exec -T backend python /app/scripts/import_road_data.py
+              echo "✅ 道路設施更新完成！"
+            fi
+            
+            # 3. 路口安全攝影機更新
+            if [[ "$TARGET" == "safety_cameras"* ]]; then
+              echo "=========================================="
+              echo "📷 正在更新路口安全攝影機..."
+              echo "=========================================="
+              docker compose exec -T backend python /app/scripts/import_safety_cameras.py
+              echo "✅ 路口安全攝影機更新完成！"
+            fi
+            
+            echo "🎉 所有伺服器排程維護任務順利完成！"
