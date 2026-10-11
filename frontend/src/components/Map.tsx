@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { setWorkerUrl } from 'maplibre-gl';
-import Map, { NavigationControl, Marker, Popup, MapRef } from 'react-map-gl/maplibre';
+import Map, { NavigationControl, Marker, Popup, MapRef, Source, Layer } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl, getWsUrl } from '@/utils/api';
@@ -97,6 +97,21 @@ export default function AppMap() {
   const [flights, setFlights] = useState<any[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedFlight, setSelectedFlight] = useState<any | null>(null);
+
+  // Selected Flight Route GeoJSON LineString (Great Circle Trajectory)
+  const routeGeoJSON = useMemo(() => {
+    if (!selectedFlight?.route_coords || selectedFlight.route_coords.length < 2) return null;
+    return {
+      type: 'Feature' as const,
+      geometry: {
+        type: 'LineString' as const,
+        coordinates: selectedFlight.route_coords
+      },
+      properties: {
+        is_domestic: selectedFlight.is_domestic
+      }
+    };
+  }, [selectedFlight]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [airports, setAirports] = useState<any[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1749,6 +1764,53 @@ export default function AppMap() {
           </Popup>
         )}
 
+        {/* Selected Flight Trajectory Route Line */}
+        {routeGeoJSON && (
+          <Source id="flight-trajectory-source" type="geojson" data={routeGeoJSON}>
+            <Layer
+              id="flight-trajectory-glow"
+              type="line"
+              layout={{ 'line-join': 'round', 'line-cap': 'round' }}
+              paint={{
+                'line-color': selectedFlight?.is_domestic ? '#38bdf8' : '#f59e0b',
+                'line-width': 7,
+                'line-blur': 4,
+                'line-opacity': 0.65
+              }}
+            />
+            <Layer
+              id="flight-trajectory-line"
+              type="line"
+              layout={{ 'line-join': 'round', 'line-cap': 'round' }}
+              paint={{
+                'line-color': selectedFlight?.is_domestic ? '#0284c7' : '#d97706',
+                'line-width': 2.8,
+                'line-dasharray': [2, 1]
+              }}
+            />
+          </Source>
+        )}
+
+        {/* Selected Flight Waypoint Markers for Origin & Destination */}
+        {selectedFlight && selectedFlight.origin_coord && selectedFlight.origin_coord.length === 2 && (
+          <Marker longitude={selectedFlight.origin_coord[0]} latitude={selectedFlight.origin_coord[1]} anchor="center">
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#14161a]/95 text-white border border-sky-400 shadow-xl text-[10.5px] font-bold z-30 pointer-events-none backdrop-blur-md">
+              <span className="text-xs">🛫</span>
+              <span className="font-mono">{selectedFlight.origin_code || '出發'}</span>
+              {selectedFlight.origin_city && <span className="text-[9.5px] text-gray-300 font-normal">({selectedFlight.origin_city.split(' ')[0]})</span>}
+            </div>
+          </Marker>
+        )}
+        {selectedFlight && selectedFlight.dest_coord && selectedFlight.dest_coord.length === 2 && (
+          <Marker longitude={selectedFlight.dest_coord[0]} latitude={selectedFlight.dest_coord[1]} anchor="center">
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#14161a]/95 text-white border border-amber-400 shadow-xl text-[10.5px] font-bold z-30 pointer-events-none backdrop-blur-md">
+              <span className="text-xs">🛬</span>
+              <span className="font-mono">{selectedFlight.dest_code || '抵達'}</span>
+              {selectedFlight.dest_city && <span className="text-[9.5px] text-gray-300 font-normal">({selectedFlight.dest_city.split(' ')[0]})</span>}
+            </div>
+          </Marker>
+        )}
+
         {/* Live Flight Detail Popup */}
         {selectedFlight && (
           <Popup
@@ -1763,9 +1825,9 @@ export default function AppMap() {
             closeButton={false}
             className="z-50"
             offset={[0, -14]}
-            maxWidth="350px"
+            maxWidth="370px"
           >
-            <div className="p-3.5 w-[310px] sm:w-[330px] max-w-[88vw] text-gray-800">
+            <div className="p-3.5 w-[320px] sm:w-[350px] max-w-[90vw] text-gray-800">
               {/* Header */}
               <div className="flex items-start justify-between pb-2 mb-2.5 border-b border-gray-100">
                 <div className="flex items-center gap-2.5">
@@ -1803,70 +1865,102 @@ export default function AppMap() {
                 </button>
               </div>
 
-              {/* Status Badge */}
-              <div className="mb-2.5 flex items-center justify-between bg-gray-50 px-2.5 py-1.5 rounded-lg border border-gray-100">
-                <span className="text-[11px] text-gray-500">飛行狀態</span>
-                <span className="text-xs font-bold text-sky-700 flex items-center gap-1">
+              {/* Route Banner (出發地 ➔ 目的地) */}
+              <div className="mb-2.5 p-2.5 rounded-xl bg-gradient-to-r from-gray-50 via-sky-50/40 to-gray-50 border border-gray-200/80 shadow-sm">
+                <div className="flex items-center justify-between">
+                  {/* Origin */}
+                  <div className="flex flex-col min-w-0 max-w-[44%]">
+                    <span className="text-[10px] text-gray-500 flex items-center gap-1 font-medium">
+                      <span>🛫</span>
+                      <span>起飛出發</span>
+                    </span>
+                    <span className="font-bold text-gray-900 text-sm truncate font-mono">
+                      {selectedFlight.origin_code || 'YVR'}
+                    </span>
+                    <span className="text-[10.5px] text-gray-600 truncate font-medium">
+                      {selectedFlight.origin_city || selectedFlight.origin_name || '溫哥華'}
+                    </span>
+                    {selectedFlight.departure_time && (
+                      <span className="text-[11px] font-mono font-bold text-sky-700 mt-0.5">
+                        {selectedFlight.departure_time}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Route Indicator Arrow */}
+                  <div className="flex flex-col items-center px-1">
+                    <span className="text-sky-500 font-bold text-sm">➔</span>
+                    <span className="text-[9px] text-gray-400 font-mono">航線</span>
+                  </div>
+
+                  {/* Destination */}
+                  <div className="flex flex-col min-w-0 max-w-[44%] text-right items-end">
+                    <span className="text-[10px] text-gray-500 flex items-center gap-1 font-medium">
+                      <span>預計抵達</span>
+                      <span>🛬</span>
+                    </span>
+                    <span className="font-bold text-gray-900 text-sm truncate font-mono">
+                      {selectedFlight.dest_code || 'YVR'}
+                    </span>
+                    <span className="text-[10.5px] text-gray-600 truncate font-medium">
+                      {selectedFlight.dest_city || selectedFlight.dest_name || '溫哥華'}
+                    </span>
+                    {selectedFlight.arrival_time && (
+                      <span className="text-[11px] font-mono font-bold text-amber-700 mt-0.5">
+                        {selectedFlight.arrival_time}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Terminal & Gate & Status */}
+              <div className="mb-2.5 flex items-center justify-between bg-gray-50 px-2.5 py-1.5 rounded-lg border border-gray-100 text-xs">
+                <div className="flex items-center gap-1.5 truncate max-w-[60%]">
+                  <span className="text-gray-500 text-[11px]">航廈/閘口:</span>
+                  <span className="font-semibold text-gray-800 text-[11.5px] truncate">
+                    {selectedFlight.terminal?.includes('航廈') ? selectedFlight.terminal.split(' ')[0] : selectedFlight.terminal || '主航廈'} 
+                    {selectedFlight.gate && selectedFlight.gate !== '--' ? ` · 閘口 ${selectedFlight.gate}` : ''}
+                  </span>
+                </div>
+                <span className="text-[11px] font-bold text-sky-700 flex items-center gap-1 shrink-0">
                   <span className="w-1.5 h-1.5 rounded-full bg-sky-500 animate-ping"></span>
-                  {selectedFlight.status}
+                  {selectedFlight.status || '航行中'}
                 </span>
               </div>
 
-              {/* Flight Details or Telemetry */}
-              {selectedFlight.is_live && (selectedFlight.altitude_ft || selectedFlight.speed_kts) ? (
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div className="p-2 rounded-lg bg-gray-50/80 border border-gray-100">
+              {/* Flight Telemetry (高度、空速、航向、升降率) */}
+              {(selectedFlight.altitude_ft != null || selectedFlight.speed_kts != null) && (
+                <div className="grid grid-cols-2 gap-2 text-xs mb-2">
+                  <div className="p-2 rounded-lg bg-gray-50/90 border border-gray-100">
                     <span className="text-[10px] text-gray-500 block">✈️ 飛行高度</span>
                     <span className="font-bold text-sm text-gray-900 font-mono">
                       {selectedFlight.altitude_ft ? `${selectedFlight.altitude_ft.toLocaleString()} ft` : '地面滑行'}
                     </span>
                   </div>
-                  <div className="p-2 rounded-lg bg-gray-50/80 border border-gray-100">
+                  <div className="p-2 rounded-lg bg-gray-50/90 border border-gray-100">
                     <span className="text-[10px] text-gray-500 block">⚡ 飛行空速</span>
                     <span className="font-bold text-sm text-gray-900 font-mono">
-                      {selectedFlight.speed_kts} kts
+                      {selectedFlight.speed_kts != null ? `${selectedFlight.speed_kts} kts` : '--'}
                     </span>
                   </div>
-                  <div className="p-2 rounded-lg bg-gray-50/80 border border-gray-100">
-                    <span className="text-[10px] text-gray-500 block">🧭 航向角</span>
+                  <div className="p-2 rounded-lg bg-gray-50/90 border border-gray-100">
+                    <span className="text-[10px] text-gray-500 block">🧭 航向角度</span>
                     <span className="font-bold text-sm text-gray-900 font-mono">
-                      {selectedFlight.bearing}°
+                      {selectedFlight.bearing != null ? `${selectedFlight.bearing}°` : '--'}
                     </span>
                   </div>
-                  <div className="p-2 rounded-lg bg-gray-50/80 border border-gray-100">
-                    <span className="text-[10px] text-gray-500 block">↕️ 升降率</span>
+                  <div className="p-2 rounded-lg bg-gray-50/90 border border-gray-100">
+                    <span className="text-[10px] text-gray-500 block">↕️ 垂直升降</span>
                     <span className="font-bold text-sm text-gray-900 font-mono">
-                      {selectedFlight.vertical_rate_fpm} ft/m
+                      {selectedFlight.vertical_rate_fpm != null ? `${selectedFlight.vertical_rate_fpm} ft/m` : '--'}
                     </span>
                   </div>
-                </div>
-              ) : (
-                <div className="flex flex-col gap-1.5 text-xs bg-gray-50/80 p-2.5 rounded-lg border border-gray-100">
-                  {selectedFlight.city && (
-                    <div className="flex justify-between items-center py-0.5 border-b border-gray-100">
-                      <span className="text-gray-500">{selectedFlight.flight_type === 'arr' ? '起飛地' : '目的地'}</span>
-                      <span className="font-bold text-gray-800">{selectedFlight.city}</span>
-                    </div>
-                  )}
-                  {selectedFlight.time && (
-                    <div className="flex justify-between items-center py-0.5 border-b border-gray-100">
-                      <span className="text-gray-500">預計時間</span>
-                      <span className="font-mono font-bold text-sky-700">{selectedFlight.time}</span>
-                    </div>
-                  )}
-                  {selectedFlight.terminal && (
-                    <div className="flex justify-between items-center py-0.5">
-                      <span className="text-gray-500">航廈 / 閘口</span>
-                      <span className="font-semibold text-gray-800">
-                        {selectedFlight.terminal} {selectedFlight.gate ? `· 閘口 ${selectedFlight.gate}` : ''}
-                      </span>
-                    </div>
-                  )}
                 </div>
               )}
 
               {/* Footer */}
-              <div className="mt-2.5 pt-2 border-t border-gray-100 text-[10px] text-gray-400 flex items-center justify-between">
+              <div className="pt-2 border-t border-gray-100 text-[10px] text-gray-400 flex items-center justify-between font-mono">
                 <span>{selectedFlight.icao24 ? `ICAO: ${selectedFlight.icao24}` : `航班: ${selectedFlight.flight_no}`}</span>
                 <span>{selectedFlight.is_live ? '雷達: OpenSky ADS-B' : '計畫: FlightAware'}</span>
               </div>
