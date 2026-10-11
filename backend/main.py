@@ -76,13 +76,13 @@ async def fetch_bcferries_realtime():
             }
 
             terminal_names = {
-                'TSA': 'Tsawwassen (吐瓦生)',
-                'SWB': 'Swartz Bay (史瓦茲灣)',
-                'HSB': 'Horseshoe Bay (馬蹄灣)',
-                'DUK': 'Duke Point (杜克角)',
-                'LNG': 'Langdale (朗代爾)',
-                'NAN': 'Nanaimo (乃磨 Departure Bay)',
-                'FUL': 'Fulford Harbour (鹽泉島)',
+                'TSA': 'Tsawwassen',
+                'SWB': 'Swartz Bay',
+                'HSB': 'Horseshoe Bay',
+                'DUK': 'Duke Point',
+                'LNG': 'Langdale',
+                'NAN': 'Nanaimo (Departure Bay)',
+                'FUL': 'Fulford Harbour',
                 'BOW': 'Bowen Island (Snug Cove)'
             }
 
@@ -457,6 +457,34 @@ async def get_stop_arrivals(stop_id: str):
 
 import json
 from sqlalchemy import func
+
+@app.get("/api/geojson/road/{facility_type}")
+def get_road_facilities_geojson(facility_type: str, db: Session = Depends(database.get_db)):
+    """
+    facility_type can be 'parking_meters', 'accessible_parking', 'motorcycle_parking', or 'ev_charging'
+    """
+    facilities = db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).all()
+    
+    features = []
+    for f in facilities:
+        props = {
+            "id": f.id,
+            "facility_type": f.facility_type,
+            "name": f.name,
+            "local_area": f.local_area,
+        }
+        if f.details and isinstance(f.details, dict):
+            props.update(f.details)
+            
+        features.append({
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [f.lon, f.lat]
+            },
+            "properties": props
+        })
+    return {"type": "FeatureCollection", "features": features}
 
 @app.get("/api/geojson/stops/{group}")
 def get_stops_geojson(group: str, db: Session = Depends(database.get_db)):

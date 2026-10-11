@@ -19,6 +19,10 @@ export interface UIState {
     bcferriesVehicles: boolean;
     bcferriesRoutes: boolean;
     bcferriesTerminals: boolean;
+    parkingMeters: boolean;
+    accessibleParking: boolean;
+    motorcycleParking: boolean;
+    evCharging: boolean;
   };
   toggleLayer: (layer: keyof UIState['layers']) => void;
 }
@@ -41,6 +45,10 @@ export const useUIStore = create<UIState>()(
         bcferriesVehicles: true,
         bcferriesRoutes: true,
         bcferriesTerminals: true,
+        parkingMeters: false,
+        accessibleParking: false,
+        motorcycleParking: false,
+        evCharging: false,
       },
       toggleLayer: (layer) =>
         set((state) => ({

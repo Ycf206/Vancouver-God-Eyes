@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useUIStore, MapStyleType } from '@/store/useUIStore';
-import { Map, Satellite, Sun, Moon, Bus, Layers, CircleDot, Route, Ship } from 'lucide-react';
+import { Map, Satellite, Sun, Moon, Bus, Layers, CircleDot, Route, Ship, CircleDollarSign, Accessibility, Bike, Zap } from 'lucide-react';
 
 export default function LayerPanel() {
   const { mapStyleType, setMapStyleType, layers, toggleLayer } = useUIStore();
@@ -128,6 +128,20 @@ export default function LayerPanel() {
             <LayerButton layerKey="bcferriesVehicles" label="渡輪" icon={Ship} colorClass="text-[#3399ff]" activeBg="bg-[#0f1b2e]" activeBorder="border-[#0060a9]/50" activeShadow="shadow-[0_0_8px_rgba(0,96,169,0.2)]" />
             <LayerButton layerKey="bcferriesRoutes" label="航線" icon={Route} colorClass="text-[#3399ff]" activeBg="bg-[#0f1b2e]" activeBorder="border-[#0060a9]/50" />
             <LayerButton layerKey="bcferriesTerminals" label="碼頭" icon={CircleDot} colorClass="text-[#3399ff]" activeBg="bg-[#0f1b2e]" activeBorder="border-[#0060a9]/50" />
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div className="border-t border-slate-700/60 my-1"></div>
+
+        {/* Road Infrastructure Row */}
+        <div className="grid grid-cols-[60px_1fr] gap-3 items-start pt-1">
+          <div className="text-[11px] font-bold text-amber-400 tracking-wider pt-2">道路</div>
+          <div className="grid grid-cols-2 gap-1.5">
+            <LayerButton layerKey="parkingMeters" label="停車收費錶" icon={CircleDollarSign} colorClass="text-amber-400" activeBg="bg-[#2a2418]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_8px_rgba(245,158,11,0.15)]" />
+            <LayerButton layerKey="accessibleParking" label="無障礙停車位" icon={Accessibility} colorClass="text-sky-400" activeBg="bg-[#182633]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_8px_rgba(56,189,248,0.15)]" />
+            <LayerButton layerKey="motorcycleParking" label="摩托車停車位" icon={Bike} colorClass="text-orange-400" activeBg="bg-[#2c1d18]" activeBorder="border-orange-500/50" activeShadow="shadow-[0_0_8px_rgba(251,146,60,0.15)]" />
+            <LayerButton layerKey="evCharging" label="電動車充電站" icon={Zap} colorClass="text-emerald-400" activeBg="bg-[#14291f]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_8px_rgba(52,211,153,0.15)]" />
           </div>
         </div>
 

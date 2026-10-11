@@ -47,6 +47,17 @@ interface StopInfo {
   lon: number;
 }
 
+interface RoadFacilityInfo {
+  id: string;
+  facility_type: string;
+  name: string;
+  local_area?: string;
+  lon: number;
+  lat: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  properties: any;
+}
+
 export default function AppMap() {
   const { layers, mapStyleType } = useUIStore();
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
@@ -62,6 +73,7 @@ export default function AppMap() {
   const [terminalSchedule, setTerminalSchedule] = useState<Array<{destination: string, time: string, arrival_time: string, vessel_name: string, status: string, fill: number}>>([]);
   const [loadingSchedule, setLoadingSchedule] = useState(false);
   const [selectedFerry, setSelectedFerry] = useState<FerryVehicle | null>(null);
+  const [selectedFacility, setSelectedFacility] = useState<RoadFacilityInfo | null>(null);
 
   useEffect(() => {
     fetch('/bc_ferries_terminals_points.geojson')
@@ -158,6 +170,10 @@ export default function AppMap() {
     style.sources['bus-stops'] = { type: 'geojson', data: `${apiUrl}/api/geojson/stops/bus` };
     style.sources['seabus-tracks'] = { type: 'geojson', data: `${apiUrl}/api/geojson/tracks/seabus` };
     style.sources['seabus-stops'] = { type: 'geojson', data: `${apiUrl}/api/geojson/stops/seabus` };
+    style.sources['parking-meters'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/parking_meters` };
+    style.sources['accessible-parking'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/accessible_parking` };
+    style.sources['motorcycle-parking'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/motorcycle_parking` };
+    style.sources['ev-charging'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/ev_charging` };
 
     // Bus Routes
     if (layers.busRoutes) {
@@ -274,10 +290,81 @@ export default function AppMap() {
       });
     }
 
+    // Road Facilities: Parking Meters
+    if (layers.parkingMeters) {
+      style.layers.push({
+        id: 'parking-meters-layer',
+        type: 'circle',
+        source: 'parking-meters',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2, 14, 4, 16, 6],
+          'circle-color': '#f59e0b',
+          'circle-stroke-width': 1,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+    }
 
+    // Road Facilities: Accessible Parking
+    if (layers.accessibleParking) {
+      style.layers.push({
+        id: 'accessible-parking-layer',
+        type: 'circle',
+        source: 'accessible-parking',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 5, 16, 7.5],
+          'circle-color': '#0ea5e9',
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+    }
+
+    // Road Facilities: Motorcycle Parking
+    if (layers.motorcycleParking) {
+      style.layers.push({
+        id: 'motorcycle-parking-layer',
+        type: 'circle',
+        source: 'motorcycle-parking',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 5, 16, 7.5],
+          'circle-color': '#f97316',
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+    }
+
+    // Road Facilities: EV Charging
+    if (layers.evCharging) {
+      style.layers.push({
+        id: 'ev-charging-layer',
+        type: 'circle',
+        source: 'ev-charging',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3.5, 14, 6.5, 16, 9.5],
+          'circle-color': '#10b981',
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+    }
 
     return style;
-  }, [layers.skytrainRoutes, layers.skytrainStops, layers.busRoutes, layers.busStops, layers.seabusRoutes, layers.seabusStops, layers.bcferriesRoutes, mapStyleType]);
+  }, [
+    layers.skytrainRoutes, 
+    layers.skytrainStops, 
+    layers.busRoutes, 
+    layers.busStops, 
+    layers.seabusRoutes, 
+    layers.seabusStops, 
+    layers.bcferriesRoutes, 
+    layers.parkingMeters, 
+    layers.accessibleParking, 
+    layers.motorcycleParking, 
+    layers.evCharging, 
+    mapStyleType
+  ]);
 
   return (
     <div className="w-full h-full absolute inset-0 z-0 pt-[60px]">
@@ -285,14 +372,31 @@ export default function AppMap() {
         initialViewState={{ longitude: -123.05, latitude: 49.25, zoom: 11, pitch: 45, bearing: 0 }}
         mapStyle={mapStyle}
         style={{ width: '100%', height: '100%' }}
-        interactiveLayerIds={['bus-stops-layer', 'skytrain-stops-layer', 'seabus-stops-layer']}
+        interactiveLayerIds={[
+          'bus-stops-layer', 
+          'skytrain-stops-layer', 
+          'seabus-stops-layer',
+          'parking-meters-layer',
+          'accessible-parking-layer',
+          'motorcycle-parking-layer',
+          'ev-charging-layer'
+        ]}
         onClick={(e) => {
           const feature = e.features?.[0];
-          if (feature && (feature.layer.id === 'bus-stops-layer' || feature.layer.id === 'skytrain-stops-layer' || feature.layer.id === 'seabus-stops-layer')) {
+          if (!feature) {
+            setSelectedStop(null);
+            setSelectedFacility(null);
+            return;
+          }
+
+          const layerId = feature.layer.id;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const coords = (feature.geometry as any).coordinates;
+
+          if (layerId === 'bus-stops-layer' || layerId === 'skytrain-stops-layer' || layerId === 'seabus-stops-layer') {
+            setSelectedFacility(null);
             const stopId = feature.properties?.stop_id;
             const stopName = feature.properties?.name;
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const coords = (feature.geometry as any).coordinates;
             setSelectedStop({ id: stopId, name: stopName, lon: coords[0], lat: coords[1] });
             
             // Fetch arrivals
@@ -308,8 +412,26 @@ export default function AppMap() {
                 console.error(err);
                 setLoadingArrivals(false);
               });
+          } else if (
+            layerId === 'parking-meters-layer' || 
+            layerId === 'accessible-parking-layer' || 
+            layerId === 'motorcycle-parking-layer' || 
+            layerId === 'ev-charging-layer'
+          ) {
+            setSelectedStop(null);
+            const props = feature.properties || {};
+            setSelectedFacility({
+              id: props.id || '',
+              facility_type: props.facility_type || '',
+              name: props.name || '',
+              local_area: props.local_area || '',
+              lon: coords[0],
+              lat: coords[1],
+              properties: props
+            });
           } else {
             setSelectedStop(null);
+            setSelectedFacility(null);
           }
         }}
       >
@@ -595,6 +717,146 @@ export default function AppMap() {
                       style={{ width: `${Math.min(100, Math.max(0, selectedFerry.fill))}%` }}
                     ></div>
                   </div>
+                </div>
+              )}
+            </div>
+          </Popup>
+        )}
+
+        {/* Road Facility Popup */}
+        {selectedFacility && (
+          <Popup
+            longitude={selectedFacility.lon}
+            latitude={selectedFacility.lat}
+            anchor="bottom"
+            onClose={() => setSelectedFacility(null)}
+            closeOnClick={false}
+            closeButton={false}
+            className="z-50"
+            offset={[0, -10]}
+            maxWidth="320px"
+          >
+            <div className="p-3.5 w-[290px] max-w-[85vw] text-gray-800">
+              <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
+                <div className="flex items-center gap-2">
+                  <span className={`w-3 h-3 rounded-full flex-shrink-0 ${
+                    selectedFacility.facility_type === 'parking_meters' ? 'bg-amber-500' :
+                    selectedFacility.facility_type === 'accessible_parking' ? 'bg-sky-500' :
+                    selectedFacility.facility_type === 'motorcycle_parking' ? 'bg-orange-500' : 'bg-emerald-500'
+                  }`}></span>
+                  <div>
+                    <h3 className="font-bold text-gray-900 text-sm leading-tight">{selectedFacility.name}</h3>
+                    {selectedFacility.local_area && (
+                      <span className="text-[11px] text-gray-400">{selectedFacility.local_area}</span>
+                    )}
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setSelectedFacility(null)} 
+                  className="text-gray-400 hover:text-gray-700 text-2xl font-light leading-none px-1 py-0.5 rounded transition-colors focus:outline-none -mt-1"
+                >
+                  &times;
+                </button>
+              </div>
+
+              {/* Parking Meters Details */}
+              {selectedFacility.facility_type === 'parking_meters' && (
+                <div className="flex flex-col gap-1.5 text-xs">
+                  {selectedFacility.properties.rate_9am_6pm && (
+                    <div className="flex justify-between items-center bg-gray-50 p-1.5 rounded">
+                      <span className="text-gray-500">日間費率 (9am-6pm)</span>
+                      <span className="font-bold text-amber-700">{selectedFacility.properties.rate_9am_6pm} /小時</span>
+                    </div>
+                  )}
+                  {selectedFacility.properties.rate_6pm_10pm && (
+                    <div className="flex justify-between items-center bg-gray-50 p-1.5 rounded">
+                      <span className="text-gray-500">夜間費率 (6pm-10pm)</span>
+                      <span className="font-bold text-amber-700">{selectedFacility.properties.rate_6pm_10pm} /小時</span>
+                    </div>
+                  )}
+                  {selectedFacility.properties.time_limit_9am_6pm && (
+                    <div className="flex justify-between text-gray-600">
+                      <span>停放限制</span>
+                      <span>{selectedFacility.properties.time_limit_9am_6pm}</span>
+                    </div>
+                  )}
+                  {selectedFacility.properties.credit_card && (
+                    <div className="flex justify-between text-gray-600">
+                      <span>支援信用卡</span>
+                      <span className="font-medium">{selectedFacility.properties.credit_card === 'Yes' ? '✅ 是' : '❌ 否'}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Accessible Parking Details */}
+              {selectedFacility.facility_type === 'accessible_parking' && (
+                <div className="flex flex-col gap-1.5 text-xs">
+                  <div className="flex justify-between items-center bg-sky-50 p-1.5 rounded">
+                    <span className="text-sky-700 font-medium">專用車位數</span>
+                    <span className="font-bold text-sky-800 text-sm">{selectedFacility.properties.spaces || 1} 格</span>
+                  </div>
+                  {selectedFacility.properties.location && (
+                    <div className="text-gray-600">
+                      <span className="text-gray-400">位置：</span>{selectedFacility.properties.location}
+                    </div>
+                  )}
+                  {selectedFacility.properties.type && (
+                    <div className="text-gray-500 text-[11px]">
+                      {selectedFacility.properties.type}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Motorcycle Parking Details */}
+              {selectedFacility.facility_type === 'motorcycle_parking' && (
+                <div className="flex flex-col gap-1.5 text-xs">
+                  {selectedFacility.properties.street && (
+                    <div className="text-gray-700 font-medium">
+                      {selectedFacility.properties.block} {selectedFacility.properties.street}
+                    </div>
+                  )}
+                  {selectedFacility.properties.time_limit && (
+                    <div className="flex justify-between text-gray-600 bg-orange-50 p-1.5 rounded">
+                      <span className="text-orange-700">時間限制</span>
+                      <span className="font-bold text-orange-800">{selectedFacility.properties.time_limit}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* EV Charging Details */}
+              {selectedFacility.facility_type === 'ev_charging' && (
+                <div className="flex flex-col gap-1.5 text-xs">
+                  <div className="flex justify-between items-center bg-emerald-50 p-1.5 rounded">
+                    <span className="text-emerald-700 font-medium">充電接口 (Ports)</span>
+                    <span className="font-bold text-emerald-800 text-sm">{selectedFacility.properties.ports || 2} 個</span>
+                  </div>
+                  {selectedFacility.properties.connectors && (
+                    <div className="flex justify-between text-gray-600">
+                      <span>接口規格</span>
+                      <span className="font-medium text-gray-800">{selectedFacility.properties.connectors}</span>
+                    </div>
+                  )}
+                  {selectedFacility.properties.voltage && (
+                    <div className="flex justify-between text-gray-600">
+                      <span>電壓</span>
+                      <span className="font-medium text-gray-800">{selectedFacility.properties.voltage}</span>
+                    </div>
+                  )}
+                  {selectedFacility.properties.cost && (
+                    <div className="flex justify-between text-gray-600">
+                      <span>充電費用</span>
+                      <span className="font-bold text-emerald-700">{selectedFacility.properties.cost}</span>
+                    </div>
+                  )}
+                  {selectedFacility.properties.operator && (
+                    <div className="flex justify-between text-gray-500 text-[11px] pt-1 border-t border-gray-100">
+                      <span>營運單位</span>
+                      <span>{selectedFacility.properties.operator}</span>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

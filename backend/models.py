@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, Boolean, Float
+from sqlalchemy import Column, Integer, String, DateTime, Boolean, Float, JSON
 from geoalchemy2 import Geometry
 from datetime import datetime
 from database import Base
@@ -70,3 +70,20 @@ class SeaBusSchedule(Base):
     departure_time = Column(String) # "HH:MM:SS"
     arrival_time = Column(String) # "HH:MM:SS"
     shape_id = Column(String)
+
+class RoadFacility(Base):
+    """
+    Municipal Road Facilities (Updated monthly):
+    facility_type: 'parking_meters', 'accessible_parking', 'motorcycle_parking', 'ev_charging'
+    """
+    __tablename__ = "road_facilities"
+
+    id = Column(String, primary_key=True, index=True)
+    facility_type = Column(String, index=True)
+    name = Column(String)
+    local_area = Column(String, index=True)
+    lat = Column(Float)
+    lon = Column(Float)
+    geom = Column(Geometry(geometry_type='POINT', srid=4326))
+    details = Column(JSON)
+    last_updated = Column(DateTime, default=datetime.utcnow)
