@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, Depends, WebSocket, WebSocketDisconnect, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 import asyncio
@@ -1313,4 +1313,36 @@ def report_issue(payload: IssueReportRequest, db: Session = Depends(database.get
         "email_dispatched": email_sent,
         "email_error": email_error
     }
+
+@app.post("/api/admin/update-open-data")
+def trigger_update_open_data(background_tasks: BackgroundTasks):
+    """
+    手動或透過外部 Webhook / Cron 觸發每 6 個月的 Vancouver Open Data 資料集全面更新
+    """
+    from scripts.update_open_data import run_all_updates
+    background_tasks.add_task(run_all_updates)
+    return {
+        "status": "triggered",
+        "message": "已在背景啟動溫哥華 Open Data 9 項圖層資料集更新作業",
+        "cycle_months": 6,
+        "datasets": [
+            "parks", "parks_facilities", "community_gardens",
+            "drinking_fountains", "public_washrooms",
+            "schools", "libraries", "food_vendors", "homeless_shelters"
+        ]
+    }
+
+@app.get("/api/admin/update-open-data/status")
+def get_update_open_data_status():
+    """
+    查詢每 6 個月定期資料集的最新更新時間與狀態
+    """
+    meta_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'last_open_data_update.json')
+    if os.path.exists(meta_path):
+        try:
+            with open(meta_path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception as e:
+            return {"error": str(e)}
+    return {"status": "never_updated", "cycle_months": 6}
 

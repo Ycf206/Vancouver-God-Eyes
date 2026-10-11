@@ -2,6 +2,7 @@
   "type": "FeatureCollection",
   "generator": "VancouverGodsEye",
   "total_count": 218,
+  "updated_at": "2026-10-11T17:35:13.281248Z",
   "features": [
     {
       "type": "Feature",
@@ -12,14 +13,14 @@
         "name": "Arbutus Village Park",
         "parkid": 1,
         "street_address": "4202 Valley Drive",
-        "intersection": "King Edward Avenue & Valley Drive",
-        "neighbourhood": "Arbutus-Ridge",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.41,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Arbutus-Ridge"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -38,14 +39,14 @@
         "name": "Trafalgar Park",
         "parkid": 8,
         "street_address": "2610 W 23rd Avenue",
-        "intersection": "W 23rd Avenue & Valley Drive",
-        "neighbourhood": "Arbutus-Ridge",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 4.85,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Arbutus-Ridge"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -64,14 +65,14 @@
         "name": "Coopers' Park",
         "parkid": 14,
         "street_address": "1020 Marinaside Crescent",
-        "intersection": "Nelson Street & Marinaside Crescent",
-        "neighbourhood": "Downtown",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.71,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Downtown"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -90,14 +91,14 @@
         "name": "Devonian Harbour Park",
         "parkid": 18,
         "street_address": "1929 W Georgia Street",
-        "intersection": "W Georgia Street & Denman Street",
-        "neighbourhood": "Downtown",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 4.42,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Downtown"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -116,14 +117,14 @@
         "name": "Emery Barnes Park",
         "parkid": 20,
         "street_address": "1170 Richards Street",
-        "intersection": "Davie Street & Richards Street",
-        "neighbourhood": "Downtown",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.85,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Downtown"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -142,14 +143,14 @@
         "name": "Wendy Poole Park",
         "parkid": 32,
         "street_address": "199 Alexander Street",
-        "intersection": "Alexander Street & Main Street",
-        "neighbourhood": "Downtown",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.04,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Downtown"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -168,14 +169,14 @@
         "name": "Deering Island Park",
         "parkid": 38,
         "street_address": "3530 Deering Island Pl.",
-        "intersection": "Deering Island Place & Carrington Street",
-        "neighbourhood": "Dunbar-Southlands",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.74,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Dunbar-Southlands"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -194,14 +195,14 @@
         "name": "Valdez Park",
         "parkid": 42,
         "street_address": "3210 W 22nd Avenue",
-        "intersection": "W 22nd Avenue & Balaclava Street",
-        "neighbourhood": "Dunbar-Southlands",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.77,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Dunbar-Southlands"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -220,14 +221,14 @@
         "name": "Willow Park",
         "parkid": 48,
         "street_address": "802 W 7th Avenue",
-        "intersection": "W 7th Avenue & Willow Street",
-        "neighbourhood": "Fairview",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.07,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Fairview"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -246,14 +247,14 @@
         "name": "Alice Townley Park",
         "parkid": 49,
         "street_address": "1775 Woodland Drive",
-        "intersection": "E 2nd Avenue & Woodland Drive",
-        "neighbourhood": "Grandview-Woodland",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.22,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Grandview-Woodland"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -272,14 +273,14 @@
         "name": "Cambridge Park",
         "parkid": 50,
         "street_address": "2099 Wall Street",
-        "intersection": "Cambridge Street & Wall Street",
-        "neighbourhood": "Grandview-Woodland",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.19,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Grandview-Woodland"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -298,14 +299,14 @@
         "name": "McSpadden Park",
         "parkid": 54,
         "street_address": "2125 Victoria Drive",
-        "intersection": "E 5th Avenue & Victoria Drive",
-        "neighbourhood": "Grandview-Woodland",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.62,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Grandview-Woodland"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -324,14 +325,14 @@
         "name": "Mosaic Creek Park",
         "parkid": 55,
         "street_address": "1475 Charles Street",
-        "intersection": "Charles Street & McLean Drive",
-        "neighbourhood": "Grandview-Woodland",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.11,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Grandview-Woodland"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -350,14 +351,14 @@
         "name": "Salsbury Park",
         "parkid": 58,
         "street_address": "1806 Adanac Street",
-        "intersection": "Adanac Street & Salsbury Drive",
-        "neighbourhood": "Grandview-Woodland",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.17,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Grandview-Woodland"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -376,14 +377,14 @@
         "name": "Victoria Park",
         "parkid": 62,
         "street_address": "1425 Victoria Drive",
-        "intersection": "Kitchener Street & Victoria Drive",
-        "neighbourhood": "Grandview-Woodland",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.89,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Grandview-Woodland"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -402,14 +403,14 @@
         "name": "W.C. Shelly Park",
         "parkid": 63,
         "street_address": "1500 E 8th Avenue",
-        "intersection": "E 8th Avenue & Woodland Drive",
-        "neighbourhood": "Grandview-Woodland",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.3,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Grandview-Woodland"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -428,14 +429,14 @@
         "name": "Burrard View Park",
         "parkid": 67,
         "street_address": "650 North Penticton Street",
-        "intersection": "Wall Street & N Penticton Street",
-        "neighbourhood": "Hastings-Sunrise",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 2.76,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Hastings-Sunrise"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -454,14 +455,14 @@
         "name": "Callister Park",
         "parkid": 68,
         "street_address": "2875 Oxford Street",
-        "intersection": "Oxford Street & Renfrew Street",
-        "neighbourhood": "Hastings-Sunrise",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.45,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Hastings-Sunrise"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -480,14 +481,14 @@
         "name": "Hastings Community Park",
         "parkid": 73,
         "street_address": "3000 E Pender Street",
-        "intersection": "E Pender Street & E Hastings Street",
-        "neighbourhood": "Hastings-Sunrise",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 4.19,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Hastings-Sunrise"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -506,14 +507,14 @@
         "name": "Kaslo Park",
         "parkid": 74,
         "street_address": "2851 E 7th Avenue",
-        "intersection": "E 7th Avenue & Kaslo Street",
-        "neighbourhood": "Hastings-Sunrise",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.45,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Hastings-Sunrise"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -532,14 +533,14 @@
         "name": "Sunrise Park",
         "parkid": 77,
         "street_address": "1950 Windermere Street",
-        "intersection": "E 5th Avenue & Windermere Street",
-        "neighbourhood": "Hastings-Sunrise",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 3.18,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Hastings-Sunrise"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -558,14 +559,14 @@
         "name": "Brewers Park",
         "parkid": 79,
         "street_address": "4175 Victoria Drive",
-        "intersection": "E 26th Avenue & Victoria Drive",
-        "neighbourhood": "Kensington-Cedar Cottage",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.38,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kensington-Cedar Cottage"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -584,14 +585,14 @@
         "name": "Clark Park",
         "parkid": 81,
         "street_address": "1500 E 14th Avenue",
-        "intersection": "E 14th Avenue & Commercial Drive",
-        "neighbourhood": "Kensington-Cedar Cottage",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 4.28,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kensington-Cedar Cottage"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -610,14 +611,14 @@
         "name": "Glen Park",
         "parkid": 83,
         "street_address": "3999 Glen Drive",
-        "intersection": "E 24th Avenue & Glen Drive",
-        "neighbourhood": "Kensington-Cedar Cottage",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.09,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kensington-Cedar Cottage"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -636,14 +637,14 @@
         "name": "Jones Park",
         "parkid": 86,
         "street_address": "5350 Commercial Street",
-        "intersection": "E 38th Avenue & Commercial Street",
-        "neighbourhood": "Kensington-Cedar Cottage",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.42,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kensington-Cedar Cottage"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -662,14 +663,14 @@
         "name": "Sunnyside Park",
         "parkid": 89,
         "street_address": "1100 E 17th Avenue",
-        "intersection": "E 17th Avenue & Inverness Street",
-        "neighbourhood": "Kensington-Cedar Cottage",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.97,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kensington-Cedar Cottage"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -688,14 +689,14 @@
         "name": "Malkin Park",
         "parkid": 95,
         "street_address": "6001 Balaclava Street",
-        "intersection": "W 44th Avenue & Balaclava Street",
-        "neighbourhood": "Kerrisdale",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 2.42,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kerrisdale"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -714,14 +715,14 @@
         "name": "McCleery Park",
         "parkid": 97,
         "street_address": "6501 Marine Crescent",
-        "intersection": "W 49th Avenue & Marine Crescent",
-        "neighbourhood": "Kerrisdale",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.25,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kerrisdale"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -740,14 +741,14 @@
         "name": "McCleery Golf Course",
         "parkid": 98,
         "street_address": "7188 Macdonald Street",
-        "intersection": "W 55th Avenue & MacDonald Street",
-        "neighbourhood": "Kerrisdale",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 48.57,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kerrisdale"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -766,14 +767,14 @@
         "name": "Everett Crowley Park",
         "parkid": 101,
         "street_address": "8200 Kerr Street",
-        "intersection": "SE Marine Drive & Kerr Street",
-        "neighbourhood": "Killarney",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 38.08,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Killarney"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -792,14 +793,14 @@
         "name": "Killarney Park",
         "parkid": 103,
         "street_address": "6205 Kerr Street",
-        "intersection": "Waverley Street & Kerr Street",
-        "neighbourhood": "Killarney",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 13.36,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Killarney"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -818,14 +819,14 @@
         "name": "Kinross Ravine Park",
         "parkid": 104,
         "street_address": "3350 SE Marine Drive",
-        "intersection": "3350 SE Marine Drive & Kinross Street",
-        "neighbourhood": "Killarney",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.2,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Killarney"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -844,14 +845,14 @@
         "name": "Almond Park",
         "parkid": 106,
         "street_address": "3600 W 12th Avenue",
-        "intersection": "W 12th Avenue & Dunbar Street",
-        "neighbourhood": "Kitsilano",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.61,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kitsilano"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -870,14 +871,14 @@
         "name": "Connaught Park",
         "parkid": 108,
         "street_address": "2390 W 10th Avenue",
-        "intersection": "W 10th Avenue & Vine Street",
-        "neighbourhood": "Kitsilano",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 5.98,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kitsilano"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -896,14 +897,14 @@
         "name": "Delamont Park",
         "parkid": 109,
         "street_address": "2091 W 7th Avenue",
-        "intersection": "W 7th Avenue & Arbutus Street",
-        "neighbourhood": "Kitsilano",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.22,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kitsilano"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -922,14 +923,14 @@
         "name": "McBride Park",
         "parkid": 114,
         "street_address": "3350 W 4th Avenue",
-        "intersection": "W 4th Avenue & Waterloo Street",
-        "neighbourhood": "Kitsilano",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.71,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kitsilano"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -948,14 +949,14 @@
         "name": "Point Grey Park Site at Musqueamview Street",
         "parkid": 115,
         "street_address": "3215 Point Grey Road",
-        "intersection": "Point Grey Road & Musqueamview Street",
-        "neighbourhood": "Kitsilano",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.22,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kitsilano"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -974,14 +975,14 @@
         "name": "Oak Park",
         "parkid": 126,
         "street_address": "900 W 59th Avenue",
-        "intersection": "W 59th Avenue & Oak Street",
-        "neighbourhood": "Marpole",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 5.25,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Marpole"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1000,14 +1001,14 @@
         "name": "Riverview Park",
         "parkid": 127,
         "street_address": "1751 W 66th Avenue",
-        "intersection": "W 66th Avenue & Angus Drive",
-        "neighbourhood": "Marpole",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 2.38,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Marpole"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1026,14 +1027,14 @@
         "name": "Winona Park",
         "parkid": 131,
         "street_address": "7575 Columbia Street",
-        "intersection": "W 59th Avenue & Columbia Street",
-        "neighbourhood": "Marpole",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 5.31,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Marpole"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1052,14 +1053,14 @@
         "name": "Guelph Park",
         "parkid": 136,
         "street_address": "2390 Brunswick Street",
-        "intersection": "E 7th Avenue & Brunswick Street",
-        "neighbourhood": "Mount Pleasant",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.04,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Mount Pleasant"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1078,14 +1079,14 @@
         "name": "Jonathan Rogers Park",
         "parkid": 137,
         "street_address": "110 W 7th Avenue",
-        "intersection": "W 7th Avenue & Manitoba Street",
-        "neighbourhood": "Mount Pleasant",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.4,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Mount Pleasant"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1104,14 +1105,14 @@
         "name": "Robson Park",
         "parkid": 140,
         "street_address": "599 Kingsway",
-        "intersection": "Kingsway & St. George Street",
-        "neighbourhood": "Mount Pleasant",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.56,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Mount Pleasant"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1130,14 +1131,14 @@
         "name": "Cambie Park",
         "parkid": 142,
         "street_address": "500 W 54th Avenue",
-        "intersection": "W 54th Avenue & Cambie Street",
-        "neighbourhood": "Oakridge",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.93,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Oakridge"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1156,14 +1157,14 @@
         "name": "Columbia Park",
         "parkid": 143,
         "street_address": "5908 Alberta Street",
-        "intersection": "W 42nd Avenue & Alberta Street",
-        "neighbourhood": "Oakridge",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 2.78,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Oakridge"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1182,14 +1183,14 @@
         "name": "Tisdall Park",
         "parkid": 147,
         "street_address": "6210 Tisdall Street",
-        "intersection": "W 49th Avenue & Tisdall Street",
-        "neighbourhood": "Oakridge",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 5.02,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Oakridge"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1208,14 +1209,14 @@
         "name": "Beaconsfield Park",
         "parkid": 148,
         "street_address": "3215 Slocan Street",
-        "intersection": "E 15th Avenue & Slocan Street",
-        "neighbourhood": "Renfrew-Collingwood",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 4.43,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Renfrew-Collingwood"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1234,14 +1235,14 @@
         "name": "Collingwood Park",
         "parkid": 151,
         "street_address": "5275 McKinnon Street",
-        "intersection": "Euclid Street & McKinnon Street",
-        "neighbourhood": "Renfrew-Collingwood",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.27,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Renfrew-Collingwood"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1260,14 +1261,14 @@
         "name": "Norquay Park",
         "parkid": 157,
         "street_address": "5050 Wales Street",
-        "intersection": "Kingsway & Wales Street",
-        "neighbourhood": "Renfrew-Collingwood",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 2.26,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Renfrew-Collingwood"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1286,14 +1287,14 @@
         "name": "Renfrew Community Park",
         "parkid": 159,
         "street_address": "2929 E 22nd Avenue",
-        "intersection": "E 22nd Avenue & Renfrew Street",
-        "neighbourhood": "Renfrew-Collingwood",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 5.0,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Renfrew-Collingwood"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1312,14 +1313,14 @@
         "name": "Renfrew Ravine Park",
         "parkid": 160,
         "street_address": "3900 Renfrew Street",
-        "intersection": "E 24th Avenue & Renfrew Street",
-        "neighbourhood": "Renfrew-Collingwood",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 5.89,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Renfrew-Collingwood"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1338,14 +1339,14 @@
         "name": "Slocan Park",
         "parkid": 161,
         "street_address": "2750 E 29th Avenue",
-        "intersection": "E 29th Avenue & Slocan Street",
-        "neighbourhood": "Renfrew-Collingwood",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 4.14,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Renfrew-Collingwood"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1364,14 +1365,14 @@
         "name": "Grimmett Park",
         "parkid": 163,
         "street_address": "169 E 19th Avenue",
-        "intersection": "E 19th Avenue & Quebec Street",
-        "neighbourhood": "Riley Park",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.24,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Riley Park"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1390,14 +1391,14 @@
         "name": "Hillcrest Park",
         "parkid": 164,
         "street_address": "4501 Clancy Loranger Way",
-        "intersection": "Midlothian Avenue & Clancy Loranger Way",
-        "neighbourhood": "Riley Park",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 7.51,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Riley Park"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1416,14 +1417,14 @@
         "name": "Queen Elizabeth Park",
         "parkid": 167,
         "street_address": "4600 Cambie Street",
-        "intersection": "W 29th Avenue & Cambie Street",
-        "neighbourhood": "Riley Park",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 52.98,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Riley Park"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1442,14 +1443,14 @@
         "name": "Riley Park",
         "parkid": 168,
         "street_address": "50 E 30th Avenue",
-        "intersection": "E 30th Avenue & Ontario Street",
-        "neighbourhood": "Riley Park",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 2.7,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Riley Park"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1468,14 +1469,14 @@
         "name": "Kerrisdale Park",
         "parkid": 171,
         "street_address": "5670 E Boulevard",
-        "intersection": "W 39th Avenue & East Boulevard",
-        "neighbourhood": "Shaughnessy",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 2.99,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Shaughnessy"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1494,14 +1495,14 @@
         "name": "VanDusen Botanical Garden",
         "parkid": 173,
         "street_address": "5251 Oak Street",
-        "intersection": "W 37th Avenue & Oak Street",
-        "neighbourhood": "Shaughnessy",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 22.29,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Shaughnessy"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1520,14 +1521,14 @@
         "name": "Strathcona Park",
         "parkid": 181,
         "street_address": "857 Malkin Avenue",
-        "intersection": "Malkin Avenue & Hawks Avenue",
-        "neighbourhood": "Strathcona",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 10.07,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Strathcona"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1546,14 +1547,14 @@
         "name": "Thornton Park",
         "parkid": 183,
         "street_address": "1166 Main Street",
-        "intersection": "Terminal Avenue & Main Street",
-        "neighbourhood": "Strathcona",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.49,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Strathcona"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1572,14 +1573,14 @@
         "name": "George Park",
         "parkid": 184,
         "street_address": "500 E 63rd Avenue",
-        "intersection": "E 63rd Avenue & St. George Street",
-        "neighbourhood": "Sunset",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.43,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Sunset"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1598,14 +1599,14 @@
         "name": "Memorial South Park",
         "parkid": 186,
         "street_address": "5955 Ross Street",
-        "intersection": "E 41st Avenue & Ross Street",
-        "neighbourhood": "Sunset",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 13.59,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Sunset"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1624,14 +1625,14 @@
         "name": "Moberly Park",
         "parkid": 187,
         "street_address": "7646 Prince Albert Street",
-        "intersection": "E 59th Avenue & Prince Albert Street",
-        "neighbourhood": "Sunset",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 3.6,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Sunset"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1650,14 +1651,14 @@
         "name": "Ross Park",
         "parkid": 188,
         "street_address": "7402 Ross Street",
-        "intersection": "E 59th Avenue & Ross Street",
-        "neighbourhood": "Sunset",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.51,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Sunset"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1676,14 +1677,14 @@
         "name": "Fraserview Park",
         "parkid": 192,
         "street_address": "7595 Victoria Drive",
-        "intersection": "E 61st Avenue & Victoria Drive",
-        "neighbourhood": "Victoria-Fraserview",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.27,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Victoria-Fraserview"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1702,14 +1703,14 @@
         "name": "Gordon Park",
         "parkid": 194,
         "street_address": "6675 Commercial Street",
-        "intersection": "E 49th Avenue & Commercial Street",
-        "neighbourhood": "Victoria-Fraserview",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 6.51,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Victoria-Fraserview"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1728,14 +1729,14 @@
         "name": "Alexandra Park",
         "parkid": 199,
         "street_address": "1755 Beach Avenue",
-        "intersection": "Beach Avenue & Bidwell Street",
-        "neighbourhood": "West End",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.55,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "West End"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1754,14 +1755,14 @@
         "name": "Barclay Heritage Square",
         "parkid": 200,
         "street_address": "1433 Barclay Street",
-        "intersection": "Barclay Street & Nicola Street",
-        "neighbourhood": "West End",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.56,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "West End"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1780,14 +1781,14 @@
         "name": "Rosemont Park",
         "parkid": 204,
         "street_address": "3101 Rosemont Drive",
-        "intersection": "Rosemont Drive & Kerr Street",
-        "neighbourhood": "Killarney",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.36,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Killarney"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1806,14 +1807,14 @@
         "name": "Langara Park",
         "parkid": 209,
         "street_address": "200 W 49th Avenue",
-        "intersection": "W 49th Avenue & Columbia Street",
-        "neighbourhood": "Oakridge",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.21,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Oakridge"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1832,14 +1833,14 @@
         "name": "Park Site on Shaughnessy Street",
         "parkid": 213,
         "street_address": "9250 Shaughnessy Street",
-        "intersection": "Shaughnessy Street & None",
-        "neighbourhood": "Marpole",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.56,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Marpole"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1858,14 +1859,14 @@
         "name": "Hastings Mill Park",
         "parkid": 217,
         "street_address": "1575 Alma Street",
-        "intersection": "Point Grey Road & Alma Street",
-        "neighbourhood": "West Point Grey",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.23,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "West Point Grey"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1884,14 +1885,14 @@
         "name": "Westmount Park",
         "parkid": 222,
         "street_address": "4651 W 2nd Avenue",
-        "intersection": "W 2nd Avenue & Blanca Street",
-        "neighbourhood": "West Point Grey",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.4,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "West Point Grey"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1910,14 +1911,14 @@
         "name": "Arbutus Greenway Park",
         "parkid": 233,
         "street_address": "2205 W11th Avenue",
-        "intersection": "W 11th Avenue & Arbutus Street",
-        "neighbourhood": "Kitsilano",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.08,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kitsilano"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1936,14 +1937,14 @@
         "name": "Granville Island Water Park",
         "parkid": 235,
         "street_address": "1348 Cartwright Street",
-        "intersection": "None & None",
-        "neighbourhood": "Fairview",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.0,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Fairview"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1962,14 +1963,14 @@
         "name": "Yaletown Park",
         "parkid": 237,
         "street_address": "901 Mainland Street",
-        "intersection": "Mainland Street & Nelson Street",
-        "neighbourhood": "Downtown",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.17,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Downtown"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -1988,14 +1989,14 @@
         "name": "Carolina Park",
         "parkid": 238,
         "street_address": "2100 Carolina Street",
-        "intersection": "E 5th Avenue & Carolina Street",
-        "neighbourhood": "Mount Pleasant",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.08,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Mount Pleasant"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2014,14 +2015,14 @@
         "name": "Habitat Island",
         "parkid": 241,
         "street_address": "1616 Columbia Street",
-        "intersection": "None & None",
-        "neighbourhood": "Mount Pleasant",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.6,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Mount Pleasant"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2040,14 +2041,14 @@
         "name": "Fraser River Trail",
         "parkid": 244,
         "street_address": "9149 Hudson Street",
-        "intersection": "SW Marine Drive & Hudson Street",
-        "neighbourhood": "Marpole",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.35,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Marpole"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2066,14 +2067,14 @@
         "name": "Carnarvon Park",
         "parkid": 2,
         "street_address": "2995 W 19th Avenue",
-        "intersection": "W 19th Avenue & Mackenzie Street",
-        "neighbourhood": "Arbutus-Ridge",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 3.79,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Arbutus-Ridge"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2092,14 +2093,14 @@
         "name": "Coal Harbour Park",
         "parkid": 13,
         "street_address": "480 Broughton Street",
-        "intersection": "W Hastings Street & Broughton Street",
-        "neighbourhood": "Downtown",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.95,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Downtown"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2118,14 +2119,14 @@
         "name": "David Lam Park",
         "parkid": 16,
         "street_address": "1300 Pacific Boulevard",
-        "intersection": "Drake Street & Pacific Boulevard",
-        "neighbourhood": "Downtown",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 4.34,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Downtown"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2144,14 +2145,14 @@
         "name": "May & Lorne Brown Park",
         "parkid": 25,
         "street_address": "801 Beach Avenue",
-        "intersection": "Beach Avenue & Hornby Street",
-        "neighbourhood": "Downtown",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.25,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Downtown"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2170,14 +2171,14 @@
         "name": "Pioneer Place (Pigeon Park)",
         "parkid": 26,
         "street_address": "399 Carrall Street",
-        "intersection": "W Hastings Street & Carrall Street",
-        "neighbourhood": "Downtown",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.03,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Downtown"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2196,14 +2197,14 @@
         "name": "Portal Park",
         "parkid": 27,
         "street_address": "1099 W Hastings Street",
-        "intersection": "W Hastings Street & Thurlow Street",
-        "neighbourhood": "Downtown",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.1,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Downtown"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2222,14 +2223,14 @@
         "name": "CRAB Park at Portside",
         "parkid": 28,
         "street_address": "101 E Waterfront Road",
-        "intersection": "E Waterfront Road & Main Street",
-        "neighbourhood": "Downtown",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 3.31,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Downtown"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2248,14 +2249,14 @@
         "name": "Roundhouse Turntable Plaza",
         "parkid": 29,
         "street_address": "181 Roundhouse Mews",
-        "intersection": "Roundhouse Mews & Pacific Boulevard",
-        "neighbourhood": "Downtown",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.91,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Downtown"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2274,14 +2275,14 @@
         "name": "Balaclava Park",
         "parkid": 34,
         "street_address": "4594 Balaclava Street",
-        "intersection": "W 29th Avenue & Balaclava Street",
-        "neighbourhood": "Dunbar-Southlands",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 5.0,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Dunbar-Southlands"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2300,14 +2301,14 @@
         "name": "Chaldecott Park",
         "parkid": 37,
         "street_address": "4175 Wallace Street",
-        "intersection": "King Edward Avenue & Wallace Street",
-        "neighbourhood": "Dunbar-Southlands",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 3.45,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Dunbar-Southlands"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2326,14 +2327,14 @@
         "name": "Musqueam Park",
         "parkid": 40,
         "street_address": "4000 SW Marine Drive",
-        "intersection": "SW Marine Drive & Crown Street",
-        "neighbourhood": "Dunbar-Southlands",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 22.05,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Dunbar-Southlands"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2352,14 +2353,14 @@
         "name": "Charleson Park",
         "parkid": 43,
         "street_address": "999 Charleson Street",
-        "intersection": "Charleson Street & Laurel Street",
-        "neighbourhood": "Fairview",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 7.14,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Fairview"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2378,14 +2379,14 @@
         "name": "Granville Park",
         "parkid": 44,
         "street_address": "3001 Fir Street",
-        "intersection": "W 14th Avenue & Fir Street",
-        "neighbourhood": "Fairview",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.96,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Fairview"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2404,14 +2405,14 @@
         "name": "Granville Loop Park",
         "parkid": 45,
         "street_address": "1435 W 5th Avenue",
-        "intersection": "W 5th Avenue & Granville Street",
-        "neighbourhood": "Fairview",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.05,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Fairview"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2430,14 +2431,14 @@
         "name": "Garden Park",
         "parkid": 51,
         "street_address": "1851 Garden Drive",
-        "intersection": "E 3rd Avenue & Garden Drive",
-        "neighbourhood": "Grandview-Woodland",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.97,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Grandview-Woodland"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2456,14 +2457,14 @@
         "name": "Grandview Park",
         "parkid": 52,
         "street_address": "1255 Commercial Drive",
-        "intersection": "Charles Street & Commercial Drive",
-        "neighbourhood": "Grandview-Woodland",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.89,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Grandview-Woodland"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2482,14 +2483,14 @@
         "name": "McGill Park",
         "parkid": 53,
         "street_address": "2305 McGill Street",
-        "intersection": "McGill Street & Garden Drive",
-        "neighbourhood": "Grandview-Woodland",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.19,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Grandview-Woodland"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2508,14 +2509,14 @@
         "name": "Oxford Park",
         "parkid": 56,
         "street_address": "2050 Wall Street",
-        "intersection": "Oxford Street & Wall Street",
-        "neighbourhood": "Grandview-Woodland",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.22,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Grandview-Woodland"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2534,14 +2535,14 @@
         "name": "Woodland Park",
         "parkid": 64,
         "street_address": "705 Woodland Drive",
-        "intersection": "Adanac Street & Woodland Drive",
-        "neighbourhood": "Grandview-Woodland",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.58,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Grandview-Woodland"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2560,14 +2561,14 @@
         "name": "Adanac Park",
         "parkid": 65,
         "street_address": "1025 Boundary Road",
-        "intersection": "Adanac Street & Boundary Road",
-        "neighbourhood": "Hastings-Sunrise",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 4.17,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Hastings-Sunrise"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2586,14 +2587,14 @@
         "name": "Bates Park",
         "parkid": 66,
         "street_address": "669 Fellowes Street",
-        "intersection": "Fellowes Street & High Road",
-        "neighbourhood": "Hastings-Sunrise",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.3,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Hastings-Sunrise"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2612,14 +2613,14 @@
         "name": "Clinton Park",
         "parkid": 70,
         "street_address": "2690 Grant Street",
-        "intersection": "Grant Street & Slocan Street",
-        "neighbourhood": "Hastings-Sunrise",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 3.04,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Hastings-Sunrise"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2638,14 +2639,14 @@
         "name": "Dusty Greenwell Park",
         "parkid": 71,
         "street_address": "2799 Wall Street",
-        "intersection": "Wall Street & North Kaslo Street",
-        "neighbourhood": "Hastings-Sunrise",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.44,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Hastings-Sunrise"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2664,14 +2665,14 @@
         "name": "Hastings Park",
         "parkid": 72,
         "street_address": "2901 E Hastings",
-        "intersection": "E Hastings Street & Renfrew Street",
-        "neighbourhood": "Hastings-Sunrise",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 62.0,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Hastings-Sunrise"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2690,14 +2691,14 @@
         "name": "New Brighton Park",
         "parkid": 75,
         "street_address": "3201 New Brighton Road",
-        "intersection": "New Brighton Road & N Windermere Street",
-        "neighbourhood": "Hastings-Sunrise",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 10.0,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Hastings-Sunrise"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2716,14 +2717,14 @@
         "name": "Rupert Park",
         "parkid": 76,
         "street_address": "1600 Rupert Street",
-        "intersection": "E 1st Avenue & Rupert Street",
-        "neighbourhood": "Hastings-Sunrise",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 11.43,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Hastings-Sunrise"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2742,14 +2743,14 @@
         "name": "Grays Park",
         "parkid": 84,
         "street_address": "4850 St. Catherines Street",
-        "intersection": "E 33rd Avenue & St. Catherines Street",
-        "neighbourhood": "Kensington-Cedar Cottage",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.61,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kensington-Cedar Cottage"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2768,14 +2769,14 @@
         "name": "John Hendry (Trout Lake) Park",
         "parkid": 85,
         "street_address": "3300 Victoria Drive",
-        "intersection": "E 15th Avenue & Victoria Drive",
-        "neighbourhood": "Kensington-Cedar Cottage",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 27.31,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kensington-Cedar Cottage"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2794,14 +2795,14 @@
         "name": "Arbutus Park",
         "parkid": 90,
         "street_address": "7601 Arbutus Street",
-        "intersection": "SW Marine Drive & Arbutus Street",
-        "neighbourhood": "Kerrisdale",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.74,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kerrisdale"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2820,14 +2821,14 @@
         "name": "Elm Park",
         "parkid": 91,
         "street_address": "5800 Elm Street",
-        "intersection": "W 41st Avenue & Elm Street",
-        "neighbourhood": "Kerrisdale",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.49,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kerrisdale"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2846,14 +2847,14 @@
         "name": "Maple Grove Park",
         "parkid": 96,
         "street_address": "6875 Yew Street",
-        "intersection": "W 51st Avenue & Yew Street",
-        "neighbourhood": "Kerrisdale",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 4.2,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kerrisdale"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2872,14 +2873,14 @@
         "name": "Captain Cook Park",
         "parkid": 99,
         "street_address": "3398 E 54th Avenue",
-        "intersection": "E 54th Avenue & Champlain Crescent",
-        "neighbourhood": "Killarney",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 5.49,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Killarney"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2898,14 +2899,14 @@
         "name": "Champlain Heights Park",
         "parkid": 100,
         "street_address": "3351 Maquinna Drive",
-        "intersection": "Maquinna Drive & Champlain Crescent",
-        "neighbourhood": "Killarney",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 7.84,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Killarney"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2924,14 +2925,14 @@
         "name": "Fraserview Golf Course",
         "parkid": 102,
         "street_address": "7800 Vivian Drive",
-        "intersection": "E 54th Avenue & Vivian Drive",
-        "neighbourhood": "Killarney",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 84.34,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Killarney"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2950,14 +2951,14 @@
         "name": "Sparwood Park",
         "parkid": 105,
         "street_address": "6998 Arlington Street",
-        "intersection": "Whithorn Court & Arlington Street",
-        "neighbourhood": "Killarney",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 3.6,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Killarney"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -2976,14 +2977,14 @@
         "name": "Hadden Park",
         "parkid": 110,
         "street_address": "1905 Ogden Avenue",
-        "intersection": "Ogden Avenue & Cypress Street",
-        "neighbourhood": "Kitsilano",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 2.92,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Kitsilano"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3002,14 +3003,14 @@
         "name": "Kitsilano Beach Park",
         "parkid": 112,
         "street_address": "1499 Arbutus Street",
-        "intersection": "Cornwall Avenue & Arbutus Street",
-        "neighbourhood": "Kitsilano",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 13.47,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Kitsilano"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3028,14 +3029,14 @@
         "name": "Point Grey Park Site at Stephens Street",
         "parkid": 116,
         "street_address": "2699 Point Grey Road",
-        "intersection": "Point Grey Road & Stephens Street",
-        "neighbourhood": "Kitsilano",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.23,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kitsilano"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3054,14 +3055,14 @@
         "name": "Point Grey Park Site at Trafalgar Street",
         "parkid": 117,
         "street_address": "2601 Point Grey Road",
-        "intersection": "Point Grey Road & Trafalgar Street",
-        "neighbourhood": "Kitsilano",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.22,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kitsilano"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3080,14 +3081,14 @@
         "name": "Seaforth Peace Park",
         "parkid": 118,
         "street_address": "1620 Chestnut Street",
-        "intersection": "Cornwall Avenue & Chestnut Street",
-        "neighbourhood": "Kitsilano",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.74,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kitsilano"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3106,14 +3107,14 @@
         "name": "China Creek South Park",
         "parkid": 134,
         "street_address": "1255 E 10th Avenue",
-        "intersection": "E 10th Avenue & Clark Drive",
-        "neighbourhood": "Mount Pleasant",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.47,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Mount Pleasant"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3132,14 +3133,14 @@
         "name": "Major Matthews Park",
         "parkid": 138,
         "street_address": "2627 Manitoba Street",
-        "intersection": "W 11th Avenue & Manitoba Street",
-        "neighbourhood": "Mount Pleasant",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.06,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Mount Pleasant"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3158,14 +3159,14 @@
         "name": "Tea Swamp Park",
         "parkid": 141,
         "street_address": "266 E 15th Avenue",
-        "intersection": "E 15th Avenue & Sophia Street",
-        "neighbourhood": "Mount Pleasant",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.09,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Mount Pleasant"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3184,14 +3185,14 @@
         "name": "Langara Golf Course",
         "parkid": 145,
         "street_address": "6706 Alberta Street",
-        "intersection": "W 49th Avenue & Alberta Street",
-        "neighbourhood": "South Cambie",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 48.57,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "South Cambie"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3210,14 +3211,14 @@
         "name": "Carleton Park",
         "parkid": 150,
         "street_address": "3450 Price Street",
-        "intersection": "Price Street & Joyce Street",
-        "neighbourhood": "Renfrew-Collingwood",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.68,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Renfrew-Collingwood"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3236,14 +3237,14 @@
         "name": "Earles Park",
         "parkid": 152,
         "street_address": "2801 E 41st Avenue",
-        "intersection": "E 41st Avenue & Earles Street",
-        "neighbourhood": "Renfrew-Collingwood",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.59,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Renfrew-Collingwood"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3262,14 +3263,14 @@
         "name": "Falaise Park",
         "parkid": 153,
         "street_address": "3434 Falaise Avenue",
-        "intersection": "Worthington Drive & Falaise Avenue",
-        "neighbourhood": "Renfrew-Collingwood",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 7.57,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Renfrew-Collingwood"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3288,14 +3289,14 @@
         "name": "Gaston Park",
         "parkid": 155,
         "street_address": "3470 Crowley Drive",
-        "intersection": "Crowley Drive & Tyne Street",
-        "neighbourhood": "Renfrew-Collingwood",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.5,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Renfrew-Collingwood"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3314,14 +3315,14 @@
         "name": "Prince Edward Park",
         "parkid": 166,
         "street_address": "3773 Prince Edward Street",
-        "intersection": "E 21st Avenue & Prince Edward Street",
-        "neighbourhood": "Riley Park",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.21,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Riley Park"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3340,14 +3341,14 @@
         "name": "Angus Park",
         "parkid": 169,
         "street_address": "3600 Angus Drive",
-        "intersection": "Alexandra Street & Angus Drive",
-        "neighbourhood": "Shaughnessy",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.0,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Shaughnessy"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3366,14 +3367,14 @@
         "name": "Devonshire Park",
         "parkid": 170,
         "street_address": "1250 Devonshire Crescent",
-        "intersection": "Devonshire Crescent & Selkirk Street",
-        "neighbourhood": "Shaughnessy",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.53,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Shaughnessy"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3392,14 +3393,14 @@
         "name": "Shaughnessy Park",
         "parkid": 172,
         "street_address": "1300 The Crescent",
-        "intersection": "The Crescent & Hudson Street",
-        "neighbourhood": "Shaughnessy",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.45,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Shaughnessy"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3418,14 +3419,14 @@
         "name": "Heather Park",
         "parkid": 177,
         "street_address": "702 W 18th Avenue",
-        "intersection": "W 18th Avenue & Heather Street",
-        "neighbourhood": "South Cambie",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.98,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "South Cambie"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3444,14 +3445,14 @@
         "name": "Gladstone-Riverside Park",
         "parkid": 193,
         "street_address": "2500 E Kent Street S",
-        "intersection": "E Kent Street S & Nanaimo Street",
-        "neighbourhood": "Victoria-Fraserview",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.07,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Victoria-Fraserview"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3470,14 +3471,14 @@
         "name": "Humm Park",
         "parkid": 195,
         "street_address": "7250 Humm Street",
-        "intersection": "Upland Drive & Humm Street",
-        "neighbourhood": "Victoria-Fraserview",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.47,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Victoria-Fraserview"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3496,14 +3497,14 @@
         "name": "Nanaimo Park",
         "parkid": 196,
         "street_address": "2390 E 46th Avenue",
-        "intersection": "E 46th Avenue & Nanaimo Street",
-        "neighbourhood": "Victoria-Fraserview",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 2.91,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Victoria-Fraserview"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3522,14 +3523,14 @@
         "name": "Riverfront Park",
         "parkid": 197,
         "street_address": "2750 E Kent Ave S",
-        "intersection": "E Kent Ave S & Elliott Street",
-        "neighbourhood": "Killarney",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 4.01,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Killarney"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3548,14 +3549,14 @@
         "name": "Tecumseh Park",
         "parkid": 198,
         "street_address": "1751 E 45th Avenue",
-        "intersection": "E 45th Avenue & Bruce Street",
-        "neighbourhood": "Victoria-Fraserview",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 2.09,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Victoria-Fraserview"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3574,14 +3575,14 @@
         "name": "Morton Park",
         "parkid": 202,
         "street_address": "1800 Morton Avenue",
-        "intersection": "Morton Avenue & Denman Street",
-        "neighbourhood": "West End",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.22,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "West End"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3600,14 +3601,14 @@
         "name": "Nelson Park",
         "parkid": 203,
         "street_address": "1030 Bute Street",
-        "intersection": "Nelson Street & Bute Street",
-        "neighbourhood": "West End",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.16,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "West End"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3626,14 +3627,14 @@
         "name": "Sunset Beach Park",
         "parkid": 207,
         "street_address": "1204 Beach Avenue",
-        "intersection": "Beach Avenue & Bute Street",
-        "neighbourhood": "West End",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 3.61,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "West End"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3652,14 +3653,14 @@
         "name": "Spanish Banks Beach Park",
         "parkid": 220,
         "street_address": "4801 NW Marine Drive",
-        "intersection": "NW Marine Drive & Blanca Street",
-        "neighbourhood": "West Point Grey",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 6.53,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "West Point Grey"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3678,14 +3679,14 @@
         "name": "West Point Grey Park",
         "parkid": 221,
         "street_address": "2250 Trimble Street",
-        "intersection": "W 8th Avenue & Trimble Street",
-        "neighbourhood": "West Point Grey",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 3.4,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "West Point Grey"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3704,14 +3705,14 @@
         "name": "Choklit Park",
         "parkid": 224,
         "street_address": "2400 Spruce Street",
-        "intersection": "W 7th Avenue & Spruce Street",
-        "neighbourhood": "Fairview",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.07,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Fairview"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3730,14 +3731,14 @@
         "name": "George Wainborn Park",
         "parkid": 225,
         "street_address": "450 Beach Crescent",
-        "intersection": "Beach Crescent & None",
-        "neighbourhood": "Downtown",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 2.49,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Downtown"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3756,14 +3757,14 @@
         "name": "Camosun",
         "parkid": 231,
         "street_address": "4102 W 16th Avenue",
-        "intersection": "W 16th Avenue & Discovery Street",
-        "neighbourhood": "Dunbar-Southlands",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.0,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Dunbar-Southlands"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3782,14 +3783,14 @@
         "name": "Creekway Park",
         "parkid": 246,
         "street_address": "2901 E Hastings Street",
-        "intersection": "McGill Street & None",
-        "neighbourhood": "Hastings-Sunrise",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 8.0,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Hastings-Sunrise"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3808,20 +3809,20 @@
         "name": "Shannon Mews",
         "parkid": 249,
         "street_address": "1551 W 57th Ave",
-        "intersection": "W 57th Ave & Granville Street",
-        "neighbourhood": "Kerrisdale",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.69,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kerrisdale"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.1419607,
-          49.2197839
+          -123.141960658531,
+          49.21978389371605
         ]
       }
     },
@@ -3834,14 +3835,14 @@
         "name": "Prince of Wales Park",
         "parkid": 3,
         "street_address": "4780 Haggart Street",
-        "intersection": "W 32nd Avenue & Haggart Street",
-        "neighbourhood": "Arbutus-Ridge",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 2.89,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Arbutus-Ridge"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3860,14 +3861,14 @@
         "name": "Park Site on Puget Drive",
         "parkid": 4,
         "street_address": "4309 Puget Drive",
-        "intersection": "Puget Drive & MacDonald Street",
-        "neighbourhood": "Arbutus-Ridge",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.09,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Arbutus-Ridge"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3886,14 +3887,14 @@
         "name": "Park Site on Quesnel Drive",
         "parkid": 5,
         "street_address": "4301 Quesnel Drive",
-        "intersection": "Quesnel Drive & MacKenzie Street",
-        "neighbourhood": "Arbutus-Ridge",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.03,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Arbutus-Ridge"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3912,14 +3913,14 @@
         "name": "Quilchena Park",
         "parkid": 6,
         "street_address": "4590 Magnolia Street",
-        "intersection": "W 33rd Avenue & Magnolia Street",
-        "neighbourhood": "Arbutus-Ridge",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 7.67,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Arbutus-Ridge"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3938,14 +3939,14 @@
         "name": "Ravine Park",
         "parkid": 7,
         "street_address": "2159 W 36th Avenue",
-        "intersection": "W 36th Avenue & Arbutus Street",
-        "neighbourhood": "Arbutus-Ridge",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.72,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Arbutus-Ridge"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3964,14 +3965,14 @@
         "name": "Park Site on Trafalgar Street",
         "parkid": 9,
         "street_address": "4600 Trafalgar Street",
-        "intersection": "W 31st Avenue & Trafalgar Street",
-        "neighbourhood": "Arbutus-Ridge",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.14,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Arbutus-Ridge"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -3990,14 +3991,14 @@
         "name": "Andy Livingstone Park",
         "parkid": 10,
         "street_address": "89 Expo Boulevard",
-        "intersection": "Expo Boulevard & Carrall Street",
-        "neighbourhood": "Downtown",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 4.21,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Downtown"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4016,14 +4017,14 @@
         "name": "Cardero Park",
         "parkid": 11,
         "street_address": "1601 Bayshore Drive",
-        "intersection": "Bayshore Drive & Cardero Street",
-        "neighbourhood": "West End",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.33,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "West End"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4042,14 +4043,14 @@
         "name": "Cathedral Square",
         "parkid": 12,
         "street_address": "566 Richards Street",
-        "intersection": "Dunsmuir Street & Richards Street",
-        "neighbourhood": "Downtown",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.27,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Downtown"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4068,14 +4069,14 @@
         "name": "Creekside Park",
         "parkid": 15,
         "street_address": "1455 Quebec Street",
-        "intersection": "Terminal Avenue & Quebec Street",
-        "neighbourhood": "Downtown",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 2.53,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Downtown"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4094,14 +4095,14 @@
         "name": "Art Phillips Park",
         "parkid": 19,
         "street_address": "625 Burrard Street",
-        "intersection": "Melville Street & Burrard Street",
-        "neighbourhood": "Downtown",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.1,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Downtown"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4120,14 +4121,14 @@
         "name": "Harbour Green Park",
         "parkid": 21,
         "street_address": "1199 W Cordova Street",
-        "intersection": "W Cordova Street & Bute Street",
-        "neighbourhood": "Downtown",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 3.1,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Downtown"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4146,14 +4147,14 @@
         "name": "Helmcken Park",
         "parkid": 23,
         "street_address": "1103 Pacific Boulevard",
-        "intersection": "Helmcken Street & Pacific Boulevard",
-        "neighbourhood": "Downtown",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.17,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Downtown"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4172,14 +4173,14 @@
         "name": "Marina Square",
         "parkid": 24,
         "street_address": "1675 Bayshore Drive",
-        "intersection": "Bayshore Drive & Denman Street",
-        "neighbourhood": "Downtown",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.63,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Downtown"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4198,14 +4199,14 @@
         "name": "Sun Yat-Sen Gardens",
         "parkid": 30,
         "street_address": "578 Carrall Street",
-        "intersection": "Keefer Street & Carrall Street",
-        "neighbourhood": "Downtown",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.83,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Downtown"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4224,14 +4225,14 @@
         "name": "Victory Square",
         "parkid": 31,
         "street_address": "200 W Hastings Street",
-        "intersection": "W Hastings Street & Cambie Street",
-        "neighbourhood": "Downtown",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.39,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Downtown"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4250,14 +4251,14 @@
         "name": "Park Site on Blenheim",
         "parkid": 35,
         "street_address": "3500 Quadra Street",
-        "intersection": "W 19th Avenue & Quadra Street",
-        "neighbourhood": "Arbutus-Ridge",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.07,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Arbutus-Ridge"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4276,14 +4277,14 @@
         "name": "Memorial West Park",
         "parkid": 39,
         "street_address": "4747 Dunbar Street",
-        "intersection": "W 31st Avenue & Dunbar Street",
-        "neighbourhood": "Dunbar-Southlands",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 7.49,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Dunbar-Southlands"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4302,14 +4303,14 @@
         "name": "Quadra West Park",
         "parkid": 41,
         "street_address": "3250 Quadra Street",
-        "intersection": "W 17th Avenue & Quadra Street",
-        "neighbourhood": "Dunbar-Southlands",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.17,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Dunbar-Southlands"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4328,14 +4329,14 @@
         "name": "Sutcliffe Park",
         "parkid": 47,
         "street_address": "1318 Cartwright Street",
-        "intersection": "Island Park Walk & Old Bridge Walk",
-        "neighbourhood": "Fairview",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 2.88,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Fairview"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4354,14 +4355,14 @@
         "name": "Pandora Park",
         "parkid": 57,
         "street_address": "2325 Franklin Street",
-        "intersection": "Franklin Street & Garden Drive",
-        "neighbourhood": "Grandview-Woodland",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.66,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Grandview-Woodland"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4380,14 +4381,14 @@
         "name": "Templeton Park",
         "parkid": 60,
         "street_address": "700 Templeton Drive",
-        "intersection": "Adanac Street & Templeton Drive",
-        "neighbourhood": "Grandview-Woodland",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.93,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Grandview-Woodland"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4406,14 +4407,14 @@
         "name": "Park Site on Trinity Street",
         "parkid": 61,
         "street_address": "2303 Wall Street",
-        "intersection": "Trinity Street & Wall Street",
-        "neighbourhood": "Hastings-Sunrise",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.1,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Hastings-Sunrise"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4432,14 +4433,14 @@
         "name": "Charles Park",
         "parkid": 69,
         "street_address": "3400 Charles Street",
-        "intersection": "Charles Street & Kootenay Street",
-        "neighbourhood": "Hastings-Sunrise",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.55,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Hastings-Sunrise"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4458,14 +4459,14 @@
         "name": "Thunderbird Park",
         "parkid": 78,
         "street_address": "3485 E 2nd Avenue",
-        "intersection": "E 2nd Avenue & Skeena Street",
-        "neighbourhood": "Hastings-Sunrise",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.89,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Hastings-Sunrise"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4484,14 +4485,14 @@
         "name": "Cedar Cottage Park",
         "parkid": 80,
         "street_address": "2650 Clark Drive",
-        "intersection": "E 11th Avenue & Clark Drive",
-        "neighbourhood": "Kensington-Cedar Cottage",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.47,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kensington-Cedar Cottage"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4510,14 +4511,14 @@
         "name": "General Brock Park",
         "parkid": 82,
         "street_address": "2301 Brock Street",
-        "intersection": "Brock Street & Baldwin Street",
-        "neighbourhood": "Kensington-Cedar Cottage",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 2.11,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kensington-Cedar Cottage"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4536,14 +4537,14 @@
         "name": "Kensington Park",
         "parkid": 87,
         "street_address": "5175 Dumfries Street",
-        "intersection": "E 37th Avenue & Dumfries Street",
-        "neighbourhood": "Kensington-Cedar Cottage",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 5.84,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kensington-Cedar Cottage"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4562,14 +4563,14 @@
         "name": "Kingcrest Park",
         "parkid": 88,
         "street_address": "4150 Knight Street",
-        "intersection": "E 26th Avenue & Knight Street",
-        "neighbourhood": "Kensington-Cedar Cottage",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 2.41,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kensington-Cedar Cottage"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4588,14 +4589,14 @@
         "name": "Fraser River Park",
         "parkid": 92,
         "street_address": "8705 Angus Drive",
-        "intersection": "W 75th Avenue & Angus Drive",
-        "neighbourhood": "Kerrisdale",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 9.1,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kerrisdale"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4614,14 +4615,14 @@
         "name": "Kerrisdale Centennial Park",
         "parkid": 93,
         "street_address": "5898 Yew Street",
-        "intersection": "W 42nd Avenue & Yew Street",
-        "neighbourhood": "Kerrisdale",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.53,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kerrisdale"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4640,14 +4641,14 @@
         "name": "Jean Beaty Park",
         "parkid": 111,
         "street_address": "3393 Point Grey Road",
-        "intersection": "Point Grey Road & Waterloo Street",
-        "neighbourhood": "West Point Grey",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.04,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "West Point Grey"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4666,14 +4667,14 @@
         "name": "Margaret Pigott Park",
         "parkid": 113,
         "street_address": "2743 Point Grey Road",
-        "intersection": "Point Grey Road & Macdonald Street",
-        "neighbourhood": "Kitsilano",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.38,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kitsilano"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4692,14 +4693,14 @@
         "name": "Tatlow Park",
         "parkid": 119,
         "street_address": "2845 W 3rd Avenue",
-        "intersection": "Point Grey Road & Point Grey Road",
-        "neighbourhood": "Kitsilano",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.4,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kitsilano"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4718,14 +4719,14 @@
         "name": "Vanier Park",
         "parkid": 120,
         "street_address": "1000 Chestnut Street",
-        "intersection": "Whyte Avenue & Chestnut Street",
-        "neighbourhood": "Kitsilano",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 16.95,
         "facilities": "無",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Kitsilano"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4744,14 +4745,14 @@
         "name": "Volunteer Park",
         "parkid": 121,
         "street_address": "2855 Point Grey Road",
-        "intersection": "Point Grey Road & Macdonald Street",
-        "neighbourhood": "Kitsilano",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.72,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kitsilano"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4770,14 +4771,14 @@
         "name": "Ash Park",
         "parkid": 122,
         "street_address": "8288 Ash Street",
-        "intersection": "W 68th Avenue & Ash Street",
-        "neighbourhood": "Marpole",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.51,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Marpole"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4796,14 +4797,14 @@
         "name": "Eburne Park",
         "parkid": 123,
         "street_address": "950 W 71st Avenue",
-        "intersection": "W 71st Avenue & Oak Street",
-        "neighbourhood": "Marpole",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.9,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Marpole"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4822,14 +4823,14 @@
         "name": "Marpole Park",
         "parkid": 124,
         "street_address": "1410 W 72nd Avenue",
-        "intersection": "W 72nd Avenue & Cartier Street",
-        "neighbourhood": "Marpole",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.27,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Marpole"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4848,14 +4849,14 @@
         "name": "Shannon Park",
         "parkid": 128,
         "street_address": "1575 W 62nd Avenue",
-        "intersection": "W 62nd Avenue & Adera Street",
-        "neighbourhood": "Marpole",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.94,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Marpole"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4874,14 +4875,14 @@
         "name": "William Mackie Park",
         "parkid": 130,
         "street_address": "1592 W 71st Avenue",
-        "intersection": "W 71st Avenue & SW Marine Drive",
-        "neighbourhood": "Marpole",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.37,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Marpole"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4900,14 +4901,14 @@
         "name": "China Creek North Park",
         "parkid": 133,
         "street_address": "1001 E 7th Avenue",
-        "intersection": "E 7th Avenue & Glen Drive",
-        "neighbourhood": "Mount Pleasant",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 3.16,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Mount Pleasant"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4926,14 +4927,14 @@
         "name": "Mount Pleasant Park",
         "parkid": 139,
         "street_address": "3161 Ontario Street",
-        "intersection": "W 16th Avenue & Ontario Street",
-        "neighbourhood": "Mount Pleasant",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.12,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Mount Pleasant"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4952,14 +4953,14 @@
         "name": "Montgomery Park",
         "parkid": 146,
         "street_address": "1040 W 43rd Avenue",
-        "intersection": "W 43rd Avenue & Montgomery Street",
-        "neighbourhood": "Oakridge",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 4.02,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Oakridge"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -4978,14 +4979,14 @@
         "name": "Cariboo Park",
         "parkid": 149,
         "street_address": "3450 E 29th Avenue",
-        "intersection": "E 29th Avenue & Cariboo Street",
-        "neighbourhood": "Renfrew-Collingwood",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.77,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Renfrew-Collingwood"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -5004,14 +5005,14 @@
         "name": "Foster Park",
         "parkid": 154,
         "street_address": "5501 Aberdeen Street",
-        "intersection": "Foster Avenue & Aberdeen Street",
-        "neighbourhood": "Renfrew-Collingwood",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.29,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Renfrew-Collingwood"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -5030,14 +5031,14 @@
         "name": "Melbourne Park",
         "parkid": 156,
         "street_address": "3530 Vanness Avenue",
-        "intersection": "Vanness Avenue & Melbourne Street",
-        "neighbourhood": "Renfrew-Collingwood",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.49,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Renfrew-Collingwood"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -5056,14 +5057,14 @@
         "name": "Price Park",
         "parkid": 158,
         "street_address": "3650 Price Street",
-        "intersection": "Price Street & Boundary Road",
-        "neighbourhood": "Renfrew-Collingwood",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.35,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Renfrew-Collingwood"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -5082,14 +5083,14 @@
         "name": "Cartier Park",
         "parkid": 162,
         "street_address": "390 E 36th Avenue",
-        "intersection": "E 36th Avenue & Prince Edward Street",
-        "neighbourhood": "Riley Park",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.37,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Riley Park"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -5108,14 +5109,14 @@
         "name": "Nat Bailey Stadium",
         "parkid": 165,
         "street_address": "4601 Ontario Street",
-        "intersection": "W 30th Avenue & Ontario Street",
-        "neighbourhood": "Riley Park",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 6.21,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Riley Park"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -5134,14 +5135,14 @@
         "name": "Braemar Park",
         "parkid": 174,
         "street_address": "895 W 27th Avenue",
-        "intersection": "W 27th Avenue & Willow Street",
-        "neighbourhood": "South Cambie",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.26,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "South Cambie"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -5160,14 +5161,14 @@
         "name": "Douglas Park",
         "parkid": 175,
         "street_address": "801 W 22nd Avenue",
-        "intersection": "W 22nd Avenue & Heather Street",
-        "neighbourhood": "South Cambie",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 5.32,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "South Cambie"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -5186,14 +5187,14 @@
         "name": "MacLean Park",
         "parkid": 179,
         "street_address": "710 Keefer Street",
-        "intersection": "Keefer Street & Heatley Avenue",
-        "neighbourhood": "Strathcona",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.21,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Strathcona"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -5212,14 +5213,14 @@
         "name": "Oppenheimer Park",
         "parkid": 180,
         "street_address": "488 Powell Street",
-        "intersection": "Powell Street & Jackson Street",
-        "neighbourhood": "Strathcona",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.0,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Strathcona"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -5238,14 +5239,14 @@
         "name": "Strathcona Linear Park",
         "parkid": 182,
         "street_address": "787 Prior Street",
-        "intersection": "Prior Street & Hawks Avenue",
-        "neighbourhood": "Strathcona",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.3,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Strathcona"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -5264,14 +5265,14 @@
         "name": "MacDonald Park",
         "parkid": 185,
         "street_address": "300 E 44th Avenue",
-        "intersection": "E 44th Avenue & Prince Edward Street",
-        "neighbourhood": "Sunset",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.05,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Sunset"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -5290,14 +5291,14 @@
         "name": "Sunset Park",
         "parkid": 189,
         "street_address": "404 E 51st Avenue",
-        "intersection": "E 51st Avenue & Prince Edward Street",
-        "neighbourhood": "Sunset",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 3.42,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Sunset"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -5316,14 +5317,14 @@
         "name": "Bobolink Park",
         "parkid": 191,
         "street_address": "2510 Hoylake Avenue",
-        "intersection": "Hoylake Avenue & Muirfield Drive",
-        "neighbourhood": "Victoria-Fraserview",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 3.82,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Victoria-Fraserview"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -5342,14 +5343,14 @@
         "name": "English Bay Beach Park",
         "parkid": 201,
         "street_address": "1700 Beach Avenue",
-        "intersection": "Beach Avenue & Bidwell Street",
-        "neighbourhood": "West End",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 9.83,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "West End"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -5368,14 +5369,14 @@
         "name": "Stanley Park",
         "parkid": 206,
         "street_address": "2000 W Georgia Street",
-        "intersection": "W Georgia Street & Chilco Street",
-        "neighbourhood": "West End",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 400.0,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "West End"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -5394,14 +5395,14 @@
         "name": "Rosemary Brown Park",
         "parkid": 208,
         "street_address": "2299 Redbud Lane",
-        "intersection": "W 11th Avenue & Vine Street",
-        "neighbourhood": "Kitsilano",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.12,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Kitsilano"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -5420,14 +5421,14 @@
         "name": "Sahalli Park",
         "parkid": 212,
         "street_address": "2300 Fraser Street",
-        "intersection": "E 7th Avenue & Fraser Street",
-        "neighbourhood": "Mount Pleasant",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.06,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Mount Pleasant"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -5446,14 +5447,14 @@
         "name": "Jericho Beach Park",
         "parkid": 218,
         "street_address": "3941 Point Grey Road",
-        "intersection": "Point Grey Road & Wallace Street",
-        "neighbourhood": "West Point Grey",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 46.71,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "West Point Grey"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -5472,14 +5473,14 @@
         "name": "Locarno Park",
         "parkid": 219,
         "street_address": "4445 NW Marine Drive",
-        "intersection": "NW Marine Drive & Trimble Street",
-        "neighbourhood": "West Point Grey",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 19.0,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "West Point Grey"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -5498,14 +5499,14 @@
         "name": "Oak Meadows Park",
         "parkid": 228,
         "street_address": "899 W 37th Avenue",
-        "intersection": "W 37th Avenue & Oak Street",
-        "neighbourhood": "South Cambie",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 5.0,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "South Cambie"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -5524,14 +5525,14 @@
         "name": "Aberdeen Park",
         "parkid": 234,
         "street_address": "3525 Foster Avenue",
-        "intersection": "Foster Avenue & Aberdeen Street",
-        "neighbourhood": "Renfrew-Collingwood",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 1.0,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Renfrew-Collingwood"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -5550,14 +5551,14 @@
         "name": "Ebisu Park",
         "parkid": 236,
         "street_address": "8805 Olser Street",
-        "intersection": "W 72nd Avenue & Olser Street",
-        "neighbourhood": "Marpole",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.4,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Marpole"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -5576,14 +5577,14 @@
         "name": "Hinge Park",
         "parkid": 240,
         "street_address": "215 W 1st Avenue",
-        "intersection": "W 1st Avenue & Columbia Street",
-        "neighbourhood": "Mount Pleasant",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.95,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Mount Pleasant"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -5602,14 +5603,14 @@
         "name": "Trillium Park",
         "parkid": 245,
         "street_address": "600 National Avenue",
-        "intersection": "National Avenue & Thornton Street",
-        "neighbourhood": "Strathcona",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 3.05,
         "facilities": "有",
         "washrooms": "有",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Strathcona"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -5628,14 +5629,14 @@
         "name": "McAuley Park",
         "parkid": 247,
         "street_address": "699 Kingsway",
-        "intersection": "Kingsway & Fraser Street",
-        "neighbourhood": "Mount Pleasant",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.0,
         "facilities": "無",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Mount Pleasant"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",
@@ -5654,14 +5655,14 @@
         "name": "s??q?lxen?m'ts'exwts'a?xwi7",
         "parkid": 248,
         "street_address": "860 Richards Street",
-        "intersection": "Richards Street & Smithe Street",
-        "neighbourhood": "Downtown",
+        "intersection": "",
+        "neighbourhood": "",
         "hectare": 0.32,
         "facilities": "有",
         "washrooms": "無",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Downtown"
+        "local_area": "Vancouver"
       },
       "geometry": {
         "type": "Point",

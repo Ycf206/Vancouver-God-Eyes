@@ -1,0 +1,25 @@
+# ==============================================================================
+# 溫哥華上帝之眼 (Vancouver God's Eye) - 定期資料集更新排程 (Cronjob)
+# ==============================================================================
+# 涵蓋 9 項每 6 個月更新的溫哥華開放資料集：
+# 1. 公園 (Parks)
+# 2. 休憩設施 (Parks Facilities)
+# 3. 社區花園 (Community Gardens)
+# 4. 飲水器 (Drinking Fountains)
+# 5. 公共廁所 (Public Washrooms)
+# 6. 學校 (Schools)
+# 7. 圖書館 (Libraries)
+# 8. 食品攤販 (Food Vendors)
+# 9. 無家者庇護所 (Homeless Shelter Locations)
+# ==============================================================================
+
+# 【方式一：OCI 主機原生 Linux Crontab 排程】(每半年 1/1 與 7/1 凌晨 03:00 自動執行)
+# 在 OCI 虛擬主機上執行 `crontab -e` 並加入以下設定：
+0 3 1 1,7 * cd /home/ubuntu/Vancouver-God-Eyes && docker compose exec -T backend python scripts/update_open_data.py >> /var/log/gods_eye_open_data_cron.log 2>&1
+
+# 【方式二：直接呼叫後端 API 觸發】(可用於外部排程服務如 cron-job.org 或 curl)
+0 3 1 1,7 * curl -X POST http://localhost:8000/api/admin/update-open-data >> /var/log/gods_eye_api_cron.log 2>&1
+
+# 【方式三：GitHub Actions 雲端排程 (已預設啟用)】
+# 已於 .github/workflows/update-datasets.yml 配置 GitHub Actions 雲端 Cron，
+# 即使本機關機或虛擬主機維護，GitHub 也會每 6 個月自動抓取最新資料並推送至主分支。
