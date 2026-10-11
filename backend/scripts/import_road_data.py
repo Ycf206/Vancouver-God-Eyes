@@ -169,23 +169,32 @@ def import_single_facility_type(facility_type, db=None):
         if should_close:
             db.close()
 
-def import_road_facilities():
+def import_road_facilities(target_types=None):
     print("=" * 60)
-    print("🚦 Starting Municipal Road Facilities Data Import")
+    print("🚦 Starting Municipal Facilities Data Import")
     print(f"📅 Timestamp: {datetime.utcnow().isoformat()}Z")
+    if target_types:
+        print(f"🎯 Target facilities: {', '.join(target_types)}")
+    else:
+        print("🎯 Target facilities: ALL")
     print("=" * 60)
     
     models.Base.metadata.create_all(bind=database.engine)
     db = database.SessionLocal()
     
     try:
-        for conf in DATASETS:
+        datasets_to_run = DATASETS
+        if target_types:
+            datasets_to_run = [c for c in DATASETS if c["facility_type"] in target_types]
+            
+        for conf in datasets_to_run:
             facility_type = conf["facility_type"]
             import_single_facility_type(facility_type, db)
     finally:
         db.close()
         
-    print("\n🎉 Road facilities data import finished successfully!")
+    print("\n🎉 Facilities data import finished successfully!")
 
 if __name__ == "__main__":
-    import_road_facilities()
+    targets = sys.argv[1:] if len(sys.argv) > 1 else None
+    import_road_facilities(targets)
