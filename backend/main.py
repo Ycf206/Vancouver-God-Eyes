@@ -746,6 +746,26 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                 icon = "🚻"
                 layer_key = "publicWashrooms"
                 zoom = 17
+            elif ftype == 'schools':
+                badge = "學校"
+                icon = "🏫"
+                layer_key = "schools"
+                zoom = 16
+            elif ftype == 'libraries':
+                badge = "圖書館"
+                icon = "📚"
+                layer_key = "libraries"
+                zoom = 16
+            elif ftype == 'food_vendors':
+                badge = "食品攤販"
+                icon = "🍱"
+                layer_key = "foodVendors"
+                zoom = 17
+            elif ftype == 'homeless_shelters':
+                badge = "庇護所"
+                icon = "🏠"
+                layer_key = "homelessShelters"
+                zoom = 16
 
             sub_parts = [badge]
             if ftype == 'safety_cameras' and f.details and isinstance(f.details, dict) and f.details.get('camera_type'):
@@ -786,6 +806,26 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                     sub_parts.append(str(f.details.get('washroom_type')))
                 if f.details.get('wheelchair_access'):
                     sub_parts.append(str(f.details.get('wheelchair_access')))
+            elif ftype == 'schools' and f.details and isinstance(f.details, dict):
+                if f.details.get('school_category_zh'):
+                    sub_parts.append(str(f.details.get('school_category_zh')))
+                if f.details.get('address'):
+                    sub_parts.append(str(f.details.get('address')))
+            elif ftype == 'libraries' and f.details and isinstance(f.details, dict):
+                if f.details.get('address'):
+                    sub_parts.append(str(f.details.get('address')))
+                elif f.local_area:
+                    sub_parts.append(f.local_area)
+            elif ftype == 'food_vendors' and f.details and isinstance(f.details, dict):
+                if f.details.get('description'):
+                    sub_parts.append(str(f.details.get('description')))
+                if f.details.get('location_desc'):
+                    sub_parts.append(str(f.details.get('location_desc')))
+            elif ftype == 'homeless_shelters' and f.details and isinstance(f.details, dict):
+                if f.details.get('category'):
+                    sub_parts.append(str(f.details.get('category')))
+                if f.details.get('meals'):
+                    sub_parts.append(str(f.details.get('meals')))
             elif f.local_area:
                 sub_parts.append(f.local_area)
             if f.details and isinstance(f.details, dict):

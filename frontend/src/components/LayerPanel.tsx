@@ -6,7 +6,7 @@ import {
   Map, Satellite, Sun, Moon, Bus, Layers, CircleDot, Route, Ship, 
   CircleDollarSign, Accessibility, Bike, Zap, Scooter, Camera, Siren, 
   Flame, Building2, Hospital, ChevronLeft, Trees, Footprints, Flower2, 
-  Droplets, Bath, Leaf, Landmark
+  Droplets, Bath, Leaf, Landmark, GraduationCap, BookOpen, UtensilsCrossed, Bed, Heart
 } from 'lucide-react';
 
 export default function LayerPanel() {
@@ -193,6 +193,26 @@ export default function LayerPanel() {
             <LayerButton layerKey="sharedBikes" label="共享單車" icon={Bike} colorClass="text-emerald-400" activeBg="bg-[#14291f]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
             <LayerButton layerKey="trafficCameras" label="交通攝影機" icon={Camera} colorClass="text-cyan-400" activeBg="bg-[#14262b]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.15)]" />
             <LayerButton layerKey="safetyCameras" label="路口安全相機" icon={Siren} colorClass="text-rose-400" activeBg="bg-[#2b171c]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.15)]" />
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div className="w-full h-px bg-[#26282d]"></div>
+
+        {/* Lifestyle Row (生活) */}
+        <div className="flex flex-col gap-1.5">
+          <div className="text-[10px] font-bold text-amber-400 tracking-wider flex items-center justify-between">
+            <div className="flex items-center gap-1">
+              <Heart className="w-3 h-3 text-amber-400" />
+              <span>生活</span>
+            </div>
+            <span className="text-[9px] text-amber-500/70 font-mono">LIFESTYLE</span>
+          </div>
+          <div className="grid grid-cols-2 gap-1">
+            <LayerButton layerKey="schools" label="學校" icon={GraduationCap} colorClass="text-blue-400" activeBg="bg-[#142334]" activeBorder="border-blue-500/50" activeShadow="shadow-[0_0_6px_rgba(59,130,246,0.15)]" />
+            <LayerButton layerKey="libraries" label="圖書館" icon={BookOpen} colorClass="text-amber-400" activeBg="bg-[#292215]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
+            <LayerButton layerKey="foodVendors" label="食品攤販" icon={UtensilsCrossed} colorClass="text-orange-400" activeBg="bg-[#2b1e16]" activeBorder="border-orange-500/50" activeShadow="shadow-[0_0_6px_rgba(251,146,60,0.15)]" />
+            <LayerButton layerKey="homelessShelters" label="無家者庇護所" icon={Bed} colorClass="text-rose-400" activeBg="bg-[#2a171d]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.15)]" />
           </div>
         </div>
 

@@ -211,6 +211,10 @@ export default function TopBar() {
                       item.category === 'community_centres' ? 'bg-violet-950/80 text-violet-300 border-violet-800/60' :
                       item.category === 'escooter' ? 'bg-lime-950/80 text-lime-300 border-lime-800/60' :
                       item.category === 'ev_charging' ? 'bg-emerald-950/80 text-emerald-300 border-emerald-800/60' :
+                      item.category === 'schools' ? 'bg-blue-950/80 text-blue-300 border-blue-800/60' :
+                      item.category === 'libraries' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
+                      item.category === 'food_vendors' ? 'bg-orange-950/80 text-orange-300 border-orange-800/60' :
+                      item.category === 'homeless_shelters' ? 'bg-rose-950/80 text-rose-300 border-rose-800/60' :
                       'bg-gray-800 text-gray-300 border-gray-700'
                     }`}>
                       {item.badge}

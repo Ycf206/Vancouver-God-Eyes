@@ -50,6 +50,10 @@ export interface UIState {
     communityGardens: boolean;
     drinkingFountains: boolean;
     publicWashrooms: boolean;
+    schools: boolean;
+    libraries: boolean;
+    foodVendors: boolean;
+    homelessShelters: boolean;
   };
   toggleLayer: (layer: keyof UIState['layers']) => void;
   enableLayer: (layer: keyof UIState['layers']) => void;
@@ -94,6 +98,10 @@ export const useUIStore = create<UIState>()(
         communityGardens: false,
         drinkingFountains: false,
         publicWashrooms: false,
+        schools: false,
+        libraries: false,
+        foodVendors: false,
+        homelessShelters: false,
       },
       toggleLayer: (layer) =>
         set((state) => ({

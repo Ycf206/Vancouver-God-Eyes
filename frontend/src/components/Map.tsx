@@ -318,6 +318,10 @@ export default function AppMap() {
     style.sources['community-gardens'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/community_gardens` };
     style.sources['drinking-fountains'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/drinking_fountains` };
     style.sources['public-washrooms'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/public_washrooms` };
+    style.sources['schools'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/schools` };
+    style.sources['libraries'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/libraries` };
+    style.sources['food-vendors'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/food_vendors` };
+    style.sources['homeless-shelters'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/homeless_shelters` };
 
     // Bus Routes
     if (layers.busRoutes) {
@@ -920,6 +924,126 @@ export default function AppMap() {
       });
     }
 
+    // Life Facilities: Schools (學校)
+    if (layers.schools) {
+      style.layers.push({
+        id: 'schools-layer',
+        type: 'circle',
+        source: 'schools',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 5, 15, 8.5, 17, 11],
+          'circle-color': '#3b82f6',
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'schools-symbol-layer',
+        type: 'symbol',
+        source: 'schools',
+        minzoom: 15,
+        layout: {
+          'text-field': '🏫',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 15, 11, 17, 14],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+    }
+
+    // Life Facilities: Libraries (圖書館)
+    if (layers.libraries) {
+      style.layers.push({
+        id: 'libraries-layer',
+        type: 'circle',
+        source: 'libraries',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 5, 15, 8.5, 17, 11],
+          'circle-color': '#f59e0b',
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'libraries-symbol-layer',
+        type: 'symbol',
+        source: 'libraries',
+        minzoom: 15,
+        layout: {
+          'text-field': '📚',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 15, 11, 17, 14],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+    }
+
+    // Life Facilities: Food Vendors (食品攤販)
+    if (layers.foodVendors) {
+      style.layers.push({
+        id: 'food-vendors-layer',
+        type: 'circle',
+        source: 'food-vendors',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 5, 15, 8.5, 17, 11],
+          'circle-color': '#f97316',
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'food-vendors-symbol-layer',
+        type: 'symbol',
+        source: 'food-vendors',
+        minzoom: 15,
+        layout: {
+          'text-field': '🍱',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 15, 11, 17, 14],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+    }
+
+    // Life Facilities: Homeless Shelters (無家者庇護所)
+    if (layers.homelessShelters) {
+      style.layers.push({
+        id: 'homeless-shelters-layer',
+        type: 'circle',
+        source: 'homeless-shelters',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 5, 15, 8.5, 17, 11],
+          'circle-color': '#f43f5e',
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'homeless-shelters-symbol-layer',
+        type: 'symbol',
+        source: 'homeless-shelters',
+        minzoom: 15,
+        layout: {
+          'text-field': '🏠',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 15, 11, 17, 14],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+    }
+
     return style;
   }, [
     layers.skytrainRoutes, 
@@ -945,6 +1069,10 @@ export default function AppMap() {
     layers.communityGardens,
     layers.drinkingFountains,
     layers.publicWashrooms,
+    layers.schools,
+    layers.libraries,
+    layers.foodVendors,
+    layers.homelessShelters,
     mapStyleType
   ]);
 
@@ -995,7 +1123,15 @@ export default function AppMap() {
           'drinking-fountains-layer',
           'drinking-fountains-symbol-layer',
           'public-washrooms-layer',
-          'public-washrooms-symbol-layer'
+          'public-washrooms-symbol-layer',
+          'schools-layer',
+          'schools-symbol-layer',
+          'libraries-layer',
+          'libraries-symbol-layer',
+          'food-vendors-layer',
+          'food-vendors-symbol-layer',
+          'homeless-shelters-layer',
+          'homeless-shelters-symbol-layer'
         ]}
         onClick={(e) => {
           const feature = e.features?.[0];
@@ -1043,7 +1179,11 @@ export default function AppMap() {
             layerId.startsWith('parks') ||
             layerId.startsWith('community-gardens') ||
             layerId.startsWith('drinking-fountains') ||
-            layerId.startsWith('public-washrooms')
+            layerId.startsWith('public-washrooms') ||
+            layerId.startsWith('schools') ||
+            layerId.startsWith('libraries') ||
+            layerId.startsWith('food-vendors') ||
+            layerId.startsWith('homeless-shelters')
           ) {
             setSelectedStop(null);
             const props = feature.properties || {};
@@ -1393,7 +1533,11 @@ export default function AppMap() {
                     selectedFacility.facility_type === 'parks_facilities' ? 'bg-teal-600' :
                     selectedFacility.facility_type === 'community_gardens' ? 'bg-lime-600' :
                     selectedFacility.facility_type === 'drinking_fountains' ? 'bg-sky-500' :
-                    selectedFacility.facility_type === 'public_washrooms' ? 'bg-cyan-500' : 'bg-violet-500'
+                    selectedFacility.facility_type === 'public_washrooms' ? 'bg-cyan-500' :
+                    selectedFacility.facility_type === 'schools' ? 'bg-blue-500' :
+                    selectedFacility.facility_type === 'libraries' ? 'bg-amber-500' :
+                    selectedFacility.facility_type === 'food_vendors' ? 'bg-orange-500' :
+                    selectedFacility.facility_type === 'homeless_shelters' ? 'bg-rose-500' : 'bg-violet-500'
                   }`}></span>
                   <div>
                     <h3 className="font-bold text-gray-900 text-sm leading-tight">{selectedFacility.name}</h3>
@@ -2159,6 +2303,154 @@ export default function AppMap() {
                     <div className="bg-gray-50 p-2 rounded text-[11px] text-gray-600 border border-gray-100">
                       <span className="font-semibold block mb-0.5 text-gray-700">備註說明：</span>
                       <span>{selectedFacility.properties.notes}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Schools Details */}
+              {selectedFacility.facility_type === 'schools' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-blue-50/80 p-2.5 rounded border border-blue-200 flex flex-col gap-1.5 text-[11px]">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">學校類別</span>
+                      <span className="font-bold text-blue-900 bg-blue-100/80 px-1.5 py-0.5 rounded">
+                        {selectedFacility.properties.school_category_zh || selectedFacility.properties.school_category || '學校'}
+                      </span>
+                    </div>
+                    {selectedFacility.properties.address && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>校園地址</span>
+                        <span className="font-semibold text-gray-800 text-right truncate max-w-[170px]">
+                          {selectedFacility.properties.address}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.local_area && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>所在學區</span>
+                        <span className="font-medium text-gray-800">{selectedFacility.local_area}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Libraries Details */}
+              {selectedFacility.facility_type === 'libraries' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-amber-50/80 p-2.5 rounded border border-amber-200 flex flex-col gap-1.5 text-[11px]">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">圖書館分館</span>
+                      <span className="font-bold text-amber-900 bg-amber-100/80 px-1.5 py-0.5 rounded">
+                        {selectedFacility.properties.branch_name || selectedFacility.name}
+                      </span>
+                    </div>
+                    {selectedFacility.properties.address && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>館址地址</span>
+                        <span className="font-semibold text-gray-800 text-right truncate max-w-[170px]">
+                          {selectedFacility.properties.address}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.local_area && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>服務轄區</span>
+                        <span className="font-medium text-gray-800">{selectedFacility.local_area}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {selectedFacility.properties.urllink && (
+                    <div className="pt-1 border-t border-gray-100">
+                      <a
+                        href={selectedFacility.properties.urllink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-amber-600 hover:bg-amber-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
+                      >
+                        前往 VPL 溫哥華市立圖書館官網 ↗
+                      </a>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Food Vendors Details */}
+              {selectedFacility.facility_type === 'food_vendors' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-orange-50/80 p-2.5 rounded border border-orange-200 flex flex-col gap-1.5 text-[11px]">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">營業狀態</span>
+                      <span className="font-bold text-emerald-800 bg-emerald-100/80 px-1.5 py-0.5 rounded">
+                        {selectedFacility.properties.status || '營運中'}
+                      </span>
+                    </div>
+                    {selectedFacility.properties.description && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>餐飲特色</span>
+                        <span className="font-bold text-orange-900">
+                          {selectedFacility.properties.description}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.vendor_code && (
+                      <div className="flex justify-between items-center text-gray-500 text-[10px]">
+                        <span>攤販編號</span>
+                        <span className="font-mono text-gray-700">{selectedFacility.properties.vendor_code}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {selectedFacility.properties.location_desc && (
+                    <div className="bg-gray-50 p-2 rounded text-[11px] text-gray-600 border border-gray-100">
+                      <span className="font-semibold block mb-0.5 text-gray-700">擺攤營業位置：</span>
+                      <span>{selectedFacility.properties.location_desc}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Homeless Shelters Details */}
+              {selectedFacility.facility_type === 'homeless_shelters' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-rose-50/80 p-2.5 rounded border border-rose-200 flex flex-col gap-1.5 text-[11px]">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">收容對象</span>
+                      <span className="font-bold text-rose-900 bg-rose-100/80 px-1.5 py-0.5 rounded">
+                        {selectedFacility.properties.category || '通用收容'}
+                      </span>
+                    </div>
+                    {selectedFacility.local_area && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>所在社區</span>
+                        <span className="font-medium text-gray-800">{selectedFacility.local_area}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-1 text-[10.5px]">
+                    <div className="bg-gray-50 p-1.5 rounded border border-gray-100 text-center">
+                      <span className="text-gray-500 block text-[9.5px]">供餐</span>
+                      <span className="font-semibold text-gray-800">{selectedFacility.properties.meals || '未註記'}</span>
+                    </div>
+                    <div className="bg-gray-50 p-1.5 rounded border border-gray-100 text-center">
+                      <span className="text-gray-500 block text-[9.5px]">寵物</span>
+                      <span className="font-semibold text-gray-800">{selectedFacility.properties.pets || '未註記'}</span>
+                    </div>
+                    <div className="bg-gray-50 p-1.5 rounded border border-gray-100 text-center">
+                      <span className="text-gray-500 block text-[9.5px]">推車</span>
+                      <span className="font-semibold text-gray-800">{selectedFacility.properties.carts || '未註記'}</span>
+                    </div>
+                  </div>
+
+                  {selectedFacility.properties.phone && (
+                    <div className="flex justify-between items-center bg-gray-50 p-2 rounded border border-gray-100 text-[11px]">
+                      <span className="text-gray-500">聯絡專線</span>
+                      <a href={`tel:${selectedFacility.properties.phone}`} className="font-bold text-blue-600 hover:underline">
+                        📞 {selectedFacility.properties.phone}
+                      </a>
                     </div>
                   )}
                 </div>

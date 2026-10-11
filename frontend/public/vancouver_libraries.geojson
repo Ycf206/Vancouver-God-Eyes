@@ -1,0 +1,447 @@
+{
+  "type": "FeatureCollection",
+  "generator": "VancouverGodsEye",
+  "total_count": 22,
+  "features": [
+    {
+      "type": "Feature",
+      "id": "lib_1",
+      "properties": {
+        "id": "lib_1",
+        "facility_type": "libraries",
+        "name": "Fraserview 分館 (VPL)",
+        "branch_name": "Fraserview",
+        "address": "1950 Argyle Drive",
+        "urllink": "http://www.vpl.ca/branches/details/fraserview_branch",
+        "local_area": "Victoria-Fraserview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0669,
+          49.2197
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "lib_2",
+      "properties": {
+        "id": "lib_2",
+        "facility_type": "libraries",
+        "name": "Outreach Services 分館 (VPL)",
+        "branch_name": "Outreach Services",
+        "address": "302-345 Robson St",
+        "urllink": "http://www.vpl.ca/branches/details/outreach_branch",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1156,
+          49.2797
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "lib_3",
+      "properties": {
+        "id": "lib_3",
+        "facility_type": "libraries",
+        "name": "Kitsilano 分館 (VPL)",
+        "branch_name": "Kitsilano",
+        "address": "2425 Macdonald St",
+        "urllink": "http://www.vpl.ca/branches/details/kitsilano_branch",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1687,
+          49.2647
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "lib_4",
+      "properties": {
+        "id": "lib_4",
+        "facility_type": "libraries",
+        "name": "Renfrew 分館 (VPL)",
+        "branch_name": "Renfrew",
+        "address": "2969 E 22nd Av",
+        "urllink": "http://www.vpl.ca/branches/details/renfrew_branch",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.043,
+          49.2524
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "lib_5",
+      "properties": {
+        "id": "lib_5",
+        "facility_type": "libraries",
+        "name": "Britannia 分館 (VPL)",
+        "branch_name": "Britannia",
+        "address": "1661 Napier St",
+        "urllink": "http://www.vpl.ca/branches/details/britannia_branch",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0738,
+          49.2756
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "lib_6",
+      "properties": {
+        "id": "lib_6",
+        "facility_type": "libraries",
+        "name": "Joe Fortes 分館 (VPL)",
+        "branch_name": "Joe Fortes",
+        "address": "870 Denman St",
+        "urllink": "http://www.vpl.ca/branches/details/joe_fortes_branch",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1361,
+          49.2899
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "lib_7",
+      "properties": {
+        "id": "lib_7",
+        "facility_type": "libraries",
+        "name": "Kerrisdale 分館 (VPL)",
+        "branch_name": "Kerrisdale",
+        "address": "2112 W 42nd Av",
+        "urllink": "http://www.vpl.ca/branches/details/kerrisdale_branch",
+        "local_area": "Kerrisdale"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1571,
+          49.2332
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "lib_8",
+      "properties": {
+        "id": "lib_8",
+        "facility_type": "libraries",
+        "name": "Marpole 分館 (VPL)",
+        "branch_name": "Marpole",
+        "address": "8386 Granville St",
+        "urllink": "http://www.vpl.ca/branches/details/marpole_branch",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14,
+          49.2104
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "lib_9",
+      "properties": {
+        "id": "lib_9",
+        "facility_type": "libraries",
+        "name": "Carnegie 分館 (VPL)",
+        "branch_name": "Carnegie",
+        "address": "401 Main St",
+        "urllink": "http://www.vpl.ca/branches/details/carnegie_branch",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1001,
+          49.2811
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "lib_10",
+      "properties": {
+        "id": "lib_10",
+        "facility_type": "libraries",
+        "name": "Central Branch 分館 (VPL)",
+        "branch_name": "Central Branch",
+        "address": "350 W Georgia St",
+        "urllink": "http://www.vpl.ca/branches/details/central_library",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1156,
+          49.2797
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "lib_11",
+      "properties": {
+        "id": "lib_11",
+        "facility_type": "libraries",
+        "name": "Kensington 分館 (VPL)",
+        "branch_name": "Kensington",
+        "address": "1428 Cedar Cottage Mews",
+        "urllink": "http://www.vpl.ca/branches/details/kensington_branch",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0753,
+          49.2491
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "lib_12",
+      "properties": {
+        "id": "lib_12",
+        "facility_type": "libraries",
+        "name": "Oakridge 分館 (VPL)",
+        "branch_name": "Oakridge",
+        "address": "191-650 W 41st Av",
+        "urllink": "http://www.vpl.ca/branches/details/oakridge_branch",
+        "local_area": "Oakridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1172,
+          49.2327
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "lib_13",
+      "properties": {
+        "id": "lib_13",
+        "facility_type": "libraries",
+        "name": "Terry Salman 分館 (VPL)",
+        "branch_name": "Terry Salman",
+        "address": "4575 Clancy Loranger Way",
+        "urllink": "http://www.vpl.ca/location/terry-salman-branch",
+        "local_area": "Riley Park"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1079,
+          49.2438
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "lib_14",
+      "properties": {
+        "id": "lib_14",
+        "facility_type": "libraries",
+        "name": "Strathcona 分館 (VPL)",
+        "branch_name": "Strathcona",
+        "address": "592 E Pender St",
+        "urllink": "http://www.vpl.ca/branches/details/strathcona_branch",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0915,
+          49.2798
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "lib_15",
+      "properties": {
+        "id": "lib_15",
+        "facility_type": "libraries",
+        "name": "Champlain Heights 分館 (VPL)",
+        "branch_name": "Champlain Heights",
+        "address": "7110 Kerr St",
+        "urllink": "http://www.vpl.ca/branches/details/champlain_heights_branch",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0402,
+          49.2191
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "lib_16",
+      "properties": {
+        "id": "lib_16",
+        "facility_type": "libraries",
+        "name": "Firehall 分館 (VPL)",
+        "branch_name": "Firehall",
+        "address": "1455 W 10th Av",
+        "urllink": "http://www.vpl.ca/branches/details/firehall_branch",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1376,
+          49.2629
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "lib_17",
+      "properties": {
+        "id": "lib_17",
+        "facility_type": "libraries",
+        "name": "South Hill 分館 (VPL)",
+        "branch_name": "South Hill",
+        "address": "6076 Fraser St",
+        "urllink": "http://www.vpl.ca/branches/details/south_hill_branch",
+        "local_area": "Sunset"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0903,
+          49.2295
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "lib_18",
+      "properties": {
+        "id": "lib_18",
+        "facility_type": "libraries",
+        "name": "West Point Grey 分館 (VPL)",
+        "branch_name": "West Point Grey",
+        "address": "4480 W 10th Av",
+        "urllink": "http://www.vpl.ca/branches/details/west_point_grey_branch",
+        "local_area": "West Point Grey"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.2086,
+          49.2635
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "lib_19",
+      "properties": {
+        "id": "lib_19",
+        "facility_type": "libraries",
+        "name": "Collingwood 分館 (VPL)",
+        "branch_name": "Collingwood",
+        "address": "2985 Kingsway",
+        "urllink": "http://www.vpl.ca/branches/details/collingwood_branch",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0426,
+          49.2362
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "lib_20",
+      "properties": {
+        "id": "lib_20",
+        "facility_type": "libraries",
+        "name": "Mount Pleasant 分館 (VPL)",
+        "branch_name": "Mount Pleasant",
+        "address": "1 Kingsway",
+        "urllink": "http://www.vpl.ca/branches/details/mount_pleasant_branch",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1002,
+          49.2643
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "lib_21",
+      "properties": {
+        "id": "lib_21",
+        "facility_type": "libraries",
+        "name": "Dunbar 分館 (VPL)",
+        "branch_name": "Dunbar",
+        "address": "4515 Dunbar St",
+        "urllink": "http://www.vpl.ca/branches/details/dunbar_branch",
+        "local_area": "Dunbar-Southlands"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1856,
+          49.246
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "lib_22",
+      "properties": {
+        "id": "lib_22",
+        "facility_type": "libraries",
+        "name": "Hastings 分館 (VPL)",
+        "branch_name": "Hastings",
+        "address": "2674 E Hastings St",
+        "urllink": "http://www.vpl.ca/branches/details/hastings_branch",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05,
+          49.2809
+        ]
+      }
+    }
+  ]
+}

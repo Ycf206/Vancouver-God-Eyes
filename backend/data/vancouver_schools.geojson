@@ -1,0 +1,3887 @@
+{
+  "type": "FeatureCollection",
+  "generator": "VancouverGodsEye",
+  "total_count": 194,
+  "features": [
+    {
+      "type": "Feature",
+      "id": "school_1",
+      "properties": {
+        "id": "school_1",
+        "facility_type": "schools",
+        "name": "Champlain Heights Annex",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "7835 Champlain Crescent",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.03054968939806,
+          49.2140784317513
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_2",
+      "properties": {
+        "id": "school_2",
+        "facility_type": "schools",
+        "name": "Charles Dickens Annex",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "3877 Glen Drive",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.08271031,
+          49.2502130610676
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_3",
+      "properties": {
+        "id": "school_3",
+        "facility_type": "schools",
+        "name": "Crofton House",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "3200 W 41st Av",
+        "local_area": "Kerrisdale"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.17721815907593,
+          49.233677833584544
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_4",
+      "properties": {
+        "id": "school_4",
+        "facility_type": "schools",
+        "name": "David Livingstone Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "315 E 23rd Av",
+        "local_area": "Riley Park"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09798144,
+          49.2507533360676
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_5",
+      "properties": {
+        "id": "school_5",
+        "facility_type": "schools",
+        "name": "G F Strong School Program",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "5025 Willow St",
+        "local_area": "South Cambie"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12579095999999,
+          49.23963096106753
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_6",
+      "properties": {
+        "id": "school_6",
+        "facility_type": "schools",
+        "name": "General Brock Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "4860 Main St",
+        "local_area": "Riley Park"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10063141,
+          49.24121522106756
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_7",
+      "properties": {
+        "id": "school_7",
+        "facility_type": "schools",
+        "name": "Lord Selkirk Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "1750 E 22nd Av",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.06900705,
+          49.249691952067586
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_8",
+      "properties": {
+        "id": "school_8",
+        "facility_type": "schools",
+        "name": "Pattison High School",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "981 Nelson St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12511331828341,
+          49.28108362095662
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_9",
+      "properties": {
+        "id": "school_9",
+        "facility_type": "schools",
+        "name": "Pattison School",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "981 Nelson St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12511331828341,
+          49.28108362095662
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_10",
+      "properties": {
+        "id": "school_10",
+        "facility_type": "schools",
+        "name": "Sir Charles Kingsford-Smith",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "6901 Elliott St",
+        "local_area": "Victoria-Fraserview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0557042,
+          49.221596673067474
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_11",
+      "properties": {
+        "id": "school_11",
+        "facility_type": "schools",
+        "name": "St Francis Xavier",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "428 Great Northern Way",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09452064422761,
+          49.26646231107508
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_12",
+      "properties": {
+        "id": "school_12",
+        "facility_type": "schools",
+        "name": "The Westside School",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "788 Beatty St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11344354347607,
+          49.27757064431133
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_13",
+      "properties": {
+        "id": "school_13",
+        "facility_type": "schools",
+        "name": "Lord Roberts Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "1100 Bidwell St",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13784476,
+          49.28678528206777
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_14",
+      "properties": {
+        "id": "school_14",
+        "facility_type": "schools",
+        "name": "Queen Alexandra Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "1300 E Broadway",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.07592057,
+          49.261970549067655
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_15",
+      "properties": {
+        "id": "school_15",
+        "facility_type": "schools",
+        "name": "Quilchena Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "5300 Maple St",
+        "local_area": "Shaughnessy"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.15157081,
+          49.23724621006754
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_16",
+      "properties": {
+        "id": "school_16",
+        "facility_type": "schools",
+        "name": "Simon Fraser Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "100 W 15th Av",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10819689943345,
+          49.25717135541721
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_17",
+      "properties": {
+        "id": "school_17",
+        "facility_type": "schools",
+        "name": "Sir Alexander Mackenzie StrongStart",
+        "school_category": "StrongStart BC",
+        "school_category_zh": "StrongStart BC",
+        "address": "960 E 39th Av",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.08671432,
+          49.23453643506752
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_18",
+      "properties": {
+        "id": "school_18",
+        "facility_type": "schools",
+        "name": "Sir Wilfrid Laurier Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "7350 Laurel St",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12504721,
+          49.21776253406744
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_19",
+      "properties": {
+        "id": "school_19",
+        "facility_type": "schools",
+        "name": "Tecumseh Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "1850 E 41st Av",
+        "local_area": "Victoria-Fraserview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.06800394,
+          49.2320557420675
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_20",
+      "properties": {
+        "id": "school_20",
+        "facility_type": "schools",
+        "name": "Thunderbird StrongStart Centre",
+        "school_category": "StrongStart BC",
+        "school_category_zh": "StrongStart BC",
+        "address": "2325 Cassiar St",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.03187058558184,
+          49.263648890401456
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_21",
+      "properties": {
+        "id": "school_21",
+        "facility_type": "schools",
+        "name": "Trafalgar Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "4170 Trafalgar St",
+        "local_area": "Arbutus Ridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.16460607,
+          49.250178756067605
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_22",
+      "properties": {
+        "id": "school_22",
+        "facility_type": "schools",
+        "name": "West Coast Christian School",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "15 N Renfrew St",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.04453612333309,
+          49.284984466234356
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_23",
+      "properties": {
+        "id": "school_23",
+        "facility_type": "schools",
+        "name": "David Thompson Secondary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "1755 E 55th Av",
+        "local_area": "Victoria-Fraserview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.07063159999998,
+          49.220439256067465
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_24",
+      "properties": {
+        "id": "school_24",
+        "facility_type": "schools",
+        "name": "Dr Annie B Jamieson Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "6350 Tisdall St",
+        "local_area": "Oakridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12100426,
+          49.22690693506749
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_25",
+      "properties": {
+        "id": "school_25",
+        "facility_type": "schools",
+        "name": "Emily Carr Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "4070 Oak St",
+        "local_area": "South Cambie"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12609640999999,
+          49.2500416520676
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_26",
+      "properties": {
+        "id": "school_26",
+        "facility_type": "schools",
+        "name": "Fraser Academy",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "2294 W 10th Av",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.15727596082289,
+          49.26266070419338
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_27",
+      "properties": {
+        "id": "school_27",
+        "facility_type": "schools",
+        "name": "King George Secondary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "1755 Barclay St",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13644517,
+          49.28982415206781
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_28",
+      "properties": {
+        "id": "school_28",
+        "facility_type": "schools",
+        "name": "Lord Kitchener Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "3455 W King Edward Av",
+        "local_area": "Dunbar-Southlands"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.18024556263893,
+          49.250581806373596
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_29",
+      "properties": {
+        "id": "school_29",
+        "facility_type": "schools",
+        "name": "Madrona School",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "2678 W Broadway",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.16601055529476,
+          49.263528260800655
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_30",
+      "properties": {
+        "id": "school_30",
+        "facility_type": "schools",
+        "name": "Peak House",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "1580 W Broadway",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14026052001878,
+          49.26329988232251
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_31",
+      "properties": {
+        "id": "school_31",
+        "facility_type": "schools",
+        "name": "Queen Victoria Annex",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "1850 E 3rd Av",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.06634874,
+          49.267187849067696
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_32",
+      "properties": {
+        "id": "school_32",
+        "facility_type": "schools",
+        "name": "Renfrew Community Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "3315 E 22nd Av",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.03205805,
+          49.25145777406758
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_33",
+      "properties": {
+        "id": "school_33",
+        "facility_type": "schools",
+        "name": "Sir Wm Van Horne Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "5855 Ontario St",
+        "local_area": "Oakridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10656921,
+          49.23156648606752
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_34",
+      "properties": {
+        "id": "school_34",
+        "facility_type": "schools",
+        "name": "St Anthony of Padua",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "1370 W 73rd Av",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13700792036838,
+          49.20446493818909
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_35",
+      "properties": {
+        "id": "school_35",
+        "facility_type": "schools",
+        "name": "St Patrick's Elementary",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "2850 Quebec St",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1024366967439,
+          49.259762302830595
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_36",
+      "properties": {
+        "id": "school_36",
+        "facility_type": "schools",
+        "name": "Tyee Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "3525 Dumphries St",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.07382164,
+          49.25356935406761
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_37",
+      "properties": {
+        "id": "school_37",
+        "facility_type": "schools",
+        "name": "Vancouver Hebrew Academy",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "1545 W 62nd Av",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1413692647842,
+          49.21547172757715
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_38",
+      "properties": {
+        "id": "school_38",
+        "facility_type": "schools",
+        "name": "Walter Moberly Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "1000 E 59th Av",
+        "local_area": "Sunset"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.08434542,
+          49.216109230067424
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_39",
+      "properties": {
+        "id": "school_39",
+        "facility_type": "schools",
+        "name": "Admiral Seymour StrongStart Centre",
+        "school_category": "StrongStart BC",
+        "school_category_zh": "StrongStart BC",
+        "address": "1130 Keefer St",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.08031429999998,
+          49.27859426906773
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_40",
+      "properties": {
+        "id": "school_40",
+        "facility_type": "schools",
+        "name": "Bayview Community Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "2251 Collingwood St",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.18233379,
+          49.26648700606768
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_41",
+      "properties": {
+        "id": "school_41",
+        "facility_type": "schools",
+        "name": "Canuck Place School Program",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "1690 Matthews Av",
+        "local_area": "Shaughnessy"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14306239951357,
+          49.251669525820965
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_42",
+      "properties": {
+        "id": "school_42",
+        "facility_type": "schools",
+        "name": "Chief Maquinna Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "2684 E 2nd Av",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05058984,
+          49.26788631306769
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_43",
+      "properties": {
+        "id": "school_43",
+        "facility_type": "schools",
+        "name": "David Lloyd George StrongStart Centre",
+        "school_category": "StrongStart BC",
+        "school_category_zh": "StrongStart BC",
+        "address": "8370 Cartier St",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13634890999998,
+          49.209962411067416
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_44",
+      "properties": {
+        "id": "school_44",
+        "facility_type": "schools",
+        "name": "John Henderson StrongStart Centre",
+        "school_category": "StrongStart BC",
+        "school_category_zh": "StrongStart BC",
+        "address": "801 E 54th Av",
+        "local_area": "Sunset"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.08804322,
+          49.22104214306744
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_45",
+      "properties": {
+        "id": "school_45",
+        "facility_type": "schools",
+        "name": "Kitsilano Secondary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "2550 W 10th Av",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.16358941,
+          49.262654772067656
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_46",
+      "properties": {
+        "id": "school_46",
+        "facility_type": "schools",
+        "name": "Magee Secondary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "6360 Maple St",
+        "local_area": "Kerrisdale"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.15153798760876,
+          49.22855386506042
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_47",
+      "properties": {
+        "id": "school_47",
+        "facility_type": "schools",
+        "name": "PALS Autism School",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "2409 E Pender St",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05595432992459,
+          49.28051480952856
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_48",
+      "properties": {
+        "id": "school_48",
+        "facility_type": "schools",
+        "name": "Pacific Spirit School",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "4196 W 4th Av",
+        "local_area": "West Point Grey"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1982460233882,
+          49.267667982326586
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_49",
+      "properties": {
+        "id": "school_49",
+        "facility_type": "schools",
+        "name": "Pierre Elliott Trudeau Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "449 E 62nd Av",
+        "local_area": "Sunset"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.096959,
+          49.21445400406743
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_50",
+      "properties": {
+        "id": "school_50",
+        "facility_type": "schools",
+        "name": "St Andrew's",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "450 E 47th Av",
+        "local_area": "Sunset"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09585589038312,
+          49.22721361145612
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_51",
+      "properties": {
+        "id": "school_51",
+        "facility_type": "schools",
+        "name": "St Francis of Assisi",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "870 Victoria Drive",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.06504858875364,
+          49.276881634743646
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_52",
+      "properties": {
+        "id": "school_52",
+        "facility_type": "schools",
+        "name": "Vancouver College DL",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "5400 Cartier St",
+        "local_area": "Shaughnessy"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1361713344514,
+          49.23495941876865
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_53",
+      "properties": {
+        "id": "school_53",
+        "facility_type": "schools",
+        "name": "Vancouver Formosa Academy",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "5621 Killarney St",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.04636736023019,
+          49.233747421132286
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_54",
+      "properties": {
+        "id": "school_54",
+        "facility_type": "schools",
+        "name": "Waverley Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "6111 Elliott St",
+        "local_area": "Victoria-Fraserview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05578593,
+          49.22783722506748
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_55",
+      "properties": {
+        "id": "school_55",
+        "facility_type": "schools",
+        "name": "Waverley StrongStart Centre",
+        "school_category": "StrongStart BC",
+        "school_category_zh": "StrongStart BC",
+        "address": "6111 Elliott St",
+        "local_area": "Victoria-Fraserview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05578593,
+          49.22783722506748
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_56",
+      "properties": {
+        "id": "school_56",
+        "facility_type": "schools",
+        "name": "York House Little School",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "3274 East Boulevard",
+        "local_area": "Shaughnessy"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.152101,
+          49.25670999906763
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_57",
+      "properties": {
+        "id": "school_57",
+        "facility_type": "schools",
+        "name": "Sir James Douglas Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "2150 Brigadoon Av",
+        "local_area": "Victoria-Fraserview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0646531767478,
+          49.21604932869144
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_58",
+      "properties": {
+        "id": "school_58",
+        "facility_type": "schools",
+        "name": "Alexander Academy",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "688 W Hastings St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11400985419304,
+          49.28500059925005
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_59",
+      "properties": {
+        "id": "school_59",
+        "facility_type": "schools",
+        "name": "Captain James Cook StrongStart Centre",
+        "school_category": "StrongStart BC",
+        "school_category_zh": "StrongStart BC",
+        "address": "3340 E 54th Av",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.03582905,
+          49.219380799067466
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_60",
+      "properties": {
+        "id": "school_60",
+        "facility_type": "schools",
+        "name": "Carnarvon Community Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "3400 Balaclava St",
+        "local_area": "Arbutus Ridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.17355723856548,
+          49.25658742134096
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_61",
+      "properties": {
+        "id": "school_61",
+        "facility_type": "schools",
+        "name": "Dr A R Lord Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "555 Lillooet St",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.03951720287967,
+          49.27964048422215
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_62",
+      "properties": {
+        "id": "school_62",
+        "facility_type": "schools",
+        "name": "Ecole Jules Quesnel Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "3050 Crown St",
+        "local_area": "West Point Grey"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.19253813000002,
+          49.25956780506763
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_63",
+      "properties": {
+        "id": "school_63",
+        "facility_type": "schools",
+        "name": "Family Montessori School",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "4196 W 4th Av",
+        "local_area": "West Point Grey"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1982460233882,
+          49.267667982326586
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_64",
+      "properties": {
+        "id": "school_64",
+        "facility_type": "schools",
+        "name": "G T Cunningham Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "2330 E 37th Av",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05745595,
+          49.23673222606754
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_65",
+      "properties": {
+        "id": "school_65",
+        "facility_type": "schools",
+        "name": "Lord Beaconsfield Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "3663 Penticton St",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05269627000001,
+          49.2521383750676
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_66",
+      "properties": {
+        "id": "school_66",
+        "facility_type": "schools",
+        "name": "Lord Selkirk Annex",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "4444 Dumfries St",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.07246012,
+          49.24532077406758
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_67",
+      "properties": {
+        "id": "school_67",
+        "facility_type": "schools",
+        "name": "Mount Pleasant StrongStart Centre",
+        "school_category": "StrongStart BC",
+        "school_category_zh": "StrongStart BC",
+        "address": "2300 Guelph St",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09399954,
+          49.26396573206767
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_68",
+      "properties": {
+        "id": "school_68",
+        "facility_type": "schools",
+        "name": "Queen Elizabeth Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "4102 W 16th Av",
+        "local_area": "Dunbar-Southlands"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.20112784000001,
+          49.257791772067634
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_69",
+      "properties": {
+        "id": "school_69",
+        "facility_type": "schools",
+        "name": "Shaughnessy Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "4250 Marguerite St",
+        "local_area": "Shaughnessy"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14380998000001,
+          49.24867607506759
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_70",
+      "properties": {
+        "id": "school_70",
+        "facility_type": "schools",
+        "name": "Sir Charles Tupper Secondary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "419 E 24th Av",
+        "local_area": "Riley Park"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09480947999998,
+          49.249753501067595
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_71",
+      "properties": {
+        "id": "school_71",
+        "facility_type": "schools",
+        "name": "St John's School",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "2215 W 10th Av",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1561791428068,
+          49.26317767149081
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_72",
+      "properties": {
+        "id": "school_72",
+        "facility_type": "schools",
+        "name": "St Mary's",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "5239 Joyce St",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.03370590892874,
+          49.237501631148845
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_73",
+      "properties": {
+        "id": "school_73",
+        "facility_type": "schools",
+        "name": "St Patrick Regional Secondary",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "115 E 11th Av",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10260439171995,
+          49.261404544549904
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_74",
+      "properties": {
+        "id": "school_74",
+        "facility_type": "schools",
+        "name": "Thunderbird Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "2325 Cassiar St",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.03187058558184,
+          49.263648890401456
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_75",
+      "properties": {
+        "id": "school_75",
+        "facility_type": "schools",
+        "name": "Vancouver College",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "5400 Cartier St",
+        "local_area": "Shaughnessy"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1361713344514,
+          49.23495941876865
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_76",
+      "properties": {
+        "id": "school_76",
+        "facility_type": "schools",
+        "name": "Westside Montessori Academy",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "3075 Slocan St",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0503919492473,
+          49.256937847571606
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_77",
+      "properties": {
+        "id": "school_77",
+        "facility_type": "schools",
+        "name": "York House School",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "4176 Alexandra St",
+        "local_area": "Shaughnessy"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14034013611547,
+          49.248848218981884
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_78",
+      "properties": {
+        "id": "school_78",
+        "facility_type": "schools",
+        "name": "Edith Cavell Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "500 W 20th Av",
+        "local_area": "South Cambie"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11722884,
+          49.25290710906762
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_79",
+      "properties": {
+        "id": "school_79",
+        "facility_type": "schools",
+        "name": "John Henderson Annex",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "801 E 54th Av",
+        "local_area": "Sunset"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.08804322,
+          49.22104214306744
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_80",
+      "properties": {
+        "id": "school_80",
+        "facility_type": "schools",
+        "name": "Lord Tennyson Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "1936 W 10th Av",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14937705,
+          49.262518934067664
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_81",
+      "properties": {
+        "id": "school_81",
+        "facility_type": "schools",
+        "name": "Norma Rose Point School",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "4102 W 16th Av",
+        "local_area": "Dunbar-Southlands"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.20112784000001,
+          49.257791772067634
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_82",
+      "properties": {
+        "id": "school_82",
+        "facility_type": "schools",
+        "name": "Stratford Hall",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "3000 Commercial Drive",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.06946327228026,
+          49.257469215545306
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_83",
+      "properties": {
+        "id": "school_83",
+        "facility_type": "schools",
+        "name": "Vancouver Alternate",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "1580 W Broadway",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14026052001878,
+          49.26329988232251
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_84",
+      "properties": {
+        "id": "school_84",
+        "facility_type": "schools",
+        "name": "Dr George M Weir Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "2900 E 44th Av",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.04440254,
+          49.22957875906749
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_85",
+      "properties": {
+        "id": "school_85",
+        "facility_type": "schools",
+        "name": "Hastings Community Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "2625 Franklin St",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05057740868249,
+          49.28261095988815
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_86",
+      "properties": {
+        "id": "school_86",
+        "facility_type": "schools",
+        "name": "Mount Pleasant Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "2300 Guelph St",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09399954,
+          49.26396573206767
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_87",
+      "properties": {
+        "id": "school_87",
+        "facility_type": "schools",
+        "name": "Royal Canadian College",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "8610 Ash St",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11860774594169,
+          49.20724201501598
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_88",
+      "properties": {
+        "id": "school_88",
+        "facility_type": "schools",
+        "name": "Sir James Douglas Annex",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "7668 Borden St",
+        "local_area": "Victoria-Fraserview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.07329351,
+          49.214830464067425
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_89",
+      "properties": {
+        "id": "school_89",
+        "facility_type": "schools",
+        "name": "Sir Sandford Fleming Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "1401 E 49th Av",
+        "local_area": "Victoria-Fraserview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.07657409,
+          49.22574768906748
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_90",
+      "properties": {
+        "id": "school_90",
+        "facility_type": "schools",
+        "name": "Sir Wilfred Grenfell Community",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "3323 Wellington Av",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0348073745407,
+          49.242891620676865
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_91",
+      "properties": {
+        "id": "school_91",
+        "facility_type": "schools",
+        "name": "West Point Grey Academy",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "4125 W 8th Av",
+        "local_area": "West Point Grey"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.20150739365414,
+          49.26706634514379
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_92",
+      "properties": {
+        "id": "school_92",
+        "facility_type": "schools",
+        "name": "BC Childrens Hosp School Program",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "5025 Willow St",
+        "local_area": "South Cambie"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12579095999999,
+          49.23963096106753
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_93",
+      "properties": {
+        "id": "school_93",
+        "facility_type": "schools",
+        "name": "Charles Dickens Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "1010 E 17th Av",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.08239063270196,
+          49.254854500002445
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_94",
+      "properties": {
+        "id": "school_94",
+        "facility_type": "schools",
+        "name": "Collingwood StrongStart Centre",
+        "school_category": "StrongStart BC",
+        "school_category_zh": "StrongStart BC",
+        "address": "3417 Euclid Av",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.032313,
+          49.23634859906753
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_95",
+      "properties": {
+        "id": "school_95",
+        "facility_type": "schools",
+        "name": "Columbia College",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "438 Terminal Av",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09507768504591,
+          49.27155962112064
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_96",
+      "properties": {
+        "id": "school_96",
+        "facility_type": "schools",
+        "name": "Dr R E McKechnie Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "7455 Maple St",
+        "local_area": "Kerrisdale"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.15401133,
+          49.21770658906743
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_97",
+      "properties": {
+        "id": "school_97",
+        "facility_type": "schools",
+        "name": "False Creek Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "900 School Green",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12685921,
+          49.26710311106769
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_98",
+      "properties": {
+        "id": "school_98",
+        "facility_type": "schools",
+        "name": "Garibaldi Annex",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "1025 Slocan St",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05026876999999,
+          49.27541639106772
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_99",
+      "properties": {
+        "id": "school_99",
+        "facility_type": "schools",
+        "name": "General Gordon Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "2896 W 6th Av",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.17067418,
+          49.26597990206767
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_100",
+      "properties": {
+        "id": "school_100",
+        "facility_type": "schools",
+        "name": "Immaculate Conception School",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "3745 W 28th Av",
+        "local_area": "Dunbar-Southlands"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.18770751925071,
+          49.24759061248421
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_101",
+      "properties": {
+        "id": "school_101",
+        "facility_type": "schools",
+        "name": "J.W. Sexsmith Community Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "7455 Ontario St",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10879442,
+          49.21726779206743
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_102",
+      "properties": {
+        "id": "school_102",
+        "facility_type": "schools",
+        "name": "John Oliver Secondary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "530 E 41st Av",
+        "local_area": "Sunset"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09279776,
+          49.23195715006752
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_103",
+      "properties": {
+        "id": "school_103",
+        "facility_type": "schools",
+        "name": "Lord Byng Secondary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "3939 W 16th Av",
+        "local_area": "West Point Grey"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1925309529982,
+          49.259566550086106
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_104",
+      "properties": {
+        "id": "school_104",
+        "facility_type": "schools",
+        "name": "Lord Nelson Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "2235 Kitchener St",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05971209,
+          49.27250773706771
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_105",
+      "properties": {
+        "id": "school_105",
+        "facility_type": "schools",
+        "name": "Lord Selkirk StrongStart Centre",
+        "school_category": "StrongStart BC",
+        "school_category_zh": "StrongStart BC",
+        "address": "1750 E 22nd Av",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.06900705,
+          49.249691952067586
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_106",
+      "properties": {
+        "id": "school_106",
+        "facility_type": "schools",
+        "name": "Pacific Torah Institute International",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "5750 Oak St",
+        "local_area": "Oakridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12761225509908,
+          49.23342156632536
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_107",
+      "properties": {
+        "id": "school_107",
+        "facility_type": "schools",
+        "name": "Prov. Early Intervention Resource Prg",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "3417 Euclid Av",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.032313,
+          49.23634859906753
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_108",
+      "properties": {
+        "id": "school_108",
+        "facility_type": "schools",
+        "name": "Queen Alexandra StrongStart Centre",
+        "school_category": "StrongStart BC",
+        "school_category_zh": "StrongStart BC",
+        "address": "1300 E Broadway",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.07592057,
+          49.261970549067655
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_109",
+      "properties": {
+        "id": "school_109",
+        "facility_type": "schools",
+        "name": "Queen Mary Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "2000 Trimble St",
+        "local_area": "West Point Grey"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.20479699,
+          49.26785642206768
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_110",
+      "properties": {
+        "id": "school_110",
+        "facility_type": "schools",
+        "name": "Sir John Franklin Community",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "250S Skeena St",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.02758566,
+          49.28249619606777
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_111",
+      "properties": {
+        "id": "school_111",
+        "facility_type": "schools",
+        "name": "St George's School",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "4175 W 29th Av",
+        "local_area": "Dunbar-Southlands"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.19846496388473,
+          49.24758226745896
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_112",
+      "properties": {
+        "id": "school_112",
+        "facility_type": "schools",
+        "name": "St Joseph's",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "3261 Fleming St",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0716470523458,
+          49.255914408245054
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_113",
+      "properties": {
+        "id": "school_113",
+        "facility_type": "schools",
+        "name": "St Jude's",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "2953 E 15th Av",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.04262672835044,
+          49.256545786691255
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_114",
+      "properties": {
+        "id": "school_114",
+        "facility_type": "schools",
+        "name": "Templeton Secondary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "727 Templeton Drive",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.06069106000001,
+          49.278439093067725
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_115",
+      "properties": {
+        "id": "school_115",
+        "facility_type": "schools",
+        "name": "Vancouver Technical Secondary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "2600 E Broadway",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05129983999998,
+          49.260755475067654
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_116",
+      "properties": {
+        "id": "school_116",
+        "facility_type": "schools",
+        "name": "Westside Montessori",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "4157 Oak St",
+        "local_area": "Shaughnessy"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1280001050362,
+          49.24857412675284
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_117",
+      "properties": {
+        "id": "school_117",
+        "facility_type": "schools",
+        "name": "SD 39 DL Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "1025 Slocan St",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05026876999999,
+          49.27541639106772
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_118",
+      "properties": {
+        "id": "school_118",
+        "facility_type": "schools",
+        "name": "Champlain Heights Annex StrongStart Cntr",
+        "school_category": "StrongStart BC",
+        "school_category_zh": "StrongStart BC",
+        "address": "7835 Champlain Crescent",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.03054968939806,
+          49.2140784317513
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_119",
+      "properties": {
+        "id": "school_119",
+        "facility_type": "schools",
+        "name": "BCCH Eating Disorders School Program",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "5025 Willow St",
+        "local_area": "South Cambie"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12579095999999,
+          49.23963096106753
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_120",
+      "properties": {
+        "id": "school_120",
+        "facility_type": "schools",
+        "name": "Century High School",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "1788 W Broadway",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14531440269688,
+          49.263384758081116
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_121",
+      "properties": {
+        "id": "school_121",
+        "facility_type": "schools",
+        "name": "Florence Nightingale Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "2740 Guelph St",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09371757,
+          49.260059324067655
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_122",
+      "properties": {
+        "id": "school_122",
+        "facility_type": "schools",
+        "name": "General Wolfe Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "4251 Ontario St",
+        "local_area": "Riley Park"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10596494,
+          49.247228706067595
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_123",
+      "properties": {
+        "id": "school_123",
+        "facility_type": "schools",
+        "name": "Lord Strathcona Community Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "592 E Pender St",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09147679242075,
+          49.27981151466552
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_124",
+      "properties": {
+        "id": "school_124",
+        "facility_type": "schools",
+        "name": "Maple Grove Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "6199 Cypress St",
+        "local_area": "Kerrisdale"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.15151486,
+          49.22940869906749
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_125",
+      "properties": {
+        "id": "school_125",
+        "facility_type": "schools",
+        "name": "Pacific Torah Institute",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "5750 Oak St",
+        "local_area": "Oakridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12761225509908,
+          49.23342156632536
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_126",
+      "properties": {
+        "id": "school_126",
+        "facility_type": "schools",
+        "name": "Sir Richard McBride Annex",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "4750 St. Catherines St",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.08495018892324,
+          49.241944229212045
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_127",
+      "properties": {
+        "id": "school_127",
+        "facility_type": "schools",
+        "name": "Tillicum Annex StrongStart Centre",
+        "school_category": "StrongStart BC",
+        "school_category_zh": "StrongStart BC",
+        "address": "2450 Cambridge St",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05559853,
+          49.28626345506777
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_128",
+      "properties": {
+        "id": "school_128",
+        "facility_type": "schools",
+        "name": "Vancouver Learning Network",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "530 E 41st Av",
+        "local_area": "Sunset"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09279776,
+          49.23195715006752
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_129",
+      "properties": {
+        "id": "school_129",
+        "facility_type": "schools",
+        "name": "BC Children's Adol. Psych. Unit",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "5025 Willow St",
+        "local_area": "South Cambie"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12579095999999,
+          49.23963096106753
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_130",
+      "properties": {
+        "id": "school_130",
+        "facility_type": "schools",
+        "name": "Britannia Community Secondary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "1001 Cotton Drive",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.07192309841,
+          49.27523599085204
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_131",
+      "properties": {
+        "id": "school_131",
+        "facility_type": "schools",
+        "name": "Captain James Cook Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "3340 E 54th Av",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.03582905,
+          49.219380799067466
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_132",
+      "properties": {
+        "id": "school_132",
+        "facility_type": "schools",
+        "name": "Chief Maquinna StrongStart Centre",
+        "school_category": "StrongStart BC",
+        "school_category_zh": "StrongStart BC",
+        "address": "2684 E 2nd Av",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05058984,
+          49.26788631306769
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_133",
+      "properties": {
+        "id": "school_133",
+        "facility_type": "schools",
+        "name": "Children's Hearing and Speech Centre BC",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "3575 Kaslo St",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0483494372457,
+          49.25235796846878
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_134",
+      "properties": {
+        "id": "school_134",
+        "facility_type": "schools",
+        "name": "Collingwood Neighbourhood School",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "3417 Euclid Av",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.032313,
+          49.23634859906753
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_135",
+      "properties": {
+        "id": "school_135",
+        "facility_type": "schools",
+        "name": "Elsie Roy Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "150 Drake St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.122482,
+          49.27223799906772
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_136",
+      "properties": {
+        "id": "school_136",
+        "facility_type": "schools",
+        "name": "Graham Bruce Community Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "3633 Tanner St",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.02567271,
+          49.24206908706756
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_137",
+      "properties": {
+        "id": "school_137",
+        "facility_type": "schools",
+        "name": "Henry Hudson Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "1551 Cypress St",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14935629,
+          49.2722458780677
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_138",
+      "properties": {
+        "id": "school_138",
+        "facility_type": "schools",
+        "name": "Ivy Montessori School",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "2490 W 37th Av",
+        "local_area": "Arbutus Ridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.16209828723368,
+          49.238114800850234
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_139",
+      "properties": {
+        "id": "school_139",
+        "facility_type": "schools",
+        "name": "John Henderson Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "451 E 53rd Av",
+        "local_area": "Sunset"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09527169,
+          49.222569588067465
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_140",
+      "properties": {
+        "id": "school_140",
+        "facility_type": "schools",
+        "name": "John Norquay Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "4710 Slocan St",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0516408,
+          49.24142469506758
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_141",
+      "properties": {
+        "id": "school_141",
+        "facility_type": "schools",
+        "name": "King David High School",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "5718 Willow St",
+        "local_area": "Oakridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1227909397854,
+          49.23344818232933
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_142",
+      "properties": {
+        "id": "school_142",
+        "facility_type": "schools",
+        "name": "Little Flower Academy",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "4195 Alexandra St",
+        "local_area": "Shaughnessy"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14226149913934,
+          49.24843134181949
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_143",
+      "properties": {
+        "id": "school_143",
+        "facility_type": "schools",
+        "name": "Lord Roberts Annex",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "1150 Nelson St",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12980600999998,
+          49.283091710067765
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_144",
+      "properties": {
+        "id": "school_144",
+        "facility_type": "schools",
+        "name": "Our Lady of Perpetual Help",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "2550 Camosun St",
+        "local_area": "West Point Grey"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.19617943097614,
+          49.264135070670505
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_145",
+      "properties": {
+        "id": "school_145",
+        "facility_type": "schools",
+        "name": "Pacific Rim Montessori Academy",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "1819 Larch St",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.16244364510744,
+          49.269785798267485
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_146",
+      "properties": {
+        "id": "school_146",
+        "facility_type": "schools",
+        "name": "Sir Alexander Mackenzie Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "960 E 39th Av",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.08671432,
+          49.23453643506752
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_147",
+      "properties": {
+        "id": "school_147",
+        "facility_type": "schools",
+        "name": "Sir Guy Carleton Community Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "3250 Kingsway",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.03760798,
+          49.234347746067506
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_148",
+      "properties": {
+        "id": "school_148",
+        "facility_type": "schools",
+        "name": "Sir Richard McBride Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "1300 E 29th Av",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.07817551,
+          49.244156609067566
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_149",
+      "properties": {
+        "id": "school_149",
+        "facility_type": "schools",
+        "name": "Sir William Macdonald Community",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "1950 E Hastings St",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.06467911,
+          49.280723909067746
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_150",
+      "properties": {
+        "id": "school_150",
+        "facility_type": "schools",
+        "name": "Sir Winston Churchill Secondary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "7055 Heather St",
+        "local_area": "Oakridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12561546,
+          49.22105956806746
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_151",
+      "properties": {
+        "id": "school_151",
+        "facility_type": "schools",
+        "name": "Sunny Hill Hospital Program",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "3155 E 27th Av",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0371743,
+          49.246512456067585
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_152",
+      "properties": {
+        "id": "school_152",
+        "facility_type": "schools",
+        "name": "Vancouver Christian",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "3496 Mons Drive",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.02856693112142,
+          49.25471221591419
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_153",
+      "properties": {
+        "id": "school_153",
+        "facility_type": "schools",
+        "name": "Vancouver Montessori School",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "8650 Barnard St",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14463359946043,
+          49.20779039590787
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_154",
+      "properties": {
+        "id": "school_154",
+        "facility_type": "schools",
+        "name": "Champlain Heights Community Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "6955 Frontenac St",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.02774835,
+          49.22064030106746
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_155",
+      "properties": {
+        "id": "school_155",
+        "facility_type": "schools",
+        "name": "Continuing Ed SD 39",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "1580 W Broadway",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14026052001878,
+          49.26329988232251
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_156",
+      "properties": {
+        "id": "school_156",
+        "facility_type": "schools",
+        "name": "Corpus Christi School",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "6344 Nanaimo St",
+        "local_area": "Victoria-Fraserview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05758354036608,
+          49.226406104158166
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_157",
+      "properties": {
+        "id": "school_157",
+        "facility_type": "schools",
+        "name": "David Lloyd George Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "8370 Cartier St",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13634890999998,
+          49.209962411067416
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_158",
+      "properties": {
+        "id": "school_158",
+        "facility_type": "schools",
+        "name": "David Oppenheimer Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "2421 Scarboro Av",
+        "local_area": "Victoria-Fraserview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05829331021336,
+          49.21331811031946
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_159",
+      "properties": {
+        "id": "school_159",
+        "facility_type": "schools",
+        "name": "Eric Hamber Secondary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "5025 Willow St",
+        "local_area": "South Cambie"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12579095999999,
+          49.23963096106753
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_160",
+      "properties": {
+        "id": "school_160",
+        "facility_type": "schools",
+        "name": "Florence Nightingale StrongStart Centre",
+        "school_category": "StrongStart BC",
+        "school_category_zh": "StrongStart BC",
+        "address": "2740 Guelph St",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09371757,
+          49.260059324067655
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_161",
+      "properties": {
+        "id": "school_161",
+        "facility_type": "schools",
+        "name": "Gladstone Secondary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "4105 Gladstone St",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.06163307000001,
+          49.24761203506759
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_162",
+      "properties": {
+        "id": "school_162",
+        "facility_type": "schools",
+        "name": "Kerrisdale Annex",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "3250 W 43rd Av",
+        "local_area": "Kerrisdale"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.177405,
+          49.232867999067516
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_163",
+      "properties": {
+        "id": "school_163",
+        "facility_type": "schools",
+        "name": "L'Ecole Bilingue Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "1166 W 14th Av",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13038640000002,
+          49.25808403306762
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_164",
+      "properties": {
+        "id": "school_164",
+        "facility_type": "schools",
+        "name": "Lord Nelson StrongStart Centre",
+        "school_category": "StrongStart BC",
+        "school_category_zh": "StrongStart BC",
+        "address": "2235 Kitchener St",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05971209,
+          49.27250773706771
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_165",
+      "properties": {
+        "id": "school_165",
+        "facility_type": "schools",
+        "name": "Nootka Community Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "3375 Nootka St",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.04294917,
+          49.25359297006762
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_166",
+      "properties": {
+        "id": "school_166",
+        "facility_type": "schools",
+        "name": "Notre Dame Regional Secondary",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "2880 Venables St",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.04556662808874,
+          49.275802839348714
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_167",
+      "properties": {
+        "id": "school_167",
+        "facility_type": "schools",
+        "name": "Our Lady of Sorrows",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "575 Slocan St",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05015370472844,
+          49.27957121602082
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_168",
+      "properties": {
+        "id": "school_168",
+        "facility_type": "schools",
+        "name": "Queen Elizabeth Annex",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "4275 Crown St",
+        "local_area": "Dunbar-Southlands"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.19469107,
+          49.24893677906758
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_169",
+      "properties": {
+        "id": "school_169",
+        "facility_type": "schools",
+        "name": "Sir Matthew Begbie Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "1430 Lillooet St",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.03801003712412,
+          49.27183079984159
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_170",
+      "properties": {
+        "id": "school_170",
+        "facility_type": "schools",
+        "name": "Sir Wilfrid Laurier Annex",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "590 W 65th Av",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11944529999998,
+          49.210717995067405
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_171",
+      "properties": {
+        "id": "school_171",
+        "facility_type": "schools",
+        "name": "Sir William Osler Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "5970 Selkirk St",
+        "local_area": "Oakridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13266216000001,
+          49.23076242206749
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_172",
+      "properties": {
+        "id": "school_172",
+        "facility_type": "schools",
+        "name": "Southlands Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "5351 Camosun St",
+        "local_area": "Dunbar-Southlands"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.19781516,
+          49.23813758506754
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_173",
+      "properties": {
+        "id": "school_173",
+        "facility_type": "schools",
+        "name": "St Augustine's",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "2145 W 8th Av",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.15355224259545,
+          49.26517255153582
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_174",
+      "properties": {
+        "id": "school_174",
+        "facility_type": "schools",
+        "name": "Walter Moberly StrongStart Centre",
+        "school_category": "StrongStart BC",
+        "school_category_zh": "StrongStart BC",
+        "address": "1000 E 59th Av",
+        "local_area": "Sunset"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.08434542,
+          49.216109230067424
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_175",
+      "properties": {
+        "id": "school_175",
+        "facility_type": "schools",
+        "name": "Windermere Community Secondary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "3155 E 27th Av",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0371743,
+          49.246512456067585
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_176",
+      "properties": {
+        "id": "school_176",
+        "facility_type": "schools",
+        "name": "Britannia Community Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "1110 Cotton Drive",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.07137879542154,
+          49.27451200859733
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_177",
+      "properties": {
+        "id": "school_177",
+        "facility_type": "schools",
+        "name": "Dr H N MacCorkindale Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "6100 Battison St",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.02935503511594,
+          49.22799018553298
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_178",
+      "properties": {
+        "id": "school_178",
+        "facility_type": "schools",
+        "name": "Grandview Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "2055 Woodland Dr",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0743697,
+          49.266193169067684
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_179",
+      "properties": {
+        "id": "school_179",
+        "facility_type": "schools",
+        "name": "Laura Secord Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "2500 Lakewood Drive",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.06022338,
+          49.26173570306765
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_180",
+      "properties": {
+        "id": "school_180",
+        "facility_type": "schools",
+        "name": "Prince of Wales Secondary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "2250 Eddington Drive",
+        "local_area": "Arbutus Ridge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.15953565,
+          49.24498305306758
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_181",
+      "properties": {
+        "id": "school_181",
+        "facility_type": "schools",
+        "name": "Sir Wilfred Grenfell StrongStart Centre",
+        "school_category": "StrongStart BC",
+        "school_category_zh": "StrongStart BC",
+        "address": "3323 Wellington Av",
+        "local_area": "Renfrew-Collingwood"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0348073745407,
+          49.242891620676865
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_182",
+      "properties": {
+        "id": "school_182",
+        "facility_type": "schools",
+        "name": "Tillicum Community Annex",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "2450 Cambridge St",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05559853,
+          49.28626345506777
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_183",
+      "properties": {
+        "id": "school_183",
+        "facility_type": "schools",
+        "name": "Vancouver Talmud Torah Elementary",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "998 W 26th Av",
+        "local_area": "South Cambie"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12682202118758,
+          49.2475796718668
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_184",
+      "properties": {
+        "id": "school_184",
+        "facility_type": "schools",
+        "name": "Admiral Seymour Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "1130 Keefer St",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.08031429999998,
+          49.27859426906773
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_185",
+      "properties": {
+        "id": "school_185",
+        "facility_type": "schools",
+        "name": "Anchor Point Montessori",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "1351 Hornby St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13091892226645,
+          49.277061847359775
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_186",
+      "properties": {
+        "id": "school_186",
+        "facility_type": "schools",
+        "name": "Blessed Sacrament School",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "3020 Heather St",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1193909103338,
+          49.2583379074734
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_187",
+      "properties": {
+        "id": "school_187",
+        "facility_type": "schools",
+        "name": "Chief Maquinna Annex",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "2882 E 4th Av",
+        "local_area": "Hastings-Sunrise"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.04511809000002,
+          49.266421543067686
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_188",
+      "properties": {
+        "id": "school_188",
+        "facility_type": "schools",
+        "name": "Crosstown Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "55 Expo Blvd",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.106594,
+          49.27863099906775
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_189",
+      "properties": {
+        "id": "school_189",
+        "facility_type": "schools",
+        "name": "Kerrisdale Elementary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "5555 Carnarvon St",
+        "local_area": "Dunbar-Southlands"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.17345921,
+          49.23616824506754
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_190",
+      "properties": {
+        "id": "school_190",
+        "facility_type": "schools",
+        "name": "Killarney Secondary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "6454 Killarney St",
+        "local_area": "Killarney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.04415722000002,
+          49.22530010406748
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_191",
+      "properties": {
+        "id": "school_191",
+        "facility_type": "schools",
+        "name": "MacDonald StrongStart Centre",
+        "school_category": "StrongStart BC",
+        "school_category_zh": "StrongStart BC",
+        "address": "1950 E Hastings St",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.06467911,
+          49.280723909067746
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_192",
+      "properties": {
+        "id": "school_192",
+        "facility_type": "schools",
+        "name": "Point Grey Secondary",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "5350 East Boulevard",
+        "local_area": "Shaughnessy"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.15343060436416,
+          49.23728903611385
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_193",
+      "properties": {
+        "id": "school_193",
+        "facility_type": "schools",
+        "name": "St John's International",
+        "school_category": "Independent School",
+        "school_category_zh": "私立/獨立學校",
+        "address": "1885 W Broadway",
+        "local_area": "Kitsilano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14789881614395,
+          49.2640409804403
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "school_194",
+      "properties": {
+        "id": "school_194",
+        "facility_type": "schools",
+        "name": "Tecumseh Annex",
+        "school_category": "Public School",
+        "school_category_zh": "公立學校",
+        "address": "1551 E 37th Av",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.07309884,
+          49.23711627206752
+        ]
+      }
+    }
+  ]
+}

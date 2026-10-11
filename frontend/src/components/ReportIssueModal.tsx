@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { AlertCircle, X, Send, CheckCircle2, Loader2, Mail } from 'lucide-react';
+import { AlertCircle, X, Send, CheckCircle2, Loader2 } from 'lucide-react';
 
 interface ReportIssueModalProps {
   isOpen: boolean;
@@ -109,22 +109,8 @@ export default function ReportIssueModal({ isOpen, onClose }: ReportIssueModalPr
             </div>
             <h3 className="text-lg font-bold text-white">問題回報已送出！</h3>
             <p className="text-xs text-gray-300 max-w-[380px] leading-relaxed">
-              感謝您的寶貴反饋，問題已成功記錄並遞交至 <span className="text-emerald-400 font-mono font-medium">{targetEmail}</span>。我們將盡速審閱與處理！
+              感謝您的寶貴反饋，問題已成功記錄並遞交給管理團隊。我們將盡速審閱與處理！
             </p>
-
-            <div className="w-full bg-[#16171a] p-3 rounded-lg border border-[#2d2e34] flex flex-col gap-2 mt-2 text-left">
-              <div className="flex items-center justify-between text-[11px] text-gray-400">
-                <span>備用郵件寄送</span>
-                <span>若需附加截圖</span>
-              </div>
-              <a
-                href={getMailtoUrl()}
-                className="inline-flex items-center justify-center gap-1.5 py-2 px-3 bg-[#252830] hover:bg-[#2e323c] border border-gray-700/80 hover:border-gray-600 rounded text-xs text-gray-200 transition-colors"
-              >
-                <Mail className="w-3.5 h-3.5 text-amber-400" />
-                <span>透過本機郵件程式開啟寄件 (mailto) ↗</span>
-              </a>
-            </div>
 
             <button
               onClick={handleResetAndClose}
@@ -187,15 +173,6 @@ export default function ReportIssueModal({ isOpen, onClose }: ReportIssueModalPr
                 placeholder="your.email@example.com"
                 className="w-full bg-[#16171a] border border-[#373a40] focus:border-emerald-500/80 focus:ring-1 focus:ring-emerald-500/40 rounded-lg px-3 py-2 text-white placeholder:text-gray-500 text-xs outline-none transition-all"
               />
-            </div>
-
-            {/* 目標信箱標籤 */}
-            <div className="flex items-center justify-between bg-[#16171a] px-3 py-2 rounded-lg border border-[#2d2e34] text-[11px] text-gray-400">
-              <span className="flex items-center gap-1.5">
-                <Mail className="w-3.5 h-3.5 text-amber-400" />
-                <span>收件信箱：</span>
-              </span>
-              <span className="font-mono text-gray-300 font-semibold">{targetEmail}</span>
             </div>
 
             {/* 按鈕組 */}

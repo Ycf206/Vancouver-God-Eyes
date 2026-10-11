@@ -1,0 +1,381 @@
+{
+  "type": "FeatureCollection",
+  "generator": "VancouverGodsEye",
+  "total_count": 17,
+  "features": [
+    {
+      "type": "Feature",
+      "id": "shelter_1",
+      "properties": {
+        "id": "shelter_1",
+        "facility_type": "homeless_shelters",
+        "name": "Tenth Avenue Church",
+        "category": "Adults (all genders)",
+        "phone": "604-876-2181",
+        "meals": "有提供熱食 🍲",
+        "pets": "不可攜帶寵物",
+        "carts": "不可推車",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10586046207774,
+          49.262338305195684
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "shelter_2",
+      "properties": {
+        "id": "shelter_2",
+        "facility_type": "homeless_shelters",
+        "name": "Union Gospel Mission",
+        "category": "Men",
+        "phone": "604-253-3323",
+        "meals": "有提供熱食 🍲",
+        "pets": "不可攜帶寵物",
+        "carts": "不可推車",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09098604679792,
+          49.281871703205425
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "shelter_3",
+      "properties": {
+        "id": "shelter_3",
+        "facility_type": "homeless_shelters",
+        "name": "Catholic Charities Men's Hostel",
+        "category": "Men",
+        "phone": "604-443-3292",
+        "meals": "無供餐",
+        "pets": "不可攜帶寵物",
+        "carts": "不可推車",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1147756731615,
+          49.27769337237721
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "shelter_4",
+      "properties": {
+        "id": "shelter_4",
+        "facility_type": "homeless_shelters",
+        "name": "Vineyard Church",
+        "category": "Adults (all genders)",
+        "phone": "604-255-4463",
+        "meals": "有提供熱食 🍲",
+        "pets": "不可攜帶寵物",
+        "carts": "不可推車",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.07055190144827,
+          49.269335660054985
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "shelter_5",
+      "properties": {
+        "id": "shelter_5",
+        "facility_type": "homeless_shelters",
+        "name": "The Haven",
+        "category": "Men",
+        "phone": "604-646-6800",
+        "meals": "無供餐",
+        "pets": "不可攜帶寵物",
+        "carts": "不可推車",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10109474719326,
+          49.282056211986955
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "shelter_6",
+      "properties": {
+        "id": "shelter_6",
+        "facility_type": "homeless_shelters",
+        "name": "Triage",
+        "category": "Adults (all genders)",
+        "phone": "604-254-3700",
+        "meals": "無供餐",
+        "pets": "不可攜帶寵物",
+        "carts": "不可推車",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.08914065335308,
+          49.28325701333048
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "shelter_7",
+      "properties": {
+        "id": "shelter_7",
+        "facility_type": "homeless_shelters",
+        "name": "Anchor of Hope",
+        "category": "Adults (all genders)",
+        "phone": "604-646-6899",
+        "meals": "有提供熱食 🍲",
+        "pets": "不可攜帶寵物",
+        "carts": "不可推車",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10109474719326,
+          49.282056211986955
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "shelter_8",
+      "properties": {
+        "id": "shelter_8",
+        "facility_type": "homeless_shelters",
+        "name": "Dusk to Dawn-Directions Youth Centre",
+        "category": "Youth (all genders)",
+        "phone": "604-633-1472",
+        "meals": "有提供熱食 🍲",
+        "pets": "不可攜帶寵物",
+        "carts": "不可推車",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12780362309378,
+          49.27956687773119
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "shelter_9",
+      "properties": {
+        "id": "shelter_9",
+        "facility_type": "homeless_shelters",
+        "name": "Grandview Calvary Baptist Church",
+        "category": "Adults (all genders)",
+        "phone": "604-255-1411",
+        "meals": "有提供熱食 🍲",
+        "pets": "不可攜帶寵物",
+        "carts": "不可推車",
+        "local_area": "Grandview-Woodland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.06735635798717,
+          49.26974745114546
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "shelter_10",
+      "properties": {
+        "id": "shelter_10",
+        "facility_type": "homeless_shelters",
+        "name": "Lookout Downtown",
+        "category": "Adults (all genders)",
+        "phone": "604-681-9126",
+        "meals": "無供餐",
+        "pets": "允許攜帶寵物 🐾",
+        "carts": "不可推車",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09620765787055,
+          49.28374408771319
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "shelter_11",
+      "properties": {
+        "id": "shelter_11",
+        "facility_type": "homeless_shelters",
+        "name": "Belkin House",
+        "category": "Adults (all genders)",
+        "phone": "604-681-3405",
+        "meals": "無供餐",
+        "pets": "不可攜帶寵物",
+        "carts": "不可推車",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11292301849707,
+          49.282457498201765
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "shelter_12",
+      "properties": {
+        "id": "shelter_12",
+        "facility_type": "homeless_shelters",
+        "name": "Aboriginal Shelter",
+        "category": "Adults (all genders)",
+        "phone": "604-347-0299",
+        "meals": "有提供熱食 🍲",
+        "pets": "允許攜帶寵物 🐾",
+        "carts": "可停放推車 🛒",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09934686157887,
+          49.27157435253819
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "shelter_13",
+      "properties": {
+        "id": "shelter_13",
+        "facility_type": "homeless_shelters",
+        "name": "Yukon Shelter",
+        "category": "Adults (all genders)",
+        "phone": "604-264-1680",
+        "meals": "無供餐",
+        "pets": "允許攜帶寵物 🐾",
+        "carts": "不可推車",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11236726193974,
+          49.26689088504469
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "shelter_14",
+      "properties": {
+        "id": "shelter_14",
+        "facility_type": "homeless_shelters",
+        "name": "First United Church",
+        "category": "Adults (all genders)",
+        "phone": "604-681-8365",
+        "meals": "有提供熱食 🍲",
+        "pets": "允許攜帶寵物 🐾",
+        "carts": "可停放推車 🛒",
+        "local_area": "Strathcona"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09704179173589,
+          49.28098552764485
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "shelter_15",
+      "properties": {
+        "id": "shelter_15",
+        "facility_type": "homeless_shelters",
+        "name": "First Baptist Church",
+        "category": "Adults (all genders)",
+        "phone": "604-683-8441",
+        "meals": "有提供熱食 🍲",
+        "pets": "不可攜帶寵物",
+        "carts": "不可推車",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12645824751823,
+          49.281851154764425
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "shelter_16",
+      "properties": {
+        "id": "shelter_16",
+        "facility_type": "homeless_shelters",
+        "name": "Crosswalk",
+        "category": "Adults (all genders)",
+        "phone": "604-669-4349",
+        "meals": "無供餐",
+        "pets": "不可攜帶寵物",
+        "carts": "不可推車",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10767247883172,
+          49.28180507947213
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "shelter_17",
+      "properties": {
+        "id": "shelter_17",
+        "facility_type": "homeless_shelters",
+        "name": "The Beacon",
+        "category": "Men",
+        "phone": "604-646-6846",
+        "meals": "無供餐",
+        "pets": "不可攜帶寵物",
+        "carts": "不可推車",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10109474719326,
+          49.282056211986955
+        ]
+      }
+    }
+  ]
+}

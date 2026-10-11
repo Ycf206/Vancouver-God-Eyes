@@ -1,0 +1,2009 @@
+{
+  "type": "FeatureCollection",
+  "generator": "VancouverGodsEye",
+  "total_count": 91,
+  "features": [
+    {
+      "type": "Feature",
+      "id": "food_DT21",
+      "properties": {
+        "id": "food_DT21",
+        "facility_type": "food_vendors",
+        "name": "Hot Dogs",
+        "vendor_code": "DT21",
+        "description": "Hot Dogs",
+        "business_name": "餐車攤商",
+        "status": "營運中",
+        "location_desc": "South Side of 300 Davie St - 6 Metres East of Hamilton St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.122779848,
+          49.2747502296
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_C12",
+      "properties": {
+        "id": "food_C12",
+        "facility_type": "food_vendors",
+        "name": "Chickpea (Vegetarian)",
+        "vendor_code": "C12",
+        "description": "Vegetarian",
+        "business_name": "Chickpea",
+        "status": "營運中",
+        "location_desc": "Authorised Parking Meter - North Side of W Cordova St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.115773447,
+          49.2876125304
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_GT02",
+      "properties": {
+        "id": "food_GT02",
+        "facility_type": "food_vendors",
+        "name": "Chou Chou Crepes (French Crepes)",
+        "vendor_code": "GT02",
+        "description": "French Crepes",
+        "business_name": "Chou Chou Crepes",
+        "status": "營運中",
+        "location_desc": "North Side of 100 Water St - 10 Metres West of Abbott St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.106627255,
+          49.283989749
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT75",
+      "properties": {
+        "id": "food_DT75",
+        "facility_type": "food_vendors",
+        "name": "Eat Chicken Wraps (Wraps and Sandwiches)",
+        "vendor_code": "DT75",
+        "description": "Wraps and Sandwiches",
+        "business_name": "Eat Chicken Wraps",
+        "status": "營運中",
+        "location_desc": "South Side of 800 Robson St - 28 Metres East of Hornby St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.121388,
+          49.282313
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT26",
+      "properties": {
+        "id": "food_DT26",
+        "facility_type": "food_vendors",
+        "name": "Japadog (Hot Dogs)",
+        "vendor_code": "DT26",
+        "description": "Hot Dogs",
+        "business_name": "Japadog",
+        "status": "營運中",
+        "location_desc": "East Side of 500 Burrard St - 6 Metres South of West Pender St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.117884,
+          49.286363
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_EB07",
+      "properties": {
+        "id": "food_EB07",
+        "facility_type": "food_vendors",
+        "name": "Mac BBQ (Hot Dogs)",
+        "vendor_code": "EB07",
+        "description": "Hot Dogs",
+        "business_name": "Mac BBQ",
+        "status": "營運中",
+        "location_desc": "South Side of 1800 Beach Av - West of Davie St",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.142526485,
+          49.2875878236
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT16",
+      "properties": {
+        "id": "food_DT16",
+        "facility_type": "food_vendors",
+        "name": "Mogu (Japanese Cuisine)",
+        "vendor_code": "DT16",
+        "description": "Japanese Cuisine",
+        "business_name": "Mogu",
+        "status": "營運中",
+        "location_desc": "West Side of Howe St - South of Dunsmuir St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.117633,
+          49.284218
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT58",
+      "properties": {
+        "id": "food_DT58",
+        "facility_type": "food_vendors",
+        "name": "Mr. Shawarma (Shawarma)",
+        "vendor_code": "DT58",
+        "description": "Shawarma",
+        "business_name": "Mr. Shawarma",
+        "status": "營運中",
+        "location_desc": "North Side of 800 Robson St - East of Hornby St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.121480947,
+          49.2825844485
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT56",
+      "properties": {
+        "id": "food_DT56",
+        "facility_type": "food_vendors",
+        "name": "Sea Dogs (Hot Dogs)",
+        "vendor_code": "DT56",
+        "description": "Hot Dogs",
+        "business_name": "Sea Dogs",
+        "status": "營運中",
+        "location_desc": "Coal Harbour Seawall  - 200 Metres Northeast of Broughton St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.123682322,
+          49.2910821453
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_C24",
+      "properties": {
+        "id": "food_C24",
+        "facility_type": "food_vendors",
+        "name": "Vij's Railway Express (Indian Cuisine)",
+        "vendor_code": "C24",
+        "description": "Indian Cuisine",
+        "business_name": "Vij's Railway Express",
+        "status": "營運中",
+        "location_desc": "Authorised Parking Meter North Side of 1000 W Georgia St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.122541268,
+          49.2854937288
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_C1",
+      "properties": {
+        "id": "food_C1",
+        "facility_type": "food_vendors",
+        "name": "Vie Niapolotan (Italian Cuisine)",
+        "vendor_code": "C1",
+        "description": "Italian Cuisine",
+        "business_name": "Vie Niapolotan",
+        "status": "營運中",
+        "location_desc": "Authorised Parking Meter - West Side of 400 Burrard St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.117533502,
+          49.2869026429
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT38",
+      "properties": {
+        "id": "food_DT38",
+        "facility_type": "food_vendors",
+        "name": "Hot Dogs",
+        "vendor_code": "DT38",
+        "description": "Hot Dogs",
+        "business_name": "餐車攤商",
+        "status": "營運中",
+        "location_desc": "South Side of 800 W Georgia St - 55 Metres West of Howe St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11986322,
+          49.2834680335
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_OD12",
+      "properties": {
+        "id": "food_OD12",
+        "facility_type": "food_vendors",
+        "name": "Hot Dogs",
+        "vendor_code": "OD12",
+        "description": "Hot Dogs",
+        "business_name": "餐車攤商",
+        "status": "營運中",
+        "location_desc": "East Side of 8400 Cambie St - 75 Metres South of SW Marine Dr",
+        "local_area": "Marpole"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.117031735,
+          49.2098916793
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_EB03",
+      "properties": {
+        "id": "food_EB03",
+        "facility_type": "food_vendors",
+        "name": "Lemon Sea (Lemonade and Crepes)",
+        "vendor_code": "EB03",
+        "description": "Lemonade and Crepes",
+        "business_name": "Lemon Sea",
+        "status": "營運中",
+        "location_desc": "South Side of 2000 Beach Av - 30 metres West of Chilco St",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.144697764,
+          49.2896827396
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_GM21",
+      "properties": {
+        "id": "food_GM21",
+        "facility_type": "food_vendors",
+        "name": "Soho Road Naan Kebab (Indian Cuisine)",
+        "vendor_code": "GM21",
+        "description": "Indian Cuisine",
+        "business_name": "Soho Road Naan Kebab",
+        "status": "營運中",
+        "location_desc": "South Side of 700 W Georgia St - 20 Metres West of Granville St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.118501288,
+          49.2825721404
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT42",
+      "properties": {
+        "id": "food_DT42",
+        "facility_type": "food_vendors",
+        "name": "Cheesey Does It (Sandwiches)",
+        "vendor_code": "DT42",
+        "description": "Sandwiches",
+        "business_name": "Cheesey Does It",
+        "status": "營運中",
+        "location_desc": "South Side of 900 Robson St - 16 Metres West of Hornby St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.122135786,
+          49.2827533647
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT05",
+      "properties": {
+        "id": "food_DT05",
+        "facility_type": "food_vendors",
+        "name": "Mr. Camaron (Drinks and Smoothies)",
+        "vendor_code": "DT05",
+        "description": "Drinks and Smoothies",
+        "business_name": "Mr. Camaron",
+        "status": "營運中",
+        "location_desc": "North Side of W Georgia St - 10 Metres West of Homer St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.115237361,
+          49.2808012429
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_GM16",
+      "properties": {
+        "id": "food_GM16",
+        "facility_type": "food_vendors",
+        "name": "Mr. Shawarma (Middle Eastern Cuisine)",
+        "vendor_code": "GM16",
+        "description": "Middle Eastern Cuisine",
+        "business_name": "Mr. Shawarma",
+        "status": "營運中",
+        "location_desc": "East Side of 600 Granville St - 80 Metres North of W Georgia St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.117190394,
+          49.2830199659
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_C5",
+      "properties": {
+        "id": "food_C5",
+        "facility_type": "food_vendors",
+        "name": "Tacofino (Tacos and Burritos)",
+        "vendor_code": "C5",
+        "description": "Tacos and Burritos",
+        "business_name": "Tacofino",
+        "status": "營運中",
+        "location_desc": "Authorised Parking Meter West Side of 700 Howe St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.120529317,
+          49.2823011792
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_GT05",
+      "properties": {
+        "id": "food_GT05",
+        "facility_type": "food_vendors",
+        "name": "Hot Dogs",
+        "vendor_code": "GT05",
+        "description": "Hot Dogs",
+        "business_name": "餐車攤商",
+        "status": "營運中",
+        "location_desc": "North Side of 300 Water St - 17 Metres West of Cambie St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10916041,
+          49.2844467907
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_OD03",
+      "properties": {
+        "id": "food_OD03",
+        "facility_type": "food_vendors",
+        "name": "Holy Smokes (Hot Dogs)",
+        "vendor_code": "OD03",
+        "description": "Hot Dogs",
+        "business_name": "Holy Smokes",
+        "status": "營運中",
+        "location_desc": "South Side 1500 West Broadway - 6 Metres West of Granville St",
+        "local_area": "Fairview"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.138921554,
+          49.2634838294
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_EB01",
+      "properties": {
+        "id": "food_EB01",
+        "facility_type": "food_vendors",
+        "name": "Mac BBQ (Hot Dogs)",
+        "vendor_code": "EB01",
+        "description": "Hot Dogs",
+        "business_name": "Mac BBQ",
+        "status": "營運中",
+        "location_desc": "South Side of 1800 Beach Av - East of Davie St",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.142505041,
+          49.2873240136
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT64",
+      "properties": {
+        "id": "food_DT64",
+        "facility_type": "food_vendors",
+        "name": "Marimba (Middle Eastern Cuisine)",
+        "vendor_code": "DT64",
+        "description": "Middle Eastern Cuisine",
+        "business_name": "Marimba",
+        "status": "營運中",
+        "location_desc": "South Side of 800 W Georgia St - 30 Metres West of Howe St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.119611426,
+          49.2832896022
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT15",
+      "properties": {
+        "id": "food_DT15",
+        "facility_type": "food_vendors",
+        "name": "Meet to Eat (Kosher Israeli)",
+        "vendor_code": "DT15",
+        "description": "Kosher Israeli",
+        "business_name": "Meet to Eat",
+        "status": "營運中",
+        "location_desc": "West Side of 1100 Burrard St - 10 Metres North of Davie St",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.129163572,
+          49.2792760359
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_C20",
+      "properties": {
+        "id": "food_C20",
+        "facility_type": "food_vendors",
+        "name": "The Fryinig Pan (Fried Chicken Sandwiches)",
+        "vendor_code": "C20",
+        "description": "Fried Chicken Sandwiches",
+        "business_name": "The Fryinig Pan",
+        "status": "營運中",
+        "location_desc": "Authorised Parking Meter West Side of 500 Burrard St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.118158491,
+          49.2865384001
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT13",
+      "properties": {
+        "id": "food_DT13",
+        "facility_type": "food_vendors",
+        "name": "Hot Dogs",
+        "vendor_code": "DT13",
+        "description": "Hot Dogs",
+        "business_name": "餐車攤商",
+        "status": "營運中",
+        "location_desc": "North Side of 900 Robson St - 6 Metres East of Burrard St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.122520505,
+          49.2832224976
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_GM20",
+      "properties": {
+        "id": "food_GM20",
+        "facility_type": "food_vendors",
+        "name": "Crab Park Chowdery (Chowders and Soups)",
+        "vendor_code": "GM20",
+        "description": "Chowders and Soups",
+        "business_name": "Crab Park Chowdery",
+        "status": "營運中",
+        "location_desc": "East Side of 600 Granville St - 30 Metres North of W Georgia St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.117466132,
+          49.2828190133
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT48",
+      "properties": {
+        "id": "food_DT48",
+        "facility_type": "food_vendors",
+        "name": "Hot Dogs",
+        "vendor_code": "DT48",
+        "description": "Hot Dogs",
+        "business_name": "餐車攤商",
+        "status": "營運中",
+        "location_desc": "East Side of 800 Beatty St - 6 Metres South of Robson St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.114069374,
+          49.2774273253
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT61",
+      "properties": {
+        "id": "food_DT61",
+        "facility_type": "food_vendors",
+        "name": "Actual Oden (Japanese Cuisine)",
+        "vendor_code": "DT61",
+        "description": "Japanese Cuisine",
+        "business_name": "Actual Oden",
+        "status": "營運中",
+        "location_desc": "South Side of 900 W Hastings - 10 metres East of Burrard St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.116782,
+          49.286949
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT57",
+      "properties": {
+        "id": "food_DT57",
+        "facility_type": "food_vendors",
+        "name": "Arturo's Mexico To Go (Mexican Cuisine)",
+        "vendor_code": "DT57",
+        "description": "Mexican Cuisine",
+        "business_name": "Arturo's Mexico To Go",
+        "status": "營運中",
+        "location_desc": "North Side of 700 W Cordova St - 14 metres East of Howe St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.113567537,
+          49.2865282201
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT40",
+      "properties": {
+        "id": "food_DT40",
+        "facility_type": "food_vendors",
+        "name": "Cazba Express (Kebabs)",
+        "vendor_code": "DT40",
+        "description": "Kebabs",
+        "business_name": "Cazba Express",
+        "status": "營運中",
+        "location_desc": "North Side of 700 Robson St - 50 Metres West of Granville St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12034,
+          49.281785
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_C21",
+      "properties": {
+        "id": "food_C21",
+        "facility_type": "food_vendors",
+        "name": "Come Arepa (Venezuelan Cuisine)",
+        "vendor_code": "C21",
+        "description": "Venezuelan Cuisine",
+        "business_name": "Come Arepa",
+        "status": "營運中",
+        "location_desc": "Authorised Parking Meter - 1000 W Hastings St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.119288,
+          49.287838
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT71",
+      "properties": {
+        "id": "food_DT71",
+        "facility_type": "food_vendors",
+        "name": "Didi's Greek (Greek Cuisine)",
+        "vendor_code": "DT71",
+        "description": "Greek Cuisine",
+        "business_name": "Didi's Greek",
+        "status": "營運中",
+        "location_desc": "South Side of 1700 Robson St - 10 Metres East of Denman St",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.135271204,
+          49.2912416909
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_C8",
+      "properties": {
+        "id": "food_C8",
+        "facility_type": "food_vendors",
+        "name": "Gourmet Syndicate (Comfort Food)",
+        "vendor_code": "C8",
+        "description": "Comfort Food",
+        "business_name": "Gourmet Syndicate",
+        "status": "營運中",
+        "location_desc": "Authorised Parking Meter East Side of 900 Burrard St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.124511374,
+          49.2820545294
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT67",
+      "properties": {
+        "id": "food_DT67",
+        "facility_type": "food_vendors",
+        "name": "Mr. Arancino (Italian Cuisine)",
+        "vendor_code": "DT67",
+        "description": "Italian Cuisine",
+        "business_name": "Mr. Arancino",
+        "status": "營運中",
+        "location_desc": "West Side of Granville St - 75 Metres North of Robson St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.119039,
+          49.281957
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_GM15",
+      "properties": {
+        "id": "food_GM15",
+        "facility_type": "food_vendors",
+        "name": "Mr. Sandwich (Sandwiches)",
+        "vendor_code": "GM15",
+        "description": "Sandwiches",
+        "business_name": "Mr. Sandwich",
+        "status": "營運中",
+        "location_desc": "South Side of 700 W Georgia St - 20 Metres West of Granville St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.118453808,
+          49.2825423251
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT72",
+      "properties": {
+        "id": "food_DT72",
+        "facility_type": "food_vendors",
+        "name": "The Loving Hut (Vegetarian and Vegan)",
+        "vendor_code": "DT72",
+        "description": "Vegetarian and Vegan",
+        "business_name": "The Loving Hut",
+        "status": "營運中",
+        "location_desc": "East Side of 1200 Pacific Boulevard - 10 Metres South of Davie St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.121519626,
+          49.2738358887
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT47",
+      "properties": {
+        "id": "food_DT47",
+        "facility_type": "food_vendors",
+        "name": "V Dub Dogs (Hot Dogs)",
+        "vendor_code": "DT47",
+        "description": "Hot Dogs",
+        "business_name": "V Dub Dogs",
+        "status": "營運中",
+        "location_desc": "Foot of Davie St - 2 Metres South of Marinaside Cres.",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.119509851,
+          49.2728501609
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_GM11",
+      "properties": {
+        "id": "food_GM11",
+        "facility_type": "food_vendors",
+        "name": "Van Dog (Hot Dogs)",
+        "vendor_code": "GM11",
+        "description": "Hot Dogs",
+        "business_name": "Van Dog",
+        "status": "營運中",
+        "location_desc": "East Side of 900 Granville St - 75 Metres South of Smithe St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.122119558,
+          49.2797455147
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT31",
+      "properties": {
+        "id": "food_DT31",
+        "facility_type": "food_vendors",
+        "name": "Yokabai (Burgers and Fries)",
+        "vendor_code": "DT31",
+        "description": "Burgers and Fries",
+        "business_name": "Yokabai",
+        "status": "營運中",
+        "location_desc": "West Side of 500 Granville St - 10 Metres South of West Pender St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.115175232,
+          49.284522117
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_C23",
+      "properties": {
+        "id": "food_C23",
+        "facility_type": "food_vendors",
+        "name": "Fat Duck Mobile Eatery (International Comfort Foods)",
+        "vendor_code": "C23",
+        "description": "International Comfort Foods",
+        "business_name": "Fat Duck Mobile Eatery",
+        "status": "營運中",
+        "location_desc": "Authorised Parking Meter - North Side of 800 W Cordova St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.114022,
+          49.286811
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_OD06",
+      "properties": {
+        "id": "food_OD06",
+        "facility_type": "food_vendors",
+        "name": "La Bomba Taqueria (Tacos and Fresh Salsas)",
+        "vendor_code": "OD06",
+        "description": "Tacos and Fresh Salsas",
+        "business_name": "La Bomba Taqueria",
+        "status": "營運中",
+        "location_desc": "South Side of 1700 E Broadway",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.068886047,
+          49.262216537
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_C3",
+      "properties": {
+        "id": "food_C3",
+        "facility_type": "food_vendors",
+        "name": "Mr. Shawarma (Shawarma)",
+        "vendor_code": "C3",
+        "description": "Shawarma",
+        "business_name": "Mr. Shawarma",
+        "status": "營運中",
+        "location_desc": "Authorised Parking Meter - North Side of 1000 Melville St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.120163,
+          49.285361
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_C7",
+      "properties": {
+        "id": "food_C7",
+        "facility_type": "food_vendors",
+        "name": "Roaming Dragon (Asian Fusion)",
+        "vendor_code": "C7",
+        "description": "Asian Fusion",
+        "business_name": "Roaming Dragon",
+        "status": "營運中",
+        "location_desc": "Authorised Parking Meter East Side of 800 Burrard St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.122918691,
+          49.2830967069
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT36",
+      "properties": {
+        "id": "food_DT36",
+        "facility_type": "food_vendors",
+        "name": "Suassy Thai (Thai Cuisine)",
+        "vendor_code": "DT36",
+        "description": "Thai Cuisine",
+        "business_name": "Suassy Thai",
+        "status": "營運中",
+        "location_desc": "North Side of 800 Robson St - 30 Metres West of Howe St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.121070522,
+          49.2822804045
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_C22",
+      "properties": {
+        "id": "food_C22",
+        "facility_type": "food_vendors",
+        "name": "The Praguery (Central European Desserts)",
+        "vendor_code": "C22",
+        "description": "Central European Desserts",
+        "business_name": "The Praguery",
+        "status": "營運中",
+        "location_desc": "Authorised Parking Meter - 1000 W Hastings St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.119362,
+          49.287858
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT06",
+      "properties": {
+        "id": "food_DT06",
+        "facility_type": "food_vendors",
+        "name": "Van Dog (Hot Dogs)",
+        "vendor_code": "DT06",
+        "description": "Hot Dogs",
+        "business_name": "Van Dog",
+        "status": "營運中",
+        "location_desc": "South Side of 900 Robson St - 12 Metres East of Burrard St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12266063,
+          49.2830840428
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_GM04",
+      "properties": {
+        "id": "food_GM04",
+        "facility_type": "food_vendors",
+        "name": "Van Dog (Western)",
+        "vendor_code": "GM04",
+        "description": "Western",
+        "business_name": "Van Dog",
+        "status": "營運中",
+        "location_desc": "South Side of 600 W Georgia St - 6 Metres East of Granville St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11806677,
+          49.2823144043
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_GM03",
+      "properties": {
+        "id": "food_GM03",
+        "facility_type": "food_vendors",
+        "name": "Hot Dogs",
+        "vendor_code": "GM03",
+        "description": "Hot Dogs",
+        "business_name": "餐車攤商",
+        "status": "營運中",
+        "location_desc": "East side of 700 Granville St - 6 Metres South W Georgia St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.118235028,
+          49.2823195925
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT59",
+      "properties": {
+        "id": "food_DT59",
+        "facility_type": "food_vendors",
+        "name": "Commissary Connect (Variety Menu)",
+        "vendor_code": "DT59",
+        "description": "Variety Menu",
+        "business_name": "Commissary Connect",
+        "status": "營運中",
+        "location_desc": "East Side of 700 Hornby St - 22 metres South of W Georgia St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.120309651,
+          49.283508765
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_GM05",
+      "properties": {
+        "id": "food_GM05",
+        "facility_type": "food_vendors",
+        "name": "Hot Dogs",
+        "vendor_code": "GM05",
+        "description": "Hot Dogs",
+        "business_name": "餐車攤商",
+        "status": "營運中",
+        "location_desc": "East Side of 800 Granville St - 30 Metres North of Smithe St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.120951897,
+          49.2805178578
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_GM18",
+      "properties": {
+        "id": "food_GM18",
+        "facility_type": "food_vendors",
+        "name": "Hot Dogs",
+        "vendor_code": "GM18",
+        "description": "Hot Dogs",
+        "business_name": "餐車攤商",
+        "status": "營運中",
+        "location_desc": "West Side of 700 Granville St - 5 Metres South of W Georgia St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.118426844,
+          49.2824701485
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT79",
+      "properties": {
+        "id": "food_DT79",
+        "facility_type": "food_vendors",
+        "name": "Ali's Hot Dogs (Hot Dogs)",
+        "vendor_code": "DT79",
+        "description": "Hot Dogs",
+        "business_name": "Ali's Hot Dogs",
+        "status": "營運中",
+        "location_desc": "North Side of 1000 Robson St",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.123569703,
+          49.2839220207
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT54",
+      "properties": {
+        "id": "food_DT54",
+        "facility_type": "food_vendors",
+        "name": "Dim Sum Express (Dim Sum)",
+        "vendor_code": "DT54",
+        "description": "Dim Sum",
+        "business_name": "Dim Sum Express",
+        "status": "營運中",
+        "location_desc": "East Side of 200 Howe St - 100 Metres North of W Cordova St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.112870853,
+          49.2872354621
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_OD18",
+      "properties": {
+        "id": "food_OD18",
+        "facility_type": "food_vendors",
+        "name": "Dog Meister (Hot Dogs)",
+        "vendor_code": "OD18",
+        "description": "Hot Dogs",
+        "business_name": "Dog Meister",
+        "status": "營運中",
+        "location_desc": "West Side of 2900 Main St - 20 Metres North of E 14th Ave",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.101569149,
+          49.258474676
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_C9",
+      "properties": {
+        "id": "food_C9",
+        "facility_type": "food_vendors",
+        "name": "Feastro - The Rolling Bistro (Local Meats and Seafood)",
+        "vendor_code": "C9",
+        "description": "Local Meats and Seafood",
+        "business_name": "Feastro - The Rolling Bistro",
+        "status": "營運中",
+        "location_desc": "Authorised Parking Meter - Thurlow St at W Cordova St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.118453,
+          49.288672
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_C16",
+      "properties": {
+        "id": "food_C16",
+        "facility_type": "food_vendors",
+        "name": "Feastro The Rolling Bistro (Local Meats and Seafood)",
+        "vendor_code": "C16",
+        "description": "Local Meats and Seafood",
+        "business_name": "Feastro The Rolling Bistro",
+        "status": "營運中",
+        "location_desc": "Authorised Parking Meter West Side of 700 Howe St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.120345228,
+          49.2824386635
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT52",
+      "properties": {
+        "id": "food_DT52",
+        "facility_type": "food_vendors",
+        "name": "Japadog (Hot Dogs)",
+        "vendor_code": "DT52",
+        "description": "Hot Dogs",
+        "business_name": "Japadog",
+        "status": "營運中",
+        "location_desc": "West Side of 800 Burrard St - 2.5 Metres North of Smithe St",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.124363671,
+          49.2824199268
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_GM10",
+      "properties": {
+        "id": "food_GM10",
+        "facility_type": "food_vendors",
+        "name": "Potato Tornado (Potato Based Dishes)",
+        "vendor_code": "GM10",
+        "description": "Potato Based Dishes",
+        "business_name": "Potato Tornado",
+        "status": "營運中",
+        "location_desc": "West Side of 800 Granville St - 6 Metres South of Robson St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.120079603,
+          49.2812971849
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_C25",
+      "properties": {
+        "id": "food_C25",
+        "facility_type": "food_vendors",
+        "name": "Roaming Dragon (Asian Fusion)",
+        "vendor_code": "C25",
+        "description": "Asian Fusion",
+        "business_name": "Roaming Dragon",
+        "status": "營運中",
+        "location_desc": "Authorised Parking Meter East Side of 1600 Manitoba St",
+        "local_area": "Mount Pleasant"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.106548732,
+          49.2713078459
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_C26",
+      "properties": {
+        "id": "food_C26",
+        "facility_type": "food_vendors",
+        "name": "Super Thai (Thai Cuisine)",
+        "vendor_code": "C26",
+        "description": "Thai Cuisine",
+        "business_name": "Super Thai",
+        "status": "營運中",
+        "location_desc": "Authorised Parking Meter North Side of 1000 W Georgia St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.122623765,
+          49.285532115
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT41",
+      "properties": {
+        "id": "food_DT41",
+        "facility_type": "food_vendors",
+        "name": "The Juice Truck (Juice and Smoothies)",
+        "vendor_code": "DT41",
+        "description": "Juice and Smoothies",
+        "business_name": "The Juice Truck",
+        "status": "營運中",
+        "location_desc": "South Side of 900 Robson - 6 Metres East of Burrard St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.122696998,
+          49.2831023503
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_C11",
+      "properties": {
+        "id": "food_C11",
+        "facility_type": "food_vendors",
+        "name": "Meet to Eat (Kosher Israeli)",
+        "vendor_code": "C11",
+        "description": "Kosher Israeli",
+        "business_name": "Meet to Eat",
+        "status": "營運中",
+        "location_desc": "Authorised Parking Meter South Side of 1000 Dunsmuir St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11975,
+          49.285658
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_C6",
+      "properties": {
+        "id": "food_C6",
+        "facility_type": "food_vendors",
+        "name": "The Juice Truck (Juice and Smoothies)",
+        "vendor_code": "C6",
+        "description": "Juice and Smoothies",
+        "business_name": "The Juice Truck",
+        "status": "營運中",
+        "location_desc": "Authorised Parking Meter West Side of 300 Cambie St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.109452,
+          49.283032
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT01",
+      "properties": {
+        "id": "food_DT01",
+        "facility_type": "food_vendors",
+        "name": "Mr. Tube Steak (Hot Dogs)",
+        "vendor_code": "DT01",
+        "description": "Hot Dogs",
+        "business_name": "Mr. Tube Steak",
+        "status": "營運中",
+        "location_desc": "East Side of 600 Beatty St - 6 Metres North of West Georgia St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.112040051,
+          49.2787463289
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_EB06",
+      "properties": {
+        "id": "food_EB06",
+        "facility_type": "food_vendors",
+        "name": "San Juan Family Farm (Fruit Shakes, Smoothies and Juices)",
+        "vendor_code": "EB06",
+        "description": "Fruit Shakes, Smoothies and Juices",
+        "business_name": "San Juan Family Farm",
+        "status": "營運中",
+        "location_desc": "Authorised Parking Meter North Side of 1600 Davie St",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.139739,
+          49.286003
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_EB04",
+      "properties": {
+        "id": "food_EB04",
+        "facility_type": "food_vendors",
+        "name": "Hot Dogs",
+        "vendor_code": "EB04",
+        "description": "Hot Dogs",
+        "business_name": "餐車攤商",
+        "status": "營運中",
+        "location_desc": "South Side of 1700 Beach Ave - East Side of Bidwell St",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.142926123,
+          49.2844925173
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_OD05",
+      "properties": {
+        "id": "food_OD05",
+        "facility_type": "food_vendors",
+        "name": "Hot Dogs",
+        "vendor_code": "OD05",
+        "description": "Hot Dogs",
+        "business_name": "餐車攤商",
+        "status": "營運中",
+        "location_desc": "South Side of 1700 East Broadway - 37 Metres East of Commercial Dr",
+        "local_area": "Kensington-Cedar Cottage"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.069072741,
+          49.2622160477
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT10",
+      "properties": {
+        "id": "food_DT10",
+        "facility_type": "food_vendors",
+        "name": "Hot Dogs",
+        "vendor_code": "DT10",
+        "description": "Hot Dogs",
+        "business_name": "餐車攤商",
+        "status": "營運中",
+        "location_desc": "Expo Boulevard - 20 Metres West of Abbott St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.108008079,
+          49.2787930538
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_C18",
+      "properties": {
+        "id": "food_C18",
+        "facility_type": "food_vendors",
+        "name": "Aussie Pie Guy (Australian Pies)",
+        "vendor_code": "C18",
+        "description": "Australian Pies",
+        "business_name": "Aussie Pie Guy",
+        "status": "營運中",
+        "location_desc": "Authorised Parking Meter - 1000 W Pender St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.118192426,
+          49.2869519782
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_C17",
+      "properties": {
+        "id": "food_C17",
+        "facility_type": "food_vendors",
+        "name": "Le Tigre (Chinese Cuisine)",
+        "vendor_code": "C17",
+        "description": "Chinese Cuisine",
+        "business_name": "Le Tigre",
+        "status": "營運中",
+        "location_desc": "Authorised Parking Meter North Side of Alberni St - East of Bute St",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.125618909,
+          49.2865915482
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT35",
+      "properties": {
+        "id": "food_DT35",
+        "facility_type": "food_vendors",
+        "name": "Russett Shack (Potato Based Dishes)",
+        "vendor_code": "DT35",
+        "description": "Potato Based Dishes",
+        "business_name": "Russett Shack",
+        "status": "營運中",
+        "location_desc": "West Side of 1100 Burrard St - 10 Metres North of Davie St",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.128965,
+          49.279378
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT32",
+      "properties": {
+        "id": "food_DT32",
+        "facility_type": "food_vendors",
+        "name": "Tandoori Tikka Dog (Hot Dogs)",
+        "vendor_code": "DT32",
+        "description": "Hot Dogs",
+        "business_name": "Tandoori Tikka Dog",
+        "status": "營運中",
+        "location_desc": "North Side of 500 W Cordova St - 59 Metres West of Richards St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.111358833,
+          49.2851739116
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT73",
+      "properties": {
+        "id": "food_DT73",
+        "facility_type": "food_vendors",
+        "name": "Tandoori Tikka Dog (Hot Dogs)",
+        "vendor_code": "DT73",
+        "description": "Hot Dogs",
+        "business_name": "Tandoori Tikka Dog",
+        "status": "營運中",
+        "location_desc": "South Side of 200 West Georgia St - 8 Metres East of Hamilton St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.114194279,
+          49.2797972582
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT37",
+      "properties": {
+        "id": "food_DT37",
+        "facility_type": "food_vendors",
+        "name": "Hot Dogs",
+        "vendor_code": "DT37",
+        "description": "Hot Dogs",
+        "business_name": "餐車攤商",
+        "status": "營運中",
+        "location_desc": "West Side of 700 Burrard St - 15 Metres North of Robson St",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.122731857,
+          49.2834887921
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_C15",
+      "properties": {
+        "id": "food_C15",
+        "facility_type": "food_vendors",
+        "name": "Bandidas (Vegan Cuisine)",
+        "vendor_code": "C15",
+        "description": "Vegan Cuisine",
+        "business_name": "Bandidas",
+        "status": "營運中",
+        "location_desc": "Authorised Parking Meter - North Side of 1000 W Georgia St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.122093113,
+          49.2851936823
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_C14",
+      "properties": {
+        "id": "food_C14",
+        "facility_type": "food_vendors",
+        "name": "Brasilian Roots (Brasilian Cuisine)",
+        "vendor_code": "C14",
+        "description": "Brasilian Cuisine",
+        "business_name": "Brasilian Roots",
+        "status": "營運中",
+        "location_desc": "Authorised Parking Meter - East Side of 600 Seymour St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.116846018,
+          49.2819872241
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT70",
+      "properties": {
+        "id": "food_DT70",
+        "facility_type": "food_vendors",
+        "name": "Commissary Connect (Variety Menu)",
+        "vendor_code": "DT70",
+        "description": "Variety Menu",
+        "business_name": "Commissary Connect",
+        "status": "營運中",
+        "location_desc": "West Side of 600 Hornby St - 6 Metres South of Dunsmuir St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.118581094,
+          49.2849051032
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_C13",
+      "properties": {
+        "id": "food_C13",
+        "facility_type": "food_vendors",
+        "name": "Disco Cheetah (Korean)",
+        "vendor_code": "C13",
+        "description": "Korean",
+        "business_name": "Disco Cheetah",
+        "status": "營運中",
+        "location_desc": "Authorised Parking Meter West Side of 700 Howe St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.120443627,
+          49.2823678348
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT49",
+      "properties": {
+        "id": "food_DT49",
+        "facility_type": "food_vendors",
+        "name": "Eat Chicken Wraps (Wraps and Sandwiches)",
+        "vendor_code": "DT49",
+        "description": "Wraps and Sandwiches",
+        "business_name": "Eat Chicken Wraps",
+        "status": "營運中",
+        "location_desc": "West Side of 800 Howe St - 5 Metres South of Robson St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.121098559,
+          49.2819285671
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT69",
+      "properties": {
+        "id": "food_DT69",
+        "facility_type": "food_vendors",
+        "name": "Japadog (Hot Dogs)",
+        "vendor_code": "DT69",
+        "description": "Hot Dogs",
+        "business_name": "Japadog",
+        "status": "營運中",
+        "location_desc": "North Side of 600 W Cordova St - 6 Metres East of Granville St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.112525974,
+          49.285906094
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_GM17",
+      "properties": {
+        "id": "food_GM17",
+        "facility_type": "food_vendors",
+        "name": "Master Chef's Kebab House (Kebabs)",
+        "vendor_code": "GM17",
+        "description": "Kebabs",
+        "business_name": "Master Chef's Kebab House",
+        "status": "營運中",
+        "location_desc": "East Side of 500 Granville St - 10 Metres North of Dunsmuir St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.115997593,
+          49.2838072993
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT39",
+      "properties": {
+        "id": "food_DT39",
+        "facility_type": "food_vendors",
+        "name": "Mo's Hot Dog Plus (Western)",
+        "vendor_code": "DT39",
+        "description": "Western",
+        "business_name": "Mo's Hot Dog Plus",
+        "status": "營運中",
+        "location_desc": "South Side of 800 Robson St  -30 Metres West of Howe St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.121307872,
+          49.2822753151
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_C10",
+      "properties": {
+        "id": "food_C10",
+        "facility_type": "food_vendors",
+        "name": "Mum's Grilled Cheese Truck (Grilled Cheese and Soups)",
+        "vendor_code": "C10",
+        "description": "Grilled Cheese and Soups",
+        "business_name": "Mum's Grilled Cheese Truck",
+        "status": "營運中",
+        "location_desc": "Authorised Parking Meter -West Side of 700 Howe St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.120684903,
+          49.2822094865
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_C4",
+      "properties": {
+        "id": "food_C4",
+        "facility_type": "food_vendors",
+        "name": "Tacofino White Lightening (Tacos and Burritos)",
+        "vendor_code": "C4",
+        "description": "Tacos and Burritos",
+        "business_name": "Tacofino White Lightening",
+        "status": "營運中",
+        "location_desc": "Authorised Parking Meter West Side 500 Burrard St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.119002,
+          49.286031
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_C19",
+      "properties": {
+        "id": "food_C19",
+        "facility_type": "food_vendors",
+        "name": "The Reef (Caribbean)",
+        "vendor_code": "C19",
+        "description": "Caribbean",
+        "business_name": "The Reef",
+        "status": "營運中",
+        "location_desc": "Authorised Parking Meter - East Side of Thurlow St - North of W Hastings St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.119509663,
+          49.2880164318
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_EB05",
+      "properties": {
+        "id": "food_EB05",
+        "facility_type": "food_vendors",
+        "name": "Hot Dogs",
+        "vendor_code": "EB05",
+        "description": "Hot Dogs",
+        "business_name": "餐車攤商",
+        "status": "營運中",
+        "location_desc": "South Side of 1900 Beach Ave - 17 Metres West of Gilford St",
+        "local_area": "West End"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.143229444,
+          49.2887284882
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_GT04",
+      "properties": {
+        "id": "food_GT04",
+        "facility_type": "food_vendors",
+        "name": "Hot Dogs",
+        "vendor_code": "GT04",
+        "description": "Hot Dogs",
+        "business_name": "餐車攤商",
+        "status": "營運中",
+        "location_desc": "North Side of 100 Water St - 10 Metres West of Abbott St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.106609298,
+          49.2839891744
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT02",
+      "properties": {
+        "id": "food_DT02",
+        "facility_type": "food_vendors",
+        "name": "Hot Dogs",
+        "vendor_code": "DT02",
+        "description": "Hot Dogs",
+        "business_name": "餐車攤商",
+        "status": "營運中",
+        "location_desc": "North Side of Dunsmuir St - 6 Metres East of Beatty St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11025893,
+          49.2798897005
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_GM13",
+      "properties": {
+        "id": "food_GM13",
+        "facility_type": "food_vendors",
+        "name": "BBKB Kaboom Box (Seafood and Western)",
+        "vendor_code": "GM13",
+        "description": "Seafood and Western",
+        "business_name": "BBKB Kaboom Box",
+        "status": "營運中",
+        "location_desc": "West Side of 700 Granville St - South of W Georgia St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.118591524,
+          49.2823626147
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_DT74",
+      "properties": {
+        "id": "food_DT74",
+        "facility_type": "food_vendors",
+        "name": "Commissary Connect (Variety Menu)",
+        "vendor_code": "DT74",
+        "description": "Variety Menu",
+        "business_name": "Commissary Connect",
+        "status": "營運中",
+        "location_desc": "South Side of 800 Robson St- 13 Metres West of Howe St",
+        "local_area": "Downtown"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.121122,
+          49.282109
+        ]
+      }
+    }
+  ]
+}
