@@ -39,7 +39,7 @@ interface ScheduleData {
 }
 
 export default function FlightScheduleModal() {
-  const { isFlightScheduleOpen, setFlightScheduleOpen, setSearchTarget } = useUIStore();
+  const { isFlightScheduleOpen, setFlightScheduleOpen, searchTarget, setSearchTarget } = useUIStore();
   const [activeTab, setActiveTab] = useState<'arrivals' | 'departures'>('arrivals');
   const [filterType, setFilterType] = useState<'all' | 'domestic' | 'international' | 'live'>('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -91,7 +91,6 @@ export default function FlightScheduleModal() {
 
   const handleFlightClick = (flight: FlightScheduleItem) => {
     if (flight.is_live && flight.lat && flight.lon) {
-      setFlightScheduleOpen(false);
       setSearchTarget({
         id: flight.flight_id || flight.id,
         title: `${flight.flight_no} · ${flight.airline}`,
@@ -102,15 +101,18 @@ export default function FlightScheduleModal() {
         lon: flight.lon,
         lat: flight.lat,
         zoom: 13,
-        meta: flight
+        meta: {
+          ...flight,
+          id: flight.flight_id || flight.id,
+        }
       });
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-md animate-fade-in">
+    <div className="fixed top-[68px] right-3 sm:right-5 bottom-4 w-[380px] sm:w-[480px] max-w-[calc(100vw-24px)] z-40 flex flex-col pointer-events-none animate-fade-in">
       <div 
-        className="w-full max-w-3xl max-h-[88vh] bg-[#14161a] border border-[#2b303c] rounded-2xl shadow-2xl flex flex-col overflow-hidden text-gray-200"
+        className="w-full h-full bg-[#14161a]/95 backdrop-blur-md border border-[#2b303c] rounded-2xl shadow-2xl flex flex-col overflow-hidden text-gray-200 pointer-events-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -264,14 +266,17 @@ export default function FlightScheduleModal() {
           ) : (
             filteredList.map((flight) => {
               const isLive = flight.is_live;
+              const isSelected = searchTarget?.id === (flight.flight_id || flight.id);
               return (
                 <div
                   key={flight.id}
                   onClick={() => handleFlightClick(flight)}
                   className={`p-3 rounded-xl transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 ${
-                    isLive
+                    isSelected
+                      ? 'bg-sky-500/20 border-sky-400 shadow-[0_0_12px_rgba(56,189,248,0.25)] ring-1 ring-sky-400/40'
+                      : isLive
                       ? 'hover:bg-[#1a212e] cursor-pointer hover:border-sky-500/30 border border-transparent'
-                      : 'hover:bg-[#181a20]'
+                      : 'hover:bg-[#181a20] border border-transparent'
                   }`}
                 >
                   {/* Left: Time & Flight Details */}

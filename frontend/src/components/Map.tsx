@@ -59,7 +59,7 @@ interface RoadFacilityInfo {
 }
 
 export default function AppMap() {
-  const { layers, mapStyleType, searchTarget, isLayerPanelOpen } = useUIStore();
+  const { layers, mapStyleType, searchTarget, setSearchTarget, isLayerPanelOpen } = useUIStore();
   const mapRef = useRef<MapRef>(null);
 
   // Resize map canvas smoothly when side panel toggles
@@ -69,6 +69,25 @@ export default function AppMap() {
     }, 220);
     return () => clearTimeout(timer);
   }, [isLayerPanelOpen]);
+
+  // 當航空相關圖層關閉時，清除已選取的項目與高亮光環
+  useEffect(() => {
+    if (!layers.domesticFlights && !layers.intlFlights) {
+      setSelectedFlight(null);
+      if (searchTarget && (searchTarget.category === 'domestic_flight' || searchTarget.category === 'intl_flight')) {
+        setSearchTarget(null);
+      }
+    }
+  }, [layers.domesticFlights, layers.intlFlights, searchTarget, setSearchTarget]);
+
+  useEffect(() => {
+    if (!layers.airports) {
+      setSelectedAirport(null);
+      if (searchTarget && searchTarget.category === 'airports') {
+        setSearchTarget(null);
+      }
+    }
+  }, [layers.airports, searchTarget, setSearchTarget]);
 
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [ferryVehicles, setFerryVehicles] = useState<FerryVehicle[]>([]);
@@ -1241,6 +1260,9 @@ export default function AppMap() {
           } else {
             setSelectedStop(null);
             setSelectedFacility(null);
+            setSelectedAirport(null);
+            setSelectedFlight(null);
+            setSearchTarget(null);
           }
         }}
       >
@@ -1555,12 +1577,12 @@ export default function AppMap() {
           return (
             <Marker key={props.id || `ap-${i}`} longitude={coords[0]} latitude={coords[1]} anchor="center">
               <div
-                className={`relative flex items-center gap-1.5 px-2 py-1 rounded-full border-2 border-white shadow-xl cursor-pointer backdrop-blur-md transition-all hover:scale-110 z-35 select-none ${
+                className={`relative flex items-center justify-center w-8 h-8 rounded-full border-2 border-white shadow-xl cursor-pointer backdrop-blur-md transition-all hover:scale-125 z-35 select-none ${
                   isMain 
-                    ? 'bg-sky-600 text-white font-bold ring-2 ring-sky-400/50' 
+                    ? 'bg-sky-600 text-white ring-2 ring-sky-400/50' 
                     : isSeaplane 
-                    ? 'bg-teal-600 text-white font-semibold' 
-                    : 'bg-emerald-600 text-white font-medium'
+                    ? 'bg-teal-600 text-white' 
+                    : 'bg-emerald-600 text-white'
                 }`}
                 title={props.name}
                 onClick={(e) => {
@@ -1568,8 +1590,7 @@ export default function AppMap() {
                   setSelectedAirport(ap);
                 }}
               >
-                <span className="text-xs">{props.icon || '🛫'}</span>
-                <span className="text-[11px] whitespace-nowrap pr-0.5">{isMain ? 'YVR 國際機場' : isSeaplane ? (props.iata === 'CXH' ? '煤港水上機場' : 'YVR 南航廈') : '賞機公園'}</span>
+                <span className="text-sm">{props.icon || '🛫'}</span>
               </div>
             </Marker>
           );
@@ -1619,7 +1640,12 @@ export default function AppMap() {
             longitude={selectedAirport.geometry.coordinates[0]}
             latitude={selectedAirport.geometry.coordinates[1]}
             anchor="bottom"
-            onClose={() => setSelectedAirport(null)}
+            onClose={() => {
+              setSelectedAirport(null);
+              if (searchTarget?.category === 'airports') {
+                setSearchTarget(null);
+              }
+            }}
             closeOnClick={false}
             closeButton={false}
             className="z-50"
@@ -1640,7 +1666,12 @@ export default function AppMap() {
                   </div>
                 </div>
                 <button
-                  onClick={() => setSelectedAirport(null)}
+                  onClick={() => {
+                    setSelectedAirport(null);
+                    if (searchTarget?.category === 'airports') {
+                      setSearchTarget(null);
+                    }
+                  }}
                   className="text-gray-400 hover:text-gray-700 text-2xl font-light leading-none px-1 py-0.5 -mt-1"
                 >
                   &times;
@@ -1696,7 +1727,10 @@ export default function AppMap() {
             longitude={selectedFlight.lon}
             latitude={selectedFlight.lat}
             anchor="bottom"
-            onClose={() => setSelectedFlight(null)}
+            onClose={() => {
+              setSelectedFlight(null);
+              setSearchTarget(null);
+            }}
             closeOnClick={false}
             closeButton={false}
             className="z-50"
@@ -1731,7 +1765,10 @@ export default function AppMap() {
                   </div>
                 </div>
                 <button
-                  onClick={() => setSelectedFlight(null)}
+                  onClick={() => {
+                    setSelectedFlight(null);
+                    setSearchTarget(null);
+                  }}
                   className="text-gray-400 hover:text-gray-700 text-2xl font-light leading-none px-1 py-0.5 -mt-1"
                 >
                   &times;
