@@ -465,6 +465,15 @@ def get_road_facilities_geojson(facility_type: str, db: Session = Depends(databa
     """
     facilities = db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).all()
     
+    # Auto-import on-the-fly if not yet populated in DB
+    if not facilities:
+        try:
+            from scripts.import_road_data import import_single_facility_type
+            import_single_facility_type(facility_type, db)
+            facilities = db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).all()
+        except Exception as e:
+            print(f"Auto-import error for {facility_type}: {e}")
+            
     features = []
     for f in facilities:
         props = {

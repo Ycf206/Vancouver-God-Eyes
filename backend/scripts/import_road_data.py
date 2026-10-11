@@ -14,7 +14,7 @@ DATASETS = [
     {
         "facility_type": "parking_meters",
         "dataset_id": "parking-meters",
-        "name_field": lambda r: f"收費錶 #{r.get('meter_id', '')}".strip(),
+        "name_field": lambda r: f"收費錶 #{r.get('meter_id', '')}".strip() if r.get('meter_id') else "停車收費錶",
         "id_func": lambda r, idx: f"meter_{r.get('meter_id') or r.get('object_id') or idx}"
     },
     {
@@ -74,85 +74,96 @@ def fetch_dataset_records(dataset_id):
             
     return all_records
 
+def import_single_facility_type(facility_type, db=None):
+    """Imports or auto-populates a single road facility dataset"""
+    should_close = False
+    if db is None:
+        models.Base.metadata.create_all(bind=database.engine)
+        db = database.SessionLocal()
+        should_close = True
+        
+    try:
+        conf = next((c for c in DATASETS if c["facility_type"] == facility_type), None)
+        if not conf:
+            print(f"Unknown facility type: {facility_type}")
+            return []
+            
+        dataset_id = conf["dataset_id"]
+        print(f"Fetching [{facility_type}] ({dataset_id})...")
+        records = fetch_dataset_records(dataset_id)
+        if not records:
+            return []
+            
+        db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).delete()
+        
+        objects_to_add = []
+        seen_ids = set()
+        
+        for idx, r in enumerate(records):
+            geo_point = r.get("geo_point_2d") or {}
+            lon = geo_point.get("lon")
+            lat = geo_point.get("lat")
+            
+            if lon is None or lat is None:
+                geom_data = r.get("geom", {})
+                if isinstance(geom_data, dict):
+                    coords = geom_data.get("geometry", {}).get("coordinates", [])
+                    if len(coords) >= 2:
+                        lon, lat = coords[0], coords[1]
+                        
+            if lon is None or lat is None:
+                continue
+                
+            obj_id = conf["id_func"](r, idx)
+            if obj_id in seen_ids:
+                obj_id = f"{obj_id}_{idx}"
+            seen_ids.add(obj_id)
+            
+            name = conf["name_field"](r)
+            local_area = r.get("local_area") or r.get("geo_local_area") or ""
+            details = {k: v for k, v in r.items() if k not in ("geom", "geo_point_2d")}
+            
+            facility = models.RoadFacility(
+                id=obj_id,
+                facility_type=facility_type,
+                name=name,
+                local_area=local_area,
+                lat=lat,
+                lon=lon,
+                geom=f"SRID=4326;POINT({lon} {lat})",
+                details=details,
+                last_updated=datetime.utcnow()
+            )
+            objects_to_add.append(facility)
+            
+        for i, fac in enumerate(objects_to_add):
+            db.add(fac)
+            if (i + 1) % 500 == 0:
+                db.commit()
+        db.commit()
+        print(f"✅ Successfully saved {len(objects_to_add)} {facility_type} records.")
+        return objects_to_add
+    except Exception as e:
+        db.rollback()
+        print(f"❌ Error importing {facility_type}: {e}")
+        return []
+    finally:
+        if should_close:
+            db.close()
+
 def import_road_facilities():
     print("=" * 60)
     print("🚦 Starting Municipal Road Facilities Data Import")
     print(f"📅 Timestamp: {datetime.utcnow().isoformat()}Z")
     print("=" * 60)
     
-    # Ensure tables exist
     models.Base.metadata.create_all(bind=database.engine)
     db = database.SessionLocal()
     
     try:
         for conf in DATASETS:
             facility_type = conf["facility_type"]
-            dataset_id = conf["dataset_id"]
-            
-            print(f"\n📥 Downloading [{facility_type}] from Open Data Vancouver ({dataset_id})...")
-            records = fetch_dataset_records(dataset_id)
-            print(f"  Total records fetched: {len(records)}")
-            
-            if not records:
-                print(f"  ⚠️ Skipping {facility_type} (no records).")
-                continue
-                
-            # Clear old records for this facility type
-            deleted = db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).delete()
-            print(f"  Cleared {deleted} existing records for {facility_type}.")
-            
-            objects_to_add = []
-            seen_ids = set()
-            
-            for idx, r in enumerate(records):
-                # Extract lat/lon
-                geo_point = r.get("geo_point_2d") or {}
-                lon = geo_point.get("lon")
-                lat = geo_point.get("lat")
-                
-                if lon is None or lat is None:
-                    # Fallback to geom
-                    geom_data = r.get("geom", {})
-                    if isinstance(geom_data, dict):
-                        coords = geom_data.get("geometry", {}).get("coordinates", [])
-                        if len(coords) >= 2:
-                            lon, lat = coords[0], coords[1]
-                            
-                if lon is None or lat is None:
-                    continue
-                    
-                obj_id = conf["id_func"](r, idx)
-                if obj_id in seen_ids:
-                    obj_id = f"{obj_id}_{idx}"
-                seen_ids.add(obj_id)
-                
-                name = conf["name_field"](r)
-                local_area = r.get("local_area") or r.get("geo_local_area") or ""
-                
-                # Clean details: remove large geom objects from json details to save space
-                details = {k: v for k, v in r.items() if k not in ("geom", "geo_point_2d")}
-                
-                facility = models.RoadFacility(
-                    id=obj_id,
-                    facility_type=facility_type,
-                    name=name,
-                    local_area=local_area,
-                    lat=lat,
-                    lon=lon,
-                    geom=f"SRID=4326;POINT({lon} {lat})",
-                    details=details,
-                    last_updated=datetime.utcnow()
-                )
-                objects_to_add.append(facility)
-                
-            db.bulk_save_objects(objects_to_add)
-            db.commit()
-            print(f"  ✅ Successfully imported {len(objects_to_add)} {facility_type} records.")
-            
-    except Exception as e:
-        db.rollback()
-        print(f"❌ Error during road facility import: {e}")
-        raise e
+            import_single_facility_type(facility_type, db)
     finally:
         db.close()
         
