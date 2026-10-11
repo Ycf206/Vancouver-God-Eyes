@@ -148,7 +148,7 @@ export default function AppMap() {
           type: 'raster',
           source: 'esri-base',
           minzoom: 0,
-          maxzoom: 16
+          maxzoom: 24
         }
       ]
     };
@@ -269,7 +269,7 @@ export default function AppMap() {
         type: 'raster',
         source: 'esri-labels',
         minzoom: 0,
-        maxzoom: 16
+        maxzoom: 24
       });
     }
 
@@ -297,10 +297,26 @@ export default function AppMap() {
         type: 'circle',
         source: 'parking-meters',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2, 14, 4, 16, 6],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2, 14, 4, 15, 7, 17, 9],
           'circle-color': '#f59e0b',
-          'circle-stroke-width': 1,
+          'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'parking-meters-symbol-layer',
+        type: 'symbol',
+        source: 'parking-meters',
+        minzoom: 15,
+        layout: {
+          'text-field': 'P',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 15, 9, 17, 11],
+          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
         }
       });
     }
@@ -312,10 +328,25 @@ export default function AppMap() {
         type: 'circle',
         source: 'accessible-parking',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 5, 16, 7.5],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 5, 15, 8, 17, 10],
           'circle-color': '#0ea5e9',
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'accessible-parking-symbol-layer',
+        type: 'symbol',
+        source: 'accessible-parking',
+        minzoom: 15,
+        layout: {
+          'text-field': '♿',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 15, 10, 17, 12],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
         }
       });
     }
@@ -327,10 +358,25 @@ export default function AppMap() {
         type: 'circle',
         source: 'motorcycle-parking',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 5, 16, 7.5],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 5, 15, 8, 17, 10],
           'circle-color': '#f97316',
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'motorcycle-parking-symbol-layer',
+        type: 'symbol',
+        source: 'motorcycle-parking',
+        minzoom: 15,
+        layout: {
+          'text-field': '🏍',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 15, 10, 17, 12],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
         }
       });
     }
@@ -342,10 +388,25 @@ export default function AppMap() {
         type: 'circle',
         source: 'ev-charging',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3.5, 14, 6.5, 16, 9.5],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3.5, 14, 6.5, 15, 9.5, 17, 12],
           'circle-color': '#10b981',
           'circle-stroke-width': 2,
           'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'ev-charging-symbol-layer',
+        type: 'symbol',
+        source: 'ev-charging',
+        minzoom: 14,
+        layout: {
+          'text-field': '⚡',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 14, 9, 17, 13],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
         }
       });
     }
@@ -369,7 +430,8 @@ export default function AppMap() {
   return (
     <div className="w-full h-full absolute inset-0 z-0 pt-[60px]">
       <Map
-        initialViewState={{ longitude: -123.05, latitude: 49.25, zoom: 11, pitch: 45, bearing: 0 }}
+        initialViewState={{ longitude: -123.05, latitude: 49.25, zoom: 11, pitch: 0, bearing: 0 }}
+        maxZoom={20}
         mapStyle={mapStyle}
         style={{ width: '100%', height: '100%' }}
         interactiveLayerIds={[
@@ -377,9 +439,13 @@ export default function AppMap() {
           'skytrain-stops-layer', 
           'seabus-stops-layer',
           'parking-meters-layer',
+          'parking-meters-symbol-layer',
           'accessible-parking-layer',
+          'accessible-parking-symbol-layer',
           'motorcycle-parking-layer',
-          'ev-charging-layer'
+          'motorcycle-parking-symbol-layer',
+          'ev-charging-layer',
+          'ev-charging-symbol-layer'
         ]}
         onClick={(e) => {
           const feature = e.features?.[0];
@@ -413,10 +479,10 @@ export default function AppMap() {
                 setLoadingArrivals(false);
               });
           } else if (
-            layerId === 'parking-meters-layer' || 
-            layerId === 'accessible-parking-layer' || 
-            layerId === 'motorcycle-parking-layer' || 
-            layerId === 'ev-charging-layer'
+            layerId.startsWith('parking-meters') || 
+            layerId.startsWith('accessible-parking') || 
+            layerId.startsWith('motorcycle-parking') || 
+            layerId.startsWith('ev-charging')
           ) {
             setSelectedStop(null);
             const props = feature.properties || {};
