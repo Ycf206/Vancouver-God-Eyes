@@ -75,6 +75,17 @@ async def fetch_bcferries_realtime():
                 'BOW': [-123.3313, 49.3795]
             }
 
+            terminal_names = {
+                'TSA': 'Tsawwassen (吐瓦生)',
+                'SWB': 'Swartz Bay (史瓦茲灣)',
+                'HSB': 'Horseshoe Bay (馬蹄灣)',
+                'DUK': 'Duke Point (杜克角)',
+                'LNG': 'Langdale (朗代爾)',
+                'NAN': 'Nanaimo (乃磨 Departure Bay)',
+                'FUL': 'Fulford Harbour (鹽泉島)',
+                'BOW': 'Bowen Island (Snug Cove)'
+            }
+
             vehicles = []
             
             import datetime
@@ -137,12 +148,21 @@ async def fetch_bcferries_realtime():
                         seen_trips.add(trip_key)
                         lon = dep_coord[0] + (arr_coord[0] - dep_coord[0]) * progress
                         lat = dep_coord[1] + (arr_coord[1] - dep_coord[1]) * progress
+                        fill = sailing.get('fill') or sailing.get('carFill') or 0
                         
                         vehicles.append({
                             'id': f"bcferries_{vessel_name.replace(' ', '_')}_{dep_code}_{arr_code}_{time_str}",
                             'route_id': f"{dep_code} ➝ {arr_code}",
                             'is_bcferries': True,
                             'vessel_name': vessel_name,
+                            'dep_code': dep_code,
+                            'arr_code': arr_code,
+                            'dep_name': terminal_names.get(dep_code, dep_code),
+                            'arr_name': terminal_names.get(arr_code, arr_code),
+                            'departure_time': time_str,
+                            'arrival_time': arr_time_str,
+                            'fill': fill,
+                            'progress': round(progress * 100, 1),
                             'lat': lat,
                             'lon': lon,
                             'bearing': bearing

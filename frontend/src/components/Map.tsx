@@ -27,6 +27,14 @@ interface FerryVehicle {
   id: string;
   route_id: string;
   vessel_name?: string;
+  dep_code?: string;
+  arr_code?: string;
+  dep_name?: string;
+  arr_name?: string;
+  departure_time?: string;
+  arrival_time?: string;
+  fill?: number;
+  progress?: number;
   lat: number;
   lon: number;
   bearing: number;
@@ -53,6 +61,7 @@ export default function AppMap() {
   const [selectedTerminal, setSelectedTerminal] = useState<{geometry: {coordinates: number[]}, properties: {name?: string, code: string}} | null>(null);
   const [terminalSchedule, setTerminalSchedule] = useState<Array<{destination: string, time: string, arrival_time: string, vessel_name: string, status: string, fill: number}>>([]);
   const [loadingSchedule, setLoadingSchedule] = useState(false);
+  const [selectedFerry, setSelectedFerry] = useState<FerryVehicle | null>(null);
 
   useEffect(() => {
     fetch('/bc_ferries_terminals_points.geojson')
@@ -335,6 +344,10 @@ export default function AppMap() {
             <div 
               className="relative flex items-center justify-center w-8 h-8 bg-[#0060a9] rounded-full cursor-pointer tooltip border-2 border-white shadow-xl backdrop-blur-sm transition-transform hover:scale-125 z-30" 
               title={`${v.vessel_name || 'BC Ferries'} (${v.route_id})`}
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedFerry(v);
+              }}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M2 12h20"/><path d="M6 12l2-4h8l2 4"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
@@ -496,6 +509,94 @@ export default function AppMap() {
                   </div>
                 )}
               </div>
+            </div>
+          </Popup>
+        )}
+
+        {/* Ferry Popup */}
+        {selectedFerry && (
+          <Popup
+            longitude={selectedFerry.lon}
+            latitude={selectedFerry.lat}
+            anchor="bottom"
+            onClose={() => setSelectedFerry(null)}
+            closeOnClick={false}
+            closeButton={false}
+            className="z-50"
+            offset={[0, -14]}
+            maxWidth="360px"
+          >
+            <div className="p-3.5 w-[310px] sm:w-[330px] max-w-[88vw] text-gray-800">
+              <div className="flex items-start justify-between pb-2 mb-2.5 border-b border-gray-100">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 bg-[#0060a9] rounded-lg flex items-center justify-center text-white shadow-sm flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M2 12h20"/><path d="M6 12l2-4h8l2 4"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-900 text-sm leading-tight">{selectedFerry.vessel_name || 'BC Ferries'}</h3>
+                    <div className="text-[10px] text-emerald-600 font-semibold flex items-center gap-1 mt-0.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                      航行中 (In Transit)
+                    </div>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setSelectedFerry(null)} 
+                  className="text-gray-400 hover:text-gray-700 text-2xl font-light leading-none px-1 py-0.5 rounded transition-colors focus:outline-none -mt-1"
+                >
+                  &times;
+                </button>
+              </div>
+
+              <div className="bg-gray-50/90 p-2.5 rounded-lg border border-gray-200/60 mb-2.5 flex flex-col gap-2">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-gray-400 text-[10px] uppercase font-bold tracking-wider">航線 (Route)</span>
+                  <span className="font-bold text-[#0060a9]">{selectedFerry.route_id}</span>
+                </div>
+                <div className="text-xs text-gray-700 flex justify-between items-center bg-white p-1.5 rounded border border-gray-100">
+                  <span className="font-medium truncate max-w-[125px]">{selectedFerry.dep_name || selectedFerry.dep_code}</span>
+                  <span className="text-gray-400 font-bold">➝</span>
+                  <span className="font-medium truncate max-w-[125px] text-right">{selectedFerry.arr_name || selectedFerry.arr_code}</span>
+                </div>
+                <div className="flex justify-between items-center text-xs pt-1 border-t border-gray-200/50">
+                  <span className="text-gray-500">預計時間</span>
+                  <span className="font-bold text-gray-900">
+                    {selectedFerry.departure_time} {selectedFerry.arrival_time ? `➝ ${selectedFerry.arrival_time}` : ''}
+                  </span>
+                </div>
+              </div>
+
+              {selectedFerry.progress !== undefined && (
+                <div className="mb-2">
+                  <div className="flex justify-between items-center text-[10px] text-gray-500 mb-1">
+                    <span>航程進度 (Sailing Progress)</span>
+                    <span className="font-bold text-emerald-700">{selectedFerry.progress}%</span>
+                  </div>
+                  <div className="w-full bg-gray-200/80 rounded-full h-1.5 overflow-hidden">
+                    <div 
+                      className="bg-emerald-500 h-1.5 rounded-full transition-all duration-500" 
+                      style={{ width: `${selectedFerry.progress}%` }}
+                    ></div>
+                  </div>
+                </div>
+              )}
+
+              {selectedFerry.fill !== undefined && selectedFerry.fill > 0 && (
+                <div>
+                  <div className="flex justify-between items-center text-[10px] text-gray-500 mb-1">
+                    <span>車位載車率 (Deck Fill)</span>
+                    <span className="font-bold text-gray-800">{selectedFerry.fill}%</span>
+                  </div>
+                  <div className="w-full bg-gray-200/80 rounded-full h-1.5 overflow-hidden">
+                    <div 
+                      className={`h-1.5 rounded-full transition-all duration-300 ${selectedFerry.fill >= 80 ? 'bg-amber-500' : 'bg-[#0060a9]'}`} 
+                      style={{ width: `${Math.min(100, Math.max(0, selectedFerry.fill))}%` }}
+                    ></div>
+                  </div>
+                </div>
+              )}
             </div>
           </Popup>
         )}
