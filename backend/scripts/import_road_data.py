@@ -34,6 +34,24 @@ DATASETS = [
         "dataset_id": "electric-vehicle-charging-stations",
         "name_field": lambda r: r.get('location') or r.get('address') or "電動車充電站",
         "id_func": lambda r, idx: f"ev_{r.get('map_id') or r.get('object_id') or idx}"
+    },
+    {
+        "facility_type": "escooter",
+        "dataset_id": "shared-e-scooter-stations-lime-docking-stations",
+        "name_field": lambda r: r.get('station_name') or r.get('station_location') or "共享電動滑板車站",
+        "id_func": lambda r, idx: f"scooter_{r.get('station_id') or r.get('fid') or idx}"
+    },
+    {
+        "facility_type": "fire_halls",
+        "dataset_id": "fire-halls",
+        "name_field": lambda r: f"Fire Hall {r.get('name')}".strip() if r.get('name') else "消防局",
+        "id_func": lambda r, idx: f"fire_{r.get('name', '').replace(' ', '_') or idx}"
+    },
+    {
+        "facility_type": "community_centres",
+        "dataset_id": "community-centres",
+        "name_field": lambda r: f"{r.get('name', '')} Community Centre".strip() if r.get('name') else "社區中心",
+        "id_func": lambda r, idx: f"cc_{r.get('name', '').replace(' ', '_') or idx}"
     }
 ]
 

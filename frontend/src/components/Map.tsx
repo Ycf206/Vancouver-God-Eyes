@@ -174,6 +174,9 @@ export default function AppMap() {
     style.sources['accessible-parking'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/accessible_parking` };
     style.sources['motorcycle-parking'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/motorcycle_parking` };
     style.sources['ev-charging'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/ev_charging` };
+    style.sources['escooter'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/escooter` };
+    style.sources['fire-halls'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/fire_halls` };
+    style.sources['community-centres'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/community_centres` };
 
     // Bus Routes
     if (layers.busRoutes) {
@@ -411,6 +414,96 @@ export default function AppMap() {
       });
     }
 
+    // Road Facilities: Shared E-Scooter Stations
+    if (layers.escooter) {
+      style.layers.push({
+        id: 'escooter-layer',
+        type: 'circle',
+        source: 'escooter',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
+          'circle-color': '#84cc16',
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'escooter-symbol-layer',
+        type: 'symbol',
+        source: 'escooter',
+        minzoom: 15,
+        layout: {
+          'text-field': '🛴',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 15, 10, 17, 12],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+    }
+
+    // Government Facilities: Fire Halls
+    if (layers.fireHalls) {
+      style.layers.push({
+        id: 'fire-halls-layer',
+        type: 'circle',
+        source: 'fire-halls',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3, 14, 5.5, 15, 9, 17, 12],
+          'circle-color': '#ef4444',
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'fire-halls-symbol-layer',
+        type: 'symbol',
+        source: 'fire-halls',
+        minzoom: 14,
+        layout: {
+          'text-field': '🚒',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 14, 10, 17, 14],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+    }
+
+    // Government Facilities: Community Centres
+    if (layers.communityCentres) {
+      style.layers.push({
+        id: 'community-centres-layer',
+        type: 'circle',
+        source: 'community-centres',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3, 14, 5.5, 15, 9, 17, 12],
+          'circle-color': '#8b5cf6',
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'community-centres-symbol-layer',
+        type: 'symbol',
+        source: 'community-centres',
+        minzoom: 14,
+        layout: {
+          'text-field': '🏛️',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 14, 10, 17, 14],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+    }
+
     return style;
   }, [
     layers.skytrainRoutes, 
@@ -424,6 +517,9 @@ export default function AppMap() {
     layers.accessibleParking, 
     layers.motorcycleParking, 
     layers.evCharging, 
+    layers.escooter,
+    layers.fireHalls,
+    layers.communityCentres,
     mapStyleType
   ]);
 
@@ -445,7 +541,13 @@ export default function AppMap() {
           'motorcycle-parking-layer',
           'motorcycle-parking-symbol-layer',
           'ev-charging-layer',
-          'ev-charging-symbol-layer'
+          'ev-charging-symbol-layer',
+          'escooter-layer',
+          'escooter-symbol-layer',
+          'fire-halls-layer',
+          'fire-halls-symbol-layer',
+          'community-centres-layer',
+          'community-centres-symbol-layer'
         ]}
         onClick={(e) => {
           const feature = e.features?.[0];
@@ -482,7 +584,10 @@ export default function AppMap() {
             layerId.startsWith('parking-meters') || 
             layerId.startsWith('accessible-parking') || 
             layerId.startsWith('motorcycle-parking') || 
-            layerId.startsWith('ev-charging')
+            layerId.startsWith('ev-charging') ||
+            layerId.startsWith('escooter') ||
+            layerId.startsWith('fire-halls') ||
+            layerId.startsWith('community-centres')
           ) {
             setSelectedStop(null);
             const props = feature.properties || {};
@@ -808,7 +913,10 @@ export default function AppMap() {
                   <span className={`w-3 h-3 rounded-full flex-shrink-0 ${
                     selectedFacility.facility_type === 'parking_meters' ? 'bg-amber-500' :
                     selectedFacility.facility_type === 'accessible_parking' ? 'bg-sky-500' :
-                    selectedFacility.facility_type === 'motorcycle_parking' ? 'bg-orange-500' : 'bg-emerald-500'
+                    selectedFacility.facility_type === 'motorcycle_parking' ? 'bg-orange-500' :
+                    selectedFacility.facility_type === 'ev_charging' ? 'bg-emerald-500' :
+                    selectedFacility.facility_type === 'escooter' ? 'bg-lime-500' :
+                    selectedFacility.facility_type === 'fire_halls' ? 'bg-rose-500' : 'bg-violet-500'
                   }`}></span>
                   <div>
                     <h3 className="font-bold text-gray-900 text-sm leading-tight">{selectedFacility.name}</h3>
@@ -921,6 +1029,88 @@ export default function AppMap() {
                     <div className="flex justify-between text-gray-500 text-[11px] pt-1 border-t border-gray-100">
                       <span>營運單位</span>
                       <span>{selectedFacility.properties.operator}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* E-Scooter Station Details */}
+              {selectedFacility.facility_type === 'escooter' && (
+                <div className="flex flex-col gap-1.5 text-xs">
+                  <div className="flex justify-between items-center bg-lime-50 p-1.5 rounded">
+                    <span className="text-lime-800 font-medium">車位容量 (Capacity)</span>
+                    <span className="font-bold text-lime-900 text-sm">{selectedFacility.properties.station_size || '—'} 輛</span>
+                  </div>
+                  {selectedFacility.properties.station_number && (
+                    <div className="flex justify-between text-gray-600">
+                      <span>站點編號</span>
+                      <span className="font-medium text-gray-800">{selectedFacility.properties.station_number}</span>
+                    </div>
+                  )}
+                  {selectedFacility.properties.placement && (
+                    <div className="flex justify-between text-gray-600">
+                      <span>設置位置</span>
+                      <span className="font-medium text-gray-800">{selectedFacility.properties.placement}</span>
+                    </div>
+                  )}
+                  {selectedFacility.properties.jurisdiction && (
+                    <div className="flex justify-between text-gray-600">
+                      <span>管轄屬性</span>
+                      <span className="font-medium text-gray-800">{selectedFacility.properties.jurisdiction}</span>
+                    </div>
+                  )}
+                  {selectedFacility.properties.installation_date && (
+                    <div className="flex justify-between text-gray-500 text-[11px] pt-1 border-t border-gray-100">
+                      <span>啟用日期</span>
+                      <span>{String(selectedFacility.properties.installation_date).slice(0, 10)}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Fire Halls Details */}
+              {selectedFacility.facility_type === 'fire_halls' && (
+                <div className="flex flex-col gap-1.5 text-xs">
+                  {selectedFacility.properties.address && (
+                    <div className="bg-rose-50 p-2 rounded text-gray-700">
+                      <span className="text-rose-800 font-medium block text-[11px] mb-0.5">局址地址</span>
+                      <span className="font-bold text-rose-950 text-sm">{selectedFacility.properties.address}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between items-center text-gray-600 pt-1">
+                    <span>服務轄區</span>
+                    <span className="font-medium text-gray-800">{selectedFacility.local_area || selectedFacility.properties.geo_local_area || '溫哥華市'}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-gray-500 text-[11px] pt-1 border-t border-gray-100">
+                    <span>緊急求助</span>
+                    <span className="font-bold text-rose-600">撥打 911</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Community Centres Details */}
+              {selectedFacility.facility_type === 'community_centres' && (
+                <div className="flex flex-col gap-1.5 text-xs">
+                  {selectedFacility.properties.address && (
+                    <div className="bg-violet-50 p-2 rounded text-gray-700">
+                      <span className="text-violet-800 font-medium block text-[11px] mb-0.5">中心地址</span>
+                      <span className="font-bold text-violet-950 text-sm">{selectedFacility.properties.address}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between items-center text-gray-600 pt-1">
+                    <span>所在社區</span>
+                    <span className="font-medium text-gray-800">{selectedFacility.local_area || selectedFacility.properties.geo_local_area || '溫哥華市'}</span>
+                  </div>
+                  {selectedFacility.properties.urllink && (
+                    <div className="pt-1.5 border-t border-gray-100">
+                      <a 
+                        href={selectedFacility.properties.urllink} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-violet-600 hover:bg-violet-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
+                      >
+                        前往社區中心官方網站 ↗
+                      </a>
                     </div>
                   )}
                 </div>

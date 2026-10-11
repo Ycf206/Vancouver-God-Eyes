@@ -23,6 +23,9 @@ export interface UIState {
     accessibleParking: boolean;
     motorcycleParking: boolean;
     evCharging: boolean;
+    escooter: boolean;
+    fireHalls: boolean;
+    communityCentres: boolean;
   };
   toggleLayer: (layer: keyof UIState['layers']) => void;
 }
@@ -49,6 +52,9 @@ export const useUIStore = create<UIState>()(
         accessibleParking: false,
         motorcycleParking: false,
         evCharging: false,
+        escooter: false,
+        fireHalls: false,
+        communityCentres: false,
       },
       toggleLayer: (layer) =>
         set((state) => ({
