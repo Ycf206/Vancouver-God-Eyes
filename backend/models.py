@@ -87,3 +87,16 @@ class RoadFacility(Base):
     geom = Column(Geometry(geometry_type='POINT', srid=4326))
     details = Column(JSON)
     last_updated = Column(DateTime, default=datetime.utcnow)
+
+class IssueReport(Base):
+    """
+    User reported issues and feedback
+    """
+    __tablename__ = "issue_reports"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    title = Column(String, nullable=False)
+    details = Column(String, nullable=False)
+    contact_email = Column(String, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+

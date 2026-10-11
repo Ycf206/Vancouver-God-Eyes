@@ -1173,3 +1173,104 @@ def get_debug_gtfs_routes():
     except Exception as e:
         return {"error": str(e)}
     return {"total": len(routes), "route_short_names": list(set(routes))}
+
+from pydantic import BaseModel
+from typing import Optional
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+class IssueReportRequest(BaseModel):
+    title: str
+    details: str
+    contact_email: Optional[str] = None
+
+@app.post("/api/report-issue")
+def report_issue(payload: IssueReportRequest, db: Session = Depends(database.get_db)):
+    """
+    接收使用者回報的問題與建議，儲存至資料庫與備份檔案，並嘗試發送通知郵件至 vancouvergodeyes@gmail.com
+    """
+    now_utc = datetime.utcnow()
+    # 1. 儲存至資料庫
+    try:
+        report = models.IssueReport(
+            title=payload.title,
+            details=payload.details,
+            contact_email=payload.contact_email or None,
+            created_at=now_utc
+        )
+        db.add(report)
+        db.commit()
+    except Exception as e:
+        print(f"[Issue Report DB Error]: {e}")
+        db.rollback()
+
+    # 2. 備份至 JSONL 檔案 (確保即便離線或無 DB 亦可持久保存)
+    try:
+        data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
+        os.makedirs(data_dir, exist_ok=True)
+        report_file = os.path.join(data_dir, 'issue_reports.jsonl')
+        with open(report_file, 'a', encoding='utf-8') as f:
+            f.write(json.dumps({
+                "timestamp": now_utc.isoformat(),
+                "title": payload.title,
+                "details": payload.details,
+                "contact_email": payload.contact_email or ""
+            }, ensure_ascii=False) + "\n")
+    except Exception as e:
+        print(f"[Issue Report Backup File Error]: {e}")
+
+    # 3. 發送郵件至 vancouvergodeyes@gmail.com
+    target_email = "vancouvergodeyes@gmail.com"
+    smtp_host = os.getenv("SMTP_HOST") # 例如 smtp.gmail.com
+    smtp_port = int(os.getenv("SMTP_PORT", "587"))
+    smtp_user = os.getenv("SMTP_USER")
+    smtp_pass = os.getenv("SMTP_PASSWORD")
+
+    email_sent = False
+    email_error = None
+
+    if smtp_host and smtp_user and smtp_pass:
+        try:
+            msg = MIMEMultipart("alternative")
+            msg["Subject"] = f"[上帝之眼問題回報] {payload.title}"
+            msg["From"] = smtp_user
+            msg["To"] = target_email
+
+            body_text = f"""溫哥華上帝之眼 - 使用者問題回報
+=============================================
+回報標題: {payload.title}
+送出時間: {now_utc.strftime('%Y-%m-%d %H:%M:%S UTC')}
+聯絡 Email: {payload.contact_email or '未提供'}
+
+問題詳情:
+---------------------------------------------
+{payload.details}
+=============================================
+"""
+            msg.attach(MIMEText(body_text, "plain", "utf-8"))
+
+            if smtp_port == 465:
+                server = smtplib.SMTP_SSL(smtp_host, smtp_port, timeout=10)
+            else:
+                server = smtplib.SMTP(smtp_host, smtp_port, timeout=10)
+                server.starttls()
+            server.login(smtp_user, smtp_pass)
+            server.sendmail(smtp_user, [target_email], msg.as_string())
+            server.quit()
+            email_sent = True
+            print(f"[Issue Report] Email successfully dispatched to {target_email}")
+        except Exception as e:
+            email_error = str(e)
+            print(f"[Issue Report Email Error]: {e}")
+    else:
+        print(f"[Issue Report] Stored report '{payload.title}' locally. (SMTP credentials not configured, skipping SMTP dispatch)")
+
+    return {
+        "status": "success",
+        "message": "問題回報已成功送出！",
+        "target_email": target_email,
+        "email_dispatched": email_sent,
+        "email_error": email_error
+    }
+
