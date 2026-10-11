@@ -3,7 +3,6 @@ import os
 import requests
 import json
 import re
-from bs4 import BeautifulSoup
 from datetime import datetime
 
 # Windows encoding safety
@@ -103,11 +102,12 @@ def scrape_bc_gov_safety_cameras():
 
     print(f"📡 Fetching BC Gov safety cameras from {url}...")
     try:
-        resp = requests.get(url, headers=headers, timeout=20)
+        from bs4 import BeautifulSoup
+        resp = requests.get(url, headers=headers, timeout=12)
         resp.raise_for_status()
         soup = BeautifulSoup(resp.content, "html.parser")
     except Exception as e:
-        print(f"  ⚠️ Error scraping BC Gov website: {e}. Falling back to verified records.")
+        print(f"  ⚠️ Error scraping BC Gov website ({e}). Falling back to verified records.")
         soup = None
 
     vancouver_cameras = []

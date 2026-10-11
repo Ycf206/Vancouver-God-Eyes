@@ -962,6 +962,42 @@ def get_road_facilities_geojson(facility_type: str, db: Session = Depends(databa
     
     # Auto-import on-the-fly if not yet populated in DB
     if not facilities:
+        # 1. Check for precompiled verified GeoJSON in backend/data/
+        static_geojson_path = os.path.join(os.path.dirname(__file__), "data", f"vancouver_{facility_type}.geojson")
+        if os.path.exists(static_geojson_path):
+            try:
+                with open(static_geojson_path, "r", encoding="utf-8") as f:
+                    static_geojson = json.load(f)
+                
+                # Auto-populate DB for future queries & search
+                for feat in static_geojson.get("features", []):
+                    props = feat.get("properties", {})
+                    coords = feat.get("geometry", {}).get("coordinates", [])
+                    if len(coords) >= 2:
+                        lon, lat = coords[0], coords[1]
+                        fac_id = feat.get("id") or props.get("id") or f"{facility_type}_{lon}_{lat}"
+                        fac = models.RoadFacility(
+                            id=str(fac_id),
+                            facility_type=facility_type,
+                            name=props.get("name", "Unknown"),
+                            local_area=props.get("local_area") or props.get("municipality", ""),
+                            lat=lat,
+                            lon=lon,
+                            geom=f"SRID=4326;POINT({lon} {lat})",
+                            details={k: v for k, v in props.items() if k not in ("id", "facility_type", "name", "local_area")},
+                            last_updated=datetime.utcnow()
+                        )
+                        db.merge(fac)
+                db.commit()
+                return static_geojson
+            except Exception as e:
+                db.rollback()
+                print(f"Error populating {facility_type} from static geojson: {e}")
+                if os.path.exists(static_geojson_path):
+                    with open(static_geojson_path, "r", encoding="utf-8") as f:
+                        return json.load(f)
+
+        # 2. Try online API import
         try:
             from scripts.import_road_data import import_single_facility_type
             import_single_facility_type(facility_type, db)
@@ -969,10 +1005,11 @@ def get_road_facilities_geojson(facility_type: str, db: Session = Depends(databa
         except Exception as e:
             print(f"Auto-import error for {facility_type}: {e}")
 
-    if not facilities and facility_type == "hospitals":
-        geojson_path = os.path.join(os.path.dirname(__file__), "data", "vancouver_hospitals.geojson")
-        if os.path.exists(geojson_path):
-            with open(geojson_path, "r", encoding="utf-8") as f:
+    # Fallback to static geojson file if still empty
+    if not facilities:
+        static_geojson_path = os.path.join(os.path.dirname(__file__), "data", f"vancouver_{facility_type}.geojson")
+        if os.path.exists(static_geojson_path):
+            with open(static_geojson_path, "r", encoding="utf-8") as f:
                 return json.load(f)
             
     features = []

@@ -1,0 +1,1037 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "safety_cam_31",
+      "properties": {
+        "id": "safety_cam_31",
+        "facility_type": "safety_cameras",
+        "name": "Boundary Road at E 1 Avenue",
+        "official_intersection": "BOUNDARY ROAD AND E 1ST AV",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": false,
+        "camera_type": "闖紅燈攝影",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.023642649664,
+          49.2694567477204
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_32",
+      "properties": {
+        "id": "safety_cam_32",
+        "facility_type": "safety_cameras",
+        "name": "Boundary Road at E 49 Avenue",
+        "official_intersection": "BOUNDARY ROAD AND E 49TH AV",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": true,
+        "camera_type": "雙向取締 (闖紅燈 + 超速)",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.023606579336,
+          49.2219475667675
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_34",
+      "properties": {
+        "id": "safety_cam_34",
+        "facility_type": "safety_cameras",
+        "name": "Burrard Street at Davie Street",
+        "official_intersection": "BURRARD ST AND DAVIE ST",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": false,
+        "camera_type": "闖紅燈攝影",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.129181117067,
+          49.2790800585704
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_35",
+      "properties": {
+        "id": "safety_cam_35",
+        "facility_type": "safety_cameras",
+        "name": "Burrard Street at Pacific Street",
+        "official_intersection": "BURRARD ST AND PACIFIC ST",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": false,
+        "camera_type": "闖紅燈攝影",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.132369080681,
+          49.276970665521
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_37",
+      "properties": {
+        "id": "safety_cam_37",
+        "facility_type": "safety_cameras",
+        "name": "Cambie Street at W 41 Avenue",
+        "official_intersection": "CAMBIE ST AND W 41ST AV",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": false,
+        "camera_type": "闖紅燈攝影",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.116192190428,
+          49.2335434701942
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_40",
+      "properties": {
+        "id": "safety_cam_40",
+        "facility_type": "safety_cameras",
+        "name": "Clark Drive at E Hastings Street",
+        "official_intersection": "CLARK DRIVE AND E HASTINGS ST",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": false,
+        "camera_type": "闖紅燈攝影",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.077092917807,
+          49.2813216268518
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_41",
+      "properties": {
+        "id": "safety_cam_41",
+        "facility_type": "safety_cameras",
+        "name": "Clark Drive at Venables Street",
+        "official_intersection": "CLARK DRIVE AND VENABLES ST",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": false,
+        "camera_type": "闖紅燈攝影",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.077228130828,
+          49.2767557901435
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_43",
+      "properties": {
+        "id": "safety_cam_43",
+        "facility_type": "safety_cameras",
+        "name": "Dundas Street at Nanaimo Street",
+        "official_intersection": "NANAIMO ST AND DUNDAS ST",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": false,
+        "camera_type": "闖紅燈攝影",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.056530916608,
+          49.2847919782587
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_44",
+      "properties": {
+        "id": "safety_cam_44",
+        "facility_type": "safety_cameras",
+        "name": "E 1 Avenue at Commercial Drive",
+        "official_intersection": "COMMERCIAL DRIVE AND E 1ST AV",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": false,
+        "camera_type": "闖紅燈攝影",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.069621664266,
+          49.2695996340758
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_45",
+      "properties": {
+        "id": "safety_cam_45",
+        "facility_type": "safety_cameras",
+        "name": "E 49 Avenue at Fraser Street",
+        "official_intersection": "FRASER ST AND E 49TH AV",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": false,
+        "camera_type": "闖紅燈攝影",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09077387286,
+          49.225471822633
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_46",
+      "properties": {
+        "id": "safety_cam_46",
+        "facility_type": "safety_cameras",
+        "name": "E 49 Avenue at Main Street",
+        "official_intersection": "MAIN ST AND E 49TH AV",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": false,
+        "camera_type": "闖紅燈攝影",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.101632002575,
+          49.225663160914
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_47",
+      "properties": {
+        "id": "safety_cam_47",
+        "facility_type": "safety_cameras",
+        "name": "E Broadway at Main Street",
+        "official_intersection": "MAIN ST AND E BROADWAY",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": false,
+        "camera_type": "闖紅燈攝影",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.100959552457,
+          49.2629134523986
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_48",
+      "properties": {
+        "id": "safety_cam_48",
+        "facility_type": "safety_cameras",
+        "name": "E Broadway at Nanaimo Street",
+        "official_intersection": "NANAIMO ST AND E BROADWAY",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": false,
+        "camera_type": "闖紅燈攝影",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.056601076643,
+          49.2621493236791
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_49",
+      "properties": {
+        "id": "safety_cam_49",
+        "facility_type": "safety_cameras",
+        "name": "E Broadway Avenue at Commercial Drive",
+        "official_intersection": "COMMERCIAL DRIVE AND E BROADWAY",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": false,
+        "camera_type": "闖紅燈攝影",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.069762688147,
+          49.2623194541699
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_50",
+      "properties": {
+        "id": "safety_cam_50",
+        "facility_type": "safety_cameras",
+        "name": "E Hastings Street at Main Street",
+        "official_intersection": "MAIN ST AND E HASTINGS ST",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": true,
+        "camera_type": "雙向取締 (闖紅燈 + 超速)",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.099648798315,
+          49.2813356595642
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_51",
+      "properties": {
+        "id": "safety_cam_51",
+        "facility_type": "safety_cameras",
+        "name": "E Hastings Street at Nanaimo Street",
+        "official_intersection": "NANAIMO ST AND E HASTINGS ST",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": false,
+        "camera_type": "闖紅燈攝影",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05655071446,
+          49.2811460997902
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_52",
+      "properties": {
+        "id": "safety_cam_52",
+        "facility_type": "safety_cameras",
+        "name": "E Hastings Street at Renfrew Street",
+        "official_intersection": "RENFREW ST AND E HASTINGS ST",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": true,
+        "camera_type": "雙向取締 (闖紅燈 + 超速)",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.044076520854,
+          49.2811232429382
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_58",
+      "properties": {
+        "id": "safety_cam_58",
+        "facility_type": "safety_cameras",
+        "name": "Grandview Hwy at Rupert Street",
+        "official_intersection": "RUPERT ST AND GRANDVIEW HIGHWAY",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": true,
+        "camera_type": "雙向取締 (闖紅燈 + 超速)",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.033771994207,
+          49.2581502388647
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_59",
+      "properties": {
+        "id": "safety_cam_59",
+        "facility_type": "safety_cameras",
+        "name": "Granville Street at SW Marine Drive",
+        "official_intersection": "GRANVILLE ST AND SW MARINE DRIVE",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": false,
+        "camera_type": "闖紅燈攝影",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.140643842999,
+          49.2050742477074
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_60",
+      "properties": {
+        "id": "safety_cam_60",
+        "facility_type": "safety_cameras",
+        "name": "Granville Street at W 16 Avenue",
+        "official_intersection": "GRANVILLE ST AND W 16TH AV",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": false,
+        "camera_type": "闖紅燈攝影",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.138802310813,
+          49.2570539196924
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_61",
+      "properties": {
+        "id": "safety_cam_61",
+        "facility_type": "safety_cameras",
+        "name": "Granville Street at W 41 Avenue",
+        "official_intersection": "GRANVILLE ST AND W 41ST AV",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": false,
+        "camera_type": "闖紅燈攝影",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.139588020868,
+          49.2343303690082
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_62",
+      "properties": {
+        "id": "safety_cam_62",
+        "facility_type": "safety_cameras",
+        "name": "Granville Street at W 49 Avenue",
+        "official_intersection": "GRANVILLE ST AND W 49TH AV",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": false,
+        "camera_type": "闖紅燈攝影",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.139843254787,
+          49.2269658269465
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_63",
+      "properties": {
+        "id": "safety_cam_63",
+        "facility_type": "safety_cameras",
+        "name": "Granville Street at W King Edward Ave",
+        "official_intersection": "GRANVILLE ST AND W KING EDWARD AV",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": true,
+        "camera_type": "雙向取締 (闖紅燈 + 超速)",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.139083718034,
+          49.2494135681774
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_82",
+      "properties": {
+        "id": "safety_cam_82",
+        "facility_type": "safety_cameras",
+        "name": "Kingsway at Fraser Street",
+        "official_intersection": "FRASER ST AND KINGSWAY",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": false,
+        "camera_type": "闖紅燈攝影",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.089854052781,
+          49.2567175686813
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_84",
+      "properties": {
+        "id": "safety_cam_84",
+        "facility_type": "safety_cameras",
+        "name": "Kingsway at Joyce Street",
+        "official_intersection": "JOYCE ST AND KINGSWAY",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": true,
+        "camera_type": "雙向取締 (闖紅燈 + 超速)",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.035876616588,
+          49.2341534988201
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_85",
+      "properties": {
+        "id": "safety_cam_85",
+        "facility_type": "safety_cameras",
+        "name": "Kingsway at Nanaimo Street",
+        "official_intersection": "NANAIMO ST AND KINGSWAY",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": false,
+        "camera_type": "闖紅燈攝影",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.058127991121,
+          49.2418856341958
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_87",
+      "properties": {
+        "id": "safety_cam_87",
+        "facility_type": "safety_cameras",
+        "name": "Kingsway at Victoria Drive",
+        "official_intersection": "VICTORIA DRIVE AND KINGSWAY",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": true,
+        "camera_type": "雙向取締 (闖紅燈 + 超速)",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.065153288388,
+          49.2451645233662
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_88",
+      "properties": {
+        "id": "safety_cam_88",
+        "facility_type": "safety_cameras",
+        "name": "Knight Street at E 33 Avenue",
+        "official_intersection": "KNIGHT ST AND E 33RD AV",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": true,
+        "camera_type": "雙向取締 (闖紅燈 + 超速)",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.07640496412,
+          49.2402092009028
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_89",
+      "properties": {
+        "id": "safety_cam_89",
+        "facility_type": "safety_cameras",
+        "name": "Knight Street at E 49 Avenue",
+        "official_intersection": "KNIGHT ST AND E 49TH AV",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": false,
+        "camera_type": "闖紅燈攝影",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.077291375599,
+          49.2252943974205
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_109",
+      "properties": {
+        "id": "safety_cam_109",
+        "facility_type": "safety_cameras",
+        "name": "Oak Street at W 33 Avenue",
+        "official_intersection": "OAK ST AND W 33RD AV",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": false,
+        "camera_type": "闖紅燈攝影",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.127818712954,
+          49.2414345896128
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_110",
+      "properties": {
+        "id": "safety_cam_110",
+        "facility_type": "safety_cameras",
+        "name": "Oak Street at W 41 Avenue",
+        "official_intersection": "OAK ST AND W 41ST AV",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": false,
+        "camera_type": "闖紅燈攝影",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.128074250468,
+          49.2339516500522
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_111",
+      "properties": {
+        "id": "safety_cam_111",
+        "facility_type": "safety_cameras",
+        "name": "Oak Street at W 49TH Avenue",
+        "official_intersection": "OAK ST AND W 49TH AV",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": false,
+        "camera_type": "闖紅燈攝影",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.128315682237,
+          49.2265526749615
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_112",
+      "properties": {
+        "id": "safety_cam_112",
+        "facility_type": "safety_cameras",
+        "name": "Oak Street at W 57 Avenue",
+        "official_intersection": "OAK ST AND W 57TH AV",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": true,
+        "camera_type": "雙向取締 (闖紅燈 + 超速)",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.128590605796,
+          49.2192040297827
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_113",
+      "properties": {
+        "id": "safety_cam_113",
+        "facility_type": "safety_cameras",
+        "name": "Oak Street at W 70 Avenue",
+        "official_intersection": "OAK ST AND W 70TH AV",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": true,
+        "camera_type": "雙向取締 (闖紅燈 + 超速)",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13024568806,
+          49.2084713060909
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_120",
+      "properties": {
+        "id": "safety_cam_120",
+        "facility_type": "safety_cameras",
+        "name": "SE Marine Drive at Argyle Street",
+        "official_intersection": "ARGYLE ST AND SE MARINE DRIVE",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": false,
+        "camera_type": "闖紅燈攝影",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.071301338005,
+          49.2110145197325
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_121",
+      "properties": {
+        "id": "safety_cam_121",
+        "facility_type": "safety_cameras",
+        "name": "SE Marine Drive at Fraser Street",
+        "official_intersection": "FRASER ST AND SE MARINE DRIVE",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": false,
+        "camera_type": "闖紅燈攝影",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09110216274,
+          49.2110128638778
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_122",
+      "properties": {
+        "id": "safety_cam_122",
+        "facility_type": "safety_cameras",
+        "name": "SE Marine Drive at Kerr Street",
+        "official_intersection": "KERR ST AND SE MARINE DRIVE",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": true,
+        "camera_type": "雙向取締 (闖紅燈 + 超速)",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.042256338686,
+          49.2081071383573
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_123",
+      "properties": {
+        "id": "safety_cam_123",
+        "facility_type": "safety_cameras",
+        "name": "SE Marine Drive at Main Street",
+        "official_intersection": "MAIN ST AND SE MARINE DRIVE",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": false,
+        "camera_type": "闖紅燈攝影",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.102193665642,
+          49.211094282372
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_124",
+      "properties": {
+        "id": "safety_cam_124",
+        "facility_type": "safety_cameras",
+        "name": "SE Marine Drive at Victoria Drive",
+        "official_intersection": "VICTORIA DRIVE AND SE MARINE DRIVE",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": false,
+        "camera_type": "闖紅燈攝影",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.06611124721,
+          49.2096895759308
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_127",
+      "properties": {
+        "id": "safety_cam_127",
+        "facility_type": "safety_cameras",
+        "name": "Terminal Avenue at Main Street",
+        "official_intersection": "MAIN ST AND TERMINAL AV",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": false,
+        "camera_type": "闖紅燈攝影",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.100028035364,
+          49.2727762969897
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_132",
+      "properties": {
+        "id": "safety_cam_132",
+        "facility_type": "safety_cameras",
+        "name": "Victoria Drive at E 41 Avenue",
+        "official_intersection": "VICTORIA DRIVE AND E 41ST AV",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": false,
+        "camera_type": "闖紅燈攝影",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.065536694432,
+          49.2327506154927
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_133",
+      "properties": {
+        "id": "safety_cam_133",
+        "facility_type": "safety_cameras",
+        "name": "W Georgia Street at Cardero Street",
+        "official_intersection": "CARDERO ST AND W GEORGIA ST",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": true,
+        "camera_type": "雙向取締 (闖紅燈 + 超速)",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.130597257994,
+          49.2905612452676
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "safety_cam_134",
+      "properties": {
+        "id": "safety_cam_134",
+        "facility_type": "safety_cameras",
+        "name": "W Georgia Street at Denman Street",
+        "official_intersection": "DENMAN ST AND W GEORGIA ST",
+        "municipality": "Vancouver",
+        "has_red_light": true,
+        "has_speed": false,
+        "camera_type": "闖紅燈攝影",
+        "fine_info": "闖紅燈罰款 $167 (扣3點)；超速依速限累進罰款 $138~$483 及記點",
+        "enforcement_agency": "RoadSafetyBC / ICBC / VPD",
+        "source": "BC Government Intersection Safety Camera Program"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13374007094,
+          49.2925946723086
+        ]
+      }
+    }
+  ]
+}
