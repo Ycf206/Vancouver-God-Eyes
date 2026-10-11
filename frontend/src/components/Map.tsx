@@ -1,9 +1,9 @@
 'use client';
 
 import * as React from 'react';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { setWorkerUrl } from 'maplibre-gl';
-import Map, { NavigationControl, Marker, Popup } from 'react-map-gl/maplibre';
+import Map, { NavigationControl, Marker, Popup, MapRef } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useUIStore } from '@/store/useUIStore';
 
@@ -59,7 +59,9 @@ interface RoadFacilityInfo {
 }
 
 export default function AppMap() {
-  const { layers, mapStyleType } = useUIStore();
+  const { layers, mapStyleType, searchTarget } = useUIStore();
+  const mapRef = useRef<MapRef>(null);
+
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [ferryVehicles, setFerryVehicles] = useState<FerryVehicle[]>([]);
   const [ferryTerminals, setFerryTerminals] = useState<Array<{geometry: {coordinates: number[]}, properties: {name?: string, code: string}}>>([]);
@@ -74,6 +76,76 @@ export default function AppMap() {
   const [loadingSchedule, setLoadingSchedule] = useState(false);
   const [selectedFerry, setSelectedFerry] = useState<FerryVehicle | null>(null);
   const [selectedFacility, setSelectedFacility] = useState<RoadFacilityInfo | null>(null);
+
+  // 響應全域搜尋項目選取 (FlyTo & 自動打開詳細資訊卡片)
+  useEffect(() => {
+    if (!searchTarget) return;
+
+    if (mapRef.current) {
+      mapRef.current.flyTo({
+        center: [searchTarget.lon, searchTarget.lat],
+        zoom: searchTarget.zoom || 16,
+        duration: 1200
+      });
+    }
+
+    if (searchTarget.category === 'ferry_terminal' && searchTarget.meta?.code) {
+      setSelectedStop(null);
+      setSelectedFacility(null);
+      setSelectedTerminal({
+        geometry: { coordinates: [searchTarget.lon, searchTarget.lat] },
+        properties: { code: searchTarget.meta.code, name: searchTarget.title }
+      });
+      setLoadingSchedule(true);
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:8000` : 'http://localhost:8000');
+      fetch(`${apiUrl}/api/bcferries/schedule/${searchTarget.meta.code}`)
+        .then(res => res.json())
+        .then(data => {
+          setTerminalSchedule(data.schedule || []);
+          setLoadingSchedule(false);
+        })
+        .catch(err => {
+          console.error(err);
+          setLoadingSchedule(false);
+        });
+    } else if (searchTarget.category === 'skytrain' || searchTarget.category === 'seabus' || searchTarget.category === 'bus_stop') {
+      setSelectedTerminal(null);
+      setSelectedFacility(null);
+      const stopId = searchTarget.meta?.stop_id;
+      setSelectedStop({
+        id: stopId,
+        name: searchTarget.title,
+        lon: searchTarget.lon,
+        lat: searchTarget.lat
+      });
+      setLoadingArrivals(true);
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:8000` : 'http://localhost:8000');
+      fetch(`${apiUrl}/api/stops/${stopId}/arrivals`)
+        .then(res => res.json())
+        .then(data => {
+          setArrivals(data.arrivals || []);
+          setLoadingArrivals(false);
+        })
+        .catch(err => {
+          console.error(err);
+          setLoadingArrivals(false);
+        });
+    } else if (
+      ['fire_halls', 'community_centres', 'ev_charging', 'escooter', 'parking_meters', 'accessible_parking', 'motorcycle_parking'].includes(searchTarget.category)
+    ) {
+      setSelectedTerminal(null);
+      setSelectedStop(null);
+      setSelectedFacility({
+        id: searchTarget.id,
+        facility_type: searchTarget.category,
+        name: searchTarget.title,
+        local_area: searchTarget.meta?.local_area || '',
+        lon: searchTarget.lon,
+        lat: searchTarget.lat,
+        properties: searchTarget.meta?.properties || {}
+      });
+    }
+  }, [searchTarget]);
 
   useEffect(() => {
     fetch('/bc_ferries_terminals_points.geojson')
@@ -526,6 +598,7 @@ export default function AppMap() {
   return (
     <div className="w-full h-full absolute inset-0 z-0 pt-[60px]">
       <Map
+        ref={mapRef}
         initialViewState={{ longitude: -123.05, latitude: 49.25, zoom: 11, pitch: 0, bearing: 0 }}
         maxZoom={20}
         mapStyle={mapStyle}
@@ -607,6 +680,18 @@ export default function AppMap() {
         }}
       >
         <NavigationControl position="bottom-right" visualizePitch={true} />
+
+        {/* 搜尋目標高亮光環 (Search Target Focus Ring) */}
+        {searchTarget && (
+          <Marker longitude={searchTarget.lon} latitude={searchTarget.lat} anchor="center">
+            <div className="relative flex items-center justify-center pointer-events-none z-40">
+              <span className="absolute w-12 h-12 rounded-full bg-emerald-400/40 animate-ping"></span>
+              <span className="w-7 h-7 rounded-full border-2 border-emerald-400 bg-emerald-500/30 flex items-center justify-center shadow-lg">
+                <span className="text-xs">{searchTarget.icon}</span>
+              </span>
+            </div>
+          </Marker>
+        )}
 
         {/* 即時車輛位置 (Live TransLink Vehicles) */}
         {vehicles.map(v => {

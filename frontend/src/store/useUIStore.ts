@@ -3,6 +3,21 @@ import { persist } from 'zustand/middleware';
 
 export type MapStyleType = 'street' | 'satellite' | 'light' | 'dark';
 
+export interface SearchTarget {
+  id: string;
+  title: string;
+  subtitle?: string;
+  category: string;
+  badge: string;
+  icon: string;
+  lon: number;
+  lat: number;
+  zoom?: number;
+  layer_key?: keyof UIState['layers'];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  meta?: any;
+}
+
 export interface UIState {
   mapStyleType: MapStyleType;
   setMapStyleType: (type: MapStyleType) => void;
@@ -28,6 +43,9 @@ export interface UIState {
     communityCentres: boolean;
   };
   toggleLayer: (layer: keyof UIState['layers']) => void;
+  enableLayer: (layer: keyof UIState['layers']) => void;
+  searchTarget: SearchTarget | null;
+  setSearchTarget: (target: SearchTarget | null) => void;
 }
 
 export const useUIStore = create<UIState>()(
@@ -63,9 +81,22 @@ export const useUIStore = create<UIState>()(
             [layer]: !state.layers[layer],
           },
         })),
+      enableLayer: (layer) =>
+        set((state) => ({
+          layers: {
+            ...state.layers,
+            [layer]: true,
+          },
+        })),
+      searchTarget: null,
+      setSearchTarget: (target) => set({ searchTarget: target }),
     }),
     {
-      name: 'vancouver-gods-eye-ui-storage', // name of the item in the storage (must be unique)
+      name: 'vancouver-gods-eye-ui-storage',
+      partialize: (state) => ({
+        mapStyleType: state.mapStyleType,
+        layers: state.layers,
+      }),
     }
   )
 );

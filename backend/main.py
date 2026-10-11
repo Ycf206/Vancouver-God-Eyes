@@ -455,6 +455,285 @@ async def get_ferry_terminal_schedule(terminal_code: str):
 async def get_stop_arrivals(stop_id: str):
     return {"stop_id": stop_id, "arrivals": stop_arrivals.get(stop_id, [])[:10]}
 
+SEARCH_BC_FERRY_TERMINALS = [
+    {
+        "id": "ferry_tsa",
+        "title": "Tsawwassen Ferry Terminal",
+        "subtitle": "BC Ferries 碼頭 · 托瓦森 (TSA · 往維多利亞/納奈莫/海灣群島)",
+        "category": "ferry_terminal",
+        "badge": "BC Ferries 碼頭",
+        "icon": "⛴️",
+        "lon": -123.1317,
+        "lat": 49.0064,
+        "zoom": 14,
+        "keywords": ["tsawwassen", "tsa", "托瓦森", "delta", "victoria", "swartz", "ferry", "碼頭", "渡輪"],
+        "meta": {"code": "TSA"}
+    },
+    {
+        "id": "ferry_hsb",
+        "title": "Horseshoe Bay Ferry Terminal",
+        "subtitle": "BC Ferries 碼頭 · 馬蹄灣 (HSB · 往納奈莫/陽光海岸/寶雲島)",
+        "category": "ferry_terminal",
+        "badge": "BC Ferries 碼頭",
+        "icon": "⛴️",
+        "lon": -123.2741,
+        "lat": 49.3693,
+        "zoom": 14,
+        "keywords": ["horseshoe bay", "hsb", "馬蹄灣", "west vancouver", "nanaimo", "bowen", "langdale", "ferry", "碼頭", "渡輪"],
+        "meta": {"code": "HSB"}
+    },
+    {
+        "id": "ferry_swb",
+        "title": "Swartz Bay Ferry Terminal",
+        "subtitle": "BC Ferries 碼頭 · 斯沃茨灣 (SWB · 維多利亞 Victoria)",
+        "category": "ferry_terminal",
+        "badge": "BC Ferries 碼頭",
+        "icon": "⛴️",
+        "lon": -123.4107,
+        "lat": 48.6868,
+        "zoom": 14,
+        "keywords": ["swartz bay", "swb", "victoria", "維多利亞", "斯沃茨灣", "ferry", "碼頭", "渡輪"],
+        "meta": {"code": "SWB"}
+    },
+    {
+        "id": "ferry_nan",
+        "title": "Departure Bay Ferry Terminal",
+        "subtitle": "BC Ferries 碼頭 · 啟航灣 (NAN · 納奈莫 Nanaimo)",
+        "category": "ferry_terminal",
+        "badge": "BC Ferries 碼頭",
+        "icon": "⛴️",
+        "lon": -123.9554,
+        "lat": 49.1935,
+        "zoom": 14,
+        "keywords": ["departure bay", "nanaimo", "nan", "啟航灣", "納奈莫", "ferry", "碼頭", "渡輪"],
+        "meta": {"code": "NAN"}
+    },
+    {
+        "id": "ferry_duk",
+        "title": "Duke Point Ferry Terminal",
+        "subtitle": "BC Ferries 碼頭 · 杜克角 (DUK · 納奈莫 Nanaimo)",
+        "category": "ferry_terminal",
+        "badge": "BC Ferries 碼頭",
+        "icon": "⛴️",
+        "lon": -123.8912,
+        "lat": 49.1606,
+        "zoom": 14,
+        "keywords": ["duke point", "duk", "杜克角", "nanaimo", "納奈莫", "ferry", "碼頭", "渡輪"],
+        "meta": {"code": "DUK"}
+    },
+    {
+        "id": "ferry_lng",
+        "title": "Langdale Ferry Terminal",
+        "subtitle": "BC Ferries 碼頭 · 蘭代爾 (LNG · 陽光海岸 Sunshine Coast)",
+        "category": "ferry_terminal",
+        "badge": "BC Ferries 碼頭",
+        "icon": "⛴️",
+        "lon": -123.4723,
+        "lat": 49.4339,
+        "zoom": 14,
+        "keywords": ["langdale", "lng", "sunshine coast", "蘭代爾", "陽光海岸", "gibson", "ferry", "碼頭", "渡輪"],
+        "meta": {"code": "LNG"}
+    },
+    {
+        "id": "ferry_bow",
+        "title": "Bowen Island (Snug Cove) Ferry Terminal",
+        "subtitle": "BC Ferries 碼頭 · 寶雲島 (BOW · Snug Cove)",
+        "category": "ferry_terminal",
+        "badge": "BC Ferries 碼頭",
+        "icon": "⛴️",
+        "lon": -123.3313,
+        "lat": 49.3795,
+        "zoom": 14,
+        "keywords": ["bowen island", "snug cove", "bow", "寶雲島", "ferry", "碼頭", "渡輪"],
+        "meta": {"code": "BOW"}
+    },
+    {
+        "id": "ferry_ful",
+        "title": "Fulford Harbour Ferry Terminal",
+        "subtitle": "BC Ferries 碼頭 · 富爾福德港 (FUL · 鹽泉島 Salt Spring Island)",
+        "category": "ferry_terminal",
+        "badge": "BC Ferries 碼頭",
+        "icon": "⛴️",
+        "lon": -123.4511,
+        "lat": 48.7694,
+        "zoom": 14,
+        "keywords": ["fulford", "salt spring", "ful", "富爾福德港", "鹽泉島", "ferry", "碼頭", "渡輪"],
+        "meta": {"code": "FUL"}
+    }
+]
+
+@app.get("/api/search")
+def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
+    """
+    全圖層項目搜尋 (Search Layer Items):
+    搜尋圖層中的項目：站名 (SkyTrain/SeaBus/Bus)、碼頭名 (BC Ferries)、道路設施、政府機構 (消防局/社區中心)
+    """
+    q_clean = q.strip().lower()
+    if not q_clean:
+        return {"results": []}
+
+    results = []
+
+    # 1. 搜尋 BC Ferries 渡輪碼頭
+    for term in SEARCH_BC_FERRY_TERMINALS:
+        t_title = term["title"].lower()
+        t_sub = term["subtitle"].lower()
+        t_code = term["meta"]["code"].lower()
+        if (q_clean in t_title or q_clean in t_sub or q_clean == t_code or
+            any(q_clean in kw for kw in term["keywords"])):
+            results.append({
+                "id": term["id"],
+                "title": term["title"],
+                "subtitle": term["subtitle"],
+                "category": term["category"],
+                "badge": term["badge"],
+                "icon": term["icon"],
+                "lon": term["lon"],
+                "lat": term["lat"],
+                "zoom": term["zoom"],
+                "layer_key": "bcferriesTerminals",
+                "meta": term["meta"]
+            })
+
+    # 2. 搜尋大眾運輸車站與站牌 (Transit Stops)
+    try:
+        stops = db.query(models.TransitStop).filter(
+            models.TransitStop.name.ilike(f"%{q_clean}%") |
+            models.TransitStop.stop_id.ilike(f"{q_clean}%")
+        ).limit(30).all()
+
+        skytrain_stops = [s for s in stops if s.stop_group == 'skytrain']
+        seabus_stops = [s for s in stops if s.stop_group == 'seabus']
+        bus_stops = [s for s in stops if s.stop_group == 'bus']
+
+        for s in skytrain_stops[:6]:
+            results.append({
+                "id": f"stop_{s.stop_id}",
+                "title": s.name,
+                "subtitle": f"SkyTrain 車站 (#{s.stop_id})",
+                "category": "skytrain",
+                "badge": "SkyTrain 車站",
+                "icon": "🚇",
+                "lon": s.lon,
+                "lat": s.lat,
+                "zoom": 16,
+                "layer_key": "skytrainStops",
+                "meta": {"stop_id": s.stop_id, "name": s.name}
+            })
+
+        for s in seabus_stops[:2]:
+            results.append({
+                "id": f"stop_{s.stop_id}",
+                "title": s.name,
+                "subtitle": f"SeaBus 碼頭 (#{s.stop_id})",
+                "category": "seabus",
+                "badge": "SeaBus 碼頭",
+                "icon": "🚢",
+                "lon": s.lon,
+                "lat": s.lat,
+                "zoom": 16,
+                "layer_key": "seabusStops",
+                "meta": {"stop_id": s.stop_id, "name": s.name}
+            })
+
+        for s in bus_stops[:6]:
+            results.append({
+                "id": f"stop_{s.stop_id}",
+                "title": s.name,
+                "subtitle": f"公車站牌 (#{s.stop_id})",
+                "category": "bus_stop",
+                "badge": "公車站牌",
+                "icon": "🚏",
+                "lon": s.lon,
+                "lat": s.lat,
+                "zoom": 17,
+                "layer_key": "busStops",
+                "meta": {"stop_id": s.stop_id, "name": s.name}
+            })
+    except Exception as e:
+        print(f"Error searching stops: {e}")
+
+    # 3. 搜尋道路設施與政府機構 (Road & Gov Facilities)
+    try:
+        from sqlalchemy import cast, String
+        facilities = db.query(models.RoadFacility).filter(
+            models.RoadFacility.name.ilike(f"%{q_clean}%") |
+            models.RoadFacility.local_area.ilike(f"%{q_clean}%") |
+            cast(models.RoadFacility.details, String).ilike(f"%{q_clean}%")
+        ).limit(20).all()
+
+        for f in facilities:
+            ftype = f.facility_type
+            badge = "市政設施"
+            icon = "📍"
+            layer_key = "parkingMeters"
+            zoom = 16
+
+            if ftype == 'fire_halls':
+                badge = "消防局"
+                icon = "🚒"
+                layer_key = "fireHalls"
+            elif ftype == 'community_centres':
+                badge = "社區中心"
+                icon = "🏛️"
+                layer_key = "communityCentres"
+            elif ftype == 'ev_charging':
+                badge = "充電站"
+                icon = "⚡"
+                layer_key = "evCharging"
+            elif ftype == 'escooter':
+                badge = "共享滑板車"
+                icon = "🛴"
+                layer_key = "escooter"
+                zoom = 17
+            elif ftype == 'parking_meters':
+                badge = "收費錶"
+                icon = "🅿️"
+                layer_key = "parkingMeters"
+                zoom = 17
+            elif ftype == 'accessible_parking':
+                badge = "無障礙車位"
+                icon = "♿"
+                layer_key = "accessibleParking"
+                zoom = 17
+            elif ftype == 'motorcycle_parking':
+                badge = "摩托車位"
+                icon = "🏍"
+                layer_key = "motorcycleParking"
+                zoom = 17
+
+            sub_parts = [badge]
+            if f.local_area:
+                sub_parts.append(f.local_area)
+            if f.details and isinstance(f.details, dict):
+                addr = f.details.get('address') or f.details.get('location') or f.details.get('street')
+                if addr:
+                    sub_parts.append(str(addr))
+
+            results.append({
+                "id": f.id,
+                "title": f.name,
+                "subtitle": " · ".join(sub_parts),
+                "category": ftype,
+                "badge": badge,
+                "icon": icon,
+                "lon": f.lon,
+                "lat": f.lat,
+                "zoom": zoom,
+                "layer_key": layer_key,
+                "meta": {
+                    "id": f.id,
+                    "facility_type": f.facility_type,
+                    "name": f.name,
+                    "local_area": f.local_area,
+                    "properties": f.details or {}
+                }
+            })
+    except Exception as e:
+        print(f"Error searching facilities: {e}")
+
+    return {"results": results[:25]}
+
 import json
 from sqlalchemy import func
 
