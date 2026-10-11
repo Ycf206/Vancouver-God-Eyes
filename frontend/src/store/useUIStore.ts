@@ -39,6 +39,7 @@ export interface UIState {
     motorcycleParking: boolean;
     evCharging: boolean;
     escooter: boolean;
+    trafficCameras: boolean;
     fireHalls: boolean;
     communityCentres: boolean;
   };
@@ -71,6 +72,7 @@ export const useUIStore = create<UIState>()(
         motorcycleParking: false,
         evCharging: false,
         escooter: false,
+        trafficCameras: false,
         fireHalls: false,
         communityCentres: false,
       },

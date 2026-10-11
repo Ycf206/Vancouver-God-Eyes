@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useUIStore, MapStyleType } from '@/store/useUIStore';
-import { Map, Satellite, Sun, Moon, Bus, Layers, CircleDot, Route, Ship, CircleDollarSign, Accessibility, Bike, Zap, Scooter, Flame, Building2 } from 'lucide-react';
+import { Map, Satellite, Sun, Moon, Bus, Layers, CircleDot, Route, Ship, CircleDollarSign, Accessibility, Bike, Zap, Scooter, Camera, Flame, Building2 } from 'lucide-react';
 
 export default function LayerPanel() {
   const { mapStyleType, setMapStyleType, layers, toggleLayer } = useUIStore();
@@ -142,9 +142,8 @@ export default function LayerPanel() {
             <LayerButton layerKey="accessibleParking" label="無障礙停車位" icon={Accessibility} colorClass="text-sky-400" activeBg="bg-[#182633]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_8px_rgba(56,189,248,0.15)]" />
             <LayerButton layerKey="motorcycleParking" label="摩托車停車位" icon={Bike} colorClass="text-orange-400" activeBg="bg-[#2c1d18]" activeBorder="border-orange-500/50" activeShadow="shadow-[0_0_8px_rgba(251,146,60,0.15)]" />
             <LayerButton layerKey="evCharging" label="電動車充電站" icon={Zap} colorClass="text-emerald-400" activeBg="bg-[#14291f]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_8px_rgba(52,211,153,0.15)]" />
-            <div className="col-span-2">
-              <LayerButton layerKey="escooter" label="共享電動滑板車" icon={Scooter} colorClass="text-lime-400" activeBg="bg-[#1e2a14]" activeBorder="border-lime-500/50" activeShadow="shadow-[0_0_8px_rgba(132,204,22,0.15)]" />
-            </div>
+            <LayerButton layerKey="escooter" label="共享電動滑板車" icon={Scooter} colorClass="text-lime-400" activeBg="bg-[#1e2a14]" activeBorder="border-lime-500/50" activeShadow="shadow-[0_0_8px_rgba(132,204,22,0.15)]" />
+            <LayerButton layerKey="trafficCameras" label="交通攝影機" icon={Camera} colorClass="text-cyan-400" activeBg="bg-[#14262b]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_8px_rgba(6,182,212,0.15)]" />
           </div>
         </div>
 

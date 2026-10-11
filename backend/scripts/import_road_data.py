@@ -52,6 +52,12 @@ DATASETS = [
         "dataset_id": "community-centres",
         "name_field": lambda r: f"{r.get('name', '')} Community Centre".strip() if r.get('name') else "社區中心",
         "id_func": lambda r, idx: f"cc_{r.get('name', '').replace(' ', '_') or idx}"
+    },
+    {
+        "facility_type": "traffic_cameras",
+        "dataset_id": "web-cam-url-links",
+        "name_field": lambda r: r.get('name') or "交通攝影機",
+        "id_func": lambda r, idx: f"cam_{r.get('mapid') or idx}"
     }
 ]
 

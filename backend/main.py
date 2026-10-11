@@ -701,6 +701,11 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                 icon = "🏍"
                 layer_key = "motorcycleParking"
                 zoom = 17
+            elif ftype == 'traffic_cameras':
+                badge = "交通攝影機"
+                icon = "📷"
+                layer_key = "trafficCameras"
+                zoom = 16
 
             sub_parts = [badge]
             if f.local_area:
@@ -733,6 +738,62 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
         print(f"Error searching facilities: {e}")
 
     return {"results": results[:25]}
+
+webcam_images_cache = {}
+
+@app.get("/api/webcam/images")
+def get_webcam_images(url: str):
+    """
+    獲取溫哥華交通攝影機頁面 (trafficcams.vancouver.ca) 的即時畫面圖片
+    """
+    if not url:
+        return {"images": []}
+        
+    now = time.time()
+    if url in webcam_images_cache:
+        cached_time, cached_data = webcam_images_cache[url]
+        if now - cached_time < 300: # 5分鐘快取
+            return {"images": cached_data}
+            
+    try:
+        from bs4 import BeautifulSoup
+        resp = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=6)
+        if resp.status_code != 200:
+            return {"images": []}
+            
+        soup = BeautifulSoup(resp.text, 'html.parser')
+        images = []
+        for img in soup.find_all('img'):
+            src = img.get('src', '')
+            alt = img.get('alt', '')
+            if 'cameraimages' in src or (src.endswith('.jpg') and 'city-emblem' not in src and 'favicon' not in src):
+                full_src = src if src.startswith('http') else f"https://trafficcams.vancouver.ca/{src.lstrip('/')}"
+                direction = "即時路況"
+                alt_clean = alt.replace("Traffic Camera Images", "").strip()
+                if " - " in alt_clean:
+                    direction = alt_clean.split(" - ")[-1].strip()
+                elif "North" in src or "north" in src or "North" in alt:
+                    direction = "北向 (North)"
+                elif "South" in src or "south" in src or "South" in alt:
+                    direction = "南向 (South)"
+                elif "East" in src or "east" in src or "East" in alt:
+                    direction = "東向 (East)"
+                elif "West" in src or "west" in src or "West" in alt:
+                    direction = "西向 (West)"
+                else:
+                    direction = alt_clean or "即時路況"
+
+                images.append({
+                    "url": full_src,
+                    "direction": direction,
+                    "alt": alt
+                })
+                
+        webcam_images_cache[url] = (now, images)
+        return {"images": images}
+    except Exception as e:
+        print(f"Error fetching webcam images for {url}: {e}")
+        return {"images": []}
 
 import json
 from sqlalchemy import func

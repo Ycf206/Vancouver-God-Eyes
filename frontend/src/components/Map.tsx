@@ -77,6 +77,34 @@ export default function AppMap() {
   const [selectedFerry, setSelectedFerry] = useState<FerryVehicle | null>(null);
   const [selectedFacility, setSelectedFacility] = useState<RoadFacilityInfo | null>(null);
 
+  // States for Traffic Camera Images
+  const [webcamImages, setWebcamImages] = useState<Array<{url: string, direction: string, alt: string}>>([]);
+  const [loadingWebcam, setLoadingWebcam] = useState(false);
+  const [webcamRefreshKey, setWebcamRefreshKey] = useState(0);
+
+  // Fetch webcam images when a traffic camera is selected
+  useEffect(() => {
+    if (selectedFacility && selectedFacility.facility_type === 'traffic_cameras') {
+      const pageUrl = selectedFacility.properties?.url;
+      if (pageUrl) {
+        setLoadingWebcam(true);
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:8000` : 'http://localhost:8000');
+        fetch(`${apiUrl}/api/webcam/images?url=${encodeURIComponent(pageUrl)}`)
+          .then(res => res.json())
+          .then(data => {
+            setWebcamImages(data.images || []);
+            setLoadingWebcam(false);
+          })
+          .catch(err => {
+            console.error('Webcam image fetch error:', err);
+            setLoadingWebcam(false);
+          });
+      }
+    } else {
+      setWebcamImages([]);
+    }
+  }, [selectedFacility, webcamRefreshKey]);
+
   // 響應全域搜尋項目選取 (FlyTo & 自動打開詳細資訊卡片)
   useEffect(() => {
     if (!searchTarget) return;
@@ -131,7 +159,7 @@ export default function AppMap() {
           setLoadingArrivals(false);
         });
     } else if (
-      ['fire_halls', 'community_centres', 'ev_charging', 'escooter', 'parking_meters', 'accessible_parking', 'motorcycle_parking'].includes(searchTarget.category)
+      ['fire_halls', 'community_centres', 'ev_charging', 'escooter', 'traffic_cameras', 'parking_meters', 'accessible_parking', 'motorcycle_parking'].includes(searchTarget.category)
     ) {
       setSelectedTerminal(null);
       setSelectedStop(null);
@@ -249,6 +277,7 @@ export default function AppMap() {
     style.sources['escooter'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/escooter` };
     style.sources['fire-halls'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/fire_halls` };
     style.sources['community-centres'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/community_centres` };
+    style.sources['traffic-cameras'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/traffic_cameras` };
 
     // Bus Routes
     if (layers.busRoutes) {
@@ -576,6 +605,36 @@ export default function AppMap() {
       });
     }
 
+    // Road Facilities: Traffic Cameras
+    if (layers.trafficCameras) {
+      style.layers.push({
+        id: 'traffic-cameras-layer',
+        type: 'circle',
+        source: 'traffic-cameras',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 5, 15, 8.5, 17, 11],
+          'circle-color': '#06b6d4',
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'traffic-cameras-symbol-layer',
+        type: 'symbol',
+        source: 'traffic-cameras',
+        minzoom: 15,
+        layout: {
+          'text-field': '📷',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 15, 10, 17, 13],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+    }
+
     return style;
   }, [
     layers.skytrainRoutes, 
@@ -590,6 +649,7 @@ export default function AppMap() {
     layers.motorcycleParking, 
     layers.evCharging, 
     layers.escooter,
+    layers.trafficCameras,
     layers.fireHalls,
     layers.communityCentres,
     mapStyleType
@@ -617,6 +677,8 @@ export default function AppMap() {
           'ev-charging-symbol-layer',
           'escooter-layer',
           'escooter-symbol-layer',
+          'traffic-cameras-layer',
+          'traffic-cameras-symbol-layer',
           'fire-halls-layer',
           'fire-halls-symbol-layer',
           'community-centres-layer',
@@ -659,6 +721,7 @@ export default function AppMap() {
             layerId.startsWith('motorcycle-parking') || 
             layerId.startsWith('ev-charging') ||
             layerId.startsWith('escooter') ||
+            layerId.startsWith('traffic-cameras') ||
             layerId.startsWith('fire-halls') ||
             layerId.startsWith('community-centres')
           ) {
@@ -990,9 +1053,9 @@ export default function AppMap() {
             closeButton={false}
             className="z-50"
             offset={[0, -10]}
-            maxWidth="320px"
+            maxWidth={selectedFacility.facility_type === 'traffic_cameras' ? '400px' : '320px'}
           >
-            <div className="p-3.5 w-[290px] max-w-[85vw] text-gray-800">
+            <div className={`p-3.5 ${selectedFacility.facility_type === 'traffic_cameras' ? 'w-[360px]' : 'w-[290px]'} max-w-[90vw] text-gray-800`}>
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
                 <div className="flex items-center gap-2">
                   <span className={`w-3 h-3 rounded-full flex-shrink-0 ${
@@ -1001,6 +1064,7 @@ export default function AppMap() {
                     selectedFacility.facility_type === 'motorcycle_parking' ? 'bg-orange-500' :
                     selectedFacility.facility_type === 'ev_charging' ? 'bg-emerald-500' :
                     selectedFacility.facility_type === 'escooter' ? 'bg-lime-500' :
+                    selectedFacility.facility_type === 'traffic_cameras' ? 'bg-cyan-500' :
                     selectedFacility.facility_type === 'fire_halls' ? 'bg-rose-500' : 'bg-violet-500'
                   }`}></span>
                   <div>
@@ -1195,6 +1259,71 @@ export default function AppMap() {
                         className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-violet-600 hover:bg-violet-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
                       >
                         前往社區中心官方網站 ↗
+                      </a>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Traffic Cameras Details */}
+              {selectedFacility.facility_type === 'traffic_cameras' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="flex items-center justify-between text-[11px] text-gray-500 bg-cyan-50/70 p-1.5 rounded">
+                    <span className="flex items-center gap-1 text-cyan-800 font-medium">
+                      <span>📷 即時路況畫面</span>
+                      <span className="text-[10px] text-cyan-600">（每 1 小時自動更新）</span>
+                    </span>
+                    <button
+                      onClick={() => setWebcamRefreshKey(k => k + 1)}
+                      className="px-1.5 py-0.5 bg-white border border-cyan-200 text-cyan-700 hover:bg-cyan-100 rounded text-[10px] font-medium transition-colors"
+                      title="立即重新整理圖片"
+                    >
+                      重新整理 🔄
+                    </button>
+                  </div>
+
+                  {loadingWebcam ? (
+                    <div className="py-8 flex flex-col items-center justify-center text-gray-400 gap-2">
+                      <div className="w-5 h-5 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+                      <span className="text-[11px]">正在載入即時鏡頭畫面...</span>
+                    </div>
+                  ) : webcamImages.length > 0 ? (
+                    <div className="grid grid-cols-2 gap-1.5 pt-1">
+                      {webcamImages.map((img, idx) => {
+                        const hourlyTimestamp = Math.floor(Date.now() / 3600000);
+                        const imgSrc = `${img.url}?t=${hourlyTimestamp}_${webcamRefreshKey}`;
+                        return (
+                          <div key={idx} className="relative rounded overflow-hidden border border-gray-200 bg-black aspect-[4/3] group shadow-sm">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={imgSrc}
+                              alt={img.alt || img.direction}
+                              referrerPolicy="no-referrer"
+                              className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
+                              loading="lazy"
+                            />
+                            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-1 pt-3 text-[10px] font-medium text-white truncate text-center">
+                              {img.direction}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="py-4 text-center text-gray-400 text-xs">
+                      目前暫無可用鏡頭畫面
+                    </div>
+                  )}
+
+                  {selectedFacility.properties?.url && (
+                    <div className="pt-1 border-t border-gray-100">
+                      <a
+                        href={selectedFacility.properties.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-cyan-700 hover:bg-cyan-800 text-white rounded font-medium text-xs transition-colors shadow-sm"
+                      >
+                        前往溫哥華官方路況網頁 ↗
                       </a>
                     </div>
                   )}
