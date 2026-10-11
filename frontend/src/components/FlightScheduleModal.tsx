@@ -34,6 +34,7 @@ interface ScheduleData {
   updated_at: string;
   total_arrivals: number;
   total_departures: number;
+  source?: string;
   arrivals: FlightScheduleItem[];
   departures: FlightScheduleItem[];
 }
@@ -90,23 +91,28 @@ export default function FlightScheduleModal() {
   });
 
   const handleFlightClick = (flight: FlightScheduleItem) => {
-    if (flight.is_live && flight.lat && flight.lon) {
-      setSearchTarget({
+    // Airborne flights track live GPS coordinates; Ground/scheduled flights lock to YVR airport
+    const targetLon = (flight.is_live && flight.lon) ? flight.lon : -123.1815;
+    const targetLat = (flight.is_live && flight.lat) ? flight.lat : 49.1967;
+    const targetZoom = flight.is_live ? 13 : 15;
+
+    setSearchTarget({
+      id: flight.flight_id || flight.id,
+      title: `${flight.flight_no} · ${flight.airline}`,
+      subtitle: `${flight.city} (${flight.status}) · ${flight.terminal} Gate ${flight.gate}`,
+      category: flight.is_domestic ? 'domestic_flight' : 'intl_flight',
+      badge: flight.is_domestic ? '🇨🇦 國內航班' : '🌐 國際航班',
+      icon: '✈️',
+      lon: targetLon,
+      lat: targetLat,
+      zoom: targetZoom,
+      meta: {
+        ...flight,
         id: flight.flight_id || flight.id,
-        title: `${flight.flight_no} · ${flight.airline}`,
-        subtitle: `${flight.city} ➔ YVR (${flight.status})`,
-        category: flight.is_domestic ? 'domestic_flight' : 'intl_flight',
-        badge: flight.is_domestic ? '🇨🇦 國內航班' : '🌐 國際航班',
-        icon: '✈️',
-        lon: flight.lon,
-        lat: flight.lat,
-        zoom: 13,
-        meta: {
-          ...flight,
-          id: flight.flight_id || flight.id,
-        }
-      });
-    }
+        lon: targetLon,
+        lat: targetLat,
+      }
+    });
   };
 
   return (
@@ -256,7 +262,7 @@ export default function FlightScheduleModal() {
           {loading && !data ? (
             <div className="flex flex-col items-center justify-center py-16 text-gray-400 gap-3">
               <RefreshCw className="w-6 h-6 animate-spin text-sky-400" />
-              <p className="text-xs">正在連線 OpenSky Network 接收大溫即時航班資訊...</p>
+              <p className="text-xs">正在連線 FlightAware / OpenSky 接收大溫即時航班資訊...</p>
             </div>
           ) : filteredList.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-gray-400 gap-2">
@@ -271,12 +277,12 @@ export default function FlightScheduleModal() {
                 <div
                   key={flight.id}
                   onClick={() => handleFlightClick(flight)}
-                  className={`p-3 rounded-xl transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 ${
+                  className={`p-3 rounded-xl transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 cursor-pointer ${
                     isSelected
                       ? 'bg-sky-500/20 border-sky-400 shadow-[0_0_12px_rgba(56,189,248,0.25)] ring-1 ring-sky-400/40'
                       : isLive
-                      ? 'hover:bg-[#1a212e] cursor-pointer hover:border-sky-500/30 border border-transparent'
-                      : 'hover:bg-[#181a20] border border-transparent'
+                      ? 'hover:bg-[#1a212e] hover:border-sky-500/30 border border-transparent'
+                      : 'hover:bg-[#1a212e] hover:border-[#384152] border border-transparent'
                   }`}
                 >
                   {/* Left: Time & Flight Details */}
@@ -318,16 +324,22 @@ export default function FlightScheduleModal() {
 
                   {/* Right: Status & Radar Badge */}
                   <div className="flex items-center gap-2.5 self-end sm:self-center shrink-0">
-                    {isLive && (
-                      <div className="text-right hidden md:block">
-                        <div className="text-[11px] font-mono text-gray-300">
-                          {flight.altitude_ft ? `${flight.altitude_ft.toLocaleString()} ft` : '地面'} · {flight.speed_kts} kts
+                    <div className="text-right hidden md:block">
+                      {isLive ? (
+                        <>
+                          <div className="text-[11px] font-mono text-gray-300">
+                            {flight.altitude_ft ? `${flight.altitude_ft.toLocaleString()} ft` : '地面'} · {flight.speed_kts} kts
+                          </div>
+                          <div className="text-[9px] text-cyan-400 font-mono">
+                            點擊雷達鎖定 ➔
+                          </div>
+                        </>
+                      ) : (
+                        <div className="text-[9px] text-gray-400 hover:text-sky-300 font-mono">
+                          點擊地圖定位 ➔
                         </div>
-                        <div className="text-[9px] text-cyan-400 font-mono">
-                          點擊地圖鎖定 ➔
-                        </div>
-                      </div>
-                    )}
+                      )}
+                    </div>
 
                     <div className={`px-2.5 py-1 rounded-lg text-xs font-semibold border flex items-center gap-1.5 ${
                       isLive 
@@ -347,7 +359,7 @@ export default function FlightScheduleModal() {
         {/* Footer */}
         <div className="px-5 py-2.5 border-t border-[#21252e] bg-[#121418] text-[11px] text-gray-400 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
-            <span>📡 資料來源：OpenSky Network (ADS-B 雷達即時廣播)</span>
+            <span>📡 資料來源：{data?.source || 'FlightAware AeroAPI (官方即時航班計畫)'}</span>
           </div>
           <div className="flex items-center gap-2 text-gray-400 font-mono">
             <span>YVR 航空樞紐</span>

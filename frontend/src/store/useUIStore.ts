@@ -148,6 +148,15 @@ export const useUIStore = create<UIState>()(
         layers: state.layers,
         isLayerPanelOpen: state.isLayerPanelOpen,
       }),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      merge: (persistedState: any, currentState: UIState) => ({
+        ...currentState,
+        ...persistedState,
+        layers: {
+          ...currentState.layers,
+          ...(persistedState?.layers || {}),
+        },
+      }),
     }
   )
 );

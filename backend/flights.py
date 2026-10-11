@@ -67,20 +67,58 @@ def get_vancouver_now() -> datetime:
     van_tz = timezone(timedelta(hours=-7 if is_dst else -8))
     return utc_now.astimezone(van_tz)
 
+def is_canadian_airport(airport_info: dict) -> bool:
+    """Robustly checks whether an airport is in Canada by country, ICAO (starts with C), IATA (starts with Y) or city name."""
+    if not airport_info:
+        return False
+    # 1. Country code check
+    country = str(airport_info.get("country") or "").strip().upper()
+    if country in ("CANADA", "CA", "CAN"):
+        return True
+    
+    # 2. ICAO code: All Canadian airports start with 'C' (e.g. CYVR, CYYJ, CYYZ, CYCD, CYEG, CYUL, CYLW)
+    icao = str(airport_info.get("code_icao") or airport_info.get("code") or "").strip().upper()
+    if icao.startswith("C") and len(icao) == 4:
+        return True
+        
+    # 3. IATA code: Major Canadian airports start with 'Y' (YYZ, YYJ, YCD, YVR, YEG, YUL, etc.)
+    iata = str(airport_info.get("code_iata") or "").strip().upper()
+    if iata.startswith("Y") and len(iata) == 3:
+        return True
+        
+    # 4. Known Canadian cities / regions
+    city = str(airport_info.get("city") or "").strip().lower()
+    known_canadian_cities = (
+        "victoria", "toronto", "nanaimo", "vancouver", "calgary", "edmonton", 
+        "montreal", "ottawa", "kelowna", "winnipeg", "halifax", "quebec", 
+        "abbotsford", "kamloops", "prince george", "castlegar", "whitehorse", 
+        "yellowknife", "comox", "campbell river", "tofino", "terrace", 
+        "fort st. john", "prince rupert", "regina", "saskatoon", "moncton", "st. john's"
+    )
+    if any(cc in city for cc in known_canadian_cities):
+        return True
+        
+    return False
+
 # Major airlines operating at YVR
 AIRLINES_INFO = {
     # Canadian Domestic & Regional
     "ACA": {"name": "Air Canada (加拿大航空)", "short": "加航", "code": "AC", "domestic": True},
+    "JZA": {"name": "Air Canada Express / Jazz (加航快運)", "short": "加航快運", "code": "QK", "domestic": True},
     "WJA": {"name": "WestJet (西捷航空)", "short": "西捷", "code": "WS", "domestic": True},
     "WEN": {"name": "WestJet Encore (西捷短途)", "short": "西捷Encore", "code": "WR", "domestic": True},
+    "POE": {"name": "Porter Airlines (波特航空)", "short": "波特航空", "code": "PD", "domestic": True},
     "FLE": {"name": "Flair Airlines (精靈航空)", "short": "Flair", "code": "F8", "domestic": True},
     "ROU": {"name": "Air Canada Rouge (加航Rouge)", "short": "加航Rouge", "code": "RV", "domestic": True},
+    "TSC": {"name": "Air Transat (越洋航空)", "short": "越洋航空", "code": "TS", "domestic": True},
+    "SWG": {"name": "Sunwing Airlines (陽翼航空)", "short": "陽翼航空", "code": "WG", "domestic": True},
     "PCO": {"name": "Pacific Coastal Airlines (太平洋沿岸航空)", "short": "Pacific Coastal", "code": "8P", "domestic": True},
     "CRA": {"name": "Central Mountain Air (中天航空)", "short": "CMA", "code": "9M", "domestic": True},
     "HBA": {"name": "Harbour Air (港灣水上航空)", "short": "Harbour Air", "code": "HBA", "domestic": True},
     "SEI": {"name": "Seair Seaplanes (西埃水上航空)", "short": "Seair", "code": "SEI", "domestic": True},
     "CJT": {"name": "Cargojet (加拿大貨運航空)", "short": "Cargojet", "code": "W8", "domestic": True},
     "KFA": {"name": "Kelowna Flightcraft", "short": "KF Cargo", "code": "KW", "domestic": True},
+    "MAL": {"name": "Morningstar Air Express", "short": "Morningstar", "code": "MAL", "domestic": True},
 
     # US & Transborder Carriers
     "QXE": {"name": "Horizon Air / Alaska (阿拉斯加地平線)", "short": "Alaska Horizon", "code": "AS", "domestic": False},
@@ -443,8 +481,8 @@ def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any] |
             ident = flight.get("ident") or flight.get("ident_iata") or "N/A"
             origin_info = flight.get("origin") or {}
             orig_city = origin_info.get("city") or origin_info.get("code_iata") or "起飛地"
-            orig_country = origin_info.get("country")
-            is_dom = (orig_country == "Canada" or orig_country == "CA")
+            is_dom = is_canadian_airport(origin_info)
+            airline_name = flight.get("operator") or (AIRLINES_INFO.get(ident[:3].upper(), {}).get("name") if len(ident) >= 3 else "客運航空")
             
             # Format time in Vancouver timezone
             t_str = flight.get("estimated_on") or flight.get("scheduled_on") or flight.get("estimated_in")
@@ -460,12 +498,12 @@ def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any] |
             item = {
                 "id": f"fa_arr_{flight.get('fa_flight_id') or ident}",
                 "flight_no": ident,
-                "airline": flight.get("operator") or "客運航空",
+                "airline": airline_name,
                 "category": "domestic" if is_dom else "international",
                 "is_domestic": is_dom,
                 "city": f"{orig_city} ({origin_info.get('code_iata', '')})",
                 "time": display_time,
-                "terminal": flight.get("terminal") or ("國內線航廈" if is_dom else "國際線航廈"),
+                "terminal": flight.get("terminal") or ("國內線航廈 (Domestic)" if is_dom else "國際線航廈 (International)"),
                 "gate": flight.get("gate") or "--",
                 "status": flight.get("status") or "預計抵達",
                 "status_code": "scheduled",
@@ -489,8 +527,8 @@ def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any] |
             ident = flight.get("ident") or flight.get("ident_iata") or "N/A"
             dest_info = flight.get("destination") or {}
             dest_city = dest_info.get("city") or dest_info.get("code_iata") or "目的地"
-            dest_country = dest_info.get("country")
-            is_dom = (dest_country == "Canada" or dest_country == "CA")
+            is_dom = is_canadian_airport(dest_info)
+            airline_name = flight.get("operator") or (AIRLINES_INFO.get(ident[:3].upper(), {}).get("name") if len(ident) >= 3 else "客運航空")
 
             t_str = flight.get("estimated_off") or flight.get("scheduled_off") or flight.get("estimated_out")
             display_time = van_now.strftime("%H:%M")
@@ -505,12 +543,12 @@ def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any] |
             item = {
                 "id": f"fa_dep_{flight.get('fa_flight_id') or ident}",
                 "flight_no": ident,
-                "airline": flight.get("operator") or "客運航空",
+                "airline": airline_name,
                 "category": "domestic" if is_dom else "international",
                 "is_domestic": is_dom,
                 "city": f"{dest_city} ({dest_info.get('code_iata', '')})",
                 "time": display_time,
-                "terminal": flight.get("terminal") or ("國內線航廈" if is_dom else "國際線航廈"),
+                "terminal": flight.get("terminal") or ("國內線航廈 (Domestic)" if is_dom else "國際線航廈 (International)"),
                 "gate": flight.get("gate") or "--",
                 "status": flight.get("status") or "準時",
                 "status_code": "scheduled",
@@ -568,25 +606,40 @@ def generate_flight_schedules(live_flights: List[Dict[str, Any]], allow_api_call
         fa_arr = fa_schedules["arrivals"]
         fa_dep = fa_schedules["departures"]
         
-        # Cross-reference live flights with FA schedule
+        # Cross-reference live flights with FA schedule (Matching ICAO/IATA callsigns & numbers)
         for f in live_flights:
-            norm_no = f["flight_no"].replace(" ", "")
-            for a in fa_arr:
-                if a["flight_no"].replace(" ", "") == norm_no:
-                    a["is_live"] = True
-                    a["lat"] = f["lat"]
-                    a["lon"] = f["lon"]
-                    a["altitude_ft"] = f["altitude_ft"]
-                    a["speed_kts"] = f["speed_kts"]
-                    a["status"] = f["status_badge"]
-            for d in fa_dep:
-                if d["flight_no"].replace(" ", "") == norm_no:
-                    d["is_live"] = True
-                    d["lat"] = f["lat"]
-                    d["lon"] = f["lon"]
-                    d["altitude_ft"] = f["altitude_ft"]
-                    d["speed_kts"] = f["speed_kts"]
-                    d["status"] = f["status_badge"]
+            f_no_clean = f["flight_no"].replace(" ", "").upper()
+            f_raw = f.get("id", "").upper().replace("FLIGHT_", "")
+            f_digits = "".join(filter(str.isdigit, f_no_clean))
+
+            for item in fa_arr + fa_dep:
+                item_no = item["flight_no"].replace(" ", "").upper()
+                item_digits = "".join(filter(str.isdigit, item_no))
+
+                # Check exact match OR matching flight digits with same carrier code
+                is_match = (item_no == f_no_clean) or (item_no == f_raw) or (
+                    f_digits and item_digits and (f_digits == item_digits) and (
+                        f_no_clean[:2] in item_no or item_no[:2] in f_no_clean or
+                        f_no_clean[:3] in item_no or item_no[:3] in f_no_clean
+                    )
+                )
+                if is_match:
+                    item["is_live"] = True
+                    item["flight_id"] = f["id"]
+                    item["lat"] = f["lat"]
+                    item["lon"] = f["lon"]
+                    item["altitude_ft"] = f["altitude_ft"]
+                    item["speed_kts"] = f["speed_kts"]
+                    item["status"] = f["status_badge"]
+
+                    # Feed FlightAware verified route back to live flight on map
+                    f["matched_route"] = {
+                        "city": item["city"],
+                        "intl": not item["is_domestic"],
+                        "type": "arr" if item in fa_arr else "dep",
+                        "terminal": item["terminal"],
+                        "gate": item["gate"]
+                    }
         return fa_schedules
 
     # 2. OpenSky Radar + Authentic Routes Database in Vancouver Local Time

@@ -253,6 +253,18 @@ export default function AppMap() {
   }, [searchTarget]);
 
   useEffect(() => {
+    if (selectedFlight) {
+      if (selectedFlight.is_domestic && layers.domesticFlights === false) {
+        setSelectedFlight(null);
+        setSearchTarget(null);
+      } else if (!selectedFlight.is_domestic && layers.intlFlights === false) {
+        setSelectedFlight(null);
+        setSearchTarget(null);
+      }
+    }
+  }, [layers.domesticFlights, layers.intlFlights, selectedFlight, setSearchTarget]);
+
+  useEffect(() => {
     fetch('/bc_ferries_terminals_points.geojson')
       .then(r => r.json())
       .then(data => {
@@ -266,11 +278,20 @@ export default function AppMap() {
       }).catch(e => console.error(e));
 
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:8000` : 'http://localhost:8000');
-    fetch(`${apiUrl}/api/flights/live`)
-      .then(r => r.json())
-      .then(data => {
-        if (data && data.flights) setFlights(data.flights);
-      }).catch(e => console.error(e));
+    const fetchLiveFlights = () => {
+      fetch(`${apiUrl}/api/flights/live`)
+        .then(r => r.json())
+        .then(data => {
+          if (data && Array.isArray(data.flights) && data.flights.length > 0) {
+            setFlights(data.flights);
+          }
+        })
+        .catch(e => console.error('Error fetching live flights:', e));
+    };
+
+    fetchLiveFlights();
+    const flightTimer = setInterval(fetchLiveFlights, 10000);
+    return () => clearInterval(flightTimer);
   }, []);
 
   useEffect(() => {
@@ -1567,7 +1588,7 @@ export default function AppMap() {
         )}
 
         {/* 機場與水上飛機場標記 (Airports & Seaplane Bases) */}
-        {layers.airports && airports.map((ap, i) => {
+        {(layers.airports !== false) && airports.map((ap, i) => {
           const coords = ap.geometry?.coordinates;
           if (!coords || coords.length < 2) return null;
           const props = ap.properties || {};
@@ -1598,8 +1619,8 @@ export default function AppMap() {
 
         {/* 即時航班飛機位置 (Live Aircraft Markers) */}
         {flights.map((f) => {
-          const showDomestic = f.is_domestic && layers.domesticFlights;
-          const showIntl = !f.is_domestic && layers.intlFlights;
+          const showDomestic = f.is_domestic && (layers.domesticFlights !== false);
+          const showIntl = !f.is_domestic && (layers.intlFlights !== false);
           if (!showDomestic && !showIntl) return null;
 
           return (
@@ -1784,38 +1805,63 @@ export default function AppMap() {
                 </span>
               </div>
 
-              {/* Telemetry Grid */}
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                <div className="p-2 rounded-lg bg-gray-50/80 border border-gray-100">
-                  <span className="text-[10px] text-gray-500 block">✈️ 飛行高度</span>
-                  <span className="font-bold text-sm text-gray-900 font-mono">
-                    {selectedFlight.altitude_ft ? `${selectedFlight.altitude_ft.toLocaleString()} ft` : '地面滑行'}
-                  </span>
+              {/* Flight Details or Telemetry */}
+              {selectedFlight.is_live && (selectedFlight.altitude_ft || selectedFlight.speed_kts) ? (
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="p-2 rounded-lg bg-gray-50/80 border border-gray-100">
+                    <span className="text-[10px] text-gray-500 block">✈️ 飛行高度</span>
+                    <span className="font-bold text-sm text-gray-900 font-mono">
+                      {selectedFlight.altitude_ft ? `${selectedFlight.altitude_ft.toLocaleString()} ft` : '地面滑行'}
+                    </span>
+                  </div>
+                  <div className="p-2 rounded-lg bg-gray-50/80 border border-gray-100">
+                    <span className="text-[10px] text-gray-500 block">⚡ 飛行空速</span>
+                    <span className="font-bold text-sm text-gray-900 font-mono">
+                      {selectedFlight.speed_kts} kts
+                    </span>
+                  </div>
+                  <div className="p-2 rounded-lg bg-gray-50/80 border border-gray-100">
+                    <span className="text-[10px] text-gray-500 block">🧭 航向角</span>
+                    <span className="font-bold text-sm text-gray-900 font-mono">
+                      {selectedFlight.bearing}°
+                    </span>
+                  </div>
+                  <div className="p-2 rounded-lg bg-gray-50/80 border border-gray-100">
+                    <span className="text-[10px] text-gray-500 block">↕️ 升降率</span>
+                    <span className="font-bold text-sm text-gray-900 font-mono">
+                      {selectedFlight.vertical_rate_fpm} ft/m
+                    </span>
+                  </div>
                 </div>
-                <div className="p-2 rounded-lg bg-gray-50/80 border border-gray-100">
-                  <span className="text-[10px] text-gray-500 block">⚡ 飛行空速</span>
-                  <span className="font-bold text-sm text-gray-900 font-mono">
-                    {selectedFlight.speed_kts} kts
-                  </span>
+              ) : (
+                <div className="flex flex-col gap-1.5 text-xs bg-gray-50/80 p-2.5 rounded-lg border border-gray-100">
+                  {selectedFlight.city && (
+                    <div className="flex justify-between items-center py-0.5 border-b border-gray-100">
+                      <span className="text-gray-500">{selectedFlight.flight_type === 'arr' ? '起飛地' : '目的地'}</span>
+                      <span className="font-bold text-gray-800">{selectedFlight.city}</span>
+                    </div>
+                  )}
+                  {selectedFlight.time && (
+                    <div className="flex justify-between items-center py-0.5 border-b border-gray-100">
+                      <span className="text-gray-500">預計時間</span>
+                      <span className="font-mono font-bold text-sky-700">{selectedFlight.time}</span>
+                    </div>
+                  )}
+                  {selectedFlight.terminal && (
+                    <div className="flex justify-between items-center py-0.5">
+                      <span className="text-gray-500">航廈 / 閘口</span>
+                      <span className="font-semibold text-gray-800">
+                        {selectedFlight.terminal} {selectedFlight.gate ? `· 閘口 ${selectedFlight.gate}` : ''}
+                      </span>
+                    </div>
+                  )}
                 </div>
-                <div className="p-2 rounded-lg bg-gray-50/80 border border-gray-100">
-                  <span className="text-[10px] text-gray-500 block">🧭 航向角</span>
-                  <span className="font-bold text-sm text-gray-900 font-mono">
-                    {selectedFlight.bearing}°
-                  </span>
-                </div>
-                <div className="p-2 rounded-lg bg-gray-50/80 border border-gray-100">
-                  <span className="text-[10px] text-gray-500 block">↕️ 升降率</span>
-                  <span className="font-bold text-sm text-gray-900 font-mono">
-                    {selectedFlight.vertical_rate_fpm} ft/m
-                  </span>
-                </div>
-              </div>
+              )}
 
               {/* Footer */}
               <div className="mt-2.5 pt-2 border-t border-gray-100 text-[10px] text-gray-400 flex items-center justify-between">
-                <span>ICAO: {selectedFlight.icao24}</span>
-                <span>雷達來源: OpenSky ADS-B</span>
+                <span>{selectedFlight.icao24 ? `ICAO: ${selectedFlight.icao24}` : `航班: ${selectedFlight.flight_no}`}</span>
+                <span>{selectedFlight.is_live ? '雷達: OpenSky ADS-B' : '計畫: FlightAware'}</span>
               </div>
             </div>
           </Popup>
