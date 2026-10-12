@@ -771,15 +771,6 @@ def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any]:
                     "gate": item["gate"]
                 }
 
-        # Supplement arrivals if fewer than 5 so Arrivals is never 0!
-        if len(arrivals) < 5:
-            fallback_data = _generate_fallback_schedules(van_now)
-            fallback_arrs = fallback_data.get("arrivals", [])
-            existing_nos = {a["flight_no"].replace(" ", "").upper() for a in arrivals}
-            for fa in fallback_arrs:
-                if fa["flight_no"].replace(" ", "").upper() not in existing_nos:
-                    arrivals.append(fa)
-
         # Save dynamic routes to persistent cache
         try:
             os.makedirs(os.path.dirname(FLIGHTAWARE_ROUTES_CACHE_FILE), exist_ok=True)
@@ -804,7 +795,7 @@ def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any]:
         }
         _flightaware_cache["timestamp"] = now_ts
         _flightaware_cache["data"] = result
-        print(f"✅ FlightAware YVR schedule refreshed: {len(arrivals)} arrivals, {len(departures)} departures. (Quota: {quota_count}/{max_monthly_calls})")
+        print(f"✅ FlightAware YVR schedule refreshed: {len(arrivals)} arrivals, {len(departures)} departures. (Quota: {month_rounds}/{max_monthly_rounds} rounds)")
         return result
 
     except Exception as e:
@@ -920,7 +911,8 @@ def _generate_fallback_schedules(van_now: datetime) -> Dict[str, Any]:
         "airport": "YVR",
         "airport_name": "Vancouver International Airport (溫哥華國際機場)",
         "updated_at": van_now.isoformat(),
-        "source": "FlightAware 航線計畫快取庫",
+        "source": "離線參考排程庫 (未檢測到 FLIGHTAWARE_API_KEY，請在 backend/.env 設定以啟動官方即時排程)",
+        "is_real_api": False,
         "total_arrivals": len(arrivals),
         "total_departures": len(departures),
         "arrivals": arrivals,
