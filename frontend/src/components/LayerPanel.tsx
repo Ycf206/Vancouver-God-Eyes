@@ -218,7 +218,10 @@ export default function LayerPanel() {
             <LayerButton layerKey="motorcycleParking" label="摩托車停車位" icon={Bike} colorClass="text-orange-400" activeBg="bg-[#2c1d18]" activeBorder="border-orange-500/50" activeShadow="shadow-[0_0_6px_rgba(251,146,60,0.15)]" />
             <LayerButton layerKey="evCharging" label="電動車充電站" icon={Zap} colorClass="text-emerald-400" activeBg="bg-[#14291f]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(52,211,153,0.15)]" />
             <LayerButton layerKey="escooter" label="共享滑板車" icon={Scooter} colorClass="text-lime-400" activeBg="bg-[#1e2a14]" activeBorder="border-lime-500/50" activeShadow="shadow-[0_0_6px_rgba(132,204,22,0.15)]" />
+            {/* 預留 1 格將來放置「共享汽車」 */}
+            <div className="h-7 rounded border border-dashed border-[#26282e]/50 bg-[#18191d]/30 pointer-events-none" aria-hidden="true" />
             <LayerButton layerKey="sharedBikes" label="共享單車" icon={Bike} colorClass="text-emerald-400" activeBg="bg-[#14291f]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
+            <LayerButton layerKey="bikeways" label="單車徑" icon={Route} colorClass="text-teal-400" activeBg="bg-[#122826]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
             <LayerButton layerKey="trafficCameras" label="交通攝影機" icon={Camera} colorClass="text-cyan-400" activeBg="bg-[#14262b]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.15)]" />
             <LayerButton layerKey="safetyCameras" label="路口安全相機" icon={Siren} colorClass="text-rose-400" activeBg="bg-[#2b171c]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.15)]" />
           </div>
@@ -279,7 +282,7 @@ export default function LayerPanel() {
             <span className="text-[9px] text-rose-400/70 font-mono">GOVERNMENT</span>
           </div>
           <div className="grid grid-cols-2 gap-1">
-            <LayerButton layerKey="fireHalls" label="消防局" icon={Flame} colorClass="text-rose-400" activeBg="bg-[#2a171a]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.15)]" />
+            <LayerButton layerKey="fireHalls" label="消防" icon={Flame} colorClass="text-rose-400" activeBg="bg-[#2a171a]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.15)]" />
             <LayerButton layerKey="hospitals" label="醫院" icon={Hospital} colorClass="text-emerald-400" activeBg="bg-[#13271d]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
           </div>
         </div>

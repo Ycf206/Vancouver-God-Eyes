@@ -476,6 +476,104 @@ def update_homeless_shelters():
     save_geojson("vancouver_homeless_shelters", features)
     sync_to_db("homeless_shelters", features)
 
+def _round_coords(coords):
+    """Recursively round GeoJSON LineString / MultiLineString coordinates to 5 decimal places."""
+    if not isinstance(coords, list):
+        return coords
+    if len(coords) >= 2 and isinstance(coords[0], (int, float)) and isinstance(coords[1], (int, float)):
+        return [round(float(coords[0]), 5), round(float(coords[1]), 5)]
+    return [_round_coords(c) for c in coords]
+
+def update_bikeways():
+    """Fetches Vancouver bikeways LineString dataset from Vancouver Open Data v2.1 API."""
+    records = fetch_all_records("bikeways")
+    features = []
+
+    type_map_zh = {
+        "Protected Bike Lanes": "實體分隔單車道 (Protected)",
+        "Painted Lanes": "標線專用單車道 (Painted)",
+        "Local Street": "街區單車綠道 (Local Street)",
+        "Shared Lanes": "共享車道 (Shared)"
+    }
+    dir_map_zh = {
+        "2W": "雙向通行 (Two-Way)",
+        "1W": "單向通行 (One-Way)"
+    }
+    surf_map_zh = {
+        "Paved": "柏油鋪面 (Paved)",
+        "Unpaved": "非鋪面/碎石 (Unpaved)",
+        "Concrete": "混凝土鋪面 (Concrete)"
+    }
+
+    for idx, r in enumerate(records):
+        status = r.get("status") or "Active"
+        if status == "Temporarily Removed":
+            continue
+
+        geom_wrapper = r.get("geom") or {}
+        geom = geom_wrapper.get("geometry") if isinstance(geom_wrapper, dict) else None
+        if not geom or geom.get("type") not in ("LineString", "MultiLineString"):
+            continue
+
+        raw_coords = geom.get("coordinates")
+        if not raw_coords:
+            continue
+
+        gp = r.get("geo_point_2d") or {}
+        center_lon = gp.get("lon")
+        center_lat = gp.get("lat")
+
+        obj_id = r.get("object_id") or str(idx + 1)
+        route_name = (r.get("bike_route_name") or "").strip()
+        street_name = (r.get("street_name") or "").strip()
+        if route_name and street_name and route_name.lower() not in street_name.lower():
+            disp_name = f"{route_name} 單車徑 ({street_name})"
+        elif route_name:
+            disp_name = f"{route_name} 單車徑"
+        elif street_name:
+            disp_name = f"{street_name} 單車道"
+        else:
+            disp_name = f"溫哥華單車專用道 #{obj_id}"
+
+        b_type = r.get("bikeway_type") or "Local Street"
+        b_type_zh = type_map_zh.get(b_type, b_type)
+        b_dir = r.get("bikeway_direction") or "2W"
+        b_dir_zh = dir_map_zh.get(b_dir, b_dir)
+        surf = r.get("surface_type") or "Paved"
+        surf_zh = surf_map_zh.get(surf, surf)
+        aaa = "全齡友善安全路網 (AAA)" if (r.get("aaa_network") or "").upper() == "YES" else "一般單車路網"
+        snow = "優先除雪路線 ❄️" if (r.get("snow_removal") or "").lower() == "yes" else "一般維護"
+
+        features.append({
+            "type": "Feature",
+            "id": f"bikeway_{obj_id}",
+            "properties": {
+                "id": f"bikeway_{obj_id}",
+                "facility_type": "bikeways",
+                "name": disp_name,
+                "bike_route_name": route_name or "市區單車網",
+                "street_name": street_name or "",
+                "bikeway_type": b_type,
+                "bikeway_type_zh": b_type_zh,
+                "bikeway_direction": b_dir_zh,
+                "surface_type": surf_zh,
+                "speed_limit": r.get("speed_limit") or "",
+                "aaa_network": aaa,
+                "snow_removal": snow,
+                "year_of_construction": r.get("year_of_construction") or "",
+                "upgrade_year": r.get("upgrade_year") or "",
+                "center_lon": round(float(center_lon), 5) if center_lon is not None else None,
+                "center_lat": round(float(center_lat), 5) if center_lat is not None else None,
+                "local_area": "溫哥華市"
+            },
+            "geometry": {
+                "type": geom["type"],
+                "coordinates": _round_coords(raw_coords)
+            }
+        })
+
+    save_geojson("vancouver_bikeways", features)
+
 def run_all_updates():
     start_time = datetime.now(timezone.utc)
     print("=" * 60)
@@ -509,6 +607,9 @@ def run_all_updates():
     
     # 9. Homeless Shelters
     update_homeless_shelters()
+
+    # 10. Bikeways (LineString)
+    update_bikeways()
     
     # Record metadata
     meta_path = os.path.join(BACKEND_DATA_DIR, "last_open_data_update.json")
@@ -519,13 +620,14 @@ def run_all_updates():
             "datasets": [
                 "parks", "parks_facilities", "community_gardens", 
                 "drinking_fountains", "public_washrooms",
-                "schools", "libraries", "food_vendors", "homeless_shelters"
+                "schools", "libraries", "food_vendors", "homeless_shelters",
+                "bikeways"
             ]
         }, f, indent=2)
         
     duration = (datetime.now(timezone.utc) - start_time).total_seconds()
     print("=" * 60)
-    print(f"🎉 All 9 datasets successfully refreshed in {duration:.1f}s!")
+    print(f"🎉 All 10 datasets successfully refreshed in {duration:.1f}s!")
     print("=" * 60)
 
 if __name__ == "__main__":

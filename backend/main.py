@@ -775,7 +775,7 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
             zoom = 16
 
             if ftype == 'fire_halls':
-                badge = "消防局"
+                badge = "消防"
                 icon = "🚒"
                 layer_key = "fireHalls"
             elif ftype == 'community_centres':
@@ -1159,11 +1159,35 @@ def get_hospital_waittimes():
 import json
 from sqlalchemy import func
 
+_bikeways_geojson_cache = {"data": None, "mtime": 0}
+
 @app.get("/api/geojson/road/{facility_type}")
 def get_road_facilities_geojson(facility_type: str, db: Session = Depends(database.get_db)):
     """
-    facility_type can be 'parking_meters', 'accessible_parking', 'motorcycle_parking', or 'ev_charging'
+    facility_type can be 'parking_meters', 'accessible_parking', 'motorcycle_parking', 'ev_charging', 'bikeways', etc.
     """
+    if facility_type == "bikeways":
+        static_geojson_path = os.path.join(os.path.dirname(__file__), "data", "vancouver_bikeways.geojson")
+        if not os.path.exists(static_geojson_path):
+            try:
+                from scripts.update_open_data import update_bikeways
+                update_bikeways()
+            except Exception as e:
+                print(f"Auto-fetch bikeways error: {e}")
+        if os.path.exists(static_geojson_path):
+            try:
+                mtime = os.path.getmtime(static_geojson_path)
+                if _bikeways_geojson_cache["data"] and _bikeways_geojson_cache["mtime"] == mtime:
+                    return _bikeways_geojson_cache["data"]
+                with open(static_geojson_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                _bikeways_geojson_cache["data"] = data
+                _bikeways_geojson_cache["mtime"] = mtime
+                return data
+            except Exception as e:
+                print(f"Error reading vancouver_bikeways.geojson: {e}")
+        return {"type": "FeatureCollection", "features": []}
+
     facilities = db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).all()
     
     # Auto-import on-the-fly if not yet populated in DB
@@ -1428,12 +1452,13 @@ def trigger_update_open_data(background_tasks: BackgroundTasks):
     background_tasks.add_task(run_all_updates)
     return {
         "status": "triggered",
-        "message": "已在背景啟動溫哥華 Open Data 9 項圖層資料集更新作業",
+        "message": "已在背景啟動溫哥華 Open Data 10 項圖層資料集更新作業 (含單車徑 Bikeways)",
         "cycle_months": 6,
         "datasets": [
             "parks", "parks_facilities", "community_gardens",
             "drinking_fountains", "public_washrooms",
-            "schools", "libraries", "food_vendors", "homeless_shelters"
+            "schools", "libraries", "food_vendors", "homeless_shelters",
+            "bikeways"
         ]
     }
 

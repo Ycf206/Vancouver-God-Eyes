@@ -323,7 +323,12 @@ export default function AppMap() {
       setSelectedAirport(null);
       setSelectedFlight(searchTarget.meta);
     } else if (
-      ['fire_halls', 'community_centres', 'ev_charging', 'escooter', 'traffic_cameras', 'safety_cameras', 'parking_meters', 'accessible_parking', 'motorcycle_parking', 'hospitals'].includes(searchTarget.category)
+      [
+        'fire_halls', 'community_centres', 'ev_charging', 'escooter', 'shared_bikes', 'bikeways',
+        'traffic_cameras', 'safety_cameras', 'parking_meters', 'accessible_parking', 'motorcycle_parking',
+        'hospitals', 'parks', 'parks_facilities', 'community_gardens', 'drinking_fountains',
+        'public_washrooms', 'schools', 'libraries', 'food_vendors', 'homeless_shelters'
+      ].includes(searchTarget.category)
     ) {
       setSelectedTerminal(null);
       setSelectedStop(null);
@@ -455,6 +460,7 @@ export default function AppMap() {
     style.sources['ev-charging'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/ev_charging` };
     style.sources['escooter'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/escooter` };
     style.sources['shared-bikes'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/shared_bikes` };
+    style.sources['bikeways'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/bikeways` };
     style.sources['fire-halls'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/fire_halls` };
     style.sources['community-centres'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/community_centres` };
     style.sources['traffic-cameras'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/traffic_cameras` };
@@ -581,6 +587,46 @@ export default function AppMap() {
           'line-width': 2,
           'line-dasharray': [4, 4],
           'line-opacity': 0.7
+        }
+      });
+    }
+
+    // Road Facilities: Bikeways (單車徑 LineString)
+    if (layers.bikeways) {
+      style.layers.push({
+        id: 'bikeways-casing-layer',
+        type: 'line',
+        source: 'bikeways',
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        paint: {
+          'line-color': '#042f2e',
+          'line-width': ['interpolate', ['linear'], ['zoom'], 10, 2.5, 13, 4.5, 16, 7],
+          'line-opacity': 0.55
+        }
+      });
+      style.layers.push({
+        id: 'bikeways-layer',
+        type: 'line',
+        source: 'bikeways',
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        paint: {
+          'line-color': [
+            'match',
+            ['get', 'bikeway_type'],
+            'Protected Bike Lanes', '#14b8a6',
+            'Painted Lanes', '#10b981',
+            'Local Street', '#2dd4bf',
+            'Shared Lanes', '#34d399',
+            '#14b8a6'
+          ],
+          'line-width': ['interpolate', ['linear'], ['zoom'], 10, 1.5, 13, 2.8, 16, 4.5],
+          'line-opacity': 0.92
         }
       });
     }
@@ -1206,6 +1252,7 @@ export default function AppMap() {
     layers.evCharging, 
     layers.escooter,
     layers.sharedBikes,
+    layers.bikeways,
     layers.trafficCameras,
     layers.safetyCameras,
     layers.fireHalls,
@@ -1239,6 +1286,7 @@ export default function AppMap() {
           'bus-stops-layer', 
           'skytrain-stops-layer', 
           'seabus-stops-layer',
+          'bikeways-layer',
           'parking-meters-layer',
           'parking-meters-symbol-layer',
           'accessible-parking-layer',
@@ -1311,6 +1359,20 @@ export default function AppMap() {
                 console.error(err);
                 setLoadingArrivals(false);
               });
+          } else if (layerId === 'bikeways-layer') {
+            setSelectedStop(null);
+            const props = feature.properties || {};
+            const clickLon = e.lngLat?.lng ?? props.center_lon ?? -123.1207;
+            const clickLat = e.lngLat?.lat ?? props.center_lat ?? 49.2827;
+            setSelectedFacility({
+              id: props.id || '',
+              facility_type: 'bikeways',
+              name: props.name || '溫哥華單車專用道',
+              local_area: props.local_area || '溫哥華市',
+              lon: clickLon,
+              lat: clickLat,
+              properties: props
+            });
           } else if (
             layerId.startsWith('parking-meters') || 
             layerId.startsWith('accessible-parking') || 
@@ -2158,6 +2220,7 @@ export default function AppMap() {
                     selectedFacility.facility_type === 'ev_charging' ? 'bg-emerald-500' :
                     selectedFacility.facility_type === 'escooter' ? 'bg-lime-500' :
                     selectedFacility.facility_type === 'shared_bikes' ? 'bg-emerald-500' :
+                    selectedFacility.facility_type === 'bikeways' ? 'bg-teal-500' :
                     selectedFacility.facility_type === 'traffic_cameras' ? 'bg-cyan-500' :
                     selectedFacility.facility_type === 'safety_cameras' ? 'bg-rose-600' :
                     selectedFacility.facility_type === 'hospitals' ? 'bg-emerald-500' :
@@ -2373,6 +2436,64 @@ export default function AppMap() {
                     >
                       前往 Mobi 官方網站 / 租借資訊 ↗
                     </a>
+                  </div>
+                </div>
+              )}
+
+              {/* Bikeways (單車徑 LineString) Details */}
+              {selectedFacility.facility_type === 'bikeways' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="p-2.5 rounded bg-teal-50 border border-teal-200 flex flex-col gap-1">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-teal-900 flex items-center gap-1.5">
+                        <span>🚴</span>
+                        <span>{selectedFacility.properties.bikeway_type_zh || '單車專用道'}</span>
+                      </span>
+                    </div>
+                    {selectedFacility.properties.aaa_network && (
+                      <div className="text-[11px] font-medium text-teal-700 pt-1 border-t border-teal-200/60">
+                        ✅ {selectedFacility.properties.aaa_network}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="bg-gray-50 p-2 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                    {selectedFacility.properties.bike_route_name && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>單車路線</span>
+                        <span className="font-bold text-gray-900">{selectedFacility.properties.bike_route_name}</span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.street_name && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>所在街道</span>
+                        <span className="font-semibold text-gray-800">{selectedFacility.properties.street_name}</span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.bikeway_direction && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>通行方向</span>
+                        <span className="font-medium text-gray-800">{selectedFacility.properties.bikeway_direction}</span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.surface_type && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>路面材質</span>
+                        <span className="font-medium text-gray-800">{selectedFacility.properties.surface_type}</span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.speed_limit && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>路段速限</span>
+                        <span className="font-bold text-teal-800">{selectedFacility.properties.speed_limit} km/h</span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.snow_removal && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>冬季養護</span>
+                        <span className="font-medium text-sky-700">{selectedFacility.properties.snow_removal}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
