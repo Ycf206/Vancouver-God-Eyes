@@ -5,7 +5,7 @@ import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
 import { 
   X, Plane, PlaneTakeoff, PlaneLanding, Search, RefreshCw, 
-  MapPin, Activity
+  MapPin, Clock
 } from 'lucide-react';
 
 
@@ -33,13 +33,8 @@ interface FlightScheduleItem {
   gate: string;
   status: string;
   status_code: string;
-  is_live: boolean;
-  lat?: number;
-  lon?: number;
-  altitude_ft?: number;
-  speed_kts?: number;
-  bearing?: number;
-  vertical_rate_fpm?: number;
+  remaining_time?: string;
+  remaining_code?: string;
   route_coords?: [number, number][];
 }
 
@@ -57,7 +52,7 @@ interface ScheduleData {
 export default function FlightScheduleModal() {
   const { isFlightScheduleOpen, setFlightScheduleOpen, searchTarget, setSearchTarget } = useUIStore();
   const [activeTab, setActiveTab] = useState<'arrivals' | 'departures'>('arrivals');
-  const [filterType, setFilterType] = useState<'all' | 'domestic' | 'international' | 'live'>('all');
+  const [filterType, setFilterType] = useState<'all' | 'domestic' | 'international'>('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [data, setData] = useState<ScheduleData | null>(null);
   const [loading, setLoading] = useState(false);
@@ -88,90 +83,36 @@ export default function FlightScheduleModal() {
   const currentList = activeTab === 'arrivals' ? (data?.arrivals || []) : (data?.departures || []);
 
   const filteredList = currentList.filter(item => {
-    // Filter by type
+    // 過去的航班不再顯示
+    if (item.remaining_code === 'past') return false;
+
+    // Filter by domestic / international
     if (filterType === 'domestic' && !item.is_domestic) return false;
     if (filterType === 'international' && item.is_domestic) return false;
-    if (filterType === 'live' && !item.is_live) return false;
 
-    // Filter by search
+    // Filter by search (航班號、航空公司、城市、出發/目的代碼、登機門)
     if (searchTerm.trim()) {
       const q = searchTerm.toLowerCase();
       const matchNo = item.flight_no.toLowerCase().includes(q);
       const matchAirline = item.airline.toLowerCase().includes(q);
       const matchCity = item.city.toLowerCase().includes(q);
-      const matchGate = item.gate.toLowerCase().includes(q);
-      return matchNo || matchAirline || matchCity || matchGate;
+      const matchOrig = (item.origin_code || '').toLowerCase().includes(q);
+      const matchDest = (item.dest_code || '').toLowerCase().includes(q);
+      const matchGate = (item.gate || '').toLowerCase().includes(q);
+      return matchNo || matchAirline || matchCity || matchOrig || matchDest || matchGate;
     }
     return true;
   });
 
   const handleFlightClick = (flight: FlightScheduleItem) => {
-    // 1. Auto-enable the corresponding layer in the layer control panel
-    const layerKey = flight.is_domestic ? 'domesticFlights' : 'intlFlights';
-    useUIStore.getState().enableLayer(layerKey);
-
-    // 2. Cross-reference with live airborne flights currently tracked on map
-    const liveList = useUIStore.getState().liveFlights || [];
-    const flightNoClean = (flight.flight_no || '').replace(/\s+/g, '').toUpperCase();
-    const flightDigits = flightNoClean.replace(/\D/g, '');
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const liveMatch = liveList.find((f: any) => {
-      if (flight.flight_id && f.id === flight.flight_id) return true;
-      const fNoClean = (f.flight_no || '').replace(/\s+/g, '').toUpperCase();
-      const fCs = (f.callsign || '').replace(/\s+/g, '').toUpperCase();
-      if (fNoClean === flightNoClean || fCs === flightNoClean) return true;
-      
-      const fDigits = fNoClean.replace(/\D/g, '') || fCs.replace(/\D/g, '');
-      if (flightDigits && fDigits === flightDigits) {
-        // Cross-match equivalent airline codes e.g. LH/DLH, KE/KAL, WK/EDW, AC/ACA, WS/WJA, AS/QXE, OO/SKW
-        const fPrefix = fCs.slice(0, 3) || fNoClean.slice(0, 2);
-        const flightPrefix = flightNoClean.slice(0, 3) || flightNoClean.slice(0, 2);
-        if (
-          fPrefix === flightPrefix ||
-          (flightNoClean.startsWith('LH') && fCs.startsWith('DLH')) ||
-          (flightNoClean.startsWith('KE') && fCs.startsWith('KAL')) ||
-          (flightNoClean.startsWith('WK') && fCs.startsWith('EDW')) ||
-          (flightNoClean.startsWith('AC') && (fCs.startsWith('ACA') || fCs.startsWith('ROU') || fCs.startsWith('JZA'))) ||
-          (flightNoClean.startsWith('WS') && (fCs.startsWith('WJA') || fCs.startsWith('WEN'))) ||
-          (flightNoClean.startsWith('AS') && (fCs.startsWith('ASA') || fCs.startsWith('QXE'))) ||
-          (flightNoClean.startsWith('OO') && fCs.startsWith('SKW')) ||
-          (flightNoClean.startsWith('WL') && (fCs.startsWith('WLD') || fCs.startsWith('WLT')))
-        ) {
-          return true;
-        }
-      }
-      return false;
-    });
-
-    let targetLon: number;
-    let targetLat: number;
-    let targetZoom: number;
-    const isLiveAirborne = Boolean(liveMatch || (flight.is_live && flight.lat && flight.lon));
-
-    if (liveMatch && typeof liveMatch.lon === 'number' && typeof liveMatch.lat === 'number') {
-      targetLon = liveMatch.lon;
-      targetLat = liveMatch.lat;
-      targetZoom = 13;
-    } else if (flight.is_live && typeof flight.lon === 'number' && typeof flight.lat === 'number') {
-      targetLon = flight.lon;
-      targetLat = flight.lat;
-      targetZoom = 13;
-    } else {
-      // Flight is scheduled or enroute outside local Vancouver radar.
-      // Anchor map camera cleanly at Vancouver International Airport (YVR)
-      targetLon = -123.1815;
-      targetLat = 49.1967;
-      targetZoom = 12;
-    }
-
+    // 航線排程地圖：定位溫哥華國際機場並在大地圖上繪製航線與端點標籤
     const isDom = flight.is_domestic;
     const isDep = flight.flight_type === 'dep';
 
-    let safeOriginCode = flight.origin_code || liveMatch?.origin_code;
-    let safeDestCode = flight.dest_code || liveMatch?.dest_code;
-    let safeOriginCity = flight.origin_city || flight.origin_name || liveMatch?.origin_city || liveMatch?.origin_name;
-    let safeDestCity = flight.dest_city || flight.dest_name || liveMatch?.dest_city || liveMatch?.dest_name;
+    let safeOriginCode = flight.origin_code;
+    let safeDestCode = flight.dest_code;
+    let safeOriginCity = flight.origin_city || flight.origin_name;
+    let safeDestCity = flight.dest_city || flight.dest_name;
 
     if (!safeOriginCode && !safeDestCode) {
       safeOriginCode = isDep ? 'YVR' : (isDom ? 'YYC' : 'SEA');
@@ -201,43 +142,28 @@ export default function FlightScheduleModal() {
       }
     }
 
-    const mergedFlightData = {
-      ...(liveMatch || {}),
+    const flightMeta = {
       ...flight,
-      is_live: isLiveAirborne,
-      lon: isLiveAirborne ? targetLon : undefined,
-      lat: isLiveAirborne ? targetLat : undefined,
-      id: liveMatch?.id || flight.flight_id || flight.id,
       origin_code: safeOriginCode,
       dest_code: safeDestCode,
       origin_city: safeOriginCity,
       dest_city: safeDestCity,
-      origin_name: flight.origin_name || liveMatch?.origin_name || safeOriginCity,
-      dest_name: flight.dest_name || liveMatch?.dest_name || safeDestCity,
-      origin_coord: flight.origin_coord || liveMatch?.origin_coord,
-      dest_coord: flight.dest_coord || liveMatch?.dest_coord,
-      departure_time: flight.departure_time || liveMatch?.departure_time,
-      arrival_time: flight.arrival_time || liveMatch?.arrival_time,
-      route_coords: flight.route_coords || liveMatch?.route_coords,
-      altitude_ft: isLiveAirborne ? (liveMatch?.altitude_ft ?? flight.altitude_ft ?? 0) : undefined,
-      speed_kts: isLiveAirborne ? (liveMatch?.speed_kts ?? flight.speed_kts ?? 0) : undefined,
-      bearing: isLiveAirborne ? (liveMatch?.bearing ?? flight.bearing ?? 0) : undefined,
-      vertical_rate_fpm: isLiveAirborne ? (liveMatch?.vertical_rate_fpm ?? flight.vertical_rate_fpm ?? 0) : undefined,
-      status: liveMatch?.status || flight.status,
-      status_badge: liveMatch?.status_badge || (isLiveAirborne ? '✈️ 即時追蹤中' : flight.status),
+      origin_name: flight.origin_name || safeOriginCity,
+      dest_name: flight.dest_name || safeDestCity,
+      status: flight.status || '依時刻表排程',
     };
 
     setSearchTarget({
-      id: mergedFlightData.id,
+      id: flight.id,
       title: `${flight.flight_no} · ${flight.airline}`,
       subtitle: `${flight.city} (${flight.status}) · ${flight.terminal} Gate ${flight.gate}`,
-      category: flight.is_domestic ? 'domestic_flight' : 'intl_flight',
+      category: 'flight_schedule',
       badge: flight.is_domestic ? '🇨🇦 國內航班' : '🌐 國際航班',
       icon: '✈️',
-      lon: targetLon,
-      lat: targetLat,
-      zoom: targetZoom,
-      meta: mergedFlightData
+      lon: -123.1815,
+      lat: 49.1967,
+      zoom: 8,
+      meta: flightMeta
     });
   };
 
@@ -256,9 +182,9 @@ export default function FlightScheduleModal() {
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-base font-bold text-white tracking-wide">YVR 溫哥華國際機場</h3>
-                <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                  即時雷達連線中
+                <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-sky-500/15 border border-sky-500/30 text-sky-400 flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse"></span>
+                  排程航線地圖
                 </span>
               </div>
               <p className="text-xs text-gray-400 mt-0.5">
@@ -348,17 +274,6 @@ export default function FlightScheduleModal() {
               >
                 🌐 國際線
               </button>
-              <button
-                onClick={() => setFilterType('live')}
-                className={`px-2.5 py-1 rounded-lg border transition-colors flex items-center gap-1 ${
-                  filterType === 'live'
-                    ? 'bg-cyan-500/20 border-cyan-500/50 text-cyan-300 font-medium'
-                    : 'bg-[#181a20] border-[#262932] text-gray-400 hover:text-gray-200'
-                }`}
-              >
-                <Activity className="w-3 h-3 text-cyan-400" />
-                雷達追蹤中
-              </button>
             </div>
           </div>
 
@@ -369,7 +284,7 @@ export default function FlightScheduleModal() {
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="搜尋航班編號 (AC64, CX888, BR10)、航空公司、城市 (Toronto, Tokyo, Taipei)..."
+              placeholder="搜尋航班號 (AC64, CX888)、航空公司、代碼 (YYZ, NRT)、城市 (Toronto, Tokyo)..."
               className="w-full pl-9 pr-4 py-1.5 bg-[#101216] border border-[#262a34] rounded-xl text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-sky-500 transition-colors"
             />
             {searchTerm && (
@@ -388,7 +303,7 @@ export default function FlightScheduleModal() {
           {loading && !data ? (
             <div className="flex flex-col items-center justify-center py-16 text-gray-400 gap-3">
               <RefreshCw className="w-6 h-6 animate-spin text-sky-400" />
-              <p className="text-xs">正在連線 FlightAware / OpenSky 接收大溫即時航班資訊...</p>
+              <p className="text-xs">正在連線 FlightAware AeroAPI 獲取溫哥華機場航班時刻排程與航線...</p>
             </div>
           ) : filteredList.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-gray-400 gap-2">
@@ -397,8 +312,9 @@ export default function FlightScheduleModal() {
             </div>
           ) : (
             filteredList.map((flight) => {
-              const isLive = flight.is_live;
-              const isSelected = searchTarget?.id === (flight.flight_id || flight.id);
+              const isSelected = searchTarget?.id === flight.id;
+              const orig = flight.origin_code || (flight.flight_type === 'dep' ? 'YVR' : '--');
+              const dest = flight.dest_code || (flight.flight_type === 'arr' ? 'YVR' : '--');
               return (
                 <div
                   key={flight.id}
@@ -406,8 +322,6 @@ export default function FlightScheduleModal() {
                   className={`p-3 rounded-xl transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 cursor-pointer ${
                     isSelected
                       ? 'bg-sky-500/20 border-sky-400 shadow-[0_0_12px_rgba(56,189,248,0.25)] ring-1 ring-sky-400/40'
-                      : isLive
-                      ? 'hover:bg-[#1a212e] hover:border-sky-500/30 border border-transparent'
                       : 'hover:bg-[#1a212e] hover:border-[#384152] border border-transparent'
                   }`}
                 >
@@ -436,9 +350,10 @@ export default function FlightScheduleModal() {
                       </div>
 
                       <div className="flex items-center gap-2 text-xs text-gray-400 mt-1">
-                        <span className="flex items-center gap-1 text-gray-300">
+                        <span className="flex items-center gap-1 text-gray-300 font-medium">
                           <MapPin className="w-3 h-3 text-sky-400 shrink-0" />
-                          <span>{flight.city}</span>
+                          <span className="font-mono text-sky-200">{orig} ➔ {dest}</span>
+                          <span>({flight.city})</span>
                         </span>
                         <span>·</span>
                         <span>{flight.terminal}</span>
@@ -448,31 +363,22 @@ export default function FlightScheduleModal() {
                     </div>
                   </div>
 
-                  {/* Right: Status & Radar Badge */}
+                  {/* Right: Remaining Time & Status */}
                   <div className="flex items-center gap-2.5 self-end sm:self-center shrink-0">
+                    {flight.remaining_time && (
+                      <div className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-sky-500/15 border border-sky-500/30 text-sky-300 text-[11px] font-mono font-medium">
+                        <Clock className="w-3 h-3 text-sky-400" />
+                        <span>{flight.remaining_time}</span>
+                      </div>
+                    )}
+
                     <div className="text-right hidden md:block">
-                      {isLive ? (
-                        <>
-                          <div className="text-[11px] font-mono text-gray-300">
-                            {flight.altitude_ft ? `${flight.altitude_ft.toLocaleString()} ft` : '地面'} · {flight.speed_kts} kts
-                          </div>
-                          <div className="text-[9px] text-cyan-400 font-mono">
-                            點擊雷達鎖定 ➔
-                          </div>
-                        </>
-                      ) : (
-                        <div className="text-[9px] text-gray-400 hover:text-sky-300 font-mono">
-                          點擊地圖定位 ➔
-                        </div>
-                      )}
+                      <div className="text-[9px] text-gray-400 hover:text-sky-300 font-mono">
+                        繪製航線 ➔
+                      </div>
                     </div>
 
-                    <div className={`px-2.5 py-1 rounded-lg text-xs font-semibold border flex items-center gap-1.5 ${
-                      isLive 
-                        ? 'bg-sky-500/15 border-sky-500/40 text-sky-300 shadow-[0_0_8px_rgba(56,189,248,0.15)]'
-                        : 'bg-[#181a20] border-[#292e3a] text-gray-300'
-                    }`}>
-                      {isLive && <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-ping"></span>}
+                    <div className="px-2.5 py-1 rounded-lg text-xs font-semibold border flex items-center gap-1.5 bg-[#181a20] border-[#292e3a] text-gray-300">
                       <span>{flight.status}</span>
                     </div>
                   </div>

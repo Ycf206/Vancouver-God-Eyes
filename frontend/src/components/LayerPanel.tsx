@@ -197,10 +197,6 @@ export default function LayerPanel() {
               <span className="truncate">航班班次</span>
             </button>
           </div>
-          <div className="grid grid-cols-2 gap-1 mt-0.5">
-            <LayerButton layerKey="domesticFlights" label="國內航班" icon={Plane} colorClass="text-emerald-400" activeBg="bg-[#12281d]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
-            <LayerButton layerKey="intlFlights" label="國際航班" icon={Plane} colorClass="text-amber-400" activeBg="bg-[#292215]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
-          </div>
         </div>
 
         {/* Divider */}

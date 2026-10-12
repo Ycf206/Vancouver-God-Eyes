@@ -30,7 +30,6 @@ active_connections: list[WebSocket] = []
 stop_arrivals = {}
 cached_translink_vehicles: list[dict] = []
 cached_bcferries_vehicles: list[dict] = []
-cached_flights: list[dict] = []
 cached_flight_schedules: dict = {}
 
 import flights
@@ -54,8 +53,6 @@ async def websocket_endpoint(websocket: WebSocket):
             await websocket.send_json({"type": "vehicles_update", "data": cached_translink_vehicles})
         if cached_bcferries_vehicles:
             await websocket.send_json({"type": "bc_ferries_update", "data": cached_bcferries_vehicles})
-        if cached_flights:
-            await websocket.send_json({"type": "flights_update", "data": cached_flights})
 
         while True:
             await websocket.receive_text()
@@ -352,67 +349,27 @@ async def fetch_translink_trip_updates():
             
         await asyncio.sleep(30)
 
-async def fetch_flights_realtime():
-    """Polls OpenSky Network every 20 seconds for real-time aircraft over Vancouver."""
-    global cached_flights, cached_flight_schedules
-    while True:
-        try:
-            loop = asyncio.get_event_loop()
-            live = await loop.run_in_executor(None, flights.fetch_live_flights)
-            if live:
-                cached_flights = live
-                cached_flight_schedules = flights.generate_flight_schedules(live, allow_api_call=False)
-                if active_connections:
-                    message = {"type": "flights_update", "data": cached_flights}
-                    for connection in list(active_connections):
-                        try:
-                            await connection.send_json(message)
-                        except Exception:
-                            pass
-        except Exception as e:
-            print(f"Error in fetch_flights_realtime: {e}")
-        await asyncio.sleep(20)
-
 @app.on_event("startup")
 async def startup_event():
-    # Warm up live flights cache immediately
-    try:
-        global cached_flights
-        init_flights = flights.fetch_live_flights()
-        if init_flights:
-            cached_flights = init_flights
-    except Exception as e:
-        print(f"Error initializing flights cache: {e}")
-
     asyncio.create_task(fetch_translink_realtime())
     asyncio.create_task(fetch_bcferries_realtime())
     asyncio.create_task(fetch_translink_trip_updates())
-    asyncio.create_task(fetch_flights_realtime())
 
 @app.get("/api/flights/live")
 def get_live_flights():
-    global cached_flights
-    if not cached_flights:
-        live = flights.fetch_live_flights()
-        if live:
-            cached_flights = live
     return {
-        "count": len(cached_flights),
+        "count": 0,
         "updated_at": datetime.utcnow().isoformat() + "Z",
-        "flights": cached_flights
+        "flights": []
     }
 
 @app.get("/api/flights/schedules")
 def get_flight_schedules():
-    global cached_flights, cached_flight_schedules
-    if not cached_flights:
-        live = flights.fetch_live_flights()
-        if live:
-            cached_flights = live
-    schedules = flights.generate_flight_schedules(cached_flights, allow_api_call=True)
+    global cached_flight_schedules
+    schedules = flights.fetch_flightaware_schedules(allow_api_call=True)
     if schedules:
         cached_flight_schedules = schedules
-    return cached_flight_schedules or schedules
+    return cached_flight_schedules or schedules or {"arrivals": [], "departures": []}
 
 @app.get("/api/geojson/airports")
 def get_airports_geojson():

@@ -55,8 +55,6 @@ export interface UIState {
     foodVendors: boolean;
     homelessShelters: boolean;
     airports: boolean;
-    domesticFlights: boolean;
-    intlFlights: boolean;
   };
   toggleLayer: (layer: keyof UIState['layers']) => void;
   enableLayer: (layer: keyof UIState['layers']) => void;
@@ -70,10 +68,6 @@ export interface UIState {
   setFlightScheduleOpen: (open: boolean) => void;
   selectedFlightId: string | null;
   setSelectedFlightId: (id: string | null) => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  liveFlights: any[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setLiveFlights: (flights: any[]) => void;
 }
 
 
@@ -116,8 +110,6 @@ export const useUIStore = create<UIState>()(
         foodVendors: false,
         homelessShelters: false,
         airports: true,
-        domesticFlights: true,
-        intlFlights: true,
       },
       toggleLayer: (layer) =>
         set((state) => ({
@@ -143,8 +135,6 @@ export const useUIStore = create<UIState>()(
       setFlightScheduleOpen: (open) => set({ isFlightScheduleOpen: open }),
       selectedFlightId: null,
       setSelectedFlightId: (id) => set({ selectedFlightId: id }),
-      liveFlights: [],
-      setLiveFlights: (flights) => set({ liveFlights: flights }),
     }),
 
     {
