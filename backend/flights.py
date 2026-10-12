@@ -459,7 +459,7 @@ def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any]:
     days_in_month = calendar.monthrange(van_now.year, van_now.month)[1]
     # Daily ceiling: 15 rounds for 31-day months (15 * 31 = 465 rounds = $4.65), 16 rounds for 30-day months (16 * 30 = 480 rounds = $4.80)
     max_daily_rounds = 15 if days_in_month >= 31 else 16
-    max_monthly_rounds = int(os.getenv("FLIGHTAWARE_MAX_MONTHLY_ROUNDS", "480"))
+    max_monthly_rounds = int(os.getenv("FLIGHTAWARE_MAX_MONTHLY_ROUNDS") or os.getenv("FLIGHTAWARE_MAX_MONTHLY_CALLS") or "480")
 
     # 1. Check in-memory cache (90 minutes)
     if _flightaware_cache["data"] and (now_ts - _flightaware_cache["timestamp"] < CACHE_TTL_SECONDS):

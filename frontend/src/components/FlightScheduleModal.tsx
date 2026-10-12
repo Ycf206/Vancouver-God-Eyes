@@ -5,7 +5,7 @@ import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
 import { 
   X, Plane, PlaneTakeoff, PlaneLanding, Search, RefreshCw, 
-  Clock, Calendar, ArrowRight
+  Clock, ArrowRight
 } from 'lucide-react';
 
 interface FlightScheduleItem {
@@ -267,7 +267,7 @@ export default function FlightScheduleModal() {
   };
 
   return (
-    <div className="fixed top-[64px] right-2 sm:right-4 md:right-6 bottom-4 w-[96vw] sm:w-[94vw] md:w-[860px] lg:w-[980px] xl:w-[1060px] max-w-[calc(100vw-16px)] z-40 flex flex-col pointer-events-none animate-fade-in">
+    <div className="fixed top-[64px] right-2 sm:right-4 md:right-6 bottom-4 w-[95vw] sm:w-[90vw] md:w-[780px] lg:w-[840px] max-w-[calc(100vw-16px)] z-40 flex flex-col pointer-events-none animate-fade-in">
       <div 
         className="w-full h-full bg-[#13151a]/95 backdrop-blur-md border border-[#2b303c] rounded-2xl shadow-2xl flex flex-col overflow-hidden text-gray-200 pointer-events-auto"
         onClick={(e) => e.stopPropagation()}
@@ -406,25 +406,24 @@ export default function FlightScheduleModal() {
           </div>
         </div>
 
-        {/* Wide Table Header (visible on md screens and up) */}
-        <div className="hidden md:grid grid-cols-12 gap-3 px-6 py-2 bg-[#101217] border-b border-[#21252e] text-[11px] font-semibold text-gray-400 uppercase tracking-wider shrink-0">
-          <div className="col-span-2 flex items-center gap-1">
-            <Calendar className="w-3.5 h-3.5 text-sky-400" />
-            <span>日期 / 時間</span>
+        {/* Table Header (visible on md screens and up) */}
+        <div className="hidden md:grid grid-cols-[58px_130px_1fr_135px_110px_80px] gap-3 px-4 py-2 bg-[#101217] border-b border-[#21252e] text-[11px] font-semibold text-gray-400 uppercase tracking-wider shrink-0">
+          <div>
+            <span>時間</span>
           </div>
-          <div className="col-span-2">
-            <span>航班 / 航空公司</span>
+          <div>
+            <span>航班 / 航空</span>
           </div>
-          <div className="col-span-3">
+          <div>
             <span>起迄航線 (機場 · 城市)</span>
           </div>
-          <div className="col-span-2">
-            <span>航廈 / 登機閘口</span>
+          <div>
+            <span>航廈 / 閘口</span>
           </div>
-          <div className="col-span-2">
-            <span>實時動態倒數</span>
+          <div>
+            <span>動態倒數</span>
           </div>
-          <div className="col-span-1 text-right">
+          <div className="text-right">
             <span>狀態</span>
           </div>
         </div>
@@ -465,17 +464,17 @@ export default function FlightScheduleModal() {
                 <div
                   key={flight.id}
                   onClick={() => handleFlightClick(flight)}
-                  className={`px-4 py-3 rounded-xl transition-all cursor-pointer border ${
+                  className={`px-3 py-2.5 rounded-xl transition-all cursor-pointer border ${
                     isSelected
                       ? 'bg-sky-500/20 border-sky-400 shadow-[0_0_15px_rgba(56,189,248,0.25)] ring-1 ring-sky-400/40'
                       : 'hover:bg-[#1a212e] hover:border-[#384152] border-transparent'
                   }`}
                 >
                   {/* Grid Layout for Medium+ Screens */}
-                  <div className="hidden md:grid grid-cols-12 gap-3 items-center">
-                    {/* Col 1: Date & Time */}
-                    <div className="col-span-2 flex items-center gap-2.5">
-                      <div className="text-center w-14 py-1 px-1.5 rounded-lg bg-[#0e1015] border border-[#232732] shrink-0">
+                  <div className="hidden md:grid grid-cols-[58px_130px_1fr_135px_110px_80px] gap-3 items-center">
+                    {/* Col 1: Date & Time (Compact, tight width) */}
+                    <div className="w-[58px] shrink-0">
+                      <div className="text-center w-[54px] py-1 px-0.5 rounded-lg bg-[#0e1015] border border-[#232732]">
                         {flight.date && (
                           <div className="text-[10px] font-mono font-medium text-sky-400 leading-tight">
                             {flight.date}
@@ -484,23 +483,23 @@ export default function FlightScheduleModal() {
                         <div className="text-sm font-bold font-mono text-white tracking-tight leading-tight">
                           {flight.time}
                         </div>
-                        <div className="text-[9px] text-gray-400 font-mono scale-90">
+                        <div className="text-[8.5px] text-gray-400 font-mono scale-90">
                           {isArr ? '預計抵達' : '預計出發'}
                         </div>
                       </div>
                     </div>
 
                     {/* Col 2: Flight No & Airline */}
-                    <div className="col-span-2 min-w-0">
+                    <div className="min-w-0 pr-1">
                       <div className="flex items-center gap-1.5">
                         <span className="font-bold text-sm text-sky-300 font-mono tracking-wide">{flight.flight_no}</span>
                         {flight.is_domestic ? (
                           <span className="px-1.5 py-0.2 rounded text-[9px] bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 shrink-0 font-medium">
-                            🇨🇦 國內
+                            CA 國內
                           </span>
                         ) : (
                           <span className="px-1.5 py-0.2 rounded text-[9px] bg-amber-500/15 border border-amber-500/30 text-amber-400 shrink-0 font-medium">
-                            🌐 國際
+                            國際
                           </span>
                         )}
                       </div>
@@ -509,25 +508,37 @@ export default function FlightScheduleModal() {
                       </div>
                     </div>
 
-                    {/* Col 3: Route & Cities */}
-                    <div className="col-span-3 min-w-0">
-                      <div className="flex items-center gap-1.5 text-xs text-gray-200 font-medium">
-                        <span className="font-mono font-bold text-white bg-[#101217] px-1.5 py-0.5 rounded border border-[#262a35]">{orig}</span>
+                    {/* Col 3: Route & Cities (3 clear lines: Codes -> Full Cities -> Timestamps) */}
+                    <div className="min-w-0">
+                      {/* Line 1: Airport Code Badges */}
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-mono font-bold text-white bg-[#101217] px-1.5 py-0.5 rounded border border-[#262a35] text-xs">
+                          {orig}
+                        </span>
                         <ArrowRight className="w-3 h-3 text-sky-400 shrink-0" />
-                        <span className="font-mono font-bold text-white bg-[#101217] px-1.5 py-0.5 rounded border border-[#262a35]">{dest}</span>
-                        <span className="text-gray-400 truncate text-[11px] ml-1">
-                          ({flight.city.replace('➔', '至')})
+                        <span className="font-mono font-bold text-white bg-[#101217] px-1.5 py-0.5 rounded border border-[#262a35] text-xs">
+                          {dest}
                         </span>
                       </div>
-                      <div className="text-[11px] text-gray-400 font-mono mt-1 flex items-center gap-2">
-                        {flight.departure_time && <span>起: <strong className="text-gray-300">{flight.departure_time}</strong></span>}
-                        {flight.arrival_time && <span>· 抵: <strong className="text-gray-300">{flight.arrival_time}</strong></span>}
+                      {/* Line 2: Full City Names on their own line (never cut off!) */}
+                      <div className="text-xs text-gray-200 font-medium mt-1 leading-tight" title={flight.city}>
+                        {flight.city}
+                      </div>
+                      {/* Line 3: Exact Departure & Arrival Dates and Times */}
+                      <div className="text-[11px] text-gray-400 font-mono mt-0.5 flex items-center gap-1.5 flex-wrap">
+                        {flight.departure_time && (
+                          <span>起: <strong className="text-gray-300 font-normal">{flight.departure_time}</strong></span>
+                        )}
+                        {flight.departure_time && flight.arrival_time && <span>-</span>}
+                        {flight.arrival_time && (
+                          <span>抵: <strong className="text-gray-300 font-normal">{flight.arrival_time}</strong></span>
+                        )}
                       </div>
                     </div>
 
                     {/* Col 4: Terminal & Gate */}
-                    <div className="col-span-2 min-w-0">
-                      <div className="text-xs text-gray-300 font-medium truncate">
+                    <div className="min-w-0 pr-1">
+                      <div className="text-xs text-gray-300 font-medium truncate" title={flight.terminal}>
                         {flight.terminal}
                       </div>
                       <div className="text-xs font-mono text-amber-300 font-bold mt-0.5">
@@ -536,15 +547,15 @@ export default function FlightScheduleModal() {
                     </div>
 
                     {/* Col 5: Live Countdown */}
-                    <div className="col-span-2">
-                      <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-mono ${countdownBadgeClass}`}>
+                    <div className="shrink-0">
+                      <div className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border text-xs font-mono ${countdownBadgeClass}`}>
                         <Clock className="w-3.5 h-3.5 shrink-0" />
                         <span>{timing.remainingText}</span>
                       </div>
                     </div>
 
                     {/* Col 6: Status & Action */}
-                    <div className="col-span-1 text-right">
+                    <div className="text-right shrink-0">
                       <div className="inline-block px-2 py-0.5 rounded text-[11px] font-semibold bg-[#1a1c24] border border-[#292d3b] text-gray-200">
                         {timing.displayStatus}
                       </div>
@@ -568,8 +579,11 @@ export default function FlightScheduleModal() {
                             <span className="font-bold text-sm text-sky-300 font-mono">{flight.flight_no}</span>
                             <span className="text-xs text-gray-300 truncate max-w-[120px]">{flight.airline}</span>
                           </div>
-                          <div className="text-[11px] text-gray-400 font-mono">
-                            {orig} ➔ {dest} · {flight.terminal}
+                          <div className="text-[11px] text-gray-300 font-mono mt-0.5">
+                            {orig} ➔ {dest}
+                          </div>
+                          <div className="text-[10px] text-gray-400 font-medium truncate max-w-[180px]">
+                            {flight.city}
                           </div>
                         </div>
                       </div>
