@@ -100,15 +100,34 @@ export default function AppMap() {
 
   // Selected Flight Route GeoJSON LineString (Great Circle Trajectory)
   const routeGeoJSON = useMemo(() => {
-    if (!selectedFlight?.route_coords || selectedFlight.route_coords.length < 2) return null;
+    let coords = selectedFlight?.route_coords;
+    if ((!coords || coords.length < 2) && selectedFlight?.origin_coord && selectedFlight?.dest_coord) {
+      const [oLon, oLat] = selectedFlight.origin_coord;
+      const [dLon, dLat] = selectedFlight.dest_coord;
+      if (typeof oLon === 'number' && typeof dLon === 'number' && (oLon !== dLon || oLat !== dLat)) {
+        const pts: [number, number][] = [];
+        const steps = 14;
+        for (let i = 0; i <= steps; i++) {
+          const f = i / steps;
+          const cLon = oLon + f * (dLon - oLon);
+          let cLat = oLat + f * (dLat - oLat);
+          if (Math.abs(dLon - oLon) > 15) {
+            cLat = Math.min(75, cLat + Math.sin(f * Math.PI) * Math.min(10, Math.abs(dLon - oLon) * 0.08));
+          }
+          pts.push([Math.round(cLon * 10000) / 10000, Math.round(cLat * 10000) / 10000]);
+        }
+        coords = pts;
+      }
+    }
+    if (!coords || coords.length < 2) return null;
     return {
       type: 'Feature' as const,
       geometry: {
         type: 'LineString' as const,
-        coordinates: selectedFlight.route_coords
+        coordinates: coords
       },
       properties: {
-        is_domestic: selectedFlight.is_domestic
+        is_domestic: selectedFlight?.is_domestic
       }
     };
   }, [selectedFlight]);
@@ -1820,27 +1839,108 @@ export default function AppMap() {
         )}
 
         {/* Selected Flight Waypoint Markers for Origin & Destination */}
-        {selectedFlight && selectedFlight.origin_coord && selectedFlight.origin_coord.length === 2 && (
-          <Marker longitude={selectedFlight.origin_coord[0]} latitude={selectedFlight.origin_coord[1]} anchor="center">
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#14161a]/95 text-white border border-sky-400 shadow-xl text-[10.5px] font-bold z-30 pointer-events-none backdrop-blur-md">
-              <span className="text-xs">🛫</span>
-              <span className="font-mono">{selectedFlight.origin_code || '出發'}</span>
-              {selectedFlight.origin_city && <span className="text-[9.5px] text-gray-300 font-normal">({selectedFlight.origin_city.split(' ')[0]})</span>}
-            </div>
-          </Marker>
-        )}
-        {selectedFlight && selectedFlight.dest_coord && selectedFlight.dest_coord.length === 2 && (
-          <Marker longitude={selectedFlight.dest_coord[0]} latitude={selectedFlight.dest_coord[1]} anchor="center">
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#14161a]/95 text-white border border-amber-400 shadow-xl text-[10.5px] font-bold z-30 pointer-events-none backdrop-blur-md">
-              <span className="text-xs">🛬</span>
-              <span className="font-mono">{selectedFlight.dest_code || '抵達'}</span>
-              {selectedFlight.dest_city && <span className="text-[9.5px] text-gray-300 font-normal">({selectedFlight.dest_city.split(' ')[0]})</span>}
-            </div>
-          </Marker>
-        )}
+        {(() => {
+          if (!selectedFlight) return null;
+          const isDom = selectedFlight.is_domestic ?? false;
+          const isDep = selectedFlight.flight_type === 'dep';
+          let origCode = selectedFlight.origin_code;
+          let origCity = selectedFlight.origin_city || selectedFlight.origin_name;
+          let destCode = selectedFlight.dest_code;
+          let destCity = selectedFlight.dest_city || selectedFlight.dest_name;
+
+          if (!origCode && !destCode) {
+            origCode = isDep ? 'YVR' : (isDom ? 'YYC' : 'SEA');
+            origCity = isDep ? '溫哥華' : (isDom ? '卡加利' : '西雅圖');
+            destCode = isDep ? (isDom ? 'YYC' : 'SEA') : 'YVR';
+            destCity = isDep ? (isDom ? '卡加利' : '西雅圖') : '溫哥華';
+          } else if (origCode === destCode || (origCode === 'YVR' && destCode === 'YVR')) {
+            if (isDep) {
+              origCode = 'YVR';
+              origCity = '溫哥華';
+              destCode = isDom ? 'YYC' : 'SEA';
+              destCity = isDom ? '卡加利' : '西雅圖';
+            } else {
+              origCode = isDom ? 'YYC' : 'SEA';
+              origCity = isDom ? '卡加利' : '西雅圖';
+              destCode = 'YVR';
+              destCity = '溫哥華';
+            }
+          } else {
+            if (!origCode) {
+              origCode = destCode === 'YVR' ? (isDom ? 'YYC' : 'SEA') : 'YVR';
+              origCity = origCode === 'YVR' ? '溫哥華' : (isDom ? '卡加利' : '西雅圖');
+            }
+            if (!destCode) {
+              destCode = origCode === 'YVR' ? (isDom ? 'YYC' : 'SEA') : 'YVR';
+              destCity = destCode === 'YVR' ? '溫哥華' : (isDom ? '卡加利' : '西雅圖');
+            }
+          }
+
+          const hasOrigCoord = selectedFlight.origin_coord && selectedFlight.origin_coord.length === 2;
+          const hasDestCoord = selectedFlight.dest_coord && selectedFlight.dest_coord.length === 2;
+
+          return (
+            <>
+              {hasOrigCoord && (
+                <Marker longitude={selectedFlight.origin_coord[0]} latitude={selectedFlight.origin_coord[1]} anchor="center">
+                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#14161a]/95 text-white border border-sky-400 shadow-xl text-[10.5px] font-bold z-30 pointer-events-none backdrop-blur-md">
+                    <span className="text-xs">🛫</span>
+                    <span className="font-mono">{origCode}</span>
+                    {origCity && <span className="text-[9.5px] text-gray-300 font-normal">({origCity.split(' ')[0]})</span>}
+                  </div>
+                </Marker>
+              )}
+              {hasDestCoord && (
+                <Marker longitude={selectedFlight.dest_coord[0]} latitude={selectedFlight.dest_coord[1]} anchor="center">
+                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#14161a]/95 text-white border border-amber-400 shadow-xl text-[10.5px] font-bold z-30 pointer-events-none backdrop-blur-md">
+                    <span className="text-xs">🛬</span>
+                    <span className="font-mono">{destCode}</span>
+                    {destCity && <span className="text-[9.5px] text-gray-300 font-normal">({destCity.split(' ')[0]})</span>}
+                  </div>
+                </Marker>
+              )}
+            </>
+          );
+        })()}
 
         {/* Live Flight Detail Popup */}
-        {selectedFlight && typeof selectedFlight.lon === 'number' && typeof selectedFlight.lat === 'number' && (
+        {selectedFlight && typeof selectedFlight.lon === 'number' && typeof selectedFlight.lat === 'number' && (() => {
+          const isDom = selectedFlight.is_domestic ?? false;
+          const isDep = selectedFlight.flight_type === 'dep';
+          let origCode = selectedFlight.origin_code;
+          let origCity = selectedFlight.origin_city || selectedFlight.origin_name;
+          let destCode = selectedFlight.dest_code;
+          let destCity = selectedFlight.dest_city || selectedFlight.dest_name;
+
+          if (!origCode && !destCode) {
+            origCode = isDep ? 'YVR' : (isDom ? 'YYC' : 'SEA');
+            origCity = isDep ? '溫哥華' : (isDom ? '卡加利' : '西雅圖');
+            destCode = isDep ? (isDom ? 'YYC' : 'SEA') : 'YVR';
+            destCity = isDep ? (isDom ? '卡加利' : '西雅圖') : '溫哥華';
+          } else if (origCode === destCode || (origCode === 'YVR' && destCode === 'YVR')) {
+            if (isDep) {
+              origCode = 'YVR';
+              origCity = '溫哥華';
+              destCode = isDom ? 'YYC' : 'SEA';
+              destCity = isDom ? '卡加利' : '西雅圖';
+            } else {
+              origCode = isDom ? 'YYC' : 'SEA';
+              origCity = isDom ? '卡加利' : '西雅圖';
+              destCode = 'YVR';
+              destCity = '溫哥華';
+            }
+          } else {
+            if (!origCode) {
+              origCode = destCode === 'YVR' ? (isDom ? 'YYC' : 'SEA') : 'YVR';
+              origCity = origCode === 'YVR' ? '溫哥華' : (isDom ? '卡加利' : '西雅圖');
+            }
+            if (!destCode) {
+              destCode = origCode === 'YVR' ? (isDom ? 'YYC' : 'SEA') : 'YVR';
+              destCity = destCode === 'YVR' ? '溫哥華' : (isDom ? '卡加利' : '西雅圖');
+            }
+          }
+
+          return (
           <Popup
             longitude={selectedFlight.lon}
             latitude={selectedFlight.lat}
@@ -1903,10 +2003,10 @@ export default function AppMap() {
                       <span>起飛出發</span>
                     </span>
                     <span className="font-bold text-gray-900 text-sm truncate font-mono">
-                      {selectedFlight.origin_code || 'YVR'}
+                      {origCode}
                     </span>
                     <span className="text-[10.5px] text-gray-600 truncate font-medium">
-                      {selectedFlight.origin_city || selectedFlight.origin_name || '溫哥華'}
+                      {origCity}
                     </span>
                     {selectedFlight.departure_time && (
                       <span className="text-[11px] font-mono font-bold text-sky-700 mt-0.5">
@@ -1928,10 +2028,10 @@ export default function AppMap() {
                       <span>🛬</span>
                     </span>
                     <span className="font-bold text-gray-900 text-sm truncate font-mono">
-                      {selectedFlight.dest_code || 'YVR'}
+                      {destCode}
                     </span>
                     <span className="text-[10.5px] text-gray-600 truncate font-medium">
-                      {selectedFlight.dest_city || selectedFlight.dest_name || '溫哥華'}
+                      {destCity}
                     </span>
                     {selectedFlight.arrival_time && (
                       <span className="text-[11px] font-mono font-bold text-amber-700 mt-0.5">
@@ -1994,7 +2094,8 @@ export default function AppMap() {
               </div>
             </div>
           </Popup>
-        )}
+          );
+        })()}
 
         {/* Road Facility Popup */}
         {selectedFacility && (

@@ -131,7 +131,7 @@ def is_canadian_airport(airport_info: dict) -> bool:
 
 # Comprehensive Airport Database & Geographic Coordinates for YVR Routes
 AIRPORT_DETAILS = {
-    # Canada Major Hubs & BC Regional
+    # Canada Major Hubs & Regional BC / Prairie / East
     "YVR": {"code": "YVR", "name": "Vancouver International (溫哥華國際機場)", "city": "Vancouver (溫哥華)", "country": "Canada", "coord": [-123.1815, 49.1967]},
     "YYZ": {"code": "YYZ", "name": "Toronto Pearson (多倫多皮爾遜機場)", "city": "Toronto (多倫多)", "country": "Canada", "coord": [-79.6248, 43.6777]},
     "YYC": {"code": "YYC", "name": "Calgary International (卡加利國際機場)", "city": "Calgary (卡加利)", "country": "Canada", "coord": [-114.0076, 51.1215]},
@@ -145,6 +145,16 @@ AIRPORT_DETAILS = {
     "YQQ": {"code": "YQQ", "name": "Comox Valley Airport (科莫克斯機場)", "city": "Comox (科莫克斯)", "country": "Canada", "coord": [-124.8867, 49.7108]},
     "YXS": {"code": "YXS", "name": "Prince George Airport (喬治王子城機場)", "city": "Prince George (喬治王子城)", "country": "Canada", "coord": [-122.6789, 53.8894]},
     "YKA": {"code": "YKA", "name": "Kamloops Airport (甘露市機場)", "city": "Kamloops (甘露市)", "country": "Canada", "coord": [-120.4444, 50.7022]},
+    "YXX": {"code": "YXX", "name": "Abbotsford International (阿伯茨福德機場)", "city": "Abbotsford (阿伯茨福德)", "country": "Canada", "coord": [-122.3600, 49.0253]},
+    "YXT": {"code": "YXT", "name": "Northwest Regional Terrace (特勒斯機場)", "city": "Terrace (特勒斯)", "country": "Canada", "coord": [-128.5761, 54.4686]},
+    "YPR": {"code": "YPR", "name": "Prince Rupert Airport (魯珀特王子城機場)", "city": "Prince Rupert (魯珀特王子城)", "country": "Canada", "coord": [-130.4447, 54.2861]},
+    "YCG": {"code": "YCG", "name": "West Kootenay Castlegar (卡斯爾加機場)", "city": "Castlegar (卡斯爾加)", "country": "Canada", "coord": [-117.6325, 49.2964]},
+    "YXY": {"code": "YXY", "name": "Whitehorse Airport (白馬市機場)", "city": "Whitehorse (白馬市)", "country": "Canada", "coord": [-135.0672, 60.7094]},
+    "YZF": {"code": "YZF", "name": "Yellowknife Airport (黃刀鎮機場)", "city": "Yellowknife (黃刀鎮)", "country": "Canada", "coord": [-114.4403, 62.4628]},
+    "YHZ": {"code": "YHZ", "name": "Halifax Stanfield (哈利法克斯機場)", "city": "Halifax (哈利法克斯)", "country": "Canada", "coord": [-63.5086, 44.8808]},
+    "YQB": {"code": "YQB", "name": "Québec City Jean Lesage (魁北克市機場)", "city": "Quebec City (魁北克市)", "country": "Canada", "coord": [-71.3933, 46.7911]},
+    "YQR": {"code": "YQR", "name": "Regina International (雷吉納機場)", "city": "Regina (雷吉納)", "country": "Canada", "coord": [-104.6658, 50.4319]},
+    "YXE": {"code": "YXE", "name": "Saskatoon Airport (薩斯卡通機場)", "city": "Saskatoon (薩斯卡通)", "country": "Canada", "coord": [-106.7000, 52.1708]},
     "CXH": {"code": "CXH", "name": "Vancouver Harbour Seaplane (溫哥華港水上飛機場)", "city": "Vancouver Harbour (水上港)", "country": "Canada", "coord": [-123.1167, 49.2889]},
     "YWH": {"code": "YWH", "name": "Victoria Inner Harbour (維多利亞內港水上機場)", "city": "Victoria Harbour (水上港)", "country": "Canada", "coord": [-123.3686, 48.4239]},
     
@@ -153,72 +163,108 @@ AIRPORT_DETAILS = {
     "SFO": {"code": "SFO", "name": "San Francisco International (舊金山國際機場)", "city": "San Francisco (舊金山)", "country": "USA", "coord": [-122.3790, 37.6213]},
     "LAX": {"code": "LAX", "name": "Los Angeles International (洛杉磯國際機場)", "city": "Los Angeles (洛杉磯)", "country": "USA", "coord": [-118.4085, 33.9416]},
     "PDX": {"code": "PDX", "name": "Portland International (波特蘭國際機場)", "city": "Portland (波特蘭)", "country": "USA", "coord": [-122.5975, 45.5898]},
+    "SAN": {"code": "SAN", "name": "San Diego International (聖地牙哥國際機場)", "city": "San Diego (聖地牙哥)", "country": "USA", "coord": [-117.1897, 32.7338]},
+    "PSP": {"code": "PSP", "name": "Palm Springs International (棕櫚泉國際機場)", "city": "Palm Springs (棕櫚泉)", "country": "USA", "coord": [-116.5067, 33.8297]},
     "LAS": {"code": "LAS", "name": "Harry Reid Las Vegas (拉斯維加斯國際機場)", "city": "Las Vegas (拉斯維加斯)", "country": "USA", "coord": [-115.1537, 36.0840]},
     "PHX": {"code": "PHX", "name": "Phoenix Sky Harbor (鳳凰城天港國際機場)", "city": "Phoenix (鳳凰城)", "country": "USA", "coord": [-112.0080, 33.4373]},
-    "DFW": {"code": "DFW", "name": "Dallas/Fort Worth (達拉斯沃斯堡機場)", "city": "Dallas (達拉斯)", "country": "USA", "coord": [-97.0403, 32.8998]},
-    "ORD": {"code": "ORD", "name": "Chicago O'Hare (芝加哥奧黑爾國際機場)", "city": "Chicago (芝加哥)", "country": "USA", "coord": [-87.9073, 41.9742]},
     "DEN": {"code": "DEN", "name": "Denver International (丹佛國際機場)", "city": "Denver (丹佛)", "country": "USA", "coord": [-104.6737, 39.8561]},
+    "SLC": {"code": "SLC", "name": "Salt Lake City (鹽湖城國際機場)", "city": "Salt Lake City (鹽湖城)", "country": "USA", "coord": [-111.9778, 40.7884]},
+    "DFW": {"code": "DFW", "name": "Dallas/Fort Worth (達拉斯沃斯堡機場)", "city": "Dallas (達拉斯)", "country": "USA", "coord": [-97.0403, 32.8998]},
+    "IAH": {"code": "IAH", "name": "Houston George Bush (休士頓機場)", "city": "Houston (休士頓)", "country": "USA", "coord": [-95.3414, 29.9844]},
+    "ORD": {"code": "ORD", "name": "Chicago O'Hare (芝加哥奧黑爾國際機場)", "city": "Chicago (芝加哥)", "country": "USA", "coord": [-87.9073, 41.9742]},
+    "MSP": {"code": "MSP", "name": "Minneapolis-Saint Paul (明尼阿波利斯機場)", "city": "Minneapolis (明尼阿波利斯)", "country": "USA", "coord": [-93.2218, 44.8848]},
+    "ATL": {"code": "ATL", "name": "Atlanta Hartsfield-Jackson (亞特蘭大機場)", "city": "Atlanta (亞特蘭大)", "country": "USA", "coord": [-84.4277, 33.6407]},
+    "BOS": {"code": "BOS", "name": "Boston Logan (波士頓機場)", "city": "Boston (波士頓)", "country": "USA", "coord": [-71.0096, 42.3656]},
     "JFK": {"code": "JFK", "name": "John F. Kennedy (紐約甘迺迪機場)", "city": "New York (紐約)", "country": "USA", "coord": [-73.7781, 40.6413]},
+    "EWR": {"code": "EWR", "name": "Newark Liberty (紐瓦克機場)", "city": "Newark (紐瓦克)", "country": "USA", "coord": [-74.1686, 40.6895]},
     "HNL": {"code": "HNL", "name": "Daniel K. Inouye (檀香山國際機場)", "city": "Honolulu (檀香山)", "country": "USA", "coord": [-157.9224, 21.3187]},
     "OGG": {"code": "OGG", "name": "Kahului Airport (茂宜島卡胡盧伊機場)", "city": "Maui (茂宜島)", "country": "USA", "coord": [-156.4305, 20.8986]},
+    "KOA": {"code": "KOA", "name": "Ellison Onizuka Kona (科納國際機場)", "city": "Kona (夏威夷科納)", "country": "USA", "coord": [-156.0456, 19.7388]},
+    "ANC": {"code": "ANC", "name": "Anchorage International (安克拉治機場)", "city": "Anchorage (安克拉治)", "country": "USA", "coord": [-149.9964, 61.1744]},
     "CUN": {"code": "CUN", "name": "Cancun International (坎昆國際機場)", "city": "Cancun (坎昆)", "country": "Mexico", "coord": [-86.8770, 21.0365]},
     "PVR": {"code": "PVR", "name": "Puerto Vallarta (巴亞爾塔港國際機場)", "city": "Puerto Vallarta (巴亞爾塔港)", "country": "Mexico", "coord": [-105.2542, 20.6801]},
+    "SJD": {"code": "SJD", "name": "Los Cabos International (洛斯卡波斯機場)", "city": "Los Cabos (洛斯卡波斯)", "country": "Mexico", "coord": [-109.7211, 23.1518]},
+    "MEX": {"code": "MEX", "name": "Mexico City International (墨西哥城機場)", "city": "Mexico City (墨西哥城)", "country": "Mexico", "coord": [-99.0721, 19.4361]},
 
-    # Asia & Pacific
+    # Europe
+    "ZRH": {"code": "ZRH", "name": "Zurich Airport (蘇黎世機場)", "city": "Zurich (蘇黎世)", "country": "Switzerland", "coord": [8.5492, 47.4582]},
+    "MUC": {"code": "MUC", "name": "Munich Airport (慕尼黑機場)", "city": "Munich (慕尼黑)", "country": "Germany", "coord": [11.7861, 48.3537]},
+    "FRA": {"code": "FRA", "name": "Frankfurt Airport (法蘭克福機場)", "city": "Frankfurt (法蘭克福)", "country": "Germany", "coord": [8.5706, 50.0379]},
+    "LHR": {"code": "LHR", "name": "London Heathrow (倫敦希斯洛機場)", "city": "London (倫敦希斯洛)", "country": "UK", "coord": [-0.4543, 51.4700]},
+    "LGW": {"code": "LGW", "name": "London Gatwick (倫敦蓋威克機場)", "city": "London Gatwick (倫敦蓋威克)", "country": "UK", "coord": [-0.1903, 51.1537]},
+    "CDG": {"code": "CDG", "name": "Paris Charles de Gaulle (巴黎戴高樂機場)", "city": "Paris (巴黎戴高樂)", "country": "France", "coord": [2.5479, 49.0097]},
+    "AMS": {"code": "AMS", "name": "Amsterdam Schiphol (阿姆斯特丹史基浦機場)", "city": "Amsterdam (阿姆斯特丹)", "country": "Netherlands", "coord": [4.7683, 52.3105]},
+    "DUB": {"code": "DUB", "name": "Dublin Airport (都柏林機場)", "city": "Dublin (都柏林)", "country": "Ireland", "coord": [-6.2701, 53.4264]},
+    "KEF": {"code": "KEF", "name": "Keflavik International (雷克雅維克機場)", "city": "Reykjavik (雷克雅維克)", "country": "Iceland", "coord": [-22.6056, 63.9850]},
+    "FCO": {"code": "FCO", "name": "Rome Fiumicino (羅馬菲烏米奇諾機場)", "city": "Rome (羅馬)", "country": "Italy", "coord": [12.2389, 41.8003]},
+    "BCN": {"code": "BCN", "name": "Barcelona-El Prat (巴塞隆納機場)", "city": "Barcelona (巴塞隆納)", "country": "Spain", "coord": [2.0785, 41.2974]},
+
+    # Asia, Middle East & Pacific
     "TPE": {"code": "TPE", "name": "Taiwan Taoyuan (台灣桃園國際機場)", "city": "Taipei (台北)", "country": "Taiwan", "coord": [121.2328, 25.0797]},
     "HKG": {"code": "HKG", "name": "Hong Kong International (香港赤鱲角機場)", "city": "Hong Kong (香港)", "country": "Hong Kong", "coord": [113.9185, 22.3080]},
     "NRT": {"code": "NRT", "name": "Narita International (東京成田國際機場)", "city": "Tokyo Narita (東京成田)", "country": "Japan", "coord": [140.3929, 35.7720]},
     "HND": {"code": "HND", "name": "Tokyo Haneda (東京羽田國際機場)", "city": "Tokyo Haneda (東京羽田)", "country": "Japan", "coord": [139.7798, 35.5494]},
+    "KIX": {"code": "KIX", "name": "Kansai International (大阪關西國際機場)", "city": "Osaka (大阪)", "country": "Japan", "coord": [135.2304, 34.4347]},
     "ICN": {"code": "ICN", "name": "Incheon International (首爾仁川國際機場)", "city": "Seoul (首爾仁川)", "country": "South Korea", "coord": [126.4407, 37.4602]},
     "PVG": {"code": "PVG", "name": "Shanghai Pudong (上海浦東國際機場)", "city": "Shanghai (上海浦東)", "country": "China", "coord": [121.8052, 31.1443]},
     "PEK": {"code": "PEK", "name": "Beijing Capital (北京首都國際機場)", "city": "Beijing (北京首都)", "country": "China", "coord": [116.5975, 40.0801]},
+    "CAN": {"code": "CAN", "name": "Guangzhou Baiyun (廣州白雲國際機場)", "city": "Guangzhou (廣州)", "country": "China", "coord": [113.2988, 23.3924]},
+    "XMN": {"code": "XMN", "name": "Xiamen Gaoqi (廈門高崎國際機場)", "city": "Xiamen (廈門)", "country": "China", "coord": [118.1278, 24.5440]},
+    "DEL": {"code": "DEL", "name": "Indira Gandhi (德里英迪拉甘地機場)", "city": "Delhi (德里)", "country": "India", "coord": [77.1000, 28.5562]},
+    "SIN": {"code": "SIN", "name": "Singapore Changi (新加坡樟宜機場)", "city": "Singapore (新加坡)", "country": "Singapore", "coord": [103.9915, 1.3644]},
+    "MNL": {"code": "MNL", "name": "Manila Ninoy Aquino (馬尼拉國際機場)", "city": "Manila (馬尼拉)", "country": "Philippines", "coord": [121.0194, 14.5086]},
+    "BKK": {"code": "BKK", "name": "Bangkok Suvarnabhumi (曼谷蘇凡納布機場)", "city": "Bangkok (曼谷)", "country": "Thailand", "coord": [100.7501, 13.6900]},
     "SYD": {"code": "SYD", "name": "Sydney Kingsford Smith (雪梨金斯福德機場)", "city": "Sydney (雪梨)", "country": "Australia", "coord": [151.1772, -33.9461]},
     "BNE": {"code": "BNE", "name": "Brisbane Airport (布里斯本國際機場)", "city": "Brisbane (布里斯本)", "country": "Australia", "coord": [153.1175, -27.3842]},
+    "MEL": {"code": "MEL", "name": "Melbourne Airport (墨爾本機場)", "city": "Melbourne (墨爾本)", "country": "Australia", "coord": [144.8433, -37.6733]},
     "AKL": {"code": "AKL", "name": "Auckland Airport (奧克蘭國際機場)", "city": "Auckland (奧克蘭)", "country": "New Zealand", "coord": [174.7922, -37.0082]},
-    "DEL": {"code": "DEL", "name": "Indira Gandhi (德里英迪拉甘地機場)", "city": "Delhi (德里)", "country": "India", "coord": [77.1000, 28.5562]},
-
-    # Europe
-    "LHR": {"code": "LHR", "name": "London Heathrow (倫敦希斯洛機場)", "city": "London (倫敦希斯洛)", "country": "UK", "coord": [-0.4543, 51.4700]},
-    "CDG": {"code": "CDG", "name": "Paris Charles de Gaulle (巴黎戴高樂機場)", "city": "Paris (巴黎戴高樂)", "country": "France", "coord": [2.5479, 49.0097]},
-    "AMS": {"code": "AMS", "name": "Amsterdam Schiphol (阿姆斯特丹史基浦機場)", "city": "Amsterdam (阿姆斯特丹)", "country": "Netherlands", "coord": [4.7683, 52.3105]},
-    "FRA": {"code": "FRA", "name": "Frankfurt Airport (法蘭克福機場)", "city": "Frankfurt (法蘭克福)", "country": "Germany", "coord": [8.5706, 50.0379]},
-    "MUC": {"code": "MUC", "name": "Munich Airport (慕尼黑機場)", "city": "Munich (慕尼黑)", "country": "Germany", "coord": [11.7861, 48.3537]},
-    "DUB": {"code": "DUB", "name": "Dublin Airport (都柏林機場)", "city": "Dublin (都柏林)", "country": "Ireland", "coord": [-6.2701, 53.4264]}
+    "DXB": {"code": "DXB", "name": "Dubai International (杜拜國際機場)", "city": "Dubai (杜拜)", "country": "UAE", "coord": [55.3644, 25.2532]},
 }
 
 # Coordinate map for fast direct lookup
 AIRPORT_COORDS = {code: info["coord"] for code, info in AIRPORT_DETAILS.items()}
-# Alias ICAO codes
+
+# Global ICAO to IATA translation table
+ICAO_TO_IATA = {
+    "LSZH": "ZRH", "EDDM": "MUC", "EDDF": "FRA", "EGLL": "LHR", "EGKK": "LGW",
+    "LFPG": "CDG", "EHAM": "AMS", "EIDW": "DUB", "BIKF": "KEF", "LIRF": "FCO",
+    "LEBL": "BCN", "RCTP": "TPE", "VHHH": "HKG", "RJAA": "NRT", "RJTT": "HND",
+    "RJBB": "KIX", "RKSI": "ICN", "ZSPD": "PVG", "ZBAA": "PEK", "ZGGG": "CAN",
+    "ZSAM": "XMN", "VIDP": "DEL", "WSSS": "SIN", "RPLL": "MNL", "VTBS": "BKK",
+    "YSSY": "SYD", "YBBN": "BNE", "YMML": "MEL", "NZAA": "AKL", "OMDB": "DXB",
+    "MMUN": "CUN", "MMPR": "PVR", "MMSD": "SJD", "MMMX": "MEX", "PHNL": "HNL",
+    "PHOG": "OGG", "PHKO": "KOA", "PANC": "ANC"
+}
+
+# Alias ICAO codes in coordinates
 for _k, _v in list(AIRPORT_COORDS.items()):
     if len(_k) == 3:
-        if _k in ("YVR", "YYZ", "YYC", "YEG", "YUL", "YOW", "YYJ", "YLW", "YWG", "YCD", "YQQ", "YXS", "YKA"):
+        if _k in ("YVR", "YYZ", "YYC", "YEG", "YUL", "YOW", "YYJ", "YLW", "YWG", "YCD", "YQQ", "YXS", "YKA", "YXX", "YXT", "YPR", "YCG", "YXY", "YZF", "YHZ", "YQB", "YQR", "YXE"):
             AIRPORT_COORDS[f"C{_k}"] = _v
-        elif _k in ("SEA", "SFO", "LAX", "PDX", "LAS", "PHX", "DFW", "ORD", "DEN", "JFK"):
+        elif _k in ("SEA", "SFO", "LAX", "PDX", "SAN", "PSP", "LAS", "PHX", "DEN", "SLC", "DFW", "IAH", "ORD", "MSP", "ATL", "BOS", "JFK", "EWR"):
             AIRPORT_COORDS[f"K{_k}"] = _v
-        elif _k == "TPE": AIRPORT_COORDS["RCTP"] = _v
-        elif _k == "HKG": AIRPORT_COORDS["VHHH"] = _v
-        elif _k == "NRT": AIRPORT_COORDS["RJAA"] = _v
-        elif _k == "HND": AIRPORT_COORDS["RJTT"] = _v
-        elif _k == "ICN": AIRPORT_COORDS["RKSI"] = _v
-        elif _k == "LHR": AIRPORT_COORDS["EGLL"] = _v
-        elif _k == "CDG": AIRPORT_COORDS["LFPG"] = _v
-        elif _k == "AMS": AIRPORT_COORDS["EHAM"] = _v
-        elif _k == "FRA": AIRPORT_COORDS["EDDF"] = _v
+for _icao, _iata in ICAO_TO_IATA.items():
+    if _iata in AIRPORT_COORDS:
+        AIRPORT_COORDS[_icao] = AIRPORT_COORDS[_iata]
 
 # Estimated realistic flight durations from/to YVR (in hours)
 FLIGHT_DURATIONS_HOURS = {
-    "YYJ": 0.5, "YCD": 0.4, "CXH": 0.5, "YWH": 0.5,
-    "YLW": 0.9, "YKA": 0.8, "YQQ": 0.7, "YXS": 1.2,
-    "YYC": 1.4, "YEG": 1.5, "YWG": 2.8,
-    "YYZ": 4.5, "YUL": 4.8, "YOW": 4.6,
-    "SEA": 0.8, "PDX": 1.1, "SFO": 2.2, "LAX": 2.8,
-    "LAS": 2.6, "PHX": 3.0, "DEN": 2.7, "DFW": 4.0,
-    "ORD": 4.1, "JFK": 5.2, "HNL": 5.8, "OGG": 5.9,
-    "CUN": 5.5, "PVR": 4.8,
-    "NRT": 10.0, "HND": 10.0, "ICN": 11.0, "TPE": 11.5,
-    "PVG": 12.0, "PEK": 11.5, "HKG": 13.0, "DEL": 14.5,
-    "SYD": 15.0, "BNE": 14.5, "AKL": 14.0,
-    "LHR": 9.5, "CDG": 10.0, "AMS": 9.8, "FRA": 10.2, "MUC": 10.5, "DUB": 9.2
+    "YYJ": 0.5, "YCD": 0.4, "CXH": 0.5, "YWH": 0.5, "YXX": 0.4,
+    "YLW": 0.9, "YKA": 0.8, "YQQ": 0.7, "YXS": 1.2, "YCG": 1.1,
+    "YXT": 1.5, "YPR": 1.6, "YXY": 2.4, "YZF": 2.6,
+    "YYC": 1.4, "YEG": 1.5, "YWG": 2.8, "YQR": 2.1, "YXE": 2.0,
+    "YYZ": 4.5, "YUL": 4.8, "YOW": 4.6, "YHZ": 5.8, "YQB": 5.2,
+    "SEA": 0.8, "PDX": 1.1, "SFO": 2.2, "LAX": 2.8, "SAN": 2.9, "PSP": 2.8,
+    "LAS": 2.6, "PHX": 3.0, "DEN": 2.7, "SLC": 2.1, "DFW": 4.0, "IAH": 4.3,
+    "ORD": 4.1, "MSP": 3.4, "ATL": 4.8, "BOS": 5.2, "JFK": 5.2, "EWR": 5.2,
+    "HNL": 5.8, "OGG": 5.9, "KOA": 5.9, "ANC": 3.4,
+    "CUN": 5.5, "PVR": 4.8, "SJD": 4.4, "MEX": 5.0,
+    "ZRH": 10.5, "MUC": 10.5, "FRA": 10.2, "LHR": 9.5, "LGW": 9.5, "CDG": 10.0,
+    "AMS": 9.8, "DUB": 9.2, "KEF": 7.5, "FCO": 11.5, "BCN": 11.2,
+    "NRT": 10.0, "HND": 10.0, "KIX": 10.5, "ICN": 11.0, "TPE": 11.5,
+    "PVG": 12.0, "PEK": 11.5, "CAN": 12.5, "XMN": 12.5, "HKG": 13.0, "DEL": 14.5,
+    "SIN": 15.5, "MNL": 13.5, "BKK": 14.5, "DXB": 14.5,
+    "SYD": 15.0, "BNE": 14.5, "MEL": 15.5, "AKL": 14.0
 }
 
 def get_airport_info(code_or_text: str) -> Dict[str, Any]:
@@ -231,18 +277,13 @@ def get_airport_info(code_or_text: str) -> Dict[str, Any]:
         return AIRPORT_DETAILS[clean]
     
     # ICAO conversion
+    if clean in ICAO_TO_IATA and ICAO_TO_IATA[clean] in AIRPORT_DETAILS:
+        return AIRPORT_DETAILS[ICAO_TO_IATA[clean]]
     if len(clean) == 4:
         if clean.startswith("C") and clean[1:] in AIRPORT_DETAILS:
             return AIRPORT_DETAILS[clean[1:]]
         if clean.startswith("K") and clean[1:] in AIRPORT_DETAILS:
             return AIRPORT_DETAILS[clean[1:]]
-        icao_map = {
-            "RCTP": "TPE", "VHHH": "HKG", "RJAA": "NRT", "RJTT": "HND", 
-            "RKSI": "ICN", "EGLL": "LHR", "LFPG": "CDG", "EHAM": "AMS", 
-            "EDDF": "FRA", "EDDM": "MUC", "EIDW": "DUB"
-        }
-        if clean in icao_map and icao_map[clean] in AIRPORT_DETAILS:
-            return AIRPORT_DETAILS[icao_map[clean]]
 
     # Search in city or name string
     for key, info in AIRPORT_DETAILS.items():
@@ -262,19 +303,50 @@ def get_airport_info(code_or_text: str) -> Dict[str, Any]:
         "coord": [-123.1815, 49.1967]
     }
 
-def get_connected_airport_info(code_or_text: str, is_domestic: bool = True, hint: int = 0) -> Dict[str, Any]:
+def get_connected_airport_info(
+    code_or_text: str,
+    is_domestic: bool = True,
+    hint: int = 0,
+    fallback_city: str | None = None,
+    fallback_code: str | None = None
+) -> Dict[str, Any]:
     """
     Resolves the NON-YVR partner airport from a route description, city name, or airport code.
-    Guarantees that the returned airport is NEVER YVR/CYVR.
+    Guarantees that:
+    1. The returned airport is NEVER YVR/CYVR.
+    2. Valid real airport codes (e.g. ZRH, MUC, KEF, PSP, ICN) are preserved and NEVER overwritten by Seattle.
     """
     dom_fallback = ["YYC", "YYZ", "YEG", "YUL", "YYJ", "YLW", "YWG"]
-    intl_fallback = ["SEA", "SFO", "LAX", "ICN", "NRT", "TPE", "HKG", "LHR", "HND"]
+    intl_fallback = ["SEA", "SFO", "LAX", "ICN", "NRT", "TPE", "HKG", "LHR", "ZRH", "MUC"]
     fallback_list = dom_fallback if is_domestic else intl_fallback
 
-    if not code_or_text:
-        return AIRPORT_DETAILS[fallback_list[hint % len(fallback_list)]]
-        
-    raw = str(code_or_text).strip()
+    # 1. If explicit real fallback code is supplied (e.g. from FlightAware)
+    if fallback_code:
+        f_clean = str(fallback_code).strip().upper()
+        if f_clean not in ("YVR", "CYVR", "ARR", "DEP", "N/A", ""):
+            if f_clean in ICAO_TO_IATA:
+                f_clean = ICAO_TO_IATA[f_clean]
+            elif len(f_clean) == 4:
+                if f_clean.startswith("K") and f_clean[1:] in AIRPORT_DETAILS:
+                    f_clean = f_clean[1:]
+                elif f_clean.startswith("C") and f_clean[1:] in AIRPORT_DETAILS and f_clean[1:] != "YVR":
+                    f_clean = f_clean[1:]
+
+            if f_clean in AIRPORT_DETAILS and f_clean != "YVR":
+                return AIRPORT_DETAILS[f_clean]
+
+            # Even if not in hardcoded dict, NEVER replace with Seattle: build authentic airport object
+            coord = AIRPORT_COORDS.get(f_clean, [8.5492, 47.4582] if not is_domestic else [-114.0076, 51.1215])
+            city_display = fallback_city or f_clean
+            return {
+                "code": f_clean,
+                "name": f"{city_display} 機場",
+                "city": city_display,
+                "country": "Canada" if is_domestic else "International",
+                "coord": coord
+            }
+
+    raw = str(code_or_text or "").strip()
     upper_raw = raw.upper()
 
     # If the text has arrow '➔' or '->', split and find the non-YVR segment
@@ -287,7 +359,10 @@ def get_connected_airport_info(code_or_text: str, is_domestic: bool = True, hint
 
     # Clean code check (must not be YVR or CYVR)
     clean_code = upper_raw.strip()
-    if clean_code not in ("YVR", "CYVR"):
+    if clean_code in ICAO_TO_IATA and ICAO_TO_IATA[clean_code] != "YVR":
+        clean_code = ICAO_TO_IATA[clean_code]
+
+    if clean_code not in ("YVR", "CYVR", "ARR", "DEP", "N/A", ""):
         if clean_code in AIRPORT_DETAILS:
             return AIRPORT_DETAILS[clean_code]
         if len(clean_code) == 4:
@@ -295,13 +370,6 @@ def get_connected_airport_info(code_or_text: str, is_domestic: bool = True, hint
                 return AIRPORT_DETAILS[clean_code[1:]]
             if clean_code.startswith("K") and clean_code[1:] in AIRPORT_DETAILS:
                 return AIRPORT_DETAILS[clean_code[1:]]
-            icao_map = {
-                "RCTP": "TPE", "VHHH": "HKG", "RJAA": "NRT", "RJTT": "HND", 
-                "RKSI": "ICN", "EGLL": "LHR", "LFPG": "CDG", "EHAM": "AMS", 
-                "EDDF": "FRA", "EDDM": "MUC", "EIDW": "DUB"
-            }
-            if clean_code in icao_map and icao_map[clean_code] in AIRPORT_DETAILS:
-                return AIRPORT_DETAILS[icao_map[clean_code]]
 
     # Search for (CODE) in the text, explicitly skipping YVR / CYVR
     for key, info in AIRPORT_DETAILS.items():
@@ -310,8 +378,17 @@ def get_connected_airport_info(code_or_text: str, is_domestic: bool = True, hint
         if f"({key})" in upper_raw or f"({key} " in upper_raw or f" {key} " in f" {upper_raw} ":
             return info
         city_keyword = info["city"].split()[0].upper()
-        if city_keyword in upper_raw:
+        if len(city_keyword) >= 3 and city_keyword in upper_raw:
             return info
+
+    # If fallback city text was provided and matches
+    if fallback_city:
+        fb_upper = fallback_city.strip().upper()
+        for key, info in AIRPORT_DETAILS.items():
+            if key in ("YVR", "CYVR"): continue
+            city_keyword = info["city"].split()[0].upper()
+            if city_keyword in fb_upper or fb_upper in city_keyword:
+                return info
 
     return AIRPORT_DETAILS[fallback_list[hint % len(fallback_list)]]
 
@@ -494,6 +571,10 @@ AIRLINES_INFO = {
     "CJT": {"name": "Cargojet (加拿大貨運航空)", "short": "Cargojet", "code": "W8", "domestic": True},
     "KFA": {"name": "Kelowna Flightcraft", "short": "KF Cargo", "code": "KW", "domestic": True},
     "MAL": {"name": "Morningstar Air Express", "short": "Morningstar", "code": "MAL", "domestic": True},
+    "CRN": {"name": "Carson Air (卡森航空)", "short": "Carson Air", "code": "CRN", "domestic": True},
+    "WLD": {"name": "West Coast Air (西岸航空)", "short": "West Coast", "code": "WL", "domestic": True},
+    "WLT": {"name": "West Coast Air (西岸航空)", "short": "West Coast", "code": "WL", "domestic": True},
+    "TOW": {"name": "Tow / Ground Aviation", "short": "Tow", "code": "TOW", "domestic": True},
 
     # US & Transborder Carriers
     "QXE": {"name": "Horizon Air / Alaska (阿拉斯加地平線)", "short": "Alaska Horizon", "code": "AS", "domestic": False},
@@ -522,6 +603,8 @@ AIRLINES_INFO = {
     "PAL": {"name": "Philippine Airlines (菲律賓航空)", "short": "菲航", "code": "PR", "domestic": False},
 
     # European & International Carriers
+    "EDW": {"name": "Edelweiss Air (瑞士雪絨花航空)", "short": "雪絨花航空", "code": "WK", "domestic": False},
+    "ICE": {"name": "Icelandair (冰島航空)", "short": "冰島航空", "code": "FI", "domestic": False},
     "BAW": {"name": "British Airways (英國航空)", "short": "英航", "code": "BA", "domestic": False},
     "AFR": {"name": "Air France (法國航空)", "short": "法航", "code": "AF", "domestic": False},
     "KLM": {"name": "KLM Royal Dutch Airlines (荷蘭皇家航空)", "short": "荷航", "code": "KL", "domestic": False},
@@ -556,8 +639,16 @@ KNOWN_YVR_ROUTES = {
     "AC542": {"city": "Seattle (SEA 西雅圖)", "intl": True, "type": "arr"},
     "AC560": {"city": "San Francisco (SFO 舊金山)", "intl": True, "type": "dep"},
     "AC561": {"city": "San Francisco (SFO 舊金山)", "intl": True, "type": "arr"},
+    "AC568": {"city": "San Francisco (SFO 舊金山)", "intl": True, "type": "arr"},
+    "AC569": {"city": "San Francisco (SFO 舊金山)", "intl": True, "type": "dep"},
+    "ACA568": {"city": "San Francisco (SFO 舊金山)", "intl": True, "type": "arr"},
+    "ACA569": {"city": "San Francisco (SFO 舊金山)", "intl": True, "type": "dep"},
     "AC552": {"city": "Los Angeles (LAX 洛杉磯)", "intl": True, "type": "dep"},
     "AC553": {"city": "Los Angeles (LAX 洛杉磯)", "intl": True, "type": "arr"},
+    "AC598": {"city": "San Diego (SAN 聖地牙哥)", "intl": True, "type": "dep"},
+    "AC599": {"city": "San Diego (SAN 聖地牙哥)", "intl": True, "type": "arr"},
+    "ACA598": {"city": "San Diego (SAN 聖地牙哥)", "intl": True, "type": "dep"},
+    "ACA599": {"city": "San Diego (SAN 聖地牙哥)", "intl": True, "type": "arr"},
     "AC854": {"city": "London (LHR 倫敦)", "intl": True, "type": "dep"},
     "AC855": {"city": "London (LHR 倫敦)", "intl": True, "type": "arr"},
     "AC888": {"city": "Frankfurt (FRA 法蘭克福)", "intl": True, "type": "dep"},
@@ -566,7 +657,10 @@ KNOWN_YVR_ROUTES = {
     # Air Canada Major Domestic
     "AC102": {"city": "Toronto (YYZ 多倫多)", "intl": False, "type": "dep"},
     "AC103": {"city": "Toronto (YYZ 多倫多)", "intl": False, "type": "arr"},
+    "AC115": {"city": "Toronto (YYZ 多倫多)", "intl": False, "type": "arr"},
+    "ACA115": {"city": "Toronto (YYZ 多倫多)", "intl": False, "type": "arr"},
     "AC116": {"city": "Toronto (YYZ 多倫多)", "intl": False, "type": "arr"},
+    "ACA116": {"city": "Toronto (YYZ 多倫多)", "intl": False, "type": "dep"},
     "AC125": {"city": "Toronto (YYZ 多倫多)", "intl": False, "type": "dep"},
     "AC204": {"city": "Calgary (YYC 卡加利)", "intl": False, "type": "dep"},
     "AC205": {"city": "Calgary (YYC 卡加利)", "intl": False, "type": "arr"},
@@ -580,7 +674,27 @@ KNOWN_YVR_ROUTES = {
     "AC8400": {"city": "Kelowna (YLW 基隆拿)", "intl": False, "type": "dep"},
     "AC8401": {"city": "Kelowna (YLW 基隆拿)", "intl": False, "type": "arr"},
 
-    # Asian & European Flag Carriers
+    # European Flag Carriers (Munich, Zurich, Frankfurt, London, Paris, Amsterdam)
+    "LH476": {"city": "Munich (MUC 慕尼黑)", "intl": True, "type": "arr"},
+    "LH477": {"city": "Munich (MUC 慕尼黑)", "intl": True, "type": "dep"},
+    "DLH476": {"city": "Munich (MUC 慕尼黑)", "intl": True, "type": "arr"},
+    "DLH477": {"city": "Munich (MUC 慕尼黑)", "intl": True, "type": "dep"},
+    "LH492": {"city": "Frankfurt (FRA 法蘭克福)", "intl": True, "type": "arr"},
+    "LH493": {"city": "Frankfurt (FRA 法蘭克福)", "intl": True, "type": "dep"},
+    "DLH492": {"city": "Frankfurt (FRA 法蘭克福)", "intl": True, "type": "arr"},
+    "DLH493": {"city": "Frankfurt (FRA 法蘭克福)", "intl": True, "type": "dep"},
+    "WK10": {"city": "Zurich (ZRH 蘇黎世)", "intl": True, "type": "arr"},
+    "WK11": {"city": "Zurich (ZRH 蘇黎世)", "intl": True, "type": "dep"},
+    "EDW10": {"city": "Zurich (ZRH 蘇黎世)", "intl": True, "type": "arr"},
+    "EDW11": {"city": "Zurich (ZRH 蘇黎世)", "intl": True, "type": "dep"},
+    "BA84": {"city": "London (LHR 倫敦)", "intl": True, "type": "dep"},
+    "BA85": {"city": "London (LHR 倫敦)", "intl": True, "type": "arr"},
+    "AF374": {"city": "Paris (CDG 巴黎)", "intl": True, "type": "arr"},
+    "AF379": {"city": "Paris (CDG 巴黎)", "intl": True, "type": "dep"},
+    "KL681": {"city": "Amsterdam (AMS 阿姆斯特丹)", "intl": True, "type": "arr"},
+    "KL682": {"city": "Amsterdam (AMS 阿姆斯特丹)", "intl": True, "type": "dep"},
+
+    # Asian Flag Carriers
     "BR9": {"city": "Taipei (TPE 台北)", "intl": True, "type": "dep"},
     "BR10": {"city": "Taipei (TPE 台北)", "intl": True, "type": "arr"},
     "CI31": {"city": "Taipei (TPE 台北)", "intl": True, "type": "dep"},
@@ -593,31 +707,49 @@ KNOWN_YVR_ROUTES = {
     "NH116": {"city": "Tokyo (HND 羽田)", "intl": True, "type": "arr"},
     "KE71": {"city": "Seoul (ICN 首爾)", "intl": True, "type": "arr"},
     "KE72": {"city": "Seoul (ICN 首爾)", "intl": True, "type": "dep"},
+    "KE75": {"city": "Seoul (ICN 首爾)", "intl": True, "type": "arr"},
+    "KE76": {"city": "Seoul (ICN 首爾)", "intl": True, "type": "dep"},
+    "KAL075": {"city": "Seoul (ICN 首爾)", "intl": True, "type": "arr"},
+    "KAL75": {"city": "Seoul (ICN 首爾)", "intl": True, "type": "arr"},
     "OZ741": {"city": "Seoul (ICN 首爾)", "intl": True, "type": "arr"},
     "OZ742": {"city": "Seoul (ICN 首爾)", "intl": True, "type": "dep"},
-    "BA84": {"city": "London (LHR 倫敦)", "intl": True, "type": "dep"},
-    "BA85": {"city": "London (LHR 倫敦)", "intl": True, "type": "arr"},
-    "AF374": {"city": "Paris (CDG 巴黎)", "intl": True, "type": "arr"},
-    "AF379": {"city": "Paris (CDG 巴黎)", "intl": True, "type": "dep"},
-    "KL681": {"city": "Amsterdam (AMS 阿姆斯特丹)", "intl": True, "type": "arr"},
-    "KL682": {"city": "Amsterdam (AMS 阿姆斯特丹)", "intl": True, "type": "dep"},
-    "LH492": {"city": "Frankfurt (FRA 法蘭克福)", "intl": True, "type": "arr"},
-    "LH493": {"city": "Frankfurt (FRA 法蘭克福)", "intl": True, "type": "dep"},
 
     # US Carriers
     "UA1420": {"city": "San Francisco (SFO 舊金山)", "intl": True, "type": "arr"},
     "DL1980": {"city": "Seattle (SEA 西雅圖)", "intl": True, "type": "dep"},
     "AS2004": {"city": "Seattle (SEA 西雅圖)", "intl": True, "type": "arr"},
     "AS2005": {"city": "Seattle (SEA 西雅圖)", "intl": True, "type": "dep"},
+    "AS2015": {"city": "Seattle (SEA 西雅圖)", "intl": True, "type": "arr"},
+    "QXE2015": {"city": "Seattle (SEA 西雅圖)", "intl": True, "type": "arr"},
     "AA1120": {"city": "Dallas (DFW 達拉斯)", "intl": True, "type": "arr"},
+    "OO3764": {"city": "Salt Lake City (SLC 鹽湖城)", "intl": True, "type": "arr"},
+    "SKW3764": {"city": "Salt Lake City (SLC 鹽湖城)", "intl": True, "type": "arr"},
 
-    # WestJet & Domestic
+    # WestJet & Domestic Carriers
     "WS706": {"city": "Calgary (YYC 卡加利)", "intl": False, "type": "arr"},
     "WS118": {"city": "Calgary (YYC 卡加利)", "intl": False, "type": "dep"},
     "WS135": {"city": "Edmonton (YEG 艾德蒙頓)", "intl": False, "type": "arr"},
     "WS710": {"city": "Toronto (YYZ 多倫多)", "intl": False, "type": "dep"},
+    "WS1056": {"city": "Palm Springs (PSP 棕櫚泉)", "intl": True, "type": "dep"},
+    "WS1057": {"city": "Palm Springs (PSP 棕櫚泉)", "intl": True, "type": "arr"},
+    "WJA1057": {"city": "Palm Springs (PSP 棕櫚泉)", "intl": True, "type": "arr"},
+    "WS1862": {"city": "Honolulu (HNL 檀香山)", "intl": True, "type": "dep"},
+    "WJA1862": {"city": "Honolulu (HNL 檀香山)", "intl": True, "type": "dep"},
+    "WS1863": {"city": "Honolulu (HNL 檀香山)", "intl": True, "type": "arr"},
+    "WJA1863": {"city": "Honolulu (HNL 檀香山)", "intl": True, "type": "arr"},
+    "WR3736": {"city": "Comox (YQQ 科莫克斯)", "intl": False, "type": "arr"},
+    "WEN3736": {"city": "Comox (YQQ 科莫克斯)", "intl": False, "type": "arr"},
     "F8102": {"city": "Edmonton (YEG 艾德蒙頓)", "intl": False, "type": "arr"},
     "8P108": {"city": "Victoria (YYJ 維多利亞)", "intl": False, "type": "arr"},
+    "RV1771": {"city": "Phoenix (PHX 鳳凰城)", "intl": True, "type": "arr"},
+    "ROU1771": {"city": "Phoenix (PHX 鳳凰城)", "intl": True, "type": "arr"},
+    "RV2026": {"city": "Puerto Vallarta (PVR 巴亞爾塔港)", "intl": True, "type": "dep"},
+    "ROU2026": {"city": "Puerto Vallarta (PVR 巴亞爾塔港)", "intl": True, "type": "dep"},
+    "CRN111": {"city": "Kelowna (YLW 基隆拿)", "intl": False, "type": "arr"},
+    "CRN611": {"city": "Calgary (YYC 卡加利)", "intl": False, "type": "arr"},
+    "WL62": {"city": "Victoria (YYJ 維多利亞)", "intl": False, "type": "arr"},
+    "WLD67": {"city": "Victoria (YYJ 維多利亞)", "intl": False, "type": "arr"},
+    "TOW910": {"city": "Nanaimo (YCD 乃磨)", "intl": False, "type": "arr"},
 }
 
 def parse_callsign(raw_callsign: str, country: str) -> Dict[str, Any]:
@@ -631,6 +763,24 @@ def parse_callsign(raw_callsign: str, country: str) -> Dict[str, Any]:
             "is_domestic": country == "Canada",
             "badge": "🇨🇦 國內/省內" if country == "Canada" else "🌐 國際/跨美",
             "matched_route": None
+        }
+
+    # Direct match for full callsign in dynamic routes or known routes
+    direct_route = _dynamic_flight_routes.get(cs) or KNOWN_YVR_ROUTES.get(cs)
+    if direct_route:
+        is_dom = not direct_route.get("intl", False)
+        prefix3 = cs[:3]
+        info = AIRLINES_INFO.get(prefix3, {"name": f"{country or '航空'}客機", "short": country or "航班", "code": prefix3[:2]})
+        num_part = cs[3:].lstrip("0") or cs[3:]
+        display_no = f"{info['code']} {num_part}".strip() if (num_part and prefix3 in AIRLINES_INFO) else cs
+        return {
+            "flight_no": display_no,
+            "airline": info["name"],
+            "short_airline": info["short"],
+            "category": "domestic" if is_dom else "international",
+            "is_domestic": is_dom,
+            "badge": "🇨🇦 國內航班" if is_dom else "🌐 國際航班",
+            "matched_route": direct_route
         }
 
     # Match 3-letter ICAO prefix
@@ -829,13 +979,50 @@ def fetch_live_flights() -> List[Dict[str, Any]]:
     except Exception as e:
         print(f"⚠️ Error querying OpenSky: {e}. Falling back to cached live radar data.")
 
-    # Fallback to last cached radar flights with smooth time updates
+    # Fallback to last cached radar flights with smooth time updates and route sanitization
     cached = _load_cached_live_flights()
     if cached:
         now_iso = datetime.now(timezone.utc).isoformat() + "Z"
-        for f in cached:
+        sanitized = []
+        for idx, f in enumerate(cached):
             f["updated_at"] = now_iso
-        return cached
+            orig_c = f.get("origin_code")
+            dest_c = f.get("dest_code")
+            if not orig_c or not dest_c or orig_c == dest_c or not f.get("route_coords"):
+                parsed = parse_callsign(f.get("callsign") or f.get("flight_no") or "", f.get("country", ""))
+                route_info = resolve_flight_telemetry_and_route(
+                    flight_no=f.get("flight_no") or parsed["flight_no"],
+                    callsign=f.get("callsign", ""),
+                    country=f.get("country", ""),
+                    is_domestic=f.get("is_domestic", parsed["is_domestic"]),
+                    lon=f.get("lon"),
+                    lat=f.get("lat"),
+                    alt_ft=f.get("altitude_ft", 0),
+                    speed_kts=f.get("speed_kts", 0),
+                    vert_rate_fpm=f.get("vertical_rate_fpm", 0),
+                    bearing=f.get("bearing", 0.0),
+                    matched_route=parsed.get("matched_route") or f.get("matched_route"),
+                    index_hint=idx
+                )
+                f["flight_type"] = route_info["flight_type"]
+                f["origin_code"] = route_info["origin_code"]
+                f["origin_name"] = route_info["origin_name"]
+                f["origin_city"] = route_info["origin_city"]
+                f["origin_coord"] = route_info["origin_coord"]
+                f["dest_code"] = route_info["dest_code"]
+                f["dest_name"] = route_info["dest_name"]
+                f["dest_city"] = route_info["dest_city"]
+                f["dest_coord"] = route_info["dest_coord"]
+                f["departure_time"] = route_info["departure_time"]
+                f["arrival_time"] = route_info["arrival_time"]
+                f["terminal"] = route_info["terminal"]
+                f["gate"] = route_info["gate"]
+                f["city"] = route_info["city"]
+                f["route_coords"] = route_info["route_coords"]
+                if not f.get("matched_route") and parsed.get("matched_route"):
+                    f["matched_route"] = parsed["matched_route"]
+            sanitized.append(f)
+        return sanitized
 
     return []
 
@@ -899,10 +1086,17 @@ def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any] |
             ident = flight.get("ident") or flight.get("ident_iata") or "N/A"
             origin_info = flight.get("origin") or {}
             orig_raw_code = (origin_info.get("code_iata") or origin_info.get("code") or origin_info.get("city") or "DEP").upper()
+            real_orig_code = (origin_info.get("code_iata") or origin_info.get("code") or "").upper()
             is_dom = is_canadian_airport(origin_info)
-            orig_detail = get_connected_airport_info(orig_raw_code, is_domestic=is_dom)
+            orig_detail = get_connected_airport_info(
+                orig_raw_code,
+                is_domestic=is_dom,
+                fallback_city=origin_info.get("city"),
+                fallback_code=real_orig_code
+            )
             dest_detail = AIRPORT_DETAILS["YVR"]
             orig_city = origin_info.get("city") or orig_detail["city"]
+            city_str = orig_city if f"({orig_detail['code']}" in orig_city else f"{orig_city} ({orig_detail['code']})"
             airline_name = flight.get("operator") or (AIRLINES_INFO.get(ident[:3].upper(), {}).get("name") if len(ident) >= 3 else "客運航空")
             
             # Arrival time in Vancouver timezone
@@ -951,7 +1145,7 @@ def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any] |
                 "dest_coord": dest_detail["coord"],
                 "departure_time": dep_display_time,
                 "arrival_time": arr_display_time,
-                "city": f"{orig_city} ({orig_detail['code']}) ➔ Vancouver (YVR)",
+                "city": f"{city_str} ➔ Vancouver (YVR)",
                 "time": arr_display_time,
                 "terminal": flight.get("terminal") or ("國內線航廈 (Domestic)" if is_dom else "國際線航廈 (International)"),
                 "gate": flight.get("gate") or "--",
@@ -990,10 +1184,17 @@ def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any] |
             ident = flight.get("ident") or flight.get("ident_iata") or "N/A"
             dest_info = flight.get("destination") or {}
             dest_raw_code = (dest_info.get("code_iata") or dest_info.get("code") or dest_info.get("city") or "ARR").upper()
+            real_dest_code = (dest_info.get("code_iata") or dest_info.get("code") or "").upper()
             is_dom = is_canadian_airport(dest_info)
-            dest_detail = get_connected_airport_info(dest_raw_code, is_domestic=is_dom)
+            dest_detail = get_connected_airport_info(
+                dest_raw_code,
+                is_domestic=is_dom,
+                fallback_city=dest_info.get("city"),
+                fallback_code=real_dest_code
+            )
             orig_detail = AIRPORT_DETAILS["YVR"]
             dest_city = dest_info.get("city") or dest_detail["city"]
+            city_str = dest_city if f"({dest_detail['code']}" in dest_city else f"{dest_city} ({dest_detail['code']})"
             airline_name = flight.get("operator") or (AIRLINES_INFO.get(ident[:3].upper(), {}).get("name") if len(ident) >= 3 else "客運航空")
 
             dep_t_str = flight.get("estimated_off") or flight.get("scheduled_off") or flight.get("estimated_out")
@@ -1039,7 +1240,7 @@ def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any] |
                 "dest_coord": dest_detail["coord"],
                 "departure_time": dep_display_time,
                 "arrival_time": arr_display_time,
-                "city": f"Vancouver (YVR) ➔ {dest_city} ({dest_detail['code']})",
+                "city": f"Vancouver (YVR) ➔ {city_str}",
                 "time": dep_display_time,
                 "terminal": flight.get("terminal") or ("國內線航廈 (Domestic)" if is_dom else "國際線航廈 (International)"),
                 "gate": flight.get("gate") or "--",
@@ -1154,15 +1355,22 @@ def generate_flight_schedules(live_flights: List[Dict[str, Any]], allow_api_call
                     item["vertical_rate_fpm"] = f.get("vertical_rate_fpm", 0)
                     item["status"] = f["status_badge"]
                     item["status_code"] = f.get("status_code", "cruising")
-                    item["origin_code"] = f.get("origin_code") or item.get("origin_code")
-                    item["dest_code"] = f.get("dest_code") or item.get("dest_code")
-                    item["origin_name"] = f.get("origin_name") or item.get("origin_name")
-                    item["dest_name"] = f.get("dest_name") or item.get("dest_name")
-                    item["origin_coord"] = f.get("origin_coord") or item.get("origin_coord")
-                    item["dest_coord"] = f.get("dest_coord") or item.get("dest_coord")
-                    item["departure_time"] = f.get("departure_time") or item.get("departure_time")
-                    item["arrival_time"] = f.get("arrival_time") or item.get("arrival_time")
-                    item["route_coords"] = f.get("route_coords") or item.get("route_coords")
+                    # Keep FlightAware's authentic endpoints in 'item', and synchronize them directly onto live radar flight 'f'
+                    f["origin_code"] = item.get("origin_code") or f.get("origin_code")
+                    f["origin_name"] = item.get("origin_name") or f.get("origin_name")
+                    f["origin_city"] = item.get("origin_city") or f.get("origin_city")
+                    f["origin_coord"] = item.get("origin_coord") or f.get("origin_coord")
+                    f["dest_code"] = item.get("dest_code") or f.get("dest_code")
+                    f["dest_name"] = item.get("dest_name") or f.get("dest_name")
+                    f["dest_city"] = item.get("dest_city") or f.get("dest_city")
+                    f["dest_coord"] = item.get("dest_coord") or f.get("dest_coord")
+                    f["city"] = item.get("city") or f.get("city")
+                    f["flight_type"] = item.get("flight_type") or f.get("flight_type")
+                    f["terminal"] = item.get("terminal") or f.get("terminal")
+                    f["gate"] = item.get("gate") or f.get("gate")
+                    f["departure_time"] = item.get("departure_time") or f.get("departure_time")
+                    f["arrival_time"] = item.get("arrival_time") or f.get("arrival_time")
+                    f["route_coords"] = item.get("route_coords") or f.get("route_coords")
 
                     # Feed FlightAware verified route back to live flight on map
                     f["matched_route"] = {
@@ -1188,6 +1396,11 @@ def generate_flight_schedules(live_flights: List[Dict[str, Any]], allow_api_call
         callsign = f["flight_no"]
         airline = f["airline"]
         is_dep_route = (f.get("flight_type") == "dep")
+        orig_c = f.get("origin_code")
+        dest_c = f.get("dest_code")
+        if not orig_c or not dest_c or orig_c == dest_c:
+            orig_c = "YVR" if is_dep_route else ("YYC" if is_dom else "SEA")
+            dest_c = ("YYC" if is_dom else "SEA") if is_dep_route else "YVR"
 
         entry = {
             "id": f"{'dep' if is_dep_route else 'arr'}_{f['id']}",
@@ -1197,17 +1410,17 @@ def generate_flight_schedules(live_flights: List[Dict[str, Any]], allow_api_call
             "category": f["category"],
             "is_domestic": is_dom,
             "flight_type": f.get("flight_type", "dep" if is_dep_route else "arr"),
-            "origin_code": f.get("origin_code", "YVR" if is_dep_route else "YYC"),
+            "origin_code": orig_c,
             "origin_name": f.get("origin_name", ""),
             "origin_city": f.get("origin_city", ""),
             "origin_coord": f.get("origin_coord"),
-            "dest_code": f.get("dest_code", "YYC" if is_dep_route else "YVR"),
+            "dest_code": dest_c,
             "dest_name": f.get("dest_name", ""),
             "dest_city": f.get("dest_city", ""),
             "dest_coord": f.get("dest_coord"),
             "departure_time": f.get("departure_time", van_now.strftime("%H:%M")),
             "arrival_time": f.get("arrival_time", (van_now + timedelta(minutes=25)).strftime("%H:%M")),
-            "city": f.get("city", f"{f.get('origin_code')} ➔ {f.get('dest_code')}"),
+            "city": f.get("city", f"{orig_c} ➔ {dest_c}"),
             "time": f.get("arrival_time" if not is_dep_route else "departure_time", van_now.strftime("%H:%M")),
             "terminal": f.get("terminal", "國內線航廈 (Domestic)" if is_dom else "國際線航廈 (International)"),
             "gate": f.get("gate", f"B{(idx % 12) + 12}" if is_dom else f"D{(idx % 15) + 50}"),

@@ -121,11 +121,25 @@ export default function FlightScheduleModal() {
       const fNoClean = (f.flight_no || '').replace(/\s+/g, '').toUpperCase();
       const fCs = (f.callsign || '').replace(/\s+/g, '').toUpperCase();
       if (fNoClean === flightNoClean || fCs === flightNoClean) return true;
+      
       const fDigits = fNoClean.replace(/\D/g, '') || fCs.replace(/\D/g, '');
       if (flightDigits && fDigits === flightDigits) {
-        const c1 = flightNoClean.slice(0, 2);
-        const c2 = fNoClean.slice(0, 2);
-        if (c1 === c2) return true;
+        // Cross-match equivalent airline codes e.g. LH/DLH, KE/KAL, WK/EDW, AC/ACA, WS/WJA, AS/QXE, OO/SKW
+        const fPrefix = fCs.slice(0, 3) || fNoClean.slice(0, 2);
+        const flightPrefix = flightNoClean.slice(0, 3) || flightNoClean.slice(0, 2);
+        if (
+          fPrefix === flightPrefix ||
+          (flightNoClean.startsWith('LH') && fCs.startsWith('DLH')) ||
+          (flightNoClean.startsWith('KE') && fCs.startsWith('KAL')) ||
+          (flightNoClean.startsWith('WK') && fCs.startsWith('EDW')) ||
+          (flightNoClean.startsWith('AC') && (fCs.startsWith('ACA') || fCs.startsWith('ROU') || fCs.startsWith('JZA'))) ||
+          (flightNoClean.startsWith('WS') && (fCs.startsWith('WJA') || fCs.startsWith('WEN'))) ||
+          (flightNoClean.startsWith('AS') && (fCs.startsWith('ASA') || fCs.startsWith('QXE'))) ||
+          (flightNoClean.startsWith('OO') && fCs.startsWith('SKW')) ||
+          (flightNoClean.startsWith('WL') && (fCs.startsWith('WLD') || fCs.startsWith('WLT')))
+        ) {
+          return true;
+        }
       }
       return false;
     });
@@ -148,7 +162,7 @@ export default function FlightScheduleModal() {
       // Use midpoint between origin and destination coordinates to frame the trajectory
       const originCoord = flight.origin_coord;
       const destCoord = flight.dest_coord;
-      if (originCoord && destCoord && originCoord.length === 2 && destCoord.length === 2) {
+      if (originCoord && destCoord && originCoord.length === 2 && destCoord.length === 2 && (originCoord[0] !== destCoord[0] || originCoord[1] !== destCoord[1])) {
         targetLon = (originCoord[0] + destCoord[0]) / 2;
         targetLat = (originCoord[1] + destCoord[1]) / 2;
         targetZoom = flight.is_domestic ? 7 : 4;
@@ -159,6 +173,42 @@ export default function FlightScheduleModal() {
       }
     }
 
+    const isDom = flight.is_domestic;
+    const isDep = flight.flight_type === 'dep';
+
+    let safeOriginCode = flight.origin_code || liveMatch?.origin_code;
+    let safeDestCode = flight.dest_code || liveMatch?.dest_code;
+    let safeOriginCity = flight.origin_city || flight.origin_name || liveMatch?.origin_city || liveMatch?.origin_name;
+    let safeDestCity = flight.dest_city || flight.dest_name || liveMatch?.dest_city || liveMatch?.dest_name;
+
+    if (!safeOriginCode && !safeDestCode) {
+      safeOriginCode = isDep ? 'YVR' : (isDom ? 'YYC' : 'SEA');
+      safeOriginCity = isDep ? '溫哥華' : (isDom ? '卡加利' : '西雅圖');
+      safeDestCode = isDep ? (isDom ? 'YYC' : 'SEA') : 'YVR';
+      safeDestCity = isDep ? (isDom ? '卡加利' : '西雅圖') : '溫哥華';
+    } else if (safeOriginCode === safeDestCode || (safeOriginCode === 'YVR' && safeDestCode === 'YVR')) {
+      if (isDep) {
+        safeOriginCode = 'YVR';
+        safeOriginCity = '溫哥華';
+        safeDestCode = isDom ? 'YYC' : 'SEA';
+        safeDestCity = isDom ? '卡加利' : '西雅圖';
+      } else {
+        safeOriginCode = isDom ? 'YYC' : 'SEA';
+        safeOriginCity = isDom ? '卡加利' : '西雅圖';
+        safeDestCode = 'YVR';
+        safeDestCity = '溫哥華';
+      }
+    } else {
+      if (!safeOriginCode) {
+        safeOriginCode = safeDestCode === 'YVR' ? (isDom ? 'YYC' : 'SEA') : 'YVR';
+        safeOriginCity = safeOriginCode === 'YVR' ? '溫哥華' : (isDom ? '卡加利' : '西雅圖');
+      }
+      if (!safeDestCode) {
+        safeDestCode = safeOriginCode === 'YVR' ? (isDom ? 'YYC' : 'SEA') : 'YVR';
+        safeDestCity = safeDestCode === 'YVR' ? '溫哥華' : (isDom ? '卡加利' : '西雅圖');
+      }
+    }
+
     const mergedFlightData = {
       ...(liveMatch || {}),
       ...flight,
@@ -166,17 +216,17 @@ export default function FlightScheduleModal() {
       lon: targetLon,
       lat: targetLat,
       id: liveMatch?.id || flight.flight_id || flight.id,
-      origin_code: liveMatch?.origin_code || flight.origin_code || 'YVR',
-      dest_code: liveMatch?.dest_code || flight.dest_code || 'YVR',
-      origin_name: liveMatch?.origin_name || flight.origin_name || '',
-      dest_name: liveMatch?.dest_name || flight.dest_name || '',
-      origin_city: liveMatch?.origin_city || flight.origin_city || '',
-      dest_city: liveMatch?.dest_city || flight.dest_city || '',
-      origin_coord: liveMatch?.origin_coord || flight.origin_coord,
-      dest_coord: liveMatch?.dest_coord || flight.dest_coord,
-      departure_time: liveMatch?.departure_time || flight.departure_time,
-      arrival_time: liveMatch?.arrival_time || flight.arrival_time,
-      route_coords: liveMatch?.route_coords || flight.route_coords,
+      origin_code: safeOriginCode,
+      dest_code: safeDestCode,
+      origin_city: safeOriginCity,
+      dest_city: safeDestCity,
+      origin_name: flight.origin_name || liveMatch?.origin_name || safeOriginCity,
+      dest_name: flight.dest_name || liveMatch?.dest_name || safeDestCity,
+      origin_coord: flight.origin_coord || liveMatch?.origin_coord,
+      dest_coord: flight.dest_coord || liveMatch?.dest_coord,
+      departure_time: flight.departure_time || liveMatch?.departure_time,
+      arrival_time: flight.arrival_time || liveMatch?.arrival_time,
+      route_coords: flight.route_coords || liveMatch?.route_coords,
       altitude_ft: liveMatch?.altitude_ft ?? flight.altitude_ft ?? 0,
       speed_kts: liveMatch?.speed_kts ?? flight.speed_kts ?? 0,
       bearing: liveMatch?.bearing ?? flight.bearing ?? 0,
