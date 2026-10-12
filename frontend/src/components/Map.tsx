@@ -2013,11 +2013,21 @@ export default function AppMap() {
 
               {/* Terminal & Gate & Status */}
               <div className="mb-2.5 flex items-center justify-between bg-gray-50 px-2.5 py-1.5 rounded-lg border border-gray-100 text-xs">
-                <div className="flex items-center gap-1.5 truncate max-w-[60%]">
-                  <span className="text-gray-500 text-[11px]">航廈/閘口:</span>
+                <div className="flex items-center gap-1.5 truncate max-w-[65%]">
+                  <span className="text-gray-500 text-[11px] shrink-0">航廈/閘口:</span>
                   <span className="font-semibold text-gray-800 text-[11.5px] truncate">
-                    {selectedFlight.terminal?.includes('航廈') ? selectedFlight.terminal.split(' ')[0] : selectedFlight.terminal || '主航廈'} 
-                    {selectedFlight.gate && selectedFlight.gate !== '--' ? ` · 閘口 ${selectedFlight.gate}` : ''}
+                    {selectedFlight.terminal?.includes('航廈') ? selectedFlight.terminal.split(' ')[0] : selectedFlight.terminal || '主航廈'}
+                    {selectedFlight.gate && selectedFlight.gate !== '--'
+                      ? ` · ${
+                          selectedFlight.gate.startsWith('Gate') ||
+                          selectedFlight.gate.includes('登機門') ||
+                          selectedFlight.gate.includes('轉盤') ||
+                          selectedFlight.gate.includes('出發') ||
+                          selectedFlight.gate.includes('抵達')
+                            ? selectedFlight.gate
+                            : `閘口 ${selectedFlight.gate}`
+                        }`
+                      : ''}
                   </span>
                 </div>
                 <span className="text-[11px] font-bold text-sky-700 flex items-center gap-1 shrink-0">
@@ -2026,15 +2036,16 @@ export default function AppMap() {
                 </span>
               </div>
 
-              {/* Remaining Time & Route Info */}
+              {/* Remaining Time & Live Flight Progress Bar */}
               {(() => {
+                const nowMs = Date.now();
                 const liveRemaining = (() => {
                   if (selectedFlight.target_dt_iso) {
                     const targetMs = new Date(selectedFlight.target_dt_iso).getTime();
                     if (!isNaN(targetMs)) {
-                      const diffMin = Math.round((targetMs - Date.now()) / 60000);
-                      if (diffMin < -15) return isDep ? '已起飛' : '已降落';
-                      if (diffMin < 0) return isDep ? `剛起飛 (${Math.abs(diffMin)}分前)` : `剛降落 (${Math.abs(diffMin)}分前)`;
+                      const diffMin = Math.round((targetMs - nowMs) / 60000);
+                      if (diffMin < -45) return isDep ? '已起飛' : '已降落';
+                      if (diffMin < 0) return isDep ? `已起飛 (${Math.abs(diffMin)}分前)` : `已降落 (${Math.abs(diffMin)}分前)`;
                       if (diffMin <= 10) return isDep ? `即將起飛 (${diffMin}分)` : `即將降落 (${diffMin}分)`;
                       if (diffMin < 60) return `剩餘 ${diffMin} 分鐘`;
                       const h = Math.floor(diffMin / 60);
@@ -2045,22 +2056,71 @@ export default function AppMap() {
                   return selectedFlight.remaining_time || '依表訂時刻';
                 })();
 
+                let depMs = selectedFlight.dep_dt_iso ? new Date(selectedFlight.dep_dt_iso).getTime() : NaN;
+                let arrMs = selectedFlight.arr_dt_iso ? new Date(selectedFlight.arr_dt_iso).getTime() : NaN;
+                const targetMs = selectedFlight.target_dt_iso ? new Date(selectedFlight.target_dt_iso).getTime() : NaN;
+                if (!isNaN(targetMs)) {
+                  const defaultDurMs = (isDom ? 2.5 : 8.5) * 3600000;
+                  if (isDep) {
+                    if (isNaN(depMs)) depMs = targetMs;
+                    if (isNaN(arrMs)) arrMs = depMs + defaultDurMs;
+                  } else {
+                    if (isNaN(arrMs)) arrMs = targetMs;
+                    if (isNaN(depMs)) depMs = arrMs - defaultDurMs;
+                  }
+                }
+
+                let pct = typeof selectedFlight.progress_percent === 'number' ? selectedFlight.progress_percent : 0;
+                let phaseLabel = '尚未起飛';
+                if (!isNaN(depMs) && !isNaN(arrMs) && arrMs > depMs) {
+                  if (nowMs <= depMs) {
+                    pct = 0;
+                    phaseLabel = '尚未起飛';
+                  } else if (nowMs >= arrMs) {
+                    pct = 100;
+                    phaseLabel = '已抵達目的地';
+                  } else {
+                    pct = Math.max(1, Math.min(99, Math.round(((nowMs - depMs) / (arrMs - depMs)) * 100)));
+                    phaseLabel = '空中飛行中';
+                  }
+                }
+
                 return (
-                  <div className="mb-2 p-2.5 rounded-lg bg-sky-50/70 border border-sky-100 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-base">⏱️</span>
-                      <div>
-                        <span className="text-[10px] text-gray-500 block font-medium">
-                          {isDep ? '預計出發倒數' : '預計降落倒數'}
+                  <div className="mb-2 p-2.5 rounded-lg bg-sky-50/70 border border-sky-100 flex flex-col gap-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-base">⏱️</span>
+                        <div>
+                          <span className="text-[10px] text-gray-500 block font-medium">
+                            {isDep ? '預計出發倒數' : '預計降落倒數'}
+                          </span>
+                          <span className="font-bold text-xs text-sky-900 font-mono">
+                            {liveRemaining}
+                          </span>
+                        </div>
+                      </div>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-sky-100/80 text-sky-800 font-medium border border-sky-200">
+                        航線圖已繪製
+                      </span>
+                    </div>
+
+                    {/* Progress Bar inside Popup */}
+                    <div className="pt-1.5 border-t border-sky-200/60">
+                      <div className="flex items-center justify-between text-[10.5px] font-mono mb-1">
+                        <span className="font-semibold text-sky-900">
+                          ✈️ 飛行進度 · {phaseLabel}
                         </span>
-                        <span className="font-bold text-xs text-sky-900 font-mono">
-                          {liveRemaining}
+                        <span className="font-bold text-sky-800 bg-sky-200/70 px-1.5 py-0.2 rounded">
+                          {pct}%
                         </span>
                       </div>
+                      <div className="w-full h-2 bg-sky-950/15 rounded-full overflow-hidden border border-sky-200">
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-sky-500 via-cyan-500 to-emerald-500 transition-all duration-500"
+                          style={{ width: `${Math.max(pct, pct > 0 && pct < 100 ? 4 : 0)}%` }}
+                        />
+                      </div>
                     </div>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-sky-100/80 text-sky-800 font-medium border border-sky-200">
-                      航線圖已繪製
-                    </span>
                   </div>
                 );
               })()}

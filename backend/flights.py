@@ -404,9 +404,12 @@ AIRLINES_INFO = {
     "CSN": {"name": "China Southern Airlines (中國南方航空)", "short": "南航", "code": "CZ", "domestic": False},
     "CHH": {"name": "Hainan Airlines (海南航空)", "short": "海航", "code": "HU", "domestic": False},
     "XMR": {"name": "Xiamen Airlines (廈門航空)", "short": "廈航", "code": "MF", "domestic": False},
+    "CXA": {"name": "XiamenAir (廈門航空)", "short": "廈航", "code": "MF", "domestic": False},
     "SIA": {"name": "Singapore Airlines (新加坡航空)", "short": "新航", "code": "SQ", "domestic": False},
     "PAL": {"name": "Philippine Airlines (菲律賓航空)", "short": "菲航", "code": "PR", "domestic": False},
     "EDW": {"name": "Edelweiss Air (瑞士雪絨花航空)", "short": "雪絨花航空", "code": "WK", "domestic": False},
+    "SWR": {"name": "Swiss International (瑞士國際航空)", "short": "瑞航", "code": "LX", "domestic": False},
+    "CFG": {"name": "Condor (神鷹航空)", "short": "神鷹航空", "code": "DE", "domestic": False},
     "ICE": {"name": "Icelandair (冰島航空)", "short": "冰島航空", "code": "FI", "domestic": False},
     "BAW": {"name": "British Airways (英國航空)", "short": "英航", "code": "BA", "domestic": False},
     "AFR": {"name": "Air France (法國航空)", "short": "法航", "code": "AF", "domestic": False},
@@ -414,8 +417,123 @@ AIRLINES_INFO = {
     "DLH": {"name": "Lufthansa (德國漢莎航空)", "short": "漢莎", "code": "LH", "domestic": False},
     "ANZ": {"name": "Air New Zealand (紐西蘭航空)", "short": "紐航", "code": "NZ", "domestic": False},
     "QFA": {"name": "Qantas (澳洲航空)", "short": "澳航", "code": "QF", "domestic": False},
+    "FJI": {"name": "Fiji Airways (斐濟航空)", "short": "斐濟航空", "code": "FJ", "domestic": False},
+    "THY": {"name": "Turkish Airlines (土耳其航空)", "short": "土航", "code": "TK", "domestic": False},
+    "AIC": {"name": "Air India (印度航空)", "short": "印航", "code": "AI", "domestic": False},
     "AMX": {"name": "Aeromexico (墨西哥航空)", "short": "墨航", "code": "AM", "domestic": False},
+    "JBU": {"name": "JetBlue Airways (捷藍航空)", "short": "捷藍", "code": "B6", "domestic": False},
+    "FFT": {"name": "Frontier Airlines (邊疆航空)", "short": "邊疆航空", "code": "F9", "domestic": False},
+    "HAL": {"name": "Hawaiian Airlines (夏威夷航空)", "short": "夏威夷航空", "code": "HA", "domestic": False},
+    "ENY": {"name": "Envoy Air / American Eagle (美鷹航空)", "short": "美鷹", "code": "MQ", "domestic": False},
+    "ANT": {"name": "Air North (北方航空)", "short": "北方航空", "code": "4N", "domestic": True},
+    "MPE": {"name": "Canadian North (加拿大北方航空)", "short": "加北航空", "code": "5T", "domestic": True},
+    "PAG": {"name": "Perimeter Aviation (周邊航空)", "short": "Perimeter", "code": "YP", "domestic": True},
 }
+
+def resolve_airline_name(flight: Dict[str, Any], ident: str) -> str:
+    """Resolves full airline name from AeroAPI operator code or flight ident."""
+    op_code = str(flight.get("operator") or flight.get("operator_icao") or "").strip().upper()
+    prefix = ident[:3].upper() if len(ident) >= 3 else ""
+    if op_code in AIRLINES_INFO:
+        return AIRLINES_INFO[op_code]["name"]
+    if prefix in AIRLINES_INFO:
+        return AIRLINES_INFO[prefix]["name"]
+    return op_code or prefix or "客運航空"
+
+def resolve_yvr_terminal_and_gate(
+    flight: Dict[str, Any],
+    is_arr: bool,
+    is_dom: bool,
+    partner_detail: Dict[str, Any],
+    ident: str
+) -> Tuple[str, str]:
+    """
+    Extracts authentic terminal and gate from FlightAware AeroAPI v4 payload:
+    - gate_origin / terminal_origin (departure airport)
+    - gate_destination / terminal_destination / baggage_claim (arrival airport)
+    """
+    gate_orig = str(flight.get("gate_origin") or "").strip()
+    gate_dest = str(flight.get("gate_destination") or "").strip()
+    gate_generic = str(flight.get("gate") or "").strip()
+    term_orig = str(flight.get("terminal_origin") or "").strip()
+    term_dest = str(flight.get("terminal_destination") or "").strip()
+    term_generic = str(flight.get("terminal") or "").strip()
+    baggage = str(flight.get("baggage_claim") or "").strip()
+
+    partner_country = str(partner_detail.get("country") or "").upper()
+    is_us = partner_country in ("USA", "US", "UNITED STATES")
+    op_code = str(flight.get("operator") or flight.get("operator_icao") or (ident[:3] if len(ident) >= 3 else "")).strip().upper()
+
+    if is_arr:
+        # YVR is destination
+        yvr_raw_term = term_dest or term_generic
+        yvr_gate = gate_dest or gate_generic
+        other_gate = gate_orig
+    else:
+        # YVR is origin
+        yvr_raw_term = term_orig or term_generic
+        yvr_gate = gate_orig or gate_generic
+        other_gate = gate_dest
+
+    # Determine YVR Terminal description
+    if yvr_raw_term.upper() in ("S", "SOUTH") or op_code in ("PCO", "CRA", "HBA", "SEI"):
+        terminal_str = "南航廈 (South Terminal)"
+    elif is_dom:
+        if yvr_raw_term and yvr_raw_term.upper() not in ("M", "MAIN", "D", "DOMESTIC", "NONE", "NULL"):
+            terminal_str = f"國內線航廈 (Terminal {yvr_raw_term})"
+        else:
+            terminal_str = "國內線航廈 (Domestic)"
+    elif is_us:
+        terminal_str = "美國跨界航廈 (US Transborder)"
+    else:
+        if yvr_raw_term and yvr_raw_term.upper() not in ("M", "MAIN", "I", "INTL", "INTERNATIONAL", "NONE", "NULL"):
+            terminal_str = f"國際線航廈 (Terminal {yvr_raw_term})"
+        else:
+            terminal_str = "國際線航廈 (International)"
+
+    # Determine Gate display
+    valid_yvr_gate = yvr_gate and yvr_gate.lower() not in ("--", "none", "null", "tbd", "")
+    valid_other_gate = other_gate and other_gate.lower() not in ("--", "none", "null", "tbd", "")
+    valid_baggage = baggage and baggage.lower() not in ("--", "none", "null", "tbd", "")
+
+    if valid_yvr_gate:
+        gate_str = yvr_gate if yvr_gate.upper().startswith("GATE") else f"Gate {yvr_gate}"
+        if is_arr and valid_baggage:
+            gate_str = f"{gate_str} · 轉盤 {baggage}"
+        elif not is_arr and valid_other_gate:
+            gate_str = f"{gate_str} (抵: {other_gate})"
+    elif valid_other_gate:
+        if is_arr:
+            gate_str = f"出發 Gate {other_gate}"
+            if valid_baggage:
+                gate_str = f"{gate_str} · 轉盤 {baggage}"
+        else:
+            gate_str = f"目的 Gate {other_gate}"
+    elif is_arr and valid_baggage:
+        gate_str = f"行李轉盤 {baggage}"
+    else:
+        # Check persistent route cache if a previous query recorded a specific gate
+        clean_id = ident.replace(" ", "").upper()
+        cached_gate = str((_dynamic_flight_routes.get(clean_id) or {}).get("gate") or "").strip()
+        if cached_gate and cached_gate not in ("--", "閘口未定", "待分配") and "區" not in cached_gate:
+            gate_str = cached_gate if cached_gate.startswith("Gate") else f"Gate {cached_gate}"
+        else:
+            # Assign YVR Concourse Zone based on terminal/carrier when specific gate number is omitted by upstream feed
+            if op_code in ("PCO", "CRA", "HBA", "SEI"):
+                gate_str = "S 區登機門 (South)"
+            elif is_dom:
+                if op_code in ("ACA", "ROU", "TSC"):
+                    gate_str = "C 區登機門 (Pier C)"
+                elif op_code in ("JZA",):
+                    gate_str = "A/C 區登機門 (Pier A/C)"
+                else:
+                    gate_str = "B 區登機門 (Pier B)"
+            elif is_us:
+                gate_str = "E 區登機門 (US Pier E)"
+            else:
+                gate_str = "D 區登機門 (Intl Pier D)"
+
+    return terminal_str, gate_str
 
 def calculate_remaining_time(target_dt: datetime, now_dt: datetime, is_arr: bool = True) -> Tuple[str, str, int]:
     """Calculates humanized remaining time to landing or departure in Vancouver time."""
@@ -548,16 +666,16 @@ def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any]:
             dest_detail = AIRPORT_DETAILS["YVR"]
             orig_city = origin_info.get("city") or orig_detail["city"]
             city_str = orig_city if f"({orig_detail['code']}" in orig_city else f"{orig_city} ({orig_detail['code']})"
-            airline_name = flight.get("operator") or (AIRLINES_INFO.get(ident[:3].upper(), {}).get("name") if len(ident) >= 3 else "客運航空")
+            airline_name = resolve_airline_name(flight, ident)
 
             # Arrival time in Vancouver timezone
             t_str = (
+                flight.get("actual_on") or 
+                flight.get("actual_in") or 
                 flight.get("estimated_on") or 
                 flight.get("estimated_in") or 
                 flight.get("scheduled_on") or 
-                flight.get("scheduled_in") or 
-                flight.get("actual_on") or 
-                flight.get("actual_in")
+                flight.get("scheduled_in")
             )
             arr_dt = van_now + timedelta(minutes=30)
             if t_str:
@@ -569,33 +687,32 @@ def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any]:
 
             arr_display_time = arr_dt.strftime("%m/%d %H:%M")
 
-            # Calculate remaining time & filter past flights
+            # Calculate remaining time & filter past flights (> 30 mins ago)
             rem_text, rem_code, diff_min = calculate_remaining_time(arr_dt, van_now, is_arr=True)
-            if diff_min < -15:
+            if diff_min < -30:
                 continue  # Filter out past flights
 
             # Departure time
             dep_t_str = (
+                flight.get("actual_off") or 
+                flight.get("actual_out") or 
                 flight.get("estimated_off") or 
                 flight.get("estimated_out") or 
                 flight.get("scheduled_off") or 
-                flight.get("scheduled_out") or 
-                flight.get("actual_off") or 
-                flight.get("actual_out")
+                flight.get("scheduled_out")
             )
-            dep_display_time = "--/-- --:--"
+            dep_dt = None
             if dep_t_str:
                 try:
                     dep_dt_val = datetime.fromisoformat(dep_t_str.replace("Z", "+00:00"))
-                    dep_display_time = dep_dt_val.astimezone(van_now.tzinfo).strftime("%m/%d %H:%M")
+                    dep_dt = dep_dt_val.astimezone(van_now.tzinfo)
                 except Exception:
-                    pass
-            if dep_display_time == "--/-- --:--":
+                    dep_dt = None
+            if not dep_dt or dep_dt >= arr_dt:
                 flight_dur = FLIGHT_DURATIONS_HOURS.get(orig_detail["code"], 2.5)
-                try:
-                    dep_display_time = (arr_dt - timedelta(hours=flight_dur)).strftime("%m/%d %H:%M")
-                except Exception:
-                    dep_display_time = van_now.strftime("%m/%d 12:00")
+                dep_dt = arr_dt - timedelta(hours=flight_dur)
+
+            dep_display_time = dep_dt.strftime("%m/%d %H:%M")
 
             route_coords = generate_flight_route_points(orig_detail["coord"], None, dest_detail["coord"])
             status_raw = str(flight.get("status") or "").strip()
@@ -607,6 +724,14 @@ def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any]:
                 status_display = "預計抵達"
             else:
                 status_display = status_raw
+
+            terminal_str, gate_str = resolve_yvr_terminal_and_gate(
+                flight=flight,
+                is_arr=True,
+                is_dom=is_dom,
+                partner_detail=orig_detail,
+                ident=ident
+            )
 
             item = {
                 "id": f"fa_arr_{flight.get('fa_flight_id') or ident}",
@@ -625,13 +750,16 @@ def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any]:
                 "dest_coord": dest_detail["coord"],
                 "departure_time": dep_display_time,
                 "arrival_time": arr_display_time,
+                "dep_dt_iso": dep_dt.isoformat(),
+                "arr_dt_iso": arr_dt.isoformat(),
+                "progress_percent": flight.get("progress_percent"),
                 "date": arr_dt.strftime("%m/%d"),
                 "time": arr_dt.strftime("%H:%M"),
                 "city": f"{city_str} ➔ Vancouver (YVR)",
                 "remaining_time": rem_text,
                 "remaining_code": rem_code,
-                "terminal": flight.get("terminal") or ("國內線航廈 (Domestic)" if is_dom else "國際線航廈 (International)"),
-                "gate": flight.get("gate") or "--",
+                "terminal": terminal_str,
+                "gate": gate_str,
                 "status": status_display,
                 "status_code": rem_code,
                 "is_live": False,
@@ -670,15 +798,15 @@ def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any]:
             orig_detail = AIRPORT_DETAILS["YVR"]
             dest_city = dest_info.get("city") or dest_detail["city"]
             city_str = dest_city if f"({dest_detail['code']}" in dest_city else f"{dest_city} ({dest_detail['code']})"
-            airline_name = flight.get("operator") or (AIRLINES_INFO.get(ident[:3].upper(), {}).get("name") if len(ident) >= 3 else "客運航空")
+            airline_name = resolve_airline_name(flight, ident)
 
             dep_t_str = (
+                flight.get("actual_off") or 
+                flight.get("actual_out") or 
                 flight.get("estimated_off") or 
                 flight.get("estimated_out") or 
                 flight.get("scheduled_off") or 
-                flight.get("scheduled_out") or 
-                flight.get("actual_off") or 
-                flight.get("actual_out")
+                flight.get("scheduled_out")
             )
             dep_dt = van_now + timedelta(minutes=40)
             if dep_t_str:
@@ -691,41 +819,48 @@ def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any]:
             dep_display_time = dep_dt.strftime("%m/%d %H:%M")
 
             rem_text, rem_code, diff_min = calculate_remaining_time(dep_dt, van_now, is_arr=False)
-            if diff_min < -15:
-                continue  # Filter out past flights
+            if diff_min < -60:
+                continue  # Filter out flights that departed > 60 mins ago
 
             arr_t_str = (
+                flight.get("actual_on") or 
+                flight.get("actual_in") or 
                 flight.get("estimated_on") or 
                 flight.get("estimated_in") or 
                 flight.get("scheduled_on") or 
-                flight.get("scheduled_in") or 
-                flight.get("actual_on") or 
-                flight.get("actual_in")
+                flight.get("scheduled_in")
             )
-            arr_display_time = "--/-- --:--"
+            arr_dt = None
             if arr_t_str:
                 try:
                     arr_dt_val = datetime.fromisoformat(arr_t_str.replace("Z", "+00:00"))
-                    arr_display_time = arr_dt_val.astimezone(van_now.tzinfo).strftime("%m/%d %H:%M")
+                    arr_dt = arr_dt_val.astimezone(van_now.tzinfo)
                 except Exception:
-                    pass
-            if arr_display_time == "--/-- --:--":
+                    arr_dt = None
+            if not arr_dt or arr_dt <= dep_dt:
                 flight_dur = FLIGHT_DURATIONS_HOURS.get(dest_detail["code"], 2.5)
-                try:
-                    arr_display_time = (dep_dt + timedelta(hours=flight_dur)).strftime("%m/%d %H:%M")
-                except Exception:
-                    arr_display_time = van_now.strftime("%m/%d 18:00")
+                arr_dt = dep_dt + timedelta(hours=flight_dur)
+
+            arr_display_time = arr_dt.strftime("%m/%d %H:%M")
 
             route_coords = generate_flight_route_points(orig_detail["coord"], None, dest_detail["coord"])
             status_raw = str(flight.get("status") or "").strip()
-            if not status_raw or "On Time" in status_raw:
+            if not status_raw or "On Time" in status_raw or "Scheduled" in status_raw:
                 status_display = "準點"
             elif "Delayed" in status_raw:
                 status_display = "延誤"
-            elif "Departed" in status_raw or "Taxiing" in status_raw:
+            elif "Departed" in status_raw or "Taxiing" in status_raw or "En Route" in status_raw:
                 status_display = "已出發"
             else:
                 status_display = status_raw
+
+            terminal_str, gate_str = resolve_yvr_terminal_and_gate(
+                flight=flight,
+                is_arr=False,
+                is_dom=is_dom,
+                partner_detail=dest_detail,
+                ident=ident
+            )
 
             item = {
                 "id": f"fa_dep_{flight.get('fa_flight_id') or ident}",
@@ -744,13 +879,16 @@ def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any]:
                 "dest_coord": dest_detail["coord"],
                 "departure_time": dep_display_time,
                 "arrival_time": arr_display_time,
+                "dep_dt_iso": dep_dt.isoformat(),
+                "arr_dt_iso": arr_dt.isoformat(),
+                "progress_percent": flight.get("progress_percent"),
                 "date": dep_dt.strftime("%m/%d"),
                 "time": dep_dt.strftime("%H:%M"),
                 "city": f"Vancouver (YVR) ➔ {city_str}",
                 "remaining_time": rem_text,
                 "remaining_code": rem_code,
-                "terminal": flight.get("terminal") or ("國內線航廈 (Domestic)" if is_dom else "國際線航廈 (International)"),
-                "gate": flight.get("gate") or "--",
+                "terminal": terminal_str,
+                "gate": gate_str,
                 "status": status_display,
                 "status_code": rem_code,
                 "is_live": False,
@@ -868,6 +1006,10 @@ def _generate_fallback_schedules(van_now: datetime) -> Dict[str, Any]:
 
         route_coords = generate_flight_route_points(orig_info["coord"], None, dest_info["coord"])
 
+        total_dur_sec = max((arr_dt - dep_dt).total_seconds(), 60.0)
+        elapsed_sec = (van_now - dep_dt).total_seconds()
+        progress_pct = max(0, min(100, int(round((elapsed_sec / total_dur_sec) * 100))))
+
         sched_entry = {
             "id": f"sched_{item['flight_no'].replace(' ', '_')}_{item['type']}",
             "flight_no": item["flight_no"],
@@ -885,6 +1027,9 @@ def _generate_fallback_schedules(van_now: datetime) -> Dict[str, Any]:
             "dest_coord": dest_info["coord"],
             "departure_time": dep_time_str,
             "arrival_time": arr_time_str,
+            "dep_dt_iso": dep_dt.isoformat(),
+            "arr_dt_iso": arr_dt.isoformat(),
+            "progress_percent": progress_pct,
             "date": target_dt.strftime("%m/%d"),
             "city": f"{orig_info['city']} ➔ {dest_info['city']}",
             "time": time_str,

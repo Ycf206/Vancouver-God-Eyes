@@ -26,6 +26,9 @@ interface FlightScheduleItem {
   dest_coord?: [number, number];
   departure_time?: string;
   arrival_time?: string;
+  dep_dt_iso?: string;
+  arr_dt_iso?: string;
+  progress_percent?: number;
   date?: string;
   time: string;
   target_dt_iso?: string;
@@ -50,6 +53,34 @@ interface ScheduleData {
   departures: FlightScheduleItem[];
 }
 
+const formatDurationMin = (mins: number) => {
+  const safeMins = Math.max(1, Math.round(mins));
+  const h = Math.floor(safeMins / 60);
+  const m = safeMins % 60;
+  if (h > 0 && m > 0) return `${h}時${m}分`;
+  if (h > 0) return `${h}小時`;
+  return `${m}分`;
+};
+
+const formatGateDisplay = (gate?: string) => {
+  if (!gate || gate === '--' || gate.trim() === '') {
+    return '航廈候機區';
+  }
+  const g = gate.trim();
+  if (
+    g.startsWith('Gate') ||
+    g.includes('登機門') ||
+    g.includes('轉盤') ||
+    g.includes('出發') ||
+    g.includes('抵達') ||
+    g.includes('航廈') ||
+    g.includes('Pier')
+  ) {
+    return g;
+  }
+  return `Gate ${g}`;
+};
+
 export default function FlightScheduleModal() {
   const { isFlightScheduleOpen, setFlightScheduleOpen, searchTarget, setSearchTarget } = useUIStore();
   const [activeTab, setActiveTab] = useState<'arrivals' | 'departures'>('arrivals');
@@ -58,7 +89,7 @@ export default function FlightScheduleModal() {
   const [data, setData] = useState<ScheduleData | null>(null);
   const [loading, setLoading] = useState(false);
   
-  // Real-time tick every 10 seconds for dynamic countdown & auto-filtering past flights
+  // Real-time tick every 10 seconds for dynamic countdown & flight progress bar
   const [currentTime, setCurrentTime] = useState<number>(Date.now());
 
   useEffect(() => {
@@ -91,7 +122,7 @@ export default function FlightScheduleModal() {
 
   if (!isFlightScheduleOpen) return null;
 
-  // Calculate live countdown and status dynamically against currentTime
+  // Calculate live countdown, status, and real-time flight progress dynamically against currentTime
   const getLiveFlightTiming = (flight: FlightScheduleItem) => {
     let targetMs: number | null = null;
     if (flight.target_dt_iso) {
@@ -103,38 +134,99 @@ export default function FlightScheduleModal() {
 
     const isArr = flight.flight_type === 'arr';
 
+    // Parse departure and arrival timestamps for time-based progress bar
+    let depMs: number | null = flight.dep_dt_iso ? new Date(flight.dep_dt_iso).getTime() : null;
+    let arrMs: number | null = flight.arr_dt_iso ? new Date(flight.arr_dt_iso).getTime() : null;
+    if (depMs && isNaN(depMs)) depMs = null;
+    if (arrMs && isNaN(arrMs)) arrMs = null;
+
+    if (targetMs) {
+      const defaultDurMs = (flight.is_domestic ? 2.5 : 8.5) * 3600000;
+      if (isArr) {
+        if (!arrMs) arrMs = targetMs;
+        if (!depMs) depMs = arrMs - defaultDurMs;
+      } else {
+        if (!depMs) depMs = targetMs;
+        if (!arrMs) arrMs = depMs + defaultDurMs;
+      }
+    }
+
+    let progressPercent = typeof flight.progress_percent === 'number' ? flight.progress_percent : 0;
+    let progressPhase: 'scheduled' | 'enroute' | 'landed' = 'scheduled';
+    let progressLabel = '尚未起飛';
+    let progressDetail = '';
+
+    if (depMs && arrMs && arrMs > depMs) {
+      const totalDurMin = Math.max(1, Math.round((arrMs - depMs) / 60000));
+      if (currentTime <= depMs) {
+        progressPercent = 0;
+        progressPhase = 'scheduled';
+        progressLabel = '尚未起飛';
+        progressDetail = `總航程 ${formatDurationMin(totalDurMin)}`;
+      } else if (currentTime >= arrMs) {
+        progressPercent = 100;
+        progressPhase = 'landed';
+        progressLabel = '已抵達';
+        progressDetail = `總航程 ${formatDurationMin(totalDurMin)}`;
+      } else {
+        const ratio = (currentTime - depMs) / (arrMs - depMs);
+        progressPercent = Math.max(1, Math.min(99, Math.round(ratio * 100)));
+        progressPhase = 'enroute';
+        const elapsedMin = Math.max(1, Math.round((currentTime - depMs) / 60000));
+        const remToArrMin = Math.max(1, Math.round((arrMs - currentTime) / 60000));
+        progressLabel = '飛行中';
+        progressDetail = `已飛 ${formatDurationMin(elapsedMin)} · 距抵 ${formatDurationMin(remToArrMin)}`;
+      }
+    }
+
     if (!targetMs) {
       return {
         remainingText: flight.remaining_time || '--',
         liveStatusCode: flight.remaining_code || 'normal',
         isPast: flight.remaining_code === 'past',
         displayStatus: flight.status || '依時刻表排程',
-        badgeType: 'sky'
+        badgeType: 'sky',
+        progressPercent,
+        progressPhase,
+        progressLabel,
+        progressDetail
       };
     }
 
     const diffMs = targetMs - currentTime;
     const diffMin = Math.round(diffMs / 60000);
 
-    // Filter out past flights (> 15 minutes past)
-    if (diffMin < -15) {
+    // Filter out past flights:
+    // - Arrivals: > 20 mins after landing
+    // - Departures: > 45 mins after takeoff (so recently departed flights stay visible with live progress bar!)
+    const pastThresholdMin = isArr ? -20 : -45;
+    if (diffMin < pastThresholdMin) {
       return {
         remainingText: isArr ? '已降落' : '已起飛',
         liveStatusCode: 'past',
         isPast: true,
         displayStatus: isArr ? '已降落' : '已起飛',
-        badgeType: 'gray'
+        badgeType: 'gray',
+        progressPercent,
+        progressPhase,
+        progressLabel,
+        progressDetail
       };
     }
 
-    // Just arrived / departed (within 0 to -15 mins)
+    // Just arrived / departed (within 0 to pastThresholdMin)
     if (diffMin < 0) {
+      const absMin = Math.abs(diffMin);
       return {
-        remainingText: isArr ? `剛降落 (${Math.abs(diffMin)}分前)` : `剛起飛 (${Math.abs(diffMin)}分前)`,
+        remainingText: isArr ? `已降落 (${absMin}分前)` : `已起飛 (${absMin}分前)`,
         liveStatusCode: 'active',
         isPast: false,
-        displayStatus: isArr ? '已降落 (滑行中)' : '已離地 (航行中)',
-        badgeType: 'emerald'
+        displayStatus: isArr ? '已降落 (滑行中)' : '已起飛 (航行中)',
+        badgeType: 'emerald',
+        progressPercent,
+        progressPhase,
+        progressLabel,
+        progressDetail
       };
     }
 
@@ -145,7 +237,11 @@ export default function FlightScheduleModal() {
         liveStatusCode: 'urgent',
         isPast: false,
         displayStatus: isArr ? '進場降落中' : '最後登機 / 關艙',
-        badgeType: 'amber'
+        badgeType: 'amber',
+        progressPercent,
+        progressPhase,
+        progressLabel,
+        progressDetail
       };
     }
 
@@ -156,7 +252,11 @@ export default function FlightScheduleModal() {
         liveStatusCode: 'soon',
         isPast: false,
         displayStatus: flight.status || (isArr ? '航行中 (準點)' : '準備登機'),
-        badgeType: 'sky'
+        badgeType: 'sky',
+        progressPercent,
+        progressPhase,
+        progressLabel,
+        progressDetail
       };
     }
 
@@ -170,7 +270,11 @@ export default function FlightScheduleModal() {
       liveStatusCode: 'normal',
       isPast: false,
       displayStatus: flight.status || '準點',
-      badgeType: 'sky'
+      badgeType: 'sky',
+      progressPercent,
+      progressPhase,
+      progressLabel,
+      progressDetail
     };
   };
 
@@ -178,7 +282,6 @@ export default function FlightScheduleModal() {
 
   const filteredList = currentList.filter(item => {
     const timing = getLiveFlightTiming(item);
-    // 過去超過 15 分鐘的航班不再顯示
     if (timing.isPast) return false;
 
     // Filter by domestic / international
@@ -237,6 +340,7 @@ export default function FlightScheduleModal() {
     }
 
     const timing = getLiveFlightTiming(flight);
+    const gateFormatted = formatGateDisplay(flight.gate);
 
     const flightMeta = {
       ...flight,
@@ -249,13 +353,14 @@ export default function FlightScheduleModal() {
       departure_time: flight.departure_time,
       arrival_time: flight.arrival_time,
       remaining_time: timing.remainingText,
+      progress_percent: timing.progressPercent,
       status: timing.displayStatus || flight.status || '依時刻表排程',
     };
 
     setSearchTarget({
       id: flight.id,
       title: `${flight.flight_no} · ${flight.airline}`,
-      subtitle: `${flight.city} (${flightMeta.status}) · ${flight.terminal} Gate ${flight.gate}`,
+      subtitle: `${flight.city} (${flightMeta.status}) · ${flight.terminal} ${gateFormatted}`,
       category: 'flight_schedule',
       badge: flight.is_domestic ? '🇨🇦 國內航班' : '🌐 國際航班',
       icon: '✈️',
@@ -508,8 +613,8 @@ export default function FlightScheduleModal() {
                       </div>
                     </div>
 
-                    {/* Col 3: Route & Cities (3 clear lines: Codes -> Full Cities -> Timestamps) */}
-                    <div className="min-w-0">
+                    {/* Col 3: Route & Cities + Live Flight Progress Bar */}
+                    <div className="min-w-0 pr-1">
                       {/* Line 1: Airport Code Badges */}
                       <div className="flex items-center gap-1.5">
                         <span className="font-mono font-bold text-white bg-[#101217] px-1.5 py-0.5 rounded border border-[#262a35] text-xs">
@@ -534,6 +639,45 @@ export default function FlightScheduleModal() {
                           <span>抵: <strong className="text-gray-300 font-normal">{flight.arrival_time}</strong></span>
                         )}
                       </div>
+                      {/* Line 4: Time-calculated Flight Progress Bar */}
+                      <div className="mt-1.5 pt-1 border-t border-[#1e232d]/80">
+                        <div className="flex items-center justify-between text-[10px] font-mono mb-1">
+                          <span className={
+                            timing.progressPhase === 'enroute'
+                              ? 'text-cyan-300 font-semibold flex items-center gap-1'
+                              : timing.progressPhase === 'landed'
+                              ? 'text-emerald-400 font-semibold'
+                              : 'text-gray-400'
+                          }>
+                            <span>{timing.progressPhase === 'enroute' ? '✈️' : timing.progressPhase === 'landed' ? '🛬' : '🛫'}</span>
+                            <span>{timing.progressLabel}</span>
+                            {timing.progressDetail && (
+                              <span className="text-gray-400 font-normal ml-1">({timing.progressDetail})</span>
+                            )}
+                          </span>
+                          <span className={`font-bold px-1.5 py-0.2 rounded text-[9.5px] ${
+                            timing.progressPhase === 'enroute'
+                              ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
+                              : timing.progressPhase === 'landed'
+                              ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                              : 'bg-gray-800 text-gray-400 border border-gray-700'
+                          }`}>
+                            {timing.progressPercent}%
+                          </span>
+                        </div>
+                        <div className="w-full h-1.5 bg-[#0b0d12] rounded-full overflow-hidden border border-[#232834] relative">
+                          <div
+                            className={`h-full rounded-full transition-all duration-500 ${
+                              timing.progressPhase === 'enroute'
+                                ? 'bg-gradient-to-r from-sky-500 via-cyan-400 to-emerald-400 shadow-[0_0_8px_rgba(34,211,238,0.6)]'
+                                : timing.progressPhase === 'landed'
+                                ? 'bg-emerald-500'
+                                : 'bg-slate-600'
+                            }`}
+                            style={{ width: `${Math.max(timing.progressPercent, timing.progressPhase === 'enroute' ? 4 : 0)}%` }}
+                          />
+                        </div>
+                      </div>
                     </div>
 
                     {/* Col 4: Terminal & Gate */}
@@ -541,8 +685,8 @@ export default function FlightScheduleModal() {
                       <div className="text-xs text-gray-300 font-medium truncate" title={flight.terminal}>
                         {flight.terminal}
                       </div>
-                      <div className="text-xs font-mono text-amber-300 font-bold mt-0.5">
-                        {flight.gate && flight.gate !== '--' ? `Gate ${flight.gate}` : '閘口未定'}
+                      <div className="text-xs font-mono text-amber-300 font-bold mt-0.5 truncate" title={formatGateDisplay(flight.gate)}>
+                        {formatGateDisplay(flight.gate)}
                       </div>
                     </div>
 
@@ -599,9 +743,25 @@ export default function FlightScheduleModal() {
                       </div>
                     </div>
 
+                    {/* Mobile Progress Bar */}
+                    <div className="pt-1">
+                      <div className="flex items-center justify-between text-[10px] font-mono mb-1">
+                        <span className="text-cyan-300">
+                          {timing.progressLabel} {timing.progressDetail ? `(${timing.progressDetail})` : ''}
+                        </span>
+                        <span className="text-cyan-300 font-bold">{timing.progressPercent}%</span>
+                      </div>
+                      <div className="w-full h-1.5 bg-[#0b0d12] rounded-full overflow-hidden border border-[#232834]">
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-sky-500 via-cyan-400 to-emerald-400"
+                          style={{ width: `${timing.progressPercent}%` }}
+                        />
+                      </div>
+                    </div>
+
                     <div className="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#1e222a] text-gray-400 font-mono">
                       <span>起: {flight.departure_time} · 抵: {flight.arrival_time}</span>
-                      <span className="text-amber-300 font-bold">Gate {flight.gate}</span>
+                      <span className="text-amber-300 font-bold">{formatGateDisplay(flight.gate)}</span>
                     </div>
                   </div>
                 </div>
