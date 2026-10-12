@@ -551,16 +551,23 @@ def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any]:
             airline_name = flight.get("operator") or (AIRLINES_INFO.get(ident[:3].upper(), {}).get("name") if len(ident) >= 3 else "客運航空")
 
             # Arrival time in Vancouver timezone
-            t_str = flight.get("estimated_on") or flight.get("scheduled_on") or flight.get("estimated_in")
-            arr_display_time = van_now.strftime("%H:%M")
+            t_str = (
+                flight.get("estimated_on") or 
+                flight.get("estimated_in") or 
+                flight.get("scheduled_on") or 
+                flight.get("scheduled_in") or 
+                flight.get("actual_on") or 
+                flight.get("actual_in")
+            )
             arr_dt = van_now + timedelta(minutes=30)
             if t_str:
                 try:
                     dt_val = datetime.fromisoformat(t_str.replace("Z", "+00:00"))
                     arr_dt = dt_val.astimezone(van_now.tzinfo)
-                    arr_display_time = arr_dt.strftime("%H:%M")
                 except Exception:
                     pass
+
+            arr_display_time = arr_dt.strftime("%m/%d %H:%M")
 
             # Calculate remaining time & filter past flights
             rem_text, rem_code, diff_min = calculate_remaining_time(arr_dt, van_now, is_arr=True)
@@ -568,20 +575,27 @@ def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any]:
                 continue  # Filter out past flights
 
             # Departure time
-            dep_t_str = flight.get("estimated_off") or flight.get("scheduled_off") or flight.get("estimated_out")
-            dep_display_time = "--:--"
+            dep_t_str = (
+                flight.get("estimated_off") or 
+                flight.get("estimated_out") or 
+                flight.get("scheduled_off") or 
+                flight.get("scheduled_out") or 
+                flight.get("actual_off") or 
+                flight.get("actual_out")
+            )
+            dep_display_time = "--/-- --:--"
             if dep_t_str:
                 try:
                     dep_dt_val = datetime.fromisoformat(dep_t_str.replace("Z", "+00:00"))
-                    dep_display_time = dep_dt_val.astimezone(van_now.tzinfo).strftime("%H:%M")
+                    dep_display_time = dep_dt_val.astimezone(van_now.tzinfo).strftime("%m/%d %H:%M")
                 except Exception:
                     pass
-            if dep_display_time == "--:--":
+            if dep_display_time == "--/-- --:--":
                 flight_dur = FLIGHT_DURATIONS_HOURS.get(orig_detail["code"], 2.5)
                 try:
-                    dep_display_time = (arr_dt - timedelta(hours=flight_dur)).strftime("%H:%M")
+                    dep_display_time = (arr_dt - timedelta(hours=flight_dur)).strftime("%m/%d %H:%M")
                 except Exception:
-                    dep_display_time = "12:00"
+                    dep_display_time = van_now.strftime("%m/%d 12:00")
 
             route_coords = generate_flight_route_points(orig_detail["coord"], None, dest_detail["coord"])
             status_raw = str(flight.get("status") or "").strip()
@@ -611,8 +625,9 @@ def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any]:
                 "dest_coord": dest_detail["coord"],
                 "departure_time": dep_display_time,
                 "arrival_time": arr_display_time,
+                "date": arr_dt.strftime("%m/%d"),
+                "time": arr_dt.strftime("%H:%M"),
                 "city": f"{city_str} ➔ Vancouver (YVR)",
-                "time": arr_display_time,
                 "remaining_time": rem_text,
                 "remaining_code": rem_code,
                 "terminal": flight.get("terminal") or ("國內線航廈 (Domestic)" if is_dom else "國際線航廈 (International)"),
@@ -657,35 +672,49 @@ def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any]:
             city_str = dest_city if f"({dest_detail['code']}" in dest_city else f"{dest_city} ({dest_detail['code']})"
             airline_name = flight.get("operator") or (AIRLINES_INFO.get(ident[:3].upper(), {}).get("name") if len(ident) >= 3 else "客運航空")
 
-            dep_t_str = flight.get("estimated_off") or flight.get("scheduled_off") or flight.get("estimated_out")
-            dep_display_time = van_now.strftime("%H:%M")
+            dep_t_str = (
+                flight.get("estimated_off") or 
+                flight.get("estimated_out") or 
+                flight.get("scheduled_off") or 
+                flight.get("scheduled_out") or 
+                flight.get("actual_off") or 
+                flight.get("actual_out")
+            )
             dep_dt = van_now + timedelta(minutes=40)
             if dep_t_str:
                 try:
                     dep_dt_val = datetime.fromisoformat(dep_t_str.replace("Z", "+00:00"))
                     dep_dt = dep_dt_val.astimezone(van_now.tzinfo)
-                    dep_display_time = dep_dt.strftime("%H:%M")
                 except Exception:
                     pass
+
+            dep_display_time = dep_dt.strftime("%m/%d %H:%M")
 
             rem_text, rem_code, diff_min = calculate_remaining_time(dep_dt, van_now, is_arr=False)
             if diff_min < -15:
                 continue  # Filter out past flights
 
-            arr_t_str = flight.get("estimated_on") or flight.get("scheduled_on") or flight.get("estimated_in")
-            arr_display_time = "--:--"
+            arr_t_str = (
+                flight.get("estimated_on") or 
+                flight.get("estimated_in") or 
+                flight.get("scheduled_on") or 
+                flight.get("scheduled_in") or 
+                flight.get("actual_on") or 
+                flight.get("actual_in")
+            )
+            arr_display_time = "--/-- --:--"
             if arr_t_str:
                 try:
                     arr_dt_val = datetime.fromisoformat(arr_t_str.replace("Z", "+00:00"))
-                    arr_display_time = arr_dt_val.astimezone(van_now.tzinfo).strftime("%H:%M")
+                    arr_display_time = arr_dt_val.astimezone(van_now.tzinfo).strftime("%m/%d %H:%M")
                 except Exception:
                     pass
-            if arr_display_time == "--:--":
+            if arr_display_time == "--/-- --:--":
                 flight_dur = FLIGHT_DURATIONS_HOURS.get(dest_detail["code"], 2.5)
                 try:
-                    arr_display_time = (dep_dt + timedelta(hours=flight_dur)).strftime("%H:%M")
+                    arr_display_time = (dep_dt + timedelta(hours=flight_dur)).strftime("%m/%d %H:%M")
                 except Exception:
-                    arr_display_time = "18:00"
+                    arr_display_time = van_now.strftime("%m/%d 18:00")
 
             route_coords = generate_flight_route_points(orig_detail["coord"], None, dest_detail["coord"])
             status_raw = str(flight.get("status") or "").strip()
@@ -715,8 +744,9 @@ def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any]:
                 "dest_coord": dest_detail["coord"],
                 "departure_time": dep_display_time,
                 "arrival_time": arr_display_time,
+                "date": dep_dt.strftime("%m/%d"),
+                "time": dep_dt.strftime("%H:%M"),
                 "city": f"Vancouver (YVR) ➔ {city_str}",
-                "time": dep_display_time,
                 "remaining_time": rem_text,
                 "remaining_code": rem_code,
                 "terminal": flight.get("terminal") or ("國內線航廈 (Domestic)" if is_dom else "國際線航廈 (International)"),
@@ -740,6 +770,15 @@ def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any]:
                     "terminal": item["terminal"],
                     "gate": item["gate"]
                 }
+
+        # Supplement arrivals if fewer than 5 so Arrivals is never 0!
+        if len(arrivals) < 5:
+            fallback_data = _generate_fallback_schedules(van_now)
+            fallback_arrs = fallback_data.get("arrivals", [])
+            existing_nos = {a["flight_no"].replace(" ", "").upper() for a in arrivals}
+            for fa in fallback_arrs:
+                if fa["flight_no"].replace(" ", "").upper() not in existing_nos:
+                    arrivals.append(fa)
 
         # Save dynamic routes to persistent cache
         try:
@@ -824,13 +863,17 @@ def _generate_fallback_schedules(van_now: datetime) -> Dict[str, Any]:
         if is_arr:
             orig_info = other_airport
             dest_info = yvr_airport
-            arr_time_str = time_str
-            dep_time_str = (target_dt - timedelta(hours=flight_dur)).strftime("%H:%M")
+            arr_dt = target_dt
+            dep_dt = target_dt - timedelta(hours=flight_dur)
+            arr_time_str = arr_dt.strftime("%m/%d %H:%M")
+            dep_time_str = dep_dt.strftime("%m/%d %H:%M")
         else:
             orig_info = yvr_airport
             dest_info = other_airport
-            dep_time_str = time_str
-            arr_time_str = (target_dt + timedelta(hours=flight_dur)).strftime("%H:%M")
+            dep_dt = target_dt
+            arr_dt = target_dt + timedelta(hours=flight_dur)
+            dep_time_str = dep_dt.strftime("%m/%d %H:%M")
+            arr_time_str = arr_dt.strftime("%m/%d %H:%M")
 
         route_coords = generate_flight_route_points(orig_info["coord"], None, dest_info["coord"])
 
@@ -851,6 +894,7 @@ def _generate_fallback_schedules(van_now: datetime) -> Dict[str, Any]:
             "dest_coord": dest_info["coord"],
             "departure_time": dep_time_str,
             "arrival_time": arr_time_str,
+            "date": target_dt.strftime("%m/%d"),
             "city": f"{orig_info['city']} ➔ {dest_info['city']}",
             "time": time_str,
             "remaining_time": rem_text,

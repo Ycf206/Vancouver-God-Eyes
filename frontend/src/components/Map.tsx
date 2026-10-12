@@ -2027,22 +2027,43 @@ export default function AppMap() {
               </div>
 
               {/* Remaining Time & Route Info */}
-              <div className="mb-2 p-2.5 rounded-lg bg-sky-50/70 border border-sky-100 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-base">⏱️</span>
-                  <div>
-                    <span className="text-[10px] text-gray-500 block font-medium">
-                      {isDep ? '預計出發倒數' : '預計降落倒數'}
-                    </span>
-                    <span className="font-bold text-xs text-sky-900 font-mono">
-                      {selectedFlight.remaining_time || '依表訂時刻'}
+              {(() => {
+                const liveRemaining = (() => {
+                  if (selectedFlight.target_dt_iso) {
+                    const targetMs = new Date(selectedFlight.target_dt_iso).getTime();
+                    if (!isNaN(targetMs)) {
+                      const diffMin = Math.round((targetMs - Date.now()) / 60000);
+                      if (diffMin < -15) return isDep ? '已起飛' : '已降落';
+                      if (diffMin < 0) return isDep ? `剛起飛 (${Math.abs(diffMin)}分前)` : `剛降落 (${Math.abs(diffMin)}分前)`;
+                      if (diffMin <= 10) return isDep ? `即將起飛 (${diffMin}分)` : `即將降落 (${diffMin}分)`;
+                      if (diffMin < 60) return `剩餘 ${diffMin} 分鐘`;
+                      const h = Math.floor(diffMin / 60);
+                      const m = diffMin % 60;
+                      return m > 0 ? `剩餘 ${h} 小時 ${m} 分` : `剩餘 ${h} 小時`;
+                    }
+                  }
+                  return selectedFlight.remaining_time || '依表訂時刻';
+                })();
+
+                return (
+                  <div className="mb-2 p-2.5 rounded-lg bg-sky-50/70 border border-sky-100 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-base">⏱️</span>
+                      <div>
+                        <span className="text-[10px] text-gray-500 block font-medium">
+                          {isDep ? '預計出發倒數' : '預計降落倒數'}
+                        </span>
+                        <span className="font-bold text-xs text-sky-900 font-mono">
+                          {liveRemaining}
+                        </span>
+                      </div>
+                    </div>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-sky-100/80 text-sky-800 font-medium border border-sky-200">
+                      航線圖已繪製
                     </span>
                   </div>
-                </div>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-sky-100/80 text-sky-800 font-medium border border-sky-200">
-                  航線圖已繪製
-                </span>
-              </div>
+                );
+              })()}
 
               {/* Footer */}
               <div className="pt-2 border-t border-gray-100 text-[10px] text-gray-400 flex items-center justify-between font-mono">
