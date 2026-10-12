@@ -3,6 +3,7 @@ import json
 import requests
 import time
 import math
+import calendar
 from datetime import datetime, timezone, timedelta
 from typing import List, Dict, Any, Tuple
 
@@ -10,8 +11,8 @@ from typing import List, Dict, Any, Tuple
 FLIGHTAWARE_QUOTA_FILE = os.path.join(os.path.dirname(__file__), "data", "flightaware_quota.json")
 FLIGHTAWARE_ROUTES_CACHE_FILE = os.path.join(os.path.dirname(__file__), "data", "flightaware_routes_cache.json")
 
-# In-memory cache for FlightAware responses (1-hour cache TTL)
-CACHE_TTL_SECONDS = 3600  # 1 hour in-memory cache
+# In-memory cache for FlightAware responses (Plan B: 90-minute cache TTL = 5400s)
+CACHE_TTL_SECONDS = 5400  # 90 minutes (1.5 hours) per update round
 _flightaware_cache = {
     "timestamp": 0,
     "data": None
@@ -440,63 +441,99 @@ def calculate_remaining_time(target_dt: datetime, now_dt: datetime, is_arr: bool
 
 def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any]:
     """
-    Fetches official YVR arrivals and departures from FlightAware AeroAPI.
+    Fetches official YVR arrivals and departures from FlightAware AeroAPI (Plan B: Separate Scheduled Endpoints).
     Strictly protected with:
-    1. 1-hour in-memory cache (3600 seconds).
-    2. 480-call monthly hard limit (safety buffer for 500 free tier).
-    3. Persistent disk storage of all parsed routes (flightaware_routes_cache.json).
-    4. Automatically excludes past flights (< -15 mins) and sorts upcoming flights chronologically.
+    1. 90-minute in-memory cache (5400 seconds) for 16 rounds/day in 30-day months, 15 rounds/day in 31-day months.
+    2. 480-round monthly hard limit (safety buffer: 480 rounds * $0.010 = $4.80 USD < $5.00 limit).
+    3. Auto-detection of month length (31-day month: 15 rounds/day; 30-day month: 16 rounds/day, skipping late night).
+    4. Persistent disk storage of quota usage and parsed routes.
+    5. Automatically excludes past flights (< -15 mins) and sorts upcoming flights chronologically.
     """
     global _dynamic_flight_routes
     now_ts = time.time()
     van_now = get_vancouver_now()
+    current_month = van_now.strftime("%Y-%m")
+    today_str = van_now.strftime("%Y-%m-%d")
 
-    # 1. Check 1-hour cache
+    # Days in current month (e.g. 30 or 31)
+    days_in_month = calendar.monthrange(van_now.year, van_now.month)[1]
+    # Daily ceiling: 15 rounds for 31-day months (15 * 31 = 465 rounds = $4.65), 16 rounds for 30-day months (16 * 30 = 480 rounds = $4.80)
+    max_daily_rounds = 15 if days_in_month >= 31 else 16
+    max_monthly_rounds = int(os.getenv("FLIGHTAWARE_MAX_MONTHLY_ROUNDS", "480"))
+
+    # 1. Check in-memory cache (90 minutes)
     if _flightaware_cache["data"] and (now_ts - _flightaware_cache["timestamp"] < CACHE_TTL_SECONDS):
         return _flightaware_cache["data"]
 
     api_key = get_flightaware_api_key()
-    # Safety limit: 240 calls * $0.020 = $4.80 USD (strictly under $5.00 monthly credit)
-    max_monthly_calls = int(os.getenv("FLIGHTAWARE_MAX_MONTHLY_CALLS", "240"))
-    quota_count = 0
+    month_rounds = 0
+    today_rounds = 0
 
     try:
         if os.path.exists(FLIGHTAWARE_QUOTA_FILE):
-            with open(FLIGHTAWARE_QUOTA_FILE, "r") as f:
+            with open(FLIGHTAWARE_QUOTA_FILE, "r", encoding="utf-8") as f:
                 q_data = json.load(f)
                 if q_data.get("month") == current_month:
-                    quota_count = q_data.get("count", 0)
+                    month_rounds = q_data.get("month_rounds") or q_data.get("count", 0)
+                if q_data.get("today") == today_str:
+                    today_rounds = q_data.get("today_rounds", 0)
     except Exception:
         pass
 
-    # Circuit breaker check: Strictly block external queries if quota >= 480
-    if not api_key or quota_count >= max_monthly_calls or not allow_api_call:
-        if quota_count >= max_monthly_calls:
-            print(f"⚠️ FlightAware Monthly Quota Circuit Breaker active ({quota_count}/{max_monthly_calls} calls). Using verified cache & fallback.")
+    # 31-day month late-night skip: YVR has virtually no commercial flights arriving/departing between 02:00 AM and 05:00 AM.
+    # On 31-day months, skip queries during 02:00-05:00 AM to conserve quota for the 15-round limit.
+    is_late_night = (van_now.hour in (2, 3, 4))
+    night_skip = (days_in_month >= 31 and is_late_night and today_rounds >= 1)
+
+    # Circuit breaker check: Strictly block external queries if quota >= 480 or daily ceiling reached
+    if (not api_key or 
+        month_rounds >= max_monthly_rounds or 
+        today_rounds >= max_daily_rounds or 
+        night_skip or 
+        not allow_api_call):
+        if month_rounds >= max_monthly_rounds:
+            print(f"⚠️ FlightAware Monthly Quota Circuit Breaker active ({month_rounds}/{max_monthly_rounds} rounds). Using verified cache & fallback.")
+        elif today_rounds >= max_daily_rounds:
+            print(f"ℹ️ FlightAware Daily Quota ceiling reached ({today_rounds}/{max_daily_rounds} rounds today). Using cache & fallback.")
+        elif night_skip:
+            print(f"🌙 FlightAware Late-night quota conservation active (02:00-05:00 AM in 31-day month). Using cache & fallback.")
         return _flightaware_cache["data"] or _generate_fallback_schedules(van_now)
 
     try:
-        url = "https://aeroapi.flightaware.com/aeroapi/airports/CYVR/flights?max_pages=1"
         headers = {"x-apikey": api_key, "User-Agent": "VancouverGodsEye/1.0"}
-        resp = requests.get(url, headers=headers, timeout=10)
+        arr_url = "https://aeroapi.flightaware.com/aeroapi/airports/CYVR/flights/scheduled_arrivals?max_pages=1"
+        dep_url = "https://aeroapi.flightaware.com/aeroapi/airports/CYVR/flights/scheduled_departures?max_pages=1"
 
-        if resp.status_code != 200:
-            print(f"FlightAware API error status: {resp.status_code}. Using fallback schedules.")
+        arr_resp = requests.get(arr_url, headers=headers, timeout=10)
+        dep_resp = requests.get(dep_url, headers=headers, timeout=10)
+
+        if arr_resp.status_code != 200 and dep_resp.status_code != 200:
+            print(f"FlightAware API error status: arr={arr_resp.status_code}, dep={dep_resp.status_code}. Using fallback schedules.")
             return _flightaware_cache["data"] or _generate_fallback_schedules(van_now)
 
-        # Increment quota tracker on successful call
-        quota_count += 1
+        # Increment quota tracker on successful round ($0.005 + $0.005 = $0.010 USD)
+        month_rounds += 1
+        today_rounds += 1
         os.makedirs(os.path.dirname(FLIGHTAWARE_QUOTA_FILE), exist_ok=True)
-        with open(FLIGHTAWARE_QUOTA_FILE, "w") as f:
+        with open(FLIGHTAWARE_QUOTA_FILE, "w", encoding="utf-8") as f:
             json.dump({
                 "month": current_month,
-                "count": quota_count,
+                "month_rounds": month_rounds,
+                "today": today_str,
+                "today_rounds": today_rounds,
+                "max_daily_rounds": max_daily_rounds,
+                "max_monthly_rounds": max_monthly_rounds,
+                "cost_per_round_usd": 0.010,
+                "estimated_monthly_cost_usd": round(month_rounds * 0.010, 3),
                 "last_call": datetime.now(timezone.utc).isoformat()
-            }, f)
+            }, f, indent=2)
 
-        fa_data = resp.json()
+        arr_data = arr_resp.json() if arr_resp.status_code == 200 else {}
+        dep_data = dep_resp.json() if dep_resp.status_code == 200 else {}
+
+        raw_arrivals = arr_data.get("scheduled_arrivals", []) + arr_data.get("arrivals", [])
         arrivals = []
-        for flight in fa_data.get("enroute", []) + fa_data.get("arrivals", []) + fa_data.get("scheduled_arrivals", []):
+        for flight in raw_arrivals:
             ident = flight.get("ident") or flight.get("ident_iata") or "N/A"
             origin_info = flight.get("origin") or {}
             orig_raw_code = (origin_info.get("code_iata") or origin_info.get("code") or origin_info.get("city") or "DEP").upper()
@@ -601,8 +638,9 @@ def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any]:
                     "gate": item["gate"]
                 }
 
+        raw_departures = dep_data.get("scheduled_departures", []) + dep_data.get("departures", [])
         departures = []
-        for flight in fa_data.get("departures", []) + fa_data.get("scheduled_departures", []):
+        for flight in raw_departures:
             ident = flight.get("ident") or flight.get("ident_iata") or "N/A"
             dest_info = flight.get("destination") or {}
             dest_raw_code = (dest_info.get("code_iata") or dest_info.get("code") or dest_info.get("city") or "ARR").upper()
