@@ -269,18 +269,6 @@ export default function AppMap() {
   }, [searchTarget]);
 
   useEffect(() => {
-    if (selectedFlight) {
-      if (selectedFlight.is_domestic && layers.domesticFlights === false) {
-        setSelectedFlight(null);
-        setSearchTarget(null);
-      } else if (!selectedFlight.is_domestic && layers.intlFlights === false) {
-        setSelectedFlight(null);
-        setSearchTarget(null);
-      }
-    }
-  }, [layers.domesticFlights, layers.intlFlights, selectedFlight, setSearchTarget]);
-
-  useEffect(() => {
     fetch('/bc_ferries_terminals_points.geojson')
       .then(r => r.json())
       .then(data => {
@@ -307,6 +295,7 @@ export default function AppMap() {
         .then(data => {
           if (data && Array.isArray(data.flights) && data.flights.length > 0) {
             setFlights(data.flights);
+            useUIStore.getState().setLiveFlights(data.flights);
           }
         })
         .catch(e => console.error('Error fetching live flights:', e));
@@ -1641,9 +1630,16 @@ export default function AppMap() {
 
         {/* 即時航班飛機位置 (Live Aircraft Markers) */}
         {flights.map((f) => {
+          const isSelected = Boolean(
+            selectedFlight && (
+              selectedFlight.id === f.id ||
+              selectedFlight.flight_no?.replace(/\s+/g, '') === f.flight_no?.replace(/\s+/g, '') ||
+              (selectedFlight.icao24 && selectedFlight.icao24 === f.icao24)
+            )
+          );
           const showDomestic = f.is_domestic && (layers.domesticFlights !== false);
           const showIntl = !f.is_domestic && (layers.intlFlights !== false);
-          if (!showDomestic && !showIntl) return null;
+          if (!showDomestic && !showIntl && !isSelected) return null;
 
           return (
             <Marker key={f.id} longitude={f.lon} latitude={f.lat} anchor="center">
@@ -1652,13 +1648,17 @@ export default function AppMap() {
                   e.stopPropagation();
                   setSelectedFlight(f);
                 }}
-                className="cursor-pointer group flex flex-col items-center z-30 transition-transform duration-300 select-none"
+                className={`cursor-pointer group flex flex-col items-center z-30 transition-transform duration-300 select-none ${
+                  isSelected ? 'scale-125 z-40' : ''
+                }`}
                 title={`${f.flight_no} · ${f.airline} (${f.status})`}
               >
                 {/* 順應航向旋轉的飛機圖示 */}
                 <div
                   style={{ transform: `rotate(${f.bearing || 0}deg)` }}
                   className={`relative flex items-center justify-center w-7 h-7 rounded-full border-[1.5px] border-white shadow-lg backdrop-blur-sm transition-transform duration-300 group-hover:scale-125 ${
+                    isSelected ? 'ring-2 ring-white scale-110 animate-pulse' : ''
+                  } ${
                     f.is_domestic
                       ? 'bg-sky-500 shadow-[0_0_10px_rgba(14,165,233,0.5)] ring-1 ring-sky-300/60'
                       : 'bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.5)] ring-1 ring-amber-300/60'
@@ -1669,13 +1669,41 @@ export default function AppMap() {
                   </svg>
                 </div>
                 {/* 航班呼號標籤 */}
-                <span className="mt-0.5 px-1 py-0.2 rounded text-[9px] font-mono font-bold bg-[#14161a]/90 text-gray-200 border border-[#2b303c] whitespace-nowrap shadow-sm group-hover:scale-110 group-hover:border-sky-400">
+                <span className={`mt-0.5 px-1 py-0.2 rounded text-[9px] font-mono font-bold text-gray-200 border whitespace-nowrap shadow-sm group-hover:scale-110 group-hover:border-sky-400 ${
+                  isSelected ? 'bg-sky-950 text-sky-200 border-sky-400 font-extrabold' : 'bg-[#14161a]/90 border-[#2b303c]'
+                }`}>
                   {f.flight_no}
                 </span>
               </div>
             </Marker>
           );
         })}
+
+        {/* 若選取的航班不在目前 OpenSky 局部雷達陣列中 (例如遠程飛行或預排航班)，獨立繪製其航機 Marker */}
+        {selectedFlight && typeof selectedFlight.lon === 'number' && typeof selectedFlight.lat === 'number' && !flights.some(f => f.id === selectedFlight.id || f.flight_no?.replace(/\s+/g, '') === selectedFlight.flight_no?.replace(/\s+/g, '')) && (
+          <Marker longitude={selectedFlight.lon} latitude={selectedFlight.lat} anchor="center">
+            <div
+              className="cursor-pointer group flex flex-col items-center z-40 select-none animate-pulse"
+              title={`${selectedFlight.flight_no} · ${selectedFlight.airline} (${selectedFlight.status || ''})`}
+            >
+              <div
+                style={{ transform: `rotate(${selectedFlight.bearing || 0}deg)` }}
+                className={`relative flex items-center justify-center w-8 h-8 rounded-full border-2 border-white shadow-xl backdrop-blur-sm ring-2 ${
+                  selectedFlight.is_domestic
+                    ? 'bg-sky-500 ring-sky-300 shadow-[0_0_12px_rgba(14,165,233,0.8)]'
+                    : 'bg-amber-500 ring-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.8)]'
+                }`}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white">
+                  <path d="M10.18 9 L2.5 12.5 L2.5 14.5 L10.18 12.5 L10.18 19 L7.5 21 L7.5 22.5 L12 21 L16.5 22.5 L16.5 21 L13.82 19 L13.82 12.5 L21.5 14.5 L21.5 12.5 L13.82 9 L13.82 3 C13.82 1.9 12.92 1 12 1 C11.08 1 10.18 1.9 10.18 3 Z"/>
+                </svg>
+              </div>
+              <span className="mt-0.5 px-1.5 py-0.2 rounded text-[9.5px] font-mono font-bold bg-[#14161a]/95 text-sky-300 border border-sky-400 whitespace-nowrap shadow-md">
+                {selectedFlight.flight_no}
+              </span>
+            </div>
+          </Marker>
+        )}
 
         {/* Airport Detail Popup */}
         {selectedAirport && (
@@ -1812,7 +1840,7 @@ export default function AppMap() {
         )}
 
         {/* Live Flight Detail Popup */}
-        {selectedFlight && (
+        {selectedFlight && typeof selectedFlight.lon === 'number' && typeof selectedFlight.lat === 'number' && (
           <Popup
             longitude={selectedFlight.lon}
             latitude={selectedFlight.lat}

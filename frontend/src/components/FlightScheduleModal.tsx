@@ -16,6 +16,17 @@ interface FlightScheduleItem {
   airline: string;
   category: string;
   is_domestic: boolean;
+  flight_type?: 'arr' | 'dep';
+  origin_code?: string;
+  origin_name?: string;
+  origin_city?: string;
+  origin_coord?: [number, number];
+  dest_code?: string;
+  dest_name?: string;
+  dest_city?: string;
+  dest_coord?: [number, number];
+  departure_time?: string;
+  arrival_time?: string;
   city: string;
   time: string;
   terminal: string;
@@ -27,6 +38,9 @@ interface FlightScheduleItem {
   lon?: number;
   altitude_ft?: number;
   speed_kts?: number;
+  bearing?: number;
+  vertical_rate_fpm?: number;
+  route_coords?: [number, number][];
 }
 
 interface ScheduleData {
@@ -92,13 +106,87 @@ export default function FlightScheduleModal() {
   });
 
   const handleFlightClick = (flight: FlightScheduleItem) => {
-    // Airborne flights track live GPS coordinates; Ground/scheduled flights lock to YVR airport
-    const targetLon = (flight.is_live && flight.lon) ? flight.lon : -123.1815;
-    const targetLat = (flight.is_live && flight.lat) ? flight.lat : 49.1967;
-    const targetZoom = flight.is_live ? 13 : 15;
+    // 1. Auto-enable the corresponding layer in the layer control panel
+    const layerKey = flight.is_domestic ? 'domesticFlights' : 'intlFlights';
+    useUIStore.getState().enableLayer(layerKey);
+
+    // 2. Cross-reference with live airborne flights currently tracked on map
+    const liveList = useUIStore.getState().liveFlights || [];
+    const flightNoClean = (flight.flight_no || '').replace(/\s+/g, '').toUpperCase();
+    const flightDigits = flightNoClean.replace(/\D/g, '');
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const liveMatch = liveList.find((f: any) => {
+      if (flight.flight_id && f.id === flight.flight_id) return true;
+      const fNoClean = (f.flight_no || '').replace(/\s+/g, '').toUpperCase();
+      const fCs = (f.callsign || '').replace(/\s+/g, '').toUpperCase();
+      if (fNoClean === flightNoClean || fCs === flightNoClean) return true;
+      const fDigits = fNoClean.replace(/\D/g, '') || fCs.replace(/\D/g, '');
+      if (flightDigits && fDigits === flightDigits) {
+        const c1 = flightNoClean.slice(0, 2);
+        const c2 = fNoClean.slice(0, 2);
+        if (c1 === c2) return true;
+      }
+      return false;
+    });
+
+    let targetLon: number;
+    let targetLat: number;
+    let targetZoom: number;
+    const isLiveAirborne = Boolean(liveMatch || (flight.is_live && flight.lat && flight.lon));
+
+    if (liveMatch && typeof liveMatch.lon === 'number' && typeof liveMatch.lat === 'number') {
+      targetLon = liveMatch.lon;
+      targetLat = liveMatch.lat;
+      targetZoom = 13;
+    } else if (flight.is_live && typeof flight.lon === 'number' && typeof flight.lat === 'number') {
+      targetLon = flight.lon;
+      targetLat = flight.lat;
+      targetZoom = 13;
+    } else {
+      // Flight is scheduled or enroute outside local Vancouver radar.
+      // Use midpoint between origin and destination coordinates to frame the trajectory
+      const originCoord = flight.origin_coord;
+      const destCoord = flight.dest_coord;
+      if (originCoord && destCoord && originCoord.length === 2 && destCoord.length === 2) {
+        targetLon = (originCoord[0] + destCoord[0]) / 2;
+        targetLat = (originCoord[1] + destCoord[1]) / 2;
+        targetZoom = flight.is_domestic ? 7 : 4;
+      } else {
+        targetLon = -123.1815;
+        targetLat = 49.1967;
+        targetZoom = 12;
+      }
+    }
+
+    const mergedFlightData = {
+      ...(liveMatch || {}),
+      ...flight,
+      is_live: isLiveAirborne,
+      lon: targetLon,
+      lat: targetLat,
+      id: liveMatch?.id || flight.flight_id || flight.id,
+      origin_code: liveMatch?.origin_code || flight.origin_code || 'YVR',
+      dest_code: liveMatch?.dest_code || flight.dest_code || 'YVR',
+      origin_name: liveMatch?.origin_name || flight.origin_name || '',
+      dest_name: liveMatch?.dest_name || flight.dest_name || '',
+      origin_city: liveMatch?.origin_city || flight.origin_city || '',
+      dest_city: liveMatch?.dest_city || flight.dest_city || '',
+      origin_coord: liveMatch?.origin_coord || flight.origin_coord,
+      dest_coord: liveMatch?.dest_coord || flight.dest_coord,
+      departure_time: liveMatch?.departure_time || flight.departure_time,
+      arrival_time: liveMatch?.arrival_time || flight.arrival_time,
+      route_coords: liveMatch?.route_coords || flight.route_coords,
+      altitude_ft: liveMatch?.altitude_ft ?? flight.altitude_ft ?? 0,
+      speed_kts: liveMatch?.speed_kts ?? flight.speed_kts ?? 0,
+      bearing: liveMatch?.bearing ?? flight.bearing ?? 0,
+      vertical_rate_fpm: liveMatch?.vertical_rate_fpm ?? flight.vertical_rate_fpm ?? 0,
+      status: liveMatch?.status || flight.status,
+      status_badge: liveMatch?.status_badge || (isLiveAirborne ? '✈️ 即時追蹤中' : flight.status),
+    };
 
     setSearchTarget({
-      id: flight.flight_id || flight.id,
+      id: mergedFlightData.id,
       title: `${flight.flight_no} · ${flight.airline}`,
       subtitle: `${flight.city} (${flight.status}) · ${flight.terminal} Gate ${flight.gate}`,
       category: flight.is_domestic ? 'domestic_flight' : 'intl_flight',
@@ -107,12 +195,7 @@ export default function FlightScheduleModal() {
       lon: targetLon,
       lat: targetLat,
       zoom: targetZoom,
-      meta: {
-        ...flight,
-        id: flight.flight_id || flight.id,
-        lon: targetLon,
-        lat: targetLat,
-      }
+      meta: mergedFlightData
     });
   };
 

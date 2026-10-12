@@ -262,6 +262,89 @@ def get_airport_info(code_or_text: str) -> Dict[str, Any]:
         "coord": [-123.1815, 49.1967]
     }
 
+def get_connected_airport_info(code_or_text: str, is_domestic: bool = True, hint: int = 0) -> Dict[str, Any]:
+    """
+    Resolves the NON-YVR partner airport from a route description, city name, or airport code.
+    Guarantees that the returned airport is NEVER YVR/CYVR.
+    """
+    dom_fallback = ["YYC", "YYZ", "YEG", "YUL", "YYJ", "YLW", "YWG"]
+    intl_fallback = ["SEA", "SFO", "LAX", "ICN", "NRT", "TPE", "HKG", "LHR", "HND"]
+    fallback_list = dom_fallback if is_domestic else intl_fallback
+
+    if not code_or_text:
+        return AIRPORT_DETAILS[fallback_list[hint % len(fallback_list)]]
+        
+    raw = str(code_or_text).strip()
+    upper_raw = raw.upper()
+
+    # If the text has arrow '➔' or '->', split and find the non-YVR segment
+    if "➔" in upper_raw or "->" in upper_raw:
+        sep = "➔" if "➔" in upper_raw else "->"
+        parts = [p.strip() for p in upper_raw.split(sep)]
+        non_yvr_parts = [p for p in parts if "YVR" not in p and "CYVR" not in p]
+        if non_yvr_parts:
+            upper_raw = non_yvr_parts[0]
+
+    # Clean code check (must not be YVR or CYVR)
+    clean_code = upper_raw.strip()
+    if clean_code not in ("YVR", "CYVR"):
+        if clean_code in AIRPORT_DETAILS:
+            return AIRPORT_DETAILS[clean_code]
+        if len(clean_code) == 4:
+            if clean_code.startswith("C") and clean_code[1:] in AIRPORT_DETAILS and clean_code[1:] != "YVR":
+                return AIRPORT_DETAILS[clean_code[1:]]
+            if clean_code.startswith("K") and clean_code[1:] in AIRPORT_DETAILS:
+                return AIRPORT_DETAILS[clean_code[1:]]
+            icao_map = {
+                "RCTP": "TPE", "VHHH": "HKG", "RJAA": "NRT", "RJTT": "HND", 
+                "RKSI": "ICN", "EGLL": "LHR", "LFPG": "CDG", "EHAM": "AMS", 
+                "EDDF": "FRA", "EDDM": "MUC", "EIDW": "DUB"
+            }
+            if clean_code in icao_map and icao_map[clean_code] in AIRPORT_DETAILS:
+                return AIRPORT_DETAILS[icao_map[clean_code]]
+
+    # Search for (CODE) in the text, explicitly skipping YVR / CYVR
+    for key, info in AIRPORT_DETAILS.items():
+        if key in ("YVR", "CYVR"):
+            continue
+        if f"({key})" in upper_raw or f"({key} " in upper_raw or f" {key} " in f" {upper_raw} ":
+            return info
+        city_keyword = info["city"].split()[0].upper()
+        if city_keyword in upper_raw:
+            return info
+
+    return AIRPORT_DETAILS[fallback_list[hint % len(fallback_list)]]
+
+def are_carriers_equivalent(c1: str, c2: str) -> bool:
+    """Checks if two carrier codes (IATA or ICAO) belong to the same airline family or operation."""
+    c1 = (c1 or "").strip().upper()
+    c2 = (c2 or "").strip().upper()
+    if not c1 or not c2 or c1 == c2:
+        return True
+    
+    # Check AIRLINES_INFO mapping
+    for icao, info in AIRLINES_INFO.items():
+        iata = info["code"].upper()
+        if (c1 in (icao, iata)) and (c2 in (icao, iata)):
+            return True
+            
+    # Airline families & subsidiary brands (e.g. Air Canada Express / Jazz, WestJet Encore, Horizon Air)
+    families = [
+        {"AC", "ACA", "QK", "JZA", "RV", "ROU"}, # Air Canada / Jazz / Rouge
+        {"WS", "WJA", "WR", "WEN"},             # WestJet / WestJet Encore
+        {"AS", "ASA", "QXE"},                   # Alaska Airlines / Horizon Air
+        {"DL", "DAL", "OO", "SKW"},             # Delta / SkyWest
+        {"UA", "UAL", "OO", "SKW"},             # United / SkyWest
+        {"AA", "AAL"},                          # American
+        {"PD", "POE"},                          # Porter
+        {"F8", "FLE"},                          # Flair
+        {"8P", "PCO"},                          # Pacific Coastal
+    ]
+    for fam in families:
+        if c1 in fam and c2 in fam:
+            return True
+    return False
+
 def generate_flight_route_points(origin_coord: List[float], plane_coord: List[float] | None, dest_coord: List[float]) -> List[List[float]]:
     """
     Generates smooth, realistic Great Circle flight path coordinates connecting:
@@ -313,6 +396,7 @@ def resolve_flight_telemetry_and_route(
     """
     Resolves complete origin, destination, schedule times (in Vancouver time),
     terminal, gate, and full Great Circle trajectory points for any flight.
+    Guarantees that origin != destination (eliminates YVR -> YVR duplicates).
     """
     # 1. Determine flight type: Arrival ('arr') or Departure ('dep')
     if matched_route and matched_route.get("type"):
@@ -324,20 +408,18 @@ def resolve_flight_telemetry_and_route(
     else:
         flight_type = "arr"
 
-    # 2. Determine connected airport details
-    if matched_route and matched_route.get("city"):
-        other_info = get_airport_info(matched_route["city"])
-    else:
-        if is_domestic:
-            dom_candidates = ["YYC", "YYZ", "YEG", "YUL", "YYJ", "YLW", "YWG"]
-            chosen = dom_candidates[index_hint % len(dom_candidates)]
-            other_info = AIRPORT_DETAILS[chosen]
-        else:
-            intl_candidates = ["SEA", "SFO", "LAX", "ICN", "NRT", "TPE", "HKG", "LHR", "HND"]
-            chosen = intl_candidates[index_hint % len(intl_candidates)]
-            other_info = AIRPORT_DETAILS[chosen]
+    # 2. Determine connected partner airport details (never YVR)
+    ref_text = ""
+    if matched_route:
+        ref_text = (
+            matched_route.get("connected_airport_code") or
+            (matched_route.get("dest_code") if flight_type == "dep" else matched_route.get("origin_code")) or
+            matched_route.get("city") or
+            ""
+        )
+    other_info = get_connected_airport_info(ref_text, is_domestic=is_domestic, hint=index_hint)
 
-    # 3. Assign Origin and Destination
+    # 3. Assign Origin and Destination strictly
     yvr_info = AIRPORT_DETAILS["YVR"]
     if flight_type == "dep":
         origin_info = yvr_info
@@ -568,7 +650,9 @@ def parse_callsign(raw_callsign: str, country: str) -> Dict[str, Any]:
             _dynamic_flight_routes.get(normalized_flight_key) or
             _dynamic_flight_routes.get(cs) or
             _dynamic_flight_routes.get(flight_no.replace(" ", "")) or
-            KNOWN_YVR_ROUTES.get(normalized_flight_key)
+            _dynamic_flight_routes.get(f"{prefix3}{num_part}") or
+            KNOWN_YVR_ROUTES.get(normalized_flight_key) or
+            KNOWN_YVR_ROUTES.get(f"{prefix3}{num_part}")
         )
         
         if matched_route:
@@ -815,10 +899,10 @@ def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any] |
             ident = flight.get("ident") or flight.get("ident_iata") or "N/A"
             origin_info = flight.get("origin") or {}
             orig_raw_code = (origin_info.get("code_iata") or origin_info.get("code") or origin_info.get("city") or "DEP").upper()
-            orig_detail = get_airport_info(orig_raw_code)
+            is_dom = is_canadian_airport(origin_info)
+            orig_detail = get_connected_airport_info(orig_raw_code, is_domestic=is_dom)
             dest_detail = AIRPORT_DETAILS["YVR"]
             orig_city = origin_info.get("city") or orig_detail["city"]
-            is_dom = is_canadian_airport(origin_info)
             airline_name = flight.get("operator") or (AIRLINES_INFO.get(ident[:3].upper(), {}).get("name") if len(ident) >= 3 else "客運航空")
             
             # Arrival time in Vancouver timezone
@@ -880,24 +964,36 @@ def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any] |
 
             # Accumulate dynamic route for live radar map matching
             clean_ident = ident.replace(" ", "").upper()
+            ident_iata = (flight.get("ident_iata") or "").replace(" ", "").upper()
             if clean_ident:
-                _dynamic_flight_routes[clean_ident] = {
+                route_entry = {
                     "city": item["city"],
+                    "connected_airport_code": orig_detail["code"],
+                    "origin_code": orig_detail["code"],
+                    "dest_code": "YVR",
                     "intl": not is_dom,
                     "type": "arr",
                     "terminal": item["terminal"],
                     "gate": item["gate"]
                 }
+                _dynamic_flight_routes[clean_ident] = route_entry
+                if ident_iata:
+                    _dynamic_flight_routes[ident_iata] = route_entry
+                if len(clean_ident) > 3 and clean_ident[:3] in AIRLINES_INFO:
+                    iata_code = AIRLINES_INFO[clean_ident[:3]]["code"]
+                    num = clean_ident[3:].lstrip("0") or clean_ident[3:]
+                    _dynamic_flight_routes[f"{iata_code}{num}"] = route_entry
+                    _dynamic_flight_routes[f"{clean_ident[:3]}{num}"] = route_entry
 
         departures = []
         for flight in fa_data.get("departures", []) + fa_data.get("scheduled_departures", []):
             ident = flight.get("ident") or flight.get("ident_iata") or "N/A"
             dest_info = flight.get("destination") or {}
             dest_raw_code = (dest_info.get("code_iata") or dest_info.get("code") or dest_info.get("city") or "ARR").upper()
-            dest_detail = get_airport_info(dest_raw_code)
+            is_dom = is_canadian_airport(dest_info)
+            dest_detail = get_connected_airport_info(dest_raw_code, is_domestic=is_dom)
             orig_detail = AIRPORT_DETAILS["YVR"]
             dest_city = dest_info.get("city") or dest_detail["city"]
-            is_dom = is_canadian_airport(dest_info)
             airline_name = flight.get("operator") or (AIRLINES_INFO.get(ident[:3].upper(), {}).get("name") if len(ident) >= 3 else "客運航空")
 
             dep_t_str = flight.get("estimated_off") or flight.get("scheduled_off") or flight.get("estimated_out")
@@ -956,14 +1052,26 @@ def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any] |
 
             # Accumulate dynamic route for live radar map matching
             clean_ident = ident.replace(" ", "").upper()
+            ident_iata = (flight.get("ident_iata") or "").replace(" ", "").upper()
             if clean_ident:
-                _dynamic_flight_routes[clean_ident] = {
+                route_entry = {
                     "city": item["city"],
+                    "connected_airport_code": dest_detail["code"],
+                    "origin_code": "YVR",
+                    "dest_code": dest_detail["code"],
                     "intl": not is_dom,
                     "type": "dep",
                     "terminal": item["terminal"],
                     "gate": item["gate"]
                 }
+                _dynamic_flight_routes[clean_ident] = route_entry
+                if ident_iata:
+                    _dynamic_flight_routes[ident_iata] = route_entry
+                if len(clean_ident) > 3 and clean_ident[:3] in AIRLINES_INFO:
+                    iata_code = AIRLINES_INFO[clean_ident[:3]]["code"]
+                    num = clean_ident[3:].lstrip("0") or clean_ident[3:]
+                    _dynamic_flight_routes[f"{iata_code}{num}"] = route_entry
+                    _dynamic_flight_routes[f"{clean_ident[:3]}{num}"] = route_entry
 
         # Save accumulated dynamic routes to persistent disk file
         try:
@@ -1009,22 +1117,31 @@ def generate_flight_schedules(live_flights: List[Dict[str, Any]], allow_api_call
             f_no_clean = f.get("flight_no", "").replace(" ", "").upper()
             f_cs = (f.get("callsign") or "").replace(" ", "").upper()
             f_raw = f.get("id", "").upper().replace("FLIGHT_", "")
+            
+            # Extract carrier prefix and digits
             f_digits = "".join(filter(str.isdigit, f_no_clean)) or "".join(filter(str.isdigit, f_cs))
+            f_carrier = f_no_clean[:3] if len(f_no_clean) >= 3 and f_no_clean[:3].isalpha() else f_no_clean[:2]
+            f_cs_carrier = f_cs[:3] if len(f_cs) >= 3 and f_cs[:3].isalpha() else f_cs[:2]
 
             for item in fa_arr + fa_dep:
                 item_no = item["flight_no"].replace(" ", "").upper()
                 item_digits = "".join(filter(str.isdigit, item_no))
+                item_carrier = item_no[:3] if len(item_no) >= 3 and item_no[:3].isalpha() else item_no[:2]
 
-                # Check exact callsign match OR exact flight_no match OR carrier digits match
+                # Match if exact flight_no, or exact callsign, or matching digits + equivalent carrier
                 is_match = (
                     (f_cs and item_no == f_cs) or
                     (item_no == f_no_clean) or
                     (item_no == f_raw) or
-                    (f_digits and item_digits and (f_digits == item_digits) and (
-                        f_no_clean[:2] in item_no or item_no[:2] in f_no_clean or
-                        f_no_clean[:3] in item_no or item_no[:3] in f_no_clean or
-                        (f_cs and (f_cs[:3] in item_no or item_no[:3] in f_cs))
-                    ))
+                    (
+                        bool(f_digits and item_digits and f_digits == item_digits) and
+                        (
+                            are_carriers_equivalent(f_carrier, item_carrier) or
+                            are_carriers_equivalent(f_cs_carrier, item_carrier) or
+                            (f_carrier and f_carrier in item_no) or
+                            (item_carrier and item_carrier in f_no_clean)
+                        )
+                    )
                 )
                 if is_match:
                     item["is_live"] = True
@@ -1050,6 +1167,9 @@ def generate_flight_schedules(live_flights: List[Dict[str, Any]], allow_api_call
                     # Feed FlightAware verified route back to live flight on map
                     f["matched_route"] = {
                         "city": item["city"],
+                        "connected_airport_code": item.get("origin_code") if item in fa_arr else item.get("dest_code"),
+                        "origin_code": item.get("origin_code"),
+                        "dest_code": item.get("dest_code"),
                         "intl": not item["is_domestic"],
                         "type": "arr" if item in fa_arr else "dep",
                         "terminal": item["terminal"],
