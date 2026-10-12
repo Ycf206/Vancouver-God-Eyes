@@ -456,8 +456,8 @@ def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any]:
         return _flightaware_cache["data"]
 
     api_key = get_flightaware_api_key()
-    current_month = datetime.now(timezone.utc).strftime("%Y-%m")
-    max_monthly_calls = int(os.getenv("FLIGHTAWARE_MAX_MONTHLY_CALLS", "480"))
+    # Safety limit: 240 calls * $0.020 = $4.80 USD (strictly under $5.00 monthly credit)
+    max_monthly_calls = int(os.getenv("FLIGHTAWARE_MAX_MONTHLY_CALLS", "240"))
     quota_count = 0
 
     try:
