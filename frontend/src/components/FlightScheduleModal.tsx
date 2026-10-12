@@ -159,18 +159,10 @@ export default function FlightScheduleModal() {
       targetZoom = 13;
     } else {
       // Flight is scheduled or enroute outside local Vancouver radar.
-      // Use midpoint between origin and destination coordinates to frame the trajectory
-      const originCoord = flight.origin_coord;
-      const destCoord = flight.dest_coord;
-      if (originCoord && destCoord && originCoord.length === 2 && destCoord.length === 2 && (originCoord[0] !== destCoord[0] || originCoord[1] !== destCoord[1])) {
-        targetLon = (originCoord[0] + destCoord[0]) / 2;
-        targetLat = (originCoord[1] + destCoord[1]) / 2;
-        targetZoom = flight.is_domestic ? 7 : 4;
-      } else {
-        targetLon = -123.1815;
-        targetLat = 49.1967;
-        targetZoom = 12;
-      }
+      // Anchor map camera cleanly at Vancouver International Airport (YVR)
+      targetLon = -123.1815;
+      targetLat = 49.1967;
+      targetZoom = 12;
     }
 
     const isDom = flight.is_domestic;
@@ -213,8 +205,8 @@ export default function FlightScheduleModal() {
       ...(liveMatch || {}),
       ...flight,
       is_live: isLiveAirborne,
-      lon: targetLon,
-      lat: targetLat,
+      lon: isLiveAirborne ? targetLon : undefined,
+      lat: isLiveAirborne ? targetLat : undefined,
       id: liveMatch?.id || flight.flight_id || flight.id,
       origin_code: safeOriginCode,
       dest_code: safeDestCode,
@@ -227,10 +219,10 @@ export default function FlightScheduleModal() {
       departure_time: flight.departure_time || liveMatch?.departure_time,
       arrival_time: flight.arrival_time || liveMatch?.arrival_time,
       route_coords: flight.route_coords || liveMatch?.route_coords,
-      altitude_ft: liveMatch?.altitude_ft ?? flight.altitude_ft ?? 0,
-      speed_kts: liveMatch?.speed_kts ?? flight.speed_kts ?? 0,
-      bearing: liveMatch?.bearing ?? flight.bearing ?? 0,
-      vertical_rate_fpm: liveMatch?.vertical_rate_fpm ?? flight.vertical_rate_fpm ?? 0,
+      altitude_ft: isLiveAirborne ? (liveMatch?.altitude_ft ?? flight.altitude_ft ?? 0) : undefined,
+      speed_kts: isLiveAirborne ? (liveMatch?.speed_kts ?? flight.speed_kts ?? 0) : undefined,
+      bearing: isLiveAirborne ? (liveMatch?.bearing ?? flight.bearing ?? 0) : undefined,
+      vertical_rate_fpm: isLiveAirborne ? (liveMatch?.vertical_rate_fpm ?? flight.vertical_rate_fpm ?? 0) : undefined,
       status: liveMatch?.status || flight.status,
       status_badge: liveMatch?.status_badge || (isLiveAirborne ? '✈️ 即時追蹤中' : flight.status),
     };

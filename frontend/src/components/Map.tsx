@@ -98,33 +98,99 @@ export default function AppMap() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedFlight, setSelectedFlight] = useState<any | null>(null);
 
-  // Selected Flight Route GeoJSON LineString (Great Circle Trajectory)
+  // Selected Flight Route GeoJSON LineString / MultiLineString (Great Circle Trajectory)
   const routeGeoJSON = useMemo(() => {
-    let coords = selectedFlight?.route_coords;
-    if ((!coords || coords.length < 2) && selectedFlight?.origin_coord && selectedFlight?.dest_coord) {
+    let rawCoords = selectedFlight?.route_coords;
+
+    // Fallback: If route_coords is missing, generate direct great circle trajectory
+    if ((!rawCoords || rawCoords.length < 2) && selectedFlight?.origin_coord && selectedFlight?.dest_coord) {
       const [oLon, oLat] = selectedFlight.origin_coord;
       const [dLon, dLat] = selectedFlight.dest_coord;
       if (typeof oLon === 'number' && typeof dLon === 'number' && (oLon !== dLon || oLat !== dLat)) {
+        const diffLon = dLon - oLon;
+        let adjDLon = dLon;
+        if (diffLon > 180) adjDLon -= 360;
+        else if (diffLon < -180) adjDLon += 360;
+
         const pts: [number, number][] = [];
         const steps = 14;
         for (let i = 0; i <= steps; i++) {
           const f = i / steps;
-          const cLon = oLon + f * (dLon - oLon);
+          const cLon = oLon + f * (adjDLon - oLon);
           let cLat = oLat + f * (dLat - oLat);
-          if (Math.abs(dLon - oLon) > 15) {
-            cLat = Math.min(75, cLat + Math.sin(f * Math.PI) * Math.min(10, Math.abs(dLon - oLon) * 0.08));
+          const span = Math.abs(adjDLon - oLon);
+          if (span > 15) {
+            cLat = Math.min(75, cLat + Math.sin(f * Math.PI) * Math.min(10, span * 0.08));
           }
-          pts.push([Math.round(cLon * 10000) / 10000, Math.round(cLat * 10000) / 10000]);
+          let nLon = cLon;
+          while (nLon > 180) nLon -= 360;
+          while (nLon < -180) nLon += 360;
+          pts.push([Math.round(nLon * 10000) / 10000, Math.round(cLat * 10000) / 10000]);
         }
-        coords = pts;
+        rawCoords = pts;
       }
     }
-    if (!coords || coords.length < 2) return null;
+
+    if (!rawCoords || rawCoords.length < 2) return null;
+
+    // Normalize all coordinates to [-180, 180]
+    const normalizedPts: [number, number][] = (rawCoords as [number, number][]).map(([lon, lat]) => {
+      let nLon = lon;
+      while (nLon > 180) nLon -= 360;
+      while (nLon < -180) nLon += 360;
+      return [Math.round(nLon * 10000) / 10000, Math.round(lat * 10000) / 10000];
+    });
+
+    // Check for antimeridian crossing (>180° jump between consecutive points)
+    // and split into clean MultiLineString segments to eliminate cross-world horizontal lines!
+    const segments: [number, number][][] = [];
+    let currentSeg: [number, number][] = [normalizedPts[0]];
+
+    for (let i = 1; i < normalizedPts.length; i++) {
+      const [lon1, lat1] = normalizedPts[i - 1];
+      const [lon2, lat2] = normalizedPts[i];
+      const diff = lon2 - lon1;
+
+      if (Math.abs(diff) > 180) {
+        if (diff < 0) {
+          // East to West crossing (e.g. +170 to -170): interpolate edge at 180 / -180
+          const f = (180 - lon1) / ((lon2 + 360) - lon1);
+          const crossLat = Math.round((lat1 + f * (lat2 - lat1)) * 10000) / 10000;
+          currentSeg.push([180, crossLat]);
+          segments.push(currentSeg);
+          currentSeg = [[-180, crossLat], normalizedPts[i]];
+        } else {
+          // West to East crossing (e.g. -170 to +170): interpolate edge at -180 / 180
+          const f = (-180 - lon1) / ((lon2 - 360) - lon1);
+          const crossLat = Math.round((lat1 + f * (lat2 - lat1)) * 10000) / 10000;
+          currentSeg.push([-180, crossLat]);
+          segments.push(currentSeg);
+          currentSeg = [[180, crossLat], normalizedPts[i]];
+        }
+      } else {
+        currentSeg.push(normalizedPts[i]);
+      }
+    }
+    segments.push(currentSeg);
+
+    if (segments.length > 1) {
+      return {
+        type: 'Feature' as const,
+        geometry: {
+          type: 'MultiLineString' as const,
+          coordinates: segments
+        },
+        properties: {
+          is_domestic: selectedFlight?.is_domestic
+        }
+      };
+    }
+
     return {
       type: 'Feature' as const,
       geometry: {
         type: 'LineString' as const,
-        coordinates: coords
+        coordinates: segments[0]
       },
       properties: {
         is_domestic: selectedFlight?.is_domestic
@@ -1698,8 +1764,8 @@ export default function AppMap() {
           );
         })}
 
-        {/* 若選取的航班不在目前 OpenSky 局部雷達陣列中 (例如遠程飛行或預排航班)，獨立繪製其航機 Marker */}
-        {selectedFlight && typeof selectedFlight.lon === 'number' && typeof selectedFlight.lat === 'number' && !flights.some(f => f.id === selectedFlight.id || f.flight_no?.replace(/\s+/g, '') === selectedFlight.flight_no?.replace(/\s+/g, '')) && (
+        {/* 若選取的航班為即時雷達追蹤中且不在目前預載清單中，才繪製航機 Marker (排程或尚未進入空域之航班不繪製假飛機) */}
+        {selectedFlight && selectedFlight.is_live && typeof selectedFlight.lon === 'number' && typeof selectedFlight.lat === 'number' && !flights.some(f => f.id === selectedFlight.id || f.flight_no?.replace(/\s+/g, '') === selectedFlight.flight_no?.replace(/\s+/g, '')) && (
           <Marker longitude={selectedFlight.lon} latitude={selectedFlight.lat} anchor="center">
             <div
               className="cursor-pointer group flex flex-col items-center z-40 select-none animate-pulse"
@@ -1904,7 +1970,7 @@ export default function AppMap() {
         })()}
 
         {/* Live Flight Detail Popup */}
-        {selectedFlight && typeof selectedFlight.lon === 'number' && typeof selectedFlight.lat === 'number' && (() => {
+        {selectedFlight && (() => {
           const isDom = selectedFlight.is_domestic ?? false;
           const isDep = selectedFlight.flight_type === 'dep';
           let origCode = selectedFlight.origin_code;
@@ -1940,10 +2006,23 @@ export default function AppMap() {
             }
           }
 
+          // Anchor popup: If plane has live GPS, anchor to plane. Otherwise anchor to destination/origin airport (YVR).
+          let popupLon = selectedFlight.lon;
+          let popupLat = selectedFlight.lat;
+          if (typeof popupLon !== 'number' || typeof popupLat !== 'number') {
+            if (selectedFlight.flight_type === 'arr') {
+              popupLon = selectedFlight.dest_coord?.[0] ?? -123.1815;
+              popupLat = selectedFlight.dest_coord?.[1] ?? 49.1967;
+            } else {
+              popupLon = selectedFlight.origin_coord?.[0] ?? -123.1815;
+              popupLat = selectedFlight.origin_coord?.[1] ?? 49.1967;
+            }
+          }
+
           return (
           <Popup
-            longitude={selectedFlight.lon}
-            latitude={selectedFlight.lat}
+            longitude={popupLon}
+            latitude={popupLat}
             anchor="bottom"
             onClose={() => {
               setSelectedFlight(null);
@@ -2058,7 +2137,7 @@ export default function AppMap() {
               </div>
 
               {/* Flight Telemetry (高度、空速、航向、升降率) */}
-              {(selectedFlight.altitude_ft != null || selectedFlight.speed_kts != null) && (
+              {selectedFlight.is_live && (selectedFlight.altitude_ft != null || selectedFlight.speed_kts != null) ? (
                 <div className="grid grid-cols-2 gap-2 text-xs mb-2">
                   <div className="p-2 rounded-lg bg-gray-50/90 border border-gray-100">
                     <span className="text-[10px] text-gray-500 block">✈️ 飛行高度</span>
@@ -2082,6 +2161,16 @@ export default function AppMap() {
                     <span className="text-[10px] text-gray-500 block">↕️ 垂直升降</span>
                     <span className="font-bold text-sm text-gray-900 font-mono">
                       {selectedFlight.vertical_rate_fpm != null ? `${selectedFlight.vertical_rate_fpm} ft/m` : '--'}
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <div className="mb-2 p-2.5 bg-sky-50/70 rounded-lg border border-sky-100 text-[11px] text-sky-950 flex items-start gap-2">
+                  <span className="text-sm shrink-0">📡</span>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="font-bold text-[11.5px] text-sky-900">航機尚未進入溫哥華局部雷達範圍</span>
+                    <span className="text-[10px] text-sky-700 leading-tight">
+                      已由 FlightAware 同步全球航線軌跡。當飛機接近大溫哥華空域時，系統將自動啟動 ADS-B 即時動態遙測。
                     </span>
                   </div>
                 </div>

@@ -426,33 +426,44 @@ def generate_flight_route_points(origin_coord: List[float], plane_coord: List[fl
     """
     Generates smooth, realistic Great Circle flight path coordinates connecting:
     origin_coord -> [plane_coord] -> dest_coord
+    All coordinates are strictly normalized to [-180, 180].
     """
     def slerp_points(p1: List[float], p2: List[float], count: int) -> List[List[float]]:
         lon1, lat1 = p1
         lon2, lat2 = p2
         diff_lon = lon2 - lon1
-        # Handle continuous date line crossing
+        # Handle shortest direction across the dateline
         if diff_lon > 180:
             lon2 -= 360
         elif diff_lon < -180:
             lon2 += 360
-            
+
         pts = []
         for step in range(count + 1):
             f = step / float(count)
             c_lon = lon1 + f * (lon2 - lon1)
             c_lat = lat1 + f * (lat2 - lat1)
+            span = abs(lon2 - lon1)
             # Add subtle Great Circle curvature for transcontinental & transpacific routes
-            if abs(lon2 - lon1) > 15:
-                bulge = math.sin(f * math.pi) * min(10.0, abs(lon2 - lon1) * 0.08)
+            if span > 15:
+                bulge = math.sin(f * math.pi) * min(10.0, span * 0.08)
                 c_lat = min(75.0, c_lat + bulge)
-            pts.append([round(c_lon, 4), round(c_lat, 4)])
+
+            norm_lon = c_lon
+            while norm_lon > 180: norm_lon -= 360
+            while norm_lon < -180: norm_lon += 360
+            pts.append([round(norm_lon, 4), round(c_lat, 4)])
         return pts
 
     if plane_coord and plane_coord[0] is not None and plane_coord[1] is not None:
-        leg1 = slerp_points(origin_coord, plane_coord, 8)
-        leg2 = slerp_points(plane_coord, dest_coord, 8)
-        return leg1 + leg2[1:]
+        d_lon = abs(plane_coord[0] - dest_coord[0])
+        d_lat = abs(plane_coord[1] - dest_coord[1])
+        if d_lon < 0.2 and d_lat < 0.2:
+            return slerp_points(origin_coord, dest_coord, 14)
+        else:
+            leg1 = slerp_points(origin_coord, plane_coord, 10)
+            leg2 = slerp_points(plane_coord, dest_coord, 5)
+            return leg1 + leg2[1:]
     else:
         return slerp_points(origin_coord, dest_coord, 14)
 
