@@ -1300,11 +1300,8 @@ export default function AppMap() {
     return style;
   }, [
     layers.skytrainRoutes, 
-    layers.skytrainStops, 
     layers.busRoutes, 
-    layers.busStops, 
     layers.seabusRoutes, 
-    layers.seabusStops, 
     layers.bcferriesRoutes, 
     layers.parkingMeters, 
     layers.accessibleParking, 

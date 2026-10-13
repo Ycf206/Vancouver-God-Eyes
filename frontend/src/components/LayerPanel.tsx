@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { useUIStore, MapStyleType } from '@/store/useUIStore';
 import { 
-  Map, Satellite, Sun, Moon, Bus, Layers, CircleDot, Route, Ship, 
+  Map, Satellite, Sun, Moon, Bus, Layers, Route, Ship, 
   CircleDollarSign, Accessibility, Bike, Zap, Scooter, Camera, Siren, 
   Flame, Building2, Hospital, ChevronLeft, Trees, Footprints, Flower2, 
   Droplets, Bath, Leaf, Landmark, GraduationCap, BookOpen, UtensilsCrossed, Bed, Heart,
