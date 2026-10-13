@@ -16,6 +16,18 @@ if (typeof window !== 'undefined') {
 interface Vehicle {
   id: string;
   route_id: string;
+  route_number?: string;
+  route_name?: string;
+  trip_id?: string;
+  direction_id?: string;
+  stop_id?: string;
+  stop_seq?: number;
+  origin?: string;
+  destination?: string;
+  operator?: string;
+  next_stop_name?: string;
+  next_stop_time?: string;
+  next_stop_minutes?: number;
   is_seabus?: boolean;
   is_bcferries?: boolean;
   vessel_name?: string;
@@ -200,6 +212,66 @@ export default function AppMap() {
   const [loadingSchedule, setLoadingSchedule] = useState(false);
   const [selectedFerry, setSelectedFerry] = useState<FerryVehicle | null>(null);
   const [selectedFacility, setSelectedFacility] = useState<RoadFacilityInfo | null>(null);
+  const [selectedBus, setSelectedBus] = useState<Vehicle | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [busDetails, setBusDetails] = useState<any | null>(null);
+  const [loadingBusDetails, setLoadingBusDetails] = useState(false);
+
+  const handleSelectBus = React.useCallback((v: Vehicle) => {
+    setSelectedStop(null);
+    setSelectedFacility(null);
+    setSelectedTerminal(null);
+    setSelectedFerry(null);
+    setSelectedFlight(null);
+    setSelectedAirport(null);
+    setSelectedBus(v);
+    setLoadingBusDetails(true);
+
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:8000` : 'http://localhost:8000');
+    const qs = new URLSearchParams({
+      vehicle_id: v.id || '',
+      route_id: v.route_id || '',
+      trip_id: v.trip_id || '',
+      direction_id: v.direction_id || '0',
+      stop_id: v.stop_id || '',
+      stop_seq: String(v.stop_seq || 0),
+      lat: String(v.lat || 0),
+      lon: String(v.lon || 0),
+    });
+    fetch(`${apiUrl}/api/transit/vehicle-details?${qs.toString()}`)
+      .then(res => res.json())
+      .then(data => {
+        setBusDetails(data);
+        setLoadingBusDetails(false);
+      })
+      .catch(err => {
+        console.error('Error fetching bus details:', err);
+        setLoadingBusDetails(false);
+      });
+  }, []);
+
+  // Keep selectedBus live coordinates & next stop synced when vehicles update via WebSocket
+  useEffect(() => {
+    if (!selectedBus) return;
+    const updated = vehicles.find(v => v.id === selectedBus.id);
+    if (updated && (updated.lat !== selectedBus.lat || updated.lon !== selectedBus.lon || updated.stop_id !== selectedBus.stop_id)) {
+      setSelectedBus(updated);
+    }
+  }, [vehicles, selectedBus]);
+
+  const busRouteGeoJSON = useMemo(() => {
+    if (!selectedBus || !busDetails?.shape_coords || busDetails.shape_coords.length < 2) return null;
+    return {
+      type: 'Feature' as const,
+      geometry: {
+        type: 'LineString' as const,
+        coordinates: busDetails.shape_coords,
+      },
+      properties: {
+        color: busDetails.color || '#10b981',
+      },
+    };
+  }, [selectedBus, busDetails]);
 
 
   // States for Traffic Camera Images
@@ -476,7 +548,7 @@ export default function AppMap() {
     style.sources['food-vendors'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/food_vendors` };
     style.sources['homeless-shelters'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/homeless_shelters` };
 
-    // Bus Routes
+    // Bus Routes & Stops (Merged under busRoutes)
     if (layers.busRoutes) {
       style.layers.push({
         id: 'bus-tracks-layer',
@@ -488,10 +560,6 @@ export default function AppMap() {
           'line-opacity': 0.8
         }
       });
-    }
-
-    // Bus Stops
-    if (layers.busStops) {
       style.layers.push({
         id: 'bus-stops-layer',
         type: 'circle',
@@ -505,7 +573,7 @@ export default function AppMap() {
       });
     }
 
-    // SkyTrain Routes
+    // SkyTrain Routes & Stops (Merged under skytrainRoutes)
     if (layers.skytrainRoutes) {
       style.layers.push({
         id: 'skytrain-tracks-layer',
@@ -517,10 +585,6 @@ export default function AppMap() {
           'line-opacity': 0.8
         }
       });
-    }
-
-    // SkyTrain Stops
-    if (layers.skytrainStops) {
       style.layers.push({
         id: 'skytrain-stops-layer',
         type: 'circle',
@@ -534,7 +598,7 @@ export default function AppMap() {
       });
     }
 
-    // SeaBus Routes
+    // SeaBus Routes & Stops (Merged under seabusRoutes)
     if (layers.seabusRoutes) {
       style.layers.push({
         id: 'seabus-tracks-layer',
@@ -547,10 +611,6 @@ export default function AppMap() {
           'line-dasharray': [2, 2] // Dash line for ferries!
         }
       });
-    }
-
-    // SeaBus Stops
-    if (layers.seabusStops) {
       style.layers.push({
         id: 'seabus-stops-layer',
         type: 'circle',
@@ -591,7 +651,7 @@ export default function AppMap() {
       });
     }
 
-    // Road Facilities: Bikeways (單車徑 LineString)
+    // Road Facilities: Bikeways (單車徑 LineString — 4 種高對比度鮮明配色)
     if (layers.bikeways) {
       style.layers.push({
         id: 'bikeways-casing-layer',
@@ -602,9 +662,9 @@ export default function AppMap() {
           'line-cap': 'round'
         },
         paint: {
-          'line-color': '#042f2e',
-          'line-width': ['interpolate', ['linear'], ['zoom'], 10, 2.5, 13, 4.5, 16, 7],
-          'line-opacity': 0.55
+          'line-color': '#0f172a',
+          'line-width': ['interpolate', ['linear'], ['zoom'], 10, 2.6, 13, 4.6, 16, 7.2],
+          'line-opacity': 0.6
         }
       });
       style.layers.push({
@@ -619,14 +679,14 @@ export default function AppMap() {
           'line-color': [
             'match',
             ['get', 'bikeway_type'],
-            'Protected Bike Lanes', '#14b8a6',
-            'Painted Lanes', '#10b981',
-            'Local Street', '#2dd4bf',
-            'Shared Lanes', '#34d399',
-            '#14b8a6'
+            'Protected Bike Lanes', '#10b981', // 翠綠 Emerald (受保護獨立單車道)
+            'Painted Lanes', '#0ea5e9',        // 天藍 Sky Blue (路面標線單車道)
+            'Local Street', '#f59e0b',         // 琥珀金 Amber (社區慢速單車街)
+            'Shared Lanes', '#a855f7',         // 紫羅蘭 Purple (混合共用車道)
+            '#10b981'
           ],
-          'line-width': ['interpolate', ['linear'], ['zoom'], 10, 1.5, 13, 2.8, 16, 4.5],
-          'line-opacity': 0.92
+          'line-width': ['interpolate', ['linear'], ['zoom'], 10, 1.6, 13, 3.0, 16, 4.8],
+          'line-opacity': 0.94
         }
       });
     }
@@ -1410,11 +1470,55 @@ export default function AppMap() {
             setSelectedFacility(null);
             setSelectedAirport(null);
             setSelectedFlight(null);
+            setSelectedBus(null);
+            setBusDetails(null);
             setSearchTarget(null);
           }
         }}
       >
         <NavigationControl position="bottom-right" visualizePitch={true} />
+
+        {/* 選中巴士之路線軌跡與沿線站點 (Selected Bus Route Line & Stops on Map) */}
+        {selectedBus && busRouteGeoJSON && (
+          <Source id="selected-bus-route-source" type="geojson" data={busRouteGeoJSON}>
+            <Layer
+              id="selected-bus-route-glow"
+              type="line"
+              layout={{ 'line-join': 'round', 'line-cap': 'round' }}
+              paint={{
+                'line-color': busDetails?.color || '#10b981',
+                'line-width': 8,
+                'line-blur': 3,
+                'line-opacity': 0.55
+              }}
+            />
+            <Layer
+              id="selected-bus-route-line"
+              type="line"
+              layout={{ 'line-join': 'round', 'line-cap': 'round' }}
+              paint={{
+                'line-color': busDetails?.color || '#10b981',
+                'line-width': 4,
+                'line-opacity': 0.95
+              }}
+            />
+          </Source>
+        )}
+
+        {selectedBus && busDetails?.stops && busDetails.stops.map((st: { seq: number; stop_id: string; name: string; lat: number; lon: number; status: string }) => (
+          <Marker key={`bus-stop-seq-${st.seq}-${st.stop_id}`} longitude={st.lon} latitude={st.lat} anchor="center">
+            <div
+              className={`rounded-full border transition-transform ${
+                st.status === 'next'
+                  ? 'w-3.5 h-3.5 bg-amber-400 border-white shadow-[0_0_8px_rgba(251,191,36,0.95)] scale-125 z-20'
+                  : st.status === 'passed'
+                  ? 'w-2 h-2 bg-gray-400/80 border-gray-800 opacity-70 z-10'
+                  : 'w-2.5 h-2.5 bg-emerald-400 border-gray-900 shadow-sm z-10'
+              }`}
+              title={`${st.seq}. ${st.name}`}
+            />
+          </Marker>
+        ))}
 
         {/* 搜尋目標高亮光環 (Search Target Focus Ring) */}
         {searchTarget && (
@@ -1430,11 +1534,22 @@ export default function AppMap() {
 
         {/* 即時車輛位置 (Live TransLink Vehicles) */}
         {vehicles.map(v => {
+          const isSelected = selectedBus?.id === v.id;
+          const busNum = v.route_number || v.route_id;
           if (v.is_seabus) {
             if (!layers.seabusVehicles) return null;
             return (
               <Marker key={v.id} longitude={v.lon} latitude={v.lat} anchor="center">
-                <div className="relative flex items-center justify-center w-6 h-6 bg-[#8b786d]/90 rounded-full cursor-pointer tooltip border-[1.5px] border-white shadow-md backdrop-blur-sm transition-transform hover:scale-110 z-20" title={`SeaBus`}>
+                <div
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleSelectBus(v);
+                  }}
+                  className={`relative flex items-center justify-center w-6 h-6 bg-[#8b786d]/90 rounded-full cursor-pointer tooltip border-[1.5px] border-white shadow-md backdrop-blur-sm transition-transform hover:scale-125 z-20 ${
+                    isSelected ? 'ring-4 ring-amber-400/80 scale-125 z-30' : ''
+                  }`}
+                  title={`SeaBus${v.destination ? ` 往 ${v.destination}` : ''}`}
+                >
                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12h20"/><path d="M6 12l2-4h8l2 4"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                 </div>
               </Marker>
@@ -1443,7 +1558,16 @@ export default function AppMap() {
             if (!layers.bus) return null;
             return (
               <Marker key={v.id} longitude={v.lon} latitude={v.lat} anchor="center">
-                <div className="relative flex items-center justify-center w-5 h-5 bg-emerald-500/80 rounded-full cursor-pointer tooltip border border-white/60 shadow-md backdrop-blur-sm hover:scale-110 transition-transform z-10" title={`Route: ${v.route_id}`}>
+                <div
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleSelectBus(v);
+                  }}
+                  className={`relative flex items-center justify-center w-5 h-5 bg-emerald-500/90 rounded-full cursor-pointer tooltip border border-white/80 shadow-md backdrop-blur-sm hover:scale-125 transition-transform z-10 ${
+                    isSelected ? 'ring-4 ring-emerald-300/90 bg-emerald-600 scale-125 z-30' : ''
+                  }`}
+                  title={`巴士 ${busNum}${v.destination ? ` 去 ${v.destination}` : ''}`}
+                >
                   <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/></svg>
                 </div>
               </Marker>
@@ -1469,6 +1593,171 @@ export default function AppMap() {
           </Marker>
         ))}
 
+        {/* 巴士 / 海上巴士 即時動態 Popup (Live Bus / SeaBus Click Popup) */}
+        {selectedBus && (() => {
+          const busNum = busDetails?.route_number || selectedBus.route_number || selectedBus.route_id;
+          const destName = busDetails?.destination || selectedBus.destination || '終點站';
+          const originName = busDetails?.origin || selectedBus.origin || '起點站';
+          const operatorName = busDetails?.operator || selectedBus.operator || 'TransLink (CMBC 岸山巴士)';
+          const nextStopName = selectedBus.next_stop_name || busDetails?.next_stop_name || '沿線行駛中';
+          const nextStopTime = selectedBus.next_stop_time || busDetails?.next_stop_time || '';
+          const nextStopMin = selectedBus.next_stop_minutes ?? busDetails?.next_stop_minutes;
+          const stopList = busDetails?.stops || [];
+
+          return (
+            <Popup
+              longitude={selectedBus.lon}
+              latitude={selectedBus.lat}
+              anchor="bottom"
+              onClose={() => {
+                setSelectedBus(null);
+                setBusDetails(null);
+              }}
+              closeOnClick={false}
+              closeButton={false}
+              className="z-50"
+              offset={[0, -12]}
+              maxWidth="360px"
+            >
+              <div className="w-[310px] sm:w-[335px] max-w-[90vw] bg-[#161922] text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] -m-[10px]">
+                {/* Header */}
+                <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-[#262b38]">
+                  <div className="flex items-start gap-2.5 min-w-0">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5 shadow-sm">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/>
+                      </svg>
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="font-bold text-white text-[15px] leading-snug tracking-tight truncate">
+                        {busNum} 去 {destName}
+                      </h3>
+                      <div className="flex items-center gap-1.5 mt-0.5">
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_rgba(52,211,153,0.9)]"></span>
+                        <span className="text-[11px] font-semibold text-emerald-400">即時更新中</span>
+                        {selectedBus.id && (
+                          <span className="text-[10px] text-gray-400 font-mono ml-1">#{selectedBus.id}</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setSelectedBus(null);
+                      setBusDetails(null);
+                    }}
+                    className="text-gray-400 hover:text-white text-xl leading-none px-1.5 py-0.5 rounded hover:bg-[#252a38] transition-colors shrink-0"
+                  >
+                    &times;
+                  </button>
+                </div>
+
+                {/* Info Rows */}
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="flex justify-between items-center gap-2">
+                    <span className="text-gray-400 shrink-0">營辦商</span>
+                    <span className="font-bold text-gray-100 text-right truncate">{operatorName}</span>
+                  </div>
+                  <div className="flex justify-between items-center gap-2">
+                    <span className="text-gray-400 shrink-0">起點</span>
+                    <span className="font-bold text-gray-100 text-right truncate">{originName}</span>
+                  </div>
+                  <div className="flex justify-between items-center gap-2">
+                    <span className="text-gray-400 shrink-0">終點</span>
+                    <span className="font-bold text-gray-100 text-right truncate">{destName}</span>
+                  </div>
+                  <div className="flex justify-between items-center gap-2">
+                    <span className="text-gray-400 shrink-0">當前</span>
+                    <span className="font-bold text-emerald-400 text-right truncate">開往 {destName}</span>
+                  </div>
+                  <div className="flex justify-between items-start gap-2 pt-0.5">
+                    <span className="text-gray-400 shrink-0 mt-0.5">下一站</span>
+                    <div className="flex flex-col items-end text-right min-w-0">
+                      <span className="font-bold text-white leading-snug">{nextStopName}</span>
+                      <span className="text-[11px] font-bold text-amber-400 mt-0.5">
+                        {nextStopTime
+                          ? `預計 ${nextStopTime} (${nextStopMin !== undefined && nextStopMin !== null ? (nextStopMin <= 0 ? '即將進站' : `${nextStopMin} 分鐘後`) : '行駛中'})`
+                          : '即時定位中'}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex justify-between items-center gap-2">
+                    <span className="text-gray-400 shrink-0">運行</span>
+                    <span className="font-bold text-emerald-400">準時</span>
+                  </div>
+                </div>
+
+                {/* Stops List Box */}
+                <div className="mt-3 pt-2.5 border-t border-[#262b38]">
+                  <div className="bg-[#10131a] rounded-lg border border-[#232836] p-2">
+                    <div className="text-[11px] text-gray-400 font-medium mb-1.5 px-1 flex items-center justify-between">
+                      <span>
+                        {loadingBusDetails
+                          ? '載入路線站點中...'
+                          : `${stopList.length} 個站，已畫喺地圖`}
+                      </span>
+                      {busDetails?.route_name && (
+                        <span className="text-[10px] text-emerald-400/80 font-mono truncate max-w-[140px]">
+                          {busDetails.route_name}
+                        </span>
+                      )}
+                    </div>
+                    {loadingBusDetails ? (
+                      <div className="py-4 flex items-center justify-center gap-2 text-xs text-gray-400">
+                        <div className="w-3.5 h-3.5 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"></div>
+                        <span>讀取 GTFS 站序與軌跡...</span>
+                      </div>
+                    ) : stopList.length > 0 ? (
+                      <div className="max-h-[155px] overflow-y-auto flex flex-col gap-0.5 pr-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
+                        {stopList.map((st: { seq: number; stop_id: string; name: string; lat: number; lon: number; status: string; eta_time?: string; eta_minutes?: number }) => {
+                          const isNext = st.status === 'next';
+                          const isPassed = st.status === 'passed';
+                          return (
+                            <div
+                              key={`popup-stop-${st.seq}`}
+                              onClick={() => {
+                                mapRef.current?.flyTo({ center: [st.lon, st.lat], zoom: 15.5, duration: 800 });
+                              }}
+                              className={`flex items-center justify-between gap-2 px-2 py-1.5 rounded text-[11.5px] cursor-pointer transition-colors ${
+                                isNext
+                                  ? 'bg-amber-500/20 border-l-2 border-amber-400 text-white font-bold'
+                                  : isPassed
+                                  ? 'text-gray-500 hover:bg-[#1a1f2c]'
+                                  : 'text-gray-200 hover:bg-[#1a1f2c]'
+                              }`}
+                            >
+                              <span className="truncate">
+                                {st.seq}. {st.name}
+                              </span>
+                              <span className={`shrink-0 text-[10.5px] font-semibold ${
+                                isNext
+                                  ? 'text-amber-400 font-bold'
+                                  : isPassed
+                                  ? 'text-gray-600'
+                                  : 'text-emerald-400/90 font-mono'
+                              }`}>
+                                {isNext
+                                  ? '下個站'
+                                  : isPassed
+                                  ? '已過站'
+                                  : st.eta_minutes !== undefined && st.eta_minutes !== null
+                                  ? `${st.eta_minutes} 分`
+                                  : ''}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <div className="text-[11px] text-gray-500 py-2 text-center">暫無詳細站序資料</div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </Popup>
+          );
+        })()}
+
         {/* 到站時間 Popup */}
         {selectedStop && (
           <Popup
@@ -1477,9 +1766,9 @@ export default function AppMap() {
             anchor="bottom"
             onClose={() => setSelectedStop(null)}
             closeButton={true}
-              closeOnClick={false}
+            closeOnClick={false}
           >
-            <div className="p-1 min-w-[200px] text-gray-800">
+            <div className="p-1 min-w-[215px] text-gray-800">
               <h3 className="font-bold text-sm mb-2 pb-1 border-b">{selectedStop.name} <span className="text-xs text-gray-400">({selectedStop.id})</span></h3>
               {loadingArrivals ? (
                 <div className="text-xs text-gray-500 flex items-center gap-2 mt-2">
@@ -1487,19 +1776,32 @@ export default function AppMap() {
                   載入預估時間...
                 </div>
               ) : arrivals.length > 0 ? (
-                <div className="flex flex-col gap-1 mt-2">
-                  {arrivals.map((arr, i) => (
-                    <div key={i} className="flex justify-between items-center text-xs">
-                      <span className="font-semibold px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-md">路線 {arr.route_id}</span>
-                      <span className="text-gray-600">
-                        {arr.minutes <= 0 ? (
-                          <span className="text-red-500 font-bold animate-pulse">即將進站</span>
-                        ) : (
-                          <span><strong className="text-base text-gray-900">{arr.minutes}</strong> 分鐘</span>
-                        )}
-                      </span>
-                    </div>
-                  ))}
+                <div className="flex flex-col gap-1.5 mt-2">
+                  {arrivals.map((arr, i) => {
+                    const busNumber = arr.route_number || arr.route_id;
+                    const isRailOrFerry = typeof busNumber === 'string' && (busNumber.includes('Line') || busNumber.includes('SeaBus') || busNumber === 'WCE');
+                    return (
+                      <div key={i} className="flex justify-between items-center text-xs gap-2">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <span className="font-bold px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-md shrink-0 font-mono">
+                            {isRailOrFerry ? busNumber : `巴士 ${busNumber}`}
+                          </span>
+                          {arr.destination && (
+                            <span className="text-[11px] text-gray-500 truncate">
+                              往 {arr.destination}
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-gray-600 shrink-0">
+                          {arr.minutes <= 0 ? (
+                            <span className="text-red-500 font-bold animate-pulse">即將進站</span>
+                          ) : (
+                            <span><strong className="text-base text-gray-900">{arr.minutes}</strong> 分鐘</span>
+                          )}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
               ) : (
                 <div className="text-xs text-gray-500 mt-2">目前沒有即將到站的班次</div>
@@ -1508,8 +1810,8 @@ export default function AppMap() {
           </Popup>
         )}
 
-        {/* BC Ferries Terminals */}
-        {layers.bcferriesTerminals && ferryTerminals.map((t, i) => (
+        {/* BC Ferries Terminals (Merged under bcferriesRoutes '路線') */}
+        {layers.bcferriesRoutes && ferryTerminals.map((t, i) => (
           <Marker 
             key={`term-${i}`} 
             longitude={t.geometry.coordinates[0]} 
@@ -2441,62 +2743,90 @@ export default function AppMap() {
               )}
 
               {/* Bikeways (單車徑 LineString) Details */}
-              {selectedFacility.facility_type === 'bikeways' && (
-                <div className="flex flex-col gap-2 text-xs">
-                  <div className="p-2.5 rounded bg-teal-50 border border-teal-200 flex flex-col gap-1">
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-teal-900 flex items-center gap-1.5">
-                        <span>🚴</span>
-                        <span>{selectedFacility.properties.bikeway_type_zh || '單車專用道'}</span>
-                      </span>
+              {selectedFacility.facility_type === 'bikeways' && (() => {
+                const bType = selectedFacility.properties.bikeway_type || '';
+                const bColor =
+                  bType === 'Protected Bike Lanes' ? '#10b981' :
+                  bType === 'Painted Lanes' ? '#0ea5e9' :
+                  bType === 'Local Street' ? '#f59e0b' :
+                  bType === 'Shared Lanes' ? '#a855f7' : '#10b981';
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    <div className="p-2.5 rounded bg-gray-50 border border-gray-200 flex flex-col gap-1">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-gray-900 flex items-center gap-1.5">
+                          <span className="w-3 h-3 rounded-full shrink-0 border border-white shadow-sm" style={{ backgroundColor: bColor }}></span>
+                          <span>🚴 {selectedFacility.properties.bikeway_type_zh || '單車專用道'}</span>
+                        </span>
+                      </div>
+                      {selectedFacility.properties.aaa_network && (
+                        <div className="text-[11px] font-medium text-emerald-700 pt-1 border-t border-gray-200/70">
+                          ✅ {selectedFacility.properties.aaa_network}
+                        </div>
+                      )}
                     </div>
-                    {selectedFacility.properties.aaa_network && (
-                      <div className="text-[11px] font-medium text-teal-700 pt-1 border-t border-teal-200/60">
-                        ✅ {selectedFacility.properties.aaa_network}
-                      </div>
-                    )}
-                  </div>
 
-                  <div className="bg-gray-50 p-2 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                    {selectedFacility.properties.bike_route_name && (
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>單車路線</span>
-                        <span className="font-bold text-gray-900">{selectedFacility.properties.bike_route_name}</span>
+                    <div className="bg-gray-50 p-2 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                      {selectedFacility.properties.bike_route_name && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>單車路線</span>
+                          <span className="font-bold text-gray-900">{selectedFacility.properties.bike_route_name}</span>
+                        </div>
+                      )}
+                      {selectedFacility.properties.street_name && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>所在街道</span>
+                          <span className="font-semibold text-gray-800">{selectedFacility.properties.street_name}</span>
+                        </div>
+                      )}
+                      {selectedFacility.properties.bikeway_direction && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>通行方向</span>
+                          <span className="font-medium text-gray-800">{selectedFacility.properties.bikeway_direction}</span>
+                        </div>
+                      )}
+                      {selectedFacility.properties.surface_type && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>路面材質</span>
+                          <span className="font-medium text-gray-800">{selectedFacility.properties.surface_type}</span>
+                        </div>
+                      )}
+                      {selectedFacility.properties.speed_limit && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>路段速限</span>
+                          <span className="font-bold text-emerald-800">{selectedFacility.properties.speed_limit} km/h</span>
+                        </div>
+                      )}
+                      {selectedFacility.properties.snow_removal && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>冬季養護</span>
+                          <span className="font-medium text-sky-700">{selectedFacility.properties.snow_removal}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* 4種單車徑顏色圖例 */}
+                    <div className="bg-gray-50/90 px-2 py-1.5 rounded border border-gray-100 grid grid-cols-2 gap-1 text-[10px] text-gray-600">
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-2.5 h-1 rounded-full bg-[#10b981] shrink-0"></span>
+                        <span className="truncate">受保護獨立道</span>
                       </div>
-                    )}
-                    {selectedFacility.properties.street_name && (
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>所在街道</span>
-                        <span className="font-semibold text-gray-800">{selectedFacility.properties.street_name}</span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-2.5 h-1 rounded-full bg-[#0ea5e9] shrink-0"></span>
+                        <span className="truncate">路面標線單車道</span>
                       </div>
-                    )}
-                    {selectedFacility.properties.bikeway_direction && (
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>通行方向</span>
-                        <span className="font-medium text-gray-800">{selectedFacility.properties.bikeway_direction}</span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-2.5 h-1 rounded-full bg-[#f59e0b] shrink-0"></span>
+                        <span className="truncate">社區慢速單車街</span>
                       </div>
-                    )}
-                    {selectedFacility.properties.surface_type && (
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>路面材質</span>
-                        <span className="font-medium text-gray-800">{selectedFacility.properties.surface_type}</span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-2.5 h-1 rounded-full bg-[#a855f7] shrink-0"></span>
+                        <span className="truncate">混合共用車道</span>
                       </div>
-                    )}
-                    {selectedFacility.properties.speed_limit && (
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>路段速限</span>
-                        <span className="font-bold text-teal-800">{selectedFacility.properties.speed_limit} km/h</span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.snow_removal && (
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>冬季養護</span>
-                        <span className="font-medium text-sky-700">{selectedFacility.properties.snow_removal}</span>
-                      </div>
-                    )}
+                    </div>
                   </div>
-                </div>
-              )}
+                );
+              })()}
 
               {/* Fire Halls Details */}
               {selectedFacility.facility_type === 'fire_halls' && (

@@ -189,20 +189,181 @@ async def fetch_bcferries_realtime():
         await asyncio.sleep(15)
 
 
+_gtfs_metadata_cache = None
+trip_realtime_etas = {}
+
+def get_gtfs_metadata():
+    global _gtfs_metadata_cache
+    if _gtfs_metadata_cache is not None:
+        return _gtfs_metadata_cache
+    meta_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "translink_gtfs_metadata.json")
+    if not os.path.exists(meta_path):
+        try:
+            from scripts.generate_gtfs_metadata import generate_gtfs_metadata
+            generate_gtfs_metadata()
+        except Exception as e:
+            print(f"Auto-generate GTFS metadata error: {e}")
+    if os.path.exists(meta_path):
+        try:
+            import json
+            with open(meta_path, "r", encoding="utf-8") as f:
+                _gtfs_metadata_cache = json.load(f)
+                return _gtfs_metadata_cache
+        except Exception as e:
+            print(f"Error loading translink_gtfs_metadata.json: {e}")
+    return {"routes": {}, "variants": {}, "route_default_variants": {}, "trip_to_variant": {}}
+
+
+def _format_vancouver_hhmm(unix_ts: float) -> str:
+    try:
+        from zoneinfo import ZoneInfo
+        dt = datetime.fromtimestamp(unix_ts, ZoneInfo("America/Vancouver"))
+    except Exception:
+        import datetime as dt_mod
+        dt = dt_mod.datetime.utcfromtimestamp(unix_ts) - dt_mod.timedelta(hours=7)
+    return dt.strftime("%H:%M")
+
+
+def _resolve_vehicle_variant(route_id: str, trip_id: str, direction_id: str, gtfs_meta: dict):
+    variants = gtfs_meta.get("variants", {})
+    trip_to_variant = gtfs_meta.get("trip_to_variant", {})
+    default_variants = gtfs_meta.get("route_default_variants", {})
+
+    vkey = trip_to_variant.get(str(trip_id))
+    if vkey and vkey in variants:
+        return variants[vkey]
+
+    def_key = f"{route_id}_{direction_id}"
+    vkey = default_variants.get(def_key) or default_variants.get(f"{route_id}_0") or default_variants.get(f"{route_id}_1")
+    if vkey and vkey in variants:
+        return variants[vkey]
+    return None
+
+
+def _compute_vehicle_stop_progress(variant: dict, stop_id: str, stop_seq: int, lat: float, lon: float, trip_id: str):
+    """Determine next stop, origin, destination, and stop-by-stop status & ETAs for a live bus."""
+    if not variant:
+        return {
+            "next_stop_name": "沿線行駛中",
+            "next_stop_time": "",
+            "next_stop_minutes": None,
+            "next_stop_index": 0,
+            "stops": [],
+        }
+
+    stops = variant.get("stops", [])
+    if not stops:
+        return {
+            "next_stop_name": variant.get("destination", ""),
+            "next_stop_time": "",
+            "next_stop_minutes": None,
+            "next_stop_index": 0,
+            "stops": [],
+        }
+
+    next_idx = None
+    if stop_id:
+        for idx, s in enumerate(stops):
+            if str(s.get("stop_id")) == str(stop_id) or str(s.get("stop_code")) == str(stop_id):
+                next_idx = idx
+                break
+
+    if next_idx is None and stop_seq and stop_seq > 0:
+        next_idx = min(max(0, stop_seq - 1), len(stops) - 1)
+
+    if next_idx is None and lat and lon:
+        best_dist = 999999.0
+        best_i = 0
+        for idx, s in enumerate(stops):
+            d = (s["lat"] - lat) ** 2 + (s["lon"] - lon) ** 2
+            if d < best_dist:
+                best_dist = d
+                best_i = idx
+        next_idx = min(best_i + 1, len(stops) - 1) if best_i < len(stops) - 1 else best_i
+
+    if next_idx is None:
+        next_idx = 0
+
+    now_ts = time.time()
+    trip_etas = trip_realtime_etas.get(str(trip_id), {})
+
+    # Estimate base minutes to next_idx if GTFS-RT TripUpdate doesn't have this stop
+    next_stop_obj = stops[next_idx]
+    next_eta_info = trip_etas.get(str(next_stop_obj["stop_id"]))
+    if next_eta_info and next_eta_info["arrival_time"] >= now_ts - 30:
+        base_next_ts = next_eta_info["arrival_time"]
+        base_next_min = max(0, int((base_next_ts - now_ts) / 60))
+    else:
+        if lat and lon:
+            dist_km = math.hypot((next_stop_obj["lat"] - lat) * 111.0, (next_stop_obj["lon"] - lon) * 73.0)
+            base_next_min = max(1, min(12, int(round(dist_km / 0.42))))
+        else:
+            base_next_min = 2
+        base_next_ts = now_ts + base_next_min * 60
+
+    enriched_stops = []
+    for idx, s in enumerate(stops):
+        sid = str(s["stop_id"])
+        if idx < next_idx:
+            st_status = "passed"
+            eta_time_str = ""
+            eta_min = None
+        elif idx == next_idx:
+            st_status = "next"
+            eta_time_str = _format_vancouver_hhmm(base_next_ts)
+            eta_min = base_next_min
+        else:
+            st_status = "upcoming"
+            rt_info = trip_etas.get(sid)
+            if rt_info and rt_info["arrival_time"] >= now_ts:
+                eta_min = max(base_next_min + (idx - next_idx), int((rt_info["arrival_time"] - now_ts) / 60))
+                eta_time_str = _format_vancouver_hhmm(rt_info["arrival_time"])
+            else:
+                eta_min = base_next_min + (idx - next_idx) * 2
+                eta_time_str = _format_vancouver_hhmm(now_ts + eta_min * 60)
+
+        enriched_stops.append({
+            "seq": idx + 1,
+            "stop_id": s["stop_id"],
+            "stop_code": s.get("stop_code", s["stop_id"]),
+            "name": s["name"],
+            "lat": s["lat"],
+            "lon": s["lon"],
+            "status": st_status,
+            "eta_time": eta_time_str,
+            "eta_minutes": eta_min,
+        })
+
+    return {
+        "next_stop_name": next_stop_obj["name"],
+        "next_stop_time": _format_vancouver_hhmm(base_next_ts),
+        "next_stop_minutes": base_next_min,
+        "next_stop_index": next_idx,
+        "stops": enriched_stops,
+    }
+
+
 async def fetch_translink_realtime():
-    """Fetches VehiclePositions"""
+    """Fetches VehiclePositions and enriches with GTFS static bus numbers, origins, destinations & next stops."""
+    global cached_translink_vehicles
     TRANSLINK_API_KEY = os.getenv("TRANSLINK_API_KEY", "OAsdtyJoPO0odcN6Ivhy")
     url = f"https://gtfsapi.translink.ca/v3/gtfsposition?apikey={TRANSLINK_API_KEY}"
     
     while True:
         try:
+            gtfs_meta = get_gtfs_metadata()
+            routes_lookup = gtfs_meta.get("routes", {})
+            variant_route_ids = {v["route_id"] for v in gtfs_meta.get("variants", {}).values()}
+
             # Query the DB for the current active IDs!
             db = database.SessionLocal()
             try:
-                # We need all the route_ids that are currently stored in our DB
                 valid_routes = db.query(models.TransitRoute).all()
-                valid_route_ids = {r.route_id for r in valid_routes}
-                seabus_ids = {r.route_id for r in valid_routes if r.route_group == 'seabus'}
+                valid_route_ids = {r.route_id for r in valid_routes} | variant_route_ids
+                seabus_ids = {r.route_id for r in valid_routes if r.route_group == 'seabus'} | {"6771"}
+            except Exception:
+                valid_route_ids = variant_route_ids
+                seabus_ids = {"6771"}
             finally:
                 db.close()
                 
@@ -220,12 +381,41 @@ async def fetch_translink_realtime():
                     route_id = v.trip.route_id
                     
                     if route_id in valid_route_ids:
+                        trip_id = v.trip.trip_id
+                        direction_id = str(v.trip.direction_id) if v.trip.HasField('direction_id') else "0"
+                        stop_id = str(v.stop_id) if v.stop_id else ""
+                        stop_seq = int(v.current_stop_sequence) if v.current_stop_sequence else 0
+                        lat = v.position.latitude
+                        lon = v.position.longitude
+
+                        rmeta = routes_lookup.get(route_id, {})
+                        route_number = rmeta.get("route_number") or route_id
+                        variant = _resolve_vehicle_variant(route_id, trip_id, direction_id, gtfs_meta)
+                        prog = _compute_vehicle_stop_progress(variant, stop_id, stop_seq, lat, lon, trip_id)
+
+                        origin = variant.get("origin", "") if variant else ""
+                        destination = variant.get("destination", "") if variant else rmeta.get("long_name", "")
+                        route_name = variant.get("route_name", "") if variant else f"{route_number} {rmeta.get('long_name', '')}".strip()
+                        operator = variant.get("operator", "TransLink (CMBC 岸山巴士)") if variant else "TransLink (CMBC 岸山巴士)"
+
                         vehicles.append({
-                            "id": v.vehicle.id,
+                            "id": v.vehicle.id or v.vehicle.label,
                             "route_id": route_id,
+                            "route_number": route_number,
+                            "route_name": route_name,
+                            "trip_id": trip_id,
+                            "direction_id": direction_id,
+                            "stop_id": stop_id,
+                            "stop_seq": stop_seq,
+                            "origin": origin,
+                            "destination": destination,
+                            "operator": operator,
+                            "next_stop_name": prog["next_stop_name"],
+                            "next_stop_time": prog["next_stop_time"],
+                            "next_stop_minutes": prog["next_stop_minutes"],
                             "is_seabus": route_id in seabus_ids,
-                            "lat": v.position.latitude,
-                            "lon": v.position.longitude,
+                            "lat": lat,
+                            "lon": lon,
                             "bearing": v.position.bearing,
                         })
             
@@ -235,7 +425,8 @@ async def fetch_translink_realtime():
                 from zoneinfo import ZoneInfo
                 now_seabus = datetime.now(ZoneInfo("America/Vancouver"))
             except:
-                now_seabus = datetime.utcnow() - datetime.timedelta(hours=7)
+                import datetime as dt_mod
+                now_seabus = datetime.utcnow() - dt_mod.timedelta(hours=7)
                 
             # Handle GTFS >24h time format
             current_time_str = f"{now_seabus.hour:02d}:{now_seabus.minute:02d}:{now_seabus.second:02d}"
@@ -262,22 +453,36 @@ async def fetch_translink_realtime():
                     
                     if arr_sec > dep_sec:
                         progress = (curr_sec - dep_sec) / (arr_sec - dep_sec)
+                        rem_min = max(1, int((arr_sec - curr_sec) / 60))
                         
                         # Get shape geometry to interpolate
                         shape = db.query(models.TransitShape).filter(models.TransitShape.shape_id == trip.shape_id).first()
                         if shape:
-                            # We can just fetch the LineString coordinates using PostGIS ST_PointN or ST_LineInterpolatePoint
                             point_result = db.query(
                                 func.ST_X(func.ST_LineInterpolatePoint(shape.geom, progress)).label('lon'),
                                 func.ST_Y(func.ST_LineInterpolatePoint(shape.geom, progress)).label('lat')
                             ).first()
                             
                             if point_result:
-                                # Bearing logic: Waterfront to Lonsdale is roughly 15 degrees, Lonsdale to Waterfront is roughly 195 degrees
                                 bearing = 15 if trip.direction_id == 0 else 195
+                                sb_origin = "Waterfront Station" if trip.direction_id == 0 else "Lonsdale Quay"
+                                sb_dest = "Lonsdale Quay" if trip.direction_id == 0 else "Waterfront Station"
+                                arr_hhmm = f"{(arr_h % 24):02d}:{arr_m:02d}"
                                 seabus_simulated.append({
                                     "id": f"seabus_sim_{trip.trip_id}",
-                                    "route_id": "6771", # Or dynamically get the first seabus_id
+                                    "route_id": "6771",
+                                    "route_number": "SeaBus",
+                                    "route_name": "SeaBus 跨海渡輪",
+                                    "trip_id": str(trip.trip_id),
+                                    "direction_id": str(trip.direction_id),
+                                    "stop_id": "",
+                                    "stop_seq": 2,
+                                    "origin": sb_origin,
+                                    "destination": sb_dest,
+                                    "operator": "TransLink (SeaBus 海上巴士)",
+                                    "next_stop_name": sb_dest,
+                                    "next_stop_time": arr_hhmm,
+                                    "next_stop_minutes": rem_min,
                                     "is_seabus": True,
                                     "lat": point_result.lat,
                                     "lon": point_result.lon,
@@ -305,12 +510,18 @@ async def fetch_translink_realtime():
         await asyncio.sleep(15)
 
 async def fetch_translink_trip_updates():
-    """Polls GTFS-RT TripUpdates every 30 seconds to provide arrival times."""
+    """Polls GTFS-RT TripUpdates every 30 seconds to provide arrival times with real bus numbers."""
+    global stop_arrivals, trip_realtime_etas
     TRANSLINK_API_KEY = os.getenv("TRANSLINK_API_KEY", "OAsdtyJoPO0odcN6Ivhy")
     url = f"https://gtfsapi.translink.ca/v3/gtfsrealtime?apikey={TRANSLINK_API_KEY}"
     
     while True:
         try:
+            gtfs_meta = get_gtfs_metadata()
+            routes_lookup = gtfs_meta.get("routes", {})
+            variants_lookup = gtfs_meta.get("variants", {})
+            trip_to_variant = gtfs_meta.get("trip_to_variant", {})
+
             loop = asyncio.get_event_loop()
             headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
             response = await loop.run_in_executor(None, lambda: requests.get(url, headers=headers))
@@ -319,30 +530,47 @@ async def fetch_translink_trip_updates():
             feed.ParseFromString(response.content)
             
             new_arrivals = {}
+            new_trip_etas = {}
             current_time = time.time()
             
             for entity in feed.entity:
                 if entity.HasField('trip_update'):
                     tu = entity.trip_update
                     route_id = tu.trip.route_id
+                    trip_id = tu.trip.trip_id
+                    rmeta = routes_lookup.get(route_id, {})
+                    route_number = rmeta.get("route_number") or route_id
+                    route_name = rmeta.get("long_name", "")
+                    vkey = trip_to_variant.get(trip_id)
+                    dest = variants_lookup[vkey].get("destination", "") if vkey and vkey in variants_lookup else ""
+
                     for stu in tu.stop_time_update:
                         stop_id = stu.stop_id
-                        if stu.HasField('arrival') and stu.arrival.time > current_time:
+                        arr_ts = stu.arrival.time if stu.HasField('arrival') and stu.arrival.time > 0 else (stu.departure.time if stu.HasField('departure') else 0)
+                        if arr_ts > current_time:
+                            mins = int((arr_ts - current_time) / 60)
                             if stop_id not in new_arrivals:
                                 new_arrivals[stop_id] = []
                             new_arrivals[stop_id].append({
                                 "route_id": route_id,
-                                "arrival_time": stu.arrival.time,
-                                "minutes": int((stu.arrival.time - current_time) / 60)
+                                "route_number": route_number,
+                                "route_name": route_name,
+                                "destination": dest,
+                                "arrival_time": arr_ts,
+                                "minutes": mins
                             })
+                            new_trip_etas.setdefault(trip_id, {})[stop_id] = {
+                                "arrival_time": arr_ts,
+                                "minutes": mins
+                            }
                             
             # Sort arrivals by time
             for stop_id in new_arrivals:
                 new_arrivals[stop_id].sort(key=lambda x: x["arrival_time"])
                 
-            global stop_arrivals
             stop_arrivals = new_arrivals
-            print(f"✅ Updated TripUpdates for {len(stop_arrivals)} stops")
+            trip_realtime_etas = new_trip_etas
+            print(f"[OK] Updated TripUpdates for {len(stop_arrivals)} stops")
             
         except Exception as e:
             print(f"Error fetching TripUpdates: {e}")
@@ -482,7 +710,81 @@ async def get_ferry_terminal_schedule(terminal_code: str):
 
 @app.get("/api/stops/{stop_id}/arrivals")
 async def get_stop_arrivals(stop_id: str):
-    return {"stop_id": stop_id, "arrivals": stop_arrivals.get(stop_id, [])[:10]}
+    gtfs_meta = get_gtfs_metadata()
+    routes_lookup = gtfs_meta.get("routes", {})
+    raw_list = stop_arrivals.get(stop_id, [])[:10]
+    enriched = []
+    for item in raw_list:
+        rid = str(item.get("route_id", ""))
+        rmeta = routes_lookup.get(rid, {})
+        rnum = item.get("route_number") or rmeta.get("route_number") or rid
+        if rnum.isdigit():
+            rnum = str(int(rnum))
+        enriched.append({
+            **item,
+            "route_number": rnum,
+            "route_name": item.get("route_name") or rmeta.get("long_name", ""),
+        })
+    return {"stop_id": stop_id, "arrivals": enriched}
+
+
+@app.get("/api/transit/vehicle-details")
+def get_transit_vehicle_details(
+    vehicle_id: str = "",
+    route_id: str = "",
+    trip_id: str = "",
+    direction_id: str = "0",
+    stop_id: str = "",
+    stop_seq: int = 0,
+    lat: float = 0.0,
+    lon: float = 0.0,
+):
+    """
+    回傳單一即時巴士或海上巴士 (SeaBus) 的完整路線、起點、終點、當前狀態、下一站預估時間、完整沿線站點清單與地圖軌跡座標
+    """
+    gtfs_meta = get_gtfs_metadata()
+    routes_lookup = gtfs_meta.get("routes", {})
+    rmeta = routes_lookup.get(str(route_id), {})
+    route_number = rmeta.get("route_number") or str(route_id)
+    if route_number.isdigit():
+        route_number = str(int(route_number))
+
+    variant = _resolve_vehicle_variant(str(route_id), str(trip_id), str(direction_id), gtfs_meta)
+    prog = _compute_vehicle_stop_progress(variant, str(stop_id), int(stop_seq or 0), float(lat or 0.0), float(lon or 0.0), str(trip_id))
+
+    if variant:
+        origin = variant.get("origin", "")
+        destination = variant.get("destination", "")
+        route_name = variant.get("route_name", f"{route_number} {rmeta.get('long_name', '')}".strip())
+        operator = variant.get("operator", "TransLink (CMBC 岸山巴士)")
+        color = variant.get("color", "#10b981")
+        shape_coords = variant.get("shape_coords", [])
+    else:
+        origin = "起點總站"
+        destination = rmeta.get("long_name", "終點總站")
+        route_name = f"{route_number} {rmeta.get('long_name', '')}".strip()
+        operator = "TransLink (CMBC 岸山巴士)"
+        color = rmeta.get("color", "#10b981")
+        shape_coords = []
+
+    return {
+        "vehicle_id": vehicle_id,
+        "route_id": route_id,
+        "route_number": route_number,
+        "route_name": route_name,
+        "color": color,
+        "operator": operator,
+        "origin": origin,
+        "destination": destination,
+        "current_action": f"開往 {destination}" if destination else "沿線行駛中",
+        "next_stop_name": prog["next_stop_name"],
+        "next_stop_time": prog["next_stop_time"],
+        "next_stop_minutes": prog["next_stop_minutes"],
+        "next_stop_index": prog["next_stop_index"],
+        "run_status": "準時",
+        "stops": prog["stops"],
+        "shape_coords": shape_coords,
+    }
 
 SEARCH_BC_FERRY_TERMINALS = [
     {
@@ -696,7 +998,7 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                 "lon": term["lon"],
                 "lat": term["lat"],
                 "zoom": term["zoom"],
-                "layer_key": "bcferriesTerminals",
+                "layer_key": "bcferriesRoutes",
                 "meta": term["meta"]
             })
 
@@ -722,7 +1024,7 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                 "lon": s.lon,
                 "lat": s.lat,
                 "zoom": 16,
-                "layer_key": "skytrainStops",
+                "layer_key": "skytrainRoutes",
                 "meta": {"stop_id": s.stop_id, "name": s.name}
             })
 
@@ -737,7 +1039,7 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                 "lon": s.lon,
                 "lat": s.lat,
                 "zoom": 16,
-                "layer_key": "seabusStops",
+                "layer_key": "seabusRoutes",
                 "meta": {"stop_id": s.stop_id, "name": s.name}
             })
 
@@ -752,7 +1054,7 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                 "lon": s.lon,
                 "lat": s.lat,
                 "zoom": 17,
-                "layer_key": "busStops",
+                "layer_key": "busRoutes",
                 "meta": {"stop_id": s.stop_id, "name": s.name}
             })
     except Exception as e:
