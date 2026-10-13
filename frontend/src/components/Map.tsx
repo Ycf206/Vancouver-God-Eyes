@@ -250,12 +250,31 @@ export default function AppMap() {
       });
   }, []);
 
-  // Keep selectedBus live coordinates & next stop synced when vehicles update via WebSocket
+  // Keep selectedBus live coordinates & stop list synced when vehicles update via WebSocket
   useEffect(() => {
     if (!selectedBus) return;
     const updated = vehicles.find(v => v.id === selectedBus.id);
-    if (updated && (updated.lat !== selectedBus.lat || updated.lon !== selectedBus.lon || updated.stop_id !== selectedBus.stop_id)) {
+    if (updated && (updated.lat !== selectedBus.lat || updated.lon !== selectedBus.lon || updated.stop_id !== selectedBus.stop_id || updated.next_stop_name !== selectedBus.next_stop_name)) {
       setSelectedBus(updated);
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:8000` : 'http://localhost:8000');
+      const qs = new URLSearchParams({
+        vehicle_id: updated.id || '',
+        route_id: updated.route_id || '',
+        trip_id: updated.trip_id || '',
+        direction_id: updated.direction_id || '0',
+        stop_id: updated.stop_id || '',
+        stop_seq: String(updated.stop_seq || 0),
+        lat: String(updated.lat || 0),
+        lon: String(updated.lon || 0),
+      });
+      fetch(`${apiUrl}/api/transit/vehicle-details?${qs.toString()}`)
+        .then(res => res.json())
+        .then(data => {
+          setBusDetails(data);
+        })
+        .catch(err => {
+          console.error('Error refreshing bus details:', err);
+        });
     }
   }, [vehicles, selectedBus]);
 
@@ -1596,9 +1615,9 @@ export default function AppMap() {
           const destName = busDetails?.destination || selectedBus.destination || '終點站';
           const originName = busDetails?.origin || selectedBus.origin || '起點站';
           const operatorName = busDetails?.operator || selectedBus.operator || 'TransLink (CMBC 岸山巴士)';
-          const nextStopName = selectedBus.next_stop_name || busDetails?.next_stop_name || '沿線行駛中';
-          const nextStopTime = selectedBus.next_stop_time || busDetails?.next_stop_time || '';
-          const nextStopMin = selectedBus.next_stop_minutes ?? busDetails?.next_stop_minutes;
+          const nextStopName = busDetails?.next_stop_name || selectedBus.next_stop_name || '沿線行駛中';
+          const nextStopTime = busDetails?.next_stop_time || selectedBus.next_stop_time || '';
+          const nextStopMin = busDetails?.next_stop_minutes ?? selectedBus.next_stop_minutes;
           const stopList = busDetails?.stops || [];
 
           return (
@@ -1691,7 +1710,7 @@ export default function AppMap() {
                       <span>
                         {loadingBusDetails
                           ? '載入路線站點中...'
-                          : `${stopList.length} 個站，已畫喺地圖`}
+                          : `${stopList.length} 個站`}
                       </span>
                       {busDetails?.route_name && (
                         <span className="text-[10px] text-emerald-400/80 font-mono truncate max-w-[140px]">
@@ -1712,6 +1731,7 @@ export default function AppMap() {
                           return (
                             <div
                               key={`popup-stop-${st.seq}`}
+                              ref={isNext ? (el) => { el?.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } : undefined}
                               onClick={() => {
                                 mapRef.current?.flyTo({ center: [st.lon, st.lat], zoom: 15.5, duration: 800 });
                               }}

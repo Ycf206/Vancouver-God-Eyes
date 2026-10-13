@@ -61,12 +61,69 @@ async def websocket_endpoint(websocket: WebSocket):
 
 
 
+_bc_ferries_paths_cache = None
+
+def get_bc_ferries_paths():
+    global _bc_ferries_paths_cache
+    if _bc_ferries_paths_cache is not None:
+        return _bc_ferries_paths_cache
+    path_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "bc_ferries_paths.json")
+    if os.path.exists(path_file):
+        try:
+            import json
+            with open(path_file, "r", encoding="utf-8") as f:
+                _bc_ferries_paths_cache = json.load(f)
+                return _bc_ferries_paths_cache
+        except Exception as e:
+            print(f"Error loading bc_ferries_paths.json: {e}")
+    return {}
+
+
+def _interpolate_along_path(coords: list, progress: float):
+    """Interpolate (lon, lat, bearing) at progress in [0, 1] along a LineString coordinate list."""
+    if not coords:
+        return 0.0, 0.0, 0.0
+    if len(coords) == 1:
+        return coords[0][0], coords[0][1], 0.0
+
+    p = max(0.0, min(1.0, float(progress)))
+    seg_lengths = []
+    total_len = 0.0
+    for i in range(len(coords) - 1):
+        x1, y1 = coords[i]
+        x2, y2 = coords[i + 1]
+        # Scale longitude by cos(49 deg) ~= 0.656 for accurate metric arc length
+        d = math.hypot((x2 - x1) * 0.656, y2 - y1)
+        seg_lengths.append(d)
+        total_len += d
+
+    if total_len <= 1e-9:
+        return coords[0][0], coords[0][1], calculate_bearing(coords[0], coords[-1])
+
+    target_dist = p * total_len
+    accum = 0.0
+    for i, seg_len in enumerate(seg_lengths):
+        if accum + seg_len >= target_dist or i == len(seg_lengths) - 1:
+            local_t = (target_dist - accum) / seg_len if seg_len > 1e-9 else 0.0
+            local_t = max(0.0, min(1.0, local_t))
+            p1 = coords[i]
+            p2 = coords[i + 1]
+            lon = p1[0] + (p2[0] - p1[0]) * local_t
+            lat = p1[1] + (p2[1] - p1[1]) * local_t
+            bearing = calculate_bearing(p1, p2)
+            return lon, lat, bearing
+        accum += seg_len
+
+    return coords[-1][0], coords[-1][1], calculate_bearing(coords[-2], coords[-1])
+
+
 async def fetch_bcferries_realtime():
     global cached_bcferries_vehicles
     while True:
         try:
             r = requests.get('https://www.bcferriesapi.ca/v2/', timeout=10)
             data = r.json()
+            ferry_paths = get_bc_ferries_paths()
             
             terminals = {
                 'TSA': [-123.1317, 49.0064],
@@ -113,7 +170,7 @@ async def fetch_bcferries_realtime():
                     
                 dep_coord = terminals[dep_code]
                 arr_coord = terminals[arr_code]
-                bearing = calculate_bearing(dep_coord, arr_coord)
+                route_path = ferry_paths.get(f"{dep_code}_{arr_code}")
                 
                 for sailing in route.get('sailings', []):
                     status = sailing.get('sailingStatus')
@@ -145,13 +202,17 @@ async def fetch_bcferries_realtime():
                                 elapsed = (now_naive - dep_time).total_seconds()
                                 if total_seconds > 0:
                                     progress = max(0.02, min(0.98, elapsed / total_seconds))
-                    except Exception as e:
+                    except Exception:
                         pass
                         
                     if status == 'current' or is_sailing:
                         seen_trips.add(trip_key)
-                        lon = dep_coord[0] + (arr_coord[0] - dep_coord[0]) * progress
-                        lat = dep_coord[1] + (arr_coord[1] - dep_coord[1]) * progress
+                        if route_path and len(route_path) >= 2:
+                            lon, lat, bearing = _interpolate_along_path(route_path, progress)
+                        else:
+                            lon = dep_coord[0] + (arr_coord[0] - dep_coord[0]) * progress
+                            lat = dep_coord[1] + (arr_coord[1] - dep_coord[1]) * progress
+                            bearing = calculate_bearing(dep_coord, arr_coord)
                         fill = sailing.get('fill') or sailing.get('carFill') or 0
                         
                         vehicles.append({
@@ -240,6 +301,50 @@ def _resolve_vehicle_variant(route_id: str, trip_id: str, direction_id: str, gtf
     return None
 
 
+def _project_bus_next_stop_idx(stops: list, lat: float, lon: float):
+    """
+    Projects live bus GPS (lat, lon) onto the directed segments stops[i] -> stops[i+1].
+    As soon as the bus has passed stops[i] by >25m along the segment towards stops[i+1],
+    stops[i] is marked 'passed' and stops[i+1] becomes the 'next' stop.
+    """
+    if not lat or not lon or len(stops) < 2:
+        return None
+
+    best_perp_dist = 1e12
+    best_seg_idx = 0
+    best_along_m = 0.0
+    best_t = 0.0
+
+    for i in range(len(stops) - 1):
+        s1 = stops[i]
+        s2 = stops[i + 1]
+        dx = (s2["lon"] - s1["lon"]) * 73000.0
+        dy = (s2["lat"] - s1["lat"]) * 111000.0
+        px = (lon - s1["lon"]) * 73000.0
+        py = (lat - s1["lat"]) * 111000.0
+
+        seg_len_sq = dx * dx + dy * dy
+        if seg_len_sq <= 1.0:
+            t = 0.0
+            seg_len = 0.0
+        else:
+            t = max(0.0, min(1.0, (px * dx + py * dy) / seg_len_sq))
+            seg_len = math.sqrt(seg_len_sq)
+
+        perp_dist = math.hypot(px - t * dx, py - t * dy)
+        if perp_dist < best_perp_dist:
+            best_perp_dist = perp_dist
+            best_seg_idx = i
+            best_along_m = t * seg_len
+            best_t = t
+
+    # If the bus has moved >25 meters past stops[best_seg_idx] (or >3% along the segment),
+    # then stops[best_seg_idx] is already passed and the next stop is best_seg_idx + 1!
+    if best_along_m > 25.0 or best_t > 0.03:
+        return min(best_seg_idx + 1, len(stops) - 1)
+    return best_seg_idx
+
+
 def _compute_vehicle_stop_progress(variant: dict, stop_id: str, stop_seq: int, lat: float, lon: float, trip_id: str):
     """Determine next stop, origin, destination, and stop-by-stop status & ETAs for a live bus."""
     if not variant:
@@ -261,27 +366,29 @@ def _compute_vehicle_stop_progress(variant: dict, stop_id: str, stop_seq: int, l
             "stops": [],
         }
 
-    next_idx = None
+    gtfs_idx = None
     if stop_id:
         for idx, s in enumerate(stops):
             if str(s.get("stop_id")) == str(stop_id) or str(s.get("stop_code")) == str(stop_id):
-                next_idx = idx
+                gtfs_idx = idx
                 break
 
-    if next_idx is None and stop_seq and stop_seq > 0:
-        next_idx = min(max(0, stop_seq - 1), len(stops) - 1)
+    if gtfs_idx is None and stop_seq and stop_seq > 0:
+        gtfs_idx = min(max(0, stop_seq - 1), len(stops) - 1)
 
-    if next_idx is None and lat and lon:
-        best_dist = 999999.0
-        best_i = 0
-        for idx, s in enumerate(stops):
-            d = (s["lat"] - lat) ** 2 + (s["lon"] - lon) ** 2
-            if d < best_dist:
-                best_dist = d
-                best_i = idx
-        next_idx = min(best_i + 1, len(stops) - 1) if best_i < len(stops) - 1 else best_i
+    gps_idx = _project_bus_next_stop_idx(stops, lat, lon)
 
-    if next_idx is None:
+    if gps_idx is not None and gtfs_idx is not None:
+        # If GTFS stop_id lags by 1-2 stops after the bus physically passed the stop, trust GPS advancement
+        if gps_idx >= gtfs_idx and (gps_idx - gtfs_idx) <= 3:
+            next_idx = gps_idx
+        else:
+            next_idx = gps_idx
+    elif gps_idx is not None:
+        next_idx = gps_idx
+    elif gtfs_idx is not None:
+        next_idx = gtfs_idx
+    else:
         next_idx = 0
 
     now_ts = time.time()
