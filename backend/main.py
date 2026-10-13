@@ -158,8 +158,16 @@ async def fetch_bcferries_realtime():
             
             now_naive = now.replace(tzinfo=None)
 
-            all_routes = data.get('capacityRoutes', []) + data.get('nonCapacityRoutes', [])
+            capacity_routes = data.get('capacityRoutes', [])
+            # nonCapacityRoutes are schedule-only (no vessel names, times differ by 1-2 min),
+            # so they duplicate any route pair already covered by real-time capacityRoutes.
+            capacity_pairs = {(r.get('fromTerminalCode'), r.get('toTerminalCode')) for r in capacity_routes}
+            all_routes = capacity_routes + [
+                r for r in data.get('nonCapacityRoutes', [])
+                if (r.get('fromTerminalCode'), r.get('toTerminalCode')) not in capacity_pairs
+            ]
             seen_trips = set()
+            seen_vessels = set()
             
             for route in all_routes:
                 dep_code = route.get('fromTerminalCode')
@@ -206,6 +214,11 @@ async def fetch_bcferries_realtime():
                         pass
                         
                     if status == 'current' or is_sailing:
+                        # A physical vessel can only be at one place; skip repeats
+                        if sailing.get('vesselName') and vessel_name in seen_vessels:
+                            continue
+                        if sailing.get('vesselName'):
+                            seen_vessels.add(vessel_name)
                         seen_trips.add(trip_key)
                         if route_path and len(route_path) >= 2:
                             lon, lat, bearing = _interpolate_along_path(route_path, progress)
