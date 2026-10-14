@@ -6,6 +6,7 @@ import { useUIStore, SearchTarget } from '@/store/useUIStore';
 import ReportIssueModal from '@/components/ReportIssueModal';
 import DonateModal from '@/components/DonateModal';
 import SettingsModal from '@/components/SettingsModal';
+import ExplorePanel from '@/components/ExplorePanel';
 import { getApiUrl } from '@/utils/api';
 import { formatClock } from '@/utils/time';
 
@@ -16,7 +17,8 @@ export default function TopBar() {
     isLayerPanelOpen, 
     toggleLayerPanel,
     timeFormat,
-    setSettingsModalOpen
+    setSettingsModalOpen,
+    toggleExplore
   } = useUIStore();
   const [time, setTime] = useState<Date | null>(null);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
@@ -249,13 +251,11 @@ export default function TopBar() {
 
       {/* 右側按鈕組：探索按鈕 + 贊助支持按鈕 (愛心) + 回報問題按鈕 (感嘆號) + 設定按鈕 */}
       <div className="flex items-center gap-2 shrink-0">
-        {/* 探索按鈕 (預留未來新聞、天氣等資訊，位於搜尋欄右方、贊助支持左方) */}
+        {/* 探索按鈕 (位於搜尋欄右方、贊助支持左方) */}
         <button 
-          onClick={() => {
-            alert('探索功能（即時新聞、天氣資訊等）正在籌備中，敬請期待！');
-          }}
+          onClick={toggleExplore}
           className="flex items-center gap-1.5 px-3 h-9 bg-[#25262b] hover:bg-[#2c2d33] border border-[#373a40] hover:border-emerald-500/50 rounded-md transition-all group shadow-sm text-gray-300 hover:text-emerald-400 text-xs font-semibold"
-          title="探索 Vancouver（新聞、天氣等，敬請期待）"
+          title="探索 Vancouver（燃油比價、即時路況等）"
         >
           <Compass className="w-4 h-4 text-emerald-400/80 group-hover:text-emerald-400 group-hover:rotate-45 transition-transform" />
           <span className="hidden sm:inline">探索</span>
@@ -303,6 +303,9 @@ export default function TopBar() {
 
       {/* 偏好設定彈出視窗 */}
       <SettingsModal />
+
+      {/* 探索資訊面板 (燃油比價等) */}
+      <ExplorePanel />
 
     </div>
   );

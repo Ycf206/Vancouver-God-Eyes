@@ -73,7 +73,7 @@ interface RoadFacilityInfo {
 }
 
 export default function AppMap() {
-  const { layers, mapStyleType, searchTarget, setSearchTarget, isLayerPanelOpen, contourInterval, timeFormat, distanceUnit } = useUIStore();
+  const { layers, mapStyleType, searchTarget, setSearchTarget, isLayerPanelOpen, contourInterval, timeFormat, distanceUnit, userLocation, setExploreOpen } = useUIStore();
   const mapRef = useRef<MapRef>(null);
 
   // Resize map canvas smoothly when side panel toggles
@@ -353,6 +353,59 @@ export default function AppMap() {
     }
   }, [selectedFacility, hospitalRefreshKey]);
 
+  // States for Fuel Station Live Prices
+  const [fuelStationPrices, setFuelStationPrices] = useState<{
+    regular: number;
+    midgrade: number;
+    premium: number;
+    diesel: number;
+  } | null>(null);
+  const [loadingFuelPrices, setLoadingFuelPrices] = useState(false);
+
+  // Fetch fuel prices when a gas station is selected
+  useEffect(() => {
+    if (selectedFacility && selectedFacility.facility_type === 'fuel' && selectedFacility.lat && selectedFacility.lon) {
+      setLoadingFuelPrices(true);
+      const apiUrl = getApiUrl();
+      const url = `${apiUrl}/api/fuel/stations?lat=${selectedFacility.lat}&lon=${selectedFacility.lon}&sort_by=distance`;
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          if (data.stations && data.stations.length > 0) {
+            setFuelStationPrices(data.stations[0].prices || null);
+          } else {
+            setFuelStationPrices(null);
+          }
+          setLoadingFuelPrices(false);
+        })
+        .catch(err => {
+          console.error('Fuel station prices fetch error:', err);
+          setLoadingFuelPrices(false);
+        });
+    } else {
+      setFuelStationPrices(null);
+    }
+  }, [selectedFacility]);
+
+  // Compute distance from user's personal location to currently selected gas station
+  const userDistanceToFuel = useMemo(() => {
+    if (!selectedFacility || selectedFacility.facility_type !== 'fuel' || !userLocation?.confirmed || !userLocation.lat || !userLocation.lon) {
+      return null;
+    }
+    const R = 6371; // km
+    const dLat = (selectedFacility.lat - userLocation.lat) * Math.PI / 180;
+    const dLon = (selectedFacility.lon - userLocation.lon) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) ** 2 +
+              Math.cos(userLocation.lat * Math.PI / 180) * Math.cos(selectedFacility.lat * Math.PI / 180) *
+              Math.sin(dLon / 2) ** 2;
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distKm = R * c;
+    if (distanceUnit === 'imperial') {
+      return `${(distKm * 0.621371).toFixed(1)} mi`;
+    }
+    return `${distKm.toFixed(1)} km`;
+  }, [selectedFacility, userLocation, distanceUnit]);
+
   // 響應全域搜尋項目選取 (FlyTo & 自動打開詳細資訊卡片)
   useEffect(() => {
     if (!searchTarget) {
@@ -625,6 +678,7 @@ export default function AppMap() {
     const activeContourInterval = contourInterval !== 'off' ? contourInterval : '10m';
     style.sources['contours'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/contours?interval=${activeContourInterval}` };
     style.sources['local-area-boundary'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/local_area_boundary` };
+    style.sources['fuel'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/fuel` };
 
     // Bus Routes & Stops (Merged under busRoutes) - 當正在搜尋特定巴士路線或選中特定巴士時，只顯示該專屬路線，不繪製底圖全域 99 及 R1~R6 路線
     if (layers.busRoutes && !searchedBusRoute && !selectedBus) {
@@ -1165,6 +1219,36 @@ export default function AppMap() {
       });
     }
 
+    // Road Infrastructure: Gas Stations (加油站)
+    if (layers.fuel) {
+      style.layers.push({
+        id: 'fuel-layer',
+        type: 'circle',
+        source: 'fuel',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3, 14, 5.5, 15, 9, 17, 12],
+          'circle-color': '#f59e0b',
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'fuel-symbol-layer',
+        type: 'symbol',
+        source: 'fuel',
+        minzoom: 14,
+        layout: {
+          'text-field': '⛽',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 14, 10, 17, 13],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+    }
+
     // Government Facilities: Hospitals & UPCC (醫療: 急診醫院與急症基層醫療中心)
     if (layers.hospitals) {
       style.layers.push({
@@ -1637,6 +1721,7 @@ export default function AppMap() {
     layers.homelessShelters,
     layers.contours,
     layers.localAreaBoundary,
+    layers.fuel,
     contourInterval,
     mapStyleType
   ]);
@@ -1707,6 +1792,8 @@ export default function AppMap() {
           'disaster-hubs-symbol-layer',
           'aed-layer',
           'aed-symbol-layer',
+          'fuel-layer',
+          'fuel-symbol-layer',
           'contours-layer',
           'contours-label-layer'
         ]}
@@ -1779,6 +1866,7 @@ export default function AppMap() {
             layerId.startsWith('shared-bikes') ||
             layerId.startsWith('traffic-cameras') ||
             layerId.startsWith('safety-cameras') ||
+            layerId.startsWith('fuel') ||
             layerId.startsWith('fire-halls') ||
             layerId.startsWith('police') ||
             layerId.startsWith('disaster-hubs') ||
@@ -1798,9 +1886,9 @@ export default function AppMap() {
             const props = feature.properties || {};
             setSelectedFacility({
               id: props.id || '',
-              facility_type: props.facility_type || '',
-              name: props.name || '',
-              local_area: props.local_area || '',
+              facility_type: props.facility_type || (layerId.startsWith('fuel') ? 'fuel' : ''),
+              name: props.name || props.brand || (layerId.startsWith('fuel') ? '加油站' : ''),
+              local_area: props.local_area || props.address || props.city || '',
               lon: coords[0],
               lat: coords[1],
               properties: props
@@ -1870,6 +1958,31 @@ export default function AppMap() {
               <span className="w-7 h-7 rounded-full border-2 border-emerald-400 bg-emerald-500/30 flex items-center justify-center shadow-lg">
                 <span className="text-xs">{searchTarget.icon}</span>
               </span>
+            </div>
+          </Marker>
+        )}
+
+        {/* 個人設定位置標記 (User Confirmed Personal Location) */}
+        {userLocation?.confirmed && userLocation.lat && userLocation.lon && (
+          <Marker longitude={userLocation.lon} latitude={userLocation.lat} anchor="bottom">
+            <div 
+              className="group relative flex flex-col items-center cursor-pointer z-35 select-none"
+              onClick={(e) => {
+                e.stopPropagation();
+                mapRef.current?.flyTo({
+                  center: [userLocation.lon!, userLocation.lat!],
+                  zoom: 15,
+                  duration: 800
+                });
+              }}
+            >
+              <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-8 px-2.5 py-1 rounded-md bg-gray-900/95 text-white text-[11px] font-medium whitespace-nowrap shadow-xl pointer-events-none border border-indigo-500/40 z-50">
+                <span>🏠 個人位置：{userLocation.displayName || userLocation.address}</span>
+              </div>
+              <div className="relative flex items-center justify-center w-8 h-8 rounded-full bg-indigo-600 border-2 border-white shadow-[0_2px_12px_rgba(79,70,229,0.5)] text-white hover:scale-115 transition-transform">
+                <span className="text-base leading-none">🏠</span>
+              </div>
+              <div className="w-2 h-2 bg-indigo-600 rotate-45 -mt-1 border-r border-b border-white shadow-sm"></div>
             </div>
           </Marker>
         )}
@@ -2703,18 +2816,19 @@ export default function AppMap() {
             offset={[0, -10]}
             maxWidth={
               selectedFacility.facility_type === 'traffic_cameras' ? '400px' : 
-              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing') ? '360px' : 
+              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel') ? '360px' : 
               '320px'
             }
           >
             <div className={`p-3.5 ${
               selectedFacility.facility_type === 'traffic_cameras' ? 'w-[360px]' : 
-              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing') ? 'w-[340px]' : 
+              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel') ? 'w-[340px]' : 
               'w-[290px]'
             } max-w-[90vw] text-gray-800`}>
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
                 <div className="flex items-center gap-2">
                   <span className={`w-3 h-3 rounded-full flex-shrink-0 ${
+                    selectedFacility.facility_type === 'fuel' ? 'bg-amber-500' :
                     selectedFacility.facility_type === 'parking_meters' ? 'bg-amber-500' :
                     selectedFacility.facility_type === 'accessible_parking' ? 'bg-sky-500' :
                     selectedFacility.facility_type === 'motorcycle_parking' ? 'bg-orange-500' :
@@ -4050,6 +4164,106 @@ export default function AppMap() {
                     >
                       查看溫哥華開放資料等高線圖資 ↗
                     </a>
+                  </div>
+                </div>
+              )}
+
+              {/* Gas Station (Fuel) Details */}
+              {selectedFacility.facility_type === 'fuel' && (
+                <div className="flex flex-col gap-2.5 text-xs">
+                  {/* Brand & Address Header Card */}
+                  <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/25 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-amber-950 text-xs flex items-center gap-1.5">
+                        <span className="text-base">⛽</span>
+                        <span>{selectedFacility.properties.brand || selectedFacility.name || '溫哥華加油站'}</span>
+                      </span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-600 text-white">
+                        {selectedFacility.properties.opening_hours || '24/7'}
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-gray-700 flex items-center gap-1">
+                      <span className="text-gray-400">📍</span>
+                      <span className="truncate">{selectedFacility.properties.address || selectedFacility.local_area || '溫哥華市區'}</span>
+                    </div>
+                    {userDistanceToFuel ? (
+                      <div className="flex items-center justify-between pt-1 border-t border-amber-500/20 text-[11px]">
+                        <span className="text-gray-500">離個人設定位置</span>
+                        <span className="font-bold text-amber-700">約 {userDistanceToFuel}</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-between pt-1 border-t border-amber-500/20 text-[10.5px] text-gray-400">
+                        <span>離個人位置</span>
+                        <span>可在右上角「⚙️ 設定」中輸入地址</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Gas Prices Grid */}
+                  <div className="flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between text-[11px] text-gray-500 font-medium">
+                      <span>即時參考油價 (加分/公升 ¢/L)</span>
+                      <span className="text-[9.5px] text-amber-700/80 font-mono bg-amber-50 px-1 py-0.5 rounded">GasBuddy · BC</span>
+                    </div>
+
+                    {loadingFuelPrices ? (
+                      <div className="py-4 text-center text-gray-400 text-xs flex items-center justify-center gap-1.5 bg-gray-50 rounded border border-gray-100">
+                        <span className="animate-spin text-sm">⏳</span>
+                        <span>正在載入最新油價...</span>
+                      </div>
+                    ) : fuelStationPrices ? (
+                      <div className="grid grid-cols-2 gap-1.5">
+                        <div className="bg-gradient-to-br from-amber-50 to-orange-50/40 p-2 rounded border border-amber-200/80 flex flex-col">
+                          <span className="text-[10px] text-gray-500 font-medium">Regular 87 (無鉛)</span>
+                          <span className="text-base font-black text-amber-900 mt-0.5">
+                            {fuelStationPrices.regular.toFixed(1)} <span className="text-[10px] font-normal text-gray-600">¢</span>
+                          </span>
+                        </div>
+                        <div className="bg-gray-50 p-2 rounded border border-gray-100 flex flex-col">
+                          <span className="text-[10px] text-gray-500 font-medium">Midgrade 89 (中級)</span>
+                          <span className="text-base font-black text-gray-800 mt-0.5">
+                            {fuelStationPrices.midgrade.toFixed(1)} <span className="text-[10px] font-normal text-gray-600">¢</span>
+                          </span>
+                        </div>
+                        <div className="bg-gray-50 p-2 rounded border border-gray-100 flex flex-col">
+                          <span className="text-[10px] text-gray-500 font-medium">Premium 91 (高級)</span>
+                          <span className="text-base font-black text-gray-800 mt-0.5">
+                            {fuelStationPrices.premium.toFixed(1)} <span className="text-[10px] font-normal text-gray-600">¢</span>
+                          </span>
+                        </div>
+                        <div className="bg-slate-50 p-2 rounded border border-slate-200/80 flex flex-col">
+                          <span className="text-[10px] text-slate-500 font-medium">Diesel (柴油)</span>
+                          <span className="text-base font-black text-slate-800 mt-0.5">
+                            {fuelStationPrices.diesel.toFixed(1)} <span className="text-[10px] font-normal text-gray-600">¢</span>
+                          </span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="p-2 text-center text-gray-400 text-xs bg-gray-50 rounded border border-gray-100">
+                        暫無油價資料
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Actions: Navigation & Compare in Explore */}
+                  <div className="grid grid-cols-2 gap-2 pt-1 border-t border-gray-100">
+                    <a
+                      href={`https://www.google.com/maps/dir/?api=1&destination=${selectedFacility.lat},${selectedFacility.lon}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center py-1.5 px-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded font-medium text-xs transition-colors shadow-sm gap-1"
+                    >
+                      <span>🗺️</span>
+                      <span>Google 導航</span>
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => setExploreOpen(true)}
+                      className="inline-flex items-center justify-center py-1.5 px-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded font-medium text-xs transition-colors border border-gray-200 gap-1"
+                    >
+                      <span>🧭</span>
+                      <span>探索比價</span>
+                    </button>
                   </div>
                 </div>
               )}

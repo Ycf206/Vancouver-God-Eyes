@@ -10,3 +10,6 @@ gtfs-realtime-bindings
 requests
 psycopg[binary]
 beautifulsoup4
+aiohttp
+aiofiles
+py-gasbuddy

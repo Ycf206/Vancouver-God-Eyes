@@ -62,6 +62,7 @@ export interface UIState {
     carSharing: boolean;
     contours: boolean;
     localAreaBoundary: boolean;
+    fuel: boolean;
   };
   contourInterval: 'off' | '1m' | '2m' | '10m';
   setContourInterval: (interval: 'off' | '1m' | '2m' | '10m') => void;
@@ -69,9 +70,26 @@ export interface UIState {
   setTimeFormat: (format: '12h' | '24h') => void;
   distanceUnit: 'metric' | 'imperial';
   setDistanceUnit: (unit: 'metric' | 'imperial') => void;
+  userLocation: {
+    address: string;
+    displayName?: string;
+    lat: number;
+    lon: number;
+    confirmed: boolean;
+  } | null;
+  setUserLocation: (loc: {
+    address: string;
+    displayName?: string;
+    lat: number;
+    lon: number;
+    confirmed: boolean;
+  } | null) => void;
   isSettingsModalOpen: boolean;
   setSettingsModalOpen: (open: boolean) => void;
   toggleSettingsModal: () => void;
+  isExploreOpen: boolean;
+  setExploreOpen: (open: boolean) => void;
+  toggleExplore: () => void;
   toggleLayer: (layer: keyof UIState['layers']) => void;
   enableLayer: (layer: keyof UIState['layers']) => void;
   searchTarget: SearchTarget | null;
@@ -142,14 +160,20 @@ export const useUIStore = create<UIState>()(
         airports: true,
         contours: false,
         localAreaBoundary: false,
+        fuel: false,
       },
       timeFormat: '24h',
       setTimeFormat: (format) => set({ timeFormat: format }),
       distanceUnit: 'metric',
       setDistanceUnit: (unit) => set({ distanceUnit: unit }),
+      userLocation: null,
+      setUserLocation: (loc) => set({ userLocation: loc }),
       isSettingsModalOpen: false,
       setSettingsModalOpen: (open) => set({ isSettingsModalOpen: open }),
       toggleSettingsModal: () => set((state) => ({ isSettingsModalOpen: !state.isSettingsModalOpen })),
+      isExploreOpen: false,
+      setExploreOpen: (open) => set({ isExploreOpen: open }),
+      toggleExplore: () => set((state) => ({ isExploreOpen: !state.isExploreOpen })),
       toggleLayer: (layer) =>
         set((state) => ({
           layers: {
@@ -185,6 +209,7 @@ export const useUIStore = create<UIState>()(
         contourInterval: state.contourInterval,
         timeFormat: state.timeFormat,
         distanceUnit: state.distanceUnit,
+        userLocation: state.userLocation,
       }),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       merge: (persistedState: any, currentState: UIState) => {
@@ -195,11 +220,13 @@ export const useUIStore = create<UIState>()(
           contourInterval,
           timeFormat: persistedState?.timeFormat || '24h',
           distanceUnit: persistedState?.distanceUnit || 'metric',
+          userLocation: persistedState?.userLocation || null,
           layers: {
             ...currentState.layers,
             ...(persistedState?.layers || {}),
             contours: contourInterval !== 'off',
             localAreaBoundary: persistedState?.layers?.localAreaBoundary || false,
+            fuel: persistedState?.layers?.fuel || false,
           },
         };
       },

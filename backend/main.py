@@ -1750,7 +1750,7 @@ _contours_caches = {
 }
 _curated_static_caches = {}
 
-CURATED_STATIC_TYPES = ("bikeways", "hospitals", "police", "disaster_hubs", "car_sharing", "aed", "local_area_boundary")
+CURATED_STATIC_TYPES = ("bikeways", "hospitals", "police", "disaster_hubs", "car_sharing", "aed", "local_area_boundary", "fuel")
 
 @app.get("/api/geojson/road/{facility_type}")
 def get_road_facilities_geojson(facility_type: str, interval: str = "10m", db: Session = Depends(database.get_db)):
@@ -2120,4 +2120,101 @@ def get_update_open_data_status():
         except Exception as e:
             return {"error": str(e)}
     return {"status": "never_updated", "cycle_months": 6}
+
+
+# ==========================================
+# 📍 Geocoding API (個人住址驗證與座標獲取)
+# ==========================================
+@app.get("/api/geocode")
+def geocode_address(q: str = ""):
+    """
+    Geocode an address to lat/lon coordinates, with focus on Metro Vancouver.
+    """
+    query = (q or "").strip()
+    if not query:
+        return {"results": []}
+
+    search_q = query
+    lower_q = query.lower()
+    if "vancouver" not in lower_q and "bc" not in lower_q and "richmond" not in lower_q and "burnaby" not in lower_q:
+        search_q = f"{query}, Vancouver, BC, Canada"
+    elif "canada" not in lower_q:
+        search_q = f"{query}, Canada"
+
+    headers = {
+        "User-Agent": "VancouverGodsEye/1.0 (contact: info@vangodseye.fyi)"
+    }
+    params = {
+        "q": search_q,
+        "format": "json",
+        "limit": 5,
+        "countrycodes": "ca",
+        "viewbox": "-123.35,49.38,-122.5,49.0",
+        "bounded": 0
+    }
+    try:
+        resp = requests.get("https://nominatim.openstreetmap.org/search", params=params, headers=headers, timeout=6)
+        if resp.status_code == 200:
+            data = resp.json()
+            results = []
+            for item in data:
+                try:
+                    lat_val = float(item["lat"])
+                    lon_val = float(item["lon"])
+                    results.append({
+                        "name": item.get("name") or query,
+                        "display_name": item.get("display_name", ""),
+                        "lat": round(lat_val, 6),
+                        "lon": round(lon_val, 6)
+                    })
+                except (ValueError, KeyError):
+                    continue
+            if results:
+                return {"results": results}
+    except Exception as e:
+        logger.error(f"Geocoding error: {e}")
+
+    # Fallback if Nominatim has issues or is offline
+    return {
+        "results": [
+            {
+                "name": query,
+                "display_name": f"{query}, Vancouver, BC, Canada",
+                "lat": 49.2827,
+                "lon": -123.1207
+            }
+        ]
+    }
+
+
+# ==========================================
+# ⛽ Fuel & Gas Stations API (Py-GasBuddy & Vancouver Fuel Data)
+# ==========================================
+try:
+    from fuel_service import get_fuel_stations_data
+except ImportError:
+    from backend.fuel_service import get_fuel_stations_data
+
+@app.get("/api/fuel/stations")
+async def get_fuel_stations_api(
+    lat: Optional[float] = None,
+    lon: Optional[float] = None,
+    fuel_type: str = "regular",
+    sort_by: str = "best"
+):
+    """
+    取得溫哥華加油站資訊、即時油價與距離排序。
+    sort_by:
+      - 'best': 價格及距離最優
+      - 'price': 價格最優 (最平)
+      - 'distance': 距離最優 (最近)
+    """
+    stations = await get_fuel_stations_data(user_lat=lat, user_lon=lon, fuel_type=fuel_type, sort_by=sort_by)
+    return {
+        "stations": stations,
+        "total": len(stations),
+        "fuel_type": fuel_type,
+        "sort_by": sort_by
+    }
+
 
