@@ -7,24 +7,26 @@ services:
       POSTGRES_PASS: password
       POSTGRES_DB: gods_eye
       POSTGRES_DBNAME: gods_eye
-    ports:
-      - "5432:5432"
+    # 關閉 5432 外網暴露，保護資料庫安全，僅允許 Docker 容器內部連線
+    expose:
+      - "5432"
     volumes:
       - postgres_data:/var/lib/postgresql
     restart: unless-stopped
 
   redis:
     image: redis:7-alpine
-    ports:
-      - "6379:6379"
+    # 關閉 6379 外網暴露，保護快取安全，僅允許 Docker 容器內部連線
+    expose:
+      - "6379"
     volumes:
       - redis_data:/data
     restart: unless-stopped
 
   backend:
     build: ./backend
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
     volumes:
       - ./backend:/app
     depends_on:
@@ -47,10 +49,21 @@ services:
     depends_on:
       - backend
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-}
       - NEXT_PUBLIC_STRIPE_PAYMENT_LINK=${NEXT_PUBLIC_STRIPE_PAYMENT_LINK:-}
       - NEXT_PUBLIC_BUYMEACOFFEE_URL=${NEXT_PUBLIC_BUYMEACOFFEE_URL:-}
       - NEXT_PUBLIC_PAYPAL_URL=${NEXT_PUBLIC_PAYPAL_URL:-}
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - frontend
+      - backend
     restart: unless-stopped
 
 volumes:

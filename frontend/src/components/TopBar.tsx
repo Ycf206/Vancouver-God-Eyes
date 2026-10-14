@@ -5,6 +5,7 @@ import { Search, Settings, ChevronDown, Map as MapIcon, X, Loader2, Layers, Aler
 import { useUIStore, SearchTarget } from '@/store/useUIStore';
 import ReportIssueModal from '@/components/ReportIssueModal';
 import DonateModal from '@/components/DonateModal';
+import { getApiUrl } from '@/utils/api';
 
 export default function TopBar() {
   const { setSearchTarget, enableLayer, isLayerPanelOpen, toggleLayerPanel } = useUIStore();
@@ -46,7 +47,7 @@ export default function TopBar() {
     }
 
     setIsLoading(true);
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:8000` : 'http://localhost:8000');
+    const apiUrl = getApiUrl();
     
     const handler = setTimeout(() => {
       fetch(`${apiUrl}/api/search?q=${encodeURIComponent(trimmed)}`)

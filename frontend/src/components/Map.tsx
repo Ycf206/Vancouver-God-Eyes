@@ -227,7 +227,7 @@ export default function AppMap() {
     setSelectedBus(v);
     setLoadingBusDetails(true);
 
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:8000` : 'http://localhost:8000');
+    const apiUrl = getApiUrl();
     const qs = new URLSearchParams({
       vehicle_id: v.id || '',
       route_id: v.route_id || '',
@@ -256,7 +256,7 @@ export default function AppMap() {
     const updated = vehicles.find(v => v.id === selectedBus.id);
     if (updated && (updated.lat !== selectedBus.lat || updated.lon !== selectedBus.lon || updated.stop_id !== selectedBus.stop_id || updated.next_stop_name !== selectedBus.next_stop_name)) {
       setSelectedBus(updated);
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:8000` : 'http://localhost:8000');
+      const apiUrl = getApiUrl();
       const qs = new URLSearchParams({
         vehicle_id: updated.id || '',
         route_id: updated.route_id || '',
@@ -304,7 +304,7 @@ export default function AppMap() {
       const pageUrl = selectedFacility.properties?.url;
       if (pageUrl) {
         setLoadingWebcam(true);
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:8000` : 'http://localhost:8000');
+        const apiUrl = getApiUrl();
         fetch(`${apiUrl}/api/webcam/images?url=${encodeURIComponent(pageUrl)}`)
           .then(res => res.json())
           .then(data => {
@@ -331,7 +331,7 @@ export default function AppMap() {
   useEffect(() => {
     if (selectedFacility && selectedFacility.facility_type === 'hospitals') {
       setLoadingWaitTimes(true);
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:8000` : 'http://localhost:8000');
+      const apiUrl = getApiUrl();
       fetch(`${apiUrl}/api/hospitals/waittimes`)
         .then(res => res.json())
         .then(data => {
@@ -365,7 +365,7 @@ export default function AppMap() {
         properties: { code: searchTarget.meta.code, name: searchTarget.title }
       });
       setLoadingSchedule(true);
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:8000` : 'http://localhost:8000');
+      const apiUrl = getApiUrl();
       fetch(`${apiUrl}/api/bcferries/schedule/${searchTarget.meta.code}`)
         .then(res => res.json())
         .then(data => {
@@ -387,7 +387,7 @@ export default function AppMap() {
         lat: searchTarget.lat
       });
       setLoadingArrivals(true);
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:8000` : 'http://localhost:8000');
+      const apiUrl = getApiUrl();
       fetch(`${apiUrl}/api/stops/${stopId}/arrivals`)
         .then(res => res.json())
         .then(data => {
@@ -528,7 +528,7 @@ export default function AppMap() {
       ]
     };
 
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:8000` : 'http://localhost:8000');
+    const apiUrl = getApiUrl();
     
     if (labelTiles.length > 0) {
       style.sources['esri-labels'] = {
@@ -1634,7 +1634,7 @@ export default function AppMap() {
             
             // Fetch arrivals
             setLoadingArrivals(true);
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:8000` : 'http://localhost:8000');
+            const apiUrl = getApiUrl();
             fetch(`${apiUrl}/api/stops/${stopId}/arrivals`)
               .then(res => res.json())
               .then(data => {
@@ -2071,7 +2071,7 @@ export default function AppMap() {
                 e.stopPropagation();
                 setSelectedTerminal(t);
                 setLoadingSchedule(true);
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:8000` : 'http://localhost:8000');
+                const apiUrl = getApiUrl();
                 fetch(`${apiUrl}/api/ferries/terminals/${t.properties.code}/schedule`)
                   .then(r => r.json())
                   .then(data => {
@@ -3352,7 +3352,7 @@ export default function AppMap() {
                     <div className="grid grid-cols-2 gap-1.5 pt-1">
                       {webcamImages.map((img, idx) => {
                         const hourlyTimestamp = Math.floor(Date.now() / 3600000);
-                        const apiUrl = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? `http://${window.location.hostname}:8000` : 'http://localhost:8000');
+                        const apiUrl = getApiUrl();
                         const proxySrc = `${apiUrl}/api/webcam/proxy?url=${encodeURIComponent(img.url)}&t=${hourlyTimestamp}_${webcamRefreshKey}`;
                         const directSrc = `${img.url}?t=${hourlyTimestamp}_${webcamRefreshKey}`;
                         return (
