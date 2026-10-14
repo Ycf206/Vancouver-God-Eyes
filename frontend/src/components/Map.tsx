@@ -380,12 +380,13 @@ export default function AppMap() {
         .then(data => {
           setSearchedBusRoute(data);
           setLoadingSearchedRoute(false);
+          // 搜尋完畢後不自動彈出 popup，僅平滑移動至路線視野供使用者查看與自由點選車輛
           if (data.buses && data.buses.length > 0) {
-            handleSelectBus(data.buses[0]);
+            const midBus = data.buses[Math.floor(data.buses.length / 2)];
             if (mapRef.current) {
               mapRef.current.flyTo({
-                center: [data.buses[0].lon, data.buses[0].lat],
-                zoom: 14,
+                center: [midBus.lon, midBus.lat],
+                zoom: 13.5,
                 duration: 1200
               });
             }
@@ -619,8 +620,8 @@ export default function AppMap() {
     const activeContourInterval = contourInterval !== 'off' ? contourInterval : '10m';
     style.sources['contours'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/contours?interval=${activeContourInterval}` };
 
-    // Bus Routes & Stops (Merged under busRoutes)
-    if (layers.busRoutes) {
+    // Bus Routes & Stops (Merged under busRoutes) - 當正在搜尋特定巴士路線時，只顯示該搜尋路線，不繪製底圖全域 99 及 R1~R6 路線
+    if (layers.busRoutes && !searchedBusRoute) {
       style.layers.push({
         id: 'bus-tracks-layer',
         type: 'line',
@@ -1560,6 +1561,7 @@ export default function AppMap() {
   }, [
     layers.skytrainRoutes, 
     layers.busRoutes, 
+    searchedBusRoute,
     layers.seabusRoutes, 
     layers.bcferriesRoutes, 
     layers.parkingMeters, 
@@ -1594,7 +1596,7 @@ export default function AppMap() {
 
   return (
     <div 
-      className={`h-full absolute top-[60px] bottom-0 right-0 z-0 transition-[left,width] duration-200 ${
+      className={`absolute top-[60px] bottom-0 right-0 h-[calc(100vh-60px)] z-0 transition-[left,width] duration-200 overflow-hidden ${
         isLayerPanelOpen ? 'left-[240px] w-[calc(100%-240px)]' : 'left-0 w-full'
       }`}
     >
@@ -1813,8 +1815,8 @@ export default function AppMap() {
           </Marker>
         ))}
 
-        {/* 搜尋目標高亮光環 (Search Target Focus Ring) */}
-        {searchTarget && (
+        {/* 搜尋目標高亮光環 (Search Target Focus Ring) - 巴士路線等整條路線不顯示中心點閃爍標記 */}
+        {searchTarget && searchTarget.category !== 'bus_route' && (
           <Marker longitude={searchTarget.lon} latitude={searchTarget.lat} anchor="center">
             <div className="relative flex items-center justify-center pointer-events-none z-40">
               <span className="absolute w-12 h-12 rounded-full bg-emerald-400/40 animate-ping"></span>
@@ -1854,8 +1856,11 @@ export default function AppMap() {
               String(v.route_number).toLowerCase() === String(searchedBusRoute.route_number).toLowerCase()
             );
 
-            if (!isSearchedRouteBus && (!layers.bus || !isRapidBus)) {
-              return null;
+            // 若目前搜尋特定巴士路線，則僅顯示該路線在途車輛；若無搜尋，則依照一般巴士圖層開關顯示 RapidBus / 99
+            if (searchedBusRoute) {
+              if (!isSearchedRouteBus) return null;
+            } else {
+              if (!layers.bus || !isRapidBus) return null;
             }
 
             return (
@@ -1895,264 +1900,7 @@ export default function AppMap() {
           </Marker>
         ))}
 
-        {/* 巴士 / 海上巴士 即時動態 Popup (Live Bus / SeaBus Click Popup) */}
-        {selectedBus && (() => {
-          const busNum = busDetails?.route_number || selectedBus.route_number || selectedBus.route_id;
-          const destName = busDetails?.destination || selectedBus.destination || '終點站';
-          const originName = busDetails?.origin || selectedBus.origin || '起點站';
-          const operatorName = busDetails?.operator || selectedBus.operator || 'TransLink (CMBC 岸山巴士)';
-          const nextStopName = busDetails?.next_stop_name || selectedBus.next_stop_name || '沿線行駛中';
-          const nextStopTime = busDetails?.next_stop_time || selectedBus.next_stop_time || '';
-          const nextStopMin = busDetails?.next_stop_minutes ?? selectedBus.next_stop_minutes;
-          const stopList = busDetails?.stops || [];
 
-          return (
-            <Popup
-              longitude={selectedBus.lon}
-              latitude={selectedBus.lat}
-              anchor="bottom"
-              onClose={() => {
-                setSelectedBus(null);
-                setBusDetails(null);
-                setSearchedBusRoute(null);
-                setSearchTarget(null);
-              }}
-              closeOnClick={false}
-              closeButton={false}
-              className="z-50"
-              offset={[0, -12]}
-              maxWidth="360px"
-            >
-              <div className="w-[310px] sm:w-[335px] max-w-[90vw] bg-[#161922] text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] -m-[10px]">
-                {/* Header */}
-                <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-[#262b38]">
-                  <div className="flex items-start gap-2.5 min-w-0">
-                    <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5 shadow-sm">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/>
-                      </svg>
-                    </div>
-                    <div className="min-w-0">
-                      <h3 className="font-bold text-white text-[15px] leading-snug tracking-tight truncate">
-                        {busNum} 去 {destName}
-                      </h3>
-                      <div className="flex items-center gap-1.5 mt-0.5">
-                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_rgba(52,211,153,0.9)]"></span>
-                        <span className="text-[11px] font-semibold text-emerald-400">即時更新中</span>
-                        {selectedBus.id && (
-                          <span className="text-[10px] text-gray-400 font-mono ml-1">#{selectedBus.id}</span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => {
-                      setSelectedBus(null);
-                      setBusDetails(null);
-                      setSearchedBusRoute(null);
-                      setSearchTarget(null);
-                    }}
-                    className="text-gray-400 hover:text-white text-xl leading-none px-1.5 py-0.5 rounded hover:bg-[#252a38] transition-colors shrink-0"
-                  >
-                    &times;
-                  </button>
-                </div>
-
-                {/* Info Rows */}
-                <div className="flex flex-col gap-2 text-xs">
-                  <div className="flex justify-between items-center gap-2">
-                    <span className="text-gray-400 shrink-0">營辦商</span>
-                    <span className="font-bold text-gray-100 text-right truncate">{operatorName}</span>
-                  </div>
-                  <div className="flex justify-between items-center gap-2">
-                    <span className="text-gray-400 shrink-0">起點</span>
-                    <span className="font-bold text-gray-100 text-right truncate">{originName}</span>
-                  </div>
-                  <div className="flex justify-between items-center gap-2">
-                    <span className="text-gray-400 shrink-0">終點</span>
-                    <span className="font-bold text-gray-100 text-right truncate">{destName}</span>
-                  </div>
-                  <div className="flex justify-between items-center gap-2">
-                    <span className="text-gray-400 shrink-0">當前</span>
-                    <span className="font-bold text-emerald-400 text-right truncate">開往 {destName}</span>
-                  </div>
-                  <div className="flex justify-between items-start gap-2 pt-0.5">
-                    <span className="text-gray-400 shrink-0 mt-0.5">下一站</span>
-                    <div className="flex flex-col items-end text-right min-w-0">
-                      <span className="font-bold text-white leading-snug">{nextStopName}</span>
-                      <span className="text-[11px] font-bold text-amber-400 mt-0.5">
-                        {nextStopTime
-                          ? `預計 ${nextStopTime} (${nextStopMin !== undefined && nextStopMin !== null ? (nextStopMin <= 0 ? '即將進站' : `${nextStopMin} 分鐘後`) : '行駛中'})`
-                          : '即時定位中'}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center gap-2">
-                    <span className="text-gray-400 shrink-0">運行</span>
-                    <span className="font-bold text-emerald-400">準時</span>
-                  </div>
-                </div>
-
-                {/* Stops List Box */}
-                <div className="mt-3 pt-2.5 border-t border-[#262b38]">
-                  <div className="bg-[#10131a] rounded-lg border border-[#232836] p-2">
-                    <div className="text-[11px] text-gray-400 font-medium mb-1.5 px-1 flex items-center justify-between">
-                      <span>
-                        {loadingBusDetails
-                          ? '載入路線站點中...'
-                          : `${stopList.length} 個站`}
-                      </span>
-                      {busDetails?.route_name && (
-                        <span className="text-[10px] text-emerald-400/80 font-mono truncate max-w-[140px]">
-                          {busDetails.route_name}
-                        </span>
-                      )}
-                    </div>
-                    {loadingBusDetails ? (
-                      <div className="py-4 flex items-center justify-center gap-2 text-xs text-gray-400">
-                        <div className="w-3.5 h-3.5 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"></div>
-                        <span>讀取 GTFS 站序與軌跡...</span>
-                      </div>
-                    ) : stopList.length > 0 ? (
-                      <div className="max-h-[155px] overflow-y-auto flex flex-col gap-0.5 pr-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
-                        {stopList.map((st: { seq: number; stop_id: string; name: string; lat: number; lon: number; status: string; eta_time?: string; eta_minutes?: number }) => {
-                          const isNext = st.status === 'next';
-                          const isPassed = st.status === 'passed';
-                          return (
-                            <div
-                              key={`popup-stop-${st.seq}`}
-                              ref={isNext ? (el) => { el?.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } : undefined}
-                              onClick={() => {
-                                mapRef.current?.flyTo({ center: [st.lon, st.lat], zoom: 15.5, duration: 800 });
-                              }}
-                              className={`flex items-center justify-between gap-2 px-2 py-1.5 rounded text-[11.5px] cursor-pointer transition-colors ${
-                                isNext
-                                  ? 'bg-amber-500/20 border-l-2 border-amber-400 text-white font-bold'
-                                  : isPassed
-                                  ? 'text-gray-500 hover:bg-[#1a1f2c]'
-                                  : 'text-gray-200 hover:bg-[#1a1f2c]'
-                              }`}
-                            >
-                              <span className="truncate">
-                                {st.seq}. {st.name}
-                              </span>
-                              <span className={`shrink-0 text-[10.5px] font-semibold ${
-                                isNext
-                                  ? 'text-amber-400 font-bold'
-                                  : isPassed
-                                  ? 'text-gray-600'
-                                  : 'text-emerald-400/90 font-mono'
-                              }`}>
-                                {isNext
-                                  ? '下個站'
-                                  : isPassed
-                                  ? '已過站'
-                                  : st.eta_minutes !== undefined && st.eta_minutes !== null
-                                  ? `${st.eta_minutes} 分`
-                                  : ''}
-                              </span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    ) : (
-                      <div className="text-[11px] text-gray-500 py-2 text-center">暫無詳細站序資料</div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </Popup>
-          );
-        })()}
-
-        {/* 當搜尋路線且無即時行駛班次時，顯示該路線概況與站點清單 Popup */}
-        {!selectedBus && searchedBusRoute && searchedBusRoute.stops && searchedBusRoute.stops.length > 0 && (() => {
-          const midIdx = Math.floor(searchedBusRoute.stops.length / 2);
-          const repStop = searchedBusRoute.stops[midIdx] || searchedBusRoute.stops[0];
-          const busNum = searchedBusRoute.route_number || searchedBusRoute.route_id;
-          const destName = searchedBusRoute.destination || '終點站';
-          const originName = searchedBusRoute.origin || '起點站';
-          const operatorName = searchedBusRoute.operator || 'TransLink (CMBC 岸山巴士)';
-          const stopList = searchedBusRoute.stops || [];
-
-          return (
-            <Popup
-              longitude={repStop.lon}
-              latitude={repStop.lat}
-              anchor="bottom"
-              onClose={() => {
-                setSearchedBusRoute(null);
-                setSearchTarget(null);
-              }}
-              closeOnClick={false}
-              closeButton={false}
-              className="z-50"
-              offset={[0, -12]}
-              maxWidth="360px"
-            >
-              <div className="w-[310px] sm:w-[335px] max-w-[90vw] bg-[#161922] text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] -m-[10px]">
-                <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-[#262b38]">
-                  <div className="flex items-start gap-2.5 min-w-0">
-                    <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5 shadow-sm">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/>
-                      </svg>
-                    </div>
-                    <div className="min-w-0">
-                      <h3 className="font-bold text-white text-[15px] leading-snug tracking-tight truncate">
-                        {busNum} 去 {destName}
-                      </h3>
-                      <div className="flex items-center gap-1.5 mt-0.5">
-                        <span className="w-2 h-2 rounded-full bg-gray-400"></span>
-                        <span className="text-[11px] font-semibold text-gray-400">目前無在途行駛班次 (離峰時段)</span>
-                      </div>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => {
-                      setSearchedBusRoute(null);
-                      setSearchTarget(null);
-                    }}
-                    className="text-gray-400 hover:text-white text-xl leading-none px-1.5 py-0.5 rounded hover:bg-[#252a38] transition-colors shrink-0"
-                  >
-                    &times;
-                  </button>
-                </div>
-
-                <div className="flex flex-col gap-2 text-xs">
-                  <div className="flex justify-between items-center gap-2">
-                    <span className="text-gray-400 shrink-0">營辦商</span>
-                    <span className="font-bold text-gray-100 text-right truncate">{operatorName}</span>
-                  </div>
-                  <div className="flex justify-between items-center gap-2">
-                    <span className="text-gray-400 shrink-0">起點</span>
-                    <span className="font-bold text-gray-100 text-right truncate">{originName}</span>
-                  </div>
-                  <div className="flex justify-between items-center gap-2">
-                    <span className="text-gray-400 shrink-0">終點</span>
-                    <span className="font-bold text-gray-100 text-right truncate">{destName}</span>
-                  </div>
-                </div>
-
-                {/* 沿線站點清單 */}
-                <div className="mt-3 pt-2.5 border-t border-[#262b38]">
-                  <div className="flex justify-between items-center mb-1.5">
-                    <span className="text-[11px] font-bold text-gray-300">沿線停靠站點 ({stopList.length} 站)</span>
-                  </div>
-                  <div className="max-h-[160px] overflow-y-auto space-y-1 pr-1 custom-scrollbar">
-                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                    {stopList.map((st: any, idx: number) => (
-                      <div key={idx} className="flex items-center gap-2 text-[11px] text-gray-300 py-0.5">
-                        <span className="text-gray-500 font-mono w-4 text-right text-[10px] shrink-0">{st.seq || idx + 1}.</span>
-                        <span className="truncate">{st.name}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </Popup>
-          );
-        })()}
 
         {/* 到站時間 Popup */}
         {selectedStop && (
@@ -4263,6 +4011,191 @@ export default function AppMap() {
         )}
 
       </Map>
+
+      {/* 搜尋路線時若尚未選取車輛，在右上方顯示精簡提示卡 */}
+      {searchedBusRoute && !selectedBus && (
+        <div className="fixed top-[72px] right-4 z-40 bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl px-4 py-3 shadow-2xl border border-[#2a2f3d] flex items-center gap-3 animate-in fade-in slide-in-from-right-4 duration-200 select-none max-w-[calc(100vw-32px)]">
+          <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0 shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/>
+            </svg>
+          </div>
+          <div className="min-w-0 pr-1">
+            <div className="text-sm font-bold text-white truncate">
+              {searchedBusRoute.route_number || searchedBusRoute.route_id} 去 {searchedBusRoute.destination || '終點站'}
+            </div>
+            <div className="text-[11px] text-gray-400 mt-0.5 truncate">
+              已顯示路線與站點 · 點擊地圖上的巴士可查看即時班次
+            </div>
+          </div>
+          <button
+            onClick={() => {
+              setSearchedBusRoute(null);
+              setSearchTarget(null);
+            }}
+            className="text-gray-400 hover:text-white p-1 rounded hover:bg-[#252a38] transition-colors ml-1 shrink-0"
+            title="關閉路線"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+      )}
+
+      {/* 點選巴士時固定在右方展示之即時動態資料面板 */}
+      {selectedBus && (() => {
+        const busNum = busDetails?.route_number || selectedBus.route_number || selectedBus.route_id;
+        const destName = busDetails?.destination || selectedBus.destination || '終點站';
+        const originName = busDetails?.origin || selectedBus.origin || '起點站';
+        const operatorName = busDetails?.operator || selectedBus.operator || 'TransLink (CMBC 岸山巴士)';
+        const nextStopName = busDetails?.next_stop_name || selectedBus.next_stop_name || '沿線行駛中';
+        const nextStopTime = busDetails?.next_stop_time || selectedBus.next_stop_time || '';
+        const nextStopMin = busDetails?.next_stop_minutes ?? selectedBus.next_stop_minutes;
+        const stopList = busDetails?.stops || [];
+
+        return (
+          <div className="fixed top-[72px] right-4 z-40 w-[340px] max-w-[calc(100vw-32px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-200 select-none">
+            {/* Header */}
+            <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-[#262b38] shrink-0">
+              <div className="flex items-start gap-2.5 min-w-0">
+                <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5 shadow-sm">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/>
+                  </svg>
+                </div>
+                <div className="min-w-0">
+                  <h3 className="font-bold text-white text-[15px] leading-snug tracking-tight truncate">
+                    {busNum} 去 {destName}
+                  </h3>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_rgba(52,211,153,0.9)]"></span>
+                    <span className="text-[11px] font-semibold text-emerald-400">即時更新中</span>
+                    {selectedBus.id && (
+                      <span className="text-[10px] text-gray-400 font-mono ml-1">#{selectedBus.id}</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  setSelectedBus(null);
+                  setBusDetails(null);
+                  if (searchedBusRoute) {
+                    setSearchedBusRoute(null);
+                    setSearchTarget(null);
+                  }
+                }}
+                className="text-gray-400 hover:text-white p-1 rounded hover:bg-[#252a38] transition-colors shrink-0"
+                title="關閉"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+              </button>
+            </div>
+
+            {/* Info Rows */}
+            <div className="flex flex-col gap-2 text-xs shrink-0">
+              <div className="flex justify-between items-center gap-2">
+                <span className="text-gray-400 shrink-0">營辦商</span>
+                <span className="font-bold text-gray-100 text-right truncate">{operatorName}</span>
+              </div>
+              <div className="flex justify-between items-center gap-2">
+                <span className="text-gray-400 shrink-0">起點</span>
+                <span className="font-bold text-gray-100 text-right truncate">{originName}</span>
+              </div>
+              <div className="flex justify-between items-center gap-2">
+                <span className="text-gray-400 shrink-0">終點</span>
+                <span className="font-bold text-gray-100 text-right truncate">{destName}</span>
+              </div>
+              <div className="flex justify-between items-center gap-2">
+                <span className="text-gray-400 shrink-0">當前</span>
+                <span className="font-bold text-emerald-400 text-right truncate">開往 {destName}</span>
+              </div>
+              <div className="flex justify-between items-start gap-2 pt-0.5">
+                <span className="text-gray-400 shrink-0 mt-0.5">下一站</span>
+                <div className="flex flex-col items-end text-right min-w-0">
+                  <span className="font-bold text-white leading-snug">{nextStopName}</span>
+                  <span className="text-[11px] font-bold text-amber-400 mt-0.5">
+                    {nextStopTime
+                      ? `預計 ${nextStopTime} (${nextStopMin !== undefined && nextStopMin !== null ? (nextStopMin <= 0 ? '即將進站' : `${nextStopMin} 分鐘後`) : '行駛中'})`
+                      : '即時定位中'}
+                  </span>
+                </div>
+              </div>
+              <div className="flex justify-between items-center gap-2">
+                <span className="text-gray-400 shrink-0">運行</span>
+                <span className="font-bold text-emerald-400">準時</span>
+              </div>
+            </div>
+
+            {/* Stops List Box */}
+            <div className="mt-3 pt-2.5 border-t border-[#262b38] flex-1 flex flex-col min-h-0">
+              <div className="bg-[#10131a] rounded-lg border border-[#232836] p-2 flex-1 flex flex-col min-h-0">
+                <div className="text-[11px] text-gray-400 font-medium mb-1.5 px-1 flex items-center justify-between shrink-0">
+                  <span>
+                    {loadingBusDetails
+                      ? '載入路線站點中...'
+                      : `${stopList.length} 個站`}
+                  </span>
+                  {busDetails?.route_name && (
+                    <span className="text-[10px] text-emerald-400/80 font-mono truncate max-w-[140px]">
+                      {busDetails.route_name}
+                    </span>
+                  )}
+                </div>
+                {loadingBusDetails ? (
+                  <div className="py-4 flex items-center justify-center gap-2 text-xs text-gray-400">
+                    <div className="w-3.5 h-3.5 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"></div>
+                    <span>讀取 GTFS 站序與軌跡...</span>
+                  </div>
+                ) : stopList.length > 0 ? (
+                  <div className="overflow-y-auto flex-1 flex flex-col gap-0.5 pr-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
+                    {stopList.map((st: { seq: number; stop_id: string; name: string; lat: number; lon: number; status: string; eta_time?: string; eta_minutes?: number }) => {
+                      const isNext = st.status === 'next';
+                      const isPassed = st.status === 'passed';
+                      return (
+                        <div
+                          key={`popup-stop-${st.seq}`}
+                          ref={isNext ? (el) => { el?.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } : undefined}
+                          onClick={() => {
+                            mapRef.current?.flyTo({ center: [st.lon, st.lat], zoom: 15.5, duration: 800 });
+                          }}
+                          className={`flex items-center justify-between gap-2 px-2 py-1.5 rounded text-[11.5px] cursor-pointer transition-colors ${
+                            isNext
+                              ? 'bg-amber-500/20 border-l-2 border-amber-400 text-white font-bold'
+                              : isPassed
+                              ? 'text-gray-500 hover:bg-[#1a1f2c]'
+                              : 'text-gray-200 hover:bg-[#1a1f2c]'
+                          }`}
+                        >
+                          <span className="truncate">
+                            {st.seq}. {st.name}
+                          </span>
+                          <span className={`shrink-0 text-[10.5px] font-semibold ${
+                            isNext
+                              ? 'text-amber-400 font-bold'
+                              : isPassed
+                              ? 'text-gray-600'
+                              : 'text-emerald-400/90 font-mono'
+                          }`}>
+                            {isNext
+                              ? '下個站'
+                              : isPassed
+                              ? '已過站'
+                              : st.eta_minutes !== undefined && st.eta_minutes !== null
+                              ? `${st.eta_minutes} 分`
+                              : ''}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="text-[11px] text-gray-500 py-2 text-center">暫無詳細站序資料</div>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }

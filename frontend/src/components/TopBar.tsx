@@ -98,7 +98,7 @@ export default function TopBar() {
   };
 
   return (
-    <div className="absolute top-0 left-0 w-full h-[60px] bg-[#1a1b1e] border-b border-[#2d2e32] flex items-center px-4 z-50 text-white shadow-lg">
+    <div className="fixed top-0 left-0 w-full h-[60px] bg-[#1a1b1e] border-b border-[#2d2e32] flex items-center px-4 z-50 text-white shadow-lg">
       
       {/* 標誌區域 */}
       <div className="flex flex-col justify-center mr-3 select-none shrink-0">

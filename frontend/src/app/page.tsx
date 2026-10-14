@@ -10,7 +10,7 @@ const AppMap = dynamic(() => import('@/components/Map'), {
 
 export default function Home() {
   return (
-    <main className="relative w-screen h-screen overflow-hidden bg-[#161719] text-white font-sans selection:bg-emerald-500/30">
+    <main className="fixed inset-0 w-full h-full overflow-hidden bg-[#161719] text-white font-sans selection:bg-emerald-500/30">
       <TopBar />
       <LayerPanel />
       <FlightScheduleModal />
