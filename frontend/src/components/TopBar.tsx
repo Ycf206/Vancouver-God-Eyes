@@ -1,14 +1,16 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Search, Settings, ChevronDown, Map as MapIcon, X, Loader2, Layers, AlertCircle } from 'lucide-react';
+import { Search, Settings, ChevronDown, Map as MapIcon, X, Loader2, Layers, AlertCircle, Heart } from 'lucide-react';
 import { useUIStore, SearchTarget } from '@/store/useUIStore';
 import ReportIssueModal from '@/components/ReportIssueModal';
+import DonateModal from '@/components/DonateModal';
 
 export default function TopBar() {
   const { setSearchTarget, enableLayer, isLayerPanelOpen, toggleLayerPanel } = useUIStore();
   const [time, setTime] = useState<Date | null>(null);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [isDonateModalOpen, setIsDonateModalOpen] = useState(false);
 
   // 搜尋狀態
   const [query, setQuery] = useState('');
@@ -233,8 +235,17 @@ export default function TopBar() {
         )}
       </div>
 
-      {/* 右側按鈕組：回報問題按鈕 (感嘆號) + 設定按鈕 */}
+      {/* 右側按鈕組：贊助支持按鈕 (愛心) + 回報問題按鈕 (感嘆號) + 設定按鈕 */}
       <div className="flex items-center gap-2 shrink-0">
+        {/* 贊助支持按鈕 (愛心圖示，位於回報問題左側) */}
+        <button 
+          onClick={() => setIsDonateModalOpen(true)}
+          className="flex items-center justify-center w-10 h-9 bg-[#25262b] hover:bg-[#2c2d33] border border-[#373a40] hover:border-rose-500/50 rounded-md transition-colors group shadow-sm text-gray-300 hover:text-rose-400" 
+          title="贊助支持"
+        >
+          <Heart className="w-4 h-4 text-rose-400/80 group-hover:text-rose-400 group-hover:scale-110 transition-transform fill-rose-500/20" />
+        </button>
+
         <button 
           onClick={() => setIsReportModalOpen(true)}
           className="flex items-center justify-center w-10 h-9 bg-[#25262b] hover:bg-[#2c2d33] border border-[#373a40] hover:border-amber-500/50 rounded-md transition-colors group shadow-sm text-gray-300 hover:text-amber-400" 
@@ -247,6 +258,12 @@ export default function TopBar() {
           <Settings className="w-4 h-4 text-gray-300 group-hover:text-emerald-400 transition-colors" />
         </button>
       </div>
+
+      {/* 贊助支持彈出視窗 */}
+      <DonateModal 
+        isOpen={isDonateModalOpen} 
+        onClose={() => setIsDonateModalOpen(false)} 
+      />
 
       {/* 回報問題彈出視窗 */}
       <ReportIssueModal 

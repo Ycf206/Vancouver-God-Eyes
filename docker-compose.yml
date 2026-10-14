@@ -48,6 +48,9 @@ services:
       - backend
     environment:
       - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - NEXT_PUBLIC_STRIPE_PAYMENT_LINK=${NEXT_PUBLIC_STRIPE_PAYMENT_LINK:-}
+      - NEXT_PUBLIC_BUYMEACOFFEE_URL=${NEXT_PUBLIC_BUYMEACOFFEE_URL:-}
+      - NEXT_PUBLIC_PAYPAL_URL=${NEXT_PUBLIC_PAYPAL_URL:-}
     restart: unless-stopped
 
 volumes:
