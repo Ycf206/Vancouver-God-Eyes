@@ -851,6 +851,66 @@ async def get_stop_arrivals(stop_id: str):
     return {"stop_id": stop_id, "arrivals": enriched}
 
 
+@app.get("/api/transit/route/{route_id}")
+def get_transit_route_details(route_id: str):
+    """
+    Returns full route geometry, stops, and current active buses for a specific route.
+    """
+    gtfs_meta = get_gtfs_metadata()
+    routes_lookup = gtfs_meta.get("routes", {})
+    variants_lookup = gtfs_meta.get("variants", {})
+    default_variants = gtfs_meta.get("route_default_variants", {})
+
+    rid = str(route_id).strip()
+    rmeta = routes_lookup.get(rid)
+    if not rmeta:
+        for k, v in routes_lookup.items():
+            if str(v.get("route_number", "")).lower() == rid.lower() or str(v.get("raw_short_name", "")).lower() == rid.lower():
+                rid = k
+                rmeta = v
+                break
+
+    rmeta = rmeta or {}
+    rnum = str(rmeta.get("route_number") or rid)
+    rlong = str(rmeta.get("long_name") or "")
+
+    primary_v = None
+    def_key_0 = default_variants.get(f"{rid}_0")
+    def_key_1 = default_variants.get(f"{rid}_1")
+    if def_key_0 and def_key_0 in variants_lookup:
+        primary_v = variants_lookup[def_key_0]
+    elif def_key_1 and def_key_1 in variants_lookup:
+        primary_v = variants_lookup[def_key_1]
+    else:
+        route_variants = [v for v in variants_lookup.values() if str(v.get("route_id")) == rid]
+        if route_variants:
+            primary_v = max(route_variants, key=lambda v: len(v.get("stops", [])))
+
+    shape_coords = primary_v.get("shape_coords", []) if primary_v else []
+    stops = primary_v.get("stops", []) if primary_v else []
+    origin = primary_v.get("origin", "") if primary_v else ""
+    destination = primary_v.get("destination", "") if primary_v else rlong
+    operator = primary_v.get("operator", "TransLink (CMBC 岸山巴士)") if primary_v else "TransLink (CMBC 岸山巴士)"
+
+    route_buses = [
+        v for v in cached_translink_vehicles
+        if str(v.get("route_id")) == rid or str(v.get("route_number", "")).lower() == rnum.lower()
+    ]
+
+    return {
+        "route_id": rid,
+        "route_number": rnum,
+        "route_name": f"{rnum} {rlong}".strip() if rnum not in rlong else rlong,
+        "color": rmeta.get("color", "#10b981"),
+        "origin": origin,
+        "destination": destination,
+        "operator": operator,
+        "shape_coords": shape_coords,
+        "stops": stops,
+        "buses": route_buses
+    }
+
+
 @app.get("/api/transit/vehicle-details")
 def get_transit_vehicle_details(
     vehicle_id: str = "",
@@ -1083,7 +1143,80 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
 
     results = []
 
-    # 0. 搜尋機場與航空設施
+    # 0. 搜尋大眾運輸巴士路線 (Transit Bus Routes)
+    try:
+        gtfs_meta = get_gtfs_metadata()
+        routes_lookup = gtfs_meta.get("routes", {})
+        variants_lookup = gtfs_meta.get("variants", {})
+        default_variants = gtfs_meta.get("route_default_variants", {})
+
+        matching_routes = []
+        for rid, rmeta in routes_lookup.items():
+            rnum = str(rmeta.get("route_number") or rid).strip()
+            rnum_lower = rnum.lower()
+            rlong = str(rmeta.get("long_name") or "").strip()
+            rlong_lower = rlong.lower()
+
+            score = 0
+            if rnum_lower == q_clean or f"r{q_clean}" == rnum_lower or (q_clean.startswith("r") and q_clean[1:] == rnum_lower):
+                score = 3
+            elif rnum_lower.startswith(q_clean):
+                score = 2
+            elif q_clean in rnum_lower or q_clean in rlong_lower:
+                score = 1
+
+            if score > 0:
+                matching_routes.append((score, rid, rnum, rlong, rmeta))
+
+        matching_routes.sort(key=lambda x: (-x[0], len(x[2]), x[2]))
+
+        for score, rid, rnum, rlong, rmeta in matching_routes[:8]:
+            def_vkey = default_variants.get(f"{rid}_0") or default_variants.get(f"{rid}_1")
+            variant = variants_lookup.get(def_vkey) if def_vkey else None
+
+            dest_display = variant.get("destination", "") if variant else rlong
+            origin_display = variant.get("origin", "") if variant else ""
+
+            rep_lon = -123.1207
+            rep_lat = 49.2827
+            if variant and variant.get("stops"):
+                stops = variant["stops"]
+                mid_idx = len(stops) // 2
+                rep_lon = stops[mid_idx]["lon"]
+                rep_lat = stops[mid_idx]["lat"]
+            elif variant and variant.get("shape_coords") and len(variant["shape_coords"]) > 0:
+                coords = variant["shape_coords"]
+                mid_idx = len(coords) // 2
+                rep_lon = coords[mid_idx][0]
+                rep_lat = coords[mid_idx][1]
+
+            route_title = f"{rnum} 號巴士 · {dest_display}" if dest_display else f"{rnum} 號巴士"
+            route_sub = f"起點: {origin_display} ➔ 終點: {dest_display}" if origin_display and dest_display else f"TransLink 路線: {rlong}"
+
+            results.append({
+                "id": f"route_{rid}",
+                "title": route_title,
+                "subtitle": route_sub,
+                "category": "bus_route",
+                "badge": f"{rnum} 號巴士",
+                "icon": "🚌",
+                "lon": rep_lon,
+                "lat": rep_lat,
+                "zoom": 13,
+                "layer_key": "busRoutes",
+                "meta": {
+                    "route_id": rid,
+                    "route_number": rnum,
+                    "route_name": rlong,
+                    "origin": origin_display,
+                    "destination": dest_display,
+                    "color": rmeta.get("color", "#10b981")
+                }
+            })
+    except Exception as e:
+        print(f"Error searching bus routes: {e}")
+
+    # 1. 搜尋機場與航空設施
     for ap in SEARCH_AIRPORTS:
         a_title = ap["title"].lower()
         a_sub = ap["subtitle"].lower()

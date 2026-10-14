@@ -207,6 +207,7 @@ export default function TopBar() {
                       )}
                     </div>
                     <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium border flex-shrink-0 ${
+                      item.category === 'bus_route' ? 'bg-emerald-950/80 text-emerald-300 border-emerald-800/60 font-bold' :
                       item.category === 'skytrain' ? 'bg-sky-950/80 text-sky-400 border-sky-800/60' :
                       item.category === 'ferry_terminal' ? 'bg-blue-950/80 text-blue-300 border-blue-800/60' :
                       item.category === 'seabus' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
@@ -227,7 +228,7 @@ export default function TopBar() {
               ) : (
                 !isLoading && (
                   <div className="py-6 px-4 text-center text-xs text-gray-400">
-                    查無相符圖層項目（可搜尋站名、碼頭名、地址、設施名）
+                    查無相符圖層項目（可搜尋巴士路線、站名、碼頭名、地址、設施名）
                   </div>
                 )
               )}

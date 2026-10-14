@@ -216,6 +216,10 @@ export default function AppMap() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [busDetails, setBusDetails] = useState<any | null>(null);
   const [loadingBusDetails, setLoadingBusDetails] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [searchedBusRoute, setSearchedBusRoute] = useState<any | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [loadingSearchedRoute, setLoadingSearchedRoute] = useState(false);
 
   const handleSelectBus = React.useCallback((v: Vehicle) => {
     setSelectedStop(null);
@@ -279,18 +283,20 @@ export default function AppMap() {
   }, [vehicles, selectedBus]);
 
   const busRouteGeoJSON = useMemo(() => {
-    if (!selectedBus || !busDetails?.shape_coords || busDetails.shape_coords.length < 2) return null;
+    const coords = busDetails?.shape_coords || searchedBusRoute?.shape_coords;
+    const color = busDetails?.color || searchedBusRoute?.color || '#10b981';
+    if (!coords || coords.length < 2) return null;
     return {
       type: 'Feature' as const,
       geometry: {
         type: 'LineString' as const,
-        coordinates: busDetails.shape_coords,
+        coordinates: coords,
       },
       properties: {
-        color: busDetails.color || '#10b981',
+        color: color,
       },
     };
-  }, [selectedBus, busDetails]);
+  }, [busDetails, searchedBusRoute]);
 
 
   // States for Traffic Camera Images
@@ -357,7 +363,48 @@ export default function AppMap() {
       });
     }
 
-    if (searchTarget.category === 'ferry_terminal' && searchTarget.meta?.code) {
+    if (searchTarget.category === 'bus_route') {
+      setSelectedTerminal(null);
+      setSelectedStop(null);
+      setSelectedFacility(null);
+      setSelectedFlight(null);
+      setSelectedAirport(null);
+      setSelectedBus(null);
+      setBusDetails(null);
+
+      const routeId = searchTarget.meta?.route_id || searchTarget.id.replace('route_', '');
+      setLoadingSearchedRoute(true);
+      const apiUrl = getApiUrl();
+      fetch(`${apiUrl}/api/transit/route/${routeId}`)
+        .then(res => res.json())
+        .then(data => {
+          setSearchedBusRoute(data);
+          setLoadingSearchedRoute(false);
+          if (data.buses && data.buses.length > 0) {
+            handleSelectBus(data.buses[0]);
+            if (mapRef.current) {
+              mapRef.current.flyTo({
+                center: [data.buses[0].lon, data.buses[0].lat],
+                zoom: 14,
+                duration: 1200
+              });
+            }
+          } else if (data.stops && data.stops.length > 0) {
+            const midIdx = Math.floor(data.stops.length / 2);
+            if (mapRef.current) {
+              mapRef.current.flyTo({
+                center: [data.stops[midIdx].lon, data.stops[midIdx].lat],
+                zoom: 13,
+                duration: 1200
+              });
+            }
+          }
+        })
+        .catch(err => {
+          console.error('Error fetching searched bus route:', err);
+          setLoadingSearchedRoute(false);
+        });
+    } else if (searchTarget.category === 'ferry_terminal' && searchTarget.meta?.code) {
       setSelectedStop(null);
       setSelectedFacility(null);
       setSelectedTerminal({
@@ -1716,6 +1763,7 @@ export default function AppMap() {
             setSelectedFlight(null);
             setSelectedBus(null);
             setBusDetails(null);
+            setSearchedBusRoute(null);
             setSearchTarget(null);
           }
         }}
@@ -1723,15 +1771,15 @@ export default function AppMap() {
         <NavigationControl position="bottom-right" visualizePitch={true} />
         <ScaleControl position="bottom-right" unit="metric" maxWidth={120} />
 
-        {/* 選中巴士之路線軌跡與沿線站點 (Selected Bus Route Line & Stops on Map) */}
-        {selectedBus && busRouteGeoJSON && (
+        {/* 選中巴士或搜尋路線之路線軌跡與沿線站點 */}
+        {busRouteGeoJSON && (
           <Source id="selected-bus-route-source" type="geojson" data={busRouteGeoJSON}>
             <Layer
               id="selected-bus-route-glow"
               type="line"
               layout={{ 'line-join': 'round', 'line-cap': 'round' }}
               paint={{
-                'line-color': busDetails?.color || '#10b981',
+                'line-color': busDetails?.color || searchedBusRoute?.color || '#10b981',
                 'line-width': 8,
                 'line-blur': 3,
                 'line-opacity': 0.55
@@ -1742,7 +1790,7 @@ export default function AppMap() {
               type="line"
               layout={{ 'line-join': 'round', 'line-cap': 'round' }}
               paint={{
-                'line-color': busDetails?.color || '#10b981',
+                'line-color': busDetails?.color || searchedBusRoute?.color || '#10b981',
                 'line-width': 4,
                 'line-opacity': 0.95
               }}
@@ -1750,7 +1798,7 @@ export default function AppMap() {
           </Source>
         )}
 
-        {selectedBus && busDetails?.stops && busDetails.stops.map((st: { seq: number; stop_id: string; name: string; lat: number; lon: number; status: string }) => (
+        {((busDetails?.stops && busDetails.stops.length > 0) ? busDetails.stops : (searchedBusRoute?.stops || [])).map((st: { seq: number; stop_id: string; name: string; lat: number; lon: number; status?: string }) => (
           <Marker key={`bus-stop-seq-${st.seq}-${st.stop_id}`} longitude={st.lon} latitude={st.lat} anchor="center">
             <div
               className={`rounded-full border transition-transform ${
@@ -1800,7 +1848,16 @@ export default function AppMap() {
               </Marker>
             );
           } else {
-            if (!layers.bus) return null;
+            const isRapidBus = ['R1', 'R2', 'R3', 'R4', 'R5', 'R6', '99'].includes(busNum);
+            const isSearchedRouteBus = searchedBusRoute && (
+              String(v.route_id) === String(searchedBusRoute.route_id) || 
+              String(v.route_number).toLowerCase() === String(searchedBusRoute.route_number).toLowerCase()
+            );
+
+            if (!isSearchedRouteBus && (!layers.bus || !isRapidBus)) {
+              return null;
+            }
+
             return (
               <Marker key={v.id} longitude={v.lon} latitude={v.lat} anchor="center">
                 <div
@@ -1857,6 +1914,8 @@ export default function AppMap() {
               onClose={() => {
                 setSelectedBus(null);
                 setBusDetails(null);
+                setSearchedBusRoute(null);
+                setSearchTarget(null);
               }}
               closeOnClick={false}
               closeButton={false}
@@ -1890,6 +1949,8 @@ export default function AppMap() {
                     onClick={() => {
                       setSelectedBus(null);
                       setBusDetails(null);
+                      setSearchedBusRoute(null);
+                      setSearchTarget(null);
                     }}
                     className="text-gray-400 hover:text-white text-xl leading-none px-1.5 py-0.5 rounded hover:bg-[#252a38] transition-colors shrink-0"
                   >
@@ -1997,6 +2058,95 @@ export default function AppMap() {
                     ) : (
                       <div className="text-[11px] text-gray-500 py-2 text-center">暫無詳細站序資料</div>
                     )}
+                  </div>
+                </div>
+              </div>
+            </Popup>
+          );
+        })()}
+
+        {/* 當搜尋路線且無即時行駛班次時，顯示該路線概況與站點清單 Popup */}
+        {!selectedBus && searchedBusRoute && searchedBusRoute.stops && searchedBusRoute.stops.length > 0 && (() => {
+          const midIdx = Math.floor(searchedBusRoute.stops.length / 2);
+          const repStop = searchedBusRoute.stops[midIdx] || searchedBusRoute.stops[0];
+          const busNum = searchedBusRoute.route_number || searchedBusRoute.route_id;
+          const destName = searchedBusRoute.destination || '終點站';
+          const originName = searchedBusRoute.origin || '起點站';
+          const operatorName = searchedBusRoute.operator || 'TransLink (CMBC 岸山巴士)';
+          const stopList = searchedBusRoute.stops || [];
+
+          return (
+            <Popup
+              longitude={repStop.lon}
+              latitude={repStop.lat}
+              anchor="bottom"
+              onClose={() => {
+                setSearchedBusRoute(null);
+                setSearchTarget(null);
+              }}
+              closeOnClick={false}
+              closeButton={false}
+              className="z-50"
+              offset={[0, -12]}
+              maxWidth="360px"
+            >
+              <div className="w-[310px] sm:w-[335px] max-w-[90vw] bg-[#161922] text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] -m-[10px]">
+                <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-[#262b38]">
+                  <div className="flex items-start gap-2.5 min-w-0">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5 shadow-sm">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/>
+                      </svg>
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="font-bold text-white text-[15px] leading-snug tracking-tight truncate">
+                        {busNum} 去 {destName}
+                      </h3>
+                      <div className="flex items-center gap-1.5 mt-0.5">
+                        <span className="w-2 h-2 rounded-full bg-gray-400"></span>
+                        <span className="text-[11px] font-semibold text-gray-400">目前無在途行駛班次 (離峰時段)</span>
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setSearchedBusRoute(null);
+                      setSearchTarget(null);
+                    }}
+                    className="text-gray-400 hover:text-white text-xl leading-none px-1.5 py-0.5 rounded hover:bg-[#252a38] transition-colors shrink-0"
+                  >
+                    &times;
+                  </button>
+                </div>
+
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="flex justify-between items-center gap-2">
+                    <span className="text-gray-400 shrink-0">營辦商</span>
+                    <span className="font-bold text-gray-100 text-right truncate">{operatorName}</span>
+                  </div>
+                  <div className="flex justify-between items-center gap-2">
+                    <span className="text-gray-400 shrink-0">起點</span>
+                    <span className="font-bold text-gray-100 text-right truncate">{originName}</span>
+                  </div>
+                  <div className="flex justify-between items-center gap-2">
+                    <span className="text-gray-400 shrink-0">終點</span>
+                    <span className="font-bold text-gray-100 text-right truncate">{destName}</span>
+                  </div>
+                </div>
+
+                {/* 沿線站點清單 */}
+                <div className="mt-3 pt-2.5 border-t border-[#262b38]">
+                  <div className="flex justify-between items-center mb-1.5">
+                    <span className="text-[11px] font-bold text-gray-300">沿線停靠站點 ({stopList.length} 站)</span>
+                  </div>
+                  <div className="max-h-[160px] overflow-y-auto space-y-1 pr-1 custom-scrollbar">
+                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                    {stopList.map((st: any, idx: number) => (
+                      <div key={idx} className="flex items-center gap-2 text-[11px] text-gray-300 py-0.5">
+                        <span className="text-gray-500 font-mono w-4 text-right text-[10px] shrink-0">{st.seq || idx + 1}.</span>
+                        <span className="truncate">{st.name}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
