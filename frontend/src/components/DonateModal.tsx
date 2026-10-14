@@ -16,23 +16,18 @@ export default function DonateModal({ isOpen, onClose }: DonateModalProps) {
   if (!isOpen) return null;
 
   // Stripe Payment Link 與其他金流連結 (可透過環境變數或自訂)
-  const stripePaymentLink = process.env.NEXT_PUBLIC_STRIPE_PAYMENT_LINK || 'https://buy.stripe.com/your-stripe-link';
+  const stripePaymentLink = process.env.NEXT_PUBLIC_STRIPE_PAYMENT_LINK || 'https://donate.stripe.com/6oU14g6Y7fgig6N1UfcMM00';
   const buyMeACoffeeUrl = process.env.NEXT_PUBLIC_BUYMEACOFFEE_URL || '';
   const paypalUrl = process.env.NEXT_PUBLIC_PAYPAL_URL || '';
 
   const handleDonateClick = () => {
-    // 若有自訂金額，可附帶到 URL 參數，或直接開啟 Stripe Payment Link
     let targetUrl = stripePaymentLink;
-    if (stripePaymentLink.includes('your-stripe-link')) {
-      // 尚未設定時的貼心提醒
-      alert('請先在 .env 或後台設定您的 Stripe Payment Link 專屬付款短網址！');
-      return;
-    }
+    const delimiter = stripePaymentLink.includes('?') ? '&' : '?';
 
     if (selectedAmount !== 'custom' && selectedAmount) {
-      targetUrl = `${stripePaymentLink}?prefilled_amount=${selectedAmount * 100}`;
-    } else if (customAmount) {
-      targetUrl = `${stripePaymentLink}?prefilled_amount=${Math.round(parseFloat(customAmount) * 100)}`;
+      targetUrl = `${stripePaymentLink}${delimiter}prefilled_amount=${selectedAmount * 100}`;
+    } else if (customAmount && parseFloat(customAmount) > 0) {
+      targetUrl = `${stripePaymentLink}${delimiter}prefilled_amount=${Math.round(parseFloat(customAmount) * 100)}`;
     }
     window.open(targetUrl, '_blank', 'noopener,noreferrer');
   };
