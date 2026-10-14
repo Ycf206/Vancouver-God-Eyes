@@ -8,6 +8,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl, getWsUrl } from '@/utils/api';
 import { formatTimePreference } from '@/utils/time';
+import { LocateFixed } from 'lucide-react';
 
 // Fix Next.js App Router Web Worker crash
 if (typeof window !== 'undefined') {
@@ -679,6 +680,7 @@ export default function AppMap() {
     style.sources['contours'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/contours?interval=${activeContourInterval}` };
     style.sources['local-area-boundary'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/local_area_boundary` };
     style.sources['fuel'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/fuel` };
+    style.sources['aed'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/aed` };
 
     // Bus Routes & Stops (Merged under busRoutes) - 當正在搜尋特定巴士路線或選中特定巴士時，只顯示該專屬路線，不繪製底圖全域 99 及 R1~R6 路線
     if (layers.busRoutes && !searchedBusRoute && !selectedBus) {
@@ -4272,6 +4274,27 @@ export default function AppMap() {
         )}
 
       </Map>
+
+      {/* 重設地圖視角至溫哥華地區按鈕 (Reset Map View to Vancouver) */}
+      <div className="absolute bottom-[142px] right-2.5 z-20 select-none">
+        <button
+          type="button"
+          onClick={() => {
+            mapRef.current?.flyTo({
+              center: [-123.05, 49.25],
+              zoom: 11,
+              pitch: 0,
+              bearing: 0,
+              duration: 1200
+            });
+          }}
+          className="group flex items-center gap-1.5 px-2.5 py-1.5 bg-[#161922]/95 hover:bg-[#202533] text-gray-200 hover:text-white rounded-lg border border-[#2d3448] shadow-2xl backdrop-blur-md transition-all hover:border-emerald-500/50 hover:shadow-[0_0_12px_rgba(16,185,129,0.2)] active:scale-95 text-xs font-medium cursor-pointer"
+          title="重設地圖顯示視角至溫哥華地區 (Reset to Metro Vancouver)"
+        >
+          <LocateFixed className="w-3.5 h-3.5 text-emerald-400 group-hover:rotate-90 transition-transform duration-300 shrink-0" />
+          <span className="text-[11px] sm:text-xs tracking-tight">溫哥華視角</span>
+        </button>
+      </div>
 
       {/* 搜尋路線時若尚未選取車輛，在右上方顯示精簡提示卡 */}
       {searchedBusRoute && !selectedBus && (
