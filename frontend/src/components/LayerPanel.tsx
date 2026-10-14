@@ -7,7 +7,7 @@ import {
   CircleDollarSign, Accessibility, Bike, Zap, Scooter, Camera, Siren, 
   Flame, Building2, Hospital, ChevronLeft, Trees, Footprints, Flower2, 
   Droplets, Bath, Leaf, Landmark, GraduationCap, BookOpen, UtensilsCrossed, Bed, Heart,
-  Plane, PlaneTakeoff, Calendar
+  Plane, PlaneTakeoff, Calendar, Car, ShieldAlert, LifeBuoy, HeartPulse, Mountain
 } from 'lucide-react';
 
 export default function LayerPanel() {
@@ -214,8 +214,7 @@ export default function LayerPanel() {
             <LayerButton layerKey="motorcycleParking" label="摩托車停車位" icon={Bike} colorClass="text-orange-400" activeBg="bg-[#2c1d18]" activeBorder="border-orange-500/50" activeShadow="shadow-[0_0_6px_rgba(251,146,60,0.15)]" />
             <LayerButton layerKey="evCharging" label="電動車充電站" icon={Zap} colorClass="text-emerald-400" activeBg="bg-[#14291f]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(52,211,153,0.15)]" />
             <LayerButton layerKey="escooter" label="共享滑板車" icon={Scooter} colorClass="text-lime-400" activeBg="bg-[#1e2a14]" activeBorder="border-lime-500/50" activeShadow="shadow-[0_0_6px_rgba(132,204,22,0.15)]" />
-            {/* 預留 1 格將來放置「共享汽車」 */}
-            <div className="h-7 rounded border border-dashed border-[#26282e]/50 bg-[#18191d]/30 pointer-events-none" aria-hidden="true" />
+            <LayerButton layerKey="carSharing" label="共享汽車" icon={Car} colorClass="text-sky-400" activeBg="bg-[#102336]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(56,189,248,0.15)]" />
             <LayerButton layerKey="sharedBikes" label="共享單車" icon={Bike} colorClass="text-emerald-400" activeBg="bg-[#14291f]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
             <LayerButton layerKey="bikeways" label="單車徑" icon={Route} colorClass="text-teal-400" activeBg="bg-[#122826]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
             <LayerButton layerKey="trafficCameras" label="交通攝影機" icon={Camera} colorClass="text-cyan-400" activeBg="bg-[#14262b]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.15)]" />
@@ -240,6 +239,7 @@ export default function LayerPanel() {
             <LayerButton layerKey="libraries" label="圖書館" icon={BookOpen} colorClass="text-amber-400" activeBg="bg-[#292215]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
             <LayerButton layerKey="foodVendors" label="食品攤販" icon={UtensilsCrossed} colorClass="text-orange-400" activeBg="bg-[#2b1e16]" activeBorder="border-orange-500/50" activeShadow="shadow-[0_0_6px_rgba(251,146,60,0.15)]" />
             <LayerButton layerKey="homelessShelters" label="無家者庇護所" icon={Bed} colorClass="text-rose-400" activeBg="bg-[#2a171d]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.15)]" />
+            <LayerButton layerKey="aed" label="AED 去顫器" icon={HeartPulse} colorClass="text-red-400" activeBg="bg-[#2c1518]" activeBorder="border-red-500/50" activeShadow="shadow-[0_0_6px_rgba(239,68,68,0.15)]" />
           </div>
         </div>
 
@@ -269,7 +269,7 @@ export default function LayerPanel() {
         <div className="w-full h-px bg-[#26282d]"></div>
 
         {/* Government Row (政府) */}
-        <div className="flex flex-col gap-1.5 pb-2">
+        <div className="flex flex-col gap-1.5">
           <div className="text-[10px] font-bold text-rose-400 tracking-wider flex items-center justify-between">
             <div className="flex items-center gap-1">
               <Landmark className="w-3 h-3 text-rose-400" />
@@ -279,7 +279,26 @@ export default function LayerPanel() {
           </div>
           <div className="grid grid-cols-2 gap-1">
             <LayerButton layerKey="fireHalls" label="消防" icon={Flame} colorClass="text-rose-400" activeBg="bg-[#2a171a]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.15)]" />
-            <LayerButton layerKey="hospitals" label="醫院" icon={Hospital} colorClass="text-emerald-400" activeBg="bg-[#13271d]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
+            <LayerButton layerKey="hospitals" label="醫療" icon={Hospital} colorClass="text-emerald-400" activeBg="bg-[#13271d]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
+            <LayerButton layerKey="police" label="警察" icon={ShieldAlert} colorClass="text-blue-400" activeBg="bg-[#142338]" activeBorder="border-blue-500/50" activeShadow="shadow-[0_0_6px_rgba(59,130,246,0.15)]" />
+            <LayerButton layerKey="disasterHubs" label="災害支援中心" icon={LifeBuoy} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div className="w-full h-px bg-[#26282d]"></div>
+
+        {/* Geography Row (地理) */}
+        <div className="flex flex-col gap-1.5 pb-2">
+          <div className="text-[10px] font-bold text-teal-400 tracking-wider flex items-center justify-between">
+            <div className="flex items-center gap-1">
+              <Mountain className="w-3 h-3 text-teal-400" />
+              <span>地理</span>
+            </div>
+            <span className="text-[9px] text-teal-500/70 font-mono">GEOGRAPHY</span>
+          </div>
+          <div className="grid grid-cols-2 gap-1">
+            <LayerButton layerKey="contours" label="等高線" icon={Mountain} colorClass="text-teal-400" activeBg="bg-[#112724]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
           </div>
         </div>
 

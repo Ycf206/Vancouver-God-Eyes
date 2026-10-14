@@ -1,0 +1,327 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "police_1",
+      "properties": {
+        "id": "police_1",
+        "facility_type": "police",
+        "name": "Vancouver Police Department Headquarters",
+        "address": "2120 Cambie Street",
+        "city": "Vancouver",
+        "phone": "604-717-3321 (Non-Emergency) / 911 (Emergency)",
+        "website": "https://vpd.ca/",
+        "opening_hours": "Mo-Su 08:00-17:00",
+        "operator": "Vancouver Police Department (VPD)",
+        "source": "police.geojson (OpenStreetMap & VPD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.113671,
+          49.266436
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "police_2",
+      "properties": {
+        "id": "police_2",
+        "facility_type": "police",
+        "name": "Vancouver Police Department Property Office",
+        "address": "2010 Glen Drive",
+        "city": "Vancouver",
+        "phone": "604-717-3321 (Non-Emergency) / 911 (Emergency)",
+        "website": "https://vpd.ca/",
+        "opening_hours": "Mo,Fr 08:00-16:45; Tu,We,Th 08:00-19:00; PH off",
+        "operator": "Vancouver Police Department (VPD)",
+        "source": "police.geojson (OpenStreetMap & VPD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.079932,
+          49.266873
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "police_3",
+      "properties": {
+        "id": "police_3",
+        "facility_type": "police",
+        "name": "Vancouver Police Annex",
+        "address": "236 East Cordova Street",
+        "city": "Vancouver",
+        "phone": "604-717-3321 (Non-Emergency) / 911 (Emergency)",
+        "website": "https://vpd.ca/",
+        "opening_hours": "24/7 (HQ) / 週一至週五日間門市",
+        "operator": "Vancouver Police Department (VPD)",
+        "source": "police.geojson (OpenStreetMap & VPD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.098734,
+          49.282031
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "police_4",
+      "properties": {
+        "id": "police_4",
+        "facility_type": "police",
+        "name": "Hastings Sunrise Community Policing Centre",
+        "address": "2620 East Hastings Street",
+        "city": "Vancouver",
+        "phone": "604-717-3321 (Non-Emergency) / 911 (Emergency)",
+        "website": "https://vpd.ca/",
+        "opening_hours": "24/7 (HQ) / 週一至週五日間門市",
+        "operator": "Vancouver Police Department (VPD)",
+        "source": "police.geojson (OpenStreetMap & VPD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.051464,
+          49.280801
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "police_7",
+      "properties": {
+        "id": "police_7",
+        "facility_type": "police",
+        "name": "Vancouver Police Department",
+        "address": "3585 Graveley Street",
+        "city": "Vancouver",
+        "phone": "604-717-3321 (Non-Emergency) / 911 (Emergency)",
+        "website": "https://vpd.ca/",
+        "opening_hours": "24/7 (HQ) / 週一至週五日間門市",
+        "operator": "Vancouver Police Department (VPD)",
+        "source": "police.geojson (OpenStreetMap & VPD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.025732,
+          49.270721
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "police_11",
+      "properties": {
+        "id": "police_11",
+        "facility_type": "police",
+        "name": "Downtown Community Policing Centre",
+        "address": "658 Homer Street",
+        "city": "Vancouver",
+        "phone": "+1-604-717-2920",
+        "website": "https://vpd.ca/community/community-policing-centres/downtown-cpc/",
+        "opening_hours": "24/7 (HQ) / 週一至週五日間門市",
+        "operator": "Vancouver Police Department (VPD)",
+        "source": "police.geojson (OpenStreetMap & VPD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11427,
+          49.280875
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "police_12",
+      "properties": {
+        "id": "police_12",
+        "facility_type": "police",
+        "name": "West End - Coal Harbour Community Policing",
+        "address": "1267 Davie Street",
+        "city": "Vancouver",
+        "phone": "604-717-3321 (Non-Emergency) / 911 (Emergency)",
+        "website": "https://vpd.ca/",
+        "opening_hours": "Mo-Su 10:00-18:00",
+        "operator": "Vancouver Police Department (VPD)",
+        "source": "police.geojson (OpenStreetMap & VPD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.134671,
+          49.282801
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "police_13",
+      "properties": {
+        "id": "police_13",
+        "facility_type": "police",
+        "name": "Community Policing Centre",
+        "address": "109 West Hastings Street",
+        "city": "Vancouver",
+        "phone": "604-717-3321 (Non-Emergency) / 911 (Emergency)",
+        "website": "https://www.ghxcpc.ca/",
+        "opening_hours": "24/7 (HQ) / 週一至週五日間門市",
+        "operator": "Vancouver Police Department (VPD)",
+        "source": "police.geojson (OpenStreetMap & VPD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.107352,
+          49.282178
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "police_14",
+      "properties": {
+        "id": "police_14",
+        "facility_type": "police",
+        "name": "Collingwood Community Policing Centre",
+        "address": "",
+        "city": "Vancouver",
+        "phone": "604-717-3321 (Non-Emergency) / 911 (Emergency)",
+        "website": "https://vpd.ca/",
+        "opening_hours": "24/7 (HQ) / 週一至週五日間門市",
+        "operator": "Vancouver Police Department (VPD)",
+        "source": "police.geojson (OpenStreetMap & VPD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.03215,
+          49.237682
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "police_15",
+      "properties": {
+        "id": "police_15",
+        "facility_type": "police",
+        "name": "Vancouver Police Mounted Unit",
+        "address": "",
+        "city": "Vancouver",
+        "phone": "604-717-3321 (Non-Emergency) / 911 (Emergency)",
+        "website": "https://vpd.ca/",
+        "opening_hours": "24/7 (HQ) / 週一至週五日間門市",
+        "operator": "Vancouver Police Department (VPD)",
+        "source": "police.geojson (OpenStreetMap & VPD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13737,
+          49.300407
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "police_16",
+      "properties": {
+        "id": "police_16",
+        "facility_type": "police",
+        "name": "Community Police",
+        "address": "1977 Commercial Drive",
+        "city": "Vancouver",
+        "phone": "604-717-3321 (Non-Emergency) / 911 (Emergency)",
+        "website": "https://gwcpc.ca/",
+        "opening_hours": "24/7 (HQ) / 週一至週五日間門市",
+        "operator": "Vancouver Police Department (VPD)",
+        "source": "police.geojson (OpenStreetMap & VPD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.06997,
+          49.267173
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "police_17",
+      "properties": {
+        "id": "police_17",
+        "facility_type": "police",
+        "name": "Kerrisdale, Oakridge, Marpole Community Policing Centre",
+        "address": "6070 East Boulevard",
+        "city": "Vancouver",
+        "phone": "604-717-3321 (Non-Emergency) / 911 (Emergency)",
+        "website": "https://vpd.ca/",
+        "opening_hours": "24/7 (HQ) / 週一至週五日間門市",
+        "operator": "Vancouver Police Department (VPD)",
+        "source": "police.geojson (OpenStreetMap & VPD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.154923,
+          49.231101
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "police_18",
+      "properties": {
+        "id": "police_18",
+        "facility_type": "police",
+        "name": "Vancouver Police Training Academy – Centre of Excellence",
+        "address": "",
+        "city": "Vancouver",
+        "phone": "604-717-3321 (Non-Emergency) / 911 (Emergency)",
+        "website": "https://vpd.ca/",
+        "opening_hours": "24/7 (HQ) / 週一至週五日間門市",
+        "operator": "Vancouver Police Department (VPD)",
+        "source": "police.geojson (OpenStreetMap & VPD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.107966,
+          49.28226
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "police_19",
+      "properties": {
+        "id": "police_19",
+        "facility_type": "police",
+        "name": "Kitsilano Fairview Community Policing Centre",
+        "address": "1687 West Broadway",
+        "city": "Vancouver",
+        "phone": "604-717-3321 (Non-Emergency) / 911 (Emergency)",
+        "website": "https://vpd.ca/",
+        "opening_hours": "Mo-Fr 10:00-17:00; PH off",
+        "operator": "Vancouver Police Department (VPD)",
+        "source": "police.geojson (OpenStreetMap & VPD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.143173,
+          49.26384
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "type": "FeatureCollection",
+  "generator": "overpass-turbo",
+  "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.",
+  "timestamp": "2026-10-14T00:38:06Z",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/12805143984",
+        "addr:housenumber": "188",
+        "addr:postcode": "V6B 1A9",
+        "addr:street": "Nelson Street",
+        "amenity": "clinic",
+        "healthcare": "clinic",
+        "name": "Vancouver City Centre Urgent and Primary Care Centre",
+        "opening_hours": "Mo-Sa 08:00-22:00; Su 09:00-17:00",
+        "operator": "Vancouver Coastal Health",
+        "operator:type": "public",
+        "operator:wikidata": "Q7914144",
+        "website": "https://www.vch.ca/en/location/vancouver-city-centre-urgent-primary-care-centre"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.118033,
+          49.2758217
+        ]
+      },
+      "id": "node/12805143984"
+    }
+  ]
+}

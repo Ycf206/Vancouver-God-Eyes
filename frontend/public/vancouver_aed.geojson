@@ -1,0 +1,3185 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "aed_1",
+      "properties": {
+        "id": "aed_1",
+        "facility_type": "aed",
+        "name": "Alder Bay Housing Cooperative",
+        "address": "1313 SHOREPINE WK",
+        "cleaned_address": "SHOREPINE Walk",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.133797,
+          49.267826
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_2",
+      "properties": {
+        "id": "aed_2",
+        "facility_type": "aed",
+        "name": "Architectural Institute of British Columbia",
+        "address": "100 - 440 CAMBIE ST",
+        "cleaned_address": "CAMBIE St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.118289,
+          49.241653
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_3",
+      "properties": {
+        "id": "aed_3",
+        "facility_type": "aed",
+        "name": "Arius Technology Inc.",
+        "address": "101 - 33 8TH AV  W",
+        "cleaned_address": "8TH Ave  W",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.107003,
+          49.20655
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_4",
+      "properties": {
+        "id": "aed_4",
+        "facility_type": "aed",
+        "name": "BC Assessment - Vancouver",
+        "address": "200 - 2925 VIRTUAL WY",
+        "cleaned_address": "VIRTUAL Way",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.042226,
+          49.261016
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_5",
+      "properties": {
+        "id": "aed_5",
+        "facility_type": "aed",
+        "name": "BC Lung Association office building",
+        "address": "2675 OAK ST",
+        "cleaned_address": "OAK St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.128127,
+          49.232671
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_6",
+      "properties": {
+        "id": "aed_6",
+        "facility_type": "aed",
+        "name": "Britannia Community Services Centre",
+        "address": "1661 NAPIER ST",
+        "cleaned_address": "NAPIER St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.052127,
+          49.274975
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_7",
+      "properties": {
+        "id": "aed_7",
+        "facility_type": "aed",
+        "name": "Camp Potlatch",
+        "address": "2875 GEORGE ST",
+        "cleaned_address": "GEORGE St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.08,
+          49.27589
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_8",
+      "properties": {
+        "id": "aed_8",
+        "facility_type": "aed",
+        "name": "Champlain Heights Library",
+        "address": "7110  KERR ST",
+        "cleaned_address": "KERR St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.041252,
+          49.220709
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_9",
+      "properties": {
+        "id": "aed_9",
+        "facility_type": "aed",
+        "name": "Christ Church Cathedral",
+        "address": "690 BURRARD ST",
+        "cleaned_address": "BURRARD St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.133777,
+          49.276012
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_10",
+      "properties": {
+        "id": "aed_10",
+        "facility_type": "aed",
+        "name": "Coast Capital Savings - Georgia Branch",
+        "address": "PLAZA - 1075 WEST GEORGIA ST",
+        "cleaned_address": "WEST GEORGIA St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1244,
+          49.286538
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_11",
+      "properties": {
+        "id": "aed_11",
+        "facility_type": "aed",
+        "name": "Collingwood Branch, Vancouver Public Library",
+        "address": "2985  KINGSWAY AV",
+        "cleaned_address": "KINGSWAY Ave",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.069588,
+          49.247226
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_12",
+      "properties": {
+        "id": "aed_12",
+        "facility_type": "aed",
+        "name": "Creekside Community Recreation Centre",
+        "address": "1 ATHLETES WY",
+        "cleaned_address": "ATHLETES Way",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.106967,
+          49.271548
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_13",
+      "properties": {
+        "id": "aed_13",
+        "facility_type": "aed",
+        "name": "DIALOG",
+        "address": "406 - 611 ALEXANDER ST",
+        "cleaned_address": "ALEXANDER St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.095574,
+          49.284023
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_14",
+      "properties": {
+        "id": "aed_14",
+        "facility_type": "aed",
+        "name": "Downtown Community Health Clinic",
+        "address": "569 POWELL ST  E",
+        "cleaned_address": "POWELL St  E",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.083882,
+          49.282679
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_15",
+      "properties": {
+        "id": "aed_15",
+        "facility_type": "aed",
+        "name": "Dunbar Library",
+        "address": "4515  DUNBAR ST",
+        "cleaned_address": "DUNBAR St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.185206,
+          49.248875
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_16",
+      "properties": {
+        "id": "aed_16",
+        "facility_type": "aed",
+        "name": "False creek pure dental care",
+        "address": "303 2ND AV  W",
+        "cleaned_address": "2ND Ave  W",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.106935,
+          49.206556
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_17",
+      "properties": {
+        "id": "aed_17",
+        "facility_type": "aed",
+        "name": "Firehall Library",
+        "address": "1455  WEST 10TH AV",
+        "cleaned_address": "WEST 10TH Ave",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.160289,
+          49.262988
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_18",
+      "properties": {
+        "id": "aed_18",
+        "facility_type": "aed",
+        "name": "FPInnovations",
+        "address": "2601 EAST MALL  DR  E",
+        "cleaned_address": "EAST MALL  Dr  E",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.247672,
+          49.262343
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_19",
+      "properties": {
+        "id": "aed_19",
+        "facility_type": "aed",
+        "name": "Fraserview Library",
+        "address": "1950  ARGYLE DR",
+        "cleaned_address": "ARGYLE Dr",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.068747,
+          49.219269
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_20",
+      "properties": {
+        "id": "aed_20",
+        "facility_type": "aed",
+        "name": "Greater Vancouver Food Bank",
+        "address": "1150 RAYMUR AV",
+        "cleaned_address": "RAYMUR Ave",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.083263,
+          49.277744
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_21",
+      "properties": {
+        "id": "aed_21",
+        "facility_type": "aed",
+        "name": "Hastings Library",
+        "address": "2674  EAST HASTINGS ST",
+        "cleaned_address": "EAST HASTINGS St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.061985,
+          49.281178
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_22",
+      "properties": {
+        "id": "aed_22",
+        "facility_type": "aed",
+        "name": "HAYWOOD SECURITIES - RECEPTION",
+        "address": "700 - 200 BURRARD ST",
+        "cleaned_address": "BURRARD St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.133777,
+          49.276012
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_23",
+      "properties": {
+        "id": "aed_23",
+        "facility_type": "aed",
+        "name": "Heart and Stroke Foundation - Coastal Vancouver Regional Office",
+        "address": "1216 BROADWAY Other  W",
+        "cleaned_address": "BROADWAY   W",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.149212,
+          49.26376
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_24",
+      "properties": {
+        "id": "aed_24",
+        "facility_type": "aed",
+        "name": "Heart and Stroke Foundation,  Suite 302 Provincial Office",
+        "address": "302 - 1212  WEST BROADWAY AV",
+        "cleaned_address": "WEST BROADWAY Ave",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.149212,
+          49.26376
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_25",
+      "properties": {
+        "id": "aed_25",
+        "facility_type": "aed",
+        "name": "Heart and Stroke Foundation, Suite 200 Provincial Office",
+        "address": "200 - 1212 WEST BROADWAY AV",
+        "cleaned_address": "WEST BROADWAY Ave",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.149212,
+          49.26376
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_26",
+      "properties": {
+        "id": "aed_26",
+        "facility_type": "aed",
+        "name": "Hollyburn Properties Ltd",
+        "address": "300 - 1650 ALBERNI ST",
+        "cleaned_address": "ALBERNI St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.129521,
+          49.289027
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_27",
+      "properties": {
+        "id": "aed_27",
+        "facility_type": "aed",
+        "name": "Home Depot Terminal Avenue Vancouver",
+        "address": "900 - 900 TERMINAL  AV",
+        "cleaned_address": "TERMINAL  Ave",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.091177,
+          49.271383
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_28",
+      "properties": {
+        "id": "aed_28",
+        "facility_type": "aed",
+        "name": "Hycroft Towers",
+        "address": "1445 MARPOLE AV",
+        "cleaned_address": "MARPOLE Ave",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.140277,
+          49.25595
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_29",
+      "properties": {
+        "id": "aed_29",
+        "facility_type": "aed",
+        "name": "Insurance Council of BC",
+        "address": "300 - 1040 WEST GEORGIA ST",
+        "cleaned_address": "WEST GEORGIA St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1244,
+          49.286538
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_30",
+      "properties": {
+        "id": "aed_30",
+        "facility_type": "aed",
+        "name": "Iridia Medical",
+        "address": "1644 WEST 3RD AV",
+        "cleaned_address": "WEST 3RD Ave",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.165243,
+          49.269205
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_31",
+      "properties": {
+        "id": "aed_31",
+        "facility_type": "aed",
+        "name": "JIM PATTISON TOYOTA DOWNTOWN",
+        "address": "1395 WEST BROADWAY Other",
+        "cleaned_address": "WEST BROADWAY",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.149212,
+          49.26376
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_32",
+      "properties": {
+        "id": "aed_32",
+        "facility_type": "aed",
+        "name": "Joe Fortes Library",
+        "address": "870  DENMAN ST",
+        "cleaned_address": "DENMAN St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.137411,
+          49.290166
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_33",
+      "properties": {
+        "id": "aed_33",
+        "facility_type": "aed",
+        "name": "Kensington Library",
+        "address": "1428  CEDAR COTTAGE ME",
+        "cleaned_address": "CEDAR COTTAGE ME",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.147593,
+          49.254982
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_34",
+      "properties": {
+        "id": "aed_34",
+        "facility_type": "aed",
+        "name": "Kerrisdale Library",
+        "address": "2112  WEST 42 AV",
+        "cleaned_address": "WEST 42 Ave",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.149289,
+          49.233512
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_35",
+      "properties": {
+        "id": "aed_35",
+        "facility_type": "aed",
+        "name": "Kitsilano Library",
+        "address": "2425  MACDONALD ST",
+        "cleaned_address": "MACDONALD St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.167851,
+          49.248061
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_36",
+      "properties": {
+        "id": "aed_36",
+        "facility_type": "aed",
+        "name": "Kiwassa Neighbourhood Services",
+        "address": "2425 OXFORD ST",
+        "cleaned_address": "OXFORD St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.045135,
+          49.285667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_37",
+      "properties": {
+        "id": "aed_37",
+        "facility_type": "aed",
+        "name": "Klohn Crippen Berger Ltd Expansion office",
+        "address": "130 - 2985 VIRTUAL WY",
+        "cleaned_address": "VIRTUAL Way",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.042226,
+          49.261016
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_38",
+      "properties": {
+        "id": "aed_38",
+        "facility_type": "aed",
+        "name": "Klohn Crippen Berger Ltd Lab",
+        "address": "110 - 2935 HEBB AV",
+        "cleaned_address": "HEBB Ave",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.041137,
+          49.259504
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_39",
+      "properties": {
+        "id": "aed_39",
+        "facility_type": "aed",
+        "name": "Klohn Crippen Berger Ltd Main office",
+        "address": "500 - 2955 VIRTUAL WY",
+        "cleaned_address": "VIRTUAL Way",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.042226,
+          49.261016
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_40",
+      "properties": {
+        "id": "aed_40",
+        "facility_type": "aed",
+        "name": "London Drugs Limited #10",
+        "address": "2091 WEST 42 ST  W",
+        "cleaned_address": "WEST 42 St  W",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.107388,
+          49.206517
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_41",
+      "properties": {
+        "id": "aed_41",
+        "facility_type": "aed",
+        "name": "London Drugs Limited #19",
+        "address": "1187 ROBSON ST",
+        "cleaned_address": "ROBSON St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.126098,
+          49.285413
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_42",
+      "properties": {
+        "id": "aed_42",
+        "facility_type": "aed",
+        "name": "London Drugs Limited #2",
+        "address": "710 GRANVILLE ST",
+        "cleaned_address": "GRANVILLE St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.139216,
+          49.245851
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_43",
+      "properties": {
+        "id": "aed_43",
+        "facility_type": "aed",
+        "name": "London Drugs Limited #28",
+        "address": "3328 KINGSWAY AV",
+        "cleaned_address": "KINGSWAY Ave",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.069588,
+          49.247226
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_44",
+      "properties": {
+        "id": "aed_44",
+        "facility_type": "aed",
+        "name": "London Drugs Limited #4",
+        "address": "525 WEST BROADWAY AV  W",
+        "cleaned_address": "WEST BROADWAY Ave  W",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.149212,
+          49.26376
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_45",
+      "properties": {
+        "id": "aed_45",
+        "facility_type": "aed",
+        "name": "London Drugs Limited #50",
+        "address": "1650 DAVIE ST",
+        "cleaned_address": "DAVIE St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.130487,
+          49.279916
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_46",
+      "properties": {
+        "id": "aed_46",
+        "facility_type": "aed",
+        "name": "London Drugs Limited #53",
+        "address": "5639 VICTORIA DR",
+        "cleaned_address": "VICTORIA Dr",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.065142,
+          49.246041
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_47",
+      "properties": {
+        "id": "aed_47",
+        "facility_type": "aed",
+        "name": "London Drugs Limited #7",
+        "address": "2585 EAST HASTINGS ST  E",
+        "cleaned_address": "EAST HASTINGS St  E",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.061985,
+          49.281178
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_48",
+      "properties": {
+        "id": "aed_48",
+        "facility_type": "aed",
+        "name": "London Drugs Limited #74",
+        "address": "2230 WEST BROADWAY AV  W",
+        "cleaned_address": "WEST BROADWAY Ave  W",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.149212,
+          49.26376
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_49",
+      "properties": {
+        "id": "aed_49",
+        "facility_type": "aed",
+        "name": "London Drugs Limited #78",
+        "address": "150 - 351 ABBOTT ST",
+        "cleaned_address": "ABBOTT St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.107395,
+          49.281518
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_50",
+      "properties": {
+        "id": "aed_50",
+        "facility_type": "aed",
+        "name": "London Drugs Limited #82",
+        "address": "1622 SALT ST",
+        "cleaned_address": "SALT St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.106086,
+          49.27091
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_51",
+      "properties": {
+        "id": "aed_51",
+        "facility_type": "aed",
+        "name": "Lower Mainland Facilities Management",
+        "address": "500 - 520 6TH AV  W",
+        "cleaned_address": "6TH Ave  W",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.106981,
+          49.206552
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_52",
+      "properties": {
+        "id": "aed_52",
+        "facility_type": "aed",
+        "name": "Marpole Curling Club",
+        "address": "8730  HEATHER ST",
+        "cleaned_address": "HEATHER St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.120848,
+          49.235792
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_53",
+      "properties": {
+        "id": "aed_53",
+        "facility_type": "aed",
+        "name": "Marpole Library",
+        "address": "8386  GRANVILLE ST",
+        "cleaned_address": "GRANVILLE St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.139216,
+          49.245851
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_54",
+      "properties": {
+        "id": "aed_54",
+        "facility_type": "aed",
+        "name": "Marriott International-Delta Vancouver Suites",
+        "address": "550 550 WEST HASTINGS STREET ST",
+        "cleaned_address": "550 WEST HASTINGS STREET St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.112696,
+          49.284162
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_55",
+      "properties": {
+        "id": "aed_55",
+        "facility_type": "aed",
+        "name": "Mount Pleasant Library",
+        "address": "1  KINGSWAY AV",
+        "cleaned_address": "KINGSWAY Ave",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.069588,
+          49.247226
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_56",
+      "properties": {
+        "id": "aed_56",
+        "facility_type": "aed",
+        "name": "Oakridge Library",
+        "address": "191  650 41ST ST",
+        "cleaned_address": "650 41ST St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11886,
+          49.232066
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_57",
+      "properties": {
+        "id": "aed_57",
+        "facility_type": "aed",
+        "name": "Offices of the Diocese of New Westminster",
+        "address": "1410 NANTON AV",
+        "cleaned_address": "NANTON Ave",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.141102,
+          49.247434
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_58",
+      "properties": {
+        "id": "aed_58",
+        "facility_type": "aed",
+        "name": "Parq Vancouver",
+        "address": "39 SMITHE ST",
+        "cleaned_address": "SMITHE St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.119557,
+          49.279103
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_59",
+      "properties": {
+        "id": "aed_59",
+        "facility_type": "aed",
+        "name": "Raycam Community Centre",
+        "address": "920 HASTINGS ST  E",
+        "cleaned_address": "HASTINGS St  E",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.061985,
+          49.281178
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_60",
+      "properties": {
+        "id": "aed_60",
+        "facility_type": "aed",
+        "name": "Regency House",
+        "address": "1750  10TH AV  W",
+        "cleaned_address": "10TH Ave  W",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.107026,
+          49.206548
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_61",
+      "properties": {
+        "id": "aed_61",
+        "facility_type": "aed",
+        "name": "Robert Allan Ltd.",
+        "address": "230 - 1639 W 2ND AV",
+        "cleaned_address": "W 2ND Ave",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.163145,
+          49.270064
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_62",
+      "properties": {
+        "id": "aed_62",
+        "facility_type": "aed",
+        "name": "Robert Lee YMCA",
+        "address": "955 BURRARD  ST",
+        "cleaned_address": "BURRARD  St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.133777,
+          49.276012
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_63",
+      "properties": {
+        "id": "aed_63",
+        "facility_type": "aed",
+        "name": "Roundhouse Community Arts and Recreation Centre",
+        "address": "181 ROUNDHOUSE MEWS ME  N",
+        "cleaned_address": "ROUNDHOUSE MEWS ME  N",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.122404,
+          49.273176
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_64",
+      "properties": {
+        "id": "aed_64",
+        "facility_type": "aed",
+        "name": "Royal Centre",
+        "address": "1055 WEST GEORGIA ST",
+        "cleaned_address": "WEST GEORGIA St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1244,
+          49.286538
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_65",
+      "properties": {
+        "id": "aed_65",
+        "facility_type": "aed",
+        "name": "Science World",
+        "address": "1455 QUEBEC ST",
+        "cleaned_address": "QUEBEC St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1029,
+          49.25119
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_66",
+      "properties": {
+        "id": "aed_66",
+        "facility_type": "aed",
+        "name": "South Granville Seniors Centre",
+        "address": "1420 WEST 12TH AV",
+        "cleaned_address": "WEST 12TH Ave",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.158905,
+          49.261107
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_67",
+      "properties": {
+        "id": "aed_67",
+        "facility_type": "aed",
+        "name": "South Hill Library",
+        "address": "6076  FRASER ST",
+        "cleaned_address": "FRASER St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.090474,
+          49.236242
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_68",
+      "properties": {
+        "id": "aed_68",
+        "facility_type": "aed",
+        "name": "St. Andrew''s Hall",
+        "address": "6040  IONA DR",
+        "cleaned_address": "IONA Dr",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.251318,
+          49.271174
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_69",
+      "properties": {
+        "id": "aed_69",
+        "facility_type": "aed",
+        "name": "St. Faith's Anglican Church",
+        "address": "7284 CYPRESS ST",
+        "cleaned_address": "CYPRESS St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.148854,
+          49.248495
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_70",
+      "properties": {
+        "id": "aed_70",
+        "facility_type": "aed",
+        "name": "St. Joseph's School",
+        "address": "3261 FLEMING ST",
+        "cleaned_address": "FLEMING St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.072781,
+          49.236672
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_71",
+      "properties": {
+        "id": "aed_71",
+        "facility_type": "aed",
+        "name": "Stratford Hall School",
+        "address": "3000  COMMERCIAL DR",
+        "cleaned_address": "COMMERCIAL Dr",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.069674,
+          49.268987
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_72",
+      "properties": {
+        "id": "aed_72",
+        "facility_type": "aed",
+        "name": "Strathcona Library",
+        "address": "592  EAST PENDER ST",
+        "cleaned_address": "EAST PENDER St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.063713,
+          49.28024
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_73",
+      "properties": {
+        "id": "aed_73",
+        "facility_type": "aed",
+        "name": "Trek Mining Inc.",
+        "address": "730 - 800 PENDER ST  W",
+        "cleaned_address": "PENDER St  W",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.116801,
+          49.285918
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_74",
+      "properties": {
+        "id": "aed_74",
+        "facility_type": "aed",
+        "name": "Triton 1300",
+        "address": "600 - 1090 WEST PENDER ST",
+        "cleaned_address": "WEST PENDER St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.116801,
+          49.285918
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_75",
+      "properties": {
+        "id": "aed_75",
+        "facility_type": "aed",
+        "name": "UBC Acadia Park Residences",
+        "address": "2707 TENNIS CR",
+        "cleaned_address": "TENNIS Cres",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.237733,
+          49.263537
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_76",
+      "properties": {
+        "id": "aed_76",
+        "facility_type": "aed",
+        "name": "UBC Allard Hall",
+        "address": "1822 EAST MALL Other",
+        "cleaned_address": "EAST MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.247672,
+          49.262343
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_77",
+      "properties": {
+        "id": "aed_77",
+        "facility_type": "aed",
+        "name": "UBC Alumni Centre",
+        "address": "6163 UNIVERSITY BV",
+        "cleaned_address": "UNIVERSITY BV",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.235574,
+          49.265578
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_78",
+      "properties": {
+        "id": "aed_78",
+        "facility_type": "aed",
+        "name": "UBC Anthropology & Sociology Building (ANSO)",
+        "address": "6303 NW MARINE DR",
+        "cleaned_address": "NW MARINE Dr",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.234103,
+          49.27814
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_79",
+      "properties": {
+        "id": "aed_79",
+        "facility_type": "aed",
+        "name": "UBC Aquatic Centre - NEW",
+        "address": "6080 STUDENT UNION BV",
+        "cleaned_address": "STUDENT UNION BV",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.250052,
+          49.268363
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_80",
+      "properties": {
+        "id": "aed_80",
+        "facility_type": "aed",
+        "name": "UBC Asian Centre",
+        "address": "1871 WEST MALL Other",
+        "cleaned_address": "WEST MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.253423,
+          49.261858
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_81",
+      "properties": {
+        "id": "aed_81",
+        "facility_type": "aed",
+        "name": "UBC Barber Library",
+        "address": "1961 EAST MALL Other",
+        "cleaned_address": "EAST MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.247672,
+          49.262343
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_82",
+      "properties": {
+        "id": "aed_82",
+        "facility_type": "aed",
+        "name": "UBC Beaty Biodiversity Centre (Beaty Biodiversity Museum)",
+        "address": "2212 MAIN MALL Other",
+        "cleaned_address": "MAIN MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.250959,
+          49.26271
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_83",
+      "properties": {
+        "id": "aed_83",
+        "facility_type": "aed",
+        "name": "UBC Belkin Art Gallery",
+        "address": "1825 MAIN MALL Other",
+        "cleaned_address": "MAIN MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.250959,
+          49.26271
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_84",
+      "properties": {
+        "id": "aed_84",
+        "facility_type": "aed",
+        "name": "UBC Biological Sciences (West Wing)",
+        "address": "6270 UNIVERSITY BV",
+        "cleaned_address": "UNIVERSITY BV",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.235574,
+          49.265578
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_85",
+      "properties": {
+        "id": "aed_85",
+        "facility_type": "aed",
+        "name": "UBC Bookstore",
+        "address": "6200 UNIVERSITY BV",
+        "cleaned_address": "UNIVERSITY BV",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.235574,
+          49.265578
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_86",
+      "properties": {
+        "id": "aed_86",
+        "facility_type": "aed",
+        "name": "UBC Botanical Gardens",
+        "address": "6804 SW MARINE DR",
+        "cleaned_address": "SW MARINE Dr",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.18203,
+          49.230151
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_87",
+      "properties": {
+        "id": "aed_87",
+        "facility_type": "aed",
+        "name": "UBC Brock Hall",
+        "address": "1874 EAST MALL Other",
+        "cleaned_address": "EAST MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.247672,
+          49.262343
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_88",
+      "properties": {
+        "id": "aed_88",
+        "facility_type": "aed",
+        "name": "UBC Buchanan (Building A)",
+        "address": "1866 MAIN MALL Other",
+        "cleaned_address": "MAIN MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.250959,
+          49.26271
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_89",
+      "properties": {
+        "id": "aed_89",
+        "facility_type": "aed",
+        "name": "UBC Buchanan Tower",
+        "address": "1873 EAST MALL Other",
+        "cleaned_address": "EAST MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.247672,
+          49.262343
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_90",
+      "properties": {
+        "id": "aed_90",
+        "facility_type": "aed",
+        "name": "UBC Cecil Green House",
+        "address": "6251 CECIL GREEN PARK RD",
+        "cleaned_address": "CECIL GREEN PARK Rd",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.257353,
+          49.270815
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_91",
+      "properties": {
+        "id": "aed_91",
+        "facility_type": "aed",
+        "name": "UBC Centre for Comparative Medicine",
+        "address": "4145 WESBROOK MALL Other",
+        "cleaned_address": "WESBROOK MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.240031,
+          49.25983
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_92",
+      "properties": {
+        "id": "aed_92",
+        "facility_type": "aed",
+        "name": "UBC Chemical & Biological Engineering",
+        "address": "2360 EAST MALL Other",
+        "cleaned_address": "EAST MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.247672,
+          49.262343
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_93",
+      "properties": {
+        "id": "aed_93",
+        "facility_type": "aed",
+        "name": "UBC Chemistry (Building B)",
+        "address": "2036 MAIN MALL Other",
+        "cleaned_address": "MAIN MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.250959,
+          49.26271
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_94",
+      "properties": {
+        "id": "aed_94",
+        "facility_type": "aed",
+        "name": "UBC Childcare Services Main Office",
+        "address": "2881 ACADIA RD",
+        "cleaned_address": "ACADIA Rd",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.240877,
+          49.269821
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_95",
+      "properties": {
+        "id": "aed_95",
+        "facility_type": "aed",
+        "name": "UBC Civil & Mechanical Engineering (CEME)",
+        "address": "6250 APPLIED SCIENCES LN",
+        "cleaned_address": "APPLIED SCIENCES LN",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.249304,
+          49.262841
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_96",
+      "properties": {
+        "id": "aed_96",
+        "facility_type": "aed",
+        "name": "UBC CK Choi",
+        "address": "1855 WEST MALL Other",
+        "cleaned_address": "WEST MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.253423,
+          49.261858
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_97",
+      "properties": {
+        "id": "aed_97",
+        "facility_type": "aed",
+        "name": "UBC Continuing Studies (English Language Institute)",
+        "address": "2121 WEST MALL Other",
+        "cleaned_address": "WEST MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.253423,
+          49.261858
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_98",
+      "properties": {
+        "id": "aed_98",
+        "facility_type": "aed",
+        "name": "UBC Douglas Kenny (Psychology)",
+        "address": "2136 WEST MALL Other",
+        "cleaned_address": "WEST MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.253423,
+          49.261858
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_99",
+      "properties": {
+        "id": "aed_99",
+        "facility_type": "aed",
+        "name": "UBC Earth Sciences Building (ESB)",
+        "address": "2207 MAIN MALL Other",
+        "cleaned_address": "MAIN MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.250959,
+          49.26271
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_100",
+      "properties": {
+        "id": "aed_100",
+        "facility_type": "aed",
+        "name": "UBC Environmental Services Facility (ESF)",
+        "address": "6025 NURSURIES RD",
+        "cleaned_address": "NURSURIES Rd",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.230381,
+          49.245365
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_101",
+      "properties": {
+        "id": "aed_101",
+        "facility_type": "aed",
+        "name": "UBC Farm",
+        "address": "3461 ROSS DR",
+        "cleaned_address": "ROSS Dr",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.238136,
+          49.251795
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_102",
+      "properties": {
+        "id": "aed_102",
+        "facility_type": "aed",
+        "name": "UBC First Nations House of Learning",
+        "address": "1985 WEST MALL Other",
+        "cleaned_address": "WEST MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.253423,
+          49.261858
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_103",
+      "properties": {
+        "id": "aed_103",
+        "facility_type": "aed",
+        "name": "UBC Food, Nutrition & Health",
+        "address": "2205 EAST MALL Other",
+        "cleaned_address": "EAST MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.247672,
+          49.262343
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_104",
+      "properties": {
+        "id": "aed_104",
+        "facility_type": "aed",
+        "name": "UBC Forest Sciences Centre",
+        "address": "2424 MAIN MALL Other",
+        "cleaned_address": "MAIN MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.250959,
+          49.26271
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_105",
+      "properties": {
+        "id": "aed_105",
+        "facility_type": "aed",
+        "name": "UBC Frank Forward",
+        "address": "6350 STORES RD",
+        "cleaned_address": "STORES Rd",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.252124,
+          49.26195
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_106",
+      "properties": {
+        "id": "aed_106",
+        "facility_type": "aed",
+        "name": "UBC Fraser Hall Residence",
+        "address": "2550 WESBROOK MALL Other",
+        "cleaned_address": "WESBROOK MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.240031,
+          49.25983
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_107",
+      "properties": {
+        "id": "aed_107",
+        "facility_type": "aed",
+        "name": "UBC Friedman",
+        "address": "2177 WESBROOK MALL Other",
+        "cleaned_address": "WESBROOK MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.240031,
+          49.25983
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_108",
+      "properties": {
+        "id": "aed_108",
+        "facility_type": "aed",
+        "name": "UBC Geography",
+        "address": "1984 WEST MALL Other",
+        "cleaned_address": "WEST MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.253423,
+          49.261858
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_109",
+      "properties": {
+        "id": "aed_109",
+        "facility_type": "aed",
+        "name": "UBC Green College",
+        "address": "6201 CECIL GREEN PARK RD",
+        "cleaned_address": "CECIL GREEN PARK Rd",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.257353,
+          49.270815
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_110",
+      "properties": {
+        "id": "aed_110",
+        "facility_type": "aed",
+        "name": "UBC Hennings Building (Physics & Astronomy)",
+        "address": "6224 AGRICULTURAL RD",
+        "cleaned_address": "AGRICULTURAL Rd",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.25459,
+          49.266015
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_111",
+      "properties": {
+        "id": "aed_111",
+        "facility_type": "aed",
+        "name": "UBC Henry Angus Building (Sauder School of Business)",
+        "address": "2053 MAIN MALL Other",
+        "cleaned_address": "MAIN MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.250959,
+          49.26271
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_112",
+      "properties": {
+        "id": "aed_112",
+        "facility_type": "aed",
+        "name": "UBC Huckleberry Daycare",
+        "address": "101 - 2725 OSOYOOS CR",
+        "cleaned_address": "OSOYOOS Cres",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.2377,
+          49.260206
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_113",
+      "properties": {
+        "id": "aed_113",
+        "facility_type": "aed",
+        "name": "UBC Institute for Computing, Information and Cognitive Systems / Computer Science (ICICS/CS)",
+        "address": "2366 MAIN MALL Other",
+        "cleaned_address": "MAIN MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.250959,
+          49.26271
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_114",
+      "properties": {
+        "id": "aed_114",
+        "facility_type": "aed",
+        "name": "UBC International House",
+        "address": "1783 WEST MALL Other",
+        "cleaned_address": "WEST MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.253423,
+          49.261858
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_115",
+      "properties": {
+        "id": "aed_115",
+        "facility_type": "aed",
+        "name": "UBC Jack Bell Building (School of Social Work)",
+        "address": "2080 WEST MALL Other",
+        "cleaned_address": "WEST MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.253423,
+          49.261858
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_116",
+      "properties": {
+        "id": "aed_116",
+        "facility_type": "aed",
+        "name": "UBC Kaiser Building",
+        "address": "2332 MAIN MALL Other",
+        "cleaned_address": "MAIN MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.250959,
+          49.26271
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_117",
+      "properties": {
+        "id": "aed_117",
+        "facility_type": "aed",
+        "name": "UBC Klinck",
+        "address": "6356 AGRICULTURAL RD",
+        "cleaned_address": "AGRICULTURAL Rd",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.25459,
+          49.266015
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_118",
+      "properties": {
+        "id": "aed_118",
+        "facility_type": "aed",
+        "name": "UBC Koerner Library",
+        "address": "1958 MAIN MALL Other",
+        "cleaned_address": "MAIN MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.250959,
+          49.26271
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_119",
+      "properties": {
+        "id": "aed_119",
+        "facility_type": "aed",
+        "name": "UBC Life Sciences Centre",
+        "address": "2350 HEALTH SCIENCES MALL Other",
+        "cleaned_address": "HEALTH SCIENCES MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.246783,
+          49.262983
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_120",
+      "properties": {
+        "id": "aed_120",
+        "facility_type": "aed",
+        "name": "UBC MacMilan Building",
+        "address": "2357 MAIN MALL Other",
+        "cleaned_address": "MAIN MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.250959,
+          49.26271
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_121",
+      "properties": {
+        "id": "aed_121",
+        "facility_type": "aed",
+        "name": "UBC Marine Drive Point Grill Restaurant - Building 4",
+        "address": "2205 LOWER MALL Other",
+        "cleaned_address": "LOWER MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.255765,
+          49.262723
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_122",
+      "properties": {
+        "id": "aed_122",
+        "facility_type": "aed",
+        "name": "UBC Marine Drive Residence - Building 3",
+        "address": "2205 LOWER MALL Other",
+        "cleaned_address": "LOWER MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.255765,
+          49.262723
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_123",
+      "properties": {
+        "id": "aed_123",
+        "facility_type": "aed",
+        "name": "UBC Michael Smith Laboratories",
+        "address": "2185 EAST MALL Other",
+        "cleaned_address": "EAST MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.247672,
+          49.262343
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_124",
+      "properties": {
+        "id": "aed_124",
+        "facility_type": "aed",
+        "name": "UBC Museum of Anthropology",
+        "address": "6393 NW MARINE DR",
+        "cleaned_address": "NW MARINE Dr",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.234103,
+          49.27814
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_125",
+      "properties": {
+        "id": "aed_125",
+        "facility_type": "aed",
+        "name": "UBC Music Building",
+        "address": "6361 MEMORIAL RD",
+        "cleaned_address": "MEMORIAL Rd",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.255365,
+          49.267576
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_126",
+      "properties": {
+        "id": "aed_126",
+        "facility_type": "aed",
+        "name": "UBC National Soccer Development Centre",
+        "address": "3055 WESBROOK MALL Other",
+        "cleaned_address": "WESBROOK MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.240031,
+          49.25983
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_127",
+      "properties": {
+        "id": "aed_127",
+        "facility_type": "aed",
+        "name": "UBC NEST (Student Union Building)",
+        "address": "6133 UNIVERSITY BV",
+        "cleaned_address": "UNIVERSITY BV",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.235574,
+          49.265578
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_128",
+      "properties": {
+        "id": "aed_128",
+        "facility_type": "aed",
+        "name": "UBC Old Administration Building (OAB)",
+        "address": "6328 MEMORIAL RD",
+        "cleaned_address": "MEMORIAL Rd",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.255365,
+          49.267576
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_129",
+      "properties": {
+        "id": "aed_129",
+        "facility_type": "aed",
+        "name": "UBC Old Rugby Pavillion",
+        "address": "MAIN ENTRANCE",
+        "cleaned_address": "MAIN ENTRANCE",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.099248,
+          49.28552
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_130",
+      "properties": {
+        "id": "aed_130",
+        "facility_type": "aed",
+        "name": "UBC Orchard Commons",
+        "address": "6363 AGRONOMY RD",
+        "cleaned_address": "AGRONOMY Rd",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.246688,
+          49.261434
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_131",
+      "properties": {
+        "id": "aed_131",
+        "facility_type": "aed",
+        "name": "UBC Owl at the Barn Daycare",
+        "address": "2323 MAIN MALL Other",
+        "cleaned_address": "MAIN MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.250959,
+          49.26271
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_132",
+      "properties": {
+        "id": "aed_132",
+        "facility_type": "aed",
+        "name": "UBC Pharmaceutical Sciences",
+        "address": "2405 WESBROOK MALL Other",
+        "cleaned_address": "WESBROOK MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.240031,
+          49.25983
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_133",
+      "properties": {
+        "id": "aed_133",
+        "facility_type": "aed",
+        "name": "UBC Place Vanier Residence",
+        "address": "1935 LOWER MALL Other",
+        "cleaned_address": "LOWER MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.255765,
+          49.262723
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_134",
+      "properties": {
+        "id": "aed_134",
+        "facility_type": "aed",
+        "name": "UBC Ponderosa Hub - Athletes Studio in Maple House",
+        "address": "2075 WEST MALL Other",
+        "cleaned_address": "WEST MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.253423,
+          49.261858
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_135",
+      "properties": {
+        "id": "aed_135",
+        "facility_type": "aed",
+        "name": "UBC Pulp & Paper Centre",
+        "address": "2385 EAST MALL Other",
+        "cleaned_address": "EAST MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.247672,
+          49.262343
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_136",
+      "properties": {
+        "id": "aed_136",
+        "facility_type": "aed",
+        "name": "UBC Scarfe (Education)",
+        "address": "2125 MAIN MALL Other",
+        "cleaned_address": "MAIN MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.250959,
+          49.26271
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_137",
+      "properties": {
+        "id": "aed_137",
+        "facility_type": "aed",
+        "name": "UBC School of Economics (Iona Building)",
+        "address": "6000 IONA DR",
+        "cleaned_address": "IONA Dr",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.251318,
+          49.271174
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_138",
+      "properties": {
+        "id": "aed_138",
+        "facility_type": "aed",
+        "name": "UBC School of Population Health",
+        "address": "2206 EAST MALL Other",
+        "cleaned_address": "EAST MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.247672,
+          49.262343
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_139",
+      "properties": {
+        "id": "aed_139",
+        "facility_type": "aed",
+        "name": "UBC Sitka Daycare Centre",
+        "address": "B - 5620 OSOYOOS CR",
+        "cleaned_address": "B - 5620 OSOYOOS Cres",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.234782,
+          49.259831
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_140",
+      "properties": {
+        "id": "aed_140",
+        "facility_type": "aed",
+        "name": "UBC St. Johns College Residence",
+        "address": "2111 LOWER MALL Other",
+        "cleaned_address": "LOWER MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.255765,
+          49.262723
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_141",
+      "properties": {
+        "id": "aed_141",
+        "facility_type": "aed",
+        "name": "UBC Student Recreation Centre (SRC)",
+        "address": "6000 STUDENT UNION BV",
+        "cleaned_address": "STUDENT UNION BV",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.250052,
+          49.268363
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_142",
+      "properties": {
+        "id": "aed_142",
+        "facility_type": "aed",
+        "name": "UBC Technology Enterprise Facility 3 (TEF 3)",
+        "address": "6190 AGRONOMY RD",
+        "cleaned_address": "AGRONOMY Rd",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.246688,
+          49.261434
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_143",
+      "properties": {
+        "id": "aed_143",
+        "facility_type": "aed",
+        "name": "UBC Thunderbird Residence (Building B2)",
+        "address": "6335 THUNDERBIRD CR",
+        "cleaned_address": "THUNDERBIRD Cres",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.249717,
+          49.259548
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_144",
+      "properties": {
+        "id": "aed_144",
+        "facility_type": "aed",
+        "name": "UBC Thunderbird Warehouse",
+        "address": "2440 WEST MALL Other",
+        "cleaned_address": "WEST MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.253423,
+          49.261858
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_145",
+      "properties": {
+        "id": "aed_145",
+        "facility_type": "aed",
+        "name": "UBC Totem Park Residence",
+        "address": "2525 WEST MALL Other",
+        "cleaned_address": "WEST MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.253423,
+          49.261858
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_146",
+      "properties": {
+        "id": "aed_146",
+        "facility_type": "aed",
+        "name": "UBC University Centre",
+        "address": "6331 CRESCENT RD",
+        "cleaned_address": "CRESCENT Rd",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.255934,
+          49.268842
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_147",
+      "properties": {
+        "id": "aed_147",
+        "facility_type": "aed",
+        "name": "UBC Walter Gage Residence",
+        "address": "5959 STUDENT UNION BV",
+        "cleaned_address": "STUDENT UNION BV",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.250052,
+          49.268363
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_148",
+      "properties": {
+        "id": "aed_148",
+        "facility_type": "aed",
+        "name": "UBC Wesbrook Building",
+        "address": "6174 UNIVERSITY BV",
+        "cleaned_address": "UNIVERSITY BV",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.235574,
+          49.265578
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_149",
+      "properties": {
+        "id": "aed_149",
+        "facility_type": "aed",
+        "name": "UBC Wescadia Catering (Portable AED Units #1, #2 & #3)",
+        "address": "2205 LOWER MALL Other",
+        "cleaned_address": "LOWER MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.255765,
+          49.262723
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_150",
+      "properties": {
+        "id": "aed_150",
+        "facility_type": "aed",
+        "name": "UBC West Coast Suites",
+        "address": "5961 STUDENT UNION BV",
+        "cleaned_address": "STUDENT UNION BV",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.250052,
+          49.268363
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_151",
+      "properties": {
+        "id": "aed_151",
+        "facility_type": "aed",
+        "name": "UBC Woodward Instructional Resource Centre (IRC)",
+        "address": "2194 HEALTH SCIENCES MALL Other",
+        "cleaned_address": "HEALTH SCIENCES MALL",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.246783,
+          49.262983
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_152",
+      "properties": {
+        "id": "aed_152",
+        "facility_type": "aed",
+        "name": "Unitarian Church of Vancouver",
+        "address": "949 WEST 49TH AV",
+        "cleaned_address": "WEST 49TH Ave",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.146077,
+          49.227044
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_153",
+      "properties": {
+        "id": "aed_153",
+        "facility_type": "aed",
+        "name": "Vancouver Central Library",
+        "address": "350  WEST GEORGIA ST",
+        "cleaned_address": "WEST GEORGIA St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1244,
+          49.286538
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_154",
+      "properties": {
+        "id": "aed_154",
+        "facility_type": "aed",
+        "name": "Vancouver Coastal Health - Administration Offices",
+        "address": "200 - 520 6TH AV  W",
+        "cleaned_address": "6TH Ave  W",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.106981,
+          49.206552
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_155",
+      "properties": {
+        "id": "aed_155",
+        "facility_type": "aed",
+        "name": "VCH Communicable Disease Control",
+        "address": "800 601 WEST BROADWAY AV",
+        "cleaned_address": "601 WEST BROADWAY Ave",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.118036,
+          49.263687
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_156",
+      "properties": {
+        "id": "aed_156",
+        "facility_type": "aed",
+        "name": "West Point Grey Library",
+        "address": "4480  WEST 10TH AV",
+        "cleaned_address": "WEST 10TH Ave",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.160289,
+          49.262988
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_157",
+      "properties": {
+        "id": "aed_157",
+        "facility_type": "aed",
+        "name": "Whole Way House Society",
+        "address": "165  WEST PENDER ST",
+        "cleaned_address": "WEST PENDER St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.116801,
+          49.285918
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_158",
+      "properties": {
+        "id": "aed_158",
+        "facility_type": "aed",
+        "name": "YWCA Hotel",
+        "address": "733 BEATTY ST",
+        "cleaned_address": "BEATTY St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.112798,
+          49.278354
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aed_159",
+      "properties": {
+        "id": "aed_159",
+        "facility_type": "aed",
+        "name": "YWCA Metro Vancouver",
+        "address": "535  HORNBY ST",
+        "cleaned_address": "HORNBY St",
+        "municipality": "Vancouver",
+        "source": "BC Public Access to Defibrillation (BC PAD)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.124988,
+          49.280533
+        ]
+      }
+    }
+  ]
+}

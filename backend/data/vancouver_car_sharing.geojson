@@ -1,0 +1,749 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "carshare_evo_1",
+      "properties": {
+        "id": "carshare_evo_1",
+        "facility_type": "car_sharing",
+        "operator": "Evo",
+        "operator_name": "Evo Car Share",
+        "name": "Evo Car Share (14 車位專用站點)",
+        "address": "Vancouver",
+        "capacity": "14 車位",
+        "vehicle_type": "Toyota Prius Hybrid (裝備單車/滑雪架)",
+        "pricing": "約 $0.49/分鐘起 (含保險油費)",
+        "app_url": "https://evo.ca/",
+        "source": "evo.geojson (OpenStreetMap)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.116107,
+          49.280933
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "carshare_evo_2",
+      "properties": {
+        "id": "carshare_evo_2",
+        "facility_type": "car_sharing",
+        "operator": "Evo",
+        "operator_name": "Evo Car Share",
+        "name": "Evo Car Share (2 車位專用站點)",
+        "address": "Vancouver, BC",
+        "capacity": "2 車位",
+        "vehicle_type": "Toyota Prius Hybrid (裝備單車/滑雪架)",
+        "pricing": "約 $0.49/分鐘起 (含保險油費)",
+        "app_url": "https://evo.ca/",
+        "source": "evo.geojson (OpenStreetMap)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1539774,
+          49.2729146
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "carshare_evo_3",
+      "properties": {
+        "id": "carshare_evo_3",
+        "facility_type": "car_sharing",
+        "operator": "Evo",
+        "operator_name": "Evo Car Share",
+        "name": "Evo Car Share (6 車位專用站點)",
+        "address": "Vancouver",
+        "capacity": "6 車位",
+        "vehicle_type": "Toyota Prius Hybrid (裝備單車/滑雪架)",
+        "pricing": "約 $0.49/分鐘起 (含保險油費)",
+        "app_url": "https://evo.ca/",
+        "source": "evo.geojson (OpenStreetMap)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.122108,
+          49.2792802
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "carshare_evo_4",
+      "properties": {
+        "id": "carshare_evo_4",
+        "facility_type": "car_sharing",
+        "operator": "Evo",
+        "operator_name": "Evo Car Share",
+        "name": "Evo Car Share (2 車位專用站點)",
+        "address": "Vancouver, BC",
+        "capacity": "2 車位",
+        "vehicle_type": "Toyota Prius Hybrid (裝備單車/滑雪架)",
+        "pricing": "約 $0.49/分鐘起 (含保險油費)",
+        "app_url": "https://evo.ca/",
+        "source": "evo.geojson (OpenStreetMap)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.120013,
+          49.288517
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "carshare_evo_5",
+      "properties": {
+        "id": "carshare_evo_5",
+        "facility_type": "car_sharing",
+        "operator": "Evo",
+        "operator_name": "Evo Car Share",
+        "name": "Evo Car Share (7 車位專用站點)",
+        "address": "Vancouver",
+        "capacity": "7 車位",
+        "vehicle_type": "Toyota Prius Hybrid (裝備單車/滑雪架)",
+        "pricing": "約 $0.49/分鐘起 (含保險油費)",
+        "app_url": "https://evo.ca/",
+        "source": "evo.geojson (OpenStreetMap)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.115876,
+          49.2816641
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "carshare_evo_6",
+      "properties": {
+        "id": "carshare_evo_6",
+        "facility_type": "car_sharing",
+        "operator": "Evo",
+        "operator_name": "Evo Car Share",
+        "name": "Evo Car Share (3 車位專用站點)",
+        "address": "Vancouver, BC",
+        "capacity": "3 車位",
+        "vehicle_type": "Toyota Prius Hybrid (裝備單車/滑雪架)",
+        "pricing": "約 $0.49/分鐘起 (含保險油費)",
+        "app_url": "https://evo.ca/",
+        "source": "evo.geojson (OpenStreetMap)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1267474,
+          49.2863451
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "carshare_evo_7",
+      "properties": {
+        "id": "carshare_evo_7",
+        "facility_type": "car_sharing",
+        "operator": "Evo",
+        "operator_name": "Evo Car Share",
+        "name": "Evo Car Share (2 車位專用站點)",
+        "address": "Vancouver, BC",
+        "capacity": "2 車位",
+        "vehicle_type": "Toyota Prius Hybrid (裝備單車/滑雪架)",
+        "pricing": "約 $0.49/分鐘起 (含保險油費)",
+        "app_url": "https://evo.ca/",
+        "source": "evo.geojson (OpenStreetMap)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.128351,
+          49.2854037
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "carshare_evo_8",
+      "properties": {
+        "id": "carshare_evo_8",
+        "facility_type": "car_sharing",
+        "operator": "Evo",
+        "operator_name": "Evo Car Share",
+        "name": "Evo Car Share (4 車位專用站點)",
+        "address": "Vancouver, BC",
+        "capacity": "4 車位",
+        "vehicle_type": "Toyota Prius Hybrid (裝備單車/滑雪架)",
+        "pricing": "約 $0.49/分鐘起 (含保險油費)",
+        "app_url": "https://evo.ca/",
+        "source": "evo.geojson (OpenStreetMap)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1132159,
+          49.2623488
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "carshare_evo_9",
+      "properties": {
+        "id": "carshare_evo_9",
+        "facility_type": "car_sharing",
+        "operator": "Evo",
+        "operator_name": "Evo Car Share",
+        "name": "Evo Car Share (4 車位專用站點)",
+        "address": "Vancouver",
+        "capacity": "4 車位",
+        "vehicle_type": "Toyota Prius Hybrid (裝備單車/滑雪架)",
+        "pricing": "約 $0.49/分鐘起 (含保險油費)",
+        "app_url": "https://evo.ca/",
+        "source": "evo.geojson (OpenStreetMap)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14088,
+          49.2881731
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "carshare_evo_10",
+      "properties": {
+        "id": "carshare_evo_10",
+        "facility_type": "car_sharing",
+        "operator": "Evo",
+        "operator_name": "Evo Car Share",
+        "name": "Evo Car Share (2 車位專用站點)",
+        "address": "Vancouver, BC",
+        "capacity": "2 車位",
+        "vehicle_type": "Toyota Prius Hybrid (裝備單車/滑雪架)",
+        "pricing": "約 $0.49/分鐘起 (含保險油費)",
+        "app_url": "https://evo.ca/",
+        "source": "evo.geojson (OpenStreetMap)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.070282,
+          49.2631606
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "carshare_evo_11",
+      "properties": {
+        "id": "carshare_evo_11",
+        "facility_type": "car_sharing",
+        "operator": "Evo",
+        "operator_name": "Evo Car Share",
+        "name": "Evo Car Share (4 車位專用站點)",
+        "address": "Vancouver, BC",
+        "capacity": "4 車位",
+        "vehicle_type": "Toyota Prius Hybrid (裝備單車/滑雪架)",
+        "pricing": "約 $0.49/分鐘起 (含保險油費)",
+        "app_url": "https://evo.ca/",
+        "source": "evo.geojson (OpenStreetMap)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.069092,
+          49.2611822
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "carshare_evo_12",
+      "properties": {
+        "id": "carshare_evo_12",
+        "facility_type": "car_sharing",
+        "operator": "Evo",
+        "operator_name": "Evo Car Share",
+        "name": "Evo Car Share (4 車位專用站點)",
+        "address": "Vancouver, BC",
+        "capacity": "4 車位",
+        "vehicle_type": "Toyota Prius Hybrid (裝備單車/滑雪架)",
+        "pricing": "約 $0.49/分鐘起 (含保險油費)",
+        "app_url": "https://evo.ca/",
+        "source": "evo.geojson (OpenStreetMap)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1360606,
+          49.2725154
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "carshare_evo_13",
+      "properties": {
+        "id": "carshare_evo_13",
+        "facility_type": "car_sharing",
+        "operator": "Evo",
+        "operator_name": "Evo Car Share",
+        "name": "Evo Car Share (2 車位專用站點)",
+        "address": "Vancouver, BC",
+        "capacity": "2 車位",
+        "vehicle_type": "Toyota Prius Hybrid (裝備單車/滑雪架)",
+        "pricing": "約 $0.49/分鐘起 (含保險油費)",
+        "app_url": "https://evo.ca/",
+        "source": "evo.geojson (OpenStreetMap)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0951972,
+          49.2846841
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "carshare_evo_14",
+      "properties": {
+        "id": "carshare_evo_14",
+        "facility_type": "car_sharing",
+        "operator": "Evo",
+        "operator_name": "Evo Car Share",
+        "name": "Evo Car Share (3 車位專用站點)",
+        "address": "Vancouver, BC",
+        "capacity": "3 車位",
+        "vehicle_type": "Toyota Prius Hybrid (裝備單車/滑雪架)",
+        "pricing": "約 $0.49/分鐘起 (含保險油費)",
+        "app_url": "https://evo.ca/",
+        "source": "evo.geojson (OpenStreetMap)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1157907,
+          49.2602188
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "carshare_evo_15",
+      "properties": {
+        "id": "carshare_evo_15",
+        "facility_type": "car_sharing",
+        "operator": "Evo",
+        "operator_name": "Evo Car Share",
+        "name": "Evo Car Share (1 車位專用站點)",
+        "address": "Vancouver, BC",
+        "capacity": "1 車位",
+        "vehicle_type": "Toyota Prius Hybrid (裝備單車/滑雪架)",
+        "pricing": "約 $0.49/分鐘起 (含保險油費)",
+        "app_url": "https://evo.ca/",
+        "source": "evo.geojson (OpenStreetMap)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1157896,
+          49.2600109
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "carshare_evo_16",
+      "properties": {
+        "id": "carshare_evo_16",
+        "facility_type": "car_sharing",
+        "operator": "Evo",
+        "operator_name": "Evo Car Share",
+        "name": "Evo Car Share (3 車位專用站點)",
+        "address": "Vancouver, BC",
+        "capacity": "3 車位",
+        "vehicle_type": "Toyota Prius Hybrid (裝備單車/滑雪架)",
+        "pricing": "約 $0.49/分鐘起 (含保險油費)",
+        "app_url": "https://evo.ca/",
+        "source": "evo.geojson (OpenStreetMap)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1004781,
+          49.2721016
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "carshare_evo_17",
+      "properties": {
+        "id": "carshare_evo_17",
+        "facility_type": "car_sharing",
+        "operator": "Evo",
+        "operator_name": "Evo Car Share",
+        "name": "Evo Car Share (4 車位專用站點)",
+        "address": "Vancouver, BC",
+        "capacity": "4 車位",
+        "vehicle_type": "Toyota Prius Hybrid (裝備單車/滑雪架)",
+        "pricing": "約 $0.49/分鐘起 (含保險油費)",
+        "app_url": "https://evo.ca/",
+        "source": "evo.geojson (OpenStreetMap)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1159932,
+          49.2667304
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "carshare_evo_18",
+      "properties": {
+        "id": "carshare_evo_18",
+        "facility_type": "car_sharing",
+        "operator": "Evo",
+        "operator_name": "Evo Car Share",
+        "name": "Evo Car Share (4 車位專用站點)",
+        "address": "Vancouver, BC",
+        "capacity": "4 車位",
+        "vehicle_type": "Toyota Prius Hybrid (裝備單車/滑雪架)",
+        "pricing": "約 $0.49/分鐘起 (含保險油費)",
+        "app_url": "https://evo.ca/",
+        "source": "evo.geojson (OpenStreetMap)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1232166,
+          49.2783553
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "carshare_evo_19",
+      "properties": {
+        "id": "carshare_evo_19",
+        "facility_type": "car_sharing",
+        "operator": "Evo",
+        "operator_name": "Evo Car Share",
+        "name": "Evo Car Share (3 車位專用站點)",
+        "address": "Vancouver, BC",
+        "capacity": "3 車位",
+        "vehicle_type": "Toyota Prius Hybrid (裝備單車/滑雪架)",
+        "pricing": "約 $0.49/分鐘起 (含保險油費)",
+        "app_url": "https://evo.ca/",
+        "source": "evo.geojson (OpenStreetMap)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1441517,
+          49.2909173
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "carshare_evo_20",
+      "properties": {
+        "id": "carshare_evo_20",
+        "facility_type": "car_sharing",
+        "operator": "Evo",
+        "operator_name": "Evo Car Share",
+        "name": "Evo Car Share (2 車位專用站點)",
+        "address": "Vancouver, BC",
+        "capacity": "2 車位",
+        "vehicle_type": "Toyota Prius Hybrid (裝備單車/滑雪架)",
+        "pricing": "約 $0.49/分鐘起 (含保險油費)",
+        "app_url": "https://evo.ca/",
+        "source": "evo.geojson (OpenStreetMap)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1316112,
+          49.2800644
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "carshare_evo_21",
+      "properties": {
+        "id": "carshare_evo_21",
+        "facility_type": "car_sharing",
+        "operator": "Evo",
+        "operator_name": "Evo Car Share",
+        "name": "Evo Car Share (2 車位專用站點)",
+        "address": "Vancouver, BC",
+        "capacity": "2 車位",
+        "vehicle_type": "Toyota Prius Hybrid (裝備單車/滑雪架)",
+        "pricing": "約 $0.49/分鐘起 (含保險油費)",
+        "app_url": "https://evo.ca/",
+        "source": "evo.geojson (OpenStreetMap)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1311471,
+          49.2667087
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "carshare_modo_1",
+      "properties": {
+        "id": "carshare_modo_1",
+        "facility_type": "car_sharing",
+        "operator": "Modo",
+        "operator_name": "Modo Car Co-op",
+        "name": "Modo - Vancouver City Hall",
+        "address": "453 W 12th Ave, Vancouver, BC V5Y 1V4",
+        "capacity": "4 車位",
+        "vehicle_type": "Sedan, SUV, Minivan, Cargo Van",
+        "pricing": "約 $5/小時起 + 每公里收費 (往返式原站還車)",
+        "app_url": "https://www.modo.coop/",
+        "source": "Modo.json & Modo Co-op Vancouver Network"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1147,
+          49.2608
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "carshare_modo_2",
+      "properties": {
+        "id": "carshare_modo_2",
+        "facility_type": "car_sharing",
+        "operator": "Modo",
+        "operator_name": "Modo Car Co-op",
+        "name": "Modo - Commercial-Broadway Station",
+        "address": "1720 E 10th Ave, Vancouver, BC V5N 1X7",
+        "capacity": "3 車位",
+        "vehicle_type": "Sedan, Hybrid Hatchback",
+        "pricing": "約 $5/小時起 + 每公里收費 (往返式原站還車)",
+        "app_url": "https://www.modo.coop/",
+        "source": "Modo.json & Modo Co-op Vancouver Network"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0694,
+          49.2625
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "carshare_modo_3",
+      "properties": {
+        "id": "carshare_modo_3",
+        "facility_type": "car_sharing",
+        "operator": "Modo",
+        "operator_name": "Modo Car Co-op",
+        "name": "Modo - Main Street–Science World",
+        "address": "1455 Quebec St, Vancouver, BC V6A 3Z7",
+        "capacity": "3 車位",
+        "vehicle_type": "Electric Vehicle, SUV",
+        "pricing": "約 $5/小時起 + 每公里收費 (往返式原站還車)",
+        "app_url": "https://www.modo.coop/",
+        "source": "Modo.json & Modo Co-op Vancouver Network"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1039,
+          49.2732
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "carshare_modo_4",
+      "properties": {
+        "id": "carshare_modo_4",
+        "facility_type": "car_sharing",
+        "operator": "Modo",
+        "operator_name": "Modo Car Co-op",
+        "name": "Modo - Olympic Village Square",
+        "address": "1628 Walter Hardwick Ave, Vancouver, BC V5Y 0E7",
+        "capacity": "4 車位",
+        "vehicle_type": "EV, AWD SUV",
+        "pricing": "約 $5/小時起 + 每公里收費 (往返式原站還車)",
+        "app_url": "https://www.modo.coop/",
+        "source": "Modo.json & Modo Co-op Vancouver Network"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1065,
+          49.2709
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "carshare_modo_5",
+      "properties": {
+        "id": "carshare_modo_5",
+        "facility_type": "car_sharing",
+        "operator": "Modo",
+        "operator_name": "Modo Car Co-op",
+        "name": "Modo - Granville Island (Anderson St)",
+        "address": "1661 Anderson St, Vancouver, BC V6H 3R5",
+        "capacity": "2 車位",
+        "vehicle_type": "Hybrid, Cargo Van",
+        "pricing": "約 $5/小時起 + 每公里收費 (往返式原站還車)",
+        "app_url": "https://www.modo.coop/",
+        "source": "Modo.json & Modo Co-op Vancouver Network"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1362,
+          49.2705
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "carshare_modo_6",
+      "properties": {
+        "id": "carshare_modo_6",
+        "facility_type": "car_sharing",
+        "operator": "Modo",
+        "operator_name": "Modo Car Co-op",
+        "name": "Modo - Waterfront Station / Gastown",
+        "address": "601 W Cordova St, Vancouver, BC V6B 1G1",
+        "capacity": "3 車位",
+        "vehicle_type": "Sedan, Hybrid",
+        "pricing": "約 $5/小時起 + 每公里收費 (往返式原站還車)",
+        "app_url": "https://www.modo.coop/",
+        "source": "Modo.json & Modo Co-op Vancouver Network"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1118,
+          49.2858
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "carshare_modo_7",
+      "properties": {
+        "id": "carshare_modo_7",
+        "facility_type": "car_sharing",
+        "operator": "Modo",
+        "operator_name": "Modo Car Co-op",
+        "name": "Modo - West End / Denman & Robson",
+        "address": "1700 Robson St, Vancouver, BC V6G 1C9",
+        "capacity": "2 車位",
+        "vehicle_type": "Compact, Sedan",
+        "pricing": "約 $5/小時起 + 每公里收費 (往返式原站還車)",
+        "app_url": "https://www.modo.coop/",
+        "source": "Modo.json & Modo Co-op Vancouver Network"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1354,
+          49.2908
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "carshare_modo_8",
+      "properties": {
+        "id": "carshare_modo_8",
+        "facility_type": "car_sharing",
+        "operator": "Modo",
+        "operator_name": "Modo Car Co-op",
+        "name": "Modo - Kitsilano Community Centre",
+        "address": "2690 Larch St, Vancouver, BC V6K 4K7",
+        "capacity": "2 車位",
+        "vehicle_type": "SUV, Hybrid",
+        "pricing": "約 $5/小時起 + 每公里收費 (往返式原站還車)",
+        "app_url": "https://www.modo.coop/",
+        "source": "Modo.json & Modo Co-op Vancouver Network"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1618,
+          49.2612
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "carshare_modo_9",
+      "properties": {
+        "id": "carshare_modo_9",
+        "facility_type": "car_sharing",
+        "operator": "Modo",
+        "operator_name": "Modo Car Co-op",
+        "name": "Modo - Mount Pleasant Community Centre",
+        "address": "1 Kingsway, Vancouver, BC V5T 3H7",
+        "capacity": "3 車位",
+        "vehicle_type": "Sedan, SUV",
+        "pricing": "約 $5/小時起 + 每公里收費 (往返式原站還車)",
+        "app_url": "https://www.modo.coop/",
+        "source": "Modo.json & Modo Co-op Vancouver Network"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1022,
+          49.2638
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "carshare_modo_10",
+      "properties": {
+        "id": "carshare_modo_10",
+        "facility_type": "car_sharing",
+        "operator": "Modo",
+        "operator_name": "Modo Car Co-op",
+        "name": "Modo - UBC Student Union Building / The Nest",
+        "address": "6133 University Blvd, Vancouver, BC V6T 1Z1",
+        "capacity": "4 車位",
+        "vehicle_type": "Electric Vehicle, Hatchback, Van",
+        "pricing": "約 $5/小時起 + 每公里收費 (往返式原站還車)",
+        "app_url": "https://www.modo.coop/",
+        "source": "Modo.json & Modo Co-op Vancouver Network"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.2498,
+          49.2665
+        ]
+      }
+    }
+  ]
+}

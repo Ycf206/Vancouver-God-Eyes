@@ -44,6 +44,8 @@ export interface UIState {
     trafficCameras: boolean;
     safetyCameras: boolean;
     fireHalls: boolean;
+    police: boolean;
+    disasterHubs: boolean;
     communityCentres: boolean;
     hospitals: boolean;
     parks: boolean;
@@ -54,8 +56,11 @@ export interface UIState {
     schools: boolean;
     libraries: boolean;
     foodVendors: boolean;
+    aed: boolean;
     homelessShelters: boolean;
     airports: boolean;
+    carSharing: boolean;
+    contours: boolean;
   };
   toggleLayer: (layer: keyof UIState['layers']) => void;
   enableLayer: (layer: keyof UIState['layers']) => void;
@@ -95,11 +100,14 @@ export const useUIStore = create<UIState>()(
         motorcycleParking: false,
         evCharging: false,
         escooter: false,
+        carSharing: false,
         sharedBikes: false,
         bikeways: false,
         trafficCameras: false,
         safetyCameras: false,
         fireHalls: false,
+        police: false,
+        disasterHubs: false,
         communityCentres: false,
         hospitals: false,
         parks: false,
@@ -110,8 +118,10 @@ export const useUIStore = create<UIState>()(
         schools: false,
         libraries: false,
         foodVendors: false,
+        aed: false,
         homelessShelters: false,
         airports: true,
+        contours: false,
       },
       toggleLayer: (layer) =>
         set((state) => ({

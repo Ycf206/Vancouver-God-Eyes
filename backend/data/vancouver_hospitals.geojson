@@ -7,6 +7,8 @@
       "properties": {
         "id": "hosp_vgh",
         "facility_type": "hospitals",
+        "medical_type": "hospital",
+        "type_label": "急症綜合醫院 (Emergency Hospital)",
         "name": "Vancouver General Hospital",
         "chinese_name": "溫哥華綜合醫院 (VGH)",
         "short_name": "VGH",
@@ -34,6 +36,8 @@
       "properties": {
         "id": "hosp_sph",
         "facility_type": "hospitals",
+        "medical_type": "hospital",
+        "type_label": "急症綜合醫院 (Emergency Hospital)",
         "name": "St. Paul's Hospital",
         "chinese_name": "聖保祿醫院 (SPH)",
         "short_name": "SPH",
@@ -61,6 +65,8 @@
       "properties": {
         "id": "hosp_msj",
         "facility_type": "hospitals",
+        "medical_type": "hospital",
+        "type_label": "急症綜合醫院 (Emergency Hospital)",
         "name": "Mount Saint Joseph Hospital",
         "chinese_name": "聖若瑟醫院 (MSJ)",
         "short_name": "MSJ",
@@ -88,15 +94,17 @@
       "properties": {
         "id": "hosp_bcch",
         "facility_type": "hospitals",
+        "medical_type": "hospital",
+        "type_label": "兒科專門急診醫院 (Paediatric Emergency)",
         "name": "BC Children's Hospital",
-        "chinese_name": "卑詩省兒童醫院 (BC Children)",
+        "chinese_name": "卑詩省兒童醫院 (BC Children's)",
         "short_name": "BCCH",
         "local_area": "South Cambie",
         "address": "4480 Oak St (Entrance 55), Vancouver, BC V6H 3V4",
         "phone": "+1-604-875-2345",
         "operator": "Provincial Health Services Authority (PHSA)",
         "emergency": "yes",
-        "hours": "24/7 全天候兒科專門急診 (Paediatric Emergency)",
+        "hours": "24/7 全天候兒科專門急診",
         "website": "http://www.bcchildrens.ca",
         "erstat_name": "BC Children's Hospital",
         "erstat_url": "https://erstat.ca/hospitals/bc/bc-childrens-hospital"
@@ -115,6 +123,8 @@
       "properties": {
         "id": "hosp_ubc",
         "facility_type": "hospitals",
+        "medical_type": "hospital",
+        "type_label": "急症醫療中心 (Urgent Care)",
         "name": "UBC Hospital",
         "chinese_name": "卑詩大學醫院 (UBC Hospital)",
         "short_name": "UBCH",
@@ -123,7 +133,7 @@
         "phone": "+1-604-822-7121",
         "operator": "Vancouver Coastal Health (VCH)",
         "emergency": "yes",
-        "hours": "08:00 - 20:00 (Urgent Care 急症醫療中心)",
+        "hours": "08:00 - 20:00 (Urgent Care 急症門診)",
         "website": "https://www.vch.ca/en/location/ubc-hospital",
         "erstat_name": "Ubc Hospital",
         "erstat_url": "https://erstat.ca/hospitals/bc/ubc-hospital"
@@ -133,6 +143,151 @@
         "coordinates": [
           -123.2458,
           49.2644
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "upcc_city_centre",
+      "properties": {
+        "id": "upcc_city_centre",
+        "facility_type": "hospitals",
+        "medical_type": "upcc",
+        "type_label": "急症基層醫療中心 (UPCC)",
+        "name": "Vancouver City Centre Urgent and Primary Care Centre",
+        "chinese_name": "溫哥華市中心急症基層醫療中心 (City Centre UPCC)",
+        "short_name": "City Centre UPCC",
+        "local_area": "Downtown / Yaletown",
+        "address": "188 Nelson Street, Vancouver, BC V6B 1A9",
+        "phone": "+1-604-416-1811",
+        "operator": "Vancouver Coastal Health (VCH)",
+        "emergency": "urgent_care",
+        "hours": "Mo-Sa 08:00 - 22:00; Su 09:00 - 17:00",
+        "website": "https://www.vch.ca/en/location/vancouver-city-centre-urgent-primary-care-centre",
+        "erstat_name": "Vancouver City Centre Urgent and Primary Care Centre",
+        "erstat_url": "https://edwaittimes.ca/times"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1181,
+          49.2758
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "upcc_reach",
+      "properties": {
+        "id": "upcc_reach",
+        "facility_type": "hospitals",
+        "medical_type": "upcc",
+        "type_label": "急症基層醫療中心 (UPCC)",
+        "name": "REACH Urgent and Primary Care Centre",
+        "chinese_name": "REACH 急症基層醫療中心 (Commercial Dr)",
+        "short_name": "REACH UPCC",
+        "local_area": "Grandview-Woodland",
+        "address": "1145 Commercial Drive, Vancouver, BC V5L 3X3",
+        "phone": "+1-604-254-1354",
+        "operator": "Vancouver Coastal Health (VCH) & REACH",
+        "emergency": "urgent_care",
+        "hours": "Mo-Sa 08:00 - 20:00; Su 09:00 - 17:00",
+        "website": "https://www.reachcentre.bc.ca/",
+        "erstat_name": "REACH Urgent and Primary Care Centre",
+        "erstat_url": "https://edwaittimes.ca/times"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0697,
+          49.2744
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "upcc_northeast",
+      "properties": {
+        "id": "upcc_northeast",
+        "facility_type": "hospitals",
+        "medical_type": "upcc",
+        "type_label": "急症基層醫療中心 (UPCC)",
+        "name": "Northeast Urgent and Primary Care Centre",
+        "chinese_name": "東北區急症基層醫療中心 (Hastings)",
+        "short_name": "Northeast UPCC",
+        "local_area": "Hastings-Sunrise",
+        "address": "102-2788 E Hastings St, Vancouver, BC V5K 1Z9",
+        "phone": "+1-604-675-3450",
+        "operator": "Vancouver Coastal Health (VCH)",
+        "emergency": "urgent_care",
+        "hours": "Mo-Sa 08:00 - 22:00; Su 09:00 - 17:00",
+        "website": "https://www.vch.ca/en/location-service/northeast-urgent-primary-care-centre",
+        "erstat_name": "Northeast Urgent and Primary Care Centre",
+        "erstat_url": "https://edwaittimes.ca/times"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0471,
+          49.2811
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "upcc_southeast",
+      "properties": {
+        "id": "upcc_southeast",
+        "facility_type": "hospitals",
+        "medical_type": "upcc",
+        "type_label": "急症基層醫療中心 (UPCC)",
+        "name": "Southeast Urgent and Primary Care Centre",
+        "chinese_name": "東南區急症基層醫療中心 (Victoria Dr)",
+        "short_name": "Southeast UPCC",
+        "local_area": "Victoria-Fraserview",
+        "address": "5880 Victoria Drive, Vancouver, BC V5P 3W9",
+        "phone": "+1-604-675-3460",
+        "operator": "Vancouver Coastal Health (VCH)",
+        "emergency": "urgent_care",
+        "hours": "Mo-Sa 08:00 - 22:00; Su 09:00 - 17:00",
+        "website": "https://www.vch.ca/en/location-service/southeast-urgent-primary-care-centre",
+        "erstat_name": "Southeast Urgent and Primary Care Centre",
+        "erstat_url": "https://edwaittimes.ca/times"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0652,
+          49.2306
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "upcc_ubc",
+      "properties": {
+        "id": "upcc_ubc",
+        "facility_type": "hospitals",
+        "medical_type": "upcc",
+        "type_label": "急症基層醫療中心 (UPCC)",
+        "name": "UBC Urgent and Primary Care Centre",
+        "chinese_name": "卑詩大學急症基層醫療中心 (UBC UPCC)",
+        "short_name": "UBC UPCC",
+        "local_area": "University Endowment Lands",
+        "address": "6165 Agronomy Road, Vancouver, BC V6T 1Z3",
+        "phone": "+1-604-827-0177",
+        "operator": "Vancouver Coastal Health (VCH)",
+        "emergency": "urgent_care",
+        "hours": "Mo-Fr 08:00 - 20:00; Sa-Su 09:00 - 17:00",
+        "website": "https://www.vch.ca/en/location-service/ubc-urgent-primary-care-centre",
+        "erstat_name": "UBC Urgent and Primary Care Centre",
+        "erstat_url": "https://edwaittimes.ca/times"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.2461,
+          49.2617
         ]
       }
     }

@@ -1,0 +1,580 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "hub_1",
+      "properties": {
+        "id": "hub_1",
+        "facility_type": "disaster_hubs",
+        "name": "Britannia Community Centre",
+        "address": "1661 Napier St , Vancouver, BC",
+        "raw_description": "1661 Napier St , Vancouver, BC<br>Phone: 604-718-5800<br><br><a href=\"https://google.com/maps?daddr=1661 Napier St Vancouver BC\">Get directions</a>",
+        "city": "Vancouver",
+        "phone": "604-718-5800",
+        "directions_url": "https://google.com/maps?daddr=1661 Napier St Vancouver BC",
+        "purpose": "海嘯與地震緊急集合點 (Disaster Support Hub)",
+        "description": "重大災害發生後市民集結互助、協調支援、領取緊急救援資訊與物資之官方指定避難集合中心。"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.071070699893,
+          49.2746329461015
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "hub_2",
+      "properties": {
+        "id": "hub_2",
+        "facility_type": "disaster_hubs",
+        "name": "Champlain Heights Community Centre",
+        "address": "3350 Maquinna Drive , Vancouver, BC",
+        "raw_description": "3350 Maquinna Drive , Vancouver, BC<br>Phone: 604-718-6575<br><br><a href=\"https://google.com/maps?daddr=3350 Maquinna Drive Vancouver BC\">Get directions</a>",
+        "city": "Vancouver",
+        "phone": "604-718-6575",
+        "directions_url": "https://google.com/maps?daddr=3350 Maquinna Drive Vancouver BC",
+        "purpose": "海嘯與地震緊急集合點 (Disaster Support Hub)",
+        "description": "重大災害發生後市民集結互助、協調支援、領取緊急救援資訊與物資之官方指定避難集合中心。"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.032032963267,
+          49.2149460397594
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "hub_3",
+      "properties": {
+        "id": "hub_3",
+        "facility_type": "disaster_hubs",
+        "name": "Coal Harbour Community Centre",
+        "address": "480 Broughton St , Vancouver, BC",
+        "raw_description": "480 Broughton St , Vancouver, BC<br>Phone: 604-718-8222<br><br><a href=\"https://google.com/maps?daddr=480 Broughton St Vancouver BC\">Get directions</a>",
+        "city": "Vancouver",
+        "phone": "604-718-8222",
+        "directions_url": "https://google.com/maps?daddr=480 Broughton St Vancouver BC",
+        "purpose": "海嘯與地震緊急集合點 (Disaster Support Hub)",
+        "description": "重大災害發生後市民集結互助、協調支援、領取緊急救援資訊與物資之官方指定避難集合中心。"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12543698539,
+          49.2902919781456
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "hub_4",
+      "properties": {
+        "id": "hub_4",
+        "facility_type": "disaster_hubs",
+        "name": "Creekside Community Centre",
+        "address": "1 Athletes Way , Vancouver, BC",
+        "raw_description": "1 Athletes Way , Vancouver, BC<br>Phone: 604-257-3050<br><br><a href=\"https://google.com/maps?daddr=1 Athletes Way Vancouver BC\">Get directions</a>",
+        "city": "Vancouver",
+        "phone": "604-257-3050",
+        "directions_url": "https://google.com/maps?daddr=1 Athletes Way Vancouver BC",
+        "purpose": "海嘯與地震緊急集合點 (Disaster Support Hub)",
+        "description": "重大災害發生後市民集結互助、協調支援、領取緊急救援資訊與物資之官方指定避難集合中心。"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.105585963861,
+          49.2717869631632
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "hub_5",
+      "properties": {
+        "id": "hub_5",
+        "facility_type": "disaster_hubs",
+        "name": "Douglas Park Community Centre",
+        "address": "801 W 22nd Av , Vancouver, BC",
+        "raw_description": "801 W 22nd Av , Vancouver, BC<br>Phone: 604-257-8130<br><br><a href=\"https://google.com/maps?daddr=801 W 22nd Av Vancouver BC\">Get directions</a>",
+        "city": "Vancouver",
+        "phone": "604-257-8130",
+        "directions_url": "https://google.com/maps?daddr=801 W 22nd Av Vancouver BC",
+        "purpose": "海嘯與地震緊急集合點 (Disaster Support Hub)",
+        "description": "重大災害發生後市民集結互助、協調支援、領取緊急救援資訊與物資之官方指定避難集合中心。"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.122428530193,
+          49.2520780829387
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "hub_6",
+      "properties": {
+        "id": "hub_6",
+        "facility_type": "disaster_hubs",
+        "name": "Dunbar Community Centre",
+        "address": "4747 Dunbar St , Vancouver, BC",
+        "raw_description": "4747 Dunbar St , Vancouver, BC<br>Phone: 604-222-6060<br><br><a href=\"https://google.com/maps?daddr=4747 Dunbar St Vancouver BC\">Get directions</a>",
+        "city": "Vancouver",
+        "phone": "604-222-6060",
+        "directions_url": "https://google.com/maps?daddr=4747 Dunbar St Vancouver BC",
+        "purpose": "海嘯與地震緊急集合點 (Disaster Support Hub)",
+        "description": "重大災害發生後市民集結互助、協調支援、領取緊急救援資訊與物資之官方指定避難集合中心。"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.186142005298,
+          49.243797039414
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "hub_7",
+      "properties": {
+        "id": "hub_7",
+        "facility_type": "disaster_hubs",
+        "name": "False Creek Community Centre",
+        "address": "1318 Cartwright St , Vancouver, BC",
+        "raw_description": "1318 Cartwright St , Vancouver, BC<br>Phone: 604-257-8195<br><br><a href=\"https://google.com/maps?daddr=1318 Cartwright St Vancouver BC\">Get directions</a>",
+        "city": "Vancouver",
+        "phone": "604-257-8195",
+        "directions_url": "https://google.com/maps?daddr=1318 Cartwright St Vancouver BC",
+        "purpose": "海嘯與地震緊急集合點 (Disaster Support Hub)",
+        "description": "重大災害發生後市民集結互助、協調支援、領取緊急救援資訊與物資之官方指定避難集合中心。"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13402031187,
+          49.269397082321
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "hub_8",
+      "properties": {
+        "id": "hub_8",
+        "facility_type": "disaster_hubs",
+        "name": "Fraserview Library",
+        "address": "1950 Argyle Drive , Vancouver, BC",
+        "raw_description": "1950 Argyle Drive , Vancouver, BC<br>Phone: 604-665-3957<br><br><a href=\"https://google.com/maps?daddr=1950 Argyle Drive Vancouver BC\">Get directions</a>",
+        "city": "Vancouver",
+        "phone": "604-665-3957",
+        "directions_url": "https://google.com/maps?daddr=1950 Argyle Drive Vancouver BC",
+        "purpose": "海嘯與地震緊急集合點 (Disaster Support Hub)",
+        "description": "重大災害發生後市民集結互助、協調支援、領取緊急救援資訊與物資之官方指定避難集合中心。"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.06685604494,
+          49.219654734152
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "hub_9",
+      "properties": {
+        "id": "hub_9",
+        "facility_type": "disaster_hubs",
+        "name": "Hastings Community Centre",
+        "address": "3096 E Hastings St , Vancouver, BC",
+        "raw_description": "3096 E Hastings St , Vancouver, BC<br>Phone: 604-718-6222<br><br><a href=\"https://google.com/maps?daddr=3096 E Hastings St Vancouver BC\">Get directions</a>",
+        "city": "Vancouver",
+        "phone": "604-718-6222",
+        "directions_url": "https://google.com/maps?daddr=3096 E Hastings St Vancouver BC",
+        "purpose": "海嘯與地震緊急集合點 (Disaster Support Hub)",
+        "description": "重大災害發生後市民集結互助、協調支援、領取緊急救援資訊與物資之官方指定避難集合中心。"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.039475947883,
+          49.2809440351607
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "hub_10",
+      "properties": {
+        "id": "hub_10",
+        "facility_type": "disaster_hubs",
+        "name": "Hillcrest Community Centre",
+        "address": "4575 Clancy Loranger Way , Vancouver, BC",
+        "raw_description": "4575 Clancy Loranger Way , Vancouver, BC<br>Phone: 604-257-8680<br><br><a href=\"https://google.com/maps?daddr=4575 Clancy Loranger Way Vancouver BC\">Get directions</a>",
+        "city": "Vancouver",
+        "phone": "604-257-8680",
+        "directions_url": "https://google.com/maps?daddr=4575 Clancy Loranger Way Vancouver BC",
+        "purpose": "海嘯與地震緊急集合點 (Disaster Support Hub)",
+        "description": "重大災害發生後市民集結互助、協調支援、領取緊急救援資訊與物資之官方指定避難集合中心。"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.107643012983,
+          49.2434919664621
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "hub_11",
+      "properties": {
+        "id": "hub_11",
+        "facility_type": "disaster_hubs",
+        "name": "Kensington Community Centre",
+        "address": "5175 Dumfries St , Vancouver, BC",
+        "raw_description": "5175 Dumfries St , Vancouver, BC<br>Phone: 604-718-6200<br><br><a href=\"https://google.com/maps?daddr=5175 Dumfries St Vancouver BC\">Get directions</a>",
+        "city": "Vancouver",
+        "phone": "604-718-6200",
+        "directions_url": "https://google.com/maps?daddr=5175 Dumfries St Vancouver BC",
+        "purpose": "海嘯與地震緊急集合點 (Disaster Support Hub)",
+        "description": "重大災害發生後市民集結互助、協調支援、領取緊急救援資訊與物資之官方指定避難集合中心。"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.074849521687,
+          49.2372621408517
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "hub_12",
+      "properties": {
+        "id": "hub_12",
+        "facility_type": "disaster_hubs",
+        "name": "Kerrisdale Community Centre",
+        "address": "5851 West Boulevard , Vancouver, BC",
+        "raw_description": "5851 West Boulevard , Vancouver, BC<br>Phone: 604-257-8100<br><br><a href=\"https://google.com/maps?daddr=5851 West Boulevard Vancouver BC\">Get directions</a>",
+        "city": "Vancouver",
+        "phone": "604-257-8100",
+        "directions_url": "https://google.com/maps?daddr=5851 West Boulevard Vancouver BC",
+        "purpose": "海嘯與地震緊急集合點 (Disaster Support Hub)",
+        "description": "重大災害發生後市民集結互助、協調支援、領取緊急救援資訊與物資之官方指定避難集合中心。"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.156427053375,
+          49.2331659989655
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "hub_13",
+      "properties": {
+        "id": "hub_13",
+        "facility_type": "disaster_hubs",
+        "name": "Killarney Community Centre",
+        "address": "6260 Killarney St , Vancouver, BC",
+        "raw_description": "6260 Killarney St , Vancouver, BC<br>Phone: 604-718-8201<br><br><a href=\"https://google.com/maps?daddr=6260 Killarney St Vancouver BC\">Get directions</a>",
+        "city": "Vancouver",
+        "phone": "604-718-8201",
+        "directions_url": "https://google.com/maps?daddr=6260 Killarney St Vancouver BC",
+        "purpose": "海嘯與地震緊急集合點 (Disaster Support Hub)",
+        "description": "重大災害發生後市民集結互助、協調支援、領取緊急救援資訊與物資之官方指定避難集合中心。"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.043999187868,
+          49.2268907863441
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "hub_14",
+      "properties": {
+        "id": "hub_14",
+        "facility_type": "disaster_hubs",
+        "name": "Kitsilano War Memorial Community Centre",
+        "address": "2690 Larch St , Vancouver, BC",
+        "raw_description": "2690 Larch St , Vancouver, BC<br>Phone: 604-257-6976<br><br><a href=\"https://google.com/maps?daddr=2690 Larch St Vancouver BC\">Get directions</a>",
+        "city": "Vancouver",
+        "phone": "604-257-6976",
+        "directions_url": "https://google.com/maps?daddr=2690 Larch St Vancouver BC",
+        "purpose": "海嘯與地震緊急集合點 (Disaster Support Hub)",
+        "description": "重大災害發生後市民集結互助、協調支援、領取緊急救援資訊與物資之官方指定避難集合中心。"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.162145980447,
+          49.2617080332964
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "hub_15",
+      "properties": {
+        "id": "hub_15",
+        "facility_type": "disaster_hubs",
+        "name": "Marpole-Oakridge Community Centre",
+        "address": "990 W 59th Av , Vancouver, BC",
+        "raw_description": "990 W 59th Av , Vancouver, BC<br>Phone: 604-257-8180<br><br><a href=\"https://google.com/maps?daddr=990 W 59th Av Vancouver BC\">Get directions</a>",
+        "city": "Vancouver",
+        "phone": "604-257-8180",
+        "directions_url": "https://google.com/maps?daddr=990 W 59th Av Vancouver BC",
+        "purpose": "海嘯與地震緊急集合點 (Disaster Support Hub)",
+        "description": "重大災害發生後市民集結互助、協調支援、領取緊急救援資訊與物資之官方指定避難集合中心。"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.128657084051,
+          49.2168091859839
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "hub_16",
+      "properties": {
+        "id": "hub_16",
+        "facility_type": "disaster_hubs",
+        "name": "Mount Pleasant Community Centre",
+        "address": "1 Kingsway , Vancouver, BC",
+        "raw_description": "1 Kingsway , Vancouver, BC<br>Phone: 604-257-3080<br><br><a href=\"https://google.com/maps?daddr=1 Kingsway Vancouver BC\">Get directions</a>",
+        "city": "Vancouver",
+        "phone": "604-257-3080",
+        "directions_url": "https://google.com/maps?daddr=1 Kingsway Vancouver BC",
+        "purpose": "海嘯與地震緊急集合點 (Disaster Support Hub)",
+        "description": "重大災害發生後市民集結互助、協調支援、領取緊急救援資訊與物資之官方指定避難集合中心。"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.100206904258,
+          49.2641572829818
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "hub_17",
+      "properties": {
+        "id": "hub_17",
+        "facility_type": "disaster_hubs",
+        "name": "Oppenheimer Park",
+        "address": "400 Powell Street , Vancouver, BC",
+        "raw_description": "400 Powell Street , Vancouver, BC<br>Phone: 604-253-8830<br><br><a href=\"https://google.com/maps?daddr=400 Powell Street Vancouver BC\">Get directions</a>",
+        "city": "Vancouver",
+        "phone": "604-253-8830",
+        "directions_url": "https://google.com/maps?daddr=400 Powell Street Vancouver BC",
+        "purpose": "海嘯與地震緊急集合點 (Disaster Support Hub)",
+        "description": "重大災害發生後市民集結互助、協調支援、領取緊急救援資訊與物資之官方指定避難集合中心。"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.094335379793,
+          49.2826446543814
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "hub_18",
+      "properties": {
+        "id": "hub_18",
+        "facility_type": "disaster_hubs",
+        "name": "Renfrew Park Community Centre",
+        "address": "2929 E 22nd Av , Vancouver, BC",
+        "raw_description": "2929 E 22nd Av , Vancouver, BC<br>Phone: 604-257-8388<br><br><a href=\"https://google.com/maps?daddr=2929 E 22nd Av Vancouver BC\">Get directions</a>",
+        "city": "Vancouver",
+        "phone": "604-257-8388",
+        "directions_url": "https://google.com/maps?daddr=2929 E 22nd Av Vancouver BC",
+        "purpose": "海嘯與地震緊急集合點 (Disaster Support Hub)",
+        "description": "重大災害發生後市民集結互助、協調支援、領取緊急救援資訊與物資之官方指定避難集合中心。"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.042670123765,
+          49.2511563198111
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "hub_19",
+      "properties": {
+        "id": "hub_19",
+        "facility_type": "disaster_hubs",
+        "name": "Roundhouse Community Centre",
+        "address": "181 Roundhouse Mews , Vancouver, BC",
+        "raw_description": "181 Roundhouse Mews , Vancouver, BC<br>Phone: 604-713-1800<br><br><a href=\"https://google.com/maps?daddr=181 Roundhouse Mews Vancouver BC\">Get directions</a>",
+        "city": "Vancouver",
+        "phone": "604-713-1800",
+        "directions_url": "https://google.com/maps?daddr=181 Roundhouse Mews Vancouver BC",
+        "purpose": "海嘯與地震緊急集合點 (Disaster Support Hub)",
+        "description": "重大災害發生後市民集結互助、協調支援、領取緊急救援資訊與物資之官方指定避難集合中心。"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.121747181224,
+          49.27330839011
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "hub_20",
+      "properties": {
+        "id": "hub_20",
+        "facility_type": "disaster_hubs",
+        "name": "Strathcona Community Centre",
+        "address": "601 Keefer St , Vancouver, BC",
+        "raw_description": "601 Keefer St , Vancouver, BC<br>Phone: 604-713-1838<br><br><a href=\"https://google.com/maps?daddr=601 Keefer St Vancouver BC\">Get directions</a>",
+        "city": "Vancouver",
+        "phone": "604-713-1838",
+        "directions_url": "https://google.com/maps?daddr=601 Keefer St Vancouver BC",
+        "purpose": "海嘯與地震緊急集合點 (Disaster Support Hub)",
+        "description": "重大災害發生後市民集結互助、協調支援、領取緊急救援資訊與物資之官方指定避難集合中心。"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.091570458011,
+          49.2796335724367
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "hub_21",
+      "properties": {
+        "id": "hub_21",
+        "facility_type": "disaster_hubs",
+        "name": "Sunset Community Centre",
+        "address": "6810 Main St , Vancouver, BC",
+        "raw_description": "6810 Main St , Vancouver, BC<br>Phone: 604-718-6505<br><br><a href=\"https://google.com/maps?daddr=6810 Main St Vancouver BC\">Get directions</a>",
+        "city": "Vancouver",
+        "phone": "604-718-6505",
+        "directions_url": "https://google.com/maps?daddr=6810 Main St Vancouver BC",
+        "purpose": "海嘯與地震緊急集合點 (Disaster Support Hub)",
+        "description": "重大災害發生後市民集結互助、協調支援、領取緊急救援資訊與物資之官方指定避難集合中心。"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.101184021534,
+          49.222866982096
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "hub_22",
+      "properties": {
+        "id": "hub_22",
+        "facility_type": "disaster_hubs",
+        "name": "Thunderbird Community Centre",
+        "address": "2311 Cassiar St , Vancouver, BC",
+        "raw_description": "2311 Cassiar St , Vancouver, BC<br>Phone: 604-713-1818<br><br><a href=\"https://google.com/maps?daddr=2311 Cassiar St Vancouver BC\">Get directions</a>",
+        "city": "Vancouver",
+        "phone": "604-713-1818",
+        "directions_url": "https://google.com/maps?daddr=2311 Cassiar St Vancouver BC",
+        "purpose": "海嘯與地震緊急集合點 (Disaster Support Hub)",
+        "description": "重大災害發生後市民集結互助、協調支援、領取緊急救援資訊與物資之官方指定避難集合中心。"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.031219027259,
+          49.2638879565894
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "hub_23",
+      "properties": {
+        "id": "hub_23",
+        "facility_type": "disaster_hubs",
+        "name": "Trout Lake Community Centre",
+        "address": "3360 Victoria Drive , Vancouver, BC",
+        "raw_description": "3360 Victoria Drive , Vancouver, BC<br>Phone: 604-257-6955<br><br><a href=\"https://google.com/maps?daddr=3360 Victoria Drive Vancouver BC\">Get directions</a>",
+        "city": "Vancouver",
+        "phone": "604-257-6955",
+        "directions_url": "https://google.com/maps?daddr=3360 Victoria Drive Vancouver BC",
+        "purpose": "海嘯與地震緊急集合點 (Disaster Support Hub)",
+        "description": "重大災害發生後市民集結互助、協調支援、領取緊急救援資訊與物資之官方指定避難集合中心。"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.065372047649,
+          49.2552570331885
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "hub_24",
+      "properties": {
+        "id": "hub_24",
+        "facility_type": "disaster_hubs",
+        "name": "West End Community Centre",
+        "address": "870 Denman St , Vancouver, BC",
+        "raw_description": "870 Denman St , Vancouver, BC<br>Phone: 604-257-8333<br><br><a href=\"https://google.com/maps?daddr=870 Denman St Vancouver BC\">Get directions</a>",
+        "city": "Vancouver",
+        "phone": "604-257-8333",
+        "directions_url": "https://google.com/maps?daddr=870 Denman St Vancouver BC",
+        "purpose": "海嘯與地震緊急集合點 (Disaster Support Hub)",
+        "description": "重大災害發生後市民集結互助、協調支援、領取緊急救援資訊與物資之官方指定避難集合中心。"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.136073732157,
+          49.2899129244272
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "hub_25",
+      "properties": {
+        "id": "hub_25",
+        "facility_type": "disaster_hubs",
+        "name": "West Point Grey Community Centre",
+        "address": "4397 W 2nd Av , Vancouver, BC",
+        "raw_description": "4397 W 2nd Av , Vancouver, BC<br>Phone: 604-257-8140<br><br><a href=\"https://google.com/maps?daddr=4397 W 2nd Av Vancouver BC\">Get directions</a>",
+        "city": "Vancouver",
+        "phone": "604-257-8140",
+        "directions_url": "https://google.com/maps?daddr=4397 W 2nd Av Vancouver BC",
+        "purpose": "海嘯與地震緊急集合點 (Disaster Support Hub)",
+        "description": "重大災害發生後市民集結互助、協調支援、領取緊急救援資訊與物資之官方指定避難集合中心。"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.203992969774,
+          49.2715890319327
+        ]
+      }
+    }
+  ]
+}

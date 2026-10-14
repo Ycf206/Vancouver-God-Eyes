@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { setWorkerUrl } from 'maplibre-gl';
-import Map, { NavigationControl, Marker, Popup, MapRef, Source, Layer } from 'react-map-gl/maplibre';
+import Map, { NavigationControl, ScaleControl, Marker, Popup, MapRef, Source, Layer } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl, getWsUrl } from '@/utils/api';
@@ -566,6 +566,11 @@ export default function AppMap() {
     style.sources['libraries'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/libraries` };
     style.sources['food-vendors'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/food_vendors` };
     style.sources['homeless-shelters'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/homeless_shelters` };
+    style.sources['car-sharing'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/car_sharing` };
+    style.sources['police'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/police` };
+    style.sources['disaster-hubs'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/disaster_hubs` };
+    style.sources['aed'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/aed` };
+    style.sources['contours'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/contours` };
 
     // Bus Routes & Stops (Merged under busRoutes)
     if (layers.busRoutes) {
@@ -861,6 +866,36 @@ export default function AppMap() {
       });
     }
 
+    // Road Facilities: Car Sharing (共享汽車 - Evo & Modo)
+    if (layers.carSharing) {
+      style.layers.push({
+        id: 'car-sharing-layer',
+        type: 'circle',
+        source: 'car-sharing',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3, 14, 5.5, 15, 9, 17, 12],
+          'circle-color': ['match', ['get', 'operator'], 'Evo', '#0284c7', 'Modo', '#e11d48', '#0284c7'],
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'car-sharing-symbol-layer',
+        type: 'symbol',
+        source: 'car-sharing',
+        minzoom: 14,
+        layout: {
+          'text-field': '🚗',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 14, 10, 17, 13],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+    }
+
     // Road Facilities: Shared Bikes (Mobi by Rogers)
     if (layers.sharedBikes) {
       style.layers.push({
@@ -912,6 +947,66 @@ export default function AppMap() {
         layout: {
           'text-field': '🚒',
           'text-size': ['interpolate', ['linear'], ['zoom'], 14, 10, 17, 14],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+    }
+
+    // Government Facilities: Police (警察局與社區警務中心)
+    if (layers.police) {
+      style.layers.push({
+        id: 'police-layer',
+        type: 'circle',
+        source: 'police',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3, 14, 6, 15, 9.5, 17, 13],
+          'circle-color': '#2563eb',
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'police-symbol-layer',
+        type: 'symbol',
+        source: 'police',
+        minzoom: 14,
+        layout: {
+          'text-field': '👮',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 14, 11, 17, 15],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+    }
+
+    // Government Facilities: Disaster Support Hubs (災害支援中心 - 海嘯與地震緊急集合點)
+    if (layers.disasterHubs) {
+      style.layers.push({
+        id: 'disaster-hubs-layer',
+        type: 'circle',
+        source: 'disaster-hubs',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3.5, 14, 6.5, 15, 10, 17, 14],
+          'circle-color': '#d97706',
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'disaster-hubs-symbol-layer',
+        type: 'symbol',
+        source: 'disaster-hubs',
+        minzoom: 13,
+        layout: {
+          'text-field': '🆘',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 11, 17, 15],
           'text-allow-overlap': true,
           'text-ignore-placement': true
         },
@@ -1316,6 +1411,67 @@ export default function AppMap() {
       });
     }
 
+    // Lifestyle Facilities: AED (自動體外心臟去顫器)
+    if (layers.aed) {
+      style.layers.push({
+        id: 'aed-layer',
+        type: 'circle',
+        source: 'aed',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 5, 15, 8.5, 17, 11],
+          'circle-color': '#dc2626',
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'aed-symbol-layer',
+        type: 'symbol',
+        source: 'aed',
+        minzoom: 14,
+        layout: {
+          'text-field': '⚡',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 14, 9, 17, 12],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+    }
+
+    // Geography: Elevation Contour Lines (等高線)
+    if (layers.contours) {
+      style.layers.push({
+        id: 'contours-layer',
+        type: 'line',
+        source: 'contours',
+        paint: {
+          'line-color': ['case', ['get', 'is_major'], '#0d9488', '#14b8a6'],
+          'line-width': ['case', ['get', 'is_major'], 1.8, 1.0],
+          'line-opacity': 0.75
+        }
+      });
+      style.layers.push({
+        id: 'contours-label-layer',
+        type: 'symbol',
+        source: 'contours',
+        minzoom: 13,
+        layout: {
+          'symbol-placement': 'line',
+          'text-field': ['get', 'label'],
+          'text-size': 10,
+          'text-offset': [0, 0.5]
+        },
+        paint: {
+          'text-color': '#0f766e',
+          'text-halo-color': '#ffffff',
+          'text-halo-width': 1.5
+        }
+      });
+    }
+
     return style;
   }, [
     layers.skytrainRoutes, 
@@ -1327,11 +1483,14 @@ export default function AppMap() {
     layers.motorcycleParking, 
     layers.evCharging, 
     layers.escooter,
+    layers.carSharing,
     layers.sharedBikes,
     layers.bikeways,
     layers.trafficCameras,
     layers.safetyCameras,
     layers.fireHalls,
+    layers.police,
+    layers.disasterHubs,
     layers.communityCentres,
     layers.hospitals,
     layers.parks,
@@ -1342,7 +1501,9 @@ export default function AppMap() {
     layers.schools,
     layers.libraries,
     layers.foodVendors,
+    layers.aed,
     layers.homelessShelters,
+    layers.contours,
     mapStyleType
   ]);
 
@@ -1402,7 +1563,17 @@ export default function AppMap() {
           'food-vendors-layer',
           'food-vendors-symbol-layer',
           'homeless-shelters-layer',
-          'homeless-shelters-symbol-layer'
+          'homeless-shelters-symbol-layer',
+          'car-sharing-layer',
+          'car-sharing-symbol-layer',
+          'police-layer',
+          'police-symbol-layer',
+          'disaster-hubs-layer',
+          'disaster-hubs-symbol-layer',
+          'aed-layer',
+          'aed-symbol-layer',
+          'contours-layer',
+          'contours-label-layer'
         ]}
         onClick={(e) => {
           const feature = e.features?.[0];
@@ -1449,16 +1620,33 @@ export default function AppMap() {
               lat: clickLat,
               properties: props
             });
+          } else if (layerId === 'contours-layer' || layerId === 'contours-label-layer') {
+            setSelectedStop(null);
+            const props = feature.properties || {};
+            const clickLon = e.lngLat?.lng ?? -123.1207;
+            const clickLat = e.lngLat?.lat ?? 49.2827;
+            setSelectedFacility({
+              id: props.id || `contour_${props.elevation}`,
+              facility_type: 'contours',
+              name: `海拔等高線: ${props.label || props.elevation + 'm'}`,
+              local_area: '溫哥華地形等高線',
+              lon: clickLon,
+              lat: clickLat,
+              properties: props
+            });
           } else if (
             layerId.startsWith('parking-meters') || 
             layerId.startsWith('accessible-parking') || 
             layerId.startsWith('motorcycle-parking') || 
             layerId.startsWith('ev-charging') ||
             layerId.startsWith('escooter') ||
+            layerId.startsWith('car-sharing') ||
             layerId.startsWith('shared-bikes') ||
             layerId.startsWith('traffic-cameras') ||
             layerId.startsWith('safety-cameras') ||
             layerId.startsWith('fire-halls') ||
+            layerId.startsWith('police') ||
+            layerId.startsWith('disaster-hubs') ||
             layerId.startsWith('community-centres') ||
             layerId.startsWith('hospitals') ||
             layerId.startsWith('parks') ||
@@ -1468,6 +1656,7 @@ export default function AppMap() {
             layerId.startsWith('schools') ||
             layerId.startsWith('libraries') ||
             layerId.startsWith('food-vendors') ||
+            layerId.startsWith('aed') ||
             layerId.startsWith('homeless-shelters')
           ) {
             setSelectedStop(null);
@@ -1493,6 +1682,7 @@ export default function AppMap() {
         }}
       >
         <NavigationControl position="bottom-right" visualizePitch={true} />
+        <ScaleControl position="bottom-left" unit="metric" maxWidth={120} />
 
         {/* 選中巴士之路線軌跡與沿線站點 (Selected Bus Route Line & Stops on Map) */}
         {selectedBus && busRouteGeoJSON && (
@@ -2538,12 +2728,15 @@ export default function AppMap() {
                     selectedFacility.facility_type === 'motorcycle_parking' ? 'bg-orange-500' :
                     selectedFacility.facility_type === 'ev_charging' ? 'bg-emerald-500' :
                     selectedFacility.facility_type === 'escooter' ? 'bg-lime-500' :
+                    selectedFacility.facility_type === 'car_sharing' ? 'bg-sky-600' :
                     selectedFacility.facility_type === 'shared_bikes' ? 'bg-emerald-500' :
                     selectedFacility.facility_type === 'bikeways' ? 'bg-teal-500' :
                     selectedFacility.facility_type === 'traffic_cameras' ? 'bg-cyan-500' :
                     selectedFacility.facility_type === 'safety_cameras' ? 'bg-rose-600' :
                     selectedFacility.facility_type === 'hospitals' ? 'bg-emerald-500' :
                     selectedFacility.facility_type === 'fire_halls' ? 'bg-rose-500' :
+                    selectedFacility.facility_type === 'police' ? 'bg-blue-600' :
+                    selectedFacility.facility_type === 'disaster_hubs' ? 'bg-amber-600' :
                     selectedFacility.facility_type === 'parks' ? 'bg-emerald-600' :
                     selectedFacility.facility_type === 'parks_facilities' ? 'bg-teal-600' :
                     selectedFacility.facility_type === 'community_gardens' ? 'bg-lime-600' :
@@ -2552,6 +2745,8 @@ export default function AppMap() {
                     selectedFacility.facility_type === 'schools' ? 'bg-blue-500' :
                     selectedFacility.facility_type === 'libraries' ? 'bg-amber-500' :
                     selectedFacility.facility_type === 'food_vendors' ? 'bg-orange-500' :
+                    selectedFacility.facility_type === 'aed' ? 'bg-red-600' :
+                    selectedFacility.facility_type === 'contours' ? 'bg-teal-700' :
                     selectedFacility.facility_type === 'homeless_shelters' ? 'bg-rose-500' : 'bg-violet-500'
                   }`}></span>
                   <div>
@@ -2701,6 +2896,75 @@ export default function AppMap() {
                       <span>{String(selectedFacility.properties.installation_date).slice(0, 10)}</span>
                     </div>
                   )}
+                </div>
+              )}
+
+              {/* Car Sharing Details (Evo & Modo) */}
+              {selectedFacility.facility_type === 'car_sharing' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className={`p-2.5 rounded border flex flex-col gap-1 ${
+                    selectedFacility.properties.operator === 'Modo' 
+                      ? 'bg-red-50/80 border-red-200 text-red-950' 
+                      : 'bg-cyan-50/80 border-cyan-200 text-cyan-950'
+                  }`}>
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-xs flex items-center gap-1.5">
+                        <span>🚗</span>
+                        <span>{selectedFacility.properties.operator_name || (selectedFacility.properties.operator === 'Modo' ? 'Modo Co-op' : 'Evo Car Share')}</span>
+                      </span>
+                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded text-white ${
+                        selectedFacility.properties.operator === 'Modo' ? 'bg-red-600' : 'bg-cyan-600'
+                      }`}>
+                        {selectedFacility.properties.operator || '共享汽車'}
+                      </span>
+                    </div>
+                    {selectedFacility.properties.capacity && (
+                      <div className="flex justify-between items-baseline pt-1 border-t border-black/10">
+                        <span className="text-gray-600 text-[11px]">車位規模</span>
+                        <span className="font-bold text-sm text-gray-900">{selectedFacility.properties.capacity}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="bg-gray-50 p-2 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                    {selectedFacility.properties.vehicle_type && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>提供車種</span>
+                        <span className="font-semibold text-gray-800 text-right truncate max-w-[170px]">
+                          {selectedFacility.properties.vehicle_type}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.pricing && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>計費方案</span>
+                        <span className="font-bold text-emerald-700 text-right">
+                          {selectedFacility.properties.pricing}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.address && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>站點位置</span>
+                        <span className="font-medium text-gray-800 text-right truncate max-w-[170px]">
+                          {selectedFacility.properties.address}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="pt-1 border-t border-gray-100">
+                    <a
+                      href={selectedFacility.properties.app_url || (selectedFacility.properties.operator === 'Modo' ? "https://modo.coop" : "https://evo.ca")}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`inline-flex items-center justify-center w-full py-1.5 px-3 text-white rounded font-medium text-xs transition-colors shadow-sm ${
+                        selectedFacility.properties.operator === 'Modo' ? 'bg-red-600 hover:bg-red-700' : 'bg-cyan-600 hover:bg-cyan-700'
+                      }`}
+                    >
+                      前往 {selectedFacility.properties.operator || '共享汽車'} 官網 / App ↗
+                    </a>
+                  </div>
                 </div>
               )}
 
@@ -2861,6 +3125,128 @@ export default function AppMap() {
                   <div className="flex justify-between items-center text-gray-500 text-[11px] pt-1 border-t border-gray-100">
                     <span>緊急求助</span>
                     <span className="font-bold text-rose-600">撥打 911</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Police (警察) Details */}
+              {selectedFacility.facility_type === 'police' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-blue-50/80 p-2.5 rounded border border-blue-200 flex flex-col gap-1 text-[11px]">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">執法機關</span>
+                      <span className="font-bold text-blue-900 bg-blue-100/80 px-1.5 py-0.5 rounded">
+                        {selectedFacility.properties.operator || 'Vancouver Police Department (VPD)'}
+                      </span>
+                    </div>
+                    {selectedFacility.properties.address && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-blue-100">
+                        <span>設施地址</span>
+                        <span className="font-bold text-gray-900 text-right truncate max-w-[170px]">
+                          {selectedFacility.properties.address}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.opening_hours && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>開放時間</span>
+                        <span className="font-medium text-emerald-800 text-right">
+                          {selectedFacility.properties.opening_hours}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {selectedFacility.properties.phone && (
+                    <div className="bg-gray-50 p-2 rounded border border-gray-100 flex justify-between items-center text-[11px]">
+                      <span className="text-gray-500">聯絡專線</span>
+                      <a href={`tel:${selectedFacility.properties.phone.split(' ')[0]}`} className="font-bold text-blue-600 hover:underline">
+                        📞 {selectedFacility.properties.phone}
+                      </a>
+                    </div>
+                  )}
+
+                  <div className="bg-amber-50/80 p-2 rounded border border-amber-200 text-[11px] text-amber-900">
+                    <span className="font-bold block mb-0.5">🚨 報案指引：</span>
+                    <span>重大緊急危難請即刻撥打 <strong>911</strong>；非緊急報案請撥 <strong>604-717-3321</strong>。</span>
+                  </div>
+
+                  {selectedFacility.properties.website && (
+                    <div className="pt-1 border-t border-gray-100">
+                      <a
+                        href={selectedFacility.properties.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-blue-600 hover:bg-blue-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
+                      >
+                        前往 VPD 溫哥華警察局官網 ↗
+                      </a>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Disaster Support Hubs (災害支援中心 - 海嘯與地震避難集合點) Details */}
+              {selectedFacility.facility_type === 'disaster_hubs' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-amber-50/90 p-2.5 rounded-lg border border-amber-200 flex flex-col gap-1 text-[11px]">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-xs text-amber-950 flex items-center gap-1.5">
+                        <span>🛟</span>
+                        <span>官方災害支援中心</span>
+                      </span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-600 text-white">
+                        Disaster Hub
+                      </span>
+                    </div>
+                    <div className="text-[11px] font-semibold text-amber-900 pt-1 border-t border-amber-200/60">
+                      {selectedFacility.properties.purpose || '海嘯與地震緊急集合點 (Disaster Support Hub)'}
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1 text-[11px]">
+                    {selectedFacility.properties.address && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>中心地址</span>
+                        <span className="font-semibold text-gray-800 text-right truncate max-w-[170px]">
+                          {selectedFacility.properties.address}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.phone && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>聯絡電話</span>
+                        <a href={`tel:${selectedFacility.properties.phone}`} className="font-bold text-blue-600 hover:underline">
+                          📞 {selectedFacility.properties.phone}
+                        </a>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="bg-slate-50 p-2 rounded text-[11px] text-gray-600 border border-gray-100 leading-relaxed">
+                    <span className="font-semibold block mb-0.5 text-gray-700">📍 功能說明：</span>
+                    <span>重大災害（如大地震、海嘯）發生後，市民集結互助、協調支援、領取緊急救援資訊與物資之官方指定避難集合中心。</span>
+                  </div>
+
+                  <div className="pt-1 border-t border-gray-100 flex flex-col gap-1">
+                    {selectedFacility.properties.directions_url && (
+                      <a
+                        href={selectedFacility.properties.directions_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-amber-600 hover:bg-amber-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
+                      >
+                        前往 Google 地圖導航避難路線 ↗
+                      </a>
+                    )}
+                    <a
+                      href="https://vancouver.ca/home-property-development/disaster-support-hubs.aspx"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center w-full py-1 px-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded font-medium text-[11px] transition-colors text-center"
+                    >
+                      查看溫哥華市政府災害中心專頁 ↗
+                    </a>
                   </div>
                 </div>
               )}
@@ -3031,8 +3417,9 @@ export default function AppMap() {
                 </div>
               )}
 
-              {/* Hospitals Details & Live ER Wait Times */}
+              {/* Hospitals & UPCC Details & Live Wait Times */}
               {selectedFacility.facility_type === 'hospitals' && (() => {
+                const isUPCC = selectedFacility.properties?.medical_type === 'upcc';
                 const hName = (selectedFacility.name || '').toLowerCase();
                 const erKey = (selectedFacility.properties?.erstat_name || '').toLowerCase();
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -3073,12 +3460,26 @@ export default function AppMap() {
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
-                    {/* Live ER Wait Time Card */}
+                    {/* Facility Type Badge */}
+                    <div className="flex items-center justify-between">
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                        isUPCC ? 'bg-cyan-100 text-cyan-800 border border-cyan-300' : 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                      }`}>
+                        {selectedFacility.properties?.type_label || (isUPCC ? '急症基層醫療中心 (UPCC)' : '急症綜合醫院')}
+                      </span>
+                      {selectedFacility.properties?.short_name && (
+                        <span className="text-[10px] font-mono text-gray-500 font-bold">
+                          {selectedFacility.properties.short_name}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Live ER/UPCC Wait Time Card */}
                     <div className={`p-2.5 rounded-lg border flex flex-col gap-1.5 ${statusBg}`}>
                       <div className="flex items-center justify-between">
                         <span className="font-bold text-xs flex items-center gap-1.5">
                           <span>⏱️</span>
-                          <span>急診預估等候時間</span>
+                          <span>{isUPCC ? '門診預估等候時間' : '急診預估等候時間'}</span>
                         </span>
                         <div className="flex items-center gap-1.5">
                           {loadingWaitTimes ? (
@@ -3103,12 +3504,12 @@ export default function AppMap() {
                           {loadingWaitTimes ? '...' : waitTime}
                         </span>
                         <span className="text-[10px] text-gray-500 font-medium">
-                          {isPredicted ? '（模型預估）' : '（官方即時回報）'} · 每 1 小時更新
+                          {isPredicted ? '（模型預估）' : '（官方即時回報）'} · 每 15 分鐘更新
                         </span>
                       </div>
                     </div>
 
-                    {/* Hospital Info Card */}
+                    {/* Hospital / UPCC Info Card */}
                     <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
                       {selectedFacility.properties?.chinese_name && (
                         <div className="flex justify-between items-center text-gray-700 font-semibold">
@@ -3118,13 +3519,13 @@ export default function AppMap() {
                       )}
                       {selectedFacility.properties?.hours && (
                         <div className="flex justify-between items-center text-gray-600">
-                          <span>急診門診時間</span>
-                          <span className="font-medium text-emerald-700">{selectedFacility.properties.hours}</span>
+                          <span>{isUPCC ? '門診服務時間' : '急診門診時間'}</span>
+                          <span className="font-medium text-emerald-700 text-right">{selectedFacility.properties.hours}</span>
                         </div>
                       )}
                       {selectedFacility.properties?.address && (
                         <div className="flex justify-between items-center text-gray-600">
-                          <span>醫院地址</span>
+                          <span>機構地址</span>
                           <span className="font-medium text-gray-800 text-right truncate max-w-[170px]">
                             {selectedFacility.properties.address}
                           </span>
@@ -3132,7 +3533,7 @@ export default function AppMap() {
                       )}
                       {selectedFacility.properties?.phone && (
                         <div className="flex justify-between items-center text-gray-600">
-                          <span>總機電話</span>
+                          <span>聯絡電話</span>
                           <a href={`tel:${selectedFacility.properties.phone}`} className="font-bold text-blue-600 hover:underline">
                             {selectedFacility.properties.phone}
                           </a>
@@ -3149,12 +3550,12 @@ export default function AppMap() {
                     {/* Action Links */}
                     <div className="flex flex-col gap-1 pt-1 border-t border-gray-100">
                       <a
-                        href={waitInfo?.url || selectedFacility.properties?.erstat_url || "https://erstat.ca/hospitals/bc/vancouver"}
+                        href={waitInfo?.url || selectedFacility.properties?.erstat_url || "https://edwaittimes.ca/times"}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
                       >
-                        前往 ERstat 查看急診即時數據 ↗
+                        {isUPCC ? '前往 edwaittimes.ca 查看門診即時數據 ↗' : '前往 ERstat 查看急診即時數據 ↗'}
                       </a>
                       {selectedFacility.properties?.website && (
                         <a
@@ -3163,7 +3564,7 @@ export default function AppMap() {
                           rel="noopener noreferrer"
                           className="inline-flex items-center justify-center w-full py-1 px-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded font-medium text-[11px] transition-colors text-center"
                         >
-                          前往醫院官方網站 ↗
+                          {isUPCC ? '前往醫療中心官方網站 ↗' : '前往醫院官方網站 ↗'}
                         </a>
                       )}
                     </div>
@@ -3554,6 +3955,110 @@ export default function AppMap() {
                       </a>
                     </div>
                   )}
+                </div>
+              )}
+
+              {/* AED (自動體外心臟去顫器) Details */}
+              {selectedFacility.facility_type === 'aed' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-red-50/90 p-2.5 rounded-lg border border-red-200 flex flex-col gap-1 text-[11px]">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-xs text-red-950 flex items-center gap-1.5">
+                        <span>⚡</span>
+                        <span>AED 自動體外心臟去顫器</span>
+                      </span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-red-600 text-white">
+                        BC PAD
+                      </span>
+                    </div>
+                    <div className="text-[11px] font-medium text-red-800 pt-1 border-t border-red-200/60">
+                      心臟驟停急救設備 · 公共場所配置
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1 text-[11px]">
+                    <div className="flex justify-between items-center text-gray-600">
+                      <span>設置機構</span>
+                      <span className="font-bold text-gray-900 text-right truncate max-w-[170px]">
+                        {selectedFacility.name}
+                      </span>
+                    </div>
+                    {selectedFacility.properties.address && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>所在地址</span>
+                        <span className="font-semibold text-gray-800 text-right truncate max-w-[170px]">
+                          {selectedFacility.properties.address}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.municipality && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>所屬轄區</span>
+                        <span className="font-medium text-gray-700">{selectedFacility.properties.municipality}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="bg-rose-50 p-2 rounded text-[11px] text-rose-900 border border-rose-100 leading-relaxed">
+                    <span className="font-bold block mb-0.5">⚠️ 急救重要提示：</span>
+                    <span>若發現疑似心臟驟停患者，請<strong>立即撥打 911</strong>，同時派人取用此處 AED 依照語音指引施救。</span>
+                  </div>
+
+                  <div className="pt-1 border-t border-gray-100">
+                    <a
+                      href="https://bcpadprogram.ca/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-red-600 hover:bg-red-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
+                    >
+                      前往 BC PAD 心臟去顫器登記計畫 ↗
+                    </a>
+                  </div>
+                </div>
+              )}
+
+              {/* Contours (等高線) Details */}
+              {selectedFacility.facility_type === 'contours' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-teal-50/90 p-2.5 rounded border border-teal-200 flex flex-col gap-1 text-[11px]">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-xs text-teal-950 flex items-center gap-1.5">
+                        <span>⛰️</span>
+                        <span>溫哥華地形等高線</span>
+                      </span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-teal-700 text-white">
+                        10m Contours
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-baseline pt-1 border-t border-teal-200/60">
+                      <span className="text-gray-600 text-[11px]">海平面標高 (Elevation)</span>
+                      <span className="font-black text-teal-900 text-lg">
+                        {selectedFacility.properties.elevation != null ? `${selectedFacility.properties.elevation} m` : selectedFacility.name}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-2 rounded border border-gray-100 flex flex-col gap-1 text-[11px] text-gray-600">
+                    <div className="flex justify-between items-center">
+                      <span>資料來源</span>
+                      <span className="font-medium text-gray-800">City of Vancouver Open Data</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span>等高線間隔</span>
+                      <span className="font-medium text-gray-800">10 公尺 (10-metre intervals)</span>
+                    </div>
+                  </div>
+
+                  <div className="pt-1 border-t border-gray-100">
+                    <a
+                      href="https://opendata.vancouver.ca/explore/dataset/elevation-contours/information/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-teal-700 hover:bg-teal-800 text-white rounded font-medium text-xs transition-colors shadow-sm"
+                    >
+                      查看溫哥華開放資料等高線圖資 ↗
+                    </a>
+                  </div>
                 </div>
               )}
             </div>

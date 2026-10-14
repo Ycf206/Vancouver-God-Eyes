@@ -1486,11 +1486,11 @@ hospital_waittimes_cache = {"timestamp": 0, "data": {}}
 @app.get("/api/hospitals/waittimes")
 def get_hospital_waittimes():
     """
-    獲取溫哥華各大醫院急診即時預估等候時間 (erstat.ca)
-    每 1 小時自動快取更新一次
+    獲取溫哥華各大醫院急診與 UPCC 急症暨基層醫療中心即時預估等候時間 (edwaittimes.ca & erstat.ca)
+    每 15 分鐘自動快取更新一次
     """
     now = time.time()
-    if now - hospital_waittimes_cache["timestamp"] < 3600 and hospital_waittimes_cache["data"]:
+    if now - hospital_waittimes_cache["timestamp"] < 900 and hospital_waittimes_cache["data"]:
         return {
             "cached": True,
             "last_updated": hospital_waittimes_cache.get("updated_at_str", ""),
@@ -1501,11 +1501,51 @@ def get_hospital_waittimes():
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     }
 
+    hosp_map = {}
+
+    # 1. Fetch live wait times from official BC ED/UPCC API (edwaittimes.ca)
+    try:
+        url_ed = "https://edwaittimes.ca/api/wait-times"
+        resp_ed = requests.get(url_ed, headers=headers, timeout=10)
+        if resp_ed.status_code == 200:
+            ed_items = resp_ed.json()
+            for it in ed_items:
+                name = it.get('name')
+                if not name:
+                    continue
+                wt = it.get('waitTime') or {}
+                wt_min = wt.get('waitTimeMinutes')
+                status = wt.get('status') or 'normal'
+                if wt_min is not None:
+                    hours = wt_min // 60
+                    mins = wt_min % 60
+                    if hours > 0 and mins > 0:
+                        wt_str = f"{hours}h {mins}m"
+                    elif hours > 0:
+                        wt_str = f"{hours}h"
+                    else:
+                        wt_str = f"{mins}m"
+                else:
+                    wt_str = "門診正常"
+
+                hosp_map[name.lower()] = {
+                    "name": name,
+                    "type": it.get('type'),
+                    "wait_time": wt_str,
+                    "wait_minutes": wt_min,
+                    "status": status,
+                    "address": it.get('address'),
+                    "is_predicted": False,
+                    "url": it.get('website') or "https://edwaittimes.ca/times"
+                }
+    except Exception as e:
+        print(f"Error fetching edwaittimes: {e}")
+
+    # 2. Supplement or fallback with erstat.ca for additional hospital emergency wait predictions
     try:
         url = "https://erstat.ca/hospitals/bc/vancouver"
-        resp = requests.get(url, headers=headers, timeout=12)
+        resp = requests.get(url, headers=headers, timeout=10)
         if resp.status_code == 200:
-            hosp_map = {}
             html = resp.text
             try:
                 from bs4 import BeautifulSoup
@@ -1528,46 +1568,31 @@ def get_hospital_waittimes():
 
                     full_url = f"https://erstat.ca{href}" if href.startswith('/') else href
 
-                    hosp_map[name.lower()] = {
-                        "name": name,
-                        "meta": meta_text,
-                        "wait_time": wait_time,
-                        "status": status,
-                        "is_predicted": 'predicted' in classes,
-                        "url": full_url
-                    }
-            except Exception:
-                import re
-                row_pattern = re.compile(r'<a\s+[^>]*?href=[\"|\']([^\"\']+)[\"|\'][^>]*?class=[\"|\']hospital-row[\"|\'][^>]*?>(.*?)</a>', re.S | re.I)
-                for m in row_pattern.finditer(html):
-                    href, block = m.group(1), m.group(2)
-                    name_m = re.search(r'<h3>([^<]+)</h3>', block, re.I)
-                    wait_m = re.search(r'<div\s+[^>]*?class=[\"|\']hospital-row-wait([^\"\']*)[\"|\'][^>]*?>([^<]+)</div>', block, re.I)
-                    if name_m and wait_m:
-                        name = name_m.group(1).strip()
-                        classes = wait_m.group(1)
-                        wait_time = wait_m.group(2).strip()
-                        status = 'packed' if 'packed' in classes else ('moderate' if 'moderate' in classes else ('quick' if 'quick' in classes else 'normal'))
-                        hosp_map[name.lower()] = {
+                    k = name.lower()
+                    if k not in hosp_map or hosp_map[k]["wait_time"] in ("門診正常", "N/A"):
+                        hosp_map[k] = {
                             "name": name,
+                            "meta": meta_text,
                             "wait_time": wait_time,
                             "status": status,
                             "is_predicted": 'predicted' in classes,
-                            "url": f"https://erstat.ca{href}" if href.startswith('/') else href
+                            "url": full_url
                         }
-
-            if hosp_map:
-                now_str = datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
-                hospital_waittimes_cache["timestamp"] = now
-                hospital_waittimes_cache["updated_at_str"] = now_str
-                hospital_waittimes_cache["data"] = hosp_map
-                return {
-                    "cached": False,
-                    "last_updated": now_str,
-                    "hospitals": hosp_map
-                }
+            except Exception:
+                pass
     except Exception as e:
-        print(f"Error fetching hospital wait times: {e}")
+        print(f"Error fetching erstat: {e}")
+
+    if hosp_map:
+        now_str = datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
+        hospital_waittimes_cache["timestamp"] = now
+        hospital_waittimes_cache["updated_at_str"] = now_str
+        hospital_waittimes_cache["data"] = hosp_map
+        return {
+            "cached": False,
+            "last_updated": now_str,
+            "hospitals": hosp_map
+        }
 
     if hospital_waittimes_cache["data"]:
         return {
@@ -1582,32 +1607,36 @@ import json
 from sqlalchemy import func
 
 _bikeways_geojson_cache = {"data": None, "mtime": 0}
+_contours_geojson_cache = {"data": None, "mtime": 0}
 
 @app.get("/api/geojson/road/{facility_type}")
 def get_road_facilities_geojson(facility_type: str, db: Session = Depends(database.get_db)):
     """
-    facility_type can be 'parking_meters', 'accessible_parking', 'motorcycle_parking', 'ev_charging', 'bikeways', etc.
+    facility_type can be 'parking_meters', 'accessible_parking', 'motorcycle_parking', 'ev_charging', 'bikeways', 'contours', etc.
     """
-    if facility_type == "bikeways":
-        static_geojson_path = os.path.join(os.path.dirname(__file__), "data", "vancouver_bikeways.geojson")
+    if facility_type in ("bikeways", "contours"):
+        filename = f"vancouver_{facility_type}.geojson"
+        static_geojson_path = os.path.join(os.path.dirname(__file__), "data", filename)
+        cache_ref = _contours_geojson_cache if facility_type == "contours" else _bikeways_geojson_cache
         if not os.path.exists(static_geojson_path):
-            try:
-                from scripts.update_open_data import update_bikeways
-                update_bikeways()
-            except Exception as e:
-                print(f"Auto-fetch bikeways error: {e}")
+            if facility_type == "bikeways":
+                try:
+                    from scripts.update_open_data import update_bikeways
+                    update_bikeways()
+                except Exception as e:
+                    print(f"Auto-fetch bikeways error: {e}")
         if os.path.exists(static_geojson_path):
             try:
                 mtime = os.path.getmtime(static_geojson_path)
-                if _bikeways_geojson_cache["data"] and _bikeways_geojson_cache["mtime"] == mtime:
-                    return _bikeways_geojson_cache["data"]
+                if cache_ref["data"] and cache_ref["mtime"] == mtime:
+                    return cache_ref["data"]
                 with open(static_geojson_path, "r", encoding="utf-8") as f:
                     data = json.load(f)
-                _bikeways_geojson_cache["data"] = data
-                _bikeways_geojson_cache["mtime"] = mtime
+                cache_ref["data"] = data
+                cache_ref["mtime"] = mtime
                 return data
             except Exception as e:
-                print(f"Error reading vancouver_bikeways.geojson: {e}")
+                print(f"Error reading {filename}: {e}")
         return {"type": "FeatureCollection", "features": []}
 
     facilities = db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).all()

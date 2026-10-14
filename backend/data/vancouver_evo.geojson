@@ -1,0 +1,458 @@
+{
+  "type": "FeatureCollection",
+  "generator": "overpass-turbo",
+  "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.",
+  "timestamp": "2026-10-14T00:12:58Z",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "way/520853710",
+        "addr:city": "Vancouver",
+        "addr:province": "BC",
+        "amenity": "car_sharing",
+        "capacity": "14",
+        "operator": "Evo",
+        "operator:type": "private",
+        "operator:wikidata": "Q26553214",
+        "operator:wikipedia": "en:Evo Car Share",
+        "parking": "surface",
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -123.116223,
+              49.2810661
+            ],
+            [
+              -123.1163576,
+              49.2809751
+            ],
+            [
+              -123.1160157,
+              49.2807504
+            ],
+            [
+              -123.115873,
+              49.2808465
+            ],
+            [
+              -123.1159504,
+              49.2808951
+            ],
+            [
+              -123.116223,
+              49.2810661
+            ]
+          ]
+        ]
+      },
+      "id": "way/520853710"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4356820946",
+        "amenity": "car_sharing",
+        "capacity": "2",
+        "operator": "Evo",
+        "operator:wikidata": "Q26553214",
+        "operator:wikipedia": "en:Evo Car Share"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1539774,
+          49.2729146
+        ]
+      },
+      "id": "node/4356820946"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4934628434",
+        "addr:city": "Vancouver",
+        "addr:province": "BC",
+        "amenity": "car_sharing",
+        "capacity": "6",
+        "operator": "Evo",
+        "operator:type": "private",
+        "operator:wikidata": "Q26553214",
+        "operator:wikipedia": "en:Evo Car Share"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.122108,
+          49.2792802
+        ]
+      },
+      "id": "node/4934628434"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4934693598",
+        "amenity": "car_sharing",
+        "capacity": "2",
+        "operator": "Evo",
+        "operator:type": "private",
+        "operator:wikidata": "Q26553214",
+        "operator:wikipedia": "en:Evo Car Share"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.120013,
+          49.288517
+        ]
+      },
+      "id": "node/4934693598"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4963096295",
+        "addr:city": "Vancouver",
+        "addr:province": "BC",
+        "amenity": "car_sharing",
+        "capacity": "7",
+        "operator": "Evo",
+        "operator:type": "private",
+        "operator:wikidata": "Q26553214",
+        "operator:wikipedia": "en:Evo Car Share"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.115876,
+          49.2816641
+        ]
+      },
+      "id": "node/4963096295"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5099700272",
+        "amenity": "car_sharing",
+        "capacity": "3",
+        "operator": "Evo",
+        "operator:type": "private",
+        "operator:wikidata": "Q26553214",
+        "operator:wikipedia": "en:Evo Car Share"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1267474,
+          49.2863451
+        ]
+      },
+      "id": "node/5099700272"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5099702080",
+        "amenity": "car_sharing",
+        "capacity": "2",
+        "operator": "Evo",
+        "operator:type": "private",
+        "operator:wikidata": "Q26553214",
+        "operator:wikipedia": "en:Evo Car Share"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.128351,
+          49.2854037
+        ]
+      },
+      "id": "node/5099702080"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5125129523",
+        "amenity": "car_sharing",
+        "capacity": "4",
+        "operator": "Evo",
+        "operator:type": "private",
+        "operator:wikidata": "Q26553214",
+        "operator:wikipedia": "en:Evo Car Share"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1132159,
+          49.2623488
+        ]
+      },
+      "id": "node/5125129523"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5261240244",
+        "addr:city": "Vancouver",
+        "addr:province": "BC",
+        "amenity": "car_sharing",
+        "capacity": "4",
+        "operator": "Evo",
+        "operator:type": "private",
+        "operator:wikidata": "Q26553214",
+        "operator:wikipedia": "en:Evo Car Share",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14088,
+          49.2881731
+        ]
+      },
+      "id": "node/5261240244"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5384021310",
+        "amenity": "car_sharing",
+        "capacity": "2",
+        "operator": "Evo",
+        "operator:type": "private",
+        "operator:wikidata": "Q26553214",
+        "operator:wikipedia": "en:Evo Car Share"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.070282,
+          49.2631606
+        ]
+      },
+      "id": "node/5384021310"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5476952117",
+        "amenity": "car_sharing",
+        "capacity": "4",
+        "operator": "Evo",
+        "operator:type": "private",
+        "operator:wikidata": "Q26553214",
+        "operator:wikipedia": "en:Evo Car Share"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.069092,
+          49.2611822
+        ]
+      },
+      "id": "node/5476952117"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5483845611",
+        "amenity": "car_sharing",
+        "capacity": "4",
+        "operator": "Evo",
+        "operator:type": "private",
+        "operator:wikidata": "Q26553214",
+        "operator:wikipedia": "en:Evo Car Share"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1360606,
+          49.2725154
+        ]
+      },
+      "id": "node/5483845611"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5740366133",
+        "amenity": "car_sharing",
+        "capacity": "2",
+        "operator": "Evo",
+        "operator:type": "private",
+        "operator:wikidata": "Q26553214",
+        "operator:wikipedia": "en:Evo Car Share"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0951972,
+          49.2846841
+        ]
+      },
+      "id": "node/5740366133"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6037924425",
+        "amenity": "car_sharing",
+        "capacity": "3",
+        "check_date": "2024-12-21",
+        "operator": "Evo",
+        "operator:type": "private",
+        "operator:wikidata": "Q26553214",
+        "operator:wikipedia": "en:Evo Car Share"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1157907,
+          49.2602188
+        ]
+      },
+      "id": "node/6037924425"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6037924841",
+        "amenity": "car_sharing",
+        "capacity": "1",
+        "operator": "Evo",
+        "operator:type": "private",
+        "operator:wikidata": "Q26553214",
+        "operator:wikipedia": "en:Evo Car Share"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1157896,
+          49.2600109
+        ]
+      },
+      "id": "node/6037924841"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6313162293",
+        "amenity": "car_sharing",
+        "capacity": "3",
+        "operator": "Evo",
+        "operator:wikidata": "Q26553214",
+        "operator:wikipedia": "en:Evo Car Share"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1004781,
+          49.2721016
+        ]
+      },
+      "id": "node/6313162293"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6431933896",
+        "amenity": "car_sharing",
+        "capacity": "4",
+        "operator": "Evo",
+        "operator:type": "private",
+        "operator:wikidata": "Q26553214",
+        "operator:wikipedia": "en:Evo Car Share"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1159932,
+          49.2667304
+        ]
+      },
+      "id": "node/6431933896"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8593645365",
+        "amenity": "car_sharing",
+        "capacity": "4",
+        "operator": "Evo",
+        "operator:type": "private",
+        "operator:wikidata": "Q26553214",
+        "operator:wikipedia": "en:Evo Car Share"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1232166,
+          49.2783553
+        ]
+      },
+      "id": "node/8593645365"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10984867592",
+        "amenity": "car_sharing",
+        "capacity": "3",
+        "operator": "Evo",
+        "operator:type": "private",
+        "operator:wikidata": "Q26553214"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1441517,
+          49.2909173
+        ]
+      },
+      "id": "node/10984867592"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/12729584193",
+        "amenity": "car_sharing",
+        "operator": "Evo",
+        "operator:type": "private",
+        "operator:wikidata": "Q26553214"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1316112,
+          49.2800644
+        ]
+      },
+      "id": "node/12729584193"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/12790955824",
+        "amenity": "car_sharing",
+        "capacity": "2",
+        "operator": "Evo",
+        "operator:type": "private",
+        "operator:wikidata": "Q26553214"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1311471,
+          49.2667087
+        ]
+      },
+      "id": "node/12790955824"
+    }
+  ]
+}
