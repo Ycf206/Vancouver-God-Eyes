@@ -1203,7 +1203,7 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                 "lon": rep_lon,
                 "lat": rep_lat,
                 "zoom": 13,
-                "layer_key": "busRoutes",
+                "layer_key": None,
                 "meta": {
                     "route_id": rid,
                     "route_number": rnum,
@@ -1750,7 +1750,7 @@ _contours_caches = {
 }
 _curated_static_caches = {}
 
-CURATED_STATIC_TYPES = ("bikeways", "hospitals", "police", "disaster_hubs", "car_sharing", "aed")
+CURATED_STATIC_TYPES = ("bikeways", "hospitals", "police", "disaster_hubs", "car_sharing", "aed", "local_area_boundary")
 
 @app.get("/api/geojson/road/{facility_type}")
 def get_road_facilities_geojson(facility_type: str, interval: str = "10m", db: Session = Depends(database.get_db)):

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
+import { formatTimePreference } from '@/utils/time';
 import { 
   X, Plane, PlaneTakeoff, PlaneLanding, Search, RefreshCw, 
   Clock, ArrowRight
@@ -82,7 +83,7 @@ const formatGateDisplay = (gate?: string) => {
 };
 
 export default function FlightScheduleModal() {
-  const { isFlightScheduleOpen, setFlightScheduleOpen, searchTarget, setSearchTarget } = useUIStore();
+  const { isFlightScheduleOpen, setFlightScheduleOpen, searchTarget, setSearchTarget, timeFormat } = useUIStore();
   const [activeTab, setActiveTab] = useState<'arrivals' | 'departures'>('arrivals');
   const [filterType, setFilterType] = useState<'all' | 'domestic' | 'international'>('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -576,17 +577,17 @@ export default function FlightScheduleModal() {
                   }`}
                 >
                   {/* Grid Layout for Medium+ Screens */}
-                  <div className="hidden md:grid grid-cols-[58px_130px_1fr_135px_110px_80px] gap-3 items-center">
+                  <div className="hidden md:grid grid-cols-[70px_125px_1fr_135px_110px_80px] gap-3 items-center">
                     {/* Col 1: Date & Time (Compact, tight width) */}
-                    <div className="w-[58px] shrink-0">
-                      <div className="text-center w-[54px] py-1 px-0.5 rounded-lg bg-[#0e1015] border border-[#232732]">
+                    <div className="w-[70px] shrink-0">
+                      <div className="text-center w-[66px] py-1 px-0.5 rounded-lg bg-[#0e1015] border border-[#232732]">
                         {flight.date && (
                           <div className="text-[10px] font-mono font-medium text-sky-400 leading-tight">
                             {flight.date}
                           </div>
                         )}
-                        <div className="text-sm font-bold font-mono text-white tracking-tight leading-tight">
-                          {flight.time}
+                        <div className="text-xs font-bold font-mono text-white tracking-tight leading-tight">
+                          {formatTimePreference(flight.time, timeFormat)}
                         </div>
                         <div className="text-[8.5px] text-gray-400 font-mono scale-90">
                           {isArr ? '預計抵達' : '預計出發'}
@@ -632,11 +633,11 @@ export default function FlightScheduleModal() {
                       {/* Line 3: Exact Departure & Arrival Dates and Times */}
                       <div className="text-[11px] text-gray-400 font-mono mt-0.5 flex items-center gap-1.5 flex-wrap">
                         {flight.departure_time && (
-                          <span>起: <strong className="text-gray-300 font-normal">{flight.departure_time}</strong></span>
+                          <span>起: <strong className="text-gray-300 font-normal">{formatTimePreference(flight.departure_time, timeFormat)}</strong></span>
                         )}
                         {flight.departure_time && flight.arrival_time && <span>-</span>}
                         {flight.arrival_time && (
-                          <span>抵: <strong className="text-gray-300 font-normal">{flight.arrival_time}</strong></span>
+                          <span>抵: <strong className="text-gray-300 font-normal">{formatTimePreference(flight.arrival_time, timeFormat)}</strong></span>
                         )}
                       </div>
                       {/* Line 4: Time-calculated Flight Progress Bar */}
@@ -714,9 +715,9 @@ export default function FlightScheduleModal() {
                   <div className="flex md:hidden flex-col gap-2">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <div className="text-center w-12 py-1 px-1 rounded-lg bg-[#0e1015] border border-[#232732] shrink-0">
+                        <div className="text-center w-14 py-1 px-1 rounded-lg bg-[#0e1015] border border-[#232732] shrink-0">
                           {flight.date && <div className="text-[9px] font-mono text-sky-400">{flight.date}</div>}
-                          <div className="text-xs font-bold font-mono text-white">{flight.time}</div>
+                          <div className="text-[11px] font-bold font-mono text-white leading-tight">{formatTimePreference(flight.time, timeFormat)}</div>
                         </div>
                         <div>
                           <div className="flex items-center gap-1.5">
@@ -760,7 +761,7 @@ export default function FlightScheduleModal() {
                     </div>
 
                     <div className="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#1e222a] text-gray-400 font-mono">
-                      <span>起: {flight.departure_time} · 抵: {flight.arrival_time}</span>
+                      <span>起: {formatTimePreference(flight.departure_time, timeFormat)} · 抵: {formatTimePreference(flight.arrival_time, timeFormat)}</span>
                       <span className="text-amber-300 font-bold">{formatGateDisplay(flight.gate)}</span>
                     </div>
                   </div>

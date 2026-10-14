@@ -61,9 +61,17 @@ export interface UIState {
     airports: boolean;
     carSharing: boolean;
     contours: boolean;
+    localAreaBoundary: boolean;
   };
   contourInterval: 'off' | '1m' | '2m' | '10m';
   setContourInterval: (interval: 'off' | '1m' | '2m' | '10m') => void;
+  timeFormat: '12h' | '24h';
+  setTimeFormat: (format: '12h' | '24h') => void;
+  distanceUnit: 'metric' | 'imperial';
+  setDistanceUnit: (unit: 'metric' | 'imperial') => void;
+  isSettingsModalOpen: boolean;
+  setSettingsModalOpen: (open: boolean) => void;
+  toggleSettingsModal: () => void;
   toggleLayer: (layer: keyof UIState['layers']) => void;
   enableLayer: (layer: keyof UIState['layers']) => void;
   searchTarget: SearchTarget | null;
@@ -133,7 +141,15 @@ export const useUIStore = create<UIState>()(
         homelessShelters: false,
         airports: true,
         contours: false,
+        localAreaBoundary: false,
       },
+      timeFormat: '24h',
+      setTimeFormat: (format) => set({ timeFormat: format }),
+      distanceUnit: 'metric',
+      setDistanceUnit: (unit) => set({ distanceUnit: unit }),
+      isSettingsModalOpen: false,
+      setSettingsModalOpen: (open) => set({ isSettingsModalOpen: open }),
+      toggleSettingsModal: () => set((state) => ({ isSettingsModalOpen: !state.isSettingsModalOpen })),
       toggleLayer: (layer) =>
         set((state) => ({
           layers: {
@@ -167,6 +183,8 @@ export const useUIStore = create<UIState>()(
         layers: state.layers,
         isLayerPanelOpen: state.isLayerPanelOpen,
         contourInterval: state.contourInterval,
+        timeFormat: state.timeFormat,
+        distanceUnit: state.distanceUnit,
       }),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       merge: (persistedState: any, currentState: UIState) => {
@@ -175,10 +193,13 @@ export const useUIStore = create<UIState>()(
           ...currentState,
           ...persistedState,
           contourInterval,
+          timeFormat: persistedState?.timeFormat || '24h',
+          distanceUnit: persistedState?.distanceUnit || 'metric',
           layers: {
             ...currentState.layers,
             ...(persistedState?.layers || {}),
             contours: contourInterval !== 'off',
+            localAreaBoundary: persistedState?.layers?.localAreaBoundary || false,
           },
         };
       },

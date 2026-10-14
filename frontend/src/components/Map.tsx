@@ -7,6 +7,7 @@ import Map, { NavigationControl, ScaleControl, Marker, Popup, MapRef, Source, La
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl, getWsUrl } from '@/utils/api';
+import { formatTimePreference } from '@/utils/time';
 
 // Fix Next.js App Router Web Worker crash
 if (typeof window !== 'undefined') {
@@ -72,7 +73,7 @@ interface RoadFacilityInfo {
 }
 
 export default function AppMap() {
-  const { layers, mapStyleType, searchTarget, setSearchTarget, isLayerPanelOpen, contourInterval } = useUIStore();
+  const { layers, mapStyleType, searchTarget, setSearchTarget, isLayerPanelOpen, contourInterval, timeFormat, distanceUnit } = useUIStore();
   const mapRef = useRef<MapRef>(null);
 
   // Resize map canvas smoothly when side panel toggles
@@ -283,6 +284,7 @@ export default function AppMap() {
   }, [vehicles, selectedBus]);
 
   const busRouteGeoJSON = useMemo(() => {
+    if (!selectedBus && !searchedBusRoute) return null;
     const coords = busDetails?.shape_coords || searchedBusRoute?.shape_coords;
     const color = busDetails?.color || searchedBusRoute?.color || '#10b981';
     if (!coords || coords.length < 2) return null;
@@ -296,7 +298,7 @@ export default function AppMap() {
         color: color,
       },
     };
-  }, [busDetails, searchedBusRoute]);
+  }, [busDetails, searchedBusRoute, selectedBus]);
 
 
   // States for Traffic Camera Images
@@ -353,7 +355,10 @@ export default function AppMap() {
 
   // 響應全域搜尋項目選取 (FlyTo & 自動打開詳細資訊卡片)
   useEffect(() => {
-    if (!searchTarget) return;
+    if (!searchTarget) {
+      setSearchedBusRoute(null);
+      return;
+    }
 
     if (mapRef.current) {
       mapRef.current.flyTo({
@@ -619,9 +624,10 @@ export default function AppMap() {
     style.sources['disaster-hubs'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/disaster_hubs` };
     const activeContourInterval = contourInterval !== 'off' ? contourInterval : '10m';
     style.sources['contours'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/contours?interval=${activeContourInterval}` };
+    style.sources['local-area-boundary'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/local_area_boundary` };
 
-    // Bus Routes & Stops (Merged under busRoutes) - 當正在搜尋特定巴士路線時，只顯示該搜尋路線，不繪製底圖全域 99 及 R1~R6 路線
-    if (layers.busRoutes && !searchedBusRoute) {
+    // Bus Routes & Stops (Merged under busRoutes) - 當正在搜尋特定巴士路線或選中特定巴士時，只顯示該專屬路線，不繪製底圖全域 99 及 R1~R6 路線
+    if (layers.busRoutes && !searchedBusRoute && !selectedBus) {
       style.layers.push({
         id: 'bus-tracks-layer',
         type: 'line',
@@ -1557,11 +1563,51 @@ export default function AppMap() {
       });
     }
 
+    // Geography: Local Area Boundary (區域邊界)
+    if (layers.localAreaBoundary) {
+      style.layers.push({
+        id: 'local-area-boundary-fill',
+        type: 'fill',
+        source: 'local-area-boundary',
+        paint: {
+          'fill-color': '#0d9488',
+          'fill-opacity': 0.08
+        }
+      });
+      style.layers.push({
+        id: 'local-area-boundary-line',
+        type: 'line',
+        source: 'local-area-boundary',
+        paint: {
+          'line-color': '#14b8a6',
+          'line-width': 1.8,
+          'line-dasharray': [3, 2],
+          'line-opacity': 0.85
+        }
+      });
+      style.layers.push({
+        id: 'local-area-boundary-label',
+        type: 'symbol',
+        source: 'local-area-boundary',
+        layout: {
+          'text-field': ['get', 'name'],
+          'text-size': 11,
+          'text-allow-overlap': false
+        },
+        paint: {
+          'text-color': '#2dd4bf',
+          'text-halo-color': '#0f172a',
+          'text-halo-width': 2
+        }
+      });
+    }
+
     return style;
   }, [
     layers.skytrainRoutes, 
     layers.busRoutes, 
     searchedBusRoute,
+    selectedBus,
     layers.seabusRoutes, 
     layers.bcferriesRoutes, 
     layers.parkingMeters, 
@@ -1590,6 +1636,7 @@ export default function AppMap() {
     layers.aed,
     layers.homelessShelters,
     layers.contours,
+    layers.localAreaBoundary,
     contourInterval,
     mapStyleType
   ]);
@@ -1771,7 +1818,7 @@ export default function AppMap() {
         }}
       >
         <NavigationControl position="bottom-right" visualizePitch={true} />
-        <ScaleControl position="bottom-right" unit="metric" maxWidth={120} />
+        <ScaleControl position="bottom-right" unit={distanceUnit === 'imperial' ? 'imperial' : 'metric'} maxWidth={120} />
 
         {/* 選中巴士或搜尋路線之路線軌跡與沿線站點 */}
         {busRouteGeoJSON && (
@@ -1800,7 +1847,7 @@ export default function AppMap() {
           </Source>
         )}
 
-        {((busDetails?.stops && busDetails.stops.length > 0) ? busDetails.stops : (searchedBusRoute?.stops || [])).map((st: { seq: number; stop_id: string; name: string; lat: number; lon: number; status?: string }) => (
+        {(selectedBus || searchedBusRoute) && ((busDetails?.stops && busDetails.stops.length > 0) ? busDetails.stops : (searchedBusRoute?.stops || [])).map((st: { seq: number; stop_id: string; name: string; lat: number; lon: number; status?: string }) => (
           <Marker key={`bus-stop-seq-${st.seq}-${st.stop_id}`} longitude={st.lon} latitude={st.lat} anchor="center">
             <div
               className={`rounded-full border transition-transform ${
@@ -2035,7 +2082,7 @@ export default function AppMap() {
                       <div key={i} className="flex flex-col gap-1 text-xs bg-gray-50/80 p-2.5 rounded-lg border border-gray-200/60 shadow-xs hover:border-gray-300 transition-colors">
                         <div className="flex justify-between items-center">
                           <span className="font-bold text-[#0060a9] text-sm tracking-tight">
-                            {sailing.time} {sailing.arrival_time ? `➝ ${sailing.arrival_time}` : ""}
+                            {formatTimePreference(sailing.time, timeFormat)} {sailing.arrival_time ? `➝ ${formatTimePreference(sailing.arrival_time, timeFormat)}` : ""}
                           </span>
                           <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
                             sailing.status === 'past' ? 'bg-gray-100 text-gray-500' : 
@@ -2122,7 +2169,7 @@ export default function AppMap() {
                 <div className="flex justify-between items-center text-xs pt-1 border-t border-gray-200/50">
                   <span className="text-gray-500">預計時間</span>
                   <span className="font-bold text-gray-900">
-                    {selectedFerry.departure_time} {selectedFerry.arrival_time ? `➝ ${selectedFerry.arrival_time}` : ''}
+                    {formatTimePreference(selectedFerry.departure_time, timeFormat)} {selectedFerry.arrival_time ? `➝ ${formatTimePreference(selectedFerry.arrival_time, timeFormat)}` : ''}
                   </span>
                 </div>
               </div>
@@ -2487,7 +2534,7 @@ export default function AppMap() {
                     </span>
                     {selectedFlight.departure_time && (
                       <span className="text-[11px] font-mono font-bold text-sky-700 mt-0.5">
-                        {selectedFlight.departure_time}
+                        {formatTimePreference(selectedFlight.departure_time, timeFormat)}
                       </span>
                     )}
                   </div>
@@ -2512,7 +2559,7 @@ export default function AppMap() {
                     </span>
                     {selectedFlight.arrival_time && (
                       <span className="text-[11px] font-mono font-bold text-amber-700 mt-0.5">
-                        {selectedFlight.arrival_time}
+                        {formatTimePreference(selectedFlight.arrival_time, timeFormat)}
                       </span>
                     )}
                   </div>
@@ -4030,6 +4077,8 @@ export default function AppMap() {
           </div>
           <button
             onClick={() => {
+              setSelectedBus(null);
+              setBusDetails(null);
               setSearchedBusRoute(null);
               setSearchTarget(null);
             }}
@@ -4079,10 +4128,8 @@ export default function AppMap() {
                 onClick={() => {
                   setSelectedBus(null);
                   setBusDetails(null);
-                  if (searchedBusRoute) {
-                    setSearchedBusRoute(null);
-                    setSearchTarget(null);
-                  }
+                  setSearchedBusRoute(null);
+                  setSearchTarget(null);
                 }}
                 className="text-gray-400 hover:text-white p-1 rounded hover:bg-[#252a38] transition-colors shrink-0"
                 title="關閉"
@@ -4115,7 +4162,7 @@ export default function AppMap() {
                   <span className="font-bold text-white leading-snug">{nextStopName}</span>
                   <span className="text-[11px] font-bold text-amber-400 mt-0.5">
                     {nextStopTime
-                      ? `預計 ${nextStopTime} (${nextStopMin !== undefined && nextStopMin !== null ? (nextStopMin <= 0 ? '即將進站' : `${nextStopMin} 分鐘後`) : '行駛中'})`
+                      ? `預計 ${formatTimePreference(nextStopTime, timeFormat)} (${nextStopMin !== undefined && nextStopMin !== null ? (nextStopMin <= 0 ? '即將進站' : `${nextStopMin} 分鐘後`) : '行駛中'})`
                       : '即時定位中'}
                   </span>
                 </div>
@@ -4181,7 +4228,9 @@ export default function AppMap() {
                               : isPassed
                               ? '已過站'
                               : st.eta_minutes !== undefined && st.eta_minutes !== null
-                              ? `${st.eta_minutes} 分`
+                              ? `${st.eta_minutes} 分${st.eta_time ? ` (${formatTimePreference(st.eta_time, timeFormat)})` : ''}`
+                              : st.eta_time
+                              ? formatTimePreference(st.eta_time, timeFormat)
                               : ''}
                           </span>
                         </div>

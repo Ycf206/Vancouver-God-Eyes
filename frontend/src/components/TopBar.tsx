@@ -1,14 +1,23 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Search, Settings, ChevronDown, Map as MapIcon, X, Loader2, Layers, AlertCircle, Heart } from 'lucide-react';
+import { Search, Settings, ChevronDown, Map as MapIcon, X, Loader2, Layers, AlertCircle, Heart, Compass } from 'lucide-react';
 import { useUIStore, SearchTarget } from '@/store/useUIStore';
 import ReportIssueModal from '@/components/ReportIssueModal';
 import DonateModal from '@/components/DonateModal';
+import SettingsModal from '@/components/SettingsModal';
 import { getApiUrl } from '@/utils/api';
+import { formatClock } from '@/utils/time';
 
 export default function TopBar() {
-  const { setSearchTarget, enableLayer, isLayerPanelOpen, toggleLayerPanel } = useUIStore();
+  const { 
+    setSearchTarget, 
+    enableLayer, 
+    isLayerPanelOpen, 
+    toggleLayerPanel,
+    timeFormat,
+    setSettingsModalOpen
+  } = useUIStore();
   const [time, setTime] = useState<Date | null>(null);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isDonateModalOpen, setIsDonateModalOpen] = useState(false);
@@ -67,7 +76,8 @@ export default function TopBar() {
   }, [query]);
 
   const handleSelect = (target: SearchTarget) => {
-    if (target.layer_key) {
+    // 巴士路線為獨立搜尋展示，不自動開啟全域靜態巴士路線圖層
+    if (target.layer_key && target.category !== 'bus_route') {
       enableLayer(target.layer_key);
     }
     setSearchTarget(target);
@@ -83,7 +93,7 @@ export default function TopBar() {
   };
 
   const formatTime = (date: Date) => {
-    return date.toLocaleTimeString('zh-TW', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    return formatClock(date, timeFormat);
   };
 
   const formatDate = (date: Date) => {
@@ -237,8 +247,20 @@ export default function TopBar() {
         )}
       </div>
 
-      {/* 右側按鈕組：贊助支持按鈕 (愛心) + 回報問題按鈕 (感嘆號) + 設定按鈕 */}
+      {/* 右側按鈕組：探索按鈕 + 贊助支持按鈕 (愛心) + 回報問題按鈕 (感嘆號) + 設定按鈕 */}
       <div className="flex items-center gap-2 shrink-0">
+        {/* 探索按鈕 (預留未來新聞、天氣等資訊，位於搜尋欄右方、贊助支持左方) */}
+        <button 
+          onClick={() => {
+            alert('探索功能（即時新聞、天氣資訊等）正在籌備中，敬請期待！');
+          }}
+          className="flex items-center gap-1.5 px-3 h-9 bg-[#25262b] hover:bg-[#2c2d33] border border-[#373a40] hover:border-emerald-500/50 rounded-md transition-all group shadow-sm text-gray-300 hover:text-emerald-400 text-xs font-semibold"
+          title="探索 Vancouver（新聞、天氣等，敬請期待）"
+        >
+          <Compass className="w-4 h-4 text-emerald-400/80 group-hover:text-emerald-400 group-hover:rotate-45 transition-transform" />
+          <span className="hidden sm:inline">探索</span>
+        </button>
+
         {/* 贊助支持按鈕 (愛心圖示，位於回報問題左側) */}
         <button 
           onClick={() => setIsDonateModalOpen(true)}
@@ -248,6 +270,7 @@ export default function TopBar() {
           <Heart className="w-4 h-4 text-rose-400/80 group-hover:text-rose-400 group-hover:scale-110 transition-transform fill-rose-500/20" />
         </button>
 
+        {/* 回報問題按鈕 */}
         <button 
           onClick={() => setIsReportModalOpen(true)}
           className="flex items-center justify-center w-10 h-9 bg-[#25262b] hover:bg-[#2c2d33] border border-[#373a40] hover:border-amber-500/50 rounded-md transition-colors group shadow-sm text-gray-300 hover:text-amber-400" 
@@ -256,8 +279,13 @@ export default function TopBar() {
           <AlertCircle className="w-4 h-4 transition-colors group-hover:scale-110" />
         </button>
 
-        <button className="flex items-center justify-center w-10 h-9 bg-[#25262b] hover:bg-[#2c2d33] border border-[#373a40] rounded-md transition-colors group shadow-sm" title="設定">
-          <Settings className="w-4 h-4 text-gray-300 group-hover:text-emerald-400 transition-colors" />
+        {/* 設定按鈕 (點擊開啟設定版面) */}
+        <button 
+          onClick={() => setSettingsModalOpen(true)}
+          className="flex items-center justify-center w-10 h-9 bg-[#25262b] hover:bg-[#2c2d33] border border-[#373a40] hover:border-emerald-500/50 rounded-md transition-colors group shadow-sm text-gray-300 hover:text-emerald-400" 
+          title="偏好設定"
+        >
+          <Settings className="w-4 h-4 transition-transform group-hover:rotate-45" />
         </button>
       </div>
 
@@ -272,6 +300,9 @@ export default function TopBar() {
         isOpen={isReportModalOpen} 
         onClose={() => setIsReportModalOpen(false)} 
       />
+
+      {/* 偏好設定彈出視窗 */}
+      <SettingsModal />
 
     </div>
   );

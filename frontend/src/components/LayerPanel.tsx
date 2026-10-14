@@ -7,7 +7,8 @@ import {
   CircleDollarSign, Accessibility, Bike, Zap, Scooter, Camera, Siren, 
   Flame, Building2, Hospital, ChevronLeft, Trees, Footprints, Flower2, 
   Droplets, Bath, Leaf, Landmark, GraduationCap, BookOpen, UtensilsCrossed, Bed, Heart,
-  Plane, PlaneTakeoff, Calendar, Car, ShieldAlert, LifeBuoy, HeartPulse, Mountain
+  Plane, PlaneTakeoff, Calendar, Car, ShieldAlert, LifeBuoy, HeartPulse, Mountain,
+  Compass, MapPin
 } from 'lucide-react';
 
 export default function LayerPanel() {
@@ -292,12 +293,26 @@ export default function LayerPanel() {
         {/* Divider */}
         <div className="w-full h-px bg-[#26282d]"></div>
 
-        {/* Geography Row (地理 - 等高線滑動條) */}
+        {/* Geography Row (地理) */}
         <div className="flex flex-col gap-2 pb-2">
           <div className="text-[10px] font-bold text-teal-400 tracking-wider flex items-center justify-between">
             <div className="flex items-center gap-1">
+              <Compass className="w-3 h-3 text-teal-400" />
+              <span>地理</span>
+            </div>
+            <span className="text-[9px] text-teal-500/70 font-mono">GEOGRAPHY</span>
+          </div>
+
+          {/* 區域邊界按鈕 (等高線上方) */}
+          <div className="grid grid-cols-2 gap-1">
+            <LayerButton layerKey="localAreaBoundary" label="區域邊界" icon={MapPin} colorClass="text-teal-400" activeBg="bg-[#122826]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
+          </div>
+
+          {/* 等高線文字與狀態標籤 (地理文字下方、拉動條上方) */}
+          <div className="text-[10px] font-bold text-teal-400 tracking-wider flex items-center justify-between pt-1">
+            <div className="flex items-center gap-1">
               <Mountain className="w-3 h-3 text-teal-400" />
-              <span>地理 · 等高線</span>
+              <span>等高線</span>
             </div>
             <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border transition-colors ${
               contourInterval === 'off'
