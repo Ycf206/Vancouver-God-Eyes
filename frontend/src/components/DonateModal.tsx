@@ -56,7 +56,7 @@ export default function DonateModal({ isOpen, onClose }: DonateModalProps) {
                   SUPPORT
                 </span>
               </h2>
-              <p className="text-[11px] text-gray-400">支持城市即時數據、OpenData 串流與地圖伺服器營運</p>
+              <p className="text-[11px] text-gray-400">感謝您對「溫哥華上帝之眼」與開發者的喜愛與支持！</p>
             </div>
           </div>
           <button 
@@ -70,29 +70,29 @@ export default function DonateModal({ isOpen, onClose }: DonateModalProps) {
 
         {/* Content Body */}
         <div className="p-5 overflow-y-auto flex flex-col gap-4 text-xs leading-relaxed">
-          {/* Mission Description Card */}
+          {/* Mission / Appreciation Card */}
           <div className="bg-[#25262c] p-3.5 rounded-lg border border-[#373a40]/70 flex flex-col gap-2">
             <div className="flex items-center gap-1.5 text-rose-300 font-semibold text-xs">
               <Sparkles className="w-4 h-4 text-amber-400" />
-              <span>打造大溫哥華最強大的即時開源數據地圖</span>
+              <span>如果您喜歡這個作品，歡迎給予一份溫暖鼓勵！</span>
             </div>
             <p className="text-gray-300 text-[11.5px] leading-relaxed">
-              「溫哥華上帝之眼」（Vancouver God&apos;s Eye）由獨立開發者建立與維護，即時整合全溫哥華公車天車、渡輪、航班、急診與 UPCC 等候時間、單車道及道路設施。您的每一份支持，都將實質轉化為伺服器運算資源與 API 數據流量！
+              「溫哥華上帝之眼」（Vancouver God&apos;s Eye）由獨立開發者用心打造與維護，致力為大家帶來直覺流暢的即時城市數據體驗。若本系統為您的生活帶來了便利或價值，歡迎隨喜贊助一份心意，您的欣賞就是對創作者最大的肯定與動力！
             </p>
           </div>
 
           {/* Donation Amount Presets */}
           <div className="flex flex-col gap-2">
             <label className="font-semibold text-gray-300 text-xs flex items-center justify-between">
-              <span>選擇贊助金額 (CAD 加幣)</span>
+              <span>選擇贊助心意 (CAD 加幣)</span>
               <span className="text-[10px] text-gray-400 font-normal">支援信用卡 / Apple Pay / Google Pay</span>
             </label>
             <div className="grid grid-cols-4 gap-2">
               {[
-                { amount: 5, label: '$5 CAD', desc: '買杯咖啡 ☕' },
-                { amount: 15, label: '$15 CAD', desc: '午餐應援 🥪' },
-                { amount: 30, label: '$30 CAD', desc: '一週運維 ⚡' },
-                { amount: 50, label: '$50 CAD', desc: '重大支持 🚀' },
+                { amount: 5, label: '$5 CAD', desc: '請杯咖啡 ☕' },
+                { amount: 15, label: '$15 CAD', desc: '暖心應援 🥪' },
+                { amount: 30, label: '$30 CAD', desc: '深度肯定 ✨' },
+                { amount: 50, label: '$50 CAD', desc: '熱情支持 🚀' },
               ].map((item) => (
                 <button
                   key={item.amount}
@@ -190,7 +190,7 @@ export default function DonateModal({ isOpen, onClose }: DonateModalProps) {
             </div>
             <div className="flex items-start gap-1.5">
               <span className="text-gray-500 shrink-0">•</span>
-              <span><strong>款項用途</strong>：所有贊助金額全數用於支付本站之伺服器主機、OpenData 即時資料串流與第三方地圖 API 額度開銷。</span>
+              <span><strong>贊助性質</strong>：本贊助純屬對本專案與作者心血付出之自願贈與及打賞（Voluntary Gift / Tip），不包含任何實體商品、商業回饋或特定服務對價。</span>
             </div>
             <div className="flex items-start gap-1.5">
               <span className="text-gray-500 shrink-0">•</span>
@@ -211,7 +211,7 @@ export default function DonateModal({ isOpen, onClose }: DonateModalProps) {
         <div className="px-5 py-3 border-t border-[#2d2e34] bg-[#191a1e] flex items-center justify-between text-[11px] text-gray-500">
           <span className="flex items-center gap-1">
             <Info className="w-3 h-3 text-gray-400" />
-            <span>感謝您讓溫哥華上帝之眼持續穩定運作</span>
+            <span>感謝您對「溫哥華上帝之眼」的欣賞與支持！</span>
           </span>
           <button
             onClick={onClose}
