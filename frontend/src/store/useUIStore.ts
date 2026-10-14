@@ -62,6 +62,8 @@ export interface UIState {
     carSharing: boolean;
     contours: boolean;
   };
+  contourInterval: 'off' | '1m' | '2m' | '10m';
+  setContourInterval: (interval: 'off' | '1m' | '2m' | '10m') => void;
   toggleLayer: (layer: keyof UIState['layers']) => void;
   enableLayer: (layer: keyof UIState['layers']) => void;
   searchTarget: SearchTarget | null;
@@ -82,6 +84,15 @@ export const useUIStore = create<UIState>()(
     (set) => ({
       mapStyleType: 'dark',
       setMapStyleType: (type) => set({ mapStyleType: type }),
+      contourInterval: 'off',
+      setContourInterval: (interval) =>
+        set((state) => ({
+          contourInterval: interval,
+          layers: {
+            ...state.layers,
+            contours: interval !== 'off',
+          },
+        })),
       layers: {
         traffic: true,
         bus: true,
@@ -155,16 +166,22 @@ export const useUIStore = create<UIState>()(
         mapStyleType: state.mapStyleType,
         layers: state.layers,
         isLayerPanelOpen: state.isLayerPanelOpen,
+        contourInterval: state.contourInterval,
       }),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      merge: (persistedState: any, currentState: UIState) => ({
-        ...currentState,
-        ...persistedState,
-        layers: {
-          ...currentState.layers,
-          ...(persistedState?.layers || {}),
-        },
-      }),
+      merge: (persistedState: any, currentState: UIState) => {
+        const contourInterval = persistedState?.contourInterval || (persistedState?.layers?.contours ? '10m' : 'off');
+        return {
+          ...currentState,
+          ...persistedState,
+          contourInterval,
+          layers: {
+            ...currentState.layers,
+            ...(persistedState?.layers || {}),
+            contours: contourInterval !== 'off',
+          },
+        };
+      },
     }
   )
 );

@@ -11,7 +11,11 @@ import {
 } from 'lucide-react';
 
 export default function LayerPanel() {
-  const { mapStyleType, setMapStyleType, layers, toggleLayer, isLayerPanelOpen, toggleLayerPanel, toggleFlightSchedule } = useUIStore();
+  const { 
+    mapStyleType, setMapStyleType, layers, toggleLayer, 
+    isLayerPanelOpen, toggleLayerPanel, toggleFlightSchedule,
+    contourInterval, setContourInterval
+  } = useUIStore();
 
 
   // Helper component for Style buttons (Icon only)
@@ -288,17 +292,65 @@ export default function LayerPanel() {
         {/* Divider */}
         <div className="w-full h-px bg-[#26282d]"></div>
 
-        {/* Geography Row (地理) */}
-        <div className="flex flex-col gap-1.5 pb-2">
+        {/* Geography Row (地理 - 等高線滑動條) */}
+        <div className="flex flex-col gap-2 pb-2">
           <div className="text-[10px] font-bold text-teal-400 tracking-wider flex items-center justify-between">
             <div className="flex items-center gap-1">
               <Mountain className="w-3 h-3 text-teal-400" />
-              <span>地理</span>
+              <span>地理 · 等高線</span>
             </div>
-            <span className="text-[9px] text-teal-500/70 font-mono">GEOGRAPHY</span>
+            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border transition-colors ${
+              contourInterval === 'off'
+                ? 'bg-[#1c1d21] text-gray-400 border-[#2d2e32]'
+                : 'bg-teal-950/80 text-teal-300 border-teal-500/50 shadow-[0_0_6px_rgba(20,184,166,0.2)]'
+            }`}>
+              {contourInterval === 'off' ? 'OFF 關閉' : `${contourInterval === '1m' ? '1米' : contourInterval === '2m' ? '2米' : '10米'}間距`}
+            </span>
           </div>
-          <div className="grid grid-cols-2 gap-1">
-            <LayerButton layerKey="contours" label="等高線" icon={Mountain} colorClass="text-teal-400" activeBg="bg-[#112724]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
+
+          {/* Stepped Slider Controls */}
+          <div className="bg-[#1c1d21] p-2 rounded-lg border border-[#2d2e32] flex flex-col gap-2 shadow-inner">
+            <div className="relative flex items-center px-1">
+              <input
+                type="range"
+                min="0"
+                max="3"
+                step="1"
+                aria-label="等高線間隔選擇"
+                value={
+                  contourInterval === 'off' ? 0 :
+                  contourInterval === '1m' ? 1 :
+                  contourInterval === '2m' ? 2 : 3
+                }
+                onChange={(e) => {
+                  const val = Number(e.target.value);
+                  const opts: ('off' | '1m' | '2m' | '10m')[] = ['off', '1m', '2m', '10m'];
+                  setContourInterval(opts[val]);
+                }}
+                className="w-full h-1.5 bg-[#2a2b30] rounded-lg appearance-none cursor-pointer accent-teal-400 focus:outline-none"
+              />
+            </div>
+
+            {/* Stepped Snap Button Labels */}
+            <div className="grid grid-cols-4 gap-1">
+              {(['off', '1m', '2m', '10m'] as const).map((opt) => {
+                const labelMap = { off: 'OFF', '1m': '1米', '2m': '2米', '10m': '10米' };
+                const isActive = contourInterval === opt;
+                return (
+                  <button
+                    key={opt}
+                    onClick={() => setContourInterval(opt)}
+                    className={`py-1 text-[10px] rounded transition-all duration-150 text-center ${
+                      isActive
+                        ? 'bg-teal-500 text-black font-bold shadow-[0_0_8px_rgba(20,184,166,0.4)]'
+                        : 'bg-[#25262b] text-gray-400 hover:text-gray-200 hover:bg-[#2d2e34] font-normal'
+                    }`}
+                  >
+                    {labelMap[opt]}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
 

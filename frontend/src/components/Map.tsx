@@ -72,7 +72,7 @@ interface RoadFacilityInfo {
 }
 
 export default function AppMap() {
-  const { layers, mapStyleType, searchTarget, setSearchTarget, isLayerPanelOpen } = useUIStore();
+  const { layers, mapStyleType, searchTarget, setSearchTarget, isLayerPanelOpen, contourInterval } = useUIStore();
   const mapRef = useRef<MapRef>(null);
 
   // Resize map canvas smoothly when side panel toggles
@@ -569,8 +569,8 @@ export default function AppMap() {
     style.sources['car-sharing'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/car_sharing` };
     style.sources['police'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/police` };
     style.sources['disaster-hubs'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/disaster_hubs` };
-    style.sources['aed'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/aed` };
-    style.sources['contours'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/contours` };
+    const activeContourInterval = contourInterval !== 'off' ? contourInterval : '10m';
+    style.sources['contours'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/contours?interval=${activeContourInterval}` };
 
     // Bus Routes & Stops (Merged under busRoutes)
     if (layers.busRoutes) {
@@ -1111,15 +1111,19 @@ export default function AppMap() {
       });
     }
 
-    // Government Facilities: Hospitals (急診醫院)
+    // Government Facilities: Hospitals & UPCC (醫療: 急診醫院與急症基層醫療中心)
     if (layers.hospitals) {
       style.layers.push({
         id: 'hospitals-layer',
         type: 'circle',
         source: 'hospitals',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3, 14, 5.5, 15, 9.5, 17, 13],
-          'circle-color': '#10b981',
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 4, 13, 7, 15, 11, 17, 15],
+          'circle-color': [
+            'case',
+            ['==', ['get', 'medical_type'], 'upcc'], '#06b6d4',
+            '#10b981'
+          ],
           'circle-stroke-width': 2,
           'circle-stroke-color': '#ffffff'
         }
@@ -1128,15 +1132,42 @@ export default function AppMap() {
         id: 'hospitals-symbol-layer',
         type: 'symbol',
         source: 'hospitals',
-        minzoom: 15,
+        minzoom: 12,
         layout: {
-          'text-field': '🏥',
-          'text-size': ['interpolate', ['linear'], ['zoom'], 15, 11, 17, 15],
+          'text-field': [
+            'case',
+            ['==', ['get', 'medical_type'], 'upcc'], '🩺',
+            '🏥'
+          ],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 12, 11, 15, 14, 17, 17],
           'text-allow-overlap': true,
           'text-ignore-placement': true
         },
         paint: {
           'text-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'hospitals-label-layer',
+        type: 'symbol',
+        source: 'hospitals',
+        minzoom: 13,
+        layout: {
+          'text-field': ['coalesce', ['get', 'short_name'], ['get', 'chinese_name'], ['get', 'name']],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 10, 16, 12],
+          'text-offset': [0, 1.3],
+          'text-anchor': 'top',
+          'text-allow-overlap': false,
+          'text-ignore-placement': false
+        },
+        paint: {
+          'text-color': [
+            'case',
+            ['==', ['get', 'medical_type'], 'upcc'], '#38bdf8',
+            '#34d399'
+          ],
+          'text-halo-color': '#0f172a',
+          'text-halo-width': 2
         }
       });
     }
@@ -1441,23 +1472,29 @@ export default function AppMap() {
       });
     }
 
-    // Geography: Elevation Contour Lines (等高線)
-    if (layers.contours) {
+    // Geography: Elevation Contour Lines (等高線: 1m / 2m / 10m)
+    if (layers.contours && contourInterval !== 'off') {
+      const isOneMetre = contourInterval === '1m';
+      const isTwoMetre = contourInterval === '2m';
       style.layers.push({
         id: 'contours-layer',
         type: 'line',
         source: 'contours',
         paint: {
           'line-color': ['case', ['get', 'is_major'], '#0d9488', '#14b8a6'],
-          'line-width': ['case', ['get', 'is_major'], 1.8, 1.0],
-          'line-opacity': 0.75
+          'line-width': isOneMetre 
+            ? ['interpolate', ['linear'], ['zoom'], 11, 0.4, 14, 0.8, 16, 1.2]
+            : isTwoMetre
+            ? ['interpolate', ['linear'], ['zoom'], 11, 0.5, 14, 1.0, 16, 1.5]
+            : ['interpolate', ['linear'], ['zoom'], 11, 0.7, 14, 1.3, 16, 2.0],
+          'line-opacity': isOneMetre ? 0.65 : 0.8
         }
       });
       style.layers.push({
         id: 'contours-label-layer',
         type: 'symbol',
         source: 'contours',
-        minzoom: 13,
+        minzoom: isOneMetre ? 14.5 : isTwoMetre ? 13.5 : 12.5,
         layout: {
           'symbol-placement': 'line',
           'text-field': ['get', 'label'],
@@ -1504,6 +1541,7 @@ export default function AppMap() {
     layers.aed,
     layers.homelessShelters,
     layers.contours,
+    contourInterval,
     mapStyleType
   ]);
 
@@ -1546,6 +1584,7 @@ export default function AppMap() {
           'community-centres-symbol-layer',
           'hospitals-layer',
           'hospitals-symbol-layer',
+          'hospitals-label-layer',
           'parks-layer',
           'parks-symbol-layer',
           'parks-facilities-layer',
@@ -1682,7 +1721,7 @@ export default function AppMap() {
         }}
       >
         <NavigationControl position="bottom-right" visualizePitch={true} />
-        <ScaleControl position="bottom-left" unit="metric" maxWidth={120} />
+        <ScaleControl position="bottom-right" unit="metric" maxWidth={120} />
 
         {/* 選中巴士之路線軌跡與沿線站點 (Selected Bus Route Line & Stops on Map) */}
         {selectedBus && busRouteGeoJSON && (
@@ -2717,9 +2756,17 @@ export default function AppMap() {
             closeButton={false}
             className="z-50"
             offset={[0, -10]}
-            maxWidth={selectedFacility.facility_type === 'traffic_cameras' ? '400px' : (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals') ? '360px' : '320px'}
+            maxWidth={
+              selectedFacility.facility_type === 'traffic_cameras' ? '400px' : 
+              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing') ? '360px' : 
+              '320px'
+            }
           >
-            <div className={`p-3.5 ${selectedFacility.facility_type === 'traffic_cameras' ? 'w-[360px]' : (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals') ? 'w-[330px]' : 'w-[290px]'} max-w-[90vw] text-gray-800`}>
+            <div className={`p-3.5 ${
+              selectedFacility.facility_type === 'traffic_cameras' ? 'w-[360px]' : 
+              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing') ? 'w-[340px]' : 
+              'w-[290px]'
+            } max-w-[90vw] text-gray-800`}>
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
                 <div className="flex items-center gap-2">
                   <span className={`w-3 h-3 rounded-full flex-shrink-0 ${
@@ -2928,25 +2975,25 @@ export default function AppMap() {
 
                   <div className="bg-gray-50 p-2 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
                     {selectedFacility.properties.vehicle_type && (
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>提供車種</span>
-                        <span className="font-semibold text-gray-800 text-right truncate max-w-[170px]">
+                      <div className="flex justify-between items-start gap-2 text-gray-600">
+                        <span className="shrink-0 text-gray-500">提供車種</span>
+                        <span className="font-semibold text-gray-800 text-right leading-relaxed">
                           {selectedFacility.properties.vehicle_type}
                         </span>
                       </div>
                     )}
                     {selectedFacility.properties.pricing && (
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>計費方案</span>
-                        <span className="font-bold text-emerald-700 text-right">
+                      <div className="flex justify-between items-start gap-2 text-gray-600">
+                        <span className="shrink-0 text-gray-500">計費方案</span>
+                        <span className="font-bold text-emerald-700 text-right leading-relaxed">
                           {selectedFacility.properties.pricing}
                         </span>
                       </div>
                     )}
                     {selectedFacility.properties.address && (
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>站點位置</span>
-                        <span className="font-medium text-gray-800 text-right truncate max-w-[170px]">
+                      <div className="flex justify-between items-start gap-2 text-gray-600">
+                        <span className="shrink-0 text-gray-500">站點位置</span>
+                        <span className="font-medium text-gray-800 text-right leading-relaxed">
                           {selectedFacility.properties.address}
                         </span>
                       </div>

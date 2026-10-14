@@ -17,6 +17,9 @@ except Exception as e:
 
 app = FastAPI(title="Vancouver God's Eye API")
 
+from fastapi.middleware.gzip import GZipMiddleware
+app.add_middleware(GZipMiddleware, minimum_size=1000)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -1607,24 +1610,35 @@ import json
 from sqlalchemy import func
 
 _bikeways_geojson_cache = {"data": None, "mtime": 0}
-_contours_geojson_cache = {"data": None, "mtime": 0}
+_contours_caches = {
+    "1m": {"data": None, "mtime": 0},
+    "2m": {"data": None, "mtime": 0},
+    "10m": {"data": None, "mtime": 0},
+}
+_curated_static_caches = {}
+
+CURATED_STATIC_TYPES = ("bikeways", "hospitals", "police", "disaster_hubs", "car_sharing", "aed")
 
 @app.get("/api/geojson/road/{facility_type}")
-def get_road_facilities_geojson(facility_type: str, db: Session = Depends(database.get_db)):
+def get_road_facilities_geojson(facility_type: str, interval: str = "10m", db: Session = Depends(database.get_db)):
     """
     facility_type can be 'parking_meters', 'accessible_parking', 'motorcycle_parking', 'ev_charging', 'bikeways', 'contours', etc.
+    For contours, interval can be '1m', '2m', '10m'.
     """
-    if facility_type in ("bikeways", "contours"):
-        filename = f"vancouver_{facility_type}.geojson"
+    # 1. Handle Contours with 1m, 2m, 10m intervals
+    if facility_type.startswith("contours"):
+        raw_int = "10m"
+        if facility_type == "contours_1m" or interval.strip().lower() in ("1m", "1"):
+            raw_int = "1m"
+        elif facility_type == "contours_2m" or interval.strip().lower() in ("2m", "2"):
+            raw_int = "2m"
+        
+        filename = f"vancouver_contours_{raw_int}.geojson"
         static_geojson_path = os.path.join(os.path.dirname(__file__), "data", filename)
-        cache_ref = _contours_geojson_cache if facility_type == "contours" else _bikeways_geojson_cache
-        if not os.path.exists(static_geojson_path):
-            if facility_type == "bikeways":
-                try:
-                    from scripts.update_open_data import update_bikeways
-                    update_bikeways()
-                except Exception as e:
-                    print(f"Auto-fetch bikeways error: {e}")
+        if not os.path.exists(static_geojson_path) and raw_int == "10m":
+            static_geojson_path = os.path.join(os.path.dirname(__file__), "data", "vancouver_contours.geojson")
+
+        cache_ref = _contours_caches.get(raw_int, _contours_caches["10m"])
         if os.path.exists(static_geojson_path):
             try:
                 mtime = os.path.getmtime(static_geojson_path)
@@ -1636,8 +1650,55 @@ def get_road_facilities_geojson(facility_type: str, db: Session = Depends(databa
                 cache_ref["mtime"] = mtime
                 return data
             except Exception as e:
-                print(f"Error reading {filename}: {e}")
+                print(f"Error reading contour {filename}: {e}")
         return {"type": "FeatureCollection", "features": []}
+
+    # 2. Prioritize verified curated static GeoJSON files (hospitals/UPCC, police, etc.)
+    if facility_type in CURATED_STATIC_TYPES:
+        filename = f"vancouver_{facility_type}.geojson"
+        static_geojson_path = os.path.join(os.path.dirname(__file__), "data", filename)
+        if os.path.exists(static_geojson_path):
+            try:
+                mtime = os.path.getmtime(static_geojson_path)
+                cache_ref = _curated_static_caches.setdefault(facility_type, {"data": None, "mtime": 0})
+                if not cache_ref["data"] or cache_ref["mtime"] != mtime:
+                    with open(static_geojson_path, "r", encoding="utf-8") as f:
+                        cache_ref["data"] = json.load(f)
+                    cache_ref["mtime"] = mtime
+
+                static_geojson = cache_ref["data"]
+                
+                # Ensure DB is synchronized with all curated items (e.g. UPCCs) for /api/search
+                try:
+                    feat_count = len(static_geojson.get("features", []))
+                    db_count = db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).count()
+                    if db_count < feat_count:
+                        for feat in static_geojson.get("features", []):
+                            props = feat.get("properties", {})
+                            coords = feat.get("geometry", {}).get("coordinates", [])
+                            if len(coords) >= 2:
+                                lon, lat = coords[0], coords[1]
+                                fac_id = feat.get("id") or props.get("id") or f"{facility_type}_{lon}_{lat}"
+                                fac = models.RoadFacility(
+                                    id=str(fac_id),
+                                    facility_type=facility_type,
+                                    name=props.get("name", "Unknown"),
+                                    local_area=props.get("local_area") or props.get("municipality", ""),
+                                    lat=lat,
+                                    lon=lon,
+                                    geom=f"SRID=4326;POINT({lon} {lat})",
+                                    details={k: v for k, v in props.items() if k not in ("id", "facility_type", "name", "local_area")},
+                                    last_updated=datetime.utcnow()
+                                )
+                                db.merge(fac)
+                        db.commit()
+                except Exception as e:
+                    db.rollback()
+                    print(f"Error syncing {facility_type} to DB: {e}")
+
+                return static_geojson
+            except Exception as e:
+                print(f"Error reading curated {filename}: {e}")
 
     facilities = db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).all()
     
