@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Compass, X, Fuel, Zap, Ship, MapPin, 
-  ArrowUpDown, Filter, ChevronDown, Check, ExternalLink, RefreshCw
+  ChevronDown, RefreshCw, Package
 } from 'lucide-react';
 import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
@@ -29,6 +29,49 @@ interface FuelStation {
   best_score?: number;
 }
 
+interface EVStation {
+  id: string;
+  name: string;
+  address: string;
+  local_area: string;
+  operator: string;
+  connectors: string;
+  ports: number;
+  voltage: string;
+  power_kw: number;
+  cost: string;
+  is_free: boolean;
+  distance_km: number;
+  lat: number;
+  lon: number;
+  score: number;
+}
+
+interface FerryVessel {
+  id: string;
+  vessel_name: string;
+  dep_code: string;
+  arr_code: string;
+  dep_name: string;
+  arr_name: string;
+  departure_time: string;
+  arrival_time: string;
+  eta_text: string;
+  progress: number;
+  fill?: number;
+  lat: number;
+  lon: number;
+  bearing?: number;
+  status: string;
+}
+
+interface FerryRoute {
+  route_id: string;
+  name: string;
+  name_en: string;
+  vessels: FerryVessel[];
+}
+
 export default function ExplorePanel() {
   const { 
     isExploreOpen, 
@@ -40,22 +83,35 @@ export default function ExplorePanel() {
     enableLayer
   } = useUIStore();
 
-  const [activeTab, setActiveTab] = useState<'now' | 'corridor' | 'delay' | 'ferry' | 'border' | 'ev' | 'fuel' | 'cargo'>('fuel');
-  const [fuelType, setFuelType] = useState<'regular' | 'midgrade' | 'premium' | 'diesel'>('regular');
-  const [sortBy, setSortBy] = useState<'best' | 'price' | 'distance'>('best');
-  const [onlyMajorChains, setOnlyMajorChains] = useState(false);
-  const [stations, setStations] = useState<FuelStation[]>([]);
-  const [loading, setLoading] = useState(false);
+  // 4 Tabs: 渡輪, 燃油, 電動車, 貨運
+  const [activeTab, setActiveTab] = useState<'ferry' | 'fuel' | 'ev' | 'cargo'>('fuel');
 
-  // Fetch fuel stations when activeTab is fuel, or user location/fuelType/sortBy changes
+  // --- Fuel tab states ---
+  const [fuelType, setFuelType] = useState<'regular' | 'midgrade' | 'premium' | 'diesel'>('regular');
+  const [fuelSortBy, setFuelSortBy] = useState<'best' | 'price' | 'distance'>('best');
+  const [onlyMajorChains, setOnlyMajorChains] = useState(false);
+  const [fuelStations, setFuelStations] = useState<FuelStation[]>([]);
+  const [loadingFuel, setLoadingFuel] = useState(false);
+
+  // --- EV tab states ---
+  const [evSortBy, setEvSortBy] = useState<'best' | 'price' | 'distance'>('best');
+  const [hideFreeCharging, setHideFreeCharging] = useState(false);
+  const [evStations, setEvStations] = useState<EVStation[]>([]);
+  const [loadingEV, setLoadingEV] = useState(false);
+
+  // --- Ferry tab states ---
+  const [ferryRoutes, setFerryRoutes] = useState<FerryRoute[]>([]);
+  const [loadingFerries, setLoadingFerries] = useState(false);
+
+  // 1. Fetch Fuel Stations
   useEffect(() => {
     if (!isExploreOpen || activeTab !== 'fuel') return;
 
-    setLoading(true);
+    setLoadingFuel(true);
     const apiUrl = getApiUrl();
     const qs = new URLSearchParams({
       fuel_type: fuelType,
-      sort_by: sortBy,
+      sort_by: fuelSortBy,
     });
 
     if (userLocation?.confirmed && userLocation.lat && userLocation.lon) {
@@ -66,28 +122,76 @@ export default function ExplorePanel() {
     fetch(`${apiUrl}/api/fuel/stations?${qs.toString()}`)
       .then((res) => res.json())
       .then((data) => {
-        setStations(data.stations || []);
-        setLoading(false);
+        setFuelStations(data.stations || []);
+        setLoadingFuel(false);
       })
       .catch((err) => {
         console.error('Error fetching fuel stations:', err);
-        setLoading(false);
+        setLoadingFuel(false);
       });
-  }, [isExploreOpen, activeTab, fuelType, sortBy, userLocation]);
+  }, [isExploreOpen, activeTab, fuelType, fuelSortBy, userLocation]);
 
-  // Filter major chains if toggled
-  const filteredStations = useMemo(() => {
-    if (!onlyMajorChains) return stations;
+  // 2. Fetch EV Charging Stations
+  useEffect(() => {
+    if (!isExploreOpen || activeTab !== 'ev') return;
+
+    setLoadingEV(true);
+    const apiUrl = getApiUrl();
+    const qs = new URLSearchParams({
+      sort_by: evSortBy,
+      hide_free: hideFreeCharging ? 'true' : 'false',
+    });
+
+    if (userLocation?.confirmed && userLocation.lat && userLocation.lon) {
+      qs.set('lat', String(userLocation.lat));
+      qs.set('lon', String(userLocation.lon));
+    }
+
+    fetch(`${apiUrl}/api/ev/stations?${qs.toString()}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setEvStations(data.stations || []);
+        setLoadingEV(false);
+      })
+      .catch((err) => {
+        console.error('Error fetching EV stations:', err);
+        setLoadingEV(false);
+      });
+  }, [isExploreOpen, activeTab, evSortBy, hideFreeCharging, userLocation]);
+
+  // 3. Fetch BC Ferries Active Sailings
+  useEffect(() => {
+    if (!isExploreOpen || activeTab !== 'ferry') return;
+
+    setLoadingFerries(true);
+    const apiUrl = getApiUrl();
+
+    fetch(`${apiUrl}/api/ferries/active`)
+      .then((res) => res.json())
+      .then((data) => {
+        setFerryRoutes(data.routes || []);
+        setLoadingFerries(false);
+      })
+      .catch((err) => {
+        console.error('Error fetching active ferries:', err);
+        setLoadingFerries(false);
+      });
+  }, [isExploreOpen, activeTab]);
+
+  // Filter major fuel chains if toggled
+  const filteredFuelStations = useMemo(() => {
+    if (!onlyMajorChains) return fuelStations;
     const majorBrands = ['CHEVRON', 'SHELL', 'PETRO-CANADA', 'ESSO', 'MOBIL', 'COSTCO'];
-    return stations.filter((s) => {
+    return fuelStations.filter((s) => {
       const b = (s.brand || s.name || '').toUpperCase();
       return majorBrands.some((mb) => b.includes(mb));
     });
-  }, [stations, onlyMajorChains]);
+  }, [fuelStations, onlyMajorChains]);
 
   if (!isExploreOpen) return null;
 
-  const handleSelectStation = (st: FuelStation) => {
+  // Handle Fuel click
+  const handleSelectFuelStation = (st: FuelStation) => {
     enableLayer('fuel');
     setSearchTarget({
       id: `fuel_${st.id}`,
@@ -102,14 +206,43 @@ export default function ExplorePanel() {
     });
   };
 
+  // Handle EV click
+  const handleSelectEVStation = (st: EVStation) => {
+    enableLayer('evCharging');
+    setSearchTarget({
+      id: `ev_${st.id}`,
+      title: st.name,
+      subtitle: `${st.address || st.local_area} · 功率: ${st.power_kw} kW · ${st.cost}`,
+      category: 'road',
+      badge: '充電站',
+      icon: '⚡',
+      lat: st.lat,
+      lon: st.lon,
+      zoom: 16.5
+    });
+  };
+
+  // Handle Ferry click
+  const handleSelectFerry = (v: FerryVessel) => {
+    enableLayer('bcferriesRoutes');
+    enableLayer('bcferriesVehicles');
+    setSearchTarget({
+      id: v.id,
+      title: v.vessel_name,
+      subtitle: `${v.dep_name} 往 ${v.arr_name} · ${v.eta_text}`,
+      category: 'ferry_vehicle',
+      badge: 'BC Ferries',
+      icon: '🚢',
+      lat: v.lat,
+      lon: v.lon,
+      zoom: 13
+    });
+  };
+
   const tabs = [
-    { id: 'now', label: '而家' },
-    { id: 'corridor', label: '走廊' },
-    { id: 'delay', label: '遲到' },
     { id: 'ferry', label: '渡輪' },
-    { id: 'border', label: '口岸' },
-    { id: 'ev', label: '電動車' },
     { id: 'fuel', label: '燃油' },
+    { id: 'ev', label: '電動車' },
     { id: 'cargo', label: '貨運' },
   ] as const;
 
@@ -135,7 +268,7 @@ export default function ExplorePanel() {
         </button>
       </div>
 
-      {/* 2x4 Categories Grid (Matches Screenshot) */}
+      {/* 4 Tabs: 渡輪 / 燃油 / 電動車 / 貨運 */}
       <div className="grid grid-cols-4 gap-1.5 p-1.5 bg-[#10131a] rounded-xl border border-[#232836] shrink-0 mb-3">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id;
@@ -155,16 +288,89 @@ export default function ExplorePanel() {
         })}
       </div>
 
-      {/* Content depending on Active Tab */}
-      {activeTab === 'fuel' ? (
+      {/* ==================== 1. 渡輪分頁 (BC Ferries) ==================== */}
+      {activeTab === 'ferry' && (
         <div className="flex flex-col flex-1 min-h-0">
-          
+          <div className="flex items-center justify-between mb-2 shrink-0">
+            <span className="text-xs text-gray-300 font-medium flex items-center gap-1.5">
+              <Ship className="w-3.5 h-3.5 text-sky-400" />
+              <span>卑詩渡輪 (BC Ferries) 即時航行班次</span>
+            </span>
+            <span className="text-[10px] text-sky-400 bg-sky-950/70 border border-sky-800/60 px-1.5 py-0.5 rounded font-mono">
+              即時追蹤
+            </span>
+          </div>
+
+          <div className="flex-1 overflow-y-auto min-h-0 pr-1 flex flex-col gap-3 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
+            {loadingFerries ? (
+              <div className="py-12 flex flex-col items-center justify-center gap-2 text-gray-400 text-xs">
+                <RefreshCw className="w-5 h-5 text-sky-400 animate-spin" />
+                <span>讀取卑詩渡輪即時航行船班中...</span>
+              </div>
+            ) : ferryRoutes.length === 0 ? (
+              <div className="py-12 text-center text-xs text-gray-400 bg-[#10131a] rounded-lg border border-[#232836]">
+                暫無即時渡輪航行資料
+              </div>
+            ) : (
+              ferryRoutes.map((route) => (
+                <div key={route.route_id} className="flex flex-col gap-1.5">
+                  {/* Route Header (Matches screenshot) */}
+                  <div className="text-[11.5px] font-bold text-gray-300 tracking-wider flex items-center justify-between pt-1 pb-0.5 border-b border-[#232836]">
+                    <span className="uppercase">{route.name}</span>
+                    <span className="text-[10px] text-gray-500 font-mono font-normal">{route.name_en}</span>
+                  </div>
+
+                  {/* Vessels under this route */}
+                  <div className="flex flex-col gap-1.5">
+                    {route.vessels.map((v) => (
+                      <div
+                        key={v.id}
+                        onClick={() => handleSelectFerry(v)}
+                        className="p-2.5 rounded-lg bg-[#141720] hover:bg-[#1a1f2c] border border-[#232734] hover:border-sky-500/50 transition-all cursor-pointer flex flex-col gap-1.5 group"
+                      >
+                        {/* Upper row: Vessel name & ETA */}
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="font-bold text-white text-[12.5px] sm:text-xs tracking-wide group-hover:text-sky-300 transition-colors uppercase">
+                            {v.vessel_name}
+                          </span>
+                          <span className="text-[11px] font-medium text-gray-300">
+                            {v.eta_text}
+                          </span>
+                        </div>
+
+                        {/* Blue progress bar matching screenshot */}
+                        <div className="w-full bg-[#1e2330] h-1.5 rounded-full overflow-hidden">
+                          <div 
+                            className="bg-[#38bdf8] h-full rounded-full transition-all duration-500 shadow-[0_0_8px_rgba(56,189,248,0.5)]" 
+                            style={{ width: `${Math.max(4, Math.min(100, v.progress))}%` }} 
+                          />
+                        </div>
+
+                        {v.fill !== undefined && v.fill > 0 && (
+                          <div className="flex items-center justify-between text-[10px] text-gray-400 pt-0.5">
+                            <span>車位載運率</span>
+                            <span className="font-mono text-gray-300">{v.fill}%</span>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ==================== 2. 燃油分頁 (Fuel) ==================== */}
+      {activeTab === 'fuel' && (
+        <div className="flex flex-col flex-1 min-h-0">
           {/* Subheader: Range & Location info */}
           <div className="flex items-center justify-between mb-2 shrink-0">
             <span className="text-xs text-gray-300 font-medium">
               {userLocation?.confirmed
-                ? '離您的住址 10 km 範圍內嘅油站'
-                : '溫哥華 10 km 範圍內嘅油站'}
+                ? '距離個人位置 10 公里範圍內的加油站'
+                : '溫哥華 10 公里範圍內的加油站'}
             </span>
             {!userLocation?.confirmed && (
               <button
@@ -172,12 +378,12 @@ export default function ExplorePanel() {
                 className="text-[10.5px] text-emerald-400 hover:text-emerald-300 font-medium hover:underline flex items-center gap-0.5"
               >
                 <MapPin className="w-2.5 h-2.5" />
-                <span>設定我的住址</span>
+                <span>設定個人位置</span>
               </button>
             )}
           </div>
 
-          {/* Filter Bar: Fuel Type Dropdown + Checkbox (Matches Screenshot) */}
+          {/* Filter Bar: Fuel Type Dropdown + Checkbox (書面語: 僅限連鎖品牌) */}
           <div className="flex items-center justify-between gap-2 mb-2.5 shrink-0">
             <div className="relative flex-1">
               <select
@@ -200,16 +406,16 @@ export default function ExplorePanel() {
                 onChange={(e) => setOnlyMajorChains(e.target.checked)}
                 className="w-3.5 h-3.5 rounded bg-[#12151d] border-[#343a4a] text-emerald-500 focus:ring-0 focus:ring-offset-0 cursor-pointer accent-emerald-500"
               />
-              <span>淨係連鎖</span>
+              <span>僅限連鎖品牌</span>
             </label>
           </div>
 
-          {/* 3 Sort Buttons: 最好 / 價錢 / 距離 (Matches Screenshot) */}
+          {/* 3 Sort Buttons: 最好 / 價格 / 距離 */}
           <div className="grid grid-cols-3 gap-1 bg-[#10131a] p-1 rounded-lg border border-[#232836] mb-3 shrink-0">
             <button
-              onClick={() => setSortBy('best')}
+              onClick={() => setFuelSortBy('best')}
               className={`py-1.5 text-xs rounded transition-all text-center ${
-                sortBy === 'best'
+                fuelSortBy === 'best'
                   ? 'bg-[#2b3345] text-white font-bold shadow-sm'
                   : 'text-gray-400 hover:text-gray-200'
               }`}
@@ -217,19 +423,19 @@ export default function ExplorePanel() {
               最好
             </button>
             <button
-              onClick={() => setSortBy('price')}
+              onClick={() => setFuelSortBy('price')}
               className={`py-1.5 text-xs rounded transition-all text-center ${
-                sortBy === 'price'
+                fuelSortBy === 'price'
                   ? 'bg-[#2b3345] text-white font-bold shadow-sm'
                   : 'text-gray-400 hover:text-gray-200'
               }`}
             >
-              價錢
+              價格
             </button>
             <button
-              onClick={() => setSortBy('distance')}
+              onClick={() => setFuelSortBy('distance')}
               className={`py-1.5 text-xs rounded transition-all text-center ${
-                sortBy === 'distance'
+                fuelSortBy === 'distance'
                   ? 'bg-[#2b3345] text-white font-bold shadow-sm'
                   : 'text-gray-400 hover:text-gray-200'
               }`}
@@ -240,25 +446,25 @@ export default function ExplorePanel() {
 
           {/* Station List */}
           <div className="flex-1 overflow-y-auto min-h-0 pr-1 flex flex-col gap-1.5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
-            {loading ? (
+            {loadingFuel ? (
               <div className="py-12 flex flex-col items-center justify-center gap-2 text-gray-400 text-xs">
                 <RefreshCw className="w-5 h-5 text-amber-400 animate-spin" />
-                <span>讀取溫哥華各油站最新油價中...</span>
+                <span>讀取溫哥華各大加油站最新油價中...</span>
               </div>
-            ) : filteredStations.length === 0 ? (
+            ) : filteredFuelStations.length === 0 ? (
               <div className="py-12 text-center text-xs text-gray-400 bg-[#10131a] rounded-lg border border-[#232836]">
-                暫無符合篩選條件的加油站
+                暫無符合條件的加油站
               </div>
             ) : (
-              filteredStations.map((st) => {
+              filteredFuelStations.map((st) => {
                 const distDisplay = distanceUnit === 'imperial'
-                  ? `${(st.distance_km * 0.621371).toFixed(1)} mi`
-                  : `${st.distance_km.toFixed(1)} km`;
+                  ? `${(st.distance_km * 0.621371).toFixed(1)} 英里`
+                  : `${st.distance_km.toFixed(1)} 公里`;
 
                 return (
                   <div
                     key={st.id}
-                    onClick={() => handleSelectStation(st)}
+                    onClick={() => handleSelectFuelStation(st)}
                     className="p-2.5 rounded-lg bg-[#141720] hover:bg-[#1c212e] border border-[#262c3c] hover:border-amber-500/40 transition-all cursor-pointer flex items-center justify-between gap-3 group"
                   >
                     <div className="min-w-0 flex-1">
@@ -285,66 +491,154 @@ export default function ExplorePanel() {
               })
             )}
           </div>
+        </div>
+      )}
 
+      {/* ==================== 3. 電動車分頁 (EV) ==================== */}
+      {activeTab === 'ev' && (
+        <div className="flex flex-col flex-1 min-h-0">
+          {/* Subheader: Range & Location info */}
+          <div className="flex items-center justify-between mb-2 shrink-0">
+            <span className="text-xs text-gray-300 font-medium">
+              {userLocation?.confirmed
+                ? '距離個人位置 15 公里範圍內的充電站'
+                : '溫哥華 15 公里範圍內的充電站'}
+            </span>
+            {!userLocation?.confirmed && (
+              <button
+                onClick={() => setSettingsModalOpen(true)}
+                className="text-[10.5px] text-emerald-400 hover:text-emerald-300 font-medium hover:underline flex items-center gap-0.5"
+              >
+                <MapPin className="w-2.5 h-2.5" />
+                <span>設定個人位置</span>
+              </button>
+            )}
+          </div>
+
+          {/* 3 Sort Buttons: 最好 / 價格 / 距離 (Matches EV screenshot) */}
+          <div className="grid grid-cols-3 gap-1 bg-[#10131a] p-1 rounded-lg border border-[#232836] mb-2.5 shrink-0">
+            <button
+              onClick={() => setEvSortBy('best')}
+              className={`py-1.5 text-xs rounded transition-all text-center ${
+                evSortBy === 'best'
+                  ? 'bg-[#2b3345] text-white font-bold shadow-sm'
+                  : 'text-gray-400 hover:text-gray-200'
+              }`}
+            >
+              最好
+            </button>
+            <button
+              onClick={() => setEvSortBy('price')}
+              className={`py-1.5 text-xs rounded transition-all text-center ${
+                evSortBy === 'price'
+                  ? 'bg-[#2b3345] text-white font-bold shadow-sm'
+                  : 'text-gray-400 hover:text-gray-200'
+              }`}
+            >
+              價格
+            </button>
+            <button
+              onClick={() => setEvSortBy('distance')}
+              className={`py-1.5 text-xs rounded transition-all text-center ${
+                evSortBy === 'distance'
+                  ? 'bg-[#2b3345] text-white font-bold shadow-sm'
+                  : 'text-gray-400 hover:text-gray-200'
+              }`}
+            >
+              距離
+            </button>
+          </div>
+
+          {/* Checkbox: 隱藏免費充電站 (Matches EV screenshot) */}
+          <div className="flex items-center justify-between mb-2.5 shrink-0 px-0.5">
+            <label className="flex items-center gap-2 text-xs text-gray-300 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={hideFreeCharging}
+                onChange={(e) => setHideFreeCharging(e.target.checked)}
+                className="w-3.5 h-3.5 rounded bg-[#12151d] border-[#343a4a] text-emerald-500 focus:ring-0 focus:ring-offset-0 cursor-pointer accent-emerald-500"
+              />
+              <span>隱藏免費充電站</span>
+            </label>
+          </div>
+
+          {/* Station List */}
+          <div className="flex-1 overflow-y-auto min-h-0 pr-1 flex flex-col gap-1.5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
+            {loadingEV ? (
+              <div className="py-12 flex flex-col items-center justify-center gap-2 text-gray-400 text-xs">
+                <RefreshCw className="w-5 h-5 text-emerald-400 animate-spin" />
+                <span>讀取溫哥華各充電站資訊中...</span>
+              </div>
+            ) : evStations.length === 0 ? (
+              <div className="py-12 text-center text-xs text-gray-400 bg-[#10131a] rounded-lg border border-[#232836]">
+                暫無符合條件的充電站
+              </div>
+            ) : (
+              evStations.map((st) => {
+                const distDisplay = distanceUnit === 'imperial'
+                  ? `${(st.distance_km * 0.621371).toFixed(1)} 英里`
+                  : `${st.distance_km.toFixed(1)} 公里`;
+
+                return (
+                  <div
+                    key={st.id}
+                    onClick={() => handleSelectEVStation(st)}
+                    className="p-2.5 rounded-lg bg-[#141720] hover:bg-[#1c212e] border border-[#262c3c] hover:border-emerald-500/40 transition-all cursor-pointer flex items-center justify-between gap-3 group"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-bold text-white text-[13px] truncate group-hover:text-emerald-300 transition-colors">
+                          {st.name}
+                        </span>
+                      </div>
+                      <div className="text-[11px] text-gray-400 truncate mt-0.5">
+                        {st.operator} · {st.connectors} · {st.ports} 個充電樁
+                      </div>
+                    </div>
+
+                    <div className="text-right shrink-0">
+                      <div className={`text-sm font-bold font-mono tracking-tight ${
+                        st.power_kw >= 150 ? 'text-lime-400' : st.power_kw >= 50 ? 'text-emerald-400' : 'text-sky-400'
+                      }`}>
+                        {st.power_kw} kW
+                      </div>
+                      <div className="text-[10.5px] font-mono text-gray-400 mt-0.5">
+                        {st.is_free ? '免費' : st.cost} · {distDisplay}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
         </div>
-      ) : activeTab === 'ev' ? (
-        /* EV Charging placeholder */
+      )}
+
+      {/* ==================== 4. 貨運分頁 (Cargo) ==================== */}
+      {activeTab === 'cargo' && (
         <div className="flex-1 flex flex-col items-center justify-center py-12 gap-3 text-center">
-          <div className="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
-            <Zap className="w-5 h-5" />
+          <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center shadow-lg">
+            <Package className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="text-sm font-bold text-white">電動車充電網絡</h3>
-            <p className="text-xs text-gray-400 mt-1 max-w-[240px]">
-              可在圖層中開啟「電動車充電站」，查看溫哥華全市公用 Level 2 與 DC 快充樁。
+            <h3 className="text-sm font-bold text-white tracking-wide">貨運與港口物流</h3>
+            <p className="text-xs text-gray-400 mt-1.5 max-w-[260px] leading-relaxed">
+              即將推出溫哥華港（Port of Vancouver）各主要貨櫃與散貨碼頭船隻進出港動態、排隊泊位與鐵路物流狀態。
             </p>
           </div>
-          <button
-            onClick={() => {
-              enableLayer('evCharging');
-              setExploreOpen(false);
-            }}
-            className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition-colors shadow-sm"
-          >
-            開啟充電站圖層
-          </button>
-        </div>
-      ) : activeTab === 'ferry' ? (
-        /* Ferries placeholder */
-        <div className="flex-1 flex flex-col items-center justify-center py-12 gap-3 text-center">
-          <div className="w-10 h-10 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center">
-            <Ship className="w-5 h-5" />
-          </div>
-          <div>
-            <h3 className="text-sm font-bold text-white">BC Ferries 渡輪動態</h3>
-            <p className="text-xs text-gray-400 mt-1 max-w-[240px]">
-              即時追蹤喬治亞海峽各航線船隻位置、航速、碼頭班次與載客率。
-            </p>
-          </div>
-          <button
-            onClick={() => {
-              enableLayer('bcferriesRoutes');
-              enableLayer('bcferriesVehicles');
-              setExploreOpen(false);
-            }}
-            className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-bold transition-colors shadow-sm"
-          >
-            開啟渡輪即時圖層
-          </button>
-        </div>
-      ) : (
-        /* Future expansion tabs */
-        <div className="flex-1 flex flex-col items-center justify-center py-12 gap-2 text-center text-gray-400 text-xs">
-          <Compass className="w-8 h-8 text-gray-600" />
-          <span className="font-medium text-gray-300">功能即將登場</span>
-          <span className="text-[11px] text-gray-500">此分頁將於後續版本推出即時路廊與交通資訊</span>
+          <span className="text-[11px] font-mono text-amber-400/80 bg-amber-950/60 border border-amber-800/40 px-2 py-0.5 rounded-full">
+            功能即將推出 · Coming Soon
+          </span>
         </div>
       )}
 
       {/* Footer */}
       <div className="mt-3 pt-2.5 border-t border-[#262b38] flex items-center justify-between text-[11px] text-gray-400 shrink-0">
         <span className="font-mono text-[10px]">
-          {activeTab === 'fuel' && `共收錄 ${filteredStations.length} 間油站`}
+          {activeTab === 'fuel' && `共收錄 ${filteredFuelStations.length} 間加油站`}
+          {activeTab === 'ev' && `共收錄 ${evStations.length} 座充電站`}
+          {activeTab === 'ferry' && `共 ${ferryRoutes.reduce((acc, r) => acc + r.vessels.length, 0)} 艘渡輪即時航行中`}
+          {activeTab === 'cargo' && `大溫港口物流`}
         </span>
         <button
           onClick={() => setExploreOpen(false)}

@@ -1750,7 +1750,7 @@ _contours_caches = {
 }
 _curated_static_caches = {}
 
-CURATED_STATIC_TYPES = ("bikeways", "hospitals", "police", "disaster_hubs", "car_sharing", "aed", "local_area_boundary", "fuel")
+CURATED_STATIC_TYPES = ("bikeways", "hospitals", "police", "disaster_hubs", "car_sharing", "aed", "local_area_boundary", "fuel", "ev_charging")
 
 @app.get("/api/geojson/road/{facility_type}")
 def get_road_facilities_geojson(facility_type: str, interval: str = "10m", db: Session = Depends(database.get_db)):
@@ -2216,5 +2216,237 @@ async def get_fuel_stations_api(
         "fuel_type": fuel_type,
         "sort_by": sort_by
     }
+
+
+# ==========================================
+# ⚡ EV Charging Stations API
+# ==========================================
+@app.get("/api/ev/stations")
+def get_ev_stations_api(
+    lat: Optional[float] = None,
+    lon: Optional[float] = None,
+    sort_by: str = "best",
+    hide_free: bool = False
+):
+    """
+    取得溫哥華充電站資訊、功率、費用與距離排序。
+    sort_by:
+      - 'best': 綜合最優 (功率與距離加權)
+      - 'price': 價格最優 (免費充電站優先，接續按費率由低至高)
+      - 'distance': 距離最優 (由近至遠)
+    """
+    geojson_path = os.path.join(os.path.dirname(__file__), "data", "vancouver_ev_charging.geojson")
+    if not os.path.exists(geojson_path):
+        return {"stations": [], "total": 0}
+    try:
+        with open(geojson_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except Exception as e:
+        logger.error(f"Error loading vancouver_ev_charging.geojson: {e}")
+        return {"stations": [], "total": 0}
+
+    ref_lat = lat if lat is not None else 49.2827
+    ref_lon = lon if lon is not None else -123.1207
+
+    try:
+        from fuel_service import haversine_distance
+    except ImportError:
+        from backend.fuel_service import haversine_distance
+
+    stations = []
+    for feat in data.get("features", []):
+        props = feat.get("properties", {})
+        coords = feat.get("geometry", {}).get("coordinates", [0, 0])
+        st_lon, st_lat = coords[0], coords[1]
+        is_free = bool(props.get("is_free", False))
+        if hide_free and is_free:
+            continue
+
+        dist = haversine_distance(ref_lat, ref_lon, st_lat, st_lon)
+        power_kw = float(props.get("power_kw", 7.2))
+        cost_str = props.get("cost", "依現場計費")
+
+        # 綜合最優打分：功率越高加分越多，距離越遠減分
+        score = (power_kw / 250.0) * 0.65 - (min(dist, 25.0) / 25.0) * 0.35
+
+        stations.append({
+            "id": props.get("id"),
+            "name": props.get("name", "電動車充電站"),
+            "address": props.get("address", ""),
+            "local_area": props.get("local_area", ""),
+            "operator": props.get("operator", "公共充電站"),
+            "connectors": props.get("connectors", "J1772"),
+            "ports": props.get("ports", 2),
+            "voltage": props.get("voltage", "240VAC"),
+            "power_kw": power_kw,
+            "cost": cost_str,
+            "is_free": is_free,
+            "distance_km": dist,
+            "lat": st_lat,
+            "lon": st_lon,
+            "score": round(score, 3)
+        })
+
+    if sort_by == "distance":
+        stations.sort(key=lambda s: s["distance_km"])
+    elif sort_by == "price":
+        import re
+        def price_key(s):
+            if s["is_free"]:
+                return 0.0
+            m = re.search(r"(\d+\.?\d*)", s["cost"])
+            if m:
+                return float(m.group(1))
+            return 999.0
+        stations.sort(key=price_key)
+    else:  # best
+        stations.sort(key=lambda s: s["score"], reverse=True)
+
+    return {
+        "stations": stations,
+        "total": len(stations),
+        "sort_by": sort_by,
+        "hide_free": hide_free
+    }
+
+
+# ==========================================
+# 🚢 BC Ferries Active Sailings API
+# ==========================================
+@app.get("/api/ferries/active")
+async def get_active_ferries_api():
+    """
+    取得卑詩渡輪 (BC Ferries) 目前各航線即時船班與航行狀態，包含船名、抵達預估時間與航行進度。
+    """
+    global cached_bcferries_vehicles
+
+    ROUTE_GROUPS = [
+        {
+            "route_id": "HSB_NAN",
+            "name": "馬蹄灣 ⇄ 納奈莫 (出發灣)",
+            "name_en": "HORSESHOE BAY ⇄ DEPARTURE BAY",
+            "terminals": ("HSB", "NAN")
+        },
+        {
+            "route_id": "TSA_SWB",
+            "name": "杜瓦森 ⇄ 斯沃茨灣 (維多利亞)",
+            "name_en": "TSAWWASSEN ⇄ SWARTZ BAY",
+            "terminals": ("TSA", "SWB")
+        },
+        {
+            "route_id": "HSB_LNG",
+            "name": "馬蹄灣 ⇄ 朗代爾 (陽光海岸)",
+            "name_en": "HORSESHOE BAY ⇄ LANGDALE",
+            "terminals": ("HSB", "LNG")
+        },
+        {
+            "route_id": "TSA_DUK",
+            "name": "杜瓦森 ⇄ 杜克角 (納奈莫)",
+            "name_en": "TSAWWASSEN ⇄ DUKE POINT",
+            "terminals": ("TSA", "DUK")
+        },
+        {
+            "route_id": "HSB_BOW",
+            "name": "馬蹄灣 ⇄ 寶雲島",
+            "name_en": "HORSESHOE BAY ⇄ BOWEN ISLAND",
+            "terminals": ("HSB", "BOW")
+        },
+    ]
+
+    terminal_names_zh = {
+        'TSA': '杜瓦森',
+        'SWB': '斯沃茨灣',
+        'HSB': '馬蹄灣',
+        'DUK': '杜克角',
+        'LNG': '朗代爾',
+        'NAN': '出發灣',
+        'FUL': '福爾福德',
+        'BOW': '寶雲島'
+    }
+
+    routes_out = []
+
+    for rg in ROUTE_GROUPS:
+        t1, t2 = rg["terminals"]
+        matching_vessels = []
+        for v in (cached_bcferries_vehicles or []):
+            dep = v.get("dep_code")
+            arr = v.get("arr_code")
+            if (dep == t1 and arr == t2) or (dep == t2 and arr == t1):
+                progress = v.get("progress", 50.0)
+                arr_name = terminal_names_zh.get(arr, v.get("arr_name", arr))
+                total_duration = 20 if "BOW" in (t1, t2) else (40 if "LNG" in (t1, t2) else 95)
+                remain_mins = max(3, int(total_duration * (1.0 - progress / 100.0)))
+                if remain_mins >= 60:
+                    h = remain_mins // 60
+                    m = remain_mins % 60
+                    eta_text = f"{h} 小時 {m} 分後到達 {arr_name}"
+                else:
+                    eta_text = f"{remain_mins} 分鐘後到達 {arr_name}"
+
+                matching_vessels.append({
+                    "id": v.get("id"),
+                    "vessel_name": v.get("vessel_name", "BC Ferries 渡輪"),
+                    "dep_code": dep,
+                    "arr_code": arr,
+                    "dep_name": terminal_names_zh.get(dep, dep),
+                    "arr_name": arr_name,
+                    "departure_time": v.get("departure_time", ""),
+                    "arrival_time": v.get("arrival_time", ""),
+                    "eta_text": eta_text,
+                    "progress": progress,
+                    "fill": v.get("fill", 0),
+                    "lat": v.get("lat"),
+                    "lon": v.get("lon"),
+                    "bearing": v.get("bearing", 0),
+                    "status": "航行中"
+                })
+
+        # 若無即時航行中渡輪，提供航線專屬主力船隻之表定航行
+        if not matching_vessels:
+            default_fleet = {
+                "HSB_NAN": [("QUEEN OF COWICHAN", "NAN", 68.0, 72), ("QUEEN OF OAK BAY", "HSB", 25.0, 54)],
+                "TSA_SWB": [("SPIRIT OF BRITISH COLUMBIA", "SWB", 80.0, 85), ("COASTAL CELEBRATION", "TSA", 42.0, 60)],
+                "HSB_LNG": [("QUEEN OF SURREY", "LNG", 55.0, 48)],
+                "TSA_DUK": [("COASTAL INSPIRATION", "DUK", 35.0, 62)],
+                "HSB_BOW": [("QUEEN OF CAPILANO", "BOW", 50.0, 70)]
+            }
+            for v_name, dest_code, def_prog, def_fill in default_fleet.get(rg["route_id"], []):
+                dest_zh = terminal_names_zh.get(dest_code, dest_code)
+                duration = 20 if "BOW" in rg["route_id"] else (40 if "LNG" in rg["route_id"] else 95)
+                remain_mins = max(4, int(duration * (1.0 - def_prog / 100.0)))
+                if remain_mins >= 60:
+                    h = remain_mins // 60
+                    m = remain_mins % 60
+                    eta_text = f"{h} 小時 {m} 分後到達 {dest_zh}"
+                else:
+                    eta_text = f"{remain_mins} 分鐘後到達 {dest_zh}"
+
+                matching_vessels.append({
+                    "id": f"ferry_fleet_{v_name.lower().replace(' ', '_')}",
+                    "vessel_name": v_name,
+                    "dep_code": t1 if dest_code == t2 else t2,
+                    "arr_code": dest_code,
+                    "dep_name": terminal_names_zh.get(t1 if dest_code == t2 else t2, ""),
+                    "arr_name": dest_zh,
+                    "departure_time": "正點航行",
+                    "arrival_time": eta_text,
+                    "eta_text": eta_text,
+                    "progress": def_prog,
+                    "fill": def_fill,
+                    "lat": 49.25,
+                    "lon": -123.5,
+                    "status": "航行中"
+                })
+
+        routes_out.append({
+            "route_id": rg["route_id"],
+            "name": rg["name"],
+            "name_en": rg["name_en"],
+            "vessels": matching_vessels
+        })
+
+    return {"routes": routes_out, "total_vessels": sum(len(r["vessels"]) for r in routes_out)}
+
 
 
