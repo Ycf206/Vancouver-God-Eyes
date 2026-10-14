@@ -77,9 +77,6 @@ def generate_gtfs_metadata():
         z = zipfile.ZipFile(io.BytesIO(resp.content), "r")
 
     routes_map = {}
-    target_short_names = {"099", "99", "R1", "R2", "R3", "R4", "R5", "R6"}
-    target_route_ids = set()
-
     with z.open("routes.txt") as f:
         reader = csv.DictReader(io.TextIOWrapper(f, "utf-8-sig"))
         for row in reader:
@@ -110,10 +107,7 @@ def generate_gtfs_metadata():
                 "color": color,
             }
 
-            if raw_sn in target_short_names or clean_sn in target_short_names or clean_sn == "SeaBus":
-                target_route_ids.add(rid)
-
-    print(f"Loaded {len(routes_map)} total routes. Target routes for detailed stop/shape variants: {target_route_ids}")
+    print(f"Loaded {len(routes_map)} total routes.")
 
     # Load stops
     stops_dict = {}
@@ -129,40 +123,49 @@ def generate_gtfs_metadata():
                 "lon": round(float(row["stop_lon"]), 5),
             }
 
-    # Load trips for target routes
+    # Load all trips
     trips_info = {}
+    variant_trips = {}
     with z.open("trips.txt") as f:
         reader = csv.DictReader(io.TextIOWrapper(f, "utf-8-sig"))
         for row in reader:
             rid = row["route_id"].strip()
-            if rid in target_route_ids:
+            if rid in routes_map:
                 tid = row["trip_id"].strip()
-                trips_info[tid] = {
+                dir_id = str(row.get("direction_id", "0")).strip()
+                headsign = row.get("trip_headsign", "").strip()
+                shape_id = row.get("shape_id", "").strip()
+                tinfo = {
+                    "trip_id": tid,
                     "route_id": rid,
-                    "direction_id": str(row.get("direction_id", "0")).strip(),
-                    "headsign": row.get("trip_headsign", "").strip(),
-                    "shape_id": row.get("shape_id", "").strip(),
+                    "direction_id": dir_id,
+                    "headsign": headsign,
+                    "shape_id": shape_id,
                 }
+                trips_info[tid] = tinfo
+                vkey = f"{rid}_{dir_id}_{headsign}"
+                if vkey not in variant_trips:
+                    variant_trips[vkey] = tinfo
 
-    # Load stop_times for target trips
+    rep_trip_ids = {t["trip_id"] for t in variant_trips.values()}
+    print(f"Loaded {len(trips_info)} trips across {len(variant_trips)} route variants.")
+
+    # Load stop_times for representative trips only
     trip_stop_lists = {}
     with z.open("stop_times.txt") as f:
         reader = csv.DictReader(io.TextIOWrapper(f, "utf-8-sig"))
         for row in reader:
             tid = row["trip_id"].strip()
-            if tid in trips_info:
+            if tid in rep_trip_ids:
                 seq = int(row["stop_sequence"])
                 sid = row["stop_id"].strip()
                 trip_stop_lists.setdefault(tid, []).append((seq, sid))
 
-    # Pick representative trip for each (route_id, direction_id, headsign)
     variant_best_trip = {}
-    for tid, st_list in trip_stop_lists.items():
+    for vkey, tinfo in variant_trips.items():
+        st_list = trip_stop_lists.get(tinfo["trip_id"], [])
         st_list.sort(key=lambda x: x[0])
-        tinfo = trips_info[tid]
-        vkey = f"{tinfo['route_id']}_{tinfo['direction_id']}_{tinfo['headsign']}"
-        if vkey not in variant_best_trip or len(st_list) > len(variant_best_trip[vkey][1]):
-            variant_best_trip[vkey] = (tinfo, st_list)
+        variant_best_trip[vkey] = (tinfo, st_list)
 
     # Needed shape_ids
     needed_shape_ids = {tinfo["shape_id"] for tinfo, _ in variant_best_trip.values() if tinfo.get("shape_id")}

@@ -34,3 +34,4 @@ scratch_*.py
 add_api.py
 generate_bc_ferries.py
 bcferries.json
+temp_gtfs/
