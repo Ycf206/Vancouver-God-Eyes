@@ -197,11 +197,24 @@ export default function ExplorePanel() {
       id: `fuel_${st.id}`,
       title: st.name || st.brand,
       subtitle: `${st.address} · 油價: ${st.price_current.toFixed(1)}¢`,
-      category: 'road',
+      category: 'fuel',
+      layer_key: 'fuel',
       badge: '加油站',
       icon: '⛽',
       lat: st.lat,
       lon: st.lon,
+      meta: {
+        local_area: st.address || st.city || '溫哥華市',
+        properties: {
+          id: st.id,
+          name: st.name || st.brand,
+          brand: st.brand,
+          address: st.address,
+          city: st.city,
+          facility_type: 'fuel',
+          opening_hours: '24/7'
+        }
+      },
       zoom: 16.5
     });
   };
@@ -213,11 +226,26 @@ export default function ExplorePanel() {
       id: `ev_${st.id}`,
       title: st.name,
       subtitle: `${st.address || st.local_area} · 功率: ${st.power_kw} kW · ${st.cost}`,
-      category: 'road',
+      category: 'ev_charging',
+      layer_key: 'evCharging',
       badge: '充電站',
       icon: '⚡',
       lat: st.lat,
       lon: st.lon,
+      meta: {
+        local_area: st.address || st.local_area || '溫哥華市',
+        properties: {
+          id: st.id,
+          name: st.name,
+          power_kw: st.power_kw,
+          connectors: st.connectors,
+          ports: st.ports,
+          voltage: st.voltage,
+          cost: st.cost,
+          operator: st.operator,
+          facility_type: 'ev_charging'
+        }
+      },
       zoom: 16.5
     });
   };
@@ -269,7 +297,10 @@ export default function ExplorePanel() {
           <h2 className="text-base font-bold text-white tracking-wide">探索</h2>
         </div>
         <button
-          onClick={() => setExploreOpen(false)}
+          onClick={() => {
+            setExploreOpen(false);
+            setSearchTarget(null);
+          }}
           className="text-gray-400 hover:text-white p-1 rounded-md hover:bg-[#252a38] transition-colors"
           title="關閉"
         >
@@ -656,7 +687,10 @@ export default function ExplorePanel() {
           {activeTab === 'cargo' && `大溫港口物流`}
         </span>
         <button
-          onClick={() => setExploreOpen(false)}
+          onClick={() => {
+            setExploreOpen(false);
+            setSearchTarget(null);
+          }}
           className="text-gray-400 hover:text-white hover:underline text-[11px]"
         >
           關閉

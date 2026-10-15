@@ -177,12 +177,32 @@ export const useUIStore = create<UIState>()(
       setExploreOpen: (open) => set({ isExploreOpen: open }),
       toggleExplore: () => set((state) => ({ isExploreOpen: !state.isExploreOpen })),
       toggleLayer: (layer) =>
-        set((state) => ({
-          layers: {
-            ...state.layers,
-            [layer]: !state.layers[layer],
-          },
-        })),
+        set((state) => {
+          const nextActive = !state.layers[layer];
+          let nextSearchTarget = state.searchTarget;
+          if (!nextActive && state.searchTarget) {
+            const st = state.searchTarget;
+            const isTargetMatch =
+              st.layer_key === layer ||
+              (layer === 'fuel' && (st.category === 'fuel' || st.id?.startsWith('fuel_'))) ||
+              (layer === 'evCharging' && (st.category === 'ev_charging' || st.id?.startsWith('ev_'))) ||
+              (layer === 'airports' && st.category === 'airports') ||
+              (layer === 'bcferriesTerminals' && st.category === 'ferry_terminal') ||
+              (layer === 'bcferriesVehicles' && st.category === 'ferry_vehicle') ||
+              (layer === 'skytrainRoutes' && st.category === 'skytrain') ||
+              (layer === 'bus' && st.category === 'bus');
+            if (isTargetMatch) {
+              nextSearchTarget = null;
+            }
+          }
+          return {
+            layers: {
+              ...state.layers,
+              [layer]: nextActive,
+            },
+            searchTarget: nextSearchTarget,
+          };
+        }),
       enableLayer: (layer) =>
         set((state) => ({
           layers: {

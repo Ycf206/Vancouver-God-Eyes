@@ -142,14 +142,6 @@ export default function AppMap() {
     return () => clearTimeout(timer);
   }, [isLayerPanelOpen]);
 
-  useEffect(() => {
-    if (!layers.airports) {
-      setSelectedAirport(null);
-      if (searchTarget && searchTarget.category === 'airports') {
-        setSearchTarget(null);
-      }
-    }
-  }, [layers.airports, searchTarget, setSearchTarget]);
 
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [ferryVehicles, setFerryVehicles] = useState<FerryVehicle[]>([]);
@@ -297,8 +289,107 @@ export default function AppMap() {
     setBusDetails(null);
     setSearchedBusRoute(null);
     setSelectedSkytrainStation(null);
-    setSelectedTrain(train);
   }, []);
+
+  // 當圖層被關閉時，自動清理對應已開啟之資訊卡片與搜尋閃爍標記 (Search Target Focus Ring)
+  useEffect(() => {
+    // 1. 設施類別 (Facility)
+    if (selectedFacility) {
+      const type = selectedFacility.facility_type;
+      let facilityClosed = false;
+      if (type === 'fuel' && !layers.fuel) facilityClosed = true;
+      else if (type === 'ev_charging' && !layers.evCharging) facilityClosed = true;
+      else if (type === 'aed' && !layers.aed) facilityClosed = true;
+      else if (type === 'fire_halls' && !layers.fireHalls) facilityClosed = true;
+      else if (type === 'police' && !layers.police) facilityClosed = true;
+      else if (type === 'disaster_hubs' && !layers.disasterHubs) facilityClosed = true;
+      else if (type === 'community_centres' && !layers.communityCentres) facilityClosed = true;
+      else if (type === 'hospitals' && !layers.hospitals) facilityClosed = true;
+      else if (type === 'parks' && !layers.parks) facilityClosed = true;
+      else if (type === 'parks_facilities' && !layers.parksFacilities) facilityClosed = true;
+      else if (type === 'community_gardens' && !layers.communityGardens) facilityClosed = true;
+      else if (type === 'drinking_fountains' && !layers.drinkingFountains) facilityClosed = true;
+      else if (type === 'public_washrooms' && !layers.publicWashrooms) facilityClosed = true;
+      else if (type === 'schools' && !layers.schools) facilityClosed = true;
+      else if (type === 'libraries' && !layers.libraries) facilityClosed = true;
+      else if (type === 'food_vendors' && !layers.foodVendors) facilityClosed = true;
+      else if (type === 'homeless_shelters' && !layers.homelessShelters) facilityClosed = true;
+      else if (type === 'traffic_cameras' && !layers.trafficCameras) facilityClosed = true;
+      else if (type === 'safety_cameras' && !layers.safetyCameras) facilityClosed = true;
+      else if (type === 'parking_meters' && !layers.parkingMeters) facilityClosed = true;
+      else if (type === 'accessible_parking' && !layers.accessibleParking) facilityClosed = true;
+      else if (type === 'motorcycle_parking' && !layers.motorcycleParking) facilityClosed = true;
+      else if (type === 'shared_bikes' && !layers.sharedBikes) facilityClosed = true;
+      else if (type === 'escooter' && !layers.escooter) facilityClosed = true;
+      else if (type === 'contours' && !layers.contours) facilityClosed = true;
+
+      if (facilityClosed) {
+        setSelectedFacility(null);
+        setSearchTarget(null);
+      }
+    }
+
+    // 2. 機場 (Airports)
+    if (selectedAirport && !layers.airports) {
+      setSelectedAirport(null);
+      if (searchTarget && searchTarget.category === 'airports') {
+        setSearchTarget(null);
+      }
+    }
+
+    // 3. BC Ferries 碼頭與船隻
+    if (selectedTerminal && !layers.bcferriesTerminals) {
+      setSelectedTerminal(null);
+      if (searchTarget && searchTarget.category === 'ferry_terminal') {
+        setSearchTarget(null);
+      }
+    }
+    if (selectedFerry && !layers.bcferriesVehicles) {
+      setSelectedFerry(null);
+      if (searchTarget && searchTarget.category === 'ferry_vehicle') {
+        setSearchTarget(null);
+      }
+    }
+
+    // 4. 巴士與天車
+    if ((selectedBus || searchedBusRoute) && !layers.bus && !layers.busRoutes) {
+      setSelectedBus(null);
+      setBusDetails(null);
+      setSearchedBusRoute(null);
+      if (searchTarget && (searchTarget.category === 'bus' || searchTarget.category === 'bus_route')) {
+        setSearchTarget(null);
+      }
+    }
+    if (selectedTrain && !layers.skytrainTrains) {
+      setSelectedTrain(null);
+    }
+    if (selectedSkytrainStation && !layers.skytrainStops && !layers.skytrainRoutes) {
+      setSelectedSkytrainStation(null);
+      if (searchTarget && searchTarget.category === 'skytrain') {
+        setSearchTarget(null);
+      }
+    }
+
+    // 5. 搜尋目標 (Search Target) 直接聯動圖層開關
+    if (searchTarget) {
+      if (searchTarget.layer_key && !layers[searchTarget.layer_key]) {
+        setSearchTarget(null);
+      } else if ((searchTarget.category === 'fuel' || searchTarget.id?.startsWith('fuel_')) && !layers.fuel) {
+        setSearchTarget(null);
+      } else if ((searchTarget.category === 'ev_charging' || searchTarget.id?.startsWith('ev_')) && !layers.evCharging) {
+        setSearchTarget(null);
+      } else if (searchTarget.category === 'aed' && !layers.aed) {
+        setSearchTarget(null);
+      } else if (searchTarget.category === 'airports' && !layers.airports) {
+        setSearchTarget(null);
+      } else if (searchTarget.category === 'ferry_terminal' && !layers.bcferriesTerminals) {
+        setSearchTarget(null);
+      } else if (searchTarget.category === 'ferry_vehicle' && !layers.bcferriesVehicles) {
+        setSearchTarget(null);
+      }
+    }
+  }, [layers, selectedFacility, selectedAirport, selectedTerminal, selectedFerry, selectedBus, searchedBusRoute, selectedTrain, selectedSkytrainStation, searchTarget, setSearchTarget]);
+
 
   const fetchSkytrainStationSchedule = React.useCallback((stopId: string, stopName?: string, lat?: number, lon?: number) => {
     setSelectedStop(null);
@@ -745,16 +836,17 @@ export default function AppMap() {
         'fire_halls', 'community_centres', 'ev_charging', 'escooter', 'shared_bikes', 'bikeways',
         'traffic_cameras', 'safety_cameras', 'parking_meters', 'accessible_parking', 'motorcycle_parking',
         'hospitals', 'parks', 'parks_facilities', 'community_gardens', 'drinking_fountains',
-        'public_washrooms', 'schools', 'libraries', 'food_vendors', 'homeless_shelters'
+        'public_washrooms', 'schools', 'libraries', 'food_vendors', 'homeless_shelters', 'aed', 'fuel', 'contours', 'road'
       ].includes(searchTarget.category)
     ) {
       setSelectedTerminal(null);
       setSelectedStop(null);
       setSelectedFlight(null);
       setSelectedAirport(null);
+      const facType = searchTarget.meta?.properties?.facility_type || (searchTarget.category === 'road' ? (searchTarget.id?.startsWith('fuel_') ? 'fuel' : 'ev_charging') : searchTarget.category);
       setSelectedFacility({
         id: searchTarget.id,
-        facility_type: searchTarget.category,
+        facility_type: facType,
         name: searchTarget.title,
         local_area: searchTarget.meta?.local_area || '',
         lon: searchTarget.lon,
@@ -2026,6 +2118,16 @@ export default function AppMap() {
           if (!feature) {
             setSelectedStop(null);
             setSelectedFacility(null);
+            setSelectedAirport(null);
+            setSelectedFlight(null);
+            setSelectedBus(null);
+            setBusDetails(null);
+            setSearchedBusRoute(null);
+            setSelectedTrain(null);
+            setSelectedSkytrainStation(null);
+            setSelectedTerminal(null);
+            setSelectedFerry(null);
+            setSearchTarget(null);
             return;
           }
 
@@ -2138,6 +2240,8 @@ export default function AppMap() {
             setSearchTarget(null);
             setSelectedTrain(null);
             setSelectedSkytrainStation(null);
+            setSelectedTerminal(null);
+            setSelectedFerry(null);
           }
         }}
       >
@@ -2231,10 +2335,19 @@ export default function AppMap() {
         {/* 搜尋目標高亮光環 (Search Target Focus Ring) - 巴士路線等整條路線不顯示中心點閃爍標記 */}
         {searchTarget && searchTarget.category !== 'bus_route' && searchTarget.category !== 'ferry_vehicle' && (
           <Marker longitude={searchTarget.lon} latitude={searchTarget.lat} anchor="center">
-            <div className="relative flex items-center justify-center pointer-events-none z-40">
-              <span className="absolute w-12 h-12 rounded-full bg-emerald-400/40 animate-ping"></span>
-              <span className="w-7 h-7 rounded-full border-2 border-emerald-400 bg-emerald-500/30 flex items-center justify-center shadow-lg">
-                <span className="text-xs">{searchTarget.icon}</span>
+            <div 
+              onClick={(e) => {
+                e.stopPropagation();
+                setSearchTarget(null);
+                if (selectedFacility) setSelectedFacility(null);
+              }}
+              className="relative flex items-center justify-center cursor-pointer z-40 group"
+              title="點擊清除閃爍標記"
+            >
+              <span className="absolute w-12 h-12 rounded-full bg-emerald-400/40 animate-ping pointer-events-none"></span>
+              <span className="w-7 h-7 rounded-full border-2 border-emerald-400 bg-emerald-500/30 group-hover:bg-rose-500/60 group-hover:border-rose-400 flex items-center justify-center shadow-lg transition-all">
+                <span className="text-xs group-hover:hidden">{searchTarget.icon}</span>
+                <span className="text-xs hidden group-hover:inline text-white font-bold leading-none">✕</span>
               </span>
             </div>
           </Marker>
@@ -2371,7 +2484,10 @@ export default function AppMap() {
             longitude={selectedStop.lon}
             latitude={selectedStop.lat}
             anchor="bottom"
-            onClose={() => setSelectedStop(null)}
+            onClose={() => {
+              setSelectedStop(null);
+              setSearchTarget(null);
+            }}
             closeButton={true}
             closeOnClick={false}
           >
@@ -2461,7 +2577,10 @@ export default function AppMap() {
             longitude={selectedTerminal.geometry.coordinates[0]}
             latitude={selectedTerminal.geometry.coordinates[1]}
             anchor="bottom"
-            onClose={() => setSelectedTerminal(null)}
+            onClose={() => {
+              setSelectedTerminal(null);
+              setSearchTarget(null);
+            }}
             closeOnClick={false}
             closeButton={false}
             className="z-50"
@@ -2475,7 +2594,10 @@ export default function AppMap() {
                   <h3 className="font-bold text-gray-900 text-base leading-snug pr-2">{selectedTerminal.properties?.name}</h3>
                 </div>
                 <button 
-                  onClick={() => setSelectedTerminal(null)} 
+                  onClick={() => {
+                    setSelectedTerminal(null);
+                    setSearchTarget(null);
+                  }} 
                   className="text-gray-400 hover:text-gray-700 text-2xl font-light leading-none px-1 py-0.5 rounded transition-colors focus:outline-none -mt-1"
                 >
                   &times;
@@ -2541,7 +2663,10 @@ export default function AppMap() {
             longitude={selectedFerry.lon}
             latitude={selectedFerry.lat}
             anchor="bottom"
-            onClose={() => setSelectedFerry(null)}
+            onClose={() => {
+              setSelectedFerry(null);
+              setSearchTarget(null);
+            }}
             closeOnClick={false}
             closeButton={false}
             className="z-50"
@@ -2565,7 +2690,10 @@ export default function AppMap() {
                   </div>
                 </div>
                 <button 
-                  onClick={() => setSelectedFerry(null)} 
+                  onClick={() => {
+                    setSelectedFerry(null);
+                    setSearchTarget(null);
+                  }} 
                   className="text-gray-400 hover:text-gray-700 text-2xl font-light leading-none px-1 py-0.5 rounded transition-colors focus:outline-none -mt-1"
                 >
                   &times;
@@ -3112,7 +3240,10 @@ export default function AppMap() {
             longitude={selectedFacility.lon}
             latitude={selectedFacility.lat}
             anchor="bottom"
-            onClose={() => setSelectedFacility(null)}
+            onClose={() => {
+              setSelectedFacility(null);
+              setSearchTarget(null);
+            }}
             closeOnClick={false}
             closeButton={false}
             className="z-50"
@@ -3166,7 +3297,10 @@ export default function AppMap() {
                   </div>
                 </div>
                 <button 
-                  onClick={() => setSelectedFacility(null)} 
+                  onClick={() => {
+                    setSelectedFacility(null);
+                    setSearchTarget(null);
+                  }} 
                   className="text-gray-400 hover:text-gray-700 text-2xl font-light leading-none px-1 py-0.5 rounded transition-colors focus:outline-none -mt-1"
                 >
                   &times;
