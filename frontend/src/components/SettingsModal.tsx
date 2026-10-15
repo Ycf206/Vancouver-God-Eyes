@@ -365,7 +365,7 @@ export default function SettingsModal() {
 
           <div className="flex flex-col gap-1.5">
             {[
-              { id: 'America/Vancouver', label: '溫哥華 (本地預設)', desc: '太平洋時間 · 目前 GMT-7 (PDT) / 冬令 GMT-8' },
+              { id: 'America/Vancouver', label: '溫哥華 (本地預設)', desc: '太平洋標準時間 · 永久單一時間制 (GMT-7 / PDT)' },
               { id: 'auto', label: '自動 (裝置系統時區)', desc: '跟隨您目前設備系統的本地時間與時區' },
               { id: 'Asia/Hong_Kong', label: '香港 / 台北 (HKT/CST)', desc: '亞洲時間 · GMT+8' },
               { id: 'America/Toronto', label: '多倫多 / 紐約 (EDT/EST)', desc: '加東美東時間 · 目前 GMT-4 / 冬令 GMT-5' },

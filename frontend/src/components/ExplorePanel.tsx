@@ -62,7 +62,7 @@ interface MaritimeVessel {
   callsign?: string;
   type_code?: number;
   ship_type: string;
-  type_group: 'cargo' | 'tanker' | 'tug' | 'passenger' | 'other';
+  type_group: 'cargo' | 'tanker' | 'tug' | 'passenger' | 'pleasure' | 'sailing' | 'other';
   lat: number;
   lon: number;
   sog: number;
@@ -1212,10 +1212,12 @@ function ExploreContent() {
                 const isUnderway = ship.sog > 0.5;
                 const statusColor = isUnderway ? 'text-emerald-400' : 'text-amber-400';
                 const typeBg = 
-                  ship.type_group === 'tanker' ? 'bg-amber-500/20 text-amber-300 border-amber-500/30' :
+                  ship.type_group === 'cargo' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' :
+                  ship.type_group === 'tanker' ? 'bg-rose-500/20 text-rose-300 border-rose-500/30' :
                   ship.type_group === 'tug' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30' :
-                  ship.type_group === 'passenger' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' :
-                  'bg-blue-500/20 text-blue-300 border-blue-500/30';
+                  ship.type_group === 'passenger' ? 'bg-blue-500/20 text-blue-300 border-blue-500/30' :
+                  ship.type_group === 'pleasure' || ship.type_group === 'sailing' ? 'bg-purple-500/20 text-purple-300 border-purple-500/30' :
+                  'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
 
                 return (
                   <div

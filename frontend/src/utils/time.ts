@@ -54,21 +54,24 @@ export function formatClock(
     minute: '2-digit',
     second: '2-digit',
   };
-  if (timeZone && timeZone !== 'auto') {
-    options.timeZone = timeZone;
+  // 溫哥華自 2026 年起實施永久單一時間制 (常年單一時間 UTC-7)，不再回撥至冬令 GMT-8
+  const effectiveTimeZone = timeZone === 'America/Vancouver' ? 'Etc/GMT+7' : timeZone;
+  if (effectiveTimeZone && effectiveTimeZone !== 'auto') {
+    options.timeZone = effectiveTimeZone;
   }
   return date.toLocaleTimeString('zh-TW', options);
 }
 
 export function formatDateWithTimezone(date: Date, timeZone?: string): string {
+  const effectiveTimeZone = timeZone === 'America/Vancouver' ? 'Etc/GMT+7' : timeZone;
   const options: Intl.DateTimeFormatOptions = {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
     timeZoneName: 'shortOffset',
   };
-  if (timeZone && timeZone !== 'auto') {
-    options.timeZone = timeZone;
+  if (effectiveTimeZone && effectiveTimeZone !== 'auto') {
+    options.timeZone = effectiveTimeZone;
   }
   const parts = new Intl.DateTimeFormat('en-US', options).formatToParts(date);
   const year = parts.find((p) => p.type === 'year')?.value || '';

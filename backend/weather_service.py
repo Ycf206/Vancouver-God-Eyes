@@ -40,24 +40,10 @@ class WeatherService:
 
     def _get_vancouver_now(self) -> datetime:
         """
-        獲取溫哥華當地時間 (America/Vancouver - 夏令 PDT UTC-7 / 冬令 PST UTC-8)
+        獲取溫哥華當地時間 (溫哥華自 2026 年起實施永久單一時間制，常年保持 UTC-7 / PDT，不再切換回冬令 GMT-8)
         """
-        try:
-            from zoneinfo import ZoneInfo
-            return datetime.now(ZoneInfo("America/Vancouver"))
-        except Exception:
-            pass
-        try:
-            import zoneinfo
-            return datetime.now(zoneinfo.ZoneInfo("America/Vancouver"))
-        except Exception:
-            pass
         from datetime import timezone, timedelta
-        utc_now = datetime.now(timezone.utc)
-        # 加拿大夏令時間 (PDT): 3月第二個週日至11月第一個週日 (約 UTC-7, 冬令 PST UTC-8)
-        is_dst = (3, 8) <= (utc_now.month, utc_now.day) <= (11, 1)
-        offset_hours = -7 if is_dst else -8
-        return utc_now + timedelta(hours=offset_hours)
+        return datetime.now(timezone.utc) - timedelta(hours=7)
 
     def fetch_weather(self) -> Dict[str, Any]:
         """

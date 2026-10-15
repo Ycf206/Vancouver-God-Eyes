@@ -62,7 +62,7 @@ export interface MaritimeVessel {
   callsign?: string;
   type_code?: number;
   ship_type: string;
-  type_group: 'cargo' | 'tanker' | 'tug' | 'passenger' | 'other';
+  type_group: 'cargo' | 'tanker' | 'tug' | 'passenger' | 'pleasure' | 'sailing' | 'other';
   lat: number;
   lon: number;
   sog: number;
@@ -2870,10 +2870,14 @@ export default function AppMap() {
           const headingDeg = ship.cog || ship.heading || 0;
           
           const bgColor = 
-            ship.type_group === 'tanker' ? '#ea580c' :
+            ship.type_group === 'cargo' ? '#16a34a' :
+            ship.type_group === 'tanker' ? '#dc2626' :
             ship.type_group === 'tug' ? '#0891b2' :
-            ship.type_group === 'passenger' ? '#059669' :
-            ship.type_group === 'other' ? '#475569' : '#1d4ed8';
+            ship.type_group === 'passenger' ? '#2563eb' :
+            ship.type_group === 'pleasure' || ship.type_group === 'sailing' ? '#a855f7' :
+            ship.type_group === 'other' ? '#a855f7' : '#16a34a';
+
+          const isMoving = (ship.sog && ship.sog > 0.5);
 
           return (
             <Marker 
@@ -2891,7 +2895,7 @@ export default function AppMap() {
                   isSelected ? 'ring-4 ring-cyan-400 scale-125 z-40' : ''
                 }`}
                 style={{ backgroundColor: bgColor }}
-                title={`${ship.name} (${ship.ship_type}) · ${ship.sog} 節`}
+                title={`${ship.name} (${ship.ship_type}) · ${ship.sog} 節 · ${ship.nav_status}`}
                 onClick={(e) => {
                   e.stopPropagation();
                   setSelectedMaritimeVessel(ship);
@@ -2901,9 +2905,13 @@ export default function AppMap() {
                   className="w-full h-full flex items-center justify-center transition-transform duration-300"
                   style={{ transform: `rotate(${headingDeg}deg)` }}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="white" strokeWidth="1" className="text-white drop-shadow-sm">
-                    <polygon points="12,2 19,21 12,17 5,21" />
-                  </svg>
+                  {isMoving ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="white" strokeWidth="1" className="text-white drop-shadow-sm">
+                      <polygon points="12,2 19,21 12,17 5,21" />
+                    </svg>
+                  ) : (
+                    <div className="w-2.5 h-2.5 rounded-full bg-white/90 shadow-sm" />
+                  )}
                 </div>
               </div>
             </Marker>
