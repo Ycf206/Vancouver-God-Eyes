@@ -356,12 +356,11 @@ export default function AppMap() {
       }
     }
 
-    // 4. 巴士與天車
-    if ((selectedBus || searchedBusRoute) && !layers.bus && !layers.busRoutes) {
+    // 4. 巴士與天車 (全域圖層關閉時僅清除一般選取的巴士，不影響獨立搜尋的巴士路線)
+    if (selectedBus && !layers.bus && !searchedBusRoute) {
       setSelectedBus(null);
       setBusDetails(null);
-      setSearchedBusRoute(null);
-      if (searchTarget && (searchTarget.category === 'bus' || searchTarget.category === 'bus_route')) {
+      if (searchTarget && searchTarget.category === 'bus') {
         setSearchTarget(null);
       }
     }
@@ -556,6 +555,27 @@ export default function AppMap() {
     };
   }, [selectedTrain]);
 
+  // 當搜尋特定路線時，整合該路線即時在途車輛清單 (無論是否開啟全域巴士圖層均可顯示)
+  const displayVehicles = useMemo<Vehicle[]>(() => {
+    if (searchedBusRoute) {
+      const vDict: Record<string, Vehicle> = {};
+      // 1. 先加入 route API 回傳之該路線在途車輛
+      (searchedBusRoute.buses || []).forEach((b: Vehicle) => {
+        if (b && b.id) vDict[String(b.id)] = b;
+      });
+      // 2. 結合全域 WebSocket 即時車輛資訊 (若有最新位置或方向則更新)
+      vehicles.forEach(v => {
+        if (
+          String(v.route_id) === String(searchedBusRoute.route_id) || 
+          String(v.route_number).toLowerCase() === String(searchedBusRoute.route_number).toLowerCase()
+        ) {
+          vDict[String(v.id)] = v;
+        }
+      });
+      return Object.values(vDict);
+    }
+    return vehicles;
+  }, [vehicles, searchedBusRoute]);
 
   // States for Traffic Camera Images
   const [webcamImages, setWebcamImages] = useState<Array<{url: string, direction: string, alt: string}>>([]);
@@ -687,9 +707,10 @@ export default function AppMap() {
       setBusDetails(null);
 
       const routeId = searchTarget.meta?.route_id || searchTarget.id.replace('route_', '');
+      const variantKey = searchTarget.meta?.variant_key || '';
       setLoadingSearchedRoute(true);
       const apiUrl = getApiUrl();
-      fetch(`${apiUrl}/api/transit/route/${routeId}`)
+      fetch(`${apiUrl}/api/transit/route/${encodeURIComponent(routeId)}${variantKey ? `?variant=${encodeURIComponent(variantKey)}` : ''}`)
         .then(res => res.json())
         .then(data => {
           setSearchedBusRoute(data);
@@ -2429,7 +2450,7 @@ export default function AppMap() {
         )}
 
         {/* 即時車輛位置 (Live TransLink Vehicles) */}
-        {vehicles.map(v => {
+        {displayVehicles.map(v => {
           const isSelected = selectedBus?.id === v.id;
           const busNum = v.route_number || v.route_id;
           if (v.is_seabus) {
@@ -4927,7 +4948,16 @@ export default function AppMap() {
               {searchedBusRoute.route_number || searchedBusRoute.route_id} 去 {searchedBusRoute.destination || '終點站'}
             </div>
             <div className="text-[11px] text-gray-400 mt-0.5 truncate">
-              已顯示路線與站點 · 點擊地圖上的巴士可查看即時班次
+              {searchedBusRoute.stops ? `沿途 ${searchedBusRoute.stops.length} 個站點 · ` : ''}
+              {displayVehicles.filter(v => 
+                String(v.route_id) === String(searchedBusRoute.route_id) || 
+                String(v.route_number).toLowerCase() === String(searchedBusRoute.route_number).toLowerCase()
+              ).length > 0 
+                ? `${displayVehicles.filter(v => 
+                    String(v.route_id) === String(searchedBusRoute.route_id) || 
+                    String(v.route_number).toLowerCase() === String(searchedBusRoute.route_number).toLowerCase()
+                  ).length} 輛在途行駛 · 點選車輛查看動態`
+                : '目前暫無在途班次 · 已載入沿線車站'}
             </div>
           </div>
           <button

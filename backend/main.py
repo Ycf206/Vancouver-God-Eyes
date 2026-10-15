@@ -885,7 +885,7 @@ async def get_stop_arrivals(stop_id: str):
 
 
 @app.get("/api/transit/route/{route_id}")
-def get_transit_route_details(route_id: str):
+def get_transit_route_details(route_id: str, variant: str = ""):
     """
     Returns full route geometry, stops, and current active buses for a specific route.
     """
@@ -908,16 +908,19 @@ def get_transit_route_details(route_id: str):
     rlong = str(rmeta.get("long_name") or "")
 
     primary_v = None
-    def_key_0 = default_variants.get(f"{rid}_0")
-    def_key_1 = default_variants.get(f"{rid}_1")
-    if def_key_0 and def_key_0 in variants_lookup:
-        primary_v = variants_lookup[def_key_0]
-    elif def_key_1 and def_key_1 in variants_lookup:
-        primary_v = variants_lookup[def_key_1]
+    if variant and variant in variants_lookup:
+        primary_v = variants_lookup[variant]
     else:
-        route_variants = [v for v in variants_lookup.values() if str(v.get("route_id")) == rid]
-        if route_variants:
-            primary_v = max(route_variants, key=lambda v: len(v.get("stops", [])))
+        def_key_0 = default_variants.get(f"{rid}_0")
+        def_key_1 = default_variants.get(f"{rid}_1")
+        if def_key_0 and def_key_0 in variants_lookup:
+            primary_v = variants_lookup[def_key_0]
+        elif def_key_1 and def_key_1 in variants_lookup:
+            primary_v = variants_lookup[def_key_1]
+        else:
+            route_variants = [v for v in variants_lookup.values() if str(v.get("route_id")) == rid]
+            if route_variants:
+                primary_v = max(route_variants, key=lambda v: len(v.get("stops", [])))
 
     shape_coords = primary_v.get("shape_coords", []) if primary_v else []
     stops = primary_v.get("stops", []) if primary_v else []
@@ -1243,6 +1246,7 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                     "route_name": rlong,
                     "origin": origin_display,
                     "destination": dest_display,
+                    "variant_key": def_vkey,
                     "color": rmeta.get("color", "#10b981")
                 }
             })

@@ -31,6 +31,7 @@ export default function TopBar() {
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const searchContainerRef = useRef<HTMLDivElement>(null);
+  const isSelectingRef = useRef(false);
 
   useEffect(() => {
     setTime(new Date());
@@ -51,6 +52,11 @@ export default function TopBar() {
 
   // 搜尋防抖 (Debounce)
   useEffect(() => {
+    if (isSelectingRef.current) {
+      isSelectingRef.current = false;
+      return;
+    }
+
     const trimmed = query.trim();
     if (!trimmed) {
       setResults([]);
@@ -65,7 +71,8 @@ export default function TopBar() {
       fetch(`${apiUrl}/api/search?q=${encodeURIComponent(trimmed)}`)
         .then(res => res.json())
         .then(data => {
-          setResults(data.results || []);
+          const list = Array.isArray(data) ? data : (data.results || []);
+          setResults(list);
           setIsLoading(false);
           setIsOpen(true);
         })
@@ -79,6 +86,7 @@ export default function TopBar() {
   }, [query]);
 
   const handleSelect = (target: SearchTarget) => {
+    isSelectingRef.current = true;
     // 巴士路線為獨立搜尋展示，不自動開啟全域靜態巴士路線圖層
     if (target.layer_key && target.category !== 'bus_route') {
       enableLayer(target.layer_key);

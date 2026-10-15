@@ -11,7 +11,7 @@
                 "display_name": "British Columbia",
                 "locale": null
             },
-            "display_name": "L辿ermitage Hotel Vancouver",
+            "display_name": "L'Hermitage Hotel Vancouver",
             "store_region": {
                 "name": "north_america"
             },
@@ -80,10 +80,10 @@
                         "longitude": -123.117098
                     }
                 ],
-                "customer_facing_name": "L辿ermitage Hotel Vancouver Vancouver BC",
+                "customer_facing_name": "L'Hermitage Hotel Vancouver Vancouver BC",
                 "translations": {
                     "customerFacingName": {
-                        "en-US": "L辿ermitage Hotel Vancouver Vancouver BC"
+                        "en-US": "L'Hermitage Hotel Vancouver Vancouver BC"
                     }
                 },
                 "name": "Charging_Commercial_Charging",

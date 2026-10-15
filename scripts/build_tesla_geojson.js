@@ -27,7 +27,8 @@ for (const file of files) {
   }
 
   let subType = 'unknown';
-  let name = m.display_name || 'Tesla 設施';
+  let rawName = (m.display_name || 'Tesla 設施').replace(/L[辿\u8fbf]ermitage/g, "L'Hermitage");
+  let name = rawName;
   let power = 0;
   let stalls = 0;
   let speed = '';
@@ -58,7 +59,7 @@ for (const file of files) {
     notes = [dc.restrictions, dc.access_instructions].filter(Boolean).join(' · ');
     phone = dc.phone_number || '';
     services = ['目的地充電樁 (Destination Charger)'];
-    name = `Tesla 目的地充電站 (${m.display_name})`;
+    name = `Tesla 目的地充電站 (${rawName})`;
   } else if (file.includes('Raymur')) {
     subType = 'center';
     name = 'Tesla 溫哥華服務與體驗中心 (Vancouver-Raymur)';
@@ -97,7 +98,7 @@ for (const file of files) {
       facility_type: 'tesla',
       sub_type: subType,
       name,
-      display_name: m.display_name,
+      display_name: rawName,
       address: [address.address_1, address.city, address.state_province, address.postal_code].filter(Boolean).join(', '),
       city: address.city || 'Vancouver',
       postal_code: address.postal_code || '',
