@@ -211,6 +211,17 @@ export default function AppMap() {
   const [ferryTerminals, setFerryTerminals] = useState<Array<{geometry: {coordinates: number[]}, properties: {name?: string, code: string}}>>([]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedFlight, setSelectedFlight] = useState<any | null>(null);
+  const [cursorCoords, setCursorCoords] = useState<{ lng: number; lat: number } | null>(null);
+
+  const handleMapMouseMove = React.useCallback((e: any) => {
+    if (e.lngLat) {
+      setCursorCoords({ lng: e.lngLat.lng, lat: e.lngLat.lat });
+    }
+  }, []);
+
+  const handleMapMouseLeave = React.useCallback(() => {
+    setCursorCoords(null);
+  }, []);
 
   // Selected Flight Route GeoJSON LineString / MultiLineString (Great Circle Trajectory)
   const routeGeoJSON = useMemo(() => {
@@ -1210,6 +1221,8 @@ export default function AppMap() {
     style.sources['marine_terminals'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/marine_terminals` };
     style.sources['aed'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/aed` };
     style.sources['crime_areas'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/crime_areas` };
+    style.sources['water_distribution_mains'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/water_distribution_mains` };
+    style.sources['sewer_mains'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/sewer_mains` };
 
     // Crime Areas (罪案地區 - 各區犯罪率面圖層)
     if (layers.crimeAreas) {
@@ -1237,7 +1250,7 @@ export default function AppMap() {
         type: 'symbol',
         source: 'crime_areas',
         layout: {
-          'text-field': ['concat', ['get', 'name_zh'], '\n', ['get', 'density_label']],
+          'text-field': ['get', 'name'],
           'text-size': 11,
           'text-allow-overlap': false
         },
@@ -2404,6 +2417,46 @@ export default function AppMap() {
       });
     }
 
+    // Utilities: Water Distribution Mains (自來水管道)
+    if (layers.waterDistributionMains) {
+      style.layers.push({
+        id: 'water-distribution-mains-layer',
+        type: 'line',
+        source: 'water_distribution_mains',
+        minzoom: 12,
+        paint: {
+          'line-color': '#0ea5e9',
+          'line-width': [
+            'interpolate', ['linear'], ['zoom'],
+            12, 1.2,
+            15, 2.5,
+            18, 4.5
+          ],
+          'line-opacity': 0.85
+        }
+      });
+    }
+
+    // Utilities: Sewer Mains (污水管道)
+    if (layers.sewerMains) {
+      style.layers.push({
+        id: 'sewer-mains-layer',
+        type: 'line',
+        source: 'sewer_mains',
+        minzoom: 12,
+        paint: {
+          'line-color': '#14b8a6',
+          'line-width': [
+            'interpolate', ['linear'], ['zoom'],
+            12, 1.2,
+            15, 2.5,
+            18, 4.5
+          ],
+          'line-opacity': 0.85
+        }
+      });
+    }
+
     return style;
   }, [
     layers.skytrainRoutes, 
@@ -2445,6 +2498,8 @@ export default function AppMap() {
     layers.snowRemovalRoutes,
     layers.marineTerminals,
     layers.crimeAreas,
+    layers.waterDistributionMains,
+    layers.sewerMains,
     contourInterval,
     mapStyleType
   ]);
@@ -2464,6 +2519,8 @@ export default function AppMap() {
         onMove={updateScale}
         onZoom={updateScale}
         onLoad={() => updateScale()}
+        onMouseMove={handleMapMouseMove}
+        onMouseLeave={handleMapMouseLeave}
         interactiveLayerIds={[
           'bus-stops-layer', 
           'skytrain-stops-layer', 
@@ -2526,6 +2583,8 @@ export default function AppMap() {
           'marine-terminals-symbol-layer',
           'one-way-streets-layer',
           'snow-removal-routes-layer',
+          'water-distribution-mains-layer',
+          'sewer-mains-layer',
           'contours-layer',
           'contours-label-layer'
         ]}
@@ -2623,6 +2682,34 @@ export default function AppMap() {
               facility_type: 'snow_removal_routes',
               name: props.name || '鏟雪優先路線',
               local_area: '溫哥華冬季鏟雪與除冰路網',
+              lon: clickLon,
+              lat: clickLat,
+              properties: props
+            });
+          } else if (layerId === 'water-distribution-mains-layer') {
+            setSelectedStop(null);
+            const props = feature.properties || {};
+            const clickLon = e.lngLat?.lng ?? -123.1207;
+            const clickLat = e.lngLat?.lat ?? 49.2827;
+            setSelectedFacility({
+              id: `water_${clickLon}_${clickLat}`,
+              facility_type: 'water_distribution_mains',
+              name: '自來水主管道',
+              local_area: '溫哥華市區供水主幹管網',
+              lon: clickLon,
+              lat: clickLat,
+              properties: props
+            });
+          } else if (layerId === 'sewer-mains-layer') {
+            setSelectedStop(null);
+            const props = feature.properties || {};
+            const clickLon = e.lngLat?.lng ?? -123.1207;
+            const clickLat = e.lngLat?.lat ?? 49.2827;
+            setSelectedFacility({
+              id: `sewer_${clickLon}_${clickLat}`,
+              facility_type: 'sewer_mains',
+              name: '污水下水道',
+              local_area: '溫哥華市政排水與污水管網',
               lon: clickLon,
               lat: clickLat,
               properties: props
@@ -3887,18 +3974,20 @@ export default function AppMap() {
             offset={[0, -10]}
             maxWidth={
               selectedFacility.facility_type === 'traffic_cameras' ? '400px' : 
-              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes') ? '360px' : 
+              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains') ? '360px' : 
               '320px'
             }
           >
             <div className={`p-3.5 ${
               selectedFacility.facility_type === 'traffic_cameras' ? 'w-[360px]' : 
-              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes') ? 'w-[340px]' : 
+              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains') ? 'w-[340px]' : 
               'w-[290px]'
             } max-w-[90vw] text-gray-800`}>
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
                 <div className="flex items-center gap-2">
                   <span className={`w-3 h-3 rounded-full flex-shrink-0 ${
+                    selectedFacility.facility_type === 'water_distribution_mains' ? 'bg-sky-500' :
+                    selectedFacility.facility_type === 'sewer_mains' ? 'bg-teal-500' :
                     selectedFacility.facility_type === 'tesla' ? 'bg-red-600' :
                     selectedFacility.facility_type === 'marine_terminals' ? 'bg-cyan-600' :
                     selectedFacility.facility_type === 'snow_removal_routes' ? 'bg-sky-500' :
@@ -5602,6 +5691,106 @@ export default function AppMap() {
                   </div>
                 </div>
               )}
+
+              {/* Water Distribution Mains (自來水管道) Details */}
+              {selectedFacility.facility_type === 'water_distribution_mains' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-sky-950 text-xs flex items-center gap-1.5">
+                        <span className="text-base text-sky-600 font-bold">💧</span>
+                        <span>自來水主管道</span>
+                      </span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-sky-600 text-white shrink-0">
+                        {selectedFacility.properties.diameter_mm ? `${selectedFacility.properties.diameter_mm} mm` : '供水管網'}
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-sky-900 font-medium">
+                      🚰 溫哥華市政自來水輸送與配水主管網
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                    {selectedFacility.properties.diameter_mm && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>管道管徑 (Diameter)</span>
+                        <span className="font-bold text-gray-900 font-mono">
+                          {selectedFacility.properties.diameter_mm} mm
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.material && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>管材材質 (Material)</span>
+                        <span className="font-semibold text-gray-800">
+                          {selectedFacility.properties.material}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.lining_material && selectedFacility.properties.lining_material !== 'blank' && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>內襯材料 (Lining)</span>
+                        <span className="font-medium text-gray-800">
+                          {selectedFacility.properties.lining_material}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.installation_date && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>鋪設安裝年份</span>
+                        <span className="font-mono text-gray-700">
+                          {selectedFacility.properties.installation_date}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Sewer Mains (污水管道) Details */}
+              {selectedFacility.facility_type === 'sewer_mains' && (() => {
+                const effluent = selectedFacility.properties.effluent_type || 'Sewer';
+                const effluentZh = 
+                  effluent === 'Storm' ? '雨水排放管網 (Storm)' :
+                  effluent === 'Sanitary' ? '生活污水管網 (Sanitary)' :
+                  effluent === 'Combined' ? '合流下水道 (Combined)' : effluent;
+
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    <div className="bg-teal-500/10 p-2.5 rounded-lg border border-teal-500/25 flex flex-col gap-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-teal-950 text-xs flex items-center gap-1.5">
+                          <span className="text-base text-teal-600 font-bold">🌊</span>
+                          <span>市政下水道管線</span>
+                        </span>
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-teal-600 text-white shrink-0">
+                          {effluent}
+                        </span>
+                      </div>
+                      <div className="text-[11px] text-teal-900 font-medium">
+                        🌀 {effluentZh}
+                      </div>
+                    </div>
+
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>下水道排水類型</span>
+                        <span className="font-bold text-teal-900">
+                          {effluentZh}
+                        </span>
+                      </div>
+                      {selectedFacility.properties.material && (
+                        <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                          <span>管道結構材質</span>
+                          <span className="font-semibold text-gray-800">
+                            {selectedFacility.properties.material}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
           </Popup>
         )}
@@ -5652,6 +5841,16 @@ export default function AppMap() {
           </svg>
         </div>
       </div>
+
+      {/* 滑鼠即時經緯度座標顯示 (Cursor Latitude & Longitude HUD - 位於地圖下方中央) */}
+      {cursorCoords && (
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 pointer-events-none select-none flex items-center gap-2 px-3 py-1 bg-[#10131a]/90 backdrop-blur-md rounded-full border border-[#2a2f3d]/90 shadow-lg text-[11px] font-mono text-gray-200 transition-opacity duration-150">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span className="tracking-tight text-gray-300">
+            {Math.abs(cursorCoords.lat).toFixed(4)}° {cursorCoords.lat >= 0 ? 'N' : 'S'}, {Math.abs(cursorCoords.lng).toFixed(4)}° {cursorCoords.lng >= 0 ? 'E' : 'W'}
+          </span>
+        </div>
+      )}
 
       {/* 罪案地區圖例卡片 (Crime Rate Legend) */}
       {layers.crimeAreas && (

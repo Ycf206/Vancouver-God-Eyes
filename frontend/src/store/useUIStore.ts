@@ -70,6 +70,8 @@ export interface UIState {
     maritimeShipping: boolean;
     marineTerminals: boolean;
     crimeAreas: boolean;
+    waterDistributionMains: boolean;
+    sewerMains: boolean;
   };
   contourInterval: 'off' | '1m' | '2m' | '10m';
   setContourInterval: (interval: 'off' | '1m' | '2m' | '10m') => void;
@@ -179,6 +181,8 @@ export const useUIStore = create<UIState>()(
         maritimeShipping: true,
         marineTerminals: true,
         crimeAreas: false,
+        waterDistributionMains: false,
+        sewerMains: false,
       },
       timeFormat: '24h',
       setTimeFormat: (format) => set({ timeFormat: format }),
@@ -213,6 +217,8 @@ export const useUIStore = create<UIState>()(
               (layer === 'marineTerminals' && st.category === 'marine_terminals') ||
               (layer === 'oneWayStreets' && (st.category === 'one_way_streets' || st.id?.startsWith('oneway_'))) ||
               (layer === 'snowRemovalRoutes' && (st.category === 'snow_removal_routes' || st.id?.startsWith('snow_'))) ||
+              (layer === 'waterDistributionMains' && (st.category === 'water_distribution_mains' || st.id?.startsWith('water_'))) ||
+              (layer === 'sewerMains' && (st.category === 'sewer_mains' || st.id?.startsWith('sewer_'))) ||
               (layer === 'skytrainRoutes' && st.category === 'skytrain') ||
               (layer === 'bus' && st.category === 'bus');
             if (isTargetMatch) {
@@ -282,6 +288,8 @@ export const useUIStore = create<UIState>()(
             snowRemovalRoutes: persistedState?.layers?.snowRemovalRoutes || false,
             marineTerminals: persistedState?.layers?.marineTerminals ?? true,
             crimeAreas: persistedState?.layers?.crimeAreas || false,
+            waterDistributionMains: persistedState?.layers?.waterDistributionMains || false,
+            sewerMains: persistedState?.layers?.sewerMains || false,
           },
         };
       },

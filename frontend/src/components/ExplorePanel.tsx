@@ -28,6 +28,26 @@ interface WeatherDailyItem {
   uv_index?: number;
 }
 
+interface WeatherAqhiForecastItem {
+  period: string;
+  period_zh?: string;
+  value: number;
+  value_display?: string;
+  risk: string;
+  risk_zh?: string;
+}
+
+interface WeatherAqhi {
+  value: number;
+  value_display?: string;
+  risk: string;
+  risk_zh?: string;
+  calculated_at?: string;
+  at_risk_msg?: string;
+  general_msg?: string;
+  forecasts?: WeatherAqhiForecastItem[];
+}
+
 interface WeatherData {
   city: string;
   city_en: string;
@@ -51,6 +71,7 @@ interface WeatherData {
     severity: string;
     message: string;
   };
+  aqhi?: WeatherAqhi;
   hourly?: WeatherHourlyItem[];
   forecast?: WeatherDailyItem[];
 }
@@ -742,6 +763,153 @@ function ExploreContent() {
                   </p>
                 )}
               </div>
+
+              {/* 空氣質素健康指數 (AQHI - Air Quality Health Index, 完全對標加拿大環境部官方截圖) */}
+              {weather.aqhi && (() => {
+                const aqhiVal = weather.aqhi.value || 1;
+                // AQHI 1-10+ 顏色標度
+                const aqhiColors = [
+                  '#56b4e9', '#3399ff', '#0072b2', // 1, 2, 3: Low Risk
+                  '#f0e442', '#e69f00', '#d55e00', // 4, 5, 6: Moderate Risk
+                  '#cc3333', '#b22222', '#8b0000', '#882255', // 7, 8, 9, 10: High Risk
+                  '#4a101d' // +: Very High Risk
+                ];
+                // 計算指示箭頭水平位置百分比 (11格，索引 0~10)
+                const valIdx = Math.min(Math.max(aqhiVal - 1, 0), 10);
+                const leftPercent = ((valIdx + 0.5) / 11) * 100;
+
+                return (
+                  <div className="bg-[#12151e] border border-[#262c3c] rounded-xl p-3.5 shadow-lg flex flex-col gap-2.5">
+                    {/* Header */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-2.5 h-2.5 rounded-full bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.4)]"></span>
+                        <h4 className="text-xs font-bold text-white tracking-wide">空氣質素健康指數 (AQHI)</h4>
+                      </div>
+                      <span className="text-[10px] text-sky-400 font-mono bg-sky-950/60 border border-sky-800/40 px-1.5 py-0.5 rounded">
+                        bcaq-001
+                      </span>
+                    </div>
+
+                    <div className="text-[10px] text-gray-400">
+                      <span>觀測狀況 · </span>
+                      <span>計算時間：{weather.aqhi.calculated_at || '今日 3:00 AM PDT'}</span>
+                    </div>
+
+                    {/* 指示條與上方數值指標方塊 (對標截圖) */}
+                    <div className="pt-5 pb-1 relative">
+                      {/* 當前數值小方塊與向下指標 */}
+                      <div 
+                        className="absolute top-0 -translate-x-1/2 flex flex-col items-center transition-all duration-300"
+                        style={{ left: `${leftPercent}%` }}
+                      >
+                        <div className="px-1.5 py-0.5 bg-white text-gray-900 border border-gray-300 rounded font-bold text-[11px] leading-tight shadow-sm font-mono">
+                          {weather.aqhi.value_display || aqhiVal}
+                        </div>
+                        <div className="w-0 h-0 border-l-[3.5px] border-l-transparent border-r-[3.5px] border-r-transparent border-t-[4px] border-t-white -mt-[1px]"></div>
+                      </div>
+
+                      {/* 11 階彩色色帶 */}
+                      <div className="grid grid-cols-11 h-3 rounded overflow-hidden shadow-inner border border-black/40">
+                        {aqhiColors.map((color, i) => (
+                          <div key={i} style={{ backgroundColor: color }} className="h-full"></div>
+                        ))}
+                      </div>
+
+                      {/* 刻度數值 (1 ~ 10, +) */}
+                      <div className="grid grid-cols-11 text-center text-[9px] text-gray-400 font-mono mt-1 select-none">
+                        <span>1</span>
+                        <span>2</span>
+                        <span>3</span>
+                        <span>4</span>
+                        <span>5</span>
+                        <span>6</span>
+                        <span>7</span>
+                        <span>8</span>
+                        <span>9</span>
+                        <span>10</span>
+                        <span>+</span>
+                      </div>
+
+                      {/* 4 大風險分類標示 (對標截圖) */}
+                      <div className="grid grid-cols-4 text-center mt-1 pt-1 border-t border-[#232838] text-[9.5px]">
+                        <div className="text-sky-300 font-medium">
+                          <div>Low Risk</div>
+                          <div className="text-[8.5px] text-gray-400">(1-3)</div>
+                        </div>
+                        <div className="text-yellow-300 font-medium">
+                          <div>Moderate</div>
+                          <div className="text-[8.5px] text-gray-400">(4-6)</div>
+                        </div>
+                        <div className="text-rose-400 font-medium">
+                          <div>High</div>
+                          <div className="text-[8.5px] text-gray-400">(7-10)</div>
+                        </div>
+                        <div className="text-amber-600 font-medium">
+                          <div>Very High</div>
+                          <div className="text-[8.5px] text-gray-400">(10+)</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 健康指引 (高敏感族群 vs 一般民眾) */}
+                    <div className="grid grid-cols-2 gap-2 mt-1">
+                      <div className="bg-[#181c26] border border-[#282f42] p-2 rounded-lg flex flex-col gap-0.5">
+                        <span className="text-[10px] font-bold text-sky-300">高敏感族群 (At-Risk)</span>
+                        <span className="text-[10px] text-gray-300 leading-relaxed">
+                          {weather.aqhi.at_risk_msg || '可如常進行戶外活動。'}
+                        </span>
+                      </div>
+                      <div className="bg-[#181c26] border border-[#282f42] p-2 rounded-lg flex flex-col gap-0.5">
+                        <span className="text-[10px] font-bold text-emerald-300">一般民眾 (General)</span>
+                        <span className="text-[10px] text-gray-300 leading-relaxed">
+                          {weather.aqhi.general_msg || '適合進行戶外活動的理想空氣品質。'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* 預報最大值 (Forecast Maximums, 對標截圖底部) */}
+                    {weather.aqhi.forecasts && weather.aqhi.forecasts.length > 0 && (
+                      <div className="pt-2 border-t border-[#232838] flex flex-col gap-1.5">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10.5px] font-bold text-gray-300">預報峰值 (Forecast Maximums)</span>
+                          <a 
+                            href="https://weather.gc.ca/airquality/pages/bcaq-001_e.html" 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="text-[10px] text-sky-400 hover:underline flex items-center gap-0.5"
+                          >
+                            官方專頁 ↗
+                          </a>
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          {weather.aqhi.forecasts.map((f, fi) => {
+                            const fIdx = Math.min(Math.max((f.value || 1) - 1, 0), 10);
+                            const fPercent = ((fIdx + 0.5) / 11) * 100;
+                            return (
+                              <div key={fi} className="flex items-center justify-between text-[10px] py-0.5 px-1 bg-[#161a24] rounded border border-[#232838]/60">
+                                <span className="text-gray-300 font-medium w-24 truncate">{f.period_zh || f.period}</span>
+                                <span className="font-bold text-sky-300 font-mono">{f.value_display || f.value} - {f.risk_zh || f.risk}</span>
+                                <div className="w-24 relative h-1.5 rounded overflow-hidden bg-gray-800 ml-2">
+                                  <div className="grid grid-cols-11 h-full w-full">
+                                    {aqhiColors.map((c, ci) => (
+                                      <div key={ci} style={{ backgroundColor: c }}></div>
+                                    ))}
+                                  </div>
+                                  <div 
+                                    className="absolute top-0 bottom-0 w-1 bg-white shadow-sm -translate-x-1/2"
+                                    style={{ left: `${fPercent}%` }}
+                                  ></div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
 
               {/* 詳細氣象指標 */}
               <div className="grid grid-cols-3 gap-2">

@@ -1,4 +1,5 @@
 import time
+import re
 import requests
 from datetime import datetime, timezone
 from typing import Dict, Any, Optional
@@ -103,6 +104,21 @@ class WeatherService:
                 "title": "加拿大環境部警告",
                 "severity": "none",
                 "message": "大溫哥華地區目前無極端天氣預警，天候狀況良好。"
+            },
+            "aqhi": {
+                "value": 1,
+                "value_display": "1",
+                "risk": "Low Risk",
+                "risk_zh": "低健康風險 (1-3)",
+                "calculated_at": "3:00 AM PDT Thursday 15 October 2026",
+                "at_risk_msg": "可如常進行戶外活動。",
+                "general_msg": "適合進行戶外活動的理想空氣品質。",
+                "forecasts": [
+                    {"period": "Thursday", "period_zh": "今日", "value": 2, "value_display": "2", "risk": "Low Risk", "risk_zh": "低風險"},
+                    {"period": "Thursday night", "period_zh": "今晚", "value": 2, "value_display": "2", "risk": "Low Risk", "risk_zh": "低風險"},
+                    {"period": "Friday", "period_zh": "明日", "value": 2, "value_display": "2", "risk": "Low Risk", "risk_zh": "低風險"},
+                    {"period": "Friday night", "period_zh": "明晚", "value": 2, "value_display": "2", "risk": "Low Risk", "risk_zh": "低風險"}
+                ]
             },
             "hourly": default_hourly,
             "forecast": default_forecast
@@ -260,6 +276,63 @@ class WeatherService:
                         })
                     if forecast_list:
                         weather_data["forecast"] = forecast_list
+        # 4. 嘗試向加拿大環境部 weather.gc.ca 查詢溫哥華即時空氣質素健康指數 (AQHI bcaq-001)
+        try:
+            r_aqhi = requests.get(
+                "https://weather.gc.ca/airquality/pages/bcaq-001_e.html",
+                timeout=4,
+                headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+            )
+            if r_aqhi.status_code == 200:
+                html = r_aqhi.text
+                calc_m = re.search(r"Calculated at:<\/strong>\s*(?:<span>\s*<\/span>)?\s*([^<]+)", html, re.I)
+                val_m = re.search(r'<p class="withBorder">\s*(\d+|\+)\s*<span class="wb-invisible">\s*([^<]+)<\/span>', html, re.I)
+                if val_m:
+                    val_str = val_m.group(1).strip()
+                    risk_str = val_m.group(2).strip()
+                    val_num = int(val_str) if val_str.isdigit() else 11
+                    risk_zh = (
+                        "低健康風險 (1-3)" if val_num <= 3 else
+                        "中等健康風險 (4-6)" if val_num <= 6 else
+                        "高健康風險 (7-10)" if val_num <= 10 else "極高健康風險 (10+)"
+                    )
+                    at_risk_msg = "可如常進行戶外活動。" if val_num <= 3 else "若出現咳嗽或喉嚨不適，請考慮減少或重新安排劇烈戶外運動。"
+                    general_msg = "適合進行戶外活動的理想空氣品質。" if val_num <= 3 else "除非出現咳嗽或喉嚨發炎，否則毋須調整常態戶外活動。"
+
+                    weather_data["aqhi"]["value"] = val_num if val_num <= 10 else 10
+                    weather_data["aqhi"]["value_display"] = val_str
+                    weather_data["aqhi"]["risk"] = risk_str
+                    weather_data["aqhi"]["risk_zh"] = risk_zh
+                    weather_data["aqhi"]["at_risk_msg"] = at_risk_msg
+                    weather_data["aqhi"]["general_msg"] = general_msg
+                if calc_m:
+                    weather_data["aqhi"]["calculated_at"] = calc_m.group(1).strip()
+
+                # 預報最大值 (Forecast Maximums)
+                f_blocks = re.findall(r'<div class="col-md-3 col-sm-3"><p>([^<]+)<\/p><\/div>\s*<div class="col-md-4 col-sm-3">\s*<b>(\d+|\+)<\/b>\s*-\s*([^<]+)<\/div>', html)
+                if f_blocks:
+                    fcasts = []
+                    for period_name, f_val, f_risk in f_blocks[:4]:
+                        f_val_num = int(f_val) if f_val.isdigit() else 11
+                        p_clean = period_name.strip()
+                        p_zh = "今日" if "thursday" in p_clean.lower() and "night" not in p_clean.lower() else (
+                            "今晚" if "thursday night" in p_clean.lower() else (
+                                "明日" if "friday" in p_clean.lower() and "night" not in p_clean.lower() else (
+                                    "明晚" if "friday night" in p_clean.lower() else p_clean
+                                )
+                            )
+                        )
+                        f_risk_zh = "低風險" if f_val_num <= 3 else "中風險" if f_val_num <= 6 else "高風險"
+                        fcasts.append({
+                            "period": p_clean,
+                            "period_zh": p_zh,
+                            "value": f_val_num if f_val_num <= 10 else 10,
+                            "value_display": f_val.strip(),
+                            "risk": f_risk.strip(),
+                            "risk_zh": f_risk_zh
+                        })
+                    if fcasts:
+                        weather_data["aqhi"]["forecasts"] = fcasts
         except Exception:
             pass
 

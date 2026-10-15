@@ -8,7 +8,7 @@ import {
   Flame, Building2, Hospital, ChevronLeft, Trees, Footprints, Flower2, 
   Droplets, Bath, Leaf, Landmark, GraduationCap, BookOpen, UtensilsCrossed, Bed, Heart,
   Plane, PlaneTakeoff, Calendar, Car, ShieldAlert, LifeBuoy, HeartPulse, Mountain,
-  Compass, MapPin, Fuel, Train, Anchor, ArrowRight, Snowflake, Fingerprint
+  Compass, MapPin, Fuel, Train, Anchor, ArrowRight, Snowflake, Fingerprint, Waves
 } from 'lucide-react';
 
 // Helper component for Tesla Icon
@@ -315,6 +315,24 @@ export default function LayerPanel() {
             <LayerButton layerKey="police" label="警察" icon={ShieldAlert} colorClass="text-blue-400" activeBg="bg-[#142338]" activeBorder="border-blue-500/50" activeShadow="shadow-[0_0_6px_rgba(59,130,246,0.15)]" />
             <LayerButton layerKey="crimeAreas" label="罪案地區" icon={Fingerprint} colorClass="text-rose-400" activeBg="bg-[#2c1619]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.2)]" />
             <LayerButton layerKey="disasterHubs" label="災害支援中心" icon={LifeBuoy} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div className="w-full h-px bg-[#26282d]"></div>
+
+        {/* Utilities Row (公共事業) - 位於政府類別下方 */}
+        <div className="flex flex-col gap-1.5">
+          <div className="text-[10px] font-bold text-cyan-400 tracking-wider flex items-center justify-between">
+            <div className="flex items-center gap-1">
+              <Droplets className="w-3 h-3 text-cyan-400" />
+              <span>公共事業</span>
+            </div>
+            <span className="text-[9px] text-cyan-400/70 font-mono">UTILITIES</span>
+          </div>
+          <div className="grid grid-cols-2 gap-1">
+            <LayerButton layerKey="waterDistributionMains" label="自來水管道" icon={Droplets} colorClass="text-sky-400" activeBg="bg-[#102436]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(14,165,233,0.15)]" />
+            <LayerButton layerKey="sewerMains" label="污水管道" icon={Waves} colorClass="text-teal-400" activeBg="bg-[#102826]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
           </div>
         </div>
 
