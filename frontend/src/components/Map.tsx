@@ -154,6 +154,43 @@ interface SkytrainStationSchedule {
   updated_at: string;
 }
 
+const STANLEY_PARK_EXCLUSION_POLY = [
+  [-123.1580, 49.3110],
+  [-123.1430, 49.3140],
+  [-123.1230, 49.3070],
+  [-123.1130, 49.3010],
+  [-123.1160, 49.2940],
+  [-123.1380, 49.2900],
+  [-123.1490, 49.2900],
+  [-123.1560, 49.2980],
+  [-123.1580, 49.3110]
+];
+
+function isPointInPolygon2D(lon: number, lat: number, poly: number[][]): boolean {
+  let inside = false;
+  let p1Lon = poly[0][0], p1Lat = poly[0][1];
+  for (let i = 1; i <= poly.length; i++) {
+    const p2Lon = poly[i % poly.length][0], p2Lat = poly[i % poly.length][1];
+    if (lat > Math.min(p1Lat, p2Lat)) {
+      if (lat <= Math.max(p1Lat, p2Lat)) {
+        if (lon <= Math.max(p1Lon, p2Lon)) {
+          const xinters = p1Lat !== p2Lat ? (lat - p1Lat) * (p2Lon - p1Lon) / (p2Lat - p1Lat) + p1Lon : p1Lon;
+          if (p1Lon === p2Lon || lon <= xinters) {
+            inside = !inside;
+          }
+        }
+      }
+    }
+    p1Lon = p2Lon; p1Lat = p2Lat;
+  }
+  return inside;
+}
+
+function isShipOnLand(lon: number, lat: number): boolean {
+  if (!lon || !lat) return false;
+  return isPointInPolygon2D(lon, lat, STANLEY_PARK_EXCLUSION_POLY);
+}
+
 export default function AppMap() {
   const { layers, mapStyleType, searchTarget, setSearchTarget, isLayerPanelOpen, contourInterval, timeFormat, distanceUnit, userLocation, setExploreOpen } = useUIStore();
   const mapRef = useRef<MapRef>(null);
@@ -2853,7 +2890,7 @@ export default function AppMap() {
         ))}
 
         {/* 🚢 Maritime Shipping 港口商船 (Live AIS Shipping from Aisstream.io) */}
-        {layers.maritimeShipping && maritimeVessels.map(ship => {
+        {layers.maritimeShipping && maritimeVessels.filter(ship => !isShipOnLand(ship.lon, ship.lat)).map(ship => {
           const isSelected = selectedMaritimeVessel?.mmsi === ship.mmsi;
           const headingDeg = ship.cog || ship.heading || 0;
           

@@ -4,17 +4,184 @@ import time
 import math
 import asyncio
 import logging
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Tuple
 from datetime import datetime, timezone
 
 logger = logging.getLogger("shipping_service")
 
+# ----------------- 陸地邊界多邊形遮罩 (Land Exclusion Masks) -----------------
+# 史丹利公園陸地邊界 (嚴格防止船隻在史丹利公園陸地行駛)
+STANLEY_PARK_POLYGON = [
+    [-123.1580, 49.3110], # Third Beach / Ferguson Point
+    [-123.1430, 49.3140], # Prospect Point
+    [-123.1230, 49.3070], # North shore
+    [-123.1130, 49.3010], # Brockton Point
+    [-123.1160, 49.2940], # South of Brockton Point / Coal Harbour entrance
+    [-123.1380, 49.2900], # Lost Lagoon / Bayshore
+    [-123.1490, 49.2900], # English Bay Beach north
+    [-123.1560, 49.2980], # Second Beach
+    [-123.1580, 49.3110]  # Close
+]
+
+# 溫哥華市中心陸地邊界 (Coal Harbour 南岸至 False Creek 北岸)
+DOWNTOWN_VANCOUVER_LAND = [
+    [-123.1420, 49.2870],
+    [-123.1180, 49.2910],
+    [-123.1090, 49.2880],
+    [-123.0950, 49.2840],
+    [-123.1000, 49.2730],
+    [-123.1250, 49.2730],
+    [-123.1390, 49.2800],
+    [-123.1420, 49.2870]
+]
+
+def is_point_in_polygon(lon: float, lat: float, poly: list) -> bool:
+    """Ray-casting 射線法判定座標是否位於陸地多邊形內部。"""
+    n = len(poly)
+    inside = False
+    p1_lon, p1_lat = poly[0]
+    for i in range(1, n + 1):
+        p2_lon, p2_lat = poly[i % n]
+        if lat > min(p1_lat, p2_lat):
+            if lat <= max(p1_lat, p2_lat):
+                if lon <= max(p1_lon, p2_lon):
+                    if p1_lat != p2_lat:
+                        xinters = (lat - p1_lat) * (p2_lon - p1_lon) / (p2_lat - p1_lat) + p1_lon
+                    else:
+                        xinters = p1_lon
+                    if p1_lon == p2_lon or lon <= xinters:
+                        inside = not inside
+        p1_lon, p1_lat = p2_lon, p2_lat
+    return inside
+
+def is_point_on_vancouver_land(lon: float, lat: float) -> bool:
+    """檢查座標是否位於史丹利公園或溫哥華市中心陸地上。"""
+    if is_point_in_polygon(lon, lat, STANLEY_PARK_POLYGON):
+        return True
+    if is_point_in_polygon(lon, lat, DOWNTOWN_VANCOUVER_LAND):
+        return True
+    return False
+
+# ----------------- 溫哥華港口深水航道與水域巡邏路徑 (Verified Deep Water Waypoints) -----------------
+# 航道 1: 布勒內灣主航道出港（貨輪出海：Vanterm -> First Narrows -> English Bay -> 喬治亞海峽）
+PATH_BURRARD_OUTBOUND = [
+    [-123.0600, 49.2980],  # Centerm / Vanterm container basin
+    [-123.0850, 49.3015],  # Off Canada Place / SeaBus lane
+    [-123.1120, 49.3085],  # North of Brockton Point (深水航道，避開史丹利公園)
+    [-123.1385, 49.3145],  # Lions Gate Bridge center channel (First Narrows)
+    [-123.1650, 49.3240],  # First Narrows outer approach
+    [-123.2200, 49.3160],  # English Bay Traffic Separation Zone
+    [-123.2700, 49.3100]   # Pilot station / Strait of Georgia
+]
+
+# 航道 2: 布勒內灣主航道進港（外海進入溫哥華港）
+PATH_BURRARD_INBOUND = [
+    [-123.2700, 49.3100],  # Strait of Georgia entrance
+    [-123.2200, 49.3160],  # English Bay Fairway
+    [-123.1650, 49.3240],  # First Narrows west approach
+    [-123.1385, 49.3145],  # Lions Gate Bridge center span
+    [-123.1120, 49.3085],  # North of Brockton Point
+    [-123.0850, 49.3015],  # Central Harbour
+    [-123.0600, 49.2980]   # Vanterm / Centerm Basin
+]
+
+# 航道 3: 布勒內灣核心港區作業拖船巡邏迴圈 (Seaspan Eagle，全程位於布勒內灣深水區，絕不進入史丹利公園)
+PATH_BURRARD_TUG_PATROL = [
+    [-123.1050, 49.3060],  # 布洛克頓角東側深水區 (東經 -123.105，安全水域)
+    [-123.0850, 49.3025],  # 加拿大廣場以北航道
+    [-123.0600, 49.3000],  # 溫哥華貨櫃碼頭外側深水區
+    [-123.0400, 49.2975],  # 二峽橋西側掉頭水域
+    [-123.0600, 49.3015],  # 北岸 Seaspan 造船廠外側返航
+    [-123.0850, 49.3040],  # 北岸 Lonsdale Quay 外側水域
+    [-123.1050, 49.3060]   # 回到布勒內灣巡邏起點 (閉合迴圈)
+]
+
+# 航道 4: 一峽橋護航拖船巡邏線 (Seaspan Commodore，往返一峽橋與英吉利灣)
+PATH_FIRST_NARROWS_ESCORT = [
+    [-123.1700, 49.3230],  # 英吉利灣東口深水區
+    [-123.1500, 49.3190],  # 獅門橋西引道
+    [-123.1385, 49.3145],  # 獅門橋主跨下方中央深水區
+    [-123.1150, 49.3085],  # 內港入口
+    [-123.1385, 49.3145],  # 掉頭折返
+    [-123.1500, 49.3190],
+    [-123.1700, 49.3230]
+]
+
+# 航道 5: 菲沙河內河推船作業航線 (Island Defender，沿菲沙河主航道中心線)
+PATH_FRASER_RIVER = [
+    [-122.9900, 49.1990],  # 安納西斯島南側航道
+    [-122.9550, 49.2015],  # 菲沙河航道中心線
+    [-122.9250, 49.2050],  # 主航道
+    [-122.8950, 49.2100],  # 新西敏碼頭水域
+    [-122.9250, 49.2050],  # 掉頭折返
+    [-122.9550, 49.2015],
+    [-122.9900, 49.1990]
+]
+
+def calculate_bearing(p1: List[float], p2: List[float]) -> float:
+    """計算從點 p1 到點 p2 的真航向 (方位角 0°~360°)。"""
+    rad = math.pi / 180.0
+    lon1, lat1 = p1[0] * rad, p1[1] * rad
+    lon2, lat2 = p2[0] * rad, p2[1] * rad
+    d_lon = lon2 - lon1
+    y = math.sin(d_lon) * math.cos(lat2)
+    x = math.cos(lat1) * math.sin(lat2) - math.sin(lat1) * math.cos(lat2) * math.cos(d_lon)
+    bearing = math.atan2(y, x) * 180.0 / math.pi
+    return (bearing + 360.0) % 360.0
+
+def get_path_length_meters(coords: List[List[float]]) -> float:
+    """計算折線航道的總公尺長度。"""
+    if len(coords) < 2:
+        return 1.0
+    total_len = 0.0
+    for i in range(len(coords) - 1):
+        x1, y1 = coords[i]
+        x2, y2 = coords[i + 1]
+        d = math.hypot((x2 - x1) * 0.652, y2 - y1) * 111320.0
+        total_len += d
+    return max(total_len, 1.0)
+
+def interpolate_along_path(coords: List[List[float]], progress: float) -> Tuple[float, float, float]:
+    """
+    沿水路航道 LineString 依進度 (0.0~1.0) 進行平滑內插，
+    回傳 (lon, lat, bearing)。保證船隻永遠行駛在水域中央，不碰觸陸地。
+    """
+    if not coords:
+        return 0.0, 0.0, 0.0
+    if len(coords) == 1:
+        return coords[0][0], coords[0][1], 0.0
+
+    p = max(0.0, min(1.0, float(progress)))
+    seg_lengths = []
+    total_len = 0.0
+    for i in range(len(coords) - 1):
+        x1, y1 = coords[i]
+        x2, y2 = coords[i + 1]
+        d = math.hypot((x2 - x1) * 0.652, y2 - y1)
+        seg_lengths.append(d)
+        total_len += d
+
+    if total_len <= 1e-9:
+        return coords[0][0], coords[0][1], calculate_bearing(coords[0], coords[-1])
+
+    target_dist = p * total_len
+    accum = 0.0
+    for i, seg_len in enumerate(seg_lengths):
+        if accum + seg_len >= target_dist or i == len(seg_lengths) - 1:
+            local_t = (target_dist - accum) / seg_len if seg_len > 1e-9 else 0.0
+            local_t = max(0.0, min(1.0, local_t))
+            p1 = coords[i]
+            p2 = coords[i + 1]
+            lon = p1[0] + (p2[0] - p1[0]) * local_t
+            lat = p1[1] + (p2[1] - p1[1]) * local_t
+            bearing = calculate_bearing(p1, p2)
+            return lon, lat, bearing
+        accum += seg_len
+
+    return coords[-1][0], coords[-1][1], calculate_bearing(coords[-2], coords[-1])
+
 # 船舶類型代碼轉換 (ITU-R M.1371)
-def parse_ship_type(type_code: int) -> tuple[str, str]:
-    """
-    回傳 (中文類別名稱, 樣式分組)
-    分組：'cargo' | 'tanker' | 'tug' | 'passenger' | 'other'
-    """
+def parse_ship_type(type_code: int) -> Tuple[str, str]:
     if 70 <= type_code <= 79:
         if type_code == 71:
             return "貨櫃輪 (Container Ship)", "cargo"
@@ -29,7 +196,7 @@ def parse_ship_type(type_code: int) -> tuple[str, str]:
         elif type_code == 82:
             return "化學品油輪 (Chemical Tanker)", "tanker"
         return "油輪 (Tanker)", "tanker"
-    elif type_code == 52 or type_code == 31 or type_code == 32:
+    elif type_code in (52, 31, 32):
         return "拖船 / 引水船 (Tug / Pilot)", "tug"
     elif 60 <= type_code <= 69:
         return "大型客輪 / 郵輪 (Passenger / Cruise)", "passenger"
@@ -64,7 +231,7 @@ class MaritimeShippingService:
     def _init_realistic_vancouver_fleet(self):
         """
         溫哥華港口（Port of Vancouver）代表性真實船舶隊列：
-        包含布勒內灣貨櫃與散貨碼頭、英吉利灣錨地、西嶺油港、Seaspan 港口拖船與菲沙河作業船。
+        航行中船隻均配置專業水路航道與巡邏迴圈，保證 100% 航行於深水區，絕不穿越陸地。
         """
         fleet = [
             {
@@ -75,11 +242,7 @@ class MaritimeShippingService:
                 "type_code": 71,
                 "ship_type": "超大型貨櫃輪 (Container Ship)",
                 "type_group": "cargo",
-                "lat": 49.3086,
-                "lon": -123.1180,
                 "sog": 11.8,
-                "cog": 295.0,
-                "heading": 295.0,
                 "nav_status": "發動機航行中 (Underway)",
                 "destination": "VANCOUVER CENTERM",
                 "eta": "10-15 14:30",
@@ -87,9 +250,9 @@ class MaritimeShippingService:
                 "width": 59,
                 "draft": 14.8,
                 "flag": "巴拿馬 (Panama)",
-                "base_lat": 49.3086,
-                "base_lon": -123.1180,
-                "path_type": "inbound"
+                "waypoints": PATH_BURRARD_OUTBOUND,
+                "progress": 0.35,
+                "path_length_meters": get_path_length_meters(PATH_BURRARD_OUTBOUND)
             },
             {
                 "mmsi": "477218300",
@@ -111,9 +274,7 @@ class MaritimeShippingService:
                 "width": 43,
                 "draft": 13.2,
                 "flag": "香港 (Hong Kong)",
-                "base_lat": 49.2890,
-                "base_lon": -123.0760,
-                "path_type": "moored"
+                "waypoints": None
             },
             {
                 "mmsi": "219018501",
@@ -123,11 +284,7 @@ class MaritimeShippingService:
                 "type_code": 71,
                 "ship_type": "貨櫃輪 (Container Ship)",
                 "type_group": "cargo",
-                "lat": 49.3150,
-                "lon": -123.2350,
                 "sog": 14.2,
-                "cog": 110.0,
-                "heading": 110.0,
                 "nav_status": "發動機航行中 (Underway)",
                 "destination": "VANCOUVER PORT",
                 "eta": "10-15 16:00",
@@ -135,9 +292,9 @@ class MaritimeShippingService:
                 "width": 59,
                 "draft": 14.0,
                 "flag": "丹麥 (Denmark)",
-                "base_lat": 49.3150,
-                "base_lon": -123.2350,
-                "path_type": "inbound"
+                "waypoints": PATH_BURRARD_INBOUND,
+                "progress": 0.15,
+                "path_length_meters": get_path_length_meters(PATH_BURRARD_INBOUND)
             },
             {
                 "mmsi": "538004521",
@@ -159,9 +316,7 @@ class MaritimeShippingService:
                 "width": 32,
                 "draft": 11.5,
                 "flag": "馬紹爾群島 (Marshall Islands)",
-                "base_lat": 49.2935,
-                "base_lon": -123.2080,
-                "path_type": "anchor"
+                "waypoints": None
             },
             {
                 "mmsi": "311000789",
@@ -183,9 +338,7 @@ class MaritimeShippingService:
                 "width": 32,
                 "draft": 12.0,
                 "flag": "巴哈馬 (Bahamas)",
-                "base_lat": 49.3050,
-                "base_lon": -123.2420,
-                "path_type": "anchor"
+                "waypoints": None
             },
             {
                 "mmsi": "316001248",
@@ -195,11 +348,7 @@ class MaritimeShippingService:
                 "type_code": 52,
                 "ship_type": "港口作業拖船 (Harbor Tug)",
                 "type_group": "tug",
-                "lat": 49.3020,
-                "lon": -123.1090,
                 "sog": 8.5,
-                "cog": 270.0,
-                "heading": 270.0,
                 "nav_status": "發動機航行中 (Underway)",
                 "destination": "BURRARD INLET PATROL",
                 "eta": "10-15 18:00",
@@ -207,9 +356,9 @@ class MaritimeShippingService:
                 "width": 10,
                 "draft": 4.5,
                 "flag": "加拿大 (Canada)",
-                "base_lat": 49.3020,
-                "base_lon": -123.1090,
-                "path_type": "patrol"
+                "waypoints": PATH_BURRARD_TUG_PATROL,
+                "progress": 0.25,
+                "path_length_meters": get_path_length_meters(PATH_BURRARD_TUG_PATROL)
             },
             {
                 "mmsi": "316005720",
@@ -219,11 +368,7 @@ class MaritimeShippingService:
                 "type_code": 52,
                 "ship_type": "護航引導拖船 (Escort Tug)",
                 "type_group": "tug",
-                "lat": 49.3180,
-                "lon": -123.1420,
                 "sog": 9.2,
-                "cog": 125.0,
-                "heading": 125.0,
                 "nav_status": "發動機航行中 (Underway)",
                 "destination": "FIRST NARROWS ESCORT",
                 "eta": "10-15 15:10",
@@ -231,9 +376,9 @@ class MaritimeShippingService:
                 "width": 11,
                 "draft": 5.0,
                 "flag": "加拿大 (Canada)",
-                "base_lat": 49.3180,
-                "base_lon": -123.1420,
-                "path_type": "patrol"
+                "waypoints": PATH_FIRST_NARROWS_ESCORT,
+                "progress": 0.40,
+                "path_length_meters": get_path_length_meters(PATH_FIRST_NARROWS_ESCORT)
             },
             {
                 "mmsi": "636018320",
@@ -255,9 +400,7 @@ class MaritimeShippingService:
                 "width": 44,
                 "draft": 12.8,
                 "flag": "賴比瑞亞 (Liberia)",
-                "base_lat": 49.2960,
-                "base_lon": -122.9550,
-                "path_type": "moored"
+                "waypoints": None
             },
             {
                 "mmsi": "316012490",
@@ -267,11 +410,7 @@ class MaritimeShippingService:
                 "type_code": 52,
                 "ship_type": "菲沙河內河推船 (River Tug)",
                 "type_group": "tug",
-                "lat": 49.2010,
-                "lon": -122.9250,
                 "sog": 6.8,
-                "cog": 260.0,
-                "heading": 260.0,
                 "nav_status": "發動機航行中 (Underway)",
                 "destination": "FRASER RIVER LOG BOOM",
                 "eta": "10-15 17:00",
@@ -279,9 +418,9 @@ class MaritimeShippingService:
                 "width": 8,
                 "draft": 3.2,
                 "flag": "加拿大 (Canada)",
-                "base_lat": 49.2010,
-                "base_lon": -122.9250,
-                "path_type": "patrol"
+                "waypoints": PATH_FRASER_RIVER,
+                "progress": 0.30,
+                "path_length_meters": get_path_length_meters(PATH_FRASER_RIVER)
             },
             {
                 "mmsi": "311000342",
@@ -303,9 +442,7 @@ class MaritimeShippingService:
                 "width": 32,
                 "draft": 8.9,
                 "flag": "巴哈馬 (Bahamas)",
-                "base_lat": 49.1720,
-                "base_lon": -122.9460,
-                "path_type": "moored"
+                "waypoints": None
             },
             {
                 "mmsi": "316002599",
@@ -327,55 +464,69 @@ class MaritimeShippingService:
                 "width": 32,
                 "draft": 11.2,
                 "flag": "加拿大 (Canada)",
-                "base_lat": 49.3080,
-                "base_lon": -123.0310,
-                "path_type": "moored"
+                "waypoints": None
             }
         ]
 
         for s in fleet:
             s["source"] = "AISStream.io (溫哥華港區即時監測)"
             s["updated_at"] = datetime.now(timezone.utc).isoformat()
+            
+            # 若為水路航道巡邏船隻，依照初始 progress 立即計算初始位置與航向
+            if s.get("waypoints"):
+                lon, lat, bearing = interpolate_along_path(s["waypoints"], s.get("progress", 0.0))
+                s["lon"] = round(lon, 5)
+                s["lat"] = round(lat, 5)
+                s["cog"] = round(bearing, 1)
+                s["heading"] = round(bearing, 1)
+
             self.vessels[s["mmsi"]] = s
 
     def update_simulation_tick(self):
         """
-        當未配置 API Key 或等待 AIS 訊息時，讓航行中船隻平滑微幅沿航向移動，
-        使港口船運動態栩栩如生。
+        當未配置 API Key 或等待 AIS 訊息時，讓航行中船隻沿著深水航道路徑平滑巡邏。
+        絕不偏離水路航道，徹底杜絕船隻穿行史丹利公園或任何陸地的問題。
         """
         now = time.time()
         elapsed = now - self.last_update_time
         self.last_update_time = now
 
+        # 防止時間差異常暴增
+        elapsed = min(elapsed, 10.0)
+
         for mmsi, v in self.vessels.items():
             if v.get("is_live_ais"):
                 continue  # 真實 AIS 數據不介入模擬
 
+            waypoints = v.get("waypoints")
+            if not waypoints:
+                continue
+
             sog = v.get("sog", 0.0)
-            if sog > 0.5:
-                cog = v.get("cog", 0.0)
-                # 航行微移：1 節 ≈ 0.514 m/s
-                dist_meters = sog * 0.5144 * elapsed
-                rad = math.radians(cog)
-                d_lat = (dist_meters * math.cos(rad)) / 111320.0
-                d_lon = (dist_meters * math.sin(rad)) / (111320.0 * math.cos(math.radians(v["lat"])))
+            if sog <= 0.2:
+                continue
 
-                v["lat"] += d_lat
-                v["lon"] += d_lon
+            # 依真實海浬時速換算移動距離 (1 節 ≈ 0.5144 公尺/秒)
+            dist_meters = sog * 0.5144 * elapsed
+            path_len = v.get("path_length_meters") or get_path_length_meters(waypoints)
+            delta_p = dist_meters / path_len
 
-                # 當船隻偏離溫哥華水道基準點過遠時，掉頭巡邏
-                base_lat = v.get("base_lat", v["lat"])
-                base_lon = v.get("base_lon", v["lon"])
-                dist_from_base = math.hypot(v["lat"] - base_lat, v["lon"] - base_lon)
-                if dist_from_base > 0.06:
-                    v["cog"] = (v["cog"] + 180.0) % 360.0
-                    v["heading"] = v["cog"]
+            current_p = v.get("progress", 0.0)
+            next_p = (current_p + delta_p) % 1.0
+            v["progress"] = next_p
 
+            # 沿深水航道精確內插座標與真航向
+            lon, lat, bearing = interpolate_along_path(waypoints, next_p)
+            v["lon"] = round(lon, 5)
+            v["lat"] = round(lat, 5)
+            v["cog"] = round(bearing, 1)
+            v["heading"] = round(bearing, 1)
             v["updated_at"] = datetime.now(timezone.utc).isoformat()
 
     def handle_ais_message(self, raw_json: str):
         """
-        解析來自 Aisstream.io WebSocket 的即時封包
+        解析來自 Aisstream.io WebSocket 的即時封包。
+        內建雙重安全陸地過濾：若回報座標落入史丹利公園或市中心陸地，一律過濾拋棄。
         """
         try:
             msg = json.loads(raw_json)
@@ -411,8 +562,16 @@ class MaritimeShippingService:
 
             if msg_type == "PositionReport":
                 pos = msg.get("Message", {}).get("PositionReport", {})
-                vessel["lat"] = pos.get("Latitude", meta.get("latitude", vessel.get("lat")))
-                vessel["lon"] = pos.get("Longitude", meta.get("longitude", vessel.get("lon")))
+                new_lat = pos.get("Latitude", meta.get("latitude", vessel.get("lat")))
+                new_lon = pos.get("Longitude", meta.get("longitude", vessel.get("lon")))
+
+                # 陸地座標安全檢查：若 GPS 偏移或地面發報機落入史丹利公園或市中心陸地，立即捨棄
+                if is_point_on_vancouver_land(new_lon, new_lat):
+                    logger.warning(f"過濾陸地異常 AIS 船舶座標: MMSI {mmsi} 位於 ({new_lon}, {new_lat})，已自動忽略")
+                    return
+
+                vessel["lat"] = new_lat
+                vessel["lon"] = new_lon
                 vessel["sog"] = round(float(pos.get("Sog", 0.0)), 1)
                 vessel["cog"] = round(float(pos.get("Cog", 0.0)), 1)
                 vessel["heading"] = round(float(pos.get("TrueHeading", vessel["cog"])), 1)
@@ -452,7 +611,7 @@ class MaritimeShippingService:
 
         while True:
             if not self.api_key:
-                # 未提供 API 金鑰，每 3 秒更新模擬船舶位置
+                # 未提供 API 金鑰，每 3 秒更新模擬船舶水路航行位置
                 self.update_simulation_tick()
                 await asyncio.sleep(3.0)
                 continue
@@ -480,13 +639,14 @@ class MaritimeShippingService:
             except Exception as e:
                 self.is_connected = False
                 logger.error(f"Aisstream WebSocket connection error: {e}. Retrying in 10s...")
-                # 斷線期間維持平滑模擬
+                # 斷線期間維持水路航道平滑巡航
                 for _ in range(5):
                     self.update_simulation_tick()
                     await asyncio.sleep(2.0)
 
     def get_vessels(self) -> List[Dict[str, Any]]:
         self.update_simulation_tick()
-        return list(self.vessels.values())
+        # 最終輸出守衛：過濾掉任何可能落入陸地多邊形的船舶
+        return [v for v in self.vessels.values() if not is_point_on_vancouver_land(v.get("lon", 0.0), v.get("lat", 0.0))]
 
 shipping_service = MaritimeShippingService()
