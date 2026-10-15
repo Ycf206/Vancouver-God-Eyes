@@ -2390,6 +2390,8 @@ export default function AppMap() {
     layers.localAreaBoundary,
     layers.fuel,
     layers.tesla,
+    layers.oneWayStreets,
+    layers.snowRemovalRoutes,
     layers.marineTerminals,
     contourInterval,
     mapStyleType

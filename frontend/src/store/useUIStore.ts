@@ -205,6 +205,8 @@ export const useUIStore = create<UIState>()(
               (layer === 'bcferriesTerminals' && st.category === 'ferry_terminal') ||
               (layer === 'bcferriesVehicles' && st.category === 'ferry_vehicle') ||
               (layer === 'marineTerminals' && st.category === 'marine_terminals') ||
+              (layer === 'oneWayStreets' && (st.category === 'one_way_streets' || st.id?.startsWith('oneway_'))) ||
+              (layer === 'snowRemovalRoutes' && (st.category === 'snow_removal_routes' || st.id?.startsWith('snow_'))) ||
               (layer === 'skytrainRoutes' && st.category === 'skytrain') ||
               (layer === 'bus' && st.category === 'bus');
             if (isTargetMatch) {
