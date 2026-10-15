@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Settings, X, Clock, Ruler, Thermometer, Check, MapPin, Navigation, Search, AlertCircle, RefreshCw } from 'lucide-react';
+import { Settings, X, Clock, Ruler, Thermometer, Check, MapPin, Navigation, Search, AlertCircle, RefreshCw, Globe } from 'lucide-react';
 import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
 
@@ -11,6 +11,8 @@ export default function SettingsModal() {
     setSettingsModalOpen, 
     timeFormat, 
     setTimeFormat, 
+    timeZone,
+    setTimeZone,
     distanceUnit, 
     setDistanceUnit,
     temperatureUnit,
@@ -351,7 +353,50 @@ export default function SettingsModal() {
 
         <div className="w-full h-px bg-[#26282d]"></div>
 
-        {/* Setting 3: 地圖比例尺單位 (Map Scale Unit) */}
+        {/* Setting 3: 時區設定 (Timezone) */}
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <label className="text-xs font-bold text-gray-200 flex items-center gap-1.5">
+              <Globe className="w-3.5 h-3.5 text-indigo-400" />
+              <span>時區設定 (Timezone)</span>
+            </label>
+            <span className="text-[10px] text-gray-400">頂部時鐘與系統時間</span>
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            {[
+              { id: 'America/Vancouver', label: '溫哥華 (本地預設)', desc: '太平洋時間 · 目前 GMT-7 (PDT) / 冬令 GMT-8' },
+              { id: 'auto', label: '自動 (裝置系統時區)', desc: '跟隨您目前設備系統的本地時間與時區' },
+              { id: 'Asia/Hong_Kong', label: '香港 / 台北 (HKT/CST)', desc: '亞洲時間 · GMT+8' },
+              { id: 'America/Toronto', label: '多倫多 / 紐約 (EDT/EST)', desc: '加東美東時間 · 目前 GMT-4 / 冬令 GMT-5' },
+              { id: 'Europe/London', label: '倫敦 (BST/GMT)', desc: '英國時間 · 目前 GMT+1 / 冬令 GMT+0' },
+              { id: 'UTC', label: '世界協調時間 (UTC)', desc: '國際標準時間 · GMT+0' },
+            ].map((tz) => (
+              <button
+                key={tz.id}
+                type="button"
+                onClick={() => setTimeZone(tz.id)}
+                className={`flex items-center justify-between p-2 rounded-lg border text-left transition-all ${
+                  timeZone === tz.id
+                    ? 'bg-indigo-950/50 border-indigo-500 text-white shadow-[0_0_8px_rgba(99,102,241,0.2)] ring-1 ring-indigo-500/50'
+                    : 'bg-[#1a1e28] border-[#2c3242] text-gray-300 hover:bg-[#232938] hover:text-white'
+                }`}
+              >
+                <div>
+                  <div className="text-xs font-bold">{tz.label}</div>
+                  <div className="text-[10px] text-gray-400 mt-0.5">{tz.desc}</div>
+                </div>
+                {timeZone === tz.id && (
+                  <Check className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="w-full h-px bg-[#26282d]"></div>
+
+        {/* Setting 4: 地圖比例尺單位 (Map Scale Unit) */}
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <label className="text-xs font-bold text-gray-200 flex items-center gap-1.5">
@@ -402,7 +447,7 @@ export default function SettingsModal() {
 
         <div className="w-full h-px bg-[#26282d]"></div>
 
-        {/* Setting 4: 氣溫單位 (Temperature Unit) */}
+        {/* Setting 5: 氣溫單位 (Temperature Unit) */}
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <label className="text-xs font-bold text-gray-200 flex items-center gap-1.5">

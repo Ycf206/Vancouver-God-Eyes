@@ -43,13 +43,39 @@ export function formatTimePreference(
   }
 }
 
-export function formatClock(date: Date, format: '12h' | '24h' = '24h'): string {
-  return date.toLocaleTimeString('zh-TW', {
+export function formatClock(
+  date: Date, 
+  format: '12h' | '24h' = '24h',
+  timeZone?: string
+): string {
+  const options: Intl.DateTimeFormatOptions = {
     hour12: format === '12h',
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
-  });
+  };
+  if (timeZone && timeZone !== 'auto') {
+    options.timeZone = timeZone;
+  }
+  return date.toLocaleTimeString('zh-TW', options);
+}
+
+export function formatDateWithTimezone(date: Date, timeZone?: string): string {
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    timeZoneName: 'shortOffset',
+  };
+  if (timeZone && timeZone !== 'auto') {
+    options.timeZone = timeZone;
+  }
+  const parts = new Intl.DateTimeFormat('en-US', options).formatToParts(date);
+  const year = parts.find((p) => p.type === 'year')?.value || '';
+  const month = parts.find((p) => p.type === 'month')?.value || '';
+  const day = parts.find((p) => p.type === 'day')?.value || '';
+  const tzName = parts.find((p) => p.type === 'timeZoneName')?.value || '';
+  return `${year}年${month}月${day}日 ${tzName}`;
 }
 
 /**

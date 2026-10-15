@@ -8,7 +8,7 @@ import DonateModal from '@/components/DonateModal';
 import SettingsModal from '@/components/SettingsModal';
 import ExplorePanel from '@/components/ExplorePanel';
 import { getApiUrl } from '@/utils/api';
-import { formatClock } from '@/utils/time';
+import { formatClock, formatDateWithTimezone } from '@/utils/time';
 
 export default function TopBar() {
   const { 
@@ -17,6 +17,7 @@ export default function TopBar() {
     isLayerPanelOpen, 
     toggleLayerPanel,
     timeFormat,
+    timeZone,
     setSettingsModalOpen,
     isExploreOpen,
     toggleExplore
@@ -104,18 +105,11 @@ export default function TopBar() {
   };
 
   const formatTime = (date: Date) => {
-    return formatClock(date, timeFormat);
+    return formatClock(date, timeFormat, timeZone);
   };
 
   const formatDate = (date: Date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    
-    const tzParts = date.toLocaleTimeString('en-US', { timeZoneName: 'short' }).split(' ');
-    const tzName = tzParts[tzParts.length - 1];
-    
-    return `${year}年${month}月${day}日 ${tzName}`;
+    return formatDateWithTimezone(date, timeZone);
   };
 
   return (

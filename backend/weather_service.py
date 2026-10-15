@@ -38,6 +38,27 @@ class WeatherService:
         }
         return mapping.get(code, ("多雲", "partly_cloudy"))
 
+    def _get_vancouver_now(self) -> datetime:
+        """
+        獲取溫哥華當地時間 (America/Vancouver - 夏令 PDT UTC-7 / 冬令 PST UTC-8)
+        """
+        try:
+            from zoneinfo import ZoneInfo
+            return datetime.now(ZoneInfo("America/Vancouver"))
+        except Exception:
+            pass
+        try:
+            import zoneinfo
+            return datetime.now(zoneinfo.ZoneInfo("America/Vancouver"))
+        except Exception:
+            pass
+        from datetime import timezone, timedelta
+        utc_now = datetime.now(timezone.utc)
+        # 加拿大夏令時間 (PDT): 3月第二個週日至11月第一個週日 (約 UTC-7, 冬令 PST UTC-8)
+        is_dst = (3, 8) <= (utc_now.month, utc_now.day) <= (11, 1)
+        offset_hours = -7 if is_dst else -8
+        return utc_now + timedelta(hours=offset_hours)
+
     def fetch_weather(self) -> Dict[str, Any]:
         """
         取得大溫哥華地區即時天氣與氣象警報：
@@ -48,11 +69,16 @@ class WeatherService:
         if self.cached_weather and (now - self.last_fetch_time < self.cache_ttl):
             return self.cached_weather
 
-        # 預設基準氣候數據（溫哥華典型氣候備援數據，確保前端永不讀取 undefined 造成白畫面）
+        now_vancouver = self._get_vancouver_now()
+        current_hour = now_vancouver.hour
+
+        # 預設基準氣候數據（溫哥華典型氣候備援數據，由當前小時起算 24 小時）
         default_hourly = []
-        for h in range(24):
+        for offset in range(24):
+            h = (current_hour + offset) % 24
+            time_label = "現在" if offset == 0 else f"{h:02d}:00"
             default_hourly.append({
-                "time": f"{h:02d}:00",
+                "time": time_label,
                 "temp": 12 + (3 if 11 <= h <= 17 else 0),
                 "condition": "多雲",
                 "icon": "partly_cloudy",
@@ -184,7 +210,7 @@ class WeatherService:
                     h_pops = hourly.get("precipitation_probability", [])
                     h_codes = hourly.get("weather_code", [])
 
-                    now_iso = datetime.now().strftime("%Y-%m-%dT%H:00")
+                    now_iso = now_vancouver.strftime("%Y-%m-%dT%H:00")
                     start_idx = 0
                     for idx, t in enumerate(h_times):
                         if t >= now_iso:

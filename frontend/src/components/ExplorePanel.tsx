@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
-import { formatShipEta } from '@/utils/time';
+import { formatShipEta, formatTimePreference } from '@/utils/time';
 
 interface WeatherHourlyItem {
   time: string;
@@ -355,20 +355,16 @@ function ExploreContent() {
             severity: 'none',
             message: '大溫哥華地區目前無極端天氣預警，天候狀況良好。'
           },
-          hourly: [
-            { time: '現在', temp: 15, condition: '多雲', icon: 'partly_cloudy', pop: 10 },
-            { time: '21:00', temp: 14, condition: '多雲', icon: 'partly_cloudy', pop: 10 },
-            { time: '22:00', temp: 13, condition: '密雲', icon: 'overcast', pop: 15 },
-            { time: '23:00', temp: 13, condition: '多雲', icon: 'partly_cloudy', pop: 20 },
-            { time: '00:00', temp: 12, condition: '多雲', icon: 'partly_cloudy', pop: 10 },
-            { time: '01:00', temp: 11, condition: '大致天晴', icon: 'mostly_sunny', pop: 5 },
-            { time: '02:00', temp: 11, condition: '晴天', icon: 'sunny', pop: 0 },
-            { time: '03:00', temp: 10, condition: '晴天', icon: 'sunny', pop: 0 },
-            { time: '04:00', temp: 10, condition: '晴天', icon: 'sunny', pop: 0 },
-            { time: '05:00', temp: 10, condition: '多雲', icon: 'partly_cloudy', pop: 10 },
-            { time: '06:00', temp: 11, condition: '多雲', icon: 'partly_cloudy', pop: 10 },
-            { time: '07:00', temp: 12, condition: '短暫陽光', icon: 'mostly_sunny', pop: 10 },
-          ],
+          hourly: Array.from({ length: 24 }).map((_, offset) => {
+            const h = (new Date().getHours() + offset) % 24;
+            return {
+              time: offset === 0 ? '現在' : `${String(h).padStart(2, '0')}:00`,
+              temp: 14 + (h >= 11 && h <= 17 ? 3 : 0),
+              condition: '多雲',
+              icon: 'partly_cloudy',
+              pop: 10
+            };
+          }),
           forecast: [
             { day: '今天', high: 16, low: 10, condition: '多雲時陰', icon: 'overcast', pop: 20 },
             { day: '明天', high: 15, low: 9, condition: '短暫陽光', icon: 'partly_cloudy', pop: 10 },
@@ -781,13 +777,15 @@ function ExploreContent() {
                     {weather.hourly.map((h, idx) => (
                       <div 
                         key={idx} 
-                        className={`shrink-0 w-[64px] py-2 px-1.5 rounded-lg border flex flex-col items-center justify-between text-center transition-all ${
+                        className={`shrink-0 w-[68px] py-2 px-1.5 rounded-lg border flex flex-col items-center justify-between text-center transition-all ${
                           idx === 0 
                             ? 'bg-sky-950/40 border-sky-500/40 text-white shadow-sm ring-1 ring-sky-500/30' 
                             : 'bg-[#12151e] border-[#252b3a] text-gray-300'
                         }`}
                       >
-                        <span className="text-[10.5px] font-medium text-gray-400 font-mono">{h.time}</span>
+                        <span className="text-[10px] font-medium text-gray-400 font-mono truncate max-w-full">
+                          {h.time === '現在' ? '現在' : formatTimePreference(h.time, timeFormat)}
+                        </span>
                         <div className="my-1.5 text-sky-300 flex items-center justify-center">
                           {renderWeatherMiniIcon(h.icon)}
                         </div>

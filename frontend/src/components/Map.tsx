@@ -1138,6 +1138,7 @@ export default function AppMap() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const style: any = {
       version: 8,
+      glyphs: 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf',
       sources: {
         'esri-base': {
           type: 'raster',
@@ -1417,7 +1418,7 @@ export default function AppMap() {
         },
         paint: {
           'line-color': '#082f49',
-          'line-width': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 17, 7.5],
+          'line-width': ['interpolate', ['linear'], ['zoom'], 10, 3.2, 13, 5.2, 16, 7.8],
           'line-opacity': 0.85
         }
       });
@@ -1435,34 +1436,8 @@ export default function AppMap() {
             ['==', ['get', 'priority'], 1], '#0284c7',
             '#38bdf8'
           ],
-          'line-width': [
-            'case',
-            ['==', ['get', 'priority'], 1],
-            ['interpolate', ['linear'], ['zoom'], 11, 2.0, 14, 3.8, 17, 6.0],
-            ['interpolate', ['linear'], ['zoom'], 11, 1.4, 14, 2.6, 17, 4.5]
-          ],
+          'line-width': ['interpolate', ['linear'], ['zoom'], 10, 2.0, 13, 3.6, 16, 5.6],
           'line-opacity': 0.95
-        }
-      });
-      style.layers.push({
-        id: 'snow-removal-routes-label-layer',
-        type: 'symbol',
-        source: 'snow_removal_routes',
-        minzoom: 13,
-        layout: {
-          'symbol-placement': 'line',
-          'symbol-spacing': 200,
-          'text-field': ['concat', '❄️ ', ['get', 'name']],
-          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 9, 15, 11, 17, 13],
-          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
-          'text-keep-upright': true,
-          'text-allow-overlap': false,
-          'text-ignore-placement': false
-        },
-        paint: {
-          'text-color': '#0369a1',
-          'text-halo-color': '#f0f9ff',
-          'text-halo-width': 2.0
         }
       });
     }
@@ -2598,7 +2573,7 @@ export default function AppMap() {
               lat: clickLat,
               properties: props
             });
-          } else if (layerId === 'snow-removal-routes-layer' || layerId === 'snow-removal-routes-casing-layer' || layerId === 'snow-removal-routes-label-layer') {
+          } else if (layerId === 'snow-removal-routes-layer' || layerId === 'snow-removal-routes-casing-layer') {
             setSelectedStop(null);
             const props = feature.properties || {};
             const clickLon = e.lngLat?.lng ?? -123.1207;

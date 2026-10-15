@@ -74,6 +74,8 @@ export interface UIState {
   setContourInterval: (interval: 'off' | '1m' | '2m' | '10m') => void;
   timeFormat: '12h' | '24h';
   setTimeFormat: (format: '12h' | '24h') => void;
+  timeZone: string;
+  setTimeZone: (timeZone: string) => void;
   distanceUnit: 'metric' | 'imperial';
   setDistanceUnit: (unit: 'metric' | 'imperial') => void;
   temperatureUnit: 'celsius' | 'fahrenheit';
@@ -178,6 +180,8 @@ export const useUIStore = create<UIState>()(
       },
       timeFormat: '24h',
       setTimeFormat: (format) => set({ timeFormat: format }),
+      timeZone: 'America/Vancouver',
+      setTimeZone: (tz) => set({ timeZone: tz }),
       distanceUnit: 'metric',
       setDistanceUnit: (unit) => set({ distanceUnit: unit }),
       temperatureUnit: 'celsius',
@@ -248,6 +252,7 @@ export const useUIStore = create<UIState>()(
         isLayerPanelOpen: state.isLayerPanelOpen,
         contourInterval: state.contourInterval,
         timeFormat: state.timeFormat,
+        timeZone: state.timeZone,
         distanceUnit: state.distanceUnit,
         temperatureUnit: state.temperatureUnit,
         userLocation: state.userLocation,
@@ -260,6 +265,7 @@ export const useUIStore = create<UIState>()(
           ...persistedState,
           contourInterval,
           timeFormat: persistedState?.timeFormat || '24h',
+          timeZone: persistedState?.timeZone || 'America/Vancouver',
           distanceUnit: persistedState?.distanceUnit || 'metric',
           temperatureUnit: persistedState?.temperatureUnit || 'celsius',
           userLocation: persistedState?.userLocation || null,
