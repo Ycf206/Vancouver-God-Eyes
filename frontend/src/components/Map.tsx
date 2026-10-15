@@ -278,7 +278,10 @@ export default function AppMap() {
   const [selectedSkytrainStation, setSelectedSkytrainStation] = useState<SkytrainStationSchedule | null>(null);
   const [loadingStationSchedule, setLoadingStationSchedule] = useState(false);
 
+  const lastInteractiveItemClickRef = useRef<number>(0);
+
   const handleSelectTrain = React.useCallback((train: SkytrainTrain) => {
+    lastInteractiveItemClickRef.current = Date.now();
     setSelectedStop(null);
     setSelectedFacility(null);
     setSelectedTerminal(null);
@@ -289,6 +292,7 @@ export default function AppMap() {
     setBusDetails(null);
     setSearchedBusRoute(null);
     setSelectedSkytrainStation(null);
+    setSelectedTrain(train);
   }, []);
 
   // 當圖層被關閉時，自動清理對應已開啟之資訊卡片與搜尋閃爍標記 (Search Target Focus Ring)
@@ -431,6 +435,7 @@ export default function AppMap() {
   }, []);
 
   const handleSelectBus = React.useCallback((v: Vehicle) => {
+    lastInteractiveItemClickRef.current = Date.now();
     setSelectedStop(null);
     setSelectedFacility(null);
     setSelectedTerminal(null);
@@ -2114,6 +2119,11 @@ export default function AppMap() {
           'contours-label-layer'
         ]}
         onClick={(e) => {
+          // 若剛剛點擊了車輛、列車或標記，阻止地圖畫布背景點擊事件清理所選內容
+          if (Date.now() - lastInteractiveItemClickRef.current < 450) {
+            return;
+          }
+
           const feature = e.features?.[0];
           if (!feature) {
             setSelectedStop(null);
@@ -2455,14 +2465,32 @@ export default function AppMap() {
         {layers.skytrainTrains && skytrainTrains.map(train => {
           const isSelected = selectedTrain?.id === train.id;
           return (
-            <Marker key={train.id} longitude={train.lon} latitude={train.lat} anchor="center">
+            <Marker 
+              key={train.id} 
+              longitude={train.lon} 
+              latitude={train.lat} 
+              anchor="center"
+              onClick={(e) => {
+                e.originalEvent?.stopPropagation();
+                handleSelectTrain(train);
+              }}
+            >
               <div
+                onMouseDown={(e) => {
+                  e.stopPropagation();
+                  e.nativeEvent?.stopImmediatePropagation();
+                }}
+                onTouchStart={(e) => {
+                  e.stopPropagation();
+                  e.nativeEvent?.stopImmediatePropagation();
+                }}
                 onClick={(e) => {
                   e.stopPropagation();
+                  e.nativeEvent?.stopImmediatePropagation();
                   handleSelectTrain(train);
                 }}
-                className={`relative flex items-center justify-center w-6 h-6 rounded-full cursor-pointer tooltip border-[1.5px] border-white shadow-lg backdrop-blur-sm transition-transform hover:scale-125 z-25 ${
-                  isSelected ? 'ring-4 ring-amber-400 scale-125 z-35' : ''
+                className={`relative flex items-center justify-center w-6 h-6 rounded-full cursor-pointer tooltip border-[1.5px] border-white shadow-lg backdrop-blur-sm transition-transform hover:scale-125 z-30 ${
+                  isSelected ? 'ring-4 ring-amber-400 scale-125 z-40' : ''
                 }`}
                 style={{
                   backgroundColor: train.color,
@@ -4710,8 +4738,8 @@ export default function AppMap() {
 
       </Map>
 
-      {/* 重設地圖視角至溫哥華地區按鈕 (Reset Map View to Vancouver) */}
-      <div className="absolute bottom-[142px] right-2.5 z-20 select-none">
+      {/* 重設地圖視角至溫哥華地區按鈕 (Reset Map View to Vancouver) - 精緻控制項樣式避免阻擋地圖或縮放控制 */}
+      <div className="absolute bottom-[164px] right-2.5 z-20 select-none">
         <button
           type="button"
           onClick={() => {
@@ -4723,11 +4751,13 @@ export default function AppMap() {
               duration: 1200
             });
           }}
-          className="group flex items-center gap-1.5 px-2.5 py-1.5 bg-[#161922]/95 hover:bg-[#202533] text-gray-200 hover:text-white rounded-lg border border-[#2d3448] shadow-2xl backdrop-blur-md transition-all hover:border-emerald-500/50 hover:shadow-[0_0_12px_rgba(16,185,129,0.2)] active:scale-95 text-xs font-medium cursor-pointer"
-          title="重設地圖顯示視角至溫哥華地區 (Reset to Metro Vancouver)"
+          className="group relative flex items-center justify-center w-[29px] h-[29px] bg-[#161922]/95 hover:bg-[#202533] text-gray-200 hover:text-white rounded border border-[#2d3448] shadow-md backdrop-blur-md transition-all hover:border-emerald-500/60 hover:shadow-[0_0_10px_rgba(16,185,129,0.25)] active:scale-95 cursor-pointer"
+          title="重設地圖顯示視角至溫哥華地區"
         >
-          <LocateFixed className="w-3.5 h-3.5 text-emerald-400 group-hover:rotate-90 transition-transform duration-300 shrink-0" />
-          <span className="text-[11px] sm:text-xs tracking-tight">溫哥華視角</span>
+          <LocateFixed className="w-4 h-4 text-emerald-400 group-hover:rotate-90 transition-transform duration-300 shrink-0" />
+          <span className="pointer-events-none absolute right-[36px] top-1/2 -translate-y-1/2 px-2 py-1 bg-[#10131a]/95 text-white text-[11px] font-medium rounded border border-[#262b3a] shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+            重設溫哥華視角
+          </span>
         </button>
       </div>
 

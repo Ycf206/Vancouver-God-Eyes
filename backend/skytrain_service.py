@@ -169,9 +169,23 @@ def get_estimated_skytrain_trains():
     now_sec = now_van.hour * 3600 + now_van.minute * 60 + now_van.second + now_van.microsecond / 1e6
     hw_expo, hw_mln, hw_can = _get_headways_for_time(now_van)
 
+    PATTERN_SCHEDULE_CONFIG = {
+        'expo_kg_outbound': {'prefix': 'EXP', 'start_id': 101, 'phase_ratio': 0.0},
+        'expo_pwu_outbound': {'prefix': 'EXP', 'start_id': 201, 'phase_ratio': 0.5},
+        'expo_kg_inbound': {'prefix': 'EXP', 'start_id': 151, 'phase_ratio': 0.25},
+        'expo_pwu_inbound': {'prefix': 'EXP', 'start_id': 251, 'phase_ratio': 0.75},
+        'millennium_east': {'prefix': 'MLN', 'start_id': 301, 'phase_ratio': 0.0},
+        'millennium_west': {'prefix': 'MLN', 'start_id': 351, 'phase_ratio': 0.5},
+        'canada_rb_outbound': {'prefix': 'CAN', 'start_id': 401, 'phase_ratio': 0.0},
+        'canada_yvr_outbound': {'prefix': 'CAN', 'start_id': 421, 'phase_ratio': 0.5},
+        'canada_rb_inbound': {'prefix': 'CAN', 'start_id': 451, 'phase_ratio': 0.25},
+        'canada_yvr_inbound': {'prefix': 'CAN', 'start_id': 471, 'phase_ratio': 0.75},
+    }
+
     trains = []
 
     for pattern in patterns:
+        pid = pattern['pattern_id']
         line_id = pattern['line_id']
         headway = hw_expo if line_id == 'expo' else (hw_mln if line_id == 'millennium' else hw_can)
         duration = pattern['duration_sec']
@@ -184,12 +198,17 @@ def get_estimated_skytrain_trains():
         shape_indices = _get_station_shape_indices(pattern)
         models = FLEET_MODELS.get(line_id, FLEET_MODELS['expo'])
 
-        # Deterministic phase hash for this pattern
-        pid_hash = sum(ord(c) for c in pattern['pattern_id']) * 37
+        cfg = PATTERN_SCHEDULE_CONFIG.get(pid, {
+            'prefix': 'EXP' if line_id == 'expo' else ('MLN' if line_id == 'millennium' else 'CAN'),
+            'start_id': 501,
+            'phase_ratio': 0.0
+        })
+
+        branch_offset = cfg['phase_ratio'] * headway
 
         for k in range(num_trains):
-            # Phase offset for each train
-            train_phase = (k * headway + pid_hash) % duration
+            # Interleaved phase offset for each train on its branch and trunk
+            train_phase = (k * headway + branch_offset) % duration
             elapsed = (now_sec + train_phase) % duration
 
             # Find bounding stations
@@ -233,9 +252,8 @@ def get_estimated_skytrain_trains():
             next_eta_dt = now_van + timedelta(seconds=rem_to_next)
             eta_time_str = next_eta_dt.strftime("%H:%M:%S")
 
-            # Vehicle ID
-            prefix = "EXP" if line_id == 'expo' else ("MLN" if line_id == 'millennium' else "CAN")
-            train_id = f"{prefix}-{k + 1:02d}"
+            # Strictly unique Vehicle ID (e.g. CAN-401, CAN-421, EXP-101, MLN-301)
+            train_id = f"{cfg['prefix']}-{cfg['start_id'] + k:03d}"
 
             # Train model assignment
             model_info = models[k % len(models)]
@@ -302,8 +320,21 @@ def get_estimated_skytrain_trains():
                 'stops': stops_with_eta,
                 'shape_coords': shape
             })
+    # Proximity filter: Ensure no two trains on the same line traveling in the same direction are within ~300m
+    deduped_trains = []
+    for t in trains:
+        collision = False
+        for existing in deduped_trains:
+            if existing['line_id'] == t['line_id'] and existing['direction'] == t['direction']:
+                # Distance squared in approximate degrees (~1 deg lat ~ 111km, 0.0025 deg ~ 250m)
+                d_sq = (existing['lat'] - t['lat']) ** 2 + ((existing['lon'] - t['lon']) * 0.65) ** 2
+                if d_sq < 0.000008:  # within ~300 meters
+                    collision = True
+                    break
+        if not collision:
+            deduped_trains.append(t)
 
-    return trains
+    return deduped_trains
 
 
 def get_skytrain_station_schedule(stop_id: str):
