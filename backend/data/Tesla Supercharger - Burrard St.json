@@ -1,0 +1,164 @@
+{
+    "data": {
+        "marketing": {
+            "display_driving_directions": true,
+            "show_on_bodyshop_support_page": false,
+            "show_on_find_us": true,
+            "store_sub_region": {
+                "display_name": "British Columbia",
+                "locale": null
+            },
+            "display_name": "Vancouver, BC - Burrard Street Supercharger",
+            "roadside_assistance_number": "(877) 798-3752",
+            "address_notes": null,
+            "gmaps_override": "https://maps.google.com/maps?daddr=49.287778,-123.115489",
+            "location_url_slug": "vancouverburradstsupercharger",
+            "gmaps_override_longitude": -123.115812,
+            "store_region": {
+                "name": "north_america"
+            },
+            "gmaps_override_latitude": 49.287898,
+            "service_center_phone": null,
+            "service_hours_by_appointment_only": "0",
+            "store_hours_by_appointment_only": "0",
+            "phone_numbers": null,
+            "common_name": "Cadillac Fairview Waterfront Centre",
+            "site_event": {
+                "has_event": null
+            }
+        },
+        "functions": [
+            {
+                "business_hours": {
+                    "hours": []
+                },
+                "address": {
+                    "country": "CA",
+                    "formatted_address": [
+                        "200 BURRARD STREET",
+                        "Vancouver BC V6C 3L6"
+                    ],
+                    "address_validated": false,
+                    "city": "Vancouver",
+                    "address_1": "200 Burrard Street",
+                    "address_2": "",
+                    "latitude": 49.2876627,
+                    "county": null,
+                    "state_province": "BC",
+                    "locale": "en-US",
+                    "address_number": "",
+                    "address_street": "",
+                    "district": null,
+                    "country_name": null,
+                    "address_provider_enum": "google",
+                    "postal_code": "V6C 3L6",
+                    "postal_code_suffix": null,
+                    "longitude": -123.1151995
+                },
+                "address_by_locale": [
+                    {
+                        "country": "CA",
+                        "formatted_address": [
+                            "200 BURRARD STREET",
+                            "Vancouver BC V6C 3L6"
+                        ],
+                        "address_validated": false,
+                        "city": "Vancouver",
+                        "address_1": "200 Burrard Street",
+                        "address_2": "",
+                        "latitude": 49.2876627,
+                        "county": null,
+                        "state_province": "BC",
+                        "locale": "en-US",
+                        "address_number": "",
+                        "address_street": "",
+                        "district": null,
+                        "country_name": null,
+                        "address_provider_enum": "google",
+                        "postal_code": "V6C 3L6",
+                        "postal_code_suffix": null,
+                        "longitude": -123.1151995
+                    }
+                ],
+                "customer_facing_name": "Vancouver, BC - Burrard Street Supercharger Vancouver BC",
+                "translations": {
+                    "customerFacingName": {
+                        "en-US": "Vancouver, BC - Burrard Street Supercharger Vancouver BC"
+                    }
+                },
+                "name": "Charging_Supercharger",
+                "opening_date": "2018-07-21",
+                "status": "Pending"
+            }
+        ],
+        "tesla_center_collision_function": {
+            "company_phone": null
+        },
+        "key_data": {
+            "address": {
+                "country": "CA",
+                "formatted_address": [
+                    "200 BURRARD STREET",
+                    "Vancouver BC V6C 3L6"
+                ],
+                "address_validated": false,
+                "city": "Vancouver",
+                "address_1": "200 Burrard Street",
+                "address_2": "",
+                "latitude": 49.2876627,
+                "county": null,
+                "state_province": "BC",
+                "locale": "en-US",
+                "address_number": "",
+                "address_street": "",
+                "district": null,
+                "country_name": "Canada",
+                "address_provider_enum": "google",
+                "postal_code": "V6C 3L6",
+                "postal_code_suffix": null,
+                "longitude": -123.1151995
+            },
+            "phone": null,
+            "local_address": null,
+            "use_local_address": false,
+            "geo_point": {
+                "lon": -123.1151995,
+                "lat": 49.2876627
+            },
+            "status": {
+                "name": "Open"
+            },
+            "address_by_locale": [
+                {
+                    "country": "CA",
+                    "city": "Vancouver",
+                    "address_1": "200 Burrard Street",
+                    "address_2": "",
+                    "latitude": 49.2876627,
+                    "country_name": null,
+                    "state_province": "BC",
+                    "locale": "en-US",
+                    "postal_code": "V6C 3L6",
+                    "longitude": -123.1151995
+                }
+            ]
+        },
+        "supercharger_function": {
+            "customer_facing_coming_soon_date": null,
+            "actual_longitude": "-123.114524",
+            "access_type": "Public",
+            "installed_full_power": "75",
+            "vote_winner_quarter": null,
+            "show_on_find_us": "1",
+            "project_status": "Open",
+            "actual_latitude": "49.287416",
+            "open_to_non_tesla": false,
+            "coming_soon_longitude": "-123.115489",
+            "site_status": "open",
+            "coming_soon_name": null,
+            "charging_accessibility": "Tesla Only",
+            "coming_soon_latitude": "49.287778",
+            "num_charger_stalls": "8"
+        }
+    }
+}

@@ -302,6 +302,7 @@ export default function AppMap() {
       const type = selectedFacility.facility_type;
       let facilityClosed = false;
       if (type === 'fuel' && !layers.fuel) facilityClosed = true;
+      else if (type === 'tesla' && !layers.tesla) facilityClosed = true;
       else if (type === 'ev_charging' && !layers.evCharging) facilityClosed = true;
       else if (type === 'aed' && !layers.aed) facilityClosed = true;
       else if (type === 'fire_halls' && !layers.fireHalls) facilityClosed = true;
@@ -379,6 +380,8 @@ export default function AppMap() {
       if (searchTarget.layer_key && !layers[searchTarget.layer_key]) {
         setSearchTarget(null);
       } else if ((searchTarget.category === 'fuel' || searchTarget.id?.startsWith('fuel_')) && !layers.fuel) {
+        setSearchTarget(null);
+      } else if ((searchTarget.category === 'tesla' || searchTarget.id?.startsWith('tesla_')) && !layers.tesla) {
         setSearchTarget(null);
       } else if ((searchTarget.category === 'ev_charging' || searchTarget.id?.startsWith('ev_')) && !layers.evCharging) {
         setSearchTarget(null);
@@ -841,7 +844,7 @@ export default function AppMap() {
         'fire_halls', 'community_centres', 'ev_charging', 'escooter', 'shared_bikes', 'bikeways',
         'traffic_cameras', 'safety_cameras', 'parking_meters', 'accessible_parking', 'motorcycle_parking',
         'hospitals', 'parks', 'parks_facilities', 'community_gardens', 'drinking_fountains',
-        'public_washrooms', 'schools', 'libraries', 'food_vendors', 'homeless_shelters', 'aed', 'fuel', 'contours', 'road'
+        'public_washrooms', 'schools', 'libraries', 'food_vendors', 'homeless_shelters', 'aed', 'fuel', 'tesla', 'contours', 'road'
       ].includes(searchTarget.category)
     ) {
       setSelectedTerminal(null);
@@ -999,6 +1002,7 @@ export default function AppMap() {
     style.sources['contours'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/contours?interval=${activeContourInterval}` };
     style.sources['local-area-boundary'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/local_area_boundary` };
     style.sources['fuel'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/fuel` };
+    style.sources['tesla'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/tesla` };
     style.sources['aed'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/aed` };
 
     // Bus Routes & Stops (Merged under busRoutes) - 當正在搜尋特定巴士路線或選中特定巴士時，只顯示該專屬路線，不繪製底圖全域 99 及 R1~R6 路線
@@ -1570,6 +1574,36 @@ export default function AppMap() {
       });
     }
 
+    // Road Infrastructure: Tesla Superchargers & Service Centers (TESLA 專屬超級充電與服務中心)
+    if (layers.tesla) {
+      style.layers.push({
+        id: 'tesla-layer',
+        type: 'circle',
+        source: 'tesla',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 4.5, 14, 7.5, 15, 10, 17, 14],
+          'circle-color': '#e82127',
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'tesla-symbol-layer',
+        type: 'symbol',
+        source: 'tesla',
+        minzoom: 12,
+        layout: {
+          'text-field': '⚡',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 12, 9, 15, 11, 17, 13],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+    }
+
     // Government Facilities: Hospitals & UPCC (醫療: 急診醫院與急症基層醫療中心)
     if (layers.hospitals) {
       style.layers.push({
@@ -2043,6 +2077,7 @@ export default function AppMap() {
     layers.contours,
     layers.localAreaBoundary,
     layers.fuel,
+    layers.tesla,
     contourInterval,
     mapStyleType
   ]);
@@ -2115,6 +2150,8 @@ export default function AppMap() {
           'aed-symbol-layer',
           'fuel-layer',
           'fuel-symbol-layer',
+          'tesla-layer',
+          'tesla-symbol-layer',
           'contours-layer',
           'contours-label-layer'
         ]}
@@ -2213,6 +2250,7 @@ export default function AppMap() {
             layerId.startsWith('traffic-cameras') ||
             layerId.startsWith('safety-cameras') ||
             layerId.startsWith('fuel') ||
+            layerId.startsWith('tesla') ||
             layerId.startsWith('fire-halls') ||
             layerId.startsWith('police') ||
             layerId.startsWith('disaster-hubs') ||
@@ -2230,10 +2268,12 @@ export default function AppMap() {
           ) {
             setSelectedStop(null);
             const props = feature.properties || {};
+            const isFuel = layerId.startsWith('fuel');
+            const isTesla = layerId.startsWith('tesla');
             setSelectedFacility({
               id: props.id || '',
-              facility_type: props.facility_type || (layerId.startsWith('fuel') ? 'fuel' : ''),
-              name: props.name || props.brand || (layerId.startsWith('fuel') ? '加油站' : ''),
+              facility_type: props.facility_type || (isFuel ? 'fuel' : (isTesla ? 'tesla' : '')),
+              name: props.name || props.brand || (isFuel ? '加油站' : (isTesla ? 'Tesla 站點' : '')),
               local_area: props.local_area || props.address || props.city || '',
               lon: coords[0],
               lat: coords[1],
@@ -3278,18 +3318,19 @@ export default function AppMap() {
             offset={[0, -10]}
             maxWidth={
               selectedFacility.facility_type === 'traffic_cameras' ? '400px' : 
-              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel') ? '360px' : 
+              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla') ? '360px' : 
               '320px'
             }
           >
             <div className={`p-3.5 ${
               selectedFacility.facility_type === 'traffic_cameras' ? 'w-[360px]' : 
-              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel') ? 'w-[340px]' : 
+              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla') ? 'w-[340px]' : 
               'w-[290px]'
             } max-w-[90vw] text-gray-800`}>
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
                 <div className="flex items-center gap-2">
                   <span className={`w-3 h-3 rounded-full flex-shrink-0 ${
+                    selectedFacility.facility_type === 'tesla' ? 'bg-red-600' :
                     selectedFacility.facility_type === 'fuel' ? 'bg-amber-500' :
                     selectedFacility.facility_type === 'parking_meters' ? 'bg-amber-500' :
                     selectedFacility.facility_type === 'accessible_parking' ? 'bg-sky-500' :
@@ -4729,6 +4770,119 @@ export default function AppMap() {
                       <span>🧭</span>
                       <span>探索比價</span>
                     </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Tesla Supercharger & Service Center Details */}
+              {selectedFacility.facility_type === 'tesla' && (
+                <div className="flex flex-col gap-2.5 text-xs">
+                  {/* Category Banner */}
+                  <div className="bg-red-500/10 p-2.5 rounded-lg border border-red-500/25 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-red-950 text-xs flex items-center gap-1.5">
+                        <span className="text-base text-red-600 font-bold">⚡</span>
+                        <span>{selectedFacility.properties.name || 'Tesla 站點'}</span>
+                      </span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-red-600 text-white shrink-0">
+                        {selectedFacility.properties.sub_type === 'supercharger' ? '超級充電' : selectedFacility.properties.sub_type === 'destination_charger' ? '目的地充電' : selectedFacility.properties.sub_type === 'center' ? '體驗/服務中心' : '移動服務'}
+                      </span>
+                    </div>
+                    {selectedFacility.properties.address && (
+                      <div className="text-[11px] text-gray-700 flex items-center gap-1">
+                        <span className="text-gray-400">📍</span>
+                        <span className="truncate">{selectedFacility.properties.address}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Charging Specifications */}
+                  {(selectedFacility.properties.power_kw > 0 || selectedFacility.properties.stalls > 0) && (
+                    <div className="grid grid-cols-2 gap-1.5">
+                      <div className="bg-gray-50 p-2 rounded border border-gray-100 flex flex-col">
+                        <span className="text-[10px] text-gray-500 font-medium">充電規格</span>
+                        <span className="text-sm font-bold text-red-600 mt-0.5">
+                          {selectedFacility.properties.power_kw ? `${selectedFacility.properties.power_kw} kW` : '原廠技術'}
+                        </span>
+                        <span className="text-[10px] text-gray-400 truncate">
+                          {selectedFacility.properties.charging_speed || (selectedFacility.properties.sub_type === 'destination_charger' ? 'Level 2 AC' : '超級充電')}
+                        </span>
+                      </div>
+                      <div className="bg-gray-50 p-2 rounded border border-gray-100 flex flex-col">
+                        <span className="text-[10px] text-gray-500 font-medium">充電樁 / 車位</span>
+                        <span className="text-sm font-bold text-gray-800 mt-0.5">
+                          {selectedFacility.properties.stalls != null && selectedFacility.properties.stalls > 0 ? `${selectedFacility.properties.stalls} 個車位` : '原廠工位'}
+                        </span>
+                        <span className="text-[10px] text-gray-400 truncate">
+                          {selectedFacility.properties.access_type || '公眾開放'}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Access & Compatibility */}
+                  {selectedFacility.properties.charging_access && (
+                    <div className="flex justify-between items-center text-gray-600 bg-gray-50 px-2 py-1.5 rounded border border-gray-100">
+                      <span className="shrink-0 text-gray-500">適用車型</span>
+                      <span className="font-semibold text-gray-800 text-right truncate max-w-[190px]">
+                        {selectedFacility.properties.charging_access}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Hours */}
+                  {selectedFacility.properties.hours && (
+                    <div className="flex justify-between items-center text-gray-600 px-1">
+                      <span className="shrink-0 text-gray-500">開放時間</span>
+                      <span className="font-medium text-gray-800 text-right">
+                        {selectedFacility.properties.hours}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Phone */}
+                  {selectedFacility.properties.phone && (
+                    <div className="flex justify-between items-center text-gray-600 px-1">
+                      <span className="shrink-0 text-gray-500">服務中心電話</span>
+                      <a href={`tel:${selectedFacility.properties.phone}`} className="font-bold text-blue-600 hover:underline">
+                        {selectedFacility.properties.phone}
+                      </a>
+                    </div>
+                  )}
+
+                  {/* Services List (for Vancouver-Raymur center) */}
+                  {selectedFacility.properties.services && Array.isArray(selectedFacility.properties.services) && selectedFacility.properties.services.length > 0 && (
+                    <div className="flex flex-col gap-1 pt-1.5 border-t border-gray-100">
+                      <span className="text-gray-500 text-[11px] font-medium">站點提供服務：</span>
+                      <div className="flex flex-col gap-1">
+                        {selectedFacility.properties.services.map((svc: string, sIdx: number) => (
+                          <div key={sIdx} className="flex items-center gap-1.5 text-[11px] text-gray-700 bg-red-50/60 px-2 py-1 rounded border border-red-100/60">
+                            <span className="text-red-500 text-[10px]">●</span>
+                            <span>{svc}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Notes */}
+                  {selectedFacility.properties.notes && (
+                    <div className="text-[11px] text-gray-600 bg-amber-50 p-2 rounded border border-amber-200/60">
+                      💡 {selectedFacility.properties.notes}
+                    </div>
+                  )}
+
+                  {/* Action: Navigation */}
+                  <div className="pt-1 border-t border-gray-100">
+                    <a
+                      href={`https://www.google.com/maps/dir/?api=1&destination=${selectedFacility.lat},${selectedFacility.lon}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full inline-flex items-center justify-center py-2 px-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium text-xs transition-colors shadow-sm gap-1.5"
+                    >
+                      <span>🗺️</span>
+                      <span>Google 導航至此站點</span>
+                    </a>
                   </div>
                 </div>
               )}

@@ -1,0 +1,819 @@
+{
+    "data": {
+        "marketing": {
+            "display_driving_directions": true,
+            "service_hours_by_appointment_only": "0",
+            "show_on_bodyshop_support_page": false,
+            "show_on_find_us": false,
+            "store_sub_region": {
+                "display_name": "British Columbia",
+                "locale": null
+            },
+            "display_name": "Tesla Vancouver-Raymur",
+            "roadside_assistance_number": "877 798 3752",
+            "address_notes": "Service: Entrance off Raymur Ave. Look for door marked Service and pull up to door. Door will open, proceed inside. ",
+            "gmaps_override": null,
+            "store_hours_by_appointment_only": "0",
+            "location_url_slug": "teslavancouverraymur",
+            "gmaps_override_longitude": 0,
+            "common_name": "Tesla Vancouver-Raymur",
+            "store_region": {
+                "name": "north_america"
+            },
+            "gmaps_override_latitude": 0,
+            "service_center_phone": "(778) 357-4185",
+            "phone_numbers": "(778) 357-4185",
+            "site_event": {
+                "has_event": null
+            }
+        },
+        "functions": [
+            {
+                "business_hours": {
+                    "hours": []
+                },
+                "address": {
+                    "country": "CA",
+                    "formatted_address": [
+                        "908 RAYMUR AVE",
+                        "Vancouver BC V6A 0K3"
+                    ],
+                    "address_validated": false,
+                    "city": "Vancouver",
+                    "address_1": "908 Raymur Ave",
+                    "address_2": "",
+                    "latitude": 49.2762977,
+                    "county": null,
+                    "state_province": "BC",
+                    "locale": "en-US",
+                    "address_number": "908",
+                    "address_street": "Raymur Ave",
+                    "district": null,
+                    "country_name": null,
+                    "address_provider_enum": "google",
+                    "postal_code": "V6A 0K3",
+                    "postal_code_suffix": null,
+                    "longitude": -123.0819508
+                },
+                "address_by_locale": [
+                    {
+                        "country": "CA",
+                        "formatted_address": [
+                            "908 RAYMUR AVE",
+                            "Vancouver BC V6A 0K3"
+                        ],
+                        "address_validated": null,
+                        "city": "Vancouver",
+                        "address_1": "908 Raymur Ave",
+                        "address_2": "",
+                        "latitude": 49.2762977,
+                        "county": null,
+                        "state_province": "BC",
+                        "locale": "en",
+                        "address_number": "908",
+                        "address_street": "Raymur Ave",
+                        "district": null,
+                        "country_name": null,
+                        "address_provider_enum": "google",
+                        "postal_code": "V6A 0K3",
+                        "postal_code_suffix": null,
+                        "longitude": -123.0819508
+                    },
+                    {
+                        "country": "CA",
+                        "formatted_address": [
+                            "908 RAYMUR AVE",
+                            "Vancouver BC V6A 0K3"
+                        ],
+                        "address_validated": false,
+                        "city": "Vancouver",
+                        "address_1": "908 Raymur Ave",
+                        "address_2": "",
+                        "latitude": 49.2762977,
+                        "county": null,
+                        "state_province": "BC",
+                        "locale": "en-US",
+                        "address_number": "908",
+                        "address_street": "Raymur Ave",
+                        "district": null,
+                        "country_name": null,
+                        "address_provider_enum": "google",
+                        "postal_code": "V6A 0K3",
+                        "postal_code_suffix": null,
+                        "longitude": -123.0819508
+                    }
+                ],
+                "customer_facing_name": "Tesla Service Vancouver-Raymur",
+                "translations": {
+                    "customerFacingName": {
+                        "en-US": "Tesla Service Vancouver-Raymur"
+                    }
+                },
+                "name": "Tesla_Center_Service",
+                "opening_date": "2026-08-16",
+                "status": "Open"
+            },
+            {
+                "business_hours": {
+                    "hours": [
+                        {
+                            "close_hour": "05:00",
+                            "open_hour": "00:00",
+                            "day": "Monday",
+                            "holiday": null,
+                            "is_24_hours": false,
+                            "is_closed": false
+                        },
+                        {
+                            "close_hour": "23:59",
+                            "open_hour": "22:00",
+                            "day": "Monday",
+                            "holiday": null,
+                            "is_24_hours": false,
+                            "is_closed": false
+                        },
+                        {
+                            "close_hour": "05:00",
+                            "open_hour": "00:00",
+                            "day": "Tuesday",
+                            "holiday": null,
+                            "is_24_hours": false,
+                            "is_closed": false
+                        },
+                        {
+                            "close_hour": "23:59",
+                            "open_hour": "17:00",
+                            "day": "Tuesday",
+                            "holiday": null,
+                            "is_24_hours": false,
+                            "is_closed": false
+                        },
+                        {
+                            "close_hour": "05:00",
+                            "open_hour": "00:00",
+                            "day": "Wednesday",
+                            "holiday": null,
+                            "is_24_hours": false,
+                            "is_closed": false
+                        },
+                        {
+                            "close_hour": "23:59",
+                            "open_hour": "05:00",
+                            "day": "Wednesday",
+                            "holiday": null,
+                            "is_24_hours": false,
+                            "is_closed": false
+                        },
+                        {
+                            "close_hour": "05:00",
+                            "open_hour": "00:00",
+                            "day": "Thursday",
+                            "holiday": null,
+                            "is_24_hours": false,
+                            "is_closed": false
+                        },
+                        {
+                            "close_hour": "23:59",
+                            "open_hour": "17:00",
+                            "day": "Thursday",
+                            "holiday": null,
+                            "is_24_hours": false,
+                            "is_closed": false
+                        },
+                        {
+                            "close_hour": "05:00",
+                            "open_hour": "00:00",
+                            "day": "Friday",
+                            "holiday": null,
+                            "is_24_hours": false,
+                            "is_closed": false
+                        },
+                        {
+                            "close_hour": "23:59",
+                            "open_hour": "17:00",
+                            "day": "Friday",
+                            "holiday": null,
+                            "is_24_hours": false,
+                            "is_closed": false
+                        },
+                        {
+                            "close_hour": "05:00",
+                            "open_hour": "00:00",
+                            "day": "Saturday",
+                            "holiday": null,
+                            "is_24_hours": false,
+                            "is_closed": false
+                        },
+                        {
+                            "close_hour": "23:59",
+                            "open_hour": "17:00",
+                            "day": "Saturday",
+                            "holiday": null,
+                            "is_24_hours": false,
+                            "is_closed": false
+                        },
+                        {
+                            "close_hour": "05:00",
+                            "open_hour": "00:00",
+                            "day": "Sunday",
+                            "holiday": null,
+                            "is_24_hours": false,
+                            "is_closed": false
+                        },
+                        {
+                            "close_hour": "23:59",
+                            "open_hour": "17:00",
+                            "day": "Sunday",
+                            "holiday": null,
+                            "is_24_hours": false,
+                            "is_closed": false
+                        }
+                    ]
+                },
+                "address": {
+                    "country": "CA",
+                    "formatted_address": [
+                        "908 RAYMUR AVE",
+                        "Vancouver BC V6A 0K3"
+                    ],
+                    "address_validated": null,
+                    "city": "Vancouver",
+                    "address_1": "908 Raymur Ave",
+                    "address_2": "",
+                    "latitude": 49.2762977,
+                    "county": "",
+                    "state_province": "BC",
+                    "locale": "en-US",
+                    "address_number": "908",
+                    "address_street": "Raymur Ave",
+                    "district": null,
+                    "country_name": null,
+                    "address_provider_enum": "google",
+                    "postal_code": "V6A 0K3",
+                    "postal_code_suffix": null,
+                    "longitude": -123.0819508
+                },
+                "address_by_locale": [
+                    {
+                        "country": "CA",
+                        "formatted_address": [
+                            "908 RAYMUR AVE",
+                            "Vancouver BC V6A 0K3"
+                        ],
+                        "address_validated": null,
+                        "city": "Vancouver",
+                        "address_1": "908 Raymur Ave",
+                        "address_2": "",
+                        "latitude": 49.2762977,
+                        "county": "",
+                        "state_province": "BC",
+                        "locale": "en-US",
+                        "address_number": "908",
+                        "address_street": "Raymur Ave",
+                        "district": null,
+                        "country_name": null,
+                        "address_provider_enum": "google",
+                        "postal_code": "V6A 0K3",
+                        "postal_code_suffix": null,
+                        "longitude": -123.0819508
+                    }
+                ],
+                "customer_facing_name": "NA-CA-BC-Vancouver-Raymur - Robotaxi Cleaning",
+                "translations": {
+                    "customerFacingName": {
+                        "en-US": "NA-CA-BC-Vancouver-Raymur - Robotaxi Cleaning"
+                    }
+                },
+                "name": "Support_Robotaxi_Cleaning",
+                "opening_date": null,
+                "status": "Pending"
+            },
+            {
+                "business_hours": {
+                    "hours": []
+                },
+                "address": {
+                    "country": "CA",
+                    "formatted_address": [
+                        "908 RAYMUR AVE",
+                        "Vancouver BC V6A 0K3"
+                    ],
+                    "address_validated": false,
+                    "city": "Vancouver",
+                    "address_1": "908 Raymur Ave",
+                    "address_2": "",
+                    "latitude": 49.2762977,
+                    "county": null,
+                    "state_province": "BC",
+                    "locale": "en-US",
+                    "address_number": "908",
+                    "address_street": "Raymur Ave",
+                    "district": null,
+                    "country_name": null,
+                    "address_provider_enum": "google",
+                    "postal_code": "V6A 0K3",
+                    "postal_code_suffix": null,
+                    "longitude": -123.0819508
+                },
+                "address_by_locale": [
+                    {
+                        "country": "CA",
+                        "formatted_address": [
+                            "908 RAYMUR AVE",
+                            "Vancouver BC V6A 0K3"
+                        ],
+                        "address_validated": null,
+                        "city": "Vancouver",
+                        "address_1": "908 Raymur Ave",
+                        "address_2": "",
+                        "latitude": 49.2762977,
+                        "county": null,
+                        "state_province": "BC",
+                        "locale": "en",
+                        "address_number": "908",
+                        "address_street": "Raymur Ave",
+                        "district": null,
+                        "country_name": null,
+                        "address_provider_enum": "google",
+                        "postal_code": "V6A 0K3",
+                        "postal_code_suffix": null,
+                        "longitude": -123.0819508
+                    },
+                    {
+                        "country": "CA",
+                        "formatted_address": [
+                            "908 RAYMUR AVE",
+                            "Vancouver BC V6A 0K3"
+                        ],
+                        "address_validated": false,
+                        "city": "Vancouver",
+                        "address_1": "908 Raymur Ave",
+                        "address_2": "",
+                        "latitude": 49.2762977,
+                        "county": null,
+                        "state_province": "BC",
+                        "locale": "en-US",
+                        "address_number": "908",
+                        "address_street": "Raymur Ave",
+                        "district": null,
+                        "country_name": null,
+                        "address_provider_enum": "google",
+                        "postal_code": "V6A 0K3",
+                        "postal_code_suffix": null,
+                        "longitude": -123.0819508
+                    }
+                ],
+                "customer_facing_name": "Tesla Vancouver-Raymur - Gallery",
+                "translations": {
+                    "customerFacingName": {
+                        "en-US": "Tesla Vancouver-Raymur - Gallery"
+                    }
+                },
+                "name": "Tesla_Center_Sales",
+                "opening_date": "2026-08-16",
+                "status": "Open"
+            },
+            {
+                "business_hours": {
+                    "hours": []
+                },
+                "address": {
+                    "country": "CA",
+                    "formatted_address": [
+                        "950 RAYMUR AVE",
+                        "Vancouver BC V6A 3L5"
+                    ],
+                    "address_validated": null,
+                    "city": "Vancouver",
+                    "address_1": "950 Raymur Ave",
+                    "address_2": "",
+                    "latitude": 49.2762977,
+                    "county": null,
+                    "state_province": "BC",
+                    "locale": "en-US",
+                    "address_number": "950",
+                    "address_street": "Raymur Ave",
+                    "district": null,
+                    "country_name": null,
+                    "address_provider_enum": "google",
+                    "postal_code": "V6A 3L5",
+                    "postal_code_suffix": null,
+                    "longitude": -123.0819508
+                },
+                "address_by_locale": [
+                    {
+                        "country": "CA",
+                        "formatted_address": [
+                            "950 RAYMUR AVE",
+                            "Vancouver BC V6A 3L5"
+                        ],
+                        "address_validated": null,
+                        "city": "Vancouver",
+                        "address_1": "950 Raymur Ave",
+                        "address_2": "",
+                        "latitude": 49.2762977,
+                        "county": null,
+                        "state_province": "BC",
+                        "locale": "en-US",
+                        "address_number": "950",
+                        "address_street": "Raymur Ave",
+                        "district": null,
+                        "country_name": null,
+                        "address_provider_enum": "google",
+                        "postal_code": "V6A 3L5",
+                        "postal_code_suffix": null,
+                        "longitude": -123.0819508
+                    }
+                ],
+                "customer_facing_name": "NA-CA-BC-Vancouver- Vancouver BC",
+                "translations": {
+                    "customerFacingName": {
+                        "en-US": "NA-CA-BC-Vancouver- Vancouver BC"
+                    }
+                },
+                "name": "Charging_Supercharger",
+                "opening_date": "2026-07-31",
+                "status": "Open"
+            },
+            {
+                "business_hours": {
+                    "hours": [
+                        {
+                            "close_hour": "18:00",
+                            "open_hour": "10:00",
+                            "day": "Monday",
+                            "holiday": null,
+                            "is_24_hours": false,
+                            "is_closed": false
+                        },
+                        {
+                            "close_hour": "18:00",
+                            "open_hour": "10:00",
+                            "day": "Tuesday",
+                            "holiday": null,
+                            "is_24_hours": false,
+                            "is_closed": false
+                        },
+                        {
+                            "close_hour": "18:00",
+                            "open_hour": "10:00",
+                            "day": "Wednesday",
+                            "holiday": null,
+                            "is_24_hours": false,
+                            "is_closed": false
+                        },
+                        {
+                            "close_hour": "18:00",
+                            "open_hour": "10:00",
+                            "day": "Thursday",
+                            "holiday": null,
+                            "is_24_hours": false,
+                            "is_closed": false
+                        },
+                        {
+                            "close_hour": "18:00",
+                            "open_hour": "10:00",
+                            "day": "Friday",
+                            "holiday": null,
+                            "is_24_hours": false,
+                            "is_closed": false
+                        },
+                        {
+                            "close_hour": "18:00",
+                            "open_hour": "10:00",
+                            "day": "Saturday",
+                            "holiday": null,
+                            "is_24_hours": false,
+                            "is_closed": false
+                        },
+                        {
+                            "close_hour": "18:00",
+                            "open_hour": "10:00",
+                            "day": "Sunday",
+                            "holiday": null,
+                            "is_24_hours": false,
+                            "is_closed": false
+                        }
+                    ]
+                },
+                "address": {
+                    "country": "CA",
+                    "formatted_address": [
+                        "908 RAYMUR AVE",
+                        "Vancouver BC V6A 0K3"
+                    ],
+                    "address_validated": false,
+                    "city": "Vancouver",
+                    "address_1": "908 Raymur Ave",
+                    "address_2": "",
+                    "latitude": 49.2762977,
+                    "county": null,
+                    "state_province": "BC",
+                    "locale": "en-US",
+                    "address_number": "908",
+                    "address_street": "Raymur Ave",
+                    "district": null,
+                    "country_name": null,
+                    "address_provider_enum": "google",
+                    "postal_code": "V6A 0K3",
+                    "postal_code_suffix": null,
+                    "longitude": -123.0819508
+                },
+                "address_by_locale": [
+                    {
+                        "country": "CA",
+                        "formatted_address": [
+                            "908 RAYMUR AVE",
+                            "Vancouver BC V6A 0K3"
+                        ],
+                        "address_validated": null,
+                        "city": "Vancouver",
+                        "address_1": "908 Raymur Ave",
+                        "address_2": "",
+                        "latitude": 49.2762977,
+                        "county": null,
+                        "state_province": "BC",
+                        "locale": "en",
+                        "address_number": "908",
+                        "address_street": "Raymur Ave",
+                        "district": null,
+                        "country_name": null,
+                        "address_provider_enum": "google",
+                        "postal_code": "V6A 0K3",
+                        "postal_code_suffix": null,
+                        "longitude": -123.0819508
+                    },
+                    {
+                        "country": "CA",
+                        "formatted_address": [
+                            "908 RAYMUR AVE",
+                            "Vancouver BC V6A 0K3"
+                        ],
+                        "address_validated": false,
+                        "city": "Vancouver",
+                        "address_1": "908 Raymur Ave",
+                        "address_2": "",
+                        "latitude": 49.2762977,
+                        "county": null,
+                        "state_province": "BC",
+                        "locale": "en-US",
+                        "address_number": "908",
+                        "address_street": "Raymur Ave",
+                        "district": null,
+                        "country_name": null,
+                        "address_provider_enum": "google",
+                        "postal_code": "V6A 0K3",
+                        "postal_code_suffix": null,
+                        "longitude": -123.0819508
+                    }
+                ],
+                "customer_facing_name": "Tesla Vancouver-Raymur - Delivery",
+                "translations": {
+                    "customerFacingName": {
+                        "en-US": "Tesla Vancouver-Raymur - Delivery"
+                    }
+                },
+                "name": "Tesla_Center_Delivery",
+                "opening_date": "2026-08-16",
+                "status": "Open"
+            }
+        ],
+        "tesla_center_collision_function": {
+            "company_phone": null
+        },
+        "key_data": {
+            "address": {
+                "country": "CA",
+                "formatted_address": [
+                    "908 RAYMUR AVE",
+                    "Vancouver BC V6A 0K3"
+                ],
+                "address_validated": false,
+                "city": "Vancouver",
+                "address_1": "908 Raymur Ave",
+                "address_2": "",
+                "latitude": 49.2762977,
+                "county": null,
+                "state_province": "BC",
+                "locale": "en-US",
+                "address_number": "908",
+                "address_street": "Raymur Ave",
+                "district": null,
+                "country_name": "Canada",
+                "address_provider_enum": "google",
+                "postal_code": "V6A 0K3",
+                "postal_code_suffix": null,
+                "longitude": -123.0819508
+            },
+            "phone": "(778) 357-4185",
+            "local_address": null,
+            "use_local_address": false,
+            "geo_point": {
+                "lon": -123.0819508,
+                "lat": 49.2762977
+            },
+            "status": {
+                "name": "Open"
+            },
+            "address_by_locale": [
+                {
+                    "country": "CA",
+                    "city": "Vancouver",
+                    "address_1": "908 Raymur Ave",
+                    "address_2": "",
+                    "latitude": 49.2762977,
+                    "country_name": null,
+                    "state_province": "BC",
+                    "locale": "en",
+                    "postal_code": "V6A 0K3",
+                    "longitude": -123.0819508
+                },
+                {
+                    "country": "CA",
+                    "city": "Vancouver",
+                    "address_1": "908 Raymur Ave",
+                    "address_2": "",
+                    "latitude": 49.2762977,
+                    "country_name": null,
+                    "state_province": "BC",
+                    "locale": "en-US",
+                    "postal_code": "V6A 0K3",
+                    "longitude": -123.0819508
+                }
+            ],
+            "amvic_licensed_business": false
+        },
+        "attributes": [
+            {
+                "name": "Tesla_Center_Service_Customer_Facing"
+            },
+            {
+                "name": "Tesla_Center_Service_Glass"
+            },
+            {
+                "name": "Tesla_Center_Sales_Customer_Facing"
+            },
+            {
+                "name": "Tesla_Center_Sales_Street"
+            },
+            {
+                "name": "Tesla_Center_Service_Robotaxi"
+            },
+            {
+                "name": "Tesla_Center_Delivery_Customer_Facing"
+            },
+            {
+                "name": "Tesla_Center_Service_Tires"
+            },
+            {
+                "name": "Tesla_Center_Delivery_Accessory_Sales"
+            },
+            {
+                "name": "Tesla_Center_Sales_Tesla_Center"
+            }
+        ],
+        "sales_function": {
+            "business_hours": {
+                "hours": [
+                    {
+                        "close_hour": null,
+                        "open_hour": null,
+                        "day": "Monday",
+                        "holiday": "Thanksgiving ",
+                        "is_24_hours": false,
+                        "is_closed": true
+                    },
+                    {
+                        "close_hour": "18:00",
+                        "open_hour": "10:00",
+                        "day": "Tuesday",
+                        "holiday": null,
+                        "is_24_hours": false,
+                        "is_closed": false
+                    },
+                    {
+                        "close_hour": "18:00",
+                        "open_hour": "10:00",
+                        "day": "Wednesday",
+                        "holiday": null,
+                        "is_24_hours": false,
+                        "is_closed": false
+                    },
+                    {
+                        "close_hour": "18:00",
+                        "open_hour": "10:00",
+                        "day": "Thursday",
+                        "holiday": null,
+                        "is_24_hours": false,
+                        "is_closed": false
+                    },
+                    {
+                        "close_hour": "18:00",
+                        "open_hour": "10:00",
+                        "day": "Friday",
+                        "holiday": null,
+                        "is_24_hours": false,
+                        "is_closed": false
+                    },
+                    {
+                        "close_hour": "18:00",
+                        "open_hour": "10:00",
+                        "day": "Saturday",
+                        "holiday": null,
+                        "is_24_hours": false,
+                        "is_closed": false
+                    },
+                    {
+                        "close_hour": "18:00",
+                        "open_hour": "10:00",
+                        "day": "Sunday",
+                        "holiday": null,
+                        "is_24_hours": false,
+                        "is_closed": false
+                    }
+                ]
+            },
+            "show_on_find_us": true,
+            "store_email": null
+        },
+        "service_function": {
+            "business_hours": {
+                "hours": [
+                    {
+                        "close_hour": null,
+                        "open_hour": null,
+                        "day": "Monday",
+                        "holiday": "Thanksgiving",
+                        "is_24_hours": false,
+                        "is_closed": true
+                    },
+                    {
+                        "close_hour": "18:00",
+                        "open_hour": "07:30",
+                        "day": "Tuesday",
+                        "holiday": null,
+                        "is_24_hours": false,
+                        "is_closed": false
+                    },
+                    {
+                        "close_hour": "18:00",
+                        "open_hour": "07:30",
+                        "day": "Wednesday",
+                        "holiday": null,
+                        "is_24_hours": false,
+                        "is_closed": false
+                    },
+                    {
+                        "close_hour": "18:00",
+                        "open_hour": "07:30",
+                        "day": "Thursday",
+                        "holiday": null,
+                        "is_24_hours": false,
+                        "is_closed": false
+                    },
+                    {
+                        "close_hour": "18:00",
+                        "open_hour": "07:30",
+                        "day": "Friday",
+                        "holiday": null,
+                        "is_24_hours": false,
+                        "is_closed": false
+                    },
+                    {
+                        "close_hour": "17:00",
+                        "open_hour": "08:00",
+                        "day": "Saturday",
+                        "holiday": null,
+                        "is_24_hours": false,
+                        "is_closed": false
+                    },
+                    {
+                        "close_hour": null,
+                        "open_hour": null,
+                        "day": "Sunday",
+                        "holiday": null,
+                        "is_24_hours": false,
+                        "is_closed": true
+                    }
+                ]
+            },
+            "customer_facing_coming_soon_date": "Q3 2026",
+            "coming_soon_longitude": -123.1207,
+            "show_on_find_us": true,
+            "coming_soon_name": "Vancouver-Raymur",
+            "service_center_email": null,
+            "coming_soon_latitude": 49.2827,
+            "find_us_status": "Open"
+        },
+        "delivery_function": {
+            "address_note": "Street parking is available along Raymur Ave against Strathcona Park or on P2 of the Tesla parkade accessible via Parker St.",
+            "delivery_enabled": true,
+            "show_on_find_us": true,
+            "phone_number": "(778) 357-4185",
+            "vrl_enabled": true,
+            "hours_note": null
+        },
+        "trtId": 58631,
+        "sales_or_gallery": true
+    }
+}

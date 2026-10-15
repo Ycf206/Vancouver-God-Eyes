@@ -1,0 +1,159 @@
+{
+    "data": {
+        "marketing": {
+            "gmaps_override": null,
+            "display_driving_directions": true,
+            "show_on_bodyshop_support_page": false,
+            "location_url_slug": "dc2825",
+            "show_on_find_us": false,
+            "gmaps_override_longitude": -123.1221991,
+            "store_sub_region": {
+                "display_name": "British Columbia",
+                "locale": null
+            },
+            "display_name": "Coast Coal Harbour Hotel",
+            "store_region": {
+                "name": "north_america"
+            },
+            "gmaps_override_latitude": 49.2884189,
+            "roadside_assistance_number": "877 798 3752",
+            "address_notes": null,
+            "service_hours_by_appointment_only": "0",
+            "store_hours_by_appointment_only": "0",
+            "phone_numbers": null,
+            "common_name": "",
+            "site_event": {
+                "has_event": null
+            },
+            "service_center_phone": null
+        },
+        "functions": [
+            {
+                "business_hours": {
+                    "hours": []
+                },
+                "address": {
+                    "country": "CA",
+                    "formatted_address": [
+                        "1180 W HASTINGS ST",
+                        "Vancouver BC V6E 4R5"
+                    ],
+                    "address_validated": false,
+                    "city": "Vancouver",
+                    "address_1": "1180 W Hastings St",
+                    "address_2": "",
+                    "latitude": 49.2884189,
+                    "county": null,
+                    "state_province": "BC",
+                    "locale": "en-US",
+                    "address_number": null,
+                    "address_street": null,
+                    "district": null,
+                    "country_name": null,
+                    "address_provider_enum": "google",
+                    "postal_code": "V6E 4R5",
+                    "postal_code_suffix": null,
+                    "longitude": -123.1221991
+                },
+                "address_by_locale": [
+                    {
+                        "country": "CA",
+                        "formatted_address": [
+                            "1180 W HASTINGS ST",
+                            "Vancouver BC V6E 4R5"
+                        ],
+                        "address_validated": false,
+                        "city": "Vancouver",
+                        "address_1": "1180 W Hastings St",
+                        "address_2": "",
+                        "latitude": 49.2884189,
+                        "county": null,
+                        "state_province": "BC",
+                        "locale": "en-US",
+                        "address_number": null,
+                        "address_street": null,
+                        "district": null,
+                        "country_name": null,
+                        "address_provider_enum": "google",
+                        "postal_code": "V6E 4R5",
+                        "postal_code_suffix": null,
+                        "longitude": -123.1221991
+                    }
+                ],
+                "customer_facing_name": "Coast Coal Harbour Hotel Vancouver BC",
+                "translations": {
+                    "customerFacingName": {
+                        "en-US": "Coast Coal Harbour Hotel Vancouver BC"
+                    }
+                },
+                "name": "Charging_Commercial_Charging",
+                "opening_date": "2015-06-02",
+                "status": "Pending"
+            }
+        ],
+        "tesla_center_collision_function": {
+            "company_phone": null
+        },
+        "key_data": {
+            "address": {
+                "country": "CA",
+                "formatted_address": [
+                    "1180 W HASTINGS ST",
+                    "Vancouver BC V6E 4R5"
+                ],
+                "address_validated": false,
+                "city": "Vancouver",
+                "address_1": "1180 W Hastings St",
+                "address_2": "",
+                "latitude": 49.2884189,
+                "county": null,
+                "state_province": "BC",
+                "locale": "en-US",
+                "address_number": null,
+                "address_street": null,
+                "district": null,
+                "country_name": "Canada",
+                "address_provider_enum": "google",
+                "postal_code": "V6E 4R5",
+                "postal_code_suffix": null,
+                "longitude": -123.1221991
+            },
+            "phone": null,
+            "local_address": null,
+            "use_local_address": false,
+            "geo_point": {
+                "lon": -123.1221991,
+                "lat": 49.2884189
+            },
+            "status": {
+                "name": "Open"
+            },
+            "address_by_locale": [
+                {
+                    "country": "CA",
+                    "city": "Vancouver",
+                    "address_1": "1180 W Hastings St",
+                    "address_2": "",
+                    "latitude": 49.2884189,
+                    "country_name": null,
+                    "state_province": "BC",
+                    "locale": "en-US",
+                    "postal_code": "V6E 4R5",
+                    "longitude": -123.1221991
+                }
+            ]
+        },
+        "destination_charger_function": {
+            "installed_full_power": "13",
+            "access_type": "Public",
+            "destination_website": "http://www.coasthotels.com/hotels/bc/vancouver/coast-coal-harbour-hotel/",
+            "open_to_non_tesla": false,
+            "show_on_find_us": true,
+            "project_status": "Open",
+            "restrictions": "Available for customers.",
+            "phone_number": "(604) 697-0202",
+            "access_instructions": "Please see valet.",
+            "num_charger_stalls": "1"
+        }
+    }
+}

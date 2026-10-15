@@ -64,6 +64,7 @@ export interface UIState {
     contours: boolean;
     localAreaBoundary: boolean;
     fuel: boolean;
+    tesla: boolean;
   };
   contourInterval: 'off' | '1m' | '2m' | '10m';
   setContourInterval: (interval: 'off' | '1m' | '2m' | '10m') => void;
@@ -163,6 +164,7 @@ export const useUIStore = create<UIState>()(
         contours: false,
         localAreaBoundary: false,
         fuel: false,
+        tesla: false,
       },
       timeFormat: '24h',
       setTimeFormat: (format) => set({ timeFormat: format }),
@@ -185,6 +187,7 @@ export const useUIStore = create<UIState>()(
             const isTargetMatch =
               st.layer_key === layer ||
               (layer === 'fuel' && (st.category === 'fuel' || st.id?.startsWith('fuel_'))) ||
+              (layer === 'tesla' && (st.category === 'tesla' || st.id?.startsWith('tesla_'))) ||
               (layer === 'evCharging' && (st.category === 'ev_charging' || st.id?.startsWith('ev_'))) ||
               (layer === 'airports' && st.category === 'airports') ||
               (layer === 'bcferriesTerminals' && st.category === 'ferry_terminal') ||

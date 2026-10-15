@@ -1,0 +1,146 @@
+{
+    "data": {
+        "marketing": {
+            "gmaps_override": "https://maps.google.com/maps?daddr=49.283739,-123.069578",
+            "display_driving_directions": true,
+            "location_url_slug": "vancouvermobileservice",
+            "gmaps_override_longitude": -123.069578,
+            "store_sub_region": {
+                "locale": null
+            },
+            "store_region": {
+                "name": "north_america"
+            },
+            "gmaps_override_latitude": 49.283739,
+            "address_notes": null,
+            "service_hours_by_appointment_only": "0",
+            "store_hours_by_appointment_only": "0",
+            "phone_numbers": null,
+            "show_on_bodyshop_support_page": false,
+            "show_on_find_us": false,
+            "common_name": null,
+            "display_name": "Vancouver-Mobile Service",
+            "site_event": {
+                "has_event": null
+            },
+            "service_center_phone": "(604) 255-4427",
+            "roadside_assistance_number": null
+        },
+        "functions": [
+            {
+                "business_hours": {
+                    "hours": []
+                },
+                "address": {
+                    "country": "CA",
+                    "formatted_address": [
+                        "1712 POWELL ST.",
+                        "Vancouver BC V5L 1H7"
+                    ],
+                    "address_validated": false,
+                    "city": "Vancouver",
+                    "address_1": "1712 Powell St.",
+                    "address_2": null,
+                    "latitude": 49.283739,
+                    "county": null,
+                    "state_province": "BC",
+                    "locale": "en-US",
+                    "address_number": "1712",
+                    "address_street": "Powell St.",
+                    "district": null,
+                    "country_name": null,
+                    "address_provider_enum": "google",
+                    "postal_code": "V5L 1H7",
+                    "postal_code_suffix": null,
+                    "longitude": -123.069578
+                },
+                "address_by_locale": [
+                    {
+                        "country": "CA",
+                        "formatted_address": [
+                            "1712 POWELL ST.",
+                            "Vancouver BC V5L 1H7"
+                        ],
+                        "address_validated": false,
+                        "city": "Vancouver",
+                        "address_1": "1712 Powell St.",
+                        "address_2": null,
+                        "latitude": 49.283739,
+                        "county": null,
+                        "state_province": "BC",
+                        "locale": "en-US",
+                        "address_number": "1712",
+                        "address_street": "Powell St.",
+                        "district": null,
+                        "country_name": null,
+                        "address_provider_enum": "google",
+                        "postal_code": "V5L 1H7",
+                        "postal_code_suffix": null,
+                        "longitude": -123.069578
+                    }
+                ],
+                "customer_facing_name": "Mobile Service Vancouver-Powell",
+                "translations": {
+                    "customerFacingName": {
+                        "en-US": "Mobile Service Vancouver-Powell"
+                    }
+                },
+                "name": "Tesla_Center_Mobile_Hub",
+                "opening_date": null,
+                "status": "Open"
+            }
+        ],
+        "tesla_center_collision_function": {
+            "company_phone": null
+        },
+        "key_data": {
+            "address": {
+                "country": "CA",
+                "formatted_address": [
+                    "1712 POWELL ST.",
+                    "Vancouver BC V5L 1H7"
+                ],
+                "address_validated": false,
+                "city": "Vancouver",
+                "address_1": "1712 Powell St.",
+                "address_2": null,
+                "latitude": 49.283739,
+                "county": null,
+                "state_province": "BC",
+                "locale": "en-US",
+                "address_number": "1712",
+                "address_street": "Powell St.",
+                "district": null,
+                "country_name": "Canada",
+                "address_provider_enum": "google",
+                "postal_code": "V5L 1H7",
+                "postal_code_suffix": null,
+                "longitude": -123.069578
+            },
+            "phone": null,
+            "local_address": null,
+            "use_local_address": false,
+            "geo_point": {
+                "lon": -123.069578,
+                "lat": 49.283739
+            },
+            "status": {
+                "name": "Open"
+            },
+            "address_by_locale": [
+                {
+                    "country": "CA",
+                    "city": "Vancouver",
+                    "address_1": "1712 Powell St.",
+                    "address_2": null,
+                    "latitude": 49.283739,
+                    "country_name": null,
+                    "state_province": "BC",
+                    "locale": "en-US",
+                    "postal_code": "V5L 1H7",
+                    "longitude": -123.069578
+                }
+            ]
+        }
+    }
+}

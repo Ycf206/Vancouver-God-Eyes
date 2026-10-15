@@ -1,0 +1,602 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "tesla_destination_charger___coast_coal_harbour_hotel_json",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1221991,
+          49.2884189
+        ]
+      },
+      "properties": {
+        "id": "tesla_destination_charger___coast_coal_harbour_hotel_json",
+        "facility_type": "tesla",
+        "sub_type": "destination_charger",
+        "name": "Tesla 目的地充電站 (Coast Coal Harbour Hotel)",
+        "display_name": "Coast Coal Harbour Hotel",
+        "address": "1180 W Hastings St, Vancouver, BC, V6E 4R5",
+        "city": "Vancouver",
+        "postal_code": "V6E 4R5",
+        "phone": "(604) 697-0202",
+        "stalls": 1,
+        "power_kw": 13,
+        "charging_speed": "13 kW 目的地充電 (Level 2 AC)",
+        "charging_access": "Tesla 專用",
+        "access_type": "飯店/商場顧客及公眾",
+        "status": "營運中 (Open)",
+        "hours": "24/7 全天候開放",
+        "services": [
+          "目的地充電樁 (Destination Charger)"
+        ],
+        "notes": "Available for customers. · Please see valet."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "tesla_destination_charger___diamond_parking_json",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.122178,
+          49.284829
+        ]
+      },
+      "properties": {
+        "id": "tesla_destination_charger___diamond_parking_json",
+        "facility_type": "tesla",
+        "sub_type": "destination_charger",
+        "name": "Tesla 目的地充電站 (Diamond Parking)",
+        "display_name": "Diamond Parking",
+        "address": "1030 W Georgia St, Vancouver, BC, V6E 2Y3",
+        "city": "Vancouver",
+        "postal_code": "V6E 2Y3",
+        "phone": "(604) 681-7311",
+        "stalls": 4,
+        "power_kw": 16,
+        "charging_speed": "16 kW 目的地充電 (Level 2 AC)",
+        "charging_access": "Tesla 專用",
+        "access_type": "飯店/商場顧客及公眾",
+        "status": "營運中 (Open)",
+        "hours": "24/7 全天候開放",
+        "services": [
+          "目的地充電樁 (Destination Charger)"
+        ],
+        "notes": "Parking fees will apply. · Self park."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "tesla_destination_charger___fairmont_pacific_rim_json",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.117272,
+          49.288078
+        ]
+      },
+      "properties": {
+        "id": "tesla_destination_charger___fairmont_pacific_rim_json",
+        "facility_type": "tesla",
+        "sub_type": "destination_charger",
+        "name": "Tesla 目的地充電站 (Fairmont Pacific Rim)",
+        "display_name": "Fairmont Pacific Rim",
+        "address": "1038 Canada Pl, Vancouver, BC, V6C 0B9",
+        "city": "Vancouver",
+        "postal_code": "V6C 0B9",
+        "phone": "(866) 599-6674",
+        "stalls": 1,
+        "power_kw": 16,
+        "charging_speed": "16 kW 目的地充電 (Level 2 AC)",
+        "charging_access": "Tesla 專用",
+        "access_type": "飯店/商場顧客及公眾",
+        "status": "營運中 (Open)",
+        "hours": "24/7 全天候開放",
+        "services": [
+          "目的地充電樁 (Destination Charger)"
+        ],
+        "notes": "Available for customers. · Please see front desk."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "tesla_destination_charger___l_hermitage_hotel_vancouver_json",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.117098,
+          49.280564
+        ]
+      },
+      "properties": {
+        "id": "tesla_destination_charger___l_hermitage_hotel_vancouver_json",
+        "facility_type": "tesla",
+        "sub_type": "destination_charger",
+        "name": "Tesla 目的地充電站 (L辿ermitage Hotel Vancouver)",
+        "display_name": "L辿ermitage Hotel Vancouver",
+        "address": "788 Richards Street, Vancouver, BC, V6B 3A4",
+        "city": "Vancouver",
+        "postal_code": "V6B 3A4",
+        "phone": "(778) 327-4100",
+        "stalls": 2,
+        "power_kw": 16,
+        "charging_speed": "16 kW 目的地充電 (Level 2 AC)",
+        "charging_access": "Tesla 專用",
+        "access_type": "飯店/商場顧客及公眾",
+        "status": "營運中 (Open)",
+        "hours": "24/7 全天候開放",
+        "services": [
+          "目的地充電樁 (Destination Charger)"
+        ],
+        "notes": "Parking fees will apply. · Please see valet."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "tesla_destination_charger___loden_hotel_json",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.123521,
+          49.287521
+        ]
+      },
+      "properties": {
+        "id": "tesla_destination_charger___loden_hotel_json",
+        "facility_type": "tesla",
+        "sub_type": "destination_charger",
+        "name": "Tesla 目的地充電站 (Loden Hotel)",
+        "display_name": "Loden Hotel",
+        "address": "1177 Melville St, Vancouver, BC, V6E 0A3",
+        "city": "Vancouver",
+        "postal_code": "V6E 0A3",
+        "phone": "(604) 669-5060",
+        "stalls": 6,
+        "power_kw": 16,
+        "charging_speed": "16 kW 目的地充電 (Level 2 AC)",
+        "charging_access": "Tesla 專用",
+        "access_type": "飯店/商場顧客及公眾",
+        "status": "營運中 (Open)",
+        "hours": "24/7 全天候開放",
+        "services": [
+          "目的地充電樁 (Destination Charger)"
+        ],
+        "notes": "Available for customers. · Please see valet."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "tesla_destination_charger___oakridge_centre_json",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.119316,
+          49.232488
+        ]
+      },
+      "properties": {
+        "id": "tesla_destination_charger___oakridge_centre_json",
+        "facility_type": "tesla",
+        "sub_type": "destination_charger",
+        "name": "Tesla 目的地充電站 (Oakridge Centre)",
+        "display_name": "Oakridge Centre",
+        "address": "650 W 41st Ave, Vancouver, BC, V5Z 2M9",
+        "city": "Vancouver",
+        "postal_code": "V5Z 2M9",
+        "phone": "(604) 264.9221",
+        "stalls": 2,
+        "power_kw": 6,
+        "charging_speed": "6 kW 目的地充電 (Level 2 AC)",
+        "charging_access": "Tesla 專用",
+        "access_type": "飯店/商場顧客及公眾",
+        "status": "營運中 (Open)",
+        "hours": "24/7 全天候開放",
+        "services": [
+          "目的地充電樁 (Destination Charger)"
+        ],
+        "notes": "Available to the public. · Self park."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "tesla_destination_charger___opus_hotel_vancouver_json",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.122561,
+          49.274642
+        ]
+      },
+      "properties": {
+        "id": "tesla_destination_charger___opus_hotel_vancouver_json",
+        "facility_type": "tesla",
+        "sub_type": "destination_charger",
+        "name": "Tesla 目的地充電站 (OPUS Hotel Vancouver)",
+        "display_name": "OPUS Hotel Vancouver",
+        "address": "322 Davie St, Vancouver, BC, V6B 5Z6",
+        "city": "Vancouver",
+        "postal_code": "V6B 5Z6",
+        "phone": "(604) 642-6787",
+        "stalls": 2,
+        "power_kw": 16,
+        "charging_speed": "16 kW 目的地充電 (Level 2 AC)",
+        "charging_access": "Tesla 專用",
+        "access_type": "飯店/商場顧客及公眾",
+        "status": "營運中 (Open)",
+        "hours": "24/7 全天候開放",
+        "services": [
+          "目的地充電樁 (Destination Charger)"
+        ],
+        "notes": "Available for customers. · Please see valet."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "tesla_destination_charger___shangri_la_hotel_json",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.123763,
+          49.28571
+        ]
+      },
+      "properties": {
+        "id": "tesla_destination_charger___shangri_la_hotel_json",
+        "facility_type": "tesla",
+        "sub_type": "destination_charger",
+        "name": "Tesla 目的地充電站 (Shangri-La Hotel, Vancouver)",
+        "display_name": "Shangri-La Hotel, Vancouver",
+        "address": "1128 W Georgia St, Vancouver, BC, V6E 0A8",
+        "city": "Vancouver",
+        "postal_code": "V6E 0A8",
+        "phone": "(604) 689-1120",
+        "stalls": 6,
+        "power_kw": 16,
+        "charging_speed": "16 kW 目的地充電 (Level 2 AC)",
+        "charging_access": "Tesla 專用",
+        "access_type": "飯店/商場顧客及公眾",
+        "status": "營運中 (Open)",
+        "hours": "24/7 全天候開放",
+        "services": [
+          "目的地充電樁 (Destination Charger)"
+        ],
+        "notes": "Available for customers. · Please see front desk."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "tesla_destination_charger___ta_management___fortisbc_centre_json",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12312,
+          49.285731
+        ]
+      },
+      "properties": {
+        "id": "tesla_destination_charger___ta_management___fortisbc_centre_json",
+        "facility_type": "tesla",
+        "sub_type": "destination_charger",
+        "name": "Tesla 目的地充電站 (TA Management  - FortisBC Centre)",
+        "display_name": "TA Management  - FortisBC Centre",
+        "address": "300 1111 West Georgia Street, Vancouver, BC, V6E 4M3",
+        "city": "Vancouver",
+        "postal_code": "V6E 4M3",
+        "phone": "(604) 683-1628",
+        "stalls": 4,
+        "power_kw": 16,
+        "charging_speed": "16 kW 目的地充電 (Level 2 AC)",
+        "charging_access": "Tesla 專用",
+        "access_type": "飯店/商場顧客及公眾",
+        "status": "營運中 (Open)",
+        "hours": "24/7 全天候開放",
+        "services": [
+          "目的地充電樁 (Destination Charger)"
+        ],
+        "notes": "Parking fees will apply. · Self park."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "tesla_destination_charger___the_fairmont_hotel_vancouver_json",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.120989,
+          49.283791
+        ]
+      },
+      "properties": {
+        "id": "tesla_destination_charger___the_fairmont_hotel_vancouver_json",
+        "facility_type": "tesla",
+        "sub_type": "destination_charger",
+        "name": "Tesla 目的地充電站 (The Fairmont Hotel Vancouver)",
+        "display_name": "The Fairmont Hotel Vancouver",
+        "address": "900 W George St, Vancouver, BC, V6C 2W6",
+        "city": "Vancouver",
+        "postal_code": "V6C 2W6",
+        "phone": "604-684-3131",
+        "stalls": 1,
+        "power_kw": 8,
+        "charging_speed": "8 kW 目的地充電 (Level 2 AC)",
+        "charging_access": "Tesla 專用",
+        "access_type": "飯店/商場顧客及公眾",
+        "status": "營運中 (Open)",
+        "hours": "24/7 全天候開放",
+        "services": [
+          "目的地充電樁 (Destination Charger)"
+        ],
+        "notes": "Available for customers. · Please see valet."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "tesla_destination_charger___the_victorian_hotel_json",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.112165,
+          49.282416
+        ]
+      },
+      "properties": {
+        "id": "tesla_destination_charger___the_victorian_hotel_json",
+        "facility_type": "tesla",
+        "sub_type": "destination_charger",
+        "name": "Tesla 目的地充電站 (The Victorian Hotel)",
+        "display_name": "The Victorian Hotel",
+        "address": "514 Homer St, Vancouver, BC, V6B 2V6",
+        "city": "Vancouver",
+        "postal_code": "V6B 2V6",
+        "phone": "(877) 681-6369",
+        "stalls": 1,
+        "power_kw": 13,
+        "charging_speed": "13 kW 目的地充電 (Level 2 AC)",
+        "charging_access": "Tesla 專用",
+        "access_type": "飯店/商場顧客及公眾",
+        "status": "營運中 (Open)",
+        "hours": "24/7 全天候開放",
+        "services": [
+          "目的地充電樁 (Destination Charger)"
+        ],
+        "notes": "Available for customers. · Please see front desk."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "tesla_destination_charger___times_square_suites_hotel_json",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.135607,
+          49.2917388
+        ]
+      },
+      "properties": {
+        "id": "tesla_destination_charger___times_square_suites_hotel_json",
+        "facility_type": "tesla",
+        "sub_type": "destination_charger",
+        "name": "Tesla 目的地充電站 (Times Square Suites Hotel)",
+        "display_name": "Times Square Suites Hotel",
+        "address": "1821 Robson St, Vancouver, BC, V6G 3E4",
+        "city": "Vancouver",
+        "postal_code": "V6G 3E4",
+        "phone": "(604) 684-2223",
+        "stalls": 1,
+        "power_kw": 8,
+        "charging_speed": "8 kW 目的地充電 (Level 2 AC)",
+        "charging_access": "Tesla 專用",
+        "access_type": "飯店/商場顧客及公眾",
+        "status": "營運中 (Open)",
+        "hours": "24/7 全天候開放",
+        "services": [
+          "目的地充電樁 (Destination Charger)"
+        ],
+        "notes": "Available for customers. · Please see front desk."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "tesla_mobile_service_vancouver_powell_json",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.069578,
+          49.283739
+        ]
+      },
+      "properties": {
+        "id": "tesla_mobile_service_vancouver_powell_json",
+        "facility_type": "tesla",
+        "sub_type": "mobile_service",
+        "name": "Tesla 移動服務支援中心 (Powell Hub)",
+        "display_name": "Vancouver-Mobile Service",
+        "address": "1712 Powell St., Vancouver, BC, V5L 1H7",
+        "city": "Vancouver",
+        "postal_code": "V5L 1H7",
+        "phone": "(604) 255-4427",
+        "stalls": 0,
+        "power_kw": 0,
+        "charging_speed": "",
+        "charging_access": "Tesla 專用",
+        "access_type": "原廠預約服務",
+        "status": "營運中 (Open)",
+        "hours": "預約式上門維修支援 (Mobile Service)",
+        "services": [
+          "Tesla 移動維修服務 (Mobile Fleet Service Hub)"
+        ],
+        "notes": "專屬 Tesla 行動服務車隊調配基地，提供大溫哥華地區上門到府檢修。"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "tesla_tesla_supercharger___burrard_st_json",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1151995,
+          49.2876627
+        ]
+      },
+      "properties": {
+        "id": "tesla_tesla_supercharger___burrard_st_json",
+        "facility_type": "tesla",
+        "sub_type": "supercharger",
+        "name": "Tesla 超級充電站 (Burrard Street)",
+        "display_name": "Vancouver, BC - Burrard Street Supercharger",
+        "address": "200 Burrard Street, Vancouver, BC, V6C 3L6",
+        "city": "Vancouver",
+        "postal_code": "V6C 3L6",
+        "phone": "(877) 798-3752",
+        "stalls": 8,
+        "power_kw": 75,
+        "charging_speed": "75 kW 超級充電",
+        "charging_access": "Tesla 專用 (Tesla Only)",
+        "access_type": "公眾開放",
+        "status": "營運中 (Open)",
+        "hours": "24/7 全天候開放",
+        "services": [
+          "超級充電站 (Supercharger - 8 個充電樁)"
+        ],
+        "notes": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "tesla_tesla_supercharger___kaslo_street_json",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.04627,
+          49.2600399
+        ]
+      },
+      "properties": {
+        "id": "tesla_tesla_supercharger___kaslo_street_json",
+        "facility_type": "tesla",
+        "sub_type": "supercharger",
+        "name": "Tesla 超級充電站 (Vancouver, BC)",
+        "display_name": "Vancouver, BC ",
+        "address": "2710 Kaslo St, Vancouver, BC, V5M 4J1",
+        "city": "Vancouver",
+        "postal_code": "V5M 4J1",
+        "phone": "",
+        "stalls": 16,
+        "power_kw": 250,
+        "charging_speed": "250 kW V3 極速充電",
+        "charging_access": "支援 NACS 合作車款及 Tesla",
+        "access_type": "公眾開放",
+        "status": "營運中 (Open)",
+        "hours": "24/7 全天候開放",
+        "services": [
+          "超級充電站 (Supercharger - V3 250kW)"
+        ],
+        "notes": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "tesla_tesla_supercharger___pacific_centre_json",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.117736,
+          49.2833332
+        ]
+      },
+      "properties": {
+        "id": "tesla_tesla_supercharger___pacific_centre_json",
+        "facility_type": "tesla",
+        "sub_type": "supercharger",
+        "name": "Tesla 超級充電站 (Pacific Centre)",
+        "display_name": "Vancouver, BC - Pacific Centre Supercharger",
+        "address": "701 W Georgia Street, Vancouver, BC, V7Y 1G5",
+        "city": "Vancouver",
+        "postal_code": "V7Y 1G5",
+        "phone": "(877) 798-3752",
+        "stalls": 22,
+        "power_kw": 75,
+        "charging_speed": "75 kW 超級充電",
+        "charging_access": "Tesla 專用 (Tesla Only)",
+        "access_type": "公眾開放",
+        "status": "營運中 (Open)",
+        "hours": "24/7 全天候開放",
+        "services": [
+          "超級充電站 (Supercharger - 22 個充電樁)"
+        ],
+        "notes": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "tesla_tesla_supercharger___seymour_st_json",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.119668,
+          49.2794455
+        ]
+      },
+      "properties": {
+        "id": "tesla_tesla_supercharger___seymour_st_json",
+        "facility_type": "tesla",
+        "sub_type": "supercharger",
+        "name": "Tesla 超級充電站 (535 Smithe St)",
+        "display_name": "Vancouver, BC - 535 Smithe St",
+        "address": "535 Smithe St, Vancouver, BC, V6B 0H2",
+        "city": "Vancouver",
+        "postal_code": "V6B 0H2",
+        "phone": "877 798 3752",
+        "stalls": 12,
+        "power_kw": 250,
+        "charging_speed": "250 kW V3 極速充電",
+        "charging_access": "支援 NACS 合作車款及 Tesla",
+        "access_type": "公眾開放",
+        "status": "營運中 (Open)",
+        "hours": "24/7 全天候開放",
+        "services": [
+          "超級充電站 (Supercharger - V3 250kW)"
+        ],
+        "notes": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "tesla_tesla_vancouver_raymur___gallery_json",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0819508,
+          49.2762977
+        ]
+      },
+      "properties": {
+        "id": "tesla_tesla_vancouver_raymur___gallery_json",
+        "facility_type": "tesla",
+        "sub_type": "center",
+        "name": "Tesla 溫哥華服務與體驗中心 (Vancouver-Raymur)",
+        "display_name": "Tesla Vancouver-Raymur",
+        "address": "908 Raymur Ave, Vancouver, BC, V6A 0K3",
+        "city": "Vancouver",
+        "postal_code": "V6A 0K3",
+        "phone": "(778) 357-4185",
+        "stalls": 8,
+        "power_kw": 250,
+        "charging_speed": "超級充電站",
+        "charging_access": "Tesla 專用",
+        "access_type": "原廠預約服務",
+        "status": "營運中 (Open)",
+        "hours": "服務部 週一至週六 08:00 - 18:00 · 充電 24/7",
+        "services": [
+          "Tesla 原廠售後維修與保養 (Service Center)",
+          "車輛展示與銷售體驗 (Sales Gallery)",
+          "新車交付中心 (Delivery Hub)",
+          "超級充電站 (Supercharger)"
+        ],
+        "notes": "車輛維修請由 Raymur Ave 入口駛入標示 Service 之接待門口。"
+      }
+    }
+  ]
+}

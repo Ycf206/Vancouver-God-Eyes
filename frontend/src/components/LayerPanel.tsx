@@ -11,6 +11,13 @@ import {
   Compass, MapPin, Fuel, Train
 } from 'lucide-react';
 
+// Helper component for Tesla Icon
+const TeslaIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 4.2c2.2 0 4.4.4 6.2 1.2.3.1.6 0 .7-.2l.7-1.1c.1-.2 0-.5-.2-.6C17.1 2.5 14.6 2 12 2S6.9 2.5 4.6 3.5c-.2.1-.3.4-.2.6l.7 1.1c.1.2.4.3.7.2 1.8-.8 4-1.2 6.2-1.2zm0 3.3c-1.7 0-3.3.3-4.8.9-.3.1-.4.4-.3.7l.6 1.8c.1.2.3.4.5.3 1.3-.4 2.6-.6 4-.6s2.7.2 4 .6c.2.1.4-.1.5-.3l.6-1.8c.1-.3 0-.6-.3-.7-1.5-.6-3.1-.9-4.8-.9zm1.3 4.2h-2.6v9.8c0 .3.2.5.5.5h1.6c.3 0 .5-.2.5-.5V11.7z"/>
+  </svg>
+);
+
 export default function LayerPanel() {
   const { 
     mapStyleType, setMapStyleType, layers, toggleLayer, 
@@ -226,6 +233,7 @@ export default function LayerPanel() {
             <LayerButton layerKey="trafficCameras" label="交通攝影機" icon={Camera} colorClass="text-cyan-400" activeBg="bg-[#14262b]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.15)]" />
             <LayerButton layerKey="safetyCameras" label="路口安全相機" icon={Siren} colorClass="text-rose-400" activeBg="bg-[#2b171c]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.15)]" />
             <LayerButton layerKey="fuel" label="加油站" icon={Fuel} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
+            <LayerButton layerKey="tesla" label="TESLA" icon={TeslaIcon} colorClass="text-red-500" activeBg="bg-[#2d1417]" activeBorder="border-red-500/60" activeShadow="shadow-[0_0_8px_rgba(232,33,39,0.3)]" />
           </div>
         </div>
 

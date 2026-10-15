@@ -1,0 +1,157 @@
+{
+    "data": {
+        "marketing": {
+            "address_notes": null,
+            "gmaps_override": null,
+            "display_driving_directions": true,
+            "show_on_bodyshop_support_page": false,
+            "location_url_slug": "27231",
+            "show_on_find_us": false,
+            "gmaps_override_longitude": -123.1198855,
+            "display_name": "Vancouver, BC - 535 Smithe St",
+            "gmaps_override_latitude": 49.2799684,
+            "service_center_phone": null,
+            "roadside_assistance_number": "877 798 3752",
+            "service_hours_by_appointment_only": "0",
+            "store_hours_by_appointment_only": "0",
+            "phone_numbers": null,
+            "common_name": null,
+            "site_event": {
+                "has_event": null
+            }
+        },
+        "functions": [
+            {
+                "business_hours": {
+                    "hours": []
+                },
+                "address": {
+                    "country": "CA",
+                    "formatted_address": [
+                        "535 SMITHE ST",
+                        "Vancouver BC V6B 0H2"
+                    ],
+                    "address_validated": false,
+                    "city": "Vancouver",
+                    "address_1": "535 Smithe St",
+                    "address_2": "",
+                    "latitude": 49.2794455,
+                    "county": null,
+                    "state_province": "BC",
+                    "locale": "en-US",
+                    "address_number": "535",
+                    "address_street": "Smithe St",
+                    "district": null,
+                    "country_name": null,
+                    "address_provider_enum": "google",
+                    "postal_code": "V6B 0H2",
+                    "postal_code_suffix": null,
+                    "longitude": -123.119668
+                },
+                "address_by_locale": [
+                    {
+                        "country": "CA",
+                        "formatted_address": [
+                            "535 SMITHE ST",
+                            "Vancouver BC V6B 0H2"
+                        ],
+                        "address_validated": false,
+                        "city": "Vancouver",
+                        "address_1": "535 Smithe St",
+                        "address_2": "",
+                        "latitude": 49.2794455,
+                        "county": null,
+                        "state_province": "BC",
+                        "locale": "en-US",
+                        "address_number": "535",
+                        "address_street": "Smithe St",
+                        "district": null,
+                        "country_name": null,
+                        "address_provider_enum": "google",
+                        "postal_code": "V6B 0H2",
+                        "postal_code_suffix": null,
+                        "longitude": -123.119668
+                    }
+                ],
+                "customer_facing_name": "Vancouver, BC - 535 Smithe St Vancouver BC",
+                "translations": {
+                    "customerFacingName": {
+                        "en-US": "Vancouver, BC - 535 Smithe St Vancouver BC"
+                    }
+                },
+                "name": "Charging_Supercharger",
+                "opening_date": "2025-04-17",
+                "status": "Open"
+            }
+        ],
+        "tesla_center_collision_function": {
+            "company_phone": null
+        },
+        "key_data": {
+            "address": {
+                "country": "CA",
+                "formatted_address": [
+                    "535 SMITHE ST",
+                    "Vancouver BC V6B 0H2"
+                ],
+                "address_validated": false,
+                "city": "Vancouver",
+                "address_1": "535 Smithe St",
+                "address_2": "",
+                "latitude": 49.2794455,
+                "county": null,
+                "state_province": "BC",
+                "locale": "en-US",
+                "address_number": "535",
+                "address_street": "Smithe St",
+                "district": null,
+                "country_name": "Canada",
+                "address_provider_enum": "google",
+                "postal_code": "V6B 0H2",
+                "postal_code_suffix": null,
+                "longitude": -123.119668
+            },
+            "phone": null,
+            "local_address": null,
+            "use_local_address": false,
+            "geo_point": {
+                "lon": -123.119668,
+                "lat": 49.2794455
+            },
+            "status": {
+                "name": "Open"
+            },
+            "address_by_locale": [
+                {
+                    "country": "CA",
+                    "city": "Vancouver",
+                    "address_1": "535 Smithe St",
+                    "address_2": "",
+                    "latitude": 49.2794455,
+                    "country_name": null,
+                    "state_province": "BC",
+                    "locale": "en-US",
+                    "postal_code": "V6B 0H2",
+                    "longitude": -123.119668
+                }
+            ]
+        },
+        "supercharger_function": {
+            "customer_facing_coming_soon_date": "Under Construction",
+            "actual_longitude": "-123.119925",
+            "access_type": "Public",
+            "installed_full_power": "250",
+            "vote_winner_quarter": null,
+            "show_on_find_us": "1",
+            "project_status": "Open",
+            "actual_latitude": "49.279836",
+            "open_to_non_tesla": false,
+            "coming_soon_longitude": "-123.119668",
+            "site_status": "open",
+            "coming_soon_name": "Vancouver, BC ",
+            "charging_accessibility": "NACS Partner Enabled (Production)",
+            "coming_soon_latitude": "49.279446",
+            "num_charger_stalls": "12"
+        }
+    }
+}

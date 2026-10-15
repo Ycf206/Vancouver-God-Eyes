@@ -224,12 +224,19 @@ def get_estimated_skytrain_trains():
             st_next = stations[min(curr_st_idx + 1, len(stations) - 1)]
 
             seg_duration = max(1.0, float(st_next['time_sec'] - st_curr['time_sec']))
-            seg_elapsed = elapsed - st_curr['time_sec']
-            seg_fraction = max(0.0, min(1.0, seg_elapsed / seg_duration))
-
-            # SkyTrain dwell time at stations is typically ~20-25 seconds
-            dwell_time = min(22.0, seg_duration * 0.25)
+            seg_elapsed = max(0.0, float(elapsed - st_curr['time_sec']))
+            # SkyTrain dwell time at stations is typically ~20-25 seconds (terminal ~35s)
+            dwell_time = min(25.0, seg_duration * 0.3) if curr_st_idx > 0 else min(35.0, seg_duration * 0.35)
             is_dwelling = (seg_elapsed < dwell_time) and (curr_st_idx < len(stations) - 1)
+
+            if is_dwelling:
+                # 停靠月台期間：位置嚴格鎖定於本站月台中心點，靜止不動
+                seg_fraction = 0.0
+            else:
+                # 出發開出後：於剩餘區間行車時間內行駛至下一站
+                travel_duration = max(1.0, seg_duration - dwell_time)
+                travel_elapsed = seg_elapsed - dwell_time
+                seg_fraction = max(0.0, min(1.0, travel_elapsed / travel_duration))
 
             # Interpolate position
             idx_start = shape_indices[curr_st_idx]

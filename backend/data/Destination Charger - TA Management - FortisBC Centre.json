@@ -1,0 +1,152 @@
+{
+    "data": {
+        "marketing": {
+            "gmaps_override": null,
+            "display_driving_directions": true,
+            "show_on_bodyshop_support_page": false,
+            "location_url_slug": "54917",
+            "show_on_find_us": false,
+            "gmaps_override_longitude": -123.12312,
+            "display_name": "TA Management  - FortisBC Centre",
+            "gmaps_override_latitude": 49.285731,
+            "roadside_assistance_number": "877 798 3752",
+            "address_notes": null,
+            "service_hours_by_appointment_only": "0",
+            "store_hours_by_appointment_only": "0",
+            "phone_numbers": null,
+            "common_name": "TA Management  - FortisBC Centre",
+            "site_event": {
+                "has_event": null
+            },
+            "service_center_phone": null
+        },
+        "functions": [
+            {
+                "business_hours": {
+                    "hours": []
+                },
+                "address": {
+                    "country": "CA",
+                    "formatted_address": [
+                        "300 1111 WEST GEORGIA STREET",
+                        "Vancouver BC V6E 4M3"
+                    ],
+                    "address_validated": false,
+                    "city": "Vancouver",
+                    "address_1": "300 1111 West Georgia Street",
+                    "address_2": "",
+                    "latitude": 49.285731,
+                    "county": null,
+                    "state_province": "BC",
+                    "locale": "en-US",
+                    "address_number": null,
+                    "address_street": null,
+                    "district": null,
+                    "country_name": null,
+                    "address_provider_enum": "google",
+                    "postal_code": "V6E 4M3",
+                    "postal_code_suffix": null,
+                    "longitude": -123.12312
+                },
+                "address_by_locale": [
+                    {
+                        "country": "CA",
+                        "formatted_address": [
+                            "300 1111 WEST GEORGIA STREET",
+                            "Vancouver BC V6E 4M3"
+                        ],
+                        "address_validated": false,
+                        "city": "Vancouver",
+                        "address_1": "300 1111 West Georgia Street",
+                        "address_2": "",
+                        "latitude": 49.285731,
+                        "county": null,
+                        "state_province": "BC",
+                        "locale": "en-US",
+                        "address_number": null,
+                        "address_street": null,
+                        "district": null,
+                        "country_name": null,
+                        "address_provider_enum": "google",
+                        "postal_code": "V6E 4M3",
+                        "postal_code_suffix": null,
+                        "longitude": -123.12312
+                    }
+                ],
+                "customer_facing_name": "TA Management  - FortisBC Centre Vancouver BC",
+                "translations": {
+                    "customerFacingName": {
+                        "en-US": "TA Management  - FortisBC Centre Vancouver BC"
+                    }
+                },
+                "name": "Charging_Commercial_Charging",
+                "opening_date": "2019-05-11",
+                "status": "Pending"
+            }
+        ],
+        "tesla_center_collision_function": {
+            "company_phone": null
+        },
+        "key_data": {
+            "address": {
+                "country": "CA",
+                "formatted_address": [
+                    "300 1111 WEST GEORGIA STREET",
+                    "Vancouver BC V6E 4M3"
+                ],
+                "address_validated": false,
+                "city": "Vancouver",
+                "address_1": "300 1111 West Georgia Street",
+                "address_2": "",
+                "latitude": 49.285731,
+                "county": null,
+                "state_province": "BC",
+                "locale": "en-US",
+                "address_number": null,
+                "address_street": null,
+                "district": null,
+                "country_name": "Canada",
+                "address_provider_enum": "google",
+                "postal_code": "V6E 4M3",
+                "postal_code_suffix": null,
+                "longitude": -123.12312
+            },
+            "phone": null,
+            "local_address": null,
+            "use_local_address": false,
+            "geo_point": {
+                "lon": -123.12312,
+                "lat": 49.285731
+            },
+            "status": {
+                "name": "Open"
+            },
+            "address_by_locale": [
+                {
+                    "country": "CA",
+                    "city": "Vancouver",
+                    "address_1": "300 1111 West Georgia Street",
+                    "address_2": "",
+                    "latitude": 49.285731,
+                    "country_name": null,
+                    "state_province": "BC",
+                    "locale": "en-US",
+                    "postal_code": "V6E 4M3",
+                    "longitude": -123.12312
+                }
+            ]
+        },
+        "destination_charger_function": {
+            "installed_full_power": "16",
+            "access_type": "Public",
+            "destination_website": "http://www.ta-management.com/",
+            "open_to_non_tesla": false,
+            "show_on_find_us": true,
+            "project_status": "Open",
+            "restrictions": "Parking fees will apply.",
+            "phone_number": "(604) 683-1628",
+            "access_instructions": "Self park.",
+            "num_charger_stalls": "4"
+        }
+    }
+}

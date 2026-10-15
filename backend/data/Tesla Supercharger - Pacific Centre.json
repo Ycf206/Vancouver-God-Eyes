@@ -1,0 +1,164 @@
+{
+    "data": {
+        "marketing": {
+            "display_driving_directions": true,
+            "show_on_bodyshop_support_page": false,
+            "show_on_find_us": true,
+            "store_sub_region": {
+                "display_name": "British Columbia",
+                "locale": null
+            },
+            "display_name": "Vancouver, BC - Pacific Centre Supercharger",
+            "roadside_assistance_number": "(877) 798-3752",
+            "address_notes": null,
+            "gmaps_override": "https://maps.google.com/maps?daddr=49.282005,-123.120232",
+            "location_url_slug": "vancouverpacificentresupercharger",
+            "gmaps_override_longitude": -123.11959,
+            "store_region": {
+                "name": "north_america"
+            },
+            "gmaps_override_latitude": 49.282779,
+            "service_center_phone": null,
+            "service_hours_by_appointment_only": "0",
+            "store_hours_by_appointment_only": "0",
+            "phone_numbers": null,
+            "common_name": "CF Pacific Centre",
+            "site_event": {
+                "has_event": null
+            }
+        },
+        "functions": [
+            {
+                "business_hours": {
+                    "hours": []
+                },
+                "address": {
+                    "country": "CA",
+                    "formatted_address": [
+                        "701 W GEORGIA STREET",
+                        "Vancouver BC V7Y 1G5"
+                    ],
+                    "address_validated": false,
+                    "city": "Vancouver",
+                    "address_1": "701 W Georgia Street",
+                    "address_2": "",
+                    "latitude": 49.2833332,
+                    "county": null,
+                    "state_province": "BC",
+                    "locale": "en-US",
+                    "address_number": null,
+                    "address_street": null,
+                    "district": "",
+                    "country_name": null,
+                    "address_provider_enum": "google",
+                    "postal_code": "V7Y 1G5",
+                    "postal_code_suffix": "",
+                    "longitude": -123.117736
+                },
+                "address_by_locale": [
+                    {
+                        "country": "CA",
+                        "formatted_address": [
+                            "701 W GEORGIA STREET",
+                            "Vancouver BC V7Y 1G5"
+                        ],
+                        "address_validated": false,
+                        "city": "Vancouver",
+                        "address_1": "701 W Georgia Street",
+                        "address_2": "",
+                        "latitude": 49.2833332,
+                        "county": null,
+                        "state_province": "BC",
+                        "locale": "en-US",
+                        "address_number": null,
+                        "address_street": null,
+                        "district": "",
+                        "country_name": null,
+                        "address_provider_enum": "google",
+                        "postal_code": "V7Y 1G5",
+                        "postal_code_suffix": "",
+                        "longitude": -123.117736
+                    }
+                ],
+                "customer_facing_name": "Vancouver, BC - Pacific Centre Supercharger Vancouver BC",
+                "translations": {
+                    "customerFacingName": {
+                        "en-US": "Vancouver, BC - Pacific Centre Supercharger Vancouver BC"
+                    }
+                },
+                "name": "Charging_Supercharger",
+                "opening_date": "2019-04-26",
+                "status": "Pending"
+            }
+        ],
+        "tesla_center_collision_function": {
+            "company_phone": null
+        },
+        "key_data": {
+            "address": {
+                "country": "CA",
+                "formatted_address": [
+                    "701 W GEORGIA STREET",
+                    "Vancouver BC V7Y 1G5"
+                ],
+                "address_validated": false,
+                "city": "Vancouver",
+                "address_1": "701 W Georgia Street",
+                "address_2": "",
+                "latitude": 49.2833332,
+                "county": null,
+                "state_province": "BC",
+                "locale": "en-US",
+                "address_number": null,
+                "address_street": null,
+                "district": "",
+                "country_name": "Canada",
+                "address_provider_enum": "google",
+                "postal_code": "V7Y 1G5",
+                "postal_code_suffix": "",
+                "longitude": -123.117736
+            },
+            "phone": null,
+            "local_address": null,
+            "use_local_address": false,
+            "geo_point": {
+                "lon": -123.117736,
+                "lat": 49.2833332
+            },
+            "status": {
+                "name": "Open"
+            },
+            "address_by_locale": [
+                {
+                    "country": "CA",
+                    "city": "Vancouver",
+                    "address_1": "701 W Georgia Street",
+                    "address_2": "",
+                    "latitude": 49.2833332,
+                    "country_name": null,
+                    "state_province": "BC",
+                    "locale": "en-US",
+                    "postal_code": "V7Y 1G5",
+                    "longitude": -123.117736
+                }
+            ]
+        },
+        "supercharger_function": {
+            "customer_facing_coming_soon_date": null,
+            "actual_longitude": "-123.120204",
+            "access_type": "Public",
+            "installed_full_power": "75",
+            "vote_winner_quarter": null,
+            "show_on_find_us": "1",
+            "project_status": "Open",
+            "actual_latitude": "49.281781",
+            "open_to_non_tesla": false,
+            "coming_soon_longitude": "-123.120232",
+            "site_status": "open",
+            "coming_soon_name": null,
+            "charging_accessibility": "Tesla Only",
+            "coming_soon_latitude": "49.282005",
+            "num_charger_stalls": "22"
+        }
+    }
+}

@@ -1,0 +1,164 @@
+{
+    "data": {
+        "marketing": {
+            "display_driving_directions": true,
+            "show_on_bodyshop_support_page": false,
+            "show_on_find_us": true,
+            "store_sub_region": {
+                "display_name": "British Columbia",
+                "locale": null
+            },
+            "display_name": "Vancouver, BC ",
+            "roadside_assistance_number": "",
+            "address_notes": null,
+            "gmaps_override": null,
+            "location_url_slug": "13658",
+            "gmaps_override_longitude": -123.046705,
+            "store_region": {
+                "name": "north_america"
+            },
+            "gmaps_override_latitude": 49.260408,
+            "service_center_phone": null,
+            "service_hours_by_appointment_only": "0",
+            "store_hours_by_appointment_only": "0",
+            "phone_numbers": null,
+            "common_name": "",
+            "site_event": {
+                "has_event": null
+            }
+        },
+        "functions": [
+            {
+                "business_hours": {
+                    "hours": []
+                },
+                "address": {
+                    "country": "CA",
+                    "formatted_address": [
+                        "2710 KASLO ST",
+                        "Vancouver BC V5M 4J1"
+                    ],
+                    "address_validated": false,
+                    "city": "Vancouver",
+                    "address_1": "2710 Kaslo St",
+                    "address_2": "",
+                    "latitude": 49.2599942,
+                    "county": null,
+                    "state_province": "BC",
+                    "locale": "en-US",
+                    "address_number": "2710",
+                    "address_street": "Kaslo St",
+                    "district": null,
+                    "country_name": null,
+                    "address_provider_enum": "google",
+                    "postal_code": "V5M 4J1",
+                    "postal_code_suffix": null,
+                    "longitude": -123.0468335
+                },
+                "address_by_locale": [
+                    {
+                        "country": "CA",
+                        "formatted_address": [
+                            "2710 KASLO ST",
+                            "Vancouver BC V5M 4J1"
+                        ],
+                        "address_validated": false,
+                        "city": "Vancouver",
+                        "address_1": "2710 Kaslo St",
+                        "address_2": "",
+                        "latitude": 49.2599942,
+                        "county": null,
+                        "state_province": "BC",
+                        "locale": "en-US",
+                        "address_number": "2710",
+                        "address_street": "Kaslo St",
+                        "district": null,
+                        "country_name": null,
+                        "address_provider_enum": "google",
+                        "postal_code": "V5M 4J1",
+                        "postal_code_suffix": null,
+                        "longitude": -123.0468335
+                    }
+                ],
+                "customer_facing_name": "Vancouver, BC  Vancouver BC",
+                "translations": {
+                    "customerFacingName": {
+                        "en-US": "Vancouver, BC  Vancouver BC"
+                    }
+                },
+                "name": "Charging_Supercharger",
+                "opening_date": "2025-10-17",
+                "status": "Open"
+            }
+        ],
+        "tesla_center_collision_function": {
+            "company_phone": null
+        },
+        "key_data": {
+            "address": {
+                "country": "CA",
+                "formatted_address": [
+                    "2710 KASLO ST",
+                    "Vancouver BC V5M 4J1"
+                ],
+                "address_validated": false,
+                "city": "Vancouver",
+                "address_1": "2710 Kaslo St",
+                "address_2": "",
+                "latitude": 49.2600399,
+                "county": null,
+                "state_province": "BC",
+                "locale": "en-US",
+                "address_number": "2710",
+                "address_street": "Kaslo St",
+                "district": null,
+                "country_name": "Canada",
+                "address_provider_enum": "google",
+                "postal_code": "V5M 4J1",
+                "postal_code_suffix": null,
+                "longitude": -123.04627
+            },
+            "phone": null,
+            "local_address": null,
+            "use_local_address": false,
+            "geo_point": {
+                "lon": -123.04627,
+                "lat": 49.2600399
+            },
+            "status": {
+                "name": "Open"
+            },
+            "address_by_locale": [
+                {
+                    "country": "CA",
+                    "city": "Vancouver",
+                    "address_1": "2710 Kaslo St",
+                    "address_2": "",
+                    "latitude": 49.2600399,
+                    "country_name": null,
+                    "state_province": "BC",
+                    "locale": "en-US",
+                    "postal_code": "V5M 4J1",
+                    "longitude": -123.04627
+                }
+            ]
+        },
+        "supercharger_function": {
+            "customer_facing_coming_soon_date": "Under Construction",
+            "actual_longitude": "-123.04627",
+            "access_type": "Public",
+            "installed_full_power": "250",
+            "vote_winner_quarter": null,
+            "show_on_find_us": "1",
+            "project_status": "Open",
+            "actual_latitude": "49.2600399",
+            "open_to_non_tesla": false,
+            "coming_soon_longitude": "-123.04627",
+            "site_status": "open",
+            "coming_soon_name": "Vancouver, BC ",
+            "charging_accessibility": "NACS Partner Enabled (Production)",
+            "coming_soon_latitude": "49.26004",
+            "num_charger_stalls": "16"
+        }
+    }
+}
