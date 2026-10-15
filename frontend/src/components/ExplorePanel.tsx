@@ -278,7 +278,7 @@ function ExploreContent() {
     );
   };
 
-  // 分頁：天氣, 渡輪, 燃油, 電動車, 貨運
+  // 分頁：天氣, 渡輪, 船運, 燃油, 充電
   const [activeTab, setActiveTab] = useState<'weather' | 'ferry' | 'fuel' | 'ev' | 'cargo'>('weather');
 
   // --- Weather tab states ---
@@ -589,10 +589,10 @@ function ExploreContent() {
   };
 
   const tabs = [
-    { id: 'ferry', label: '渡輪' },
-    { id: 'fuel', label: '燃油' },
-    { id: 'ev', label: '電動車' },
-    { id: 'cargo', label: '貨運' },
+    { id: 'ferry', label: '渡輪', icon: Ship, iconColor: 'text-sky-400' },
+    { id: 'cargo', label: '船運', icon: Anchor, iconColor: 'text-cyan-400' },
+    { id: 'fuel', label: '燃油', icon: Fuel, iconColor: 'text-amber-400' },
+    { id: 'ev', label: '充電', icon: Zap, iconColor: 'text-emerald-400' },
   ] as const;
 
   return (
@@ -630,28 +630,30 @@ function ExploreContent() {
               : 'text-gray-300 hover:text-white hover:bg-[#1a1f2b]'
           }`}
         >
-          <CloudSun className="w-3.5 h-3.5 text-sky-400" />
+          <CloudSun className="w-3.5 h-3.5 text-sky-400 shrink-0" />
           <span>天氣</span>
         </button>
         {/* 保留未來新增分頁空間 */}
         <div className="col-span-3"></div>
       </div>
 
-      {/* 探索分類分頁 - 第二行 (渡輪 / 燃油 / 電動車 / 貨運) */}
+      {/* 探索分類分頁 - 第二行 (渡輪 > 船運 > 燃油 > 充電) */}
       <div className="grid grid-cols-4 gap-1.5 p-1.5 bg-[#10131a] rounded-xl border border-[#232836] shrink-0 mb-3">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id;
+          const Icon = tab.icon;
           return (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`py-2 text-xs font-medium rounded-lg transition-all text-center ${
+              className={`py-2 text-xs font-medium rounded-lg transition-all text-center flex items-center justify-center gap-1.5 ${
                 isActive
                   ? 'bg-[#2b3345] text-white font-bold shadow-md ring-1 ring-[#3d4760]'
                   : 'text-gray-300 hover:text-white hover:bg-[#1a1f2b]'
               }`}
             >
-              {tab.label}
+              <Icon className={`w-3.5 h-3.5 ${tab.iconColor} shrink-0`} />
+              <span>{tab.label}</span>
             </button>
           );
         })}
@@ -1061,7 +1063,7 @@ function ExploreContent() {
         </div>
       )}
 
-      {/* ==================== 3. 電動車分頁 (EV) ==================== */}
+      {/* ==================== 3. 充電分頁 (EV Charging) ==================== */}
       {activeTab === 'ev' && (
         <div className="flex flex-col flex-1 min-h-0">
           {/* Subheader: Range & Location info */}
@@ -1186,7 +1188,7 @@ function ExploreContent() {
         </div>
       )}
 
-      {/* ==================== 4. 貨運分頁 (Cargo - Port of Vancouver AIS Shipping) ==================== */}
+      {/* ==================== 4. 船運分頁 (Maritime Shipping - Port of Vancouver AIS Shipping) ==================== */}
       {activeTab === 'cargo' && (
         <div className="flex flex-col flex-1 min-h-0">
           <div className="flex items-center justify-between mb-2 shrink-0">
