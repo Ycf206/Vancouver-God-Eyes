@@ -143,20 +143,29 @@ async function run() {
   });
   console.log(`Loaded ${Object.keys(tripsInfo).length} trips.`);
 
-  console.log('4. Loading stop_times (representative trips selection)...');
-  // Group trips by variant key: route_id_direction_id_headsign
+  console.log('4. Analyzing stop_times to select trips with maximum stops...');
+  const tripStopCounts = new Map();
+  await parseCSV(path.join(GTFS_DIR, 'stop_times.txt'), (row) => {
+    const tid = row.trip_id.trim();
+    if (tripsInfo[tid]) {
+      tripStopCounts.set(tid, (tripStopCounts.get(tid) || 0) + 1);
+    }
+  });
+
+  // Group trips by variant key: route_id_direction_id_headsign, selecting the trip with the MOST stops
   const variantTrips = new Map();
   for (const tid in tripsInfo) {
     const t = tripsInfo[tid];
     const vkey = `${t.route_id}_${t.direction_id}_${t.headsign}`;
-    if (!variantTrips.has(vkey)) {
+    const count = tripStopCounts.get(tid) || 0;
+    const existing = variantTrips.get(vkey);
+    if (!existing || count > (tripStopCounts.get(existing.trip_id) || 0)) {
       variantTrips.set(vkey, t);
     }
   }
-  console.log(`Found ${variantTrips.size} total variants across all routes.`);
+  console.log(`Found ${variantTrips.size} total variants across all routes (selected maximal trips).`);
 
-  // To keep stop_times streaming fast, collect stop sequences for all representative trips
-  // and map all trips to variant
+  // Collect full stop sequences for the selected maximal trips
   const repTripIds = new Set([...variantTrips.values()].map(t => t.trip_id));
   const tripStopLists = new Map();
 
@@ -169,7 +178,7 @@ async function run() {
       tripStopLists.get(tid).push([seq, sid]);
     }
   });
-  console.log(`Loaded stop sequences for representative trips.`);
+  console.log(`Loaded complete stop sequences for representative trips.`);
 
   // Find needed shape_ids
   const neededShapeIds = new Set();

@@ -1,0 +1,341 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.0898, 49.2848]
+      },
+      "properties": {
+        "id": "terminal_centerm",
+        "name": "DP World Centerm (中央貨櫃碼頭)",
+        "name_en": "DP World Centerm Container Terminal",
+        "facility_type": "marine_terminals",
+        "operator": "DP World",
+        "terminal_type": "貨櫃集裝箱碼頭 (Container Terminal)",
+        "cargo": "國際海運進出口貨櫃 (ISO Containers)",
+        "waterway": "Burrard Inlet 南岸 (Vancouver)",
+        "berths": "2 個深水泊位",
+        "draught": "15.5 m",
+        "capacity": "150 萬 TEU / 年",
+        "address": "777 Centennial Rd, Vancouver, BC V6A 1A3"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.0645, 49.2882]
+      },
+      "properties": {
+        "id": "terminal_vanterm",
+        "name": "GCT Vanterm (溫哥華貨櫃碼頭)",
+        "name_en": "GCT Vanterm Container Terminal",
+        "facility_type": "marine_terminals",
+        "operator": "Global Container Terminals (GCT)",
+        "terminal_type": "貨櫃集裝箱碼頭 (Container Terminal)",
+        "cargo": "跨太平洋貨櫃貿易 (Trans-Pacific Containers)",
+        "waterway": "Burrard Inlet 南岸 (Vancouver)",
+        "berths": "2 個深水泊位",
+        "draught": "15.5 m",
+        "capacity": "100 萬 TEU / 年",
+        "address": "1300 Stewart St, Vancouver, BC V5L 4X5"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.1111, 49.2888]
+      },
+      "properties": {
+        "id": "terminal_canada_place",
+        "name": "Canada Place Cruise Ship Terminal (加拿大廣場郵輪碼頭)",
+        "name_en": "Canada Place Cruise Ship Terminal",
+        "facility_type": "marine_terminals",
+        "operator": "Port of Vancouver / Ceres Terminals",
+        "terminal_type": "國際客運郵輪碼頭 (Cruise Ship Terminal)",
+        "cargo": "阿拉斯加航線豪華郵輪、國際遊客",
+        "waterway": "Burrard Inlet (Downtown Vancouver)",
+        "berths": "3 個豪華郵輪深水泊位 (East, West, North)",
+        "draught": "10.7 m",
+        "capacity": "每年接待逾 120 萬郵輪旅客人次",
+        "address": "999 Canada Place, Vancouver, BC V6C 3T4"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.0305, 49.3075]
+      },
+      "properties": {
+        "id": "terminal_lynnterm",
+        "name": "Lynnterm Terminal (林恩散裝貨物碼頭)",
+        "name_en": "Lynnterm Breakbulk Terminal",
+        "facility_type": "marine_terminals",
+        "operator": "Western Stevedoring",
+        "terminal_type": "散裝與林業貨物碼頭 (Breakbulk & Forest Products)",
+        "cargo": "加拿大木材、紙漿、進口鋼材、大型工程設備",
+        "waterway": "Burrard Inlet 北岸 (North Vancouver)",
+        "berths": "4 個深水泊位",
+        "draught": "15.2 m",
+        "capacity": "加拿大太平洋最大林產與雜貨樞紐",
+        "address": "1212 Low Level Rd, North Vancouver, BC V7L 1A1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.0560, 49.3082]
+      },
+      "properties": {
+        "id": "terminal_neptune",
+        "name": "Neptune Bulk Terminals (海王星散貨碼頭)",
+        "name_en": "Neptune Bulk Terminals",
+        "facility_type": "marine_terminals",
+        "operator": "Neptune Bulk Terminals (Canada) Ltd.",
+        "terminal_type": "大宗散貨出口碼頭 (Bulk Export Terminal)",
+        "cargo": "冶金煤 (Steelmaking Coal)、薩斯喀徹溫省鉀肥 (Potash)",
+        "waterway": "Burrard Inlet 北岸 (North Vancouver)",
+        "berths": "3 個深水泊位",
+        "draught": "15.3 m",
+        "capacity": "2350 萬公噸 / 年",
+        "address": "1001 Low Level Rd, North Vancouver, BC V7L 1A7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.0815, 49.3090]
+      },
+      "properties": {
+        "id": "terminal_richardson",
+        "name": "Richardson International Terminal (理查森糧食碼頭)",
+        "name_en": "Richardson International Grain Terminal",
+        "facility_type": "marine_terminals",
+        "operator": "Richardson International",
+        "terminal_type": "穀物糧食出口碼頭 (Agricultural Grain Terminal)",
+        "cargo": "加拿大小麥、大麥、芥花籽 (Canola)",
+        "waterway": "Burrard Inlet 北岸 (North Vancouver)",
+        "berths": "2 個泊位",
+        "draught": "14.5 m",
+        "capacity": "600 萬公噸 / 年",
+        "address": "375 Low Level Rd, North Vancouver, BC V7L 1A7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.0880, 49.3105]
+      },
+      "properties": {
+        "id": "terminal_cargill",
+        "name": "Cargill Grain Terminal (嘉吉穀物碼頭)",
+        "name_en": "Cargill Grain Terminal",
+        "facility_type": "marine_terminals",
+        "operator": "Cargill Limited",
+        "terminal_type": "穀物糧食出口碼頭 (Agricultural Grain Terminal)",
+        "cargo": "加拿大平原穀物、油籽與農產品出口",
+        "waterway": "Burrard Inlet 北岸 (North Vancouver)",
+        "berths": "1 個深水泊位",
+        "draught": "13.7 m",
+        "capacity": "450 萬公噸 / 年",
+        "address": "300 Low Level Rd, North Vancouver, BC V7L 1A7"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.0760, 49.2872]
+      },
+      "properties": {
+        "id": "terminal_cascadia",
+        "name": "Cascadia Terminal (卡斯卡迪亞散糧碼頭)",
+        "name_en": "Cascadia Grain Terminal",
+        "facility_type": "marine_terminals",
+        "operator": "Viterra Canada",
+        "terminal_type": "穀物糧食出口碼頭 (Agricultural Grain Terminal)",
+        "cargo": "加拿大西部小麥、杜蘭小麥與油菜籽",
+        "waterway": "Burrard Inlet 南岸 (Vancouver)",
+        "berths": "2 個泊位",
+        "draught": "13.5 m",
+        "capacity": "300 萬公噸 / 年",
+        "address": "1803 Stewart St, Vancouver, BC V5L 4X5"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.0690, 49.2862]
+      },
+      "properties": {
+        "id": "terminal_pacific",
+        "name": "Pacific Elevators (太平洋糧食出口碼頭)",
+        "name_en": "Pacific Grain Terminal",
+        "facility_type": "marine_terminals",
+        "operator": "Viterra Canada",
+        "terminal_type": "穀物糧食出口碼頭 (Agricultural Grain Terminal)",
+        "cargo": "小麥、油籽與特種農產出口",
+        "waterway": "Burrard Inlet 南岸 (Vancouver)",
+        "berths": "1 個深水泊位",
+        "draught": "13.5 m",
+        "capacity": "300 萬公噸 / 年",
+        "address": "2001 Wall St, Vancouver, BC V5L 1J4"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-122.9525, 49.2933]
+      },
+      "properties": {
+        "id": "terminal_westridge",
+        "name": "Westridge Marine Terminal (西嶺原油出口碼頭)",
+        "name_en": "Westridge Marine Terminal (Trans Mountain)",
+        "facility_type": "marine_terminals",
+        "operator": "Trans Mountain Corporation",
+        "terminal_type": "原油與液態大宗裝載碼頭 (Crude Oil Export)",
+        "cargo": "跨山輸油管加拿大原油 (Aframax 超大型油輪出口)",
+        "waterway": "Burrard Inlet (Burnaby)",
+        "berths": "3 個現代化 Aframax 油輪專用泊位",
+        "draught": "15.0 m",
+        "capacity": "每月最多停泊 34 艘 Aframax 原油輪",
+        "address": "7065 Inlet Dr, Burnaby, BC V5A 1B2"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-122.8872, 49.2945]
+      },
+      "properties": {
+        "id": "terminal_suncor",
+        "name": "Suncor Burrard Products Terminal (森科爾成品油碼頭)",
+        "name_en": "Suncor Burrard Products Terminal",
+        "facility_type": "marine_terminals",
+        "operator": "Suncor Energy",
+        "terminal_type": "成品油分銷碼頭 (Refined Petroleum Products)",
+        "cargo": "航空燃油、汽油、柴油等精煉石油產品",
+        "waterway": "Burrard Inlet (Port Moody)",
+        "berths": "1 個油料專用泊位",
+        "draught": "11.5 m",
+        "capacity": "卑詩省重要航空燃料與車用燃油集散基地",
+        "address": "1155 Barnet Hwy, Port Moody, BC V3H 1V6"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.1530, 49.0205]
+      },
+      "properties": {
+        "id": "terminal_deltaport",
+        "name": "GCT Deltaport (羅伯茨堤岸深水貨櫃碼頭)",
+        "name_en": "GCT Deltaport Container Terminal",
+        "facility_type": "marine_terminals",
+        "operator": "Global Container Terminals (GCT)",
+        "terminal_type": "超大型深水貨櫃碼頭 (Ultra-Large Container Terminal)",
+        "cargo": "加拿大最大跨太平洋貨櫃航線樞紐，可停靠超巴拿馬型巨輪",
+        "waterway": "Roberts Bank (Delta)",
+        "berths": "3 個深水巨型泊位",
+        "draught": "15.9 m",
+        "capacity": "240 萬 TEU / 年",
+        "address": "1 Roberts Bank Way, Delta, BC V4M 4G5"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.1610, 49.0152]
+      },
+      "properties": {
+        "id": "terminal_westshore",
+        "name": "Westshore Terminals (西岸大宗煤炭碼頭)",
+        "name_en": "Westshore Terminals",
+        "facility_type": "marine_terminals",
+        "operator": "Westshore Terminals LP",
+        "terminal_type": "北美最大散裝煤炭出口碼頭 (Coal Bulk Terminal)",
+        "cargo": "加拿大冶金煤、動力煤、散裝肥料",
+        "waterway": "Roberts Bank (Delta)",
+        "berths": "2 個開敞海域深水泊位 (Capesize 好望角型散貨輪)",
+        "draught": "20.0 m",
+        "capacity": "3300 萬公噸 / 年",
+        "address": "1 Roberts Bank Way, Delta, BC V4M 4G5"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-122.8942, 49.1915]
+      },
+      "properties": {
+        "id": "terminal_fraser_surrey",
+        "name": "Fraser Surrey Docks (菲沙薩里綜合碼頭)",
+        "name_en": "Fraser Surrey Docks",
+        "facility_type": "marine_terminals",
+        "operator": "DP World Fraser Surrey",
+        "terminal_type": "多用途綜合深水碼頭 (Multi-Purpose Marine Terminal)",
+        "cargo": "貨櫃、林木、鋼材、農產品、散裝乾貨",
+        "waterway": "Fraser River (Surrey)",
+        "berths": "4 個深水泊位",
+        "draught": "11.5 m",
+        "capacity": "加拿大西岸最大內河多用途國際深水碼頭",
+        "address": "11060 Elevator Rd, Surrey, BC V3V 2R8"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-122.9590, 49.1670]
+      },
+      "properties": {
+        "id": "terminal_annacis_auto",
+        "name": "Annacis Auto Terminal (安納西斯汽車滾裝碼頭)",
+        "name_en": "Annacis Auto Terminal",
+        "facility_type": "marine_terminals",
+        "operator": "Wallenius Wilhelmsen Solutions",
+        "terminal_type": "專業滾裝汽車進出口碼頭 (Ro-Ro Automotive Terminal)",
+        "cargo": "進口全新汽車 (加拿大近 100% 亞洲進口汽車第一入境港)",
+        "waterway": "Annacis Island, Fraser River (Delta)",
+        "berths": "2 個專業滾裝船 (Ro-Ro) 專用泊位",
+        "draught": "10.5 m",
+        "capacity": "每年處理逾 40 萬輛進口汽車",
+        "address": "101 Derwent Way, Delta, BC V3M 5P8"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.0825, 49.1945]
+      },
+      "properties": {
+        "id": "terminal_lantic_sugar",
+        "name": "Lantic Sugar Terminal (列治文精糖碼頭)",
+        "name_en": "Lantic Sugar Marine Terminal",
+        "facility_type": "marine_terminals",
+        "operator": "Lantic Inc. (Rogers Sugar)",
+        "terminal_type": "原糖散裝專用碼頭 (Raw Sugar Marine Terminal)",
+        "cargo": "國際遠洋原糖進口與加拿大西部食糖供應",
+        "waterway": "Fraser River (Richmond)",
+        "berths": "1 個原糖專用卸載泊位",
+        "draught": "9.8 m",
+        "capacity": "加拿大西部唯一大規模原糖煉糖海運碼頭",
+        "address": "12311 Mitchell Rd, Richmond, BC V6V 1T7"
+      }
+    }
+  ]
+}

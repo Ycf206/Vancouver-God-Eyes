@@ -48,7 +48,27 @@ class WeatherService:
         if self.cached_weather and (now - self.last_fetch_time < self.cache_ttl):
             return self.cached_weather
 
-        # 預設基準氣候數據（春秋季溫哥華典型氣候）
+        # 預設基準氣候數據（溫哥華典型氣候備援數據，確保前端永不讀取 undefined 造成白畫面）
+        default_hourly = []
+        for h in range(24):
+            default_hourly.append({
+                "time": f"{h:02d}:00",
+                "temp": 12 + (3 if 11 <= h <= 17 else 0),
+                "condition": "多雲",
+                "icon": "partly_cloudy",
+                "pop": 15
+            })
+
+        default_forecast = [
+            {"day": "今天", "date": "今天", "high": 16, "low": 10, "condition": "多雲時陰", "icon": "overcast", "pop": 20, "uv_index": 3},
+            {"day": "明天", "date": "明天", "high": 15, "low": 9, "condition": "短暫陽光", "icon": "partly_cloudy", "pop": 10, "uv_index": 4},
+            {"day": "後天", "date": "後天", "high": 14, "low": 8, "condition": "局部微雨", "icon": "rain_light", "pop": 40, "uv_index": 2},
+            {"day": "週五", "date": "週五", "high": 13, "low": 7, "condition": "間歇陣雨", "icon": "rain_moderate", "pop": 65, "uv_index": 2},
+            {"day": "週六", "date": "週六", "high": 14, "low": 8, "condition": "多雲轉晴", "icon": "partly_cloudy", "pop": 15, "uv_index": 3},
+            {"day": "週日", "date": "週日", "high": 16, "low": 9, "condition": "大致天晴", "icon": "mostly_sunny", "pop": 10, "uv_index": 4},
+            {"day": "週一", "date": "週一", "high": 15, "low": 9, "condition": "晴朗天晴", "icon": "sunny", "pop": 5, "uv_index": 4},
+        ]
+
         weather_data: Dict[str, Any] = {
             "city": "溫哥華",
             "city_en": "Vancouver",
@@ -62,6 +82,7 @@ class WeatherService:
             "humidity": 78,
             "pressure_kpa": 101.5,
             "visibility_km": 24.0,
+            "uv_index": 3,
             "source": "加拿大環境部 (api.weather.gc.ca)",
             "source_url": "https://api.weather.gc.ca/",
             "updated_at": datetime.now(timezone.utc).isoformat(),
@@ -71,11 +92,8 @@ class WeatherService:
                 "severity": "none",
                 "message": "大溫哥華地區目前無極端天氣預警，天候狀況良好。"
             },
-            "forecast": [
-                {"day": "今天", "high": 16, "low": 10, "condition": "多雲時陰", "icon": "overcast"},
-                {"day": "明天", "high": 15, "low": 9, "condition": "短暫陽光", "icon": "partly_cloudy"},
-                {"day": "後天", "high": 14, "low": 8, "condition": "局部微雨", "icon": "rain_light"}
-            ]
+            "hourly": default_hourly,
+            "forecast": default_forecast
         }
 
         # 1. 嘗試向 api.weather.gc.ca 查詢加拿大官方氣象警報
@@ -97,7 +115,7 @@ class WeatherService:
                         "message": desc[:200] + "..." if len(desc) > 200 else desc
                     }
                     eccc_success = True
-        except Exception as e:
+        except Exception:
             # 環境部 API 若因網路隔離或超時，平滑 fallback
             pass
 
@@ -124,44 +142,109 @@ class WeatherService:
         except Exception:
             pass
 
-        # 3. 輔以 Open-Meteo 獲取溫哥華完整預報與實況補充
+        # 3. 輔以 Open-Meteo 獲取溫哥華完整預報 (24 小時每小時 + 7 天逐日預報)
         try:
-            om_url = "https://api.open-meteo.com/v1/forecast?latitude=49.2827&longitude=-123.1207&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,surface_pressure&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=America%2FVancouver"
+            om_url = (
+                "https://api.open-meteo.com/v1/forecast?"
+                "latitude=49.2827&longitude=-123.1207&"
+                "current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,surface_pressure,uv_index&"
+                "hourly=temperature_2m,precipitation_probability,weather_code&"
+                "daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,uv_index_max&"
+                "timezone=America%2FVancouver&forecast_days=7"
+            )
             r_om = requests.get(om_url, timeout=4)
             if r_om.status_code == 200:
                 om_data = r_om.json()
                 current = om_data.get("current", {})
+                hourly = om_data.get("hourly", {})
                 daily = om_data.get("daily", {})
 
-                if "temperature_2m" in current:
+                if "temperature_2m" in current and not eccc_success:
                     weather_data["temperature"] = round(float(current["temperature_2m"]))
-                if "apparent_temperature" in current:
+                if "apparent_temperature" in current and not eccc_success:
                     weather_data["apparent_temperature"] = round(float(current["apparent_temperature"]))
-                if "relative_humidity_2m" in current:
+                if "relative_humidity_2m" in current and not eccc_success:
                     weather_data["humidity"] = round(float(current["relative_humidity_2m"]))
-                if "wind_speed_10m" in current:
+                if "wind_speed_10m" in current and not eccc_success:
                     weather_data["wind_speed_kmh"] = round(float(current["wind_speed_10m"]))
                 if "surface_pressure" in current:
                     weather_data["pressure_kpa"] = round(float(current["surface_pressure"]) / 10.0, 1)
+                if "uv_index" in current:
+                    weather_data["uv_index"] = round(float(current["uv_index"]), 1)
 
                 wmo_code = current.get("weather_code", 3)
                 cond_text, icon_key = self._map_wmo_code(wmo_code)
                 weather_data["condition"] = cond_text
                 weather_data["icon_type"] = icon_key
 
-                # 3 天天氣預報
+                # 解析未來 24 小時每小時預報
+                if hourly and "time" in hourly and "temperature_2m" in hourly:
+                    h_times = hourly.get("time", [])
+                    h_temps = hourly.get("temperature_2m", [])
+                    h_pops = hourly.get("precipitation_probability", [])
+                    h_codes = hourly.get("weather_code", [])
+
+                    now_iso = datetime.now().strftime("%Y-%m-%dT%H:00")
+                    start_idx = 0
+                    for idx, t in enumerate(h_times):
+                        if t >= now_iso:
+                            start_idx = idx
+                            break
+
+                    parsed_hourly = []
+                    end_idx = min(start_idx + 24, len(h_times))
+                    for i in range(start_idx, end_idx):
+                        t_str = h_times[i]
+                        hour_part = t_str.split("T")[1][:5] if "T" in t_str else t_str
+                        c_code = h_codes[i] if i < len(h_codes) else 2
+                        h_cond, h_icon = self._map_wmo_code(c_code)
+                        parsed_hourly.append({
+                            "time": "現在" if i == start_idx else hour_part,
+                            "temp": round(float(h_temps[i])) if i < len(h_temps) else 15,
+                            "condition": h_cond,
+                            "icon": h_icon,
+                            "pop": int(h_pops[i]) if i < len(h_pops) and h_pops[i] is not None else 0
+                        })
+                    if parsed_hourly:
+                        weather_data["hourly"] = parsed_hourly
+
+                # 解析未來 7 天逐日天氣預報
                 if daily and "temperature_2m_max" in daily:
                     forecast_list = []
-                    days_label = ["今天", "明天", "後天"]
-                    for idx in range(min(3, len(daily["temperature_2m_max"]))):
+                    daily_times = daily.get("time", [])
+                    weekday_labels = ["週一", "週二", "週三", "週四", "週五", "週六", "週日"]
+                    max_days = min(7, len(daily["temperature_2m_max"]))
+                    for idx in range(max_days):
                         d_code = daily.get("weather_code", [3])[idx]
                         d_cond, d_icon = self._map_wmo_code(d_code)
+                        d_max = round(daily["temperature_2m_max"][idx])
+                        d_min = round(daily["temperature_2m_min"][idx])
+                        d_pop = round(daily.get("precipitation_probability_max", [0])[idx] or 0)
+                        d_uv = round(daily.get("uv_index_max", [0])[idx] or 0)
+                        d_time = daily_times[idx] if idx < len(daily_times) else ""
+
+                        if idx == 0:
+                            day_name = "今天"
+                        elif idx == 1:
+                            day_name = "明天"
+                        elif idx == 2:
+                            day_name = "後天"
+                        else:
+                            try:
+                                dt = datetime.strptime(d_time, "%Y-%m-%d")
+                                day_name = weekday_labels[dt.weekday()]
+                            except Exception:
+                                day_name = f"+{idx}天"
+
                         forecast_list.append({
-                            "day": days_label[idx] if idx < len(days_label) else f"+{idx}天",
-                            "high": round(daily["temperature_2m_max"][idx]),
-                            "low": round(daily["temperature_2m_min"][idx]),
+                            "date": d_time,
+                            "day": day_name,
+                            "high": d_max,
+                            "low": d_min,
                             "condition": d_cond,
-                            "icon": d_icon
+                            "icon": d_icon,
+                            "pop": d_pop,
+                            "uv_index": d_uv
                         })
                     if forecast_list:
                         weather_data["forecast"] = forecast_list

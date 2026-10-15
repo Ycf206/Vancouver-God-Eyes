@@ -8,7 +8,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl, getWsUrl } from '@/utils/api';
 import { formatTimePreference } from '@/utils/time';
-import { LocateFixed, Train } from 'lucide-react';
+import { LocateFixed, Train, Compass } from 'lucide-react';
 
 // Fix Next.js App Router Web Worker crash
 if (typeof window !== 'undefined') {
@@ -1167,6 +1167,7 @@ export default function AppMap() {
     style.sources['local-area-boundary'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/local_area_boundary` };
     style.sources['fuel'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/fuel` };
     style.sources['tesla'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/tesla` };
+    style.sources['marine_terminals'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/marine_terminals` };
     style.sources['aed'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/aed` };
 
     // Bus Routes & Stops (Merged under busRoutes) - 當正在搜尋特定巴士路線或選中特定巴士時，只顯示該專屬路線，不繪製底圖全域 99 及 R1~R6 路線
@@ -1768,6 +1769,36 @@ export default function AppMap() {
       });
     }
 
+    // Maritime: Marine Terminals (溫哥華港口深水碼頭)
+    if (layers.marineTerminals) {
+      style.layers.push({
+        id: 'marine-terminals-layer',
+        type: 'circle',
+        source: 'marine_terminals',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 5, 13, 8.5, 15, 12, 17, 16],
+          'circle-color': '#0891b2',
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'marine-terminals-symbol-layer',
+        type: 'symbol',
+        source: 'marine_terminals',
+        minzoom: 11,
+        layout: {
+          'text-field': '⚓',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 11, 10, 14, 13, 17, 16],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+    }
+
     // Government Facilities: Hospitals & UPCC (醫療: 急診醫院與急症基層醫療中心)
     if (layers.hospitals) {
       style.layers.push({
@@ -2242,6 +2273,7 @@ export default function AppMap() {
     layers.localAreaBoundary,
     layers.fuel,
     layers.tesla,
+    layers.marineTerminals,
     contourInterval,
     mapStyleType
   ]);
@@ -2319,6 +2351,8 @@ export default function AppMap() {
           'fuel-symbol-layer',
           'tesla-layer',
           'tesla-symbol-layer',
+          'marine-terminals-layer',
+          'marine-terminals-symbol-layer',
           'contours-layer',
           'contours-label-layer'
         ]}
@@ -2418,6 +2452,7 @@ export default function AppMap() {
             layerId.startsWith('safety-cameras') ||
             layerId.startsWith('fuel') ||
             layerId.startsWith('tesla') ||
+            layerId.startsWith('marine-terminals') ||
             layerId.startsWith('fire-halls') ||
             layerId.startsWith('police') ||
             layerId.startsWith('disaster-hubs') ||
@@ -2437,11 +2472,12 @@ export default function AppMap() {
             const props = feature.properties || {};
             const isFuel = layerId.startsWith('fuel');
             const isTesla = layerId.startsWith('tesla');
+            const isMarineTerminal = layerId.startsWith('marine-terminals');
             setSelectedFacility({
               id: props.id || '',
-              facility_type: props.facility_type || (isFuel ? 'fuel' : (isTesla ? 'tesla' : '')),
-              name: props.name || props.brand || (isFuel ? '加油站' : (isTesla ? 'Tesla 站點' : '')),
-              local_area: props.local_area || props.address || props.city || '',
+              facility_type: props.facility_type || (isFuel ? 'fuel' : (isTesla ? 'tesla' : (isMarineTerminal ? 'marine_terminals' : ''))),
+              name: props.name || props.brand || (isFuel ? '加油站' : (isTesla ? 'Tesla 站點' : (isMarineTerminal ? '港口碼頭' : ''))),
+              local_area: props.waterway || props.local_area || props.address || props.city || '',
               lon: coords[0],
               lat: coords[1],
               properties: props
@@ -3642,19 +3678,20 @@ export default function AppMap() {
             offset={[0, -10]}
             maxWidth={
               selectedFacility.facility_type === 'traffic_cameras' ? '400px' : 
-              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla') ? '360px' : 
+              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals') ? '360px' : 
               '320px'
             }
           >
             <div className={`p-3.5 ${
               selectedFacility.facility_type === 'traffic_cameras' ? 'w-[360px]' : 
-              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla') ? 'w-[340px]' : 
+              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals') ? 'w-[340px]' : 
               'w-[290px]'
             } max-w-[90vw] text-gray-800`}>
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
                 <div className="flex items-center gap-2">
                   <span className={`w-3 h-3 rounded-full flex-shrink-0 ${
                     selectedFacility.facility_type === 'tesla' ? 'bg-red-600' :
+                    selectedFacility.facility_type === 'marine_terminals' ? 'bg-cyan-600' :
                     selectedFacility.facility_type === 'fuel' ? 'bg-amber-500' :
                     selectedFacility.facility_type === 'parking_meters' ? 'bg-amber-500' :
                     selectedFacility.facility_type === 'accessible_parking' ? 'bg-sky-500' :
@@ -3689,15 +3726,27 @@ export default function AppMap() {
                     )}
                   </div>
                 </div>
-                <button 
-                  onClick={() => {
-                    setSelectedFacility(null);
-                    setSearchTarget(null);
-                  }} 
-                  className="text-gray-400 hover:text-gray-700 text-2xl font-light leading-none px-1 py-0.5 rounded transition-colors focus:outline-none -mt-1"
-                >
-                  &times;
-                </button>
+                <div className="flex flex-col items-center gap-1 shrink-0 -mt-1 -mr-1">
+                  <button 
+                    onClick={() => {
+                      setSelectedFacility(null);
+                      setSearchTarget(null);
+                    }} 
+                    className="text-gray-400 hover:text-gray-700 text-2xl font-light leading-none px-1 py-0.5 rounded transition-colors focus:outline-none"
+                    title="關閉"
+                  >
+                    &times;
+                  </button>
+                  <a
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${selectedFacility.lat},${selectedFacility.lon}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-1 rounded-md text-sky-600 hover:text-sky-700 hover:bg-sky-50 transition-colors flex items-center justify-center shadow-sm border border-sky-100"
+                    title="Google 導航至此"
+                  >
+                    <Compass className="w-3.5 h-3.5" />
+                  </a>
+                </div>
               </div>
 
               {/* Parking Meters Details */}
@@ -5195,18 +5244,70 @@ export default function AppMap() {
                       💡 {selectedFacility.properties.notes}
                     </div>
                   )}
+                </div>
+              )}
 
-                  {/* Action: Navigation */}
-                  <div className="pt-1 border-t border-gray-100">
-                    <a
-                      href={`https://www.google.com/maps/dir/?api=1&destination=${selectedFacility.lat},${selectedFacility.lon}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full inline-flex items-center justify-center py-2 px-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium text-xs transition-colors shadow-sm gap-1.5"
-                    >
-                      <span>🗺️</span>
-                      <span>Google 導航至此站點</span>
-                    </a>
+              {/* Marine Terminals (港口碼頭) Details */}
+              {selectedFacility.facility_type === 'marine_terminals' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-cyan-500/10 p-2.5 rounded-lg border border-cyan-500/25 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-cyan-950 text-xs flex items-center gap-1.5">
+                        <span className="text-sm text-cyan-600 font-bold">⚓</span>
+                        <span>{selectedFacility.name}</span>
+                      </span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-cyan-700 text-white shrink-0">
+                        {selectedFacility.properties.terminal_type?.split('(')[0]?.trim() || '深水碼頭'}
+                      </span>
+                    </div>
+                    {selectedFacility.properties.waterway && (
+                      <div className="text-[11px] text-cyan-900 font-medium">
+                        🌊 水域位置：{selectedFacility.properties.waterway}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                    {selectedFacility.properties.operator && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>營運單位</span>
+                        <span className="font-bold text-gray-900 text-right truncate max-w-[190px]">
+                          {selectedFacility.properties.operator}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.cargo && (
+                      <div className="flex justify-between items-start text-gray-600 pt-1 border-t border-gray-100">
+                        <span className="shrink-0">主要貨類</span>
+                        <span className="font-semibold text-gray-800 text-right max-w-[190px]">
+                          {selectedFacility.properties.cargo}
+                        </span>
+                      </div>
+                    )}
+                    {(selectedFacility.properties.berths || selectedFacility.properties.draught) && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>泊位與水深</span>
+                        <span className="font-mono text-cyan-800 font-semibold text-right">
+                          {selectedFacility.properties.berths || ''} {selectedFacility.properties.draught ? `(吃水 ${selectedFacility.properties.draught})` : ''}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.capacity && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>年處理能力</span>
+                        <span className="font-medium text-emerald-700 text-right">
+                          {selectedFacility.properties.capacity}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.address && (
+                      <div className="flex justify-between items-center text-gray-500 text-[10.5px] pt-1 border-t border-gray-100">
+                        <span>碼頭地址</span>
+                        <span className="text-gray-700 text-right truncate max-w-[190px]">
+                          {selectedFacility.properties.address}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}

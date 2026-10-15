@@ -66,6 +66,7 @@ export interface UIState {
     fuel: boolean;
     tesla: boolean;
     maritimeShipping: boolean;
+    marineTerminals: boolean;
   };
   contourInterval: 'off' | '1m' | '2m' | '10m';
   setContourInterval: (interval: 'off' | '1m' | '2m' | '10m') => void;
@@ -73,6 +74,8 @@ export interface UIState {
   setTimeFormat: (format: '12h' | '24h') => void;
   distanceUnit: 'metric' | 'imperial';
   setDistanceUnit: (unit: 'metric' | 'imperial') => void;
+  temperatureUnit: 'celsius' | 'fahrenheit';
+  setTemperatureUnit: (unit: 'celsius' | 'fahrenheit') => void;
   userLocation: {
     address: string;
     displayName?: string;
@@ -167,11 +170,14 @@ export const useUIStore = create<UIState>()(
         fuel: false,
         tesla: false,
         maritimeShipping: true,
+        marineTerminals: true,
       },
       timeFormat: '24h',
       setTimeFormat: (format) => set({ timeFormat: format }),
       distanceUnit: 'metric',
       setDistanceUnit: (unit) => set({ distanceUnit: unit }),
+      temperatureUnit: 'celsius',
+      setTemperatureUnit: (unit) => set({ temperatureUnit: unit }),
       userLocation: null,
       setUserLocation: (loc) => set({ userLocation: loc }),
       isSettingsModalOpen: false,
@@ -194,6 +200,7 @@ export const useUIStore = create<UIState>()(
               (layer === 'airports' && st.category === 'airports') ||
               (layer === 'bcferriesTerminals' && st.category === 'ferry_terminal') ||
               (layer === 'bcferriesVehicles' && st.category === 'ferry_vehicle') ||
+              (layer === 'marineTerminals' && st.category === 'marine_terminals') ||
               (layer === 'skytrainRoutes' && st.category === 'skytrain') ||
               (layer === 'bus' && st.category === 'bus');
             if (isTargetMatch) {
@@ -236,6 +243,7 @@ export const useUIStore = create<UIState>()(
         contourInterval: state.contourInterval,
         timeFormat: state.timeFormat,
         distanceUnit: state.distanceUnit,
+        temperatureUnit: state.temperatureUnit,
         userLocation: state.userLocation,
       }),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -247,6 +255,7 @@ export const useUIStore = create<UIState>()(
           contourInterval,
           timeFormat: persistedState?.timeFormat || '24h',
           distanceUnit: persistedState?.distanceUnit || 'metric',
+          temperatureUnit: persistedState?.temperatureUnit || 'celsius',
           userLocation: persistedState?.userLocation || null,
           layers: {
             ...currentState.layers,
@@ -254,6 +263,7 @@ export const useUIStore = create<UIState>()(
             contours: contourInterval !== 'off',
             localAreaBoundary: persistedState?.layers?.localAreaBoundary || false,
             fuel: persistedState?.layers?.fuel || false,
+            marineTerminals: persistedState?.layers?.marineTerminals ?? true,
           },
         };
       },

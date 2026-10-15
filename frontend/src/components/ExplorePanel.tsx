@@ -8,6 +8,25 @@ import {
 import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
 
+interface WeatherHourlyItem {
+  time: string;
+  temp: number;
+  condition: string;
+  icon: string;
+  pop: number;
+}
+
+interface WeatherDailyItem {
+  day: string;
+  date?: string;
+  high: number;
+  low: number;
+  condition: string;
+  icon: string;
+  pop?: number;
+  uv_index?: number;
+}
+
 interface WeatherData {
   city: string;
   city_en: string;
@@ -21,6 +40,7 @@ interface WeatherData {
   humidity: number;
   pressure_kpa: number;
   visibility_km: number;
+  uv_index?: number;
   source: string;
   source_url: string;
   updated_at: string;
@@ -30,13 +50,8 @@ interface WeatherData {
     severity: string;
     message: string;
   };
-  forecast?: Array<{
-    day: string;
-    high: number;
-    low: number;
-    condition: string;
-    icon: string;
-  }>;
+  hourly?: WeatherHourlyItem[];
+  forecast?: WeatherDailyItem[];
 }
 
 interface MaritimeVessel {
@@ -133,9 +148,63 @@ export default function ExplorePanel() {
     userLocation, 
     setSettingsModalOpen,
     distanceUnit,
+    temperatureUnit,
     setSearchTarget,
     enableLayer
   } = useUIStore();
+
+  // 氣溫單位轉換輔助函式
+  const formatTemp = (celsius?: number | null) => {
+    if (celsius === undefined || celsius === null || isNaN(celsius)) return '--';
+    if (temperatureUnit === 'fahrenheit') {
+      return `${Math.round((celsius * 9) / 5 + 32)}°F`;
+    }
+    return `${Math.round(celsius)}°C`;
+  };
+
+  const formatTempNumber = (celsius?: number | null) => {
+    if (celsius === undefined || celsius === null || isNaN(celsius)) return '--';
+    if (temperatureUnit === 'fahrenheit') {
+      return Math.round((celsius * 9) / 5 + 32);
+    }
+    return Math.round(celsius);
+  };
+
+  const renderWeatherMiniIcon = (iconType: string) => {
+    if (iconType === 'sunny') {
+      return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-400">
+          <circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>
+        </svg>
+      );
+    }
+    if (iconType?.includes('rain') || iconType === 'drizzle') {
+      return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sky-400">
+          <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M16 14v6"/><path d="M8 14v6"/><path d="M12 16v6"/>
+        </svg>
+      );
+    }
+    if (iconType?.includes('thunder')) {
+      return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-300">
+          <path d="M19 16.9A5 5 0 0 0 18 7h-1.26a8 8 0 1 0-11.62 9"/><path d="m13 11-4 6h6l-4 6"/>
+        </svg>
+      );
+    }
+    if (iconType?.includes('snow')) {
+      return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-cyan-200">
+          <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M8 15h.01"/><path d="M8 19h.01"/><path d="M12 17h.01"/><path d="M12 21h.01"/><path d="M16 15h.01"/><path d="M16 19h.01"/>
+        </svg>
+      );
+    }
+    return (
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sky-200">
+        <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
+      </svg>
+    );
+  };
 
   // 分頁：天氣, 渡輪, 燃油, 電動車, 貨運
   const [activeTab, setActiveTab] = useState<'weather' | 'ferry' | 'fuel' | 'ev' | 'cargo'>('weather');
@@ -165,20 +234,79 @@ export default function ExplorePanel() {
   const [ferryRoutes, setFerryRoutes] = useState<FerryRoute[]>([]);
   const [loadingFerries, setLoadingFerries] = useState(false);
 
-  // 0. Fetch Weather from ECCC
+  // 0. Fetch Weather from ECCC / Open-Meteo
   useEffect(() => {
     if (!isExploreOpen || activeTab !== 'weather') return;
 
     setLoadingWeather(true);
     const apiUrl = getApiUrl();
     fetch(`${apiUrl}/api/weather/current`)
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
       .then((data) => {
-        setWeather(data);
+        if (data && typeof data === 'object') {
+          data.alert = data.alert || {
+            has_alert: false,
+            title: '加拿大環境部警告',
+            severity: 'none',
+            message: '大溫哥華地區目前無極端天氣預警，天候狀況良好。'
+          };
+          setWeather(data);
+        }
         setLoadingWeather(false);
       })
       .catch((err) => {
         console.error('Error fetching weather:', err);
+        // 設定安全的預設天氣對象，防止白畫面崩潰
+        setWeather((prev) => prev || {
+          city: '溫哥華',
+          city_en: 'Vancouver',
+          region: '大溫哥華 (Metro Vancouver)',
+          temperature: 15,
+          apparent_temperature: 15,
+          condition: '密雲',
+          icon_type: 'overcast',
+          wind_speed_kmh: 8,
+          wind_direction: '西微風',
+          humidity: 78,
+          pressure_kpa: 101.5,
+          visibility_km: 24.0,
+          uv_index: 3,
+          source: '加拿大環境部 (api.weather.gc.ca)',
+          source_url: 'https://api.weather.gc.ca/',
+          updated_at: new Date().toISOString(),
+          alert: {
+            has_alert: false,
+            title: '加拿大環境部警告',
+            severity: 'none',
+            message: '大溫哥華地區目前無極端天氣預警，天候狀況良好。'
+          },
+          hourly: [
+            { time: '現在', temp: 15, condition: '多雲', icon: 'partly_cloudy', pop: 10 },
+            { time: '21:00', temp: 14, condition: '多雲', icon: 'partly_cloudy', pop: 10 },
+            { time: '22:00', temp: 13, condition: '密雲', icon: 'overcast', pop: 15 },
+            { time: '23:00', temp: 13, condition: '多雲', icon: 'partly_cloudy', pop: 20 },
+            { time: '00:00', temp: 12, condition: '多雲', icon: 'partly_cloudy', pop: 10 },
+            { time: '01:00', temp: 11, condition: '大致天晴', icon: 'mostly_sunny', pop: 5 },
+            { time: '02:00', temp: 11, condition: '晴天', icon: 'sunny', pop: 0 },
+            { time: '03:00', temp: 10, condition: '晴天', icon: 'sunny', pop: 0 },
+            { time: '04:00', temp: 10, condition: '晴天', icon: 'sunny', pop: 0 },
+            { time: '05:00', temp: 10, condition: '多雲', icon: 'partly_cloudy', pop: 10 },
+            { time: '06:00', temp: 11, condition: '多雲', icon: 'partly_cloudy', pop: 10 },
+            { time: '07:00', temp: 12, condition: '短暫陽光', icon: 'mostly_sunny', pop: 10 },
+          ],
+          forecast: [
+            { day: '今天', high: 16, low: 10, condition: '多雲時陰', icon: 'overcast', pop: 20 },
+            { day: '明天', high: 15, low: 9, condition: '短暫陽光', icon: 'partly_cloudy', pop: 10 },
+            { day: '後天', high: 14, low: 8, condition: '局部微雨', icon: 'rain_light', pop: 40 },
+            { day: '週五', high: 13, low: 7, condition: '間歇陣雨', icon: 'rain_moderate', pop: 60 },
+            { day: '週六', high: 14, low: 8, condition: '多雲轉晴', icon: 'partly_cloudy', pop: 15 },
+            { day: '週日', high: 16, low: 9, condition: '大致天晴', icon: 'mostly_sunny', pop: 10 },
+            { day: '週一', high: 15, low: 9, condition: '晴朗天晴', icon: 'sunny', pop: 5 },
+          ]
+        });
         setLoadingWeather(false);
       });
   }, [isExploreOpen, activeTab]);
@@ -506,12 +634,12 @@ export default function ExplorePanel() {
                   {/* 氣溫與體感數值 */}
                   <div className="flex flex-col">
                     <div className="text-4xl font-extrabold text-white tracking-tight leading-none">
-                      {weather.temperature}°C
+                      {formatTemp(weather.temperature)}
                     </div>
                     <div className="text-sm font-medium text-gray-200 mt-1.5 flex items-center gap-1.5">
                       <span>{weather.condition}</span>
                       <span>·</span>
-                      <span>體感 {weather.apparent_temperature}°C</span>
+                      <span>體感 {formatTemp(weather.apparent_temperature)}</span>
                     </div>
                     <div className="text-xs text-gray-400 mt-1 flex items-center gap-1">
                       <Wind className="w-3.5 h-3.5 text-sky-400 shrink-0" />
@@ -533,7 +661,7 @@ export default function ExplorePanel() {
                   <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
                   <span>加拿大環境部警告</span>
                 </h4>
-                {weather.alert.has_alert ? (
+                {weather?.alert?.has_alert ? (
                   <div className="flex flex-col gap-1">
                     <span className="text-xs font-semibold text-amber-300">{weather.alert.title}</span>
                     <p className="text-xs text-amber-200/90 leading-relaxed">{weather.alert.message}</p>
@@ -570,19 +698,76 @@ export default function ExplorePanel() {
                 </div>
               </div>
 
-              {/* 天氣趨勢預報 */}
+              {/* 24 小時每小時天氣預報 (橫向滑動卡片) */}
+              {weather.hourly && weather.hourly.length > 0 && (
+                <div className="flex flex-col gap-1.5 mt-0.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold text-gray-300">24 小時每小時預報</span>
+                    <span className="text-[10px] text-gray-500 font-mono">橫向滑動 ❯</span>
+                  </div>
+                  <div className="flex items-center gap-2 overflow-x-auto pb-1.5 pt-0.5 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2c3244] [&::-webkit-scrollbar-thumb]:rounded-full">
+                    {weather.hourly.map((h, idx) => (
+                      <div 
+                        key={idx} 
+                        className={`shrink-0 w-[64px] py-2 px-1.5 rounded-lg border flex flex-col items-center justify-between text-center transition-all ${
+                          idx === 0 
+                            ? 'bg-sky-950/40 border-sky-500/40 text-white shadow-sm ring-1 ring-sky-500/30' 
+                            : 'bg-[#12151e] border-[#252b3a] text-gray-300'
+                        }`}
+                      >
+                        <span className="text-[10.5px] font-medium text-gray-400 font-mono">{h.time}</span>
+                        <div className="my-1.5 text-sky-300 flex items-center justify-center">
+                          {renderWeatherMiniIcon(h.icon)}
+                        </div>
+                        <span className="text-xs font-bold text-gray-100">{formatTemp(h.temp)}</span>
+                        {h.pop > 0 ? (
+                          <span className="text-[9.5px] text-cyan-400 font-mono mt-0.5 flex items-center gap-0.5">
+                            💧{h.pop}%
+                          </span>
+                        ) : (
+                          <span className="text-[9.5px] text-gray-500 font-mono mt-0.5">--</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* 未來 7 日天氣預報 */}
               {weather.forecast && weather.forecast.length > 0 && (
                 <div className="flex flex-col gap-1.5 mt-1">
-                  <span className="text-[11px] font-semibold text-gray-400">未來 3 日天氣預報</span>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold text-gray-300">未來 7 日天氣預報</span>
+                    <span className="text-[10px] text-gray-500">最高 / 最低溫</span>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
                     {weather.forecast.map((fc, idx) => (
-                      <div key={idx} className="bg-[#141722] border border-[#252b3a] p-2 rounded-lg flex flex-col items-center text-center">
-                        <span className="text-[11px] font-medium text-gray-300">{fc.day}</span>
-                        <span className="text-xs font-semibold text-gray-200 mt-1">{fc.condition}</span>
-                        <div className="text-[11px] font-mono mt-1 flex items-center gap-1 text-gray-400">
-                          <span className="text-rose-400 font-bold">{fc.high}°</span>
-                          <span>/</span>
-                          <span className="text-sky-400 font-bold">{fc.low}°</span>
+                      <div 
+                        key={idx} 
+                        className="bg-[#12151e] border border-[#232838] px-3 py-2 rounded-lg flex items-center justify-between text-xs hover:border-[#333b4e] transition-colors"
+                      >
+                        <div className="flex items-center gap-2.5 min-w-[70px]">
+                          <span className={`font-semibold ${idx === 0 ? 'text-sky-400 font-bold' : 'text-gray-200'}`}>
+                            {fc.day}
+                          </span>
+                          {fc.pop != null && fc.pop > 20 && (
+                            <span className="text-[10px] text-cyan-400 font-mono">
+                              💧{fc.pop}%
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <div className="w-5 h-5 flex items-center justify-center text-sky-300 shrink-0">
+                            {renderWeatherMiniIcon(fc.icon)}
+                          </div>
+                          <span className="text-gray-300 text-xs w-[68px] truncate">{fc.condition}</span>
+                        </div>
+
+                        <div className="text-xs font-mono flex items-center gap-1.5 justify-end min-w-[75px]">
+                          <span className="text-rose-400 font-bold">{formatTempNumber(fc.high)}°</span>
+                          <span className="text-gray-600">/</span>
+                          <span className="text-sky-400 font-bold">{formatTempNumber(fc.low)}°</span>
                         </div>
                       </div>
                     ))}
@@ -1009,7 +1194,7 @@ export default function ExplorePanel() {
       {/* Footer */}
       <div className="mt-3 pt-2.5 border-t border-[#262b38] flex items-center justify-between text-[11px] text-gray-400 shrink-0">
         <span className="font-mono text-[10px]">
-          {activeTab === 'weather' && (weather ? `${weather.city} · ${weather.condition} · ${weather.temperature}°C` : '加拿大環境部氣象數據')}
+          {activeTab === 'weather' && (weather ? `${weather.city} · ${weather.condition} · ${formatTemp(weather.temperature)}` : '加拿大環境部氣象數據')}
           {activeTab === 'fuel' && `共收錄 ${filteredFuelStations.length} 間加油站`}
           {activeTab === 'ev' && `共收錄 ${evStations.length} 座充電站`}
           {activeTab === 'ferry' && `共 ${ferryRoutes.reduce((acc, r) => acc + r.vessels.length, 0)} 艘渡輪即時航行中`}

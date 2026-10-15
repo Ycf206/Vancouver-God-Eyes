@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Settings, X, Clock, Ruler, Check, MapPin, Navigation, Search, AlertCircle, RefreshCw } from 'lucide-react';
+import { Settings, X, Clock, Ruler, Thermometer, Check, MapPin, Navigation, Search, AlertCircle, RefreshCw } from 'lucide-react';
 import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
 
@@ -13,6 +13,8 @@ export default function SettingsModal() {
     setTimeFormat, 
     distanceUnit, 
     setDistanceUnit,
+    temperatureUnit,
+    setTemperatureUnit,
     userLocation,
     setUserLocation,
     setSearchTarget
@@ -393,6 +395,57 @@ export default function SettingsModal() {
               </div>
               {distanceUnit === 'imperial' && (
                 <Check className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+              )}
+            </button>
+          </div>
+        </div>
+
+        <div className="w-full h-px bg-[#26282d]"></div>
+
+        {/* Setting 4: 氣溫單位 (Temperature Unit) */}
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <label className="text-xs font-bold text-gray-200 flex items-center gap-1.5">
+              <Thermometer className="w-3.5 h-3.5 text-amber-400" />
+              <span>氣溫單位 (Temperature Unit)</span>
+            </label>
+            <span className="text-[10px] text-gray-400">探索面板天氣顯示</span>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => setTemperatureUnit('celsius')}
+              className={`flex items-center justify-between p-2.5 rounded-lg border text-left transition-all ${
+                temperatureUnit === 'celsius'
+                  ? 'bg-amber-950/50 border-amber-500 text-white shadow-[0_0_8px_rgba(245,158,11,0.2)] ring-1 ring-amber-500/50'
+                  : 'bg-[#1a1e28] border-[#2c3242] text-gray-300 hover:bg-[#232938] hover:text-white'
+              }`}
+            >
+              <div>
+                <div className="text-xs font-bold">攝氏度 (°C)</div>
+                <div className="text-[10px] text-gray-400 font-mono mt-0.5">加拿大標準單位</div>
+              </div>
+              {temperatureUnit === 'celsius' && (
+                <Check className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setTemperatureUnit('fahrenheit')}
+              className={`flex items-center justify-between p-2.5 rounded-lg border text-left transition-all ${
+                temperatureUnit === 'fahrenheit'
+                  ? 'bg-amber-950/50 border-amber-500 text-white shadow-[0_0_8px_rgba(245,158,11,0.2)] ring-1 ring-amber-500/50'
+                  : 'bg-[#1a1e28] border-[#2c3242] text-gray-300 hover:bg-[#232938] hover:text-white'
+              }`}
+            >
+              <div>
+                <div className="text-xs font-bold">華氏度 (°F)</div>
+                <div className="text-[10px] text-gray-400 font-mono mt-0.5">美制常用單位</div>
+              </div>
+              {temperatureUnit === 'fahrenheit' && (
+                <Check className="w-3.5 h-3.5 text-amber-400 shrink-0" />
               )}
             </button>
           </div>
