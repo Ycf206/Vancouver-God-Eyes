@@ -18,6 +18,7 @@ export default function TopBar() {
     toggleLayerPanel,
     timeFormat,
     setSettingsModalOpen,
+    isExploreOpen,
     toggleExplore
   } = useUIStore();
   const [time, setTime] = useState<Date | null>(null);
@@ -254,40 +255,49 @@ export default function TopBar() {
         {/* 探索按鈕 (位於搜尋欄右方、贊助支持左方) */}
         <button 
           onClick={toggleExplore}
-          className="flex items-center justify-center group h-9 px-2.5 bg-[#25262b] hover:bg-[#2c2d33] border border-[#373a40] hover:border-emerald-500/50 rounded-md transition-all shadow-sm text-gray-300 hover:text-emerald-400 text-xs font-semibold"
-          title="探索Vancouver"
+          className={`flex items-center justify-center group h-9 px-2.5 bg-[#25262b] hover:bg-[#2c2d33] border rounded-md transition-all shadow-sm text-xs font-semibold select-none ${
+            isExploreOpen 
+              ? 'border-emerald-500/80 text-emerald-400 bg-[#2c2d33]' 
+              : 'border-[#373a40] text-gray-300 hover:border-emerald-500/50 hover:text-emerald-400'
+          }`}
         >
           <Compass className="w-4 h-4 text-emerald-400/80 group-hover:text-emerald-400 group-hover:rotate-45 transition-transform shrink-0" />
-          <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[140px] group-hover:opacity-100 group-hover:ml-1.5 transition-all duration-300 whitespace-nowrap hidden sm:inline">
-            探索Vancouver
+          <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[80px] group-hover:opacity-100 group-hover:ml-1.5 transition-all duration-300 whitespace-nowrap hidden sm:inline">
+            探索
           </span>
         </button>
 
         {/* 贊助支持按鈕 (愛心圖示，位於回報問題左側) */}
         <button 
           onClick={() => setIsDonateModalOpen(true)}
-          className="flex items-center justify-center w-10 h-9 bg-[#25262b] hover:bg-[#2c2d33] border border-[#373a40] hover:border-rose-500/50 rounded-md transition-colors group shadow-sm text-gray-300 hover:text-rose-400" 
-          title="贊助支持"
+          className="flex items-center justify-center group h-9 px-2.5 bg-[#25262b] hover:bg-[#2c2d33] border border-[#373a40] hover:border-rose-500/50 rounded-md transition-all shadow-sm text-gray-300 hover:text-rose-400 text-xs font-semibold select-none" 
         >
-          <Heart className="w-4 h-4 text-rose-400/80 group-hover:text-rose-400 group-hover:scale-110 transition-transform fill-rose-500/20" />
+          <Heart className="w-4 h-4 text-rose-400/80 group-hover:text-rose-400 group-hover:scale-110 transition-transform fill-rose-500/20 shrink-0" />
+          <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[80px] group-hover:opacity-100 group-hover:ml-1.5 transition-all duration-300 whitespace-nowrap hidden sm:inline">
+            贊助
+          </span>
         </button>
 
         {/* 回報問題按鈕 */}
         <button 
           onClick={() => setIsReportModalOpen(true)}
-          className="flex items-center justify-center w-10 h-9 bg-[#25262b] hover:bg-[#2c2d33] border border-[#373a40] hover:border-amber-500/50 rounded-md transition-colors group shadow-sm text-gray-300 hover:text-amber-400" 
-          title="回報問題"
+          className="flex items-center justify-center group h-9 px-2.5 bg-[#25262b] hover:bg-[#2c2d33] border border-[#373a40] hover:border-amber-500/50 rounded-md transition-all shadow-sm text-gray-300 hover:text-amber-400 text-xs font-semibold select-none" 
         >
-          <AlertCircle className="w-4 h-4 transition-colors group-hover:scale-110" />
+          <AlertCircle className="w-4 h-4 text-amber-400/80 group-hover:text-amber-400 group-hover:scale-110 transition-transform shrink-0" />
+          <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[100px] group-hover:opacity-100 group-hover:ml-1.5 transition-all duration-300 whitespace-nowrap hidden sm:inline">
+            回報問題
+          </span>
         </button>
 
         {/* 設定按鈕 (點擊開啟設定版面) */}
         <button 
           onClick={() => setSettingsModalOpen(true)}
-          className="flex items-center justify-center w-10 h-9 bg-[#25262b] hover:bg-[#2c2d33] border border-[#373a40] hover:border-emerald-500/50 rounded-md transition-colors group shadow-sm text-gray-300 hover:text-emerald-400" 
-          title="偏好設定"
+          className="flex items-center justify-center group h-9 px-2.5 bg-[#25262b] hover:bg-[#2c2d33] border border-[#373a40] hover:border-emerald-500/50 rounded-md transition-all shadow-sm text-gray-300 hover:text-emerald-400 text-xs font-semibold select-none" 
         >
-          <Settings className="w-4 h-4 transition-transform group-hover:rotate-45" />
+          <Settings className="w-4 h-4 text-gray-400 group-hover:text-emerald-400 group-hover:rotate-45 transition-transform shrink-0" />
+          <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[80px] group-hover:opacity-100 group-hover:ml-1.5 transition-all duration-300 whitespace-nowrap hidden sm:inline">
+            設定
+          </span>
         </button>
       </div>
 

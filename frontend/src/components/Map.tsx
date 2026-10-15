@@ -4906,7 +4906,6 @@ export default function AppMap() {
             });
           }}
           className="group relative flex items-center justify-center w-[29px] h-[29px] bg-[#161922]/95 hover:bg-[#202533] text-gray-200 hover:text-white rounded border border-[#2d3448] shadow-md backdrop-blur-md transition-all hover:border-emerald-500/60 hover:shadow-[0_0_10px_rgba(16,185,129,0.25)] active:scale-95 cursor-pointer"
-          title="重設地圖顯示視角至溫哥華地區"
         >
           <LocateFixed className="w-4 h-4 text-emerald-400 group-hover:rotate-90 transition-transform duration-300 shrink-0" />
           <span className="pointer-events-none absolute right-[36px] top-1/2 -translate-y-1/2 px-2 py-1 bg-[#10131a]/95 text-white text-[11px] font-medium rounded border border-[#262b3a] shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
