@@ -26,7 +26,7 @@ jobs:
         run: |
           pip install requests
 
-      - name: Run Open Data Update Script (10 Datasets incl. Bikeways 單車徑)
+      - name: Run Open Data Update Script (11 Datasets incl. One-Way Streets 單程路 & Bikeways 單車徑)
         run: |
           python backend/scripts/update_open_data.py
 
@@ -39,7 +39,7 @@ jobs:
             echo "No dataset updates detected from Vancouver Open Data API."
             echo "has_changes=false" >> $GITHUB_OUTPUT
           else
-            git commit -m "chore(data): auto-update semi-annual open datasets incl. bikeways (6-month cron) [skip ci]"
+            git commit -m "chore(data): auto-update semi-annual open datasets incl. one-way streets & bikeways (6-month cron) [skip ci]"
             git push origin main
             echo "has_changes=true" >> $GITHUB_OUTPUT
           fi

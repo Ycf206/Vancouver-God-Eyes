@@ -574,6 +574,64 @@ def update_bikeways():
 
     save_geojson("vancouver_bikeways", features)
 
+def update_one_way_streets():
+    """Fetches Vancouver One-Way Streets (單程路) dataset from Vancouver Open Data v2.1 API."""
+    records = fetch_all_records("one-way-streets")
+    features = []
+
+    street_use_map_zh = {
+        "Arterial": "主要幹道 (Arterial)",
+        "Secondary Arterial": "次要幹道 (Secondary Arterial)",
+        "Collector": "集散道路 (Collector)",
+        "Residential": "住宅區道路 (Residential)",
+        "Alley": "後巷/巷道 (Alley)"
+    }
+
+    for idx, r in enumerate(records):
+        geom_wrapper = r.get("geom") or {}
+        if isinstance(geom_wrapper, dict) and geom_wrapper.get("type") == "Feature":
+            geom = geom_wrapper.get("geometry")
+        else:
+            geom = geom_wrapper if isinstance(geom_wrapper, dict) else None
+
+        if not geom or geom.get("type") not in ("LineString", "MultiLineString"):
+            continue
+
+        raw_coords = geom.get("coordinates")
+        if not raw_coords:
+            continue
+
+        hblock = (r.get("hblock") or "").strip()
+        streetuse = (r.get("streetuse") or "Arterial").strip()
+        streetuse_zh = street_use_map_zh.get(streetuse, streetuse)
+        gp = r.get("geo_point_2d") or {}
+        center_lon = gp.get("lon")
+        center_lat = gp.get("lat")
+        feat_id = f"oneway_{idx + 1}"
+
+        features.append({
+            "type": "Feature",
+            "id": feat_id,
+            "properties": {
+                "id": feat_id,
+                "facility_type": "one_way_streets",
+                "hblock": hblock or "溫哥華單程路段",
+                "name": hblock or "單向通行路段",
+                "streetuse": streetuse,
+                "streetuse_zh": streetuse_zh,
+                "geo_point_2d": {
+                    "lon": round(float(center_lon), 5) if center_lon is not None else None,
+                    "lat": round(float(center_lat), 5) if center_lat is not None else None
+                }
+            },
+            "geometry": {
+                "type": geom["type"],
+                "coordinates": _round_coords(raw_coords)
+            }
+        })
+
+    save_geojson("vancouver_one_way_streets", features)
+
 def run_all_updates():
     start_time = datetime.now(timezone.utc)
     print("=" * 60)
@@ -610,6 +668,9 @@ def run_all_updates():
 
     # 10. Bikeways (LineString)
     update_bikeways()
+
+    # 11. One-Way Streets (LineString, 每6個月更新)
+    update_one_way_streets()
     
     # Record metadata
     meta_path = os.path.join(BACKEND_DATA_DIR, "last_open_data_update.json")
@@ -621,13 +682,13 @@ def run_all_updates():
                 "parks", "parks_facilities", "community_gardens", 
                 "drinking_fountains", "public_washrooms",
                 "schools", "libraries", "food_vendors", "homeless_shelters",
-                "bikeways"
+                "bikeways", "one_way_streets"
             ]
         }, f, indent=2)
         
     duration = (datetime.now(timezone.utc) - start_time).total_seconds()
     print("=" * 60)
-    print(f"🎉 All 10 datasets successfully refreshed in {duration:.1f}s!")
+    print(f"🎉 All 11 datasets successfully refreshed in {duration:.1f}s!")
     print("=" * 60)
 
 if __name__ == "__main__":

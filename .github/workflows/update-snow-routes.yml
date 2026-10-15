@@ -1,0 +1,59 @@
+name: Annual Snow Removal Routes Cron Update (每年更新1次)
+
+on:
+  schedule:
+    # 每年 11 月 1 日 03:00 UTC (冬季除雪季前夕) 自動執行 (每年 1 次)
+    - cron: '0 3 1 11 *'
+  workflow_dispatch: # 支援在 GitHub 網頁介面一鍵手動觸發立即更新
+
+jobs:
+  update-snow-routes:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install requests
+
+      - name: Run Snow Removal Routes Update Script (每年更新1次)
+        run: |
+          python backend/scripts/update_snow_routes.py
+
+      - name: Commit and Push Updated Snow Routes GeoJSON
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add backend/data/vancouver_snow_removal_routes.geojson frontend/public/vancouver_snow_removal_routes.geojson backend/data/last_snow_routes_update.json
+          if git diff --staged --quiet; then
+            echo "No snow removal route updates detected from Vancouver Open Data API."
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            git commit -m "chore(data): auto-update annual snow removal routes (1-year cron) [skip ci]"
+            git push origin main
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+        id: git_push
+
+      - name: Sync Updated GeoJSON to OCI VM
+        if: steps.git_push.outputs.has_changes == 'true'
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.OCI_HOST_IP }}
+          username: ubuntu
+          key: ${{ secrets.OCI_SSH_KEY }}
+          script: |
+            echo "🔄 同步最新鏟雪路線 GeoJSON 資料至 OCI 伺服器..."
+            cd ~/Vancouver-God-Eyes || cd ~/vancouver-gods-eye
+            git pull
+            echo "✅ OCI 伺服器資料檔案同步完成！"

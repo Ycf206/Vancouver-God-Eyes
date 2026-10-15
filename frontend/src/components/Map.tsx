@@ -1168,6 +1168,7 @@ export default function AppMap() {
     style.sources['fuel'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/fuel` };
     style.sources['tesla'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/tesla` };
     style.sources['one_way_streets'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/one_way_streets` };
+    style.sources['snow_removal_routes'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/snow_removal_routes` };
     style.sources['marine_terminals'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/marine_terminals` };
     style.sources['aed'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/aed` };
 
@@ -1363,6 +1364,68 @@ export default function AppMap() {
           'text-color': '#111827',
           'text-halo-color': '#fbbf24',
           'text-halo-width': 1.5
+        }
+      });
+    }
+
+    // Road Facilities: Snow Removal Routes (鏟雪路線 LineString / MultiLineString with Ice Blue Styling)
+    if (layers.snowRemovalRoutes) {
+      style.layers.push({
+        id: 'snow-removal-routes-casing-layer',
+        type: 'line',
+        source: 'snow_removal_routes',
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        paint: {
+          'line-color': '#082f49',
+          'line-width': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 17, 7.5],
+          'line-opacity': 0.85
+        }
+      });
+      style.layers.push({
+        id: 'snow-removal-routes-layer',
+        type: 'line',
+        source: 'snow_removal_routes',
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        paint: {
+          'line-color': [
+            'case',
+            ['==', ['get', 'priority'], 1], '#0284c7',
+            '#38bdf8'
+          ],
+          'line-width': [
+            'case',
+            ['==', ['get', 'priority'], 1],
+            ['interpolate', ['linear'], ['zoom'], 11, 2.0, 14, 3.8, 17, 6.0],
+            ['interpolate', ['linear'], ['zoom'], 11, 1.4, 14, 2.6, 17, 4.5]
+          ],
+          'line-opacity': 0.95
+        }
+      });
+      style.layers.push({
+        id: 'snow-removal-routes-label-layer',
+        type: 'symbol',
+        source: 'snow_removal_routes',
+        minzoom: 13,
+        layout: {
+          'symbol-placement': 'line',
+          'symbol-spacing': 200,
+          'text-field': ['concat', '❄️ ', ['get', 'name']],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 9, 15, 11, 17, 13],
+          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+          'text-keep-upright': true,
+          'text-allow-overlap': false,
+          'text-ignore-placement': false
+        },
+        paint: {
+          'text-color': '#0369a1',
+          'text-halo-color': '#f0f9ff',
+          'text-halo-width': 2.0
         }
       });
     }
@@ -2408,6 +2471,7 @@ export default function AppMap() {
           'marine-terminals-layer',
           'marine-terminals-symbol-layer',
           'one-way-streets-layer',
+          'snow-removal-routes-layer',
           'contours-layer',
           'contours-label-layer'
         ]}
@@ -2491,6 +2555,20 @@ export default function AppMap() {
               facility_type: 'one_way_streets',
               name: props.hblock || '單程路',
               local_area: '溫哥華單向道路管制',
+              lon: clickLon,
+              lat: clickLat,
+              properties: props
+            });
+          } else if (layerId === 'snow-removal-routes-layer' || layerId === 'snow-removal-routes-casing-layer' || layerId === 'snow-removal-routes-label-layer') {
+            setSelectedStop(null);
+            const props = feature.properties || {};
+            const clickLon = e.lngLat?.lng ?? -123.1207;
+            const clickLat = e.lngLat?.lat ?? 49.2827;
+            setSelectedFacility({
+              id: props.object_id ? `snow_${props.object_id}` : `snow_${clickLon}_${clickLat}`,
+              facility_type: 'snow_removal_routes',
+              name: props.name || '鏟雪優先路線',
+              local_area: '溫哥華冬季鏟雪與除冰路網',
               lon: clickLon,
               lat: clickLat,
               properties: props
@@ -3747,13 +3825,13 @@ export default function AppMap() {
             offset={[0, -10]}
             maxWidth={
               selectedFacility.facility_type === 'traffic_cameras' ? '400px' : 
-              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets') ? '360px' : 
+              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes') ? '360px' : 
               '320px'
             }
           >
             <div className={`p-3.5 ${
               selectedFacility.facility_type === 'traffic_cameras' ? 'w-[360px]' : 
-              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets') ? 'w-[340px]' : 
+              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes') ? 'w-[340px]' : 
               'w-[290px]'
             } max-w-[90vw] text-gray-800`}>
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
@@ -3761,6 +3839,7 @@ export default function AppMap() {
                   <span className={`w-3 h-3 rounded-full flex-shrink-0 ${
                     selectedFacility.facility_type === 'tesla' ? 'bg-red-600' :
                     selectedFacility.facility_type === 'marine_terminals' ? 'bg-cyan-600' :
+                    selectedFacility.facility_type === 'snow_removal_routes' ? 'bg-sky-500' :
                     selectedFacility.facility_type === 'one_way_streets' ? 'bg-amber-500' :
                     selectedFacility.facility_type === 'fuel' ? 'bg-amber-500' :
                     selectedFacility.facility_type === 'parking_meters' ? 'bg-amber-500' :
@@ -5414,6 +5493,57 @@ export default function AppMap() {
                         <span>道路等級分類</span>
                         <span className="font-semibold text-gray-800 text-right">
                           {selectedFacility.properties.streetuse}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Snow Removal Routes (鏟雪路線) Details */}
+              {selectedFacility.facility_type === 'snow_removal_routes' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-sky-950 text-xs flex items-center gap-1.5">
+                        <span className="text-base text-sky-600 font-bold">❄️</span>
+                        <span className="truncate max-w-[200px]">{selectedFacility.name}</span>
+                      </span>
+                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded text-white shrink-0 ${
+                        selectedFacility.properties.priority === 1 ? 'bg-sky-700' : 'bg-sky-600'
+                      }`}>
+                        {selectedFacility.properties.priority === 1 ? '第 1 優先' : '第 2 優先'}
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-sky-900 font-medium">
+                      {selectedFacility.properties.priority === 1 
+                        ? '🚛 市府第 1 優先清掃主要幹道與急救動線' 
+                        : '🚜 市府第 2 優先清掃重要陡坡、學校及主要單車道'}
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                    {selectedFacility.properties.route_type_zh && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>路線屬性</span>
+                        <span className="font-bold text-gray-900 text-right truncate max-w-[190px]">
+                          {selectedFacility.properties.route_type_zh}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.priority_zh && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>優先級別</span>
+                        <span className="font-semibold text-gray-800 text-right">
+                          {selectedFacility.properties.priority_zh}
+                        </span>
+                      </div>
+                    )}
+                    {(selectedFacility.properties.length_display || selectedFacility.properties.shape_length) && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>路段長度</span>
+                        <span className="font-mono text-gray-800 text-right">
+                          {selectedFacility.properties.length_display || `${Math.round(selectedFacility.properties.shape_length)} 公尺`}
                         </span>
                       </div>
                     )}

@@ -8,7 +8,7 @@ import {
   Flame, Building2, Hospital, ChevronLeft, Trees, Footprints, Flower2, 
   Droplets, Bath, Leaf, Landmark, GraduationCap, BookOpen, UtensilsCrossed, Bed, Heart,
   Plane, PlaneTakeoff, Calendar, Car, ShieldAlert, LifeBuoy, HeartPulse, Mountain,
-  Compass, MapPin, Fuel, Train, Anchor, ArrowRight
+  Compass, MapPin, Fuel, Train, Anchor, ArrowRight, Snowflake
 } from 'lucide-react';
 
 // Helper component for Tesla Icon
@@ -250,6 +250,7 @@ export default function LayerPanel() {
             <LayerButton layerKey="fuel" label="加油站" icon={Fuel} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
             <LayerButton layerKey="tesla" label="TESLA" icon={TeslaIcon} colorClass="text-red-500" activeBg="bg-[#2d1417]" activeBorder="border-red-500/60" activeShadow="shadow-[0_0_8px_rgba(232,33,39,0.3)]" />
             <LayerButton layerKey="oneWayStreets" label="單程路" icon={ArrowRight} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
+            <LayerButton layerKey="snowRemovalRoutes" label="鏟雪路線" icon={Snowflake} colorClass="text-sky-300" activeBg="bg-[#0f2938]" activeBorder="border-sky-400/50" activeShadow="shadow-[0_0_6px_rgba(56,189,248,0.2)]" />
           </div>
         </div>
 

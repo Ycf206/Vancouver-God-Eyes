@@ -66,6 +66,7 @@ export interface UIState {
     fuel: boolean;
     tesla: boolean;
     oneWayStreets: boolean;
+    snowRemovalRoutes: boolean;
     maritimeShipping: boolean;
     marineTerminals: boolean;
   };
@@ -171,6 +172,7 @@ export const useUIStore = create<UIState>()(
         fuel: false,
         tesla: false,
         oneWayStreets: false,
+        snowRemovalRoutes: false,
         maritimeShipping: true,
         marineTerminals: true,
       },
@@ -267,6 +269,7 @@ export const useUIStore = create<UIState>()(
             fuel: persistedState?.layers?.fuel || false,
             tesla: persistedState?.layers?.tesla || false,
             oneWayStreets: persistedState?.layers?.oneWayStreets || false,
+            snowRemovalRoutes: persistedState?.layers?.snowRemovalRoutes || false,
             marineTerminals: persistedState?.layers?.marineTerminals ?? true,
           },
         };
