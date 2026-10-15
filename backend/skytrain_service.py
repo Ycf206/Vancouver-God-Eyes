@@ -360,59 +360,82 @@ def get_skytrain_station_schedule(stop_id: str):
     now_sec = now_van.hour * 3600 + now_van.minute * 60 + now_van.second
     hw_expo, hw_mln, hw_can = _get_headways_for_time(now_van)
 
+    # 取得當前即時推算的所有列車資料
+    active_trains = get_estimated_skytrain_trains()
+    target_name = st_info.get('name', '').strip()
+    target_stop_id = str(st_info.get('stop_id', ''))
+
     departures_by_dest = {}
 
-    for pattern in patterns:
-        st_match = None
-        for s in pattern['stations']:
-            if str(s['stop_id']) == str(stop_id) or s['name'] == st_info['name']:
-                st_match = s
-                break
+    # 1. 先從當前地圖上行駛中的真實推算列車提取該站預計抵達班次
+    for train in active_trains:
+        dest_name = train.get('destination', '')
+        line_name = train.get('line_name', '')
+        key = f"{line_name} · 往 {dest_name}"
 
-        if not st_match:
-            continue
-
-        line_id = pattern['line_id']
-        headway = hw_expo if line_id == 'expo' else (hw_mln if line_id == 'millennium' else hw_can)
-        duration = pattern['duration_sec']
-        st_time = st_match['time_sec']
-
-        num_trains = max(1, math.ceil(duration / headway))
-        pid_hash = sum(ord(c) for c in pattern['pattern_id']) * 37
-
-        key = f"{pattern['line_name']} · 往 {pattern['destination']}"
         if key not in departures_by_dest:
             departures_by_dest[key] = {
-                'line_name': pattern['line_name'],
-                'color': pattern['color'],
-                'destination': pattern['destination'],
-                'direction': pattern['direction'],
+                'line_name': line_name,
+                'color': train.get('color', '#0033a0'),
+                'destination': dest_name,
+                'direction': train.get('direction', ''),
+                'line_id': train.get('line_id', 'expo'),
                 'departures': []
             }
 
-        # Calculate upcoming departure times for this pattern at this station
-        for k in range(num_trains * 2):
-            train_phase = (k * headway + pid_hash) % duration
-            # Elapsed time of train along pattern
-            elapsed = (now_sec + train_phase) % duration
-            # Time until this train reaches st_time
-            if st_time >= elapsed:
-                diff_sec = int(st_time - elapsed)
-            else:
-                diff_sec = int(st_time + (duration - elapsed))
+        # 檢查該車是否停靠或即將停靠本站
+        stops = train.get('stops', [])
+        for s in stops:
+            s_name = s.get('name', '').strip()
+            s_id = str(s.get('stop_id', ''))
+            if s_id == target_stop_id or s_name == target_name:
+                s_status = s.get('status')
+                if s_status in ('next', 'upcoming') or (s_status == 'passed' and train.get('is_dwelling') and train.get('current_station') == target_name):
+                    eta_min = s.get('eta_minutes')
+                    if eta_min is None:
+                        eta_min = 0 if train.get('is_dwelling') else 1
 
-            if diff_sec <= 3600: # within 60 minutes
-                mins = max(0, int(math.ceil(diff_sec / 60.0)))
-                dep_dt = now_van + timedelta(seconds=diff_sec)
-                departures_by_dest[key]['departures'].append({
-                    'minutes': mins,
-                    'time': dep_dt.strftime("%H:%M:%S"),
-                    'formatted': '即將進站' if mins <= 0 else f"{mins} 分鐘"
-                })
+                    eta_time = s.get('eta_time')
+                    if not eta_time:
+                        dt = now_van + timedelta(minutes=eta_min)
+                        eta_time = dt.strftime("%H:%M:%S")
 
-    for group in departures_by_dest.values():
+                    departures_by_dest[key]['departures'].append({
+                        'minutes': max(0, int(eta_min)),
+                        'time': eta_time,
+                        'formatted': '即將進站' if eta_min <= 0 else f"{eta_min} 分鐘"
+                    })
+                break
+
+    # 2. 若某些方向缺乏在途列車或班次不足 4 班，依照路線表定班距向後推算補齊
+    for key, group in departures_by_dest.items():
+        line_id = group['line_id']
+        headway = hw_expo if line_id == 'expo' else (hw_mln if line_id == 'millennium' else hw_can)
+        hw_min = max(2, int(round(headway / 60.0)))
+
+        # 排序現有班次
         group['departures'].sort(key=lambda d: d['minutes'])
-        # Keep top 4 upcoming
+
+        # 去重：若兩班次間隔小於 2 分鐘（同目的地），僅保留第一班
+        cleaned = []
+        for dep in group['departures']:
+            if not cleaned or (dep['minutes'] - cleaned[-1]['minutes'] >= 2):
+                cleaned.append(dep)
+        group['departures'] = cleaned
+
+        # 補齊至 4 班
+        while len(group['departures']) < 4:
+            if not group['departures']:
+                base_min = 2
+            else:
+                base_min = group['departures'][-1]['minutes'] + hw_min
+            dt = now_van + timedelta(minutes=base_min)
+            group['departures'].append({
+                'minutes': base_min,
+                'time': dt.strftime("%H:%M:%S"),
+                'formatted': f"{base_min} 分鐘"
+            })
+
         group['departures'] = group['departures'][:4]
 
     return {
