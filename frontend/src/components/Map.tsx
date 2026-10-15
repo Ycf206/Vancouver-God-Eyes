@@ -1,9 +1,9 @@
 'use client';
 
 import * as React from 'react';
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { setWorkerUrl } from 'maplibre-gl';
-import Map, { NavigationControl, ScaleControl, Marker, Popup, MapRef, Source, Layer } from 'react-map-gl/maplibre';
+import Map, { NavigationControl, Marker, Popup, MapRef, Source, Layer } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl, getWsUrl } from '@/utils/api';
@@ -681,6 +681,77 @@ export default function AppMap() {
     }
     return `${distKm.toFixed(1)} km`;
   }, [selectedFacility, userLocation, distanceUnit]);
+  // Google Earth 風格固定長度比例尺之動態數值推算 (Fixed-width Google Earth Style Scale Calculation)
+  const [scaleText, setScaleText] = useState<string>('500 米');
+
+  const updateScale = useCallback(() => {
+    const map = mapRef.current?.getMap();
+    if (!map) return;
+
+    const scaleWidthPx = 120; // 固定物理長度 120px
+
+    try {
+      const container = map.getContainer();
+      const width = container.clientWidth || 800;
+      const height = container.clientHeight || 600;
+      const y = height - 20;
+      const x2 = width - 20;
+      const x1 = x2 - scaleWidthPx;
+
+      const p1 = map.unproject([x1, y]);
+      const p2 = map.unproject([x2, y]);
+      const distMeters = p1.distanceTo(p2);
+
+      if (distMeters <= 0 || isNaN(distMeters)) return;
+
+      if (distanceUnit === 'imperial') {
+        const feet = distMeters * 3.28084;
+        if (feet < 5280) {
+          setScaleText(`${Math.round(feet).toLocaleString()} 英呎`);
+        } else {
+          const miles = feet / 5280;
+          setScaleText(`${miles < 10 ? miles.toFixed(2) : miles.toFixed(1)} 英里`);
+        }
+      } else {
+        if (distMeters < 1000) {
+          setScaleText(`${Math.round(distMeters)} 米`);
+        } else {
+          const km = distMeters / 1000;
+          if (km < 10) {
+            setScaleText(`${km.toFixed(2)} 公里`);
+          } else if (km < 100) {
+            setScaleText(`${km.toFixed(1)} 公里`);
+          } else {
+            setScaleText(`${Math.round(km).toLocaleString()} 公里`);
+          }
+        }
+      }
+    } catch {
+      const zoom = map.getZoom();
+      const lat = map.getCenter().lat;
+      const rad = (lat * Math.PI) / 180;
+      const metersPerPx = (40075016.686 * Math.cos(rad)) / Math.pow(2, zoom + 8);
+      const distMeters = scaleWidthPx * metersPerPx;
+      if (distMeters < 1000) {
+        setScaleText(`${Math.round(distMeters)} 米`);
+      } else {
+        const km = distMeters / 1000;
+        setScaleText(`${km < 10 ? km.toFixed(2) : km.toFixed(1)} 公里`);
+      }
+    }
+  }, [distanceUnit]);
+
+  useEffect(() => {
+    const map = mapRef.current?.getMap();
+    if (!map) return;
+    updateScale();
+    map.on('move', updateScale);
+    map.on('zoom', updateScale);
+    return () => {
+      map.off('move', updateScale);
+      map.off('zoom', updateScale);
+    };
+  }, [updateScale]);
 
   // 響應全域搜尋項目選取 (FlyTo & 自動打開詳細資訊卡片)
   useEffect(() => {
@@ -2115,6 +2186,9 @@ export default function AppMap() {
         maxZoom={20}
         mapStyle={mapStyle}
         style={{ width: '100%', height: '100%' }}
+        onMove={updateScale}
+        onZoom={updateScale}
+        onLoad={() => updateScale()}
         interactiveLayerIds={[
           'bus-stops-layer', 
           'skytrain-stops-layer', 
@@ -2317,7 +2391,6 @@ export default function AppMap() {
         }}
       >
         <NavigationControl position="bottom-right" visualizePitch={true} />
-        <ScaleControl position="bottom-right" unit={distanceUnit === 'imperial' ? 'imperial' : 'metric'} maxWidth={120} />
 
         {/* 選中巴士或搜尋路線之路線軌跡與沿線站點 */}
         {busRouteGeoJSON && (
@@ -4933,6 +5006,29 @@ export default function AppMap() {
             重設溫哥華視角
           </span>
         </button>
+      </div>
+
+      {/* Google Earth 風格固定長度比例圖例 (Google Earth Style Fixed-Width Scale Ruler) */}
+      <div className="absolute bottom-3 right-14 z-20 pointer-events-none select-none">
+        <div className="flex flex-col items-end">
+          <div className="text-right text-[11px] font-sans font-semibold text-white tracking-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.95)] mb-0.5 leading-none select-none">
+            {scaleText}
+          </div>
+          <svg width="120" height="12" viewBox="0 0 120 12" className="drop-shadow-[0_1px_2px_rgba(0,0,0,0.95)] overflow-visible">
+            {/* 基準橫線 */}
+            <line x1="0.5" y1="11" x2="119.5" y2="11" stroke="white" strokeWidth="1.5" strokeLinecap="square" />
+            {/* 左端主刻度 */}
+            <line x1="0.5" y1="1" x2="0.5" y2="11" stroke="white" strokeWidth="1.5" strokeLinecap="square" />
+            {/* 25% 次刻度 */}
+            <line x1="30.25" y1="6" x2="30.25" y2="11" stroke="white" strokeWidth="1.5" strokeLinecap="square" />
+            {/* 50% 中間刻度 */}
+            <line x1="60" y1="4.5" x2="60" y2="11" stroke="white" strokeWidth="1.5" strokeLinecap="square" />
+            {/* 75% 次刻度 */}
+            <line x1="89.75" y1="6" x2="89.75" y2="11" stroke="white" strokeWidth="1.5" strokeLinecap="square" />
+            {/* 右端主刻度 */}
+            <line x1="119.5" y1="1" x2="119.5" y2="11" stroke="white" strokeWidth="1.5" strokeLinecap="square" />
+          </svg>
+        </div>
       </div>
 
       {/* 搜尋路線時若尚未選取車輛，在右上方顯示精簡提示卡 */}
