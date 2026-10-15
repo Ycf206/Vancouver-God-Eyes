@@ -34,8 +34,10 @@ stop_arrivals = {}
 cached_translink_vehicles: list[dict] = []
 cached_bcferries_vehicles: list[dict] = []
 cached_flight_schedules: dict = {}
+cached_skytrain_trains: list[dict] = []
 
 import flights
+import skytrain_service
 
 import math
 def calculate_bearing(p1, p2):
@@ -56,6 +58,8 @@ async def websocket_endpoint(websocket: WebSocket):
             await websocket.send_json({"type": "vehicles_update", "data": cached_translink_vehicles})
         if cached_bcferries_vehicles:
             await websocket.send_json({"type": "bc_ferries_update", "data": cached_bcferries_vehicles})
+        if cached_skytrain_trains:
+            await websocket.send_json({"type": "skytrain_trains_update", "data": cached_skytrain_trains})
 
         while True:
             await websocket.receive_text()
@@ -700,11 +704,40 @@ async def fetch_translink_trip_updates():
             
         await asyncio.sleep(30)
 
+async def broadcast_skytrain_simulation():
+    global cached_skytrain_trains
+    while True:
+        try:
+            trains = skytrain_service.get_estimated_skytrain_trains()
+            cached_skytrain_trains = trains
+            if active_connections:
+                message = {"type": "skytrain_trains_update", "data": trains}
+                for connection in list(active_connections):
+                    try:
+                        await connection.send_json(message)
+                    except Exception:
+                        pass
+        except Exception as e:
+            print(f"Error in SkyTrain simulation broadcast: {e}")
+        await asyncio.sleep(4)
+
 @app.on_event("startup")
 async def startup_event():
     asyncio.create_task(fetch_translink_realtime())
     asyncio.create_task(fetch_bcferries_realtime())
     asyncio.create_task(fetch_translink_trip_updates())
+    asyncio.create_task(broadcast_skytrain_simulation())
+
+@app.get("/api/skytrain/trains")
+def get_skytrain_trains():
+    global cached_skytrain_trains
+    if not cached_skytrain_trains:
+        cached_skytrain_trains = skytrain_service.get_estimated_skytrain_trains()
+    return cached_skytrain_trains
+
+@app.get("/api/skytrain/stations/{stop_id}/schedule")
+def get_skytrain_station_schedule(stop_id: str):
+    return skytrain_service.get_skytrain_station_schedule(stop_id)
 
 @app.get("/api/flights/live")
 def get_live_flights():
@@ -2422,20 +2455,29 @@ async def get_active_ferries_api():
                 else:
                     eta_text = f"{remain_mins} 分鐘後到達 {dest_zh}"
 
+                dep_code = t1 if dest_code == t2 else t2
+                ferry_paths = get_bc_ferries_paths()
+                route_path = ferry_paths.get(f"{dep_code}_{dest_code}")
+                if route_path and len(route_path) >= 2:
+                    v_lon, v_lat, v_bearing = _interpolate_along_path(route_path, def_prog / 100.0)
+                else:
+                    v_lon, v_lat, v_bearing = -123.35, 49.25, 0
+
                 matching_vessels.append({
                     "id": f"ferry_fleet_{v_name.lower().replace(' ', '_')}",
                     "vessel_name": v_name,
-                    "dep_code": t1 if dest_code == t2 else t2,
+                    "dep_code": dep_code,
                     "arr_code": dest_code,
-                    "dep_name": terminal_names_zh.get(t1 if dest_code == t2 else t2, ""),
+                    "dep_name": terminal_names_zh.get(dep_code, ""),
                     "arr_name": dest_zh,
                     "departure_time": "正點航行",
                     "arrival_time": eta_text,
                     "eta_text": eta_text,
                     "progress": def_prog,
                     "fill": def_fill,
-                    "lat": 49.25,
-                    "lon": -123.5,
+                    "lat": round(v_lat, 6),
+                    "lon": round(v_lon, 6),
+                    "bearing": round(v_bearing, 1),
                     "status": "航行中"
                 })
 

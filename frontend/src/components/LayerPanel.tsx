@@ -8,7 +8,7 @@ import {
   Flame, Building2, Hospital, ChevronLeft, Trees, Footprints, Flower2, 
   Droplets, Bath, Leaf, Landmark, GraduationCap, BookOpen, UtensilsCrossed, Bed, Heart,
   Plane, PlaneTakeoff, Calendar, Car, ShieldAlert, LifeBuoy, HeartPulse, Mountain,
-  Compass, MapPin, Fuel
+  Compass, MapPin, Fuel, Train
 } from 'lucide-react';
 
 export default function LayerPanel() {
@@ -135,13 +135,14 @@ export default function LayerPanel() {
         <div className="flex flex-col gap-1.5">
           <div className="text-[10px] font-bold text-blue-400 tracking-wider flex items-center justify-between">
             <div className="flex items-center gap-1">
-              <Route className="w-3 h-3" />
+              <Train className="w-3 h-3" />
               <span>大眾運輸 · 天車</span>
             </div>
             <span className="text-[9px] text-blue-400/70 font-mono">SkyTrain</span>
           </div>
-          <div className="grid grid-cols-1 gap-1">
-            <LayerButton layerKey="skytrainRoutes" label="路線" icon={Route} colorClass="text-blue-400" activeBg="bg-[#1a2436]" activeBorder="border-blue-500/50" activeShadow="shadow-[0_0_6px_rgba(59,130,246,0.15)]" />
+          <div className="grid grid-cols-2 gap-1">
+            <LayerButton layerKey="skytrainTrains" label="列車 (推算)" icon={Train} colorClass="text-blue-400" activeBg="bg-[#1a2436]" activeBorder="border-blue-500/50" activeShadow="shadow-[0_0_6px_rgba(59,130,246,0.15)]" />
+            <LayerButton layerKey="skytrainRoutes" label="路線" icon={Route} colorClass="text-blue-400" activeBg="bg-[#1a2436]" activeBorder="border-blue-500/50" />
           </div>
         </div>
 

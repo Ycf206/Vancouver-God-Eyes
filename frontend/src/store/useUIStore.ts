@@ -26,6 +26,7 @@ export interface UIState {
     bus: boolean;
     busRoutes: boolean;
     busStops: boolean;
+    skytrainTrains: boolean;
     skytrainRoutes: boolean;
     skytrainStops: boolean;
     seabusVehicles: boolean;
@@ -124,6 +125,7 @@ export const useUIStore = create<UIState>()(
         bus: true,
         busRoutes: true,
         busStops: false,
+        skytrainTrains: true,
         skytrainRoutes: true,
         skytrainStops: true,
         seabusVehicles: true,

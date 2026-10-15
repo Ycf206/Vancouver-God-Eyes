@@ -8,7 +8,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl, getWsUrl } from '@/utils/api';
 import { formatTimePreference } from '@/utils/time';
-import { LocateFixed } from 'lucide-react';
+import { LocateFixed, Train } from 'lucide-react';
 
 // Fix Next.js App Router Web Worker crash
 if (typeof window !== 'undefined') {
@@ -71,6 +71,63 @@ interface RoadFacilityInfo {
   lat: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   properties: any;
+}
+
+interface SkytrainTrain {
+  id: string;
+  line_id: string;
+  line_name: string;
+  color: string;
+  headsign: string;
+  origin: string;
+  destination: string;
+  direction: string;
+  lat: number;
+  lon: number;
+  bearing: number;
+  status: string;
+  is_dwelling: boolean;
+  speed_kmh: number;
+  model: string;
+  cars: number;
+  current_station: string;
+  next_station: string;
+  next_stop_minutes: number;
+  next_stop_time: string;
+  operator: string;
+  pattern_id: string;
+  stops: Array<{
+    seq: number;
+    stop_id: string;
+    name: string;
+    lat: number;
+    lon: number;
+    status: 'passed' | 'next' | 'upcoming';
+    eta_minutes?: number | null;
+    eta_time?: string | null;
+  }>;
+  shape_coords: [number, number][];
+}
+
+interface SkytrainStationSchedule {
+  stop_id: string;
+  name: string;
+  raw_name?: string;
+  lat: number;
+  lon: number;
+  lines: string[];
+  schedules: Array<{
+    line_name: string;
+    color: string;
+    destination: string;
+    direction: string;
+    departures: Array<{
+      minutes: number;
+      time: string;
+      formatted: string;
+    }>;
+  }>;
+  updated_at: string;
 }
 
 export default function AppMap() {
@@ -223,6 +280,65 @@ export default function AppMap() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loadingSearchedRoute, setLoadingSearchedRoute] = useState(false);
 
+  // SkyTrain States
+  const [skytrainTrains, setSkytrainTrains] = useState<SkytrainTrain[]>([]);
+  const [selectedTrain, setSelectedTrain] = useState<SkytrainTrain | null>(null);
+  const [selectedSkytrainStation, setSelectedSkytrainStation] = useState<SkytrainStationSchedule | null>(null);
+  const [loadingStationSchedule, setLoadingStationSchedule] = useState(false);
+
+  const handleSelectTrain = React.useCallback((train: SkytrainTrain) => {
+    setSelectedStop(null);
+    setSelectedFacility(null);
+    setSelectedTerminal(null);
+    setSelectedFerry(null);
+    setSelectedFlight(null);
+    setSelectedAirport(null);
+    setSelectedBus(null);
+    setBusDetails(null);
+    setSearchedBusRoute(null);
+    setSelectedSkytrainStation(null);
+    setSelectedTrain(train);
+  }, []);
+
+  const fetchSkytrainStationSchedule = React.useCallback((stopId: string, stopName?: string, lat?: number, lon?: number) => {
+    setSelectedStop(null);
+    setSelectedFacility(null);
+    setSelectedTerminal(null);
+    setSelectedFerry(null);
+    setSelectedFlight(null);
+    setSelectedAirport(null);
+    setSelectedBus(null);
+    setBusDetails(null);
+    setSearchedBusRoute(null);
+    setSelectedTrain(null);
+    setLoadingStationSchedule(true);
+
+    const apiUrl = getApiUrl();
+    fetch(`${apiUrl}/api/skytrain/stations/${encodeURIComponent(stopId)}/schedule`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && !data.error) {
+          setSelectedSkytrainStation(data);
+        } else {
+          setSelectedSkytrainStation({
+            stop_id: stopId,
+            name: stopName || '天車站',
+            raw_name: stopName || '天車站',
+            lat: lat || 49.2827,
+            lon: lon || -123.1207,
+            lines: ['SkyTrain 天車'],
+            schedules: [],
+            updated_at: new Date().toLocaleTimeString('en-US', { hour12: false })
+          });
+        }
+        setLoadingStationSchedule(false);
+      })
+      .catch(err => {
+        console.error('Error fetching SkyTrain station schedule:', err);
+        setLoadingStationSchedule(false);
+      });
+  }, []);
+
   const handleSelectBus = React.useCallback((v: Vehicle) => {
     setSelectedStop(null);
     setSelectedFacility(null);
@@ -230,6 +346,8 @@ export default function AppMap() {
     setSelectedFerry(null);
     setSelectedFlight(null);
     setSelectedAirport(null);
+    setSelectedTrain(null);
+    setSelectedSkytrainStation(null);
     setSelectedBus(v);
     setLoadingBusDetails(true);
 
@@ -255,6 +373,28 @@ export default function AppMap() {
         setLoadingBusDetails(false);
       });
   }, []);
+
+  // Fetch initial SkyTrain trains
+  useEffect(() => {
+    const apiUrl = getApiUrl();
+    fetch(`${apiUrl}/api/skytrain/trains`)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setSkytrainTrains(data);
+        }
+      })
+      .catch(err => console.error('Failed to load initial SkyTrain trains:', err));
+  }, []);
+
+  // Keep selectedTrain synced when skytrainTrains updates
+  useEffect(() => {
+    if (!selectedTrain) return;
+    const updated = skytrainTrains.find(t => t.id === selectedTrain.id);
+    if (updated) {
+      setSelectedTrain(updated);
+    }
+  }, [skytrainTrains, selectedTrain]);
 
   // Keep selectedBus live coordinates & stop list synced when vehicles update via WebSocket
   useEffect(() => {
@@ -300,6 +440,22 @@ export default function AppMap() {
       },
     };
   }, [busDetails, searchedBusRoute, selectedBus]);
+
+  const skytrainRouteGeoJSON = useMemo(() => {
+    if (!selectedTrain) return null;
+    const coords = selectedTrain.shape_coords;
+    if (!coords || coords.length < 2) return null;
+    return {
+      type: 'Feature' as const,
+      geometry: {
+        type: 'LineString' as const,
+        coordinates: coords,
+      },
+      properties: {
+        color: selectedTrain.color || '#0033a0',
+      },
+    };
+  }, [selectedTrain]);
 
 
   // States for Traffic Camera Images
@@ -483,7 +639,71 @@ export default function AppMap() {
           console.error(err);
           setLoadingSchedule(false);
         });
-    } else if (searchTarget.category === 'skytrain' || searchTarget.category === 'seabus' || searchTarget.category === 'bus_stop') {
+    } else if (searchTarget.category === 'ferry_vehicle') {
+      setSelectedTerminal(null);
+      setSelectedStop(null);
+      setSelectedFacility(null);
+      setSelectedFlight(null);
+      setSelectedAirport(null);
+      setSelectedBus(null);
+
+      // Match vessel in live ferryVehicles by id or name
+      const targetName = (searchTarget.title || '').trim().toLowerCase();
+      const liveVessel = ferryVehicles.find(v => 
+        (v.id && searchTarget.id && v.id === searchTarget.id) ||
+        (v.vessel_name && v.vessel_name.toLowerCase() === targetName) ||
+        (v.vessel_name && targetName.includes(v.vessel_name.toLowerCase()))
+      );
+
+      const targetLon = liveVessel ? liveVessel.lon : searchTarget.lon;
+      const targetLat = liveVessel ? liveVessel.lat : searchTarget.lat;
+
+      if (liveVessel) {
+        setSelectedFerry(liveVessel);
+      } else {
+        setSelectedFerry({
+          id: searchTarget.id,
+          route_id: searchTarget.meta?.route_id || 'BC Ferries',
+          vessel_name: searchTarget.title,
+          dep_name: searchTarget.meta?.dep_name || '',
+          arr_name: searchTarget.meta?.arr_name || '',
+          progress: searchTarget.meta?.progress || 50,
+          fill: searchTarget.meta?.fill || 0,
+          departure_time: searchTarget.meta?.departure_time || '',
+          arrival_time: searchTarget.meta?.arrival_time || '',
+          lat: targetLat,
+          lon: targetLon,
+          bearing: 0
+        });
+      }
+
+      if (mapRef.current) {
+        mapRef.current.flyTo({
+          center: [targetLon, targetLat],
+          zoom: 13,
+          duration: 1200
+        });
+      }
+    } else if (searchTarget.category === 'skytrain') {
+      setSelectedTerminal(null);
+      setSelectedFacility(null);
+      setSelectedFerry(null);
+      setSelectedFlight(null);
+      setSelectedAirport(null);
+      setSelectedBus(null);
+      setSearchedBusRoute(null);
+      setSelectedStop(null);
+      setSelectedTrain(null);
+      const stopId = searchTarget.meta?.stop_id || searchTarget.id.replace('stop_', '');
+      fetchSkytrainStationSchedule(String(stopId), searchTarget.title, searchTarget.lon, searchTarget.lat);
+      if (mapRef.current) {
+        mapRef.current.flyTo({
+          center: [searchTarget.lon, searchTarget.lat],
+          zoom: 16,
+          duration: 1200
+        });
+      }
+    } else if (searchTarget.category === 'seabus' || searchTarget.category === 'bus_stop') {
       setSelectedTerminal(null);
       setSelectedFacility(null);
       const stopId = searchTarget.meta?.stop_id;
@@ -579,6 +799,8 @@ export default function AppMap() {
             setVehicles(message.data);
           } else if (message.type === 'bc_ferries_update') {
             setFerryVehicles(message.data);
+          } else if (message.type === 'skytrain_trains_update') {
+            setSkytrainTrains(message.data);
           }
         } catch (e) {
           console.error('Error parsing websocket message', e);
@@ -1811,8 +2033,18 @@ export default function AppMap() {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const coords = (feature.geometry as any).coordinates;
 
-          if (layerId === 'bus-stops-layer' || layerId === 'skytrain-stops-layer' || layerId === 'seabus-stops-layer') {
+          if (layerId === 'skytrain-stops-layer') {
             setSelectedFacility(null);
+            setSelectedStop(null);
+            setSelectedBus(null);
+            setSelectedTrain(null);
+            const stopId = feature.properties?.stop_id || feature.properties?.id;
+            const stopName = feature.properties?.name || '天車站';
+            fetchSkytrainStationSchedule(String(stopId), stopName, coords[0], coords[1]);
+          } else if (layerId === 'bus-stops-layer' || layerId === 'seabus-stops-layer') {
+            setSelectedFacility(null);
+            setSelectedTrain(null);
+            setSelectedSkytrainStation(null);
             const stopId = feature.properties?.stop_id;
             const stopName = feature.properties?.name;
             setSelectedStop({ id: stopId, name: stopName, lon: coords[0], lat: coords[1] });
@@ -1904,6 +2136,8 @@ export default function AppMap() {
             setBusDetails(null);
             setSearchedBusRoute(null);
             setSearchTarget(null);
+            setSelectedTrain(null);
+            setSelectedSkytrainStation(null);
           }
         }}
       >
@@ -1952,8 +2186,50 @@ export default function AppMap() {
           </Marker>
         ))}
 
+        {/* 選中天車之路線軌跡與沿線站點 */}
+        {skytrainRouteGeoJSON && (
+          <Source id="selected-train-route-source" type="geojson" data={skytrainRouteGeoJSON}>
+            <Layer
+              id="selected-train-route-glow"
+              type="line"
+              layout={{ 'line-join': 'round', 'line-cap': 'round' }}
+              paint={{
+                'line-color': selectedTrain?.color || '#0033a0',
+                'line-width': 8,
+                'line-blur': 3,
+                'line-opacity': 0.6
+              }}
+            />
+            <Layer
+              id="selected-train-route-line"
+              type="line"
+              layout={{ 'line-join': 'round', 'line-cap': 'round' }}
+              paint={{
+                'line-color': selectedTrain?.color || '#0033a0',
+                'line-width': 4,
+                'line-opacity': 0.95
+              }}
+            />
+          </Source>
+        )}
+
+        {selectedTrain && selectedTrain.stops.map((st) => (
+          <Marker key={`train-stop-${st.seq}-${st.stop_id}`} longitude={st.lon} latitude={st.lat} anchor="center">
+            <div
+              className={`rounded-full border transition-transform ${
+                st.status === 'next'
+                  ? 'w-3.5 h-3.5 bg-amber-400 border-white shadow-[0_0_8px_rgba(251,191,36,0.95)] scale-125 z-20'
+                  : st.status === 'passed'
+                  ? 'w-2 h-2 bg-gray-400/80 border-gray-800 opacity-70 z-10'
+                  : 'w-2.5 h-2.5 bg-blue-400 border-gray-900 shadow-sm z-10'
+              }`}
+              title={`${st.seq}. ${st.name}`}
+            />
+          </Marker>
+        ))}
+
         {/* 搜尋目標高亮光環 (Search Target Focus Ring) - 巴士路線等整條路線不顯示中心點閃爍標記 */}
-        {searchTarget && searchTarget.category !== 'bus_route' && (
+        {searchTarget && searchTarget.category !== 'bus_route' && searchTarget.category !== 'ferry_vehicle' && (
           <Marker longitude={searchTarget.lon} latitude={searchTarget.lat} anchor="center">
             <div className="relative flex items-center justify-center pointer-events-none z-40">
               <span className="absolute w-12 h-12 rounded-full bg-emerald-400/40 animate-ping"></span>
@@ -2061,6 +2337,31 @@ export default function AppMap() {
             </div>
           </Marker>
         ))}
+
+        {/* SkyTrain 即時推算列車 (Live Estimated SkyTrain Trains) */}
+        {layers.skytrainTrains && skytrainTrains.map(train => {
+          const isSelected = selectedTrain?.id === train.id;
+          return (
+            <Marker key={train.id} longitude={train.lon} latitude={train.lat} anchor="center">
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleSelectTrain(train);
+                }}
+                className={`relative flex items-center justify-center w-6 h-6 rounded-full cursor-pointer tooltip border-[1.5px] border-white shadow-lg backdrop-blur-sm transition-transform hover:scale-125 z-25 ${
+                  isSelected ? 'ring-4 ring-amber-400 scale-125 z-35' : ''
+                }`}
+                style={{
+                  backgroundColor: train.color,
+                  boxShadow: `0 0 10px ${train.color}bb`
+                }}
+                title={`${train.line_name} 往 ${train.destination} (${train.status})`}
+              >
+                <span className="text-[12px] leading-none select-none">🚆</span>
+              </div>
+            </Marker>
+          );
+        })}
 
 
 
@@ -4482,6 +4783,260 @@ export default function AppMap() {
           </div>
         );
       })()}
+
+      {/* 點選天車列車時固定在右方展示之即時動態資料面板 */}
+      {selectedTrain && (() => {
+        const lineName = selectedTrain.line_name;
+        const destName = selectedTrain.destination;
+        const originName = selectedTrain.origin;
+        const operatorName = selectedTrain.operator;
+        const nextStopName = selectedTrain.next_station || '沿線行駛中';
+        const nextStopTime = selectedTrain.next_stop_time || '';
+        const nextStopMin = selectedTrain.next_stop_minutes;
+        const stopList = selectedTrain.stops || [];
+
+        return (
+          <div className="fixed top-[72px] right-4 z-40 w-[340px] max-w-[calc(100vw-32px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-200 select-none">
+            {/* Header */}
+            <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-[#262b38] shrink-0">
+              <div className="flex items-start gap-2.5 min-w-0">
+                <div 
+                  className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 shadow-sm text-white"
+                  style={{ backgroundColor: `${selectedTrain.color}33`, borderColor: `${selectedTrain.color}88`, borderWidth: '1px' }}
+                >
+                  <Train className="w-4 h-4" style={{ color: selectedTrain.color }} />
+                </div>
+                <div className="min-w-0">
+                  <h3 className="font-bold text-white text-[15px] leading-snug tracking-tight truncate">
+                    {lineName} 去 {destName}
+                  </h3>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <span 
+                      className="w-2 h-2 rounded-full animate-pulse shadow-sm"
+                      style={{ backgroundColor: selectedTrain.color }}
+                    ></span>
+                    <span className="text-[11px] font-semibold text-blue-400">即時推算中</span>
+                    <span className="text-[10px] text-gray-400 font-mono ml-1">#{selectedTrain.id}</span>
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedTrain(null)}
+                className="text-gray-400 hover:text-white p-1 rounded hover:bg-[#252a38] transition-colors shrink-0"
+                title="關閉"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+              </button>
+            </div>
+
+            {/* Info Rows */}
+            <div className="flex flex-col gap-2 text-xs shrink-0">
+              <div className="flex justify-between items-center gap-2">
+                <span className="text-gray-400 shrink-0">營辦商</span>
+                <span className="font-bold text-gray-100 text-right truncate">{operatorName}</span>
+              </div>
+              <div className="flex justify-between items-center gap-2">
+                <span className="text-gray-400 shrink-0">列車型號</span>
+                <span className="font-bold text-gray-100 text-right truncate">{selectedTrain.model} ({selectedTrain.cars} 卡)</span>
+              </div>
+              <div className="flex justify-between items-center gap-2">
+                <span className="text-gray-400 shrink-0">起點</span>
+                <span className="font-bold text-gray-100 text-right truncate">{originName}</span>
+              </div>
+              <div className="flex justify-between items-center gap-2">
+                <span className="text-gray-400 shrink-0">終點</span>
+                <span className="font-bold text-gray-100 text-right truncate">{destName}</span>
+              </div>
+              <div className="flex justify-between items-center gap-2">
+                <span className="text-gray-400 shrink-0">當前</span>
+                <span className="font-bold text-right truncate" style={{ color: selectedTrain.color }}>
+                  開往 {destName} ({selectedTrain.status}{selectedTrain.speed_kmh > 0 ? ` · ${selectedTrain.speed_kmh} km/h` : ''})
+                </span>
+              </div>
+              <div className="flex justify-between items-start gap-2 pt-0.5">
+                <span className="text-gray-400 shrink-0 mt-0.5">下一站</span>
+                <div className="flex flex-col items-end text-right min-w-0">
+                  <span className="font-bold text-white leading-snug">{nextStopName}</span>
+                  <span className="text-[11px] font-bold text-amber-400 mt-0.5">
+                    {nextStopTime
+                      ? `預計 ${formatTimePreference(nextStopTime, timeFormat)} (${nextStopMin <= 0 ? '即將進站' : `${nextStopMin} 分鐘後`})`
+                      : '即時運行中'}
+                  </span>
+                </div>
+              </div>
+              <div className="flex justify-between items-center gap-2">
+                <span className="text-gray-400 shrink-0">運行</span>
+                <span className="font-bold text-emerald-400">推算準時</span>
+              </div>
+            </div>
+
+            {/* Stops List Box */}
+            <div className="mt-3 pt-2.5 border-t border-[#262b38] flex-1 flex flex-col min-h-0">
+              <div className="bg-[#10131a] rounded-lg border border-[#232836] p-2 flex-1 flex flex-col min-h-0">
+                <div className="text-[11px] text-gray-400 font-medium mb-1.5 px-1 flex items-center justify-between shrink-0">
+                  <span>{stopList.length} 個站</span>
+                  <span className="text-[10px] font-mono truncate max-w-[140px]" style={{ color: selectedTrain.color }}>
+                    {selectedTrain.line_name}
+                  </span>
+                </div>
+                <div className="overflow-y-auto flex-1 flex flex-col gap-0.5 pr-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
+                  {stopList.map((st) => {
+                    const isNext = st.status === 'next';
+                    const isPassed = st.status === 'passed';
+                    return (
+                      <div
+                        key={`train-popup-stop-${st.seq}`}
+                        ref={isNext ? (el) => { el?.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } : undefined}
+                        onClick={() => {
+                          mapRef.current?.flyTo({ center: [st.lon, st.lat], zoom: 15.5, duration: 800 });
+                        }}
+                        className={`flex items-center justify-between gap-2 px-2 py-1.5 rounded text-[11.5px] cursor-pointer transition-colors ${
+                          isNext
+                            ? 'bg-amber-500/20 border-l-2 border-amber-400 text-white font-bold'
+                            : isPassed
+                            ? 'text-gray-500 hover:bg-[#1a1f2c]'
+                            : 'text-gray-200 hover:bg-[#1a1f2c]'
+                        }`}
+                      >
+                        <span className="truncate">
+                          {st.seq}. {st.name}
+                        </span>
+                        <span className={`shrink-0 text-[10.5px] font-semibold ${
+                          isNext
+                            ? 'text-amber-400 font-bold'
+                            : isPassed
+                            ? 'text-gray-600'
+                            : 'text-blue-400/90 font-mono'
+                        }`}>
+                          {isNext
+                            ? '下個站'
+                            : isPassed
+                            ? '已過站'
+                            : st.eta_minutes !== undefined && st.eta_minutes !== null
+                            ? `${st.eta_minutes} 分${st.eta_time ? ` (${formatTimePreference(st.eta_time, timeFormat)})` : ''}`
+                            : st.eta_time
+                            ? formatTimePreference(st.eta_time, timeFormat)
+                            : ''}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* 點選天車站點時展示之路線班次面板 */}
+      {selectedSkytrainStation && (
+        <div className="fixed top-[72px] right-4 z-40 w-[340px] max-w-[calc(100vw-32px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-200 select-none">
+          {/* Header */}
+          <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-[#262b38] shrink-0">
+            <div className="flex items-start gap-2.5 min-w-0">
+              <div className="w-8 h-8 rounded-lg bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400 shrink-0 mt-0.5 shadow-sm">
+                <span className="text-base select-none">🚉</span>
+              </div>
+              <div className="min-w-0">
+                <h3 className="font-bold text-white text-[15px] leading-snug tracking-tight truncate">
+                  {selectedSkytrainStation.name}
+                </h3>
+                <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                  {selectedSkytrainStation.lines.map((ln) => (
+                    <span 
+                      key={ln}
+                      className={`text-[9.5px] font-semibold px-1.5 py-0.2 rounded border ${
+                        ln.includes('Expo') ? 'bg-[#0033a0]/30 text-blue-300 border-[#0033a0]/60' :
+                        ln.includes('Millennium') ? 'bg-amber-500/20 text-yellow-300 border-amber-500/50' :
+                        'bg-teal-500/20 text-teal-300 border-teal-500/50'
+                      }`}
+                    >
+                      {ln}
+                    </span>
+                  ))}
+                  <span className="text-[10px] text-gray-400 font-mono">#{selectedSkytrainStation.stop_id}</span>
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={() => setSelectedSkytrainStation(null)}
+              className="text-gray-400 hover:text-white p-1 rounded hover:bg-[#252a38] transition-colors shrink-0"
+              title="關閉"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+          </div>
+
+          {/* Subheader info */}
+          <div className="flex items-center justify-between text-[11px] text-gray-400 pb-2 mb-2 border-b border-[#262b38]/60 shrink-0">
+            <span className="flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
+              <span>推算班次時刻</span>
+            </span>
+            <span className="font-mono text-[10px] text-gray-400">
+              更新於 {formatTimePreference(selectedSkytrainStation.updated_at, timeFormat)}
+            </span>
+          </div>
+
+          {/* Schedules Content */}
+          <div className="overflow-y-auto flex-1 flex flex-col gap-2.5 pr-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
+            {loadingStationSchedule ? (
+              <div className="py-8 flex flex-col items-center justify-center gap-2 text-xs text-gray-400">
+                <div className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
+                <span>載入天車站點班次中...</span>
+              </div>
+            ) : selectedSkytrainStation.schedules && selectedSkytrainStation.schedules.length > 0 ? (
+              selectedSkytrainStation.schedules.map((group, gIdx) => (
+                <div 
+                  key={`sched-grp-${gIdx}`}
+                  className="bg-[#10131a] rounded-lg border border-[#232836] p-2.5 flex flex-col gap-2"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <span 
+                        className="w-2.5 h-2.5 rounded-full shrink-0"
+                        style={{ backgroundColor: group.color }}
+                      ></span>
+                      <span className="font-bold text-xs text-white truncate">
+                        {group.line_name}
+                      </span>
+                      <span className="text-[11px] text-gray-300 truncate">
+                        往 {group.destination}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {group.departures.map((dep, dIdx) => (
+                      <div 
+                        key={`dep-${dIdx}`}
+                        className={`flex flex-col px-2 py-1.5 rounded border ${
+                          dIdx === 0 
+                            ? 'bg-blue-950/40 border-blue-500/40 text-blue-200' 
+                            : 'bg-[#181d28] border-[#292f3f] text-gray-300'
+                        }`}
+                      >
+                        <div className="flex items-baseline justify-between">
+                          <span className={`text-[12px] font-bold ${dIdx === 0 ? 'text-amber-400' : 'text-gray-100'}`}>
+                            {dep.formatted}
+                          </span>
+                          <span className="text-[10px] text-gray-400 font-mono">
+                            {formatTimePreference(dep.time, timeFormat)}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="py-6 text-center text-xs text-gray-400 bg-[#10131a] rounded-lg border border-[#232836]">
+                目前暫無推算班次資料
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -235,6 +235,15 @@ export default function ExplorePanel() {
       icon: '🚢',
       lat: v.lat,
       lon: v.lon,
+      meta: {
+        route_id: `${v.dep_code} ➝ ${v.arr_code}`,
+        dep_name: v.dep_name,
+        arr_name: v.arr_name,
+        progress: v.progress,
+        fill: v.fill,
+        departure_time: v.departure_time,
+        arrival_time: v.arrival_time
+      },
       zoom: 13
     });
   };
@@ -374,7 +383,10 @@ export default function ExplorePanel() {
             </span>
             {!userLocation?.confirmed && (
               <button
-                onClick={() => setSettingsModalOpen(true)}
+                onClick={() => {
+                  setExploreOpen(false);
+                  setSettingsModalOpen(true);
+                }}
                 className="text-[10.5px] text-emerald-400 hover:text-emerald-300 font-medium hover:underline flex items-center gap-0.5"
               >
                 <MapPin className="w-2.5 h-2.5" />
@@ -506,7 +518,10 @@ export default function ExplorePanel() {
             </span>
             {!userLocation?.confirmed && (
               <button
-                onClick={() => setSettingsModalOpen(true)}
+                onClick={() => {
+                  setExploreOpen(false);
+                  setSettingsModalOpen(true);
+                }}
                 className="text-[10.5px] text-emerald-400 hover:text-emerald-300 font-medium hover:underline flex items-center gap-0.5"
               >
                 <MapPin className="w-2.5 h-2.5" />

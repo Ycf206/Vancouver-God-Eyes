@@ -254,11 +254,13 @@ export default function TopBar() {
         {/* 探索按鈕 (位於搜尋欄右方、贊助支持左方) */}
         <button 
           onClick={toggleExplore}
-          className="flex items-center gap-1.5 px-3 h-9 bg-[#25262b] hover:bg-[#2c2d33] border border-[#373a40] hover:border-emerald-500/50 rounded-md transition-all group shadow-sm text-gray-300 hover:text-emerald-400 text-xs font-semibold"
-          title="探索 Vancouver（燃油比價、即時路況等）"
+          className="flex items-center justify-center group h-9 px-2.5 bg-[#25262b] hover:bg-[#2c2d33] border border-[#373a40] hover:border-emerald-500/50 rounded-md transition-all shadow-sm text-gray-300 hover:text-emerald-400 text-xs font-semibold"
+          title="探索Vancouver"
         >
-          <Compass className="w-4 h-4 text-emerald-400/80 group-hover:text-emerald-400 group-hover:rotate-45 transition-transform" />
-          <span className="hidden sm:inline">探索</span>
+          <Compass className="w-4 h-4 text-emerald-400/80 group-hover:text-emerald-400 group-hover:rotate-45 transition-transform shrink-0" />
+          <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[140px] group-hover:opacity-100 group-hover:ml-1.5 transition-all duration-300 whitespace-nowrap hidden sm:inline">
+            探索Vancouver
+          </span>
         </button>
 
         {/* 贊助支持按鈕 (愛心圖示，位於回報問題左側) */}
