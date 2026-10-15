@@ -69,6 +69,7 @@ export interface UIState {
     snowRemovalRoutes: boolean;
     maritimeShipping: boolean;
     marineTerminals: boolean;
+    crimeAreas: boolean;
   };
   contourInterval: 'off' | '1m' | '2m' | '10m';
   setContourInterval: (interval: 'off' | '1m' | '2m' | '10m') => void;
@@ -177,6 +178,7 @@ export const useUIStore = create<UIState>()(
         snowRemovalRoutes: false,
         maritimeShipping: true,
         marineTerminals: true,
+        crimeAreas: false,
       },
       timeFormat: '24h',
       setTimeFormat: (format) => set({ timeFormat: format }),
@@ -279,6 +281,7 @@ export const useUIStore = create<UIState>()(
             oneWayStreets: persistedState?.layers?.oneWayStreets || false,
             snowRemovalRoutes: persistedState?.layers?.snowRemovalRoutes || false,
             marineTerminals: persistedState?.layers?.marineTerminals ?? true,
+            crimeAreas: persistedState?.layers?.crimeAreas || false,
           },
         };
       },

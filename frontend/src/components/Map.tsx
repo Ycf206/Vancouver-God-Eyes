@@ -1209,6 +1209,45 @@ export default function AppMap() {
     style.sources['snow_removal_routes'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/snow_removal_routes` };
     style.sources['marine_terminals'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/marine_terminals` };
     style.sources['aed'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/aed` };
+    style.sources['crime_areas'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/crime_areas` };
+
+    // Crime Areas (罪案地區 - 各區犯罪率面圖層)
+    if (layers.crimeAreas) {
+      style.layers.push({
+        id: 'crime-areas-fill',
+        type: 'fill',
+        source: 'crime_areas',
+        paint: {
+          'fill-color': ['get', 'color'],
+          'fill-opacity': 0.35
+        }
+      });
+      style.layers.push({
+        id: 'crime-areas-line',
+        type: 'line',
+        source: 'crime_areas',
+        paint: {
+          'line-color': ['get', 'color'],
+          'line-width': 2.0,
+          'line-opacity': 0.85
+        }
+      });
+      style.layers.push({
+        id: 'crime-areas-label',
+        type: 'symbol',
+        source: 'crime_areas',
+        layout: {
+          'text-field': ['concat', ['get', 'name_zh'], '\n', ['get', 'density_label']],
+          'text-size': 11,
+          'text-allow-overlap': false
+        },
+        paint: {
+          'text-color': '#ffffff',
+          'text-halo-color': '#000000',
+          'text-halo-width': 2
+        }
+      });
+    }
 
     // Bus Routes & Stops (Merged under busRoutes) - 當正在搜尋特定巴士路線或選中特定巴士時，只顯示該專屬路線，不繪製底圖全域 99 及 R1~R6 路線
     if (layers.busRoutes && !searchedBusRoute && !selectedBus) {
@@ -2405,6 +2444,7 @@ export default function AppMap() {
     layers.oneWayStreets,
     layers.snowRemovalRoutes,
     layers.marineTerminals,
+    layers.crimeAreas,
     contourInterval,
     mapStyleType
   ]);
@@ -4385,16 +4425,6 @@ export default function AppMap() {
                   </div>
 
                   <div className="pt-1 border-t border-gray-100 flex flex-col gap-1">
-                    {selectedFacility.properties.directions_url && (
-                      <a
-                        href={selectedFacility.properties.directions_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-amber-600 hover:bg-amber-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
-                      >
-                        前往 Google 地圖導航避難路線 ↗
-                      </a>
-                    )}
                     <a
                       href="https://vancouver.ca/home-property-development/disaster-support-hubs.aspx"
                       target="_blank"
@@ -5622,6 +5652,47 @@ export default function AppMap() {
           </svg>
         </div>
       </div>
+
+      {/* 罪案地區圖例卡片 (Crime Rate Legend) */}
+      {layers.crimeAreas && (
+        <div className="absolute bottom-6 left-4 z-20 bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-[#2a2f3d] select-none max-w-[340px] animate-in fade-in duration-200">
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_6px_rgba(244,63,94,0.6)]"></span>
+              <span className="text-[11px] font-bold text-gray-200">每年每平方公里警方記錄罪案數</span>
+            </div>
+            <span className="text-[10px] text-gray-400 font-mono">2026</span>
+          </div>
+
+          {/* 5 階色塊指示條 */}
+          <div className="grid grid-cols-5 gap-1.5 mb-1.5">
+            <div className="flex flex-col items-center gap-1">
+              <div className="w-full h-2.5 rounded-full bg-[#94a3b8] shadow-sm"></div>
+              <span className="text-[9px] text-gray-300 whitespace-nowrap">少過10</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <div className="w-full h-2.5 rounded-full bg-[#2e7d32] shadow-sm"></div>
+              <span className="text-[9px] text-gray-300 whitespace-nowrap">10–50</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <div className="w-full h-2.5 rounded-full bg-[#6ee7b7] shadow-sm"></div>
+              <span className="text-[9px] text-gray-300 whitespace-nowrap">50–150</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <div className="w-full h-2.5 rounded-full bg-[#f59e0b] shadow-sm"></div>
+              <span className="text-[9px] text-gray-300 whitespace-nowrap">150–400</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <div className="w-full h-2.5 rounded-full bg-[#dc2626] shadow-sm"></div>
+              <span className="text-[9px] text-gray-300 whitespace-nowrap">400+</span>
+            </div>
+          </div>
+
+          <div className="text-[10px] text-gray-400 text-center pt-1 border-t border-[#262b38]/80">
+            只供參考，唔係安全評分。
+          </div>
+        </div>
+      )}
 
       {/* 搜尋路線時若尚未選取車輛，在右上方顯示精簡提示卡 */}
       {searchedBusRoute && !selectedBus && (

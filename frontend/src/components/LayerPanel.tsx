@@ -8,7 +8,7 @@ import {
   Flame, Building2, Hospital, ChevronLeft, Trees, Footprints, Flower2, 
   Droplets, Bath, Leaf, Landmark, GraduationCap, BookOpen, UtensilsCrossed, Bed, Heart,
   Plane, PlaneTakeoff, Calendar, Car, ShieldAlert, LifeBuoy, HeartPulse, Mountain,
-  Compass, MapPin, Fuel, Train, Anchor, ArrowRight, Snowflake
+  Compass, MapPin, Fuel, Train, Anchor, ArrowRight, Snowflake, Fingerprint
 } from 'lucide-react';
 
 // Helper component for Tesla Icon
@@ -313,6 +313,7 @@ export default function LayerPanel() {
             <LayerButton layerKey="fireHalls" label="消防" icon={Flame} colorClass="text-rose-400" activeBg="bg-[#2a171a]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.15)]" />
             <LayerButton layerKey="hospitals" label="醫療" icon={Hospital} colorClass="text-emerald-400" activeBg="bg-[#13271d]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
             <LayerButton layerKey="police" label="警察" icon={ShieldAlert} colorClass="text-blue-400" activeBg="bg-[#142338]" activeBorder="border-blue-500/50" activeShadow="shadow-[0_0_6px_rgba(59,130,246,0.15)]" />
+            <LayerButton layerKey="crimeAreas" label="罪案地區" icon={Fingerprint} colorClass="text-rose-400" activeBg="bg-[#2c1619]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.2)]" />
             <LayerButton layerKey="disasterHubs" label="災害支援中心" icon={LifeBuoy} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
           </div>
         </div>

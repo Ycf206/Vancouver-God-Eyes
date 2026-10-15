@@ -1811,7 +1811,7 @@ _contours_caches = {
 }
 _curated_static_caches = {}
 
-CURATED_STATIC_TYPES = ("bikeways", "hospitals", "police", "disaster_hubs", "car_sharing", "aed", "local_area_boundary", "fuel", "ev_charging", "tesla", "marine_terminals", "one_way_streets", "snow_removal_routes")
+CURATED_STATIC_TYPES = ("bikeways", "hospitals", "police", "disaster_hubs", "car_sharing", "aed", "local_area_boundary", "fuel", "ev_charging", "tesla", "marine_terminals", "one_way_streets", "snow_removal_routes", "crime_areas")
 
 @app.get("/api/geojson/road/{facility_type}")
 def get_road_facilities_geojson(facility_type: str, interval: str = "10m", db: Session = Depends(database.get_db)):
