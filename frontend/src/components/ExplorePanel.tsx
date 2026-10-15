@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
+import { formatShipEta } from '@/utils/time';
 
 interface WeatherHourlyItem {
   time: string;
@@ -141,7 +142,74 @@ interface FerryRoute {
   vessels: FerryVessel[];
 }
 
+class ExploreErrorBoundary extends React.Component<
+  { children: React.ReactNode; onClose: () => void },
+  { hasError: boolean; error?: Error }
+> {
+  constructor(props: { children: React.ReactNode; onClose: () => void }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('ExplorePanel caught error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div 
+          className="fixed top-[72px] right-4 z-40 w-[380px] max-w-[calc(100vw-32px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-4 shadow-2xl border border-[#2a2f3d] flex flex-col select-none"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#262b38] shrink-0">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0 shadow-sm">
+                <Compass className="w-4 h-4" />
+              </div>
+              <h2 className="text-base font-bold text-white tracking-wide">探索</h2>
+            </div>
+            <button
+              onClick={this.props.onClose}
+              className="text-gray-400 hover:text-white p-1 rounded-md hover:bg-[#252a38] transition-colors"
+              title="關閉"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+          <div className="py-8 text-center flex flex-col items-center gap-3">
+            <AlertTriangle className="w-8 h-8 text-amber-400" />
+            <p className="text-xs text-gray-300">探索面板載入遇到暫時性問題</p>
+            <button
+              onClick={() => this.setState({ hasError: false })}
+              className="px-3.5 py-1.5 text-xs bg-emerald-600 hover:bg-emerald-500 text-white rounded-md font-semibold transition-colors shadow-sm"
+            >
+              重新整理
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export default function ExplorePanel() {
+  const { isExploreOpen, setExploreOpen, setSearchTarget } = useUIStore();
+  if (!isExploreOpen) return null;
+
+  return (
+    <ExploreErrorBoundary onClose={() => { setExploreOpen(false); setSearchTarget(null); }}>
+      <ExploreContent />
+    </ExploreErrorBoundary>
+  );
+}
+
+function ExploreContent() {
   const { 
     isExploreOpen, 
     setExploreOpen, 
@@ -149,50 +217,54 @@ export default function ExplorePanel() {
     setSettingsModalOpen,
     distanceUnit,
     temperatureUnit,
+    timeFormat,
     setSearchTarget,
     enableLayer
   } = useUIStore();
 
   // 氣溫單位轉換輔助函式
-  const formatTemp = (celsius?: number | null) => {
-    if (celsius === undefined || celsius === null || isNaN(celsius)) return '--';
+  const formatTemp = (celsius?: number | string | null) => {
+    if (celsius === undefined || celsius === null || isNaN(Number(celsius))) return '--';
+    const num = Number(celsius);
     if (temperatureUnit === 'fahrenheit') {
-      return `${Math.round((celsius * 9) / 5 + 32)}°F`;
+      return `${Math.round((num * 9) / 5 + 32)}°F`;
     }
-    return `${Math.round(celsius)}°C`;
+    return `${Math.round(num)}°C`;
   };
 
-  const formatTempNumber = (celsius?: number | null) => {
-    if (celsius === undefined || celsius === null || isNaN(celsius)) return '--';
+  const formatTempNumber = (celsius?: number | string | null) => {
+    if (celsius === undefined || celsius === null || isNaN(Number(celsius))) return '--';
+    const num = Number(celsius);
     if (temperatureUnit === 'fahrenheit') {
-      return Math.round((celsius * 9) / 5 + 32);
+      return Math.round((num * 9) / 5 + 32);
     }
-    return Math.round(celsius);
+    return Math.round(num);
   };
 
-  const renderWeatherMiniIcon = (iconType: string) => {
-    if (iconType === 'sunny') {
+  const renderWeatherMiniIcon = (iconType?: string) => {
+    const it = String(iconType || '').toLowerCase();
+    if (it === 'sunny') {
       return (
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-400">
           <circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>
         </svg>
       );
     }
-    if (iconType?.includes('rain') || iconType === 'drizzle') {
+    if (it.includes('rain') || it === 'drizzle') {
       return (
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-sky-400">
           <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M16 14v6"/><path d="M8 14v6"/><path d="M12 16v6"/>
         </svg>
       );
     }
-    if (iconType?.includes('thunder')) {
+    if (it.includes('thunder')) {
       return (
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-300">
           <path d="M19 16.9A5 5 0 0 0 18 7h-1.26a8 8 0 1 0-11.62 9"/><path d="m13 11-4 6h6l-4 6"/>
         </svg>
       );
     }
-    if (iconType?.includes('snow')) {
+    if (it.includes('snow')) {
       return (
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-cyan-200">
           <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M8 15h.01"/><path d="M8 19h.01"/><path d="M12 17h.01"/><path d="M12 21h.01"/><path d="M16 15h.01"/><path d="M16 19h.01"/>
@@ -603,7 +675,7 @@ export default function ExplorePanel() {
               <div className="flex flex-col">
                 <span className="text-[11px] text-gray-400 font-medium">您的地區</span>
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-extrabold text-white tracking-wide">{weather.city}</h3>
+                  <h3 className="text-xl font-extrabold text-white tracking-wide">{weather.city || '溫哥華'}</h3>
                   <span className="text-[10px] text-sky-400/90 font-mono bg-sky-950/60 border border-sky-800/40 px-2 py-0.5 rounded-full">
                     加拿大環境部即時
                   </span>
@@ -637,13 +709,13 @@ export default function ExplorePanel() {
                       {formatTemp(weather.temperature)}
                     </div>
                     <div className="text-sm font-medium text-gray-200 mt-1.5 flex items-center gap-1.5">
-                      <span>{weather.condition}</span>
+                      <span>{weather.condition || '多雲'}</span>
                       <span>·</span>
                       <span>體感 {formatTemp(weather.apparent_temperature)}</span>
                     </div>
                     <div className="text-xs text-gray-400 mt-1 flex items-center gap-1">
                       <Wind className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-                      <span>{weather.wind_speed_kmh} km/h {weather.wind_direction ? `(${weather.wind_direction})` : ''}</span>
+                      <span>{weather.wind_speed_kmh ?? 8} km/h {weather.wind_direction ? `(${weather.wind_direction})` : ''}</span>
                     </div>
                   </div>
                 </div>
@@ -680,21 +752,21 @@ export default function ExplorePanel() {
                     <Droplets className="w-3 h-3 text-cyan-400" />
                     <span>相對濕度</span>
                   </span>
-                  <span className="text-sm font-bold text-gray-100 font-mono mt-1">{weather.humidity}%</span>
+                  <span className="text-sm font-bold text-gray-100 font-mono mt-1">{weather.humidity ?? 78}%</span>
                 </div>
                 <div className="bg-[#12151e] border border-[#232838] p-2.5 rounded-lg flex flex-col">
                   <span className="text-[10.5px] text-gray-400 flex items-center gap-1">
                     <Gauge className="w-3 h-3 text-indigo-400" />
                     <span>大氣氣壓</span>
                   </span>
-                  <span className="text-sm font-bold text-gray-100 font-mono mt-1">{weather.pressure_kpa} kPa</span>
+                  <span className="text-sm font-bold text-gray-100 font-mono mt-1">{weather.pressure_kpa ?? 101.5} kPa</span>
                 </div>
                 <div className="bg-[#12151e] border border-[#232838] p-2.5 rounded-lg flex flex-col">
                   <span className="text-[10.5px] text-gray-400 flex items-center gap-1">
                     <Eye className="w-3 h-3 text-emerald-400" />
                     <span>能見度</span>
                   </span>
-                  <span className="text-sm font-bold text-gray-100 font-mono mt-1">{weather.visibility_km} km</span>
+                  <span className="text-sm font-bold text-gray-100 font-mono mt-1">{weather.visibility_km ?? 24} km</span>
                 </div>
               </div>
 
@@ -815,7 +887,7 @@ export default function ExplorePanel() {
 
                   {/* Vessels under this route */}
                   <div className="flex flex-col gap-1.5">
-                    {route.vessels.map((v) => (
+                    {(route?.vessels || []).map((v) => (
                       <div
                         key={v.id}
                         onClick={() => handleSelectFerry(v)}
@@ -835,7 +907,7 @@ export default function ExplorePanel() {
                         <div className="w-full bg-[#1e2330] h-1.5 rounded-full overflow-hidden">
                           <div 
                             className="bg-[#38bdf8] h-full rounded-full transition-all duration-500 shadow-[0_0_8px_rgba(56,189,248,0.5)]" 
-                            style={{ width: `${Math.max(4, Math.min(100, v.progress))}%` }} 
+                            style={{ width: `${Math.max(4, Math.min(100, Number(v.progress) || 50))}%` }} 
                           />
                         </div>
 
@@ -953,9 +1025,10 @@ export default function ExplorePanel() {
               </div>
             ) : (
               filteredFuelStations.map((st) => {
+                const distKm = Number(st.distance_km) || 0;
                 const distDisplay = distanceUnit === 'imperial'
-                  ? `${(st.distance_km * 0.621371).toFixed(1)} 英里`
-                  : `${st.distance_km.toFixed(1)} 公里`;
+                  ? `${(distKm * 0.621371).toFixed(1)} 英里`
+                  : `${distKm.toFixed(1)} 公里`;
 
                 return (
                   <div
@@ -976,7 +1049,7 @@ export default function ExplorePanel() {
 
                     <div className="text-right shrink-0">
                       <div className="text-sm font-bold font-mono text-amber-400 tracking-tight">
-                        {st.price_current.toFixed(1)}¢
+                        {(Number(st.price_current) || 0).toFixed(1)}¢
                       </div>
                       <div className="text-[10.5px] font-mono text-gray-400 mt-0.5">
                         {distDisplay}
@@ -1074,9 +1147,11 @@ export default function ExplorePanel() {
               </div>
             ) : (
               evStations.map((st) => {
+                const distKm = Number(st.distance_km) || 0;
                 const distDisplay = distanceUnit === 'imperial'
-                  ? `${(st.distance_km * 0.621371).toFixed(1)} 英里`
-                  : `${st.distance_km.toFixed(1)} 公里`;
+                  ? `${(distKm * 0.621371).toFixed(1)} 英里`
+                  : `${distKm.toFixed(1)} 公里`;
+                const powerKw = Number(st.power_kw) || 0;
 
                 return (
                   <div
@@ -1097,9 +1172,9 @@ export default function ExplorePanel() {
 
                     <div className="text-right shrink-0">
                       <div className={`text-sm font-bold font-mono tracking-tight ${
-                        st.power_kw >= 150 ? 'text-lime-400' : st.power_kw >= 50 ? 'text-emerald-400' : 'text-sky-400'
+                        powerKw >= 150 ? 'text-lime-400' : powerKw >= 50 ? 'text-emerald-400' : 'text-sky-400'
                       }`}>
-                        {st.power_kw} kW
+                        {powerKw} kW
                       </div>
                       <div className="text-[10.5px] font-mono text-gray-400 mt-0.5">
                         {st.is_free ? '免費' : st.cost} · {distDisplay}
@@ -1160,27 +1235,29 @@ export default function ExplorePanel() {
                         )}
                       </div>
                       <span className={`text-[10px] px-1.5 py-0.5 rounded border font-medium shrink-0 ${typeBg}`}>
-                        {ship.ship_type.split(' ')[0]}
+                        {(ship.ship_type || '商船').split(' ')[0]}
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between text-[11px] text-gray-400">
                       <div className="flex items-center gap-1.5">
                         <span className={`font-medium ${statusColor}`}>
-                          {ship.nav_status.split(' ')[0]}
+                          {(ship.nav_status || '航行中').split(' ')[0]}
                         </span>
                         <span>·</span>
-                        <span className="font-mono text-gray-300">{ship.sog} 節 ({Math.round(ship.sog * 1.852)} km/h)</span>
+                        <span className="font-mono text-gray-300">
+                          {ship.sog != null ? ship.sog : 0} 節 ({Math.round((Number(ship.sog) || 0) * 1.852)} km/h)
+                        </span>
                       </div>
                       <span className="font-mono text-gray-500 text-[10px]">
-                        {Math.round(ship.cog)}° 航向
+                        {Math.round(Number(ship.cog) || 0)}° 航向
                       </span>
                     </div>
 
                     {ship.destination && (
                       <div className="flex items-center justify-between text-[10px] pt-1 border-t border-[#232838] text-gray-500">
                         <span className="truncate max-w-[200px]">目的地: {ship.destination}</span>
-                        {ship.eta && <span className="shrink-0">{ship.eta}</span>}
+                        {ship.eta && <span className="shrink-0 font-mono text-[10px] text-gray-400">{formatShipEta(ship.eta, timeFormat)}</span>}
                       </div>
                     )}
                   </div>
@@ -1194,10 +1271,10 @@ export default function ExplorePanel() {
       {/* Footer */}
       <div className="mt-3 pt-2.5 border-t border-[#262b38] flex items-center justify-between text-[11px] text-gray-400 shrink-0">
         <span className="font-mono text-[10px]">
-          {activeTab === 'weather' && (weather ? `${weather.city} · ${weather.condition} · ${formatTemp(weather.temperature)}` : '加拿大環境部氣象數據')}
+          {activeTab === 'weather' && (weather ? `${weather.city || '溫哥華'} · ${weather.condition || '多雲'} · ${formatTemp(weather.temperature)}` : '加拿大環境部氣象數據')}
           {activeTab === 'fuel' && `共收錄 ${filteredFuelStations.length} 間加油站`}
           {activeTab === 'ev' && `共收錄 ${evStations.length} 座充電站`}
-          {activeTab === 'ferry' && `共 ${ferryRoutes.reduce((acc, r) => acc + r.vessels.length, 0)} 艘渡輪即時航行中`}
+          {activeTab === 'ferry' && `共 ${ferryRoutes.reduce((acc, r) => acc + (r?.vessels?.length || 0), 0)} 艘渡輪即時航行中`}
           {activeTab === 'cargo' && `共追蹤 ${shippingVessels.length} 艘溫哥華港口商船 (Aisstream.io)`}
         </span>
         <button

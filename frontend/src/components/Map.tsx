@@ -7,7 +7,7 @@ import Map, { NavigationControl, Marker, Popup, MapRef, Source, Layer } from 're
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl, getWsUrl } from '@/utils/api';
-import { formatTimePreference } from '@/utils/time';
+import { formatTimePreference, formatShipEta } from '@/utils/time';
 import { LocateFixed, Train, Compass } from 'lucide-react';
 
 // Fix Next.js App Router Web Worker crash
@@ -1167,6 +1167,7 @@ export default function AppMap() {
     style.sources['local-area-boundary'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/local_area_boundary` };
     style.sources['fuel'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/fuel` };
     style.sources['tesla'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/tesla` };
+    style.sources['one_way_streets'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/one_way_streets` };
     style.sources['marine_terminals'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/marine_terminals` };
     style.sources['aed'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/aed` };
 
@@ -1309,6 +1310,59 @@ export default function AppMap() {
           ],
           'line-width': ['interpolate', ['linear'], ['zoom'], 10, 1.6, 13, 3.0, 16, 4.8],
           'line-opacity': 0.94
+        }
+      });
+    }
+
+    // Road Facilities: One-Way Streets (單程路 LineString with Directional Arrows)
+    if (layers.oneWayStreets) {
+      style.layers.push({
+        id: 'one-way-streets-casing-layer',
+        type: 'line',
+        source: 'one_way_streets',
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        paint: {
+          'line-color': '#0f172a',
+          'line-width': ['interpolate', ['linear'], ['zoom'], 11, 2.8, 14, 5.0, 17, 8.0],
+          'line-opacity': 0.8
+        }
+      });
+      style.layers.push({
+        id: 'one-way-streets-layer',
+        type: 'line',
+        source: 'one_way_streets',
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        paint: {
+          'line-color': '#f59e0b',
+          'line-width': ['interpolate', ['linear'], ['zoom'], 11, 1.8, 14, 3.4, 17, 5.8],
+          'line-opacity': 0.95
+        }
+      });
+      style.layers.push({
+        id: 'one-way-streets-arrows',
+        type: 'symbol',
+        source: 'one_way_streets',
+        minzoom: 13,
+        layout: {
+          'symbol-placement': 'line',
+          'symbol-spacing': 75,
+          'text-field': '▶',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 9, 15, 12, 17, 16],
+          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+          'text-keep-upright': false,
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#111827',
+          'text-halo-color': '#fbbf24',
+          'text-halo-width': 1.5
         }
       });
     }
@@ -2353,6 +2407,7 @@ export default function AppMap() {
           'tesla-symbol-layer',
           'marine-terminals-layer',
           'marine-terminals-symbol-layer',
+          'one-way-streets-layer',
           'contours-layer',
           'contours-label-layer'
         ]}
@@ -2422,6 +2477,20 @@ export default function AppMap() {
               facility_type: 'bikeways',
               name: props.name || '溫哥華單車專用道',
               local_area: props.local_area || '溫哥華市',
+              lon: clickLon,
+              lat: clickLat,
+              properties: props
+            });
+          } else if (layerId === 'one-way-streets-layer' || layerId === 'one-way-streets-casing-layer' || layerId === 'one-way-streets-arrows') {
+            setSelectedStop(null);
+            const props = feature.properties || {};
+            const clickLon = e.lngLat?.lng ?? -123.1207;
+            const clickLat = e.lngLat?.lat ?? 49.2827;
+            setSelectedFacility({
+              id: props.hblock ? `oneway_${props.hblock}` : `oneway_${clickLon}_${clickLat}`,
+              facility_type: 'one_way_streets',
+              name: props.hblock || '單程路',
+              local_area: '溫哥華單向道路管制',
               lon: clickLon,
               lat: clickLat,
               properties: props
@@ -3153,7 +3222,7 @@ export default function AppMap() {
                 {selectedMaritimeVessel.eta && (
                   <div className="flex justify-between items-center text-xs">
                     <span className="text-gray-500 text-[11px]">預計抵達 (ETA)</span>
-                    <span className="font-medium text-gray-700 text-[11px]">{selectedMaritimeVessel.eta}</span>
+                    <span className="font-medium text-gray-700 text-[11px]">{formatShipEta(selectedMaritimeVessel.eta, timeFormat)}</span>
                   </div>
                 )}
                 <div className="flex justify-between items-center text-xs pt-1 border-t border-gray-200/60">
@@ -3678,13 +3747,13 @@ export default function AppMap() {
             offset={[0, -10]}
             maxWidth={
               selectedFacility.facility_type === 'traffic_cameras' ? '400px' : 
-              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals') ? '360px' : 
+              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets') ? '360px' : 
               '320px'
             }
           >
             <div className={`p-3.5 ${
               selectedFacility.facility_type === 'traffic_cameras' ? 'w-[360px]' : 
-              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals') ? 'w-[340px]' : 
+              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets') ? 'w-[340px]' : 
               'w-[290px]'
             } max-w-[90vw] text-gray-800`}>
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
@@ -3692,6 +3761,7 @@ export default function AppMap() {
                   <span className={`w-3 h-3 rounded-full flex-shrink-0 ${
                     selectedFacility.facility_type === 'tesla' ? 'bg-red-600' :
                     selectedFacility.facility_type === 'marine_terminals' ? 'bg-cyan-600' :
+                    selectedFacility.facility_type === 'one_way_streets' ? 'bg-amber-500' :
                     selectedFacility.facility_type === 'fuel' ? 'bg-amber-500' :
                     selectedFacility.facility_type === 'parking_meters' ? 'bg-amber-500' :
                     selectedFacility.facility_type === 'accessible_parking' ? 'bg-sky-500' :
@@ -5305,6 +5375,45 @@ export default function AppMap() {
                         <span>碼頭地址</span>
                         <span className="text-gray-700 text-right truncate max-w-[190px]">
                           {selectedFacility.properties.address}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* One-Way Streets (單程路) Details */}
+              {selectedFacility.facility_type === 'one_way_streets' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/25 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-amber-950 text-xs flex items-center gap-1.5">
+                        <span className="text-base text-amber-600 font-bold">➡️</span>
+                        <span>{selectedFacility.name}</span>
+                      </span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-600 text-white shrink-0">
+                        單程管制
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-amber-900 font-medium">
+                      ⚠️ 單向行車路段，請依地面標線與箭頭方向行駛
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                    {selectedFacility.properties.hblock && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>街區路段</span>
+                        <span className="font-bold text-gray-900 text-right truncate max-w-[190px]">
+                          {selectedFacility.properties.hblock}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.streetuse && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>道路等級分類</span>
+                        <span className="font-semibold text-gray-800 text-right">
+                          {selectedFacility.properties.streetuse}
                         </span>
                       </div>
                     )}

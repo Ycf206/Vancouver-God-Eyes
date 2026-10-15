@@ -51,3 +51,80 @@ export function formatClock(date: Date, format: '12h' | '24h' = '24h'): string {
     second: '2-digit',
   });
 }
+
+/**
+ * Format shipping ETA with date as dd/MM/yyyy and time based on 12h/24h user preference.
+ * E.g. "10-15 14:30" -> 24h: "15/10/2026 14:30"
+ *                     -> 12h: "15/10/2026 02:30 PM"
+ */
+export function formatShipEta(
+  etaStr: string | null | undefined,
+  format: '12h' | '24h' = '24h'
+): string {
+  if (!etaStr) return '';
+  const s = String(etaStr).trim();
+  if (!s || s === '--') return '';
+
+  let year = new Date().getFullYear();
+  let month = 0;
+  let day = 0;
+  let hour = 0;
+  let min = 0;
+  let parsed = false;
+
+  // 1. ISO or YYYY-MM-DD HH:mm(:ss)
+  const fullMatch = s.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})[T ](\d{1,2}):(\d{1,2})/);
+  if (fullMatch) {
+    year = parseInt(fullMatch[1], 10);
+    month = parseInt(fullMatch[2], 10);
+    day = parseInt(fullMatch[3], 10);
+    hour = parseInt(fullMatch[4], 10);
+    min = parseInt(fullMatch[5], 10);
+    parsed = true;
+  }
+
+  // 2. AIS standard: MM-DD HH:mm or MM/DD HH:mm
+  if (!parsed) {
+    const mmddMatch = s.match(/^(\d{1,2})[-/](\d{1,2})[T ](\d{1,2}):(\d{1,2})/);
+    if (mmddMatch) {
+      month = parseInt(mmddMatch[1], 10);
+      day = parseInt(mmddMatch[2], 10);
+      hour = parseInt(mmddMatch[3], 10);
+      min = parseInt(mmddMatch[4], 10);
+      parsed = true;
+    }
+  }
+
+  // 3. Fallback date parse
+  if (!parsed) {
+    const d = new Date(s);
+    if (!isNaN(d.getTime())) {
+      year = d.getFullYear();
+      month = d.getMonth() + 1;
+      day = d.getDate();
+      hour = d.getHours();
+      min = d.getMinutes();
+      parsed = true;
+    }
+  }
+
+  if (!parsed || month < 1 || month > 12 || day < 1 || day > 31) {
+    return s;
+  }
+
+  const dd = String(day).padStart(2, '0');
+  const mm = String(month).padStart(2, '0');
+  const yyyy = String(year);
+  const dateStr = `${dd}/${mm}/${yyyy}`;
+
+  if (format === '12h') {
+    const period = hour >= 12 ? 'PM' : 'AM';
+    const h12 = hour % 12 || 12;
+    const timeStr = `${String(h12).padStart(2, '0')}:${String(min).padStart(2, '0')} ${period}`;
+    return `${dateStr} ${timeStr}`;
+  } else {
+    const timeStr = `${String(hour).padStart(2, '0')}:${String(min).padStart(2, '0')}`;
+    return `${dateStr} ${timeStr}`;
+  }
+}
+

@@ -8,7 +8,7 @@ import {
   Flame, Building2, Hospital, ChevronLeft, Trees, Footprints, Flower2, 
   Droplets, Bath, Leaf, Landmark, GraduationCap, BookOpen, UtensilsCrossed, Bed, Heart,
   Plane, PlaneTakeoff, Calendar, Car, ShieldAlert, LifeBuoy, HeartPulse, Mountain,
-  Compass, MapPin, Fuel, Train, Anchor
+  Compass, MapPin, Fuel, Train, Anchor, ArrowRight
 } from 'lucide-react';
 
 // Helper component for Tesla Icon
@@ -178,7 +178,7 @@ export default function LayerPanel() {
             <span className="text-[9px] text-[#0060a9] font-mono">BC Ferries</span>
           </div>
           <div className="grid grid-cols-2 gap-1">
-            <LayerButton layerKey="bcferriesVehicles" label="渡輪" icon={Ship} colorClass="text-[#3399ff]" activeBg="bg-[#0f1b2e]" activeBorder="border-[#0060a9]/50" activeShadow="shadow-[0_0_6px_rgba(0,96,169,0.2)]" />
+            <LayerButton layerKey="bcferriesVehicles" label="船隻" icon={Ship} colorClass="text-[#3399ff]" activeBg="bg-[#0f1b2e]" activeBorder="border-[#0060a9]/50" activeShadow="shadow-[0_0_6px_rgba(0,96,169,0.2)]" />
             <LayerButton layerKey="bcferriesRoutes" label="路線" icon={Route} colorClass="text-[#3399ff]" activeBg="bg-[#0f1b2e]" activeBorder="border-[#0060a9]/50" />
           </div>
         </div>
@@ -193,7 +193,7 @@ export default function LayerPanel() {
             <span className="text-[9px] text-cyan-500/70 font-mono">AIS · PORT</span>
           </div>
           <div className="grid grid-cols-2 gap-1">
-            <LayerButton layerKey="maritimeShipping" label="即時船隻" icon={Ship} colorClass="text-cyan-400" activeBg="bg-[#0e2730]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.2)]" />
+            <LayerButton layerKey="maritimeShipping" label="船隻" icon={Ship} colorClass="text-cyan-400" activeBg="bg-[#0e2730]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.2)]" />
             <LayerButton layerKey="marineTerminals" label="碼頭" icon={Anchor} colorClass="text-cyan-400" activeBg="bg-[#0e2730]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.2)]" />
           </div>
         </div>
@@ -249,6 +249,7 @@ export default function LayerPanel() {
             <LayerButton layerKey="safetyCameras" label="路口安全相機" icon={Siren} colorClass="text-rose-400" activeBg="bg-[#2b171c]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.15)]" />
             <LayerButton layerKey="fuel" label="加油站" icon={Fuel} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
             <LayerButton layerKey="tesla" label="TESLA" icon={TeslaIcon} colorClass="text-red-500" activeBg="bg-[#2d1417]" activeBorder="border-red-500/60" activeShadow="shadow-[0_0_8px_rgba(232,33,39,0.3)]" />
+            <LayerButton layerKey="oneWayStreets" label="單程路" icon={ArrowRight} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
           </div>
         </div>
 

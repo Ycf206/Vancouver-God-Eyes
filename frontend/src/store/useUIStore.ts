@@ -65,6 +65,7 @@ export interface UIState {
     localAreaBoundary: boolean;
     fuel: boolean;
     tesla: boolean;
+    oneWayStreets: boolean;
     maritimeShipping: boolean;
     marineTerminals: boolean;
   };
@@ -169,6 +170,7 @@ export const useUIStore = create<UIState>()(
         localAreaBoundary: false,
         fuel: false,
         tesla: false,
+        oneWayStreets: false,
         maritimeShipping: true,
         marineTerminals: true,
       },
@@ -263,6 +265,8 @@ export const useUIStore = create<UIState>()(
             contours: contourInterval !== 'off',
             localAreaBoundary: persistedState?.layers?.localAreaBoundary || false,
             fuel: persistedState?.layers?.fuel || false,
+            tesla: persistedState?.layers?.tesla || false,
+            oneWayStreets: persistedState?.layers?.oneWayStreets || false,
             marineTerminals: persistedState?.layers?.marineTerminals ?? true,
           },
         };

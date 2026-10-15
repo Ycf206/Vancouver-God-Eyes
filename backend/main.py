@@ -1811,7 +1811,7 @@ _contours_caches = {
 }
 _curated_static_caches = {}
 
-CURATED_STATIC_TYPES = ("bikeways", "hospitals", "police", "disaster_hubs", "car_sharing", "aed", "local_area_boundary", "fuel", "ev_charging", "tesla", "marine_terminals")
+CURATED_STATIC_TYPES = ("bikeways", "hospitals", "police", "disaster_hubs", "car_sharing", "aed", "local_area_boundary", "fuel", "ev_charging", "tesla", "marine_terminals", "one_way_streets")
 
 @app.get("/api/geojson/road/{facility_type}")
 def get_road_facilities_geojson(facility_type: str, interval: str = "10m", db: Session = Depends(database.get_db)):
@@ -1869,8 +1869,9 @@ def get_road_facilities_geojson(facility_type: str, interval: str = "10m", db: S
                     if db_count < feat_count:
                         for feat in static_geojson.get("features", []):
                             props = feat.get("properties", {})
+                            geom_type = feat.get("geometry", {}).get("type")
                             coords = feat.get("geometry", {}).get("coordinates", [])
-                            if len(coords) >= 2:
+                            if geom_type == "Point" and len(coords) >= 2 and isinstance(coords[0], (int, float)):
                                 lon, lat = coords[0], coords[1]
                                 fac_id = feat.get("id") or props.get("id") or f"{facility_type}_{lon}_{lat}"
                                 fac = models.RoadFacility(
