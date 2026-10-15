@@ -38,6 +38,8 @@ cached_skytrain_trains: list[dict] = []
 
 import flights
 import skytrain_service
+from weather_service import weather_service
+from shipping_service import shipping_service
 
 import math
 def calculate_bearing(p1, p2):
@@ -60,6 +62,11 @@ async def websocket_endpoint(websocket: WebSocket):
             await websocket.send_json({"type": "bc_ferries_update", "data": cached_bcferries_vehicles})
         if cached_skytrain_trains:
             await websocket.send_json({"type": "skytrain_trains_update", "data": cached_skytrain_trains})
+        
+        # Send maritime shipping vessels from Aisstream / Vancouver marine tracking
+        maritime_vessels = shipping_service.get_vessels()
+        if maritime_vessels:
+            await websocket.send_json({"type": "maritime_vessels_update", "data": maritime_vessels})
 
         while True:
             await websocket.receive_text()
@@ -721,12 +728,29 @@ async def broadcast_skytrain_simulation():
             print(f"Error in SkyTrain simulation broadcast: {e}")
         await asyncio.sleep(4)
 
+async def broadcast_maritime_vessels():
+    while True:
+        try:
+            vessels = shipping_service.get_vessels()
+            if active_connections:
+                message = {"type": "maritime_vessels_update", "data": vessels}
+                for connection in list(active_connections):
+                    try:
+                        await connection.send_json(message)
+                    except Exception:
+                        pass
+        except Exception as e:
+            print(f"Error in maritime vessels broadcast: {e}")
+        await asyncio.sleep(4)
+
 @app.on_event("startup")
 async def startup_event():
     asyncio.create_task(fetch_translink_realtime())
     asyncio.create_task(fetch_bcferries_realtime())
     asyncio.create_task(fetch_translink_trip_updates())
     asyncio.create_task(broadcast_skytrain_simulation())
+    asyncio.create_task(shipping_service.run_aisstream_listener())
+    asyncio.create_task(broadcast_maritime_vessels())
 
 @app.get("/api/skytrain/trains")
 def get_skytrain_trains():
@@ -2493,6 +2517,34 @@ async def get_active_ferries_api():
         })
 
     return {"routes": routes_out, "total_vessels": sum(len(r["vessels"]) for r in routes_out)}
+
+
+# ==========================================
+# 🌤️ Weather Current Observations & Alerts
+# ==========================================
+@app.get("/api/weather/current")
+def get_current_weather():
+    """
+    取得大溫哥華地區即時天氣觀測與加拿大環境部 (ECCC api.weather.gc.ca) 氣象預警
+    """
+    return weather_service.fetch_weather()
+
+
+# ==========================================
+# 🚢 Port of Vancouver & AIS Shipping Vessels
+# ==========================================
+@app.get("/api/shipping/vessels")
+def get_shipping_vessels():
+    """
+    取得溫哥華海域即時商船、貨櫃輪、油輪、拖船等 AIS 船舶動態 (Aisstream.io)
+    """
+    vessels = shipping_service.get_vessels()
+    return {
+        "vessels": vessels,
+        "total": len(vessels),
+        "source": "Aisstream.io (即時船舶自動識別系統)"
+    }
+
 
 
 

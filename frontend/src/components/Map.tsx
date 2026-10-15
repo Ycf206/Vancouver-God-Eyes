@@ -55,6 +55,30 @@ interface FerryVehicle {
   bearing: number;
 }
 
+export interface MaritimeVessel {
+  mmsi: string;
+  name: string;
+  imo?: string;
+  callsign?: string;
+  type_code?: number;
+  ship_type: string;
+  type_group: 'cargo' | 'tanker' | 'tug' | 'passenger' | 'other';
+  lat: number;
+  lon: number;
+  sog: number;
+  cog: number;
+  heading: number;
+  nav_status: string;
+  destination?: string;
+  eta?: string;
+  length?: number;
+  width?: number;
+  draft?: number;
+  flag?: string;
+  source?: string;
+  is_live_ais?: boolean;
+}
+
 interface StopInfo {
   id: string;
   name: string;
@@ -145,6 +169,8 @@ export default function AppMap() {
 
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [ferryVehicles, setFerryVehicles] = useState<FerryVehicle[]>([]);
+  const [maritimeVessels, setMaritimeVessels] = useState<MaritimeVessel[]>([]);
+  const [selectedMaritimeVessel, setSelectedMaritimeVessel] = useState<MaritimeVessel | null>(null);
   const [ferryTerminals, setFerryTerminals] = useState<Array<{geometry: {coordinates: number[]}, properties: {name?: string, code: string}}>>([]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedFlight, setSelectedFlight] = useState<any | null>(null);
@@ -493,6 +519,28 @@ export default function AppMap() {
       setSelectedTrain(updated);
     }
   }, [skytrainTrains, selectedTrain]);
+
+  // Fetch initial maritime shipping vessels
+  useEffect(() => {
+    const apiUrl = getApiUrl();
+    fetch(`${apiUrl}/api/shipping/vessels`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.vessels && Array.isArray(data.vessels)) {
+          setMaritimeVessels(data.vessels);
+        }
+      })
+      .catch(err => console.error('Failed to load initial maritime vessels:', err));
+  }, []);
+
+  // Keep selectedMaritimeVessel synced when maritimeVessels updates
+  useEffect(() => {
+    if (!selectedMaritimeVessel) return;
+    const updated = maritimeVessels.find(v => v.mmsi === selectedMaritimeVessel.mmsi);
+    if (updated) {
+      setSelectedMaritimeVessel(updated);
+    }
+  }, [maritimeVessels, selectedMaritimeVessel]);
 
   // Keep selectedBus live coordinates & stop list synced when vehicles update via WebSocket
   useEffect(() => {
@@ -929,8 +977,30 @@ export default function AppMap() {
       setSelectedTerminal(null);
       setSelectedStop(null);
       setSelectedFacility(null);
+    } else if (searchTarget.category === 'maritime_vessel') {
+      setSelectedTerminal(null);
+      setSelectedStop(null);
+      setSelectedFacility(null);
+      setSelectedFlight(null);
       setSelectedAirport(null);
-      setSelectedFlight(searchTarget.meta);
+      setSelectedBus(null);
+      setSelectedTrain(null);
+      setSelectedFerry(null);
+
+      const ship = maritimeVessels.find(v => v.mmsi === searchTarget.id || v.name === searchTarget.title);
+      if (ship) {
+        setSelectedMaritimeVessel(ship);
+      } else if (searchTarget.meta) {
+        setSelectedMaritimeVessel(searchTarget.meta as MaritimeVessel);
+      }
+
+      if (mapRef.current) {
+        mapRef.current.flyTo({
+          center: [searchTarget.lon, searchTarget.lat],
+          zoom: 14,
+          duration: 1200
+        });
+      }
     } else if (
       [
         'fire_halls', 'community_centres', 'ev_charging', 'escooter', 'shared_bikes', 'bikeways',
@@ -993,6 +1063,8 @@ export default function AppMap() {
             setFerryVehicles(message.data);
           } else if (message.type === 'skytrain_trains_update') {
             setSkytrainTrains(message.data);
+          } else if (message.type === 'maritime_vessels_update' && Array.isArray(message.data)) {
+            setMaritimeVessels(message.data);
           }
         } catch (e) {
           console.error('Error parsing websocket message', e);
@@ -2595,6 +2667,52 @@ export default function AppMap() {
           </Marker>
         ))}
 
+        {/* 🚢 Maritime Shipping 港口商船 (Live AIS Shipping from Aisstream.io) */}
+        {layers.maritimeShipping && maritimeVessels.map(ship => {
+          const isSelected = selectedMaritimeVessel?.mmsi === ship.mmsi;
+          const headingDeg = ship.cog || ship.heading || 0;
+          
+          const bgColor = 
+            ship.type_group === 'tanker' ? '#ea580c' :
+            ship.type_group === 'tug' ? '#0891b2' :
+            ship.type_group === 'passenger' ? '#059669' :
+            ship.type_group === 'other' ? '#475569' : '#1d4ed8';
+
+          return (
+            <Marker 
+              key={`ship-${ship.mmsi}`} 
+              longitude={ship.lon} 
+              latitude={ship.lat} 
+              anchor="center"
+              onClick={(e) => {
+                e.originalEvent?.stopPropagation();
+                setSelectedMaritimeVessel(ship);
+              }}
+            >
+              <div 
+                className={`relative flex items-center justify-center w-7 h-7 rounded-full cursor-pointer tooltip border-2 border-white shadow-xl backdrop-blur-sm transition-transform hover:scale-125 z-30 ${
+                  isSelected ? 'ring-4 ring-cyan-400 scale-125 z-40' : ''
+                }`}
+                style={{ backgroundColor: bgColor }}
+                title={`${ship.name} (${ship.ship_type}) · ${ship.sog} 節`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedMaritimeVessel(ship);
+                }}
+              >
+                <div 
+                  className="w-full h-full flex items-center justify-center transition-transform duration-300"
+                  style={{ transform: `rotate(${headingDeg}deg)` }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="white" strokeWidth="1" className="text-white drop-shadow-sm">
+                    <polygon points="12,2 19,21 12,17 5,21" />
+                  </svg>
+                </div>
+              </div>
+            </Marker>
+          );
+        })}
+
         {/* SkyTrain 即時推算列車 (Live Estimated SkyTrain Trains) */}
         {layers.skytrainTrains && skytrainTrains.map(train => {
           const isSelected = selectedTrain?.id === train.id;
@@ -2909,6 +3027,118 @@ export default function AppMap() {
                   </div>
                 </div>
               )}
+            </div>
+          </Popup>
+        )}
+
+        {/* 🚢 Maritime Shipping Vessel Popup (港口船運商船彈出卡) */}
+        {selectedMaritimeVessel && (
+          <Popup
+            longitude={selectedMaritimeVessel.lon}
+            latitude={selectedMaritimeVessel.lat}
+            anchor="bottom"
+            onClose={() => {
+              setSelectedMaritimeVessel(null);
+              setSearchTarget(null);
+            }}
+            closeOnClick={false}
+            closeButton={false}
+            className="z-50"
+            offset={[0, -14]}
+            maxWidth="380px"
+          >
+            <div className="p-3.5 w-[320px] sm:w-[350px] max-w-[90vw] text-gray-800">
+              <div className="flex items-start justify-between pb-2 mb-2.5 border-b border-gray-100">
+                <div className="flex items-center gap-2.5">
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-white shadow-sm flex-shrink-0 ${
+                    selectedMaritimeVessel.type_group === 'tanker' ? 'bg-[#ea580c]' :
+                    selectedMaritimeVessel.type_group === 'tug' ? 'bg-[#0891b2]' :
+                    selectedMaritimeVessel.type_group === 'passenger' ? 'bg-[#059669]' :
+                    selectedMaritimeVessel.type_group === 'other' ? 'bg-[#475569]' : 'bg-[#1d4ed8]'
+                  }`}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M2 21c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1 .6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/>
+                      <path d="M19.38 20A11.6 11.6 0 0 0 21 14l-9-4-9 4c0 2.9.94 5.34 2.81 7.76"/>
+                      <path d="M19 13V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6"/>
+                      <path d="M12 10v4"/>
+                      <path d="M12 2v3"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-900 text-sm leading-tight flex items-center gap-1.5">
+                      <span>{selectedMaritimeVessel.name}</span>
+                      {selectedMaritimeVessel.flag && (
+                        <span className="text-[10px] text-gray-500 font-normal">({selectedMaritimeVessel.flag})</span>
+                      )}
+                    </h3>
+                    <div className="text-[10px] text-sky-700 font-semibold flex items-center gap-1 mt-0.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                      <span>{selectedMaritimeVessel.nav_status || '航行中'}</span>
+                    </div>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => {
+                    setSelectedMaritimeVessel(null);
+                    setSearchTarget(null);
+                  }} 
+                  className="text-gray-400 hover:text-gray-700 text-2xl font-light leading-none px-1 py-0.5 rounded transition-colors focus:outline-none -mt-1"
+                >
+                  &times;
+                </button>
+              </div>
+
+              {/* Vessel specs */}
+              <div className="flex flex-col gap-1.5 mb-2.5 bg-gray-50/80 p-2 rounded-lg border border-gray-100">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-gray-500 text-[11px]">船舶類型</span>
+                  <span className="font-semibold text-gray-800 text-[11px]">{selectedMaritimeVessel.ship_type}</span>
+                </div>
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-gray-500 text-[11px]">即時航速 (SOG)</span>
+                  <span className="font-bold text-emerald-700 font-mono text-[11px]">
+                    {selectedMaritimeVessel.sog} 節 ({Math.round(selectedMaritimeVessel.sog * 1.852)} km/h)
+                  </span>
+                </div>
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-gray-500 text-[11px]">對地航向 / 艏向</span>
+                  <span className="font-medium text-gray-800 font-mono text-[11px]">
+                    {Math.round(selectedMaritimeVessel.cog)}° / {Math.round(selectedMaritimeVessel.heading)}°
+                  </span>
+                </div>
+                {selectedMaritimeVessel.destination && (
+                  <div className="flex justify-between items-center text-xs pt-1 border-t border-gray-200/60">
+                    <span className="text-gray-500 text-[11px]">申報目的地</span>
+                    <span className="font-semibold text-sky-800 text-[11px] truncate max-w-[190px]">
+                      {selectedMaritimeVessel.destination}
+                    </span>
+                  </div>
+                )}
+                {selectedMaritimeVessel.eta && (
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="text-gray-500 text-[11px]">預計抵達 (ETA)</span>
+                    <span className="font-medium text-gray-700 text-[11px]">{selectedMaritimeVessel.eta}</span>
+                  </div>
+                )}
+                <div className="flex justify-between items-center text-xs pt-1 border-t border-gray-200/60">
+                  <span className="text-gray-500 text-[10px]">船體尺寸 / 吃水</span>
+                  <span className="font-mono text-gray-600 text-[10px]">
+                    {selectedMaritimeVessel.length || '--'}m × {selectedMaritimeVessel.width || '--'}m · 吃水 {selectedMaritimeVessel.draft || '--'}m
+                  </span>
+                </div>
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-gray-500 text-[10px]">MMSI / 呼號</span>
+                  <span className="font-mono text-gray-600 text-[10px]">
+                    {selectedMaritimeVessel.mmsi} {selectedMaritimeVessel.callsign ? `· ${selectedMaritimeVessel.callsign}` : ''}
+                  </span>
+                </div>
+              </div>
+
+              {/* Data source attribution */}
+              <div className="flex items-center justify-between text-[10px] text-gray-400 pt-1 border-t border-gray-100">
+                <span>{selectedMaritimeVessel.source || 'Aisstream.io (即時 AIS 串流)'}</span>
+                <span className="text-emerald-600 font-medium">即時連線</span>
+              </div>
             </div>
           </Popup>
         )}
@@ -5008,8 +5238,8 @@ export default function AppMap() {
         </button>
       </div>
 
-      {/* Google Earth 風格固定長度比例圖例 (Google Earth Style Fixed-Width Scale Ruler) */}
-      <div className="absolute bottom-3 right-14 z-20 pointer-events-none select-none">
+      {/* Google Earth 風格固定長度比例圖例 (Google Earth Style Fixed-Width Scale Ruler) - 提高底部間距以防與底圖版權白底甲面重疊 */}
+      <div className="absolute bottom-[38px] right-14 z-20 pointer-events-none select-none">
         <div className="flex flex-col items-end">
           <div className="text-right text-[11px] font-sans font-semibold text-white tracking-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.95)] mb-0.5 leading-none select-none">
             {scaleText}

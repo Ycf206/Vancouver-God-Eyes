@@ -65,6 +65,7 @@ export interface UIState {
     localAreaBoundary: boolean;
     fuel: boolean;
     tesla: boolean;
+    maritimeShipping: boolean;
   };
   contourInterval: 'off' | '1m' | '2m' | '10m';
   setContourInterval: (interval: 'off' | '1m' | '2m' | '10m') => void;
@@ -165,6 +166,7 @@ export const useUIStore = create<UIState>()(
         localAreaBoundary: false,
         fuel: false,
         tesla: false,
+        maritimeShipping: true,
       },
       timeFormat: '24h',
       setTimeFormat: (format) => set({ timeFormat: format }),

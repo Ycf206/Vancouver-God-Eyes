@@ -3,10 +3,64 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Compass, X, Fuel, Zap, Ship, MapPin, 
-  ChevronDown, RefreshCw, Package
+  ChevronDown, RefreshCw, Package, CloudSun, Wind, AlertTriangle, Droplets, Gauge, Eye, Anchor, Navigation
 } from 'lucide-react';
 import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
+
+interface WeatherData {
+  city: string;
+  city_en: string;
+  region?: string;
+  temperature: number;
+  apparent_temperature: number;
+  condition: string;
+  icon_type: string;
+  wind_speed_kmh: number;
+  wind_direction?: string;
+  humidity: number;
+  pressure_kpa: number;
+  visibility_km: number;
+  source: string;
+  source_url: string;
+  updated_at: string;
+  alert: {
+    has_alert: boolean;
+    title: string;
+    severity: string;
+    message: string;
+  };
+  forecast?: Array<{
+    day: string;
+    high: number;
+    low: number;
+    condition: string;
+    icon: string;
+  }>;
+}
+
+interface MaritimeVessel {
+  mmsi: string;
+  name: string;
+  imo?: string;
+  callsign?: string;
+  type_code?: number;
+  ship_type: string;
+  type_group: 'cargo' | 'tanker' | 'tug' | 'passenger' | 'other';
+  lat: number;
+  lon: number;
+  sog: number;
+  cog: number;
+  heading: number;
+  nav_status: string;
+  destination?: string;
+  eta?: string;
+  length?: number;
+  width?: number;
+  draft?: number;
+  flag?: string;
+  source?: string;
+}
 
 interface FuelStation {
   id: string;
@@ -83,8 +137,16 @@ export default function ExplorePanel() {
     enableLayer
   } = useUIStore();
 
-  // 4 Tabs: 渡輪, 燃油, 電動車, 貨運
-  const [activeTab, setActiveTab] = useState<'ferry' | 'fuel' | 'ev' | 'cargo'>('fuel');
+  // 分頁：天氣, 渡輪, 燃油, 電動車, 貨運
+  const [activeTab, setActiveTab] = useState<'weather' | 'ferry' | 'fuel' | 'ev' | 'cargo'>('weather');
+
+  // --- Weather tab states ---
+  const [weather, setWeather] = useState<WeatherData | null>(null);
+  const [loadingWeather, setLoadingWeather] = useState(false);
+
+  // --- Cargo tab states (Port of Vancouver AIS Shipping) ---
+  const [shippingVessels, setShippingVessels] = useState<MaritimeVessel[]>([]);
+  const [loadingShipping, setLoadingShipping] = useState(false);
 
   // --- Fuel tab states ---
   const [fuelType, setFuelType] = useState<'regular' | 'midgrade' | 'premium' | 'diesel'>('regular');
@@ -102,6 +164,24 @@ export default function ExplorePanel() {
   // --- Ferry tab states ---
   const [ferryRoutes, setFerryRoutes] = useState<FerryRoute[]>([]);
   const [loadingFerries, setLoadingFerries] = useState(false);
+
+  // 0. Fetch Weather from ECCC
+  useEffect(() => {
+    if (!isExploreOpen || activeTab !== 'weather') return;
+
+    setLoadingWeather(true);
+    const apiUrl = getApiUrl();
+    fetch(`${apiUrl}/api/weather/current`)
+      .then((res) => res.json())
+      .then((data) => {
+        setWeather(data);
+        setLoadingWeather(false);
+      })
+      .catch((err) => {
+        console.error('Error fetching weather:', err);
+        setLoadingWeather(false);
+      });
+  }, [isExploreOpen, activeTab]);
 
   // 1. Fetch Fuel Stations
   useEffect(() => {
@@ -276,6 +356,42 @@ export default function ExplorePanel() {
     });
   };
 
+  // 4. Fetch Shipping Vessels for Cargo Tab
+  useEffect(() => {
+    if (!isExploreOpen || activeTab !== 'cargo') return;
+
+    setLoadingShipping(true);
+    const apiUrl = getApiUrl();
+    fetch(`${apiUrl}/api/shipping/vessels`)
+      .then((res) => res.json())
+      .then((data) => {
+        setShippingVessels(data.vessels || []);
+        setLoadingShipping(false);
+      })
+      .catch((err) => {
+        console.error('Error fetching shipping vessels:', err);
+        setLoadingShipping(false);
+      });
+  }, [isExploreOpen, activeTab]);
+
+  // Handle Cargo Ship click
+  const handleSelectShip = (ship: MaritimeVessel) => {
+    enableLayer('maritimeShipping');
+    setSearchTarget({
+      id: ship.mmsi,
+      title: ship.name,
+      subtitle: `${ship.ship_type} · ${ship.sog} 節 · ${ship.destination || 'VANCOUVER'}`,
+      category: 'maritime_vessel',
+      layer_key: 'maritimeShipping',
+      badge: ship.ship_type,
+      icon: '🚢',
+      lat: ship.lat,
+      lon: ship.lon,
+      meta: ship,
+      zoom: 14
+    });
+  };
+
   const tabs = [
     { id: 'ferry', label: '渡輪' },
     { id: 'fuel', label: '燃油' },
@@ -308,7 +424,24 @@ export default function ExplorePanel() {
         </button>
       </div>
 
-      {/* 4 Tabs: 渡輪 / 燃油 / 電動車 / 貨運 */}
+      {/* 探索分類分頁 - 第一行 (在現有的 4 個分頁上方開一行新，最左邊第 1 個建立「天氣」分頁) */}
+      <div className="grid grid-cols-4 gap-1.5 p-1.5 bg-[#10131a] rounded-xl border border-[#232836] shrink-0 mb-1.5">
+        <button
+          onClick={() => setActiveTab('weather')}
+          className={`py-2 text-xs font-medium rounded-lg transition-all text-center flex items-center justify-center gap-1.5 ${
+            activeTab === 'weather'
+              ? 'bg-[#2b3345] text-white font-bold shadow-md ring-1 ring-[#3d4760]'
+              : 'text-gray-300 hover:text-white hover:bg-[#1a1f2b]'
+          }`}
+        >
+          <CloudSun className="w-3.5 h-3.5 text-sky-400" />
+          <span>天氣</span>
+        </button>
+        {/* 保留未來新增分頁空間 */}
+        <div className="col-span-3"></div>
+      </div>
+
+      {/* 探索分類分頁 - 第二行 (渡輪 / 燃油 / 電動車 / 貨運) */}
       <div className="grid grid-cols-4 gap-1.5 p-1.5 bg-[#10131a] rounded-xl border border-[#232836] shrink-0 mb-3">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id;
@@ -327,6 +460,141 @@ export default function ExplorePanel() {
           );
         })}
       </div>
+
+      {/* ==================== 0. 天氣分頁 (Weather - ECCC api.weather.gc.ca) ==================== */}
+      {activeTab === 'weather' && (
+        <div className="flex flex-col flex-1 min-h-0 overflow-y-auto pr-1 gap-3 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
+          {loadingWeather && !weather ? (
+            <div className="py-16 flex flex-col items-center justify-center gap-2.5 text-gray-400 text-xs">
+              <RefreshCw className="w-5 h-5 text-sky-400 animate-spin" />
+              <span>讀取加拿大環境部大溫哥華即時氣象中...</span>
+            </div>
+          ) : weather ? (
+            <div className="flex flex-col gap-3">
+              {/* 所在地區與標題 (對標參考截圖) */}
+              <div className="flex flex-col">
+                <span className="text-[11px] text-gray-400 font-medium">您的地區</span>
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-extrabold text-white tracking-wide">{weather.city}</h3>
+                  <span className="text-[10px] text-sky-400/90 font-mono bg-sky-950/60 border border-sky-800/40 px-2 py-0.5 rounded-full">
+                    加拿大環境部即時
+                  </span>
+                </div>
+              </div>
+
+              {/* 核心氣溫與天候卡片 (完全對標截圖風格) */}
+              <div className="bg-[#12151e] border border-[#262c3c] rounded-xl p-4 shadow-lg flex flex-col">
+                <div className="flex items-center gap-4">
+                  {/* 天氣圖示 (簡潔線條風格，如同截圖中的密雲) */}
+                  <div className="w-16 h-16 shrink-0 flex items-center justify-center text-sky-300">
+                    {weather.icon_type === 'sunny' ? (
+                      <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.3)]">
+                        <circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>
+                      </svg>
+                    ) : weather.icon_type?.includes('rain') ? (
+                      <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-sky-300 drop-shadow-[0_0_8px_rgba(56,189,248,0.25)]">
+                        <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M16 14v6"/><path d="M8 14v6"/><path d="M12 16v6"/>
+                      </svg>
+                    ) : (
+                      // 密雲 / 多雲 (如同截圖中的圓潤雲朵)
+                      <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-sky-200 drop-shadow-[0_0_8px_rgba(186,230,253,0.2)]">
+                        <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
+                      </svg>
+                    )}
+                  </div>
+
+                  {/* 氣溫與體感數值 */}
+                  <div className="flex flex-col">
+                    <div className="text-4xl font-extrabold text-white tracking-tight leading-none">
+                      {weather.temperature}°C
+                    </div>
+                    <div className="text-sm font-medium text-gray-200 mt-1.5 flex items-center gap-1.5">
+                      <span>{weather.condition}</span>
+                      <span>·</span>
+                      <span>體感 {weather.apparent_temperature}°C</span>
+                    </div>
+                    <div className="text-xs text-gray-400 mt-1 flex items-center gap-1">
+                      <Wind className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+                      <span>{weather.wind_speed_kmh} km/h {weather.wind_direction ? `(${weather.wind_direction})` : ''}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 天氣數據來源標記 (對標截圖) */}
+                <div className="text-[11px] text-gray-400 mt-3 pt-2.5 border-t border-[#232838] flex items-center justify-between">
+                  <span>天氣數據：<a href="https://api.weather.gc.ca/" target="_blank" rel="noreferrer" className="text-sky-400 hover:underline">加拿大環境部 (api.weather.gc.ca)</a></span>
+                  <span className="font-mono text-[10px] text-gray-500">ECCC MSC</span>
+                </div>
+              </div>
+
+              {/* 加拿大環境部警告 (對標截圖中的「英國氣象局警告」黃色風格) */}
+              <div className="bg-[#191917] border border-amber-500/40 rounded-xl p-3.5 shadow-md">
+                <h4 className="text-xs font-bold text-amber-400 flex items-center gap-1.5 mb-1.5">
+                  <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+                  <span>加拿大環境部警告</span>
+                </h4>
+                {weather.alert.has_alert ? (
+                  <div className="flex flex-col gap-1">
+                    <span className="text-xs font-semibold text-amber-300">{weather.alert.title}</span>
+                    <p className="text-xs text-amber-200/90 leading-relaxed">{weather.alert.message}</p>
+                  </div>
+                ) : (
+                  <p className="text-xs text-gray-300 leading-relaxed">
+                    現時大溫哥華地區無極端氣象預警，天候狀況平穩良好。
+                  </p>
+                )}
+              </div>
+
+              {/* 詳細氣象指標 */}
+              <div className="grid grid-cols-3 gap-2">
+                <div className="bg-[#12151e] border border-[#232838] p-2.5 rounded-lg flex flex-col">
+                  <span className="text-[10.5px] text-gray-400 flex items-center gap-1">
+                    <Droplets className="w-3 h-3 text-cyan-400" />
+                    <span>相對濕度</span>
+                  </span>
+                  <span className="text-sm font-bold text-gray-100 font-mono mt-1">{weather.humidity}%</span>
+                </div>
+                <div className="bg-[#12151e] border border-[#232838] p-2.5 rounded-lg flex flex-col">
+                  <span className="text-[10.5px] text-gray-400 flex items-center gap-1">
+                    <Gauge className="w-3 h-3 text-indigo-400" />
+                    <span>大氣氣壓</span>
+                  </span>
+                  <span className="text-sm font-bold text-gray-100 font-mono mt-1">{weather.pressure_kpa} kPa</span>
+                </div>
+                <div className="bg-[#12151e] border border-[#232838] p-2.5 rounded-lg flex flex-col">
+                  <span className="text-[10.5px] text-gray-400 flex items-center gap-1">
+                    <Eye className="w-3 h-3 text-emerald-400" />
+                    <span>能見度</span>
+                  </span>
+                  <span className="text-sm font-bold text-gray-100 font-mono mt-1">{weather.visibility_km} km</span>
+                </div>
+              </div>
+
+              {/* 天氣趨勢預報 */}
+              {weather.forecast && weather.forecast.length > 0 && (
+                <div className="flex flex-col gap-1.5 mt-1">
+                  <span className="text-[11px] font-semibold text-gray-400">未來 3 日天氣預報</span>
+                  <div className="grid grid-cols-3 gap-2">
+                    {weather.forecast.map((fc, idx) => (
+                      <div key={idx} className="bg-[#141722] border border-[#252b3a] p-2 rounded-lg flex flex-col items-center text-center">
+                        <span className="text-[11px] font-medium text-gray-300">{fc.day}</span>
+                        <span className="text-xs font-semibold text-gray-200 mt-1">{fc.condition}</span>
+                        <div className="text-[11px] font-mono mt-1 flex items-center gap-1 text-gray-400">
+                          <span className="text-rose-400 font-bold">{fc.high}°</span>
+                          <span>/</span>
+                          <span className="text-sky-400 font-bold">{fc.low}°</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="py-12 text-center text-xs text-gray-400">目前無法取得即時天氣資料</div>
+          )}
+        </div>
+      )}
 
       {/* ==================== 1. 渡輪分頁 (BC Ferries) ==================== */}
       {activeTab === 'ferry' && (
@@ -660,31 +928,92 @@ export default function ExplorePanel() {
         </div>
       )}
 
-      {/* ==================== 4. 貨運分頁 (Cargo) ==================== */}
+      {/* ==================== 4. 貨運分頁 (Cargo - Port of Vancouver AIS Shipping) ==================== */}
       {activeTab === 'cargo' && (
-        <div className="flex-1 flex flex-col items-center justify-center py-12 gap-3 text-center">
-          <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center shadow-lg">
-            <Package className="w-6 h-6" />
+        <div className="flex flex-col flex-1 min-h-0">
+          <div className="flex items-center justify-between mb-2 shrink-0">
+            <span className="text-xs text-gray-300 font-medium flex items-center gap-1.5">
+              <Ship className="w-3.5 h-3.5 text-cyan-400" />
+              <span>溫哥華港口即時船運 (AISStream)</span>
+            </span>
+            <span className="text-[10px] text-cyan-400 bg-cyan-950/70 border border-cyan-800/60 px-1.5 py-0.5 rounded font-mono">
+              即時追蹤
+            </span>
           </div>
-          <div>
-            <h3 className="text-sm font-bold text-white tracking-wide">貨運與港口物流</h3>
-            <p className="text-xs text-gray-400 mt-1.5 max-w-[260px] leading-relaxed">
-              即將推出溫哥華港（Port of Vancouver）各主要貨櫃與散貨碼頭船隻進出港動態、排隊泊位與鐵路物流狀態。
-            </p>
+
+          <div className="flex-1 overflow-y-auto min-h-0 pr-1 flex flex-col gap-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
+            {loadingShipping && shippingVessels.length === 0 ? (
+              <div className="py-12 flex flex-col items-center justify-center gap-2 text-gray-400 text-xs">
+                <RefreshCw className="w-5 h-5 text-cyan-400 animate-spin" />
+                <span>讀取溫哥華港口即時商船動態中...</span>
+              </div>
+            ) : shippingVessels.length === 0 ? (
+              <div className="py-12 text-center text-xs text-gray-400">目前溫哥華水域暫無商船動態信號</div>
+            ) : (
+              shippingVessels.map((ship) => {
+                const isUnderway = ship.sog > 0.5;
+                const statusColor = isUnderway ? 'text-emerald-400' : 'text-amber-400';
+                const typeBg = 
+                  ship.type_group === 'tanker' ? 'bg-amber-500/20 text-amber-300 border-amber-500/30' :
+                  ship.type_group === 'tug' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30' :
+                  ship.type_group === 'passenger' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' :
+                  'bg-blue-500/20 text-blue-300 border-blue-500/30';
+
+                return (
+                  <div
+                    key={ship.mmsi}
+                    onClick={() => handleSelectShip(ship)}
+                    className="p-2.5 rounded-lg bg-[#141720] hover:bg-[#1a2130] border border-[#262c3c] hover:border-cyan-500/40 transition-all cursor-pointer flex flex-col gap-1.5 group"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-1.5 truncate">
+                        <span className="font-bold text-white text-[13px] truncate group-hover:text-cyan-300 transition-colors">
+                          {ship.name}
+                        </span>
+                        {ship.flag && (
+                          <span className="text-[10px] text-gray-400 shrink-0">({ship.flag})</span>
+                        )}
+                      </div>
+                      <span className={`text-[10px] px-1.5 py-0.5 rounded border font-medium shrink-0 ${typeBg}`}>
+                        {ship.ship_type.split(' ')[0]}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between text-[11px] text-gray-400">
+                      <div className="flex items-center gap-1.5">
+                        <span className={`font-medium ${statusColor}`}>
+                          {ship.nav_status.split(' ')[0]}
+                        </span>
+                        <span>·</span>
+                        <span className="font-mono text-gray-300">{ship.sog} 節 ({Math.round(ship.sog * 1.852)} km/h)</span>
+                      </div>
+                      <span className="font-mono text-gray-500 text-[10px]">
+                        {Math.round(ship.cog)}° 航向
+                      </span>
+                    </div>
+
+                    {ship.destination && (
+                      <div className="flex items-center justify-between text-[10px] pt-1 border-t border-[#232838] text-gray-500">
+                        <span className="truncate max-w-[200px]">目的地: {ship.destination}</span>
+                        {ship.eta && <span className="shrink-0">{ship.eta}</span>}
+                      </div>
+                    )}
+                  </div>
+                );
+              })
+            )}
           </div>
-          <span className="text-[11px] font-mono text-amber-400/80 bg-amber-950/60 border border-amber-800/40 px-2 py-0.5 rounded-full">
-            功能即將推出 · Coming Soon
-          </span>
         </div>
       )}
 
       {/* Footer */}
       <div className="mt-3 pt-2.5 border-t border-[#262b38] flex items-center justify-between text-[11px] text-gray-400 shrink-0">
         <span className="font-mono text-[10px]">
+          {activeTab === 'weather' && (weather ? `${weather.city} · ${weather.condition} · ${weather.temperature}°C` : '加拿大環境部氣象數據')}
           {activeTab === 'fuel' && `共收錄 ${filteredFuelStations.length} 間加油站`}
           {activeTab === 'ev' && `共收錄 ${evStations.length} 座充電站`}
           {activeTab === 'ferry' && `共 ${ferryRoutes.reduce((acc, r) => acc + r.vessels.length, 0)} 艘渡輪即時航行中`}
-          {activeTab === 'cargo' && `大溫港口物流`}
+          {activeTab === 'cargo' && `共追蹤 ${shippingVessels.length} 艘溫哥華港口商船 (Aisstream.io)`}
         </span>
         <button
           onClick={() => {
