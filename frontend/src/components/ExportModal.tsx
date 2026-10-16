@@ -60,8 +60,10 @@ const LAYER_METADATA: Record<string, { label: string; url: string; category: str
   fireHalls: { label: '消防分局', url: '/api/geojson/road/fire_halls', category: '政府' },
   police: { label: '警察分局', url: '/api/geojson/road/police', category: '政府' },
   disasterHubs: { label: '災難應變中心', url: '/api/geojson/road/disaster_hubs', category: '政府' },
+  vanWifi: { label: 'VanWiFi 免費無線網路', url: '/api/geojson/road/van_wifi', category: '政府' },
   hospitals: { label: '綜合急診醫院', url: '/api/geojson/road/hospitals', category: '政府' },
-  crimeAreas: { label: '罪案發生率熱區', url: '/api/geojson/road/crime_areas', category: '政府' }
+  crimeAreas: { label: '罪案發生率熱區', url: '/api/geojson/road/crime_areas', category: '政府' },
+  tideStations: { label: '潮汐與海岸水位站', url: '/api/tides/stations/geojson', category: '自然' }
 };
 
 export default function ExportModal() {
@@ -98,7 +100,9 @@ export default function ExportModal() {
     const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap();
     if (!mapInstance) return;
 
+    let captured = false;
     const doCapture = () => {
+      if (captured) return;
       try {
         const mapCanvas = mapInstance.getCanvas();
         if (!mapCanvas || mapCanvas.width === 0 || mapCanvas.height === 0) return;
@@ -109,10 +113,15 @@ export default function ExportModal() {
         previewCanvas.height = Math.max(120, Math.round(mapCanvas.height * scale));
         const ctx = previewCanvas.getContext('2d');
         if (ctx) {
+          // 先填入深色底色，避免透明圖層導向黑底/無效像素
+          ctx.fillStyle = '#0c1017';
+          ctx.fillRect(0, 0, previewCanvas.width, previewCanvas.height);
+          // 繪製 WebGL 地圖畫布
           ctx.drawImage(mapCanvas, 0, 0, previewCanvas.width, previewCanvas.height);
           const dataUrl = previewCanvas.toDataURL('image/jpeg', 0.88);
           if (dataUrl && dataUrl.length > 500) {
             setPreviewDataUrl(dataUrl);
+            captured = true;
           }
         }
       } catch (err) {
@@ -120,13 +129,19 @@ export default function ExportModal() {
       }
     };
 
-    // 觸發 MapLibre 重新繪製幀，並於渲染回調中精確截取最新畫面
-    mapInstance.triggerRepaint();
+    // 1. 若當前 WebGL buffer 已有內容，先立即嘗試截取一次
+    doCapture();
+
+    // 2. 觸發 MapLibre 重新繪製幀，並於渲染回調中同步立即截取最新畫面（不可使用 requestAnimationFrame，否則幀結束 buffer 會被清理）
     mapInstance.once('render', () => {
-      requestAnimationFrame(doCapture);
+      doCapture();
     });
-    // 閒置備用定時器
-    setTimeout(doCapture, 100);
+    mapInstance.triggerRepaint();
+
+    // 3. 備用安全定時器
+    setTimeout(() => {
+      if (!captured) doCapture();
+    }, 150);
   }, []);
 
   // 當開啟 Modal 或切換到圖片分頁時生成預覽
@@ -163,10 +178,12 @@ export default function ExportModal() {
     setIsExporting(true);
     setExportStatusText('正在生成純淨高畫質地圖影像...');
 
+    let exported = false;
     const doExport = () => {
+      if (exported) return;
       try {
         const mapCanvas = mapInstance.getCanvas();
-        if (!mapCanvas) {
+        if (!mapCanvas || mapCanvas.width === 0 || mapCanvas.height === 0) {
           throw new Error('Canvas not available');
         }
 
@@ -180,16 +197,20 @@ export default function ExportModal() {
           return;
         }
 
-        // 1. 繪製純淨地圖畫布 (無任何側邊欄、設定窗、Popup 或搜尋框干擾)
+        // 1. 填入深色科技底色，徹底杜絕透明圖層於各圖片檢視器中變成空白或全黑
+        ctx.fillStyle = '#0c1017';
+        ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+
+        // 2. 繪製純淨地圖畫布 (無任何側邊欄、設定窗、Popup 或搜尋框干擾)
         ctx.drawImage(mapCanvas, 0, 0);
 
-        // 2. 若使用者選擇包含資訊標註橫條 (Watermark & Info HUD)
+        // 3. 若使用者選擇包含資訊標註橫條 (Watermark & Info HUD)
         if (includeWatermark) {
           const bannerHeight = Math.max(52, Math.round(exportCanvas.height * 0.055));
           const yPos = exportCanvas.height - bannerHeight;
 
           // 繪製半透明現代暗色漸層條
-          ctx.fillStyle = 'rgba(14, 17, 24, 0.90)';
+          ctx.fillStyle = 'rgba(14, 17, 24, 0.92)';
           ctx.fillRect(0, yPos, exportCanvas.width, bannerHeight);
 
           // 頂部科技亮青色飾條
@@ -226,6 +247,7 @@ export default function ExportModal() {
         a.click();
         document.body.removeChild(a);
 
+        exported = true;
         setIsExporting(false);
         setExportStatusText('');
       } catch (err) {
@@ -236,11 +258,16 @@ export default function ExportModal() {
       }
     };
 
-    mapInstance.triggerRepaint();
+    // 同步掛入 MapLibre 即時渲染事件中精確截取
     mapInstance.once('render', () => {
-      requestAnimationFrame(doExport);
+      doExport();
     });
-    setTimeout(doExport, 120);
+    mapInstance.triggerRepaint();
+
+    // 備用安全定時器
+    setTimeout(() => {
+      if (!exported) doExport();
+    }, 150);
   };
 
   // 抓取指定圖層的 GeoJSON 特徵清單

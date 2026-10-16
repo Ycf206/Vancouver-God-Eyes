@@ -4,7 +4,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Compass, X, Fuel, Zap, Ship, MapPin, 
   ChevronDown, RefreshCw, Package, CloudSun, Wind, AlertTriangle, Droplets, Gauge, Eye, Anchor, Navigation,
-  Newspaper, ExternalLink, Search, CalendarDays, Calendar, Tag
+  Newspaper, ExternalLink, Search, CalendarDays, Calendar, Tag, Waves, CloudRain, Play, Pause, SkipBack, SkipForward
 } from 'lucide-react';
 import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
@@ -105,6 +105,28 @@ interface WeatherData {
   aqhi?: WeatherAqhi;
   hourly?: WeatherHourlyItem[];
   forecast?: WeatherDailyItem[];
+}
+
+interface RadarFrame {
+  time: number;
+  path: string;
+}
+
+interface TideStation {
+  station_id: string;
+  code: string;
+  name: string;
+  english_name: string;
+  area: string;
+  lat: number;
+  lon: number;
+  current_water_level_m: number;
+  state: string;
+  state_trend: 'rising' | 'falling' | 'flat';
+  next_high?: { time: string; value: number } | null;
+  next_low?: { time: string; value: number } | null;
+  predictions?: Array<{ time: string; value: number }>;
+  data_source: string;
 }
 
 interface MaritimeVessel {
@@ -272,7 +294,15 @@ function ExploreContent() {
     timeFormat,
     newsRefreshInterval,
     setSearchTarget,
-    enableLayer
+    enableLayer,
+    isRadarActive,
+    setIsRadarActive,
+    radarFrameTime,
+    setRadarFrameTime,
+    radarHost,
+    setRadarHost,
+    radarTilePath,
+    setRadarTilePath
   } = useUIStore();
 
   // 氣溫單位轉換輔助函式
@@ -371,6 +401,115 @@ function ExploreContent() {
   // --- Ferry tab states ---
   const [ferryRoutes, setFerryRoutes] = useState<FerryRoute[]>([]);
   const [loadingFerries, setLoadingFerries] = useState(false);
+
+  // --- Radar states ---
+  const [radarFrames, setRadarFrames] = useState<RadarFrame[]>([]);
+  const [currentFrameIndex, setCurrentFrameIndex] = useState<number>(0);
+  const [isRadarPlaying, setIsRadarPlaying] = useState<boolean>(false);
+  const [loadingRadar, setLoadingRadar] = useState<boolean>(false);
+
+  // --- Coastal Tides states ---
+  const [tideStations, setTideStations] = useState<TideStation[]>([]);
+  const [loadingTides, setLoadingTides] = useState<boolean>(false);
+  const [selectedTideCode, setSelectedTideCode] = useState<string | null>(null);
+
+  // 0a. Fetch RainViewer radar dynamic frames
+  useEffect(() => {
+    if (!isExploreOpen || activeTab !== 'weather') return;
+    setLoadingRadar(true);
+    fetch('https://api.rainviewer.com/public/weather-maps.json')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.host && data.radar) {
+          const past = data.radar.past || [];
+          const nowcast = data.radar.nowcast || [];
+          const allFrames = [...past, ...nowcast];
+          setRadarHost(data.host);
+          setRadarFrames(allFrames);
+          if (allFrames.length > 0) {
+            const initialIdx = Math.max(0, past.length - 1);
+            setCurrentFrameIndex(initialIdx);
+            setRadarFrameTime(allFrames[initialIdx].time);
+            setRadarTilePath(allFrames[initialIdx].path);
+          }
+        }
+        setLoadingRadar(false);
+      })
+      .catch((err) => {
+        console.warn('Error fetching radar data:', err);
+        setLoadingRadar(false);
+      });
+  }, [isExploreOpen, activeTab, setRadarHost, setRadarFrameTime, setRadarTilePath]);
+
+  // 0b. Radar Loop Player
+  useEffect(() => {
+    if (!isRadarPlaying || radarFrames.length === 0) return;
+    const interval = setInterval(() => {
+      setCurrentFrameIndex((prev) => {
+        const next = (prev + 1) % radarFrames.length;
+        setRadarFrameTime(radarFrames[next].time);
+        setRadarTilePath(radarFrames[next].path);
+        return next;
+      });
+    }, 750);
+    return () => clearInterval(interval);
+  }, [isRadarPlaying, radarFrames, setRadarFrameTime, setRadarTilePath]);
+
+  // 0c. Fetch Coastal Tide Stations
+  useEffect(() => {
+    if (!isExploreOpen || activeTab !== 'weather') return;
+    setLoadingTides(true);
+    const apiUrl = getApiUrl();
+    fetch(`${apiUrl}/api/tides/live`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && Array.isArray(data.stations)) {
+          setTideStations(data.stations);
+        }
+        setLoadingTides(false);
+      })
+      .catch((err) => {
+        console.warn('Error fetching live tides:', err);
+        setLoadingTides(false);
+      });
+  }, [isExploreOpen, activeTab]);
+
+  const handleFrameChange = (idx: number) => {
+    if (idx >= 0 && idx < radarFrames.length) {
+      setCurrentFrameIndex(idx);
+      setRadarFrameTime(radarFrames[idx].time);
+      setRadarTilePath(radarFrames[idx].path);
+    }
+  };
+
+  const handleLocateTideStation = (st: TideStation) => {
+    enableLayer('tideStations');
+    setSelectedTideCode(st.code);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap();
+    if (mapInstance) {
+      mapInstance.flyTo({
+        center: [st.lon, st.lat],
+        zoom: 14.5,
+        essential: true
+      });
+    }
+  };
+
+  const formatRadarTime = (ts: number) => {
+    if (!ts) return '--:--';
+    const d = new Date(ts * 1000);
+    const timeStr = d.toLocaleTimeString('zh-TW', { hour12: false, hour: '2-digit', minute: '2-digit', timeZone: 'America/Vancouver' });
+    const nowTs = Math.floor(Date.now() / 1000);
+    const diffMins = Math.round((ts - nowTs) / 60);
+    if (Math.abs(diffMins) <= 5) {
+      return `${timeStr} (最新即時)`;
+    } else if (diffMins < 0) {
+      return `${timeStr} (${Math.abs(diffMins)} 分鐘前)`;
+    } else {
+      return `${timeStr} (預測 +${diffMins} 分鐘)`;
+    }
+  };
 
   // 0. Fetch Weather from ECCC / Open-Meteo
   useEffect(() => {
@@ -1277,6 +1416,209 @@ function ExploreContent() {
                   </div>
                 );
               })()}
+
+              {/* ================= 降水雷達動態圖 (Precipitation Radar) ================= */}
+              <div className="bg-[#12151e] border border-cyan-500/40 rounded-xl p-3.5 shadow-lg flex flex-col gap-3 mt-1">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
+                      <CloudRain className="w-3.5 h-3.5" />
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-bold text-white tracking-wide flex items-center gap-1.5">
+                        <span>即時降水雷達動態</span>
+                        <span className="text-[9px] bg-cyan-950/80 text-cyan-400 border border-cyan-800/60 px-1 py-0.2 rounded font-mono">
+                          RainViewer
+                        </span>
+                      </h4>
+                      <span className="text-[10px] text-gray-400">過去 2 小時至即時回波雲團</span>
+                    </div>
+                  </div>
+
+                  {/* 疊加主地圖開關 */}
+                  <button
+                    onClick={() => setIsRadarActive(!isRadarActive)}
+                    className={`px-2.5 py-1 text-[11px] rounded-lg font-bold transition-all flex items-center gap-1.5 shadow-sm ${
+                      isRadarActive
+                        ? 'bg-cyan-500 text-gray-950 ring-2 ring-cyan-400/50'
+                        : 'bg-[#1e2330] text-gray-300 hover:text-white hover:bg-[#282f40] border border-[#2d3547]'
+                    }`}
+                  >
+                    <span className={`w-2 h-2 rounded-full ${isRadarActive ? 'bg-gray-950 animate-ping' : 'bg-gray-500'}`} />
+                    <span>{isRadarActive ? '主地圖疊加中' : '疊加至主地圖'}</span>
+                  </button>
+                </div>
+
+                {loadingRadar ? (
+                  <div className="py-6 flex items-center justify-center gap-2 text-gray-400 text-xs">
+                    <RefreshCw className="w-4 h-4 text-cyan-400 animate-spin" />
+                    <span>載入降雨雷達回波數據中...</span>
+                  </div>
+                ) : radarFrames.length === 0 ? (
+                  <div className="py-4 text-center text-xs text-gray-400">暫無可用之雷達影格</div>
+                ) : (
+                  <div className="flex flex-col gap-2.5 bg-[#0e1118] p-2.5 rounded-lg border border-[#222736]">
+                    {/* 影格時間與狀態指示 */}
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-gray-400 text-[11px]">影格時間:</span>
+                      <span className="font-mono font-bold text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800/40 text-[11px]">
+                        {formatRadarTime(radarFrames[currentFrameIndex]?.time)}
+                      </span>
+                    </div>
+
+                    {/* 播放控制按鈕與滑桿 */}
+                    <div className="flex items-center gap-2 pt-1">
+                      <button
+                        onClick={() => handleFrameChange((currentFrameIndex - 1 + radarFrames.length) % radarFrames.length)}
+                        className="p-1.5 bg-[#1a1f2b] hover:bg-[#282f40] rounded text-gray-300 hover:text-white transition-colors"
+                        title="上一格"
+                      >
+                        <SkipBack className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => setIsRadarPlaying(!isRadarPlaying)}
+                        className={`px-3 py-1.5 rounded text-xs font-bold flex items-center gap-1.5 transition-colors ${
+                          isRadarPlaying
+                            ? 'bg-rose-500 hover:bg-rose-600 text-white'
+                            : 'bg-cyan-500 hover:bg-cyan-400 text-gray-950'
+                        }`}
+                      >
+                        {isRadarPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 fill-current" />}
+                        <span>{isRadarPlaying ? '暫停' : '播放'}</span>
+                      </button>
+                      <button
+                        onClick={() => handleFrameChange((currentFrameIndex + 1) % radarFrames.length)}
+                        className="p-1.5 bg-[#1a1f2b] hover:bg-[#282f40] rounded text-gray-300 hover:text-white transition-colors"
+                        title="下一格"
+                      >
+                        <SkipForward className="w-3.5 h-3.5" />
+                      </button>
+
+                      {/* 時間軸滑桿 */}
+                      <input
+                        type="range"
+                        min="0"
+                        max={radarFrames.length - 1}
+                        value={currentFrameIndex}
+                        onChange={(e) => handleFrameChange(Number(e.target.value))}
+                        className="flex-1 accent-cyan-400 cursor-pointer h-1.5 bg-[#252a38] rounded-lg"
+                      />
+                    </div>
+
+                    {/* 雨量強度圖例 */}
+                    <div className="pt-2 border-t border-[#1f2533] flex flex-col gap-1 text-[10px] text-gray-400">
+                      <span className="text-[9.5px]">降水強度圖例 (Precipitation Intensity):</span>
+                      <div className="grid grid-cols-5 text-center gap-1 text-[9px] font-mono">
+                        <div className="py-0.5 rounded bg-sky-900/60 text-sky-200 border border-sky-700/50">細雨 &lt;0.5</div>
+                        <div className="py-0.5 rounded bg-emerald-900/60 text-emerald-200 border border-emerald-700/50">小雨 0.5-2</div>
+                        <div className="py-0.5 rounded bg-yellow-900/60 text-yellow-200 border border-yellow-700/50">中雨 2-10</div>
+                        <div className="py-0.5 rounded bg-orange-900/60 text-orange-200 border border-orange-700/50">大雨 10-30</div>
+                        <div className="py-0.5 rounded bg-rose-900/60 text-rose-200 border border-rose-700/50">暴雨 &gt;30mm</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* ================= 海岸潮汐與即時水位站 (Coastal Tides) ================= */}
+              <div className="bg-[#12151e] border border-blue-500/40 rounded-xl p-3.5 shadow-lg flex flex-col gap-3 mt-1">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400">
+                      <Waves className="w-3.5 h-3.5" />
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-bold text-white tracking-wide flex items-center gap-1.5">
+                        <span>大溫海岸潮汐與即時水位站</span>
+                        <span className="text-[9px] bg-blue-950/80 text-blue-400 border border-blue-800/60 px-1 py-0.2 rounded font-mono">
+                          DFO / CHS 官方
+                        </span>
+                      </h4>
+                      <span className="text-[10px] text-gray-400">加拿大漁業及海洋部水文即時監測</span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => enableLayer('tideStations')}
+                    className="text-[11px] text-blue-400 hover:text-blue-300 hover:underline flex items-center gap-1"
+                  >
+                    <span>開啟潮汐圖層</span>
+                    <span>❯</span>
+                  </button>
+                </div>
+
+                {loadingTides ? (
+                  <div className="py-6 flex items-center justify-center gap-2 text-gray-400 text-xs">
+                    <RefreshCw className="w-4 h-4 text-blue-400 animate-spin" />
+                    <span>正在檢索大溫海岸觀測站即時潮位...</span>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-2">
+                    {tideStations.map((st) => {
+                      const isRising = st.state_trend === 'rising';
+                      const isFalling = st.state_trend === 'falling';
+                      return (
+                        <div
+                          key={st.code}
+                          className={`p-2.5 rounded-lg border transition-all flex flex-col gap-1.5 ${
+                            selectedTideCode === st.code
+                              ? 'bg-blue-950/40 border-blue-500 text-white ring-1 ring-blue-500/50'
+                              : 'bg-[#0f121a] border-[#222736] hover:border-[#32394d] text-gray-300'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <span className="font-bold text-xs text-white block">{st.name}</span>
+                              <span className="text-[10px] text-gray-400">{st.area}</span>
+                            </div>
+                            <div className="text-right">
+                              <div className="flex items-center gap-1.5 justify-end">
+                                <span className="text-base font-extrabold text-blue-400 font-mono">
+                                  {st.current_water_level_m} <span className="text-xs font-normal text-gray-400">m</span>
+                                </span>
+                                <span
+                                  className={`text-[10px] font-bold px-1.5 py-0.5 rounded font-mono flex items-center gap-0.5 ${
+                                    isRising
+                                      ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-800/50'
+                                      : isFalling
+                                      ? 'bg-rose-950/80 text-rose-300 border border-rose-800/50'
+                                      : 'bg-gray-800 text-gray-300'
+                                  }`}
+                                >
+                                  <span>{st.state}</span>
+                                  <span>{isRising ? '↗' : isFalling ? '↘' : '→'}</span>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* 高低潮預報與定位按鈕 */}
+                          <div className="pt-1.5 border-t border-[#1c2230] flex items-center justify-between text-[10.5px]">
+                            <div className="flex items-center gap-2 text-gray-400 font-mono">
+                              {st.next_high && (
+                                <span className="text-emerald-400/90">
+                                  滿潮: {st.next_high.value}m ({st.next_high.time.slice(11, 16)}Z)
+                                </span>
+                              )}
+                              {st.next_low && (
+                                <span className="text-sky-400/90">
+                                  乾潮: {st.next_low.value}m ({st.next_low.time.slice(11, 16)}Z)
+                                </span>
+                              )}
+                            </div>
+                            <button
+                              onClick={() => handleLocateTideStation(st)}
+                              className="text-[10.5px] text-blue-400 hover:text-white flex items-center gap-1 hover:underline"
+                            >
+                              <MapPin className="w-3 h-3" />
+                              <span>地圖定位</span>
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             </div>
           ) : (
             <div className="py-12 text-center text-xs text-gray-400">目前無法取得即時天氣資料</div>

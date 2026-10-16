@@ -781,6 +781,16 @@ def get_flight_schedules():
         cached_flight_schedules = schedules
     return cached_flight_schedules or schedules or {"arrivals": [], "departures": []}
 
+@app.get("/api/tides/live")
+def get_live_tides():
+    import tides_service
+    return tides_service.get_live_tides_data()
+
+@app.get("/api/tides/stations/geojson")
+def get_tides_geojson():
+    import tides_service
+    return tides_service.get_tides_geojson()
+
 @app.get("/api/geojson/airports")
 def get_airports_geojson():
     static_path = os.path.join(os.path.dirname(__file__), "data", "vancouver_airports.geojson")
@@ -1201,12 +1211,12 @@ CURATED_STATIC_TYPES = (
     "local_area_boundary", "fuel", "ev_charging", "tesla", "marine_terminals", 
     "one_way_streets", "snow_removal_routes", "crime_areas", "water_distribution_mains", 
     "sewer_mains", "traffic_speed_limits", "bike_racks", "postal_code_fsa", "wireless_facilities",
-    "traffic_crosswalks", "litter_containers", "food_banks", "recycling"
+    "traffic_crosswalks", "litter_containers", "food_banks", "recycling", "van_wifi"
 )
 POINT_CURATED_TYPES = (
     "hospitals", "police", "disaster_hubs", "car_sharing", "aed", 
     "fuel", "ev_charging", "tesla", "marine_terminals", "bike_racks", "wireless_facilities",
-    "traffic_crosswalks", "litter_containers", "food_banks", "recycling"
+    "traffic_crosswalks", "litter_containers", "food_banks", "recycling", "van_wifi"
 )
 
 def sync_curated_point_types(db: Session):
@@ -2243,6 +2253,11 @@ def get_road_facilities_geojson(
             return FileResponse(static_geojson_path, media_type="application/json", headers={"Cache-Control": "no-cache, must-revalidate"})
         return {"type": "FeatureCollection", "features": []}
 
+    # Handle Tide Stations
+    if facility_type == "tide_stations":
+        import tides_service
+        return tides_service.get_tides_geojson()
+
     # 2. Prioritize verified curated static GeoJSON files (hospitals/UPCC, police, etc.)
     if facility_type in CURATED_STATIC_TYPES:
         filename = f"vancouver_{facility_type}.geojson"
@@ -2411,7 +2426,8 @@ def explore_nearby_facilities(
         'parks': ('公園綠地', '🌳', 'parks'),
         'hospitals': ('醫療院所', '🏥', 'hospitals'),
         'police': ('警局', '🚓', 'police'),
-        'fire_halls': ('消防局', '🚒', 'fireHalls')
+        'fire_halls': ('消防局', '🚒', 'fireHalls'),
+        'van_wifi': ('VanWiFi 免費無線網路', '📶', 'vanWifi')
     }
 
     for f in road_query.all():

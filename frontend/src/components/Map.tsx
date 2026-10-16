@@ -12,7 +12,7 @@ import { getSkytrainStationMapUrls } from '@/utils/skytrainMaps';
 import { 
   LocateFixed, Train, Compass, ZoomIn, X, Copy, Check, 
   Navigation, ExternalLink, Clock, Bike, Car, Info, 
-  ChevronDown, ChevronUp, SlidersHorizontal 
+  ChevronDown, ChevronUp, SlidersHorizontal, Fuel, Zap, Wifi, Waves, Play, Pause, CloudRain
 } from 'lucide-react';
 
 // Fix Next.js App Router Web Worker crash
@@ -231,7 +231,11 @@ export default function AppMap() {
     layers, mapStyleType, searchTarget, setSearchTarget, isLayerPanelOpen, 
     contourInterval, timeFormat, distanceUnit, userLocation, setExploreOpen,
     parkingMeterFilter, setParkingMeterFilter,
-    radiusExploration, setRadiusExploration
+    radiusExploration, setRadiusExploration,
+    fuelFilter, setFuelFilter,
+    evChargingFilter, setEvChargingFilter,
+    isRadarActive, setIsRadarActive,
+    radarFrameTime, radarHost, radarTilePath
   } = useUIStore();
   const mapRef = useRef<MapRef>(null);
 
@@ -257,6 +261,8 @@ export default function AppMap() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const localAreaBoundariesRef = useRef<any[]>([]);
   const [parkingMeterFilterOpen, setParkingMeterFilterOpen] = useState(true);
+  const [fuelFilterOpen, setFuelFilterOpen] = useState(true);
+  const [evFilterOpen, setEvFilterOpen] = useState(true);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [nearbyFacilities, setNearbyFacilities] = useState<any[]>([]);
   const [loadingNearby, setLoadingNearby] = useState(false);
@@ -1788,6 +1794,30 @@ export default function AppMap() {
     style.sources['marine_terminals'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/marine_terminals` };
     style.sources['aed'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/aed` };
 
+    // VanWiFi (溫哥華官方免費公共 WiFi)
+    style.sources['van-wifi'] = { 
+      type: 'geojson', 
+      data: `${apiUrl}/api/geojson/road/van_wifi`,
+      cluster: true,
+      clusterMaxZoom: 14,
+      clusterRadius: 45
+    };
+
+    // Coastal Tide Stations (大溫海岸潮汐與即時水位站)
+    style.sources['tide-stations'] = {
+      type: 'geojson',
+      data: `${apiUrl}/api/geojson/road/tide_stations`
+    };
+
+    // RainViewer Radar (即時降水雷達回波)
+    if (isRadarActive && radarTilePath) {
+      style.sources['rainviewer-radar'] = {
+        type: 'raster',
+        tiles: [`${radarHost || 'https://tilecache.rainviewer.com'}${radarTilePath}/256/{z}/{x}/{y}/2/1_1.png`],
+        tileSize: 256
+      };
+    }
+
     // Crime Areas (罪案地區 - 各區犯罪率面圖層)
     if (layers.crimeAreas) {
       style.sources['crime_areas'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/crime_areas` };
@@ -2268,10 +2298,26 @@ export default function AppMap() {
 
     // Road Facilities: EV Charging
     if (layers.evCharging) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const evFilters: any[] = ['all'];
+      if (evChargingFilter.speed === 'fast') {
+        evFilters.push(['>=', ['coalesce', ['get', 'power_kw'], 0], 50]);
+      } else if (evChargingFilter.speed === 'slow') {
+        evFilters.push(['<', ['coalesce', ['get', 'power_kw'], 0], 50]);
+      }
+      if (evChargingFilter.freeOnly) {
+        evFilters.push(['==', ['coalesce', ['get', 'is_free'], false], true]);
+      }
+      if (evChargingFilter.connector && evChargingFilter.connector !== 'all') {
+        evFilters.push(['!=', ['index-of', evChargingFilter.connector, ['coalesce', ['get', 'connectors'], '']], -1]);
+      }
+      const evFilterExpr = evFilters.length > 1 ? evFilters : undefined;
+
       style.layers.push({
         id: 'ev-charging-layer',
         type: 'circle',
         source: 'ev-charging',
+        ...(evFilterExpr ? { filter: evFilterExpr } : {}),
         paint: {
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#10b981',
@@ -2283,6 +2329,7 @@ export default function AppMap() {
         id: 'ev-charging-symbol-layer',
         type: 'symbol',
         source: 'ev-charging',
+        ...(evFilterExpr ? { filter: evFilterExpr } : {}),
         minzoom: 14,
         layout: {
           'text-field': '⚡',
@@ -2573,10 +2620,26 @@ export default function AppMap() {
 
     // Road Infrastructure: Gas Stations (加油站)
     if (layers.fuel) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let fuelFilterExpr: any = undefined;
+      if (fuelFilter.brands && fuelFilter.brands.length > 0 && !fuelFilter.brands.includes('all')) {
+        const conditions = fuelFilter.brands.map(b => {
+          if (b === 'Petro-Canada') {
+            return ['any', ['==', ['get', 'brand'], 'Petro-Canada'], ['==', ['get', 'brand'], 'Petro']];
+          }
+          if (b === 'Other') {
+            return ['!', ['in', ['get', 'brand'], ['literal', ['Chevron', 'Shell', 'Petro-Canada', 'Petro', 'Esso', 'Mobil']]]];
+          }
+          return ['==', ['get', 'brand'], b];
+        });
+        fuelFilterExpr = conditions.length === 1 ? conditions[0] : ['any', ...conditions];
+      }
+
       style.layers.push({
         id: 'fuel-layer',
         type: 'circle',
         source: 'fuel',
+        ...(fuelFilterExpr ? { filter: fuelFilterExpr } : {}),
         paint: {
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#f59e0b',
@@ -2588,6 +2651,7 @@ export default function AppMap() {
         id: 'fuel-symbol-layer',
         type: 'symbol',
         source: 'fuel',
+        ...(fuelFilterExpr ? { filter: fuelFilterExpr } : {}),
         minzoom: 14,
         layout: {
           'text-field': '⛽',
@@ -2603,10 +2667,26 @@ export default function AppMap() {
 
     // Road Infrastructure: Tesla Superchargers & Service Centers (TESLA 專屬超級充電與服務中心)
     if (layers.tesla) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const teslaFilters: any[] = ['all'];
+      if (evChargingFilter.speed === 'fast') {
+        teslaFilters.push(['>=', ['coalesce', ['get', 'power_kw'], 0], 50]);
+      } else if (evChargingFilter.speed === 'slow') {
+        teslaFilters.push(['<', ['coalesce', ['get', 'power_kw'], 0], 50]);
+      }
+      if (evChargingFilter.freeOnly) {
+        teslaFilters.push(['==', ['get', 'sub_type'], 'destination_charger']);
+      }
+      if (evChargingFilter.connector && evChargingFilter.connector !== 'all' && evChargingFilter.connector !== 'Tesla') {
+        teslaFilters.push(['==', ['get', 'sub_type'], 'none']);
+      }
+      const teslaFilterExpr = teslaFilters.length > 1 ? teslaFilters : undefined;
+
       style.layers.push({
         id: 'tesla-layer',
         type: 'circle',
         source: 'tesla',
+        ...(teslaFilterExpr ? { filter: teslaFilterExpr } : {}),
         paint: {
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#e82127',
@@ -2618,6 +2698,7 @@ export default function AppMap() {
         id: 'tesla-symbol-layer',
         type: 'symbol',
         source: 'tesla',
+        ...(teslaFilterExpr ? { filter: teslaFilterExpr } : {}),
         minzoom: 12,
         layout: {
           'text-field': '⚡',
@@ -2627,6 +2708,118 @@ export default function AppMap() {
         },
         paint: {
           'text-color': '#ffffff'
+        }
+      });
+    }
+
+    // Government: VanWiFi (溫哥華官方公共免費無線網絡)
+    if (layers.vanWifi) {
+      style.layers.push({
+        id: 'van-wifi-cluster-layer',
+        type: 'circle',
+        source: 'van-wifi',
+        filter: ['has', 'point_count'],
+        paint: {
+          'circle-color': [
+            'step',
+            ['get', 'point_count'],
+            '#06b6d4',
+            10, '#0891b2',
+            30, '#0e7490'
+          ],
+          'circle-radius': [
+            'step',
+            ['get', 'point_count'],
+            16,
+            10, 20,
+            30, 24
+          ],
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'van-wifi-cluster-count-layer',
+        type: 'symbol',
+        source: 'van-wifi',
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': '{point_count_abbreviated}',
+          'text-size': 11,
+          'text-font': ['Open Sans Bold']
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'van-wifi-layer',
+        type: 'circle',
+        source: 'van-wifi',
+        filter: ['!', ['has', 'point_count']],
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3, 14, 5.5, 16, 9],
+          'circle-color': '#06b6d4',
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'van-wifi-symbol-layer',
+        type: 'symbol',
+        source: 'van-wifi',
+        filter: ['!', ['has', 'point_count']],
+        minzoom: 14,
+        layout: {
+          'text-field': '📶',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 14, 10, 17, 14],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        }
+      });
+    }
+
+    // Nature: Coastal Tide Stations (大溫海岸潮汐與即時水位站)
+    if (layers.tideStations) {
+      style.layers.push({
+        id: 'tide-stations-layer',
+        type: 'circle',
+        source: 'tide-stations',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 9, 7, 12, 11, 15, 15],
+          'circle-color': '#0284c7',
+          'circle-stroke-width': 2.5,
+          'circle-stroke-color': '#38bdf8'
+        }
+      });
+      style.layers.push({
+        id: 'tide-stations-symbol-layer',
+        type: 'symbol',
+        source: 'tide-stations',
+        layout: {
+          'text-field': ['get', 'badge'],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 9, 10, 13, 12, 16, 14],
+          'text-offset': [0, 1.4],
+          'text-anchor': 'top',
+          'text-font': ['Open Sans Bold']
+        },
+        paint: {
+          'text-color': '#38bdf8',
+          'text-halo-color': '#0f172a',
+          'text-halo-width': 2
+        }
+      });
+    }
+
+    // Precipitation Radar (即時降水雷達回波)
+    if (isRadarActive && radarTilePath) {
+      style.layers.push({
+        id: 'rainviewer-radar-layer',
+        type: 'raster',
+        source: 'rainviewer-radar',
+        paint: {
+          'raster-opacity': 0.75,
+          'raster-fade-duration': 150
         }
       });
     }
@@ -3625,7 +3818,17 @@ export default function AppMap() {
     layers.contours,
     layers.localAreaBoundary,
     layers.fuel,
+    fuelFilter.brands,
     layers.tesla,
+    layers.evCharging,
+    evChargingFilter.speed,
+    evChargingFilter.connector,
+    evChargingFilter.freeOnly,
+    layers.vanWifi,
+    layers.tideStations,
+    isRadarActive,
+    radarTilePath,
+    radarHost,
     layers.oneWayStreets,
     layers.snowRemovalRoutes,
     layers.marineTerminals,
@@ -3750,7 +3953,12 @@ export default function AppMap() {
           'water-distribution-mains-layer',
           'sewer-mains-layer',
           'contours-layer',
-          'contours-label-layer'
+          'contours-label-layer',
+          'van-wifi-cluster-layer',
+          'van-wifi-layer',
+          'van-wifi-symbol-layer',
+          'tide-stations-layer',
+          'tide-stations-symbol-layer'
         ]}
         onClick={(e) => {
           // 若剛剛點擊了車輛、列車或標記，阻止地圖畫布背景點擊事件清理所選內容
@@ -3991,7 +4199,9 @@ export default function AppMap() {
             layerId.startsWith('food-banks') ||
             layerId.startsWith('recycling') ||
             layerId.startsWith('aed') ||
-            layerId.startsWith('homeless-shelters')
+            layerId.startsWith('homeless-shelters') ||
+            layerId.startsWith('van-wifi') ||
+            layerId.startsWith('tide-stations')
           ) {
             setSelectedStop(null);
             const props = feature.properties || {};
@@ -4003,11 +4213,13 @@ export default function AppMap() {
             const isCrosswalk = layerId.startsWith('traffic-crosswalks');
             const isLitter = layerId.startsWith('litter-containers');
             const isRecycling = layerId.startsWith('recycling');
+            const isVanWifi = layerId.startsWith('van-wifi');
+            const isTideStation = layerId.startsWith('tide-stations');
             setSelectedFacility({
-              id: props.id || (props.object_id ? `${props.facility_type || (isBikeRack ? 'bike_rack' : (isWireless ? 'wireless' : (isCrosswalk ? 'crosswalk' : (isLitter ? 'litter' : (isRecycling ? 'recycling' : 'fac')))))}_${props.object_id}` : ''),
-              facility_type: props.facility_type || (isFuel ? 'fuel' : (isTesla ? 'tesla' : (isMarineTerminal ? 'marine_terminals' : (isBikeRack ? 'bike_racks' : (isWireless ? 'wireless_facilities' : (isCrosswalk ? 'traffic_crosswalks' : (isLitter ? 'litter_containers' : (isRecycling ? 'recycling' : '')))))))),
-              name: props.name || (isCrosswalk ? (props.location ? `斑馬線 - ${props.location}` : '行人斑馬線') : (isLitter ? (props.address ? `垃圾箱 - ${props.address}` : '公用垃圾箱') : (isBikeRack ? (props.location ? `單車架 - ${props.location}` : '公用單車架') : (isWireless ? (props.site_name || `無線設施 #${props.pole_number || ''}`) : (isRecycling ? (props.brand || '環保回收站') : (props.brand || (isFuel ? '加油站' : (isTesla ? 'Tesla 站點' : (isMarineTerminal ? '港口碼頭' : ''))))))))),
-              local_area: props.waterway || props.local_area || props.location || props.company || props.address || props.city || '',
+              id: props.id || (props.object_id ? `${props.facility_type || (isVanWifi ? 'van_wifi' : (isTideStation ? 'tide' : (isBikeRack ? 'bike_rack' : (isWireless ? 'wireless' : (isCrosswalk ? 'crosswalk' : (isLitter ? 'litter' : (isRecycling ? 'recycling' : 'fac')))))))}_${props.object_id}` : ''),
+              facility_type: props.facility_type || (isVanWifi ? 'van_wifi' : (isTideStation ? 'tide_stations' : (isFuel ? 'fuel' : (isTesla ? 'tesla' : (isMarineTerminal ? 'marine_terminals' : (isBikeRack ? 'bike_racks' : (isWireless ? 'wireless_facilities' : (isCrosswalk ? 'traffic_crosswalks' : (isLitter ? 'litter_containers' : (isRecycling ? 'recycling' : '')))))))))),
+              name: props.name || (isVanWifi ? (props.site_name || 'VanWiFi 公共無線網絡') : (isTideStation ? (props.english_name || '海岸潮位站') : (isCrosswalk ? (props.location ? `斑馬線 - ${props.location}` : '行人斑馬線') : (isLitter ? (props.address ? `垃圾箱 - ${props.address}` : '公用垃圾箱') : (isBikeRack ? (props.location ? `單車架 - ${props.location}` : '公用單車架') : (isWireless ? (props.site_name || `無線設施 #${props.pole_number || ''}`) : (isRecycling ? (props.brand || '環保回收站') : (props.brand || (isFuel ? '加油站' : (isTesla ? 'Tesla 站點' : (isMarineTerminal ? '港口碼頭' : ''))))))))))),
+              local_area: props.waterway || props.area || props.local_area || props.location || props.company || props.address || props.city || '',
               lon: coords[0],
               lat: coords[1],
               properties: props
@@ -5356,18 +5568,20 @@ export default function AppMap() {
             offset={[0, -10]}
             maxWidth={
               selectedFacility.facility_type === 'traffic_cameras' ? '400px' : 
-              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers') ? '360px' : 
+              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations') ? '360px' : 
               '320px'
             }
           >
             <div className={`p-3.5 ${
               selectedFacility.facility_type === 'traffic_cameras' ? 'w-[360px]' : 
-              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'recycling') ? 'w-[340px]' : 
+              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations') ? 'w-[340px]' : 
               'w-[290px]'
             } max-w-[90vw] text-gray-800`}>
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
                 <div className="flex items-center gap-2">
                   <span className={`w-3 h-3 rounded-full flex-shrink-0 ${
+                    selectedFacility.facility_type === 'van_wifi' ? 'bg-cyan-500' :
+                    selectedFacility.facility_type === 'tide_stations' ? 'bg-blue-600' :
                     selectedFacility.facility_type === 'water_distribution_mains' ? 'bg-sky-500' :
                     selectedFacility.facility_type === 'sewer_mains' ? 'bg-teal-500' :
                     selectedFacility.facility_type === 'traffic_speed_limits' ? 'bg-amber-500' :
@@ -7024,6 +7238,163 @@ export default function AppMap() {
                 </div>
               )}
 
+              {/* VanWiFi 公共無線網絡 Details */}
+              {selectedFacility.facility_type === 'van_wifi' && (() => {
+                const props = selectedFacility.properties || {};
+                const siteName = props.name || props.site_name || selectedFacility.name;
+                const address = props.address || props.Address || '';
+                const ssid = props.ssid || props.SSID || '#VanWiFi';
+                const serviceProvider = props.service_provider || props.SERVICEPROVIDER || 'City of Vancouver';
+                const apCount = props.ap_count || props.AP_COUNT;
+                const siteType = props.site_type || props.SITE_TYPE;
+                const infoUrl = props.info_url || props.URL || 'https://vancouver.ca/your-government/vanwifi.aspx';
+
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    <div className="bg-cyan-50/90 p-2.5 rounded-lg border border-cyan-200 flex flex-col gap-1.5 text-[11px]">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-xs text-cyan-950 flex items-center gap-1.5">
+                          <span>📶</span>
+                          <span>VanWiFi 免費公共無線網絡</span>
+                        </span>
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-cyan-600 text-white">
+                          溫哥華官方熱點
+                        </span>
+                      </div>
+                      <div className="text-[10.5px] text-cyan-800 pt-1 border-t border-cyan-200/60 font-medium">
+                        City of Vancouver Free Public WiFi
+                      </div>
+                    </div>
+
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-2 text-[11px]">
+                      <div className="flex flex-col gap-0.5">
+                        <span className="text-gray-500 text-[10.5px]">Site Name:</span>
+                        <span className="font-bold text-gray-900 text-sm leading-tight">{siteName}</span>
+                      </div>
+
+                      {address && (
+                        <div className="flex flex-col gap-0.5 pt-1.5 border-t border-gray-200/60">
+                          <span className="text-gray-500 text-[10.5px]">Address:</span>
+                          <span className="font-semibold text-gray-800">{address}</span>
+                        </div>
+                      )}
+
+                      <div className="flex justify-between items-center pt-1.5 border-t border-gray-200/60">
+                        <span className="text-gray-500">SSID:</span>
+                        <span className="font-mono font-bold text-cyan-700 bg-cyan-50 px-2 py-0.5 rounded border border-cyan-200 text-xs">
+                          {ssid}
+                        </span>
+                      </div>
+
+                      <div className="flex justify-between items-center pt-1.5 border-t border-gray-200/60">
+                        <span className="text-gray-500">SERVICEPROVIDER:</span>
+                        <span className="font-bold text-gray-800 text-right">{serviceProvider}</span>
+                      </div>
+
+                      {siteType && (
+                        <div className="flex justify-between items-center pt-1.5 border-t border-gray-200/60">
+                          <span className="text-gray-500">場地類型 (Site Type):</span>
+                          <span className="font-medium text-gray-700">{siteType}</span>
+                        </div>
+                      )}
+
+                      {apCount && (
+                        <div className="flex justify-between items-center pt-1.5 border-t border-gray-200/60">
+                          <span className="text-gray-500">AP 發射器數量:</span>
+                          <span className="font-mono font-bold text-gray-800">{apCount} 個</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="pt-1 border-t border-gray-100">
+                      <a
+                        href={infoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-cyan-600 hover:bg-cyan-700 text-white rounded font-medium text-xs transition-colors shadow-sm gap-1"
+                      >
+                        <span>前往 VanWiFi 官方網站</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Coastal Tide Stations (大溫海岸潮汐與即時水位站) Details */}
+              {selectedFacility.facility_type === 'tide_stations' && (() => {
+                const props = selectedFacility.properties || {};
+                const currentLevel = props.current_water_level_m ?? selectedFacility.name;
+                const state = props.state || '潮位觀測中';
+                const stateTrend = props.state_trend;
+                const isRising = stateTrend === 'rising';
+                const isFalling = stateTrend === 'falling';
+                const nextHighTime = props.next_high_time;
+                const nextHighVal = props.next_high_val;
+                const nextLowTime = props.next_low_time;
+                const nextLowVal = props.next_low_val;
+
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    <div className="bg-blue-50/90 p-2.5 rounded-lg border border-blue-200 flex flex-col gap-1.5 text-[11px]">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-xs text-blue-950 flex items-center gap-1.5">
+                          <span>🌊</span>
+                          <span>大溫海岸潮位站 (DFO / CHS)</span>
+                        </span>
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-600 text-white font-mono">
+                          #{props.station_code || '07795'}
+                        </span>
+                      </div>
+                      <div className="text-[10.5px] text-blue-800 font-medium">
+                        {props.area || selectedFacility.local_area || '大溫哥華沿海港灣水文網'}
+                      </div>
+                    </div>
+
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-2 text-[11px]">
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-500">即時海面潮位 (Water Level)</span>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-xl font-black text-blue-600 font-mono">
+                            {currentLevel} <span className="text-xs font-normal text-gray-500">m</span>
+                          </span>
+                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded font-mono ${
+                            isRising ? 'bg-emerald-100 text-emerald-800' : isFalling ? 'bg-rose-100 text-rose-800' : 'bg-gray-200 text-gray-700'
+                          }`}>
+                            {state} {isRising ? '↗' : isFalling ? '↘' : '→'}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-1.5 pt-1.5 border-t border-gray-200/60">
+                        <div className="bg-white p-2 rounded border border-gray-200 flex flex-col">
+                          <span className="text-[10px] text-gray-500">下次滿潮 (High Tide)</span>
+                          <span className="text-sm font-bold text-emerald-700 font-mono mt-0.5">
+                            {nextHighVal ? `${nextHighVal}m` : '--'}
+                          </span>
+                          {nextHighTime && (
+                            <span className="text-[9.5px] text-gray-400 font-mono">{nextHighTime.slice(11, 16)} UTC</span>
+                          )}
+                        </div>
+                        <div className="bg-white p-2 rounded border border-gray-200 flex flex-col">
+                          <span className="text-[10px] text-gray-500">下次乾潮 (Low Tide)</span>
+                          <span className="text-sm font-bold text-sky-700 font-mono mt-0.5">
+                            {nextLowVal ? `${nextLowVal}m` : '--'}
+                          </span>
+                          {nextLowTime && (
+                            <span className="text-[9.5px] text-gray-400 font-mono">{nextLowTime.slice(11, 16)} UTC</span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="text-[10px] text-gray-500 leading-relaxed pt-1 border-t border-gray-200/60">
+                        數據來源：加拿大漁業及海洋部水文觀測網 (Fisheries and Oceans Canada)
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+
               {/* Gas Station (Fuel) Details */}
               {selectedFacility.facility_type === 'fuel' && (
                 <div className="flex flex-col gap-2.5 text-xs">
@@ -8484,6 +8855,244 @@ export default function AppMap() {
               </button>
             </div>
           )}
+        </div>
+      )}
+
+      {/* 加油站品牌動態篩選器 (Gas Station Filter Popup) */}
+      {layers.fuel && (
+        <div className={`fixed top-[72px] z-30 w-[300px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-amber-500/40 select-none animate-in fade-in duration-200 ${
+          layers.parkingMeters ? 'left-4 md:left-[568px]' : 'left-4 md:left-[256px]'
+        }`}>
+          <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
+            <div className="flex items-center gap-2">
+              <span className="p-1 rounded bg-amber-500/20 text-amber-400">
+                <Fuel className="w-3.5 h-3.5" />
+              </span>
+              <span className="font-bold text-xs text-white">加油站品牌篩選</span>
+            </div>
+            <button
+              onClick={() => setFuelFilterOpen(!fuelFilterOpen)}
+              className="text-gray-400 hover:text-white p-0.5 rounded hover:bg-[#252a38] transition-colors"
+            >
+              {fuelFilterOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            </button>
+          </div>
+
+          {fuelFilterOpen ? (
+            <div className="flex flex-col gap-2.5 text-xs">
+              <div className="flex items-center justify-between">
+                <span className="text-gray-300">選擇連鎖品牌:</span>
+                <span className="font-bold text-amber-400 font-mono text-[11px]">
+                  {fuelFilter.brands.length === 0 || fuelFilter.brands.includes('all') ? '全部品牌' : `${fuelFilter.brands.length} 個已選`}
+                </span>
+              </div>
+
+              {/* 品牌快捷選擇標籤 */}
+              <div className="grid grid-cols-3 gap-1">
+                {[
+                  { label: '全部', id: 'all' },
+                  { label: 'Chevron', id: 'Chevron' },
+                  { label: 'Shell', id: 'Shell' },
+                  { label: 'Petro-Can', id: 'Petro-Canada' },
+                  { label: 'Esso', id: 'Esso' },
+                  { label: 'Mobil', id: 'Mobil' },
+                ].map((b) => {
+                  const isAll = fuelFilter.brands.length === 0 || fuelFilter.brands.includes('all');
+                  const isSelected = b.id === 'all' ? isAll : (!isAll && fuelFilter.brands.includes(b.id));
+                  return (
+                    <button
+                      key={b.id}
+                      onClick={() => {
+                        if (b.id === 'all') {
+                          setFuelFilter({ brands: ['all'] });
+                        } else {
+                          const current = isAll ? [] : [...fuelFilter.brands];
+                          const exists = current.includes(b.id);
+                          const next = exists ? current.filter(x => x !== b.id) : [...current, b.id];
+                          setFuelFilter({ brands: next.length === 0 ? ['all'] : next });
+                        }
+                      }}
+                      className={`py-1 text-[11px] rounded font-medium transition-all ${
+                        isSelected
+                          ? 'bg-amber-500 text-gray-950 font-bold shadow-sm'
+                          : 'bg-[#1e2330] text-gray-300 hover:bg-[#282f40]'
+                      }`}
+                    >
+                      {b.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* 其他獨立油站 */}
+              <label className="flex items-center gap-2 pt-1 border-t border-[#262b38] text-[11px] text-gray-300 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={!fuelFilter.brands.includes('all') && fuelFilter.brands.includes('Other')}
+                  onChange={(e) => {
+                    const isAll = fuelFilter.brands.length === 0 || fuelFilter.brands.includes('all');
+                    const current = isAll ? [] : [...fuelFilter.brands];
+                    const next = e.target.checked ? [...current, 'Other'] : current.filter(x => x !== 'Other');
+                    setFuelFilter({ brands: next.length === 0 ? ['all'] : next });
+                  }}
+                  className="rounded border-gray-600 accent-amber-500"
+                />
+                <span>包含獨立油站 (Husky / Super Save 等)</span>
+              </label>
+
+              <div className="text-[10px] text-gray-400 flex items-center justify-between">
+                <span>地圖即時過濾渲染</span>
+                <span className="text-amber-400 font-mono">即時生效</span>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center justify-between text-[11px] text-gray-300">
+              <span>目前篩選: <span className="text-amber-400 font-bold">{fuelFilter.brands.includes('all') || fuelFilter.brands.length === 0 ? '全部' : fuelFilter.brands.join(', ')}</span></span>
+              <button 
+                onClick={() => setFuelFilterOpen(true)}
+                className="text-[10px] text-amber-400 hover:underline"
+              >
+                展開
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* 電動車充電站規格篩選器 (EV & Tesla Filter Popup) */}
+      {(layers.evCharging || layers.tesla) && (
+        <div className={`fixed top-[72px] z-30 w-[310px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-emerald-500/40 select-none animate-in fade-in duration-200 ${
+          layers.parkingMeters && layers.fuel 
+            ? 'left-4 md:left-[880px]' 
+            : (layers.parkingMeters || layers.fuel) 
+            ? 'left-4 md:left-[568px]' 
+            : 'left-4 md:left-[256px]'
+        }`}>
+          <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
+            <div className="flex items-center gap-2">
+              <span className="p-1 rounded bg-emerald-500/20 text-emerald-400">
+                <Zap className="w-3.5 h-3.5" />
+              </span>
+              <span className="font-bold text-xs text-white">電動車充電規格篩選</span>
+            </div>
+            <button
+              onClick={() => setEvFilterOpen(!evFilterOpen)}
+              className="text-gray-400 hover:text-white p-0.5 rounded hover:bg-[#252a38] transition-colors"
+            >
+              {evFilterOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            </button>
+          </div>
+
+          {evFilterOpen ? (
+            <div className="flex flex-col gap-2.5 text-xs">
+              {/* 充電功率/速度 */}
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center justify-between text-[11px] text-gray-300">
+                  <span>充電速度:</span>
+                  <span className="font-bold text-emerald-400 font-mono">
+                    {evChargingFilter.speed === 'all' ? '全部功率' : evChargingFilter.speed === 'fast' ? '快充 (≥50kW DCFC)' : '慢充 (Level 2 AC)'}
+                  </span>
+                </div>
+                <div className="grid grid-cols-3 gap-1">
+                  {[
+                    { label: '全部', val: 'all' },
+                    { label: '快充 DCFC', val: 'fast' },
+                    { label: '慢充 L2', val: 'slow' }
+                  ].map((s) => (
+                    <button
+                      key={s.val}
+                      onClick={() => setEvChargingFilter({ speed: s.val as any })}
+                      className={`py-1 text-[11px] rounded font-medium transition-all ${
+                        evChargingFilter.speed === s.val
+                          ? 'bg-emerald-500 text-gray-950 font-bold shadow-sm'
+                          : 'bg-[#1e2330] text-gray-300 hover:bg-[#282f40]'
+                      }`}
+                    >
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 接頭規格 */}
+              <div className="flex flex-col gap-1 pt-1.5 border-t border-[#262b38]">
+                <div className="flex items-center justify-between text-[11px] text-gray-300">
+                  <span>接頭規格:</span>
+                  <span className="font-bold text-emerald-400 font-mono">
+                    {evChargingFilter.connector === 'all' ? '通用接頭' : evChargingFilter.connector}
+                  </span>
+                </div>
+                <div className="grid grid-cols-4 gap-1">
+                  {[
+                    { label: '全部', val: 'all' },
+                    { label: 'CCS', val: 'CCS' },
+                    { label: 'J1772', val: 'J1772' },
+                    { label: 'Tesla', val: 'Tesla' }
+                  ].map((c) => (
+                    <button
+                      key={c.val}
+                      onClick={() => setEvChargingFilter({ connector: c.val })}
+                      className={`py-1 text-[11px] rounded font-medium transition-all ${
+                        evChargingFilter.connector === c.val
+                          ? 'bg-emerald-500 text-gray-950 font-bold shadow-sm'
+                          : 'bg-[#1e2330] text-gray-300 hover:bg-[#282f40]'
+                      }`}
+                    >
+                      {c.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 免費充電 */}
+              <label className="flex items-center gap-2 pt-1.5 border-t border-[#262b38] text-[11px] text-gray-300 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={evChargingFilter.freeOnly}
+                  onChange={(e) => setEvChargingFilter({ freeOnly: e.target.checked })}
+                  className="rounded border-gray-600 accent-emerald-500"
+                />
+                <span>只顯示免費充電站點 (Free Only)</span>
+              </label>
+
+              <div className="text-[10px] text-gray-400 flex items-center justify-between">
+                <span>地圖即時過濾渲染</span>
+                <span className="text-emerald-400 font-mono">即時生效</span>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center justify-between text-[11px] text-gray-300">
+              <span>目前篩選: <span className="text-emerald-400 font-bold">{evChargingFilter.speed === 'all' ? '全部' : evChargingFilter.speed === 'fast' ? '快充' : '慢充'}{evChargingFilter.freeOnly ? ' · 免費' : ''}</span></span>
+              <button 
+                onClick={() => setEvFilterOpen(true)}
+                className="text-[10px] text-emerald-400 hover:underline"
+              >
+                展開
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* 降水雷達地圖即時狀態 HUD (Floating Radar HUD) */}
+      {isRadarActive && radarTilePath && (
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-30 bg-[#12151e]/90 backdrop-blur-md px-4 py-2 rounded-full border border-cyan-500/50 shadow-2xl flex items-center gap-3 select-none text-xs text-white animate-in fade-in duration-200">
+          <div className="flex items-center gap-1.5 text-cyan-400 font-bold">
+            <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
+            <span>🌧️ 即時降水雷達回波</span>
+          </div>
+          {radarFrameTime ? (
+            <span className="font-mono text-cyan-300 font-bold bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800/40 text-[11px]">
+              {new Date(radarFrameTime * 1000).toLocaleTimeString('zh-TW', { hour12: false, hour: '2-digit', minute: '2-digit', timeZone: 'America/Vancouver' })} PDT
+            </span>
+          ) : null}
+          <button
+            onClick={() => setIsRadarActive(false)}
+            className="text-gray-400 hover:text-white p-0.5 rounded-full hover:bg-white/10 transition-colors ml-1"
+            title="關閉雷達疊加"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
         </div>
       )}
 

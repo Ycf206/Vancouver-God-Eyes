@@ -80,6 +80,8 @@ export interface UIState {
     wirelessFacilities: boolean;
     trafficCrosswalks: boolean;
     litterContainers: boolean;
+    vanWifi: boolean;
+    tideStations: boolean;
   };
   contourInterval: 'off' | '1m' | '2m' | '10m';
   setContourInterval: (interval: 'off' | '1m' | '2m' | '10m') => void;
@@ -123,6 +125,24 @@ export interface UIState {
     creditCardOnly: boolean;
   };
   setParkingMeterFilter: (filter: Partial<{ maxRate: number; creditCardOnly: boolean }>) => void;
+  fuelFilter: {
+    brands: string[]; // empty or ['all'] = all
+  };
+  setFuelFilter: (filter: Partial<{ brands: string[] }>) => void;
+  evChargingFilter: {
+    speed: 'all' | 'fast' | 'slow';
+    connector: string; // 'all' or 'CCS' / 'J1772' / 'Tesla' / 'CHAdeMO'
+    freeOnly: boolean;
+  };
+  setEvChargingFilter: (filter: Partial<{ speed: 'all' | 'fast' | 'slow'; connector: string; freeOnly: boolean }>) => void;
+  isRadarActive: boolean;
+  setIsRadarActive: (active: boolean) => void;
+  radarFrameTime: number;
+  setRadarFrameTime: (time: number) => void;
+  radarHost: string;
+  setRadarHost: (host: string) => void;
+  radarTilePath: string;
+  setRadarTilePath: (path: string) => void;
   radiusExploration: {
     active: boolean;
     lat: number;
@@ -216,6 +236,8 @@ export const useUIStore = create<UIState>()(
         wirelessFacilities: false,
         trafficCrosswalks: false,
         litterContainers: false,
+        vanWifi: false,
+        tideStations: false,
       },
       timeFormat: '24h',
       setTimeFormat: (format) => set({ timeFormat: format }),
@@ -250,6 +272,7 @@ export const useUIStore = create<UIState>()(
               (layer === 'fuel' && (st.category === 'fuel' || st.id?.startsWith('fuel_'))) ||
               (layer === 'tesla' && (st.category === 'tesla' || st.id?.startsWith('tesla_'))) ||
               (layer === 'evCharging' && (st.category === 'ev_charging' || st.id?.startsWith('ev_'))) ||
+              (layer === 'vanWifi' && (st.category === 'van_wifi' || st.id?.startsWith('vanwifi_'))) ||
               (layer === 'airports' && st.category === 'airports') ||
               (layer === 'bcferriesTerminals' && st.category === 'ferry_terminal') ||
               (layer === 'bcferriesVehicles' && st.category === 'ferry_vehicle') ||
@@ -302,6 +325,36 @@ export const useUIStore = create<UIState>()(
             ...filter,
           },
         })),
+      fuelFilter: {
+        brands: [],
+      },
+      setFuelFilter: (filter) =>
+        set((state) => ({
+          fuelFilter: {
+            ...state.fuelFilter,
+            ...filter,
+          },
+        })),
+      evChargingFilter: {
+        speed: 'all',
+        connector: 'all',
+        freeOnly: false,
+      },
+      setEvChargingFilter: (filter) =>
+        set((state) => ({
+          evChargingFilter: {
+            ...state.evChargingFilter,
+            ...filter,
+          },
+        })),
+      isRadarActive: false,
+      setIsRadarActive: (active) => set({ isRadarActive: active }),
+      radarFrameTime: 0,
+      setRadarFrameTime: (time) => set({ radarFrameTime: time }),
+      radarHost: 'https://tilecache.rainviewer.com',
+      setRadarHost: (host) => set({ radarHost: host }),
+      radarTilePath: '',
+      setRadarTilePath: (path) => set({ radarTilePath: path }),
       radiusExploration: null,
       setRadiusExploration: (exp) => set({ radiusExploration: exp }),
       searchTarget: null,
