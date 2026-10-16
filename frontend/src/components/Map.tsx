@@ -401,6 +401,14 @@ export default function AppMap() {
       else if (type === 'shared_bikes' && !layers.sharedBikes) facilityClosed = true;
       else if (type === 'escooter' && !layers.escooter) facilityClosed = true;
       else if (type === 'contours' && !layers.contours) facilityClosed = true;
+      else if (type === 'traffic_speed_limits' && !layers.trafficSpeedLimits) facilityClosed = true;
+      else if (type === 'bike_racks' && !layers.bikeRacks) facilityClosed = true;
+      else if (type === 'postal_code_fsa' && !layers.postalCodeFSA) facilityClosed = true;
+      else if (type === 'wireless_facilities' && !layers.wirelessFacilities) facilityClosed = true;
+      else if (type === 'water_distribution_mains' && !layers.waterDistributionMains) facilityClosed = true;
+      else if (type === 'sewer_mains' && !layers.sewerMains) facilityClosed = true;
+      else if (type === 'one_way_streets' && !layers.oneWayStreets) facilityClosed = true;
+      else if (type === 'snow_removal_routes' && !layers.snowRemovalRoutes) facilityClosed = true;
 
       if (facilityClosed) {
         setSelectedFacility(null);
@@ -2531,6 +2539,162 @@ export default function AppMap() {
       });
     }
 
+    // Road: Traffic Speed Limits (限速路段)
+    if (layers.trafficSpeedLimits) {
+      style.sources['traffic_speed_limits'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/traffic_speed_limits` };
+      style.layers.push({
+        id: 'traffic-speed-limits-casing-layer',
+        type: 'line',
+        source: 'traffic_speed_limits',
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        paint: {
+          'line-color': '#0f172a',
+          'line-width': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 17, 7.5],
+          'line-opacity': 0.7
+        }
+      });
+      style.layers.push({
+        id: 'traffic-speed-limits-layer',
+        type: 'line',
+        source: 'traffic_speed_limits',
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        paint: {
+          'line-color': [
+            'match',
+            ['to-string', ['get', 'speed_limit']],
+            '30', '#10b981',
+            '40', '#f59e0b',
+            '50', '#3b82f6',
+            '#6366f1'
+          ],
+          'line-width': ['interpolate', ['linear'], ['zoom'], 11, 1.6, 14, 3.2, 17, 5.2],
+          'line-opacity': 0.95
+        }
+      });
+      style.layers.push({
+        id: 'traffic-speed-limits-label',
+        type: 'symbol',
+        source: 'traffic_speed_limits',
+        minzoom: 13,
+        layout: {
+          'symbol-placement': 'line',
+          'symbol-spacing': 120,
+          'text-field': ['concat', ['to-string', ['get', 'speed_limit']], ' km/h'],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 9, 15, 11, 17, 13],
+          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+          'text-keep-upright': true
+        },
+        paint: {
+          'text-color': '#ffffff',
+          'text-halo-color': '#0f172a',
+          'text-halo-width': 2
+        }
+      });
+    }
+
+    // Road: Bike Racks (單車架)
+    if (layers.bikeRacks) {
+      style.sources['bike_racks'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/bike_racks` };
+      style.layers.push({
+        id: 'bike-racks-layer',
+        type: 'circle',
+        source: 'bike_racks',
+        minzoom: 13,
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 13, 3, 15, 5.5, 17, 8],
+          'circle-color': '#0d9488',
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'bike-racks-symbol-layer',
+        type: 'symbol',
+        source: 'bike_racks',
+        minzoom: 15,
+        layout: {
+          'text-field': '🚲',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 15, 10, 18, 14],
+          'text-allow-overlap': false
+        }
+      });
+    }
+
+    // Geography: Postal Code FSA (郵遞編號分區)
+    if (layers.postalCodeFSA) {
+      style.sources['postal_code_fsa'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/postal_code_fsa` };
+      style.layers.push({
+        id: 'postal-code-fsa-fill',
+        type: 'fill',
+        source: 'postal_code_fsa',
+        paint: {
+          'fill-color': '#6366f1',
+          'fill-opacity': 0.08
+        }
+      });
+      style.layers.push({
+        id: 'postal-code-fsa-line',
+        type: 'line',
+        source: 'postal_code_fsa',
+        paint: {
+          'line-color': '#818cf8',
+          'line-width': 1.8,
+          'line-dasharray': [4, 2],
+          'line-opacity': 0.85
+        }
+      });
+      style.layers.push({
+        id: 'postal-code-fsa-label',
+        type: 'symbol',
+        source: 'postal_code_fsa',
+        layout: {
+          'text-field': ['get', 'fsa'],
+          'text-size': 12,
+          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+          'text-allow-overlap': false
+        },
+        paint: {
+          'text-color': '#4f46e5',
+          'text-halo-color': '#ffffff',
+          'text-halo-width': 2
+        }
+      });
+    }
+
+    // Utilities: Wireless Facilities (無線設施)
+    if (layers.wirelessFacilities) {
+      style.sources['wireless_facilities'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/wireless_facilities` };
+      style.layers.push({
+        id: 'wireless-facilities-layer',
+        type: 'circle',
+        source: 'wireless_facilities',
+        minzoom: 11,
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 4, 15, 7, 18, 10],
+          'circle-color': '#9333ea',
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'wireless-facilities-symbol-layer',
+        type: 'symbol',
+        source: 'wireless_facilities',
+        minzoom: 14,
+        layout: {
+          'text-field': '📡',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 14, 10, 18, 14],
+          'text-allow-overlap': false
+        }
+      });
+    }
+
     return style;
   }, [
     layers.skytrainRoutes, 
@@ -2574,6 +2738,10 @@ export default function AppMap() {
     layers.crimeAreas,
     layers.waterDistributionMains,
     layers.sewerMains,
+    layers.trafficSpeedLimits,
+    layers.bikeRacks,
+    layers.postalCodeFSA,
+    layers.wirelessFacilities,
     contourInterval,
     mapStyleType
   ]);
@@ -2657,6 +2825,12 @@ export default function AppMap() {
           'marine-terminals-symbol-layer',
           'one-way-streets-layer',
           'snow-removal-routes-layer',
+          'traffic-speed-limits-layer',
+          'bike-racks-layer',
+          'bike-racks-symbol-layer',
+          'postal-code-fsa-fill',
+          'wireless-facilities-layer',
+          'wireless-facilities-symbol-layer',
           'water-distribution-mains-layer',
           'sewer-mains-layer',
           'contours-layer',
@@ -2802,6 +2976,34 @@ export default function AppMap() {
               lat: clickLat,
               properties: props
             });
+          } else if (layerId === 'traffic-speed-limits-layer' || layerId === 'traffic-speed-limits-casing-layer') {
+            setSelectedStop(null);
+            const props = feature.properties || {};
+            const clickLon = e.lngLat?.lng ?? -123.1207;
+            const clickLat = e.lngLat?.lat ?? 49.2827;
+            setSelectedFacility({
+              id: props.object_id ? `speed_${props.object_id}` : `speed_${clickLon}_${clickLat}`,
+              facility_type: 'traffic_speed_limits',
+              name: props.name || props.hblock || '速限管制路段',
+              local_area: props.segment_type ? `分區: ${props.segment_type}` : '溫哥華市區道路',
+              lon: clickLon,
+              lat: clickLat,
+              properties: props
+            });
+          } else if (layerId === 'postal-code-fsa-fill' || layerId === 'postal-code-fsa-line') {
+            setSelectedStop(null);
+            const props = feature.properties || {};
+            const clickLon = e.lngLat?.lng ?? -123.1207;
+            const clickLat = e.lngLat?.lat ?? 49.2827;
+            setSelectedFacility({
+              id: props.fsa ? `fsa_${props.fsa}` : `fsa_${clickLon}_${clickLat}`,
+              facility_type: 'postal_code_fsa',
+              name: `郵遞編號分區 ${props.fsa || ''}`,
+              local_area: props.province || '溫哥華前瞻轉運區 (FSA)',
+              lon: clickLon,
+              lat: clickLat,
+              properties: props
+            });
           } else if (
             layerId.startsWith('parking-meters') || 
             layerId.startsWith('accessible-parking') || 
@@ -2810,6 +3012,8 @@ export default function AppMap() {
             layerId.startsWith('escooter') ||
             layerId.startsWith('car-sharing') ||
             layerId.startsWith('shared-bikes') ||
+            layerId.startsWith('bike-racks') ||
+            layerId.startsWith('wireless-facilities') ||
             layerId.startsWith('traffic-cameras') ||
             layerId.startsWith('safety-cameras') ||
             layerId.startsWith('fuel') ||
@@ -2835,11 +3039,13 @@ export default function AppMap() {
             const isFuel = layerId.startsWith('fuel');
             const isTesla = layerId.startsWith('tesla');
             const isMarineTerminal = layerId.startsWith('marine-terminals');
+            const isBikeRack = layerId.startsWith('bike-racks');
+            const isWireless = layerId.startsWith('wireless-facilities');
             setSelectedFacility({
-              id: props.id || '',
-              facility_type: props.facility_type || (isFuel ? 'fuel' : (isTesla ? 'tesla' : (isMarineTerminal ? 'marine_terminals' : ''))),
-              name: props.name || props.brand || (isFuel ? '加油站' : (isTesla ? 'Tesla 站點' : (isMarineTerminal ? '港口碼頭' : ''))),
-              local_area: props.waterway || props.local_area || props.address || props.city || '',
+              id: props.id || (props.object_id ? `${props.facility_type || (isBikeRack ? 'bike_rack' : (isWireless ? 'wireless' : 'fac'))}_${props.object_id}` : ''),
+              facility_type: props.facility_type || (isFuel ? 'fuel' : (isTesla ? 'tesla' : (isMarineTerminal ? 'marine_terminals' : (isBikeRack ? 'bike_racks' : (isWireless ? 'wireless_facilities' : ''))))),
+              name: props.name || (isBikeRack ? (props.location ? `單車架 - ${props.location}` : '公用單車架') : (isWireless ? (props.site_name || `無線設施 #${props.pole_number || ''}`) : (props.brand || (isFuel ? '加油站' : (isTesla ? 'Tesla 站點' : (isMarineTerminal ? '港口碼頭' : '')))))),
+              local_area: props.waterway || props.local_area || props.location || props.company || props.address || props.city || '',
               lon: coords[0],
               lat: coords[1],
               properties: props
@@ -4048,13 +4254,13 @@ export default function AppMap() {
             offset={[0, -10]}
             maxWidth={
               selectedFacility.facility_type === 'traffic_cameras' ? '400px' : 
-              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains') ? '360px' : 
+              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities') ? '360px' : 
               '320px'
             }
           >
             <div className={`p-3.5 ${
               selectedFacility.facility_type === 'traffic_cameras' ? 'w-[360px]' : 
-              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains') ? 'w-[340px]' : 
+              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities') ? 'w-[340px]' : 
               'w-[290px]'
             } max-w-[90vw] text-gray-800`}>
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
@@ -4062,6 +4268,10 @@ export default function AppMap() {
                   <span className={`w-3 h-3 rounded-full flex-shrink-0 ${
                     selectedFacility.facility_type === 'water_distribution_mains' ? 'bg-sky-500' :
                     selectedFacility.facility_type === 'sewer_mains' ? 'bg-teal-500' :
+                    selectedFacility.facility_type === 'traffic_speed_limits' ? 'bg-amber-500' :
+                    selectedFacility.facility_type === 'postal_code_fsa' ? 'bg-indigo-600' :
+                    selectedFacility.facility_type === 'bike_racks' ? 'bg-teal-600' :
+                    selectedFacility.facility_type === 'wireless_facilities' ? 'bg-purple-600' :
                     selectedFacility.facility_type === 'tesla' ? 'bg-red-600' :
                     selectedFacility.facility_type === 'marine_terminals' ? 'bg-cyan-600' :
                     selectedFacility.facility_type === 'snow_removal_routes' ? 'bg-sky-500' :
@@ -5963,12 +6173,28 @@ export default function AppMap() {
                     </div>
 
                     <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                      <div className="flex justify-between items-center text-gray-600">
+                      {selectedFacility.properties.street_name && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>所在街道</span>
+                          <span className="font-bold text-gray-900 text-right truncate max-w-[190px]">
+                            {selectedFacility.properties.street_name}
+                          </span>
+                        </div>
+                      )}
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
                         <span>下水道排水類型</span>
                         <span className="font-bold text-teal-900">
                           {effluentZh}
                         </span>
                       </div>
+                      {selectedFacility.properties.diameter_mm && (
+                        <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                          <span>管徑規格 (Diameter)</span>
+                          <span className="font-mono font-bold text-teal-800">
+                            {selectedFacility.properties.diameter_mm} mm
+                          </span>
+                        </div>
+                      )}
                       {selectedFacility.properties.material && (
                         <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
                           <span>管道結構材質</span>
@@ -5977,10 +6203,244 @@ export default function AppMap() {
                           </span>
                         </div>
                       )}
+                      {selectedFacility.properties.pipe_use && (
+                        <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                          <span>管線功能用途</span>
+                          <span className="font-medium text-gray-800">
+                            {selectedFacility.properties.pipe_use}
+                          </span>
+                        </div>
+                      )}
+                      {selectedFacility.properties.service_status && (
+                        <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                          <span>管線營運狀態</span>
+                          <span className={`font-semibold ${selectedFacility.properties.service_status.includes('Abandoned') ? 'text-rose-600' : 'text-emerald-700'}`}>
+                            {selectedFacility.properties.service_status}
+                          </span>
+                        </div>
+                      )}
+                      {selectedFacility.properties.install_date && (
+                        <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                          <span>建造鋪設年份</span>
+                          <span className="font-mono text-gray-700">
+                            {selectedFacility.properties.install_date}
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
               })()}
+
+              {/* Traffic Speed Limits (限速路段) Details */}
+              {selectedFacility.facility_type === 'traffic_speed_limits' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/25 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-amber-950 text-xs flex items-center gap-1.5">
+                        <span className="text-base text-amber-600 font-bold">⏱️</span>
+                        <span className="truncate max-w-[190px]">{selectedFacility.properties.hblock || selectedFacility.name}</span>
+                      </span>
+                      <span className="text-xs font-black px-2 py-0.5 rounded bg-amber-600 text-white shrink-0 tracking-wide">
+                        {selectedFacility.properties.speed_limit || '30'} km/h
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-amber-900 font-medium">
+                      ⚠️ 本路段道路速限為 {selectedFacility.properties.speed_limit || '30'} 公里/小時，請小心駕駛
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                    {selectedFacility.properties.hblock && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>街區門牌 (Block)</span>
+                        <span className="font-bold text-gray-900 text-right truncate max-w-[190px]">
+                          {selectedFacility.properties.hblock}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.segment_type && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>路段屬性 (Zone Type)</span>
+                        <span className="font-semibold text-gray-800 text-right">
+                          {selectedFacility.properties.segment_type === 'Residential' ? '住宅區 (Residential)' : selectedFacility.properties.segment_type}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Bike Racks (單車架) Details */}
+              {selectedFacility.facility_type === 'bike_racks' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-teal-500/10 p-2.5 rounded-lg border border-teal-500/25 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-teal-950 text-xs flex items-center gap-1.5">
+                        <span className="text-base text-teal-600 font-bold">🚲</span>
+                        <span className="truncate max-w-[190px]">{selectedFacility.properties.location || selectedFacility.name}</span>
+                      </span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-teal-600 text-white shrink-0">
+                        {selectedFacility.properties.num_racks ? `${selectedFacility.properties.num_racks} 組車架` : '公用單車架'}
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-teal-900 font-medium">
+                      🚲 溫哥華市政公共自行車停放設施
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                    {selectedFacility.properties.location && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>設置地點</span>
+                        <span className="font-bold text-gray-900 text-right truncate max-w-[190px]">
+                          {selectedFacility.properties.location}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.num_racks && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>單車架數量</span>
+                        <span className="font-bold text-teal-700">
+                          {selectedFacility.properties.num_racks} 組
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.rack_type && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>車架規格款式</span>
+                        <span className="font-medium text-gray-800">
+                          {selectedFacility.properties.rack_type}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.status && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>設施狀態</span>
+                        <span className="font-semibold text-gray-800">
+                          {selectedFacility.properties.status === 'Active' ? '使用中 (Active)' : selectedFacility.properties.status}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.year_installed && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>安裝年份</span>
+                        <span className="font-mono text-gray-700">
+                          {selectedFacility.properties.year_installed} 年
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Postal Code FSA (郵遞編號分區) Details */}
+              {selectedFacility.facility_type === 'postal_code_fsa' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-indigo-500/10 p-2.5 rounded-lg border border-indigo-500/25 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-indigo-950 text-xs flex items-center gap-1.5">
+                        <span className="text-base text-indigo-600 font-bold">📮</span>
+                        <span>郵遞前瞻轉運區 (FSA)</span>
+                      </span>
+                      <span className="text-sm font-black px-2 py-0.5 rounded bg-indigo-600 text-white shrink-0 tracking-wider font-mono">
+                        {selectedFacility.properties.fsa}
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-indigo-900 font-medium">
+                      🇨🇦 加拿大郵政前瞻性排序區 (Forward Sortation Area)
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                    <div className="flex justify-between items-center text-gray-600">
+                      <span>郵遞區號字首 (FSA Code)</span>
+                      <span className="font-mono font-bold text-indigo-700 text-sm">
+                        {selectedFacility.properties.fsa}
+                      </span>
+                    </div>
+                    {selectedFacility.properties.province && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>所屬省份</span>
+                        <span className="font-medium text-gray-800">
+                          {selectedFacility.properties.province}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Wireless Facilities (無線設施) Details */}
+              {selectedFacility.facility_type === 'wireless_facilities' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-purple-500/10 p-2.5 rounded-lg border border-purple-500/25 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-purple-950 text-xs flex items-center gap-1.5">
+                        <span className="text-base text-purple-600 font-bold">📡</span>
+                        <span className="truncate max-w-[190px]">{selectedFacility.properties.company || '電信運營商'}</span>
+                      </span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-600 text-white shrink-0">
+                        {selectedFacility.properties.facility_type_label || '基地台'}
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-purple-900 font-medium">
+                      📶 {selectedFacility.name}
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                    {selectedFacility.properties.company && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>營運電信商 (Carrier)</span>
+                        <span className="font-bold text-purple-900">
+                          {selectedFacility.properties.company}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.pole_number && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>附掛燈桿編號 (Pole)</span>
+                        <span className="font-mono font-medium text-gray-800 text-right truncate max-w-[180px]">
+                          {selectedFacility.properties.pole_number}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.map_id && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>站點代碼 (Site ID)</span>
+                        <span className="font-mono text-gray-800">
+                          {selectedFacility.properties.map_id}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.status && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>安裝附掛狀態</span>
+                        <span className="font-semibold text-emerald-700">
+                          {selectedFacility.properties.status}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.attachment_location && (
+                      <div className="flex flex-col gap-0.5 pt-1 border-t border-gray-100 text-gray-600">
+                        <span>附掛安裝細節:</span>
+                        <span className="text-gray-800 text-[10px] leading-tight bg-white p-1 rounded border border-gray-100">
+                          {selectedFacility.properties.attachment_location}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.contact_info && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>聯絡服務電話</span>
+                        <a href={`tel:${selectedFacility.properties.contact_info}`} className="text-purple-600 hover:underline font-mono">
+                          {selectedFacility.properties.contact_info}
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </Popup>
         )}

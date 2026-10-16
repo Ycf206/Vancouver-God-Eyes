@@ -8,7 +8,8 @@ import {
   Flame, Building2, Hospital, ChevronLeft, Trees, Footprints, Flower2, 
   Droplets, Bath, Leaf, Landmark, GraduationCap, BookOpen, UtensilsCrossed, Bed, Heart,
   Plane, PlaneTakeoff, Calendar, Car, ShieldAlert, LifeBuoy, HeartPulse, Mountain,
-  Compass, MapPin, Fuel, Train, Anchor, ArrowRight, Snowflake, Fingerprint, Waves
+  Compass, MapPin, Fuel, Train, Anchor, ArrowRight, Snowflake, Fingerprint, Waves,
+  Gauge, Mail, Radio
 } from 'lucide-react';
 
 // Helper component for Tesla Icon
@@ -232,9 +233,9 @@ export default function LayerPanel() {
           <div className="text-[10px] font-bold text-amber-400 tracking-wider flex items-center justify-between">
             <div className="flex items-center gap-1">
               <CircleDollarSign className="w-3 h-3 text-amber-400" />
-              <span>道路設施</span>
+              <span>道路</span>
             </div>
-            <span className="text-[9px] text-amber-500/70 font-mono">ROAD INFRA</span>
+            <span className="text-[9px] text-amber-500/70 font-mono">ROAD</span>
           </div>
           <div className="grid grid-cols-2 gap-1">
             <LayerButton layerKey="parkingMeters" label="停車收費錶" icon={CircleDollarSign} colorClass="text-amber-400" activeBg="bg-[#2a2418]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
@@ -251,6 +252,8 @@ export default function LayerPanel() {
             <LayerButton layerKey="tesla" label="TESLA" icon={TeslaIcon} colorClass="text-red-500" activeBg="bg-[#2d1417]" activeBorder="border-red-500/60" activeShadow="shadow-[0_0_8px_rgba(232,33,39,0.3)]" />
             <LayerButton layerKey="oneWayStreets" label="單程路" icon={ArrowRight} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
             <LayerButton layerKey="snowRemovalRoutes" label="鏟雪路線" icon={Snowflake} colorClass="text-sky-300" activeBg="bg-[#0f2938]" activeBorder="border-sky-400/50" activeShadow="shadow-[0_0_6px_rgba(56,189,248,0.2)]" />
+            <LayerButton layerKey="trafficSpeedLimits" label="限速路段" icon={Gauge} colorClass="text-emerald-400" activeBg="bg-[#142820]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
+            <LayerButton layerKey="bikeRacks" label="單車架" icon={Bike} colorClass="text-teal-400" activeBg="bg-[#102724]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
           </div>
         </div>
 
@@ -333,6 +336,7 @@ export default function LayerPanel() {
           <div className="grid grid-cols-2 gap-1">
             <LayerButton layerKey="waterDistributionMains" label="自來水管道" icon={Droplets} colorClass="text-sky-400" activeBg="bg-[#102436]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(14,165,233,0.15)]" />
             <LayerButton layerKey="sewerMains" label="污水管道" icon={Waves} colorClass="text-teal-400" activeBg="bg-[#102826]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
+            <LayerButton layerKey="wirelessFacilities" label="無線設施" icon={Radio} colorClass="text-purple-400" activeBg="bg-[#241733]" activeBorder="border-purple-500/50" activeShadow="shadow-[0_0_6px_rgba(168,85,247,0.15)]" />
           </div>
         </div>
 
@@ -352,6 +356,7 @@ export default function LayerPanel() {
           {/* 區域邊界按鈕 (等高線上方) */}
           <div className="grid grid-cols-2 gap-1">
             <LayerButton layerKey="localAreaBoundary" label="區域邊界" icon={MapPin} colorClass="text-teal-400" activeBg="bg-[#122826]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
+            <LayerButton layerKey="postalCodeFSA" label="郵遞編號" icon={Mail} colorClass="text-indigo-400" activeBg="bg-[#181a33]" activeBorder="border-indigo-500/50" activeShadow="shadow-[0_0_6px_rgba(99,102,241,0.15)]" />
           </div>
 
           {/* 等高線文字與狀態標籤 (地理文字下方、拉動條上方) */}

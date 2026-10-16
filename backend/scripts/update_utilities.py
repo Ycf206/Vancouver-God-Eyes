@@ -36,11 +36,6 @@ UTILITIES_DATASETS = [
         "id": "water-distribution-mains",
         "name": "自來水管道 (Water Distribution Mains)",
         "filename": "vancouver_water_distribution_mains.geojson"
-    },
-    {
-        "id": "sewer-mains",
-        "name": "污水管道 (Sewer Mains)",
-        "filename": "vancouver_sewer_mains.geojson"
     }
 ]
 

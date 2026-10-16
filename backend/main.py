@@ -1490,6 +1490,31 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                 icon = "🏠"
                 layer_key = "homelessShelters"
                 zoom = 16
+            elif ftype == 'car_sharing':
+                badge = "共享汽車"
+                icon = "🚗"
+                layer_key = "carSharing"
+                zoom = 16
+            elif ftype == 'bike_racks':
+                badge = "單車架"
+                icon = "🚲"
+                layer_key = "bikeRacks"
+                zoom = 17
+            elif ftype == 'wireless_facilities':
+                badge = "無線設施"
+                icon = "📡"
+                layer_key = "wirelessFacilities"
+                zoom = 16
+            elif ftype == 'traffic_speed_limits':
+                badge = "限速路段"
+                icon = "🚦"
+                layer_key = "trafficSpeedLimits"
+                zoom = 15
+            elif ftype == 'postal_code_fsa':
+                badge = "郵遞編號"
+                icon = "📮"
+                layer_key = "postalCodeFSA"
+                zoom = 13
 
             sub_parts = [badge]
             if ftype == 'safety_cameras' and f.details and isinstance(f.details, dict) and f.details.get('camera_type'):
@@ -1848,8 +1873,16 @@ _contours_caches = {
 _curated_static_caches = {}
 _db_synced_curated_types = set()
 
-CURATED_STATIC_TYPES = ("bikeways", "hospitals", "police", "disaster_hubs", "car_sharing", "aed", "local_area_boundary", "fuel", "ev_charging", "tesla", "marine_terminals", "one_way_streets", "snow_removal_routes", "crime_areas", "water_distribution_mains", "sewer_mains")
-POINT_CURATED_TYPES = ("hospitals", "police", "disaster_hubs", "car_sharing", "aed", "fuel", "ev_charging", "tesla", "marine_terminals")
+CURATED_STATIC_TYPES = (
+    "bikeways", "hospitals", "police", "disaster_hubs", "car_sharing", "aed", 
+    "local_area_boundary", "fuel", "ev_charging", "tesla", "marine_terminals", 
+    "one_way_streets", "snow_removal_routes", "crime_areas", "water_distribution_mains", 
+    "sewer_mains", "traffic_speed_limits", "bike_racks", "postal_code_fsa", "wireless_facilities"
+)
+POINT_CURATED_TYPES = (
+    "hospitals", "police", "disaster_hubs", "car_sharing", "aed", 
+    "fuel", "ev_charging", "tesla", "marine_terminals", "bike_racks", "wireless_facilities"
+)
 
 @app.get("/api/geojson/road/{facility_type}")
 def get_road_facilities_geojson(facility_type: str, interval: str = "10m", db: Session = Depends(database.get_db)):
@@ -1883,8 +1916,8 @@ def get_road_facilities_geojson(facility_type: str, interval: str = "10m", db: S
                 try:
                     with open(static_geojson_path, "r", encoding="utf-8") as f:
                         static_geojson = json.load(f)
-                    if facility_type == "aed":
-                        db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == "aed").delete()
+                    if facility_type in ("aed", "car_sharing", "bike_racks", "wireless_facilities"):
+                        db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).delete()
                     for feat in static_geojson.get("features", []):
                         props = feat.get("properties", {})
                         geom_type = feat.get("geometry", {}).get("type")
