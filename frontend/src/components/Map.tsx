@@ -8,6 +8,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl, getWsUrl } from '@/utils/api';
 import { formatTimePreference, formatShipEta } from '@/utils/time';
+import { getSkytrainStationMapUrls } from '@/utils/skytrainMaps';
 import { 
   LocateFixed, Train, Compass, ZoomIn, X, Copy, Check, 
   Navigation, ExternalLink, Clock, Bike, Car, Info, 
@@ -167,6 +168,7 @@ interface SkytrainStationSchedule {
     evening?: string;
     late_night?: string;
   };
+  station_map_url?: string;
   entrance_map_url?: string;
   fare_zone?: string;
   has_park_and_ride?: boolean;
@@ -684,8 +686,13 @@ export default function AppMap() {
     fetch(`${apiUrl}/api/skytrain/stations/${encodeURIComponent(stopId)}/schedule`)
       .then(res => res.json())
       .then(data => {
+        const localMaps = getSkytrainStationMapUrls(data?.name || stopName || '');
         if (data && !data.error) {
-          setSelectedSkytrainStation(data);
+          setSelectedSkytrainStation({
+            ...data,
+            station_map_url: data.station_map_url || localMaps?.Station || data.entrance_map_url,
+            entrance_map_url: data.entrance_map_url || localMaps?.Entrance || localMaps?.Station
+          });
         } else {
           setSelectedSkytrainStation({
             stop_id: stopId,
@@ -695,6 +702,8 @@ export default function AppMap() {
             lon: lon || -123.1207,
             lines: ['SkyTrain 天車'],
             schedules: [],
+            station_map_url: localMaps?.Station,
+            entrance_map_url: localMaps?.Entrance || localMaps?.Station,
             updated_at: new Date().toLocaleTimeString('en-US', { hour12: false })
           });
         }
@@ -702,6 +711,19 @@ export default function AppMap() {
       })
       .catch(err => {
         console.error('Error fetching SkyTrain station schedule:', err);
+        const localMaps = getSkytrainStationMapUrls(stopName || '');
+        setSelectedSkytrainStation({
+          stop_id: stopId,
+          name: stopName || '天車站',
+          raw_name: stopName || '天車站',
+          lat: lat || 49.2827,
+          lon: lon || -123.1207,
+          lines: ['SkyTrain 天車'],
+          schedules: [],
+          station_map_url: localMaps?.Station,
+          entrance_map_url: localMaps?.Entrance || localMaps?.Station,
+          updated_at: new Date().toLocaleTimeString('en-US', { hour12: false })
+        });
         setLoadingStationSchedule(false);
       });
   }, []);
@@ -3541,6 +3563,7 @@ export default function AppMap() {
       <Map
         ref={mapRef}
         preserveDrawingBuffer={true}
+        canvasContextAttributes={{ preserveDrawingBuffer: true, antialias: true }}
         initialViewState={{ longitude: -123.05, latitude: 49.25, zoom: 11, pitch: 0, bearing: 0 }}
         maxZoom={20}
         mapStyle={mapStyle}
@@ -8440,7 +8463,9 @@ export default function AppMap() {
                     </span>
                   ))}
                   <span className="text-[9.5px] font-semibold px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-                    Zone {selectedSkytrainStation.fare_zone || 1}
+                    {selectedSkytrainStation.fare_zone?.startsWith('Zone')
+                      ? selectedSkytrainStation.fare_zone
+                      : `Zone ${selectedSkytrainStation.fare_zone || 1}`}
                   </span>
                   <span className="text-[10px] text-gray-400 font-mono">#{selectedSkytrainStation.stop_id}</span>
                 </div>
@@ -8659,19 +8684,43 @@ export default function AppMap() {
           {/* Tab 3: 車站出入口地圖與設施指引 */}
           {skytrainDetailTab === 'facilities' && (
             <div className="overflow-y-auto flex-1 flex flex-col gap-2.5 pr-1 text-xs [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
-              {/* Station Entrance Map Link */}
+              {/* TransLink 官方車站出入口地圖 (Station Map) */}
               <a
-                href={selectedSkytrainStation.entrance_map_url || "https://www.translink.ca/schedules-and-maps/skytrain"}
+                href={selectedSkytrainStation.station_map_url || selectedSkytrainStation.entrance_map_url || "https://www.translink.ca/schedules-and-maps/skytrain"}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-between p-2.5 rounded-lg bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/40 text-blue-300 hover:text-white text-xs font-medium transition-all group shadow-sm"
+                title="開啟 TransLink 官方車站出入口與立體平面圖 PDF"
               >
-                <div className="flex items-center gap-2">
-                  <ExternalLink className="w-4 h-4 text-blue-400 group-hover:scale-110 transition-transform" />
-                  <span>TransLink 官方出入口地圖 (Station Map)</span>
+                <div className="flex items-center gap-2 min-w-0">
+                  <ExternalLink className="w-4 h-4 text-blue-400 group-hover:scale-110 transition-transform shrink-0" />
+                  <div className="flex flex-col min-w-0">
+                    <span className="font-bold text-white truncate">TransLink 官方出入口地圖 (Station Map)</span>
+                    <span className="text-[10px] text-blue-300/80">各出入口街道位置、月台層與轉乘動線</span>
+                  </div>
                 </div>
-                <span className="text-[10px] bg-blue-500/30 px-1.5 py-0.5 rounded font-mono">官網指引</span>
+                <span className="text-[10px] bg-blue-500/30 text-blue-200 px-2 py-0.5 rounded font-mono shrink-0 ml-1">PDF 官網</span>
               </a>
+
+              {/* TransLink 無障礙電梯地圖 (Accessible Elevator Map) */}
+              {selectedSkytrainStation.entrance_map_url && selectedSkytrainStation.entrance_map_url !== selectedSkytrainStation.station_map_url && (
+                <a
+                  href={selectedSkytrainStation.entrance_map_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between p-2.5 rounded-lg bg-emerald-600/15 hover:bg-emerald-600/25 border border-emerald-500/40 text-emerald-300 hover:text-white text-xs font-medium transition-all group shadow-sm"
+                  title="開啟 TransLink 無障礙電梯與輪椅出入口平面圖 PDF"
+                >
+                  <div className="flex items-center gap-2 min-w-0">
+                    <ExternalLink className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform shrink-0" />
+                    <div className="flex flex-col min-w-0">
+                      <span className="font-bold text-white truncate">TransLink 無障礙電梯與出入口地圖</span>
+                      <span className="text-[10px] text-emerald-300/80">無障礙電梯位置、無障礙閘門與地面連通道</span>
+                    </div>
+                  </div>
+                  <span className="text-[10px] bg-emerald-500/30 text-emerald-200 px-2 py-0.5 rounded font-mono shrink-0 ml-1">無障礙 PDF</span>
+                </a>
+              )}
 
               {/* 車站設施清單 */}
               <div className="bg-[#10131a] rounded-lg border border-[#232836] p-2.5 flex flex-col gap-2">

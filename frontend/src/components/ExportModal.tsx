@@ -97,32 +97,58 @@ export default function ExportModal() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap();
     if (!mapInstance) return;
-    try {
-      const mapCanvas = mapInstance.getCanvas();
-      if (!mapCanvas) return;
-      const previewCanvas = document.createElement('canvas');
-      // 縮圖大小 480 寬度
-      const scale = 480 / mapCanvas.width;
-      previewCanvas.width = 480;
-      previewCanvas.height = Math.round(mapCanvas.height * scale);
-      const ctx = previewCanvas.getContext('2d');
-      if (ctx) {
-        ctx.drawImage(mapCanvas, 0, 0, previewCanvas.width, previewCanvas.height);
-        setPreviewDataUrl(previewCanvas.toDataURL('image/jpeg', 0.85));
+
+    const doCapture = () => {
+      try {
+        const mapCanvas = mapInstance.getCanvas();
+        if (!mapCanvas || mapCanvas.width === 0 || mapCanvas.height === 0) return;
+
+        const previewCanvas = document.createElement('canvas');
+        const scale = 480 / mapCanvas.width;
+        previewCanvas.width = 480;
+        previewCanvas.height = Math.max(120, Math.round(mapCanvas.height * scale));
+        const ctx = previewCanvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(mapCanvas, 0, 0, previewCanvas.width, previewCanvas.height);
+          const dataUrl = previewCanvas.toDataURL('image/jpeg', 0.88);
+          if (dataUrl && dataUrl.length > 500) {
+            setPreviewDataUrl(dataUrl);
+          }
+        }
+      } catch (err) {
+        console.warn('Map preview generation warning:', err);
       }
-    } catch (err) {
-      console.warn('Map preview generation warning:', err);
-    }
+    };
+
+    // 觸發 MapLibre 重新繪製幀，並於渲染回調中精確截取最新畫面
+    mapInstance.triggerRepaint();
+    mapInstance.once('render', () => {
+      requestAnimationFrame(doCapture);
+    });
+    // 閒置備用定時器
+    setTimeout(doCapture, 100);
   }, []);
 
   // 當開啟 Modal 或切換到圖片分頁時生成預覽
   useEffect(() => {
     if (isExportModalOpen) {
-      // 延遲一點點確保畫布最新一幀渲染完成
-      const timer = setTimeout(updateMapPreview, 150);
-      return () => clearTimeout(timer);
+      const t1 = setTimeout(updateMapPreview, 60);
+      const t2 = setTimeout(updateMapPreview, 280);
+      return () => {
+        clearTimeout(t1);
+        clearTimeout(t2);
+      };
+    } else {
+      setPreviewDataUrl('');
     }
   }, [isExportModalOpen, updateMapPreview]);
+
+  useEffect(() => {
+    if (isExportModalOpen && activeTab === 'image') {
+      const t = setTimeout(updateMapPreview, 60);
+      return () => clearTimeout(t);
+    }
+  }, [isExportModalOpen, activeTab, updateMapPreview]);
 
   // 1. 匯出純淨地圖圖片
   const handleExportImage = () => {
@@ -137,9 +163,13 @@ export default function ExportModal() {
     setIsExporting(true);
     setExportStatusText('正在生成純淨高畫質地圖影像...');
 
-    setTimeout(() => {
+    const doExport = () => {
       try {
         const mapCanvas = mapInstance.getCanvas();
+        if (!mapCanvas) {
+          throw new Error('Canvas not available');
+        }
+
         const exportCanvas = document.createElement('canvas');
         exportCanvas.width = mapCanvas.width;
         exportCanvas.height = mapCanvas.height;
@@ -204,7 +234,13 @@ export default function ExportModal() {
         setIsExporting(false);
         setExportStatusText('');
       }
-    }, 100);
+    };
+
+    mapInstance.triggerRepaint();
+    mapInstance.once('render', () => {
+      requestAnimationFrame(doExport);
+    });
+    setTimeout(doExport, 120);
   };
 
   // 抓取指定圖層的 GeoJSON 特徵清單

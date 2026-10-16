@@ -18,6 +18,47 @@ except Exception:
     TZ_VAN = timezone(timedelta(hours=-7))
 
 _skytrain_data = None
+_station_maps_data = None
+
+def get_station_maps_lookup():
+    global _station_maps_data
+    if _station_maps_data is not None:
+        return _station_maps_data
+    file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "SkytrainStationMap.json")
+    lookup = {}
+    if os.path.exists(file_path):
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                raw = json.load(f)
+                for line, stations in raw.items():
+                    for st_name, urls in stations.items():
+                        norm = _normalize_station_name(st_name)
+                        lookup[norm] = urls
+        except Exception as e:
+            print(f"Error loading SkytrainStationMap.json: {e}")
+    _station_maps_data = lookup
+    return _station_maps_data
+
+def _normalize_station_name(name: str) -> str:
+    s = (name or "").lower()
+    s = s.replace("站", "").replace("station", "")
+    for dash in ["\u2013", "\u2014", "-"]:
+        s = s.replace(dash, " ")
+    for quote in ["\u2019", "'"]:
+        s = s.replace(quote, "")
+    return " ".join(s.split()).strip()
+
+def _find_station_maps(st_name: str, lines: list = None):
+    lookup = get_station_maps_lookup()
+    if not lookup:
+        return None
+    norm = _normalize_station_name(st_name)
+    if norm in lookup:
+        return lookup[norm]
+    for k, v in lookup.items():
+        if k and (k in norm or norm in k):
+            return v
+    return None
 
 def get_skytrain_data():
     global _skytrain_data
@@ -459,6 +500,7 @@ def get_skytrain_station_schedule(stop_id: str):
         'schedules': list(departures_by_dest.values()),
         'first_last': meta.get('first_last', {}),
         'frequencies': meta.get('frequencies', {}),
+        'station_map_url': meta.get('station_map_url'),
         'entrance_map_url': meta.get('entrance_map_url', 'https://www.translink.ca/schedules-and-maps/skytrain'),
         'fare_zone': meta.get('fare_zone', 'Zone 1'),
         'has_park_and_ride': meta.get('has_park_and_ride', False),
@@ -558,11 +600,16 @@ def _get_station_metadata(st_name: str, lines: list, stop_id: str):
             "late_night": "每 10 - 15 分鐘"
         }
 
+    maps = _find_station_maps(st_name, lines)
+    station_map_url = (maps.get('Station') if maps else None) or 'https://www.translink.ca/schedules-and-maps/skytrain'
+    entrance_map_url = (maps.get('Entrance') if maps else None) or station_map_url
+
     return {
         "fare_zone": zone_label,
         "first_last": first_last,
         "frequencies": frequencies,
-        "entrance_map_url": "https://www.translink.ca/schedules-and-maps/skytrain",
+        "station_map_url": station_map_url,
+        "entrance_map_url": entrance_map_url,
         "has_park_and_ride": has_park_and_ride,
         "has_bike_parkade": has_bike_parkade,
         "is_accessible": True

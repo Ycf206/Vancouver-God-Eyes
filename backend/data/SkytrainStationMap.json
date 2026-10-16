@@ -1,0 +1,240 @@
+{
+  "Canada Line": {
+    "Waterfront": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/waterfront_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/waterfront_station.pdf"
+    },
+    "Vancouver City Centre": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/vancouver_city_centre_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/vancouver_city_centre_station.pdf"
+    },
+    "Yaletown–Roundhouse": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/yaletown_roundhouse_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/yaletown_roundhouse_station.pdf"
+    },
+    "Olympic Village": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/olympic_village_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/olympic_village_station.pdf"
+    },
+    "Broadway–City Hall": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/broadway_city_hall_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/broadway_city_hall_station.pdf"
+    },
+    "King Edward": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/king_edward_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/king_edward_station.pdf"
+    },
+    "Oakridge–41st Ave": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/oakridge_41st_avenue_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/oakridge_41st_ave_station.pdf"
+    },
+    "Langara–49th Ave": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/langara_49th_avenue_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/langara_49th_ave_station.pdf"
+    },
+    "Marine Drive": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/marine_drive_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/marine_drive_station.pdf"
+    },
+    "Bridgeport": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/bridgeport_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/bridgeport_station.pdf"
+    },
+    "Templeton": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/templeton_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/templeton_station.pdf"
+    },
+    "Sea Island Centre": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/sea_island_centre_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/sea_island_centre_station.pdf"
+    },
+    "YVR–Airport": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/yvr_airport_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/yvr_airport_station.pdf"
+    },
+    "Capstan": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/capstan_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/capstan_station.pdf"
+    },
+    "Aberdeen": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/aberdeen_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/aberdeen_station.pdf"
+    },
+    "Lansdowne": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/lansdowne_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/lansdowne_station.pdf"
+    },
+    "Richmond–Brighouse": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/richmond_brighouse_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/richmond_brighouse_station.pdf"
+    }
+  },
+  "Expo Line": {
+    "Waterfront": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/waterfront_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/waterfront_station.pdf"
+    },
+    "Burrard": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/burrard_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/burrard_station.pdf"
+    },
+    "Granville": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/granville_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/granville_station.pdf"
+    },
+    "Stadium–Chinatown": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/stadium_chinatown_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/stadium_chinatown_station.pdf"
+    },
+    "Main Street–Science World": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/main_street_science_world_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/main_street_science_world_station.pdf"
+    },
+    "Commercial–Broadway": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/commercial_broadway_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/commercial_broadway_station.pdf"
+    },
+    "Nanaimo": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/nanaimo_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/nanaimo_station.pdf"
+    },
+    "29th Avenue": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/29th-avenue_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/29th_avenue_station.pdf"
+    },
+    "Joyce–Collingwood": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/joyce_collingwood_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/joyce_collingwood_station.pdf"
+    },
+    "Patterson": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/patterson_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/patterson_station.pdf"
+    },
+    "Metrotown": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/metrotown_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/metrotown_station.pdf"
+    },
+    "Royal Oak": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/royal_oak_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/royal_oak_station.pdf"
+    },
+    "Edmonds": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/edmonds_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/edmonds_station.pdf"
+    },
+    "22nd Street": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/22nd_street_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/22nd_street_station.pdf"
+    },
+    "New Westminster": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/new_westminster_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/new_westminster_station.pdf"
+    },
+    "Columbia": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/columbia_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/columbia_station.pdf"
+    },
+    "Sapperton": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/sapperton_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/sapperton_station.pdf"
+    },
+    "Braid": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/braid_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/braid_station.pdf"
+    },
+    "Lougheed Town Centre": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/lougheed_town_centre_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/lougheed_town_centre_station.pdf"
+    },
+    "Production Way–University": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/production_way_university_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/production_way_university_station.pdf"
+    },
+    "Scott Road": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/scott_road_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/scott_road_station.pdf"
+    },
+    "Gateway": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/gateway_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/gateway_station.pdf"
+    },
+    "Surrey Central": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/surrey_central_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/surrey_central_station.pdf"
+    },
+    "King George": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/king_george_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/king_george_station.pdf"
+    }
+  },
+  "Millennium Line": {
+    "VCC–Clark": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/vcc_clark_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/vcc_clark_station.pdf"
+    },
+    "Commercial–Broadway": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/commercial_broadway_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/commercial_broadway_station.pdf"
+    },
+    "Renfrew": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/renfrew_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/renfrew_station.pdf"
+    },
+    "Rupert": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/rupert_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/rupert_station.pdf"
+    },
+    "Gilmore": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/gilmore_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/gilmore_station.pdf"
+    },
+    "Brentwood Town Centre": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/brentwood_town_centre_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/brentwood_town_centre_station.pdf"
+    },
+    "Holdom": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/holdom_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/holdom_station.pdf"
+    },
+    "Sperling–Burnaby Lake": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/sperling_burnaby_lake_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/sperling_burnaby_lake_station.pdf"
+    },
+    "Lake City Way": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/lake_city_way_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/lake_city_way_station.pdf"
+    },
+    "Production Way–University": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/production_way_university_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/production_way_university_station.pdf"
+    },
+    "Lougheed Town Centre": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/lougheed_town_centre_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/lougheed_town_centre_station.pdf"
+    },
+    "Burquitlam": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/burquitlam_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/burquitlam_station.pdf"
+    },
+    "Moody Centre": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/moody_centre_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/moody_centre_station.pdf"
+    },
+    "Inlet Centre": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/inlet_centre_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/inlet_centre_station.pdf"
+    },
+    "Coquitlam Central": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/coquitlam_central_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/coquitlam_central_station.pdf"
+    },
+    "Lincoln": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/lincoln_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/lincoln_station.pdf"
+    },
+    "Lafarge Lake–Douglas": {
+      "Entrance": "https://www.translink.ca/-/media/translink/documents/schedules-and-maps/skytrain-accessible-entrance-maps/lafarge_lake_douglas_station_elevator_map.pdf",
+      "Station": "https://infomaps.translink.ca/system_maps/skytrain_station_maps/lafarge_lake_douglas_station.pdf"
+    }
+  }
+}
