@@ -1,0 +1,15 @@
+{
+  "updated_at": "2026-10-16T01:23:22.569824+00:00",
+  "results": {
+    "water-distribution-mains": {
+      "success": true,
+      "name": "自來水管道 (Water Distribution Mains)",
+      "update_frequency": "每 3 個月 (Quarterly)"
+    },
+    "sewer-mains": {
+      "success": true,
+      "name": "污水管道 (Sewer Mains)",
+      "update_frequency": "每 6 個月 (Semi-annually)"
+    }
+  }
+}

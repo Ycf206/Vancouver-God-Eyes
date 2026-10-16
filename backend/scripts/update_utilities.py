@@ -35,7 +35,14 @@ UTILITIES_DATASETS = [
     {
         "id": "water-distribution-mains",
         "name": "自來水管道 (Water Distribution Mains)",
-        "filename": "vancouver_water_distribution_mains.geojson"
+        "filename": "vancouver_water_distribution_mains.geojson",
+        "update_frequency": "每 3 個月 (Quarterly)"
+    },
+    {
+        "id": "sewer-mains",
+        "name": "污水管道 (Sewer Mains)",
+        "filename": "vancouver_sewer_mains.geojson",
+        "update_frequency": "每 6 個月 (Semi-annually)"
     }
 ]
 
@@ -68,11 +75,15 @@ def download_dataset(ds):
         return False
 
 def main():
-    print(f"🚀 開始執行公共事業 (自來水/污水管網) 每 3 個月定期資料同步: {datetime.now(timezone.utc).isoformat()}")
+    print(f"🚀 開始執行公共事業資料同步 (自來水: 每3個月 / 污水: 每6個月): {datetime.now(timezone.utc).isoformat()}")
     results = {}
     for ds in UTILITIES_DATASETS:
         success = download_dataset(ds)
-        results[ds["id"]] = success
+        results[ds["id"]] = {
+            "success": success,
+            "name": ds["name"],
+            "update_frequency": ds.get("update_frequency", "每 6 個月")
+        }
 
     status_file = os.path.join(BACKEND_DATA_DIR, "last_utilities_update.json")
     with open(status_file, "w", encoding="utf-8") as f:
