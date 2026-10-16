@@ -148,7 +148,7 @@ export default function SettingsModal() {
             <Settings className="w-4 h-4" />
           </div>
           <div>
-            <h2 className="text-sm font-bold text-white tracking-wide">系統設定 (SETTINGS)</h2>
+            <h2 className="text-sm font-bold text-white tracking-wide">系統設定</h2>
             <p className="text-[10.5px] text-gray-400">所有變更均會自動即時儲存</p>
           </div>
         </div>

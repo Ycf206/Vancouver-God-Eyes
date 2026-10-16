@@ -23,6 +23,7 @@ interface EventItem {
   description: string;
   image_url?: string | null;
   timestamp: number;
+  is_ongoing?: boolean;
 }
 
 interface NewsArticle {
@@ -343,7 +344,7 @@ function ExploreContent() {
   // --- Events tab states ---
   const [eventsList, setEventsList] = useState<EventItem[]>([]);
   const [loadingEvents, setLoadingEvents] = useState(false);
-  const [eventsFilter, setEventsFilter] = useState<'all' | 'eventbrite' | 'destination_vancouver'>('all');
+  const [eventsFilter, setEventsFilter] = useState<'all' | 'daily_hive' | 'eventbrite' | 'destination_vancouver'>('all');
   const [eventsSearchQuery, setEventsSearchQuery] = useState('');
 
   // --- Weather tab states ---
@@ -808,7 +809,13 @@ function ExploreContent() {
         (e.description && e.description.toLowerCase().includes(q))
       );
     }
-    return [...list].sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+    // 進行中活動優先置頂，即將舉行活動依日期由近至遠排序
+    return [...list].sort((a, b) => {
+      const aOngoing = a.is_ongoing ? 1 : 0;
+      const bOngoing = b.is_ongoing ? 1 : 0;
+      if (aOngoing !== bOngoing) return bOngoing - aOngoing;
+      return (a.timestamp || 0) - (b.timestamp || 0);
+    });
   }, [eventsList, eventsFilter, eventsSearchQuery]);
 
   const formatNewsTime = (timestamp?: number, rawDate?: string) => {
@@ -1869,6 +1876,7 @@ function ExploreContent() {
             <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5">
               {[
                 { id: 'all', label: '全部' },
+                { id: 'daily_hive', label: 'Daily Hive' },
                 { id: 'eventbrite', label: 'Eventbrite' },
                 { id: 'destination_vancouver', label: '溫哥華旅遊局' },
               ].map((src) => {
@@ -1936,10 +1944,15 @@ function ExploreContent() {
               </div>
             ) : (
               filteredEvents.map((event) => {
-                const isDV = event.source_id === 'destination_vancouver';
-                const sourceBadge = isDV
-                  ? { bg: 'bg-purple-950/40 text-purple-300 border-purple-700/50', name: 'Destination Vancouver' }
-                  : { bg: 'bg-orange-950/40 text-orange-300 border-orange-700/50', name: 'Eventbrite' };
+                const sourceBadge = (() => {
+                  if (event.source_id === 'daily_hive') {
+                    return { bg: 'bg-rose-950/40 text-rose-300 border-rose-700/50', name: 'Daily Hive' };
+                  }
+                  if (event.source_id === 'destination_vancouver') {
+                    return { bg: 'bg-purple-950/40 text-purple-300 border-purple-700/50', name: 'Destination Vancouver' };
+                  }
+                  return { bg: 'bg-orange-950/40 text-orange-300 border-orange-700/50', name: 'Eventbrite' };
+                })();
 
                 return (
                   <a
@@ -1971,6 +1984,11 @@ function ExploreContent() {
                               <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded border ${sourceBadge.bg}`}>
                                 {sourceBadge.name}
                               </span>
+                              {event.is_ongoing && (
+                                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded border bg-amber-950/50 text-amber-300 border-amber-600/60 flex items-center gap-0.5 shadow-sm">
+                                  🔥 進行中
+                                </span>
+                              )}
                               {event.category && (
                                 <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-800 text-gray-300 border border-gray-700 font-medium">
                                   {event.category}
@@ -2019,7 +2037,7 @@ function ExploreContent() {
         <span className="font-mono text-[10px]">
           {activeTab === 'weather' && (weather ? `${weather.city || '溫哥華'} · ${weather.condition || '多雲'} · ${formatTemp(weather.temperature)}` : '加拿大環境部氣象數據')}
           {activeTab === 'news' && `共收錄 ${filteredNews.length} 則大溫即時新聞 · 每 ${newsRefreshInterval || 15} 分鐘自動更新`}
-          {activeTab === 'events' && `共收錄 ${filteredEvents.length} 項大溫熱門活動 · 來源 Eventbrite 與 溫哥華旅遊局`}
+          {activeTab === 'events' && `共收錄 ${filteredEvents.length} 項大溫熱門活動 · 來源 Daily Hive、Eventbrite 與 溫哥華旅遊局`}
           {activeTab === 'fuel' && `共收錄 ${filteredFuelStations.length} 間加油站`}
           {activeTab === 'ev' && `共收錄 ${evStations.length} 座充電站`}
           {activeTab === 'ferry' && `共 ${ferryRoutes.reduce((acc, r) => acc + (r?.vessels?.length || 0), 0)} 艘渡輪即時航行中`}

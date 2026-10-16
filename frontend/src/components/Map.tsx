@@ -1118,11 +1118,38 @@ export default function AppMap() {
     });
   }, [layers, currentZoom]);
 
-  // 等高線切換獨立載入提示
-  const prevContourIntervalRef = useRef(contourInterval);
+  // 等高線切換獨立載入提示 (支援間距切換 10m/2m/1m 及圖層開關)
+  const prevContourStateRef = useRef<{ enabled: boolean; interval: string }>({
+    enabled: layers.contours,
+    interval: contourInterval,
+  });
+
   useEffect(() => {
-    if (prevContourIntervalRef.current === 'off' && contourInterval !== 'off') {
-      setLoadingHeavyLayers(curr => ({ ...curr, contours: '等高線' }));
+    const wasActive = prevContourStateRef.current.enabled && prevContourStateRef.current.interval !== 'off';
+    const isActive = layers.contours && contourInterval !== 'off';
+    const intervalChanged = prevContourStateRef.current.interval !== contourInterval;
+    const enabledChanged = prevContourStateRef.current.enabled !== layers.contours;
+
+    if (isActive && (!wasActive || intervalChanged || enabledChanged)) {
+      const label = contourInterval === '1m'
+        ? '等高線 (1米間距·精細數據)'
+        : contourInterval === '2m'
+        ? '等高線 (2米間距)'
+        : '等高線 (10米間距)';
+
+      setLoadingHeavyLayers(curr => ({ ...curr, contours: label }));
+
+      // 對於 1m / 2m 精細等高線，若當前視野較遠，提醒用家放大檢視
+      if ((contourInterval === '1m' || contourInterval === '2m') && currentZoom < 14) {
+        setZoomNotification({
+          show: true,
+          title: `已開啟${label}`,
+          message: `${label}線條密度極高，建議放大至街區層級以清晰檢視地形起伏。`,
+          targetZoom: 14.5
+        });
+      }
+
+      // 等高線資料量較大（1m/2m 資料可達數十 MB），提供充裕的 15 秒安全超時（若 source 提早載入完成會由 handleMapSourceData 自動隱藏）
       const timer = setTimeout(() => {
         setLoadingHeavyLayers(curr => {
           if (!curr.contours) return curr;
@@ -1130,19 +1157,22 @@ export default function AppMap() {
           delete next.contours;
           return next;
         });
-      }, 3500);
-      prevContourIntervalRef.current = contourInterval;
+      }, 15000);
+
+      prevContourStateRef.current = { enabled: layers.contours, interval: contourInterval };
       return () => clearTimeout(timer);
-    } else if (contourInterval === 'off') {
+    } else if (!isActive && wasActive) {
       setLoadingHeavyLayers(curr => {
         if (!curr.contours) return curr;
         const next = { ...curr };
         delete next.contours;
         return next;
       });
-      prevContourIntervalRef.current = contourInterval;
+      prevContourStateRef.current = { enabled: layers.contours, interval: contourInterval };
+    } else {
+      prevContourStateRef.current = { enabled: layers.contours, interval: contourInterval };
     }
-  }, [contourInterval]);
+  }, [layers.contours, contourInterval, currentZoom]);
 
   // MapLibre 資料載入完成事件監聽：當大數據圖層來源已就緒時自動隱藏載入提示
   const handleMapSourceData = useCallback((e: any) => {
