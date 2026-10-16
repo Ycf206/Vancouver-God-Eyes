@@ -2367,6 +2367,17 @@ def explore_nearby_facilities(
         a = math.sin(dp / 2)**2 + math.cos(p1) * math.cos(p2) * math.sin(dl / 2)**2
         return int(round(R * 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))))
 
+    def calc_walk_minutes(dist_m: float):
+        # 80m / minute (~4.8 km/h walking speed)
+        mins = dist_m / 80.0
+        if mins <= 0.6:
+            return 0.5
+        elif mins <= 1.2:
+            return 1.0
+        else:
+            half_rounded = round(mins * 2) / 2
+            return int(half_rounded) if half_rounded.is_integer() else half_rounded
+
     # Bounding box filter (1 deg ~ 111 km)
     deg_delta = (radius + 150) / 111000.0
 
@@ -2409,7 +2420,7 @@ def explore_nearby_facilities(
             meta = type_labels.get(f.facility_type, ('公共設施', '📍', f.facility_type))
             if selected_layer_keys and meta[2] not in selected_layer_keys:
                 continue
-            walk_min = max(1, int(round(dist / 80.0)))
+            walk_min = calc_walk_minutes(dist)
             nearby_items.append({
                 'id': f.id,
                 'name': f.name,
@@ -2421,7 +2432,9 @@ def explore_nearby_facilities(
                 'lat': f.lat,
                 'lon': f.lon,
                 'distance_m': dist,
+                'distance_meters': dist,
                 'walk_minutes': walk_min,
+                'walking_minutes': walk_min,
                 'properties': f.details or {}
             })
 
@@ -2437,11 +2450,11 @@ def explore_nearby_facilities(
             layer_key = 'skytrainStops' if is_skytrain else 'busStops'
             if selected_layer_keys and layer_key not in selected_layer_keys:
                 continue
-            walk_min = max(1, int(round(dist / 80.0)))
+            walk_min = calc_walk_minutes(dist)
             nearby_items.append({
                 'id': s.stop_id,
                 'name': s.name,
-                'facility_type': 'skytrain_station' if is_skytrain else 'bus_stop',
+                'facility_type': 'skytrain_stations' if is_skytrain else 'bus_stops',
                 'type_label': '天車站' if is_skytrain else '公車站',
                 'icon': '🚉' if is_skytrain else '🚏',
                 'layer_key': layer_key,
@@ -2449,7 +2462,9 @@ def explore_nearby_facilities(
                 'lat': s.lat,
                 'lon': s.lon,
                 'distance_m': dist,
+                'distance_meters': dist,
                 'walk_minutes': walk_min,
+                'walking_minutes': walk_min,
                 'properties': {'stop_id': s.stop_id, 'stop_group': s.stop_group}
             })
 

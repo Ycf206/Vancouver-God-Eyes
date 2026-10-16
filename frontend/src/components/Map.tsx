@@ -8324,7 +8324,7 @@ export default function AppMap() {
 
           {/* 設施清單 Header */}
           <div className="flex items-center justify-between text-[11px] text-gray-400 pb-2 mb-2 shrink-0">
-            <span>已開啟圖層設施清單</span>
+            <span>設施清單</span>
             <span className="text-cyan-400 font-mono font-bold">
               {loadingNearby ? '搜尋中...' : `共 ${nearbyFacilities.length} 筆`}
             </span>
@@ -8338,64 +8338,71 @@ export default function AppMap() {
                 <span>搜尋半徑內設施中...</span>
               </div>
             ) : nearbyFacilities.length > 0 ? (
-              nearbyFacilities.map((fac, idx) => (
-                <div
-                  key={`nearby-${idx}`}
-                  onClick={() => {
-                    const map = mapRef.current?.getMap();
-                    map?.flyTo({ center: [fac.lon, fac.lat], zoom: 16.5, duration: 400 });
-                    if (fac.facility_type === 'skytrain_stations') {
-                      fetchSkytrainStationSchedule(String(fac.id), fac.name, fac.lon, fac.lat);
-                    } else {
-                      setSelectedFacility({
-                        id: fac.id,
-                        facility_type: fac.facility_type,
-                        name: fac.name,
-                        local_area: fac.local_area,
-                        lon: fac.lon,
-                        lat: fac.lat,
-                        properties: fac.properties || {}
-                      });
-                    }
-                  }}
-                  className="p-2 rounded-lg bg-[#10131a] hover:bg-[#1c2230] border border-[#232836] hover:border-cyan-500/50 cursor-pointer transition-all flex items-center justify-between gap-2"
-                >
-                  <div className="flex items-center gap-2 min-w-0">
-                    <span className="text-sm shrink-0">
-                      {fac.facility_type === 'aed' ? '⚡' :
-                       fac.facility_type === 'public_washrooms' ? '🚻' :
-                       fac.facility_type === 'bike_racks' ? '🚲' :
-                       fac.facility_type === 'shared_bikes' ? '🚲' :
-                       fac.facility_type === 'litter_containers' ? '🗑️' :
-                       fac.facility_type === 'parking_meters' ? '🅿️' :
-                       fac.facility_type === 'skytrain_stations' ? '🚉' :
-                       fac.facility_type === 'bus_stops' ? '🚏' :
-                       fac.facility_type === 'food_banks' ? '🥫' :
-                       fac.facility_type === 'drinking_fountains' ? '🚰' :
-                       fac.facility_type === 'hospitals' ? '🏥' :
-                       fac.facility_type === 'schools' ? '🏫' :
-                       fac.facility_type === 'libraries' ? '📚' :
-                       fac.facility_type === 'traffic_crosswalks' ? '🚶' : '📍'}
-                    </span>
-                    <div className="min-w-0">
-                      <div className="font-bold text-xs text-white truncate max-w-[170px]">
-                        {fac.name}
+              nearbyFacilities.map((fac, idx) => {
+                const distM = fac.distance_meters ?? fac.distance_m ?? 0;
+                let mins = fac.walking_minutes ?? fac.walk_minutes;
+                if (mins === undefined || mins === null || isNaN(mins)) {
+                  mins = distM <= 50 ? 0.5 : Math.max(1, Math.round(distM / 80));
+                }
+                return (
+                  <div
+                    key={`nearby-${idx}`}
+                    onClick={() => {
+                      const map = mapRef.current?.getMap();
+                      map?.flyTo({ center: [fac.lon, fac.lat], zoom: 16.5, duration: 400 });
+                      if (fac.facility_type === 'skytrain_stations' || fac.facility_type === 'skytrain_station') {
+                        fetchSkytrainStationSchedule(String(fac.id), fac.name, fac.lon, fac.lat);
+                      } else {
+                        setSelectedFacility({
+                          id: fac.id,
+                          facility_type: fac.facility_type,
+                          name: fac.name,
+                          local_area: fac.local_area,
+                          lon: fac.lon,
+                          lat: fac.lat,
+                          properties: fac.properties || {}
+                        });
+                      }
+                    }}
+                    className="p-2 rounded-lg bg-[#10131a] hover:bg-[#1c2230] border border-[#232836] hover:border-cyan-500/50 cursor-pointer transition-all flex items-center justify-between gap-2"
+                  >
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="text-sm shrink-0">
+                        {fac.facility_type === 'aed' ? '⚡' :
+                         fac.facility_type === 'public_washrooms' ? '🚻' :
+                         fac.facility_type === 'bike_racks' ? '🚲' :
+                         fac.facility_type === 'shared_bikes' ? '🚲' :
+                         fac.facility_type === 'litter_containers' ? '🗑️' :
+                         fac.facility_type === 'parking_meters' ? '🅿️' :
+                         (fac.facility_type === 'skytrain_stations' || fac.facility_type === 'skytrain_station') ? '🚉' :
+                         (fac.facility_type === 'bus_stops' || fac.facility_type === 'bus_stop') ? '🚏' :
+                         fac.facility_type === 'food_banks' ? '🥫' :
+                         fac.facility_type === 'drinking_fountains' ? '🚰' :
+                         fac.facility_type === 'hospitals' ? '🏥' :
+                         fac.facility_type === 'schools' ? '🏫' :
+                         fac.facility_type === 'libraries' ? '📚' :
+                         fac.facility_type === 'traffic_crosswalks' ? '🚶' : '📍'}
+                      </span>
+                      <div className="min-w-0">
+                        <div className="font-bold text-xs text-white truncate max-w-[170px]">
+                          {fac.name}
+                        </div>
+                        <div className="text-[10px] text-gray-400 capitalize">
+                          {fac.category || fac.facility_type.replace(/_/g, ' ')}
+                        </div>
                       </div>
-                      <div className="text-[10px] text-gray-400 capitalize">
-                        {fac.category || fac.facility_type.replace(/_/g, ' ')}
+                    </div>
+                    <div className="text-right shrink-0">
+                      <div className="text-xs font-bold text-cyan-400 font-mono">
+                        {distM}m
+                      </div>
+                      <div className="text-[9.5px] text-gray-400">
+                        約 {mins} 分鐘
                       </div>
                     </div>
                   </div>
-                  <div className="text-right shrink-0">
-                    <div className="text-xs font-bold text-cyan-400 font-mono">
-                      {fac.distance_meters}m
-                    </div>
-                    <div className="text-[9.5px] text-gray-400">
-                      約 {fac.walking_minutes} 分鐘
-                    </div>
-                  </div>
-                </div>
-              ))
+                );
+              })
             ) : (
               <div className="py-6 text-center text-xs text-gray-400 bg-[#10131a] rounded-lg border border-[#232836] p-3 flex flex-col gap-1">
                 <span>範圍內未發現已開啟的設施</span>
