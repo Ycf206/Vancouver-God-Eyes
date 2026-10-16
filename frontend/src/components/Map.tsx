@@ -1182,14 +1182,7 @@ export default function AppMap() {
           duration: 1200
         });
       }
-    } else if (
-      [
-        'fire_halls', 'community_centres', 'ev_charging', 'escooter', 'shared_bikes', 'bikeways',
-        'traffic_cameras', 'safety_cameras', 'parking_meters', 'accessible_parking', 'motorcycle_parking',
-        'hospitals', 'parks', 'parks_facilities', 'community_gardens', 'drinking_fountains',
-        'public_washrooms', 'schools', 'libraries', 'food_vendors', 'homeless_shelters', 'aed', 'fuel', 'tesla', 'contours', 'road'
-      ].includes(searchTarget.category)
-    ) {
+    } else {
       setSelectedTerminal(null);
       setSelectedStop(null);
       setSelectedFlight(null);
@@ -1202,7 +1195,7 @@ export default function AppMap() {
         local_area: searchTarget.meta?.local_area || '',
         lon: searchTarget.lon,
         lat: searchTarget.lat,
-        properties: searchTarget.meta?.properties || {}
+        properties: searchTarget.meta?.properties || searchTarget.meta || {}
       });
     }
   }, [searchTarget]);
@@ -6648,6 +6641,41 @@ export default function AppMap() {
                         </span>
                       </div>
                     )}
+                  </div>
+                </div>
+              )}
+
+              {/* Local Area Boundary (區域邊界) Details */}
+              {selectedFacility.facility_type === 'local_area_boundary' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-teal-500/10 p-2.5 rounded-lg border border-teal-500/25 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-teal-950 text-xs flex items-center gap-1.5">
+                        <span className="text-base text-teal-600 font-bold">📍</span>
+                        <span className="truncate max-w-[190px]">{selectedFacility.name}</span>
+                      </span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-teal-600 text-white shrink-0">
+                        區域邊界
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-teal-900 font-medium">
+                      🗺️ 溫哥華官方劃定社區分區 (Local Area Boundary)
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                    <div className="flex justify-between items-center text-gray-600">
+                      <span>分區名稱</span>
+                      <span className="font-bold text-gray-900">
+                        {selectedFacility.name}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <span>中心座標</span>
+                      <span className="font-mono text-gray-700">
+                        {selectedFacility.lat.toFixed(4)}, {selectedFacility.lon.toFixed(4)}
+                      </span>
+                    </div>
                   </div>
                 </div>
               )}

@@ -1191,6 +1191,196 @@ SEARCH_AIRPORTS = [
     }
 ]
 
+_curated_static_caches = {}
+_db_synced_curated_types = set()
+
+CURATED_STATIC_TYPES = (
+    "bikeways", "hospitals", "police", "disaster_hubs", "car_sharing", "aed", 
+    "local_area_boundary", "fuel", "ev_charging", "tesla", "marine_terminals", 
+    "one_way_streets", "snow_removal_routes", "crime_areas", "water_distribution_mains", 
+    "sewer_mains", "traffic_speed_limits", "bike_racks", "postal_code_fsa", "wireless_facilities",
+    "traffic_crosswalks", "litter_containers"
+)
+POINT_CURATED_TYPES = (
+    "hospitals", "police", "disaster_hubs", "car_sharing", "aed", 
+    "fuel", "ev_charging", "tesla", "marine_terminals", "bike_racks", "wireless_facilities",
+    "traffic_crosswalks", "litter_containers"
+)
+
+def sync_curated_point_types(db: Session):
+    for facility_type in POINT_CURATED_TYPES:
+        if facility_type not in _db_synced_curated_types:
+            filename = f"vancouver_{facility_type}.geojson"
+            static_geojson_path = os.path.join(os.path.dirname(__file__), "data", filename)
+            if os.path.exists(static_geojson_path):
+                try:
+                    import json
+                    with open(static_geojson_path, "r", encoding="utf-8") as f:
+                        static_geojson = json.load(f)
+                    if facility_type in ("aed", "car_sharing", "bike_racks", "wireless_facilities", "traffic_crosswalks", "litter_containers"):
+                        db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).delete()
+                    for feat in static_geojson.get("features", []):
+                        props = feat.get("properties", {})
+                        geom_type = feat.get("geometry", {}).get("type")
+                        coords = feat.get("geometry", {}).get("coordinates", [])
+                        if geom_type == "Point" and len(coords) >= 2 and isinstance(coords[0], (int, float)):
+                            lon, lat = coords[0], coords[1]
+                            fac_id = feat.get("id") or props.get("id") or f"{facility_type}_{lon}_{lat}"
+                            fac = models.RoadFacility(
+                                id=str(fac_id),
+                                facility_type=facility_type,
+                                name=props.get("name", "Unknown"),
+                                local_area=props.get("local_area") or props.get("municipality", ""),
+                                lat=lat,
+                                lon=lon,
+                                geom=f"SRID=4326;POINT({lon} {lat})",
+                                details={k: v for k, v in props.items() if k not in ("id", "facility_type", "name", "local_area")},
+                                last_updated=datetime.utcnow()
+                            )
+                            db.merge(fac)
+                    db.commit()
+                    _db_synced_curated_types.add(facility_type)
+                except Exception as e:
+                    db.rollback()
+                    print(f"Error syncing {facility_type} to DB: {e}")
+
+_search_fsa_cache = None
+def get_search_fsa_items():
+    global _search_fsa_cache
+    if _search_fsa_cache is not None:
+        return _search_fsa_cache
+    items = []
+    path = os.path.join(os.path.dirname(__file__), "data", "vancouver_postal_code_fsa.geojson")
+    if os.path.exists(path):
+        try:
+            import json
+            with open(path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            for feat in data.get("features", []):
+                props = feat.get("properties", {})
+                fsa = props.get("fsa", "")
+                name = props.get("name", f"郵遞編號分區 {fsa}")
+                coords = feat.get("geometry", {}).get("coordinates", [])
+                all_pts = []
+                def extract_pts(c):
+                    if len(c) == 2 and isinstance(c[0], (int, float)):
+                        all_pts.append(c)
+                    else:
+                        for sub in c:
+                            extract_pts(sub)
+                extract_pts(coords)
+                if all_pts:
+                    min_lon = min(p[0] for p in all_pts)
+                    max_lon = max(p[0] for p in all_pts)
+                    min_lat = min(p[1] for p in all_pts)
+                    max_lat = max(p[1] for p in all_pts)
+                    center_lon = (min_lon + max_lon) / 2
+                    center_lat = (min_lat + max_lat) / 2
+                    items.append({
+                        "id": f"fsa_{fsa}",
+                        "title": name,
+                        "subtitle": f"溫哥華郵遞編號前瞻轉運區 · {fsa}",
+                        "category": "postal_code_fsa",
+                        "badge": "郵遞編號",
+                        "icon": "📮",
+                        "lon": center_lon,
+                        "lat": center_lat,
+                        "zoom": 13,
+                        "layer_key": "postalCodeFSA",
+                        "meta": props
+                    })
+        except Exception as e:
+            print(f"Error loading fsa items for search: {e}")
+    _search_fsa_cache = items
+    return _search_fsa_cache
+
+_search_local_area_cache = None
+def get_search_local_area_items():
+    global _search_local_area_cache
+    if _search_local_area_cache is not None:
+        return _search_local_area_cache
+    items = []
+    path = os.path.join(os.path.dirname(__file__), "data", "vancouver_local_area_boundary.geojson")
+    if os.path.exists(path):
+        try:
+            import json
+            with open(path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            for feat in data.get("features", []):
+                props = feat.get("properties", {})
+                name = props.get("name", "")
+                geo_point = props.get("geo_point_2d", {})
+                lon = geo_point.get("lon")
+                lat = geo_point.get("lat")
+                if lon and lat:
+                    items.append({
+                        "id": f"boundary_{name}",
+                        "title": f"{name} (區域邊界)",
+                        "subtitle": f"溫哥華官方劃定分區 · {name}",
+                        "category": "local_area_boundary",
+                        "badge": "區域邊界",
+                        "icon": "📍",
+                        "lon": lon,
+                        "lat": lat,
+                        "zoom": 14,
+                        "layer_key": "localAreaBoundary",
+                        "meta": props
+                    })
+        except Exception as e:
+            print(f"Error loading local area boundary items for search: {e}")
+    _search_local_area_cache = items
+    return _search_local_area_cache
+
+_search_bikeways_cache = None
+def get_search_bikeway_items():
+    global _search_bikeways_cache
+    if _search_bikeways_cache is not None:
+        return _search_bikeways_cache
+    items = []
+    path = os.path.join(os.path.dirname(__file__), "data", "vancouver_bikeways.geojson")
+    if os.path.exists(path):
+        try:
+            import json
+            with open(path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            seen_names = set()
+            for feat in data.get("features", []):
+                props = feat.get("properties", {})
+                name = props.get("bikeway_name") or props.get("street_name") or props.get("name") or ""
+                name = name.strip()
+                if not name or name in seen_names:
+                    continue
+                coords = feat.get("geometry", {}).get("coordinates", [])
+                all_pts = []
+                def extract_pts(c):
+                    if len(c) == 2 and isinstance(c[0], (int, float)):
+                        all_pts.append(c)
+                    else:
+                        for sub in c:
+                            extract_pts(sub)
+                extract_pts(coords)
+                if all_pts:
+                    mid = all_pts[len(all_pts) // 2]
+                    seen_names.add(name)
+                    route_type = props.get("bikeway_type") or "單車道"
+                    items.append({
+                        "id": f"bikeway_{name}",
+                        "title": f"{name} (單車徑)",
+                        "subtitle": f"溫哥華單車路網 · {route_type}",
+                        "category": "bikeways",
+                        "badge": "單車徑",
+                        "icon": "🚲",
+                        "lon": mid[0],
+                        "lat": mid[1],
+                        "zoom": 15,
+                        "layer_key": "bikeways",
+                        "meta": props
+                    })
+        except Exception as e:
+            print(f"Error loading bikeway items for search: {e}")
+    _search_bikeways_cache = items
+    return _search_bikeways_cache
+
 @app.get("/api/search")
 def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
     """
@@ -1202,6 +1392,12 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
         return {"results": []}
 
     results = []
+
+    # 確保點狀圖層資料庫同步，供搜尋即時定位
+    try:
+        sync_curated_point_types(db)
+    except Exception as e:
+        print(f"Error ensuring curated sync in search: {e}")
 
     # 0. 搜尋大眾運輸巴士路線 (Transit Bus Routes)
     try:
@@ -1390,13 +1586,28 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
             ftype = f.facility_type
             badge = "市政設施"
             icon = "📍"
-            layer_key = "parkingMeters"
+            layer_key = None
             zoom = 16
 
             if ftype == 'fire_halls':
                 badge = "消防"
                 icon = "🚒"
                 layer_key = "fireHalls"
+            elif ftype == 'police':
+                badge = "警察局"
+                icon = "👮"
+                layer_key = "police"
+                zoom = 16
+            elif ftype == 'disaster_hubs':
+                badge = "災害支援中心"
+                icon = "🛟"
+                layer_key = "disasterHubs"
+                zoom = 16
+            elif ftype == 'hospitals':
+                badge = "醫療"
+                icon = "🏥"
+                layer_key = "hospitals"
+                zoom = 15
             elif ftype == 'community_centres':
                 badge = "社區中心"
                 icon = "🏛️"
@@ -1405,16 +1616,36 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                 badge = "充電站"
                 icon = "⚡"
                 layer_key = "evCharging"
-            elif ftype == 'escooter':
-                badge = "共享滑板車"
-                icon = "🛴"
-                layer_key = "escooter"
-                zoom = 17
+            elif ftype == 'tesla':
+                badge = "TESLA"
+                icon = "⚡"
+                layer_key = "tesla"
+                zoom = 16
+            elif ftype == 'fuel':
+                badge = "加油站"
+                icon = "⛽"
+                layer_key = "fuel"
+                zoom = 16
+            elif ftype == 'car_sharing':
+                badge = "共享汽車"
+                icon = "🚗"
+                layer_key = "carSharing"
+                zoom = 16
             elif ftype == 'shared_bikes':
                 badge = "共享單車"
                 icon = "🚲"
                 layer_key = "sharedBikes"
                 zoom = 16
+            elif ftype == 'escooter':
+                badge = "共享滑板車"
+                icon = "🛴"
+                layer_key = "escooter"
+                zoom = 17
+            elif ftype == 'bike_racks':
+                badge = "單車架"
+                icon = "🚲"
+                layer_key = "bikeRacks"
+                zoom = 17
             elif ftype == 'parking_meters':
                 badge = "收費錶"
                 icon = "🅿️"
@@ -1440,11 +1671,36 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                 icon = "🚨"
                 layer_key = "safetyCameras"
                 zoom = 16
-            elif ftype == 'hospitals':
-                badge = "醫院"
-                icon = "🏥"
-                layer_key = "hospitals"
+            elif ftype == 'traffic_crosswalks':
+                badge = "斑馬線"
+                icon = "🚶"
+                layer_key = "trafficCrosswalks"
+                zoom = 17
+            elif ftype == 'traffic_speed_limits':
+                badge = "限速路段"
+                icon = "🚦"
+                layer_key = "trafficSpeedLimits"
                 zoom = 15
+            elif ftype == 'marine_terminals':
+                badge = "碼頭"
+                icon = "⚓"
+                layer_key = "marineTerminals"
+                zoom = 15
+            elif ftype == 'wireless_facilities':
+                badge = "無線設施"
+                icon = "📡"
+                layer_key = "wirelessFacilities"
+                zoom = 16
+            elif ftype == 'litter_containers':
+                badge = "垃圾箱"
+                icon = "🗑️"
+                layer_key = "litterContainers"
+                zoom = 17
+            elif ftype == 'aed':
+                badge = "AED 去顫器"
+                icon = "💓"
+                layer_key = "aed"
+                zoom = 17
             elif ftype == 'parks':
                 badge = "公園"
                 icon = "🌲"
@@ -1490,44 +1746,27 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                 icon = "🏠"
                 layer_key = "homelessShelters"
                 zoom = 16
-            elif ftype == 'car_sharing':
-                badge = "共享汽車"
-                icon = "🚗"
-                layer_key = "carSharing"
-                zoom = 16
-            elif ftype == 'bike_racks':
-                badge = "單車架"
-                icon = "🚲"
-                layer_key = "bikeRacks"
-                zoom = 17
-            elif ftype == 'wireless_facilities':
-                badge = "無線設施"
-                icon = "📡"
-                layer_key = "wirelessFacilities"
-                zoom = 16
-            elif ftype == 'traffic_speed_limits':
-                badge = "限速路段"
-                icon = "🚦"
-                layer_key = "trafficSpeedLimits"
-                zoom = 15
             elif ftype == 'postal_code_fsa':
                 badge = "郵遞編號"
                 icon = "📮"
                 layer_key = "postalCodeFSA"
                 zoom = 13
-            elif ftype == 'traffic_crosswalks':
-                badge = "斑馬線"
-                icon = "🚶"
-                layer_key = "trafficCrosswalks"
-                zoom = 17
-            elif ftype == 'litter_containers':
-                badge = "垃圾箱"
-                icon = "🗑️"
-                layer_key = "litterContainers"
-                zoom = 17
 
             sub_parts = [badge]
-            if ftype == 'safety_cameras' and f.details and isinstance(f.details, dict) and f.details.get('camera_type'):
+            if ftype == 'police':
+                sub_parts.append("溫哥華市警局 (VPD)")
+            elif ftype == 'disaster_hubs':
+                sub_parts.append("災後緊急集結點")
+            elif ftype == 'fuel' and f.details and isinstance(f.details, dict):
+                brand = f.details.get('brand') or f.details.get('operator')
+                if brand:
+                    sub_parts.append(str(brand))
+            elif ftype == 'tesla' and f.details and isinstance(f.details, dict):
+                ttype = f.details.get('charger_type') or "Supercharger"
+                sub_parts.append(str(ttype))
+            elif ftype == 'marine_terminals':
+                sub_parts.append("溫哥華港碼頭")
+            elif ftype == 'safety_cameras' and f.details and isinstance(f.details, dict) and f.details.get('camera_type'):
                 sub_parts.append(str(f.details.get('camera_type')))
             elif ftype == 'hospitals' and f.details and isinstance(f.details, dict):
                 if f.details.get('chinese_name'):
@@ -1614,7 +1853,67 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
     except Exception as e:
         print(f"Error searching facilities: {e}")
 
-    return {"results": results[:25]}
+    # 4. 搜尋即時 AIS 船隻 (Live AIS Maritime Vessels)
+    try:
+        vessels = shipping_service.get_vessels()
+        for v in vessels:
+            v_name = (v.get("name") or "").lower()
+            v_mmsi = str(v.get("mmsi") or "")
+            v_callsign = (v.get("callsign") or "").lower()
+            if (q_clean in v_name or q_clean == v_mmsi or (q_clean and q_clean in v_callsign) or (q_clean in ("船隻", "船運", "vessel", "ship"))):
+                results.append({
+                    "id": f"vessel_{v_mmsi}",
+                    "title": v.get("name") or f"船隻 MMSI:{v_mmsi}",
+                    "subtitle": f"即時 AIS 船隻 · 航速 {v.get('speed', 0)} 節",
+                    "category": "maritime_vessel",
+                    "badge": "即時船隻",
+                    "icon": "🚢",
+                    "lon": v.get("lon"),
+                    "lat": v.get("lat"),
+                    "zoom": 14,
+                    "layer_key": "maritimeShipping",
+                    "meta": v
+                })
+                if len(results) >= 25:
+                    break
+    except Exception as e:
+        print(f"Error searching maritime vessels: {e}")
+
+    # 5. 搜尋郵遞編號分區 (Postal Code FSA)
+    try:
+        for item in get_search_fsa_items():
+            fsa_code = item["meta"].get("fsa", "").lower()
+            fsa_name = item["title"].lower()
+            if q_clean in fsa_code or q_clean in fsa_name or (q_clean in ("郵遞", "郵區", "fsa", "postal") and len(results) < 20):
+                results.append(item)
+                if len(results) >= 25:
+                    break
+    except Exception as e:
+        print(f"Error searching FSA: {e}")
+
+    # 6. 搜尋區域邊界 (Local Area Boundaries)
+    try:
+        for item in get_search_local_area_items():
+            area_name = item["meta"].get("name", "").lower()
+            if q_clean in area_name or (q_clean in ("邊界", "分區", "boundary", "neighborhood", "neighbourhood") and len(results) < 20):
+                results.append(item)
+                if len(results) >= 25:
+                    break
+    except Exception as e:
+        print(f"Error searching local area boundaries: {e}")
+
+    # 7. 搜尋單車徑 (Bikeways)
+    try:
+        for item in get_search_bikeway_items():
+            bw_name = item["title"].lower()
+            if q_clean in bw_name or (q_clean in ("單車徑", "bike", "bikeway") and len(results) < 20):
+                results.append(item)
+                if len(results) >= 25:
+                    break
+    except Exception as e:
+        print(f"Error searching bikeways: {e}")
+
+    return {"results": results[:30]}
 
 from html.parser import HTMLParser
 
@@ -1880,21 +2179,6 @@ _contours_caches = {
     "2m": {"data": None, "mtime": 0},
     "10m": {"data": None, "mtime": 0},
 }
-_curated_static_caches = {}
-_db_synced_curated_types = set()
-
-CURATED_STATIC_TYPES = (
-    "bikeways", "hospitals", "police", "disaster_hubs", "car_sharing", "aed", 
-    "local_area_boundary", "fuel", "ev_charging", "tesla", "marine_terminals", 
-    "one_way_streets", "snow_removal_routes", "crime_areas", "water_distribution_mains", 
-    "sewer_mains", "traffic_speed_limits", "bike_racks", "postal_code_fsa", "wireless_facilities",
-    "traffic_crosswalks", "litter_containers"
-)
-POINT_CURATED_TYPES = (
-    "hospitals", "police", "disaster_hubs", "car_sharing", "aed", 
-    "fuel", "ev_charging", "tesla", "marine_terminals", "bike_racks", "wireless_facilities",
-    "traffic_crosswalks", "litter_containers"
-)
 
 @app.get("/api/geojson/road/{facility_type}")
 def get_road_facilities_geojson(facility_type: str, interval: str = "10m", db: Session = Depends(database.get_db)):
@@ -1925,36 +2209,7 @@ def get_road_facilities_geojson(facility_type: str, interval: str = "10m", db: S
         static_geojson_path = os.path.join(os.path.dirname(__file__), "data", filename)
         if os.path.exists(static_geojson_path):
             if facility_type in POINT_CURATED_TYPES and facility_type not in _db_synced_curated_types:
-                try:
-                    with open(static_geojson_path, "r", encoding="utf-8") as f:
-                        static_geojson = json.load(f)
-                    if facility_type in ("aed", "car_sharing", "bike_racks", "wireless_facilities", "traffic_crosswalks", "litter_containers"):
-                        db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).delete()
-                    for feat in static_geojson.get("features", []):
-                        props = feat.get("properties", {})
-                        geom_type = feat.get("geometry", {}).get("type")
-                        coords = feat.get("geometry", {}).get("coordinates", [])
-                        if geom_type == "Point" and len(coords) >= 2 and isinstance(coords[0], (int, float)):
-                            lon, lat = coords[0], coords[1]
-                            fac_id = feat.get("id") or props.get("id") or f"{facility_type}_{lon}_{lat}"
-                            fac = models.RoadFacility(
-                                id=str(fac_id),
-                                facility_type=facility_type,
-                                name=props.get("name", "Unknown"),
-                                local_area=props.get("local_area") or props.get("municipality", ""),
-                                lat=lat,
-                                lon=lon,
-                                geom=f"SRID=4326;POINT({lon} {lat})",
-                                details={k: v for k, v in props.items() if k not in ("id", "facility_type", "name", "local_area")},
-                                last_updated=datetime.utcnow()
-                            )
-                            db.merge(fac)
-                    db.commit()
-                    _db_synced_curated_types.add(facility_type)
-                except Exception as e:
-                    db.rollback()
-                    print(f"Error syncing {facility_type} to DB: {e}")
-
+                sync_curated_point_types(db)
             return FileResponse(static_geojson_path, media_type="application/json", headers={"Cache-Control": "no-cache, must-revalidate"})
 
     facilities = db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).all()
