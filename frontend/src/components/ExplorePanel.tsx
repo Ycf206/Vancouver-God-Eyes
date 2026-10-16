@@ -764,6 +764,110 @@ function ExploreContent() {
                 )}
               </div>
 
+              {/* 詳細氣象指標 */}
+              <div className="grid grid-cols-3 gap-2">
+                <div className="bg-[#12151e] border border-[#232838] p-2.5 rounded-lg flex flex-col">
+                  <span className="text-[10.5px] text-gray-400 flex items-center gap-1">
+                    <Droplets className="w-3 h-3 text-cyan-400" />
+                    <span>相對濕度</span>
+                  </span>
+                  <span className="text-sm font-bold text-gray-100 font-mono mt-1">{weather.humidity ?? 78}%</span>
+                </div>
+                <div className="bg-[#12151e] border border-[#232838] p-2.5 rounded-lg flex flex-col">
+                  <span className="text-[10.5px] text-gray-400 flex items-center gap-1">
+                    <Gauge className="w-3 h-3 text-indigo-400" />
+                    <span>大氣氣壓</span>
+                  </span>
+                  <span className="text-sm font-bold text-gray-100 font-mono mt-1">{weather.pressure_kpa ?? 101.5} kPa</span>
+                </div>
+                <div className="bg-[#12151e] border border-[#232838] p-2.5 rounded-lg flex flex-col">
+                  <span className="text-[10.5px] text-gray-400 flex items-center gap-1">
+                    <Eye className="w-3 h-3 text-emerald-400" />
+                    <span>能見度</span>
+                  </span>
+                  <span className="text-sm font-bold text-gray-100 font-mono mt-1">{weather.visibility_km ?? 24} km</span>
+                </div>
+              </div>
+
+              {/* 24 小時每小時天氣預報 (橫向滑動卡片) */}
+              {weather.hourly && weather.hourly.length > 0 && (
+                <div className="flex flex-col gap-1.5 mt-0.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold text-gray-300">24 小時每小時預報</span>
+                    <span className="text-[10px] text-gray-500 font-mono">橫向滑動 ❯</span>
+                  </div>
+                  <div className="flex items-center gap-2 overflow-x-auto pb-1.5 pt-0.5 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2c3244] [&::-webkit-scrollbar-thumb]:rounded-full">
+                    {weather.hourly.map((h, idx) => (
+                      <div 
+                        key={idx} 
+                        className={`shrink-0 w-[68px] py-2 px-1.5 rounded-lg border flex flex-col items-center justify-between text-center transition-all ${
+                          idx === 0 
+                            ? 'bg-sky-950/40 border-sky-500/40 text-white shadow-sm ring-1 ring-sky-500/30' 
+                            : 'bg-[#12151e] border-[#252b3a] text-gray-300'
+                        }`}
+                      >
+                        <span className="text-[10px] font-medium text-gray-400 font-mono truncate max-w-full">
+                          {h.time === '現在' ? '現在' : formatTimePreference(h.time, timeFormat)}
+                        </span>
+                        <div className="my-1.5 text-sky-300 flex items-center justify-center">
+                          {renderWeatherMiniIcon(h.icon)}
+                        </div>
+                        <span className="text-xs font-bold text-gray-100">{formatTemp(h.temp)}</span>
+                        {h.pop > 0 ? (
+                          <span className="text-[9.5px] text-cyan-400 font-mono mt-0.5 flex items-center gap-0.5">
+                            💧{h.pop}%
+                          </span>
+                        ) : (
+                          <span className="text-[9.5px] text-gray-500 font-mono mt-0.5">--</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* 未來 7 日天氣預報 */}
+              {weather.forecast && weather.forecast.length > 0 && (
+                <div className="flex flex-col gap-1.5 mt-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold text-gray-300">未來 7 日天氣預報</span>
+                    <span className="text-[10px] text-gray-500">最高 / 最低溫</span>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    {weather.forecast.map((fc, idx) => (
+                      <div 
+                        key={idx} 
+                        className="bg-[#12151e] border border-[#232838] px-3 py-2 rounded-lg flex items-center justify-between text-xs hover:border-[#333b4e] transition-colors"
+                      >
+                        <div className="flex items-center gap-2.5 min-w-[70px]">
+                          <span className={`font-semibold ${idx === 0 ? 'text-sky-400 font-bold' : 'text-gray-200'}`}>
+                            {fc.day}
+                          </span>
+                          {fc.pop != null && fc.pop > 20 && (
+                            <span className="text-[10px] text-cyan-400 font-mono">
+                              💧{fc.pop}%
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <div className="w-5 h-5 flex items-center justify-center text-sky-300 shrink-0">
+                            {renderWeatherMiniIcon(fc.icon)}
+                          </div>
+                          <span className="text-gray-300 text-xs w-[68px] truncate">{fc.condition}</span>
+                        </div>
+
+                        <div className="text-xs font-mono flex items-center gap-1.5 justify-end min-w-[75px]">
+                          <span className="text-rose-400 font-bold">{formatTempNumber(fc.high)}°</span>
+                          <span className="text-gray-600">/</span>
+                          <span className="text-sky-400 font-bold">{formatTempNumber(fc.low)}°</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* 空氣質素健康指數 (AQHI - Air Quality Health Index, 完全對標加拿大環境部官方截圖) */}
               {weather.aqhi && (() => {
                 const aqhiVal = weather.aqhi.value || 1;
@@ -779,7 +883,7 @@ function ExploreContent() {
                 const leftPercent = ((valIdx + 0.5) / 11) * 100;
 
                 return (
-                  <div className="bg-[#12151e] border border-[#262c3c] rounded-xl p-3.5 shadow-lg flex flex-col gap-2.5">
+                  <div className="bg-[#12151e] border border-[#262c3c] rounded-xl p-3.5 shadow-lg flex flex-col gap-2.5 mt-1">
                     {/* Header */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1.5">
@@ -910,110 +1014,6 @@ function ExploreContent() {
                   </div>
                 );
               })()}
-
-              {/* 詳細氣象指標 */}
-              <div className="grid grid-cols-3 gap-2">
-                <div className="bg-[#12151e] border border-[#232838] p-2.5 rounded-lg flex flex-col">
-                  <span className="text-[10.5px] text-gray-400 flex items-center gap-1">
-                    <Droplets className="w-3 h-3 text-cyan-400" />
-                    <span>相對濕度</span>
-                  </span>
-                  <span className="text-sm font-bold text-gray-100 font-mono mt-1">{weather.humidity ?? 78}%</span>
-                </div>
-                <div className="bg-[#12151e] border border-[#232838] p-2.5 rounded-lg flex flex-col">
-                  <span className="text-[10.5px] text-gray-400 flex items-center gap-1">
-                    <Gauge className="w-3 h-3 text-indigo-400" />
-                    <span>大氣氣壓</span>
-                  </span>
-                  <span className="text-sm font-bold text-gray-100 font-mono mt-1">{weather.pressure_kpa ?? 101.5} kPa</span>
-                </div>
-                <div className="bg-[#12151e] border border-[#232838] p-2.5 rounded-lg flex flex-col">
-                  <span className="text-[10.5px] text-gray-400 flex items-center gap-1">
-                    <Eye className="w-3 h-3 text-emerald-400" />
-                    <span>能見度</span>
-                  </span>
-                  <span className="text-sm font-bold text-gray-100 font-mono mt-1">{weather.visibility_km ?? 24} km</span>
-                </div>
-              </div>
-
-              {/* 24 小時每小時天氣預報 (橫向滑動卡片) */}
-              {weather.hourly && weather.hourly.length > 0 && (
-                <div className="flex flex-col gap-1.5 mt-0.5">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-bold text-gray-300">24 小時每小時預報</span>
-                    <span className="text-[10px] text-gray-500 font-mono">橫向滑動 ❯</span>
-                  </div>
-                  <div className="flex items-center gap-2 overflow-x-auto pb-1.5 pt-0.5 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2c3244] [&::-webkit-scrollbar-thumb]:rounded-full">
-                    {weather.hourly.map((h, idx) => (
-                      <div 
-                        key={idx} 
-                        className={`shrink-0 w-[68px] py-2 px-1.5 rounded-lg border flex flex-col items-center justify-between text-center transition-all ${
-                          idx === 0 
-                            ? 'bg-sky-950/40 border-sky-500/40 text-white shadow-sm ring-1 ring-sky-500/30' 
-                            : 'bg-[#12151e] border-[#252b3a] text-gray-300'
-                        }`}
-                      >
-                        <span className="text-[10px] font-medium text-gray-400 font-mono truncate max-w-full">
-                          {h.time === '現在' ? '現在' : formatTimePreference(h.time, timeFormat)}
-                        </span>
-                        <div className="my-1.5 text-sky-300 flex items-center justify-center">
-                          {renderWeatherMiniIcon(h.icon)}
-                        </div>
-                        <span className="text-xs font-bold text-gray-100">{formatTemp(h.temp)}</span>
-                        {h.pop > 0 ? (
-                          <span className="text-[9.5px] text-cyan-400 font-mono mt-0.5 flex items-center gap-0.5">
-                            💧{h.pop}%
-                          </span>
-                        ) : (
-                          <span className="text-[9.5px] text-gray-500 font-mono mt-0.5">--</span>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* 未來 7 日天氣預報 */}
-              {weather.forecast && weather.forecast.length > 0 && (
-                <div className="flex flex-col gap-1.5 mt-1">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-bold text-gray-300">未來 7 日天氣預報</span>
-                    <span className="text-[10px] text-gray-500">最高 / 最低溫</span>
-                  </div>
-                  <div className="flex flex-col gap-1.5">
-                    {weather.forecast.map((fc, idx) => (
-                      <div 
-                        key={idx} 
-                        className="bg-[#12151e] border border-[#232838] px-3 py-2 rounded-lg flex items-center justify-between text-xs hover:border-[#333b4e] transition-colors"
-                      >
-                        <div className="flex items-center gap-2.5 min-w-[70px]">
-                          <span className={`font-semibold ${idx === 0 ? 'text-sky-400 font-bold' : 'text-gray-200'}`}>
-                            {fc.day}
-                          </span>
-                          {fc.pop != null && fc.pop > 20 && (
-                            <span className="text-[10px] text-cyan-400 font-mono">
-                              💧{fc.pop}%
-                            </span>
-                          )}
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          <div className="w-5 h-5 flex items-center justify-center text-sky-300 shrink-0">
-                            {renderWeatherMiniIcon(fc.icon)}
-                          </div>
-                          <span className="text-gray-300 text-xs w-[68px] truncate">{fc.condition}</span>
-                        </div>
-
-                        <div className="text-xs font-mono flex items-center gap-1.5 justify-end min-w-[75px]">
-                          <span className="text-rose-400 font-bold">{formatTempNumber(fc.high)}°</span>
-                          <span className="text-gray-600">/</span>
-                          <span className="text-sky-400 font-bold">{formatTempNumber(fc.low)}°</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
           ) : (
             <div className="py-12 text-center text-xs text-gray-400">目前無法取得即時天氣資料</div>

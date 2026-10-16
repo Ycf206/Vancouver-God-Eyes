@@ -76,6 +76,8 @@ export interface UIState {
     bikeRacks: boolean;
     postalCodeFSA: boolean;
     wirelessFacilities: boolean;
+    trafficCrosswalks: boolean;
+    litterContainers: boolean;
   };
   contourInterval: 'off' | '1m' | '2m' | '10m';
   setContourInterval: (interval: 'off' | '1m' | '2m' | '10m') => void;
@@ -191,6 +193,8 @@ export const useUIStore = create<UIState>()(
         bikeRacks: false,
         postalCodeFSA: false,
         wirelessFacilities: false,
+        trafficCrosswalks: false,
+        litterContainers: false,
       },
       timeFormat: '24h',
       setTimeFormat: (format) => set({ timeFormat: format }),

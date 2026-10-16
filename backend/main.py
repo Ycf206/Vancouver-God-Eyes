@@ -1515,6 +1515,16 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                 icon = "📮"
                 layer_key = "postalCodeFSA"
                 zoom = 13
+            elif ftype == 'traffic_crosswalks':
+                badge = "斑馬線"
+                icon = "🚶"
+                layer_key = "trafficCrosswalks"
+                zoom = 17
+            elif ftype == 'litter_containers':
+                badge = "垃圾箱"
+                icon = "🗑️"
+                layer_key = "litterContainers"
+                zoom = 17
 
             sub_parts = [badge]
             if ftype == 'safety_cameras' and f.details and isinstance(f.details, dict) and f.details.get('camera_type'):
@@ -1877,11 +1887,13 @@ CURATED_STATIC_TYPES = (
     "bikeways", "hospitals", "police", "disaster_hubs", "car_sharing", "aed", 
     "local_area_boundary", "fuel", "ev_charging", "tesla", "marine_terminals", 
     "one_way_streets", "snow_removal_routes", "crime_areas", "water_distribution_mains", 
-    "sewer_mains", "traffic_speed_limits", "bike_racks", "postal_code_fsa", "wireless_facilities"
+    "sewer_mains", "traffic_speed_limits", "bike_racks", "postal_code_fsa", "wireless_facilities",
+    "traffic_crosswalks", "litter_containers"
 )
 POINT_CURATED_TYPES = (
     "hospitals", "police", "disaster_hubs", "car_sharing", "aed", 
-    "fuel", "ev_charging", "tesla", "marine_terminals", "bike_racks", "wireless_facilities"
+    "fuel", "ev_charging", "tesla", "marine_terminals", "bike_racks", "wireless_facilities",
+    "traffic_crosswalks", "litter_containers"
 )
 
 @app.get("/api/geojson/road/{facility_type}")
@@ -1916,7 +1928,7 @@ def get_road_facilities_geojson(facility_type: str, interval: str = "10m", db: S
                 try:
                     with open(static_geojson_path, "r", encoding="utf-8") as f:
                         static_geojson = json.load(f)
-                    if facility_type in ("aed", "car_sharing", "bike_racks", "wireless_facilities"):
+                    if facility_type in ("aed", "car_sharing", "bike_racks", "wireless_facilities", "traffic_crosswalks", "litter_containers"):
                         db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).delete()
                     for feat in static_geojson.get("features", []):
                         props = feat.get("properties", {})

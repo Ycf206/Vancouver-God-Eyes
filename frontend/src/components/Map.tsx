@@ -409,6 +409,8 @@ export default function AppMap() {
       else if (type === 'sewer_mains' && !layers.sewerMains) facilityClosed = true;
       else if (type === 'one_way_streets' && !layers.oneWayStreets) facilityClosed = true;
       else if (type === 'snow_removal_routes' && !layers.snowRemovalRoutes) facilityClosed = true;
+      else if (type === 'traffic_crosswalks' && !layers.trafficCrosswalks) facilityClosed = true;
+      else if (type === 'litter_containers' && !layers.litterContainers) facilityClosed = true;
 
       if (facilityClosed) {
         setSelectedFacility(null);
@@ -1578,7 +1580,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'parking-meters',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2, 14, 4, 15, 7, 17, 9],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#f59e0b',
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
@@ -1609,7 +1611,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'accessible-parking',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 5, 15, 8, 17, 10],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#0ea5e9',
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
@@ -1639,7 +1641,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'motorcycle-parking',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 5, 15, 8, 17, 10],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#f97316',
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
@@ -1669,7 +1671,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'ev-charging',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3.5, 14, 6.5, 15, 9.5, 17, 12],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#10b981',
           'circle-stroke-width': 2,
           'circle-stroke-color': '#ffffff'
@@ -1729,7 +1731,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'car-sharing',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3, 14, 5.5, 15, 9, 17, 12],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': ['match', ['get', 'operator'], 'Evo', '#0284c7', 'Modo', '#e11d48', '#0284c7'],
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
@@ -1759,7 +1761,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'shared-bikes',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 5.5, 15, 8.5, 17, 11],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#10b981',
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
@@ -1789,7 +1791,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'fire-halls',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3, 14, 5.5, 15, 9, 17, 12],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#ef4444',
           'circle-stroke-width': 2,
           'circle-stroke-color': '#ffffff'
@@ -1819,7 +1821,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'police',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3, 14, 6, 15, 9.5, 17, 13],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#2563eb',
           'circle-stroke-width': 2,
           'circle-stroke-color': '#ffffff'
@@ -1849,7 +1851,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'disaster-hubs',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3.5, 14, 6.5, 15, 10, 17, 14],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#d97706',
           'circle-stroke-width': 2,
           'circle-stroke-color': '#ffffff'
@@ -1879,7 +1881,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'community-centres',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3, 14, 5.5, 15, 9, 17, 12],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#8b5cf6',
           'circle-stroke-width': 2,
           'circle-stroke-color': '#ffffff'
@@ -1909,7 +1911,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'traffic-cameras',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 5, 15, 8.5, 17, 11],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#06b6d4',
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
@@ -1939,7 +1941,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'safety-cameras',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3, 14, 5.5, 15, 9, 17, 12],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': [
             'case',
             ['boolean', ['get', 'has_speed'], false],
@@ -1974,7 +1976,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'fuel',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3, 14, 5.5, 15, 9, 17, 12],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#f59e0b',
           'circle-stroke-width': 2,
           'circle-stroke-color': '#ffffff'
@@ -2004,7 +2006,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'tesla',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 4.5, 14, 7.5, 15, 10, 17, 14],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#e82127',
           'circle-stroke-width': 2,
           'circle-stroke-color': '#ffffff'
@@ -2034,7 +2036,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'marine_terminals',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 5, 13, 8.5, 15, 12, 17, 16],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#0891b2',
           'circle-stroke-width': 2,
           'circle-stroke-color': '#ffffff'
@@ -2064,7 +2066,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'hospitals',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 5, 13, 8, 15, 12, 17, 16],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': [
             'case',
             ['==', ['get', 'medical_type'], 'upcc'], '#06b6d4',
@@ -2127,7 +2129,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'parks',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3, 14, 5.5, 15, 9, 17, 13],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#16a34a',
           'circle-stroke-width': 2,
           'circle-stroke-color': '#ffffff'
@@ -2157,7 +2159,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'parks-facilities',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 5, 15, 8, 17, 11],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#0d9488',
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
@@ -2187,7 +2189,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'community-gardens',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 5, 15, 8.5, 17, 11],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#65a30d',
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
@@ -2217,7 +2219,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'drinking-fountains',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 11],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#0284c7',
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
@@ -2247,7 +2249,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'public-washrooms',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 5, 15, 8.5, 17, 11],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#06b6d4',
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
@@ -2277,7 +2279,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'schools',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 5, 15, 8.5, 17, 11],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#3b82f6',
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
@@ -2307,7 +2309,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'libraries',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 5, 15, 8.5, 17, 11],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#f59e0b',
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
@@ -2337,7 +2339,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'food-vendors',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 5, 15, 8.5, 17, 11],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#f97316',
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
@@ -2367,7 +2369,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'homeless-shelters',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 5, 15, 8.5, 17, 11],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#f43f5e',
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
@@ -2397,7 +2399,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'aed',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 5, 15, 8.5, 17, 11],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#dc2626',
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
@@ -2607,7 +2609,7 @@ export default function AppMap() {
         source: 'bike_racks',
         minzoom: 13,
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 13, 3, 15, 5.5, 17, 8],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#0d9488',
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
@@ -2676,7 +2678,7 @@ export default function AppMap() {
         source: 'wireless_facilities',
         minzoom: 11,
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 4, 15, 7, 18, 10],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#9333ea',
           'circle-stroke-width': 2,
           'circle-stroke-color': '#ffffff'
@@ -4254,13 +4256,13 @@ export default function AppMap() {
             offset={[0, -10]}
             maxWidth={
               selectedFacility.facility_type === 'traffic_cameras' ? '400px' : 
-              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities') ? '360px' : 
+              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers') ? '360px' : 
               '320px'
             }
           >
             <div className={`p-3.5 ${
               selectedFacility.facility_type === 'traffic_cameras' ? 'w-[360px]' : 
-              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities') ? 'w-[340px]' : 
+              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers') ? 'w-[340px]' : 
               'w-[290px]'
             } max-w-[90vw] text-gray-800`}>
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
@@ -4272,6 +4274,8 @@ export default function AppMap() {
                     selectedFacility.facility_type === 'postal_code_fsa' ? 'bg-indigo-600' :
                     selectedFacility.facility_type === 'bike_racks' ? 'bg-teal-600' :
                     selectedFacility.facility_type === 'wireless_facilities' ? 'bg-purple-600' :
+                    selectedFacility.facility_type === 'traffic_crosswalks' ? 'bg-yellow-500' :
+                    selectedFacility.facility_type === 'litter_containers' ? 'bg-amber-600' :
                     selectedFacility.facility_type === 'tesla' ? 'bg-red-600' :
                     selectedFacility.facility_type === 'marine_terminals' ? 'bg-cyan-600' :
                     selectedFacility.facility_type === 'snow_removal_routes' ? 'bg-sky-500' :
@@ -5191,19 +5195,7 @@ export default function AppMap() {
                           前往 edwaittimes.ca 查看即時等候時間 ↗
                         </a>
                       )}
-                      <a
-                        href={`https://www.google.com/maps/dir/?api=1&destination=${selectedFacility.lat},${selectedFacility.lon}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`inline-flex items-center justify-center w-full py-1.5 px-3 rounded font-medium text-xs transition-colors shadow-sm gap-1 ${
-                          isRehab
-                            ? 'bg-teal-600 hover:bg-teal-700 text-white'
-                            : 'bg-blue-600 hover:bg-blue-700 text-white'
-                        }`}
-                      >
-                        <span>🗺️</span>
-                        <span>Google Map 導航至此醫療機構 ↗</span>
-                      </a>
+                      
                       {selectedFacility.properties?.website && (
                         <a
                           href={selectedFacility.properties.website}
