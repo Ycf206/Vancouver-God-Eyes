@@ -935,9 +935,12 @@ export default function AppMap() {
       updateScale();
       const z = map.getZoom();
       setCurrentZoom(z);
-      if (z >= 12) {
-        setZoomNotification(prev => (prev?.show ? { ...prev, show: false } : prev));
-      }
+      setZoomNotification(prev => {
+        if (prev?.show && z >= (prev.targetZoom ? prev.targetZoom - 0.5 : 13.5)) {
+          return { ...prev, show: false };
+        }
+        return prev;
+      });
     };
     updateScale();
     map.on('move', handleZoomOrMove);
@@ -948,27 +951,72 @@ export default function AppMap() {
     };
   }, [updateScale]);
 
-  // 當開啟自來水或污水管網圖層，若當前視野 zoom < 12，主動提示用家放大檢視
+  // 當開啟單車架、管道、斑馬線等高密度圖層時，若當前視野層級過低，主動提示用家放大檢視
   useEffect(() => {
     const prev = prevLayersRef.current;
     prevLayersRef.current = layers;
 
     const turnedOnWater = !prev.waterDistributionMains && layers.waterDistributionMains;
     const turnedOnSewer = !prev.sewerMains && layers.sewerMains;
+    const turnedOnBikeRacks = !prev.bikeRacks && layers.bikeRacks;
+    const turnedOnCrosswalks = !prev.trafficCrosswalks && layers.trafficCrosswalks;
+    const turnedOnLitter = !prev.litterContainers && layers.litterContainers;
 
+    const map = mapRef.current?.getMap();
+    const z = map ? map.getZoom() : currentZoom;
+
+    // 1. 單車架 (Bike Racks)
+    if (turnedOnBikeRacks) {
+      if (z < 13.5) {
+        setZoomNotification({
+          show: true,
+          title: '已開啟單車架圖層',
+          message: '單車架設施點位較為密集，請放大地圖以清晰檢視位置與圖示。',
+          targetZoom: 14.5
+        });
+        return;
+      }
+    }
+
+    // 2. 自來水管道或污水管道 (Water / Sewer Mains)
     if (turnedOnWater || turnedOnSewer) {
-      const map = mapRef.current?.getMap();
-      const z = map ? map.getZoom() : currentZoom;
-      if (z < 12) {
+      if (z < 12.5) {
         const names = [];
         if (turnedOnWater || layers.waterDistributionMains) names.push('自來水管道');
         if (turnedOnSewer || layers.sewerMains) names.push('污水管道');
         setZoomNotification({
           show: true,
           title: `已開啟${names.join('與')}`,
-          message: '地下管道網數據較為密集，請將地圖放大檢視詳細線路分佈。',
+          message: '地下管道網數據較為龐大密集，請將地圖放大以檢視詳細線路分佈。',
           targetZoom: 13.5
         });
+        return;
+      }
+    }
+
+    // 3. 斑馬線 (Crosswalks)
+    if (turnedOnCrosswalks) {
+      if (z < 13.5) {
+        setZoomNotification({
+          show: true,
+          title: '已開啟斑馬線圖層',
+          message: '斑馬線點位密集，請放大地圖以檢視詳細路口分佈。',
+          targetZoom: 14.5
+        });
+        return;
+      }
+    }
+
+    // 4. 垃圾箱 (Litter Containers)
+    if (turnedOnLitter) {
+      if (z < 13.5) {
+        setZoomNotification({
+          show: true,
+          title: '已開啟垃圾箱圖層',
+          message: '垃圾箱數據較為密集，請放大地圖以清晰檢視分佈與圖示。',
+          targetZoom: 14.5
+        });
+        return;
       }
     }
   }, [layers, currentZoom]);
@@ -977,7 +1025,7 @@ export default function AppMap() {
     if (zoomNotification?.show) {
       const timer = setTimeout(() => {
         setZoomNotification(prev => (prev ? { ...prev, show: false } : null));
-      }, 7000);
+      }, 9000);
       return () => clearTimeout(timer);
     }
   }, [zoomNotification?.show]);
@@ -6685,16 +6733,16 @@ export default function AppMap() {
 
       </Map>
 
-      {/* 管道密集圖層放大檢視提示 Toast (Zoom-in prompt for dense network layers) */}
+      {/* 密集圖層（管道/單車架/斑馬線等）放大檢視提示 Toast (Zoom-in prompt for dense network layers) */}
       {zoomNotification?.show && (
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-40 bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl px-4 py-2.5 shadow-2xl border border-sky-500/40 flex items-center gap-3 animate-in fade-in slide-in-from-top-3 duration-200 select-none max-w-[calc(100vw-32px)]">
-          <div className="w-8 h-8 rounded-lg bg-sky-500/20 border border-sky-500/30 flex items-center justify-center text-sky-400 shrink-0">
+        <div className="fixed top-[72px] left-1/2 -translate-x-1/2 z-[60] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl px-4 py-2.5 shadow-[0_10px_35px_rgba(0,0,0,0.6)] border border-sky-500/50 flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-300 select-none max-w-[calc(100vw-32px)] ring-1 ring-sky-400/20">
+          <div className="w-8 h-8 rounded-lg bg-sky-500/20 border border-sky-500/40 flex items-center justify-center text-sky-400 shrink-0 animate-pulse">
             <ZoomIn className="w-4 h-4" />
           </div>
           <div className="flex flex-col min-w-0 pr-1">
             <div className="text-xs font-bold text-white flex items-center gap-1.5">
               <span>{zoomNotification.title}</span>
-              <span className="text-[10px] px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-300 font-normal">需放大檢視</span>
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/30 font-medium">建議放大檢視</span>
             </div>
             <div className="text-[11px] text-gray-300 mt-0.5 line-clamp-1">
               {zoomNotification.message}
@@ -6709,17 +6757,17 @@ export default function AppMap() {
               });
               setZoomNotification(prev => prev ? { ...prev, show: false } : null);
             }}
-            className="px-2.5 py-1 text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white rounded-lg transition-colors shrink-0 shadow-sm flex items-center gap-1 cursor-pointer active:scale-95"
+            className="px-3 py-1.5 text-xs font-semibold bg-sky-600 hover:bg-sky-500 active:bg-sky-700 text-white rounded-lg transition-all shrink-0 shadow-md flex items-center gap-1 cursor-pointer active:scale-95"
           >
             一鍵放大
           </button>
           <button
             type="button"
             onClick={() => setZoomNotification(prev => prev ? { ...prev, show: false } : null)}
-            className="p-1 text-gray-400 hover:text-white rounded-md transition-colors shrink-0 cursor-pointer"
+            className="p-1 text-gray-400 hover:text-white rounded-md transition-colors shrink-0 cursor-pointer ml-0.5"
             title="關閉提示"
           >
-            <X className="w-3.5 h-3.5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
       )}

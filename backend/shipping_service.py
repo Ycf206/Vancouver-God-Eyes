@@ -1201,6 +1201,21 @@ class MaritimeShippingService:
     def get_vessels(self) -> List[Dict[str, Any]]:
         self.update_simulation_tick()
         # 最終輸出守衛：過濾掉任何可能落入陸地多邊形的船舶
-        return [v for v in self.vessels.values() if not is_point_on_vancouver_land(v.get("lon", 0.0), v.get("lat", 0.0))]
+        vessels = [v for v in self.vessels.values() if not is_point_on_vancouver_land(v.get("lon", 0.0), v.get("lat", 0.0))]
+
+        # 排序：抵達時間由近至遠，已泊岸（繫泊停靠碼頭）排在最底
+        def vessel_sort_key(v: Dict[str, Any]):
+            status = (v.get("nav_status") or "").lower()
+            is_moored = any(kw in status for kw in ["moored", "berthed", "繫泊", "停靠", "泊岸"])
+            is_anchor = any(kw in status for kw in ["anchor", "拋錨", "錨泊"])
+            tier = 2 if is_moored else (1 if is_anchor else 0)
+            eta = (v.get("eta") or "").strip()
+            eta_val = eta if eta and eta != "--" else "99-99 99:99"
+            sog = float(v.get("sog") or 0.0)
+            return (tier, eta_val, -sog)
+
+        vessels.sort(key=vessel_sort_key)
+        return vessels
 
 shipping_service = MaritimeShippingService()
+

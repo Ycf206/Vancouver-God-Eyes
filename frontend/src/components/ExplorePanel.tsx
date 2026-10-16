@@ -485,6 +485,100 @@ function ExploreContent() {
     });
   }, [fuelStations, onlyMajorChains]);
 
+  // 船運排序：抵達時間由近至遠，已泊岸（繫泊停靠碼頭）排在最底
+  const sortedShippingVessels = useMemo(() => {
+    if (!shippingVessels || shippingVessels.length === 0) return [];
+
+    const currentYear = new Date().getFullYear();
+
+    const parseEtaMs = (etaStr?: string | null): number | null => {
+      if (!etaStr) return null;
+      const s = String(etaStr).trim();
+      if (!s || s === '--') return null;
+
+      // 1. ISO or YYYY-MM-DD HH:mm(:ss)
+      const yyyyMatch = s.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})[T ](\d{1,2}):(\d{1,2})/);
+      if (yyyyMatch) {
+        const y = parseInt(yyyyMatch[1], 10);
+        const m = parseInt(yyyyMatch[2], 10) - 1;
+        const d = parseInt(yyyyMatch[3], 10);
+        const h = parseInt(yyyyMatch[4], 10);
+        const min = parseInt(yyyyMatch[5], 10);
+        return new Date(y, m, d, h, min).getTime();
+      }
+
+      // 2. AIS standard: MM-DD HH:mm or MM/DD HH:mm
+      const mmddMatch = s.match(/^(\d{1,2})[-/](\d{1,2})[T ](\d{1,2}):(\d{1,2})/);
+      if (mmddMatch) {
+        const m = parseInt(mmddMatch[1], 10) - 1;
+        const d = parseInt(mmddMatch[2], 10);
+        const h = parseInt(mmddMatch[3], 10);
+        const min = parseInt(mmddMatch[4], 10);
+        return new Date(currentYear, m, d, h, min).getTime();
+      }
+
+      // 3. Fallback
+      const parsedDate = new Date(s);
+      if (!isNaN(parsedDate.getTime())) {
+        return parsedDate.getTime();
+      }
+      return null;
+    };
+
+    const isMoored = (ship: MaritimeVessel): boolean => {
+      const status = (ship.nav_status || '').toLowerCase();
+      return (
+        status.includes('moored') ||
+        status.includes('berthed') ||
+        status.includes('繫泊') ||
+        status.includes('停靠') ||
+        status.includes('泊岸')
+      );
+    };
+
+    const isAtAnchor = (ship: MaritimeVessel): boolean => {
+      const status = (ship.nav_status || '').toLowerCase();
+      return status.includes('anchor') || status.includes('拋錨') || status.includes('錨泊');
+    };
+
+    return [...shippingVessels].sort((a, b) => {
+      const aMoored = isMoored(a);
+      const bMoored = isMoored(b);
+
+      // 1. 已泊岸的船隻放到最底
+      if (aMoored !== bMoored) {
+        return aMoored ? 1 : -1;
+      }
+
+      // 2. 拋錨錨泊中船隻次之（排在航行中船隻之後、已泊岸船隻之前）
+      const aAnchor = isAtAnchor(a);
+      const bAnchor = isAtAnchor(b);
+      if (aAnchor !== bAnchor) {
+        return aAnchor ? 1 : -1;
+      }
+
+      // 3. 抵達時間由近至遠 (Earliest ETA to latest ETA)
+      const aTime = parseEtaMs(a.eta);
+      const bTime = parseEtaMs(b.eta);
+
+      if (aTime !== null && bTime !== null) {
+        if (aTime !== bTime) {
+          return aTime - bTime;
+        }
+      } else if (aTime !== null) {
+        return -1;
+      } else if (bTime !== null) {
+        return 1;
+      }
+
+      // 4. 若 ETA 相同或皆無，以航速（SOG）快者優先
+      if ((b.sog ?? 0) !== (a.sog ?? 0)) {
+        return (b.sog ?? 0) - (a.sog ?? 0);
+      }
+      return (a.name || '').localeCompare(b.name || '');
+    });
+  }, [shippingVessels]);
+
   if (!isExploreOpen) return null;
 
   // Handle Fuel click
@@ -1370,17 +1464,20 @@ function ExploreContent() {
           </div>
 
           <div className="flex-1 overflow-y-auto min-h-0 pr-1 flex flex-col gap-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
-            {loadingShipping && shippingVessels.length === 0 ? (
+            {loadingShipping && sortedShippingVessels.length === 0 ? (
               <div className="py-12 flex flex-col items-center justify-center gap-2 text-gray-400 text-xs">
                 <RefreshCw className="w-5 h-5 text-cyan-400 animate-spin" />
                 <span>讀取溫哥華港口即時商船動態中...</span>
               </div>
-            ) : shippingVessels.length === 0 ? (
+            ) : sortedShippingVessels.length === 0 ? (
               <div className="py-12 text-center text-xs text-gray-400">目前溫哥華水域暫無商船動態信號</div>
             ) : (
-              shippingVessels.map((ship) => {
-                const isUnderway = ship.sog > 0.5;
-                const statusColor = isUnderway ? 'text-emerald-400' : 'text-amber-400';
+              sortedShippingVessels.map((ship) => {
+                const isMoored = /moored|berthed|繫泊|停靠|泊岸/i.test(ship.nav_status || '');
+                const isAtAnchor = /anchor|拋錨|錨泊/i.test(ship.nav_status || '');
+                const isUnderway = ship.sog > 0.5 && !isMoored && !isAtAnchor;
+                const statusColor = isUnderway ? 'text-emerald-400' : isMoored ? 'text-sky-300' : 'text-amber-400';
+                const statusText = isMoored ? '已泊岸' : isAtAnchor ? '拋錨錨泊' : (ship.nav_status || '航行中').split(' ')[0];
                 const typeBg = 
                   ship.type_group === 'cargo' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' :
                   ship.type_group === 'tanker' ? 'bg-rose-500/20 text-rose-300 border-rose-500/30' :
@@ -1412,7 +1509,7 @@ function ExploreContent() {
                     <div className="flex items-center justify-between text-[11px] text-gray-400">
                       <div className="flex items-center gap-1.5">
                         <span className={`font-medium ${statusColor}`}>
-                          {(ship.nav_status || '航行中').split(' ')[0]}
+                          {statusText}
                         </span>
                         <span>·</span>
                         <span className="font-mono text-gray-300">
@@ -1424,10 +1521,14 @@ function ExploreContent() {
                       </span>
                     </div>
 
-                    {ship.destination && (
+                    {(ship.destination || ship.eta) && (
                       <div className="flex items-center justify-between text-[10px] pt-1 border-t border-[#232838] text-gray-500">
-                        <span className="truncate max-w-[200px]">目的地: {ship.destination}</span>
-                        {ship.eta && <span className="shrink-0 font-mono text-[10px] text-gray-400">{formatShipEta(ship.eta, timeFormat)}</span>}
+                        <span className="truncate max-w-[190px]">{ship.destination ? `目的地: ${ship.destination}` : '港口水域'}</span>
+                        {ship.eta && (
+                          <span className="shrink-0 font-mono text-[10px] text-cyan-400 bg-cyan-950/50 px-1.5 py-0.5 rounded border border-cyan-800/40 font-medium">
+                            {formatShipEta(ship.eta, timeFormat)}
+                          </span>
+                        )}
                       </div>
                     )}
                   </div>
@@ -1445,7 +1546,7 @@ function ExploreContent() {
           {activeTab === 'fuel' && `共收錄 ${filteredFuelStations.length} 間加油站`}
           {activeTab === 'ev' && `共收錄 ${evStations.length} 座充電站`}
           {activeTab === 'ferry' && `共 ${ferryRoutes.reduce((acc, r) => acc + (r?.vessels?.length || 0), 0)} 艘渡輪即時航行中`}
-          {activeTab === 'cargo' && `共追蹤 ${shippingVessels.length} 艘溫哥華港口商船 (Aisstream.io)`}
+          {activeTab === 'cargo' && `共追蹤 ${sortedShippingVessels.length} 艘溫哥華港口商船 (依抵達時間近至遠排序)`}
         </span>
         <button
           onClick={() => {
