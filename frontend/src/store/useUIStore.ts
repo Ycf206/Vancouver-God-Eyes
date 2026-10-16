@@ -114,7 +114,19 @@ export interface UIState {
   setExploreOpen: (open: boolean) => void;
   toggleExplore: () => void;
   toggleLayer: (layer: keyof UIState['layers']) => void;
-  enableLayer: (layer: keyof UIState['layers']) => void;
+  resetAllLayers: () => void;
+  parkingMeterFilter: {
+    maxRate: number; // 0 = all
+    creditCardOnly: boolean;
+  };
+  setParkingMeterFilter: (filter: Partial<{ maxRate: number; creditCardOnly: boolean }>) => void;
+  radiusExploration: {
+    active: boolean;
+    lat: number;
+    lon: number;
+    radiusM: number;
+  } | null;
+  setRadiusExploration: (exp: { active: boolean; lat: number; lon: number; radiusM: number } | null) => void;
   searchTarget: SearchTarget | null;
   setSearchTarget: (target: SearchTarget | null) => void;
   isLayerPanelOpen: boolean;
@@ -261,6 +273,31 @@ export const useUIStore = create<UIState>()(
             [layer]: true,
           },
         })),
+      resetAllLayers: () =>
+        set((state) => {
+          const allFalseLayers = Object.keys(state.layers).reduce((acc, k) => {
+            acc[k as keyof typeof state.layers] = false;
+            return acc;
+          }, {} as typeof state.layers);
+          return {
+            layers: allFalseLayers,
+            contourInterval: 'off',
+            searchTarget: null,
+          };
+        }),
+      parkingMeterFilter: {
+        maxRate: 0,
+        creditCardOnly: false,
+      },
+      setParkingMeterFilter: (filter) =>
+        set((state) => ({
+          parkingMeterFilter: {
+            ...state.parkingMeterFilter,
+            ...filter,
+          },
+        })),
+      radiusExploration: null,
+      setRadiusExploration: (exp) => set({ radiusExploration: exp }),
       searchTarget: null,
       setSearchTarget: (target) => set({ searchTarget: target }),
       isLayerPanelOpen: true,

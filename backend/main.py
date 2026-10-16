@@ -2202,6 +2202,9 @@ def get_hospital_waittimes():
     return {"cached": False, "last_updated": "", "hospitals": {}}
 
 import json
+import re
+import math
+from typing import Optional
 from sqlalchemy import func
 
 _bikeways_geojson_cache = {"data": None, "mtime": 0}
@@ -2212,7 +2215,13 @@ _contours_caches = {
 }
 
 @app.get("/api/geojson/road/{facility_type}")
-def get_road_facilities_geojson(facility_type: str, interval: str = "10m", db: Session = Depends(database.get_db)):
+def get_road_facilities_geojson(
+    facility_type: str, 
+    interval: str = "10m", 
+    max_rate: Optional[float] = None,
+    credit_card_only: bool = False,
+    db: Session = Depends(database.get_db)
+):
     """
     facility_type can be 'parking_meters', 'accessible_parking', 'motorcycle_parking', 'ev_charging', 'bikeways', 'contours', etc.
     For contours, interval can be '1m', '2m', '10m'.
@@ -2307,7 +2316,27 @@ def get_road_facilities_geojson(facility_type: str, interval: str = "10m", db: S
         }
         if f.details and isinstance(f.details, dict):
             props.update(f.details)
-            
+
+        if facility_type == 'parking_meters':
+            # Extract numeric rate for filtering and client-side styling
+            raw_rate = props.get('rate_9am_6pm') or props.get('r_mf_9a_6p') or props.get('rate') or ''
+            rate_num = None
+            rate_match = re.search(r'(\d+(?:\.\d+)?)', str(raw_rate))
+            if rate_match:
+                try:
+                    rate_num = float(rate_match.group(1))
+                except ValueError:
+                    rate_num = None
+            props['rate_numeric'] = rate_num
+
+            if max_rate is not None and max_rate > 0:
+                if rate_num is not None and rate_num > max_rate:
+                    continue
+            if credit_card_only:
+                cc = str(props.get('credit_card') or props.get('creditcard') or '').lower()
+                if cc not in ('yes', 'true', '1'):
+                    continue
+
         features.append({
             "type": "Feature",
             "geometry": {
@@ -2317,6 +2346,122 @@ def get_road_facilities_geojson(facility_type: str, interval: str = "10m", db: S
             "properties": props
         })
     return {"type": "FeatureCollection", "features": features}
+
+@app.get("/api/explore/nearby")
+def explore_nearby_facilities(
+    lat: float,
+    lon: float,
+    radius: int = 500,
+    layers: Optional[str] = None,
+    db: Session = Depends(database.get_db)
+):
+    """
+    Returns facilities and transit stops within radius (meters) of given (lat, lon).
+    Calculates exact distance and walking time (minutes).
+    """
+    def haversine_m(lat1, lon1, lat2, lon2):
+        R = 6371000
+        p1, p2 = math.radians(lat1), math.radians(lat2)
+        dp = math.radians(lat2 - lat1)
+        dl = math.radians(lon2 - lon1)
+        a = math.sin(dp / 2)**2 + math.cos(p1) * math.cos(p2) * math.sin(dl / 2)**2
+        return int(round(R * 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))))
+
+    # Bounding box filter (1 deg ~ 111 km)
+    deg_delta = (radius + 150) / 111000.0
+
+    road_query = db.query(models.RoadFacility).filter(
+        models.RoadFacility.lat.between(lat - deg_delta, lat + deg_delta),
+        models.RoadFacility.lon.between(lon - deg_delta, lon + deg_delta)
+    )
+
+    selected_layer_keys = set(layers.split(',')) if layers else None
+
+    nearby_items = []
+
+    type_labels = {
+        'aed': ('AED 去顫器', '❤️', 'aed'),
+        'public_washrooms': ('公共洗手間', '🚻', 'publicWashrooms'),
+        'drinking_fountains': ('飲水機', '💧', 'drinkingFountains'),
+        'shared_bikes': ('共享單車', '🚲', 'sharedBikes'),
+        'bike_racks': ('單車架', '🚲', 'bikeRacks'),
+        'litter_containers': ('垃圾箱', '🗑️', 'litterContainers'),
+        'parking_meters': ('停車收費錶', '🅿️', 'parkingMeters'),
+        'accessible_parking': ('無障礙車位', '♿', 'accessibleParking'),
+        'motorcycle_parking': ('摩托車位', '🏍️', 'motorcycleParking'),
+        'ev_charging': ('EV 充電站', '⚡', 'evCharging'),
+        'community_centres': ('社區中心', '🏢', 'communityCentres'),
+        'libraries': ('圖書館', '📚', 'libraries'),
+        'schools': ('學校', '🏫', 'schools'),
+        'food_banks': ('食物銀行', '🥫', 'foodBanks'),
+        'food_vendors': ('街頭餐飲', '🍔', 'foodVendors'),
+        'recycling': ('環保回收站', '♻️', 'recycling'),
+        'homeless_shelters': ('無家者庇護所', '🏠', 'homelessShelters'),
+        'parks': ('公園綠地', '🌳', 'parks'),
+        'hospitals': ('醫療院所', '🏥', 'hospitals'),
+        'police': ('警局', '🚓', 'police'),
+        'fire_halls': ('消防局', '🚒', 'fireHalls')
+    }
+
+    for f in road_query.all():
+        dist = haversine_m(lat, lon, f.lat, f.lon)
+        if dist <= radius:
+            meta = type_labels.get(f.facility_type, ('公共設施', '📍', f.facility_type))
+            if selected_layer_keys and meta[2] not in selected_layer_keys:
+                continue
+            walk_min = max(1, int(round(dist / 80.0)))
+            nearby_items.append({
+                'id': f.id,
+                'name': f.name,
+                'facility_type': f.facility_type,
+                'type_label': meta[0],
+                'icon': meta[1],
+                'layer_key': meta[2],
+                'local_area': f.local_area,
+                'lat': f.lat,
+                'lon': f.lon,
+                'distance_m': dist,
+                'walk_minutes': walk_min,
+                'properties': f.details or {}
+            })
+
+    # Transit Stops in bounding box (SkyTrain & Bus)
+    stops_query = db.query(models.TransitStop).filter(
+        models.TransitStop.lat.between(lat - deg_delta, lat + deg_delta),
+        models.TransitStop.lon.between(lon - deg_delta, lon + deg_delta)
+    )
+    for s in stops_query.all():
+        dist = haversine_m(lat, lon, s.lat, s.lon)
+        if dist <= radius:
+            is_skytrain = s.stop_group == 'skytrain'
+            layer_key = 'skytrainStops' if is_skytrain else 'busStops'
+            if selected_layer_keys and layer_key not in selected_layer_keys:
+                continue
+            walk_min = max(1, int(round(dist / 80.0)))
+            nearby_items.append({
+                'id': s.stop_id,
+                'name': s.name,
+                'facility_type': 'skytrain_station' if is_skytrain else 'bus_stop',
+                'type_label': '天車站' if is_skytrain else '公車站',
+                'icon': '🚉' if is_skytrain else '🚏',
+                'layer_key': layer_key,
+                'local_area': '',
+                'lat': s.lat,
+                'lon': s.lon,
+                'distance_m': dist,
+                'walk_minutes': walk_min,
+                'properties': {'stop_id': s.stop_id, 'stop_group': s.stop_group}
+            })
+
+    # Sort all by distance ascending
+    nearby_items.sort(key=lambda x: x['distance_m'])
+
+    return {
+        'center': {'lat': lat, 'lon': lon},
+        'radius_m': radius,
+        'total': len(nearby_items),
+        'items': nearby_items[:120]
+    }
 
 @app.get("/api/geojson/stops/{group}")
 def get_stops_geojson(group: str, db: Session = Depends(database.get_db)):

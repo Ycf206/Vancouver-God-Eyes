@@ -8,7 +8,11 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl, getWsUrl } from '@/utils/api';
 import { formatTimePreference, formatShipEta } from '@/utils/time';
-import { LocateFixed, Train, Compass, ZoomIn, X } from 'lucide-react';
+import { 
+  LocateFixed, Train, Compass, ZoomIn, X, Copy, Check, 
+  Navigation, ExternalLink, Clock, Bike, Car, Info, 
+  ChevronDown, ChevronUp, SlidersHorizontal 
+} from 'lucide-react';
 
 // Fix Next.js App Router Web Worker crash
 if (typeof window !== 'undefined') {
@@ -152,6 +156,22 @@ interface SkytrainStationSchedule {
       formatted: string;
     }>;
   }>;
+  first_last?: {
+    weekday?: { first_train: string; last_train: string };
+    saturday?: { first_train: string; last_train: string };
+    sunday_holiday?: { first_train: string; last_train: string };
+  };
+  frequencies?: {
+    peak?: string;
+    midday?: string;
+    evening?: string;
+    late_night?: string;
+  };
+  entrance_map_url?: string;
+  fare_zone?: string;
+  has_park_and_ride?: boolean;
+  has_bike_parkade?: boolean;
+  is_accessible?: boolean;
   updated_at: string;
 }
 
@@ -205,7 +225,12 @@ const HEAVY_LAYERS_CONFIG: Record<string, { label: string; prefixes: string[] }>
 };
 
 export default function AppMap() {
-  const { layers, mapStyleType, searchTarget, setSearchTarget, isLayerPanelOpen, contourInterval, timeFormat, distanceUnit, userLocation, setExploreOpen } = useUIStore();
+  const { 
+    layers, mapStyleType, searchTarget, setSearchTarget, isLayerPanelOpen, 
+    contourInterval, timeFormat, distanceUnit, userLocation, setExploreOpen,
+    parkingMeterFilter, setParkingMeterFilter,
+    radiusExploration, setRadiusExploration
+  } = useUIStore();
   const mapRef = useRef<MapRef>(null);
 
   // Resize map canvas smoothly when side panel toggles
@@ -225,6 +250,15 @@ export default function AppMap() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedFlight, setSelectedFlight] = useState<any | null>(null);
   const [cursorCoords, setCursorCoords] = useState<{ lng: number; lat: number } | null>(null);
+  const [copiedCoords, setCopiedCoords] = useState(false);
+  const [cursorNeighbourhood, setCursorNeighbourhood] = useState<string>('');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const localAreaBoundariesRef = useRef<any[]>([]);
+  const [parkingMeterFilterOpen, setParkingMeterFilterOpen] = useState(true);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [nearbyFacilities, setNearbyFacilities] = useState<any[]>([]);
+  const [loadingNearby, setLoadingNearby] = useState(false);
+  const [skytrainDetailTab, setSkytrainDetailTab] = useState<'departures' | 'schedules' | 'facilities'>('departures');
   const [currentZoom, setCurrentZoom] = useState<number>(11);
   const [loadingHeavyLayers, setLoadingHeavyLayers] = useState<{ [key: string]: string }>({});
   const [zoomNotification, setZoomNotification] = useState<{
@@ -235,15 +269,139 @@ export default function AppMap() {
   } | null>(null);
   const prevLayersRef = useRef(layers);
 
+  // 預載溫哥華市區 22 個 Local Area 邊界幾何，用於滑鼠即時社區判定
+  useEffect(() => {
+    const apiUrl = getApiUrl();
+    fetch(`${apiUrl}/api/geojson/road/local_area_boundary`)
+      .then(res => res.json())
+      .then(data => {
+        if (data?.features && Array.isArray(data.features)) {
+          localAreaBoundariesRef.current = data.features;
+        }
+      })
+      .catch(err => console.warn('Local area boundaries load warning:', err));
+  }, []);
+
+  const getNeighbourhood = useCallback((lon: number, lat: number): string => {
+    const boundaries = localAreaBoundariesRef.current;
+    if (boundaries && boundaries.length > 0) {
+      for (const feat of boundaries) {
+        const geom = feat.geometry;
+        if (!geom) continue;
+        if (geom.type === 'Polygon' && geom.coordinates?.[0]) {
+          if (isPointInPolygon2D(lon, lat, geom.coordinates[0])) {
+            return feat.properties?.name || 'Vancouver';
+          }
+        } else if (geom.type === 'MultiPolygon' && Array.isArray(geom.coordinates)) {
+          for (const poly of geom.coordinates) {
+            if (poly?.[0] && isPointInPolygon2D(lon, lat, poly[0])) {
+              return feat.properties?.name || 'Vancouver';
+            }
+          }
+        }
+      }
+    }
+    // 大溫各區域經緯度範圍判定
+    if (lat >= 49.11 && lat <= 49.20 && lon >= -123.21 && lon <= -123.05) return '列治文 (Richmond)';
+    if (lat >= 49.20 && lat <= 49.29 && lon >= -123.03 && lon <= -122.88) return '本拿比 (Burnaby)';
+    if (lat >= 49.30 && lat <= 49.38 && lon >= -123.15 && lon <= -122.95) return '北溫哥華 (North Van)';
+    if (lat >= 49.32 && lon <= -123.15) return '西溫哥華 (West Van)';
+    if (lat >= 49.05 && lat <= 49.22 && lon >= -122.89 && lon <= -122.68) return '素里 (Surrey)';
+    if (lat >= 49.23 && lat <= 49.30 && lon >= -122.88 && lon <= -122.75) return '高貴林 (Coquitlam)';
+    if (lat >= 49.20 && lat <= 49.24 && lon >= -122.95 && lon <= -122.88) return '新西敏 (New West)';
+    if (lat >= 49.20 && lat <= 49.30 && lon >= -123.26 && lon <= -123.02) return '溫哥華市區';
+    return '';
+  }, []);
+
+  const handleCopyCoordinates = useCallback(() => {
+    if (!cursorCoords) return;
+    const text = `${cursorCoords.lat.toFixed(5)}, ${cursorCoords.lng.toFixed(5)}`;
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(text);
+      setCopiedCoords(true);
+      setTimeout(() => setCopiedCoords(false), 2200);
+    }
+  }, [cursorCoords]);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleMapMouseMove = React.useCallback((e: any) => {
     if (e.lngLat) {
       setCursorCoords({ lng: e.lngLat.lng, lat: e.lngLat.lat });
+      const nName = getNeighbourhood(e.lngLat.lng, e.lngLat.lat);
+      setCursorNeighbourhood(nName);
     }
-  }, []);
+  }, [getNeighbourhood]);
 
   const handleMapMouseLeave = React.useCallback(() => {
     setCursorCoords(null);
+    setCursorNeighbourhood('');
   }, []);
+
+  // 生成半徑探索之 GeoJSON 圓形多邊形 (64 頂點)
+  const createGeoJSONCircle = useCallback((center: [number, number], radiusInMeters: number, points = 64) => {
+    const [lon, lat] = center;
+    const coords: [number, number][] = [];
+    const radiusInKm = radiusInMeters / 1000.0;
+    const distanceX = radiusInKm / (111.32 * Math.cos((lat * Math.PI) / 180));
+    const distanceY = radiusInKm / 110.574;
+
+    for (let i = 0; i <= points; i++) {
+      const theta = (i / points) * (2 * Math.PI);
+      const x = distanceX * Math.cos(theta);
+      const y = distanceY * Math.sin(theta);
+      coords.push([lon + x, lat + y]);
+    }
+    return {
+      type: 'FeatureCollection',
+      features: [{
+        type: 'Feature',
+        geometry: {
+          type: 'Polygon',
+          coordinates: [coords]
+        },
+        properties: {}
+      }]
+    };
+  }, []);
+
+  const radiusCircleGeoJSON = useMemo(() => {
+    if (!radiusExploration || !radiusExploration.active) return null;
+    return createGeoJSONCircle([radiusExploration.lon, radiusExploration.lat], radiusExploration.radiusM || 500);
+  }, [radiusExploration, createGeoJSONCircle]);
+
+  // 半徑探索周邊設施查詢
+  useEffect(() => {
+    if (!radiusExploration || !radiusExploration.active) {
+      setNearbyFacilities([]);
+      return;
+    }
+    setLoadingNearby(true);
+    const apiUrl = getApiUrl();
+    const activeKeys = Object.entries(layers).filter(([, v]) => v).map(([k]) => k).join(',');
+    fetch(`${apiUrl}/api/explore/nearby?lat=${radiusExploration.lat}&lon=${radiusExploration.lon}&radius=${radiusExploration.radiusM || 500}&layers=${encodeURIComponent(activeKeys)}`)
+      .then(res => res.json())
+      .then(data => {
+        setNearbyFacilities(data.items || []);
+        setLoadingNearby(false);
+      })
+      .catch(err => {
+        console.error('Nearby exploration fetch error:', err);
+        setLoadingNearby(false);
+      });
+  }, [radiusExploration?.lat, radiusExploration?.lon, radiusExploration?.radiusM, radiusExploration?.active, layers]);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleMapContextMenu = useCallback((e: any) => {
+    if (e && e.lngLat) {
+      e.preventDefault();
+      setRadiusExploration({
+        active: true,
+        lat: e.lngLat.lat,
+        lon: e.lngLat.lng,
+        radiusM: 500
+      });
+    }
+  }, [setRadiusExploration]);
 
   // Selected Flight Route GeoJSON LineString / MultiLineString (Great Circle Trajectory)
   const routeGeoJSON = useMemo(() => {
@@ -1540,7 +1698,21 @@ export default function AppMap() {
     style.sources['bus-stops'] = { type: 'geojson', data: `${apiUrl}/api/geojson/stops/bus` };
     style.sources['seabus-tracks'] = { type: 'geojson', data: `${apiUrl}/api/geojson/tracks/seabus` };
     style.sources['seabus-stops'] = { type: 'geojson', data: `${apiUrl}/api/geojson/stops/seabus` };
-    style.sources['parking-meters'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/parking_meters` };
+    const pmParams = new URLSearchParams();
+    if (parkingMeterFilter?.maxRate !== undefined && parkingMeterFilter.maxRate < 20) {
+      pmParams.set('max_rate', parkingMeterFilter.maxRate.toString());
+    }
+    if (parkingMeterFilter?.creditCardOnly) {
+      pmParams.set('credit_card_only', 'true');
+    }
+    const pmQuery = pmParams.toString() ? `?${pmParams.toString()}` : '';
+    style.sources['parking-meters'] = { 
+      type: 'geojson', 
+      data: `${apiUrl}/api/geojson/road/parking_meters${pmQuery}`,
+      cluster: true,
+      clusterMaxZoom: 14,
+      clusterRadius: 50
+    };
     style.sources['accessible-parking'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/accessible_parking` };
     style.sources['motorcycle-parking'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/motorcycle_parking` };
     style.sources['ev-charging'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/ev_charging` };
@@ -1847,10 +2019,53 @@ export default function AppMap() {
 
     // Road Facilities: Parking Meters
     if (layers.parkingMeters) {
+      // Cluster circle layer
+      style.layers.push({
+        id: 'parking-meters-cluster-layer',
+        type: 'circle',
+        source: 'parking-meters',
+        filter: ['has', 'point_count'],
+        paint: {
+          'circle-color': [
+            'step',
+            ['get', 'point_count'],
+            '#f59e0b',
+            50, '#d97706',
+            200, '#b45309'
+          ],
+          'circle-radius': [
+            'step',
+            ['get', 'point_count'],
+            16,
+            50, 22,
+            200, 28
+          ],
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#ffffff',
+          'circle-opacity': 0.9
+        }
+      });
+      // Cluster count text
+      style.layers.push({
+        id: 'parking-meters-cluster-count',
+        type: 'symbol',
+        source: 'parking-meters',
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': '{point_count_abbreviated}',
+          'text-size': 12,
+          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold']
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+      // Single unclustered points
       style.layers.push({
         id: 'parking-meters-layer',
         type: 'circle',
         source: 'parking-meters',
+        filter: ['!', ['has', 'point_count']],
         paint: {
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#f59e0b',
@@ -1862,6 +2077,7 @@ export default function AppMap() {
         id: 'parking-meters-symbol-layer',
         type: 'symbol',
         source: 'parking-meters',
+        filter: ['!', ['has', 'point_count']],
         minzoom: 15,
         layout: {
           'text-field': 'P',
@@ -2934,11 +3150,57 @@ export default function AppMap() {
 
     // Road: Bike Racks (單車架)
     if (layers.bikeRacks) {
-      style.sources['bike_racks'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/bike_racks` };
+      style.sources['bike_racks'] = { 
+        type: 'geojson', 
+        data: `${apiUrl}/api/geojson/road/bike_racks`,
+        cluster: true,
+        clusterMaxZoom: 14,
+        clusterRadius: 50
+      };
+      style.layers.push({
+        id: 'bike-racks-cluster-layer',
+        type: 'circle',
+        source: 'bike_racks',
+        filter: ['has', 'point_count'],
+        paint: {
+          'circle-color': [
+            'step',
+            ['get', 'point_count'],
+            '#0d9488',
+            50, '#0f766e',
+            200, '#115e59'
+          ],
+          'circle-radius': [
+            'step',
+            ['get', 'point_count'],
+            16,
+            50, 22,
+            200, 28
+          ],
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#ffffff',
+          'circle-opacity': 0.9
+        }
+      });
+      style.layers.push({
+        id: 'bike-racks-cluster-count',
+        type: 'symbol',
+        source: 'bike_racks',
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': '{point_count_abbreviated}',
+          'text-size': 12,
+          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold']
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
       style.layers.push({
         id: 'bike-racks-layer',
         type: 'circle',
         source: 'bike_racks',
+        filter: ['!', ['has', 'point_count']],
         minzoom: 11,
         paint: {
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
@@ -2951,6 +3213,7 @@ export default function AppMap() {
         id: 'bike-racks-symbol-layer',
         type: 'symbol',
         source: 'bike_racks',
+        filter: ['!', ['has', 'point_count']],
         minzoom: 15,
         layout: {
           'text-field': '🚲',
@@ -3031,11 +3294,57 @@ export default function AppMap() {
 
     // Road: Traffic Crosswalks (斑馬線)
     if (layers.trafficCrosswalks) {
-      style.sources['traffic_crosswalks'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/traffic_crosswalks` };
+      style.sources['traffic_crosswalks'] = { 
+        type: 'geojson', 
+        data: `${apiUrl}/api/geojson/road/traffic_crosswalks`,
+        cluster: true,
+        clusterMaxZoom: 14,
+        clusterRadius: 50
+      };
+      style.layers.push({
+        id: 'traffic-crosswalks-cluster-layer',
+        type: 'circle',
+        source: 'traffic_crosswalks',
+        filter: ['has', 'point_count'],
+        paint: {
+          'circle-color': [
+            'step',
+            ['get', 'point_count'],
+            '#eab308',
+            50, '#ca8a04',
+            200, '#a16207'
+          ],
+          'circle-radius': [
+            'step',
+            ['get', 'point_count'],
+            16,
+            50, 22,
+            200, 28
+          ],
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#ffffff',
+          'circle-opacity': 0.9
+        }
+      });
+      style.layers.push({
+        id: 'traffic-crosswalks-cluster-count',
+        type: 'symbol',
+        source: 'traffic_crosswalks',
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': '{point_count_abbreviated}',
+          'text-size': 12,
+          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold']
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
       style.layers.push({
         id: 'traffic-crosswalks-layer',
         type: 'circle',
         source: 'traffic_crosswalks',
+        filter: ['!', ['has', 'point_count']],
         minzoom: 11,
         paint: {
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
@@ -3048,6 +3357,7 @@ export default function AppMap() {
         id: 'traffic-crosswalks-symbol-layer',
         type: 'symbol',
         source: 'traffic_crosswalks',
+        filter: ['!', ['has', 'point_count']],
         minzoom: 15,
         layout: {
           'text-field': '🚶',
@@ -3059,11 +3369,57 @@ export default function AppMap() {
 
     // Living: Litter Containers (垃圾箱)
     if (layers.litterContainers) {
-      style.sources['litter_containers'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/litter_containers` };
+      style.sources['litter_containers'] = { 
+        type: 'geojson', 
+        data: `${apiUrl}/api/geojson/road/litter_containers`,
+        cluster: true,
+        clusterMaxZoom: 14,
+        clusterRadius: 50
+      };
+      style.layers.push({
+        id: 'litter-containers-cluster-layer',
+        type: 'circle',
+        source: 'litter_containers',
+        filter: ['has', 'point_count'],
+        paint: {
+          'circle-color': [
+            'step',
+            ['get', 'point_count'],
+            '#d97706',
+            50, '#b45309',
+            200, '#92400e'
+          ],
+          'circle-radius': [
+            'step',
+            ['get', 'point_count'],
+            16,
+            50, 22,
+            200, 28
+          ],
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#ffffff',
+          'circle-opacity': 0.9
+        }
+      });
+      style.layers.push({
+        id: 'litter-containers-cluster-count',
+        type: 'symbol',
+        source: 'litter_containers',
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': '{point_count_abbreviated}',
+          'text-size': 12,
+          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold']
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
       style.layers.push({
         id: 'litter-containers-layer',
         type: 'circle',
         source: 'litter_containers',
+        filter: ['!', ['has', 'point_count']],
         minzoom: 11,
         paint: {
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
@@ -3076,11 +3432,40 @@ export default function AppMap() {
         id: 'litter-containers-symbol-layer',
         type: 'symbol',
         source: 'litter_containers',
+        filter: ['!', ['has', 'point_count']],
         minzoom: 15,
         layout: {
           'text-field': '🗑️',
           'text-size': ['interpolate', ['linear'], ['zoom'], 15, 10, 18, 14],
           'text-allow-overlap': false
+        }
+      });
+    }
+
+    // 周邊半徑探索範圍圓形圖層 (Nearby Exploration Radius Circle)
+    if (radiusCircleGeoJSON) {
+      style.sources['radius-circle-source'] = {
+        type: 'geojson',
+        data: radiusCircleGeoJSON
+      };
+      style.layers.push({
+        id: 'radius-circle-fill',
+        type: 'fill',
+        source: 'radius-circle-source',
+        paint: {
+          'fill-color': '#0ea5e9',
+          'fill-opacity': 0.12
+        }
+      });
+      style.layers.push({
+        id: 'radius-circle-line',
+        type: 'line',
+        source: 'radius-circle-source',
+        paint: {
+          'line-color': '#0ea5e9',
+          'line-width': 2.5,
+          'line-dasharray': [3, 2],
+          'line-opacity': 0.85
         }
       });
     }
@@ -3094,6 +3479,9 @@ export default function AppMap() {
     layers.seabusRoutes, 
     layers.bcferriesRoutes, 
     layers.parkingMeters, 
+    parkingMeterFilter.maxRate,
+    parkingMeterFilter.creditCardOnly,
+    radiusCircleGeoJSON,
     layers.accessibleParking, 
     layers.motorcycleParking, 
     layers.evCharging, 
@@ -3157,6 +3545,7 @@ export default function AppMap() {
         onLoad={() => updateScale()}
         onMouseMove={handleMapMouseMove}
         onMouseLeave={handleMapMouseLeave}
+        onContextMenu={handleMapContextMenu}
         onSourceData={handleMapSourceData}
         onIdle={handleMapIdle}
         interactiveLayerIds={[
@@ -3164,6 +3553,7 @@ export default function AppMap() {
           'skytrain-stops-layer', 
           'seabus-stops-layer',
           'bikeways-layer',
+          'parking-meters-cluster-layer',
           'parking-meters-layer',
           'parking-meters-symbol-layer',
           'accessible-parking-layer',
@@ -3226,13 +3616,16 @@ export default function AppMap() {
           'one-way-streets-layer',
           'snow-removal-routes-layer',
           'traffic-speed-limits-layer',
+          'bike-racks-cluster-layer',
           'bike-racks-layer',
           'bike-racks-symbol-layer',
           'postal-code-fsa-fill',
           'wireless-facilities-layer',
           'wireless-facilities-symbol-layer',
+          'traffic-crosswalks-cluster-layer',
           'traffic-crosswalks-layer',
           'traffic-crosswalks-symbol-layer',
+          'litter-containers-cluster-layer',
           'litter-containers-layer',
           'litter-containers-symbol-layer',
           'water-distribution-mains-layer',
@@ -3268,6 +3661,35 @@ export default function AppMap() {
           const layerId = feature.layer.id;
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const coords = (feature.geometry as any).coordinates;
+
+          // 處理高密度聚類點位點擊 (點擊數字圓圈平滑放大至街區層級展開)
+          if (feature.properties?.cluster || layerId.includes('-cluster-')) {
+            const clusterId = feature.properties?.cluster_id;
+            const sourceName = feature.layer.source;
+            const map = mapRef.current?.getMap();
+            if (map && clusterId !== undefined && sourceName) {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const src: any = map.getSource(sourceName);
+              if (src && typeof src.getClusterExpansionZoom === 'function') {
+                src.getClusterExpansionZoom(clusterId, (err: any, zoom: number) => {
+                  if (!err && zoom !== undefined) {
+                    map.easeTo({
+                      center: coords,
+                      zoom: Math.min(zoom, 18),
+                      duration: 400
+                    });
+                  }
+                });
+                return;
+              }
+            }
+            map?.easeTo({
+              center: coords,
+              zoom: (map.getZoom() || 12) + 2,
+              duration: 400
+            });
+            return;
+          }
 
           if (layerId === 'skytrain-stops-layer') {
             setSelectedFacility(null);
@@ -3636,6 +4058,22 @@ export default function AppMap() {
                 <span className="text-base leading-none">🏠</span>
               </div>
               <div className="w-2 h-2 bg-indigo-600 rotate-45 -mt-1 border-r border-b border-white shadow-sm"></div>
+            </div>
+          </Marker>
+        )}
+
+        {/* 周邊探索中心點標記 (Radius Exploration Center Marker) */}
+        {radiusExploration?.active && (
+          <Marker 
+            longitude={radiusExploration.lon} 
+            latitude={radiusExploration.lat} 
+            anchor="center"
+          >
+            <div className="relative flex items-center justify-center pointer-events-none select-none">
+              <span className="animate-ping absolute inline-flex h-10 w-10 rounded-full bg-cyan-400 opacity-60"></span>
+              <div className="relative inline-flex rounded-full h-7 w-7 bg-cyan-500 border-2 border-white shadow-2xl items-center justify-center text-xs text-white">
+                🎯
+              </div>
             </div>
           </Marker>
         )}
@@ -7324,14 +7762,40 @@ export default function AppMap() {
         </div>
       </div>
 
-      {/* 滑鼠即時經緯度座標顯示 (Cursor Latitude & Longitude HUD - 位於地圖下方中央) */}
+      {/* 底部座標與地理資訊列升級 (Bottom Coordinate, Neighbourhood & Zoom Level HUD) */}
       {cursorCoords && (
-        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 pointer-events-none select-none flex items-center gap-2 px-3 py-1 bg-[#10131a]/90 backdrop-blur-md rounded-full border border-[#2a2f3d]/90 shadow-lg text-[11px] font-mono text-gray-200 transition-opacity duration-150">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span className="tracking-tight text-gray-300">
+        <button
+          onClick={handleCopyCoordinates}
+          className="group absolute bottom-3 left-1/2 -translate-x-1/2 z-20 pointer-events-auto select-none flex items-center gap-2.5 px-3.5 py-1.5 bg-[#10131a]/95 backdrop-blur-md rounded-full border border-[#2a2f3d] hover:border-cyan-500/70 hover:bg-[#141924] shadow-xl text-[11px] font-mono text-gray-200 transition-all duration-150 cursor-pointer"
+          title="點擊一鍵複製經緯度座標"
+        >
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+
+          {cursorNeighbourhood && (
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-sans font-semibold bg-cyan-950/70 text-cyan-300 border border-cyan-800/60 shrink-0">
+              {cursorNeighbourhood}
+            </span>
+          )}
+
+          <span className="tracking-tight text-gray-200 font-medium">
             {Math.abs(cursorCoords.lat).toFixed(4)}° {cursorCoords.lat >= 0 ? 'N' : 'S'}, {Math.abs(cursorCoords.lng).toFixed(4)}° {cursorCoords.lng >= 0 ? 'E' : 'W'}
           </span>
-        </div>
+
+          <span className="text-[10px] text-gray-400 px-1.5 py-0.5 rounded bg-black/40 border border-white/5 font-sans">
+            Zoom {currentZoom.toFixed(1)}
+          </span>
+
+          <div className="flex items-center gap-1 text-[10px] ml-0.5 text-gray-400 group-hover:text-cyan-300 transition-colors">
+            {copiedCoords ? (
+              <span className="flex items-center gap-1 text-emerald-400 font-sans font-semibold animate-in fade-in">
+                <Check className="w-3.5 h-3.5" />
+                <span>已複製</span>
+              </span>
+            ) : (
+              <Copy className="w-3.5 h-3.5 transition-transform group-hover:scale-110" />
+            )}
+          </div>
+        </button>
       )}
 
       {/* 罪案地區圖例卡片 (Crime Rate Legend) */}
@@ -7715,9 +8179,231 @@ export default function AppMap() {
         );
       })()}
 
-      {/* 點選天車站點時展示之路線班次面板 */}
+      {/* 停車收費錶動態篩選器 (Parking Meter Filter Popup) */}
+      {layers.parkingMeters && (
+        <div className="fixed top-[72px] left-4 md:left-[256px] z-30 w-[300px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-amber-500/40 select-none animate-in fade-in duration-200">
+          <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
+            <div className="flex items-center gap-2">
+              <span className="p-1 rounded bg-amber-500/20 text-amber-400">
+                <SlidersHorizontal className="w-3.5 h-3.5" />
+              </span>
+              <span className="font-bold text-xs text-white">停車收費錶篩選</span>
+            </div>
+            <button
+              onClick={() => setParkingMeterFilterOpen(!parkingMeterFilterOpen)}
+              className="text-gray-400 hover:text-white p-0.5 rounded hover:bg-[#252a38] transition-colors"
+            >
+              {parkingMeterFilterOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            </button>
+          </div>
+
+          {parkingMeterFilterOpen ? (
+            <div className="flex flex-col gap-2.5 text-xs">
+              <div className="flex items-center justify-between">
+                <span className="text-gray-300">每小時最高費率:</span>
+                <span className="font-bold text-amber-400 font-mono">
+                  {parkingMeterFilter.maxRate >= 20 ? '不限費率' : `≤ $${parkingMeterFilter.maxRate}/hr`}
+                </span>
+              </div>
+
+              {/* 費率滑桿 */}
+              <input
+                type="range"
+                min="1"
+                max="10"
+                step="1"
+                value={parkingMeterFilter.maxRate >= 20 ? 10 : parkingMeterFilter.maxRate}
+                onChange={(e) => {
+                  const val = Number(e.target.value);
+                  setParkingMeterFilter({ maxRate: val >= 10 ? 20 : val });
+                }}
+                className="w-full accent-amber-500 cursor-pointer h-1.5 bg-[#252a38] rounded-lg"
+              />
+
+              {/* 快捷標籤 */}
+              <div className="grid grid-cols-4 gap-1">
+                {[
+                  { label: '全部', val: 20 },
+                  { label: '≤$2', val: 2 },
+                  { label: '≤$3', val: 3 },
+                  { label: '≤$5', val: 5 }
+                ].map((chip) => (
+                  <button
+                    key={chip.label}
+                    onClick={() => setParkingMeterFilter({ maxRate: chip.val })}
+                    className={`py-1 text-[11px] rounded font-medium transition-all ${
+                      (chip.val === 20 && parkingMeterFilter.maxRate >= 20) || (chip.val === parkingMeterFilter.maxRate)
+                        ? 'bg-amber-500 text-gray-950 font-bold shadow-sm'
+                        : 'bg-[#1e2330] text-gray-300 hover:bg-[#282f40]'
+                    }`}
+                  >
+                    {chip.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* 信用卡篩選 */}
+              <label className="flex items-center gap-2 pt-1 border-t border-[#262b38] text-[11px] text-gray-300 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={parkingMeterFilter.creditCardOnly}
+                  onChange={(e) => setParkingMeterFilter({ creditCardOnly: e.target.checked })}
+                  className="rounded border-gray-600 accent-amber-500"
+                />
+                <span>只顯示支援信用卡感應付款</span>
+              </label>
+
+              <div className="text-[10px] text-gray-400 flex items-center justify-between">
+                <span>地圖即時過濾渲染</span>
+                <span className="text-amber-400 font-mono">即時生效</span>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center justify-between text-[11px] text-gray-300">
+              <span>目前篩選: <span className="text-amber-400 font-bold">{parkingMeterFilter.maxRate >= 20 ? '不限' : `≤ $${parkingMeterFilter.maxRate}/hr`}</span></span>
+              <button 
+                onClick={() => setParkingMeterFilterOpen(true)}
+                className="text-[10px] text-amber-400 hover:underline"
+              >
+                展開
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* 周邊半徑探索面板 (Nearby Radius Exploration Floating Card) */}
+      {radiusExploration?.active && (
+        <div className="fixed top-[72px] left-4 md:left-[256px] z-30 w-[330px] max-w-[calc(100vw-32px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-cyan-500/50 flex flex-col max-h-[calc(100vh-100px)] animate-in fade-in duration-200 select-none">
+          <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-[#262b38] shrink-0">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 shrink-0">
+                <Compass className="w-4 h-4 animate-spin-slow" />
+              </div>
+              <div>
+                <h4 className="font-bold text-white text-xs">周邊半徑探索 (Nearby)</h4>
+                <div className="text-[10px] text-gray-400 font-mono truncate max-w-[190px]">
+                  {radiusExploration.lat.toFixed(4)}, {radiusExploration.lon.toFixed(4)}
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={() => setRadiusExploration(null)}
+              className="text-gray-400 hover:text-white p-1 rounded hover:bg-[#252a38] transition-colors shrink-0"
+              title="關閉探索"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* 半徑切換器 */}
+          <div className="flex items-center gap-1.5 pb-2.5 mb-2.5 border-b border-[#262b38] shrink-0">
+            {[
+              { label: '300m (步行3分)', radius: 300 },
+              { label: '500m (步行5分)', radius: 500 },
+              { label: '1000m (步行12分)', radius: 1000 }
+            ].map(r => (
+              <button
+                key={r.radius}
+                onClick={() => setRadiusExploration({ ...radiusExploration, radiusM: r.radius })}
+                className={`flex-1 py-1 px-1.5 text-[10.5px] rounded font-medium transition-all ${
+                  (radiusExploration.radiusM || 500) === r.radius
+                    ? 'bg-cyan-500 text-gray-950 font-bold shadow-sm'
+                    : 'bg-[#1e2330] text-gray-300 hover:bg-[#282f40]'
+                }`}
+              >
+                {r.label}
+              </button>
+            ))}
+          </div>
+
+          {/* 設施清單 Header */}
+          <div className="flex items-center justify-between text-[11px] text-gray-400 pb-2 mb-2 shrink-0">
+            <span>已開啟圖層設施清單</span>
+            <span className="text-cyan-400 font-mono font-bold">
+              {loadingNearby ? '搜尋中...' : `共 ${nearbyFacilities.length} 筆`}
+            </span>
+          </div>
+
+          {/* 設施清單內容 */}
+          <div className="overflow-y-auto flex-1 flex flex-col gap-1.5 pr-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
+            {loadingNearby ? (
+              <div className="py-8 flex flex-col items-center justify-center gap-2 text-xs text-gray-400">
+                <div className="w-4 h-4 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+                <span>搜尋半徑內設施中...</span>
+              </div>
+            ) : nearbyFacilities.length > 0 ? (
+              nearbyFacilities.map((fac, idx) => (
+                <div
+                  key={`nearby-${idx}`}
+                  onClick={() => {
+                    const map = mapRef.current?.getMap();
+                    map?.flyTo({ center: [fac.lon, fac.lat], zoom: 16.5, duration: 400 });
+                    if (fac.facility_type === 'skytrain_stations') {
+                      fetchSkytrainStationSchedule(String(fac.id), fac.name, fac.lon, fac.lat);
+                    } else {
+                      setSelectedFacility({
+                        id: fac.id,
+                        facility_type: fac.facility_type,
+                        name: fac.name,
+                        local_area: fac.local_area,
+                        lon: fac.lon,
+                        lat: fac.lat,
+                        properties: fac.properties || {}
+                      });
+                    }
+                  }}
+                  className="p-2 rounded-lg bg-[#10131a] hover:bg-[#1c2230] border border-[#232836] hover:border-cyan-500/50 cursor-pointer transition-all flex items-center justify-between gap-2"
+                >
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="text-sm shrink-0">
+                      {fac.facility_type === 'aed' ? '⚡' :
+                       fac.facility_type === 'public_washrooms' ? '🚻' :
+                       fac.facility_type === 'bike_racks' ? '🚲' :
+                       fac.facility_type === 'shared_bikes' ? '🚲' :
+                       fac.facility_type === 'litter_containers' ? '🗑️' :
+                       fac.facility_type === 'parking_meters' ? '🅿️' :
+                       fac.facility_type === 'skytrain_stations' ? '🚉' :
+                       fac.facility_type === 'bus_stops' ? '🚏' :
+                       fac.facility_type === 'food_banks' ? '🥫' :
+                       fac.facility_type === 'drinking_fountains' ? '🚰' :
+                       fac.facility_type === 'hospitals' ? '🏥' :
+                       fac.facility_type === 'schools' ? '🏫' :
+                       fac.facility_type === 'libraries' ? '📚' :
+                       fac.facility_type === 'traffic_crosswalks' ? '🚶' : '📍'}
+                    </span>
+                    <div className="min-w-0">
+                      <div className="font-bold text-xs text-white truncate max-w-[170px]">
+                        {fac.name}
+                      </div>
+                      <div className="text-[10px] text-gray-400 capitalize">
+                        {fac.category || fac.facility_type.replace(/_/g, ' ')}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <div className="text-xs font-bold text-cyan-400 font-mono">
+                      {fac.distance_meters}m
+                    </div>
+                    <div className="text-[9.5px] text-gray-400">
+                      約 {fac.walking_minutes} 分鐘
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="py-6 text-center text-xs text-gray-400 bg-[#10131a] rounded-lg border border-[#232836] p-3 flex flex-col gap-1">
+                <span>範圍內未發現已開啟的設施</span>
+                <span className="text-[10.5px] text-gray-400">請嘗試開啟左側圖層（如單車、洗手間、AED等）或擴大搜尋半徑</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* 點選天車站點時展示之路線班次與綜合資訊面板 */}
       {selectedSkytrainStation && (
-        <div className="fixed top-[72px] right-4 z-40 w-[340px] max-w-[calc(100vw-32px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-200 select-none">
+        <div className="fixed top-[72px] right-4 z-40 w-[360px] max-w-[calc(100vw-32px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-200 select-none">
           {/* Header */}
           <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-[#262b38] shrink-0">
             <div className="flex items-start gap-2.5 min-w-0">
@@ -7741,87 +8427,291 @@ export default function AppMap() {
                       {ln}
                     </span>
                   ))}
+                  <span className="text-[9.5px] font-semibold px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                    Zone {selectedSkytrainStation.fare_zone || 1}
+                  </span>
                   <span className="text-[10px] text-gray-400 font-mono">#{selectedSkytrainStation.stop_id}</span>
                 </div>
               </div>
             </div>
+            
+            <div className="flex items-center gap-1 shrink-0">
+              {/* Google 導航按鈕 (跟隨其他圖層一致) */}
+              <a
+                href={`https://www.google.com/maps/dir/?api=1&destination=${selectedSkytrainStation.lat},${selectedSkytrainStation.lon}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-white p-1.5 rounded-lg hover:bg-blue-500/20 hover:text-blue-400 transition-colors"
+                title="Google 導航至此車站"
+              >
+                <Navigation className="w-4 h-4 text-blue-400" />
+              </a>
+
+              <button
+                onClick={() => setSelectedSkytrainStation(null)}
+                className="text-gray-400 hover:text-white p-1.5 rounded-lg hover:bg-[#252a38] transition-colors"
+                title="關閉"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* 導覽頁籤 (Tabs) */}
+          <div className="flex border-b border-[#262b38] mb-2.5 shrink-0 text-xs">
             <button
-              onClick={() => setSelectedSkytrainStation(null)}
-              className="text-gray-400 hover:text-white p-1 rounded hover:bg-[#252a38] transition-colors shrink-0"
-              title="關閉"
+              onClick={() => setSkytrainDetailTab('departures')}
+              className={`flex-1 py-1.5 text-center font-medium border-b-2 transition-all ${
+                skytrainDetailTab === 'departures'
+                  ? 'border-blue-400 text-blue-400 font-bold'
+                  : 'border-transparent text-gray-400 hover:text-gray-200'
+              }`}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+              即時班次
+            </button>
+            <button
+              onClick={() => setSkytrainDetailTab('schedules')}
+              className={`flex-1 py-1.5 text-center font-medium border-b-2 transition-all ${
+                skytrainDetailTab === 'schedules'
+                  ? 'border-blue-400 text-blue-400 font-bold'
+                  : 'border-transparent text-gray-400 hover:text-gray-200'
+              }`}
+            >
+              首末班與頻率
+            </button>
+            <button
+              onClick={() => setSkytrainDetailTab('facilities')}
+              className={`flex-1 py-1.5 text-center font-medium border-b-2 transition-all ${
+                skytrainDetailTab === 'facilities'
+                  ? 'border-blue-400 text-blue-400 font-bold'
+                  : 'border-transparent text-gray-400 hover:text-gray-200'
+              }`}
+            >
+              設施與地圖
             </button>
           </div>
 
-          {/* Subheader info */}
-          <div className="flex items-center justify-between text-[11px] text-gray-400 pb-2 mb-2 border-b border-[#262b38]/60 shrink-0">
-            <span className="flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
-              <span>推算班次時刻</span>
-            </span>
-            <span className="font-mono text-[10px] text-gray-400">
-              更新於 {formatTimePreference(selectedSkytrainStation.updated_at, timeFormat)}
-            </span>
-          </div>
-
-          {/* Schedules Content */}
-          <div className="overflow-y-auto flex-1 flex flex-col gap-2.5 pr-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
-            {loadingStationSchedule ? (
-              <div className="py-8 flex flex-col items-center justify-center gap-2 text-xs text-gray-400">
-                <div className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
-                <span>載入天車站點班次中...</span>
+          {/* Tab 1: 即時推算班次 */}
+          {skytrainDetailTab === 'departures' && (
+            <>
+              <div className="flex items-center justify-between text-[11px] text-gray-400 pb-2 mb-2 border-b border-[#262b38]/60 shrink-0">
+                <span className="flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
+                  <span>即時推算時刻</span>
+                </span>
+                <span className="font-mono text-[10px] text-gray-400">
+                  更新於 {formatTimePreference(selectedSkytrainStation.updated_at, timeFormat)}
+                </span>
               </div>
-            ) : selectedSkytrainStation.schedules && selectedSkytrainStation.schedules.length > 0 ? (
-              selectedSkytrainStation.schedules.map((group, gIdx) => (
-                <div 
-                  key={`sched-grp-${gIdx}`}
-                  className="bg-[#10131a] rounded-lg border border-[#232836] p-2.5 flex flex-col gap-2"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1.5 min-w-0">
-                      <span 
-                        className="w-2.5 h-2.5 rounded-full shrink-0"
-                        style={{ backgroundColor: group.color }}
-                      ></span>
-                      <span className="font-bold text-xs text-white truncate">
-                        {group.line_name}
-                      </span>
-                      <span className="text-[11px] text-gray-300 truncate">
-                        往 {group.destination}
-                      </span>
-                    </div>
-                  </div>
 
-                  <div className="grid grid-cols-2 gap-1.5">
-                    {group.departures.map((dep, dIdx) => (
-                      <div 
-                        key={`dep-${dIdx}`}
-                        className={`flex flex-col px-2 py-1.5 rounded border ${
-                          dIdx === 0 
-                            ? 'bg-blue-950/40 border-blue-500/40 text-blue-200' 
-                            : 'bg-[#181d28] border-[#292f3f] text-gray-300'
-                        }`}
-                      >
-                        <div className="flex items-baseline justify-between">
-                          <span className={`text-[12px] font-bold ${dIdx === 0 ? 'text-amber-400' : 'text-gray-100'}`}>
-                            {dep.formatted}
+              <div className="overflow-y-auto flex-1 flex flex-col gap-2.5 pr-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
+                {loadingStationSchedule ? (
+                  <div className="py-8 flex flex-col items-center justify-center gap-2 text-xs text-gray-400">
+                    <div className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
+                    <span>載入天車站點班次中...</span>
+                  </div>
+                ) : selectedSkytrainStation.schedules && selectedSkytrainStation.schedules.length > 0 ? (
+                  selectedSkytrainStation.schedules.map((group, gIdx) => (
+                    <div 
+                      key={`sched-grp-${gIdx}`}
+                      className="bg-[#10131a] rounded-lg border border-[#232836] p-2.5 flex flex-col gap-2"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <span 
+                            className="w-2.5 h-2.5 rounded-full shrink-0"
+                            style={{ backgroundColor: group.color }}
+                          ></span>
+                          <span className="font-bold text-xs text-white truncate">
+                            {group.line_name}
                           </span>
-                          <span className="text-[10px] text-gray-400 font-mono">
-                            {formatTimePreference(dep.time, timeFormat)}
+                          <span className="text-[11px] text-gray-300 truncate">
+                            往 {group.destination}
                           </span>
                         </div>
                       </div>
-                    ))}
+
+                      <div className="grid grid-cols-2 gap-1.5">
+                        {group.departures.map((dep, dIdx) => (
+                          <div 
+                            key={`dep-${dIdx}`}
+                            className={`flex flex-col px-2 py-1.5 rounded border ${
+                              dIdx === 0 
+                                ? 'bg-blue-950/40 border-blue-500/40 text-blue-200' 
+                                : 'bg-[#181d28] border-[#292f3f] text-gray-300'
+                            }`}
+                          >
+                            <div className="flex items-baseline justify-between">
+                              <span className={`text-[12px] font-bold ${dIdx === 0 ? 'text-amber-400' : 'text-gray-100'}`}>
+                                {dep.formatted}
+                              </span>
+                              <span className="text-[10px] text-gray-400 font-mono">
+                                {formatTimePreference(dep.time, timeFormat)}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="py-6 text-center text-xs text-gray-400 bg-[#10131a] rounded-lg border border-[#232836]">
+                    目前暫無推算班次資料
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+
+          {/* Tab 2: 首尾班車與發車頻率 */}
+          {skytrainDetailTab === 'schedules' && (
+            <div className="overflow-y-auto flex-1 flex flex-col gap-3 pr-1 text-xs [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
+              {/* 首末班車時刻卡片 */}
+              <div className="bg-[#10131a] rounded-lg border border-[#232836] p-2.5 flex flex-col gap-2">
+                <div className="flex items-center gap-1.5 text-blue-400 font-bold">
+                  <Clock className="w-3.5 h-3.5" />
+                  <span>首班車 / 尾班車時刻 (First & Last Trains)</span>
+                </div>
+
+                <div className="grid grid-cols-3 gap-1.5 text-[11px]">
+                  <div className="bg-[#181d28] p-2 rounded border border-[#292f3f] flex flex-col gap-1">
+                    <span className="text-gray-400 font-medium">平日 (Mon-Fri)</span>
+                    <div className="flex justify-between items-center text-[10.5px]">
+                      <span className="text-gray-400">首班</span>
+                      <span className="font-mono text-emerald-400 font-bold">{selectedSkytrainStation.first_last?.weekday?.first || '05:08'}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-[10.5px]">
+                      <span className="text-gray-400">尾班</span>
+                      <span className="font-mono text-amber-400 font-bold">{selectedSkytrainStation.first_last?.weekday?.last || '01:15'}</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-[#181d28] p-2 rounded border border-[#292f3f] flex flex-col gap-1">
+                    <span className="text-gray-400 font-medium">週六 (Sat)</span>
+                    <div className="flex justify-between items-center text-[10.5px]">
+                      <span className="text-gray-400">首班</span>
+                      <span className="font-mono text-emerald-400 font-bold">{selectedSkytrainStation.first_last?.saturday?.first || '06:08'}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-[10.5px]">
+                      <span className="text-gray-400">尾班</span>
+                      <span className="font-mono text-amber-400 font-bold">{selectedSkytrainStation.first_last?.saturday?.last || '01:15'}</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-[#181d28] p-2 rounded border border-[#292f3f] flex flex-col gap-1">
+                    <span className="text-gray-400 font-medium">週日/假期 (Sun/Hol)</span>
+                    <div className="flex justify-between items-center text-[10.5px]">
+                      <span className="text-gray-400">首班</span>
+                      <span className="font-mono text-emerald-400 font-bold">{selectedSkytrainStation.first_last?.sunday_holiday?.first || '07:08'}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-[10.5px]">
+                      <span className="text-gray-400">尾班</span>
+                      <span className="font-mono text-amber-400 font-bold">{selectedSkytrainStation.first_last?.sunday_holiday?.last || '00:15'}</span>
+                    </div>
                   </div>
                 </div>
-              ))
-            ) : (
-              <div className="py-6 text-center text-xs text-gray-400 bg-[#10131a] rounded-lg border border-[#232836]">
-                目前暫無推算班次資料
               </div>
-            )}
-          </div>
+
+              {/* 列車發車頻率 (Frequencies) */}
+              <div className="bg-[#10131a] rounded-lg border border-[#232836] p-2.5 flex flex-col gap-2">
+                <div className="flex items-center gap-1.5 text-blue-400 font-bold">
+                  <Train className="w-3.5 h-3.5" />
+                  <span>列車發車班距頻率 (Train Frequencies)</span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-1.5 text-[11px]">
+                  <div className="bg-[#181d28] p-2 rounded border border-[#292f3f] flex items-center justify-between">
+                    <span className="text-gray-400">尖峰時段 (Peak)</span>
+                    <span className="font-bold text-white font-mono">{selectedSkytrainStation.frequencies?.peak || '2 - 3.5 分鐘'}</span>
+                  </div>
+                  <div className="bg-[#181d28] p-2 rounded border border-[#292f3f] flex items-center justify-between">
+                    <span className="text-gray-400">日間離峰 (Midday)</span>
+                    <span className="font-bold text-white font-mono">{selectedSkytrainStation.frequencies?.midday || '3 - 6 分鐘'}</span>
+                  </div>
+                  <div className="bg-[#181d28] p-2 rounded border border-[#292f3f] flex items-center justify-between">
+                    <span className="text-gray-400">晚間時段 (Evening)</span>
+                    <span className="font-bold text-white font-mono">{selectedSkytrainStation.frequencies?.evening || '6 - 8 分鐘'}</span>
+                  </div>
+                  <div className="bg-[#181d28] p-2 rounded border border-[#292f3f] flex items-center justify-between">
+                    <span className="text-gray-400">深夜時段 (Late Night)</span>
+                    <span className="font-bold text-white font-mono">{selectedSkytrainStation.frequencies?.late_night || '10 - 15 分鐘'}</span>
+                  </div>
+                </div>
+                <div className="text-[10px] text-gray-400 text-center">
+                  * 實際班距視 TransLink 營運調度與尖峰客流有所變動
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Tab 3: 車站出入口地圖與設施指引 */}
+          {skytrainDetailTab === 'facilities' && (
+            <div className="overflow-y-auto flex-1 flex flex-col gap-2.5 pr-1 text-xs [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
+              {/* Station Entrance Map Link */}
+              <a
+                href={selectedSkytrainStation.entrance_map_url || "https://www.translink.ca/schedules-and-maps/skytrain"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between p-2.5 rounded-lg bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/40 text-blue-300 hover:text-white text-xs font-medium transition-all group shadow-sm"
+              >
+                <div className="flex items-center gap-2">
+                  <ExternalLink className="w-4 h-4 text-blue-400 group-hover:scale-110 transition-transform" />
+                  <span>TransLink 官方出入口地圖 (Station Map)</span>
+                </div>
+                <span className="text-[10px] bg-blue-500/30 px-1.5 py-0.5 rounded font-mono">官網指引</span>
+              </a>
+
+              {/* 車站設施清單 */}
+              <div className="bg-[#10131a] rounded-lg border border-[#232836] p-2.5 flex flex-col gap-2">
+                <span className="font-bold text-white text-xs">車站服務與設施 (Facilities)</span>
+
+                <div className="flex flex-col gap-1.5 text-[11px]">
+                  <div className="flex items-center justify-between py-1 border-b border-[#262b38]/60">
+                    <span className="text-gray-400 flex items-center gap-1.5">
+                      <span>♿</span> 無障礙設施 (Accessibility)
+                    </span>
+                    <span className="text-emerald-400 font-medium">全線配置升降電梯 / 盲道</span>
+                  </div>
+
+                  <div className="flex items-center justify-between py-1 border-b border-[#262b38]/60">
+                    <span className="text-gray-400 flex items-center gap-1.5">
+                      <Bike className="w-3.5 h-3.5 text-teal-400" /> 單車停放庫 (Bike Parkade)
+                    </span>
+                    <span className={selectedSkytrainStation.facilities?.bike_parkade ? 'text-teal-400 font-medium' : 'text-gray-400'}>
+                      {selectedSkytrainStation.facilities?.bike_parkade ? '提供室內單車庫' : '設有室外單車架'}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between py-1 border-b border-[#262b38]/60">
+                    <span className="text-gray-400 flex items-center gap-1.5">
+                      <Car className="w-3.5 h-3.5 text-amber-400" /> 轉乘停車場 (Park & Ride)
+                    </span>
+                    <span className={selectedSkytrainStation.facilities?.park_and_ride ? 'text-amber-400 font-medium' : 'text-gray-400'}>
+                      {selectedSkytrainStation.facilities?.park_and_ride ? '設有轉乘停車場' : '無專用轉乘停車場'}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between py-1 border-b border-[#262b38]/60">
+                    <span className="text-gray-400 flex items-center gap-1.5">
+                      <span>💳</span> 票價與支付方式
+                    </span>
+                    <span className="text-blue-300">Compass / 信用卡感應</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 票價分區小知識 */}
+              <div className="bg-blue-950/20 border border-blue-500/25 p-2 rounded-lg text-[10.5px] text-blue-200/90 flex flex-col gap-1">
+                <span className="font-bold flex items-center gap-1">
+                  <Info className="w-3.5 h-3.5 text-blue-400" />
+                  大溫 TransLink 跨區票價提示
+                </span>
+                <span>
+                  本站屬於 <strong className="text-blue-300">Zone {selectedSkytrainStation.fare_zone || 1}</strong>。平日晚上 6:30 之後以及週末假日全天，跨全網各區均統一按 1 區票價收費！
+                </span>
+              </div>
+            </div>
+          )}
         </div>
       )}
 

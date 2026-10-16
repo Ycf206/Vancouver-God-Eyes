@@ -445,13 +445,125 @@ def get_skytrain_station_schedule(stop_id: str):
 
         group['departures'] = group['departures'][:4]
 
+    station_name = st_info.get('name') or ''
+    st_lines = st_info.get('lines', [])
+    meta = _get_station_metadata(station_name, st_lines, str(st_info.get('stop_id', '')))
+
     return {
         'stop_id': st_info.get('stop_id'),
-        'name': st_info.get('name'),
+        'name': station_name,
         'raw_name': st_info.get('raw_name'),
         'lat': st_info.get('lat'),
         'lon': st_info.get('lon'),
-        'lines': st_info.get('lines', []),
+        'lines': st_lines,
         'schedules': list(departures_by_dest.values()),
+        'first_last': meta.get('first_last', {}),
+        'frequencies': meta.get('frequencies', {}),
+        'entrance_map_url': meta.get('entrance_map_url', 'https://www.translink.ca/schedules-and-maps/skytrain'),
+        'fare_zone': meta.get('fare_zone', 'Zone 1'),
+        'has_park_and_ride': meta.get('has_park_and_ride', False),
+        'has_bike_parkade': meta.get('has_bike_parkade', False),
+        'is_accessible': meta.get('is_accessible', True),
         'updated_at': now_van.strftime("%H:%M:%S")
+    }
+
+def _get_station_metadata(st_name: str, lines: list, stop_id: str):
+    name_clean = st_name.replace(" Station", "").strip()
+    lower = name_clean.lower()
+
+    # 1. Fare Zone determination
+    zone3_keywords = ["king george", "surrey", "gateway", "scott road", "coquitlam", "lafarge", "lincoln", "inlet", "moody", "burquitlam"]
+    zone2_keywords = ["patterson", "metrotown", "royal oak", "edmonds", "22nd street", "new westminster", "columbia", "sapperton", "braid", "lougheed", "production way", "lake city", "sperling", "holdom", "brentwood", "gilmore", "bridgeport", "aberdeen", "lansdowne", "richmond-brighouse", "templeton", "sea island", "yvr-airport"]
+
+    if any(k in lower for k in zone3_keywords):
+        zone_label = "Zone 3 (大溫外環收費區)"
+    elif any(k in lower for k in zone2_keywords):
+        is_yvr = any(k in lower for k in ["yvr", "templeton", "sea island"])
+        zone_label = "Zone 2 (大溫二環收費區)" + (" · 含 YVR 機場附加費" if is_yvr else "")
+    else:
+        zone_label = "Zone 1 (溫哥華市區核心收費區)"
+
+    # 2. Park & Ride
+    park_and_ride_stations = ["bridgeport", "scott road", "coquitlam central", "lafarge lake-douglas", "moody centre", "inlet centre", "south burnaby", "pitt meadows"]
+    has_park_and_ride = any(k in lower for k in park_and_ride_stations)
+
+    # 3. Bike Parkade (室內安全單車停放庫)
+    bike_parkade_stations = ["main street-science world", "commercial-broadway", "joyce-collingwood", "metrotown", "bridgeport", "king george", "burquitlam", "coquitlam central", "lafarge lake-douglas", "port moody", "moody centre"]
+    has_bike_parkade = any(k in lower for k in bike_parkade_stations)
+
+    # 4. First and Last Trains schedule estimate (TransLink standard timetable)
+    is_canada_line = any("Canada" in l for l in lines) or any(k in lower for k in ["yvr", "richmond", "bridgeport", "oakridge", "langara", "broadway-city hall", "olympic village", "yaletown", "vancouver city centre", "marine drive"])
+
+    if is_canada_line:
+        first_last = {
+            "weekday": {
+                "first_train": "04:48 (往 YVR 機場) / 05:02 (往列治文)",
+                "last_train": "01:05 (往 Waterfront) / 01:15"
+            },
+            "saturday": {
+                "first_train": "05:05 (往 YVR 機場) / 05:32",
+                "last_train": "01:05 (往 Waterfront) / 01:15"
+            },
+            "sunday_holiday": {
+                "first_train": "05:05 (往 YVR 機場) / 05:32",
+                "last_train": "00:05 (往 Waterfront) / 00:15"
+            }
+        }
+        frequencies = {
+            "peak": "每 3 - 3.5 分鐘 (分支每 6 分鐘)",
+            "midday": "每 5 - 6 分鐘 (分支每 10 - 12 分鐘)",
+            "evening": "每 7.5 - 10 分鐘 (分支每 15 分鐘)",
+            "late_night": "每 12 - 20 分鐘"
+        }
+    elif any("Millennium" in l for l in lines) and not any("Expo" in l for l in lines):
+        first_last = {
+            "weekday": {
+                "first_train": "05:05 (往 VCC-Clark) / 05:30 (往高貴林)",
+                "last_train": "01:22 (往 Lafarge Lake) / 00:59"
+            },
+            "saturday": {
+                "first_train": "06:05 (往 VCC-Clark) / 06:30",
+                "last_train": "01:22 (往 Lafarge Lake) / 00:59"
+            },
+            "sunday_holiday": {
+                "first_train": "07:05 (往 VCC-Clark) / 07:30",
+                "last_train": "00:22 (往 Lafarge Lake) / 23:59"
+            }
+        }
+        frequencies = {
+            "peak": "每 3 - 4 分鐘",
+            "midday": "每 5 - 6 分鐘",
+            "evening": "每 6 - 8 分鐘",
+            "late_night": "每 10 - 12 分鐘"
+        }
+    else:
+        first_last = {
+            "weekday": {
+                "first_train": "05:32 (Waterfront 往素里) / 05:38 (往喬治王)",
+                "last_train": "01:16 (往喬治王) / 01:11 (往本拿比)"
+            },
+            "saturday": {
+                "first_train": "06:48 (往素里) / 06:38",
+                "last_train": "01:16 (往喬治王) / 01:11"
+            },
+            "sunday_holiday": {
+                "first_train": "07:48 (往素里) / 07:38",
+                "last_train": "00:16 (往喬治王) / 00:11"
+            }
+        }
+        frequencies = {
+            "peak": "每 2 - 3 分鐘 (兩大分支每 4 - 5 分鐘)",
+            "midday": "每 3 - 5 分鐘 (分支每 6 - 8 分鐘)",
+            "evening": "每 6 - 8 分鐘",
+            "late_night": "每 10 - 15 分鐘"
+        }
+
+    return {
+        "fare_zone": zone_label,
+        "first_last": first_last,
+        "frequencies": frequencies,
+        "entrance_map_url": "https://www.translink.ca/schedules-and-maps/skytrain",
+        "has_park_and_ride": has_park_and_ride,
+        "has_bike_parkade": has_bike_parkade,
+        "is_accessible": True
     }

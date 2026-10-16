@@ -7,9 +7,9 @@ import {
   CircleDollarSign, Accessibility, Bike, Zap, Scooter, Camera, Siren, 
   Flame, Building2, Hospital, ChevronLeft, Trees, Footprints, Flower2, 
   Droplets, Bath, Leaf, Landmark, GraduationCap, BookOpen, UtensilsCrossed, Bed, Heart,
-  Plane, PlaneTakeoff, Calendar, Car, ShieldAlert, LifeBuoy, HeartPulse, Mountain,
+  PlaneTakeoff, Calendar, Car, ShieldAlert, LifeBuoy, HeartPulse, Mountain,
   Compass, MapPin, Fuel, Train, Anchor, ArrowRight, Snowflake, Fingerprint, Waves,
-  Gauge, Mail, Radio, Trash2, Soup, Recycle
+  Gauge, Mail, Radio, Trash2, Soup, Recycle, RotateCcw
 } from 'lucide-react';
 
 // Helper component for Tesla Icon
@@ -21,10 +21,14 @@ const TeslaIcon = ({ className }: { className?: string }) => (
 
 export default function LayerPanel() {
   const { 
-    mapStyleType, setMapStyleType, layers, toggleLayer, 
+    mapStyleType, setMapStyleType, layers, toggleLayer, resetAllLayers,
     isLayerPanelOpen, toggleLayerPanel, toggleFlightSchedule,
     contourInterval, setContourInterval
   } = useUIStore();
+
+  const activeLayerCount = React.useMemo(() => {
+    return Object.values(layers).filter(Boolean).length;
+  }, [layers]);
 
 
   // Helper component for Style buttons (Icon only)
@@ -93,17 +97,32 @@ export default function LayerPanel() {
       
       {/* Header */}
       <div className="flex items-center justify-between px-3 h-10 border-b border-[#2d2e32] bg-[#1a1b1e] shrink-0">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <Layers className="w-3.5 h-3.5 text-emerald-500" />
           <span className="text-xs font-bold text-gray-200 tracking-wide">圖層控制</span>
         </div>
-        <button 
-          onClick={toggleLayerPanel}
-          className="text-gray-400 hover:text-white p-1 hover:bg-[#26282e] rounded transition-colors"
-          title="收合面板"
-        >
-          <ChevronLeft className="w-4 h-4" />
-        </button>
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={resetAllLayers}
+            disabled={activeLayerCount === 0}
+            className={`flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium transition-all ${
+              activeLayerCount > 0
+                ? 'bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/40 shadow-sm cursor-pointer'
+                : 'bg-transparent text-gray-600 border border-transparent opacity-40 cursor-not-allowed'
+            }`}
+            title="一鍵全部關閉已開啟的圖層"
+          >
+            <RotateCcw className="w-2.5 h-2.5 shrink-0" />
+            <span>全關 ({activeLayerCount})</span>
+          </button>
+          <button 
+            onClick={toggleLayerPanel}
+            className="text-gray-400 hover:text-white p-1 hover:bg-[#26282e] rounded transition-colors"
+            title="收合面板"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       {/* Scrollable Body with custom scrollbar */}
