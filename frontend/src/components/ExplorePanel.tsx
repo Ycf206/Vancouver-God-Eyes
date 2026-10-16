@@ -4,11 +4,26 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Compass, X, Fuel, Zap, Ship, MapPin, 
   ChevronDown, RefreshCw, Package, CloudSun, Wind, AlertTriangle, Droplets, Gauge, Eye, Anchor, Navigation,
-  Newspaper, ExternalLink
+  Newspaper, ExternalLink, Search, CalendarDays, Calendar, Tag
 } from 'lucide-react';
 import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
 import { formatShipEta, formatTimePreference } from '@/utils/time';
+
+interface EventItem {
+  id: string;
+  title: string;
+  url: string;
+  source: string;
+  source_id: string;
+  start_date: string;
+  end_date?: string;
+  location_name?: string;
+  category: string;
+  description: string;
+  image_url?: string | null;
+  timestamp: number;
+}
 
 interface NewsArticle {
   id: string;
@@ -315,14 +330,21 @@ function ExploreContent() {
     );
   };
 
-  // 分頁：天氣, 新聞, 渡輪, 船運, 燃油, 充電
-  const [activeTab, setActiveTab] = useState<'weather' | 'news' | 'ferry' | 'fuel' | 'ev' | 'cargo'>('weather');
+  // 分頁：天氣, 新聞, 活動, 渡輪, 船運, 燃油, 充電
+  const [activeTab, setActiveTab] = useState<'weather' | 'news' | 'events' | 'ferry' | 'fuel' | 'ev' | 'cargo'>('weather');
 
   // --- News tab states ---
   const [newsArticles, setNewsArticles] = useState<NewsArticle[]>([]);
   const [loadingNews, setLoadingNews] = useState(false);
-  const [newsFilter, setNewsFilter] = useState<'all' | '604now' | 'citynews' | 'globalnews'>('all');
+  const [newsFilter, setNewsFilter] = useState<'all' | '604now' | 'citynews' | 'globalnews' | 'dailyhive'>('all');
+  const [newsSearchQuery, setNewsSearchQuery] = useState('');
   const [newsLastUpdated, setNewsLastUpdated] = useState<Date | null>(null);
+
+  // --- Events tab states ---
+  const [eventsList, setEventsList] = useState<EventItem[]>([]);
+  const [loadingEvents, setLoadingEvents] = useState(false);
+  const [eventsFilter, setEventsFilter] = useState<'all' | 'eventbrite' | 'destination_vancouver'>('all');
+  const [eventsSearchQuery, setEventsSearchQuery] = useState('');
 
   // --- Weather tab states ---
   const [weather, setWeather] = useState<WeatherData | null>(null);
@@ -739,9 +761,55 @@ function ExploreContent() {
     if (newsFilter !== 'all') {
       list = list.filter((a) => a.source_id === newsFilter);
     }
+    if (newsSearchQuery.trim()) {
+      const q = newsSearchQuery.trim().toLowerCase();
+      list = list.filter((a) =>
+        (a.title && a.title.toLowerCase().includes(q)) ||
+        (a.summary && a.summary.toLowerCase().includes(q)) ||
+        (a.category && a.category.toLowerCase().includes(q))
+      );
+    }
     // 排序以最上面由最新開始 (Newest on top)
     return [...list].sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-  }, [newsArticles, newsFilter]);
+  }, [newsArticles, newsFilter, newsSearchQuery]);
+
+  // 6. Fetch Events from Vancouver Sources (Eventbrite & Destination Vancouver)
+  const fetchEvents = React.useCallback(async (force = false) => {
+    setLoadingEvents(true);
+    try {
+      const apiUrl = getApiUrl();
+      const res = await fetch(`${apiUrl}/api/events/latest${force ? '?refresh=true' : ''}`);
+      const data = await res.json();
+      setEventsList(data.events || []);
+    } catch (err) {
+      console.error('Error fetching events:', err);
+    } finally {
+      setLoadingEvents(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isExploreOpen || activeTab !== 'events') return;
+    fetchEvents();
+  }, [isExploreOpen, activeTab, fetchEvents]);
+
+  // Filter events by source and search query
+  const filteredEvents = useMemo(() => {
+    let list = eventsList;
+    if (eventsFilter !== 'all') {
+      list = list.filter((e) => e.source_id === eventsFilter);
+    }
+    if (eventsSearchQuery.trim()) {
+      const q = eventsSearchQuery.trim().toLowerCase();
+      list = list.filter((e) =>
+        (e.title && e.title.toLowerCase().includes(q)) ||
+        (e.location_name && e.location_name.toLowerCase().includes(q)) ||
+        (e.category && e.category.toLowerCase().includes(q)) ||
+        (e.description && e.description.toLowerCase().includes(q))
+      );
+    }
+    return [...list].sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+  }, [eventsList, eventsFilter, eventsSearchQuery]);
 
   const formatNewsTime = (timestamp?: number, rawDate?: string) => {
     const ts = timestamp || (rawDate ? new Date(rawDate).getTime() : 0);
@@ -807,7 +875,7 @@ function ExploreContent() {
         </button>
       </div>
 
-      {/* 探索分類分頁 - 第一行 (天氣 | 新聞) */}
+      {/* 探索分類分頁 - 第一行 (天氣 | 新聞 | 活動) */}
       <div className="grid grid-cols-4 gap-1.5 p-1.5 bg-[#10131a] rounded-xl border border-[#232836] shrink-0 mb-1.5">
         <button
           onClick={() => setActiveTab('weather')}
@@ -831,8 +899,19 @@ function ExploreContent() {
           <Newspaper className="w-3.5 h-3.5 text-amber-400 shrink-0" />
           <span>新聞</span>
         </button>
+        <button
+          onClick={() => setActiveTab('events')}
+          className={`py-2 text-xs font-medium rounded-lg transition-all text-center flex items-center justify-center gap-1.5 ${
+            activeTab === 'events'
+              ? 'bg-[#2b3345] text-white font-bold shadow-md ring-1 ring-[#3d4760]'
+              : 'text-gray-300 hover:text-white hover:bg-[#1a1f2b]'
+          }`}
+        >
+          <CalendarDays className="w-3.5 h-3.5 text-purple-400 shrink-0" />
+          <span>活動</span>
+        </button>
         {/* 保留未來新增分頁空間 */}
-        <div className="col-span-2"></div>
+        <div className="col-span-1"></div>
       </div>
 
       {/* 探索分類分頁 - 第二行 (渡輪 > 船運 > 燃油 > 充電) */}
@@ -1622,7 +1701,7 @@ function ExploreContent() {
         </div>
       )}
 
-      {/* ==================== 5. 新聞分頁 (Vancouver News - 604 Now, CityNews, Global News BC) ==================== */}
+      {/* ==================== 5. 新聞分頁 (Vancouver News - 604 Now, CityNews, Global News BC, Daily Hive) ==================== */}
       {activeTab === 'news' && (
         <div className="flex-1 flex flex-col min-h-0 space-y-2.5 overflow-hidden">
           {/* Header Controls: Source Filter & Refresh */}
@@ -1633,6 +1712,7 @@ function ExploreContent() {
                 { id: '604now', label: '604 Now' },
                 { id: 'citynews', label: 'CityNews' },
                 { id: 'globalnews', label: 'Global News' },
+                { id: 'dailyhive', label: 'Daily Hive' },
               ].map((src) => {
                 const isSelected = newsFilter === src.id;
                 return (
@@ -1661,6 +1741,27 @@ function ExploreContent() {
             </button>
           </div>
 
+          {/* News Search Bar */}
+          <div className="relative shrink-0">
+            <Search className="w-3.5 h-3.5 text-gray-500 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              type="text"
+              value={newsSearchQuery}
+              onChange={(e) => setNewsSearchQuery(e.target.value)}
+              placeholder="從即時新聞清單搜尋關鍵字..."
+              className="w-full bg-[#10131a] text-xs text-white placeholder-gray-500 pl-8 pr-7 py-1.5 rounded-lg border border-[#232838] focus:outline-none focus:border-amber-500/50 transition-colors"
+            />
+            {newsSearchQuery && (
+              <button
+                onClick={() => setNewsSearchQuery('')}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white p-0.5"
+                title="清除搜尋"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            )}
+          </div>
+
           {/* News List */}
           <div className="flex-1 overflow-y-auto space-y-2 pr-1 min-h-0 custom-scrollbar">
             {loadingNews && filteredNews.length === 0 ? (
@@ -1671,7 +1772,9 @@ function ExploreContent() {
             ) : filteredNews.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 text-gray-400">
                 <Newspaper className="w-8 h-8 text-gray-600 mb-2" />
-                <span className="text-xs">暫無相關新聞資料</span>
+                <span className="text-xs">
+                  {newsSearchQuery ? '查無符合條件之新聞' : '暫無相關新聞資料'}
+                </span>
               </div>
             ) : (
               filteredNews.map((article) => {
@@ -1686,6 +1789,12 @@ function ExploreContent() {
                     return {
                       bg: 'bg-red-950/40 text-red-300 border-red-700/50',
                       name: 'CityNews',
+                    };
+                  }
+                  if (article.source_id === 'dailyhive') {
+                    return {
+                      bg: 'bg-amber-950/40 text-amber-300 border-amber-700/50',
+                      name: 'Daily Hive',
                     };
                   }
                   return {
@@ -1752,11 +1861,165 @@ function ExploreContent() {
         </div>
       )}
 
+      {/* ==================== 6. 活動分頁 (Vancouver Events - Eventbrite & Destination Vancouver) ==================== */}
+      {activeTab === 'events' && (
+        <div className="flex-1 flex flex-col min-h-0 space-y-2.5 overflow-hidden">
+          {/* Header Controls: Source Filter & Refresh */}
+          <div className="flex items-center justify-between gap-1.5 shrink-0 pt-0.5">
+            <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5">
+              {[
+                { id: 'all', label: '全部' },
+                { id: 'eventbrite', label: 'Eventbrite' },
+                { id: 'destination_vancouver', label: '溫哥華旅遊局' },
+              ].map((src) => {
+                const isSelected = eventsFilter === src.id;
+                return (
+                  <button
+                    key={src.id}
+                    onClick={() => setEventsFilter(src.id as any)}
+                    className={`px-2.5 py-1 text-xs rounded-lg font-medium transition-all shrink-0 ${
+                      isSelected
+                        ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40 shadow-sm font-semibold'
+                        : 'bg-[#151922] text-gray-400 hover:text-white border border-[#232838] hover:bg-[#1c2230]'
+                    }`}
+                  >
+                    {src.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            <button
+              onClick={() => fetchEvents(true)}
+              disabled={loadingEvents}
+              className="p-1.5 rounded-lg bg-[#151922] text-gray-400 hover:text-purple-400 border border-[#232838] hover:border-purple-500/40 transition-all shrink-0 flex items-center justify-center disabled:opacity-50"
+              title="重新整理活動"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${loadingEvents ? 'animate-spin text-purple-400' : ''}`} />
+            </button>
+          </div>
+
+          {/* Events Search Bar */}
+          <div className="relative shrink-0">
+            <Search className="w-3.5 h-3.5 text-gray-500 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              type="text"
+              value={eventsSearchQuery}
+              onChange={(e) => setEventsSearchQuery(e.target.value)}
+              placeholder="從活動清單搜尋活動名稱、場館或地點..."
+              className="w-full bg-[#10131a] text-xs text-white placeholder-gray-500 pl-8 pr-7 py-1.5 rounded-lg border border-[#232838] focus:outline-none focus:border-purple-500/50 transition-colors"
+            />
+            {eventsSearchQuery && (
+              <button
+                onClick={() => setEventsSearchQuery('')}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white p-0.5"
+                title="清除搜尋"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            )}
+          </div>
+
+          {/* Events List */}
+          <div className="flex-1 overflow-y-auto space-y-2 pr-1 min-h-0 custom-scrollbar">
+            {loadingEvents && filteredEvents.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 text-gray-400">
+                <RefreshCw className="w-6 h-6 animate-spin text-purple-400 mb-2" />
+                <span className="text-xs">正在載入大溫即時熱門活動...</span>
+              </div>
+            ) : filteredEvents.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 text-gray-400">
+                <CalendarDays className="w-8 h-8 text-gray-600 mb-2" />
+                <span className="text-xs">
+                  {eventsSearchQuery ? '查無符合條件之活動' : '暫無活動資料'}
+                </span>
+              </div>
+            ) : (
+              filteredEvents.map((event) => {
+                const isDV = event.source_id === 'destination_vancouver';
+                const sourceBadge = isDV
+                  ? { bg: 'bg-purple-950/40 text-purple-300 border-purple-700/50', name: 'Destination Vancouver' }
+                  : { bg: 'bg-orange-950/40 text-orange-300 border-orange-700/50', name: 'Eventbrite' };
+
+                return (
+                  <a
+                    key={event.id}
+                    href={event.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group block p-3 rounded-xl bg-[#141822] border border-[#232838] hover:border-purple-500/50 hover:bg-[#181d2a] transition-all shadow-sm"
+                  >
+                    <div className="flex gap-3">
+                      {event.image_url && (
+                        <div className="w-20 h-20 rounded-lg overflow-hidden shrink-0 bg-[#0c0e14] border border-[#232838] self-start">
+                          <img
+                            src={event.image_url}
+                            alt=""
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            loading="lazy"
+                            onError={(e) => {
+                              (e.target as HTMLElement).parentElement!.style.display = 'none';
+                            }}
+                          />
+                        </div>
+                      )}
+
+                      <div className="flex-1 min-w-0 flex flex-col justify-between">
+                        <div>
+                          <div className="flex items-center justify-between gap-1.5 mb-1.5">
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded border ${sourceBadge.bg}`}>
+                                {sourceBadge.name}
+                              </span>
+                              {event.category && (
+                                <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-800 text-gray-300 border border-gray-700 font-medium">
+                                  {event.category}
+                                </span>
+                              )}
+                            </div>
+                            <ExternalLink className="w-3 h-3 text-gray-500 group-hover:text-purple-400 transition-colors shrink-0" />
+                          </div>
+
+                          <h3 className="text-xs font-bold text-white group-hover:text-purple-300 transition-colors line-clamp-2 leading-snug">
+                            {event.title}
+                          </h3>
+
+                          {event.start_date && (
+                            <div className="flex items-center gap-1 text-[10.5px] text-purple-400 mt-1 font-mono">
+                              <Calendar className="w-3 h-3 shrink-0" />
+                              <span className="truncate">{event.start_date}</span>
+                            </div>
+                          )}
+
+                          {event.location_name && (
+                            <div className="flex items-center gap-1 text-[10px] text-gray-400 mt-0.5">
+                              <MapPin className="w-3 h-3 shrink-0 text-gray-500" />
+                              <span className="truncate">{event.location_name}</span>
+                            </div>
+                          )}
+
+                          {event.description && (
+                            <p className="text-[11px] text-gray-400 mt-1 line-clamp-2 leading-relaxed">
+                              {event.description}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                );
+              })
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Footer */}
       <div className="mt-3 pt-2.5 border-t border-[#262b38] flex items-center justify-between text-[11px] text-gray-400 shrink-0">
         <span className="font-mono text-[10px]">
           {activeTab === 'weather' && (weather ? `${weather.city || '溫哥華'} · ${weather.condition || '多雲'} · ${formatTemp(weather.temperature)}` : '加拿大環境部氣象數據')}
           {activeTab === 'news' && `共收錄 ${filteredNews.length} 則大溫即時新聞 · 每 ${newsRefreshInterval || 15} 分鐘自動更新`}
+          {activeTab === 'events' && `共收錄 ${filteredEvents.length} 項大溫熱門活動 · 來源 Eventbrite 與 溫哥華旅遊局`}
           {activeTab === 'fuel' && `共收錄 ${filteredFuelStations.length} 間加油站`}
           {activeTab === 'ev' && `共收錄 ${evStations.length} 座充電站`}
           {activeTab === 'ferry' && `共 ${ferryRoutes.reduce((acc, r) => acc + (r?.vessels?.length || 0), 0)} 艘渡輪即時航行中`}

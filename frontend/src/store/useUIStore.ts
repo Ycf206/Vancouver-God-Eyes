@@ -57,6 +57,7 @@ export interface UIState {
     schools: boolean;
     libraries: boolean;
     foodVendors: boolean;
+    foodBanks: boolean;
     aed: boolean;
     homelessShelters: boolean;
     airports: boolean;
@@ -177,6 +178,7 @@ export const useUIStore = create<UIState>()(
         schools: false,
         libraries: false,
         foodVendors: false,
+        foodBanks: false,
         aed: false,
         homelessShelters: false,
         airports: true,

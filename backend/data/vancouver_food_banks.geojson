@@ -1,0 +1,2474 @@
+{
+  "type": "FeatureCollection",
+  "generator": "VancouverGodsEye",
+  "total_count": 77,
+  "updated_at": "2026-10-16T03:52:37.722755+00:00",
+  "update_cycle": "每 3 個月 (Quarterly)",
+  "dataset_source": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/free-and-low-cost-food-programs/records/?lang=en",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "foodbank_1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.075042,
+          49.2835
+        ]
+      },
+      "properties": {
+        "id": "foodbank_1",
+        "facility_type": "food_banks",
+        "name": "A Loving Spoonful - Meals and groceries",
+        "organization": "Loving Spoonful",
+        "description": "Eligible individuals and families can be referred by a Doctor, Nurse, Dietitian, Social Worker, or self-refer. Referrals can be faxed to (604) 682-6327.",
+        "address": "",
+        "local_area": "Grandview-Woodland",
+        "provides_meals": "Yes",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": null,
+        "days_open": "Unknown",
+        "wheelchair_accessible": "Unknown",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "Yes",
+        "population_served": "Individuals and families living with HIV",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_2",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.072017,
+          49.281565
+        ]
+      },
+      "properties": {
+        "id": "foodbank_2",
+        "facility_type": "food_banks",
+        "name": "Aboriginal Friendship Centre -Grocery Hampers",
+        "organization": "Vancouver Aboriginal Friendship Centre Society",
+        "description": "An Indigenous-operated program. Delivery services are on a first come, first serve basis with limited availability.",
+        "address": "",
+        "local_area": "Grandview-Woodland",
+        "provides_meals": "Unknown",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": null,
+        "days_open": "Unknown",
+        "wheelchair_accessible": "Unknown",
+        "signup_required": "Yes",
+        "signup_phone_number": "(604) 251-4844",
+        "signup_email": "recreation@vafcs.org",
+        "requires_referral": "No",
+        "population_served": "Indigenous families with young children",
+        "comment": "To sign up call Shawn Green, 604-251-4844 115 meals a day prepared by their catering company and in another of their 4 kitchens; referral based, weekends have pre-made frozen meals delivered 154 food cards per week $25 per person grocery hampers delivered to elders in isolation, transition housing residents 50-60 catering company makes half their meals, other meals made in house by elder coordinator and volunteers"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_3",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.072017,
+          49.281565
+        ]
+      },
+      "properties": {
+        "id": "foodbank_3",
+        "facility_type": "food_banks",
+        "name": "Aboriginal Friendship Centre-Elder Meals on Wheels",
+        "organization": "Vancouver Aboriginal Friendship Centre Society",
+        "description": "An Indigenous-operated program. Provides a daily meal and one hamper per month. Delivery services are on a first come, first serve basis with limited availability.",
+        "address": "",
+        "local_area": "Grandview-Woodland",
+        "provides_meals": "Yes",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": null,
+        "days_open": "Unknown",
+        "wheelchair_accessible": "Unknown",
+        "signup_required": "Yes",
+        "signup_phone_number": "(604) 251-4844",
+        "signup_email": "elders@vafcs.org",
+        "requires_referral": "No",
+        "population_served": "Indigenous Elders",
+        "comment": "To sign up call Shawn Green, 604-251-4844 115 meals a day prepared by their catering company and in another of their 4 kitchens; referral based, weekends have pre-made frozen meals delivered 154 food cards per week $25 per person grocery hampers delivered to elders in isolation, transition housing residents 50-60 catering company makes half their meals, other meals made in house by elder coordinator and volunteers"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_4",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.062829,
+          49.285117
+        ]
+      },
+      "properties": {
+        "id": "foodbank_4",
+        "facility_type": "food_banks",
+        "name": "Aboriginal Mother Centre - Hampers for Elders",
+        "organization": "Aboriginal Mother's Centre Society",
+        "description": "An Indigenous-operated program.",
+        "address": "",
+        "local_area": "Grandview-Woodland",
+        "provides_meals": "Unknown",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": null,
+        "days_open": "Unknown",
+        "wheelchair_accessible": "Unknown",
+        "signup_required": "Yes",
+        "signup_phone_number": "",
+        "signup_email": "operations@aboriginalmothercentre.ca",
+        "requires_referral": "No",
+        "population_served": "Indigenous Elders",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_5",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.134314,
+          49.207255
+        ]
+      },
+      "properties": {
+        "id": "foodbank_5",
+        "facility_type": "food_banks",
+        "name": "Bryns Neighbourhood Table",
+        "organization": "St. Augustine's Anglican Church",
+        "description": "Free, sit-down dinner every Thursday 6-7pm at St. Augustines Anglican Church. Arrive 30 min prior to enjoy a coffee/tea with others. For info contact (604) 836-7419. Wheelchair accessible.",
+        "address": "",
+        "local_area": "Marpole",
+        "provides_meals": "Yes",
+        "provides_hampers": "Unknown",
+        "cost_of_meals": null,
+        "cost_of_hampers": null,
+        "days_open": "THU",
+        "wheelchair_accessible": "Unknown",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_6",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.139191,
+          49.258278
+        ]
+      },
+      "properties": {
+        "id": "foodbank_6",
+        "facility_type": "food_banks",
+        "name": "Care BC - Western and Chinese Meals on Wheels",
+        "organization": "Health and Home Care Society of BC (aka Care BC)",
+        "description": "Western styled meals delivered weekdays 10:30 am-1pm, priced from $6.50 -9.75. Chinese meals delivered weekdays 10:30 am-1pm, priced at $9.95. Must be home to receive the meals. More info at https://www.carebc.ca/western-mow-vancouverrichmond.html.",
+        "address": "",
+        "local_area": "Fairview",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": null,
+        "cost_of_hampers": null,
+        "days_open": "MON, TUE, WED, THU, FRI",
+        "wheelchair_accessible": "Unknown",
+        "signup_required": "Yes",
+        "signup_phone_number": "(604) 732-7638",
+        "signup_email": "wmow@carebc.ca",
+        "requires_referral": "No",
+        "population_served": "Home-bound older adults including frail seniors, their caregivers, adults with chronic illnesses, or with a debilitating injury",
+        "comment": "https://www.carebc.ca/meals-on-wheels.html"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_7",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.100135,
+          49.281067
+        ]
+      },
+      "properties": {
+        "id": "foodbank_7",
+        "facility_type": "food_banks",
+        "name": "Carnegie Community Centre - Cafeteria",
+        "organization": "Carnegie Centre",
+        "description": "Meals served daily. Breakfast ($2.25) at 9-11am, Lunch ($2.75) at 12-4pm, Dinner ($3.50) at 5-8pm.",
+        "address": "",
+        "local_area": "Downtown",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": null,
+        "cost_of_hampers": null,
+        "days_open": "MON, TUE, WED, THU, FRI, SAT, SUN",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_8",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.130733,
+          49.281091
+        ]
+      },
+      "properties": {
+        "id": "foodbank_8",
+        "facility_type": "food_banks",
+        "name": "Central Presbyterian - Rescued food distribution",
+        "organization": "Central Presbyterian Church",
+        "description": "Located at the corner of Thurlow & Pendrell Street. Weekly distribution of rescued foods on Friday from 11:45am to 12:30PM. People are encouraged to bring their own shopping bag. Sliding scale entrance fee of $3-5 with 100% proceeds going to the local food bank. No one will be turned down if unable to pay.",
+        "address": "",
+        "local_area": "West End",
+        "provides_meals": "No",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": null,
+        "days_open": "FRI",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_9",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.120377,
+          49.284493
+        ]
+      },
+      "properties": {
+        "id": "foodbank_9",
+        "facility_type": "food_banks",
+        "name": "Christ Church Cathedral - Maundy Cafe",
+        "organization": "Christ Church Cathedral",
+        "description": "Mon, Thurs, Fri from 11:30am-12:30pm.",
+        "address": "",
+        "local_area": "Downtown",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": null,
+        "cost_of_hampers": null,
+        "days_open": "MON, THU, FRI",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_10",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.048907,
+          49.261164
+        ]
+      },
+      "properties": {
+        "id": "foodbank_10",
+        "facility_type": "food_banks",
+        "name": "CityReach - Club Freedom Meal",
+        "organization": "CityReach Care Society",
+        "description": "A Christ-centred worship service and hot meal. Sun 11am. For info contact jemald@cityreach.org.",
+        "address": "",
+        "local_area": "Renfrew-Collingwood",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": 0.0,
+        "cost_of_hampers": null,
+        "days_open": "SUN",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_11",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.078601,
+          49.22836
+        ]
+      },
+      "properties": {
+        "id": "foodbank_11",
+        "facility_type": "food_banks",
+        "name": "CityReach - Food for Families (Culloden Court)",
+        "organization": "CityReach Care Society",
+        "description": "Nutritious foodbank. Fri 3-4pm. Not currently accepting new registrations, more info at https://www.cityreach.org/foodforfamilies",
+        "address": "",
+        "local_area": "Sunset",
+        "provides_meals": "No",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": 0.0,
+        "days_open": "FRI",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "Yes",
+        "signup_phone_number": "",
+        "signup_email": "fff@cityreach.org",
+        "requires_referral": "No",
+        "population_served": "individuals and families referred by a partner agency or school, and residents within the geographic borders of Main, Victoria, East 41st Avenue and Fraser River",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_12",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.048907,
+          49.261164
+        ]
+      },
+      "properties": {
+        "id": "foodbank_12",
+        "facility_type": "food_banks",
+        "name": "CityReach - Food For Families (Slocan)",
+        "organization": "CityReach Care Society",
+        "description": "Only for individuals and families referred by a partner agency or school. Nutritious foodbank. For families without minors: Tues 3-4:15pm (First and Third Tuesday of each month). For families with minors: Tues 4:30-5:30pm or Thurs 11am-noon. Not currently accepting new registrations, more info at www.cityreach.org/foodforfamilies.",
+        "address": "",
+        "local_area": "Renfrew-Collingwood",
+        "provides_meals": "No",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": 0.0,
+        "days_open": "TUE",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "Yes",
+        "signup_phone_number": "(604) 254-2489",
+        "signup_email": "fff@cityreach.org",
+        "requires_referral": "Yes",
+        "population_served": "individuals and families referred by a partner agency or school",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_13",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.041759,
+          49.219913
+        ]
+      },
+      "properties": {
+        "id": "foodbank_13",
+        "facility_type": "food_banks",
+        "name": "CityReach - Food for Families (YWCA South)",
+        "organization": "CityReach Care Society",
+        "description": "Nutritious foodbank. Fri, 1-2pm. Not currently accepting new registrations, more info at https://www.cityreach.org/foodforfamilies",
+        "address": "",
+        "local_area": "Killarney",
+        "provides_meals": "No",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": 0.0,
+        "days_open": "FRI",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "Yes",
+        "signup_phone_number": "",
+        "signup_email": "fff@cityreach.org",
+        "requires_referral": "Yes",
+        "population_served": "individuals and families referred by a partner agency or school.",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_14",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.099012,
+          49.24594
+        ]
+      },
+      "properties": {
+        "id": "foodbank_14",
+        "facility_type": "food_banks",
+        "name": "Cityview Church - Open Table",
+        "organization": "Cityview Church",
+        "description": "Thurs at 12pm. Hot lunch and spiritual service, more info at https://www.cityviewchurch.ca/opentable",
+        "address": "",
+        "local_area": "Riley Park",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": 0.0,
+        "cost_of_hampers": null,
+        "days_open": "THU",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_15",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.032871,
+          49.236585
+        ]
+      },
+      "properties": {
+        "id": "foodbank_15",
+        "facility_type": "food_banks",
+        "name": "Collingwood Community Fridge and Pantry",
+        "organization": "Collingwood Neighbourhood House",
+        "description": "Fridge and pantry stocked with free food, and located on the west facing side of Collingwood Neighbourhood House, adjacent to the gym entrance. Open 24/7. Wheelchair accessible. For more info, contact foodhub@cnh.bc.ca.",
+        "address": "",
+        "local_area": "Renfrew-Collingwood",
+        "provides_meals": "No",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": 0.0,
+        "days_open": "MON, TUE, WED, THU, FRI, SAT, SUN",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_16",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.032871,
+          49.236585
+        ]
+      },
+      "properties": {
+        "id": "foodbank_16",
+        "facility_type": "food_banks",
+        "name": "Collingwood N'hood House - Morning Star Breakfast",
+        "organization": "Collingwood Neighbourhood House",
+        "description": "Sat, 7am clothing and showers, 8-8:30am breakfast. More info (604) 435-0323.",
+        "address": "",
+        "local_area": "Renfrew-Collingwood",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": 0.0,
+        "cost_of_hampers": null,
+        "days_open": "SAT",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "Unknown",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": "Provides showers, a community breakfast, a clothing exchange, housing advocacy, homeless outreach, and referrals for people who are homeless"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_17",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.126702,
+          49.275163
+        ]
+      },
+      "properties": {
+        "id": "foodbank_17",
+        "facility_type": "food_banks",
+        "name": "Covenant House - Hamper Program",
+        "organization": "Covenant House",
+        "description": "",
+        "address": "",
+        "local_area": "Downtown",
+        "provides_meals": "No",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": 0.0,
+        "days_open": "Unknown",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "Yes",
+        "signup_phone_number": "(604) 685-7474",
+        "signup_email": "info@covenanthousebc.org",
+        "requires_referral": "No",
+        "population_served": "youth under 25",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_18",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.126702,
+          49.275163
+        ]
+      },
+      "properties": {
+        "id": "foodbank_18",
+        "facility_type": "food_banks",
+        "name": "Covenant House - Meal Program",
+        "organization": "Covenant House",
+        "description": "Hot breakfast M-F 9am-12pm; Hot meal or pizza M-F 3:30-5pm",
+        "address": "",
+        "local_area": "Downtown",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": 0.0,
+        "cost_of_hampers": null,
+        "days_open": "MON, TUE, WED, THU, FRI",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "young people age 16-24",
+        "comment": "Program is only for youth under 25"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_19",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.127819,
+          49.279572
+        ]
+      },
+      "properties": {
+        "id": "foodbank_19",
+        "facility_type": "food_banks",
+        "name": "Directions Youth Services - Meal and Snacks",
+        "organization": "Family Services of Greater Vancouver",
+        "description": "Open for snacks 24/7; Meal daily from 8-9 pm. Youth Pantry program Tues/Thurs/Sat, call to inquire. Intake process to become a client.",
+        "address": "",
+        "local_area": "Downtown",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": 0.0,
+        "cost_of_hampers": null,
+        "days_open": "MON, TUE, WED, THU, FRI, SAT, SUN",
+        "wheelchair_accessible": "Unknown",
+        "signup_required": "Yes",
+        "signup_phone_number": "(604) 633-1472",
+        "signup_email": "directions@fsgv.ca",
+        "requires_referral": "No",
+        "population_served": "Youth under 25 experiencing homelessness or precariously housed",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_20",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.091778,
+          49.281498
+        ]
+      },
+      "properties": {
+        "id": "foodbank_20",
+        "facility_type": "food_banks",
+        "name": "DTES Neighbourhood House - Meal Program",
+        "organization": "DTES Neighbourhood House",
+        "description": "Community drop-in: Oatmeal on Mon and Wed at 10am-12pm and hot lunch on Wed at 12:30pm-2pm (open to everyone). Family drop-in: Tuesdays and Thursdays 3:30-6:30PM - afterschool snack and dinner for families/caregivers and their children. Early years drop-in: Friday 9am-11am - breakfast for families/caregivers and their children age 0-6. Peacemeal lunch: Third Sunday of every month from 12pm-1pm. Contact ops@dtesnhouse.ca or call (604) 215-2030 with any questions.",
+        "address": "",
+        "local_area": "Strathcona",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": 0.0,
+        "cost_of_hampers": null,
+        "days_open": "MON, TUE, WED, FRI, SUN",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_21",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.102,
+          49.282078
+        ]
+      },
+      "properties": {
+        "id": "foodbank_21",
+        "facility_type": "food_banks",
+        "name": "DTES Women's Centre - Drop In - Takeout Meals",
+        "organization": "DTES Women's Centre",
+        "description": "Daily (except Wed) 10-11am, 12-2pm. Coffee and snacks until 4pm.",
+        "address": "",
+        "local_area": "Downtown",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": 0.0,
+        "cost_of_hampers": null,
+        "days_open": "MON, TUE, THU, FRI, SAT, SUN",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "Unknown",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "women",
+        "comment": "Update from Kate Gibson on May 27th DEWC has a Drop-In that has modified its meal service to all take-out. The Shelter (which is different) has modified its service to provide meals for the 50 women staying at the shelter as well as a few meals to women who come by but who no longer come in for a meal.  The shelter should not be on the food map, but is providing 3 meals a day every day to the women using the shelter."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_22",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.090924,
+          49.282778
+        ]
+      },
+      "properties": {
+        "id": "foodbank_22",
+        "facility_type": "food_banks",
+        "name": "DUDES Club",
+        "organization": "DUDES Club",
+        "description": "Th at 4pm. Mainly dine-in format. Men are prioritized, and extra meals are handed out to community on a first come, first serve basis.",
+        "address": "",
+        "local_area": "Strathcona",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": 0.0,
+        "cost_of_hampers": null,
+        "days_open": "THU",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "Unknown",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_23",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.094839,
+          49.283755
+        ]
+      },
+      "properties": {
+        "id": "foodbank_23",
+        "facility_type": "food_banks",
+        "name": "Evelyne Saller Centre - Low Cost Meals",
+        "organization": "Evelyne Saller Centre",
+        "description": "Breakfast 10am-12pm, Lunch 11:30am-3pm, Dinner 3-5:50pm. Menu and info at https://vancouver.ca/parks-recreation-culture/evelyne-saller-centre-cafeteria.aspx or (604) 665-3075.",
+        "address": "",
+        "local_area": "Strathcona",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": 2.0,
+        "cost_of_hampers": null,
+        "days_open": "MON, TUE, WED, THU, FRI, SAT, SUN",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_24",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.097296,
+          49.281609
+        ]
+      },
+      "properties": {
+        "id": "foodbank_24",
+        "facility_type": "food_banks",
+        "name": "First United – Community Meals",
+        "organization": "First United Church",
+        "description": "Northeast corner of Hastings St and Gore St, Vancouver. Monday – Friday, service begins around noon (not served on income assistance days or statutory holidays). Free, hearty lunch served weekdays via the FIRST Food Truck. Usually hot meals, sometimes able to provide vegetarian option. Available to all. For info, call (604) 681-8365",
+        "address": "",
+        "local_area": "Strathcona",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": 0.0,
+        "cost_of_hampers": null,
+        "days_open": "MON, TUE, WED, THU, FRI",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "Unknown",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_25",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.098612,
+          49.28272
+        ]
+      },
+      "properties": {
+        "id": "foodbank_25",
+        "facility_type": "food_banks",
+        "name": "Food on the Corner",
+        "organization": "Food on the Corner",
+        "description": "Sat 11am. Soup and coffee plus a bagged lunch with PB&J sandwich, banana, granola bar. Info at https://www.foodonthecorner.ca/",
+        "address": "",
+        "local_area": "Strathcona",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": 0.0,
+        "cost_of_hampers": null,
+        "days_open": "SAT",
+        "wheelchair_accessible": "Unknown",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_26",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.097953,
+          49.268413
+        ]
+      },
+      "properties": {
+        "id": "foodbank_26",
+        "facility_type": "food_banks",
+        "name": "Food Stash - Rescued Food Market",
+        "organization": "Food Stash Foundation",
+        "description": "Thursdays, 3-7pm fresh food market (fruit, vegetables, dairy, meat).  $24 one-time registration fee (3-month membership)",
+        "address": "",
+        "local_area": "Strathcona",
+        "provides_meals": "No",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": null,
+        "days_open": "THU",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "Yes",
+        "signup_phone_number": "(604) 862-9701",
+        "signup_email": "https://www.foodstash.ca/market",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_27",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.123553,
+          49.277982
+        ]
+      },
+      "properties": {
+        "id": "foodbank_27",
+        "facility_type": "food_banks",
+        "name": "Gathering Place Community Centre - Meals",
+        "organization": "Gathering Place Community Centre",
+        "description": "Meals every day of the week. Breakfast 9am-noon ($2.25), Lunch 11:30am-4:30pm ($2.75), Dinner 4:30-7pm ($3.50). Menu at https://vancouver.ca/parks-recreation-culture/gathering-place-cafeteria.aspx",
+        "address": "",
+        "local_area": "Downtown",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": null,
+        "cost_of_hampers": null,
+        "days_open": "MON, TUE, WED, THU, FRI, SAT, SUN",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_28",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.095644,
+          49.282414
+        ]
+      },
+      "properties": {
+        "id": "foodbank_28",
+        "facility_type": "food_banks",
+        "name": "Gospel Mission Society - Food Program",
+        "organization": "Gospel Mission Society",
+        "description": "Serving sandwiches or hot food Wed 7-8pm",
+        "address": "",
+        "local_area": "Strathcona",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": null,
+        "cost_of_hampers": null,
+        "days_open": "WED",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": "Sr. Chita Torres is from Open Door. Hosted by the Door Is Open"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_29",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.028648,
+          49.262795
+        ]
+      },
+      "properties": {
+        "id": "foodbank_29",
+        "facility_type": "food_banks",
+        "name": "Greater Van Food Bank - Lougheed Hwy Location",
+        "organization": "Greater Vancouver Food Bank Society",
+        "description": "Check https://foodbank.bc.ca/ for schedule (usually Tues to Fri from 10 am-4 pm and Sat 10am-3pm).",
+        "address": "",
+        "local_area": "Renfrew-Collingwood",
+        "provides_meals": "No",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": 0.0,
+        "days_open": "TUE, WED, THU, FRI, SAT",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "Yes",
+        "signup_phone_number": "(604) 876-3601",
+        "signup_email": "reception@foodbank.bc.ca",
+        "requires_referral": "No",
+        "population_served": "Registered clients",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_30",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.100135,
+          49.281067
+        ]
+      },
+      "properties": {
+        "id": "foodbank_30",
+        "facility_type": "food_banks",
+        "name": "Guru Nanak's Free Kitchen",
+        "organization": "Guru Nanak Free Kitchen",
+        "description": "Hot meal served Saturday 1pm, Sunday 12pm outside of Carnegie Centre.",
+        "address": "",
+        "local_area": "Downtown",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": 0.0,
+        "cost_of_hampers": null,
+        "days_open": "SAT, SUN",
+        "wheelchair_accessible": "Unknown",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_31",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10596,
+          49.263564
+        ]
+      },
+      "properties": {
+        "id": "foodbank_31",
+        "facility_type": "food_banks",
+        "name": "Japanese Community Volunteers - Meals on Wheels",
+        "organization": "Tonari Gumi (Japanese Community Volunteers Association)",
+        "description": "Japanese-style bento meal delivery service for home-bound seniors, including caregivers and people with illness or injury. Every Tuesday except two weeks during the Christmas holiday, 10:30 am – 12:30 pm. Must be home to receive the meals from delivery volunteers. An in-person pre-assessment visit from Community Services staff is required. $7/meal for Tonai Gumi members, $8/meal for non members",
+        "address": "",
+        "local_area": "Mount Pleasant",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": null,
+        "cost_of_hampers": null,
+        "days_open": "TUE",
+        "wheelchair_accessible": "Unknown",
+        "signup_required": "Yes",
+        "signup_phone_number": "(604) 687-2172",
+        "signup_email": "https://www.tonarigumi.ca/mow [tonarigumi.ca]",
+        "requires_referral": "No",
+        "population_served": "Home-bound seniors with difficulty cooking, including caregivers and people with illness or injury",
+        "comment": "http://www.tonarigumi.ca/our-services/service-list/"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_32",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.103389,
+          49.268014
+        ]
+      },
+      "properties": {
+        "id": "foodbank_32",
+        "facility_type": "food_banks",
+        "name": "Jewish Family Services - JFS Kitchen",
+        "organization": "Jewish Family Services",
+        "description": "Provides food support through a food bank, meal delivery program, and Jewish holiday assistance. Kosher foods available. For more info visit https://www.jfsvancouver.ca/services/family-and-adult-resources/food-and-support/ or call (604) 257-5151.",
+        "address": "",
+        "local_area": "Mount Pleasant",
+        "provides_meals": "Yes",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": 0.0,
+        "days_open": "Unknown",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_33",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.182089,
+          49.265762
+        ]
+      },
+      "properties": {
+        "id": "foodbank_33",
+        "facility_type": "food_banks",
+        "name": "Kits Cares - Low Cost Food Market",
+        "organization": "Tenth Church",
+        "description": "Thurs, 12:30-2:30pm. The Market sells low-cost and subsidized produce and canned goods. Cash, debit and credit accepted. Guests can also enjoy a hot drink and a sweet treat at a cafe area at no cost. Free items of food available. For info contact kitscarescafe@tenth.ca. Operated by Tenth Church.",
+        "address": "",
+        "local_area": "Kitsilano",
+        "provides_meals": "No",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": null,
+        "days_open": "THU",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_34",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.15806,
+          49.265908
+        ]
+      },
+      "properties": {
+        "id": "foodbank_34",
+        "facility_type": "food_banks",
+        "name": "Kits House Living Room Food Distribution",
+        "organization": "Kitsilano Neighbourhood House",
+        "description": "11am - 12:30PM. Fresh and non-perishable food items available to take home. Randomly generated schedule to determine pick-up times. Food is available for first time drop-ins; however, regularly attending participants will be scheduled first. After your first drop-in, you can be added to the weekly randomized list and will be notified on Tuesday about your timeslot. Those without contact info can check in a few days before Friday or drop in on the day of. More info at (604) 736 3588.",
+        "address": "",
+        "local_area": "Kitsilano",
+        "provides_meals": "No",
+        "provides_hampers": "No",
+        "cost_of_meals": null,
+        "cost_of_hampers": null,
+        "days_open": "FRI",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "Unknown",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "Unknown",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_35",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.15806,
+          49.265908
+        ]
+      },
+      "properties": {
+        "id": "foodbank_35",
+        "facility_type": "food_banks",
+        "name": "Kits Neighbourhood House Free Pantry and Fridge",
+        "organization": "Kitsilano Neighbourhood House",
+        "description": "Take what you need and give what you can to this pantry with non-perishable foods and fridge/freezer with perishable items. Available 24/7. Located outside the neighbourhood house on Vine Street. More info at https://www.kitshouse.org/2021/11/02/kitsilano-little-free-pantry/",
+        "address": "",
+        "local_area": "Kitsilano",
+        "provides_meals": "No",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": 0.0,
+        "days_open": "MON, TUE, WED, THU, FRI, SAT, SUN",
+        "wheelchair_accessible": "Unknown",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_36",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.160121,
+          49.262061
+        ]
+      },
+      "properties": {
+        "id": "foodbank_36",
+        "facility_type": "food_banks",
+        "name": "Kitsilano Community Centre Breakfast Program",
+        "organization": "Kitsilano Neighbourhood House",
+        "description": "Biweekly: 2nd and 4th Saturday, 7:30am-9am. Hot breakfast until 8:45am, showers until 9am, toiletries and clean change of clothes provided. Valet services available for carts and dogs.",
+        "address": "",
+        "local_area": "Kitsilano",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": 0.0,
+        "cost_of_hampers": null,
+        "days_open": "SAT",
+        "wheelchair_accessible": "Unknown",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "People experiencing homelessness",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_37",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.160121,
+          49.262061
+        ]
+      },
+      "properties": {
+        "id": "foodbank_37",
+        "facility_type": "food_banks",
+        "name": "Kitsilano Farmers Market - Nutrition Coupons",
+        "organization": "Vancouver Farmers Markets",
+        "description": "Farmers Market location accepting Nutrition Coupons. Enrolled households receive minimum of $27/week in vouchers. Located in the parking lot. Market is open Sundays at 10am-2pm, from May 7th – October 29th.",
+        "address": "",
+        "local_area": "Kitsilano",
+        "provides_meals": "No",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": 0.0,
+        "days_open": "Unknown",
+        "wheelchair_accessible": "Unknown",
+        "signup_required": "Yes",
+        "signup_phone_number": "",
+        "signup_email": "https://bcfarmersmarket.org/coupon-program/get-involved/individuals/",
+        "requires_referral": "No",
+        "population_served": "eligible enrolled families.",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_38",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.055868,
+          49.286007
+        ]
+      },
+      "properties": {
+        "id": "foodbank_38",
+        "facility_type": "food_banks",
+        "name": "Kiwassa Neighbourhood House - Community Lunch",
+        "organization": "Kiwassa Neighbourhood House",
+        "description": "First & third Friday of the month, 12:15pm. 3 course meal. Seniors $7, children 12 & under $5, everyone else $8. Please inform staff during sign up if a vegetarian meal is needed. Walk-ins taken as space permits. For more info contact food@kiwassa.ca",
+        "address": "",
+        "local_area": "Hastings-Sunrise",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": null,
+        "cost_of_hampers": null,
+        "days_open": "FRI",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "Yes",
+        "signup_phone_number": "(604) 254-5401",
+        "signup_email": "",
+        "requires_referral": "Unknown",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_39",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.099189,
+          49.281795
+        ]
+      },
+      "properties": {
+        "id": "foodbank_39",
+        "facility_type": "food_banks",
+        "name": "La Boussole - Foodbank",
+        "organization": "La Boussole",
+        "description": "Wed, 1:30pm. For information contact (604) 683-7337 or Laboussole@Lbv.Ca",
+        "address": "",
+        "local_area": "Strathcona",
+        "provides_meals": "No",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": 0.0,
+        "days_open": "WED",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_40",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09962,
+          49.243518
+        ]
+      },
+      "properties": {
+        "id": "foodbank_40",
+        "facility_type": "food_banks",
+        "name": "Little Mtn N'hood House-Food Distribution Program",
+        "organization": "Little Mountain Neighbourhood House",
+        "description": "Weekly market providing free produce and non-perishable food. Currently admitting families with kids and single parents (Limited spots).",
+        "address": "",
+        "local_area": "Riley Park",
+        "provides_meals": "No",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": 0.0,
+        "days_open": "Unknown",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "Yes",
+        "signup_phone_number": "",
+        "signup_email": "fooddistribution@lmnhs.bc.ca",
+        "requires_referral": "No",
+        "population_served": "registered individuals living within the boundaries of Cambie to Knight Street and 16th to 49th ave",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_41",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.094279,
+          49.28094
+        ]
+      },
+      "properties": {
+        "id": "foodbank_41",
+        "facility_type": "food_banks",
+        "name": "Lookout Society's Powell St. Getaway - Snacks",
+        "organization": "Lookout Housing and Health Society",
+        "description": "Daily at 10:30am, 1pm, and 4pm. Coffee 9-10am, 10:30-11am, and 4-5pm.",
+        "address": "",
+        "local_area": "Strathcona",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": 0.0,
+        "cost_of_hampers": null,
+        "days_open": "MON, TUE, WED, THU, FRI, SAT, SUN",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_42",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.134314,
+          49.207255
+        ]
+      },
+      "properties": {
+        "id": "foodbank_42",
+        "facility_type": "food_banks",
+        "name": "Marpole Community Food Hub - Grocery Program",
+        "organization": "St. Augustine's Anglican Church",
+        "description": "Pickup grocery bags every Thursday, 10am-noon. Sign up at the door/contact (604) 836-7419 or foodhub@staugustinemarpole.com. Free for residents of V5W V5X V5Y V5Z V6M V6N V6P.",
+        "address": "",
+        "local_area": "Marpole",
+        "provides_meals": "No",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": 0.0,
+        "days_open": "THU",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "Yes",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_43",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.044754,
+          49.265267
+        ]
+      },
+      "properties": {
+        "id": "foodbank_43",
+        "facility_type": "food_banks",
+        "name": "Monthly Seniors Dine and Connect",
+        "organization": "Frog Hollow Neighbourhood House",
+        "description": "Make new friends and connect with neighbours over a free, delicious meal. Event runs monthly. Future lunches will be announced at a later date. Visit https://froghollow.bc.ca/programs-services/seniors/ for the latest information.",
+        "address": "",
+        "local_area": "Hastings-Sunrise",
+        "provides_meals": "No",
+        "provides_hampers": "No",
+        "cost_of_meals": null,
+        "cost_of_hampers": null,
+        "days_open": "Unknown",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "Yes",
+        "signup_phone_number": "(604) 760-5351",
+        "signup_email": "seniors@froghollow.bc.ca",
+        "requires_referral": "Unknown",
+        "population_served": "Older adults (age 50+)",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_44",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.095953,
+          49.264007
+        ]
+      },
+      "properties": {
+        "id": "foodbank_44",
+        "facility_type": "food_banks",
+        "name": "Mount Pleasant Farmers Market - Nutrition Coupons",
+        "organization": "Vancouver Farmers Markets",
+        "description": "Farmers Market location accepting Nutrition Coupons. Enrolled households receive minimum of $27/week in vouchers. Market is open Sundays at 10am-2pm, May 21st – October 29th.",
+        "address": "",
+        "local_area": "Mount Pleasant",
+        "provides_meals": "No",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": 0.0,
+        "days_open": "Unknown",
+        "wheelchair_accessible": "Unknown",
+        "signup_required": "Yes",
+        "signup_phone_number": "",
+        "signup_email": "https://bcfarmersmarket.org/coupon-program/get-involved/individuals/",
+        "requires_referral": "Unknown",
+        "population_served": "eligible enrolled families.",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_45",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.086747,
+          49.262182
+        ]
+      },
+      "properties": {
+        "id": "foodbank_45",
+        "facility_type": "food_banks",
+        "name": "Mount Pleasant N'hood House",
+        "organization": "Mount Pleasant Neighbourhood House",
+        "description": "Come and share a meal with your neighbours at our Community Lunch on Fridays from 12-1PM. Lunch is served at noon. A single meal costs $6. Contact the front desk at (604) 879-8208 for more info.",
+        "address": "",
+        "local_area": "Mount Pleasant",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": null,
+        "cost_of_hampers": null,
+        "days_open": "FRI",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_46",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.086747,
+          49.262182
+        ]
+      },
+      "properties": {
+        "id": "foodbank_46",
+        "facility_type": "food_banks",
+        "name": "Mount Pleasant N'hood House - Referral Support",
+        "organization": "Mount Pleasant Neighbourhood House",
+        "description": "For information about meals and groceries available, call (604) 879-8208",
+        "address": "",
+        "local_area": "Mount Pleasant",
+        "provides_meals": "No",
+        "provides_hampers": "No",
+        "cost_of_meals": null,
+        "cost_of_hampers": null,
+        "days_open": "Unknown",
+        "wheelchair_accessible": "Unknown",
+        "signup_required": "Unknown",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_47",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.086747,
+          49.262182
+        ]
+      },
+      "properties": {
+        "id": "foodbank_47",
+        "facility_type": "food_banks",
+        "name": "Mount Pleasant N'hood House - Seniors Lunch",
+        "organization": "Mount Pleasant Neighbourhood House",
+        "description": "Come and share a meal with your neighbours at our Seniors Lunch on Tuesdays from 12-1PM. Lunch is served at noon. A single meal costs $6. Contact the front Desk at (604) 879-8208 for more info.",
+        "address": "",
+        "local_area": "Mount Pleasant",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": null,
+        "cost_of_hampers": null,
+        "days_open": "TUE",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "Older adults",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_48",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.101204,
+          49.281067
+        ]
+      },
+      "properties": {
+        "id": "foodbank_48",
+        "facility_type": "food_banks",
+        "name": "Muslim Care Centre - Meal Program",
+        "organization": "Muslim Care Centre",
+        "description": "Mon-Fri at 5:30pm, Sat at 1pm, Sun at Noon",
+        "address": "",
+        "local_area": "Downtown",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": 0.0,
+        "cost_of_hampers": null,
+        "days_open": "MON, TUE, WED, THU, FRI, SAT, SUN",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_49",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.062778,
+          49.284554
+        ]
+      },
+      "properties": {
+        "id": "foodbank_49",
+        "facility_type": "food_banks",
+        "name": "Quest Non-Profit Grocery Markets (Dundas)",
+        "organization": "Quest Food Exchange",
+        "description": "Mon–Fri 9am–6pm. Sat 10am–5pm. Closed Sunday and Holidays. Referral required to shop. For more information on referrals, please visit:  questoutreach.org/refer-clients/",
+        "address": "",
+        "local_area": "Grandview-Woodland",
+        "provides_meals": "No",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": null,
+        "days_open": "MON, TUE, WED, THU, FRI, SAT",
+        "wheelchair_accessible": "No",
+        "signup_required": "Unknown",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "Unknown",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_50",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.090665,
+          49.281478
+        ]
+      },
+      "properties": {
+        "id": "foodbank_50",
+        "facility_type": "food_banks",
+        "name": "Quest Non-Profit Grocery Markets (Hastings)",
+        "organization": "Quest Food Exchange",
+        "description": "Mon-Fri: 9am-6pm. Sat 10am-5pm. Sun and holidays closed. Referral required to shop. For more information on referrals, please visit:  questoutreach.org/refer-clients/",
+        "address": "",
+        "local_area": "Strathcona",
+        "provides_meals": "No",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": null,
+        "days_open": "MON, TUE, WED, THU, FRI, SAT, SUN",
+        "wheelchair_accessible": "No",
+        "signup_required": "Unknown",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "Yes",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_51",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.124115,
+          49.27761
+        ]
+      },
+      "properties": {
+        "id": "foodbank_51",
+        "facility_type": "food_banks",
+        "name": "Ribbon Community - Supplementary Grocery Program",
+        "organization": "Ribbon Community",
+        "description": "Groceries include protein, milk, eggs, and produce. Grocery bags available for pick up on scheduled days. See current schedule at https://www.ribboncommunity.org/grocery. To do an intake and assess eligibility, contact (604) 893-2201 and/or welcome@ribboncommunity.org",
+        "address": "",
+        "local_area": "Downtown",
+        "provides_meals": "No",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": 0.0,
+        "days_open": "Unknown",
+        "wheelchair_accessible": "Unknown",
+        "signup_required": "Yes",
+        "signup_phone_number": "(604) 893-2201",
+        "signup_email": "contact@aidsvancouver.org",
+        "requires_referral": "No",
+        "population_served": "Community Case Management clients and participants from The Corner",
+        "comment": "aims to address food security issues that our clients experience by providing over 16,000 supplemental grocery bags to approximately 1200 clients annually. Formerly known as AIDS Vancouver (as of March 2024)"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_52",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.104307,
+          49.241698
+        ]
+      },
+      "properties": {
+        "id": "foodbank_52",
+        "facility_type": "food_banks",
+        "name": "Riley Park Farmers Market - Nutrition Coupons",
+        "organization": "Vancouver Farmers Markets",
+        "description": "Farmers Market location accepting Nutrition Coupons. Enrolled households receive minimum of $27/week in vouchers. Market is open year-round, Saturdays 10am-2pm.",
+        "address": "",
+        "local_area": "Riley Park",
+        "provides_meals": "No",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": 0.0,
+        "days_open": "Unknown",
+        "wheelchair_accessible": "Unknown",
+        "signup_required": "Yes",
+        "signup_phone_number": "",
+        "signup_email": "https://bcfarmersmarket.org/coupon-program/get-involved/individuals/",
+        "requires_referral": "Unknown",
+        "population_served": "eligible enrolled families.",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_53",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.055868,
+          49.286007
+        ]
+      },
+      "properties": {
+        "id": "foodbank_53",
+        "facility_type": "food_banks",
+        "name": "Saige Community Food Bank - Food Hamper Pickup",
+        "organization": "Saige Community Food Bank",
+        "description": "Two-spirit, trans and gender diverse safe space program open for all individuals in need of healthy food options. A food hamper with fresh produce and baked goods available on the 2nd and 4th Fridays of the month. www.saigecommunityfoodbank.com",
+        "address": "",
+        "local_area": "Hastings-Sunrise",
+        "provides_meals": "No",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": 0.0,
+        "days_open": "FRI",
+        "wheelchair_accessible": "Unknown",
+        "signup_required": "Yes",
+        "signup_phone_number": "",
+        "signup_email": "fb@saigecommunityfoodbank.com",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": "Also can contact Ryan Hunter - saigecommunityfoodbank@gmail.com. Hosted at Kiwassa NH. No barrier safe space for transgender and gender non-conforming or queer individuals to access healthy food, as well as support from their LGBTQ2+ peers and allies.  It is also open to any individuals in need of food, or that cannot access government food banks because of barriers such as ID, lack of housing, income or other specifics needed to be accepted."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_54",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.101504,
+          49.282584
+        ]
+      },
+      "properties": {
+        "id": "foodbank_54",
+        "facility_type": "food_banks",
+        "name": "Salvation Army - Harbour Light, Meal Program",
+        "organization": "Salvation Army - Harbour LIght",
+        "description": "Mon-Fri at 11am; Sat 4pm.",
+        "address": "",
+        "local_area": "Downtown",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": 0.0,
+        "cost_of_hampers": null,
+        "days_open": "MON, TUE, WED, THU, FRI, SAT",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_55",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.090352,
+          49.256137
+        ]
+      },
+      "properties": {
+        "id": "foodbank_55",
+        "facility_type": "food_banks",
+        "name": "Salvation Army Boundless - Nourishing Hope Hampers",
+        "organization": "Salvation Army Boundless Vancouver Community and Family Ministeries",
+        "description": "Grocery hampers, pickup by appointment only.",
+        "address": "",
+        "local_area": "Riley Park",
+        "provides_meals": "No",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": 0.0,
+        "days_open": "Unknown",
+        "wheelchair_accessible": "Unknown",
+        "signup_required": "Yes",
+        "signup_phone_number": "(604) 872-7676",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": "Also contact pam@boundlessvancouver.ca. Update August 25th: Our breakfast and food hamper program will end October as we transition into Christmas. We will resume the hamper and breakfast program in the new year and will go until April or so. Then our office will undergo renovations for several months. We most likely will stop offering any food services during that period."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_56",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.15806,
+          49.265908
+        ]
+      },
+      "properties": {
+        "id": "foodbank_56",
+        "facility_type": "food_banks",
+        "name": "Seniors Lunch at Kitsilano Neighbourhood House",
+        "organization": "Kitsilano Neighbourhood House",
+        "description": "Tuesdays 11:00am – 1:00pm. Light exercise, engaging conversation, entertainment and a delicious meal with dessert! Drop-in, no registration required. Lunch schedule and menu can be found at https://www.kitshouse.org/seniors-55/ [kitshouse.org]. For more information contact: sarad@kitshouse.org or the front desk at Kits House. $7 per drop-in fee (annual $10 Kits House membership required)",
+        "address": "",
+        "local_area": "Kitsilano",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": null,
+        "cost_of_hampers": null,
+        "days_open": "TUE",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_57",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.092406,
+          49.28151
+        ]
+      },
+      "properties": {
+        "id": "foodbank_57",
+        "facility_type": "food_banks",
+        "name": "Sheway - Lunches",
+        "organization": "Sheway",
+        "description": "Mon-Fri 11:30am-1:30pm. Closed on holidays. Groceries are also available to eligible clients. For information contact (604) 216-1699 or drop in Mon-Fri between 10:30am-3pm.",
+        "address": "",
+        "local_area": "Strathcona",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": 0.0,
+        "cost_of_hampers": null,
+        "days_open": "MON, TUE, WED, THU, FRI",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "Sheway clients who have a current or recent history of drug and/or alcohol use and are pregnant or parenting",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_58",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.162112,
+          49.23813
+        ]
+      },
+      "properties": {
+        "id": "foodbank_58",
+        "facility_type": "food_banks",
+        "name": "St Mary's Kerrisdale - Community Meal",
+        "organization": "St Mary's Kerrisdale",
+        "description": "Every Tuesday, 11:30AM - 12:30PM. Free, sit-down hot lunch. Hot entree or soup, salad, bread, and sweets. Arrive 30 min prior to enjoy a coffee/tea with others. All welcome!",
+        "address": "",
+        "local_area": "Arbutus-Ridge",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": 0.0,
+        "cost_of_hampers": null,
+        "days_open": "TUE",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_59",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.17652,
+          49.263061
+        ]
+      },
+      "properties": {
+        "id": "foodbank_59",
+        "facility_type": "food_banks",
+        "name": "St. James Community Square Pantry",
+        "organization": "St. James Community Square",
+        "description": "Take what you need and give what you can to this pantry stocked with non-perishable foods, available 24/7. Located outside the community centre on Trutch Street. More info at www.sjcommunitysquare.org/",
+        "address": "",
+        "local_area": "Kitsilano",
+        "provides_meals": "No",
+        "provides_hampers": "No",
+        "cost_of_meals": null,
+        "cost_of_hampers": null,
+        "days_open": "Unknown",
+        "wheelchair_accessible": "Unknown",
+        "signup_required": "Unknown",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "Unknown",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_60",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.105802,
+          49.262358
+        ]
+      },
+      "properties": {
+        "id": "foodbank_60",
+        "facility_type": "food_banks",
+        "name": "Tenth Church - Oasis Cafe",
+        "organization": "Tenth Church",
+        "description": "Mon 5:30-7:30pm, Tues 11am-1pm. Dine in meals only. Access via the alley at Ontario street. For info contact oasis.cafe@tenth.ca.",
+        "address": "",
+        "local_area": "Mount Pleasant",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": 0.0,
+        "cost_of_hampers": null,
+        "days_open": "MON, TUE",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_61",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.095644,
+          49.282414
+        ]
+      },
+      "properties": {
+        "id": "foodbank_61",
+        "facility_type": "food_banks",
+        "name": "The Door is Open - Meal Program",
+        "organization": "The Door is Open",
+        "description": "Anyone on Mon, Tues, Thurs, Fri, Sat at 11am and Sun at 11:30am. Wed at 9am. More info at https://www.thedoorisopen.ca/free-lunch-program/",
+        "address": "",
+        "local_area": "Strathcona",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": 0.0,
+        "cost_of_hampers": null,
+        "days_open": "MON, TUE, WED, THU, FRI, SAT, SUN",
+        "wheelchair_accessible": "Unknown",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_62",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.102725,
+          49.283462
+        ]
+      },
+      "properties": {
+        "id": "foodbank_62",
+        "facility_type": "food_banks",
+        "name": "The Dugout - Hot Breakfast",
+        "organization": "The Dugout",
+        "description": "Daily hot meal at 10:30am. For info call (604) 685-5239.",
+        "address": "",
+        "local_area": "Downtown",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": 0.0,
+        "cost_of_hampers": null,
+        "days_open": "MON, TUE, WED, THU, FRI, SAT, SUN",
+        "wheelchair_accessible": "Unknown",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_63",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.070081,
+          49.276928
+        ]
+      },
+      "properties": {
+        "id": "foodbank_63",
+        "facility_type": "food_banks",
+        "name": "The Kettle Society - Meal Program",
+        "organization": "The Kettle Society",
+        "description": "Daily @ 11:30am Must sign up in morning prior to meal service. Required to provide name and have completed member orientation to centre (Wednesdays @ 2pm). Takeout available for $0.25. Meal cost $1.",
+        "address": "",
+        "local_area": "Grandview-Woodland",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": null,
+        "cost_of_hampers": null,
+        "days_open": "MON, TUE, WED, THU, FRI, SUN",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "Unknown",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": "CD contacted Christopher on 2020.10.23 to ask for updates. Awaiting response"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_64",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.137044,
+          49.264745
+        ]
+      },
+      "properties": {
+        "id": "foodbank_64",
+        "facility_type": "food_banks",
+        "name": "Three Links Foundation - Sunday Free Breakfast",
+        "organization": "Three Links Foundation",
+        "description": "Every Sunday, 9:30am to 11:30am. Warm breakfast for individuals experiencing homelessness, featuring items such as ham, egg, and cheese sandwiches, coffee, muffins, cereal, pancakes, hot chocolate, water, and juice.",
+        "address": "",
+        "local_area": "Fairview",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": 0.0,
+        "cost_of_hampers": null,
+        "days_open": "SUN",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_65",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.061909,
+          49.258345
+        ]
+      },
+      "properties": {
+        "id": "foodbank_65",
+        "facility_type": "food_banks",
+        "name": "Trout Lake Farmers Market - Nutrition Coupons",
+        "organization": "Vancouver Farmers Markets",
+        "description": "Farmers Market location accepting Nutrition Coupons. Enrolled households receive minimum of $27/week in vouchers. Market is open Saturdays at 9am-2pm from April 1st - October 28th.",
+        "address": "",
+        "local_area": "Kensington-Cedar Cottage",
+        "provides_meals": "No",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": 0.0,
+        "days_open": "Unknown",
+        "wheelchair_accessible": "Unknown",
+        "signup_required": "Yes",
+        "signup_phone_number": "",
+        "signup_email": "https://bcfarmersmarket.org/coupon-program/get-involved/individuals/",
+        "requires_referral": "No",
+        "population_served": "eligible enrolled families.",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_66",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.091083,
+          49.281486
+        ]
+      },
+      "properties": {
+        "id": "foodbank_66",
+        "facility_type": "food_banks",
+        "name": "Union Gospel Mission - Meal Program",
+        "organization": "Union Gospel Mission",
+        "description": "Lunch every day at 11am (tickets at 10:45am). Dinner M-F at 6pm (tickets at 5:45pm), Sat-Sun at 4pm (tickets at 3:45pm). For info call (604) 253-3323.",
+        "address": "",
+        "local_area": "Strathcona",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": 0.0,
+        "cost_of_hampers": null,
+        "days_open": "MON, TUE, WED, THU, FRI, SAT, SUN",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_67",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.162112,
+          49.23813
+        ]
+      },
+      "properties": {
+        "id": "foodbank_67",
+        "facility_type": "food_banks",
+        "name": "Vancouver Community Fridge - Kerrisdale",
+        "organization": "Vancouver Community Fridge Project",
+        "description": "Fridge and pantry stocked with free food, located in in a brown shed to the left of the pantry area at St. Mary's. Accessible 24/7. More info at https://vcfp.square.site/ [vcfp.square.site]. Free",
+        "address": "",
+        "local_area": "Arbutus-Ridge",
+        "provides_meals": "No",
+        "provides_hampers": "No",
+        "cost_of_meals": null,
+        "cost_of_hampers": null,
+        "days_open": "Unknown",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_68",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.17351,
+          49.260299
+        ]
+      },
+      "properties": {
+        "id": "foodbank_68",
+        "facility_type": "food_banks",
+        "name": "Vancouver Community Fridge - Kitsilano",
+        "organization": "Vancouver Community Fridge Project",
+        "description": "Fridge and pantry stocked with free food, located in the alley behind the red house and garden at the above address. Accessible 24/7. More info at https://vcfp.square.site/",
+        "address": "",
+        "local_area": "Kitsilano",
+        "provides_meals": "No",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": 0.0,
+        "days_open": "MON, TUE, WED, THU, FRI, SAT, SUN",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_69",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.099033,
+          49.267441
+        ]
+      },
+      "properties": {
+        "id": "foodbank_69",
+        "facility_type": "food_banks",
+        "name": "Vancouver Community Fridge - Mount Pleasant",
+        "organization": "Vancouver Community Fridge Project",
+        "description": "The fridge, freezer and pantry are maintained in partnership by Food Stash Foundation and the Vancouver Community Fridge Project. Food is free and everyone is welcome to take what they need and leave what they can. The Fridge is accessible 24/7 and it is in the alley between E 4th Avenue and Scotia Street at the CoFood Community Garden. More info: https://www.foodstash.ca/fridge.",
+        "address": "",
+        "local_area": "Mount Pleasant",
+        "provides_meals": "No",
+        "provides_hampers": "No",
+        "cost_of_meals": null,
+        "cost_of_hampers": null,
+        "days_open": "MON, TUE, WED, THU, FRI, SUN",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_70",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.206627,
+          49.265793
+        ]
+      },
+      "properties": {
+        "id": "foodbank_70",
+        "facility_type": "food_banks",
+        "name": "Vancouver Community Fridge - Point Grey",
+        "organization": "Vancouver Community Fridge Project",
+        "description": "Fridge, freezer, and pantry stocked with free food. Located inside the carpark. More info at https://vcfp.square.site/ [vcfp.square.site]. Free",
+        "address": "",
+        "local_area": "West Point Grey",
+        "provides_meals": "No",
+        "provides_hampers": "No",
+        "cost_of_meals": null,
+        "cost_of_hampers": null,
+        "days_open": "Unknown",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_71",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.064669,
+          49.248889
+        ]
+      },
+      "properties": {
+        "id": "foodbank_71",
+        "facility_type": "food_banks",
+        "name": "Vancouver Community Fridge - Victoria Drive",
+        "organization": "Vancouver Community Fridge Project",
+        "description": "Fridge, freezer, and pantry stocked with free food and home cooked meals, located in the alley behind the green house, accessible 24/7. More info at https://vcfp.square.site/",
+        "address": "",
+        "local_area": "Kensington-Cedar Cottage",
+        "provides_meals": "No",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": 0.0,
+        "days_open": "TUE, WED, THU, FRI, SAT, SUN",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_72",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10058,
+          49.251762
+        ]
+      },
+      "properties": {
+        "id": "foodbank_72",
+        "facility_type": "food_banks",
+        "name": "Vancouver Community Fridge – LMNH",
+        "organization": "Vancouver Community Fridge Project",
+        "description": "Fridge, freezer, and pantry stocked with free food. Temporarily located in front of the Soap Dispensary. Available 24/7. More info at https://vcfp.square.site/",
+        "address": "",
+        "local_area": "Riley Park",
+        "provides_meals": "No",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": null,
+        "days_open": "MON, TUE, WED, THU, FRI, SAT, SUN",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_73",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.093243,
+          49.281526
+        ]
+      },
+      "properties": {
+        "id": "foodbank_73",
+        "facility_type": "food_banks",
+        "name": "Vancouver Second Mile Society - Meal Program",
+        "organization": "Vancouver Second Mile Society",
+        "description": "",
+        "address": "",
+        "local_area": "Strathcona",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": 4.0,
+        "cost_of_hampers": null,
+        "days_open": "Unknown",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "Yes",
+        "signup_phone_number": "(604) 254-2194",
+        "signup_email": "info@vsms.ca",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_74",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.070553,
+          49.262635
+        ]
+      },
+      "properties": {
+        "id": "foodbank_74",
+        "facility_type": "food_banks",
+        "name": "VCH - Healthiest Babies Possible Food Support",
+        "organization": "Vancouver Coastal Health",
+        "description": "Available on the 2nd floor. Food access and other supports available. To sign up, drop in or phone Mon to Fri 8:30-4:30PM.",
+        "address": "",
+        "local_area": "Grandview-Woodland",
+        "provides_meals": "No",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": 0.0,
+        "days_open": "MON, WED, THU, FRI",
+        "wheelchair_accessible": "Unknown",
+        "signup_required": "Yes",
+        "signup_phone_number": "604 675 3982",
+        "signup_email": "hbp@vch.ca",
+        "requires_referral": "No",
+        "population_served": "prenatal or pregnant women and youth facing challenging life circumstances",
+        "comment": "Info at http://www.vch.ca/Locations-Services/result?res_id=1332"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_75",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.100499,
+          49.281661
+        ]
+      },
+      "properties": {
+        "id": "foodbank_75",
+        "facility_type": "food_banks",
+        "name": "Washington Community Market",
+        "organization": "Portland Hotel Society (PHS)",
+        "description": "Low cost essential food and household supplies, Mon-Fri 9am-6pm. Sat 10am-5pm. For info contact (604) 428-9605.",
+        "address": "",
+        "local_area": "Downtown",
+        "provides_meals": "No",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": null,
+        "days_open": "MON, TUE, WED, THU, FRI, SAT",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "",
+        "comment": "Transitioned operational management from PHS to CIRES in 2021"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_76",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.128928,
+          49.282455
+        ]
+      },
+      "properties": {
+        "id": "foodbank_76",
+        "facility_type": "food_banks",
+        "name": "West End Farmers Market - Nutrition Coupons",
+        "organization": "Vancouver Farmers Markets",
+        "description": "Farmers Market location accepting Nutrition Coupons. Enrolled households receive minimum of $27/week in vouchers. Market is open Saturdays at 9am-2pm, from May 20th - October 28th.",
+        "address": "",
+        "local_area": "West End",
+        "provides_meals": "No",
+        "provides_hampers": "Yes",
+        "cost_of_meals": null,
+        "cost_of_hampers": 0.0,
+        "days_open": "Unknown",
+        "wheelchair_accessible": "Unknown",
+        "signup_required": "Yes",
+        "signup_phone_number": "",
+        "signup_email": "https://bcfarmersmarket.org/coupon-program/get-involved/individuals/",
+        "requires_referral": "Unknown",
+        "population_served": "eligible enrolled families.",
+        "comment": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "foodbank_77",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.092406,
+          49.28151
+        ]
+      },
+      "properties": {
+        "id": "foodbank_77",
+        "facility_type": "food_banks",
+        "name": "YWCA Crabtree Corner - Meal Programs",
+        "organization": "YWCA Metro Vancouver",
+        "description": "Breakfast: Mon-Fri, 9-10am. Lunch: Mon-Fri: 1-2:pm. No lunch on income assistance days.",
+        "address": "",
+        "local_area": "Strathcona",
+        "provides_meals": "Yes",
+        "provides_hampers": "No",
+        "cost_of_meals": 0.0,
+        "cost_of_hampers": null,
+        "days_open": "MON, TUE, WED, THU, FRI",
+        "wheelchair_accessible": "Yes",
+        "signup_required": "No",
+        "signup_phone_number": "",
+        "signup_email": "",
+        "requires_referral": "No",
+        "population_served": "Women and children",
+        "comment": ""
+      }
+    }
+  ]
+}

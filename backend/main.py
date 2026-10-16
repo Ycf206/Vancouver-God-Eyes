@@ -41,6 +41,7 @@ import skytrain_service
 from weather_service import weather_service
 from shipping_service import shipping_service
 from news_service import news_service
+from events_service import events_service
 
 import math
 def calculate_bearing(p1, p2):
@@ -1200,12 +1201,12 @@ CURATED_STATIC_TYPES = (
     "local_area_boundary", "fuel", "ev_charging", "tesla", "marine_terminals", 
     "one_way_streets", "snow_removal_routes", "crime_areas", "water_distribution_mains", 
     "sewer_mains", "traffic_speed_limits", "bike_racks", "postal_code_fsa", "wireless_facilities",
-    "traffic_crosswalks", "litter_containers"
+    "traffic_crosswalks", "litter_containers", "food_banks"
 )
 POINT_CURATED_TYPES = (
     "hospitals", "police", "disaster_hubs", "car_sharing", "aed", 
     "fuel", "ev_charging", "tesla", "marine_terminals", "bike_racks", "wireless_facilities",
-    "traffic_crosswalks", "litter_containers"
+    "traffic_crosswalks", "litter_containers", "food_banks"
 )
 
 def sync_curated_point_types(db: Session):
@@ -1218,7 +1219,7 @@ def sync_curated_point_types(db: Session):
                     import json
                     with open(static_geojson_path, "r", encoding="utf-8") as f:
                         static_geojson = json.load(f)
-                    if facility_type in ("aed", "car_sharing", "bike_racks", "wireless_facilities", "traffic_crosswalks", "litter_containers"):
+                    if facility_type in ("aed", "car_sharing", "bike_racks", "wireless_facilities", "traffic_crosswalks", "litter_containers", "food_banks"):
                         db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).delete()
                     for feat in static_geojson.get("features", []):
                         props = feat.get("properties", {})
@@ -1747,6 +1748,11 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                 icon = "🏠"
                 layer_key = "homelessShelters"
                 zoom = 16
+            elif ftype == 'food_banks':
+                badge = "食物銀行"
+                icon = "🥫"
+                layer_key = "foodBanks"
+                zoom = 16
             elif ftype == 'postal_code_fsa':
                 badge = "郵遞編號"
                 icon = "📮"
@@ -1825,6 +1831,13 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                     sub_parts.append(str(f.details.get('category')))
                 if f.details.get('meals'):
                     sub_parts.append(str(f.details.get('meals')))
+            elif ftype == 'food_banks' and f.details and isinstance(f.details, dict):
+                if f.details.get('organization'):
+                    sub_parts.append(str(f.details.get('organization')))
+                if f.details.get('provides_meals') == 'Yes':
+                    sub_parts.append('供餐 🍲')
+                if f.details.get('provides_hampers') == 'Yes':
+                    sub_parts.append('食物籃 🧺')
             elif f.local_area:
                 sub_parts.append(f.local_area)
             if f.details and isinstance(f.details, dict):
@@ -2871,10 +2884,23 @@ def get_shipping_vessels():
 @app.get("/api/news/latest")
 def get_latest_news(refresh: bool = False):
     """
-    取得溫哥華各大即時新聞來源：604 Now, CityNews Vancouver, Global News BC
+    取得溫哥華各大即時新聞來源：604 Now, CityNews Vancouver, Global News BC, Daily Hive
     由最新至最舊排序，點選可直接開啟原文網頁
     """
     return news_service.get_latest_news(force_refresh=refresh)
+
+
+# ==========================================
+# 🎟️ Vancouver Events Aggregator (Destination Vancouver & Eventbrite)
+# ==========================================
+@app.get("/api/events/latest")
+def get_latest_events(refresh: bool = False):
+    """
+    取得溫哥華熱門即時活動：Destination Vancouver (溫哥華旅遊局) 與 Eventbrite Vancouver
+    包含音樂演出、體育賽事、節慶慶典、藝文展演等
+    """
+    return events_service.get_latest_events(force_refresh=refresh)
+
 
 
 

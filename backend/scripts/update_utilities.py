@@ -43,6 +43,12 @@ UTILITIES_DATASETS = [
         "name": "污水管道 (Sewer Mains)",
         "filename": "vancouver_sewer_mains.geojson",
         "update_frequency": "每 3 個月 (Quarterly)"
+    },
+    {
+        "id": "free-and-low-cost-food-programs",
+        "name": "食物銀行與免費餐點計畫 (Food Banks & Low-Cost Food Programs)",
+        "filename": "vancouver_food_banks.geojson",
+        "update_frequency": "每 3 個月 (Quarterly)"
     }
 ]
 

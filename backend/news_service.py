@@ -31,6 +31,14 @@ FEEDS = [
         "badge_color": "bg-sky-500/20 text-sky-300 border-sky-500/30",
         "url": "https://globalnews.ca/bc/feed/",
         "site_url": "https://globalnews.ca/bc/"
+    },
+    {
+        "id": "dailyhive",
+        "name": "Daily Hive",
+        "category_default": "溫哥華焦點",
+        "badge_color": "bg-amber-500/20 text-amber-300 border-amber-500/30",
+        "url": "https://dailyhive.com/feed",
+        "site_url": "https://dailyhive.com/vancouver/news"
     }
 ]
 
@@ -93,6 +101,11 @@ class NewsService:
                     link = (it.findtext("link") or "").strip()
                     if not title or not link:
                         continue
+
+                    # Filter Daily Hive items to Vancouver local news
+                    if feed_info["id"] == "dailyhive":
+                        if "/vancouver/" not in link and "vancouver" not in title.lower():
+                            continue
 
                     pub_raw = it.findtext("pubDate") or ""
                     parsed_ts = 0

@@ -401,6 +401,7 @@ export default function AppMap() {
       else if (type === 'schools' && !layers.schools) facilityClosed = true;
       else if (type === 'libraries' && !layers.libraries) facilityClosed = true;
       else if (type === 'food_vendors' && !layers.foodVendors) facilityClosed = true;
+      else if (type === 'food_banks' && !layers.foodBanks) facilityClosed = true;
       else if (type === 'homeless_shelters' && !layers.homelessShelters) facilityClosed = true;
       else if (type === 'traffic_cameras' && !layers.trafficCameras) facilityClosed = true;
       else if (type === 'safety_cameras' && !layers.safetyCameras) facilityClosed = true;
@@ -1424,6 +1425,7 @@ export default function AppMap() {
     style.sources['schools'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/schools` };
     style.sources['libraries'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/libraries` };
     style.sources['food-vendors'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/food_vendors` };
+    style.sources['food-banks'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/food_banks` };
     style.sources['homeless-shelters'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/homeless_shelters` };
     style.sources['car-sharing'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/car_sharing?v=2` };
     style.sources['police'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/police` };
@@ -2496,6 +2498,36 @@ export default function AppMap() {
       });
     }
 
+    // Life Facilities: Food Banks (食物銀行與免費餐點計畫)
+    if (layers.foodBanks) {
+      style.layers.push({
+        id: 'food-banks-layer',
+        type: 'circle',
+        source: 'food-banks',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
+          'circle-color': '#10b981',
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'food-banks-symbol-layer',
+        type: 'symbol',
+        source: 'food-banks',
+        minzoom: 15,
+        layout: {
+          'text-field': '🥫',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 15, 11, 17, 14],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+    }
+
     // Life Facilities: Homeless Shelters (無家者庇護所)
     if (layers.homelessShelters) {
       style.layers.push({
@@ -2918,6 +2950,7 @@ export default function AppMap() {
     layers.schools,
     layers.libraries,
     layers.foodVendors,
+    layers.foodBanks,
     layers.aed,
     layers.homelessShelters,
     layers.contours,
@@ -3001,6 +3034,8 @@ export default function AppMap() {
           'libraries-symbol-layer',
           'food-vendors-layer',
           'food-vendors-symbol-layer',
+          'food-banks-layer',
+          'food-banks-symbol-layer',
           'homeless-shelters-layer',
           'homeless-shelters-symbol-layer',
           'car-sharing-layer',
@@ -3233,6 +3268,7 @@ export default function AppMap() {
             layerId.startsWith('schools') ||
             layerId.startsWith('libraries') ||
             layerId.startsWith('food-vendors') ||
+            layerId.startsWith('food-banks') ||
             layerId.startsWith('aed') ||
             layerId.startsWith('homeless-shelters')
           ) {
@@ -4542,6 +4578,7 @@ export default function AppMap() {
                     selectedFacility.facility_type === 'schools' ? 'bg-blue-500' :
                     selectedFacility.facility_type === 'libraries' ? 'bg-amber-500' :
                     selectedFacility.facility_type === 'food_vendors' ? 'bg-orange-500' :
+                    selectedFacility.facility_type === 'food_banks' ? 'bg-emerald-500' :
                     selectedFacility.facility_type === 'aed' ? 'bg-red-600' :
                     selectedFacility.facility_type === 'contours' ? 'bg-teal-700' :
                     selectedFacility.facility_type === 'homeless_shelters' ? 'bg-rose-500' : 'bg-violet-500'
@@ -5835,6 +5872,102 @@ export default function AppMap() {
                   )}
                 </div>
               )}
+
+              {/* Food Banks & Low-Cost Food Programs Details */}
+              {selectedFacility.facility_type === 'food_banks' && (() => {
+                const props = selectedFacility.properties || {};
+                const org = props.organization;
+                const desc = props.description;
+                const addr = props.address;
+                const providesMeals = props.provides_meals === 'Yes';
+                const providesHampers = props.provides_hampers === 'Yes';
+                const daysOpen = props.days_open;
+                const phone = props.signup_phone_number;
+                const email = props.signup_email;
+                const pop = props.population_served;
+
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    <div className="bg-emerald-50/90 p-2.5 rounded-lg border border-emerald-200 flex flex-col gap-1.5 text-[11px]">
+                      {org && (
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-600">主辦機構</span>
+                          <span className="font-bold text-emerald-950 bg-emerald-100/80 px-1.5 py-0.5 rounded">
+                            {org}
+                          </span>
+                        </div>
+                      )}
+                      {selectedFacility.local_area && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>所在社區</span>
+                          <span className="font-medium text-gray-800">{selectedFacility.local_area}</span>
+                        </div>
+                      )}
+                      {addr && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>詳細地址</span>
+                          <span className="font-medium text-gray-800 text-right">{addr}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-1.5 text-[11px]">
+                      <div className="bg-gray-50 p-2 rounded border border-gray-100 flex items-center justify-between">
+                        <span className="text-gray-500">免費/平價熱食</span>
+                        <span className={`font-bold ${providesMeals ? 'text-emerald-700' : 'text-gray-500'}`}>
+                          {providesMeals ? '🍲 有供餐' : '無'}
+                        </span>
+                      </div>
+                      <div className="bg-gray-50 p-2 rounded border border-gray-100 flex items-center justify-between">
+                        <span className="text-gray-500">食材食物籃</span>
+                        <span className={`font-bold ${providesHampers ? 'text-emerald-700' : 'text-gray-500'}`}>
+                          {providesHampers ? '🧺 有提供' : '無'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {daysOpen && (
+                      <div className="bg-gray-50 p-2 rounded border border-gray-100 text-[11px] flex justify-between items-center">
+                        <span className="text-gray-500">開放時間</span>
+                        <span className="font-semibold text-gray-800 font-mono">{daysOpen}</span>
+                      </div>
+                    )}
+
+                    {desc && (
+                      <div className="bg-gray-50/90 p-2 rounded border border-gray-100 text-[11px] text-gray-700 leading-relaxed">
+                        {desc}
+                      </div>
+                    )}
+
+                    {pop && (
+                      <div className="text-[10px] text-gray-500 bg-gray-50 p-1.5 rounded border border-gray-100">
+                        服務對象：{pop}
+                      </div>
+                    )}
+
+                    {(phone || email) && (
+                      <div className="flex flex-col gap-1 bg-gray-50 p-2 rounded border border-gray-100 text-[11px]">
+                        {phone && (
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-500">預約諮詢電話</span>
+                            <a href={`tel:${phone}`} className="font-bold text-emerald-600 hover:underline">
+                              📞 {phone}
+                            </a>
+                          </div>
+                        )}
+                        {email && (
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-500">聯絡 Email</span>
+                            <a href={`mailto:${email}`} className="font-mono text-emerald-600 hover:underline">
+                              ✉️ {email}
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
 
               {/* AED (自動體外心臟去顫器) Details */}
               {selectedFacility.facility_type === 'aed' && (() => {
