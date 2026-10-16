@@ -1659,31 +1659,67 @@ def get_webcam_images(url: str):
         return {"images": []}
 
 from fastapi import Response
+from fastapi.responses import FileResponse
+
+webcam_image_bytes_cache = {}
 
 @app.get("/api/webcam/proxy")
 def proxy_webcam_image(url: str):
     """
-    代理交通攝影機圖片，避免瀏覽器跨域 (CORS) 或 Referrer 限制
+    代理交通攝影機圖片，避免瀏覽器跨域 (CORS) 或 Referrer 限制，並提供快取與充足逾時時間
     """
     if not url:
         return Response(status_code=400)
+    now = time.time()
+    if url in webcam_image_bytes_cache:
+        ts, content, mtype = webcam_image_bytes_cache[url]
+        if now - ts < 180 and content:
+            return Response(
+                content=content,
+                media_type=mtype,
+                headers={"Cache-Control": "public, max-age=180"}
+            )
     try:
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
             "Referer": "https://trafficcams.vancouver.ca/"
         }
-        r = requests.get(url, headers=headers, timeout=10)
-        return Response(content=r.content, media_type=r.headers.get("content-type", "image/jpeg"))
+        r = requests.get(url, headers=headers, timeout=18)
+        if r.status_code == 200 and r.content:
+            mtype = r.headers.get("content-type", "image/jpeg")
+            webcam_image_bytes_cache[url] = (now, r.content, mtype)
+            return Response(
+                content=r.content,
+                media_type=mtype,
+                headers={"Cache-Control": "public, max-age=180"}
+            )
+        return Response(status_code=404)
     except Exception as e:
         print(f"Webcam proxy error for {url}: {e}")
         return Response(status_code=404)
 
 hospital_waittimes_cache = {"timestamp": 0, "data": {}}
 
+def _format_minutes_hm(mins_val):
+    if mins_val is None:
+        return None
+    try:
+        m_int = int(mins_val)
+        hours = m_int // 60
+        mins = m_int % 60
+        if hours > 0 and mins > 0:
+            return f"{hours}h {mins}m"
+        elif hours > 0:
+            return f"{hours}h"
+        else:
+            return f"{mins}m"
+    except Exception:
+        return None
+
 @app.get("/api/hospitals/waittimes")
 def get_hospital_waittimes():
     """
-    獲取溫哥華各大醫院急診與 UPCC 急症暨基層醫療中心即時預估等候時間 (edwaittimes.ca & erstat.ca)
+    獲取溫哥華各大醫院急診與 UPCC 急症暨基層醫療中心即時預估等候時間 (https://www.edwaittimes.ca & erstat.ca)
     每 15 分鐘自動快取更新一次
     """
     now = time.time()
@@ -1700,43 +1736,45 @@ def get_hospital_waittimes():
 
     hosp_map = {}
 
-    # 1. Fetch live wait times from official BC ED/UPCC API (edwaittimes.ca)
-    try:
-        url_ed = "https://edwaittimes.ca/api/wait-times"
-        resp_ed = requests.get(url_ed, headers=headers, timeout=10)
-        if resp_ed.status_code == 200:
-            ed_items = resp_ed.json()
-            for it in ed_items:
-                name = it.get('name')
-                if not name:
-                    continue
-                wt = it.get('waitTime') or {}
-                wt_min = wt.get('waitTimeMinutes')
-                status = wt.get('status') or 'normal'
-                if wt_min is not None:
-                    hours = wt_min // 60
-                    mins = wt_min % 60
-                    if hours > 0 and mins > 0:
-                        wt_str = f"{hours}h {mins}m"
-                    elif hours > 0:
-                        wt_str = f"{hours}h"
-                    else:
-                        wt_str = f"{mins}m"
-                else:
-                    wt_str = "門診正常"
+    # 1. Fetch live wait times from official BC ED/UPCC API (https://www.edwaittimes.ca/api/wait-times)
+    for url_ed in ("https://www.edwaittimes.ca/api/wait-times", "https://edwaittimes.ca/api/wait-times"):
+        try:
+            resp_ed = requests.get(url_ed, headers=headers, timeout=12)
+            if resp_ed.status_code == 200:
+                ed_items = resp_ed.json()
+                for it in ed_items:
+                    name = it.get('name')
+                    if not name:
+                        continue
+                    wt = it.get('waitTime') or {}
+                    wt_min = wt.get('waitTimeMinutes')
+                    elos_min = wt.get('elosMinutes')
+                    status = wt.get('status') or 'normal'
+                    wt_str = _format_minutes_hm(wt_min) or "門診正常"
+                    elos_str = _format_minutes_hm(elos_min)
 
-                hosp_map[name.lower()] = {
-                    "name": name,
-                    "type": it.get('type'),
-                    "wait_time": wt_str,
-                    "wait_minutes": wt_min,
-                    "status": status,
-                    "address": it.get('address'),
-                    "is_predicted": False,
-                    "url": it.get('website') or "https://edwaittimes.ca/times"
-                }
-    except Exception as e:
-        print(f"Error fetching edwaittimes: {e}")
+                    norm_key = name.strip().lower().replace("’", "'")
+                    entry_obj = {
+                        "name": name,
+                        "slug": it.get('slug'),
+                        "type": it.get('type'),
+                        "wait_time": wt_str,
+                        "wait_minutes": wt_min,
+                        "elos_time": elos_str,
+                        "elos_minutes": elos_min,
+                        "status": status,
+                        "address": it.get('address'),
+                        "is_predicted": False,
+                        "url": "https://www.edwaittimes.ca"
+                    }
+                    hosp_map[norm_key] = entry_obj
+                    if "children" in norm_key:
+                        hosp_map["bc children's hospital"] = entry_obj
+                        hosp_map["bcch"] = entry_obj
+                if hosp_map:
+                    break
+        except Exception as e:
+            print(f"Error fetching {url_ed}: {e}")
 
     # 2. Supplement or fallback with erstat.ca for additional hospital emergency wait predictions
     try:
@@ -1763,9 +1801,7 @@ def get_hospital_waittimes():
                     elif 'moderate' in classes: status = 'moderate'
                     elif 'quick' in classes: status = 'quick'
 
-                    full_url = f"https://erstat.ca{href}" if href.startswith('/') else href
-
-                    k = name.lower()
+                    k = name.lower().replace("’", "'")
                     if k not in hosp_map or hosp_map[k]["wait_time"] in ("門診正常", "N/A"):
                         hosp_map[k] = {
                             "name": name,
@@ -1773,7 +1809,7 @@ def get_hospital_waittimes():
                             "wait_time": wait_time,
                             "status": status,
                             "is_predicted": 'predicted' in classes,
-                            "url": full_url
+                            "url": "https://www.edwaittimes.ca"
                         }
             except Exception:
                 pass
@@ -1810,8 +1846,10 @@ _contours_caches = {
     "10m": {"data": None, "mtime": 0},
 }
 _curated_static_caches = {}
+_db_synced_curated_types = set()
 
 CURATED_STATIC_TYPES = ("bikeways", "hospitals", "police", "disaster_hubs", "car_sharing", "aed", "local_area_boundary", "fuel", "ev_charging", "tesla", "marine_terminals", "one_way_streets", "snow_removal_routes", "crime_areas", "water_distribution_mains", "sewer_mains")
+POINT_CURATED_TYPES = ("hospitals", "police", "disaster_hubs", "car_sharing", "aed", "fuel", "ev_charging", "tesla", "marine_terminals")
 
 @app.get("/api/geojson/road/{facility_type}")
 def get_road_facilities_geojson(facility_type: str, interval: str = "10m", db: Session = Depends(database.get_db)):
@@ -1832,19 +1870,8 @@ def get_road_facilities_geojson(facility_type: str, interval: str = "10m", db: S
         if not os.path.exists(static_geojson_path) and raw_int == "10m":
             static_geojson_path = os.path.join(os.path.dirname(__file__), "data", "vancouver_contours.geojson")
 
-        cache_ref = _contours_caches.get(raw_int, _contours_caches["10m"])
         if os.path.exists(static_geojson_path):
-            try:
-                mtime = os.path.getmtime(static_geojson_path)
-                if cache_ref["data"] and cache_ref["mtime"] == mtime:
-                    return cache_ref["data"]
-                with open(static_geojson_path, "r", encoding="utf-8") as f:
-                    data = json.load(f)
-                cache_ref["data"] = data
-                cache_ref["mtime"] = mtime
-                return data
-            except Exception as e:
-                print(f"Error reading contour {filename}: {e}")
+            return FileResponse(static_geojson_path, media_type="application/json")
         return {"type": "FeatureCollection", "features": []}
 
     # 2. Prioritize verified curated static GeoJSON files (hospitals/UPCC, police, etc.)
@@ -1852,48 +1879,38 @@ def get_road_facilities_geojson(facility_type: str, interval: str = "10m", db: S
         filename = f"vancouver_{facility_type}.geojson"
         static_geojson_path = os.path.join(os.path.dirname(__file__), "data", filename)
         if os.path.exists(static_geojson_path):
-            try:
-                mtime = os.path.getmtime(static_geojson_path)
-                cache_ref = _curated_static_caches.setdefault(facility_type, {"data": None, "mtime": 0})
-                if not cache_ref["data"] or cache_ref["mtime"] != mtime:
-                    with open(static_geojson_path, "r", encoding="utf-8") as f:
-                        cache_ref["data"] = json.load(f)
-                    cache_ref["mtime"] = mtime
-
-                static_geojson = cache_ref["data"]
-                
-                # Ensure DB is synchronized with all curated items (e.g. UPCCs) for /api/search
+            if facility_type in POINT_CURATED_TYPES and facility_type not in _db_synced_curated_types:
                 try:
-                    feat_count = len(static_geojson.get("features", []))
-                    db_count = db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).count()
-                    if db_count < feat_count:
-                        for feat in static_geojson.get("features", []):
-                            props = feat.get("properties", {})
-                            geom_type = feat.get("geometry", {}).get("type")
-                            coords = feat.get("geometry", {}).get("coordinates", [])
-                            if geom_type == "Point" and len(coords) >= 2 and isinstance(coords[0], (int, float)):
-                                lon, lat = coords[0], coords[1]
-                                fac_id = feat.get("id") or props.get("id") or f"{facility_type}_{lon}_{lat}"
-                                fac = models.RoadFacility(
-                                    id=str(fac_id),
-                                    facility_type=facility_type,
-                                    name=props.get("name", "Unknown"),
-                                    local_area=props.get("local_area") or props.get("municipality", ""),
-                                    lat=lat,
-                                    lon=lon,
-                                    geom=f"SRID=4326;POINT({lon} {lat})",
-                                    details={k: v for k, v in props.items() if k not in ("id", "facility_type", "name", "local_area")},
-                                    last_updated=datetime.utcnow()
-                                )
-                                db.merge(fac)
-                        db.commit()
+                    with open(static_geojson_path, "r", encoding="utf-8") as f:
+                        static_geojson = json.load(f)
+                    if facility_type == "aed":
+                        db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == "aed").delete()
+                    for feat in static_geojson.get("features", []):
+                        props = feat.get("properties", {})
+                        geom_type = feat.get("geometry", {}).get("type")
+                        coords = feat.get("geometry", {}).get("coordinates", [])
+                        if geom_type == "Point" and len(coords) >= 2 and isinstance(coords[0], (int, float)):
+                            lon, lat = coords[0], coords[1]
+                            fac_id = feat.get("id") or props.get("id") or f"{facility_type}_{lon}_{lat}"
+                            fac = models.RoadFacility(
+                                id=str(fac_id),
+                                facility_type=facility_type,
+                                name=props.get("name", "Unknown"),
+                                local_area=props.get("local_area") or props.get("municipality", ""),
+                                lat=lat,
+                                lon=lon,
+                                geom=f"SRID=4326;POINT({lon} {lat})",
+                                details={k: v for k, v in props.items() if k not in ("id", "facility_type", "name", "local_area")},
+                                last_updated=datetime.utcnow()
+                            )
+                            db.merge(fac)
+                    db.commit()
+                    _db_synced_curated_types.add(facility_type)
                 except Exception as e:
                     db.rollback()
                     print(f"Error syncing {facility_type} to DB: {e}")
 
-                return static_geojson
-            except Exception as e:
-                print(f"Error reading curated {filename}: {e}")
+            return FileResponse(static_geojson_path, media_type="application/json")
 
     facilities = db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).all()
     

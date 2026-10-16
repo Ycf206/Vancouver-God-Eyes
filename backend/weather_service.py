@@ -276,6 +276,9 @@ class WeatherService:
                         })
                     if forecast_list:
                         weather_data["forecast"] = forecast_list
+        except Exception:
+            pass
+
         # 4. 嘗試向加拿大環境部 weather.gc.ca 查詢溫哥華即時空氣質素健康指數 (AQHI bcaq-001)
         try:
             r_aqhi = requests.get(

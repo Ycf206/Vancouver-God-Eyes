@@ -673,32 +673,104 @@ export default function AppMap() {
     return vehicles;
   }, [vehicles, searchedBusRoute]);
 
-  // States for Traffic Camera Images
+  // Initial System API & Map Data Loading Screen States (預留額外緩衝時間取得 API 與圖層資料)
+  const [isInitialApiLoading, setIsInitialApiLoading] = useState(true);
+  const [apiLoadingProgress, setApiLoadingProgress] = useState(18);
+  const [apiLoadingText, setApiLoadingText] = useState('正在連線至溫哥華即時地理與交通 API...');
+
+  useEffect(() => {
+    const t1 = setTimeout(() => {
+      setApiLoadingProgress(55);
+      setApiLoadingText('正在載入市政設施圖層與即時大眾運輸動態...');
+    }, 550);
+    const t2 = setTimeout(() => {
+      setApiLoadingProgress(88);
+      setApiLoadingText('預留額外時間同步即時路況影像與氣象資料...');
+    }, 1150);
+    const t3 = setTimeout(() => {
+      setApiLoadingProgress(100);
+      setIsInitialApiLoading(false);
+    }, 1850);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+    };
+  }, []);
+
+  // States for Traffic Camera Images (含圖片預載緩衝與個別圖片載入狀態)
   const [webcamImages, setWebcamImages] = useState<Array<{url: string, direction: string, alt: string}>>([]);
   const [loadingWebcam, setLoadingWebcam] = useState(false);
+  const [webcamLoadedCount, setWebcamLoadedCount] = useState(0);
+  const [webcamImgReadyMap, setWebcamImgReadyMap] = useState<Record<number, boolean>>({});
   const [webcamRefreshKey, setWebcamRefreshKey] = useState(0);
 
-  // Fetch webcam images when a traffic camera is selected
+  // Fetch webcam images when a traffic camera is selected, and reserve extra time to preload image bytes
   useEffect(() => {
+    let isCancelled = false;
     if (selectedFacility && selectedFacility.facility_type === 'traffic_cameras') {
       const pageUrl = selectedFacility.properties?.url;
       if (pageUrl) {
         setLoadingWebcam(true);
+        setWebcamLoadedCount(0);
+        setWebcamImgReadyMap({});
         const apiUrl = getApiUrl();
         fetch(`${apiUrl}/api/webcam/images?url=${encodeURIComponent(pageUrl)}`)
           .then(res => res.json())
           .then(data => {
-            setWebcamImages(data.images || []);
-            setLoadingWebcam(false);
+            if (isCancelled) return;
+            const imgs: Array<{url: string, direction: string, alt: string}> = data.images || [];
+            setWebcamImages(imgs);
+            if (imgs.length === 0) {
+              setLoadingWebcam(false);
+              return;
+            }
+            const hourlyTimestamp = Math.floor(Date.now() / 3600000);
+            let settled = 0;
+            const total = imgs.length;
+            const fallbackTimer = setTimeout(() => {
+              if (!isCancelled) setLoadingWebcam(false);
+            }, 2600);
+
+            imgs.forEach((img, idx) => {
+              const proxySrc = `${apiUrl}/api/webcam/proxy?url=${encodeURIComponent(img.url)}&t=${hourlyTimestamp}_${webcamRefreshKey}`;
+              const preloader = new window.Image();
+              const onDone = (ok: boolean) => {
+                if (isCancelled) return;
+                settled += 1;
+                setWebcamLoadedCount(settled);
+                if (ok) {
+                  setWebcamImgReadyMap(prev => ({ ...prev, [idx]: true }));
+                }
+                if (settled >= total) {
+                  // 預留額外 450ms 緩衝確保圖片完整解碼呈現
+                  setTimeout(() => {
+                    if (!isCancelled) {
+                      clearTimeout(fallbackTimer);
+                      setLoadingWebcam(false);
+                    }
+                  }, 450);
+                }
+              };
+              preloader.onload = () => onDone(true);
+              preloader.onerror = () => onDone(false);
+              preloader.src = proxySrc;
+            });
           })
           .catch(err => {
+            if (isCancelled) return;
             console.error('Webcam image fetch error:', err);
             setLoadingWebcam(false);
           });
       }
     } else {
       setWebcamImages([]);
+      setWebcamLoadedCount(0);
+      setWebcamImgReadyMap({});
     }
+    return () => {
+      isCancelled = true;
+    };
   }, [selectedFacility, webcamRefreshKey]);
 
   // States for Hospital ER Wait Times
@@ -709,14 +781,15 @@ export default function AppMap() {
 
   // Fetch ER wait times when a hospital is selected
   useEffect(() => {
-    if (selectedFacility && selectedFacility.facility_type === 'hospitals') {
+    const isRehab = selectedFacility?.properties?.medical_type === 'rehab' || selectedFacility?.properties?.has_wait_time === false || selectedFacility?.properties?.emergency === 'no';
+    if (selectedFacility && selectedFacility.facility_type === 'hospitals' && !isRehab) {
       setLoadingWaitTimes(true);
       const apiUrl = getApiUrl();
       fetch(`${apiUrl}/api/hospitals/waittimes`)
         .then(res => res.json())
         .then(data => {
           setHospitalWaitTimes(data.hospitals || {});
-          setLoadingWaitTimes(false);
+          setTimeout(() => setLoadingWaitTimes(false), 300);
         })
         .catch(err => {
           console.error('Hospital wait times fetch error:', err);
@@ -1211,21 +1284,15 @@ export default function AppMap() {
     style.sources['car-sharing'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/car_sharing` };
     style.sources['police'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/police` };
     style.sources['disaster-hubs'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/disaster_hubs` };
-    const activeContourInterval = contourInterval !== 'off' ? contourInterval : '10m';
-    style.sources['contours'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/contours?interval=${activeContourInterval}` };
     style.sources['local-area-boundary'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/local_area_boundary` };
     style.sources['fuel'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/fuel` };
     style.sources['tesla'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/tesla` };
-    style.sources['one_way_streets'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/one_way_streets` };
-    style.sources['snow_removal_routes'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/snow_removal_routes` };
     style.sources['marine_terminals'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/marine_terminals` };
     style.sources['aed'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/aed` };
-    style.sources['crime_areas'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/crime_areas` };
-    style.sources['water_distribution_mains'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/water_distribution_mains` };
-    style.sources['sewer_mains'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/sewer_mains` };
 
     // Crime Areas (罪案地區 - 各區犯罪率面圖層)
     if (layers.crimeAreas) {
+      style.sources['crime_areas'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/crime_areas` };
       style.layers.push({
         id: 'crime-areas-fill',
         type: 'fill',
@@ -1407,6 +1474,7 @@ export default function AppMap() {
 
     // Road Facilities: One-Way Streets (單程路 LineString with Directional Arrows)
     if (layers.oneWayStreets) {
+      style.sources['one_way_streets'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/one_way_streets` };
       style.layers.push({
         id: 'one-way-streets-casing-layer',
         type: 'line',
@@ -1460,6 +1528,7 @@ export default function AppMap() {
 
     // Road Facilities: Snow Removal Routes (鏟雪路線 LineString / MultiLineString with Ice Blue Styling)
     if (layers.snowRemovalRoutes) {
+      style.sources['snow_removal_routes'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/snow_removal_routes` };
       style.layers.push({
         id: 'snow-removal-routes-casing-layer',
         type: 'line',
@@ -1980,17 +2049,18 @@ export default function AppMap() {
       });
     }
 
-    // Government Facilities: Hospitals & UPCC (醫療: 急診醫院與急症基層醫療中心)
+    // Government Facilities: Hospitals & UPCC (醫療: 急診醫院、復健醫院與急症基層醫療中心)
     if (layers.hospitals) {
       style.layers.push({
         id: 'hospitals-layer',
         type: 'circle',
         source: 'hospitals',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 4, 13, 7, 15, 11, 17, 15],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 5, 13, 8, 15, 12, 17, 16],
           'circle-color': [
             'case',
             ['==', ['get', 'medical_type'], 'upcc'], '#06b6d4',
+            ['==', ['get', 'medical_type'], 'rehab'], '#14b8a6',
             '#10b981'
           ],
           'circle-stroke-width': 2,
@@ -2001,14 +2071,14 @@ export default function AppMap() {
         id: 'hospitals-symbol-layer',
         type: 'symbol',
         source: 'hospitals',
-        minzoom: 12,
+        minzoom: 11,
         layout: {
           'text-field': [
             'case',
             ['==', ['get', 'medical_type'], 'upcc'], '🩺',
             '🏥'
           ],
-          'text-size': ['interpolate', ['linear'], ['zoom'], 12, 11, 15, 14, 17, 17],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 11, 10, 15, 14, 17, 17],
           'text-allow-overlap': true,
           'text-ignore-placement': true
         },
@@ -2020,19 +2090,20 @@ export default function AppMap() {
         id: 'hospitals-label-layer',
         type: 'symbol',
         source: 'hospitals',
-        minzoom: 13,
+        minzoom: 11.5,
         layout: {
           'text-field': ['coalesce', ['get', 'short_name'], ['get', 'chinese_name'], ['get', 'name']],
-          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 10, 16, 12],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 11.5, 10, 16, 12],
           'text-offset': [0, 1.3],
           'text-anchor': 'top',
-          'text-allow-overlap': false,
+          'text-allow-overlap': true,
           'text-ignore-placement': false
         },
         paint: {
           'text-color': [
             'case',
             ['==', ['get', 'medical_type'], 'upcc'], '#38bdf8',
+            ['==', ['get', 'medical_type'], 'rehab'], '#2dd4bf',
             '#34d399'
           ],
           'text-halo-color': '#0f172a',
@@ -2343,6 +2414,7 @@ export default function AppMap() {
 
     // Geography: Elevation Contour Lines (等高線: 1m / 2m / 10m)
     if (layers.contours && contourInterval !== 'off') {
+      style.sources['contours'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/contours?interval=${contourInterval}` };
       const isOneMetre = contourInterval === '1m';
       const isTwoMetre = contourInterval === '2m';
       style.layers.push({
@@ -2419,6 +2491,7 @@ export default function AppMap() {
 
     // Utilities: Water Distribution Mains (自來水管道)
     if (layers.waterDistributionMains) {
+      style.sources['water_distribution_mains'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/water_distribution_mains` };
       style.layers.push({
         id: 'water-distribution-mains-layer',
         type: 'line',
@@ -2439,6 +2512,7 @@ export default function AppMap() {
 
     // Utilities: Sewer Mains (污水管道)
     if (layers.sewerMains) {
+      style.sources['sewer_mains'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/sewer_mains` };
       style.layers.push({
         id: 'sewer-mains-layer',
         type: 'line',
@@ -4572,9 +4646,30 @@ export default function AppMap() {
                   </div>
 
                   {loadingWebcam ? (
-                    <div className="py-8 flex flex-col items-center justify-center text-gray-400 gap-2">
-                      <div className="w-5 h-5 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
-                      <span className="text-[11px]">正在載入即時鏡頭畫面...</span>
+                    <div className="py-7 px-3 flex flex-col items-center justify-center bg-slate-900/95 rounded-lg border border-cyan-500/30 text-gray-200 gap-2.5 shadow-inner">
+                      <div className="relative flex items-center justify-center">
+                        <div className="w-8 h-8 border-2 border-cyan-500/30 rounded-full"></div>
+                        <div className="absolute w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+                        <span className="text-xs">📷</span>
+                      </div>
+                      <div className="flex flex-col items-center gap-1 text-center">
+                        <span className="text-[11px] font-bold text-cyan-300 tracking-wide">
+                          正在從溫哥華交通局 API 載入即時路況圖片...
+                        </span>
+                        <span className="text-[10px] text-gray-400">
+                          {webcamImages.length > 0
+                            ? `已預載 ${webcamLoadedCount} / ${webcamImages.length} 個方向鏡頭畫面`
+                            : '正在連線取得多角度路口監視器訊號，請稍候'}
+                        </span>
+                      </div>
+                      {webcamImages.length > 0 && (
+                        <div className="w-40 h-1.5 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+                          <div
+                            className="h-full bg-gradient-to-r from-cyan-500 to-emerald-400 transition-all duration-300"
+                            style={{ width: `${Math.max(15, Math.round((webcamLoadedCount / webcamImages.length) * 100))}%` }}
+                          />
+                        </div>
+                      )}
                     </div>
                   ) : webcamImages.length > 0 ? (
                     <div className="grid grid-cols-2 gap-1.5 pt-1">
@@ -4583,23 +4678,36 @@ export default function AppMap() {
                         const apiUrl = getApiUrl();
                         const proxySrc = `${apiUrl}/api/webcam/proxy?url=${encodeURIComponent(img.url)}&t=${hourlyTimestamp}_${webcamRefreshKey}`;
                         const directSrc = `${img.url}?t=${hourlyTimestamp}_${webcamRefreshKey}`;
+                        const isImgReady = webcamImgReadyMap[idx];
                         return (
-                          <div key={idx} className="relative rounded overflow-hidden border border-gray-200 bg-black aspect-[4/3] group shadow-sm">
+                          <div key={idx} className="relative rounded overflow-hidden border border-gray-200 bg-slate-900 aspect-[4/3] group shadow-sm">
+                            {!isImgReady && (
+                              <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900 text-cyan-400 gap-1 z-10">
+                                <div className="w-4 h-4 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+                                <span className="text-[9px] text-gray-400">載入圖片中...</span>
+                              </div>
+                            )}
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                               src={proxySrc}
                               alt={img.alt || img.direction}
                               referrerPolicy="no-referrer"
-                              className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
-                              loading="lazy"
+                              className={`w-full h-full object-cover transition-all duration-300 group-hover:scale-105 ${
+                                isImgReady ? 'opacity-100' : 'opacity-0'
+                              }`}
+                              onLoad={() => {
+                                setWebcamImgReadyMap(prev => ({ ...prev, [idx]: true }));
+                              }}
                               onError={(e) => {
                                 const target = e.currentTarget;
                                 if (target.src !== directSrc) {
                                   target.src = directSrc;
+                                } else {
+                                  setWebcamImgReadyMap(prev => ({ ...prev, [idx]: true }));
                                 }
                               }}
                             />
-                            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-1 pt-3 text-[10px] font-medium text-white truncate text-center">
+                            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-1 pt-3 text-[10px] font-medium text-white truncate text-center z-20">
                               {img.direction}
                             </div>
                           </div>
@@ -4692,16 +4800,20 @@ export default function AppMap() {
                 </div>
               )}
 
-              {/* Hospitals & UPCC Details & Live Wait Times */}
+              {/* Hospitals, UPCC & Rehab Centre Details & Live Wait Times */}
               {selectedFacility.facility_type === 'hospitals' && (() => {
                 const isUPCC = selectedFacility.properties?.medical_type === 'upcc';
-                const hName = (selectedFacility.name || '').toLowerCase();
-                const erKey = (selectedFacility.properties?.erstat_name || '').toLowerCase();
+                const isRehab = selectedFacility.properties?.medical_type === 'rehab' || selectedFacility.properties?.has_wait_time === false || selectedFacility.properties?.emergency === 'no';
+                const normalizeStr = (s: string) => (s || '').toLowerCase().replace(/[\u2018\u2019`]/g, "'").trim();
+                const hName = normalizeStr(selectedFacility.name || '');
+                const erKey = normalizeStr(selectedFacility.properties?.erstat_name || '');
+                const shortKey = normalizeStr(selectedFacility.properties?.short_name || '');
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                let waitInfo: any = hospitalWaitTimes[hName] || hospitalWaitTimes[erKey];
-                if (!waitInfo) {
+                let waitInfo: any = hospitalWaitTimes[hName] || hospitalWaitTimes[erKey] || hospitalWaitTimes[shortKey];
+                if (!waitInfo && !isRehab) {
                   for (const [k, v] of Object.entries(hospitalWaitTimes)) {
-                    if (hName.includes(k) || k.includes(hName) || (erKey && k.includes(erKey))) {
+                    const normK = normalizeStr(k);
+                    if (hName.includes(normK) || normK.includes(hName) || (erKey && normK.includes(erKey))) {
                       waitInfo = v;
                       break;
                     }
@@ -4709,6 +4821,7 @@ export default function AppMap() {
                 }
 
                 const waitTime = waitInfo?.wait_time || '--';
+                const elosTime = waitInfo?.elos_time || null;
                 const status = waitInfo?.status || 'normal';
                 const isPredicted = waitInfo?.is_predicted;
 
@@ -4738,9 +4851,13 @@ export default function AppMap() {
                     {/* Facility Type Badge */}
                     <div className="flex items-center justify-between">
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                        isUPCC ? 'bg-cyan-100 text-cyan-800 border border-cyan-300' : 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                        isRehab
+                          ? 'bg-teal-100 text-teal-800 border border-teal-300'
+                          : isUPCC
+                          ? 'bg-cyan-100 text-cyan-800 border border-cyan-300'
+                          : 'bg-emerald-100 text-emerald-800 border border-emerald-300'
                       }`}>
-                        {selectedFacility.properties?.type_label || (isUPCC ? '急症基層醫療中心 (UPCC)' : '急症綜合醫院')}
+                        {selectedFacility.properties?.type_label || (isRehab ? '專科復健中心 (Rehabilitation Centre)' : isUPCC ? '急症基層醫療中心 (UPCC)' : '急症綜合醫院')}
                       </span>
                       {selectedFacility.properties?.short_name && (
                         <span className="text-[10px] font-mono text-gray-500 font-bold">
@@ -4749,42 +4866,66 @@ export default function AppMap() {
                       )}
                     </div>
 
-                    {/* Live ER/UPCC Wait Time Card */}
-                    <div className={`p-2.5 rounded-lg border flex flex-col gap-1.5 ${statusBg}`}>
-                      <div className="flex items-center justify-between">
-                        <span className="font-bold text-xs flex items-center gap-1.5">
-                          <span>⏱️</span>
-                          <span>{isUPCC ? '門診預估等候時間' : '急診預估等候時間'}</span>
-                        </span>
-                        <div className="flex items-center gap-1.5">
-                          {loadingWaitTimes ? (
-                            <span className="text-[10px] text-gray-500 animate-pulse">載入中...</span>
-                          ) : (
-                            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${badgeBg}`}>
-                              {statusText}
-                            </span>
-                          )}
-                          <button
-                            onClick={() => setHospitalRefreshKey(k => k + 1)}
-                            className="px-1.5 py-0.5 bg-white/80 border border-gray-300 hover:bg-white rounded text-[10px] text-gray-700 transition-colors"
-                            title="重新整理等候時間"
-                          >
-                            🔄
-                          </button>
+                    {/* Live ER/UPCC Wait Time Card OR Rehab Facility Notice */}
+                    {isRehab ? (
+                      <div className="p-2.5 rounded-lg border bg-teal-50/90 border-teal-200 text-teal-950 flex flex-col gap-1">
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-xs flex items-center gap-1.5">
+                            <span>🏥</span>
+                            <span>專科復健與長者照護醫院</span>
+                          </span>
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-teal-700 text-white">
+                            非急診機構
+                          </span>
+                        </div>
+                        <div className="text-[11px] text-teal-800 pt-1 border-t border-teal-200/60 leading-relaxed">
+                          此院區主要提供<strong>住院物理/職能復健服務</strong>及<strong>長期照護</strong>，未設急診室（edwaittimes.ca 無等候時間數據）。
                         </div>
                       </div>
+                    ) : (
+                      <div className={`p-2.5 rounded-lg border flex flex-col gap-1.5 ${statusBg}`}>
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-xs flex items-center gap-1.5">
+                            <span>⏱️</span>
+                            <span>{isUPCC ? '門診預估等候時間' : '急診預估等候時間'}</span>
+                          </span>
+                          <div className="flex items-center gap-1.5">
+                            {loadingWaitTimes ? (
+                              <span className="text-[10px] text-gray-500 animate-pulse">載入中...</span>
+                            ) : (
+                              <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${badgeBg}`}>
+                                {statusText}
+                              </span>
+                            )}
+                            <button
+                              onClick={() => setHospitalRefreshKey(k => k + 1)}
+                              className="px-1.5 py-0.5 bg-white/80 border border-gray-300 hover:bg-white rounded text-[10px] text-gray-700 transition-colors"
+                              title="重新整理等候時間"
+                            >
+                              🔄
+                            </button>
+                          </div>
+                        </div>
 
-                      <div className="flex items-baseline justify-between pt-1 border-t border-black/10">
-                        <span className="text-2xl font-black tracking-tight">
-                          {loadingWaitTimes ? '...' : waitTime}
-                        </span>
-                        <span className="text-[10px] text-gray-500 font-medium">
-                          {isPredicted ? '（模型預估）' : '（官方即時回報）'} · 每 15 分鐘更新
-                        </span>
+                        <div className="flex items-baseline justify-between pt-1 border-t border-black/10">
+                          <span className="text-2xl font-black tracking-tight">
+                            {loadingWaitTimes ? '...' : waitTime}
+                          </span>
+                          <span className="text-[10px] text-gray-600 font-medium">
+                            {isPredicted ? '（模型預估）' : '（edwaittimes.ca 即時數據）'}
+                          </span>
+                        </div>
+
+                        {elosTime && !loadingWaitTimes && (
+                          <div className="flex items-center justify-between text-[10.5px] pt-1 border-t border-black/5 opacity-90">
+                            <span>預估總停留時間 (Length of Stay)</span>
+                            <span className="font-bold font-mono">{elosTime}</span>
+                          </div>
+                        )}
                       </div>
-                    </div>
+                    )}
 
-                    {/* Hospital / UPCC Info Card */}
+                    {/* Hospital / UPCC / Rehab Info Card */}
                     <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
                       {selectedFacility.properties?.chinese_name && (
                         <div className="flex justify-between items-center text-gray-700 font-semibold">
@@ -4792,16 +4933,22 @@ export default function AppMap() {
                           <span className="text-gray-900">{selectedFacility.properties.chinese_name}</span>
                         </div>
                       )}
+                      {selectedFacility.properties?.services && (
+                        <div className="flex justify-between items-start text-gray-600 gap-2">
+                          <span className="shrink-0">主要服務</span>
+                          <span className="font-medium text-teal-800 text-right">{selectedFacility.properties.services}</span>
+                        </div>
+                      )}
                       {selectedFacility.properties?.hours && (
                         <div className="flex justify-between items-center text-gray-600">
-                          <span>{isUPCC ? '門診服務時間' : '急診門診時間'}</span>
+                          <span>{isRehab ? '服務時間' : isUPCC ? '門診服務時間' : '急診門診時間'}</span>
                           <span className="font-medium text-emerald-700 text-right">{selectedFacility.properties.hours}</span>
                         </div>
                       )}
                       {selectedFacility.properties?.address && (
                         <div className="flex justify-between items-center text-gray-600">
                           <span>機構地址</span>
-                          <span className="font-medium text-gray-800 text-right truncate max-w-[170px]">
+                          <span className="font-medium text-gray-800 text-right truncate max-w-[175px]">
                             {selectedFacility.properties.address}
                           </span>
                         </div>
@@ -4823,14 +4970,29 @@ export default function AppMap() {
                     </div>
 
                     {/* Action Links */}
-                    <div className="flex flex-col gap-1 pt-1 border-t border-gray-100">
+                    <div className="flex flex-col gap-1.5 pt-1 border-t border-gray-100">
+                      {!isRehab && (
+                        <a
+                          href="https://www.edwaittimes.ca"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
+                        >
+                          前往 edwaittimes.ca 查看即時等候時間 ↗
+                        </a>
+                      )}
                       <a
-                        href={waitInfo?.url || selectedFacility.properties?.erstat_url || "https://edwaittimes.ca/times"}
+                        href={`https://www.google.com/maps/dir/?api=1&destination=${selectedFacility.lat},${selectedFacility.lon}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
+                        className={`inline-flex items-center justify-center w-full py-1.5 px-3 rounded font-medium text-xs transition-colors shadow-sm gap-1 ${
+                          isRehab
+                            ? 'bg-teal-600 hover:bg-teal-700 text-white'
+                            : 'bg-blue-600 hover:bg-blue-700 text-white'
+                        }`}
                       >
-                        {isUPCC ? '前往 edwaittimes.ca 查看門診即時數據 ↗' : '前往 ERstat 查看急診即時數據 ↗'}
+                        <span>🗺️</span>
+                        <span>Google Map 導航至此醫療機構 ↗</span>
                       </a>
                       {selectedFacility.properties?.website && (
                         <a
@@ -4839,7 +5001,7 @@ export default function AppMap() {
                           rel="noopener noreferrer"
                           className="inline-flex items-center justify-center w-full py-1 px-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded font-medium text-[11px] transition-colors text-center"
                         >
-                          {isUPCC ? '前往醫療中心官方網站 ↗' : '前往醫院官方網站 ↗'}
+                          {isRehab ? '前往復健中心官方網站 ↗' : isUPCC ? '前往醫療中心官方網站 ↗' : '前往醫院官方網站 ↗'}
                         </a>
                       )}
                     </div>
@@ -5234,63 +5396,91 @@ export default function AppMap() {
               )}
 
               {/* AED (自動體外心臟去顫器) Details */}
-              {selectedFacility.facility_type === 'aed' && (
-                <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-red-50/90 p-2.5 rounded-lg border border-red-200 flex flex-col gap-1 text-[11px]">
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-xs text-red-950 flex items-center gap-1.5">
-                        <span>⚡</span>
-                        <span>AED 自動體外心臟去顫器</span>
-                      </span>
-                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-red-600 text-white">
-                        BC PAD
-                      </span>
-                    </div>
-                    <div className="text-[11px] font-medium text-red-800 pt-1 border-t border-red-200/60">
-                      心臟驟停急救設備 · 公共場所配置
-                    </div>
-                  </div>
+              {selectedFacility.facility_type === 'aed' && (() => {
+                const facName = selectedFacility.properties?.FACILITY_NAME || selectedFacility.name;
+                const addr = selectedFacility.properties?.ADDRESS || selectedFacility.properties?.address;
+                const locDesc = selectedFacility.properties?.LOCATION_DESCRIPTION || selectedFacility.properties?.location_description;
+                const objId = selectedFacility.properties?.OBJECTID ?? selectedFacility.properties?.object_id;
 
-                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1 text-[11px]">
-                    <div className="flex justify-between items-center text-gray-600">
-                      <span>設置機構</span>
-                      <span className="font-bold text-gray-900 text-right truncate max-w-[170px]">
-                        {selectedFacility.name}
-                      </span>
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    <div className="bg-red-50/90 p-2.5 rounded-lg border border-red-200 flex flex-col gap-1 text-[11px]">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-xs text-red-950 flex items-center gap-1.5">
+                          <span>⚡</span>
+                          <span>AED 自動體外心臟去顫器</span>
+                        </span>
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-red-600 text-white">
+                          {objId != null ? `#${objId}` : 'BC PAD'}
+                        </span>
+                      </div>
+                      <div className="text-[11px] font-medium text-red-800 pt-1 border-t border-red-200/60">
+                        心臟驟停急救設備 · 溫哥華公共場所配置
+                      </div>
                     </div>
-                    {selectedFacility.properties.address && (
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>所在地址</span>
-                        <span className="font-semibold text-gray-800 text-right truncate max-w-[170px]">
-                          {selectedFacility.properties.address}
+
+                    {locDesc && (
+                      <div className="bg-amber-50/90 p-2.5 rounded-lg border border-amber-200 text-[11px] flex flex-col gap-1">
+                        <span className="font-bold text-amber-900 flex items-center gap-1">
+                          <span>📍</span>
+                          <span>詳細擺放位置 (Location Details)</span>
+                        </span>
+                        <span className="font-semibold text-gray-900 leading-relaxed break-words">
+                          {locDesc}
                         </span>
                       </div>
                     )}
-                    {selectedFacility.properties.municipality && (
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>所屬轄區</span>
-                        <span className="font-medium text-gray-700">{selectedFacility.properties.municipality}</span>
+
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                      <div className="flex justify-between items-start text-gray-600 gap-2">
+                        <span className="shrink-0">設置場所</span>
+                        <span className="font-bold text-gray-900 text-right max-w-[180px] break-words">
+                          {facName}
+                        </span>
                       </div>
-                    )}
-                  </div>
+                      {addr && (
+                        <div className="flex justify-between items-start text-gray-600 gap-2 pt-1 border-t border-gray-100">
+                          <span className="shrink-0">所在地址</span>
+                          <span className="font-semibold text-gray-800 text-right max-w-[180px] break-words">
+                            {addr}
+                          </span>
+                        </div>
+                      )}
+                      {selectedFacility.properties.municipality && (
+                        <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                          <span>所屬轄區</span>
+                          <span className="font-medium text-gray-700">{selectedFacility.properties.municipality}</span>
+                        </div>
+                      )}
+                    </div>
 
-                  <div className="bg-rose-50 p-2 rounded text-[11px] text-rose-900 border border-rose-100 leading-relaxed">
-                    <span className="font-bold block mb-0.5">⚠️ 急救重要提示：</span>
-                    <span>若發現疑似心臟驟停患者，請<strong>立即撥打 911</strong>，同時派人取用此處 AED 依照語音指引施救。</span>
-                  </div>
+                    <div className="bg-rose-50 p-2 rounded text-[11px] text-rose-900 border border-rose-100 leading-relaxed">
+                      <span className="font-bold block mb-0.5">⚠️ 急救重要提示：</span>
+                      <span>若發現疑似心臟驟停患者，請<strong>立即撥打 911</strong>，同時派人取用此處 AED 依照語音指引施救。</span>
+                    </div>
 
-                  <div className="pt-1 border-t border-gray-100">
-                    <a
-                      href="https://bcpadprogram.ca/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-red-600 hover:bg-red-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
-                    >
-                      前往 BC PAD 心臟去顫器登記計畫 ↗
-                    </a>
+                    <div className="flex flex-col gap-1.5 pt-1 border-t border-gray-100">
+                      <a
+                        href={`https://www.google.com/maps/dir/?api=1&destination=${selectedFacility.lat},${selectedFacility.lon}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-red-600 hover:bg-red-700 text-white rounded font-medium text-xs transition-colors shadow-sm gap-1"
+                      >
+                        <span>🗺️</span>
+                        <span>Google Map 導航至此 AED 位置 ↗</span>
+                      </a>
+                      <a
+                        href="https://bcpadprogram.ca/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center w-full py-1 px-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded font-medium text-[11px] transition-colors"
+                      >
+                        前往 BC PAD 心臟去顫器登記計畫 ↗
+                      </a>
+                    </div>
                   </div>
-                </div>
-              )}
+                );
+              })()}
 
               {/* Contours (等高線) Details */}
               {selectedFacility.facility_type === 'contours' && (
@@ -5888,7 +6078,7 @@ export default function AppMap() {
           </div>
 
           <div className="text-[10px] text-gray-400 text-center pt-1 border-t border-[#262b38]/80">
-            只供參考，唔係安全評分。
+            數據只供參考，不構成安全評分標準。
           </div>
         </div>
       )}
@@ -6339,6 +6529,41 @@ export default function AppMap() {
                 目前暫無推算班次資料
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* 系統與 API 初始載入畫面 (API Data & Image Preloading Screen) */}
+      {isInitialApiLoading && (
+        <div className="fixed inset-0 z-[100] bg-[#0c0e14]/90 backdrop-blur-md flex flex-col items-center justify-center select-none transition-opacity duration-300">
+          <div className="bg-[#161922] border border-[#2a2f3d] rounded-2xl p-6 shadow-2xl max-w-[360px] w-[90%] flex flex-col items-center gap-4">
+            <div className="relative flex items-center justify-center w-14 h-14">
+              <div className="absolute inset-0 rounded-full border-2 border-emerald-500/20"></div>
+              <div className="absolute inset-0 rounded-full border-2 border-emerald-400 border-t-transparent animate-spin"></div>
+              <span className="text-2xl">🌐</span>
+            </div>
+
+            <div className="flex flex-col items-center gap-1 text-center">
+              <h3 className="text-sm font-bold text-white tracking-wide">
+                正在載入大溫哥華即時 API 與圖資數據
+              </h3>
+              <p className="text-xs text-emerald-400 font-medium">
+                {apiLoadingText}
+              </p>
+            </div>
+
+            <div className="w-full flex flex-col gap-1.5">
+              <div className="w-full h-2 bg-[#0c0e14] rounded-full overflow-hidden border border-[#252a38]">
+                <div
+                  className="h-full bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-400 transition-all duration-300 rounded-full"
+                  style={{ width: `${apiLoadingProgress}%` }}
+                />
+              </div>
+              <div className="flex justify-between items-center text-[10px] text-gray-400 font-mono">
+                <span>預留額外緩衝時間取得 API 及圖片資源</span>
+                <span className="text-emerald-400 font-bold">{apiLoadingProgress}%</span>
+              </div>
+            </div>
           </div>
         </div>
       )}
