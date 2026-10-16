@@ -3,11 +3,26 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Compass, X, Fuel, Zap, Ship, MapPin, 
-  ChevronDown, RefreshCw, Package, CloudSun, Wind, AlertTriangle, Droplets, Gauge, Eye, Anchor, Navigation
+  ChevronDown, RefreshCw, Package, CloudSun, Wind, AlertTriangle, Droplets, Gauge, Eye, Anchor, Navigation,
+  Newspaper, ExternalLink
 } from 'lucide-react';
 import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
 import { formatShipEta, formatTimePreference } from '@/utils/time';
+
+interface NewsArticle {
+  id: string;
+  title: string;
+  url: string;
+  source: string;
+  source_id: string;
+  category: string;
+  summary: string;
+  image_url?: string | null;
+  published_at?: string;
+  pub_date_raw?: string;
+  timestamp: number;
+}
 
 interface WeatherHourlyItem {
   time: string;
@@ -239,6 +254,7 @@ function ExploreContent() {
     distanceUnit,
     temperatureUnit,
     timeFormat,
+    newsRefreshInterval,
     setSearchTarget,
     enableLayer
   } = useUIStore();
@@ -299,8 +315,14 @@ function ExploreContent() {
     );
   };
 
-  // 分頁：天氣, 渡輪, 船運, 燃油, 充電
-  const [activeTab, setActiveTab] = useState<'weather' | 'ferry' | 'fuel' | 'ev' | 'cargo'>('weather');
+  // 分頁：天氣, 新聞, 渡輪, 船運, 燃油, 充電
+  const [activeTab, setActiveTab] = useState<'weather' | 'news' | 'ferry' | 'fuel' | 'ev' | 'cargo'>('weather');
+
+  // --- News tab states ---
+  const [newsArticles, setNewsArticles] = useState<NewsArticle[]>([]);
+  const [loadingNews, setLoadingNews] = useState(false);
+  const [newsFilter, setNewsFilter] = useState<'all' | '604now' | 'citynews' | 'globalnews'>('all');
+  const [newsLastUpdated, setNewsLastUpdated] = useState<Date | null>(null);
 
   // --- Weather tab states ---
   const [weather, setWeather] = useState<WeatherData | null>(null);
@@ -685,6 +707,56 @@ function ExploreContent() {
       });
   }, [isExploreOpen, activeTab]);
 
+  // 5. Fetch News from Vancouver Sources (604 Now, CityNews, Global News BC)
+  const fetchNews = React.useCallback(async (force = false) => {
+    setLoadingNews(true);
+    try {
+      const apiUrl = getApiUrl();
+      const res = await fetch(`${apiUrl}/api/news/latest${force ? '?refresh=true' : ''}`);
+      const data = await res.json();
+      setNewsArticles(data.news || []);
+      setNewsLastUpdated(new Date());
+    } catch (err) {
+      console.error('Error fetching news:', err);
+    } finally {
+      setLoadingNews(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isExploreOpen || activeTab !== 'news') return;
+    fetchNews();
+
+    const intervalMin = newsRefreshInterval || 15;
+    const timer = setInterval(() => {
+      fetchNews(true);
+    }, intervalMin * 60 * 1000);
+    return () => clearInterval(timer);
+  }, [isExploreOpen, activeTab, newsRefreshInterval, fetchNews]);
+
+  const filteredNews = useMemo(() => {
+    let list = newsArticles;
+    if (newsFilter !== 'all') {
+      list = list.filter((a) => a.source_id === newsFilter);
+    }
+    // 排序以最上面由最新開始 (Newest on top)
+    return [...list].sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+  }, [newsArticles, newsFilter]);
+
+  const formatNewsTime = (timestamp?: number, rawDate?: string) => {
+    const ts = timestamp || (rawDate ? new Date(rawDate).getTime() : 0);
+    if (!ts) return '';
+    const diffSec = Math.floor((Date.now() - ts) / 1000);
+    if (diffSec < 60) return '剛剛';
+    const diffMin = Math.floor(diffSec / 60);
+    if (diffMin < 60) return `${diffMin} 分鐘前`;
+    const diffHr = Math.floor(diffMin / 60);
+    if (diffHr < 24) return `${diffHr} 小時前`;
+    const diffDay = Math.floor(diffHr / 24);
+    if (diffDay < 7) return `${diffDay} 天前`;
+    return new Date(ts).toLocaleDateString('zh-HK', { month: 'numeric', day: 'numeric' });
+  };
+
   // Handle Cargo Ship click
   const handleSelectShip = (ship: MaritimeVessel) => {
     enableLayer('maritimeShipping');
@@ -735,7 +807,7 @@ function ExploreContent() {
         </button>
       </div>
 
-      {/* 探索分類分頁 - 第一行 (在現有的 4 個分頁上方開一行新，最左邊第 1 個建立「天氣」分頁) */}
+      {/* 探索分類分頁 - 第一行 (天氣 | 新聞) */}
       <div className="grid grid-cols-4 gap-1.5 p-1.5 bg-[#10131a] rounded-xl border border-[#232836] shrink-0 mb-1.5">
         <button
           onClick={() => setActiveTab('weather')}
@@ -748,8 +820,19 @@ function ExploreContent() {
           <CloudSun className="w-3.5 h-3.5 text-sky-400 shrink-0" />
           <span>天氣</span>
         </button>
+        <button
+          onClick={() => setActiveTab('news')}
+          className={`py-2 text-xs font-medium rounded-lg transition-all text-center flex items-center justify-center gap-1.5 ${
+            activeTab === 'news'
+              ? 'bg-[#2b3345] text-white font-bold shadow-md ring-1 ring-[#3d4760]'
+              : 'text-gray-300 hover:text-white hover:bg-[#1a1f2b]'
+          }`}
+        >
+          <Newspaper className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+          <span>新聞</span>
+        </button>
         {/* 保留未來新增分頁空間 */}
-        <div className="col-span-3"></div>
+        <div className="col-span-2"></div>
       </div>
 
       {/* 探索分類分頁 - 第二行 (渡輪 > 船運 > 燃油 > 充電) */}
@@ -1539,10 +1622,141 @@ function ExploreContent() {
         </div>
       )}
 
+      {/* ==================== 5. 新聞分頁 (Vancouver News - 604 Now, CityNews, Global News BC) ==================== */}
+      {activeTab === 'news' && (
+        <div className="flex-1 flex flex-col min-h-0 space-y-2.5 overflow-hidden">
+          {/* Header Controls: Source Filter & Refresh */}
+          <div className="flex items-center justify-between gap-1.5 shrink-0 pt-0.5">
+            <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5">
+              {[
+                { id: 'all', label: '全部' },
+                { id: '604now', label: '604 Now' },
+                { id: 'citynews', label: 'CityNews' },
+                { id: 'globalnews', label: 'Global News' },
+              ].map((src) => {
+                const isSelected = newsFilter === src.id;
+                return (
+                  <button
+                    key={src.id}
+                    onClick={() => setNewsFilter(src.id as any)}
+                    className={`px-2.5 py-1 text-xs rounded-lg font-medium transition-all shrink-0 ${
+                      isSelected
+                        ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm font-semibold'
+                        : 'bg-[#151922] text-gray-400 hover:text-white border border-[#232838] hover:bg-[#1c2230]'
+                    }`}
+                  >
+                    {src.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            <button
+              onClick={() => fetchNews(true)}
+              disabled={loadingNews}
+              className="p-1.5 rounded-lg bg-[#151922] text-gray-400 hover:text-amber-400 border border-[#232838] hover:border-amber-500/40 transition-all shrink-0 flex items-center justify-center disabled:opacity-50"
+              title="重新整理新聞"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${loadingNews ? 'animate-spin text-amber-400' : ''}`} />
+            </button>
+          </div>
+
+          {/* News List */}
+          <div className="flex-1 overflow-y-auto space-y-2 pr-1 min-h-0 custom-scrollbar">
+            {loadingNews && filteredNews.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 text-gray-400">
+                <RefreshCw className="w-6 h-6 animate-spin text-amber-400 mb-2" />
+                <span className="text-xs">正在載入大溫即時新聞...</span>
+              </div>
+            ) : filteredNews.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 text-gray-400">
+                <Newspaper className="w-8 h-8 text-gray-600 mb-2" />
+                <span className="text-xs">暫無相關新聞資料</span>
+              </div>
+            ) : (
+              filteredNews.map((article) => {
+                const getSourceBadge = () => {
+                  if (article.source_id === '604now') {
+                    return {
+                      bg: 'bg-pink-950/40 text-pink-300 border-pink-700/50',
+                      name: '604 Now',
+                    };
+                  }
+                  if (article.source_id === 'citynews') {
+                    return {
+                      bg: 'bg-red-950/40 text-red-300 border-red-700/50',
+                      name: 'CityNews',
+                    };
+                  }
+                  return {
+                    bg: 'bg-sky-950/40 text-sky-300 border-sky-700/50',
+                    name: 'Global News',
+                  };
+                };
+
+                const badge = getSourceBadge();
+                const timeStr = formatNewsTime(article.timestamp, article.published_at || article.pub_date_raw);
+
+                return (
+                  <a
+                    key={article.id}
+                    href={article.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group block p-3 rounded-xl bg-[#141822] border border-[#232838] hover:border-amber-500/50 hover:bg-[#181d2a] transition-all shadow-sm"
+                  >
+                    <div className="flex gap-3">
+                      {article.image_url && (
+                        <div className="w-20 h-20 rounded-lg overflow-hidden shrink-0 bg-[#0c0e14] border border-[#232838] self-start">
+                          <img
+                            src={article.image_url}
+                            alt=""
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            loading="lazy"
+                            onError={(e) => {
+                              (e.target as HTMLElement).parentElement!.style.display = 'none';
+                            }}
+                          />
+                        </div>
+                      )}
+
+                      <div className="flex-1 min-w-0 flex flex-col justify-between">
+                        <div>
+                          <div className="flex items-center justify-between gap-2 mb-1.5">
+                            <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded border ${badge.bg}`}>
+                              {badge.name}
+                            </span>
+                            <div className="flex items-center gap-1.5 text-gray-500 text-[10px]">
+                              {timeStr && <span className="font-mono">{timeStr}</span>}
+                              <ExternalLink className="w-3 h-3 text-gray-500 group-hover:text-amber-400 transition-colors shrink-0" />
+                            </div>
+                          </div>
+
+                          <h3 className="text-xs font-bold text-white group-hover:text-amber-300 transition-colors line-clamp-2 leading-snug">
+                            {article.title}
+                          </h3>
+
+                          {article.summary && (
+                            <p className="text-[11px] text-gray-400 mt-1 line-clamp-2 leading-relaxed">
+                              {article.summary}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </a>
+                );
+              })
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Footer */}
       <div className="mt-3 pt-2.5 border-t border-[#262b38] flex items-center justify-between text-[11px] text-gray-400 shrink-0">
         <span className="font-mono text-[10px]">
           {activeTab === 'weather' && (weather ? `${weather.city || '溫哥華'} · ${weather.condition || '多雲'} · ${formatTemp(weather.temperature)}` : '加拿大環境部氣象數據')}
+          {activeTab === 'news' && `共收錄 ${filteredNews.length} 則大溫即時新聞 · 每 ${newsRefreshInterval || 15} 分鐘自動更新`}
           {activeTab === 'fuel' && `共收錄 ${filteredFuelStations.length} 間加油站`}
           {activeTab === 'ev' && `共收錄 ${evStations.length} 座充電站`}
           {activeTab === 'ferry' && `共 ${ferryRoutes.reduce((acc, r) => acc + (r?.vessels?.length || 0), 0)} 艘渡輪即時航行中`}

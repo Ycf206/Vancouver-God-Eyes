@@ -40,6 +40,7 @@ import flights
 import skytrain_service
 from weather_service import weather_service
 from shipping_service import shipping_service
+from news_service import news_service
 
 import math
 def calculate_bearing(p1, p2):
@@ -2862,6 +2863,18 @@ def get_shipping_vessels():
         "total": len(vessels),
         "source": "Aisstream.io (即時船舶自動識別系統)"
     }
+
+
+# ==========================================
+# 📰 Vancouver Local News Aggregator (604 Now, CityNews, Global News BC)
+# ==========================================
+@app.get("/api/news/latest")
+def get_latest_news(refresh: bool = False):
+    """
+    取得溫哥華各大即時新聞來源：604 Now, CityNews Vancouver, Global News BC
+    由最新至最舊排序，點選可直接開啟原文網頁
+    """
+    return news_service.get_latest_news(force_refresh=refresh)
 
 
 

@@ -118,6 +118,28 @@ PATH_FRASER_RIVER = [
     [-122.9900, 49.1990]
 ]
 
+# 航道 6: 福溪水上渡輪往返航線 (Aquabus / False Creek Transit)
+PATH_FALSE_CREEK = [
+    [-123.1360, 49.2730],
+    [-123.1280, 49.2710],
+    [-123.1180, 49.2720],
+    [-123.1080, 49.2720],
+    [-123.1180, 49.2720],
+    [-123.1280, 49.2710],
+    [-123.1360, 49.2730]
+]
+
+# 航道 7: 菲沙河北臂內河拖船航線 (Fraser River North Arm)
+PATH_FRASER_NORTH = [
+    [-123.1450, 49.2020],
+    [-123.1180, 49.2060],
+    [-123.0850, 49.2080],
+    [-123.0550, 49.2090],
+    [-123.0850, 49.2080],
+    [-123.1180, 49.2060],
+    [-123.1450, 49.2020]
+]
+
 def calculate_bearing(p1: List[float], p2: List[float]) -> float:
     """計算從點 p1 到點 p2 的真航向 (方位角 0°~360°)。"""
     rad = math.pi / 180.0
@@ -818,7 +840,9 @@ class MaritimeShippingService:
                 "width": 11,
                 "draft": 4.8,
                 "flag": "加拿大 (Canada)",
-                "waypoints": None
+                "waypoints": PATH_BURRARD_TUG_PATROL,
+                "progress": 0.65,
+                "path_length_meters": get_path_length_meters(PATH_BURRARD_TUG_PATROL)
             },
             # --- 煤港與福溪碼頭休閒遊艇群 (Coal Harbour & False Creek Marinas - MarineTraffic 紫色休閒船) ---
             {
@@ -907,7 +931,9 @@ class MaritimeShippingService:
                 "width": 3,
                 "draft": 1.2,
                 "flag": "加拿大 (Canada)",
-                "waypoints": None
+                "waypoints": PATH_FALSE_CREEK,
+                "progress": 0.20,
+                "path_length_meters": get_path_length_meters(PATH_FALSE_CREEK)
             },
             {
                 "mmsi": "316028710",
@@ -996,7 +1022,9 @@ class MaritimeShippingService:
                 "width": 7,
                 "draft": 2.8,
                 "flag": "加拿大 (Canada)",
-                "waypoints": None
+                "waypoints": PATH_FRASER_NORTH,
+                "progress": 0.40,
+                "path_length_meters": get_path_length_meters(PATH_FRASER_NORTH)
             },
             {
                 "mmsi": "316012870",
@@ -1006,11 +1034,7 @@ class MaritimeShippingService:
                 "type_code": 52,
                 "ship_type": "木材排拖曳船 (Log Towing Tug)",
                 "type_group": "tug",
-                "lat": 49.2080,
-                "lon": -123.0850,
                 "sog": 4.1,
-                "cog": 115.0,
-                "heading": 115.0,
                 "nav_status": "發動機航行中 (Underway)",
                 "destination": "FRASER RIVER LOG BOOM",
                 "eta": "10-15 17:30",
@@ -1018,7 +1042,9 @@ class MaritimeShippingService:
                 "width": 8,
                 "draft": 3.4,
                 "flag": "加拿大 (Canada)",
-                "waypoints": None
+                "waypoints": PATH_FRASER_NORTH,
+                "progress": 0.70,
+                "path_length_meters": get_path_length_meters(PATH_FRASER_NORTH)
             }
         ]
 

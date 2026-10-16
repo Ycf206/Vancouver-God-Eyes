@@ -77,6 +77,7 @@ export interface MaritimeVessel {
   flag?: string;
   source?: string;
   is_live_ais?: boolean;
+  waypoints?: number[][];
 }
 
 interface StopInfo {
@@ -607,6 +608,48 @@ export default function AppMap() {
       setSelectedMaritimeVessel(updated);
     }
   }, [maritimeVessels, selectedMaritimeVessel]);
+
+  // 選中商船之航線軌跡 GeoJSON (Selected Vessel Navigation Route)
+  const vesselRouteGeoJSON = useMemo(() => {
+    if (!selectedMaritimeVessel) return null;
+    let coords: [number, number][] = [];
+
+    if (selectedMaritimeVessel.waypoints && selectedMaritimeVessel.waypoints.length >= 2) {
+      coords = selectedMaritimeVessel.waypoints.map(p => [p[0], p[1]] as [number, number]);
+    } else if (selectedMaritimeVessel.sog > 0.5) {
+      const lon = selectedMaritimeVessel.lon;
+      const lat = selectedMaritimeVessel.lat;
+      const headingDeg = selectedMaritimeVessel.cog || selectedMaritimeVessel.heading || 0;
+      const rad = (headingDeg * Math.PI) / 180.0;
+      const distKm = Math.min(Math.max(selectedMaritimeVessel.sog * 0.6, 2.5), 8.0);
+      const dLat = (distKm / 111.32) * Math.cos(rad);
+      const dLon = (distKm / (111.32 * Math.cos((lat * Math.PI) / 180))) * Math.sin(rad);
+      coords = [
+        [lon - dLon * 0.3, lat - dLat * 0.3],
+        [lon, lat],
+        [lon + dLon, lat + dLat]
+      ];
+    }
+
+    if (coords.length < 2) return null;
+
+    return {
+      type: 'FeatureCollection' as const,
+      features: [
+        {
+          type: 'Feature' as const,
+          properties: {
+            mmsi: selectedMaritimeVessel.mmsi,
+            name: selectedMaritimeVessel.name
+          },
+          geometry: {
+            type: 'LineString' as const,
+            coordinates: coords
+          }
+        }
+      ]
+    };
+  }, [selectedMaritimeVessel]);
 
   // Keep selectedBus live coordinates & stop list synced when vehicles update via WebSocket
   useEffect(() => {
@@ -3005,12 +3048,14 @@ export default function AppMap() {
             setSelectedFlight(null);
             setSelectedBus(null);
             setBusDetails(null);
-            setSearchedBusRoute(null);
+            // 只有點擊搜尋卡片右上角 X 按鈕時才關閉路線，點擊地圖背景不關閉 searchedBusRoute
             setSelectedTrain(null);
             setSelectedSkytrainStation(null);
             setSelectedTerminal(null);
             setSelectedFerry(null);
-            setSearchTarget(null);
+            if (searchTarget?.category !== 'bus_route') {
+              setSearchTarget(null);
+            }
             return;
           }
 
@@ -3216,8 +3261,10 @@ export default function AppMap() {
             setSelectedFlight(null);
             setSelectedBus(null);
             setBusDetails(null);
-            setSearchedBusRoute(null);
-            setSearchTarget(null);
+            // 只有點擊搜尋卡片右上角 X 按鈕時才關閉路線，點擊地圖其他圖層不關閉 searchedBusRoute
+            if (searchTarget?.category !== 'bus_route') {
+              setSearchTarget(null);
+            }
             setSelectedTrain(null);
             setSelectedSkytrainStation(null);
             setSelectedTerminal(null);
@@ -3291,6 +3338,33 @@ export default function AppMap() {
                 'line-color': selectedTrain?.color || '#0033a0',
                 'line-width': 4,
                 'line-opacity': 0.95
+              }}
+            />
+          </Source>
+        )}
+
+        {/* 選中商船之深水航道與航行航線軌跡 (Selected Maritime Vessel Navigation Route) */}
+        {vesselRouteGeoJSON && (
+          <Source id="selected-vessel-route-source" type="geojson" data={vesselRouteGeoJSON}>
+            <Layer
+              id="selected-vessel-route-glow"
+              type="line"
+              layout={{ 'line-join': 'round', 'line-cap': 'round' }}
+              paint={{
+                'line-color': '#06b6d4',
+                'line-width': 8,
+                'line-blur': 4,
+                'line-opacity': 0.65
+              }}
+            />
+            <Layer
+              id="selected-vessel-route-line"
+              type="line"
+              layout={{ 'line-join': 'round', 'line-cap': 'round' }}
+              paint={{
+                'line-color': '#22d3ee',
+                'line-width': 3.2,
+                'line-dasharray': [2, 1]
               }}
             />
           </Source>
@@ -3904,6 +3978,14 @@ export default function AppMap() {
                   </span>
                 </div>
               </div>
+
+              {/* Route status banner */}
+              {vesselRouteGeoJSON && (
+                <div className="flex items-center gap-1.5 text-[10.5px] text-cyan-800 bg-cyan-50 px-2 py-1.5 rounded-lg border border-cyan-200/80 mb-2 font-medium">
+                  <Navigation className="w-3.5 h-3.5 text-cyan-600 shrink-0" />
+                  <span>已在地圖繪製深水航線與航行軌跡</span>
+                </div>
+              )}
 
               {/* Data source attribution */}
               <div className="flex items-center justify-between text-[10px] text-gray-400 pt-1 border-t border-gray-100">
@@ -5820,19 +5902,10 @@ export default function AppMap() {
 
                     <div className="flex flex-col gap-1.5 pt-1 border-t border-gray-100">
                       <a
-                        href={`https://www.google.com/maps/dir/?api=1&destination=${selectedFacility.lat},${selectedFacility.lon}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-red-600 hover:bg-red-700 text-white rounded font-medium text-xs transition-colors shadow-sm gap-1"
-                      >
-                        <span>🗺️</span>
-                        <span>Google Map 導航至此 AED 位置 ↗</span>
-                      </a>
-                      <a
                         href="https://bcpadprogram.ca/"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center w-full py-1 px-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded font-medium text-[11px] transition-colors"
+                        className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200/80 rounded font-medium text-xs transition-colors"
                       >
                         前往 BC PAD 心臟去顫器登記計畫 ↗
                       </a>
@@ -6751,10 +6824,21 @@ export default function AppMap() {
           <button
             type="button"
             onClick={() => {
-              mapRef.current?.flyTo({
-                zoom: zoomNotification.targetZoom,
-                duration: 900
-              });
+              const map = mapRef.current?.getMap();
+              if (map) {
+                const center = map.getCenter();
+                // 補償左側圖層面板展開時的視覺中央偏差（面板寬約 300px，向右補償 140px，無展開則為 0）
+                const offsetX = isLayerPanelOpen ? 140 : 0;
+                map.flyTo({
+                  center: [center.lng, center.lat],
+                  zoom: zoomNotification.targetZoom,
+                  offset: [-offsetX, 0],
+                  pitch: 0,
+                  bearing: 0,
+                  duration: 800,
+                  essential: true
+                });
+              }
               setZoomNotification(prev => prev ? { ...prev, show: false } : null);
             }}
             className="px-3 py-1.5 text-xs font-semibold bg-sky-600 hover:bg-sky-500 active:bg-sky-700 text-white rounded-lg transition-all shrink-0 shadow-md flex items-center gap-1 cursor-pointer active:scale-95"

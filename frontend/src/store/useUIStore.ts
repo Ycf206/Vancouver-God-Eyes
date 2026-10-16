@@ -89,6 +89,8 @@ export interface UIState {
   setDistanceUnit: (unit: 'metric' | 'imperial') => void;
   temperatureUnit: 'celsius' | 'fahrenheit';
   setTemperatureUnit: (unit: 'celsius' | 'fahrenheit') => void;
+  newsRefreshInterval: number;
+  setNewsRefreshInterval: (interval: number) => void;
   userLocation: {
     address: string;
     displayName?: string;
@@ -204,6 +206,8 @@ export const useUIStore = create<UIState>()(
       setDistanceUnit: (unit) => set({ distanceUnit: unit }),
       temperatureUnit: 'celsius',
       setTemperatureUnit: (unit) => set({ temperatureUnit: unit }),
+      newsRefreshInterval: 15,
+      setNewsRefreshInterval: (interval) => set({ newsRefreshInterval: interval }),
       userLocation: null,
       setUserLocation: (loc) => set({ userLocation: loc }),
       isSettingsModalOpen: false,
@@ -275,6 +279,7 @@ export const useUIStore = create<UIState>()(
         timeZone: state.timeZone,
         distanceUnit: state.distanceUnit,
         temperatureUnit: state.temperatureUnit,
+        newsRefreshInterval: state.newsRefreshInterval,
         userLocation: state.userLocation,
       }),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -288,6 +293,7 @@ export const useUIStore = create<UIState>()(
           timeZone: persistedState?.timeZone || 'America/Vancouver',
           distanceUnit: persistedState?.distanceUnit || 'metric',
           temperatureUnit: persistedState?.temperatureUnit || 'celsius',
+          newsRefreshInterval: persistedState?.newsRefreshInterval ?? 15,
           userLocation: persistedState?.userLocation || null,
           layers: {
             ...currentState.layers,
