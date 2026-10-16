@@ -271,6 +271,10 @@ export default function AppMap() {
 
   // 預載溫哥華市區 22 個 Local Area 邊界幾何，用於滑鼠即時社區判定
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (window as any).__godsEyeMapRef = mapRef;
+    }
     const apiUrl = getApiUrl();
     fetch(`${apiUrl}/api/geojson/road/local_area_boundary`)
       .then(res => res.json())
@@ -3536,6 +3540,7 @@ export default function AppMap() {
     >
       <Map
         ref={mapRef}
+        preserveDrawingBuffer={true}
         initialViewState={{ longitude: -123.05, latitude: 49.25, zoom: 11, pitch: 0, bearing: 0 }}
         maxZoom={20}
         mapStyle={mapStyle}

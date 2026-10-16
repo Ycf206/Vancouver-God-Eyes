@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Search, Settings, ChevronDown, Map as MapIcon, X, Loader2, Layers, AlertCircle, Heart, Compass } from 'lucide-react';
+import { Search, Settings, ChevronDown, Map as MapIcon, X, Loader2, Layers, AlertCircle, Heart, Compass, Download } from 'lucide-react';
 import { useUIStore, SearchTarget } from '@/store/useUIStore';
 import ReportIssueModal from '@/components/ReportIssueModal';
 import DonateModal from '@/components/DonateModal';
 import SettingsModal from '@/components/SettingsModal';
 import ExplorePanel from '@/components/ExplorePanel';
+import ExportModal from '@/components/ExportModal';
 import { getApiUrl } from '@/utils/api';
 import { formatClock, formatDateWithTimezone } from '@/utils/time';
 
@@ -20,7 +21,9 @@ export default function TopBar() {
     timeZone,
     setSettingsModalOpen,
     isExploreOpen,
-    toggleExplore
+    toggleExplore,
+    isExportModalOpen,
+    setExportModalOpen
   } = useUIStore();
   const [time, setTime] = useState<Date | null>(null);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
@@ -277,7 +280,7 @@ export default function TopBar() {
 
       {/* 右側按鈕組：探索按鈕 + 贊助支持按鈕 (愛心) + 回報問題按鈕 (感嘆號) + 設定按鈕 */}
       <div className="flex items-center gap-2 shrink-0">
-        {/* 探索按鈕 (位於搜尋欄右方、贊助支持左方) */}
+        {/* 探索按鈕 (位於搜尋欄右方) */}
         <button 
           onClick={toggleExplore}
           className={`flex items-center justify-center group h-9 px-2.5 bg-[#25262b] hover:bg-[#2c2d33] border rounded-md transition-all shadow-sm text-xs font-semibold select-none ${
@@ -285,10 +288,27 @@ export default function TopBar() {
               ? 'border-emerald-500/80 text-emerald-400 bg-[#2c2d33]' 
               : 'border-[#373a40] text-gray-300 hover:border-emerald-500/50 hover:text-emerald-400'
           }`}
+          title="探索大溫活動、天氣、燃油比價與新聞"
         >
           <Compass className="w-4 h-4 text-emerald-400/80 group-hover:text-emerald-400 group-hover:rotate-45 transition-transform shrink-0" />
           <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[80px] group-hover:opacity-100 group-hover:ml-1.5 transition-all duration-300 whitespace-nowrap hidden sm:inline">
             探索
+          </span>
+        </button>
+
+        {/* 匯出按鈕 (位於探索按鈕右方) */}
+        <button 
+          onClick={() => setExportModalOpen(true)}
+          className={`flex items-center justify-center group h-9 px-2.5 bg-[#25262b] hover:bg-[#2c2d33] border rounded-md transition-all shadow-sm text-xs font-semibold select-none ${
+            isExportModalOpen 
+              ? 'border-cyan-500/80 text-cyan-400 bg-[#2c2d33]' 
+              : 'border-[#373a40] text-gray-300 hover:border-cyan-500/50 hover:text-cyan-400'
+          }`}
+          title="匯出純淨地圖截圖、向量圖資或試算表表格"
+        >
+          <Download className="w-4 h-4 text-cyan-400/80 group-hover:text-cyan-400 group-hover:scale-110 transition-transform shrink-0" />
+          <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[80px] group-hover:opacity-100 group-hover:ml-1.5 transition-all duration-300 whitespace-nowrap hidden sm:inline">
+            匯出
           </span>
         </button>
 
@@ -343,6 +363,9 @@ export default function TopBar() {
 
       {/* 探索資訊面板 (燃油比價等) */}
       <ExplorePanel />
+
+      {/* 地圖與圖資匯出中心彈出視窗 */}
+      <ExportModal />
 
     </div>
   );

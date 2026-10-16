@@ -113,6 +113,9 @@ export interface UIState {
   isExploreOpen: boolean;
   setExploreOpen: (open: boolean) => void;
   toggleExplore: () => void;
+  isExportModalOpen: boolean;
+  setExportModalOpen: (open: boolean) => void;
+  toggleExportModal: () => void;
   toggleLayer: (layer: keyof UIState['layers']) => void;
   resetAllLayers: () => void;
   parkingMeterFilter: {
@@ -232,6 +235,9 @@ export const useUIStore = create<UIState>()(
       isExploreOpen: false,
       setExploreOpen: (open) => set({ isExploreOpen: open }),
       toggleExplore: () => set((state) => ({ isExploreOpen: !state.isExploreOpen })),
+      isExportModalOpen: false,
+      setExportModalOpen: (open) => set({ isExportModalOpen: open }),
+      toggleExportModal: () => set((state) => ({ isExportModalOpen: !state.isExportModalOpen })),
       toggleLayer: (layer) =>
         set((state) => {
           const nextActive = !state.layers[layer];
