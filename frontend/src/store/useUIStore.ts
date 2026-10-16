@@ -58,6 +58,7 @@ export interface UIState {
     libraries: boolean;
     foodVendors: boolean;
     foodBanks: boolean;
+    recycling: boolean;
     aed: boolean;
     homelessShelters: boolean;
     airports: boolean;
@@ -179,6 +180,7 @@ export const useUIStore = create<UIState>()(
         libraries: false,
         foodVendors: false,
         foodBanks: false,
+        recycling: false,
         aed: false,
         homelessShelters: false,
         airports: true,
@@ -226,6 +228,7 @@ export const useUIStore = create<UIState>()(
             const st = state.searchTarget;
             const isTargetMatch =
               st.layer_key === layer ||
+              (layer === 'recycling' && (st.category === 'recycling' || st.id?.startsWith('recycling_'))) ||
               (layer === 'fuel' && (st.category === 'fuel' || st.id?.startsWith('fuel_'))) ||
               (layer === 'tesla' && (st.category === 'tesla' || st.id?.startsWith('tesla_'))) ||
               (layer === 'evCharging' && (st.category === 'ev_charging' || st.id?.startsWith('ev_'))) ||

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Settings, X, Clock, Ruler, Thermometer, Check, MapPin, Navigation, Search, AlertCircle, RefreshCw, Globe, Newspaper } from 'lucide-react';
+import { Settings, X, Clock, Ruler, Thermometer, Check, MapPin, Navigation, Search, AlertCircle, RefreshCw, Globe, Newspaper, ChevronDown } from 'lucide-react';
 import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
 
@@ -358,41 +358,47 @@ export default function SettingsModal() {
         {/* Setting 3: 時區設定 (Timezone) */}
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
-            <label className="text-xs font-bold text-gray-200 flex items-center gap-1.5">
+            <label htmlFor="timezone-select" className="text-xs font-bold text-gray-200 flex items-center gap-1.5">
               <Globe className="w-3.5 h-3.5 text-indigo-400" />
               <span>時區設定 (Timezone)</span>
             </label>
             <span className="text-[10px] text-gray-400">頂部時鐘與系統時間</span>
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            {[
-              { id: 'America/Vancouver', label: '溫哥華 (本地預設)', desc: '太平洋標準時間 · 永久單一時間制 (GMT-7 / PDT)' },
-              { id: 'auto', label: '自動 (裝置系統時區)', desc: '跟隨您目前設備系統的本地時間與時區' },
-              { id: 'Asia/Hong_Kong', label: '香港 / 台北 (HKT/CST)', desc: '亞洲時間 · GMT+8' },
-              { id: 'America/Toronto', label: '多倫多 / 紐約 (EDT/EST)', desc: '加東美東時間 · 目前 GMT-4 / 冬令 GMT-5' },
-              { id: 'Europe/London', label: '倫敦 (BST/GMT)', desc: '英國時間 · 目前 GMT+1 / 冬令 GMT+0' },
-              { id: 'UTC', label: '世界協調時間 (UTC)', desc: '國際標準時間 · GMT+0' },
-            ].map((tz) => (
-              <button
-                key={tz.id}
-                type="button"
-                onClick={() => setTimeZone(tz.id)}
-                className={`flex items-center justify-between p-2 rounded-lg border text-left transition-all ${
-                  timeZone === tz.id
-                    ? 'bg-indigo-950/50 border-indigo-500 text-white shadow-[0_0_8px_rgba(99,102,241,0.2)] ring-1 ring-indigo-500/50'
-                    : 'bg-[#1a1e28] border-[#2c3242] text-gray-300 hover:bg-[#232938] hover:text-white'
-                }`}
-              >
-                <div>
-                  <div className="text-xs font-bold">{tz.label}</div>
-                  <div className="text-[10px] text-gray-400 mt-0.5">{tz.desc}</div>
-                </div>
-                {timeZone === tz.id && (
-                  <Check className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
-                )}
-              </button>
-            ))}
+          <div className="relative">
+            <select
+              id="timezone-select"
+              value={timeZone}
+              onChange={(e) => setTimeZone(e.target.value)}
+              className="w-full bg-[#1a1e28] border border-[#2c3242] focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 rounded-lg px-3 py-2 text-xs font-medium text-gray-200 outline-none transition-all appearance-none cursor-pointer pr-9 hover:border-gray-500"
+            >
+              <option value="America/Vancouver" className="bg-[#1a1b1e] text-white">溫哥華 Vancouver (本地預設 · PDT/PST GMT-7)</option>
+              <option value="auto" className="bg-[#1a1b1e] text-white">自動 Auto (跟隨裝置系統本地時區)</option>
+              <option value="Asia/Hong_Kong" className="bg-[#1a1b1e] text-white">香港 / 台北 Hong Kong / Taipei (HKT/CST GMT+8)</option>
+              <option value="Asia/Tokyo" className="bg-[#1a1b1e] text-white">東京 / 首爾 Tokyo / Seoul (JST/KST GMT+9)</option>
+              <option value="America/Toronto" className="bg-[#1a1b1e] text-white">多倫多 / 紐約 Toronto / New York (EDT/EST GMT-4)</option>
+              <option value="Europe/London" className="bg-[#1a1b1e] text-white">倫敦 London (BST/GMT GMT+1)</option>
+              <option value="Australia/Sydney" className="bg-[#1a1b1e] text-white">雪梨 Sydney (AEST/AEDT GMT+10)</option>
+              <option value="UTC" className="bg-[#1a1b1e] text-white">世界協調時間 UTC (GMT+0)</option>
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-gray-400">
+              <ChevronDown className="w-4 h-4" />
+            </div>
+          </div>
+
+          {/* 當前時區說明標籤 */}
+          <div className="text-[10.5px] text-gray-400 flex items-center gap-1.5 px-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 shrink-0"></span>
+            <span>
+              {timeZone === 'America/Vancouver' && '目前設定：溫哥華太平洋時間 (永久單一時間制 GMT-7 / PDT)'}
+              {timeZone === 'auto' && '目前設定：跟隨您目前設備系統的本地時間與時區'}
+              {timeZone === 'Asia/Hong_Kong' && '目前設定：亞洲中原標準時間 (香港 / 台北 GMT+8)'}
+              {timeZone === 'Asia/Tokyo' && '目前設定：日本 / 韓國標準時間 (東京 / 首爾 GMT+9)'}
+              {timeZone === 'America/Toronto' && '目前設定：北美東部時間 (多倫多 / 紐約 EDT/EST)'}
+              {timeZone === 'Europe/London' && '目前設定：英國標準時間 (倫敦 BST/GMT)'}
+              {timeZone === 'Australia/Sydney' && '目前設定：澳洲東部時間 (雪梨 AEST/AEDT)'}
+              {timeZone === 'UTC' && '目前設定：世界協調時間 (UTC GMT+0)'}
+            </span>
           </div>
         </div>
 

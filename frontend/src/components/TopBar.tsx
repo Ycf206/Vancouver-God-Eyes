@@ -33,6 +33,7 @@ export default function TopBar() {
   const [isOpen, setIsOpen] = useState(false);
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const isSelectingRef = useRef(false);
+  const searchCacheRef = useRef<Map<string, SearchTarget[]>>(new Map());
 
   useEffect(() => {
     setTime(new Date());
@@ -51,7 +52,7 @@ export default function TopBar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // 搜尋防抖 (Debounce)
+  // 搜尋防抖 (Debounce) 與快顯快取
   useEffect(() => {
     if (isSelectingRef.current) {
       isSelectingRef.current = false;
@@ -65,6 +66,14 @@ export default function TopBar() {
       return;
     }
 
+    // 0ms 快取命中：已搜尋過的字詞立即呈現建議清單
+    if (searchCacheRef.current.has(trimmed)) {
+      setResults(searchCacheRef.current.get(trimmed)!);
+      setIsLoading(false);
+      setIsOpen(true);
+      return;
+    }
+
     setIsLoading(true);
     const apiUrl = getApiUrl();
     
@@ -73,6 +82,7 @@ export default function TopBar() {
         .then(res => res.json())
         .then(data => {
           const list = Array.isArray(data) ? data : (data.results || []);
+          searchCacheRef.current.set(trimmed, list);
           setResults(list);
           setIsLoading(false);
           setIsOpen(true);
@@ -81,7 +91,7 @@ export default function TopBar() {
           console.error('Search error:', err);
           setIsLoading(false);
         });
-    }, 250);
+    }, 150);
 
     return () => clearTimeout(handler);
   }, [query]);

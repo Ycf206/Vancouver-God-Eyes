@@ -1201,12 +1201,12 @@ CURATED_STATIC_TYPES = (
     "local_area_boundary", "fuel", "ev_charging", "tesla", "marine_terminals", 
     "one_way_streets", "snow_removal_routes", "crime_areas", "water_distribution_mains", 
     "sewer_mains", "traffic_speed_limits", "bike_racks", "postal_code_fsa", "wireless_facilities",
-    "traffic_crosswalks", "litter_containers", "food_banks"
+    "traffic_crosswalks", "litter_containers", "food_banks", "recycling"
 )
 POINT_CURATED_TYPES = (
     "hospitals", "police", "disaster_hubs", "car_sharing", "aed", 
     "fuel", "ev_charging", "tesla", "marine_terminals", "bike_racks", "wireless_facilities",
-    "traffic_crosswalks", "litter_containers", "food_banks"
+    "traffic_crosswalks", "litter_containers", "food_banks", "recycling"
 )
 
 def sync_curated_point_types(db: Session):
@@ -1219,7 +1219,7 @@ def sync_curated_point_types(db: Session):
                     import json
                     with open(static_geojson_path, "r", encoding="utf-8") as f:
                         static_geojson = json.load(f)
-                    if facility_type in ("aed", "car_sharing", "bike_racks", "wireless_facilities", "traffic_crosswalks", "litter_containers", "food_banks"):
+                    if facility_type in ("aed", "car_sharing", "bike_racks", "wireless_facilities", "traffic_crosswalks", "litter_containers", "food_banks", "recycling"):
                         db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).delete()
                     for feat in static_geojson.get("features", []):
                         props = feat.get("properties", {})
@@ -1383,6 +1383,8 @@ def get_search_bikeway_items():
     _search_bikeways_cache = items
     return _search_bikeways_cache
 
+_search_query_cache = {}
+
 @app.get("/api/search")
 def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
     """
@@ -1392,6 +1394,9 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
     q_clean = q.strip().lower()
     if not q_clean:
         return {"results": []}
+
+    if q_clean in _search_query_cache:
+        return {"results": _search_query_cache[q_clean]}
 
     results = []
 
@@ -1577,12 +1582,10 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
 
     # 3. 搜尋道路設施與政府機構 (Road & Gov Facilities)
     try:
-        from sqlalchemy import cast, String
         facilities = db.query(models.RoadFacility).filter(
             models.RoadFacility.name.ilike(f"%{q_clean}%") |
-            models.RoadFacility.local_area.ilike(f"%{q_clean}%") |
-            cast(models.RoadFacility.details, String).ilike(f"%{q_clean}%")
-        ).limit(20).all()
+            models.RoadFacility.local_area.ilike(f"%{q_clean}%")
+        ).limit(25).all()
 
         for f in facilities:
             ftype = f.facility_type
@@ -1753,6 +1756,11 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                 icon = "🥫"
                 layer_key = "foodBanks"
                 zoom = 16
+            elif ftype == 'recycling':
+                badge = "環保回收"
+                icon = "♻️"
+                layer_key = "recycling"
+                zoom = 16
             elif ftype == 'postal_code_fsa':
                 badge = "郵遞編號"
                 icon = "📮"
@@ -1838,6 +1846,11 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                     sub_parts.append('供餐 🍲')
                 if f.details.get('provides_hampers') == 'Yes':
                     sub_parts.append('食物籃 🧺')
+            elif ftype == 'recycling' and f.details and isinstance(f.details, dict):
+                if f.details.get('brand'):
+                    sub_parts.append(str(f.details.get('brand')))
+                if f.details.get('materials') and isinstance(f.details.get('materials'), list):
+                    sub_parts.append("資源回收站")
             elif f.local_area:
                 sub_parts.append(f.local_area)
             if f.details and isinstance(f.details, dict):
@@ -1927,7 +1940,11 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
     except Exception as e:
         print(f"Error searching bikeways: {e}")
 
-    return {"results": results[:30]}
+    final_results = results[:30]
+    if len(_search_query_cache) > 200:
+        _search_query_cache.clear()
+    _search_query_cache[q_clean] = final_results
+    return {"results": final_results}
 
 from html.parser import HTMLParser
 

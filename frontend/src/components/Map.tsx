@@ -192,6 +192,18 @@ function isShipOnLand(lon: number, lat: number): boolean {
   return isPointInPolygon2D(lon, lat, STANLEY_PARK_EXCLUSION_POLY);
 }
 
+const HEAVY_LAYERS_CONFIG: Record<string, { label: string; prefixes: string[] }> = {
+  bikeRacks: { label: '單車架', prefixes: ['bike-racks'] },
+  waterDistributionMains: { label: '自來水管道', prefixes: ['water-distribution-mains'] },
+  sewerMains: { label: '污水管道', prefixes: ['sewer-mains'] },
+  contours: { label: '等高線', prefixes: ['contours'] },
+  snowRemovalRoutes: { label: '鏟雪路線', prefixes: ['snow-removal-routes'] },
+  litterContainers: { label: '垃圾箱', prefixes: ['litter-containers'] },
+  bikeways: { label: '單車道路網', prefixes: ['bikeways'] },
+  parkingMeters: { label: '收費錶', prefixes: ['parking-meters'] },
+  trafficCrosswalks: { label: '斑馬線', prefixes: ['traffic-crosswalks'] },
+};
+
 export default function AppMap() {
   const { layers, mapStyleType, searchTarget, setSearchTarget, isLayerPanelOpen, contourInterval, timeFormat, distanceUnit, userLocation, setExploreOpen } = useUIStore();
   const mapRef = useRef<MapRef>(null);
@@ -214,6 +226,7 @@ export default function AppMap() {
   const [selectedFlight, setSelectedFlight] = useState<any | null>(null);
   const [cursorCoords, setCursorCoords] = useState<{ lng: number; lat: number } | null>(null);
   const [currentZoom, setCurrentZoom] = useState<number>(11);
+  const [loadingHeavyLayers, setLoadingHeavyLayers] = useState<{ [key: string]: string }>({});
   const [zoomNotification, setZoomNotification] = useState<{
     show: boolean;
     title: string;
@@ -402,6 +415,7 @@ export default function AppMap() {
       else if (type === 'libraries' && !layers.libraries) facilityClosed = true;
       else if (type === 'food_vendors' && !layers.foodVendors) facilityClosed = true;
       else if (type === 'food_banks' && !layers.foodBanks) facilityClosed = true;
+      else if (type === 'recycling' && !layers.recycling) facilityClosed = true;
       else if (type === 'homeless_shelters' && !layers.homelessShelters) facilityClosed = true;
       else if (type === 'traffic_cameras' && !layers.trafficCameras) facilityClosed = true;
       else if (type === 'safety_cameras' && !layers.safetyCameras) facilityClosed = true;
@@ -1063,7 +1077,98 @@ export default function AppMap() {
         return;
       }
     }
+
+    // 當開啟大量資料圖層時，顯示「載入中」提示
+    const newLoading: { [key: string]: string } = {};
+    for (const [key, conf] of Object.entries(HEAVY_LAYERS_CONFIG)) {
+      if (key === 'contours') continue;
+      const k = key as keyof typeof layers;
+      if (!prev[k] && layers[k]) {
+        newLoading[key] = conf.label;
+      }
+    }
+
+    if (Object.keys(newLoading).length > 0) {
+      setLoadingHeavyLayers(curr => ({ ...curr, ...newLoading }));
+      setTimeout(() => {
+        setLoadingHeavyLayers(curr => {
+          const next = { ...curr };
+          for (const k of Object.keys(newLoading)) {
+            delete next[k];
+          }
+          return next;
+        });
+      }, 3500);
+    }
+
+    // 當用家關閉圖層時，即刻移除其載入中提示
+    setLoadingHeavyLayers(curr => {
+      let changed = false;
+      const next = { ...curr };
+      for (const key of Object.keys(next)) {
+        if (key !== 'contours') {
+          const k = key as keyof typeof layers;
+          if (!layers[k]) {
+            delete next[key];
+            changed = true;
+          }
+        }
+      }
+      return changed ? next : curr;
+    });
   }, [layers, currentZoom]);
+
+  // 等高線切換獨立載入提示
+  const prevContourIntervalRef = useRef(contourInterval);
+  useEffect(() => {
+    if (prevContourIntervalRef.current === 'off' && contourInterval !== 'off') {
+      setLoadingHeavyLayers(curr => ({ ...curr, contours: '等高線' }));
+      const timer = setTimeout(() => {
+        setLoadingHeavyLayers(curr => {
+          if (!curr.contours) return curr;
+          const next = { ...curr };
+          delete next.contours;
+          return next;
+        });
+      }, 3500);
+      prevContourIntervalRef.current = contourInterval;
+      return () => clearTimeout(timer);
+    } else if (contourInterval === 'off') {
+      setLoadingHeavyLayers(curr => {
+        if (!curr.contours) return curr;
+        const next = { ...curr };
+        delete next.contours;
+        return next;
+      });
+      prevContourIntervalRef.current = contourInterval;
+    }
+  }, [contourInterval]);
+
+  // MapLibre 資料載入完成事件監聽：當大數據圖層來源已就緒時自動隱藏載入提示
+  const handleMapSourceData = useCallback((e: any) => {
+    if (e.isSourceLoaded && e.sourceId) {
+      const sid = String(e.sourceId);
+      setLoadingHeavyLayers(curr => {
+        let changed = false;
+        const next = { ...curr };
+        for (const [key, conf] of Object.entries(HEAVY_LAYERS_CONFIG)) {
+          if (next[key] && conf.prefixes.some(p => sid.includes(p))) {
+            delete next[key];
+            changed = true;
+          }
+        }
+        return changed ? next : curr;
+      });
+    }
+  }, []);
+
+  // MapLibre 完全閒置（所有圖層瓦片渲染完成）
+  const handleMapIdle = useCallback(() => {
+    setLoadingHeavyLayers(curr => {
+      if (Object.keys(curr).length === 0) return curr;
+      return {};
+    });
+  }, []);
 
   useEffect(() => {
     if (zoomNotification?.show) {
@@ -1426,6 +1531,7 @@ export default function AppMap() {
     style.sources['libraries'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/libraries` };
     style.sources['food-vendors'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/food_vendors` };
     style.sources['food-banks'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/food_banks` };
+    style.sources['recycling'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/recycling` };
     style.sources['homeless-shelters'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/homeless_shelters` };
     style.sources['car-sharing'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/car_sharing?v=2` };
     style.sources['police'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/police` };
@@ -2528,6 +2634,36 @@ export default function AppMap() {
       });
     }
 
+    // Life Facilities: Recycling (環保資源回收站)
+    if (layers.recycling) {
+      style.layers.push({
+        id: 'recycling-layer',
+        type: 'circle',
+        source: 'recycling',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
+          'circle-color': '#0d9488',
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'recycling-symbol-layer',
+        type: 'symbol',
+        source: 'recycling',
+        minzoom: 14,
+        layout: {
+          'text-field': '♻️',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 14, 11, 17, 14],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+    }
+
     // Life Facilities: Homeless Shelters (無家者庇護所)
     if (layers.homelessShelters) {
       style.layers.push({
@@ -2951,6 +3087,7 @@ export default function AppMap() {
     layers.libraries,
     layers.foodVendors,
     layers.foodBanks,
+    layers.recycling,
     layers.aed,
     layers.homelessShelters,
     layers.contours,
@@ -2990,6 +3127,8 @@ export default function AppMap() {
         onLoad={() => updateScale()}
         onMouseMove={handleMapMouseMove}
         onMouseLeave={handleMapMouseLeave}
+        onSourceData={handleMapSourceData}
+        onIdle={handleMapIdle}
         interactiveLayerIds={[
           'bus-stops-layer', 
           'skytrain-stops-layer', 
@@ -3036,6 +3175,8 @@ export default function AppMap() {
           'food-vendors-symbol-layer',
           'food-banks-layer',
           'food-banks-symbol-layer',
+          'recycling-layer',
+          'recycling-symbol-layer',
           'homeless-shelters-layer',
           'homeless-shelters-symbol-layer',
           'car-sharing-layer',
@@ -3269,6 +3410,7 @@ export default function AppMap() {
             layerId.startsWith('libraries') ||
             layerId.startsWith('food-vendors') ||
             layerId.startsWith('food-banks') ||
+            layerId.startsWith('recycling') ||
             layerId.startsWith('aed') ||
             layerId.startsWith('homeless-shelters')
           ) {
@@ -3281,10 +3423,11 @@ export default function AppMap() {
             const isWireless = layerId.startsWith('wireless-facilities');
             const isCrosswalk = layerId.startsWith('traffic-crosswalks');
             const isLitter = layerId.startsWith('litter-containers');
+            const isRecycling = layerId.startsWith('recycling');
             setSelectedFacility({
-              id: props.id || (props.object_id ? `${props.facility_type || (isBikeRack ? 'bike_rack' : (isWireless ? 'wireless' : (isCrosswalk ? 'crosswalk' : (isLitter ? 'litter' : 'fac'))))}_${props.object_id}` : ''),
-              facility_type: props.facility_type || (isFuel ? 'fuel' : (isTesla ? 'tesla' : (isMarineTerminal ? 'marine_terminals' : (isBikeRack ? 'bike_racks' : (isWireless ? 'wireless_facilities' : (isCrosswalk ? 'traffic_crosswalks' : (isLitter ? 'litter_containers' : ''))))))),
-              name: props.name || (isCrosswalk ? (props.location ? `斑馬線 - ${props.location}` : '行人斑馬線') : (isLitter ? (props.address ? `垃圾箱 - ${props.address}` : '公用垃圾箱') : (isBikeRack ? (props.location ? `單車架 - ${props.location}` : '公用單車架') : (isWireless ? (props.site_name || `無線設施 #${props.pole_number || ''}`) : (props.brand || (isFuel ? '加油站' : (isTesla ? 'Tesla 站點' : (isMarineTerminal ? '港口碼頭' : '')))))))),
+              id: props.id || (props.object_id ? `${props.facility_type || (isBikeRack ? 'bike_rack' : (isWireless ? 'wireless' : (isCrosswalk ? 'crosswalk' : (isLitter ? 'litter' : (isRecycling ? 'recycling' : 'fac')))))}_${props.object_id}` : ''),
+              facility_type: props.facility_type || (isFuel ? 'fuel' : (isTesla ? 'tesla' : (isMarineTerminal ? 'marine_terminals' : (isBikeRack ? 'bike_racks' : (isWireless ? 'wireless_facilities' : (isCrosswalk ? 'traffic_crosswalks' : (isLitter ? 'litter_containers' : (isRecycling ? 'recycling' : '')))))))),
+              name: props.name || (isCrosswalk ? (props.location ? `斑馬線 - ${props.location}` : '行人斑馬線') : (isLitter ? (props.address ? `垃圾箱 - ${props.address}` : '公用垃圾箱') : (isBikeRack ? (props.location ? `單車架 - ${props.location}` : '公用單車架') : (isWireless ? (props.site_name || `無線設施 #${props.pole_number || ''}`) : (isRecycling ? (props.brand || '環保回收站') : (props.brand || (isFuel ? '加油站' : (isTesla ? 'Tesla 站點' : (isMarineTerminal ? '港口碼頭' : ''))))))))),
               local_area: props.waterway || props.local_area || props.location || props.company || props.address || props.city || '',
               lon: coords[0],
               lat: coords[1],
@@ -4537,7 +4680,7 @@ export default function AppMap() {
           >
             <div className={`p-3.5 ${
               selectedFacility.facility_type === 'traffic_cameras' ? 'w-[360px]' : 
-              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers') ? 'w-[340px]' : 
+              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'recycling') ? 'w-[340px]' : 
               'w-[290px]'
             } max-w-[90vw] text-gray-800`}>
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
@@ -4579,6 +4722,7 @@ export default function AppMap() {
                     selectedFacility.facility_type === 'libraries' ? 'bg-amber-500' :
                     selectedFacility.facility_type === 'food_vendors' ? 'bg-orange-500' :
                     selectedFacility.facility_type === 'food_banks' ? 'bg-emerald-500' :
+                    selectedFacility.facility_type === 'recycling' ? 'bg-teal-600' :
                     selectedFacility.facility_type === 'aed' ? 'bg-red-600' :
                     selectedFacility.facility_type === 'contours' ? 'bg-teal-700' :
                     selectedFacility.facility_type === 'homeless_shelters' ? 'bg-rose-500' : 'bg-violet-500'
@@ -5969,6 +6113,112 @@ export default function AppMap() {
                 );
               })()}
 
+              {/* Recycling (環保資源回收站) Details */}
+              {selectedFacility.facility_type === 'recycling' && (() => {
+                const props = selectedFacility.properties || {};
+                const brand = props.brand;
+                const hours = props.opening_hours;
+                const addr = props.address;
+                const phone = props.phone;
+                const website = props.website;
+                let materials: string[] = [];
+                if (Array.isArray(props.materials)) {
+                  materials = props.materials;
+                } else if (typeof props.materials === 'string') {
+                  try {
+                    materials = JSON.parse(props.materials);
+                  } catch {
+                    materials = [];
+                  }
+                }
+
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    <div className="bg-teal-50/90 p-2.5 rounded-lg border border-teal-200 flex flex-col gap-1.5 text-[11px]">
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600">設施類別</span>
+                        <span className="font-bold text-teal-950 bg-teal-100/90 px-1.5 py-0.5 rounded flex items-center gap-1">
+                          <span>♻️</span>
+                          <span>環保資源回收站</span>
+                        </span>
+                      </div>
+                      {brand && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>品牌 / 營運商</span>
+                          <span className="font-bold text-teal-800 font-mono">{brand}</span>
+                        </div>
+                      )}
+                      {selectedFacility.local_area && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>所在社區</span>
+                          <span className="font-medium text-gray-800">{selectedFacility.local_area}</span>
+                        </div>
+                      )}
+                      {addr && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>詳細地址</span>
+                          <span className="font-medium text-gray-800 text-right max-w-[200px] truncate" title={addr}>{addr}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {hours && (
+                      <div className="bg-gray-50 p-2 rounded border border-gray-100 text-[11px] flex justify-between items-center">
+                        <span className="text-gray-500">營業時間</span>
+                        <span className="font-semibold text-gray-800 font-mono">{hours}</span>
+                      </div>
+                    )}
+
+                    {/* 可回收品項列表 */}
+                    {materials && materials.length > 0 && (
+                      <div className="flex flex-col gap-1 bg-gray-50/90 p-2 rounded border border-gray-100">
+                        <span className="text-[10.5px] font-bold text-gray-600 flex items-center gap-1">
+                          <span>📦</span>
+                          <span>接收回收項目 ({materials.length} 項)：</span>
+                        </span>
+                        <div className="flex flex-wrap gap-1 mt-0.5 max-h-[120px] overflow-y-auto pr-1">
+                          {materials.map((mat, idx) => (
+                            <span 
+                              key={idx}
+                              className="text-[10px] px-1.5 py-0.5 bg-white text-teal-800 rounded border border-teal-200 font-medium shadow-xs"
+                            >
+                              {mat}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 電話與官方網站 */}
+                    {(phone || website) && (
+                      <div className="flex flex-col gap-1 bg-gray-50 p-2 rounded border border-gray-100 text-[11px]">
+                        {phone && (
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-500">諮詢電話</span>
+                            <a href={`tel:${phone}`} className="font-bold text-teal-600 hover:underline">
+                              📞 {phone}
+                            </a>
+                          </div>
+                        )}
+                        {website && (
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-500">官方網站</span>
+                            <a 
+                              href={website} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              className="font-semibold text-teal-600 hover:underline flex items-center gap-1"
+                            >
+                              <span>🌐 前往官方網站</span>
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
+
               {/* AED (自動體外心臟去顫器) Details */}
               {selectedFacility.facility_type === 'aed' && (() => {
                 const facName = selectedFacility.properties?.FACILITY_NAME || selectedFacility.name;
@@ -6938,6 +7188,16 @@ export default function AppMap() {
         )}
 
       </Map>
+
+      {/* 大數據圖層載入中提示 Toast (Heavy Layer Loading Toast) */}
+      {Object.keys(loadingHeavyLayers).length > 0 && (
+        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-[65] bg-[#141b26]/95 backdrop-blur-md text-cyan-300 rounded-full px-4 py-2 shadow-[0_10px_35px_rgba(0,0,0,0.6)] border border-cyan-500/50 flex items-center gap-2.5 animate-in fade-in slide-in-from-top-3 duration-200 select-none ring-1 ring-cyan-400/20">
+          <div className="w-3.5 h-3.5 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin shrink-0"></div>
+          <span className="text-xs font-semibold tracking-wide">
+            正在載入 {Object.values(loadingHeavyLayers).join('、')} 數據...
+          </span>
+        </div>
+      )}
 
       {/* 密集圖層（管道/單車架/斑馬線等）放大檢視提示 Toast (Zoom-in prompt for dense network layers) */}
       {zoomNotification?.show && (

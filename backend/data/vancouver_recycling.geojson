@@ -1,0 +1,483 @@
+{
+  "type": "FeatureCollection",
+  "generator": "VancouverGodsEye",
+  "total_count": 16,
+  "features": [
+    {
+      "type": "Feature",
+      "id": "recycling_1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.082537,
+          49.2707
+        ]
+      },
+      "properties": {
+        "id": "recycling_1",
+        "facility_type": "recycling",
+        "name": "Regional Recycling Vancouver Bottle Depot",
+        "brand": "獨立營運 / 市政",
+        "address": "960 Evans Avenue Vancouver V6A 2L2",
+        "local_area": "溫哥華市",
+        "opening_hours": "09:00-18:00 open, 07:30-18:00 open \"Bottle Depot\"; PH 11:00-16:00; Jan 1 off; Dec 25 off; Dec 26 off",
+        "phone": "",
+        "website": "",
+        "materials": [
+          "乾電池 🔋",
+          "鋁罐 🥫",
+          "紙箱紙板 📦",
+          "廢電子產品 💻",
+          "廢油/燃油 ⛽",
+          "玻璃瓶 🍾",
+          "金屬包裝 🥫",
+          "剩餘油漆 🎨",
+          "農藥農化瓶 🧴",
+          "塑膠瓶 🧴",
+          "廢五金金屬 🔩"
+        ],
+        "materials_text": "乾電池 🔋 · 鋁罐 🥫 · 紙箱紙板 📦 · 廢電子產品 💻 · 廢油/燃油 ⛽ · 玻璃瓶 🍾 · 金屬包裝 🥫 · 剩餘油漆 🎨 · 農藥農化瓶 🧴 · 塑膠瓶 🧴 · 廢五金金屬 🔩",
+        "recycling_type": "centre",
+        "wheelchair": "unknown"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "recycling_2",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.092815,
+          49.262771
+        ]
+      },
+      "properties": {
+        "id": "recycling_2",
+        "facility_type": "recycling",
+        "name": "Return It",
+        "brand": "Return-It",
+        "address": "501 East Broadway Vancouver",
+        "local_area": "溫哥華市",
+        "opening_hours": "Mo-Su,PH 08:00-18:00",
+        "phone": "+1-604-874-9223",
+        "website": "https://www.return-it.ca/locations/eds-bottle-depot/",
+        "materials": [
+          "飲料紙盒 🧃",
+          "鋁罐 🥫",
+          "玻璃瓶 🍾",
+          "塑膠瓶 🧴"
+        ],
+        "materials_text": "飲料紙盒 🧃 · 鋁罐 🥫 · 玻璃瓶 🍾 · 塑膠瓶 🧴",
+        "recycling_type": "centre",
+        "wheelchair": "unknown"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "recycling_3",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.100697,
+          49.245843
+        ]
+      },
+      "properties": {
+        "id": "recycling_3",
+        "facility_type": "recycling",
+        "name": "Joe's Recycling",
+        "brand": "獨立營運 / 市政",
+        "address": "Vancouver",
+        "local_area": "溫哥華市",
+        "opening_hours": "Mo-Fr 09:30-17:30; Sa 10:00-17:00; Su 11:00-17:00",
+        "phone": "",
+        "website": "",
+        "materials": [
+          "鋁罐 🥫",
+          "剩餘油漆 🎨",
+          "塑膠瓶 🧴"
+        ],
+        "materials_text": "鋁罐 🥫 · 剩餘油漆 🎨 · 塑膠瓶 🧴",
+        "recycling_type": "centre",
+        "wheelchair": "unknown"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "recycling_4",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.737817,
+          45.654299
+        ]
+      },
+      "properties": {
+        "id": "recycling_4",
+        "facility_type": "recycling",
+        "name": "West Vancouver Materials Recovery Center",
+        "brand": "Columbia Resource Company",
+        "address": "6601 Northwest Old Lower River Road Vancouver 98660",
+        "local_area": "溫哥華市",
+        "opening_hours": "Mo-Fr 06:00-18:00; Sa 08:00-16:00",
+        "phone": "+1-360-737-1727",
+        "website": "https://www.columbiaresourcecompany.com/",
+        "materials": [],
+        "materials_text": "各類生活與包裝資材",
+        "recycling_type": "centre",
+        "wheelchair": "unknown"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "recycling_5",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.133313,
+          49.202418
+        ]
+      },
+      "properties": {
+        "id": "recycling_5",
+        "facility_type": "recycling",
+        "name": "Vancouver West Return-It Depot",
+        "brand": "Encorp",
+        "address": "1253 West 75th Avenue Vancouver V6P 3G4",
+        "local_area": "溫哥華市",
+        "opening_hours": "Mo-Fr 09:00-17:00; Sa 09:00-18:00; Su 10:00-17:00",
+        "phone": "",
+        "website": "",
+        "materials": [],
+        "materials_text": "各類生活與包裝資材",
+        "recycling_type": "centre",
+        "wheelchair": "unknown"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "recycling_6",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.07967,
+          49.282595
+        ]
+      },
+      "properties": {
+        "id": "recycling_6",
+        "facility_type": "recycling",
+        "name": "North Star Metal Recycling",
+        "brand": "獨立營運 / 市政",
+        "address": "1159 Franklin Street Vancouver V6A 1J8",
+        "local_area": "溫哥華市",
+        "opening_hours": "Mo-Fr 07:30-16:30; Sa 08:30-14:00; Su,PH off",
+        "phone": "+1 604 254 2734",
+        "website": "https://northstarmetalrecycling.com",
+        "materials": [
+          "廢五金金屬 🔩"
+        ],
+        "materials_text": "廢五金金屬 🔩",
+        "recycling_type": "centre",
+        "wheelchair": "unknown"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "recycling_7",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11494,
+          49.208544
+        ]
+      },
+      "properties": {
+        "id": "recycling_7",
+        "facility_type": "recycling",
+        "name": "Vancouver Zero Waste Centre",
+        "brand": "獨立營運 / 市政",
+        "address": "8588 Yukon Street Vancouver",
+        "local_area": "溫哥華市",
+        "opening_hours": "",
+        "phone": "",
+        "website": "",
+        "materials": [
+          "紙箱紙板 📦",
+          "二手衣物 👕",
+          "廢紙 📄"
+        ],
+        "materials_text": "紙箱紙板 📦 · 二手衣物 👕 · 廢紙 📄",
+        "recycling_type": "centre",
+        "wheelchair": "unknown"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "recycling_8",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.113965,
+          49.207288
+        ]
+      },
+      "properties": {
+        "id": "recycling_8",
+        "facility_type": "recycling",
+        "name": "Vancouver South Transfer Station",
+        "brand": "City of Vancouver",
+        "address": "377 West Kent Avenue North Vancouver V5X 2X1",
+        "local_area": "溫哥華市",
+        "opening_hours": "Mo-Fr 05:30-19:00; Sa-Su 08:00-18:00; Dec 25 off; Jun 1 off",
+        "phone": "",
+        "website": "",
+        "materials": [],
+        "materials_text": "各類生活與包裝資材",
+        "recycling_type": "centre",
+        "wheelchair": "unknown"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "recycling_9",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.136235,
+          49.272522
+        ]
+      },
+      "properties": {
+        "id": "recycling_9",
+        "facility_type": "recycling",
+        "name": "溫哥華環保資源回收站",
+        "brand": "獨立營運 / 市政",
+        "address": "Vancouver",
+        "local_area": "溫哥華市",
+        "opening_hours": "",
+        "phone": "",
+        "website": "",
+        "materials": [],
+        "materials_text": "各類生活與包裝資材",
+        "recycling_type": "centre",
+        "wheelchair": "unknown"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "recycling_10",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05146,
+          49.239162
+        ]
+      },
+      "properties": {
+        "id": "recycling_10",
+        "facility_type": "recycling",
+        "name": "Vancouver Central Return-It Depot",
+        "brand": "獨立營運 / 市政",
+        "address": "2639 Kingsway Vancouver",
+        "local_area": "溫哥華市",
+        "opening_hours": "Mo-Fr,Su 09:00-17:00; Sa 09:00-18:00; PH off",
+        "phone": "",
+        "website": "https://www.return-it.ca/locations/vancouver-central-return-it-depot/",
+        "materials": [],
+        "materials_text": "各類生活與包裝資材",
+        "recycling_type": "centre",
+        "wheelchair": "unknown"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "recycling_11",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.07304,
+          49.276113
+        ]
+      },
+      "properties": {
+        "id": "recycling_11",
+        "facility_type": "recycling",
+        "name": "Beyond the Blue Box",
+        "brand": "獨立營運 / 市政",
+        "address": "Vancouver",
+        "local_area": "溫哥華市",
+        "opening_hours": "Sa 09:00-12:00",
+        "phone": "",
+        "website": "https://www.britanniacentre.org/services/recycle-depot",
+        "materials": [
+          "乾電池 🔋",
+          "plastic",
+          "plastic_packaging",
+          "廢五金金屬 🔩",
+          "保麗龍 📦"
+        ],
+        "materials_text": "乾電池 🔋 · plastic · plastic_packaging · 廢五金金屬 🔩 · 保麗龍 📦",
+        "recycling_type": "centre",
+        "wheelchair": "unknown"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "recycling_12",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.104546,
+          49.265021
+        ]
+      },
+      "properties": {
+        "id": "recycling_12",
+        "facility_type": "recycling",
+        "name": "Return-It",
+        "brand": "Return-It",
+        "address": "Vancouver",
+        "local_area": "溫哥華市",
+        "opening_hours": "Mo-Sa 09:00-18:00; Su 09:00-17:00; PH 10:00-16:00",
+        "phone": "",
+        "website": "",
+        "materials": [
+          "飲料紙盒 🧃",
+          "鋁罐 🥫",
+          "玻璃瓶 🍾",
+          "塑膠瓶 🧴"
+        ],
+        "materials_text": "飲料紙盒 🧃 · 鋁罐 🥫 · 玻璃瓶 🍾 · 塑膠瓶 🧴",
+        "recycling_type": "centre",
+        "wheelchair": "unknown"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "recycling_13",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.127195,
+          49.274141
+        ]
+      },
+      "properties": {
+        "id": "recycling_13",
+        "facility_type": "recycling",
+        "name": "Return-It Express Yaletown",
+        "brand": "Return-It",
+        "address": "1387 Richards Street Vancouver V6B 3G7",
+        "local_area": "溫哥華市",
+        "opening_hours": "Mo-Fr 10:00-18:00; Sa 10:00-17:00; Su 12:00-16:00",
+        "phone": "",
+        "website": "https://www.return-it.ca/locations/yaletown-return-it-express/",
+        "materials": [
+          "飲料紙盒 🧃",
+          "鋁罐 🥫",
+          "二手衣物 👕",
+          "玻璃瓶 🍾",
+          "塑膠瓶 🧴",
+          "鞋類 👟"
+        ],
+        "materials_text": "飲料紙盒 🧃 · 鋁罐 🥫 · 二手衣物 👕 · 玻璃瓶 🍾 · 塑膠瓶 🧴 · 鞋類 👟",
+        "recycling_type": "centre",
+        "wheelchair": "yes"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "recycling_14",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10635,
+          49.2089
+        ]
+      },
+      "properties": {
+        "id": "recycling_14",
+        "facility_type": "recycling",
+        "name": "South Van Bottle Depot",
+        "brand": "Return-It",
+        "address": "34 East 69th Avenue Vancouver V5X 4K6",
+        "local_area": "溫哥華市",
+        "opening_hours": "",
+        "phone": "+1 604 325 3370",
+        "website": "https://www.return-it.ca/locations/south-van-bottle-depot/",
+        "materials": [
+          "飲料紙盒 🧃",
+          "鋁罐 🥫",
+          "家用電器 🔌",
+          "機油 🛢️",
+          "玻璃瓶 🍾",
+          "剩餘油漆 🎨",
+          "廢紙 📄",
+          "塑膠瓶 🧴",
+          "小型家電 🔌"
+        ],
+        "materials_text": "飲料紙盒 🧃 · 鋁罐 🥫 · 家用電器 🔌 · 機油 🛢️ · 玻璃瓶 🍾 · 剩餘油漆 🎨 · 廢紙 📄 · 塑膠瓶 🧴 · 小型家電 🔌",
+        "recycling_type": "centre",
+        "wheelchair": "unknown"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "recycling_15",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.094292,
+          49.269762
+        ]
+      },
+      "properties": {
+        "id": "recycling_15",
+        "facility_type": "recycling",
+        "name": "United We Can Bottle Depot",
+        "brand": "獨立營運 / 市政",
+        "address": "449 Industrial Avenue Vancouver",
+        "local_area": "溫哥華市",
+        "opening_hours": "Mo-Su 07:30-18:00",
+        "phone": "+1-604-681-0001",
+        "website": "https://www.unitedwecan.ca/",
+        "materials": [],
+        "materials_text": "各類生活與包裝資材",
+        "recycling_type": "centre",
+        "wheelchair": "unknown"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "recycling_16",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.045312,
+          49.257964
+        ]
+      },
+      "properties": {
+        "id": "recycling_16",
+        "facility_type": "recycling",
+        "name": "Return-It - Grandview",
+        "brand": "Return-It",
+        "address": "2890 Grandview Highway Vancouver",
+        "local_area": "溫哥華市",
+        "opening_hours": "Tu-Su 09:00-17:00; PH off",
+        "phone": "+1-236-757-8588",
+        "website": "https://www.return-it.ca/locations/grandview-return-it/",
+        "materials": [
+          "飲料紙盒 🧃",
+          "鋁罐 🥫",
+          "玻璃瓶 🍾",
+          "塑膠瓶 🧴"
+        ],
+        "materials_text": "飲料紙盒 🧃 · 鋁罐 🥫 · 玻璃瓶 🍾 · 塑膠瓶 🧴",
+        "recycling_type": "centre",
+        "wheelchair": "unknown"
+      }
+    }
+  ]
+}
