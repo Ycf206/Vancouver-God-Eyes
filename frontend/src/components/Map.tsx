@@ -8,7 +8,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl, getWsUrl } from '@/utils/api';
 import { formatTimePreference, formatShipEta } from '@/utils/time';
-import { LocateFixed, Train, Compass } from 'lucide-react';
+import { LocateFixed, Train, Compass, ZoomIn, X } from 'lucide-react';
 
 // Fix Next.js App Router Web Worker crash
 if (typeof window !== 'undefined') {
@@ -212,6 +212,14 @@ export default function AppMap() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedFlight, setSelectedFlight] = useState<any | null>(null);
   const [cursorCoords, setCursorCoords] = useState<{ lng: number; lat: number } | null>(null);
+  const [currentZoom, setCurrentZoom] = useState<number>(11);
+  const [zoomNotification, setZoomNotification] = useState<{
+    show: boolean;
+    title: string;
+    message: string;
+    targetZoom: number;
+  } | null>(null);
+  const prevLayersRef = useRef(layers);
 
   const handleMapMouseMove = React.useCallback((e: any) => {
     if (e.lngLat) {
@@ -923,14 +931,56 @@ export default function AppMap() {
   useEffect(() => {
     const map = mapRef.current?.getMap();
     if (!map) return;
+    const handleZoomOrMove = () => {
+      updateScale();
+      const z = map.getZoom();
+      setCurrentZoom(z);
+      if (z >= 12) {
+        setZoomNotification(prev => (prev?.show ? { ...prev, show: false } : prev));
+      }
+    };
     updateScale();
-    map.on('move', updateScale);
-    map.on('zoom', updateScale);
+    map.on('move', handleZoomOrMove);
+    map.on('zoom', handleZoomOrMove);
     return () => {
-      map.off('move', updateScale);
-      map.off('zoom', updateScale);
+      map.off('move', handleZoomOrMove);
+      map.off('zoom', handleZoomOrMove);
     };
   }, [updateScale]);
+
+  // 當開啟自來水或污水管網圖層，若當前視野 zoom < 12，主動提示用家放大檢視
+  useEffect(() => {
+    const prev = prevLayersRef.current;
+    prevLayersRef.current = layers;
+
+    const turnedOnWater = !prev.waterDistributionMains && layers.waterDistributionMains;
+    const turnedOnSewer = !prev.sewerMains && layers.sewerMains;
+
+    if (turnedOnWater || turnedOnSewer) {
+      const map = mapRef.current?.getMap();
+      const z = map ? map.getZoom() : currentZoom;
+      if (z < 12) {
+        const names = [];
+        if (turnedOnWater || layers.waterDistributionMains) names.push('自來水管道');
+        if (turnedOnSewer || layers.sewerMains) names.push('污水管道');
+        setZoomNotification({
+          show: true,
+          title: `已開啟${names.join('與')}`,
+          message: '地下管道網數據較為密集，請將地圖放大檢視詳細線路分佈。',
+          targetZoom: 13.5
+        });
+      }
+    }
+  }, [layers, currentZoom]);
+
+  useEffect(() => {
+    if (zoomNotification?.show) {
+      const timer = setTimeout(() => {
+        setZoomNotification(prev => (prev ? { ...prev, show: false } : null));
+      }, 7000);
+      return () => clearTimeout(timer);
+    }
+  }, [zoomNotification?.show]);
 
   // 響應全域搜尋項目選取 (FlyTo & 自動打開詳細資訊卡片)
   useEffect(() => {
@@ -2607,7 +2657,7 @@ export default function AppMap() {
         id: 'bike-racks-layer',
         type: 'circle',
         source: 'bike_racks',
-        minzoom: 13,
+        minzoom: 11,
         paint: {
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#0d9488',
@@ -2697,6 +2747,62 @@ export default function AppMap() {
       });
     }
 
+    // Road: Traffic Crosswalks (斑馬線)
+    if (layers.trafficCrosswalks) {
+      style.sources['traffic_crosswalks'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/traffic_crosswalks` };
+      style.layers.push({
+        id: 'traffic-crosswalks-layer',
+        type: 'circle',
+        source: 'traffic_crosswalks',
+        minzoom: 11,
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
+          'circle-color': '#eab308',
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'traffic-crosswalks-symbol-layer',
+        type: 'symbol',
+        source: 'traffic_crosswalks',
+        minzoom: 15,
+        layout: {
+          'text-field': '🚶',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 15, 10, 18, 14],
+          'text-allow-overlap': false
+        }
+      });
+    }
+
+    // Living: Litter Containers (垃圾箱)
+    if (layers.litterContainers) {
+      style.sources['litter_containers'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/litter_containers` };
+      style.layers.push({
+        id: 'litter-containers-layer',
+        type: 'circle',
+        source: 'litter_containers',
+        minzoom: 11,
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
+          'circle-color': '#d97706',
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'litter-containers-symbol-layer',
+        type: 'symbol',
+        source: 'litter_containers',
+        minzoom: 15,
+        layout: {
+          'text-field': '🗑️',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 15, 10, 18, 14],
+          'text-allow-overlap': false
+        }
+      });
+    }
+
     return style;
   }, [
     layers.skytrainRoutes, 
@@ -2744,6 +2850,8 @@ export default function AppMap() {
     layers.bikeRacks,
     layers.postalCodeFSA,
     layers.wirelessFacilities,
+    layers.trafficCrosswalks,
+    layers.litterContainers,
     contourInterval,
     mapStyleType
   ]);
@@ -2833,6 +2941,10 @@ export default function AppMap() {
           'postal-code-fsa-fill',
           'wireless-facilities-layer',
           'wireless-facilities-symbol-layer',
+          'traffic-crosswalks-layer',
+          'traffic-crosswalks-symbol-layer',
+          'litter-containers-layer',
+          'litter-containers-symbol-layer',
           'water-distribution-mains-layer',
           'sewer-mains-layer',
           'contours-layer',
@@ -3016,6 +3128,8 @@ export default function AppMap() {
             layerId.startsWith('shared-bikes') ||
             layerId.startsWith('bike-racks') ||
             layerId.startsWith('wireless-facilities') ||
+            layerId.startsWith('traffic-crosswalks') ||
+            layerId.startsWith('litter-containers') ||
             layerId.startsWith('traffic-cameras') ||
             layerId.startsWith('safety-cameras') ||
             layerId.startsWith('fuel') ||
@@ -3043,10 +3157,12 @@ export default function AppMap() {
             const isMarineTerminal = layerId.startsWith('marine-terminals');
             const isBikeRack = layerId.startsWith('bike-racks');
             const isWireless = layerId.startsWith('wireless-facilities');
+            const isCrosswalk = layerId.startsWith('traffic-crosswalks');
+            const isLitter = layerId.startsWith('litter-containers');
             setSelectedFacility({
-              id: props.id || (props.object_id ? `${props.facility_type || (isBikeRack ? 'bike_rack' : (isWireless ? 'wireless' : 'fac'))}_${props.object_id}` : ''),
-              facility_type: props.facility_type || (isFuel ? 'fuel' : (isTesla ? 'tesla' : (isMarineTerminal ? 'marine_terminals' : (isBikeRack ? 'bike_racks' : (isWireless ? 'wireless_facilities' : ''))))),
-              name: props.name || (isBikeRack ? (props.location ? `單車架 - ${props.location}` : '公用單車架') : (isWireless ? (props.site_name || `無線設施 #${props.pole_number || ''}`) : (props.brand || (isFuel ? '加油站' : (isTesla ? 'Tesla 站點' : (isMarineTerminal ? '港口碼頭' : '')))))),
+              id: props.id || (props.object_id ? `${props.facility_type || (isBikeRack ? 'bike_rack' : (isWireless ? 'wireless' : (isCrosswalk ? 'crosswalk' : (isLitter ? 'litter' : 'fac'))))}_${props.object_id}` : ''),
+              facility_type: props.facility_type || (isFuel ? 'fuel' : (isTesla ? 'tesla' : (isMarineTerminal ? 'marine_terminals' : (isBikeRack ? 'bike_racks' : (isWireless ? 'wireless_facilities' : (isCrosswalk ? 'traffic_crosswalks' : (isLitter ? 'litter_containers' : ''))))))),
+              name: props.name || (isCrosswalk ? (props.location ? `斑馬線 - ${props.location}` : '行人斑馬線') : (isLitter ? (props.address ? `垃圾箱 - ${props.address}` : '公用垃圾箱') : (isBikeRack ? (props.location ? `單車架 - ${props.location}` : '公用單車架') : (isWireless ? (props.site_name || `無線設施 #${props.pole_number || ''}`) : (props.brand || (isFuel ? '加油站' : (isTesla ? 'Tesla 站點' : (isMarineTerminal ? '港口碼頭' : '')))))))),
               local_area: props.waterway || props.local_area || props.location || props.company || props.address || props.city || '',
               lon: coords[0],
               lat: coords[1],
@@ -6433,11 +6549,152 @@ export default function AppMap() {
                   </div>
                 </div>
               )}
+
+              {/* Traffic Crosswalks (斑馬線) Details */}
+              {selectedFacility.facility_type === 'traffic_crosswalks' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-yellow-500/10 p-2.5 rounded-lg border border-yellow-500/25 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-yellow-950 text-xs flex items-center gap-1.5">
+                        <span className="text-base text-yellow-600 font-bold">🚶</span>
+                        <span className="truncate max-w-[190px]">{selectedFacility.properties.location || selectedFacility.name}</span>
+                      </span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-yellow-500 text-gray-900 shrink-0">
+                        行人斑馬線
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-yellow-900 font-medium">
+                      🚶 溫哥華市區交通行人穿越安全設施 (Traffic Crosswalk)
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                    {selectedFacility.properties.location && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>路口 / 位置</span>
+                        <span className="font-bold text-gray-900 text-right truncate max-w-[190px]">
+                          {selectedFacility.properties.location}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.object_id && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>設施編號 (ID)</span>
+                        <span className="font-mono text-gray-700">
+                          #{selectedFacility.properties.object_id}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Litter Containers (垃圾箱) Details */}
+              {selectedFacility.facility_type === 'litter_containers' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/25 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-amber-950 text-xs flex items-center gap-1.5">
+                        <span className="text-base text-amber-600 font-bold">🗑️</span>
+                        <span className="truncate max-w-[190px]">{selectedFacility.properties.address || selectedFacility.name}</span>
+                      </span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-600 text-white shrink-0">
+                        {selectedFacility.properties.capacity ? `${selectedFacility.properties.capacity}L 垃圾箱` : '公用垃圾箱'}
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-amber-900 font-medium">
+                      🗑️ 溫哥華市政公共垃圾收集設施
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                    {selectedFacility.properties.address && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>放置地址</span>
+                        <span className="font-bold text-gray-900 text-right truncate max-w-[190px]">
+                          {selectedFacility.properties.address}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.model_type && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>垃圾箱型號</span>
+                        <span className="font-medium text-gray-800">
+                          {selectedFacility.properties.model_type}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.capacity && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>容量規格</span>
+                        <span className="font-bold text-amber-700">
+                          {selectedFacility.properties.capacity} 公升 (L)
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.service_status && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>服務運作狀態</span>
+                        <span className="font-semibold text-emerald-700">
+                          {selectedFacility.properties.service_status}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.owner && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>管理所屬單位</span>
+                        <span className="text-gray-700">
+                          {selectedFacility.properties.owner}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </Popup>
         )}
 
       </Map>
+
+      {/* 管道密集圖層放大檢視提示 Toast (Zoom-in prompt for dense network layers) */}
+      {zoomNotification?.show && (
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-40 bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl px-4 py-2.5 shadow-2xl border border-sky-500/40 flex items-center gap-3 animate-in fade-in slide-in-from-top-3 duration-200 select-none max-w-[calc(100vw-32px)]">
+          <div className="w-8 h-8 rounded-lg bg-sky-500/20 border border-sky-500/30 flex items-center justify-center text-sky-400 shrink-0">
+            <ZoomIn className="w-4 h-4" />
+          </div>
+          <div className="flex flex-col min-w-0 pr-1">
+            <div className="text-xs font-bold text-white flex items-center gap-1.5">
+              <span>{zoomNotification.title}</span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-300 font-normal">需放大檢視</span>
+            </div>
+            <div className="text-[11px] text-gray-300 mt-0.5 line-clamp-1">
+              {zoomNotification.message}
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              mapRef.current?.flyTo({
+                zoom: zoomNotification.targetZoom,
+                duration: 900
+              });
+              setZoomNotification(prev => prev ? { ...prev, show: false } : null);
+            }}
+            className="px-2.5 py-1 text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white rounded-lg transition-colors shrink-0 shadow-sm flex items-center gap-1 cursor-pointer active:scale-95"
+          >
+            一鍵放大
+          </button>
+          <button
+            type="button"
+            onClick={() => setZoomNotification(prev => prev ? { ...prev, show: false } : null)}
+            className="p-1 text-gray-400 hover:text-white rounded-md transition-colors shrink-0 cursor-pointer"
+            title="關閉提示"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
 
       {/* 重設地圖視角至溫哥華地區按鈕 (Reset Map View to Vancouver) - 精緻控制項樣式避免阻擋地圖或縮放控制 */}
       <div className="absolute bottom-[164px] right-2.5 z-20 select-none">
