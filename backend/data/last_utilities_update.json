@@ -9,7 +9,7 @@
     "sewer-mains": {
       "success": true,
       "name": "污水管道 (Sewer Mains)",
-      "update_frequency": "每 6 個月 (Semi-annually)"
+      "update_frequency": "每 3 個月 (Quarterly)"
     }
   }
 }
