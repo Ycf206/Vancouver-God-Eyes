@@ -1673,7 +1673,7 @@ export default function AppMap() {
         paint: {
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#10b981',
-          'circle-stroke-width': 2,
+          'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
         }
       });
@@ -1793,7 +1793,7 @@ export default function AppMap() {
         paint: {
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#ef4444',
-          'circle-stroke-width': 2,
+          'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
         }
       });
@@ -1823,7 +1823,7 @@ export default function AppMap() {
         paint: {
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#2563eb',
-          'circle-stroke-width': 2,
+          'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
         }
       });
@@ -1853,7 +1853,7 @@ export default function AppMap() {
         paint: {
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#d97706',
-          'circle-stroke-width': 2,
+          'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
         }
       });
@@ -1883,7 +1883,7 @@ export default function AppMap() {
         paint: {
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#8b5cf6',
-          'circle-stroke-width': 2,
+          'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
         }
       });
@@ -1948,7 +1948,7 @@ export default function AppMap() {
             '#e11d48',
             '#f97316'
           ],
-          'circle-stroke-width': 2,
+          'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
         }
       });
@@ -1978,7 +1978,7 @@ export default function AppMap() {
         paint: {
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#f59e0b',
-          'circle-stroke-width': 2,
+          'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
         }
       });
@@ -2008,7 +2008,7 @@ export default function AppMap() {
         paint: {
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#e82127',
-          'circle-stroke-width': 2,
+          'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
         }
       });
@@ -2038,7 +2038,7 @@ export default function AppMap() {
         paint: {
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#0891b2',
-          'circle-stroke-width': 2,
+          'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
         }
       });
@@ -2073,7 +2073,7 @@ export default function AppMap() {
             ['==', ['get', 'medical_type'], 'rehab'], '#14b8a6',
             '#10b981'
           ],
-          'circle-stroke-width': 2,
+          'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
         }
       });
@@ -2131,7 +2131,7 @@ export default function AppMap() {
         paint: {
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#16a34a',
-          'circle-stroke-width': 2,
+          'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
         }
       });
@@ -2680,7 +2680,7 @@ export default function AppMap() {
         paint: {
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#9333ea',
-          'circle-stroke-width': 2,
+          'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
         }
       });
