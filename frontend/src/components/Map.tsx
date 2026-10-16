@@ -538,6 +538,17 @@ export default function AppMap() {
   const [selectedSkytrainStation, setSelectedSkytrainStation] = useState<SkytrainStationSchedule | null>(null);
   const [loadingStationSchedule, setLoadingStationSchedule] = useState(false);
 
+  // 周邊半徑探索點選之設施標記 (即使圖層未開啟亦在地圖常駐顯著標示，關閉探索時才隱藏)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [explorationSelectedFacility, setExplorationSelectedFacility] = useState<any | null>(null);
+
+  // 當周邊探索被關閉時，連帶清除專屬設施標記
+  useEffect(() => {
+    if (!radiusExploration?.active) {
+      setExplorationSelectedFacility(null);
+    }
+  }, [radiusExploration?.active]);
+
   const lastInteractiveItemClickRef = useRef<number>(0);
 
   const handleSelectTrain = React.useCallback((train: SkytrainTrain) => {
@@ -559,50 +570,55 @@ export default function AppMap() {
   useEffect(() => {
     // 1. 設施類別 (Facility)
     if (selectedFacility) {
-      const type = selectedFacility.facility_type;
-      let facilityClosed = false;
-      if (type === 'fuel' && !layers.fuel) facilityClosed = true;
-      else if (type === 'tesla' && !layers.tesla) facilityClosed = true;
-      else if (type === 'ev_charging' && !layers.evCharging) facilityClosed = true;
-      else if (type === 'aed' && !layers.aed) facilityClosed = true;
-      else if (type === 'fire_halls' && !layers.fireHalls) facilityClosed = true;
-      else if (type === 'police' && !layers.police) facilityClosed = true;
-      else if (type === 'disaster_hubs' && !layers.disasterHubs) facilityClosed = true;
-      else if (type === 'community_centres' && !layers.communityCentres) facilityClosed = true;
-      else if (type === 'hospitals' && !layers.hospitals) facilityClosed = true;
-      else if (type === 'parks' && !layers.parks) facilityClosed = true;
-      else if (type === 'parks_facilities' && !layers.parksFacilities) facilityClosed = true;
-      else if (type === 'community_gardens' && !layers.communityGardens) facilityClosed = true;
-      else if (type === 'drinking_fountains' && !layers.drinkingFountains) facilityClosed = true;
-      else if (type === 'public_washrooms' && !layers.publicWashrooms) facilityClosed = true;
-      else if (type === 'schools' && !layers.schools) facilityClosed = true;
-      else if (type === 'libraries' && !layers.libraries) facilityClosed = true;
-      else if (type === 'food_vendors' && !layers.foodVendors) facilityClosed = true;
-      else if (type === 'food_banks' && !layers.foodBanks) facilityClosed = true;
-      else if (type === 'recycling' && !layers.recycling) facilityClosed = true;
-      else if (type === 'homeless_shelters' && !layers.homelessShelters) facilityClosed = true;
-      else if (type === 'traffic_cameras' && !layers.trafficCameras) facilityClosed = true;
-      else if (type === 'safety_cameras' && !layers.safetyCameras) facilityClosed = true;
-      else if (type === 'parking_meters' && !layers.parkingMeters) facilityClosed = true;
-      else if (type === 'accessible_parking' && !layers.accessibleParking) facilityClosed = true;
-      else if (type === 'motorcycle_parking' && !layers.motorcycleParking) facilityClosed = true;
-      else if (type === 'shared_bikes' && !layers.sharedBikes) facilityClosed = true;
-      else if (type === 'escooter' && !layers.escooter) facilityClosed = true;
-      else if (type === 'contours' && !layers.contours) facilityClosed = true;
-      else if (type === 'traffic_speed_limits' && !layers.trafficSpeedLimits) facilityClosed = true;
-      else if (type === 'bike_racks' && !layers.bikeRacks) facilityClosed = true;
-      else if (type === 'postal_code_fsa' && !layers.postalCodeFSA) facilityClosed = true;
-      else if (type === 'wireless_facilities' && !layers.wirelessFacilities) facilityClosed = true;
-      else if (type === 'water_distribution_mains' && !layers.waterDistributionMains) facilityClosed = true;
-      else if (type === 'sewer_mains' && !layers.sewerMains) facilityClosed = true;
-      else if (type === 'one_way_streets' && !layers.oneWayStreets) facilityClosed = true;
-      else if (type === 'snow_removal_routes' && !layers.snowRemovalRoutes) facilityClosed = true;
-      else if (type === 'traffic_crosswalks' && !layers.trafficCrosswalks) facilityClosed = true;
-      else if (type === 'litter_containers' && !layers.litterContainers) facilityClosed = true;
+      // 若為周邊半徑探索選取之設施，即便該圖層目前關閉，亦予以保留展示
+      const isExplorationActiveSelection = radiusExploration?.active && explorationSelectedFacility?.id === selectedFacility.id;
+      
+      if (!isExplorationActiveSelection) {
+        const type = selectedFacility.facility_type;
+        let facilityClosed = false;
+        if (type === 'fuel' && !layers.fuel) facilityClosed = true;
+        else if (type === 'tesla' && !layers.tesla) facilityClosed = true;
+        else if (type === 'ev_charging' && !layers.evCharging) facilityClosed = true;
+        else if (type === 'aed' && !layers.aed) facilityClosed = true;
+        else if (type === 'fire_halls' && !layers.fireHalls) facilityClosed = true;
+        else if (type === 'police' && !layers.police) facilityClosed = true;
+        else if (type === 'disaster_hubs' && !layers.disasterHubs) facilityClosed = true;
+        else if (type === 'community_centres' && !layers.communityCentres) facilityClosed = true;
+        else if (type === 'hospitals' && !layers.hospitals) facilityClosed = true;
+        else if (type === 'parks' && !layers.parks) facilityClosed = true;
+        else if (type === 'parks_facilities' && !layers.parksFacilities) facilityClosed = true;
+        else if (type === 'community_gardens' && !layers.communityGardens) facilityClosed = true;
+        else if (type === 'drinking_fountains' && !layers.drinkingFountains) facilityClosed = true;
+        else if (type === 'public_washrooms' && !layers.publicWashrooms) facilityClosed = true;
+        else if (type === 'schools' && !layers.schools) facilityClosed = true;
+        else if (type === 'libraries' && !layers.libraries) facilityClosed = true;
+        else if (type === 'food_vendors' && !layers.foodVendors) facilityClosed = true;
+        else if (type === 'food_banks' && !layers.foodBanks) facilityClosed = true;
+        else if (type === 'recycling' && !layers.recycling) facilityClosed = true;
+        else if (type === 'homeless_shelters' && !layers.homelessShelters) facilityClosed = true;
+        else if (type === 'traffic_cameras' && !layers.trafficCameras) facilityClosed = true;
+        else if (type === 'safety_cameras' && !layers.safetyCameras) facilityClosed = true;
+        else if (type === 'parking_meters' && !layers.parkingMeters) facilityClosed = true;
+        else if (type === 'accessible_parking' && !layers.accessibleParking) facilityClosed = true;
+        else if (type === 'motorcycle_parking' && !layers.motorcycleParking) facilityClosed = true;
+        else if (type === 'shared_bikes' && !layers.sharedBikes) facilityClosed = true;
+        else if (type === 'escooter' && !layers.escooter) facilityClosed = true;
+        else if (type === 'contours' && !layers.contours) facilityClosed = true;
+        else if (type === 'traffic_speed_limits' && !layers.trafficSpeedLimits) facilityClosed = true;
+        else if (type === 'bike_racks' && !layers.bikeRacks) facilityClosed = true;
+        else if (type === 'postal_code_fsa' && !layers.postalCodeFSA) facilityClosed = true;
+        else if (type === 'wireless_facilities' && !layers.wirelessFacilities) facilityClosed = true;
+        else if (type === 'water_distribution_mains' && !layers.waterDistributionMains) facilityClosed = true;
+        else if (type === 'sewer_mains' && !layers.sewerMains) facilityClosed = true;
+        else if (type === 'one_way_streets' && !layers.oneWayStreets) facilityClosed = true;
+        else if (type === 'snow_removal_routes' && !layers.snowRemovalRoutes) facilityClosed = true;
+        else if (type === 'traffic_crosswalks' && !layers.trafficCrosswalks) facilityClosed = true;
+        else if (type === 'litter_containers' && !layers.litterContainers) facilityClosed = true;
 
-      if (facilityClosed) {
-        setSelectedFacility(null);
-        setSearchTarget(null);
+        if (facilityClosed) {
+          setSelectedFacility(null);
+          setSearchTarget(null);
+        }
       }
     }
 
@@ -639,7 +655,8 @@ export default function AppMap() {
     if (selectedTrain && !layers.skytrainTrains) {
       setSelectedTrain(null);
     }
-    if (selectedSkytrainStation && !layers.skytrainStops && !layers.skytrainRoutes) {
+    const isStationExplorationActive = radiusExploration?.active && explorationSelectedFacility?.id === selectedSkytrainStation?.stop_id;
+    if (selectedSkytrainStation && !layers.skytrainStops && !layers.skytrainRoutes && !isStationExplorationActive) {
       setSelectedSkytrainStation(null);
       if (searchTarget && searchTarget.category === 'skytrain') {
         setSearchTarget(null);
@@ -669,7 +686,8 @@ export default function AppMap() {
   }, [layers, selectedFacility, selectedAirport, selectedTerminal, selectedFerry, selectedBus, searchedBusRoute, selectedTrain, selectedSkytrainStation, searchTarget, setSearchTarget]);
 
 
-  const fetchSkytrainStationSchedule = React.useCallback((stopId: string, stopName?: string, lat?: number, lon?: number) => {
+  const fetchSkytrainStationSchedule = React.useCallback((stopId: string, stopName?: string, lon?: number, lat?: number) => {
+    lastInteractiveItemClickRef.current = Date.now();
     setSelectedStop(null);
     setSelectedFacility(null);
     setSelectedTerminal(null);
@@ -1834,27 +1852,97 @@ export default function AppMap() {
       });
     }
 
-    // SkyTrain Routes & Stops (Merged under skytrainRoutes)
-    if (layers.skytrainRoutes) {
+    // SkyTrain Routes & Stops (Merged under skytrainRoutes / skytrainStops)
+    if (layers.skytrainRoutes || layers.skytrainStops) {
+      if (layers.skytrainRoutes) {
+        style.layers.push({
+          id: 'skytrain-tracks-layer',
+          type: 'line',
+          source: 'skytrain-tracks',
+          paint: {
+            'line-color': ['get', 'color'],
+            'line-width': 3,
+            'line-opacity': 0.8
+          }
+        });
+      }
+
+      // 1. 車站透明點擊感應層 (22px 寬容感應，徹底解決手機與電腦難以精確點擊的問題)
       style.layers.push({
-        id: 'skytrain-tracks-layer',
-        type: 'line',
-        source: 'skytrain-tracks',
+        id: 'skytrain-stops-hit-layer',
+        type: 'circle',
+        source: 'skytrain-stops',
         paint: {
-          'line-color': ['get', 'color'],
-          'line-width': 3,
-          'line-opacity': 0.8
+          'circle-radius': 22,
+          'circle-opacity': 0
         }
       });
+
+      // 2. 車站外環 (顏色跟隨天車路線：Canada Line 碧藍 #0097a9、Millennium Line 金黃 #f59e0b、Expo Line 深藍 #0033a0)
       style.layers.push({
         id: 'skytrain-stops-layer',
         type: 'circle',
         source: 'skytrain-stops',
         paint: {
-          'circle-radius': 4.5,
-          'circle-color': '#ffffff',
-          'circle-stroke-width': 1.5,
-          'circle-stroke-color': '#00a4e4'
+          'circle-radius': [
+            'interpolate', ['linear'], ['zoom'],
+            10, ['case', ['get', 'is_interchange'], 6.5, 4.8],
+            13, ['case', ['get', 'is_interchange'], 9.5, 7.2],
+            16, ['case', ['get', 'is_interchange'], 12.5, 9.8]
+          ],
+          'circle-color': [
+            'case',
+            ['has', 'color'], ['get', 'color'],
+            '#0033a0'
+          ],
+          'circle-stroke-width': [
+            'interpolate', ['linear'], ['zoom'],
+            10, 1.8,
+            13, 2.5,
+            16, 3.2
+          ],
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+
+      // 3. 車站白色圓心
+      style.layers.push({
+        id: 'skytrain-stops-inner-layer',
+        type: 'circle',
+        source: 'skytrain-stops',
+        paint: {
+          'circle-radius': [
+            'interpolate', ['linear'], ['zoom'],
+            10, ['case', ['get', 'is_interchange'], 2.8, 2],
+            13, ['case', ['get', 'is_interchange'], 4.5, 3.2],
+            16, ['case', ['get', 'is_interchange'], 6, 4.5]
+          ],
+          'circle-color': '#ffffff'
+        }
+      });
+
+      // 4. 車站文字標籤 (縮放層級 >= 12 時自動標註站名，點擊文字亦可直接打開資訊 Popup)
+      style.layers.push({
+        id: 'skytrain-stops-label-layer',
+        type: 'symbol',
+        source: 'skytrain-stops',
+        minzoom: 12,
+        layout: {
+          'text-field': ['get', 'name'],
+          'text-size': [
+            'interpolate', ['linear'], ['zoom'],
+            12, 10,
+            15, 12
+          ],
+          'text-offset': [0, 1.3],
+          'text-anchor': 'top',
+          'text-optional': true
+        },
+        paint: {
+          'text-color': '#ffffff',
+          'text-halo-color': '#0c1017',
+          'text-halo-width': 2,
+          'text-halo-blur': 0.5
         }
       });
     }
@@ -3578,7 +3666,10 @@ export default function AppMap() {
         onIdle={handleMapIdle}
         interactiveLayerIds={[
           'bus-stops-layer', 
+          'skytrain-stops-hit-layer',
           'skytrain-stops-layer', 
+          'skytrain-stops-inner-layer',
+          'skytrain-stops-label-layer',
           'seabus-stops-layer',
           'bikeways-layer',
           'parking-meters-cluster-layer',
@@ -3719,14 +3810,22 @@ export default function AppMap() {
             return;
           }
 
-          if (layerId === 'skytrain-stops-layer') {
+          if (
+            layerId === 'skytrain-stops-layer' || 
+            layerId === 'skytrain-stops-hit-layer' || 
+            layerId === 'skytrain-stops-inner-layer' || 
+            layerId === 'skytrain-stops-label-layer'
+          ) {
             setSelectedFacility(null);
             setSelectedStop(null);
             setSelectedBus(null);
             setSelectedTrain(null);
             const stopId = feature.properties?.stop_id || feature.properties?.id;
             const stopName = feature.properties?.name || '天車站';
-            fetchSkytrainStationSchedule(String(stopId), stopName, coords[0], coords[1]);
+            const clickLon = coords?.[0] ?? e.lngLat?.lng;
+            const clickLat = coords?.[1] ?? e.lngLat?.lat;
+            fetchSkytrainStationSchedule(String(stopId), stopName, clickLon, clickLat);
+            return;
           } else if (layerId === 'bus-stops-layer' || layerId === 'seabus-stops-layer') {
             setSelectedFacility(null);
             setSelectedTrain(null);
@@ -4102,6 +4201,93 @@ export default function AppMap() {
               <div className="relative inline-flex rounded-full h-7 w-7 bg-cyan-500 border-2 border-white shadow-2xl items-center justify-center text-xs text-white">
                 🎯
               </div>
+            </div>
+          </Marker>
+        )}
+
+        {/* 周邊探索選中設施之專屬常駐標記 (即使所屬圖層未開啟亦常駐顯示，直至關閉周邊半徑探索) */}
+        {radiusExploration?.active && explorationSelectedFacility && explorationSelectedFacility.lon && explorationSelectedFacility.lat && (
+          <Marker
+            longitude={Number(explorationSelectedFacility.lon)}
+            latitude={Number(explorationSelectedFacility.lat)}
+            anchor="bottom"
+          >
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                lastInteractiveItemClickRef.current = Date.now();
+                if (
+                  explorationSelectedFacility.facility_type === 'skytrain_stations' || 
+                  explorationSelectedFacility.facility_type === 'skytrain_station'
+                ) {
+                  fetchSkytrainStationSchedule(
+                    String(explorationSelectedFacility.id),
+                    explorationSelectedFacility.name,
+                    Number(explorationSelectedFacility.lon),
+                    Number(explorationSelectedFacility.lat)
+                  );
+                } else {
+                  setSelectedFacility({
+                    id: explorationSelectedFacility.id,
+                    facility_type: explorationSelectedFacility.facility_type,
+                    name: explorationSelectedFacility.name,
+                    local_area: explorationSelectedFacility.local_area,
+                    lon: Number(explorationSelectedFacility.lon),
+                    lat: Number(explorationSelectedFacility.lat),
+                    properties: explorationSelectedFacility.properties || {}
+                  });
+                }
+              }}
+              className="group relative flex flex-col items-center cursor-pointer select-none z-50 hover:scale-110 transition-transform"
+            >
+              {/* 頂部常駐標籤 (設施名稱與距離) */}
+              <div className="mb-1.5 px-2.5 py-1 rounded-md bg-[#0f131c]/95 text-white text-[11px] font-bold whitespace-nowrap shadow-2xl border border-cyan-400/90 backdrop-blur-md flex items-center gap-1.5 ring-2 ring-cyan-500/30">
+                <span className="text-cyan-400">
+                  {explorationSelectedFacility.facility_type === 'aed' ? '⚡' :
+                   explorationSelectedFacility.facility_type === 'public_washrooms' ? '🚻' :
+                   explorationSelectedFacility.facility_type === 'bike_racks' || explorationSelectedFacility.facility_type === 'shared_bikes' ? '🚲' :
+                   explorationSelectedFacility.facility_type === 'litter_containers' ? '🗑️' :
+                   explorationSelectedFacility.facility_type === 'parking_meters' ? '🅿️' :
+                   (explorationSelectedFacility.facility_type === 'skytrain_stations' || explorationSelectedFacility.facility_type === 'skytrain_station') ? '🚉' :
+                   (explorationSelectedFacility.facility_type === 'bus_stops' || explorationSelectedFacility.facility_type === 'bus_stop') ? '🚏' :
+                   explorationSelectedFacility.facility_type === 'food_banks' ? '🥫' :
+                   explorationSelectedFacility.facility_type === 'drinking_fountains' ? '🚰' :
+                   explorationSelectedFacility.facility_type === 'hospitals' ? '🏥' :
+                   explorationSelectedFacility.facility_type === 'schools' ? '🏫' :
+                   explorationSelectedFacility.facility_type === 'libraries' ? '📚' :
+                   explorationSelectedFacility.facility_type === 'traffic_crosswalks' ? '🚶' : '📍'}
+                </span>
+                <span className="max-w-[150px] truncate">{explorationSelectedFacility.name}</span>
+                {(explorationSelectedFacility.distance_meters !== undefined || explorationSelectedFacility.distance_m !== undefined) && (
+                  <span className="text-[10px] text-cyan-300 font-mono font-normal">
+                    ({explorationSelectedFacility.distance_meters ?? explorationSelectedFacility.distance_m}m)
+                  </span>
+                )}
+              </div>
+
+              {/* 外圈動畫波紋與中心圓標 */}
+              <div className="relative flex items-center justify-center">
+                <span className="animate-ping absolute inline-flex h-9 w-9 rounded-full bg-cyan-400 opacity-75"></span>
+                <div className="relative flex items-center justify-center w-8 h-8 rounded-full bg-cyan-500 border-2 border-white shadow-[0_2px_16px_rgba(6,182,212,0.8)] text-white">
+                  <span className="text-sm leading-none">
+                    {explorationSelectedFacility.facility_type === 'aed' ? '⚡' :
+                     explorationSelectedFacility.facility_type === 'public_washrooms' ? '🚻' :
+                     explorationSelectedFacility.facility_type === 'bike_racks' || explorationSelectedFacility.facility_type === 'shared_bikes' ? '🚲' :
+                     explorationSelectedFacility.facility_type === 'litter_containers' ? '🗑️' :
+                     explorationSelectedFacility.facility_type === 'parking_meters' ? '🅿️' :
+                     (explorationSelectedFacility.facility_type === 'skytrain_stations' || explorationSelectedFacility.facility_type === 'skytrain_station') ? '🚉' :
+                     (explorationSelectedFacility.facility_type === 'bus_stops' || explorationSelectedFacility.facility_type === 'bus_stop') ? '🚏' :
+                     explorationSelectedFacility.facility_type === 'food_banks' ? '🥫' :
+                     explorationSelectedFacility.facility_type === 'drinking_fountains' ? '🚰' :
+                     explorationSelectedFacility.facility_type === 'hospitals' ? '🏥' :
+                     explorationSelectedFacility.facility_type === 'schools' ? '🏫' :
+                     explorationSelectedFacility.facility_type === 'libraries' ? '📚' :
+                     explorationSelectedFacility.facility_type === 'traffic_crosswalks' ? '🚶' : '📍'}
+                  </span>
+                </div>
+              </div>
+              {/* 下方箭頭針 */}
+              <div className="w-2.5 h-2.5 bg-cyan-500 rotate-45 -mt-1.5 border-r-2 border-b-2 border-white shadow-md"></div>
             </div>
           </Marker>
         )}
@@ -8168,6 +8354,7 @@ export default function AppMap() {
                         ref={isNext ? (el) => { el?.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } : undefined}
                         onClick={() => {
                           mapRef.current?.flyTo({ center: [st.lon, st.lat], zoom: 15.5, duration: 800 });
+                          fetchSkytrainStationSchedule(String(st.stop_id), st.name, st.lon, st.lat);
                         }}
                         className={`flex items-center justify-between gap-2 px-2 py-1.5 rounded text-[11.5px] cursor-pointer transition-colors ${
                           isNext
@@ -8367,10 +8554,12 @@ export default function AppMap() {
                 if (mins === undefined || mins === null || isNaN(mins)) {
                   mins = distM <= 50 ? 0.5 : Math.max(1, Math.round(distM / 80));
                 }
+                const isSelected = explorationSelectedFacility?.id === fac.id;
                 return (
                   <div
                     key={`nearby-${idx}`}
                     onClick={() => {
+                      setExplorationSelectedFacility(fac);
                       const map = mapRef.current?.getMap();
                       map?.flyTo({ center: [fac.lon, fac.lat], zoom: 16.5, duration: 400 });
                       if (fac.facility_type === 'skytrain_stations' || fac.facility_type === 'skytrain_station') {
@@ -8387,7 +8576,11 @@ export default function AppMap() {
                         });
                       }
                     }}
-                    className="p-2 rounded-lg bg-[#10131a] hover:bg-[#1c2230] border border-[#232836] hover:border-cyan-500/50 cursor-pointer transition-all flex items-center justify-between gap-2"
+                    className={`p-2 rounded-lg cursor-pointer transition-all flex items-center justify-between gap-2 border ${
+                      isSelected
+                        ? 'bg-[#182638] border-cyan-400 ring-1 ring-cyan-400/50 shadow-md'
+                        : 'bg-[#10131a] hover:bg-[#1c2230] border-[#232836] hover:border-cyan-500/50'
+                    }`}
                   >
                     <div className="flex items-center gap-2 min-w-0">
                       <span className="text-sm shrink-0">

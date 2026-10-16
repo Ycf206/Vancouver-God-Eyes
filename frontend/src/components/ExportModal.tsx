@@ -9,7 +9,7 @@ import {
   Globe, Share2, Check, AlertCircle, RefreshCw, Eye
 } from 'lucide-react';
 
-// 圖層中文名稱與後端 API 端點對照表
+// 圖層中文名稱與後端 API 端點對照表 (所屬類別嚴格對齊圖層面板 7 大類別)
 const LAYER_METADATA: Record<string, { label: string; url: string; category: string }> = {
   skytrainRoutes: { label: '天車路線', url: '/api/geojson/tracks/skytrain', category: '交通' },
   skytrainStops: { label: '天車站點', url: '/api/geojson/stops/skytrain', category: '交通' },
@@ -19,6 +19,7 @@ const LAYER_METADATA: Record<string, { label: string; url: string; category: str
   seabusStops: { label: '海上巴士碼頭', url: '/api/geojson/stops/seabus', category: '交通' },
   bcferriesRoutes: { label: 'BC 渡輪航線', url: '/api/geojson/tracks/bcferries', category: '交通' },
   bcferriesTerminals: { label: 'BC 渡輪碼頭', url: '/api/geojson/stops/bcferries', category: '交通' },
+  marineTerminals: { label: '海運貨運碼頭', url: '/api/geojson/road/marine_terminals', category: '交通' },
   bikeways: { label: '單車專用道網絡', url: '/api/geojson/road/bikeways', category: '道路' },
   bikeRacks: { label: '單車架停放處', url: '/api/geojson/road/bike_racks', category: '道路' },
   parkingMeters: { label: '停車收費錶', url: '/api/geojson/road/parking_meters', category: '道路' },
@@ -29,39 +30,38 @@ const LAYER_METADATA: Record<string, { label: string; url: string; category: str
   trafficSpeedLimits: { label: '道路車速限制', url: '/api/geojson/road/traffic_speed_limits', category: '道路' },
   oneWayStreets: { label: '單行道指示', url: '/api/geojson/road/one_way_streets', category: '道路' },
   snowRemovalRoutes: { label: '冬季除雪幹道', url: '/api/geojson/road/snow_removal_routes', category: '道路' },
-  waterDistributionMains: { label: '自來水主管道', url: '/api/geojson/road/water_distribution_mains', category: '公用' },
-  sewerMains: { label: '下水道排污幹管', url: '/api/geojson/road/sewer_mains', category: '公用' },
-  wirelessFacilities: { label: '無線通訊基站', url: '/api/geojson/road/wireless_facilities', category: '公用' },
+  fuel: { label: '加油站', url: '/api/geojson/road/fuel', category: '道路' },
+  tesla: { label: 'Tesla 超級充電站', url: '/api/geojson/road/tesla', category: '道路' },
+  carSharing: { label: '共享汽車站點', url: '/api/geojson/road/car_sharing', category: '道路' },
+  sharedBikes: { label: 'Mobi 共享單車站點', url: '/api/geojson/road/shared_bikes', category: '道路' },
+  escooter: { label: 'Lime 共享電動滑板車', url: '/api/geojson/road/escooter', category: '道路' },
+  trafficCameras: { label: '即時路況攝影機', url: '/api/geojson/road/traffic_cameras', category: '道路' },
+  safetyCameras: { label: '測速與安全相機', url: '/api/geojson/road/safety_cameras', category: '道路' },
+  waterDistributionMains: { label: '自來水主管道', url: '/api/geojson/road/water_distribution_mains', category: '公共事業' },
+  sewerMains: { label: '下水道排污幹管', url: '/api/geojson/road/sewer_mains', category: '公共事業' },
+  wirelessFacilities: { label: '無線通訊基站', url: '/api/geojson/road/wireless_facilities', category: '公共事業' },
   postalCodeFSA: { label: '郵遞區號分區 (FSA)', url: '/api/geojson/road/postal_code_fsa', category: '地理' },
   localAreaBoundary: { label: '官方社區分區邊界', url: '/api/geojson/road/local_area_boundary', category: '地理' },
   contours: { label: '等高線地形圖', url: '/api/geojson/road/contours', category: '地理' },
   schools: { label: '學校', url: '/api/geojson/road/schools', category: '生活' },
   libraries: { label: '公共圖書館', url: '/api/geojson/road/libraries', category: '生活' },
-  communityCentres: { label: '社區中心', url: '/api/geojson/road/community_centres', category: '生活' },
-  parks: { label: '城市公園與綠地', url: '/api/geojson/road/parks', category: '生活' },
-  parksFacilities: { label: '公園康樂設施', url: '/api/geojson/road/parks_facilities', category: '生活' },
-  communityGardens: { label: '社區共享花園', url: '/api/geojson/road/community_gardens', category: '生活' },
-  drinkingFountains: { label: '公共飲水台', url: '/api/geojson/road/drinking_fountains', category: '生活' },
-  publicWashrooms: { label: '公共洗手間', url: '/api/geojson/road/public_washrooms', category: '生活' },
   foodVendors: { label: '街頭食品攤販', url: '/api/geojson/road/food_vendors', category: '生活' },
   foodBanks: { label: '食物銀行與低收食物', url: '/api/geojson/road/food_banks', category: '生活' },
   recycling: { label: '環保回收站', url: '/api/geojson/road/recycling', category: '生活' },
-  aed: { label: 'AED 心臟去顫器', url: '/api/geojson/road/aed', category: '生活' },
   homelessShelters: { label: '無家者緊急庇護所', url: '/api/geojson/road/homeless_shelters', category: '生活' },
   litterContainers: { label: '街頭公用垃圾箱', url: '/api/geojson/road/litter_containers', category: '生活' },
-  trafficCameras: { label: '即時路況攝影機', url: '/api/geojson/road/traffic_cameras', category: '安全' },
-  safetyCameras: { label: '測速與安全相機', url: '/api/geojson/road/safety_cameras', category: '安全' },
-  fireHalls: { label: '消防分局', url: '/api/geojson/road/fire_halls', category: '安全' },
-  police: { label: '警察分局', url: '/api/geojson/road/police', category: '安全' },
-  disasterHubs: { label: '災難應變中心', url: '/api/geojson/road/disaster_hubs', category: '安全' },
-  hospitals: { label: '綜合急診醫院', url: '/api/geojson/road/hospitals', category: '安全' },
-  crimeAreas: { label: '罪案發生率熱區', url: '/api/geojson/road/crime_areas', category: '安全' },
-  fuel: { label: '加油站', url: '/api/geojson/road/fuel', category: '商業' },
-  tesla: { label: 'Tesla 超級充電站', url: '/api/geojson/road/tesla', category: '商業' },
-  carSharing: { label: '共享汽車站點', url: '/api/geojson/road/car_sharing', category: '商業' },
-  sharedBikes: { label: 'Mobi 共享單車站點', url: '/api/geojson/road/shared_bikes', category: '商業' },
-  escooter: { label: 'Lime 共享電動滑板車', url: '/api/geojson/road/escooter', category: '商業' },
-  marineTerminals: { label: '海運貨運碼頭', url: '/api/geojson/road/marine_terminals', category: '商業' }
+  aed: { label: 'AED 心臟去顫器', url: '/api/geojson/road/aed', category: '生活' },
+  communityCentres: { label: '社區中心', url: '/api/geojson/road/community_centres', category: '自然' },
+  parks: { label: '城市公園與綠地', url: '/api/geojson/road/parks', category: '自然' },
+  parksFacilities: { label: '公園康樂設施', url: '/api/geojson/road/parks_facilities', category: '自然' },
+  communityGardens: { label: '社區共享花園', url: '/api/geojson/road/community_gardens', category: '自然' },
+  drinkingFountains: { label: '公共飲水台', url: '/api/geojson/road/drinking_fountains', category: '自然' },
+  publicWashrooms: { label: '公共洗手間', url: '/api/geojson/road/public_washrooms', category: '自然' },
+  fireHalls: { label: '消防分局', url: '/api/geojson/road/fire_halls', category: '政府' },
+  police: { label: '警察分局', url: '/api/geojson/road/police', category: '政府' },
+  disasterHubs: { label: '災難應變中心', url: '/api/geojson/road/disaster_hubs', category: '政府' },
+  hospitals: { label: '綜合急診醫院', url: '/api/geojson/road/hospitals', category: '政府' },
+  crimeAreas: { label: '罪案發生率熱區', url: '/api/geojson/road/crime_areas', category: '政府' }
 };
 
 export default function ExportModal() {
@@ -344,7 +344,7 @@ export default function ExportModal() {
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const rows: string[][] = [
-        ['設施ID', '設施名稱', '圖層分類', '所屬類別', '緯度 (Latitude)', '經度 (Longitude)', '所屬社區/鄰里', '地址/位置說明', '補充資訊']
+        ['設施ID', '設施名稱', '圖層名稱', '所屬類別', '緯度 (Latitude)', '經度 (Longitude)', '所屬社區/鄰里', '地址/位置說明', '補充資訊']
       ];
 
       for (const k of activeLayerKeys) {

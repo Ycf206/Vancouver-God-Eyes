@@ -2448,7 +2448,8 @@ def explore_nearby_facilities(
         if dist <= radius:
             is_skytrain = s.stop_group == 'skytrain'
             layer_key = 'skytrainStops' if is_skytrain else 'busStops'
-            if selected_layer_keys and layer_key not in selected_layer_keys:
+            is_allowed = not selected_layer_keys or layer_key in selected_layer_keys or (is_skytrain and 'skytrainRoutes' in selected_layer_keys)
+            if not is_allowed:
                 continue
             walk_min = calc_walk_minutes(dist)
             nearby_items.append({
@@ -2468,6 +2469,34 @@ def explore_nearby_facilities(
                 'properties': {'stop_id': s.stop_id, 'stop_group': s.stop_group}
             })
 
+    # Supplementary SkyTrain stations from skytrain_network.json to ensure 100% discovery
+    is_skytrain_layer_on = not selected_layer_keys or 'skytrainStops' in selected_layer_keys or 'skytrainRoutes' in selected_layer_keys
+    if is_skytrain_layer_on:
+        skytrain_stations = skytrain_service.get_skytrain_data().get('stations', {})
+        existing_st_ids = {str(item['id']) for item in nearby_items if item.get('facility_type') == 'skytrain_stations'}
+        for st_id, st in skytrain_stations.items():
+            if str(st_id) in existing_st_ids or str(st.get('stop_id')) in existing_st_ids:
+                continue
+            dist = haversine_m(lat, lon, st['lat'], st['lon'])
+            if dist <= radius:
+                walk_min = calc_walk_minutes(dist)
+                nearby_items.append({
+                    'id': str(st.get('stop_id', st_id)),
+                    'name': st.get('name', '天車站'),
+                    'facility_type': 'skytrain_stations',
+                    'type_label': '天車站',
+                    'icon': '🚉',
+                    'layer_key': 'skytrainStops',
+                    'local_area': '',
+                    'lat': st['lat'],
+                    'lon': st['lon'],
+                    'distance_m': dist,
+                    'distance_meters': dist,
+                    'walk_minutes': walk_min,
+                    'walking_minutes': walk_min,
+                    'properties': {'stop_id': str(st_id), 'lines': st.get('lines', [])}
+                })
+
     # Sort all by distance ascending
     nearby_items.sort(key=lambda x: x['distance_m'])
 
@@ -2481,8 +2510,48 @@ def explore_nearby_facilities(
 @app.get("/api/geojson/stops/{group}")
 def get_stops_geojson(group: str, db: Session = Depends(database.get_db)):
     """group can be 'bus', 'skytrain', or 'seabus'"""
-    stops = db.query(models.TransitStop).filter(models.TransitStop.stop_group == group).all()
-    
+    if group == 'skytrain':
+        data = skytrain_service.get_skytrain_data()
+        stations = data.get('stations', {})
+        features = []
+        for stop_id, st in stations.items():
+            st_lines = st.get('lines', [])
+            # Color follows the SkyTrain line colors:
+            # Canada Line: #0097a9 (Teal/Turquoise)
+            # Millennium Line: #f59e0b (Yellow/Amber)
+            # Expo Line: #0033a0 (Dark Blue)
+            if any('Canada' in l for l in st_lines):
+                color = '#0097a9'
+            elif any('Millennium' in l for l in st_lines):
+                color = '#f59e0b'
+            else:
+                color = '#0033a0'
+            
+            is_interchange = len(st_lines) > 1 or any(k in st.get('name', '') for k in ['Waterfront', 'Commercial', 'Lougheed', 'Production Way'])
+
+            features.append({
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [st['lon'], st['lat']]
+                },
+                "properties": {
+                    "stop_id": str(st.get('stop_id', stop_id)),
+                    "name": st.get('name', ''),
+                    "raw_name": st.get('raw_name', st.get('name', '')),
+                    "lines": st_lines,
+                    "color": color,
+                    "is_interchange": is_interchange
+                }
+            })
+        if features:
+            return {"type": "FeatureCollection", "features": features}
+
+    try:
+        stops = db.query(models.TransitStop).filter(models.TransitStop.stop_group == group).all()
+    except Exception:
+        stops = []
+
     features = []
     for stop in stops:
         features.append({
