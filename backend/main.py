@@ -1916,7 +1916,7 @@ def get_road_facilities_geojson(facility_type: str, interval: str = "10m", db: S
             static_geojson_path = os.path.join(os.path.dirname(__file__), "data", "vancouver_contours.geojson")
 
         if os.path.exists(static_geojson_path):
-            return FileResponse(static_geojson_path, media_type="application/json")
+            return FileResponse(static_geojson_path, media_type="application/json", headers={"Cache-Control": "no-cache, must-revalidate"})
         return {"type": "FeatureCollection", "features": []}
 
     # 2. Prioritize verified curated static GeoJSON files (hospitals/UPCC, police, etc.)
@@ -1955,7 +1955,7 @@ def get_road_facilities_geojson(facility_type: str, interval: str = "10m", db: S
                     db.rollback()
                     print(f"Error syncing {facility_type} to DB: {e}")
 
-            return FileResponse(static_geojson_path, media_type="application/json")
+            return FileResponse(static_geojson_path, media_type="application/json", headers={"Cache-Control": "no-cache, must-revalidate"})
 
     facilities = db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).all()
     
