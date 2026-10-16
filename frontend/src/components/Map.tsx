@@ -1417,6 +1417,28 @@ export default function AppMap() {
     }
   }, [zoomNotification?.show]);
 
+  // 當開啟即時降水雷達回波時，自動縮放至能完整顯示雷達雲團動態的地圖大小 (Zoom 7 全域視角)
+  const prevRadarActiveRef = useRef(isRadarActive);
+  useEffect(() => {
+    if (isRadarActive && !prevRadarActiveRef.current) {
+      const map = mapRef.current?.getMap();
+      if (map) {
+        const currentZoom = map.getZoom();
+        if (currentZoom > 7.5) {
+          map.flyTo({
+            center: [-123.12, 49.25],
+            zoom: 7,
+            pitch: 0,
+            bearing: 0,
+            duration: 1200,
+            essential: true
+          });
+        }
+      }
+    }
+    prevRadarActiveRef.current = isRadarActive;
+  }, [isRadarActive]);
+
   // 響應全域搜尋項目選取 (FlyTo & 自動打開詳細資訊卡片)
   useEffect(() => {
     if (!searchTarget) {
@@ -1809,12 +1831,13 @@ export default function AppMap() {
       data: `${apiUrl}/api/geojson/road/tide_stations`
     };
 
-    // RainViewer Radar (即時降水雷達回波)
+    // RainViewer Radar (即時降水雷達回波 - 免費 API 最高支援至 7 級，設定 maxzoom: 7 避免請求超額瓦片造成 "Zoom Level Not Supported")
     if (isRadarActive && radarTilePath) {
       style.sources['rainviewer-radar'] = {
         type: 'raster',
         tiles: [`${radarHost || 'https://tilecache.rainviewer.com'}${radarTilePath}/256/{z}/{x}/{y}/2/1_1.png`],
-        tileSize: 256
+        tileSize: 256,
+        maxzoom: 7
       };
     }
 
@@ -4218,7 +4241,7 @@ export default function AppMap() {
             setSelectedFacility({
               id: props.id || (props.object_id ? `${props.facility_type || (isVanWifi ? 'van_wifi' : (isTideStation ? 'tide' : (isBikeRack ? 'bike_rack' : (isWireless ? 'wireless' : (isCrosswalk ? 'crosswalk' : (isLitter ? 'litter' : (isRecycling ? 'recycling' : 'fac')))))))}_${props.object_id}` : ''),
               facility_type: props.facility_type || (isVanWifi ? 'van_wifi' : (isTideStation ? 'tide_stations' : (isFuel ? 'fuel' : (isTesla ? 'tesla' : (isMarineTerminal ? 'marine_terminals' : (isBikeRack ? 'bike_racks' : (isWireless ? 'wireless_facilities' : (isCrosswalk ? 'traffic_crosswalks' : (isLitter ? 'litter_containers' : (isRecycling ? 'recycling' : '')))))))))),
-              name: props.name || (isVanWifi ? (props.site_name || 'VanWiFi 公共無線網絡') : (isTideStation ? (props.english_name || '海岸潮位站') : (isCrosswalk ? (props.location ? `斑馬線 - ${props.location}` : '行人斑馬線') : (isLitter ? (props.address ? `垃圾箱 - ${props.address}` : '公用垃圾箱') : (isBikeRack ? (props.location ? `單車架 - ${props.location}` : '公用單車架') : (isWireless ? (props.site_name || `無線設施 #${props.pole_number || ''}`) : (isRecycling ? (props.brand || '環保回收站') : (props.brand || (isFuel ? '加油站' : (isTesla ? 'Tesla 站點' : (isMarineTerminal ? '港口碼頭' : ''))))))))))),
+              name: props.name || (isVanWifi ? (props.site_name || 'VanWiFi 公共無線網絡') : (isTideStation ? (props.english_name || '潮汐水位') : (isCrosswalk ? (props.location ? `斑馬線 - ${props.location}` : '行人斑馬線') : (isLitter ? (props.address ? `垃圾箱 - ${props.address}` : '公用垃圾箱') : (isBikeRack ? (props.location ? `單車架 - ${props.location}` : '公用單車架') : (isWireless ? (props.site_name || `無線設施 #${props.pole_number || ''}`) : (isRecycling ? (props.brand || '環保回收站') : (props.brand || (isFuel ? '加油站' : (isTesla ? 'Tesla 站點' : (isMarineTerminal ? '港口碼頭' : ''))))))))))),
               local_area: props.waterway || props.area || props.local_area || props.location || props.company || props.address || props.city || '',
               lon: coords[0],
               lat: coords[1],
@@ -7340,7 +7363,7 @@ export default function AppMap() {
                       <div className="flex items-center justify-between">
                         <span className="font-bold text-xs text-blue-950 flex items-center gap-1.5">
                           <span>🌊</span>
-                          <span>大溫海岸潮位站 (DFO / CHS)</span>
+                          <span>大溫海岸潮汐水位 (DFO / CHS)</span>
                         </span>
                         <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-600 text-white font-mono">
                           #{props.station_code || '07795'}
@@ -9086,6 +9109,18 @@ export default function AppMap() {
               {new Date(radarFrameTime * 1000).toLocaleTimeString('zh-TW', { hour12: false, hour: '2-digit', minute: '2-digit', timeZone: 'America/Vancouver' })} PDT
             </span>
           ) : null}
+          <button
+            onClick={() => {
+              const map = mapRef.current?.getMap();
+              if (map) {
+                map.flyTo({ center: [-123.12, 49.25], zoom: 7, duration: 800, essential: true });
+              }
+            }}
+            className="text-cyan-400 hover:text-white px-2 py-0.5 rounded bg-cyan-950/60 border border-cyan-800/40 text-[10.5px] font-medium flex items-center gap-1 hover:bg-cyan-900/60 transition-colors"
+            title="自動縮放至雷達全域視角"
+          >
+            <span>縮放至最佳視野</span>
+          </button>
           <button
             onClick={() => setIsRadarActive(false)}
             className="text-gray-400 hover:text-white p-0.5 rounded-full hover:bg-white/10 transition-colors ml-1"

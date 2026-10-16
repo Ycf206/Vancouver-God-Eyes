@@ -482,6 +482,28 @@ function ExploreContent() {
     }
   };
 
+  const handleToggleRadar = () => {
+    const nextActive = !isRadarActive;
+    setIsRadarActive(nextActive);
+    if (nextActive) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap();
+      if (mapInstance) {
+        const currentZoom = mapInstance.getZoom();
+        if (currentZoom > 7.5) {
+          mapInstance.flyTo({
+            center: [-123.12, 49.25],
+            zoom: 7,
+            pitch: 0,
+            bearing: 0,
+            duration: 1200,
+            essential: true
+          });
+        }
+      }
+    }
+  };
+
   const handleLocateTideStation = (st: TideStation) => {
     enableLayer('tideStations');
     setSelectedTideCode(st.code);
@@ -1437,7 +1459,7 @@ function ExploreContent() {
 
                   {/* 疊加主地圖開關 */}
                   <button
-                    onClick={() => setIsRadarActive(!isRadarActive)}
+                    onClick={handleToggleRadar}
                     className={`px-2.5 py-1 text-[11px] rounded-lg font-bold transition-all flex items-center gap-1.5 shadow-sm ${
                       isRadarActive
                         ? 'bg-cyan-500 text-gray-950 ring-2 ring-cyan-400/50'
@@ -1529,7 +1551,7 @@ function ExploreContent() {
                     </div>
                     <div>
                       <h4 className="text-xs font-bold text-white tracking-wide flex items-center gap-1.5">
-                        <span>大溫海岸潮汐與即時水位站</span>
+                        <span>大溫海岸潮汐水位</span>
                         <span className="text-[9px] bg-blue-950/80 text-blue-400 border border-blue-800/60 px-1 py-0.2 rounded font-mono">
                           DFO / CHS 官方
                         </span>
@@ -1541,7 +1563,7 @@ function ExploreContent() {
                     onClick={() => enableLayer('tideStations')}
                     className="text-[11px] text-blue-400 hover:text-blue-300 hover:underline flex items-center gap-1"
                   >
-                    <span>開啟潮汐圖層</span>
+                    <span>開啟潮汐水位圖層</span>
                     <span>❯</span>
                   </button>
                 </div>

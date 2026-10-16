@@ -63,7 +63,7 @@ const LAYER_METADATA: Record<string, { label: string; url: string; category: str
   vanWifi: { label: 'VanWiFi 免費無線網路', url: '/api/geojson/road/van_wifi', category: '政府' },
   hospitals: { label: '綜合急診醫院', url: '/api/geojson/road/hospitals', category: '政府' },
   crimeAreas: { label: '罪案發生率熱區', url: '/api/geojson/road/crime_areas', category: '政府' },
-  tideStations: { label: '潮汐與海岸水位站', url: '/api/tides/stations/geojson', category: '自然' }
+  tideStations: { label: '潮汐水位', url: '/api/tides/stations/geojson', category: '地理' }
 };
 
 export default function ExportModal() {

@@ -300,7 +300,6 @@ export default function LayerPanel() {
             <LayerButton layerKey="communityCentres" label="社區中心" icon={Building2} colorClass="text-violet-400" activeBg="bg-[#211a2f]" activeBorder="border-violet-500/50" activeShadow="shadow-[0_0_6px_rgba(139,92,246,0.15)]" />
             <LayerButton layerKey="drinkingFountains" label="飲水器" icon={Droplets} colorClass="text-sky-400" activeBg="bg-[#142533]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(56,189,248,0.15)]" />
             <LayerButton layerKey="publicWashrooms" label="公共廁所" icon={Bath} colorClass="text-cyan-400" activeBg="bg-[#13272e]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.15)]" />
-            <LayerButton layerKey="tideStations" label="潮汐水位站" icon={Waves} colorClass="text-cyan-400" activeBg="bg-[#102730]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.15)]" />
           </div>
         </div>
 
@@ -358,10 +357,11 @@ export default function LayerPanel() {
             <span className="text-[9px] text-teal-500/70 font-mono">GEOGRAPHY</span>
           </div>
 
-          {/* 區域邊界按鈕 (等高線上方) */}
+          {/* 區域邊界、郵遞編號與潮汐水位按鈕 (等高線上方) */}
           <div className="grid grid-cols-2 gap-1">
             <LayerButton layerKey="localAreaBoundary" label="區域邊界" icon={MapPin} colorClass="text-teal-400" activeBg="bg-[#122826]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
             <LayerButton layerKey="postalCodeFSA" label="郵遞編號" icon={Mail} colorClass="text-indigo-400" activeBg="bg-[#181a33]" activeBorder="border-indigo-500/50" activeShadow="shadow-[0_0_6px_rgba(99,102,241,0.15)]" />
+            <LayerButton layerKey="tideStations" label="潮汐水位" icon={Waves} colorClass="text-cyan-400" activeBg="bg-[#102730]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.15)]" />
           </div>
 
           {/* 等高線文字與狀態標籤 (地理文字下方、拉動條上方) */}

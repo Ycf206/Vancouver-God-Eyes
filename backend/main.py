@@ -2427,7 +2427,8 @@ def explore_nearby_facilities(
         'hospitals': ('醫療院所', '🏥', 'hospitals'),
         'police': ('警局', '🚓', 'police'),
         'fire_halls': ('消防局', '🚒', 'fireHalls'),
-        'van_wifi': ('VanWiFi 免費無線網路', '📶', 'vanWifi')
+        'van_wifi': ('VanWiFi 免費無線網路', '📶', 'vanWifi'),
+        'tide_stations': ('潮汐水位', '🌊', 'tideStations')
     }
 
     for f in road_query.all():
