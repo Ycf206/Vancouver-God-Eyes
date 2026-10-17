@@ -65,8 +65,16 @@ class EventsService:
                         title = clean_html(u.get('title', ''))
                         if not title:
                             continue
+                        u_id = u.get('id', '')
                         slug = u.get('slug', '')
-                        ev_url = f"https://dailyhive.com/vancouver/listed/event/{slug}" if slug else (u.get('ticket_url') or url)
+                        if u_id and slug:
+                            ev_url = f"https://dailyhive.com/vancouver/listed/events/{u_id}/{slug}"
+                        elif slug:
+                            ev_url = f"https://dailyhive.com/vancouver/listed/events/{slug}"
+                        elif u_id:
+                            ev_url = f"https://dailyhive.com/vancouver/listed/events/{u_id}"
+                        else:
+                            ev_url = u.get('ticket_url') or url
                         
                         s_iso = u.get('start_datetime', '')
                         e_iso = u.get('end_datetime', '')

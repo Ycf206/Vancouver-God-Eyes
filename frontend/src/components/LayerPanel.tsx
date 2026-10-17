@@ -285,6 +285,7 @@ export default function LayerPanel() {
             <LayerButton layerKey="homelessShelters" label="無家者庇護所" icon={Bed} colorClass="text-rose-400" activeBg="bg-[#2a171d]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.15)]" />
             <LayerButton layerKey="litterContainers" label="垃圾箱" icon={Trash2} colorClass="text-amber-400" activeBg="bg-[#282115]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
             <LayerButton layerKey="aed" label="AED 去顫器" icon={HeartPulse} colorClass="text-red-400" activeBg="bg-[#2c1518]" activeBorder="border-red-500/50" activeShadow="shadow-[0_0_6px_rgba(239,68,68,0.15)]" />
+            <LayerButton layerKey="wirelessFacilities" label="無線設施" icon={Radio} colorClass="text-purple-400" activeBg="bg-[#241733]" activeBorder="border-purple-500/50" activeShadow="shadow-[0_0_6px_rgba(168,85,247,0.15)]" />
           </div>
         </div>
 
@@ -347,8 +348,8 @@ export default function LayerPanel() {
           <div className="grid grid-cols-2 gap-1">
             <LayerButton layerKey="waterDistributionMains" label="自來水管道" icon={Droplets} colorClass="text-sky-400" activeBg="bg-[#102436]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(14,165,233,0.15)]" />
             <LayerButton layerKey="sewerMains" label="污水管道" icon={Waves} colorClass="text-teal-400" activeBg="bg-[#102826]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
-            <LayerButton layerKey="streetLighting" label="路燈" icon={Lightbulb} title="路燈控制盤 (每3個月更新)" colorClass="text-amber-300" activeBg="bg-[#2a2414]" activeBorder="border-amber-400/50" activeShadow="shadow-[0_0_6px_rgba(251,191,36,0.15)]" />
-            <LayerButton layerKey="wirelessFacilities" label="無線設施" icon={Radio} colorClass="text-purple-400" activeBg="bg-[#241733]" activeBorder="border-purple-500/50" activeShadow="shadow-[0_0_6px_rgba(168,85,247,0.15)]" />
+            <LayerButton layerKey="streetLightingConduits" label="配電管線" icon={Zap} title="路燈配電管線 (每3個月更新)" colorClass="text-amber-300" activeBg="bg-[#2a2414]" activeBorder="border-amber-400/50" activeShadow="shadow-[0_0_6px_rgba(251,191,36,0.15)]" />
+            <LayerButton layerKey="streetLighting" label="路燈" icon={Lightbulb} title="路燈燈柱 (每3個月更新)" colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-400/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
           </div>
         </div>
 

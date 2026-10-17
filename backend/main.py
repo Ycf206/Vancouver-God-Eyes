@@ -1420,7 +1420,7 @@ CURATED_STATIC_TYPES = (
     "one_way_streets", "snow_removal_routes", "crime_areas", "water_distribution_mains", 
     "sewer_mains", "traffic_speed_limits", "bike_racks", "postal_code_fsa", "wireless_facilities",
     "traffic_crosswalks", "litter_containers", "food_banks", "recycling", "van_wifi",
-    "road_closures", "road_construction", "street_lighting", "traffic_conditions",
+    "road_closures", "road_construction", "street_lighting", "street_lighting_poles", "street_lighting_conduits", "traffic_conditions",
     "beach_water_quality", "beach_water"
 )
 POINT_CURATED_TYPES = (
@@ -2475,6 +2475,18 @@ def get_road_facilities_geojson(
         import beach_water_service
         return beach_water_service.get_beach_water_geojson()
 
+    # Handle Street Lighting Poles
+    if facility_type in ("street_lighting", "street_lighting_poles"):
+        poles_path = os.path.join(os.path.dirname(__file__), "data", "vancouver_street_lighting_poles.geojson")
+        if os.path.exists(poles_path):
+            return FileResponse(poles_path, media_type="application/json", headers={"Cache-Control": "no-cache, must-revalidate"})
+
+    # Handle Street Lighting Conduits
+    if facility_type in ("street_lighting_conduits", "street_conduits"):
+        conduits_path = os.path.join(os.path.dirname(__file__), "data", "vancouver_street_lighting_conduits.geojson")
+        if os.path.exists(conduits_path):
+            return FileResponse(conduits_path, media_type="application/json", headers={"Cache-Control": "no-cache, must-revalidate"})
+
     # 2. Prioritize verified curated static GeoJSON files (hospitals/UPCC, police, etc.)
     if facility_type in CURATED_STATIC_TYPES:
         filename = f"vancouver_{facility_type}.geojson"
@@ -2685,7 +2697,9 @@ def explore_nearby_facilities(
         'van_wifi': ('VanWiFi 免費無線網路', '📶', 'vanWifi'),
         'tide_stations': ('潮汐水位', '🌊', 'tideStations'),
         'beach_water_quality': ('海灘水質', '🏖️', 'beachWaterQuality'),
-        'street_lighting': ('路燈配電管線', '💡', 'streetLighting'),
+        'street_lighting': ('路燈燈柱', '💡', 'streetLighting'),
+        'street_lighting_poles': ('路燈燈柱', '💡', 'streetLighting'),
+        'street_lighting_conduits': ('配電管線', '⚡', 'streetLightingConduits'),
         'road_closures': ('交通封閉', '🚫', 'roadClosures'),
         'road_construction': ('道路施工', '🚧', 'roadConstruction'),
         'traffic_conditions': ('獅門大橋', '🌉', 'trafficConditions')

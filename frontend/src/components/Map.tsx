@@ -236,8 +236,8 @@ const HEAVY_LAYERS_CONFIG: Record<string, { label: string; prefixes: string[] }>
   litterContainers: { label: '垃圾箱', prefixes: ['litter-containers'] },
   bikeways: { label: '單車道路網', prefixes: ['bikeways'] },
   parkingMeters: { label: '收費錶', prefixes: ['parking-meters'] },
-  trafficCrosswalks: { label: '斑馬線', prefixes: ['traffic-crosswalks'] },
-  streetLighting: { label: '路燈', prefixes: ['street-lighting', 'street_lighting'] },
+  streetLighting: { label: '路燈燈柱', prefixes: ['street-lighting-poles', 'street_lighting_poles'] },
+  streetLightingConduits: { label: '路燈配電管線', prefixes: ['street-lighting-conduits', 'street_lighting_conduits', 'street-lighting-glow', 'street-lighting-layer'] },
   beachWaterQuality: { label: '海灘水質', prefixes: ['beach-water', 'beach_water'] },
 };
 
@@ -823,6 +823,7 @@ export default function AppMap() {
         else if (type === 'road_closures' && !layers.roadClosures) facilityClosed = true;
         else if (type === 'road_construction' && !layers.roadConstruction) facilityClosed = true;
         else if (type === 'street_lighting' && !layers.streetLighting) facilityClosed = true;
+        else if (type === 'street_lighting_conduits' && !layers.streetLightingConduits) facilityClosed = true;
         else if (type === 'beach_water_quality' && !layers.beachWaterQuality) facilityClosed = true;
 
         if (facilityClosed) {
@@ -4131,16 +4132,16 @@ export default function AppMap() {
     }
 
     // Utilities: Street Lighting Conduits (路燈地下配電管線)
-    if (layers.streetLighting) {
-      style.sources['street_lighting'] = { 
+    if (layers.streetLightingConduits) {
+      style.sources['street_lighting_conduits'] = { 
         type: 'geojson', 
-        data: `${apiUrl}/api/geojson/road/street_lighting`
+        data: `${apiUrl}/api/geojson/road/street_lighting_conduits`
       };
       // 路燈配電管線外發光
       style.layers.push({
         id: 'street-lighting-glow-layer',
         type: 'line',
-        source: 'street_lighting',
+        source: 'street_lighting_conduits',
         paint: {
           'line-color': '#eab308',
           'line-width': ['interpolate', ['linear'], ['zoom'], 11, 1.5, 14, 3, 17, 6],
@@ -4152,11 +4153,44 @@ export default function AppMap() {
       style.layers.push({
         id: 'street-lighting-layer',
         type: 'line',
-        source: 'street_lighting',
+        source: 'street_lighting_conduits',
         paint: {
           'line-color': '#fef08a',
           'line-width': ['interpolate', ['linear'], ['zoom'], 11, 0.8, 14, 1.8, 17, 3.5],
           'line-opacity': 0.95
+        }
+      });
+    }
+
+    // Utilities: Street Lighting Poles (溫哥華市政公用路燈燈柱 - 58,000+ 燈柱)
+    if (layers.streetLighting) {
+      style.sources['street_lighting_poles'] = { 
+        type: 'geojson', 
+        data: `${apiUrl}/api/geojson/road/street_lighting_poles`
+      };
+      // 外層暖黃微光光暈
+      style.layers.push({
+        id: 'street-lighting-poles-glow',
+        type: 'circle',
+        source: 'street_lighting_poles',
+        paint: {
+          'circle-color': '#f59e0b',
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2, 14, 4, 16, 7, 18, 10],
+          'circle-opacity': 0.45,
+          'circle-blur': 0.8
+        }
+      });
+      // 內層路燈燈柱光點
+      style.layers.push({
+        id: 'street-lighting-poles-layer',
+        type: 'circle',
+        source: 'street_lighting_poles',
+        paint: {
+          'circle-color': '#fef08a',
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 1.2, 14, 2.2, 16, 3.5, 18, 5],
+          'circle-opacity': 0.95,
+          'circle-stroke-color': '#b45309',
+          'circle-stroke-width': 0.8
         }
       });
     }
@@ -4468,6 +4502,7 @@ export default function AppMap() {
     layers.roadClosures,
     layers.roadConstruction,
     layers.streetLighting,
+    layers.streetLightingConduits,
     layers.beachWaterQuality,
     layers.trafficCrosswalks,
     layers.litterContainers,
@@ -4854,6 +4889,23 @@ export default function AppMap() {
               lat: clickLat,
               properties: props
             });
+          } else if (layerId.startsWith('street-lighting-poles')) {
+            setSelectedStop(null);
+            const props = feature.properties || {};
+            const poleCoords = feature.geometry?.type === 'Point' 
+              ? (feature.geometry.coordinates as [number, number]) 
+              : [e.lngLat?.lng ?? -123.1207, e.lngLat?.lat ?? 49.2827];
+            const block = props.block_number || '';
+            const node = props.node_number !== undefined ? props.node_number : '';
+            setSelectedFacility({
+              id: props.id || `pole_${block}_${node}`,
+              facility_type: 'street_lighting',
+              name: block ? `路燈燈柱 (${block} 號街區 #${node})` : '路燈燈柱',
+              local_area: props.local_area || props.geo_local_area || '溫哥華市政公用照明',
+              lon: poleCoords[0],
+              lat: poleCoords[1],
+              properties: props
+            });
           } else if (layerId.startsWith('street-lighting')) {
             setSelectedStop(null);
             const props = feature.properties || {};
@@ -4862,7 +4914,7 @@ export default function AppMap() {
             const wireset = props.wireset_type || '標準線組';
             setSelectedFacility({
               id: props.id || `conduit_${clickLon}_${clickLat}`,
-              facility_type: 'street_lighting',
+              facility_type: 'street_lighting_conduits',
               name: `路燈地下配電管線 (${wireset})`,
               local_area: props.local_area || '溫哥華市政路燈配電管網',
               lon: clickLon,
@@ -6472,14 +6524,14 @@ export default function AppMap() {
             maxWidth={
               selectedFacility.facility_type === 'traffic_conditions' ? '460px' :
               selectedFacility.facility_type === 'traffic_cameras' ? '400px' : 
-              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'beach_water_quality') ? '360px' : 
+              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'beach_water_quality') ? '360px' : 
               '320px'
             }
           >
             <div className={`p-3.5 ${
               selectedFacility.facility_type === 'traffic_conditions' ? 'w-[430px]' :
               selectedFacility.facility_type === 'traffic_cameras' ? 'w-[360px]' : 
-              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'beach_water_quality') ? 'w-[340px]' : 
+              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'beach_water_quality') ? 'w-[340px]' : 
               'w-[290px]'
             } max-w-[90vw] text-gray-800`}>
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
@@ -6488,7 +6540,7 @@ export default function AppMap() {
                     selectedFacility.facility_type === 'traffic_conditions' ? 'bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]' :
                     selectedFacility.facility_type === 'road_closures' ? 'bg-rose-600' :
                     selectedFacility.facility_type === 'road_construction' ? 'bg-amber-500' :
-                    selectedFacility.facility_type === 'street_lighting' ? 'bg-amber-400' :
+                    (selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits') ? 'bg-amber-400' :
                     selectedFacility.facility_type === 'beach_water_quality' ? 'bg-teal-500' :
                     selectedFacility.facility_type === 'van_wifi' ? 'bg-cyan-500' :
                     selectedFacility.facility_type === 'tide_stations' ? 'bg-blue-600' :
@@ -9411,7 +9463,7 @@ export default function AppMap() {
                 </div>
               )}
 
-              {/* Street Lighting (路燈地下配電管線) Details */}
+              {/* Street Lighting Poles (路燈燈柱) Details */}
               {selectedFacility.facility_type === 'street_lighting' && (
                 <div className="flex flex-col gap-2 text-xs">
                   <div className="bg-amber-400/10 p-2.5 rounded-lg border border-amber-400/30 flex flex-col gap-1.5">
@@ -9421,7 +9473,72 @@ export default function AppMap() {
                         <span className="truncate max-w-[190px]">{selectedFacility.name}</span>
                       </span>
                       <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-500 text-white shrink-0">
-                        照明管線
+                        公用路燈
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-amber-900 font-medium">
+                      💡 溫哥華市政公用照明路燈柱 (Street Lighting Poles)
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                    {selectedFacility.properties.block_number && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>街區編號 (Block #)</span>
+                        <span className="font-mono font-bold text-gray-900">
+                          #{selectedFacility.properties.block_number}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.node_number !== undefined && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>燈柱節點 (Node #)</span>
+                        <span className="font-mono font-bold text-gray-900">
+                          #{selectedFacility.properties.node_number}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.local_area && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>所屬社區分區</span>
+                        <span className="font-medium text-gray-800">
+                          {selectedFacility.properties.local_area}
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <span>主管機關</span>
+                      <span className="font-medium text-gray-800">
+                        City of Vancouver Engineering Services
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <span>資料更新頻率</span>
+                      <span className="font-medium text-emerald-700">
+                        每 3 個月更新 1 次 (Quarterly)
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <span>坐標位置</span>
+                      <span className="font-mono text-gray-700">
+                        {selectedFacility.lat.toFixed(5)}, {selectedFacility.lon.toFixed(5)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Street Lighting Conduits (路燈地下配電管線) Details */}
+              {selectedFacility.facility_type === 'street_lighting_conduits' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-amber-400/10 p-2.5 rounded-lg border border-amber-400/30 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-amber-950 text-xs flex items-center gap-1.5">
+                        <span className="text-base text-amber-500 font-bold">⚡</span>
+                        <span className="truncate max-w-[190px]">{selectedFacility.name}</span>
+                      </span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-500 text-white shrink-0">
+                        配電管線
                       </span>
                     </div>
                     <div className="text-[11px] text-amber-900 font-medium">
@@ -9451,7 +9568,7 @@ export default function AppMap() {
                     <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
                       <span>資料更新頻率</span>
                       <span className="font-medium text-emerald-700">
-                        每星期更新 1 次 (Weekly)
+                        每 3 個月更新 1 次 (Quarterly)
                       </span>
                     </div>
                     <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">

@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 
 export type MapStyleType = 'street' | 'satellite' | 'light' | 'dark';
 
-export type ExploreTabType = 'weather' | 'news' | 'events' | 'ski' | 'aurora' | 'alerts' | 'fuel' | 'ev' | 'ferry' | 'cargo' | 'beach';
+export type ExploreTabType = 'weather' | 'news' | 'events' | 'ski' | 'aurora' | 'alerts' | 'fuel' | 'ev' | 'ferry' | 'cargo' | 'beach' | 'border';
 
 export interface SearchTarget {
   id: string;
@@ -88,6 +88,7 @@ export interface UIState {
     roadClosures: boolean;
     roadConstruction: boolean;
     streetLighting: boolean;
+    streetLightingConduits: boolean;
     beachWaterQuality: boolean;
   };
   contourInterval: 'off' | '1m' | '2m' | '10m';
@@ -256,6 +257,7 @@ export const useUIStore = create<UIState>()(
         roadClosures: false,
         roadConstruction: false,
         streetLighting: false,
+        streetLightingConduits: false,
         beachWaterQuality: false,
       },
       timeFormat: '24h',

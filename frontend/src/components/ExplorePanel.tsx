@@ -5,7 +5,7 @@ import {
   Compass, X, Fuel, Zap, Ship, MapPin, 
   ChevronDown, RefreshCw, Package, CloudSun, Wind, AlertTriangle, Droplets, Gauge, Eye, Anchor, Navigation,
   Newspaper, ExternalLink, Search, CalendarDays, Calendar, Tag, Waves, CloudRain, Play, Pause, SkipBack, SkipForward,
-  MountainSnow, Sparkles, Clock, ShieldAlert, BellRing, Train, Bus
+  MountainSnow, Sparkles, Clock, ShieldAlert, BellRing, Train, Bus, ShieldCheck
 } from 'lucide-react';
 import { useUIStore, ExploreTabType } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
@@ -1633,20 +1633,18 @@ function ExploreContent() {
     { id: 'weather', label: '天氣', icon: CloudSun, iconColor: 'text-sky-400' },
     { id: 'news', label: '新聞', icon: Newspaper, iconColor: 'text-amber-400' },
     { id: 'events', label: '活動', icon: CalendarDays, iconColor: 'text-purple-400' },
+    { id: 'beach', label: '沙灘水質', icon: Droplets, iconColor: 'text-teal-300' },
     { id: 'ski', label: '滑雪', icon: MountainSnow, iconColor: 'text-cyan-300' },
     { id: 'aurora', label: '極光', icon: Sparkles, iconColor: 'text-emerald-300' },
   ] as const;
 
   const exploreTabsRow2 = [
-    { id: 'ferry', label: '渡輪', icon: Ship, iconColor: 'text-cyan-400' },
-    { id: 'alerts', label: '警報', icon: AlertTriangle, iconColor: 'text-rose-400' },
-  ] as const;
-
-  const exploreTabsRow3 = [
     { id: 'fuel', label: '燃油', icon: Fuel, iconColor: 'text-emerald-400' },
     { id: 'ev', label: '充電', icon: Zap, iconColor: 'text-yellow-400' },
+    { id: 'ferry', label: '渡輪', icon: Ship, iconColor: 'text-cyan-400' },
     { id: 'cargo', label: '船運', icon: Anchor, iconColor: 'text-blue-400' },
-    { id: 'beach', label: '沙灘水質', icon: Droplets, iconColor: 'text-teal-300' },
+    { id: 'alerts', label: '交通警報', icon: AlertTriangle, iconColor: 'text-rose-400' },
+    { id: 'border', label: '關口 (未開發)', icon: ShieldCheck, iconColor: 'text-slate-400' },
   ] as const;
 
   return (
@@ -1674,10 +1672,10 @@ function ExploreContent() {
         </button>
       </div>
 
-      {/* 探索分類分頁 - 3 行圖示按鈕組，Cursor 碰到後平滑展開文字（對標右上角按鈕），保留當前緊湊比例 */}
+      {/* 探索分類分頁 - 2 行圖示按鈕組，Cursor 碰到後平滑展開文字（對標右上角按鈕），保留當前緊湊比例 */}
       <div className="flex flex-col gap-1 p-1 bg-[#10131a]/90 rounded-lg border border-[#232836] shrink-0 mb-2.5">
-        {/* 第 1 行：天氣, 新聞, 活動, 滑雪, 極光 */}
-        <div className="grid grid-cols-5 gap-1">
+        {/* 第 1 行：天氣, 新聞, 活動, 沙灘水質, 滑雪, 極光 */}
+        <div className="grid grid-cols-6 gap-1">
           {exploreTabsRow1.map((tab) => {
             const isActive = activeTab === tab.id;
             const Icon = tab.icon;
@@ -1685,7 +1683,7 @@ function ExploreContent() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as ExploreTabType)}
-                className={`flex items-center justify-center group py-1 px-1.5 rounded-md transition-all duration-200 text-xs font-semibold select-none min-h-[30px] ${
+                className={`flex items-center justify-center group py-1 px-1 rounded-md transition-all duration-200 text-xs font-semibold select-none min-h-[30px] ${
                   isActive
                     ? 'bg-[#252e3e] border border-cyan-500/70 text-white shadow-sm ring-1 ring-cyan-500/30'
                     : 'text-gray-400 hover:text-gray-100 hover:bg-[#1a202c] border border-transparent hover:border-[#2b3548]'
@@ -1693,7 +1691,7 @@ function ExploreContent() {
                 title={tab.label}
               >
                 <Icon className={`w-3.5 h-3.5 ${tab.iconColor} shrink-0 transition-transform duration-200 group-hover:scale-110`} />
-                <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[65px] group-hover:opacity-100 group-hover:ml-1.5 transition-all duration-300 whitespace-nowrap text-[11px]">
+                <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[65px] group-hover:opacity-100 group-hover:ml-1 transition-all duration-300 whitespace-nowrap text-[10.5px]">
                   {tab.label}
                 </span>
               </button>
@@ -1701,8 +1699,8 @@ function ExploreContent() {
           })}
         </div>
 
-        {/* 第 2 行：渡輪, 警報 */}
-        <div className="grid grid-cols-2 gap-1">
+        {/* 第 2 行：燃油, 充電, 渡輪, 船運, 交通警報, 關口 (未開發) */}
+        <div className="grid grid-cols-6 gap-1">
           {exploreTabsRow2.map((tab) => {
             const isActive = activeTab === tab.id;
             const Icon = tab.icon;
@@ -1710,7 +1708,7 @@ function ExploreContent() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as ExploreTabType)}
-                className={`flex items-center justify-center group py-1 px-1.5 rounded-md transition-all duration-200 text-xs font-semibold select-none min-h-[30px] ${
+                className={`flex items-center justify-center group py-1 px-1 rounded-md transition-all duration-200 text-xs font-semibold select-none min-h-[30px] ${
                   isActive
                     ? 'bg-[#252e3e] border border-cyan-500/70 text-white shadow-sm ring-1 ring-cyan-500/30'
                     : 'text-gray-400 hover:text-gray-100 hover:bg-[#1a202c] border border-transparent hover:border-[#2b3548]'
@@ -1718,32 +1716,7 @@ function ExploreContent() {
                 title={tab.label}
               >
                 <Icon className={`w-3.5 h-3.5 ${tab.iconColor} shrink-0 transition-transform duration-200 group-hover:scale-110`} />
-                <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[65px] group-hover:opacity-100 group-hover:ml-1.5 transition-all duration-300 whitespace-nowrap text-[11px]">
-                  {tab.label}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* 第 3 行：燃油, 充電, 船運, 沙灘水質 */}
-        <div className="grid grid-cols-4 gap-1">
-          {exploreTabsRow3.map((tab) => {
-            const isActive = activeTab === tab.id;
-            const Icon = tab.icon;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as ExploreTabType)}
-                className={`flex items-center justify-center group py-1 px-1.5 rounded-md transition-all duration-200 text-xs font-semibold select-none min-h-[30px] ${
-                  isActive
-                    ? 'bg-[#252e3e] border border-cyan-500/70 text-white shadow-sm ring-1 ring-cyan-500/30'
-                    : 'text-gray-400 hover:text-gray-100 hover:bg-[#1a202c] border border-transparent hover:border-[#2b3548]'
-                }`}
-                title={tab.label}
-              >
-                <Icon className={`w-3.5 h-3.5 ${tab.iconColor} shrink-0 transition-transform duration-200 group-hover:scale-110`} />
-                <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[65px] group-hover:opacity-100 group-hover:ml-1.5 transition-all duration-300 whitespace-nowrap text-[11px]">
+                <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[75px] group-hover:opacity-100 group-hover:ml-1 transition-all duration-300 whitespace-nowrap text-[10.5px]">
                   {tab.label}
                 </span>
               </button>
@@ -3685,14 +3658,14 @@ function ExploreContent() {
               <select
                 value={newsRefreshInterval || 15}
                 onChange={(e) => setNewsRefreshInterval(Number(e.target.value))}
-                className="bg-[#151922] text-gray-300 text-[11px] rounded-lg px-2 py-1 border border-[#232838] focus:outline-none focus:border-amber-500/50 cursor-pointer"
+                className="bg-[#151922] text-gray-300 text-[11px] rounded-md px-1.5 py-1 border border-[#232838] focus:outline-none focus:border-amber-500/50 cursor-pointer"
                 title="自訂新聞自動更新頻率"
               >
-                <option value={5}>每 5 分鐘</option>
-                <option value={10}>每 10 分鐘</option>
-                <option value={15}>每 15 分鐘 (預設)</option>
-                <option value={30}>每 30 分鐘</option>
-                <option value={60}>每 60 分鐘</option>
+                <option value={5}>5 mins</option>
+                <option value={10}>10 mins</option>
+                <option value={15}>15 mins</option>
+                <option value={30}>30 mins</option>
+                <option value={60}>60 mins</option>
               </select>
               <button
                 onClick={() => fetchNews(true)}
@@ -3914,7 +3887,7 @@ function ExploreContent() {
                 return (
                   <a
                     key={event.id}
-                    href={event.url}
+                    href={event.url?.replace('/listed/event/', '/listed/events/')}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group block p-3 rounded-xl bg-[#141822] border border-[#232838] hover:border-purple-500/50 hover:bg-[#181d2a] transition-all shadow-sm"
@@ -3989,12 +3962,108 @@ function ExploreContent() {
         </div>
       )}
 
+      {/* ==================== 美加邊境關口分頁 (Border Crossings - Coming Soon) ==================== */}
+      {activeTab === 'border' && (
+        <div className="flex-1 flex flex-col min-h-0 space-y-3 overflow-y-auto pr-1 custom-scrollbar">
+          {/* Header Card */}
+          <div className="p-3.5 rounded-xl bg-gradient-to-br from-[#181d2a] via-[#141824] to-[#12141c] border border-slate-700/60 shadow-lg flex flex-col gap-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-sky-500/20 border border-sky-500/40 flex items-center justify-center text-sky-300 shrink-0">
+                  <ShieldCheck className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-xs font-bold text-white">美加邊境關口即時等候時間</h3>
+                  <p className="text-[10px] text-gray-400">加拿大邊境服務局 (CBSA) 官方數據</p>
+                </div>
+              </div>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                🚧 未開發 / 規劃中
+              </span>
+            </div>
+
+            <p className="text-xs text-gray-300 leading-relaxed bg-[#0e1118] p-2.5 rounded-lg border border-[#202636]">
+              我們已完成 CBSA 邊境資料來源對接可行性檢查。本分頁即將提供大溫與 BC 省 5 大核心陸路邊境關口之即時等候時間、車道開放情況及商業貨運通關狀態。
+            </p>
+          </div>
+
+          {/* 5 大陸路邊境關卡規劃預覽清單 */}
+          <div className="space-y-2">
+            <div className="text-[11px] font-bold text-gray-400 flex items-center gap-1.5 px-0.5">
+              <span>預定收錄之 5 大主要陸路邊界關口</span>
+            </div>
+
+            {[
+              {
+                id: 'peace_arch',
+                name: '和平門關卡 (Peace Arch / Douglas)',
+                hwy: 'BC Hwy 99 ↔ US I-5',
+                desc: '溫哥華前往西雅圖最繁忙之主要客運通道，預計提供一般旅客車道、NEXUS 快速車道等候時間。'
+              },
+              {
+                id: 'pacific_highway',
+                name: '太平洋公路關卡 (Pacific Highway)',
+                hwy: 'BC Hwy 15 (176th St) ↔ WA SR 543',
+                desc: '大溫主要商業貨運車道與主要旅客輔助關卡，支援商業 FAST 車道與旅客車道即時路況。'
+              },
+              {
+                id: 'aldergrove',
+                name: '奧爾德格羅夫關卡 (Aldergrove)',
+                hwy: 'BC Hwy 13 (264th St) ↔ WA SR 539',
+                desc: '蘭里/阿伯茨福德主要過境點，提供旅客車道及商業貨車開放狀態。'
+              },
+              {
+                id: 'abbotsford_huntingdon',
+                name: '阿伯茨福德關卡 (Abbotsford-Huntingdon)',
+                hwy: 'BC Hwy 11 ↔ WA SR 9',
+                desc: '菲沙河谷主要邊境關卡，連接蘇馬斯 (Sumas)，支援旅客與商業車流通關等候預報。'
+              },
+              {
+                id: 'point_roberts',
+                name: '羅伯茨角關卡 (Boundary Bay / Point Roberts)',
+                hwy: '56th St (Tsawwassen)',
+                desc: '南三角洲 Tsawwassen 前往美國飛地 Point Roberts 之陸路關口。'
+              }
+            ].map((crossing) => (
+              <div
+                key={crossing.id}
+                className="p-2.5 rounded-lg bg-[#141822] border border-[#232838] flex flex-col gap-1 text-xs"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-white text-[11.5px]">{crossing.name}</span>
+                  <span className="text-[9.5px] font-mono text-sky-400 bg-sky-950/60 px-1.5 py-0.5 rounded border border-sky-800/40">
+                    {crossing.hwy}
+                  </span>
+                </div>
+                <p className="text-[10.5px] text-gray-400 leading-normal">
+                  {crossing.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* 官方 CBSA 外鏈 */}
+          <div className="pt-1">
+            <a
+              href="https://www.cbsa-asfc.gc.ca/bwt-taf/menu-eng.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full py-2 px-3 rounded-lg bg-[#182030] hover:bg-[#202b40] text-sky-300 border border-sky-500/30 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+            >
+              <span>前往 CBSA 官方即時邊境等候時間網頁</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+          </div>
+        </div>
+      )}
+
       {/* Footer */}
       <div className="mt-3 pt-2.5 border-t border-[#262b38] flex items-center justify-between text-[11px] text-gray-400 shrink-0">
         <span className="font-mono text-[10px]">
           {activeTab === 'weather' && (weather ? `${weather.city || '溫哥華'} · ${weather.condition || '多雲'} · ${formatTemp(weather.temperature)}` : '加拿大環境部氣象數據')}
           {activeTab === 'news' && `共收錄 ${filteredNews.length} 則大溫即時新聞 · 每 ${newsRefreshInterval || 15} 分鐘自動更新`}
           {activeTab === 'events' && `共收錄 ${filteredEvents.length} 項大溫熱門活動 · 來源 Daily Hive、Eventbrite 與 溫哥華旅遊局`}
+          {activeTab === 'beach' && `共監測大溫 ${beachList.length || 41} 座海灘水質 · 每個月更新 1 次 · 資料來源：大溫都會局 (Metro Vancouver)`}
           {activeTab === 'ski' && `大溫哥華 3 大滑雪場即時雪況 (賽普里斯山、松雞山、西摩山) · 每日更新`}
           {activeTab === 'aurora' && 'NOAA SWPC 行星 K-Index 極光指數 · 溫哥華可見度預測 · 每天 2 次更新'}
           {activeTab === 'fuel' && `共收錄 ${filteredFuelStations.length} 間加油站`}
@@ -4002,7 +4071,7 @@ function ExploreContent() {
           {activeTab === 'ferry' && `共 ${ferryRoutes.reduce((acc, r) => acc + (r?.vessels?.length || 0), 0)} 艘渡輪即時航行中`}
           {activeTab === 'cargo' && `共追蹤 ${sortedShippingVessels.length} 艘溫哥華港口商船 (依抵達時間近至遠排序)`}
           {activeTab === 'alerts' && `共 ${filteredAndSortedAlerts.banners.length + filteredAndSortedAlerts.regular.length} 則 TransLink 即時運輸警報 · 每 ${transitAlertsRefreshInterval || 10} 分鐘自動更新`}
-          {activeTab === 'beach' && `共監測大溫 ${beachList.length || 41} 座海灘水質 · 每個月更新 1 次 · 資料來源：大溫都會局 (Metro Vancouver)`}
+          {activeTab === 'border' && '美加邊境 5 大陸路關口即時等候時間 (CBSA) · 即將推出'}
         </span>
         <button
           onClick={() => {
