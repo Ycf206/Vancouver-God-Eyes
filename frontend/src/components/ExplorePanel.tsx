@@ -5,7 +5,7 @@ import {
   Compass, X, Fuel, Zap, Ship, MapPin, 
   ChevronDown, RefreshCw, Package, CloudSun, Wind, AlertTriangle, Droplets, Gauge, Eye, Anchor, Navigation,
   Newspaper, ExternalLink, Search, CalendarDays, Calendar, Tag, Waves, CloudRain, Play, Pause, SkipBack, SkipForward,
-  MountainSnow, Sparkles, Clock, ShieldAlert, BellRing, Train, Bus, ShieldCheck
+  MountainSnow, Sparkles, Clock, ShieldAlert, BellRing, Train, Bus, ShieldCheck, LayoutGrid, TrainTrack
 } from 'lucide-react';
 import { useUIStore, ExploreTabType } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
@@ -1851,10 +1851,26 @@ function ExploreContent() {
     let banners = all.filter((a) => a.is_banner);
     let regular = all.filter((a) => !a.is_banner);
 
-    // 1. 運具子分頁篩選 (同時套用於一般卡片與置頂警報)
+    // 1. 運具子分頁篩選 (同時套用於一般卡片與置頂警報，切換至特定運具時絕不混入其他運具內容)
     if (alertsSubTab !== 'all') {
       regular = regular.filter((a) => a.mode === alertsSubTab);
-      banners = banners.filter((a) => !a.mode || a.mode === alertsSubTab || a.mode === 'all');
+      banners = banners.filter((a) => {
+        if (a.mode === alertsSubTab) return true;
+        const text = `${a.header || ''} ${a.description || ''} ${a.alertText || ''} ${a.routeLongName || ''}`.toLowerCase();
+        if (alertsSubTab === 'skytrain') {
+          return text.includes('skytrain') || text.includes('expo line') || text.includes('millennium line') || text.includes('canada line');
+        }
+        if (alertsSubTab === 'bus') {
+          return text.includes('bus') || text.includes('route ');
+        }
+        if (alertsSubTab === 'seabus') {
+          return text.includes('seabus');
+        }
+        if (alertsSubTab === 'wce') {
+          return text.includes('west coast express') || text.includes('wce');
+        }
+        return false;
+      });
     }
 
     // 2. 影響性質篩選 (包含 TransLink 實際 API 回傳之各項 effect 與文字標籤)
@@ -3541,11 +3557,11 @@ function ExploreContent() {
             <select
               value={beachAuthorityFilter}
               onChange={(e) => setBeachAuthorityFilter(e.target.value as any)}
-              className="bg-[#151922] text-gray-300 text-[11px] rounded-lg px-2 py-1.5 border border-[#232838] focus:outline-none focus:border-teal-500/50 shrink-0 cursor-pointer w-[86px]"
+              className="bg-[#151922] text-gray-300 text-[10.5px] rounded-lg px-1.5 py-1.5 border border-[#232838] focus:outline-none focus:border-teal-500/50 shrink-0 cursor-pointer w-[92px]"
               title="篩選主管衛生局"
             >
-              <option value="all">全衛生局</option>
-              <option value="vch">沿海衛生局</option>
+              <option value="all">全部衛生局</option>
+              <option value="vch">溫哥華沿岸</option>
               <option value="fraser">菲沙衛生局</option>
             </select>
 
@@ -3553,12 +3569,12 @@ function ExploreContent() {
             <select
               value={beachSortBy}
               onChange={(e) => setBeachSortBy(e.target.value as any)}
-              className="bg-[#151922] text-gray-300 text-[11px] rounded-lg px-2 py-1.5 border border-[#232838] focus:outline-none focus:border-teal-500/50 shrink-0 cursor-pointer w-[76px]"
+              className="bg-[#151922] text-gray-300 text-[10.5px] rounded-lg px-1.5 py-1.5 border border-[#232838] focus:outline-none focus:border-teal-500/50 shrink-0 cursor-pointer w-[80px]"
               title="海灘水質排序"
             >
-              <option value="best">水質優</option>
-              <option value="worst">數值高</option>
-              <option value="name">名稱</option>
+              <option value="best">水質最優</option>
+              <option value="worst">濃度最高</option>
+              <option value="name">名稱順序</option>
             </select>
           </div>
 
@@ -3722,6 +3738,7 @@ function ExploreContent() {
                 title="自訂警報自動更新頻率"
               >
                 <option value={0}>手動更新</option>
+                <option value={2}>每 2 分鐘</option>
                 <option value={5}>每 5 分鐘</option>
                 <option value={10}>每 10 分鐘 (預設)</option>
                 <option value={15}>每 15 分鐘</option>
@@ -3738,31 +3755,36 @@ function ExploreContent() {
             </div>
           </div>
 
-          {/* 3.1 運具子分頁: 全部, 天車, 巴士, 水上巴士, 西岸快車 */}
+          {/* 3.1 運具子分頁: 全部, 天車, 巴士, 水上巴士, 西岸快車 (圖示按鈕風格，Hover展開文字標籤，常駐顯示括號數字) */}
           <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5 shrink-0">
             {[
-              { id: 'all', label: '全部', count: alertsCounts.all },
-              { id: 'skytrain', label: '天車', count: alertsCounts.skytrain },
-              { id: 'bus', label: '巴士', count: alertsCounts.bus },
-              { id: 'seabus', label: '水上巴士', count: alertsCounts.seabus },
-              { id: 'wce', label: '西岸快車', count: alertsCounts.wce },
+              { id: 'all', label: '全部', icon: LayoutGrid, count: alertsCounts.all, color: 'text-rose-400' },
+              { id: 'skytrain', label: '天車', icon: Train, count: alertsCounts.skytrain, color: 'text-blue-400' },
+              { id: 'bus', label: '巴士', icon: Bus, count: alertsCounts.bus, color: 'text-emerald-400' },
+              { id: 'seabus', label: '水上巴士', icon: Ship, count: alertsCounts.seabus, color: 'text-cyan-400' },
+              { id: 'wce', label: '西岸快車', icon: TrainTrack, count: alertsCounts.wce, color: 'text-purple-400' },
             ].map((sub) => {
               const isSelected = alertsSubTab === sub.id;
+              const Icon = sub.icon;
               return (
                 <button
                   key={sub.id}
                   onClick={() => setAlertsSubTab(sub.id as any)}
-                  className={`px-2.5 py-1 text-xs rounded-lg font-medium transition-all shrink-0 flex items-center gap-1 ${
+                  className={`flex items-center justify-center group py-1 px-2 rounded-lg transition-all duration-200 text-xs font-semibold select-none min-h-[30px] shrink-0 ${
                     isSelected
-                      ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40 shadow-sm font-semibold'
+                      ? 'bg-rose-500/20 text-rose-300 border border-rose-500/50 shadow-sm ring-1 ring-rose-500/30'
                       : 'bg-[#151922] text-gray-400 hover:text-white border border-[#232838] hover:bg-[#1c2230]'
                   }`}
+                  title={`${sub.label} (${sub.count})`}
                 >
-                  <span>{sub.label}</span>
-                  <span className={`text-[10px] px-1 rounded-full font-mono ${
-                    isSelected ? 'bg-rose-500/30 text-rose-200' : 'bg-[#232838] text-gray-400'
+                  <Icon className={`w-3.5 h-3.5 ${sub.color} shrink-0 transition-transform duration-200 group-hover:scale-110`} />
+                  <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[70px] group-hover:opacity-100 group-hover:ml-1.5 transition-all duration-300 whitespace-nowrap text-[11px]">
+                    {sub.label}
+                  </span>
+                  <span className={`text-[10px] ml-1 font-mono transition-colors ${
+                    isSelected ? 'text-rose-200 font-bold' : 'text-gray-400 group-hover:text-gray-200'
                   }`}>
-                    {sub.count}
+                    ({sub.count})
                   </span>
                 </button>
               );

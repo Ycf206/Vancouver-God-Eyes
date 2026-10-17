@@ -96,18 +96,27 @@ def map_effect_zh(effect_code: str) -> str:
 def detect_transport_mode(alert: dict) -> str:
     mode_val = alert.get("mode")
     route_name = str(alert.get("routeLongName", "")).lower()
-    route_id = str(alert.get("routeId", "")).lower()
+    route_id = str(alert.get("routeId", "")).strip().lower()
     text = f"{alert.get('alertText', '')} {alert.get('header', '')} {alert.get('description', '')}".lower()
 
-    if mode_val == 1 or "line" in route_name or "skytrain" in text or mode_val == 0:
-        return "skytrain"
+    # Check for SeaBus first
     if mode_val == 4 or "seabus" in route_name or "seabus" in text:
         return "seabus"
+
+    # Check for West Coast Express
     if mode_val == 2 or "west coast express" in route_name or "wce" in route_name or "west coast express" in text:
         return "wce"
-    if mode_val == 3 or "bus" in route_name or "route " in text or re.search(r'\b\d{1,3}[a-z]?\b', route_id):
+
+    # Check for SkyTrain lines explicitly
+    is_skytrain_route = any(k in route_name for k in ["expo line", "millennium line", "canada line"]) or route_id in ["992", "991", "980"]
+    if is_skytrain_route or (mode_val == 1 and not re.search(r'^\d{1,3}[a-z]?$', route_id)):
+        return "skytrain"
+
+    # Check for Bus explicitly (route numbers like 99, 413, R1, N9, etc.)
+    if mode_val == 3 or "bus" in route_name or "rapidbus" in route_name or "b-line" in route_name or "route " in text or re.search(r'^\d{1,3}[a-z]?$', route_id):
         return "bus"
-    if "skytrain" in text:
+
+    if "skytrain" in text and "bus" not in text:
         return "skytrain"
     if "bus" in text:
         return "bus"
@@ -173,14 +182,30 @@ def fetch_translink_alerts_live() -> dict:
         
         impacted_stations = extract_impacted_stations(f"{header} {desc}")
         
+        combined_text = f"{header} {desc}".lower()
+        banner_mode = "general"
+        banner_mode_name = "系統全網緊急廣播"
+        if any(k in combined_text for k in ["skytrain", "expo line", "millennium line", "canada line", "single tracking", "platform"]):
+            banner_mode = "skytrain"
+            banner_mode_name = "天車緊急公告"
+        elif "seabus" in combined_text:
+            banner_mode = "seabus"
+            banner_mode_name = "水上巴士緊急公告"
+        elif "west coast express" in combined_text or "wce" in combined_text:
+            banner_mode = "wce"
+            banner_mode_name = "西岸快車緊急公告"
+        elif "bus" in combined_text:
+            banner_mode = "bus"
+            banner_mode_name = "巴士緊急公告"
+
         item = {
             "id": alert_id,
             "alertId": alert_id,
             "is_banner": True,
-            "mode": "general",
-            "mode_name": "緊急公告",
+            "mode": banner_mode,
+            "mode_name": banner_mode_name,
             "routeId": "EMERGENCY",
-            "routeLongName": "系統全網緊急廣播",
+            "routeLongName": banner_mode_name,
             "effect": "EMERGENCY_BANNER",
             "effect_zh": "緊急公告",
             "critical": True,

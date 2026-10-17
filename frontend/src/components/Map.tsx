@@ -5899,7 +5899,7 @@ export default function AppMap() {
         )}
 
         {/* SkyTrain & SeaBus Station Warning Triangles for Active Alerts (Critical: Red, Non-critical: Yellow) */}
-        {activeStationAlertMarkers.map((marker) => (
+        {isExploreOpen && exploreTab === 'alerts' && activeStationAlertMarkers.map((marker) => (
           <Marker
             key={`st_alert_${marker.name}`}
             longitude={marker.lon}
