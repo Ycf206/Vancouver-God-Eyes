@@ -128,30 +128,27 @@ def generate_road_construction():
     print(f"[OK] Saved {len(features)} road construction projects to {out_file}")
 
 def generate_street_lighting():
-    print("Generating Street Lighting Panels (street-lighting-service-panels)...")
-    records = fetch_all_records("street-lighting-service-panels")
+    print("Generating Street Lighting Conduits (street-lighting-conduits)...")
+    records = fetch_all_records("street-lighting-conduits")
     features = []
     for idx, r in enumerate(records):
         geom_field = r.get("geom", {})
         geometry = geom_field.get("geometry") if isinstance(geom_field, dict) else None
         pt = r.get("geo_point_2d") or {}
-        if not geometry and pt.get("lon") and pt.get("lat"):
-            geometry = {"type": "Point", "coordinates": [pt["lon"], pt["lat"]]}
         
         if not geometry:
             continue
 
-        p_num = r.get("service_panel_number") or f"P{idx+1}"
-        feat_id = f"light_{p_num}"
+        wireset = r.get("wireset_type") or "標準"
+        feat_id = f"conduit_{idx+1}"
         features.append({
             "type": "Feature",
             "id": feat_id,
             "properties": {
                 "id": feat_id,
                 "facility_type": "street_lighting",
-                "name": f"路燈控制盤 #{p_num}",
-                "service_panel_number": p_num,
-                "local_area": r.get("geo_local_area") or "",
+                "name": f"路燈地下配電管線 ({wireset})",
+                "wireset_type": wireset,
                 "geo_point_2d": pt
             },
             "geometry": geometry
@@ -164,10 +161,10 @@ def generate_street_lighting():
             "generator": "VancouverGodsEye",
             "total_count": len(features),
             "updated_at": datetime.now(timezone.utc).isoformat(),
-            "update_frequency": "每 3 個月 (Quarterly)",
+            "update_frequency": "每星期更新 1 次 (Weekly)",
             "features": features
         }, f, ensure_ascii=False, indent=2)
-    print(f"[OK] Saved {len(features)} street lighting panels to {out_file}")
+    print(f"[OK] Saved {len(features)} street lighting conduits to {out_file}")
 
 def generate_traffic_conditions():
     print("Generating Traffic Conditions GeoJSON (Lions Gate Bridge ATIS)...")

@@ -238,6 +238,7 @@ const HEAVY_LAYERS_CONFIG: Record<string, { label: string; prefixes: string[] }>
   parkingMeters: { label: '收費錶', prefixes: ['parking-meters'] },
   trafficCrosswalks: { label: '斑馬線', prefixes: ['traffic-crosswalks'] },
   streetLighting: { label: '路燈', prefixes: ['street-lighting', 'street_lighting'] },
+  beachWaterQuality: { label: '海灘水質', prefixes: ['beach-water', 'beach_water'] },
 };
 
 const SKI_RESORT_POINTS = [
@@ -822,6 +823,7 @@ export default function AppMap() {
         else if (type === 'road_closures' && !layers.roadClosures) facilityClosed = true;
         else if (type === 'road_construction' && !layers.roadConstruction) facilityClosed = true;
         else if (type === 'street_lighting' && !layers.streetLighting) facilityClosed = true;
+        else if (type === 'beach_water_quality' && !layers.beachWaterQuality) facilityClosed = true;
 
         if (facilityClosed) {
           setSelectedFacility(null);
@@ -1551,17 +1553,26 @@ export default function AppMap() {
       }
     }
 
-    // 5. 路燈 (Street Lighting)
+    // 5. 路燈配電管線 (Street Lighting Conduits)
     const turnedOnStreetLighting = !prev.streetLighting && layers.streetLighting;
     if (turnedOnStreetLighting) {
       if (z < 12) {
         setZoomNotification({
           show: true,
-          title: '已開啟路燈圖層',
-          message: '全市設有 58,000+ 處路燈柱，資料量較龐大載入需數秒，地圖已啟用智慧圓圈叢集聚合顯示，放大可檢視單支燈柱。',
-          targetZoom: 14.5
+          title: '已開啟路燈管線圖層',
+          message: '全市設有 65,000+ 筆地下照明配電管線，資料量較龐大載入需數秒，地圖已渲染亮黃色照明線網。',
+          targetZoom: 13.5
         });
         return;
+      }
+    }
+
+    // 6. 海灘水質 (Beach Water Quality)
+    const turnedOnBeachWater = !prev.beachWaterQuality && layers.beachWaterQuality;
+    if (turnedOnBeachWater) {
+      const map = mapRef.current?.getMap();
+      if (map) {
+        map.flyTo({ center: [-123.16, 49.28], zoom: 12.5, duration: 600 });
       }
     }
 
@@ -4119,82 +4130,95 @@ export default function AppMap() {
       });
     }
 
-    // Utilities: Street Lighting Poles (路燈柱)
+    // Utilities: Street Lighting Conduits (路燈地下配電管線)
     if (layers.streetLighting) {
       style.sources['street_lighting'] = { 
         type: 'geojson', 
-        data: `${apiUrl}/api/geojson/road/street_lighting`,
-        cluster: true,
-        clusterMaxZoom: 15,
-        clusterRadius: 50
+        data: `${apiUrl}/api/geojson/road/street_lighting`
       };
-      // 叢集圓球
+      // 路燈配電管線外發光
       style.layers.push({
-        id: 'street-lighting-cluster-layer',
-        type: 'circle',
+        id: 'street-lighting-glow-layer',
+        type: 'line',
         source: 'street_lighting',
-        filter: ['has', 'point_count'],
         paint: {
-          'circle-color': [
-            'step',
-            ['get', 'point_count'],
-            '#ca8a04',
-            50, '#d97706',
-            200, '#b45309',
-            1000, '#92400e'
-          ],
-          'circle-radius': [
-            'step',
-            ['get', 'point_count'],
-            15,
-            50, 19,
-            200, 23,
-            1000, 28
-          ],
-          'circle-stroke-width': 2,
-          'circle-stroke-color': '#fde047',
-          'circle-opacity': 0.88
+          'line-color': '#eab308',
+          'line-width': ['interpolate', ['linear'], ['zoom'], 11, 1.5, 14, 3, 17, 6],
+          'line-opacity': 0.65,
+          'line-blur': 1.5
         }
       });
-      // 叢集計數
-      style.layers.push({
-        id: 'street-lighting-count-layer',
-        type: 'symbol',
-        source: 'street_lighting',
-        filter: ['has', 'point_count'],
-        layout: {
-          'text-field': '{point_count_abbreviated}',
-          'text-size': 11,
-          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold']
-        },
-        paint: {
-          'text-color': '#ffffff'
-        }
-      });
-      // 單個路燈點位
+      // 路燈配電管線核心亮黃線條
       style.layers.push({
         id: 'street-lighting-layer',
-        type: 'circle',
+        type: 'line',
         source: 'street_lighting',
-        filter: ['!', ['has', 'point_count']],
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 12, 2.5, 15, 4.5, 17, 6],
-          'circle-color': '#eab308',
-          'circle-stroke-width': 1.5,
-          'circle-stroke-color': '#fef08a'
+          'line-color': '#fef08a',
+          'line-width': ['interpolate', ['linear'], ['zoom'], 11, 0.8, 14, 1.8, 17, 3.5],
+          'line-opacity': 0.95
         }
       });
-      // 單個路燈圖示 (縮放較大時顯示 💡)
+    }
+
+    // Geography: Beach Water Quality (大溫海灘水質)
+    if (layers.beachWaterQuality) {
+      style.sources['beach_water_quality'] = { 
+        type: 'geojson', 
+        data: `${apiUrl}/api/geojson/beach-water`
+      };
+      // 海灘水質多邊形半透明填充
       style.layers.push({
-        id: 'street-lighting-symbol-layer',
+        id: 'beach-water-fill-layer',
+        type: 'fill',
+        source: 'beach_water_quality',
+        paint: {
+          'fill-color': [
+            'match',
+            ['get', 'status'],
+            'safe', '#10b981',
+            'advisory', '#f59e0b',
+            'warning', '#ef4444',
+            '#06b6d4'
+          ],
+          'fill-opacity': 0.38
+        }
+      });
+      // 海灘水質多邊形邊界
+      style.layers.push({
+        id: 'beach-water-outline-layer',
+        type: 'line',
+        source: 'beach_water_quality',
+        paint: {
+          'line-color': [
+            'match',
+            ['get', 'status'],
+            'safe', '#059669',
+            'advisory', '#d97706',
+            'warning', '#dc2626',
+            '#0891b2'
+          ],
+          'line-width': ['interpolate', ['linear'], ['zoom'], 10, 1.5, 14, 3, 17, 4.5],
+          'line-opacity': 0.9
+        }
+      });
+      // 海灘水質名稱標記
+      style.layers.push({
+        id: 'beach-water-symbol-layer',
         type: 'symbol',
-        source: 'street_lighting',
-        filter: ['!', ['has', 'point_count']],
-        minzoom: 16,
+        source: 'beach_water_quality',
+        minzoom: 11,
         layout: {
-          'text-field': '💡',
-          'text-size': ['interpolate', ['linear'], ['zoom'], 16, 11, 18, 15],
+          'text-field': ['concat', '🏖️ ', ['get', 'name']],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 11, 10, 14, 12, 17, 14],
+          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+          'text-anchor': 'center',
           'text-allow-overlap': false
+        },
+        paint: {
+          'text-color': '#ffffff',
+          'text-halo-color': '#0f172a',
+          'text-halo-width': 2
         }
       });
     }
@@ -4444,6 +4468,7 @@ export default function AppMap() {
     layers.roadClosures,
     layers.roadConstruction,
     layers.streetLighting,
+    layers.beachWaterQuality,
     layers.trafficCrosswalks,
     layers.litterContainers,
     contourInterval,
@@ -4815,6 +4840,35 @@ export default function AppMap() {
               lat: clickLat,
               properties: props
             });
+          } else if (layerId.startsWith('beach-water')) {
+            setSelectedStop(null);
+            const props = feature.properties || {};
+            const clickLon = e.lngLat?.lng ?? (props.center_lon || -123.1441);
+            const clickLat = e.lngLat?.lat ?? (props.center_lat || 49.2845);
+            setSelectedFacility({
+              id: props.id || `beach_${clickLon}_${clickLat}`,
+              facility_type: 'beach_water_quality',
+              name: props.name || '海灘水質監測',
+              local_area: props.municipality ? `${props.municipality} ${props.area ? `· ${props.area}` : ''}` : (props.area || '大溫公眾海灘'),
+              lon: clickLon,
+              lat: clickLat,
+              properties: props
+            });
+          } else if (layerId.startsWith('street-lighting')) {
+            setSelectedStop(null);
+            const props = feature.properties || {};
+            const clickLon = e.lngLat?.lng ?? -123.1207;
+            const clickLat = e.lngLat?.lat ?? 49.2827;
+            const wireset = props.wireset_type || '標準線組';
+            setSelectedFacility({
+              id: props.id || `conduit_${clickLon}_${clickLat}`,
+              facility_type: 'street_lighting',
+              name: `路燈地下配電管線 (${wireset})`,
+              local_area: props.local_area || '溫哥華市政路燈配電管網',
+              lon: clickLon,
+              lat: clickLat,
+              properties: props
+            });
           } else if (
             layerId.startsWith('parking-meters') || 
             layerId.startsWith('accessible-parking') || 
@@ -4826,7 +4880,6 @@ export default function AppMap() {
             layerId.startsWith('bike-racks') ||
             layerId.startsWith('wireless-facilities') ||
             layerId.startsWith('traffic-conditions') ||
-            layerId.startsWith('street-lighting') ||
             layerId.startsWith('traffic-crosswalks') ||
             layerId.startsWith('litter-containers') ||
             layerId.startsWith('traffic-cameras') ||
@@ -6419,14 +6472,14 @@ export default function AppMap() {
             maxWidth={
               selectedFacility.facility_type === 'traffic_conditions' ? '460px' :
               selectedFacility.facility_type === 'traffic_cameras' ? '400px' : 
-              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting') ? '360px' : 
+              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'beach_water_quality') ? '360px' : 
               '320px'
             }
           >
             <div className={`p-3.5 ${
               selectedFacility.facility_type === 'traffic_conditions' ? 'w-[430px]' :
               selectedFacility.facility_type === 'traffic_cameras' ? 'w-[360px]' : 
-              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting') ? 'w-[340px]' : 
+              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'beach_water_quality') ? 'w-[340px]' : 
               'w-[290px]'
             } max-w-[90vw] text-gray-800`}>
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
@@ -6436,6 +6489,7 @@ export default function AppMap() {
                     selectedFacility.facility_type === 'road_closures' ? 'bg-rose-600' :
                     selectedFacility.facility_type === 'road_construction' ? 'bg-amber-500' :
                     selectedFacility.facility_type === 'street_lighting' ? 'bg-amber-400' :
+                    selectedFacility.facility_type === 'beach_water_quality' ? 'bg-teal-500' :
                     selectedFacility.facility_type === 'van_wifi' ? 'bg-cyan-500' :
                     selectedFacility.facility_type === 'tide_stations' ? 'bg-blue-600' :
                     selectedFacility.facility_type === 'water_distribution_mains' ? 'bg-sky-500' :
@@ -9357,7 +9411,7 @@ export default function AppMap() {
                 </div>
               )}
 
-              {/* Street Lighting (路燈柱) Details */}
+              {/* Street Lighting (路燈地下配電管線) Details */}
               {selectedFacility.facility_type === 'street_lighting' && (
                 <div className="flex flex-col gap-2 text-xs">
                   <div className="bg-amber-400/10 p-2.5 rounded-lg border border-amber-400/30 flex flex-col gap-1.5">
@@ -9367,60 +9421,142 @@ export default function AppMap() {
                         <span className="truncate max-w-[190px]">{selectedFacility.name}</span>
                       </span>
                       <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-500 text-white shrink-0">
-                        市政路燈
+                        照明管線
                       </span>
                     </div>
                     <div className="text-[11px] text-amber-900 font-medium">
-                      💡 溫哥華市政公用照明路燈柱 (Street Lighting Poles)
+                      ⚡ 溫哥華市政公用路燈地下配電管線 (Street Lighting Conduits)
                     </div>
                   </div>
 
                   <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                    {selectedFacility.properties.pole_number && (
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>燈柱編號 (Pole #)</span>
-                        <span className="font-mono font-bold text-gray-900">
-                          #{selectedFacility.properties.pole_number}
-                        </span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.block_number && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                        <span>街區編號 (Block)</span>
-                        <span className="font-mono text-gray-800">
-                          {selectedFacility.properties.block_number}
-                        </span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.service_panel_number && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                        <span>控制盤編號</span>
-                        <span className="font-mono font-bold text-gray-900">
-                          #{selectedFacility.properties.service_panel_number}
-                        </span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.local_area && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                        <span>所屬社區分區</span>
-                        <span className="font-medium text-gray-800">
-                          {selectedFacility.properties.local_area}
-                        </span>
-                      </div>
-                    )}
-                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                      <span>資料更新頻率</span>
-                      <span className="font-medium text-emerald-700">
-                        每 3 個月更新
+                    <div className="flex justify-between items-center text-gray-600">
+                      <span>線組規格 (Wireset)</span>
+                      <span className="font-mono font-bold text-gray-900">
+                        {selectedFacility.properties.wireset_type || '標準規格'}
                       </span>
                     </div>
                     <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                      <span>坐標位置</span>
+                      <span>管線類型</span>
+                      <span className="font-medium text-gray-800">
+                        地下供電導管 (Underground Conduit)
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <span>主管機關</span>
+                      <span className="font-medium text-gray-800">
+                        City of Vancouver Engineering Services
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <span>資料更新頻率</span>
+                      <span className="font-medium text-emerald-700">
+                        每星期更新 1 次 (Weekly)
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <span>點選位置</span>
                       <span className="font-mono text-gray-700">
                         {selectedFacility.lat.toFixed(5)}, {selectedFacility.lon.toFixed(5)}
                       </span>
                     </div>
                   </div>
+                </div>
+              )}
+
+              {/* Beach Water Quality (海灘水質) Details */}
+              {selectedFacility.facility_type === 'beach_water_quality' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-teal-500/10 p-2.5 rounded-lg border border-teal-500/30 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-teal-950 text-xs flex items-center gap-1.5">
+                        <span className="text-base text-teal-600 font-bold">🏖️</span>
+                        <span className="truncate max-w-[180px]">{selectedFacility.name}</span>
+                      </span>
+                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded text-white shrink-0 ${
+                        selectedFacility.properties.status === 'safe' ? 'bg-emerald-600' :
+                        selectedFacility.properties.status === 'advisory' ? 'bg-amber-600' :
+                        selectedFacility.properties.status === 'warning' ? 'bg-rose-600' : 'bg-gray-500'
+                      }`}>
+                        {selectedFacility.properties.status_label || '水質檢測'}
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-teal-900 font-medium">
+                      💧 大溫哥華海灘與休閒水質監測 (Metro Vancouver Beach Monitoring)
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                    <div className="flex justify-between items-center text-gray-600">
+                      <span>大腸桿菌指標 (E. coli)</span>
+                      <span className={`font-mono font-bold text-sm ${
+                        selectedFacility.properties.status === 'safe' ? 'text-emerald-700' :
+                        selectedFacility.properties.status === 'advisory' ? 'text-amber-700' :
+                        selectedFacility.properties.status === 'warning' ? 'text-rose-700' : 'text-gray-700'
+                      }`}>
+                        {selectedFacility.properties.last_value !== null ? `${selectedFacility.properties.last_value} MPN/100ml` : '未有讀數'}
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between items-center text-[10px] text-gray-500 pt-1 border-t border-gray-100">
+                      <span>安全標準參考</span>
+                      <span className="font-sans font-medium text-gray-600">
+                        ≤200 優良 · 200-400 留意 · &gt;400 警告
+                      </span>
+                    </div>
+
+                    {selectedFacility.properties.health_authority && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>管轄衛生局</span>
+                        <span className="font-medium text-gray-800">
+                          {selectedFacility.properties.health_authority}
+                        </span>
+                      </div>
+                    )}
+
+                    {(selectedFacility.properties.municipality || selectedFacility.properties.area) && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>所屬市鎮 / 水域</span>
+                        <span className="font-medium text-gray-800">
+                          {selectedFacility.properties.municipality} {selectedFacility.properties.area ? `· ${selectedFacility.properties.area}` : ''}
+                        </span>
+                      </div>
+                    )}
+
+                    {selectedFacility.properties.last_date && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>最近檢測日期</span>
+                        <span className="font-mono text-gray-700">
+                          {selectedFacility.properties.last_date}
+                        </span>
+                      </div>
+                    )}
+
+                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <span>資料更新頻率</span>
+                      <span className="font-medium text-teal-700">
+                        每個月更新 1 次 (Monthly)
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <span>中心座標</span>
+                      <span className="font-mono text-gray-700">
+                        {selectedFacility.lat.toFixed(5)}, {selectedFacility.lon.toFixed(5)}
+                      </span>
+                    </div>
+                  </div>
+
+                  {selectedFacility.properties.internet_link && (
+                    <a
+                      href={selectedFacility.properties.internet_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full py-1.5 px-3 rounded-lg bg-teal-600 hover:bg-teal-500 text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                    >
+                      <span>🌐 開啟衛生局官方水質公告</span>
+                    </a>
+                  )}
                 </div>
               )}
 

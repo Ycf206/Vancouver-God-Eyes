@@ -889,6 +889,23 @@ def get_translink_alerts(force: bool = False):
     return translink_service.get_translink_alerts(force=force)
 
 
+@app.get("/api/beach-water/live")
+def get_live_beach_water(force: bool = False):
+    """
+    Returns latest Metro Vancouver Beach Water Quality monitoring results (E. coli MPN/100ml)
+    across all 41 public beaches. Updated monthly.
+    """
+    import beach_water_service
+    return beach_water_service.get_beach_water_data(force=force)
+
+
+@app.get("/api/beach-water/geojson")
+@app.get("/api/geojson/beach-water")
+def get_beach_water_geojson():
+    import beach_water_service
+    return beach_water_service.get_beach_water_geojson()
+
+
 @app.get("/api/geojson/airports")
 def get_airports_geojson():
     static_path = os.path.join(os.path.dirname(__file__), "data", "vancouver_airports.geojson")
@@ -1403,7 +1420,8 @@ CURATED_STATIC_TYPES = (
     "one_way_streets", "snow_removal_routes", "crime_areas", "water_distribution_mains", 
     "sewer_mains", "traffic_speed_limits", "bike_racks", "postal_code_fsa", "wireless_facilities",
     "traffic_crosswalks", "litter_containers", "food_banks", "recycling", "van_wifi",
-    "road_closures", "road_construction", "street_lighting", "traffic_conditions"
+    "road_closures", "road_construction", "street_lighting", "traffic_conditions",
+    "beach_water_quality", "beach_water"
 )
 POINT_CURATED_TYPES = (
     "hospitals", "police", "disaster_hubs", "car_sharing", "aed", 
@@ -2452,6 +2470,11 @@ def get_road_facilities_geojson(
         import tides_service
         return tides_service.get_tides_geojson()
 
+    # Handle Beach Water Quality
+    if facility_type in ("beach_water_quality", "beach_water"):
+        import beach_water_service
+        return beach_water_service.get_beach_water_geojson()
+
     # 2. Prioritize verified curated static GeoJSON files (hospitals/UPCC, police, etc.)
     if facility_type in CURATED_STATIC_TYPES:
         filename = f"vancouver_{facility_type}.geojson"
@@ -2661,7 +2684,8 @@ def explore_nearby_facilities(
         'fire_halls': ('消防局', '🚒', 'fireHalls'),
         'van_wifi': ('VanWiFi 免費無線網路', '📶', 'vanWifi'),
         'tide_stations': ('潮汐水位', '🌊', 'tideStations'),
-        'street_lighting': ('路燈控制盤', '💡', 'streetLighting'),
+        'beach_water_quality': ('海灘水質', '🏖️', 'beachWaterQuality'),
+        'street_lighting': ('路燈配電管線', '💡', 'streetLighting'),
         'road_closures': ('交通封閉', '🚫', 'roadClosures'),
         'road_construction': ('道路施工', '🚧', 'roadConstruction'),
         'traffic_conditions': ('獅門大橋', '🌉', 'trafficConditions')

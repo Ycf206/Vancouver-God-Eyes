@@ -157,6 +157,28 @@ interface NewsArticle {
   timestamp: number;
 }
 
+interface BeachItem {
+  id: string;
+  object_id: number;
+  facility_type: string;
+  name: string;
+  area: string;
+  municipality: string;
+  health_authority: string;
+  last_value: number | null;
+  last_timestamp: number | null;
+  last_date: string;
+  status: 'safe' | 'advisory' | 'warning' | 'unknown';
+  status_label: string;
+  status_color: string;
+  internet_link: string;
+  photo_link: string;
+  data_tag: string;
+  center_lon: number;
+  center_lat: number;
+  update_frequency: string;
+}
+
 interface WeatherHourlyItem {
   time: string;
   temp: number;
@@ -431,6 +453,8 @@ function ExploreContent() {
     setStationAlertsMap,
     setSearchTarget,
     enableLayer,
+    layers,
+    toggleLayer,
     isRadarActive,
     setIsRadarActive,
     radarFrameTime,
@@ -565,6 +589,111 @@ function ExploreContent() {
   const [tideStations, setTideStations] = useState<TideStation[]>([]);
   const [loadingTides, setLoadingTides] = useState<boolean>(false);
   const [selectedTideCode, setSelectedTideCode] = useState<string | null>(null);
+
+  // --- Beach Water Quality tab states ---
+  const [beachList, setBeachList] = useState<BeachItem[]>([]);
+  const [loadingBeach, setLoadingBeach] = useState<boolean>(false);
+  const [beachSearchQuery, setBeachSearchQuery] = useState('');
+  const [beachStatusFilter, setBeachStatusFilter] = useState<'all' | 'safe' | 'advisory' | 'warning'>('all');
+  const [beachAuthorityFilter, setBeachAuthorityFilter] = useState<'all' | 'vch' | 'fraser'>('all');
+  const [beachSortBy, setBeachSortBy] = useState<'best' | 'worst' | 'name'>('best');
+  const [beachLastUpdated, setBeachLastUpdated] = useState<string>('');
+
+  const fetchBeachWater = (force: boolean = false) => {
+    setLoadingBeach(true);
+    const apiUrl = getApiUrl();
+    fetch(`${apiUrl}/api/beach-water/live${force ? '?force=true' : ''}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && Array.isArray(data.beaches)) {
+          setBeachList(data.beaches);
+          if (data.last_updated) {
+            setBeachLastUpdated(data.last_updated);
+          }
+        }
+        setLoadingBeach(false);
+      })
+      .catch((err) => {
+        console.warn('Error fetching beach water:', err);
+        setLoadingBeach(false);
+      });
+  };
+
+  useEffect(() => {
+    if (!isExploreOpen || activeTab !== 'beach') return;
+    fetchBeachWater(false);
+  }, [isExploreOpen, activeTab]);
+
+  const handleToggleBeachLayer = () => {
+    const isCurrentlyOn = layers?.beachWaterQuality;
+    toggleLayer('beachWaterQuality');
+    if (!isCurrentlyOn) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap();
+      if (mapInstance) {
+        mapInstance.flyTo({
+          center: [-123.16, 49.28],
+          zoom: 12.5,
+          essential: true
+        });
+      }
+    }
+  };
+
+  const handleLocateBeach = (beach: BeachItem) => {
+    enableLayer('beachWaterQuality');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap();
+    if (mapInstance) {
+      mapInstance.flyTo({
+        center: [beach.center_lon, beach.center_lat],
+        zoom: 15,
+        essential: true
+      });
+    }
+  };
+
+  const filteredAndSortedBeaches = useMemo(() => {
+    return beachList
+      .filter((b) => {
+        if (beachStatusFilter !== 'all' && b.status !== beachStatusFilter) return false;
+        if (beachAuthorityFilter === 'vch' && !b.health_authority.includes('Vancouver Coastal')) return false;
+        if (beachAuthorityFilter === 'fraser' && !b.health_authority.includes('Fraser')) return false;
+        if (beachSearchQuery.trim()) {
+          const q = beachSearchQuery.trim().toLowerCase();
+          const matchName = b.name.toLowerCase().includes(q);
+          const matchArea = b.area.toLowerCase().includes(q);
+          const matchMuni = b.municipality.toLowerCase().includes(q);
+          if (!matchName && !matchArea && !matchMuni) return false;
+        }
+        return true;
+      })
+      .sort((a, b) => {
+        if (beachSortBy === 'best') {
+          const valA = a.last_value ?? 99999;
+          const valB = b.last_value ?? 99999;
+          return valA - valB;
+        }
+        if (beachSortBy === 'worst') {
+          const valA = a.last_value ?? -1;
+          const valB = b.last_value ?? -1;
+          return valB - valA;
+        }
+        return a.name.localeCompare(b.name, 'zh-Hant');
+      });
+  }, [beachList, beachStatusFilter, beachAuthorityFilter, beachSearchQuery, beachSortBy]);
+
+  const beachStats = useMemo(() => {
+    let safe = 0;
+    let advisory = 0;
+    let warning = 0;
+    for (const b of beachList) {
+      if (b.status === 'safe') safe++;
+      else if (b.status === 'advisory') advisory++;
+      else if (b.status === 'warning') warning++;
+    }
+    return { safe, advisory, warning, total: beachList.length };
+  }, [beachList]);
 
   // 0a. Fetch RainViewer radar dynamic frames
   useEffect(() => {
@@ -1510,13 +1639,14 @@ function ExploreContent() {
 
   const exploreTabsRow2 = [
     { id: 'ferry', label: '渡輪', icon: Ship, iconColor: 'text-cyan-400' },
-    { id: 'cargo', label: '船運', icon: Anchor, iconColor: 'text-blue-400' },
     { id: 'alerts', label: '警報', icon: AlertTriangle, iconColor: 'text-rose-400' },
   ] as const;
 
   const exploreTabsRow3 = [
     { id: 'fuel', label: '燃油', icon: Fuel, iconColor: 'text-emerald-400' },
     { id: 'ev', label: '充電', icon: Zap, iconColor: 'text-yellow-400' },
+    { id: 'cargo', label: '船運', icon: Anchor, iconColor: 'text-blue-400' },
+    { id: 'beach', label: '沙灘水質', icon: Droplets, iconColor: 'text-teal-300' },
   ] as const;
 
   return (
@@ -1571,8 +1701,8 @@ function ExploreContent() {
           })}
         </div>
 
-        {/* 第 2 行：渡輪, 船運, 警報 */}
-        <div className="grid grid-cols-3 gap-1">
+        {/* 第 2 行：渡輪, 警報 */}
+        <div className="grid grid-cols-2 gap-1">
           {exploreTabsRow2.map((tab) => {
             const isActive = activeTab === tab.id;
             const Icon = tab.icon;
@@ -1596,8 +1726,8 @@ function ExploreContent() {
           })}
         </div>
 
-        {/* 第 3 行：燃油, 充電 */}
-        <div className="grid grid-cols-2 gap-1">
+        {/* 第 3 行：燃油, 充電, 船運, 沙灘水質 */}
+        <div className="grid grid-cols-4 gap-1">
           {exploreTabsRow3.map((tab) => {
             const isActive = activeTab === tab.id;
             const Icon = tab.icon;
@@ -2970,6 +3100,254 @@ function ExploreContent() {
         </div>
       )}
 
+      {/* ==================== 大溫沙灘水質分頁 (Beach Water Quality) ==================== */}
+      {activeTab === 'beach' && (
+        <div className="flex-1 flex flex-col min-h-0 space-y-2.5 overflow-hidden">
+          {/* Header Controls: Title, Monthly update indicator & manual refresh button */}
+          <div className="flex items-center justify-between gap-1.5 shrink-0 pt-0.5">
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                <Droplets className="w-4 h-4 text-teal-400" />
+                <span>大溫沙灘水質監測</span>
+              </span>
+              <span className="text-[10px] text-teal-400 bg-teal-950/60 border border-teal-800/50 px-1.5 py-0.5 rounded font-mono font-medium">
+                每個月更新 1 次
+              </span>
+            </div>
+
+            <button
+              onClick={() => fetchBeachWater(true)}
+              disabled={loadingBeach}
+              className="p-1.5 rounded-lg bg-[#151922] text-gray-400 hover:text-teal-400 border border-[#232838] hover:border-teal-500/40 transition-all shrink-0 flex items-center justify-center disabled:opacity-50"
+              title="重新整理水質資料"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${loadingBeach ? 'animate-spin text-teal-400' : ''}`} />
+            </button>
+          </div>
+
+          {/* 開啟海灘水質圖層按鈕 (Highlight Layer Switch) */}
+          <div className="p-2.5 rounded-xl bg-gradient-to-r from-teal-950/40 via-[#102422]/60 to-[#121c24] border border-teal-500/30 flex items-center justify-between gap-2 shrink-0">
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="w-7 h-7 rounded-lg bg-teal-500/20 border border-teal-500/40 flex items-center justify-center text-teal-300 shrink-0">
+                <Eye className="w-4 h-4" />
+              </div>
+              <div className="min-w-0">
+                <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                  <span>海灘水質地圖圖層</span>
+                  <span className={`text-[9px] px-1.5 py-0.2 rounded-full font-medium ${layers?.beachWaterQuality ? 'bg-teal-500/30 text-teal-200 border border-teal-500/40' : 'bg-gray-800 text-gray-400'}`}>
+                    {layers?.beachWaterQuality ? '顯示中' : '已隱藏'}
+                  </span>
+                </div>
+                <div className="text-[10px] text-gray-400 truncate">
+                  地圖上即時呈現 41 座海灘水域範圍與水質警戒
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={handleToggleBeachLayer}
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold shrink-0 transition-all shadow-sm flex items-center gap-1.5 ${
+                layers?.beachWaterQuality
+                  ? 'bg-teal-600/80 hover:bg-teal-500 text-white border border-teal-400/50'
+                  : 'bg-[#1a2332] hover:bg-[#232f44] text-teal-300 border border-teal-600/40'
+              }`}
+            >
+              <span>{layers?.beachWaterQuality ? '圖層已開啟' : '開啟海灘水質圖層'}</span>
+            </button>
+          </div>
+
+          {/* 水質標準評級參考與統計列 */}
+          <div className="grid grid-cols-3 gap-1.5 shrink-0 text-center">
+            <div className="bg-[#10131a] border border-emerald-500/30 rounded-lg p-1.5 flex flex-col items-center">
+              <span className="text-[9.5px] text-emerald-400 font-medium">適合游泳</span>
+              <span className="text-xs font-bold text-white font-mono">{beachStats.safe} 座</span>
+              <span className="text-[8.5px] text-gray-500 font-mono">≤200 MPN</span>
+            </div>
+            <div className="bg-[#10131a] border border-amber-500/30 rounded-lg p-1.5 flex flex-col items-center">
+              <span className="text-[9.5px] text-amber-400 font-medium">需留意</span>
+              <span className="text-xs font-bold text-white font-mono">{beachStats.advisory} 座</span>
+              <span className="text-[8.5px] text-gray-500 font-mono">201-400</span>
+            </div>
+            <div className="bg-[#10131a] border border-rose-500/30 rounded-lg p-1.5 flex flex-col items-center">
+              <span className="text-[9.5px] text-rose-400 font-medium">超標警告</span>
+              <span className="text-xs font-bold text-white font-mono">{beachStats.warning} 座</span>
+              <span className="text-[8.5px] text-gray-500 font-mono">&gt;400 MPN</span>
+            </div>
+          </div>
+
+          {/* 搜尋列 */}
+          <div className="relative shrink-0">
+            <Search className="w-3.5 h-3.5 text-gray-500 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              type="text"
+              value={beachSearchQuery}
+              onChange={(e) => setBeachSearchQuery(e.target.value)}
+              placeholder="搜尋海灘名稱、所屬地區或市鎮..."
+              className="w-full bg-[#10131a] text-xs text-white placeholder-gray-500 pl-8 pr-7 py-1.5 rounded-lg border border-[#232838] focus:outline-none focus:border-teal-500/50 transition-colors"
+            />
+            {beachSearchQuery && (
+              <button
+                onClick={() => setBeachSearchQuery('')}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white p-0.5"
+                title="清除搜尋"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            )}
+          </div>
+
+          {/* 篩選與排序 */}
+          <div className="flex items-center justify-between gap-1.5 shrink-0 text-xs">
+            {/* 狀態篩選 */}
+            <select
+              value={beachStatusFilter}
+              onChange={(e) => setBeachStatusFilter(e.target.value as any)}
+              className="bg-[#151922] text-gray-300 text-[11px] rounded-md px-2 py-1 border border-[#232838] focus:outline-none focus:border-teal-500/50 flex-1 min-w-0 cursor-pointer"
+            >
+              <option value="all">全部水質狀態</option>
+              <option value="safe">適合游泳 (良好)</option>
+              <option value="advisory">需留意 (邊緣)</option>
+              <option value="warning">超標警告 (不建議下水)</option>
+            </select>
+
+            {/* 衛生局篩選 */}
+            <select
+              value={beachAuthorityFilter}
+              onChange={(e) => setBeachAuthorityFilter(e.target.value as any)}
+              className="bg-[#151922] text-gray-300 text-[11px] rounded-md px-2 py-1 border border-[#232838] focus:outline-none focus:border-teal-500/50 flex-1 min-w-0 cursor-pointer"
+            >
+              <option value="all">全部衛生局</option>
+              <option value="vch">溫哥華沿海衛生局</option>
+              <option value="fraser">菲沙衛生局</option>
+            </select>
+
+            {/* 排序 */}
+            <select
+              value={beachSortBy}
+              onChange={(e) => setBeachSortBy(e.target.value as any)}
+              className="bg-[#151922] text-gray-300 text-[11px] rounded-md px-2 py-1 border border-[#232838] focus:outline-none focus:border-teal-500/50 shrink-0 cursor-pointer"
+            >
+              <option value="best">水質最優</option>
+              <option value="worst">數值最高</option>
+              <option value="name">名稱排序</option>
+            </select>
+          </div>
+
+          {/* 海灘列表 (Beach Cards List) */}
+          <div className="flex-1 overflow-y-auto space-y-2 pr-1 min-h-0 custom-scrollbar">
+            {loadingBeach && beachList.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 text-gray-400">
+                <RefreshCw className="w-6 h-6 animate-spin text-teal-400 mb-2" />
+                <span className="text-xs">正在載入大溫海灘水質資料...</span>
+              </div>
+            ) : filteredAndSortedBeaches.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 text-gray-400 bg-[#10131a] rounded-xl border border-[#232838] p-4 text-center">
+                <Droplets className="w-8 h-8 text-teal-500/50 mb-2" />
+                <span className="text-sm font-semibold text-gray-200">查無符合條件之海灘</span>
+                <span className="text-xs text-gray-500 mt-1">請調整篩選分類或搜尋關鍵字</span>
+              </div>
+            ) : (
+              filteredAndSortedBeaches.map((beach) => {
+                const statusBadge = (() => {
+                  if (beach.status === 'warning') {
+                    return {
+                      bg: 'bg-rose-950/60 text-rose-300 border-rose-500/50',
+                      dot: 'bg-rose-400 shadow-[0_0_8px_rgba(244,63,94,0.6)]',
+                      text: '超標警告'
+                    };
+                  }
+                  if (beach.status === 'advisory') {
+                    return {
+                      bg: 'bg-amber-950/60 text-amber-300 border-amber-500/50',
+                      dot: 'bg-amber-400 shadow-[0_0_8px_rgba(245,158,11,0.6)]',
+                      text: '需留意'
+                    };
+                  }
+                  return {
+                    bg: 'bg-emerald-950/60 text-emerald-300 border-emerald-500/50',
+                    dot: 'bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.6)]',
+                    text: '適合游泳'
+                  };
+                })();
+
+                return (
+                  <div
+                    key={beach.id}
+                    className="p-3 rounded-xl bg-[#141822] border border-[#232838] hover:border-teal-500/50 hover:bg-[#181d2a] transition-all shadow-sm flex flex-col gap-2 group"
+                  >
+                    {/* Top Row: Beach name & Status Badge */}
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <span className={`w-2 h-2 rounded-full shrink-0 ${statusBadge.dot}`} />
+                          <h4 className="text-xs font-bold text-white group-hover:text-teal-300 transition-colors truncate">
+                            {beach.name}
+                          </h4>
+                        </div>
+                        <div className="text-[10px] text-gray-400 mt-0.5 truncate pl-3.5">
+                          {beach.area || beach.municipality} · {beach.health_authority}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-1 shrink-0">
+                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${statusBadge.bg}`}>
+                          {statusBadge.text}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Metric Row: E. coli reading & sample date */}
+                    <div className="grid grid-cols-2 gap-1.5 bg-[#0e1118] p-2 rounded-lg border border-[#1e2330] text-[11px]">
+                      <div>
+                        <span className="text-[9.5px] text-gray-400 block">大腸桿菌指標 (E. coli)</span>
+                        <span className="font-mono font-bold text-white">
+                          {beach.last_value !== null ? `${beach.last_value} MPN/100mL` : '定期監測中'}
+                        </span>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-[9.5px] text-gray-400 block">最新採樣日期</span>
+                        <span className="font-mono text-gray-300 text-[10.5px]">
+                          {beach.last_sample_date || '每月更新'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {beach.notes && (
+                      <p className="text-[10.5px] text-gray-400 line-clamp-2 leading-relaxed bg-[#10131a] px-2 py-1 rounded border border-[#1e2330]">
+                        {beach.notes}
+                      </p>
+                    )}
+
+                    {/* Actions: Locate on map & Official Health URL */}
+                    <div className="flex items-center justify-between pt-1 border-t border-[#1e2330] text-[10.5px]">
+                      <button
+                        onClick={() => handleLocateBeach(beach)}
+                        className="text-teal-400 hover:text-teal-300 font-medium flex items-center gap-1 transition-colors group/btn"
+                      >
+                        <MapPin className="w-3.5 h-3.5 text-teal-400 group-hover/btn:scale-110 transition-transform" />
+                        <span>在地圖檢視水域</span>
+                      </button>
+
+                      {beach.advisory_url && (
+                        <a
+                          href={beach.advisory_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-gray-400 hover:text-white flex items-center gap-1 transition-colors"
+                        >
+                          <span>官方衛生局通告</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </div>
+      )}
+
       {/* ==================== TransLink 即時警報分頁 (Transit Live Alerts) ==================== */}
       {activeTab === 'alerts' && (
         <div className="flex-1 flex flex-col min-h-0 space-y-2.5 overflow-hidden">
@@ -3624,6 +4002,7 @@ function ExploreContent() {
           {activeTab === 'ferry' && `共 ${ferryRoutes.reduce((acc, r) => acc + (r?.vessels?.length || 0), 0)} 艘渡輪即時航行中`}
           {activeTab === 'cargo' && `共追蹤 ${sortedShippingVessels.length} 艘溫哥華港口商船 (依抵達時間近至遠排序)`}
           {activeTab === 'alerts' && `共 ${filteredAndSortedAlerts.banners.length + filteredAndSortedAlerts.regular.length} 則 TransLink 即時運輸警報 · 每 ${transitAlertsRefreshInterval || 10} 分鐘自動更新`}
+          {activeTab === 'beach' && `共監測大溫 ${beachList.length || 41} 座海灘水質 · 每個月更新 1 次 · 資料來源：大溫都會局 (Metro Vancouver)`}
         </span>
         <button
           onClick={() => {
