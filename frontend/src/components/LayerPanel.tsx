@@ -9,7 +9,7 @@ import {
   Droplets, Bath, Leaf, Landmark, GraduationCap, BookOpen, UtensilsCrossed, Bed, Heart,
   PlaneTakeoff, Calendar, Car, ShieldAlert, LifeBuoy, HeartPulse, Mountain,
   Compass, MapPin, Fuel, Train, Anchor, ArrowRight, Snowflake, Fingerprint, Waves,
-  Gauge, Mail, Radio, Trash2, Soup, Recycle, RotateCcw, Wifi
+  Gauge, Mail, Radio, Trash2, Soup, Recycle, RotateCcw, Wifi, Activity, Ban, Cone, Lightbulb
 } from 'lucide-react';
 
 // Helper component for Tesla Icon
@@ -59,6 +59,7 @@ export default function LayerPanel() {
     activeBg = 'bg-[#1a1f2e]', 
     activeBorder = 'border-blue-500/50', 
     activeShadow = 'shadow-[0_0_6px_rgba(59,130,246,0.1)]',
+    title,
     className = ''
   }: { 
     layerKey: keyof typeof layers, 
@@ -69,6 +70,7 @@ export default function LayerPanel() {
     activeBg?: string, 
     activeBorder?: string, 
     activeShadow?: string,
+    title?: string,
     className?: string
   }) => {
     const isActive = layers[layerKey];
@@ -80,7 +82,7 @@ export default function LayerPanel() {
             ? `${activeBg} ${activeBorder} ${colorClass} ${activeShadow} font-semibold` 
             : 'bg-[#1c1d21] border-[#2d2e32] text-gray-400 hover:bg-[#25262b] hover:text-gray-200 font-normal'
         }`}
-        title={label}
+        title={title || label}
       >
         <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? '' : 'text-gray-500'}`} />
         {!iconOnly && <span className="truncate">{label}</span>}
@@ -248,12 +250,17 @@ export default function LayerPanel() {
             <LayerButton layerKey="evCharging" label="電動車充電站" icon={Zap} colorClass="text-emerald-400" activeBg="bg-[#14291f]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(52,211,153,0.15)]" />
             <LayerButton layerKey="tesla" label="TESLA" icon={TeslaIcon} colorClass="text-red-500" activeBg="bg-[#2d1417]" activeBorder="border-red-500/60" activeShadow="shadow-[0_0_8px_rgba(232,33,39,0.3)]" />
 
-            {/* Row 8: 交通攝影機 | 路口安全相機 */}
+            {/* Row 8: 交通封閉 | 道路施工 */}
+            <LayerButton layerKey="roadClosures" label="交通封閉" icon={Ban} title="交通封閉 (每星期更新)" colorClass="text-rose-400" activeBg="bg-[#2b171c]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.15)]" />
+            <LayerButton layerKey="roadConstruction" label="道路施工" icon={Cone} title="道路施工 (每星期更新)" colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
+
+            {/* Row 9: 交通攝影機 | 路口安全相機 */}
             <LayerButton layerKey="trafficCameras" label="交通攝影機" icon={Camera} colorClass="text-cyan-400" activeBg="bg-[#14262b]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.15)]" />
             <LayerButton layerKey="safetyCameras" label="路口安全相機" icon={Siren} colorClass="text-rose-400" activeBg="bg-[#2b171c]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.15)]" />
 
-            {/* Row 9: 鏟雪路線 */}
+            {/* Row 10: 鏟雪路線 | 路況 */}
             <LayerButton layerKey="snowRemovalRoutes" label="鏟雪路線" icon={Snowflake} colorClass="text-sky-300" activeBg="bg-[#0f2938]" activeBorder="border-sky-400/50" activeShadow="shadow-[0_0_6px_rgba(56,189,248,0.2)]" />
+            <LayerButton layerKey="trafficConditions" label="路況" icon={Activity} title="即時路況 - Lions Gate Bridge (每小時更新)" colorClass="text-emerald-400" activeBg="bg-[#142820]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
           </div>
         </div>
 
@@ -340,6 +347,7 @@ export default function LayerPanel() {
           <div className="grid grid-cols-2 gap-1">
             <LayerButton layerKey="waterDistributionMains" label="自來水管道" icon={Droplets} colorClass="text-sky-400" activeBg="bg-[#102436]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(14,165,233,0.15)]" />
             <LayerButton layerKey="sewerMains" label="污水管道" icon={Waves} colorClass="text-teal-400" activeBg="bg-[#102826]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
+            <LayerButton layerKey="streetLighting" label="路燈" icon={Lightbulb} title="路燈控制盤 (每3個月更新)" colorClass="text-amber-300" activeBg="bg-[#2a2414]" activeBorder="border-amber-400/50" activeShadow="shadow-[0_0_6px_rgba(251,191,36,0.15)]" />
             <LayerButton layerKey="wirelessFacilities" label="無線設施" icon={Radio} colorClass="text-purple-400" activeBg="bg-[#241733]" activeBorder="border-purple-500/50" activeShadow="shadow-[0_0_6px_rgba(168,85,247,0.15)]" />
           </div>
         </div>

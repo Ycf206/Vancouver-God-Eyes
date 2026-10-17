@@ -1,0 +1,35 @@
+{
+  "type": "FeatureCollection",
+  "generator": "VancouverGodsEye",
+  "total_count": 1,
+  "updated_at": "2026-10-17T03:04:30.361463+00:00",
+  "update_frequency": "每 1 小時 (Hourly)",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "bridge_traffic_lions_gate",
+      "properties": {
+        "id": "bridge_traffic_lions_gate",
+        "facility_type": "traffic_conditions",
+        "name": "獅門大橋 (Lions Gate Bridge) 即時路況",
+        "bridge_name": "Lions Gate Bridge",
+        "highway": "Hwy 99",
+        "delay_gif": "https://www.th.gov.bc.ca/atis/lgcws/images/lions_gate/atis_delay.gif",
+        "camera_jpg": "https://www.drivebc.ca/images/18.jpg",
+        "queue_map_gif": "https://www.th.gov.bc.ca/atis/lgcws/images/lions_gate/queue_map.gif",
+        "atis_url": "https://www.th.gov.bc.ca/atis/lgcws/index.html",
+        "update_interval": "每 1 小時自動更新",
+        "status": "即時監測中",
+        "description": "卑詩省運輸廳 (BC MoTI / ATIS & DriveBC) 獅門大橋即時行車延誤、車流壅塞排隊地圖與現場監視影像",
+        "source": "DriveBC / Advanced Traveller Information System (ATIS)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1385,
+          49.3145
+        ]
+      }
+    }
+  ]
+}

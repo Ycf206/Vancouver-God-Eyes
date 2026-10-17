@@ -1211,12 +1211,14 @@ CURATED_STATIC_TYPES = (
     "local_area_boundary", "fuel", "ev_charging", "tesla", "marine_terminals", 
     "one_way_streets", "snow_removal_routes", "crime_areas", "water_distribution_mains", 
     "sewer_mains", "traffic_speed_limits", "bike_racks", "postal_code_fsa", "wireless_facilities",
-    "traffic_crosswalks", "litter_containers", "food_banks", "recycling", "van_wifi"
+    "traffic_crosswalks", "litter_containers", "food_banks", "recycling", "van_wifi",
+    "road_closures", "road_construction", "street_lighting", "traffic_conditions"
 )
 POINT_CURATED_TYPES = (
     "hospitals", "police", "disaster_hubs", "car_sharing", "aed", 
     "fuel", "ev_charging", "tesla", "marine_terminals", "bike_racks", "wireless_facilities",
-    "traffic_crosswalks", "litter_containers", "food_banks", "recycling", "van_wifi"
+    "traffic_crosswalks", "litter_containers", "food_banks", "recycling", "van_wifi",
+    "street_lighting", "traffic_conditions"
 )
 
 def sync_curated_point_types(db: Session):
@@ -2467,7 +2469,11 @@ def explore_nearby_facilities(
         'police': ('警局', '🚓', 'police'),
         'fire_halls': ('消防局', '🚒', 'fireHalls'),
         'van_wifi': ('VanWiFi 免費無線網路', '📶', 'vanWifi'),
-        'tide_stations': ('潮汐水位', '🌊', 'tideStations')
+        'tide_stations': ('潮汐水位', '🌊', 'tideStations'),
+        'street_lighting': ('路燈控制盤', '💡', 'streetLighting'),
+        'road_closures': ('交通封閉', '🚫', 'roadClosures'),
+        'road_construction': ('道路施工', '🚧', 'roadConstruction'),
+        'traffic_conditions': ('大橋路況', '🚦', 'trafficConditions')
     }
 
     for f in road_query.all():

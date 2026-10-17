@@ -13,7 +13,7 @@ import {
   LocateFixed, Train, Compass, ZoomIn, X, Copy, Check, 
   Navigation, ExternalLink, Clock, Bike, Car, Info, 
   ChevronDown, ChevronUp, SlidersHorizontal, Fuel, Zap, Wifi, Waves, Play, Pause, CloudRain,
-  RotateCcw, MapPin, Crosshair
+  RotateCcw, MapPin, Crosshair, Activity, Ban, Cone, Lightbulb
 } from 'lucide-react';
 
 // Fix Next.js App Router Web Worker crash
@@ -236,6 +236,7 @@ const HEAVY_LAYERS_CONFIG: Record<string, { label: string; prefixes: string[] }>
   bikeways: { label: '單車道路網', prefixes: ['bikeways'] },
   parkingMeters: { label: '收費錶', prefixes: ['parking-meters'] },
   trafficCrosswalks: { label: '斑馬線', prefixes: ['traffic-crosswalks'] },
+  streetLighting: { label: '路燈控制盤', prefixes: ['street-lighting'] },
 };
 
 export default function AppMap() {
@@ -676,6 +677,10 @@ export default function AppMap() {
         else if (type === 'litter_containers' && !layers.litterContainers) facilityClosed = true;
         else if (type === 'van_wifi' && !layers.vanWifi) facilityClosed = true;
         else if (type === 'tide_stations' && !layers.tideStations) facilityClosed = true;
+        else if (type === 'traffic_conditions' && !layers.trafficConditions) facilityClosed = true;
+        else if (type === 'road_closures' && !layers.roadClosures) facilityClosed = true;
+        else if (type === 'road_construction' && !layers.roadConstruction) facilityClosed = true;
+        else if (type === 'street_lighting' && !layers.streetLighting) facilityClosed = true;
 
         if (facilityClosed) {
           setSelectedFacility(null);
@@ -1389,6 +1394,20 @@ export default function AppMap() {
       }
     }
 
+    // 5. 路燈控制盤 (Street Lighting)
+    const turnedOnStreetLighting = !prev.streetLighting && layers.streetLighting;
+    if (turnedOnStreetLighting) {
+      if (z < 12) {
+        setZoomNotification({
+          show: true,
+          title: '已開啟路燈控制盤圖層',
+          message: '全市設有 1,400+ 個路燈控制盤，縮放時以數字符號進行聚合顯示，放大可檢視具體點位。',
+          targetZoom: 13.5
+        });
+        return;
+      }
+    }
+
     // 當開啟大量資料圖層時，顯示「載入中」提示
     const newLoading: { [key: string]: string } = {};
     for (const [key, conf] of Object.entries(HEAVY_LAYERS_CONFIG)) {
@@ -1566,6 +1585,40 @@ export default function AppMap() {
     }
     prevRadarActiveRef.current = isRadarActive;
   }, [isRadarActive]);
+
+  // 當開啟周邊半徑探索時，自動記錄當前縮放比與中心視角
+  // 當關閉周邊半徑探索清單時，自動回復打開前的地圖縮放比例與中心視角
+  const prevRadiusActiveRef = useRef(Boolean(radiusExploration?.active));
+  const preRadiusViewStateRef = useRef<{ center: [number, number]; zoom: number; pitch: number; bearing: number } | null>(null);
+
+  useEffect(() => {
+    const map = mapRef.current?.getMap();
+    if (!map) return;
+
+    const isCurrentActive = Boolean(radiusExploration?.active);
+    if (isCurrentActive && !prevRadiusActiveRef.current) {
+      const currentCenter = map.getCenter();
+      preRadiusViewStateRef.current = {
+        center: [currentCenter.lng, currentCenter.lat],
+        zoom: map.getZoom(),
+        pitch: map.getPitch(),
+        bearing: map.getBearing()
+      };
+    } else if (!isCurrentActive && prevRadiusActiveRef.current) {
+      if (preRadiusViewStateRef.current) {
+        map.flyTo({
+          center: preRadiusViewStateRef.current.center,
+          zoom: preRadiusViewStateRef.current.zoom,
+          pitch: preRadiusViewStateRef.current.pitch,
+          bearing: preRadiusViewStateRef.current.bearing,
+          duration: 900,
+          essential: true
+        });
+        preRadiusViewStateRef.current = null;
+      }
+    }
+    prevRadiusActiveRef.current = isCurrentActive;
+  }, [radiusExploration?.active]);
 
   // 響應全域搜尋項目選取 (FlyTo & 自動打開詳細資訊卡片)
   useEffect(() => {
@@ -2155,6 +2208,29 @@ export default function AppMap() {
           'circle-stroke-color': '#8b786d'
         }
       });
+      style.layers.push({
+        id: 'seabus-stops-label-layer',
+        type: 'symbol',
+        source: 'seabus-stops',
+        minzoom: 11,
+        layout: {
+          'text-field': ['get', 'name'],
+          'text-size': [
+            'interpolate', ['linear'], ['zoom'],
+            11, 10,
+            14, 12
+          ],
+          'text-offset': [0, 1.3],
+          'text-anchor': 'top',
+          'text-optional': true
+        },
+        paint: {
+          'text-color': '#ffffff',
+          'text-halo-color': '#0c1017',
+          'text-halo-width': 2,
+          'text-halo-blur': 0.5
+        }
+      });
     }
 
     if (labelTiles.length > 0) {
@@ -2310,6 +2386,139 @@ export default function AppMap() {
             '#38bdf8'
           ],
           'line-width': ['interpolate', ['linear'], ['zoom'], 10, 2.0, 13, 3.6, 16, 5.6],
+          'line-opacity': 0.95
+        }
+      });
+    }
+
+    // Road Facilities: Traffic Conditions (即時路況 - Lions Gate Bridge 獅門大橋 ATIS/DriveBC)
+    if (layers.trafficConditions) {
+      style.sources['traffic_conditions'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/traffic_conditions` };
+      // 外部發光波紋
+      style.layers.push({
+        id: 'traffic-conditions-pulse-layer',
+        type: 'circle',
+        source: 'traffic_conditions',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 9, 14, 13, 20, 16, 26],
+          'circle-color': '#10b981',
+          'circle-opacity': 0.35,
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#34d399',
+          'circle-stroke-opacity': 0.7
+        }
+      });
+      // 核心圓點
+      style.layers.push({
+        id: 'traffic-conditions-layer',
+        type: 'circle',
+        source: 'traffic_conditions',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 9, 7, 13, 10, 16, 13],
+          'circle-color': '#059669',
+          'circle-stroke-width': 2.5,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      // 圖示
+      style.layers.push({
+        id: 'traffic-conditions-symbol-layer',
+        type: 'symbol',
+        source: 'traffic_conditions',
+        layout: {
+          'text-field': '🚗',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 10, 10, 14, 13],
+          'text-allow-overlap': true
+        }
+      });
+      // 名稱標籤
+      style.layers.push({
+        id: 'traffic-conditions-label-layer',
+        type: 'symbol',
+        source: 'traffic_conditions',
+        minzoom: 11,
+        layout: {
+          'text-field': '獅門大橋路況',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 11, 10, 14, 12],
+          'text-offset': [0, 1.4],
+          'text-anchor': 'top',
+          'text-optional': true
+        },
+        paint: {
+          'text-color': '#34d399',
+          'text-halo-color': '#06281e',
+          'text-halo-width': 2
+        }
+      });
+    }
+
+    // Road Facilities: Road Closures (交通封閉)
+    if (layers.roadClosures) {
+      style.sources['road_closures'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/road_closures` };
+      // 外框底線
+      style.layers.push({
+        id: 'road-closures-casing-layer',
+        type: 'line',
+        source: 'road_closures',
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        paint: {
+          'line-color': '#4c0519',
+          'line-width': ['interpolate', ['linear'], ['zoom'], 10, 4, 13, 6.5, 16, 9],
+          'line-opacity': 0.9
+        }
+      });
+      // 警示玫瑰紅虛線
+      style.layers.push({
+        id: 'road-closures-layer',
+        type: 'line',
+        source: 'road_closures',
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        paint: {
+          'line-color': '#f43f5e',
+          'line-width': ['interpolate', ['linear'], ['zoom'], 10, 2.5, 13, 4.2, 16, 6],
+          'line-dasharray': [2, 1.5],
+          'line-opacity': 0.95
+        }
+      });
+    }
+
+    // Road Facilities: Road Construction (道路施工)
+    if (layers.roadConstruction) {
+      style.sources['road_construction'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/road_construction` };
+      // 外框底線
+      style.layers.push({
+        id: 'road-construction-casing-layer',
+        type: 'line',
+        source: 'road_construction',
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        paint: {
+          'line-color': '#451a03',
+          'line-width': ['interpolate', ['linear'], ['zoom'], 10, 4, 13, 6.5, 16, 9],
+          'line-opacity': 0.9
+        }
+      });
+      // 施工金黃條紋線
+      style.layers.push({
+        id: 'road-construction-layer',
+        type: 'line',
+        source: 'road_construction',
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        paint: {
+          'line-color': '#f59e0b',
+          'line-width': ['interpolate', ['linear'], ['zoom'], 10, 2.5, 13, 4.2, 16, 6],
+          'line-dasharray': [3, 2],
           'line-opacity': 0.95
         }
       });
@@ -3753,6 +3962,72 @@ export default function AppMap() {
       });
     }
 
+    // Utilities: Street Lighting Service Panels (路燈控制盤)
+    if (layers.streetLighting) {
+      style.sources['street_lighting'] = { 
+        type: 'geojson', 
+        data: `${apiUrl}/api/geojson/road/street_lighting`,
+        cluster: true,
+        clusterMaxZoom: 14,
+        clusterRadius: 45
+      };
+      // 叢集圓球
+      style.layers.push({
+        id: 'street-lighting-cluster-layer',
+        type: 'circle',
+        source: 'street_lighting',
+        filter: ['has', 'point_count'],
+        paint: {
+          'circle-color': '#ca8a04',
+          'circle-radius': ['step', ['get', 'point_count'], 14, 20, 18, 50, 22],
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#fde047',
+          'circle-opacity': 0.88
+        }
+      });
+      // 叢集計數
+      style.layers.push({
+        id: 'street-lighting-count-layer',
+        type: 'symbol',
+        source: 'street_lighting',
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': '{point_count_abbreviated}',
+          'text-size': 11,
+          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold']
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+      // 單個路燈點位
+      style.layers.push({
+        id: 'street-lighting-layer',
+        type: 'circle',
+        source: 'street_lighting',
+        filter: ['!', ['has', 'point_count']],
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 16, 6],
+          'circle-color': '#eab308',
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#fef08a'
+        }
+      });
+      // 單個路燈圖示 (縮放較大時顯示 💡)
+      style.layers.push({
+        id: 'street-lighting-symbol-layer',
+        type: 'symbol',
+        source: 'street_lighting',
+        filter: ['!', ['has', 'point_count']],
+        minzoom: 15,
+        layout: {
+          'text-field': '💡',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 15, 10, 18, 14],
+          'text-allow-overlap': false
+        }
+      });
+    }
+
     // Road: Traffic Crosswalks (斑馬線)
     if (layers.trafficCrosswalks) {
       style.sources['traffic_crosswalks'] = { 
@@ -3994,6 +4269,10 @@ export default function AppMap() {
     layers.bikeRacks,
     layers.postalCodeFSA,
     layers.wirelessFacilities,
+    layers.trafficConditions,
+    layers.roadClosures,
+    layers.roadConstruction,
+    layers.streetLighting,
     layers.trafficCrosswalks,
     layers.litterContainers,
     contourInterval,
@@ -4029,6 +4308,7 @@ export default function AppMap() {
           'skytrain-stops-inner-layer',
           'skytrain-stops-label-layer',
           'seabus-stops-layer',
+          'seabus-stops-label-layer',
           'bikeways-layer',
           'parking-meters-cluster-layer',
           'parking-meters-layer',
@@ -4113,7 +4393,18 @@ export default function AppMap() {
           'van-wifi-layer',
           'van-wifi-symbol-layer',
           'tide-stations-layer',
-          'tide-stations-symbol-layer'
+          'tide-stations-symbol-layer',
+          'traffic-conditions-pulse-layer',
+          'traffic-conditions-layer',
+          'traffic-conditions-symbol-layer',
+          'traffic-conditions-label-layer',
+          'road-closures-casing-layer',
+          'road-closures-layer',
+          'road-construction-casing-layer',
+          'road-construction-layer',
+          'street-lighting-cluster-layer',
+          'street-lighting-layer',
+          'street-lighting-symbol-layer'
         ]}
         onClick={(e) => {
           if (contextMenu) {
@@ -4192,7 +4483,7 @@ export default function AppMap() {
             const clickLat = coords?.[1] ?? e.lngLat?.lat;
             fetchSkytrainStationSchedule(String(stopId), stopName, clickLon, clickLat);
             return;
-          } else if (layerId === 'bus-stops-layer' || layerId === 'seabus-stops-layer') {
+          } else if (layerId === 'bus-stops-layer' || layerId === 'seabus-stops-layer' || layerId === 'seabus-stops-label-layer') {
             setSelectedFacility(null);
             setSelectedTrain(null);
             setSelectedSkytrainStation(null);
@@ -4325,6 +4616,34 @@ export default function AppMap() {
               lat: clickLat,
               properties: props
             });
+          } else if (layerId === 'road-closures-layer' || layerId === 'road-closures-casing-layer') {
+            setSelectedStop(null);
+            const props = feature.properties || {};
+            const clickLon = e.lngLat?.lng ?? (props.geo_point_2d?.lon || -123.1207);
+            const clickLat = e.lngLat?.lat ?? (props.geo_point_2d?.lat || 49.2827);
+            setSelectedFacility({
+              id: props.id || `closure_${clickLon}_${clickLat}`,
+              facility_type: 'road_closures',
+              name: props.name || props.project || '交通封閉路段',
+              local_area: props.location || props.street || '溫哥華工程道路封閉',
+              lon: clickLon,
+              lat: clickLat,
+              properties: props
+            });
+          } else if (layerId === 'road-construction-layer' || layerId === 'road-construction-casing-layer') {
+            setSelectedStop(null);
+            const props = feature.properties || {};
+            const clickLon = e.lngLat?.lng ?? (props.geo_point_2d?.lon || -123.1207);
+            const clickLat = e.lngLat?.lat ?? (props.geo_point_2d?.lat || 49.2827);
+            setSelectedFacility({
+              id: props.id || `construction_${clickLon}_${clickLat}`,
+              facility_type: 'road_construction',
+              name: props.name || props.project || '道路施工路段',
+              local_area: props.location || props.street || '溫哥華道路維修與施工',
+              lon: clickLon,
+              lat: clickLat,
+              properties: props
+            });
           } else if (
             layerId.startsWith('parking-meters') || 
             layerId.startsWith('accessible-parking') || 
@@ -4335,6 +4654,8 @@ export default function AppMap() {
             layerId.startsWith('shared-bikes') ||
             layerId.startsWith('bike-racks') ||
             layerId.startsWith('wireless-facilities') ||
+            layerId.startsWith('traffic-conditions') ||
+            layerId.startsWith('street-lighting') ||
             layerId.startsWith('traffic-crosswalks') ||
             layerId.startsWith('litter-containers') ||
             layerId.startsWith('traffic-cameras') ||
@@ -4368,15 +4689,17 @@ export default function AppMap() {
             const isMarineTerminal = layerId.startsWith('marine-terminals');
             const isBikeRack = layerId.startsWith('bike-racks');
             const isWireless = layerId.startsWith('wireless-facilities');
+            const isTraffic = layerId.startsWith('traffic-conditions');
+            const isStreetLighting = layerId.startsWith('street-lighting');
             const isCrosswalk = layerId.startsWith('traffic-crosswalks');
             const isLitter = layerId.startsWith('litter-containers');
             const isRecycling = layerId.startsWith('recycling');
             const isVanWifi = layerId.startsWith('van-wifi');
             const isTideStation = layerId.startsWith('tide-stations');
             setSelectedFacility({
-              id: props.id || (props.object_id ? `${props.facility_type || (isVanWifi ? 'van_wifi' : (isTideStation ? 'tide' : (isBikeRack ? 'bike_rack' : (isWireless ? 'wireless' : (isCrosswalk ? 'crosswalk' : (isLitter ? 'litter' : (isRecycling ? 'recycling' : 'fac')))))))}_${props.object_id}` : ''),
-              facility_type: props.facility_type || (isVanWifi ? 'van_wifi' : (isTideStation ? 'tide_stations' : (isFuel ? 'fuel' : (isTesla ? 'tesla' : (isMarineTerminal ? 'marine_terminals' : (isBikeRack ? 'bike_racks' : (isWireless ? 'wireless_facilities' : (isCrosswalk ? 'traffic_crosswalks' : (isLitter ? 'litter_containers' : (isRecycling ? 'recycling' : '')))))))))),
-              name: props.name || (isVanWifi ? (props.site_name || 'VanWiFi 公共無線網絡') : (isTideStation ? (props.english_name || '潮汐水位') : (isCrosswalk ? (props.location ? `斑馬線 - ${props.location}` : '行人斑馬線') : (isLitter ? (props.address ? `垃圾箱 - ${props.address}` : '公用垃圾箱') : (isBikeRack ? (props.location ? `單車架 - ${props.location}` : '公用單車架') : (isWireless ? (props.site_name || `無線設施 #${props.pole_number || ''}`) : (isRecycling ? (props.brand || '環保回收站') : (props.brand || (isFuel ? '加油站' : (isTesla ? 'Tesla 站點' : (isMarineTerminal ? '港口碼頭' : ''))))))))))),
+              id: props.id || (props.object_id ? `${props.facility_type || (isTraffic ? 'traffic_conditions' : (isStreetLighting ? 'street_lighting' : (isVanWifi ? 'van_wifi' : (isTideStation ? 'tide' : (isBikeRack ? 'bike_rack' : (isWireless ? 'wireless' : (isCrosswalk ? 'crosswalk' : (isLitter ? 'litter' : (isRecycling ? 'recycling' : 'fac')))))))))}_${props.object_id}` : ''),
+              facility_type: props.facility_type || (isTraffic ? 'traffic_conditions' : (isStreetLighting ? 'street_lighting' : (isVanWifi ? 'van_wifi' : (isTideStation ? 'tide_stations' : (isFuel ? 'fuel' : (isTesla ? 'tesla' : (isMarineTerminal ? 'marine_terminals' : (isBikeRack ? 'bike_racks' : (isWireless ? 'wireless_facilities' : (isCrosswalk ? 'traffic_crosswalks' : (isLitter ? 'litter_containers' : (isRecycling ? 'recycling' : '')))))))))))),
+              name: props.name || (isTraffic ? '獅門大橋即時路況' : (isStreetLighting ? (props.service_panel_number ? `路燈控制盤 #${props.service_panel_number}` : '路燈控制盤') : (isVanWifi ? (props.site_name || 'VanWiFi 公共無線網絡') : (isTideStation ? (props.english_name || '潮汐水位') : (isCrosswalk ? (props.location ? `斑馬線 - ${props.location}` : '行人斑馬線') : (isLitter ? (props.address ? `垃圾箱 - ${props.address}` : '公用垃圾箱') : (isBikeRack ? (props.location ? `單車架 - ${props.location}` : '公用單車架') : (isWireless ? (props.site_name || `無線設施 #${props.pole_number || ''}`) : (isRecycling ? (props.brand || '環保回收站') : (props.brand || (isFuel ? '加油站' : (isTesla ? 'Tesla 站點' : (isMarineTerminal ? '港口碼頭' : ''))))))))))))),
               local_area: props.waterway || props.area || props.local_area || props.location || props.company || props.address || props.city || '',
               lon: coords[0],
               lat: coords[1],
@@ -4958,31 +5281,40 @@ export default function AppMap() {
             latitude={t.geometry.coordinates[1]}
             anchor="center"
           >
-            <div 
-              className="w-6 h-6 bg-[#0060a9] rounded-md flex items-center justify-center border-[1.5px] border-white shadow-md cursor-pointer hover:bg-[#004080] transition-colors tooltip"
-              title={t.properties?.name || 'Ferry Terminal'}
-              onClick={(e) => {
-                e.stopPropagation();
-                setSelectedTerminal(t);
-                setLoadingSchedule(true);
-                const apiUrl = getApiUrl();
-                fetch(`${apiUrl}/api/ferries/terminals/${t.properties.code}/schedule`)
-                  .then(r => r.json())
-                  .then(data => {
-                    setTerminalSchedule(data.schedule || []);
-                    setLoadingSchedule(false);
-                  })
-                  .catch(err => {
-                    console.error(err);
-                    setLoadingSchedule(false);
-                  });
-              }}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="5" r="3"/>
-                <line x1="12" y1="22" x2="12" y2="8"/>
-                <path d="M5 12H2a10 10 0 0 0 20 0h-3"/>
-              </svg>
+            <div className="flex flex-col items-center cursor-pointer select-none">
+              <div 
+                className="w-6 h-6 bg-[#0060a9] rounded-md flex items-center justify-center border-[1.5px] border-white shadow-md hover:bg-[#004080] transition-colors tooltip"
+                title={t.properties?.name || 'Ferry Terminal'}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedTerminal(t);
+                  setLoadingSchedule(true);
+                  const apiUrl = getApiUrl();
+                  fetch(`${apiUrl}/api/ferries/terminals/${t.properties.code}/schedule`)
+                    .then(r => r.json())
+                    .then(data => {
+                      setTerminalSchedule(data.schedule || []);
+                      setLoadingSchedule(false);
+                    })
+                    .catch(err => {
+                      console.error(err);
+                      setLoadingSchedule(false);
+                    });
+                }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="5" r="3"/>
+                  <line x1="12" y1="22" x2="12" y2="8"/>
+                  <path d="M5 12H2a10 10 0 0 0 20 0h-3"/>
+                </svg>
+              </div>
+              {currentZoom >= 10 && t.properties?.name && (
+                <span 
+                  className="mt-1 text-[11px] font-semibold text-white px-1.5 py-0.5 rounded bg-[#0a121e]/90 border border-sky-400/40 shadow-sm whitespace-nowrap pointer-events-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]"
+                >
+                  {t.properties.name}
+                </span>
+              )}
             </div>
           </Marker>
         ))}
@@ -5786,19 +6118,23 @@ export default function AppMap() {
             className="z-50"
             offset={[0, -10]}
             maxWidth={
-              selectedFacility.facility_type === 'traffic_cameras' ? '400px' : 
-              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations') ? '360px' : 
+              (selectedFacility.facility_type === 'traffic_cameras' || selectedFacility.facility_type === 'traffic_conditions') ? '400px' : 
+              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting') ? '360px' : 
               '320px'
             }
           >
             <div className={`p-3.5 ${
-              selectedFacility.facility_type === 'traffic_cameras' ? 'w-[360px]' : 
-              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations') ? 'w-[340px]' : 
+              (selectedFacility.facility_type === 'traffic_cameras' || selectedFacility.facility_type === 'traffic_conditions') ? 'w-[360px]' : 
+              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting') ? 'w-[340px]' : 
               'w-[290px]'
             } max-w-[90vw] text-gray-800`}>
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
                 <div className="flex items-center gap-2">
                   <span className={`w-3 h-3 rounded-full flex-shrink-0 ${
+                    selectedFacility.facility_type === 'traffic_conditions' ? 'bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]' :
+                    selectedFacility.facility_type === 'road_closures' ? 'bg-rose-600' :
+                    selectedFacility.facility_type === 'road_construction' ? 'bg-amber-500' :
+                    selectedFacility.facility_type === 'street_lighting' ? 'bg-amber-400' :
                     selectedFacility.facility_type === 'van_wifi' ? 'bg-cyan-500' :
                     selectedFacility.facility_type === 'tide_stations' ? 'bg-blue-600' :
                     selectedFacility.facility_type === 'water_distribution_mains' ? 'bg-sky-500' :
@@ -8498,6 +8834,269 @@ export default function AppMap() {
                       <span>中心座標</span>
                       <span className="font-mono text-gray-700">
                         {selectedFacility.lat.toFixed(4)}, {selectedFacility.lon.toFixed(4)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Traffic Conditions (即時路況 - Lions Gate Bridge 獅門大橋 ATIS/DriveBC) */}
+              {selectedFacility.facility_type === 'traffic_conditions' && (
+                <div className="flex flex-col gap-2.5 text-xs">
+                  <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/30 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-emerald-950 text-xs flex items-center gap-1.5">
+                        <span className="text-base text-emerald-600 font-bold">🌉</span>
+                        <span className="truncate max-w-[190px]">{selectedFacility.name}</span>
+                      </span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-600 text-white shrink-0">
+                        每 1 小時更新
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-emerald-900 font-medium">
+                      DriveBC & ATIS 即時交通延誤、排隊車龍與南向現場監視
+                    </div>
+                  </div>
+
+                  {/* 預計延誤與更新時間 GIF */}
+                  <div className="bg-gray-900 rounded-lg p-2 border border-gray-700/60 flex flex-col gap-1 shadow-inner">
+                    <div className="flex items-center justify-between text-[11px] font-semibold text-gray-200">
+                      <span>⏱️ 預計延誤與更新時間</span>
+                      <span className="text-[10px] text-emerald-400 font-mono">LIVE ATIS</span>
+                    </div>
+                    <div className="w-full overflow-hidden rounded bg-black flex items-center justify-center min-h-[44px]">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img 
+                        src="https://www.th.gov.bc.ca/atis/lgcws/images/lions_gate/atis_delay.gif" 
+                        alt="Lions Gate Bridge ATIS 預計延誤" 
+                        className="w-full object-contain"
+                        onError={(e) => {
+                          (e.target as HTMLElement).style.display = 'none';
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* 即時現場圖片 DriveBC 18 */}
+                  <div className="bg-gray-900 rounded-lg p-2 border border-gray-700/60 flex flex-col gap-1 shadow-inner">
+                    <div className="flex items-center justify-between text-[11px] font-semibold text-gray-200">
+                      <span>📷 即時監視畫面 (DriveBC #18)</span>
+                      <span className="text-[10px] text-cyan-400">南向 South</span>
+                    </div>
+                    <div className="w-full overflow-hidden rounded bg-black flex items-center justify-center min-h-[140px]">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img 
+                        src="https://www.drivebc.ca/images/18.jpg" 
+                        alt="DriveBC Lions Gate Bridge Camera 18" 
+                        className="w-full h-auto object-cover rounded"
+                      />
+                    </div>
+                  </div>
+
+                  {/* 行車情況 / 車龍排隊圖 (Queue Map) */}
+                  <div className="bg-gray-900 rounded-lg p-2 border border-gray-700/60 flex flex-col gap-1 shadow-inner">
+                    <div className="flex items-center justify-between text-[11px] font-semibold text-gray-200">
+                      <span>🗺️ 行車情況與車流排隊圖 (Queue Map)</span>
+                    </div>
+                    <div className="w-full overflow-hidden rounded bg-black flex items-center justify-center min-h-[120px]">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img 
+                        src="https://www.th.gov.bc.ca/atis/lgcws/images/lions_gate/queue_map.gif" 
+                        alt="Lions Gate Bridge Queue Map" 
+                        className="w-full h-auto object-contain"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="pt-1">
+                    <a 
+                      href="https://www.th.gov.bc.ca/atis/lgcws/index.html" 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="w-full py-1.5 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                    >
+                      <Activity className="w-3.5 h-3.5" />
+                      <span>前往 ATIS 獅門大橋路況官網</span>
+                    </a>
+                  </div>
+                </div>
+              )}
+
+              {/* Road Closures (交通封閉) Details */}
+              {selectedFacility.facility_type === 'road_closures' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-rose-500/10 p-2.5 rounded-lg border border-rose-500/30 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-rose-950 text-xs flex items-center gap-1.5">
+                        <span className="text-base text-rose-600 font-bold">⛔</span>
+                        <span className="truncate max-w-[190px]">{selectedFacility.name}</span>
+                      </span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-600 text-white shrink-0">
+                        交通封閉
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-rose-900 font-medium">
+                      🚫 溫哥華市政道路前瞻封閉管制工程 (Road Ahead)
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                    {selectedFacility.properties.project && (
+                      <div className="flex justify-between items-start text-gray-600">
+                        <span className="shrink-0">工程項目</span>
+                        <span className="font-bold text-gray-900 text-right truncate max-w-[190px]">
+                          {selectedFacility.properties.project}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.location && (
+                      <div className="flex justify-between items-start text-gray-600 pt-1 border-t border-gray-100">
+                        <span className="shrink-0">封閉區間</span>
+                        <span className="font-medium text-gray-800 text-right truncate max-w-[190px]">
+                          {selectedFacility.properties.location}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.comp_date && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>預計完工日期</span>
+                        <span className="font-bold text-rose-600 font-mono">
+                          {selectedFacility.properties.comp_date}
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <span>資料更新頻率</span>
+                      <span className="font-medium text-gray-700">
+                        每星期 1 次 (Weekly)
+                      </span>
+                    </div>
+                  </div>
+
+                  {selectedFacility.properties.url_link && (
+                    <a
+                      href={selectedFacility.properties.url_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full py-1.5 px-3 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                    >
+                      <Ban className="w-3.5 h-3.5" />
+                      <span>查看 Road Ahead 官網封閉詳情</span>
+                    </a>
+                  )}
+                </div>
+              )}
+
+              {/* Road Construction (道路施工) Details */}
+              {selectedFacility.facility_type === 'road_construction' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/30 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-amber-950 text-xs flex items-center gap-1.5">
+                        <span className="text-base text-amber-600 font-bold">🚧</span>
+                        <span className="truncate max-w-[190px]">{selectedFacility.name}</span>
+                      </span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-600 text-white shrink-0">
+                        道路施工
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-amber-900 font-medium">
+                      ⚠️ 溫哥華市政進行中道路工程項目 (Projects Under Construction)
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                    {selectedFacility.properties.project && (
+                      <div className="flex justify-between items-start text-gray-600">
+                        <span className="shrink-0">施工項目</span>
+                        <span className="font-bold text-gray-900 text-right truncate max-w-[190px]">
+                          {selectedFacility.properties.project}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.location && (
+                      <div className="flex justify-between items-start text-gray-600 pt-1 border-t border-gray-100">
+                        <span className="shrink-0">施工地點</span>
+                        <span className="font-medium text-gray-800 text-right truncate max-w-[190px]">
+                          {selectedFacility.properties.location}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.comp_date && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>預估完工日期</span>
+                        <span className="font-bold text-amber-600 font-mono">
+                          {selectedFacility.properties.comp_date}
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <span>資料更新頻率</span>
+                      <span className="font-medium text-gray-700">
+                        每星期 1 次 (Weekly)
+                      </span>
+                    </div>
+                  </div>
+
+                  {selectedFacility.properties.url_link && (
+                    <a
+                      href={selectedFacility.properties.url_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full py-1.5 px-3 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                    >
+                      <Cone className="w-3.5 h-3.5" />
+                      <span>查看 Road Ahead 施工詳情</span>
+                    </a>
+                  )}
+                </div>
+              )}
+
+              {/* Street Lighting (路燈控制盤) Details */}
+              {selectedFacility.facility_type === 'street_lighting' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-amber-400/10 p-2.5 rounded-lg border border-amber-400/30 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-amber-950 text-xs flex items-center gap-1.5">
+                        <span className="text-base text-amber-500 font-bold">💡</span>
+                        <span className="truncate max-w-[190px]">{selectedFacility.name}</span>
+                      </span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-500 text-white shrink-0">
+                        路燈控制盤
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-amber-900 font-medium">
+                      💡 溫哥華市政路燈控制箱與配電盤 (Service Panels)
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                    {selectedFacility.properties.service_panel_number && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>控制盤編號</span>
+                        <span className="font-mono font-bold text-gray-900">
+                          #{selectedFacility.properties.service_panel_number}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.local_area && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>市政社區分區</span>
+                        <span className="font-medium text-gray-800">
+                          {selectedFacility.properties.local_area}
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <span>資料更新頻率</span>
+                      <span className="font-medium text-emerald-700">
+                        每 3 個月更新
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <span>坐標位置</span>
+                      <span className="font-mono text-gray-700">
+                        {selectedFacility.lat.toFixed(5)}, {selectedFacility.lon.toFixed(5)}
                       </span>
                     </div>
                   </div>
