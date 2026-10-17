@@ -1,0 +1,59 @@
+name: Weekly Open Data Cron Update (每星期更新)
+
+on:
+  schedule:
+    # 每星期一 03:00 UTC 自動執行每週圖資更新排程 (道路施工、交通封閉、市政消防栓)
+    - cron: '0 3 * * 1'
+  workflow_dispatch: # 支援在 GitHub Actions 介面手動一鍵觸發更新
+
+jobs:
+  update-weekly-datasets:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install requests
+
+      - name: Run Weekly Datasets Update Script
+        run: |
+          python backend/scripts/update_weekly_datasets.py
+
+      - name: Commit and Push Updated GeoJSON
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add backend/data/vancouver_road_closures.geojson frontend/public/vancouver_road_closures.geojson backend/data/vancouver_road_construction.geojson frontend/public/vancouver_road_construction.geojson backend/data/vancouver_fire_hydrants.geojson frontend/public/vancouver_fire_hydrants.geojson backend/data/last_weekly_datasets_update.json
+          if git diff --staged --quiet; then
+            echo "No weekly dataset updates detected from Vancouver Open Data API."
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            git commit -m "chore(data): auto-update weekly datasets (closures, construction, hydrants) [skip ci]"
+            git push origin main
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+        id: git_push
+
+      - name: Sync Updated GeoJSON to OCI VM
+        if: steps.git_push.outputs.has_changes == 'true'
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.OCI_HOST_IP }}
+          username: ubuntu
+          key: ${{ secrets.OCI_SSH_KEY }}
+          script: |
+            echo "🔄 同步最新每週 GeoJSON 圖資至 OCI 伺服器..."
+            cd ~/Vancouver-God-Eyes || cd ~/vancouver-gods-eye
+            git pull
+            echo "✅ OCI 伺服器每週圖資檔案同步完成！"

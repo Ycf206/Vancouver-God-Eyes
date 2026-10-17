@@ -8,7 +8,7 @@
   "banners_count": 0,
   "alerts": [
     {
-      "id": "5f456f82-f6cb-45d8-b839-b29dca4e4e7c",
+      "id": "454491_skytrain_0",
       "alertId": "454491",
       "is_banner": false,
       "mode": "skytrain",
@@ -36,7 +36,7 @@
       "closed": false
     },
     {
-      "id": "06e0cc42-4a1e-46b4-956d-d46ceddddf27",
+      "id": "511077_skytrain_1",
       "alertId": "511077",
       "is_banner": false,
       "mode": "skytrain",
@@ -61,7 +61,7 @@
       "closed": false
     },
     {
-      "id": "e5910e08-5a85-4e83-94e1-f2a3eaee4a14",
+      "id": "690281_bus_2",
       "alertId": "690281",
       "is_banner": false,
       "mode": "bus",
@@ -83,7 +83,7 @@
       "closed": false
     },
     {
-      "id": "37c86156-b93b-4c31-bd64-9e149bfc1068",
+      "id": "692353_skytrain_3",
       "alertId": "692353",
       "is_banner": false,
       "mode": "skytrain",
@@ -91,7 +91,7 @@
       "routeId": "",
       "routeLongName": "",
       "effect": "ELEVATORS",
-      "effect_zh": "營運警報",
+      "effect_zh": "電梯暫停",
       "critical": false,
       "advisory": false,
       "alertText": "SkyTrain Canada Line elevator alert at Oakridge-41st Avenue Station",
@@ -109,11 +109,11 @@
       "closed": false
     },
     {
-      "id": "d582cfa5-448e-4c19-9ee4-e129700a3d85",
+      "id": "721752_general_4",
       "alertId": "721752",
       "is_banner": false,
-      "mode": "skytrain",
-      "mode_name": "天車",
+      "mode": "general",
+      "mode_name": "大眾運輸",
       "routeId": "980",
       "routeLongName": "Canada Line",
       "effect": "INFORMATIONAL",
@@ -136,7 +136,7 @@
       "closed": false
     },
     {
-      "id": "9bb5c676-3dc8-46c7-8388-3c71862f813f",
+      "id": "722542_bus_5",
       "alertId": "722542",
       "is_banner": false,
       "mode": "bus",
@@ -144,7 +144,7 @@
       "routeId": "320",
       "routeLongName": "Langley/Fleetwood/Surrey Central Station",
       "effect": "STOP_MOVE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點遷移",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 59705 Westbound Fraser Hwy @ 84 Ave has moved",
@@ -158,7 +158,7 @@
       "closed": false
     },
     {
-      "id": "9bb5c676-3dc8-46c7-8388-3c71862f813f",
+      "id": "722542_bus_6",
       "alertId": "722542",
       "is_banner": false,
       "mode": "bus",
@@ -166,7 +166,7 @@
       "routeId": "395",
       "routeLongName": "Langley Centre/King George Station",
       "effect": "STOP_MOVE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點遷移",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 59705 Westbound Fraser Hwy @ 84 Ave has moved",
@@ -180,7 +180,7 @@
       "closed": false
     },
     {
-      "id": "9bb5c676-3dc8-46c7-8388-3c71862f813f",
+      "id": "722542_bus_7",
       "alertId": "722542",
       "is_banner": false,
       "mode": "bus",
@@ -188,7 +188,7 @@
       "routeId": "502",
       "routeLongName": "Fraser Hwy",
       "effect": "STOP_MOVE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點遷移",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 59705 Westbound Fraser Hwy @ 84 Ave has moved",
@@ -202,15 +202,15 @@
       "closed": false
     },
     {
-      "id": "a7b83606-ea18-4390-86ee-2831b7ecdfc2",
+      "id": "732579_general_8",
       "alertId": "732579",
       "is_banner": false,
-      "mode": "skytrain",
-      "mode_name": "天車",
+      "mode": "general",
+      "mode_name": "大眾運輸",
       "routeId": "",
       "routeLongName": "",
       "effect": "ELEVATORS",
-      "effect_zh": "營運警報",
+      "effect_zh": "電梯暫停",
       "critical": false,
       "advisory": false,
       "alertText": "SkyTrain Expo Line elevator alert at Burrard Station",
@@ -229,15 +229,15 @@
       "closed": false
     },
     {
-      "id": "e33808b8-68eb-42aa-b787-6613d6c7bcbd",
+      "id": "732581_general_9",
       "alertId": "732581",
       "is_banner": false,
-      "mode": "skytrain",
-      "mode_name": "天車",
+      "mode": "general",
+      "mode_name": "大眾運輸",
       "routeId": "",
       "routeLongName": "",
       "effect": "ELEVATORS",
-      "effect_zh": "營運警報",
+      "effect_zh": "電梯暫停",
       "critical": false,
       "advisory": false,
       "alertText": "SkyTrain Expo Line elevator alert at Royal Oak Station",
@@ -255,7 +255,7 @@
       "closed": false
     },
     {
-      "id": "6994c18a-dca8-4b86-bc05-eb22870c0523",
+      "id": "732594_skytrain_10",
       "alertId": "732594",
       "is_banner": false,
       "mode": "skytrain",
@@ -263,7 +263,7 @@
       "routeId": "",
       "routeLongName": "",
       "effect": "ESCALATORS",
-      "effect_zh": "營運警報",
+      "effect_zh": "電扶梯暫停",
       "critical": false,
       "advisory": false,
       "alertText": "SkyTrain Millennium Line escalator alert at Gilmore Station",
@@ -281,7 +281,7 @@
       "closed": false
     },
     {
-      "id": "9c3239ca-0100-4f99-b271-5f74bde15e8c",
+      "id": "732595_skytrain_11",
       "alertId": "732595",
       "is_banner": false,
       "mode": "skytrain",
@@ -289,7 +289,7 @@
       "routeId": "",
       "routeLongName": "",
       "effect": "ESCALATORS",
-      "effect_zh": "營運警報",
+      "effect_zh": "電扶梯暫停",
       "critical": false,
       "advisory": false,
       "alertText": "SkyTrain Millennium Line escalator alert at Production Way-University Station",
@@ -306,7 +306,7 @@
       "closed": false
     },
     {
-      "id": "cf5bffe1-8ae7-4efc-bf30-60f3f6655a14",
+      "id": "733912_bus_12",
       "alertId": "733912",
       "is_banner": false,
       "mode": "bus",
@@ -330,7 +330,7 @@
       "closed": false
     },
     {
-      "id": "badb5269-8ad7-4cc1-bb0b-e477c68b6f9c",
+      "id": "733913_bus_13",
       "alertId": "733913",
       "is_banner": false,
       "mode": "bus",
@@ -354,11 +354,11 @@
       "closed": false
     },
     {
-      "id": "7002b50b-c334-419e-8908-fd5189247282",
+      "id": "733914_bus_14",
       "alertId": "733914",
       "is_banner": false,
-      "mode": "skytrain",
-      "mode_name": "天車",
+      "mode": "bus",
+      "mode_name": "巴士",
       "routeId": "99",
       "routeLongName": "Broadway B-Line",
       "effect": "DETOUR",
@@ -379,11 +379,11 @@
       "closed": false
     },
     {
-      "id": "4eb22b8b-b68f-401f-b359-3828d799e982",
+      "id": "733923_bus_15",
       "alertId": "733923",
       "is_banner": false,
-      "mode": "skytrain",
-      "mode_name": "天車",
+      "mode": "bus",
+      "mode_name": "巴士",
       "routeId": "99",
       "routeLongName": "Broadway B-Line",
       "effect": "DETOUR",
@@ -401,7 +401,7 @@
       "closed": false
     },
     {
-      "id": "b95b5d22-97e2-4d11-b3ce-72e28c3aa451",
+      "id": "736002_bus_16",
       "alertId": "736002",
       "is_banner": false,
       "mode": "bus",
@@ -426,7 +426,7 @@
       "closed": false
     },
     {
-      "id": "1d8823db-8fd8-4e07-bd91-ff73215778ce",
+      "id": "736003_bus_17",
       "alertId": "736003",
       "is_banner": false,
       "mode": "bus",
@@ -448,7 +448,7 @@
       "closed": false
     },
     {
-      "id": "2014be7d-c0d2-4905-8bbb-e791f775d1dc",
+      "id": "736021_skytrain_18",
       "alertId": "736021",
       "is_banner": false,
       "mode": "skytrain",
@@ -473,7 +473,7 @@
       "closed": false
     },
     {
-      "id": "0dc24655-be49-4836-a0ba-def541bb6964",
+      "id": "740176_bus_19",
       "alertId": "740176",
       "is_banner": false,
       "mode": "bus",
@@ -481,7 +481,7 @@
       "routeId": "14",
       "routeLongName": "Hastings/UBC Exchange",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 59831 Southbound Howe St @ W Pender St closed",
@@ -495,7 +495,7 @@
       "closed": false
     },
     {
-      "id": "0dc24655-be49-4836-a0ba-def541bb6964",
+      "id": "740176_bus_20",
       "alertId": "740176",
       "is_banner": false,
       "mode": "bus",
@@ -503,7 +503,7 @@
       "routeId": "16",
       "routeLongName": "29th Avenue Station/Arbutus",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 59831 Southbound Howe St @ W Pender St closed",
@@ -517,7 +517,7 @@
       "closed": false
     },
     {
-      "id": "0dc24655-be49-4836-a0ba-def541bb6964",
+      "id": "740176_bus_21",
       "alertId": "740176",
       "is_banner": false,
       "mode": "bus",
@@ -525,7 +525,7 @@
       "routeId": "50",
       "routeLongName": "Waterfront Station/False Creek South",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 59831 Southbound Howe St @ W Pender St closed",
@@ -539,7 +539,7 @@
       "closed": false
     },
     {
-      "id": "7d07fb82-bb62-431f-adfd-b113662221a6",
+      "id": "744773_bus_22",
       "alertId": "744773",
       "is_banner": false,
       "mode": "bus",
@@ -547,7 +547,7 @@
       "routeId": "245",
       "routeLongName": "Phibbs Exchange/Capilano University",
       "effect": "SERVICE_CHANGE",
-      "effect_zh": "營運警報",
+      "effect_zh": "服務調整",
       "critical": false,
       "advisory": false,
       "alertText": "Service changes to route 245",
@@ -561,7 +561,7 @@
       "closed": false
     },
     {
-      "id": "84f606ab-4e19-458d-88c4-e0dc38d76f67",
+      "id": "748810_bus_23",
       "alertId": "748810",
       "is_banner": false,
       "mode": "bus",
@@ -569,7 +569,7 @@
       "routeId": "560",
       "routeLongName": "Murrayville/Langley Centre",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 59191 Northbound 208 St Causeway @ Fraser Hwy closed",
@@ -583,7 +583,7 @@
       "closed": false
     },
     {
-      "id": "770a51a0-c003-4c0b-aeb7-2abdc28ef27e",
+      "id": "753566_bus_24",
       "alertId": "753566",
       "is_banner": false,
       "mode": "bus",
@@ -605,7 +605,7 @@
       "closed": false
     },
     {
-      "id": "41cfcbfd-2f9c-4722-9934-921e2825f0c1",
+      "id": "753578_bus_25",
       "alertId": "753578",
       "is_banner": false,
       "mode": "bus",
@@ -627,7 +627,7 @@
       "closed": false
     },
     {
-      "id": "41cfcbfd-2f9c-4722-9934-921e2825f0c1",
+      "id": "753578_bus_26",
       "alertId": "753578",
       "is_banner": false,
       "mode": "bus",
@@ -649,11 +649,11 @@
       "closed": false
     },
     {
-      "id": "41cfcbfd-2f9c-4722-9934-921e2825f0c1",
+      "id": "753578_general_27",
       "alertId": "753578",
       "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
+      "mode": "general",
+      "mode_name": "大眾運輸",
       "routeId": "N17",
       "routeLongName": "West Broadway",
       "effect": "INFORMATIONAL",
@@ -671,7 +671,7 @@
       "closed": false
     },
     {
-      "id": "4234e3e0-55db-4a65-b752-8ee42df265fe",
+      "id": "753612_bus_28",
       "alertId": "753612",
       "is_banner": false,
       "mode": "bus",
@@ -693,7 +693,7 @@
       "closed": false
     },
     {
-      "id": "c0efdd92-4d9e-4297-b2ce-3022ef2b22fa",
+      "id": "753669_bus_29",
       "alertId": "753669",
       "is_banner": false,
       "mode": "bus",
@@ -715,7 +715,7 @@
       "closed": false
     },
     {
-      "id": "c0efdd92-4d9e-4297-b2ce-3022ef2b22fa",
+      "id": "753669_bus_30",
       "alertId": "753669",
       "is_banner": false,
       "mode": "bus",
@@ -737,7 +737,7 @@
       "closed": false
     },
     {
-      "id": "66245a15-30b6-42be-95a7-e279dbe3a7c1",
+      "id": "753672_bus_31",
       "alertId": "753672",
       "is_banner": false,
       "mode": "bus",
@@ -759,7 +759,7 @@
       "closed": false
     },
     {
-      "id": "66245a15-30b6-42be-95a7-e279dbe3a7c1",
+      "id": "753672_bus_32",
       "alertId": "753672",
       "is_banner": false,
       "mode": "bus",
@@ -781,7 +781,7 @@
       "closed": false
     },
     {
-      "id": "66245a15-30b6-42be-95a7-e279dbe3a7c1",
+      "id": "753672_bus_33",
       "alertId": "753672",
       "is_banner": false,
       "mode": "bus",
@@ -803,7 +803,7 @@
       "closed": false
     },
     {
-      "id": "0bf6a621-35cd-40a1-a6a9-fb70e5f0b4b9",
+      "id": "753673_bus_34",
       "alertId": "753673",
       "is_banner": false,
       "mode": "bus",
@@ -825,7 +825,7 @@
       "closed": false
     },
     {
-      "id": "0bf6a621-35cd-40a1-a6a9-fb70e5f0b4b9",
+      "id": "753673_bus_35",
       "alertId": "753673",
       "is_banner": false,
       "mode": "bus",
@@ -847,7 +847,7 @@
       "closed": false
     },
     {
-      "id": "0bf6a621-35cd-40a1-a6a9-fb70e5f0b4b9",
+      "id": "753673_bus_36",
       "alertId": "753673",
       "is_banner": false,
       "mode": "bus",
@@ -869,7 +869,7 @@
       "closed": false
     },
     {
-      "id": "fcfd96c5-6736-4c59-930f-05be20001ec8",
+      "id": "753701_bus_37",
       "alertId": "753701",
       "is_banner": false,
       "mode": "bus",
@@ -891,7 +891,7 @@
       "closed": false
     },
     {
-      "id": "fcfd96c5-6736-4c59-930f-05be20001ec8",
+      "id": "753701_bus_38",
       "alertId": "753701",
       "is_banner": false,
       "mode": "bus",
@@ -913,7 +913,7 @@
       "closed": false
     },
     {
-      "id": "fcfd96c5-6736-4c59-930f-05be20001ec8",
+      "id": "753701_bus_39",
       "alertId": "753701",
       "is_banner": false,
       "mode": "bus",
@@ -935,15 +935,15 @@
       "closed": false
     },
     {
-      "id": "2b87643a-2a28-4ddb-9fc2-d81c7b13cfdb",
+      "id": "753796_general_40",
       "alertId": "753796",
       "is_banner": false,
-      "mode": "skytrain",
-      "mode_name": "天車",
+      "mode": "general",
+      "mode_name": "大眾運輸",
       "routeId": "",
       "routeLongName": "",
       "effect": "ELEVATORS",
-      "effect_zh": "營運警報",
+      "effect_zh": "電梯暫停",
       "critical": false,
       "advisory": false,
       "alertText": "SkyTrain Expo Line elevator alert at 29th Avenue Station",
@@ -961,7 +961,7 @@
       "closed": false
     },
     {
-      "id": "0c2d1472-17e6-4a5a-8d14-b3cff5db2dde",
+      "id": "753971_bus_41",
       "alertId": "753971",
       "is_banner": false,
       "mode": "bus",
@@ -969,7 +969,7 @@
       "routeId": "406",
       "routeLongName": "Railway Ave",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 56769 Eastbound Granville Ave @ Ledway Rd closed",
@@ -985,7 +985,7 @@
       "closed": false
     },
     {
-      "id": "19917e4e-6359-46ff-a08b-eba0832bf489",
+      "id": "754887_bus_42",
       "alertId": "754887",
       "is_banner": false,
       "mode": "bus",
@@ -993,7 +993,7 @@
       "routeId": "N10",
       "routeLongName": "Granville-YVR",
       "effect": "SCHEDULE_CHANGE",
-      "effect_zh": "營運警報",
+      "effect_zh": "時刻變更",
       "critical": false,
       "advisory": false,
       "alertText": "Schedule change to route N10",
@@ -1007,7 +1007,7 @@
       "closed": false
     },
     {
-      "id": "8acc051e-f1aa-4898-a240-a575725d81a4",
+      "id": "754921_bus_43",
       "alertId": "754921",
       "is_banner": false,
       "mode": "bus",
@@ -1015,7 +1015,7 @@
       "routeId": "601",
       "routeLongName": "Bridgeport Station/South Delta",
       "effect": "SCHEDULE_CHANGE",
-      "effect_zh": "營運警報",
+      "effect_zh": "時刻變更",
       "critical": false,
       "advisory": false,
       "alertText": "Schedule change to route 601",
@@ -1031,7 +1031,7 @@
       "closed": false
     },
     {
-      "id": "108ac978-31fa-4224-a029-02ad26a306cf",
+      "id": "754927_bus_44",
       "alertId": "754927",
       "is_banner": false,
       "mode": "bus",
@@ -1039,7 +1039,7 @@
       "routeId": "352",
       "routeLongName": "White Rock Centre/Bridgeport Station",
       "effect": "SCHEDULE_CHANGE",
-      "effect_zh": "營運警報",
+      "effect_zh": "時刻變更",
       "critical": false,
       "advisory": false,
       "alertText": "Schedule change to route 352",
@@ -1055,7 +1055,7 @@
       "closed": false
     },
     {
-      "id": "b50abad3-1175-46bc-9d31-7d7f26cc44c8",
+      "id": "755947_bus_45",
       "alertId": "755947",
       "is_banner": false,
       "mode": "bus",
@@ -1063,7 +1063,7 @@
       "routeId": "14",
       "routeLongName": "Hastings/UBC Exchange",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 50279 Eastbound W 10 Ave @ Courtenay St closed",
@@ -1077,7 +1077,7 @@
       "closed": false
     },
     {
-      "id": "b50abad3-1175-46bc-9d31-7d7f26cc44c8",
+      "id": "755947_bus_46",
       "alertId": "755947",
       "is_banner": false,
       "mode": "bus",
@@ -1085,7 +1085,7 @@
       "routeId": "9",
       "routeLongName": "Broadway",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 50279 Eastbound W 10 Ave @ Courtenay St closed",
@@ -1099,15 +1099,15 @@
       "closed": false
     },
     {
-      "id": "b50abad3-1175-46bc-9d31-7d7f26cc44c8",
+      "id": "755947_general_47",
       "alertId": "755947",
       "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
+      "mode": "general",
+      "mode_name": "大眾運輸",
       "routeId": "N17",
       "routeLongName": "West Broadway",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 50279 Eastbound W 10 Ave @ Courtenay St closed",
@@ -1121,7 +1121,7 @@
       "closed": false
     },
     {
-      "id": "22722067-81ad-4fb7-9d6d-36297eb8d24e",
+      "id": "756080_bus_48",
       "alertId": "756080",
       "is_banner": false,
       "mode": "bus",
@@ -1143,7 +1143,7 @@
       "closed": false
     },
     {
-      "id": "8e30aa2a-5e8c-44c4-bc07-d3857df8978c",
+      "id": "756082_bus_49",
       "alertId": "756082",
       "is_banner": false,
       "mode": "bus",
@@ -1165,7 +1165,7 @@
       "closed": false
     },
     {
-      "id": "c834c621-447b-4456-aa40-76dbfcca2d0c",
+      "id": "756091_bus_50",
       "alertId": "756091",
       "is_banner": false,
       "mode": "bus",
@@ -1173,7 +1173,7 @@
       "routeId": "864",
       "routeLongName": "Lord Tweedsmuir School Special",
       "effect": "SCHEDULE_CHANGE",
-      "effect_zh": "營運警報",
+      "effect_zh": "時刻變更",
       "critical": false,
       "advisory": false,
       "alertText": "Schedule change to route 864",
@@ -1187,7 +1187,7 @@
       "closed": false
     },
     {
-      "id": "51b5acb1-2415-4de6-b429-dc6dccce5913",
+      "id": "756117_bus_51",
       "alertId": "756117",
       "is_banner": false,
       "mode": "bus",
@@ -1195,7 +1195,7 @@
       "routeId": "345",
       "routeLongName": "152 Street",
       "effect": "SCHEDULE_CHANGE",
-      "effect_zh": "營運警報",
+      "effect_zh": "時刻變更",
       "critical": false,
       "advisory": false,
       "alertText": "Schedule change to route 345",
@@ -1211,7 +1211,7 @@
       "closed": false
     },
     {
-      "id": "55d30e6e-414a-4763-aeed-6aaa2d3a5158",
+      "id": "756123_bus_52",
       "alertId": "756123",
       "is_banner": false,
       "mode": "bus",
@@ -1219,7 +1219,7 @@
       "routeId": "345",
       "routeLongName": "152 Street",
       "effect": "SCHEDULE_CHANGE",
-      "effect_zh": "營運警報",
+      "effect_zh": "時刻變更",
       "critical": false,
       "advisory": false,
       "alertText": "Schedule change to route 345",
@@ -1235,7 +1235,7 @@
       "closed": false
     },
     {
-      "id": "620e26c3-9d59-412a-8758-aa3a4160f0f7",
+      "id": "756125_bus_53",
       "alertId": "756125",
       "is_banner": false,
       "mode": "bus",
@@ -1243,7 +1243,7 @@
       "routeId": "25",
       "routeLongName": "King Edward",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 51573 Westbound W King Edward Ave @ Columbia St closed",
@@ -1260,7 +1260,7 @@
       "closed": false
     },
     {
-      "id": "dcafdb28-c45a-4bc6-a85a-4c7ded89aa5c",
+      "id": "756165_bus_54",
       "alertId": "756165",
       "is_banner": false,
       "mode": "bus",
@@ -1282,7 +1282,7 @@
       "closed": false
     },
     {
-      "id": "dcafdb28-c45a-4bc6-a85a-4c7ded89aa5c",
+      "id": "756165_bus_55",
       "alertId": "756165",
       "is_banner": false,
       "mode": "bus",
@@ -1304,7 +1304,7 @@
       "closed": false
     },
     {
-      "id": "00ad2b7e-91cb-41e3-9fa3-a2e2ed73cf39",
+      "id": "756172_bus_56",
       "alertId": "756172",
       "is_banner": false,
       "mode": "bus",
@@ -1328,7 +1328,7 @@
       "closed": false
     },
     {
-      "id": "f6480465-f6db-4dcb-a4f1-139521311a35",
+      "id": "756173_bus_57",
       "alertId": "756173",
       "is_banner": false,
       "mode": "bus",
@@ -1350,7 +1350,7 @@
       "closed": false
     },
     {
-      "id": "f6480465-f6db-4dcb-a4f1-139521311a35",
+      "id": "756173_bus_58",
       "alertId": "756173",
       "is_banner": false,
       "mode": "bus",
@@ -1372,7 +1372,7 @@
       "closed": false
     },
     {
-      "id": "f6480465-f6db-4dcb-a4f1-139521311a35",
+      "id": "756173_bus_59",
       "alertId": "756173",
       "is_banner": false,
       "mode": "bus",
@@ -1394,7 +1394,7 @@
       "closed": false
     },
     {
-      "id": "b0ef9609-4108-47de-bc24-a9ce903eb881",
+      "id": "756179_bus_60",
       "alertId": "756179",
       "is_banner": false,
       "mode": "bus",
@@ -1416,7 +1416,7 @@
       "closed": false
     },
     {
-      "id": "b0ef9609-4108-47de-bc24-a9ce903eb881",
+      "id": "756179_bus_61",
       "alertId": "756179",
       "is_banner": false,
       "mode": "bus",
@@ -1438,7 +1438,7 @@
       "closed": false
     },
     {
-      "id": "b0ef9609-4108-47de-bc24-a9ce903eb881",
+      "id": "756179_bus_62",
       "alertId": "756179",
       "is_banner": false,
       "mode": "bus",
@@ -1460,7 +1460,7 @@
       "closed": false
     },
     {
-      "id": "cd2baf57-21a1-4e8b-b403-c1952346aa0b",
+      "id": "756237_bus_63",
       "alertId": "756237",
       "is_banner": false,
       "mode": "bus",
@@ -1468,7 +1468,7 @@
       "routeId": "324",
       "routeLongName": "132 Street",
       "effect": "SCHEDULE_CHANGE",
-      "effect_zh": "營運警報",
+      "effect_zh": "時刻變更",
       "critical": false,
       "advisory": false,
       "alertText": "Schedule change to route 324",
@@ -1484,7 +1484,7 @@
       "closed": false
     },
     {
-      "id": "588bf7ca-83b9-4e84-ace1-3911e3bdf368",
+      "id": "756266_bus_64",
       "alertId": "756266",
       "is_banner": false,
       "mode": "bus",
@@ -1492,7 +1492,7 @@
       "routeId": "595",
       "routeLongName": "208 Street",
       "effect": "STOP_MOVE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點遷移",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 61359 Northbound 201 St @ 96 Ave has moved",
@@ -1506,7 +1506,7 @@
       "closed": false
     },
     {
-      "id": "7375b4c2-6d83-4c22-84c6-05fea9632a09",
+      "id": "756267_bus_65",
       "alertId": "756267",
       "is_banner": false,
       "mode": "bus",
@@ -1528,7 +1528,7 @@
       "closed": false
     },
     {
-      "id": "0d0df100-3470-408c-8afb-553c735fe92e",
+      "id": "756271_bus_66",
       "alertId": "756271",
       "is_banner": false,
       "mode": "bus",
@@ -1550,7 +1550,7 @@
       "closed": false
     },
     {
-      "id": "aacbea5a-3862-4774-a8ae-762873ce0475",
+      "id": "756757_bus_67",
       "alertId": "756757",
       "is_banner": false,
       "mode": "bus",
@@ -1558,7 +1558,7 @@
       "routeId": "314",
       "routeLongName": "Surrey Central Station/Sunbury",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 54986 Eastbound 96 Ave @ 134 St closed",
@@ -1572,7 +1572,7 @@
       "closed": false
     },
     {
-      "id": "aacbea5a-3862-4774-a8ae-762873ce0475",
+      "id": "756757_bus_68",
       "alertId": "756757",
       "is_banner": false,
       "mode": "bus",
@@ -1580,7 +1580,7 @@
       "routeId": "329",
       "routeLongName": "Surrey Central Station/Scottsdale",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 54986 Eastbound 96 Ave @ 134 St closed",
@@ -1594,7 +1594,7 @@
       "closed": false
     },
     {
-      "id": "f65ae81b-944f-4a20-90ba-962ce401b838",
+      "id": "756793_bus_69",
       "alertId": "756793",
       "is_banner": false,
       "mode": "bus",
@@ -1602,7 +1602,7 @@
       "routeId": "246",
       "routeLongName": "Highland/Downtown",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 54530 Westbound Montroyal Blvd @ Ranger Ave closed",
@@ -1616,7 +1616,7 @@
       "closed": false
     },
     {
-      "id": "2d07a9db-f4e2-4e0c-b188-dae52708f224",
+      "id": "756801_bus_70",
       "alertId": "756801",
       "is_banner": false,
       "mode": "bus",
@@ -1624,7 +1624,7 @@
       "routeId": "246",
       "routeLongName": "Highland/Downtown",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 54496 Eastbound Montroyal Blvd @ Marineview Cres closed",
@@ -1638,7 +1638,7 @@
       "closed": false
     },
     {
-      "id": "e703f39d-31c6-41f7-adbd-cc626ab3251b",
+      "id": "757549_bus_71",
       "alertId": "757549",
       "is_banner": false,
       "mode": "bus",
@@ -1660,7 +1660,7 @@
       "closed": false
     },
     {
-      "id": "e703f39d-31c6-41f7-adbd-cc626ab3251b",
+      "id": "757549_bus_72",
       "alertId": "757549",
       "is_banner": false,
       "mode": "bus",
@@ -1682,7 +1682,7 @@
       "closed": false
     },
     {
-      "id": "e703f39d-31c6-41f7-adbd-cc626ab3251b",
+      "id": "757549_bus_73",
       "alertId": "757549",
       "is_banner": false,
       "mode": "bus",
@@ -1704,7 +1704,7 @@
       "closed": false
     },
     {
-      "id": "6caeef8e-485c-4d6c-a11f-ea3925b6c1a0",
+      "id": "758059_bus_74",
       "alertId": "758059",
       "is_banner": false,
       "mode": "bus",
@@ -1712,7 +1712,7 @@
       "routeId": "116",
       "routeLongName": "North Fraser Way",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 59743 Northbound Griffiths Dr @ 14 Ave closed",
@@ -1726,7 +1726,7 @@
       "closed": false
     },
     {
-      "id": "6f9290a1-cd9c-47e8-b1bc-e6b1d28bc41c",
+      "id": "758301_bus_75",
       "alertId": "758301",
       "is_banner": false,
       "mode": "bus",
@@ -1748,7 +1748,7 @@
       "closed": false
     },
     {
-      "id": "aa9bc24e-ab34-40c3-8dce-22c9724828c2",
+      "id": "758485_bus_76",
       "alertId": "758485",
       "is_banner": false,
       "mode": "bus",
@@ -1772,7 +1772,7 @@
       "closed": false
     },
     {
-      "id": "6f65919e-9519-433d-b857-f61824357bcb",
+      "id": "758492_bus_77",
       "alertId": "758492",
       "is_banner": false,
       "mode": "bus",
@@ -1796,11 +1796,11 @@
       "closed": false
     },
     {
-      "id": "b0add3b0-9937-4cc6-85f6-4334758e722d",
+      "id": "758530_general_78",
       "alertId": "758530",
       "is_banner": false,
-      "mode": "skytrain",
-      "mode_name": "天車",
+      "mode": "general",
+      "mode_name": "大眾運輸",
       "routeId": "29",
       "routeLongName": "Elliott/29th Avenue Station",
       "effect": "INFORMATIONAL",
@@ -1821,7 +1821,7 @@
       "closed": false
     },
     {
-      "id": "747e6166-5fa9-46fd-9d80-6f404b94c498",
+      "id": "758535_bus_79",
       "alertId": "758535",
       "is_banner": false,
       "mode": "bus",
@@ -1829,7 +1829,7 @@
       "routeId": "325",
       "routeLongName": "140 Street",
       "effect": "SCHEDULE_CHANGE",
-      "effect_zh": "營運警報",
+      "effect_zh": "時刻變更",
       "critical": false,
       "advisory": false,
       "alertText": "Schedule change to route 325",
@@ -1845,7 +1845,7 @@
       "closed": false
     },
     {
-      "id": "12472420-a343-431f-9ffd-2df06abf299b",
+      "id": "758542_bus_80",
       "alertId": "758542",
       "is_banner": false,
       "mode": "bus",
@@ -1867,7 +1867,7 @@
       "closed": false
     },
     {
-      "id": "12472420-a343-431f-9ffd-2df06abf299b",
+      "id": "758542_bus_81",
       "alertId": "758542",
       "is_banner": false,
       "mode": "bus",
@@ -1889,15 +1889,15 @@
       "closed": false
     },
     {
-      "id": "a1dcd24f-8f64-4aa4-834e-09e431c30abc",
+      "id": "758589_general_82",
       "alertId": "758589",
       "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
+      "mode": "general",
+      "mode_name": "大眾運輸",
       "routeId": "R3",
       "routeLongName": "Lougheed Hwy",
       "effect": "SCHEDULE_CHANGE",
-      "effect_zh": "營運警報",
+      "effect_zh": "時刻變更",
       "critical": false,
       "advisory": false,
       "alertText": "Schedule change to route R3",
@@ -1913,7 +1913,7 @@
       "closed": false
     },
     {
-      "id": "17122434-be1f-4642-8085-e82e40c93602",
+      "id": "758597_bus_83",
       "alertId": "758597",
       "is_banner": false,
       "mode": "bus",
@@ -1921,7 +1921,7 @@
       "routeId": "184",
       "routeLongName": "Moody Centre Station/Noons Creek",
       "effect": "SCHEDULE_CHANGE",
-      "effect_zh": "營運警報",
+      "effect_zh": "時刻變更",
       "critical": false,
       "advisory": false,
       "alertText": "Schedule change to route 184",
@@ -1937,7 +1937,7 @@
       "closed": false
     },
     {
-      "id": "7cedc17b-e03c-4282-97f5-13d876be7bc0",
+      "id": "758599_bus_84",
       "alertId": "758599",
       "is_banner": false,
       "mode": "bus",
@@ -1945,7 +1945,7 @@
       "routeId": "185",
       "routeLongName": "Coquitlam Central Station/Lansdowne",
       "effect": "SCHEDULE_CHANGE",
-      "effect_zh": "營運警報",
+      "effect_zh": "時刻變更",
       "critical": false,
       "advisory": false,
       "alertText": "Schedule change to route 185",
@@ -1961,7 +1961,7 @@
       "closed": false
     },
     {
-      "id": "312fbd94-92c5-4aef-b117-59f30fa97c3a",
+      "id": "758602_bus_85",
       "alertId": "758602",
       "is_banner": false,
       "mode": "bus",
@@ -1969,7 +1969,7 @@
       "routeId": "733",
       "routeLongName": "Rock Ridge/Haney Place",
       "effect": "SCHEDULE_CHANGE",
-      "effect_zh": "營運警報",
+      "effect_zh": "時刻變更",
       "critical": false,
       "advisory": false,
       "alertText": "Schedule change to route 733",
@@ -1983,7 +1983,7 @@
       "closed": false
     },
     {
-      "id": "f9ef35d8-a0fe-48df-b046-8d8560aa7dc8",
+      "id": "758606_bus_86",
       "alertId": "758606",
       "is_banner": false,
       "mode": "bus",
@@ -1991,7 +1991,7 @@
       "routeId": "733",
       "routeLongName": "Rock Ridge/Haney Place",
       "effect": "SCHEDULE_CHANGE",
-      "effect_zh": "營運警報",
+      "effect_zh": "時刻變更",
       "critical": false,
       "advisory": false,
       "alertText": "Schedule change to route 733",
@@ -2005,7 +2005,7 @@
       "closed": false
     },
     {
-      "id": "2be23205-71d1-4d07-aed4-95b0ca14abac",
+      "id": "758909_bus_87",
       "alertId": "758909",
       "is_banner": false,
       "mode": "bus",
@@ -2013,7 +2013,7 @@
       "routeId": "341",
       "routeLongName": "Guildford/Newton Exchange",
       "effect": "STOP_MOVE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點遷移",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 55950 Northbound 148 St @ Fraser Hwy has moved",
@@ -2027,7 +2027,7 @@
       "closed": false
     },
     {
-      "id": "5ab95f93-d2b6-44c6-8f09-fe039bc53881",
+      "id": "759056_bus_88",
       "alertId": "759056",
       "is_banner": false,
       "mode": "bus",
@@ -2035,7 +2035,7 @@
       "routeId": "324",
       "routeLongName": "132 Street",
       "effect": "SCHEDULE_CHANGE",
-      "effect_zh": "營運警報",
+      "effect_zh": "時刻變更",
       "critical": false,
       "advisory": false,
       "alertText": "Schedule change to route 324",
@@ -2051,7 +2051,7 @@
       "closed": false
     },
     {
-      "id": "b818adf5-7dbe-46ca-8a46-42e340f4920a",
+      "id": "759400_bus_89",
       "alertId": "759400",
       "is_banner": false,
       "mode": "bus",
@@ -2059,7 +2059,7 @@
       "routeId": "106",
       "routeLongName": "6th Street",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 52443 Northbound 6th St @ 13 Ave closed",
@@ -2073,7 +2073,7 @@
       "closed": false
     },
     {
-      "id": "141120d6-7def-4d07-9b03-dfbc2f526156",
+      "id": "759510_bus_90",
       "alertId": "759510",
       "is_banner": false,
       "mode": "bus",
@@ -2081,7 +2081,7 @@
       "routeId": "101",
       "routeLongName": "Lougheed Station/22nd St Station",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 52419 Southbound 6th St @ 13 Ave closed",
@@ -2095,7 +2095,7 @@
       "closed": false
     },
     {
-      "id": "141120d6-7def-4d07-9b03-dfbc2f526156",
+      "id": "759510_bus_91",
       "alertId": "759510",
       "is_banner": false,
       "mode": "bus",
@@ -2103,7 +2103,7 @@
       "routeId": "106",
       "routeLongName": "6th Street",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 52419 Southbound 6th St @ 13 Ave closed",
@@ -2117,7 +2117,7 @@
       "closed": false
     },
     {
-      "id": "da6c9b72-c3c0-4cc5-afb2-e5822a860172",
+      "id": "760092_bus_92",
       "alertId": "760092",
       "is_banner": false,
       "mode": "bus",
@@ -2125,7 +2125,7 @@
       "routeId": "146",
       "routeLongName": "Metrotown Station/Suncrest",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 59675 Southbound Patterson Ave @ Imperial St closed",
@@ -2141,7 +2141,7 @@
       "closed": false
     },
     {
-      "id": "da6c9b72-c3c0-4cc5-afb2-e5822a860172",
+      "id": "760092_bus_93",
       "alertId": "760092",
       "is_banner": false,
       "mode": "bus",
@@ -2149,7 +2149,7 @@
       "routeId": "147",
       "routeLongName": "Metrotown Station/Edmonds Station",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 59675 Southbound Patterson Ave @ Imperial St closed",
@@ -2165,7 +2165,7 @@
       "closed": false
     },
     {
-      "id": "b59db388-ab69-4048-a2ce-c1e3c2b01ce4",
+      "id": "760211_bus_94",
       "alertId": "760211",
       "is_banner": false,
       "mode": "bus",
@@ -2173,7 +2173,7 @@
       "routeId": "119",
       "routeLongName": "Kingsway",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 52394 Eastbound Kingsway @ Nelson Ave closed",
@@ -2187,15 +2187,15 @@
       "closed": false
     },
     {
-      "id": "b59db388-ab69-4048-a2ce-c1e3c2b01ce4",
+      "id": "760211_general_95",
       "alertId": "760211",
       "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
+      "mode": "general",
+      "mode_name": "大眾運輸",
       "routeId": "N19",
       "routeLongName": "Kingsway",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 52394 Eastbound Kingsway @ Nelson Ave closed",
@@ -2209,7 +2209,7 @@
       "closed": false
     },
     {
-      "id": "8de0c582-f90f-4bc0-a2a0-1463b80521e3",
+      "id": "760273_skytrain_96",
       "alertId": "760273",
       "is_banner": false,
       "mode": "skytrain",
@@ -2217,7 +2217,7 @@
       "routeId": "992",
       "routeLongName": "Expo Line",
       "effect": "STATION_ISSUE",
-      "effect_zh": "營運警報",
+      "effect_zh": "車站維護",
       "critical": false,
       "advisory": false,
       "alertText": "Issue at Joyce-Collingwood Station",
@@ -2233,7 +2233,7 @@
       "closed": false
     },
     {
-      "id": "2125ac2f-ddba-4594-b51d-5336dd93c0f9",
+      "id": "760430_bus_97",
       "alertId": "760430",
       "is_banner": false,
       "mode": "bus",
@@ -2241,7 +2241,7 @@
       "routeId": "180",
       "routeLongName": "Moody Centre Station/Lougheed Station",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 53145 Eastbound St. Johns St @ Elgin St closed",
@@ -2255,7 +2255,7 @@
       "closed": false
     },
     {
-      "id": "2125ac2f-ddba-4594-b51d-5336dd93c0f9",
+      "id": "760430_bus_98",
       "alertId": "760430",
       "is_banner": false,
       "mode": "bus",
@@ -2263,7 +2263,7 @@
       "routeId": "160",
       "routeLongName": "Port Coquitlam Station/Kootenay Loop",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 53145 Eastbound St. Johns St @ Elgin St closed",
@@ -2277,15 +2277,15 @@
       "closed": false
     },
     {
-      "id": "2125ac2f-ddba-4594-b51d-5336dd93c0f9",
+      "id": "760430_general_99",
       "alertId": "760430",
       "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
+      "mode": "general",
+      "mode_name": "大眾運輸",
       "routeId": "N9",
       "routeLongName": "Broadway-Lougheed",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 53145 Eastbound St. Johns St @ Elgin St closed",
@@ -2299,7 +2299,7 @@
       "closed": false
     },
     {
-      "id": "3ab2bbac-847a-4754-8c33-c0afb649d160",
+      "id": "760438_bus_100",
       "alertId": "760438",
       "is_banner": false,
       "mode": "bus",
@@ -2307,7 +2307,7 @@
       "routeId": "188",
       "routeLongName": "Coast Meridian Rd",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 53030 Westbound Wilson Ave @ Shaughnessy St closed",
@@ -2321,7 +2321,7 @@
       "closed": false
     },
     {
-      "id": "3ab2bbac-847a-4754-8c33-c0afb649d160",
+      "id": "760438_bus_101",
       "alertId": "760438",
       "is_banner": false,
       "mode": "bus",
@@ -2329,7 +2329,7 @@
       "routeId": "170",
       "routeLongName": "Port Coquitlam Station/Port Coquitlam South",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 53030 Westbound Wilson Ave @ Shaughnessy St closed",
@@ -2343,7 +2343,7 @@
       "closed": false
     },
     {
-      "id": "3ab2bbac-847a-4754-8c33-c0afb649d160",
+      "id": "760438_bus_102",
       "alertId": "760438",
       "is_banner": false,
       "mode": "bus",
@@ -2351,7 +2351,7 @@
       "routeId": "173",
       "routeLongName": "Coquitlam Central Station/Cedar",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 53030 Westbound Wilson Ave @ Shaughnessy St closed",
@@ -2365,7 +2365,7 @@
       "closed": false
     },
     {
-      "id": "3ab2bbac-847a-4754-8c33-c0afb649d160",
+      "id": "760438_bus_103",
       "alertId": "760438",
       "is_banner": false,
       "mode": "bus",
@@ -2373,7 +2373,7 @@
       "routeId": "174",
       "routeLongName": "Coquitlam Central Station/Rocklin",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 53030 Westbound Wilson Ave @ Shaughnessy St closed",
@@ -2387,7 +2387,7 @@
       "closed": false
     },
     {
-      "id": "3ab2bbac-847a-4754-8c33-c0afb649d160",
+      "id": "760438_bus_104",
       "alertId": "760438",
       "is_banner": false,
       "mode": "bus",
@@ -2395,7 +2395,7 @@
       "routeId": "175",
       "routeLongName": "Coquitlam Central Station/Meridian",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 53030 Westbound Wilson Ave @ Shaughnessy St closed",
@@ -2409,7 +2409,7 @@
       "closed": false
     },
     {
-      "id": "3ab2bbac-847a-4754-8c33-c0afb649d160",
+      "id": "760438_bus_105",
       "alertId": "760438",
       "is_banner": false,
       "mode": "bus",
@@ -2417,7 +2417,7 @@
       "routeId": "159",
       "routeLongName": "Coquitlam Central Station/Braid Station",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 53030 Westbound Wilson Ave @ Shaughnessy St closed",
@@ -2431,7 +2431,7 @@
       "closed": false
     },
     {
-      "id": "3ab2bbac-847a-4754-8c33-c0afb649d160",
+      "id": "760438_bus_106",
       "alertId": "760438",
       "is_banner": false,
       "mode": "bus",
@@ -2439,7 +2439,7 @@
       "routeId": "160",
       "routeLongName": "Port Coquitlam Station/Kootenay Loop",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 53030 Westbound Wilson Ave @ Shaughnessy St closed",
@@ -2453,7 +2453,7 @@
       "closed": false
     },
     {
-      "id": "a87b604b-1c62-4844-888b-5aa3f481e6ec",
+      "id": "760471_bus_107",
       "alertId": "760471",
       "is_banner": false,
       "mode": "bus",
@@ -2461,7 +2461,7 @@
       "routeId": "123",
       "routeLongName": "Canada Way",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 51452 Westbound Canada Way @ 4800 Block closed",
@@ -2475,7 +2475,7 @@
       "closed": false
     },
     {
-      "id": "2b3ad566-b6ad-4d3c-abf5-5f71394e5b22",
+      "id": "760475_bus_108",
       "alertId": "760475",
       "is_banner": false,
       "mode": "bus",
@@ -2483,7 +2483,7 @@
       "routeId": "8",
       "routeLongName": "Fraser",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 50798 Southbound Fraser St @ E 57 Ave closed",
@@ -2497,15 +2497,15 @@
       "closed": false
     },
     {
-      "id": "2b3ad566-b6ad-4d3c-abf5-5f71394e5b22",
+      "id": "760475_general_109",
       "alertId": "760475",
       "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
+      "mode": "general",
+      "mode_name": "大眾運輸",
       "routeId": "N8",
       "routeLongName": "Fraser",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 50798 Southbound Fraser St @ E 57 Ave closed",
@@ -2519,7 +2519,7 @@
       "closed": false
     },
     {
-      "id": "204b73dc-5b8a-4dc2-92f0-aed8cfb817d9",
+      "id": "760822_bus_110",
       "alertId": "760822",
       "is_banner": false,
       "mode": "bus",
@@ -2544,7 +2544,7 @@
       "closed": false
     },
     {
-      "id": "690973bc-d4c9-44c7-b656-068960d11d29",
+      "id": "760917_bus_111",
       "alertId": "760917",
       "is_banner": false,
       "mode": "bus",
@@ -2552,7 +2552,7 @@
       "routeId": "509",
       "routeLongName": "Walnut Grove/Surrey Central Station",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 57205 Westbound 88 Ave @ Wright St closed",
@@ -2566,7 +2566,7 @@
       "closed": false
     },
     {
-      "id": "690973bc-d4c9-44c7-b656-068960d11d29",
+      "id": "760917_bus_112",
       "alertId": "760917",
       "is_banner": false,
       "mode": "bus",
@@ -2574,7 +2574,7 @@
       "routeId": "562",
       "routeLongName": "Langley Centre/Walnut Grove",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 57205 Westbound 88 Ave @ Wright St closed",
@@ -2588,7 +2588,7 @@
       "closed": false
     },
     {
-      "id": "ac716a8f-7087-4f4d-aeb6-01394b056390",
+      "id": "761083_bus_113",
       "alertId": "761083",
       "is_banner": false,
       "mode": "bus",
@@ -2612,7 +2612,7 @@
       "closed": false
     },
     {
-      "id": "8c8c29e4-97f2-4145-865d-30e8a6cd9b76",
+      "id": "761087_bus_114",
       "alertId": "761087",
       "is_banner": false,
       "mode": "bus",
@@ -2634,7 +2634,7 @@
       "closed": false
     },
     {
-      "id": "a55d05ee-d91c-4964-b873-0df99dbf22c5",
+      "id": "761185_bus_115",
       "alertId": "761185",
       "is_banner": false,
       "mode": "bus",
@@ -2642,7 +2642,7 @@
       "routeId": "49",
       "routeLongName": "49th Avenue",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 52020 Westbound E 49 Ave @ Bruce St closed",
@@ -2656,7 +2656,7 @@
       "closed": false
     },
     {
-      "id": "46dec025-dedf-409e-84c0-8bc68c3d8873",
+      "id": "761186_bus_116",
       "alertId": "761186",
       "is_banner": false,
       "mode": "bus",
@@ -2664,7 +2664,7 @@
       "routeId": "28",
       "routeLongName": "Boundary",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 58392 Eastbound Henning Dr @ Boundary Rd closed",
@@ -2678,7 +2678,7 @@
       "closed": false
     },
     {
-      "id": "cd9b0136-ae45-4d61-b7df-da9e268628f2",
+      "id": "761482_bus_117",
       "alertId": "761482",
       "is_banner": false,
       "mode": "bus",
@@ -2700,7 +2700,7 @@
       "closed": false
     },
     {
-      "id": "f48cc7b3-ac86-4db0-980d-e8ba26d5f4b9",
+      "id": "761488_bus_118",
       "alertId": "761488",
       "is_banner": false,
       "mode": "bus",
@@ -2722,7 +2722,7 @@
       "closed": false
     },
     {
-      "id": "b114d51d-da07-48d4-aacd-53d2d8fc21fc",
+      "id": "761489_bus_119",
       "alertId": "761489",
       "is_banner": false,
       "mode": "bus",
@@ -2744,7 +2744,7 @@
       "closed": false
     },
     {
-      "id": "3f27ed25-5cc8-4cbf-8202-74f5dd7a47c6",
+      "id": "761490_bus_120",
       "alertId": "761490",
       "is_banner": false,
       "mode": "bus",
@@ -2766,7 +2766,7 @@
       "closed": false
     },
     {
-      "id": "59a9ccc5-4263-439b-8299-9803a4398c82",
+      "id": "761491_bus_121",
       "alertId": "761491",
       "is_banner": false,
       "mode": "bus",
@@ -2788,7 +2788,7 @@
       "closed": false
     },
     {
-      "id": "ec3ed5c7-2f03-473b-8c24-b05b06f753c7",
+      "id": "761514_bus_122",
       "alertId": "761514",
       "is_banner": false,
       "mode": "bus",
@@ -2812,7 +2812,7 @@
       "closed": false
     },
     {
-      "id": "e0efc745-7d6a-4b9d-91a8-ffd60281de85",
+      "id": "761515_bus_123",
       "alertId": "761515",
       "is_banner": false,
       "mode": "bus",
@@ -2836,7 +2836,7 @@
       "closed": false
     },
     {
-      "id": "21e64b30-782f-4df5-bc99-89183a62b888",
+      "id": "761570_bus_124",
       "alertId": "761570",
       "is_banner": false,
       "mode": "bus",
@@ -2844,7 +2844,7 @@
       "routeId": "209",
       "routeLongName": "Mountain Hwy",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 50405 Burrard Station @ Bay 2 closed",
@@ -2860,7 +2860,7 @@
       "closed": false
     },
     {
-      "id": "21e64b30-782f-4df5-bc99-89183a62b888",
+      "id": "761570_bus_125",
       "alertId": "761570",
       "is_banner": false,
       "mode": "bus",
@@ -2868,7 +2868,7 @@
       "routeId": "210",
       "routeLongName": "Mountain Hwy Express",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 50405 Burrard Station @ Bay 2 closed",
@@ -2884,7 +2884,7 @@
       "closed": false
     },
     {
-      "id": "21e64b30-782f-4df5-bc99-89183a62b888",
+      "id": "761570_bus_126",
       "alertId": "761570",
       "is_banner": false,
       "mode": "bus",
@@ -2892,7 +2892,7 @@
       "routeId": "211",
       "routeLongName": "Seymour/Phibbs Exchange/Burrard Station",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 50405 Burrard Station @ Bay 2 closed",
@@ -2908,7 +2908,7 @@
       "closed": false
     },
     {
-      "id": "cf2be144-5605-49c7-86ee-690dabe0e706",
+      "id": "761572_bus_127",
       "alertId": "761572",
       "is_banner": false,
       "mode": "bus",
@@ -2930,7 +2930,7 @@
       "closed": false
     },
     {
-      "id": "cae605e1-bb4e-4067-96c9-3875ee8a8eff",
+      "id": "761574_bus_128",
       "alertId": "761574",
       "is_banner": false,
       "mode": "bus",
@@ -2938,7 +2938,7 @@
       "routeId": "209",
       "routeLongName": "Mountain Hwy",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 50406 Eastbound W Pender St @ Thurlow St closed",
@@ -2954,7 +2954,7 @@
       "closed": false
     },
     {
-      "id": "cae605e1-bb4e-4067-96c9-3875ee8a8eff",
+      "id": "761574_bus_129",
       "alertId": "761574",
       "is_banner": false,
       "mode": "bus",
@@ -2962,7 +2962,7 @@
       "routeId": "210",
       "routeLongName": "Mountain Hwy Express",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 50406 Eastbound W Pender St @ Thurlow St closed",
@@ -2978,7 +2978,7 @@
       "closed": false
     },
     {
-      "id": "cae605e1-bb4e-4067-96c9-3875ee8a8eff",
+      "id": "761574_bus_130",
       "alertId": "761574",
       "is_banner": false,
       "mode": "bus",
@@ -2986,7 +2986,7 @@
       "routeId": "211",
       "routeLongName": "Seymour/Phibbs Exchange/Burrard Station",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 50406 Eastbound W Pender St @ Thurlow St closed",
@@ -3002,7 +3002,7 @@
       "closed": false
     },
     {
-      "id": "f7fc009b-2389-4304-bd55-77f7352c55f4",
+      "id": "761576_bus_131",
       "alertId": "761576",
       "is_banner": false,
       "mode": "bus",
@@ -3024,7 +3024,7 @@
       "closed": false
     },
     {
-      "id": "ff628c9b-ff04-4192-9411-09e87fb50512",
+      "id": "761733_bus_132",
       "alertId": "761733",
       "is_banner": false,
       "mode": "bus",
@@ -3032,7 +3032,7 @@
       "routeId": "323",
       "routeLongName": "128 Street",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 55615 Westbound 104 Ave @ 132 St closed",
@@ -3046,7 +3046,7 @@
       "closed": false
     },
     {
-      "id": "ff628c9b-ff04-4192-9411-09e87fb50512",
+      "id": "761733_bus_133",
       "alertId": "761733",
       "is_banner": false,
       "mode": "bus",
@@ -3054,7 +3054,7 @@
       "routeId": "393",
       "routeLongName": "128 Street",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 55615 Westbound 104 Ave @ 132 St closed",
@@ -3068,7 +3068,7 @@
       "closed": false
     },
     {
-      "id": "ff628c9b-ff04-4192-9411-09e87fb50512",
+      "id": "761733_bus_134",
       "alertId": "761733",
       "is_banner": false,
       "mode": "bus",
@@ -3076,7 +3076,7 @@
       "routeId": "373",
       "routeLongName": "Guildford/Surrey Central Station",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 55615 Westbound 104 Ave @ 132 St closed",
@@ -3090,7 +3090,7 @@
       "closed": false
     },
     {
-      "id": "1547c02a-c654-4018-a141-7aafdcd3747c",
+      "id": "761786_bus_135",
       "alertId": "761786",
       "is_banner": false,
       "mode": "bus",
@@ -3098,7 +3098,7 @@
       "routeId": "22",
       "routeLongName": "Knight",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 51843 Burrard Station @ Bay 3 closed",
@@ -3114,7 +3114,7 @@
       "closed": false
     },
     {
-      "id": "bf100c6c-f418-4f04-bcb6-80ce1061f13e",
+      "id": "761794_bus_136",
       "alertId": "761794",
       "is_banner": false,
       "mode": "bus",
@@ -3122,7 +3122,7 @@
       "routeId": "22",
       "routeLongName": "Knight",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 58099 Burrard Station @ Bay 5 closed",
@@ -3138,7 +3138,7 @@
       "closed": false
     },
     {
-      "id": "32e0efc7-d8ce-413b-85bd-16e32559e949",
+      "id": "761932_bus_137",
       "alertId": "761932",
       "is_banner": false,
       "mode": "bus",
@@ -3146,7 +3146,7 @@
       "routeId": "640",
       "routeLongName": "River Road",
       "effect": "STOP_MOVE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點遷移",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 57565 Eastbound River Rd @ East Mill Access Rd has moved",
@@ -3160,7 +3160,7 @@
       "closed": false
     },
     {
-      "id": "550a8d0e-737d-45f0-9b28-420d2efa0d4f",
+      "id": "761933_bus_138",
       "alertId": "761933",
       "is_banner": false,
       "mode": "bus",
@@ -3168,7 +3168,7 @@
       "routeId": "134",
       "routeLongName": "Lake City Station/Brentwood Station",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 52832 Southbound Duthie Ave @ Camarillo Place closed",
@@ -3182,7 +3182,7 @@
       "closed": false
     },
     {
-      "id": "550a8d0e-737d-45f0-9b28-420d2efa0d4f",
+      "id": "761933_bus_139",
       "alertId": "761933",
       "is_banner": false,
       "mode": "bus",
@@ -3190,7 +3190,7 @@
       "routeId": "144",
       "routeLongName": "SFU Exchange/Metrotown Station",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 52832 Southbound Duthie Ave @ Camarillo Place closed",
@@ -3204,7 +3204,7 @@
       "closed": false
     },
     {
-      "id": "6dcc48d6-b931-474e-bcce-cfb0030593dc",
+      "id": "761937_bus_140",
       "alertId": "761937",
       "is_banner": false,
       "mode": "bus",
@@ -3212,7 +3212,7 @@
       "routeId": "80",
       "routeLongName": "Marine Dr Express",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 62059 Eastbound SE Marine Dr @ Kerr St closed",
@@ -3226,7 +3226,7 @@
       "closed": false
     },
     {
-      "id": "275e8f95-2f22-4aad-8314-ffbde7c58b44",
+      "id": "761938_bus_141",
       "alertId": "761938",
       "is_banner": false,
       "mode": "bus",
@@ -3234,7 +3234,7 @@
       "routeId": "110",
       "routeLongName": "Lougheed Station/Metrotown Station",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 52569 Westbound Sprott St @ Kensington Ave closed",
@@ -3248,7 +3248,7 @@
       "closed": false
     },
     {
-      "id": "275e8f95-2f22-4aad-8314-ffbde7c58b44",
+      "id": "761938_bus_142",
       "alertId": "761938",
       "is_banner": false,
       "mode": "bus",
@@ -3256,7 +3256,7 @@
       "routeId": "144",
       "routeLongName": "SFU Exchange/Metrotown Station",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 52569 Westbound Sprott St @ Kensington Ave closed",
@@ -3270,7 +3270,7 @@
       "closed": false
     },
     {
-      "id": "f93bb3cb-3c61-4ad1-bc1f-525bf9adb12c",
+      "id": "761940_bus_143",
       "alertId": "761940",
       "is_banner": false,
       "mode": "bus",
@@ -3278,7 +3278,7 @@
       "routeId": "41",
       "routeLongName": "41st Avenue",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 50288 Westbound W 41 Ave @ Maple St closed",
@@ -3292,7 +3292,7 @@
       "closed": false
     },
     {
-      "id": "f547d9c6-7205-44d0-93e9-e570fac14e14",
+      "id": "761986_bus_144",
       "alertId": "761986",
       "is_banner": false,
       "mode": "bus",
@@ -3300,7 +3300,7 @@
       "routeId": "9",
       "routeLongName": "Broadway",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 50900 Eastbound Lougheed Hwy @ Skeena St closed",
@@ -3314,7 +3314,7 @@
       "closed": false
     },
     {
-      "id": "f1dca12e-0b39-4efe-ad13-3624fa39748d",
+      "id": "761988_bus_145",
       "alertId": "761988",
       "is_banner": false,
       "mode": "bus",
@@ -3322,7 +3322,7 @@
       "routeId": "214",
       "routeLongName": "Blueridge/Phibbs Exchange/Burrard Station",
       "effect": "STOP_MOVE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點遷移",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 60255 Main St @ Orwell St has moved",
@@ -3336,7 +3336,7 @@
       "closed": false
     },
     {
-      "id": "debc3c3c-0150-4594-a43d-b1aeddb351f7",
+      "id": "761989_bus_146",
       "alertId": "761989",
       "is_banner": false,
       "mode": "bus",
@@ -3344,7 +3344,7 @@
       "routeId": "402",
       "routeLongName": "Brighouse Station/Two Road",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 56525 Northbound No. 2 Rd @ 11300 Block closed",
@@ -3358,7 +3358,7 @@
       "closed": false
     },
     {
-      "id": "4c59225d-c6b9-46ad-a78c-dcb1b5df17db",
+      "id": "761990_bus_147",
       "alertId": "761990",
       "is_banner": false,
       "mode": "bus",
@@ -3366,7 +3366,7 @@
       "routeId": "41",
       "routeLongName": "41st Avenue",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 60386 Eastbound W 41 Ave @ East Blvd closed",
@@ -3380,7 +3380,7 @@
       "closed": false
     },
     {
-      "id": "0677afa3-d62a-4196-8d8d-4d700c6119e6",
+      "id": "762071_bus_148",
       "alertId": "762071",
       "is_banner": false,
       "mode": "bus",
@@ -3405,7 +3405,7 @@
       "closed": false
     },
     {
-      "id": "d99e1427-f41f-4556-93cc-67445705c1af",
+      "id": "762073_bus_149",
       "alertId": "762073",
       "is_banner": false,
       "mode": "bus",
@@ -3430,7 +3430,7 @@
       "closed": false
     },
     {
-      "id": "29916e7e-258e-4775-8937-5a389390a1a2",
+      "id": "762074_bus_150",
       "alertId": "762074",
       "is_banner": false,
       "mode": "bus",
@@ -3455,7 +3455,7 @@
       "closed": false
     },
     {
-      "id": "421d7bde-1f68-4d76-9cf8-b0ba19f509c7",
+      "id": "762075_bus_151",
       "alertId": "762075",
       "is_banner": false,
       "mode": "bus",
@@ -3480,7 +3480,7 @@
       "closed": false
     },
     {
-      "id": "7b15f794-0d97-492a-91ee-2a9123d98721",
+      "id": "762083_bus_152",
       "alertId": "762083",
       "is_banner": false,
       "mode": "bus",
@@ -3488,7 +3488,7 @@
       "routeId": "134",
       "routeLongName": "Lake City Station/Brentwood Station",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 61807 Southbound Willingdon Ave @ Halifax St closed",
@@ -3502,7 +3502,7 @@
       "closed": false
     },
     {
-      "id": "4d57bad5-e73f-41dc-bd05-7c5cf7a6753b",
+      "id": "762095_bus_153",
       "alertId": "762095",
       "is_banner": false,
       "mode": "bus",
@@ -3510,7 +3510,7 @@
       "routeId": "326",
       "routeLongName": "Guildford/Surrey Central Station",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 55769 Southbound 156 St @ 92 Ave closed",
@@ -3524,7 +3524,7 @@
       "closed": false
     },
     {
-      "id": "3ea6b49c-66fa-4ed5-86bf-5c595ddcc9da",
+      "id": "762096_bus_154",
       "alertId": "762096",
       "is_banner": false,
       "mode": "bus",
@@ -3532,7 +3532,7 @@
       "routeId": "101",
       "routeLongName": "Lougheed Station/22nd St Station",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 52277 Westbound Government St @ Horne St closed",
@@ -3546,7 +3546,7 @@
       "closed": false
     },
     {
-      "id": "0fa95256-2d2e-45a4-8cc7-3bb9ba72a9b1",
+      "id": "762100_bus_155",
       "alertId": "762100",
       "is_banner": false,
       "mode": "bus",
@@ -3568,7 +3568,7 @@
       "closed": false
     },
     {
-      "id": "6b115315-01dc-4732-a015-68c9e811ab9a",
+      "id": "762118_bus_156",
       "alertId": "762118",
       "is_banner": false,
       "mode": "bus",
@@ -3576,7 +3576,7 @@
       "routeId": "152",
       "routeLongName": "Coquitlam Central Station/Lougheed Station",
       "effect": "STOP_MOVE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點遷移",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 53038 Westbound Mariner Way @ Dewdney Trunk Rd has moved",
@@ -3590,7 +3590,7 @@
       "closed": false
     },
     {
-      "id": "6b115315-01dc-4732-a015-68c9e811ab9a",
+      "id": "762118_bus_157",
       "alertId": "762118",
       "is_banner": false,
       "mode": "bus",
@@ -3598,7 +3598,7 @@
       "routeId": "153",
       "routeLongName": "Coquitlam Central Station/Braid Station",
       "effect": "STOP_MOVE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點遷移",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 53038 Westbound Mariner Way @ Dewdney Trunk Rd has moved",
@@ -3612,7 +3612,7 @@
       "closed": false
     },
     {
-      "id": "35e2951e-e508-44de-83aa-71a1cb9f0240",
+      "id": "762119_bus_158",
       "alertId": "762119",
       "is_banner": false,
       "mode": "bus",
@@ -3620,7 +3620,7 @@
       "routeId": "152",
       "routeLongName": "Coquitlam Central Station/Lougheed Station",
       "effect": "STOP_MOVE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點遷移",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 53343 Eastbound Mariner Way @ Dewdney Trunk Rd has moved",
@@ -3634,7 +3634,7 @@
       "closed": false
     },
     {
-      "id": "35e2951e-e508-44de-83aa-71a1cb9f0240",
+      "id": "762119_bus_159",
       "alertId": "762119",
       "is_banner": false,
       "mode": "bus",
@@ -3642,7 +3642,7 @@
       "routeId": "153",
       "routeLongName": "Coquitlam Central Station/Braid Station",
       "effect": "STOP_MOVE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點遷移",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 53343 Eastbound Mariner Way @ Dewdney Trunk Rd has moved",
@@ -3656,11 +3656,11 @@
       "closed": false
     },
     {
-      "id": "060ae210-e822-469f-b9b4-9dd3c4a0a514",
+      "id": "762147_bus_160",
       "alertId": "762147",
       "is_banner": false,
-      "mode": "skytrain",
-      "mode_name": "天車",
+      "mode": "bus",
+      "mode_name": "巴士",
       "routeId": "99",
       "routeLongName": "Broadway B-Line",
       "effect": "DETOUR",
@@ -3681,7 +3681,7 @@
       "closed": false
     },
     {
-      "id": "debcd761-7e98-4ab6-95dc-4dfb13c57aef",
+      "id": "762156_bus_161",
       "alertId": "762156",
       "is_banner": false,
       "mode": "bus",
@@ -3689,7 +3689,7 @@
       "routeId": "3",
       "routeLongName": "Main",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 50241 Southbound Main St @ E 14 Ave closed",
@@ -3703,7 +3703,7 @@
       "closed": false
     },
     {
-      "id": "30da86f2-1f9f-455e-9c9a-10b42d96dbde",
+      "id": "762167_bus_162",
       "alertId": "762167",
       "is_banner": false,
       "mode": "bus",
@@ -3727,7 +3727,7 @@
       "closed": false
     },
     {
-      "id": "1095639f-014d-4743-850c-81811d99adcc",
+      "id": "762187_bus_163",
       "alertId": "762187",
       "is_banner": false,
       "mode": "bus",
@@ -3751,15 +3751,15 @@
       "closed": false
     },
     {
-      "id": "427fd679-b1fa-4a76-9f2a-b6d94bba407f",
+      "id": "762251_general_164",
       "alertId": "762251",
       "is_banner": false,
-      "mode": "skytrain",
-      "mode_name": "天車",
+      "mode": "general",
+      "mode_name": "大眾運輸",
       "routeId": "",
       "routeLongName": "",
       "effect": "ELEVATORS",
-      "effect_zh": "營運警報",
+      "effect_zh": "電梯暫停",
       "critical": false,
       "advisory": false,
       "alertText": "SkyTrain Expo Line elevator alert at King George Station",
@@ -3778,7 +3778,7 @@
       "closed": false
     },
     {
-      "id": "4cc36faa-f9af-4487-b35f-f274ac0a17e3",
+      "id": "762472_bus_165",
       "alertId": "762472",
       "is_banner": false,
       "mode": "bus",
@@ -3786,7 +3786,7 @@
       "routeId": "418",
       "routeLongName": "Kingswood/22nd St Station",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 60841 Westbound Blundell Rd @ Nelson Rd closed",
@@ -3800,7 +3800,7 @@
       "closed": false
     },
     {
-      "id": "1553e1ff-949f-4d43-9a8c-07fad2ac290f",
+      "id": "762591_bus_166",
       "alertId": "762591",
       "is_banner": false,
       "mode": "bus",
@@ -3808,7 +3808,7 @@
       "routeId": "9",
       "routeLongName": "Broadway",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 58269 Westbound W Broadway @ Ash St closed",
@@ -3822,7 +3822,7 @@
       "closed": false
     },
     {
-      "id": "e5b99bff-6e85-432f-ac28-79bed78a760a",
+      "id": "762592_bus_167",
       "alertId": "762592",
       "is_banner": false,
       "mode": "bus",
@@ -3830,7 +3830,7 @@
       "routeId": "123",
       "routeLongName": "Canada Way",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 51453 Northbound Canada Way @ Hardwick St closed",
@@ -3844,7 +3844,7 @@
       "closed": false
     },
     {
-      "id": "65ff0770-6fcf-4a71-bf33-72ac44e177b0",
+      "id": "762596_bus_168",
       "alertId": "762596",
       "is_banner": false,
       "mode": "bus",
@@ -3852,7 +3852,7 @@
       "routeId": "152",
       "routeLongName": "Coquitlam Central Station/Lougheed Station",
       "effect": "STOP_MOVE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點遷移",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 53394 Eastbound Austin Ave @ 500 Block has moved",
@@ -3866,7 +3866,7 @@
       "closed": false
     },
     {
-      "id": "26d596b0-217e-461f-a6c7-2ffc02c69928",
+      "id": "762610_bus_169",
       "alertId": "762610",
       "is_banner": false,
       "mode": "bus",
@@ -3891,7 +3891,7 @@
       "closed": false
     },
     {
-      "id": "43fc3f98-0b49-4d16-bfe8-d45661266a5a",
+      "id": "762614_bus_170",
       "alertId": "762614",
       "is_banner": false,
       "mode": "bus",
@@ -3916,7 +3916,7 @@
       "closed": false
     },
     {
-      "id": "2861995e-e429-45cf-8781-099e2c23699e",
+      "id": "762619_bus_171",
       "alertId": "762619",
       "is_banner": false,
       "mode": "bus",
@@ -3941,7 +3941,7 @@
       "closed": false
     },
     {
-      "id": "0b101107-cdfa-4057-80bc-b28d24246f2e",
+      "id": "762621_bus_172",
       "alertId": "762621",
       "is_banner": false,
       "mode": "bus",
@@ -3966,7 +3966,7 @@
       "closed": false
     },
     {
-      "id": "3b66fbeb-fc37-480e-b1e6-047092c18578",
+      "id": "762624_bus_173",
       "alertId": "762624",
       "is_banner": false,
       "mode": "bus",
@@ -3991,7 +3991,7 @@
       "closed": false
     },
     {
-      "id": "f7522d05-d165-4e62-a7a3-f7d3d8d23111",
+      "id": "762637_bus_174",
       "alertId": "762637",
       "is_banner": false,
       "mode": "bus",
@@ -4016,7 +4016,7 @@
       "closed": false
     },
     {
-      "id": "0db44fcb-8f06-4ed5-b51c-4c4192e4abab",
+      "id": "762653_bus_175",
       "alertId": "762653",
       "is_banner": false,
       "mode": "bus",
@@ -4041,7 +4041,7 @@
       "closed": false
     },
     {
-      "id": "c728fbb7-b153-4bee-8bb1-3ee4fc2161fb",
+      "id": "762655_bus_176",
       "alertId": "762655",
       "is_banner": false,
       "mode": "bus",
@@ -4066,7 +4066,7 @@
       "closed": false
     },
     {
-      "id": "1eaa407d-03e1-4a6b-b050-5fd7185f3b90",
+      "id": "762661_bus_177",
       "alertId": "762661",
       "is_banner": false,
       "mode": "bus",
@@ -4090,7 +4090,7 @@
       "closed": false
     },
     {
-      "id": "dc0e7af5-777d-43de-8db2-2d6985a8bed6",
+      "id": "762665_bus_178",
       "alertId": "762665",
       "is_banner": false,
       "mode": "bus",
@@ -4114,7 +4114,7 @@
       "closed": false
     },
     {
-      "id": "18bd06fb-d63d-42ee-94e8-c1c479ac19c0",
+      "id": "762693_bus_179",
       "alertId": "762693",
       "is_banner": false,
       "mode": "bus",
@@ -4138,7 +4138,7 @@
       "closed": false
     },
     {
-      "id": "2f14bc67-9c79-4edc-82be-a372908f3d94",
+      "id": "762695_bus_180",
       "alertId": "762695",
       "is_banner": false,
       "mode": "bus",
@@ -4162,11 +4162,11 @@
       "closed": false
     },
     {
-      "id": "9d0942b8-6b31-4322-b74f-4d5ccd127e6e",
+      "id": "762884_general_181",
       "alertId": "762884",
       "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
+      "mode": "general",
+      "mode_name": "大眾運輸",
       "routeId": "R4",
       "routeLongName": "41st Avenue",
       "effect": "INFORMATIONAL",
@@ -4184,7 +4184,7 @@
       "closed": false
     },
     {
-      "id": "9d0942b8-6b31-4322-b74f-4d5ccd127e6e",
+      "id": "762884_bus_182",
       "alertId": "762884",
       "is_banner": false,
       "mode": "bus",
@@ -4206,11 +4206,11 @@
       "closed": false
     },
     {
-      "id": "18de5169-fb77-4b60-a4a3-f9bd16e1bd8c",
+      "id": "762887_general_183",
       "alertId": "762887",
       "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
+      "mode": "general",
+      "mode_name": "大眾運輸",
       "routeId": "R4",
       "routeLongName": "41st Avenue",
       "effect": "INFORMATIONAL",
@@ -4228,7 +4228,7 @@
       "closed": false
     },
     {
-      "id": "18de5169-fb77-4b60-a4a3-f9bd16e1bd8c",
+      "id": "762887_bus_184",
       "alertId": "762887",
       "is_banner": false,
       "mode": "bus",
@@ -4250,7 +4250,7 @@
       "closed": false
     },
     {
-      "id": "64b9ce0c-828d-4f73-9e25-994748004f4b",
+      "id": "762894_bus_185",
       "alertId": "762894",
       "is_banner": false,
       "mode": "bus",
@@ -4275,7 +4275,7 @@
       "closed": false
     },
     {
-      "id": "05fe4596-f533-49e9-b427-da8b69428a5a",
+      "id": "762905_bus_186",
       "alertId": "762905",
       "is_banner": false,
       "mode": "bus",
@@ -4297,7 +4297,7 @@
       "closed": false
     },
     {
-      "id": "05fe4596-f533-49e9-b427-da8b69428a5a",
+      "id": "762905_bus_187",
       "alertId": "762905",
       "is_banner": false,
       "mode": "bus",
@@ -4319,7 +4319,7 @@
       "closed": false
     },
     {
-      "id": "e7b45595-1a91-478c-92d6-c88d68251731",
+      "id": "762906_bus_188",
       "alertId": "762906",
       "is_banner": false,
       "mode": "bus",
@@ -4341,7 +4341,7 @@
       "closed": false
     },
     {
-      "id": "f040cf60-3fb1-4671-a6c5-934e9c57b1ca",
+      "id": "762921_bus_189",
       "alertId": "762921",
       "is_banner": false,
       "mode": "bus",
@@ -4349,7 +4349,7 @@
       "routeId": "8",
       "routeLongName": "Fraser",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 50771 Eastbound Kingsway @ Main St closed",
@@ -4363,7 +4363,7 @@
       "closed": false
     },
     {
-      "id": "f040cf60-3fb1-4671-a6c5-934e9c57b1ca",
+      "id": "762921_bus_190",
       "alertId": "762921",
       "is_banner": false,
       "mode": "bus",
@@ -4371,7 +4371,7 @@
       "routeId": "19",
       "routeLongName": "Kingsway",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 50771 Eastbound Kingsway @ Main St closed",
@@ -4385,15 +4385,15 @@
       "closed": false
     },
     {
-      "id": "f040cf60-3fb1-4671-a6c5-934e9c57b1ca",
+      "id": "762921_general_191",
       "alertId": "762921",
       "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
+      "mode": "general",
+      "mode_name": "大眾運輸",
       "routeId": "N19",
       "routeLongName": "Kingsway",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 50771 Eastbound Kingsway @ Main St closed",
@@ -4407,15 +4407,15 @@
       "closed": false
     },
     {
-      "id": "f040cf60-3fb1-4671-a6c5-934e9c57b1ca",
+      "id": "762921_general_192",
       "alertId": "762921",
       "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
+      "mode": "general",
+      "mode_name": "大眾運輸",
       "routeId": "N8",
       "routeLongName": "Fraser",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 50771 Eastbound Kingsway @ Main St closed",
@@ -4429,7 +4429,7 @@
       "closed": false
     },
     {
-      "id": "06112c1d-e49a-4e59-b966-5a2c27927ebd",
+      "id": "762923_bus_193",
       "alertId": "762923",
       "is_banner": false,
       "mode": "bus",
@@ -4437,7 +4437,7 @@
       "routeId": "8",
       "routeLongName": "Fraser",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 58145 Westbound Kingsway @ E Broadway closed",
@@ -4451,7 +4451,7 @@
       "closed": false
     },
     {
-      "id": "06112c1d-e49a-4e59-b966-5a2c27927ebd",
+      "id": "762923_bus_194",
       "alertId": "762923",
       "is_banner": false,
       "mode": "bus",
@@ -4459,7 +4459,7 @@
       "routeId": "19",
       "routeLongName": "Kingsway",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 58145 Westbound Kingsway @ E Broadway closed",
@@ -4473,15 +4473,15 @@
       "closed": false
     },
     {
-      "id": "06112c1d-e49a-4e59-b966-5a2c27927ebd",
+      "id": "762923_general_195",
       "alertId": "762923",
       "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
+      "mode": "general",
+      "mode_name": "大眾運輸",
       "routeId": "N19",
       "routeLongName": "Kingsway",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 58145 Westbound Kingsway @ E Broadway closed",
@@ -4495,15 +4495,15 @@
       "closed": false
     },
     {
-      "id": "06112c1d-e49a-4e59-b966-5a2c27927ebd",
+      "id": "762923_general_196",
       "alertId": "762923",
       "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
+      "mode": "general",
+      "mode_name": "大眾運輸",
       "routeId": "N8",
       "routeLongName": "Fraser",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 58145 Westbound Kingsway @ E Broadway closed",
@@ -4517,7 +4517,7 @@
       "closed": false
     },
     {
-      "id": "6575e46b-8829-4004-900e-355e87cfa660",
+      "id": "762925_bus_197",
       "alertId": "762925",
       "is_banner": false,
       "mode": "bus",
@@ -4539,7 +4539,7 @@
       "closed": false
     },
     {
-      "id": "6575e46b-8829-4004-900e-355e87cfa660",
+      "id": "762925_bus_198",
       "alertId": "762925",
       "is_banner": false,
       "mode": "bus",
@@ -4561,7 +4561,7 @@
       "closed": false
     },
     {
-      "id": "938ef2b9-6f54-46b4-9884-90fe41706ff8",
+      "id": "762928_bus_199",
       "alertId": "762928",
       "is_banner": false,
       "mode": "bus",
@@ -4569,7 +4569,7 @@
       "routeId": "211",
       "routeLongName": "Seymour/Phibbs Exchange/Burrard Station",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 54074 Westbound Mt Seymour Parkway @ Riverside Dr closed",
@@ -4583,7 +4583,7 @@
       "closed": false
     },
     {
-      "id": "938ef2b9-6f54-46b4-9884-90fe41706ff8",
+      "id": "762928_bus_200",
       "alertId": "762928",
       "is_banner": false,
       "mode": "bus",
@@ -4591,7 +4591,7 @@
       "routeId": "880",
       "routeLongName": "Windsor School Special",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 54074 Westbound Mt Seymour Parkway @ Riverside Dr closed",
@@ -4605,7 +4605,7 @@
       "closed": false
     },
     {
-      "id": "9adc499e-c654-4d8d-a464-4af4c6658094",
+      "id": "762935_bus_201",
       "alertId": "762935",
       "is_banner": false,
       "mode": "bus",
@@ -4627,7 +4627,7 @@
       "closed": false
     },
     {
-      "id": "b4cfc910-80c2-4602-bb1b-a1b3e21bda22",
+      "id": "762977_bus_202",
       "alertId": "762977",
       "is_banner": false,
       "mode": "bus",
@@ -4635,7 +4635,7 @@
       "routeId": "342",
       "routeLongName": "Langley Centre/Newton Exchange",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 55258 Southbound 177B St @ 56A Ave closed",
@@ -4649,7 +4649,7 @@
       "closed": false
     },
     {
-      "id": "b4cfc910-80c2-4602-bb1b-a1b3e21bda22",
+      "id": "762977_bus_203",
       "alertId": "762977",
       "is_banner": false,
       "mode": "bus",
@@ -4657,7 +4657,7 @@
       "routeId": "370",
       "routeLongName": "Cloverdale/Willowbrook",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 55258 Southbound 177B St @ 56A Ave closed",
@@ -4671,7 +4671,7 @@
       "closed": false
     },
     {
-      "id": "0622b708-81cf-4688-83a8-44cda04e4915",
+      "id": "762984_bus_204",
       "alertId": "762984",
       "is_banner": false,
       "mode": "bus",
@@ -4679,7 +4679,7 @@
       "routeId": "159",
       "routeLongName": "Coquitlam Central Station/Braid Station",
       "effect": "STOP_MOVE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點遷移",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 53639 Eastbound United Blvd @ Leeder St has moved",
@@ -4693,7 +4693,7 @@
       "closed": false
     },
     {
-      "id": "0622b708-81cf-4688-83a8-44cda04e4915",
+      "id": "762984_bus_205",
       "alertId": "762984",
       "is_banner": false,
       "mode": "bus",
@@ -4701,7 +4701,7 @@
       "routeId": "791",
       "routeLongName": "Haney Place/Braid Station",
       "effect": "STOP_MOVE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點遷移",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 53639 Eastbound United Blvd @ Leeder St has moved",
@@ -4715,7 +4715,7 @@
       "closed": false
     },
     {
-      "id": "d17f37ce-7834-404a-ada2-f5e06627d56b",
+      "id": "763024_bus_206",
       "alertId": "763024",
       "is_banner": false,
       "mode": "bus",
@@ -4723,7 +4723,7 @@
       "routeId": "123",
       "routeLongName": "Canada Way",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 51409 Southbound Canada Way @ Ulster St closed",
@@ -4737,15 +4737,15 @@
       "closed": false
     },
     {
-      "id": "79533bd6-bb4d-43ee-957b-3ce319a2836b",
+      "id": "763104_general_207",
       "alertId": "763104",
       "is_banner": false,
-      "mode": "skytrain",
-      "mode_name": "天車",
+      "mode": "general",
+      "mode_name": "大眾運輸",
       "routeId": "",
       "routeLongName": "",
       "effect": "ADVISORY",
-      "effect_zh": "營運警報",
+      "effect_zh": "營運提示",
       "critical": false,
       "advisory": false,
       "alertText": "Bus, HandyDART, SeaBus, SkyTrain and West Coast Express advisory due to technical issues",
@@ -4759,15 +4759,15 @@
       "closed": false
     },
     {
-      "id": "79533bd6-bb4d-43ee-957b-3ce319a2836b",
+      "id": "763104_general_208",
       "alertId": "763104",
       "is_banner": false,
-      "mode": "skytrain",
-      "mode_name": "天車",
+      "mode": "general",
+      "mode_name": "大眾運輸",
       "routeId": "",
       "routeLongName": "West Coast Express",
       "effect": "ADVISORY",
-      "effect_zh": "營運警報",
+      "effect_zh": "營運提示",
       "critical": false,
       "advisory": false,
       "alertText": "Bus, HandyDART, SeaBus, SkyTrain and West Coast Express advisory due to technical issues",
@@ -4781,15 +4781,15 @@
       "closed": false
     },
     {
-      "id": "79533bd6-bb4d-43ee-957b-3ce319a2836b",
+      "id": "763104_general_209",
       "alertId": "763104",
       "is_banner": false,
-      "mode": "skytrain",
-      "mode_name": "天車",
+      "mode": "general",
+      "mode_name": "大眾運輸",
       "routeId": "",
       "routeLongName": "",
       "effect": "ADVISORY",
-      "effect_zh": "營運警報",
+      "effect_zh": "營運提示",
       "critical": false,
       "advisory": false,
       "alertText": "Bus, HandyDART, SeaBus, SkyTrain and West Coast Express advisory due to technical issues",
@@ -4803,15 +4803,15 @@
       "closed": false
     },
     {
-      "id": "79533bd6-bb4d-43ee-957b-3ce319a2836b",
+      "id": "763104_general_210",
       "alertId": "763104",
       "is_banner": false,
-      "mode": "skytrain",
-      "mode_name": "天車",
+      "mode": "general",
+      "mode_name": "大眾運輸",
       "routeId": "",
       "routeLongName": "SeaBus",
       "effect": "ADVISORY",
-      "effect_zh": "營運警報",
+      "effect_zh": "營運提示",
       "critical": false,
       "advisory": false,
       "alertText": "Bus, HandyDART, SeaBus, SkyTrain and West Coast Express advisory due to technical issues",
@@ -4825,15 +4825,15 @@
       "closed": false
     },
     {
-      "id": "79533bd6-bb4d-43ee-957b-3ce319a2836b",
+      "id": "763104_general_211",
       "alertId": "763104",
       "is_banner": false,
-      "mode": "skytrain",
-      "mode_name": "天車",
+      "mode": "general",
+      "mode_name": "大眾運輸",
       "routeId": "",
       "routeLongName": "",
       "effect": "ADVISORY",
-      "effect_zh": "營運警報",
+      "effect_zh": "營運提示",
       "critical": false,
       "advisory": false,
       "alertText": "Bus, HandyDART, SeaBus, SkyTrain and West Coast Express advisory due to technical issues",
@@ -4847,7 +4847,7 @@
       "closed": false
     },
     {
-      "id": "38a1b051-3781-48e6-85b9-aeeff6a0fcd8",
+      "id": "763125_bus_212",
       "alertId": "763125",
       "is_banner": false,
       "mode": "bus",
@@ -4871,7 +4871,7 @@
       "closed": false
     },
     {
-      "id": "d2f90170-0393-4cf4-be4a-19b95b0b277d",
+      "id": "763140_bus_213",
       "alertId": "763140",
       "is_banner": false,
       "mode": "bus",
@@ -4879,7 +4879,7 @@
       "routeId": "14",
       "routeLongName": "Hastings/UBC Exchange",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 50187 Westbound W Hastings St @ Abbott St closed",
@@ -4893,7 +4893,7 @@
       "closed": false
     },
     {
-      "id": "d2f90170-0393-4cf4-be4a-19b95b0b277d",
+      "id": "763140_bus_214",
       "alertId": "763140",
       "is_banner": false,
       "mode": "bus",
@@ -4901,7 +4901,7 @@
       "routeId": "3",
       "routeLongName": "Main",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 50187 Westbound W Hastings St @ Abbott St closed",
@@ -4915,7 +4915,7 @@
       "closed": false
     },
     {
-      "id": "d2f90170-0393-4cf4-be4a-19b95b0b277d",
+      "id": "763140_bus_215",
       "alertId": "763140",
       "is_banner": false,
       "mode": "bus",
@@ -4923,7 +4923,7 @@
       "routeId": "8",
       "routeLongName": "Fraser",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 50187 Westbound W Hastings St @ Abbott St closed",
@@ -4937,7 +4937,7 @@
       "closed": false
     },
     {
-      "id": "d2f90170-0393-4cf4-be4a-19b95b0b277d",
+      "id": "763140_bus_216",
       "alertId": "763140",
       "is_banner": false,
       "mode": "bus",
@@ -4945,7 +4945,7 @@
       "routeId": "16",
       "routeLongName": "29th Avenue Station/Arbutus",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 50187 Westbound W Hastings St @ Abbott St closed",
@@ -4959,7 +4959,7 @@
       "closed": false
     },
     {
-      "id": "d2f90170-0393-4cf4-be4a-19b95b0b277d",
+      "id": "763140_bus_217",
       "alertId": "763140",
       "is_banner": false,
       "mode": "bus",
@@ -4967,7 +4967,7 @@
       "routeId": "20",
       "routeLongName": "Victoria",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 50187 Westbound W Hastings St @ Abbott St closed",
@@ -4981,7 +4981,7 @@
       "closed": false
     },
     {
-      "id": "c982c89a-2a26-48be-ba9c-6a9da8709925",
+      "id": "763157_skytrain_218",
       "alertId": "763157",
       "is_banner": false,
       "mode": "skytrain",
@@ -5011,7 +5011,7 @@
       "closed": false
     },
     {
-      "id": "6a596771-3e6e-4000-8eec-b5583699878d",
+      "id": "763158_skytrain_219",
       "alertId": "763158",
       "is_banner": false,
       "mode": "skytrain",
@@ -5040,7 +5040,7 @@
       "closed": false
     },
     {
-      "id": "2416a27b-fa5b-4045-9b3b-d5c94c93d9de",
+      "id": "763232_bus_220",
       "alertId": "763232",
       "is_banner": false,
       "mode": "bus",
@@ -5062,7 +5062,7 @@
       "closed": false
     },
     {
-      "id": "39fe5140-ea9a-4149-8ab3-cd78e92606bc",
+      "id": "763233_bus_221",
       "alertId": "763233",
       "is_banner": false,
       "mode": "bus",
@@ -5086,7 +5086,7 @@
       "closed": false
     },
     {
-      "id": "8cef69a1-4772-44be-baca-ddb9373d21fa",
+      "id": "763360_bus_222",
       "alertId": "763360",
       "is_banner": false,
       "mode": "bus",
@@ -5094,7 +5094,7 @@
       "routeId": "601",
       "routeLongName": "Bridgeport Station/South Delta",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 57438 Southbound Milsom Wynd @ Kerry Dr closed",
@@ -5108,7 +5108,7 @@
       "closed": false
     },
     {
-      "id": "8cef69a1-4772-44be-baca-ddb9373d21fa",
+      "id": "763360_bus_223",
       "alertId": "763360",
       "is_banner": false,
       "mode": "bus",
@@ -5116,7 +5116,7 @@
       "routeId": "602",
       "routeLongName": "Bridgeport Station/Tsawwassen Heights",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 57438 Southbound Milsom Wynd @ Kerry Dr closed",
@@ -5130,7 +5130,7 @@
       "closed": false
     },
     {
-      "id": "dbd78f9c-a48e-4029-b729-9655903f563f",
+      "id": "763363_bus_224",
       "alertId": "763363",
       "is_banner": false,
       "mode": "bus",
@@ -5138,7 +5138,7 @@
       "routeId": "249",
       "routeLongName": "Lonsdale Quay/Delbrook",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 54426 Northbound Chesterfield Ave @ W 1st St closed",
@@ -5152,7 +5152,7 @@
       "closed": false
     },
     {
-      "id": "f759e2a8-a374-4c52-b688-91f805faea3f",
+      "id": "763365_bus_225",
       "alertId": "763365",
       "is_banner": false,
       "mode": "bus",
@@ -5160,7 +5160,7 @@
       "routeId": "172",
       "routeLongName": "Coquitlam Central Station/Riverside",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 60030 Westbound Dominion Ave @ 500 Block closed",
@@ -5174,7 +5174,7 @@
       "closed": false
     },
     {
-      "id": "50783035-bccc-4552-a73f-34e5b6cce02b",
+      "id": "763366_bus_226",
       "alertId": "763366",
       "is_banner": false,
       "mode": "bus",
@@ -5182,7 +5182,7 @@
       "routeId": "172",
       "routeLongName": "Coquitlam Central Station/Riverside",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 60028 Westbound Dominion Ave @ Avon Place closed",
@@ -5196,7 +5196,7 @@
       "closed": false
     },
     {
-      "id": "2bd7559f-a410-4e05-a8dc-e66a9889c55b",
+      "id": "763368_bus_227",
       "alertId": "763368",
       "is_banner": false,
       "mode": "bus",
@@ -5204,7 +5204,7 @@
       "routeId": "172",
       "routeLongName": "Coquitlam Central Station/Riverside",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 60029 Eastbound Dominion Ave @ Hawkins St closed",
@@ -5218,7 +5218,7 @@
       "closed": false
     },
     {
-      "id": "683d2667-7c5b-4128-b779-f352f2d0b4a9",
+      "id": "763369_bus_228",
       "alertId": "763369",
       "is_banner": false,
       "mode": "bus",
@@ -5226,7 +5226,7 @@
       "routeId": "171",
       "routeLongName": "Coquitlam Central Station/Fremont",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 59961 Westbound Dominion Ave @ Fremont Connector closed",
@@ -5240,7 +5240,7 @@
       "closed": false
     },
     {
-      "id": "683d2667-7c5b-4128-b779-f352f2d0b4a9",
+      "id": "763369_bus_229",
       "alertId": "763369",
       "is_banner": false,
       "mode": "bus",
@@ -5248,7 +5248,7 @@
       "routeId": "172",
       "routeLongName": "Coquitlam Central Station/Riverside",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 59961 Westbound Dominion Ave @ Fremont Connector closed",
@@ -5262,7 +5262,7 @@
       "closed": false
     },
     {
-      "id": "05ee8c3b-92bf-477d-add6-2ea82f72c970",
+      "id": "763370_bus_230",
       "alertId": "763370",
       "is_banner": false,
       "mode": "bus",
@@ -5270,7 +5270,7 @@
       "routeId": "172",
       "routeLongName": "Coquitlam Central Station/Riverside",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 60031 Eastbound Dominion Ave @ Fremont St closed",
@@ -5284,7 +5284,7 @@
       "closed": false
     },
     {
-      "id": "e9b84454-efd2-46b1-ab4c-c87c506ee692",
+      "id": "763376_bus_231",
       "alertId": "763376",
       "is_banner": false,
       "mode": "bus",
@@ -5292,7 +5292,7 @@
       "routeId": "503",
       "routeLongName": "Fraser Hwy Express",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 55300 Eastbound 56 Ave @ 206 St closed",
@@ -5306,7 +5306,7 @@
       "closed": false
     },
     {
-      "id": "e9b84454-efd2-46b1-ab4c-c87c506ee692",
+      "id": "763376_bus_232",
       "alertId": "763376",
       "is_banner": false,
       "mode": "bus",
@@ -5314,7 +5314,7 @@
       "routeId": "556",
       "routeLongName": "Langley Centre/Gloucester",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 55300 Eastbound 56 Ave @ 206 St closed",
@@ -5328,7 +5328,7 @@
       "closed": false
     },
     {
-      "id": "a247a29f-2c55-40c3-abf2-dcb949ed4f12",
+      "id": "763377_bus_233",
       "alertId": "763377",
       "is_banner": false,
       "mode": "bus",
@@ -5336,7 +5336,7 @@
       "routeId": "407",
       "routeLongName": "Gilbert/Bridgeport",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 59121 Eastbound Steveston Hwy @ Trimaran Gate closed",
@@ -5350,7 +5350,7 @@
       "closed": false
     },
     {
-      "id": "9b2fe730-884c-4785-96d8-51ce96bd4ff6",
+      "id": "763378_bus_234",
       "alertId": "763378",
       "is_banner": false,
       "mode": "bus",
@@ -5358,7 +5358,7 @@
       "routeId": "5",
       "routeLongName": "Robson",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 60502 Northbound Denman St @ Comox St closed",
@@ -5372,7 +5372,7 @@
       "closed": false
     },
     {
-      "id": "cccc16bc-9f66-4ba3-b010-46bfe69dfbbe",
+      "id": "763381_bus_235",
       "alertId": "763381",
       "is_banner": false,
       "mode": "bus",
@@ -5380,7 +5380,7 @@
       "routeId": "14",
       "routeLongName": "Hastings/UBC Exchange",
       "effect": "STOP_MOVE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點遷移",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 50357 Southbound Alma St @ W 10 Ave has moved",
@@ -5394,7 +5394,7 @@
       "closed": false
     },
     {
-      "id": "cccc16bc-9f66-4ba3-b010-46bfe69dfbbe",
+      "id": "763381_bus_236",
       "alertId": "763381",
       "is_banner": false,
       "mode": "bus",
@@ -5402,7 +5402,7 @@
       "routeId": "9",
       "routeLongName": "Broadway",
       "effect": "STOP_MOVE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點遷移",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 50357 Southbound Alma St @ W 10 Ave has moved",
@@ -5416,15 +5416,15 @@
       "closed": false
     },
     {
-      "id": "cccc16bc-9f66-4ba3-b010-46bfe69dfbbe",
+      "id": "763381_bus_237",
       "alertId": "763381",
       "is_banner": false,
-      "mode": "skytrain",
-      "mode_name": "天車",
+      "mode": "bus",
+      "mode_name": "巴士",
       "routeId": "99",
       "routeLongName": "Broadway B-Line",
       "effect": "STOP_MOVE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點遷移",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 50357 Southbound Alma St @ W 10 Ave has moved",
@@ -5438,7 +5438,7 @@
       "closed": false
     },
     {
-      "id": "ccfc55ea-67eb-4d3e-98c0-6bd958e31ab2",
+      "id": "763405_bus_238",
       "alertId": "763405",
       "is_banner": false,
       "mode": "bus",
@@ -5446,7 +5446,7 @@
       "routeId": "2",
       "routeLongName": "Macdonald",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 50072 Eastbound Cornwall Ave @ Cypress St closed",
@@ -5460,7 +5460,7 @@
       "closed": false
     },
     {
-      "id": "4a283ebe-9066-456f-96f2-acb982001561",
+      "id": "763408_bus_239",
       "alertId": "763408",
       "is_banner": false,
       "mode": "bus",
@@ -5468,7 +5468,7 @@
       "routeId": "2",
       "routeLongName": "Macdonald",
       "effect": "STOP_CLOSURE",
-      "effect_zh": "營運警報",
+      "effect_zh": "站點暫停",
       "critical": false,
       "advisory": false,
       "alertText": "Stop 50101 Westbound Cornwall Ave @ Cypress St closed",
@@ -5482,7 +5482,7 @@
       "closed": false
     },
     {
-      "id": "c1bb85e1-3d91-4ea3-be1a-efe48243951f",
+      "id": "763415_bus_240",
       "alertId": "763415",
       "is_banner": false,
       "mode": "bus",
@@ -5490,7 +5490,7 @@
       "routeId": "620",
       "routeLongName": "Tsawwassen Ferry/Bridgeport Station Exp",
       "effect": "CANCELLATION",
-      "effect_zh": "營運警報",
+      "effect_zh": "班次取消",
       "critical": false,
       "advisory": false,
       "alertText": "620 Bridgeport Station trip cancelled",
@@ -5506,7 +5506,7 @@
       "closed": false
     },
     {
-      "id": "ddf0beaa-1252-4425-a7a6-606a8e6f3fdb",
+      "id": "763417_bus_241",
       "alertId": "763417",
       "is_banner": false,
       "mode": "bus",
@@ -5514,7 +5514,7 @@
       "routeId": "620",
       "routeLongName": "Tsawwassen Ferry/Bridgeport Station Exp",
       "effect": "CANCELLATION",
-      "effect_zh": "營運警報",
+      "effect_zh": "班次取消",
       "critical": false,
       "advisory": false,
       "alertText": "620 Tsawwassen Ferry trip cancelled",
@@ -5530,7 +5530,7 @@
       "closed": false
     },
     {
-      "id": "c317cff8-ca9d-4584-8b73-6557a1639352",
+      "id": "763421_bus_242",
       "alertId": "763421",
       "is_banner": false,
       "mode": "bus",
@@ -5538,7 +5538,7 @@
       "routeId": "322",
       "routeLongName": "Newton Exchange/Scottsdale",
       "effect": "CANCELLATION",
-      "effect_zh": "營運警報",
+      "effect_zh": "班次取消",
       "critical": false,
       "advisory": false,
       "alertText": "322 Newton Exchange trip cancelled",
@@ -5552,7 +5552,7 @@
       "closed": false
     },
     {
-      "id": "b6ace844-299a-477c-be39-561e38c0c7d5",
+      "id": "763423_bus_243",
       "alertId": "763423",
       "is_banner": false,
       "mode": "bus",
@@ -5560,7 +5560,7 @@
       "routeId": "322",
       "routeLongName": "Newton Exchange/Scottsdale",
       "effect": "CANCELLATION",
-      "effect_zh": "營運警報",
+      "effect_zh": "班次取消",
       "critical": false,
       "advisory": false,
       "alertText": "322 Scottsdale trip cancelled",
@@ -5574,15 +5574,15 @@
       "closed": false
     },
     {
-      "id": "a5bd9dd8-437a-4adc-916a-6921b9d16119",
+      "id": "763458_general_244",
       "alertId": "763458",
       "is_banner": false,
-      "mode": "seabus",
-      "mode_name": "水上巴士",
+      "mode": "general",
+      "mode_name": "大眾運輸",
       "routeId": "",
       "routeLongName": "SeaBus",
       "effect": "EXTRA_SERVICE",
-      "effect_zh": "營運警報",
+      "effect_zh": "加開班次",
       "critical": false,
       "advisory": false,
       "alertText": "Extra service on SeaBus",
@@ -5598,7 +5598,7 @@
       "closed": false
     },
     {
-      "id": "8f48c96e-e9f9-4f58-abfc-c986834931b5",
+      "id": "763495_skytrain_245",
       "alertId": "763495",
       "is_banner": false,
       "mode": "skytrain",
@@ -5606,7 +5606,7 @@
       "routeId": "",
       "routeLongName": "",
       "effect": "ELEVATORS",
-      "effect_zh": "營運警報",
+      "effect_zh": "電梯暫停",
       "critical": false,
       "advisory": false,
       "alertText": "SkyTrain Expo Line elevator alert at Main Street-Science World Station",
@@ -5623,7 +5623,7 @@
       "closed": false
     },
     {
-      "id": "9fcfe8bb-988a-44ec-9f16-04cd59693dda",
+      "id": "763574_bus_246",
       "alertId": "763574",
       "is_banner": false,
       "mode": "bus",
@@ -5631,7 +5631,7 @@
       "routeId": "351",
       "routeLongName": "White Rock Centre/Bridgeport Station",
       "effect": "DELAY",
-      "effect_zh": "營運警報",
+      "effect_zh": "班次延誤",
       "critical": false,
       "advisory": false,
       "alertText": "Route 351 Bridgeport Station/White Rock Centre is delayed",
@@ -5647,7 +5647,7 @@
       "closed": false
     },
     {
-      "id": "f9253f73-5867-4bea-bdf8-f83ac0e48916",
+      "id": "763582_bus_247",
       "alertId": "763582",
       "is_banner": false,
       "mode": "bus",
@@ -5671,7 +5671,7 @@
       "closed": false
     },
     {
-      "id": "20f142f2-d73b-40ea-8910-07b4e779da8a",
+      "id": "763583_bus_248",
       "alertId": "763583",
       "is_banner": false,
       "mode": "bus",
@@ -5696,7 +5696,7 @@
       "closed": false
     },
     {
-      "id": "2adb8b83-1b9c-4856-84d5-febb251c2c3c",
+      "id": "763659_bus_249",
       "alertId": "763659",
       "is_banner": false,
       "mode": "bus",
@@ -5704,7 +5704,7 @@
       "routeId": "310",
       "routeLongName": "Scottsdale/Ladner",
       "effect": "DELAY",
-      "effect_zh": "營運警報",
+      "effect_zh": "班次延誤",
       "critical": false,
       "advisory": false,
       "alertText": "Route 310 Scottsdale/Ladner is delayed",
@@ -5718,7 +5718,7 @@
       "closed": false
     },
     {
-      "id": "9ff482fe-f9e6-4e24-b5b9-ae8b68d29107",
+      "id": "763704_skytrain_250",
       "alertId": "763704",
       "is_banner": false,
       "mode": "skytrain",
@@ -5746,7 +5746,7 @@
       "closed": false
     },
     {
-      "id": "8d52cb5b-08dc-453d-b92f-cd88c2504d2f",
+      "id": "763706_bus_251",
       "alertId": "763706",
       "is_banner": false,
       "mode": "bus",
@@ -5754,7 +5754,7 @@
       "routeId": "351",
       "routeLongName": "White Rock Centre/Bridgeport Station",
       "effect": "CANCELLATION",
-      "effect_zh": "營運警報",
+      "effect_zh": "班次取消",
       "critical": false,
       "advisory": false,
       "alertText": "351 White Rock Centre trip cancelled",
@@ -5770,7 +5770,7 @@
       "closed": false
     },
     {
-      "id": "a31a4ae7-4881-4f0b-ab0e-a49c3830fd91",
+      "id": "763710_bus_252",
       "alertId": "763710",
       "is_banner": false,
       "mode": "bus",
@@ -5778,7 +5778,7 @@
       "routeId": "119",
       "routeLongName": "Kingsway",
       "effect": "CANCELLATION",
-      "effect_zh": "營運警報",
+      "effect_zh": "班次取消",
       "critical": false,
       "advisory": false,
       "alertText": "119 Edmonds Station trip cancelled",
@@ -5795,7 +5795,7 @@
       "closed": false
     },
     {
-      "id": "e1b17fdf-c071-41f1-816e-af6666b731f8",
+      "id": "763711_bus_253",
       "alertId": "763711",
       "is_banner": false,
       "mode": "bus",
@@ -5803,7 +5803,7 @@
       "routeId": "405",
       "routeLongName": "Five Road/Cambie",
       "effect": "CANCELLATION",
-      "effect_zh": "營運警報",
+      "effect_zh": "班次取消",
       "critical": false,
       "advisory": false,
       "alertText": "405 Cambie trip cancelled",
@@ -5817,7 +5817,7 @@
       "closed": false
     },
     {
-      "id": "3560815c-9ce3-4146-afdb-b2d60ff01638",
+      "id": "763713_bus_254",
       "alertId": "763713",
       "is_banner": false,
       "mode": "bus",
@@ -5825,7 +5825,7 @@
       "routeId": "19",
       "routeLongName": "Kingsway",
       "effect": "CANCELLATION",
-      "effect_zh": "營運警報",
+      "effect_zh": "班次取消",
       "critical": false,
       "advisory": false,
       "alertText": "19 Metrotown Station trip cancelled",
@@ -5842,7 +5842,7 @@
       "closed": false
     },
     {
-      "id": "c0b15a85-f74e-4f38-8e2e-134d573c825b",
+      "id": "763714_bus_255",
       "alertId": "763714",
       "is_banner": false,
       "mode": "bus",
@@ -5850,7 +5850,7 @@
       "routeId": "119",
       "routeLongName": "Kingsway",
       "effect": "CANCELLATION",
-      "effect_zh": "營運警報",
+      "effect_zh": "班次取消",
       "critical": false,
       "advisory": false,
       "alertText": "119 Metrotown Station trip cancelled",
@@ -5867,15 +5867,15 @@
       "closed": false
     },
     {
-      "id": "8b09c3f9-7483-44ff-91aa-f390fef066e4",
+      "id": "763715_general_256",
       "alertId": "763715",
       "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
+      "mode": "general",
+      "mode_name": "大眾運輸",
       "routeId": "R3",
       "routeLongName": "Lougheed Hwy",
       "effect": "CANCELLATION",
-      "effect_zh": "營運警報",
+      "effect_zh": "班次取消",
       "critical": false,
       "advisory": false,
       "alertText": "R3 Coquitlam Central Station trip cancelled",
@@ -5891,7 +5891,7 @@
       "closed": false
     },
     {
-      "id": "29c7b163-8b29-4f56-aa56-1507b4772a8c",
+      "id": "763716_bus_257",
       "alertId": "763716",
       "is_banner": false,
       "mode": "bus",
@@ -5899,7 +5899,7 @@
       "routeId": "335",
       "routeLongName": "Newton Exchange/Surrey Central Station",
       "effect": "CANCELLATION",
-      "effect_zh": "營運警報",
+      "effect_zh": "班次取消",
       "critical": false,
       "advisory": false,
       "alertText": "335 Surrey Central Station trip cancelled",
@@ -5915,7 +5915,7 @@
       "closed": false
     },
     {
-      "id": "eada5d04-848e-423e-ae55-9d18d47456ae",
+      "id": "763717_bus_258",
       "alertId": "763717",
       "is_banner": false,
       "mode": "bus",
@@ -5923,7 +5923,7 @@
       "routeId": "100",
       "routeLongName": "Marine Drive",
       "effect": "CANCELLATION",
-      "effect_zh": "營運警報",
+      "effect_zh": "班次取消",
       "critical": false,
       "advisory": false,
       "alertText": "100 22nd Street Station trip cancelled",
@@ -5940,7 +5940,7 @@
       "closed": false
     },
     {
-      "id": "d6bba58c-8a2f-443b-bc12-494548cc0e84",
+      "id": "763719_bus_259",
       "alertId": "763719",
       "is_banner": false,
       "mode": "bus",
@@ -5948,7 +5948,7 @@
       "routeId": "310",
       "routeLongName": "Scottsdale/Ladner",
       "effect": "CANCELLATION",
-      "effect_zh": "營運警報",
+      "effect_zh": "班次取消",
       "critical": false,
       "advisory": false,
       "alertText": "310 Scottsdale trip cancelled",
@@ -5962,7 +5962,7 @@
       "closed": false
     },
     {
-      "id": "e2827f72-4fa0-4817-9f4b-99d72cd07687",
+      "id": "763721_bus_260",
       "alertId": "763721",
       "is_banner": false,
       "mode": "bus",
@@ -5970,7 +5970,7 @@
       "routeId": "337",
       "routeLongName": "Fraser Heights/Surrey Central Station",
       "effect": "CANCELLATION",
-      "effect_zh": "營運警報",
+      "effect_zh": "班次取消",
       "critical": false,
       "advisory": false,
       "alertText": "337 Fraser Heights trip cancelled",
@@ -5986,7 +5986,7 @@
       "closed": false
     },
     {
-      "id": "4597fc01-cbbb-4cef-8ee6-974c8d64921b",
+      "id": "763722_bus_261",
       "alertId": "763722",
       "is_banner": false,
       "mode": "bus",
@@ -5994,7 +5994,7 @@
       "routeId": "337",
       "routeLongName": "Fraser Heights/Surrey Central Station",
       "effect": "CANCELLATION",
-      "effect_zh": "營運警報",
+      "effect_zh": "班次取消",
       "critical": false,
       "advisory": false,
       "alertText": "337 Guildford/Surrey Central Station trip cancelled",
@@ -6010,7 +6010,7 @@
       "closed": false
     },
     {
-      "id": "075dca22-d678-4c31-8abf-609f7daf3908",
+      "id": "763723_bus_262",
       "alertId": "763723",
       "is_banner": false,
       "mode": "bus",
@@ -6018,7 +6018,7 @@
       "routeId": "351",
       "routeLongName": "White Rock Centre/Bridgeport Station",
       "effect": "CANCELLATION",
-      "effect_zh": "營運警報",
+      "effect_zh": "班次取消",
       "critical": false,
       "advisory": false,
       "alertText": "351 Bridgeport Station trip cancelled",
@@ -6034,7 +6034,7 @@
       "closed": false
     },
     {
-      "id": "69b74041-7da4-48c5-9f67-3da7f617e8f4",
+      "id": "763724_bus_263",
       "alertId": "763724",
       "is_banner": false,
       "mode": "bus",
@@ -6042,7 +6042,7 @@
       "routeId": "342",
       "routeLongName": "Langley Centre/Newton Exchange",
       "effect": "CANCELLATION",
-      "effect_zh": "營運警報",
+      "effect_zh": "班次取消",
       "critical": false,
       "advisory": false,
       "alertText": "342 Langley Centre trip cancelled",
@@ -6056,7 +6056,7 @@
       "closed": false
     },
     {
-      "id": "c6ca65eb-f397-4902-b342-11e555f78c50",
+      "id": "763725_bus_264",
       "alertId": "763725",
       "is_banner": false,
       "mode": "bus",
@@ -6064,7 +6064,7 @@
       "routeId": "160",
       "routeLongName": "Port Coquitlam Station/Kootenay Loop",
       "effect": "CANCELLATION",
-      "effect_zh": "營運警報",
+      "effect_zh": "班次取消",
       "critical": false,
       "advisory": false,
       "alertText": "160 Port Coquitlam Station trip cancelled",
@@ -6078,7 +6078,7 @@
       "closed": false
     },
     {
-      "id": "bdddca30-50c2-453d-beda-39a17f5b3230",
+      "id": "763726_bus_265",
       "alertId": "763726",
       "is_banner": false,
       "mode": "bus",
@@ -6086,7 +6086,7 @@
       "routeId": "4",
       "routeLongName": "Powell/UBC Exchange",
       "effect": "CANCELLATION",
-      "effect_zh": "營運警報",
+      "effect_zh": "班次取消",
       "critical": false,
       "advisory": false,
       "alertText": "4 UBC Exchange trip cancelled",
@@ -6102,7 +6102,7 @@
       "closed": false
     },
     {
-      "id": "82b0dcbb-a1a5-4d2c-b983-cdf883b9b3b2",
+      "id": "763727_bus_266",
       "alertId": "763727",
       "is_banner": false,
       "mode": "bus",
@@ -6110,7 +6110,7 @@
       "routeId": "4",
       "routeLongName": "Powell/UBC Exchange",
       "effect": "CANCELLATION",
-      "effect_zh": "營運警報",
+      "effect_zh": "班次取消",
       "critical": false,
       "advisory": false,
       "alertText": "4 Downtown/Powell trip cancelled",
@@ -6124,15 +6124,15 @@
       "closed": false
     },
     {
-      "id": "85b05567-a7f9-4616-a0be-c05df55e1407",
+      "id": "763728_general_267",
       "alertId": "763728",
       "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
+      "mode": "general",
+      "mode_name": "大眾運輸",
       "routeId": "R3",
       "routeLongName": "Lougheed Hwy",
       "effect": "CANCELLATION",
-      "effect_zh": "營運警報",
+      "effect_zh": "班次取消",
       "critical": false,
       "advisory": false,
       "alertText": "R3 Coquitlam Central Station trip cancelled",
@@ -6148,15 +6148,15 @@
       "closed": false
     },
     {
-      "id": "309b3f45-f325-4b9b-95d0-e389f5afb924",
+      "id": "763729_general_268",
       "alertId": "763729",
       "is_banner": false,
-      "mode": "bus",
-      "mode_name": "巴士",
+      "mode": "general",
+      "mode_name": "大眾運輸",
       "routeId": "R3",
       "routeLongName": "Lougheed Hwy",
       "effect": "CANCELLATION",
-      "effect_zh": "營運警報",
+      "effect_zh": "班次取消",
       "critical": false,
       "advisory": false,
       "alertText": "R3 Haney Place trip cancelled",
@@ -6172,7 +6172,7 @@
       "closed": false
     },
     {
-      "id": "e2ec1c1b-23ce-4fa8-abb1-6d76d0fe5af1",
+      "id": "763730_bus_269",
       "alertId": "763730",
       "is_banner": false,
       "mode": "bus",
@@ -6180,7 +6180,7 @@
       "routeId": "335",
       "routeLongName": "Newton Exchange/Surrey Central Station",
       "effect": "CANCELLATION",
-      "effect_zh": "營運警報",
+      "effect_zh": "班次取消",
       "critical": false,
       "advisory": false,
       "alertText": "335 Newton Exchange trip cancelled",

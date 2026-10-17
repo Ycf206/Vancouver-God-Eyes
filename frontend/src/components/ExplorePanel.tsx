@@ -1851,62 +1851,51 @@ function ExploreContent() {
     let banners = all.filter((a) => a.is_banner);
     let regular = all.filter((a) => !a.is_banner);
 
-    // 1. 運具子分頁篩選 (同時套用於一般卡片與置頂警報，切換至特定運具時絕不混入其他運具內容)
+    // 1. 運具子分頁篩選 (同時嚴格套用於一般卡片與置頂警報，切換至特定運具時絕不混入其他運具內容)
     if (alertsSubTab !== 'all') {
       regular = regular.filter((a) => a.mode === alertsSubTab);
-      banners = banners.filter((a) => {
-        if (a.mode === alertsSubTab) return true;
-        const text = `${a.header || ''} ${a.description || ''} ${a.alertText || ''} ${a.routeLongName || ''}`.toLowerCase();
-        if (alertsSubTab === 'skytrain') {
-          return text.includes('skytrain') || text.includes('expo line') || text.includes('millennium line') || text.includes('canada line');
-        }
-        if (alertsSubTab === 'bus') {
-          return text.includes('bus') || text.includes('route ');
-        }
-        if (alertsSubTab === 'seabus') {
-          return text.includes('seabus');
-        }
-        if (alertsSubTab === 'wce') {
-          return text.includes('west coast express') || text.includes('wce');
-        }
-        return false;
-      });
+      banners = banners.filter((a) => a.mode === alertsSubTab);
     }
 
-    // 2. 影響性質篩選 (包含 TransLink 實際 API 回傳之各項 effect 與文字標籤)
+    // 2. 影響性質篩選 (包含 TransLink 實際 API 回傳之各項 effect 與中文標籤)
     if (alertsEffectFilter !== 'all') {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const effectMatch = (a: any) => {
         const eff = (a.effect || '').toUpperCase();
+        const effZh = (a.effect_zh || '');
         const header = (a.header || '').toLowerCase();
         const text = (a.alertText || '').toLowerCase();
         const desc = (a.description || '').toLowerCase();
-        const combined = `${eff} ${header} ${text} ${desc}`;
+        const combined = `${eff} ${effZh} ${header} ${text} ${desc}`;
 
         if (alertsEffectFilter === 'PLATFORM_CHANGE') {
-          return eff.includes('PLATFORM') || combined.includes('platform');
+          return eff.includes('PLATFORM') || effZh.includes('月台') || combined.includes('platform');
         }
         if (alertsEffectFilter === 'DETOUR') {
           return (
             eff.includes('DETOUR') || 
             eff.includes('STOP_MOVE') || 
-            eff.includes('STOP_CLOSURE') || 
+            eff.includes('STOP_MOVED') || 
+            effZh.includes('改道') || 
+            effZh.includes('遷移') || 
             combined.includes('detour') || 
-            combined.includes('stop move') || 
-            combined.includes('stop closure')
+            combined.includes('stop move')
           );
         }
         if (alertsEffectFilter === 'DELAYS') {
-          return eff.includes('DELAY') || combined.includes('delay');
+          return eff.includes('DELAY') || effZh.includes('延誤') || combined.includes('delay');
         }
         if (alertsEffectFilter === 'CANCELLED_SERVICE') {
           return (
             eff.includes('CANCEL') || 
+            eff.includes('STOP_CLOSURE') || 
             eff.includes('NO_SERVICE') || 
-            eff.includes('SERVICE_CHANGE') || 
-            eff.includes('SCHEDULE_CHANGE') || 
+            effZh.includes('取消') || 
+            effZh.includes('停駛') || 
+            effZh.includes('暫停') || 
             combined.includes('cancel') || 
-            combined.includes('no service')
+            combined.includes('no service') ||
+            combined.includes('closure')
           );
         }
         if (alertsEffectFilter === 'ELEVATOR') {
@@ -1914,8 +1903,22 @@ function ExploreContent() {
             eff.includes('ELEVATOR') || 
             eff.includes('ESCALATOR') || 
             eff.includes('STATION_ISSUE') || 
+            effZh.includes('電梯') || 
+            effZh.includes('電扶梯') || 
+            effZh.includes('維護') ||
             combined.includes('elevator') || 
             combined.includes('escalator')
+          );
+        }
+        if (alertsEffectFilter === 'ADVISORY') {
+          return (
+            eff.includes('ADVISORY') || 
+            eff.includes('INFORMATIONAL') || 
+            eff.includes('SCHEDULE') || 
+            eff.includes('SERVICE_CHANGE') || 
+            effZh.includes('提示') || 
+            effZh.includes('公告') || 
+            effZh.includes('時刻')
           );
         }
         return true;
@@ -1948,8 +1951,9 @@ function ExploreContent() {
       if (a.closed) score += 300;
       const eff = (a.effect || '').toUpperCase();
       if (eff.includes('CANCEL') || eff.includes('NO_SERVICE')) score += 200;
+      else if (eff.includes('STOP_CLOSURE')) score += 180;
       else if (eff.includes('DELAY')) score += 150;
-      else if (eff.includes('DETOUR') || eff.includes('STOP_CLOSURE')) score += 100;
+      else if (eff.includes('DETOUR') || eff.includes('STOP_MOVE')) score += 100;
       else if (eff.includes('PLATFORM')) score += 80;
       else if (eff.includes('ELEVATOR') || eff.includes('ESCALATOR')) score += 50;
       if (a.advisory) score += 20;
@@ -1976,7 +1980,7 @@ function ExploreContent() {
     if (!transitAlertsData || !Array.isArray(transitAlertsData.alerts)) {
       return { all: 0, skytrain: 0, bus: 0, seabus: 0, wce: 0 };
     }
-    const list = transitAlertsData.alerts;
+    const list = transitAlertsData.alerts.filter((a) => !a.is_banner);
     return {
       all: list.length,
       skytrain: list.filter((a) => a.mode === 'skytrain').length,
@@ -2748,27 +2752,6 @@ function ExploreContent() {
                         </span>
                       )}
                     </div>
-
-                    {/* Actions: Official website */}
-                    {resort.official_url && (
-                      <div className="flex items-center justify-between pt-1 border-t border-[#1a1f2c]">
-                        <span className="text-[10px] text-cyan-400 group-hover:underline flex items-center gap-1">
-                          <MapPin className="w-3 h-3" />
-                          點擊卡片跳轉至該滑雪場
-                        </span>
-                        <a
-                          href={resort.official_url}
-                          target="_blank"
-                          rel="noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          className="py-1 px-2.5 bg-[#1e2330] hover:bg-[#282f40] border border-[#2f374a] text-gray-300 hover:text-white rounded-md text-xs font-medium transition-colors flex items-center gap-1 shrink-0"
-                          title="雪場官方網站"
-                        >
-                          <span>官網</span>
-                          <ExternalLink className="w-3 h-3 text-gray-400" />
-                        </a>
-                      </div>
-                    )}
                   </div>
                 );
               })
@@ -3020,15 +3003,14 @@ function ExploreContent() {
                       className="bg-[#141924] hover:bg-[#1a2233] p-2.5 rounded-lg border border-[#222b3b] hover:border-emerald-500/40 transition-all flex flex-col gap-1.5 cursor-pointer group"
                       onClick={() => handleSelectAuroraSpot(spot)}
                     >
-                      <div className="flex items-start justify-between">
-                        <div className="flex flex-col min-w-0">
-                          <span className="font-bold text-xs text-white group-hover:text-emerald-300 transition-colors flex items-center gap-1 truncate">
-                            <span>✨</span>
-                            <span className="truncate">{spot.name}</span>
-                          </span>
-                          <span className="text-[10.5px] text-gray-400 mt-0.5 truncate">{spot.area}</span>
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-bold text-xs text-white group-hover:text-emerald-300 transition-colors flex items-start gap-1.5 leading-snug">
+                            <span className="shrink-0 text-xs">✨</span>
+                            <span className="break-words whitespace-normal">{spot.name}</span>
+                          </h4>
                         </div>
-                        <span className="text-[9.5px] bg-[#222a3a] text-cyan-300 px-1.5 py-0.5 rounded font-mono shrink-0 ml-1">
+                        <span className="text-[9.5px] bg-[#222a3a] text-cyan-300 px-1.5 py-0.5 rounded font-mono shrink-0 whitespace-nowrap">
                           {spot.drive_min}
                         </span>
                       </div>
@@ -3492,7 +3474,6 @@ function ExploreContent() {
                 <span className="text-[10px] text-emerald-400 font-bold">適合游泳</span>
               </div>
               <span className="text-xs font-bold text-white font-mono mt-0.5">{beachStats.safe} 座</span>
-              <span className="text-[8.5px] text-gray-400 font-mono">≤200 MPN</span>
             </button>
 
             <button
@@ -3509,7 +3490,6 @@ function ExploreContent() {
                 <span className="text-[10px] text-amber-400 font-bold">需留意</span>
               </div>
               <span className="text-xs font-bold text-white font-mono mt-0.5">{beachStats.advisory} 座</span>
-              <span className="text-[8.5px] text-gray-400 font-mono">201-400</span>
             </button>
 
             <button
@@ -3526,7 +3506,6 @@ function ExploreContent() {
                 <span className="text-[10px] text-rose-400 font-bold">超標警告</span>
               </div>
               <span className="text-xs font-bold text-white font-mono mt-0.5">{beachStats.warning} 座</span>
-              <span className="text-[8.5px] text-gray-400 font-mono">&gt;400 MPN</span>
             </button>
           </div>
 
@@ -3687,12 +3666,19 @@ function ExploreContent() {
                       </p>
                     )}
 
-                    {/* Actions: Direct map locator hint & Official Health URL */}
+                    {/* Actions: Google Maps Navigation & Official Health URL */}
                     <div className="flex items-center justify-between pt-1 border-t border-[#1e2330] text-[10.5px]">
-                      <span className="text-teal-400 group-hover:underline font-medium flex items-center gap-1">
-                        <MapPin className="w-3.5 h-3.5 text-teal-400" />
-                        點擊卡片跳轉至水域
-                      </span>
+                      <a
+                        href={`https://www.google.com/maps/dir/?api=1&destination=${beach.center_lat},${beach.center_lon}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#0e121a] hover:bg-teal-950/70 text-gray-300 hover:text-teal-300 border border-[#232838] hover:border-teal-500/50 transition-colors text-[10.5px] font-medium"
+                        title="使用 Google 地圖規劃導航路線至此海灘"
+                      >
+                        <Navigation className="w-3.5 h-3.5 text-teal-400" />
+                        <span>Google 導航至此</span>
+                      </a>
 
                       {beach.advisory_url && (
                         <a
@@ -3826,8 +3812,9 @@ function ExploreContent() {
                 <option value="PLATFORM_CHANGE">月台更換</option>
                 <option value="DETOUR">路線改道 / 站點變更</option>
                 <option value="DELAYS">班次延誤</option>
-                <option value="CANCELLED_SERVICE">班次停駛 / 暫停服務</option>
-                <option value="ELEVATOR">電梯 / 電扶梯暫停</option>
+                <option value="CANCELLED_SERVICE">班次停駛 / 站點關閉</option>
+                <option value="ELEVATOR">電梯 / 電扶梯維護</option>
+                <option value="ADVISORY">營運提示 / 時刻公告</option>
               </select>
             </div>
 
@@ -3862,9 +3849,9 @@ function ExploreContent() {
             ) : (
               <>
                 {/* 3.6 橫幅緊急通知置頂 (Banner alerts - Always on top) */}
-                {filteredAndSortedAlerts.banners.map((b) => (
+                {filteredAndSortedAlerts.banners.map((b, bIdx) => (
                   <div
-                    key={b.id}
+                    key={`banner_${b.id || b.alertId}_${bIdx}`}
                     className="p-3.5 rounded-xl bg-gradient-to-br from-red-950/90 via-[#2c0e14] to-[#1a0c10] border border-red-500/80 shadow-[0_0_15px_rgba(239,68,68,0.25)] flex flex-col gap-2 relative overflow-hidden ring-1 ring-red-500/40"
                   >
                     <div className="flex items-center justify-between gap-2">
@@ -3913,7 +3900,7 @@ function ExploreContent() {
                 ))}
 
                 {/* 3.5 Regular Alert Cards */}
-                {filteredAndSortedAlerts.regular.map((item) => {
+                {filteredAndSortedAlerts.regular.map((item, idx) => {
                   const modeBg =
                     item.mode === 'skytrain'
                       ? 'bg-blue-500/15 text-blue-300 border-blue-500/30'
@@ -3927,7 +3914,7 @@ function ExploreContent() {
 
                   return (
                     <div
-                      key={item.id}
+                      key={`reg_${item.id || item.alertId}_${item.mode}_${idx}`}
                       className="p-3 rounded-xl bg-[#131620] hover:bg-[#181d2a] border border-[#232838] hover:border-[#333d54] transition-all flex flex-col gap-2 shadow-sm"
                     >
                       {/* Card Header: Mode Badge, Effect Badge, Severity Badge */}
@@ -4552,10 +4539,6 @@ function ExploreContent() {
 
                     <div className="flex items-center justify-between text-[10px] text-gray-400 pt-1 border-t border-[#1e2434]">
                       <span className="font-mono text-emerald-400/90">{crossing.hours || '24 小時全天開放'}</span>
-                      <span className="text-emerald-400 group-hover:underline flex items-center gap-1">
-                        <MapPin className="w-3 h-3" />
-                        在地圖查看 ❯
-                      </span>
                     </div>
                   </div>
                 );

@@ -255,7 +255,7 @@ const SKI_RESORT_POINTS = [
     zoom: 14,
     vertical_drop: '616 m',
     official_url: 'https://cypressmountain.com',
-    skiresort_url: 'https://www.skiresort.com/ski-resort/cypress-mountain/',
+    skiresort_url: 'https://www.skiresort.com/en/ski-resort/cypress-mountain/snow-report/',
     status_zh: '季節休園',
     is_open: false,
     season_range: '12 Dec 2026 - 11 Apr 2027',
@@ -278,7 +278,7 @@ const SKI_RESORT_POINTS = [
     zoom: 14,
     vertical_drop: '400 m',
     official_url: 'https://www.grousemountain.com',
-    skiresort_url: 'https://www.skiresort.com/ski-resort/grouse-mountain/',
+    skiresort_url: 'https://www.skiresort.com/en/ski-resort/grouse-mountain/snow-report/',
     status_zh: '季節休園',
     is_open: false,
     season_range: '19 Nov 2026 - 18 Apr 2027',
@@ -301,7 +301,7 @@ const SKI_RESORT_POINTS = [
     zoom: 14,
     vertical_drop: '330 m',
     official_url: 'https://mtseymour.ca',
-    skiresort_url: 'https://www.skiresort.com/ski-resort/mount-seymour/',
+    skiresort_url: 'https://www.skiresort.com/en/ski-resort/mount-seymour/snow-report/',
     status_zh: '季節休園',
     is_open: false,
     season_range: '10 Dec 2026 - 11 Apr 2027',
@@ -10379,6 +10379,28 @@ export default function AppMap() {
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                   )}
+
+                  {/* 詳細資料 (Snow Report / SkiResort) 外部連結按鈕 */}
+                  {(() => {
+                    const detailUrl = selectedFacility.properties.skiresort_url || (
+                      selectedFacility.id?.includes('cypress') ? 'https://www.skiresort.com/en/ski-resort/cypress-mountain/snow-report/' :
+                      selectedFacility.id?.includes('grouse') ? 'https://www.skiresort.com/en/ski-resort/grouse-mountain/snow-report/' :
+                      selectedFacility.id?.includes('seymour') ? 'https://www.skiresort.com/en/ski-resort/mount-seymour/snow-report/' :
+                      null
+                    );
+                    if (!detailUrl) return null;
+                    return (
+                      <a
+                        href={detailUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-1.5 py-1.5 px-3 bg-slate-800 hover:bg-slate-700 text-cyan-200 hover:text-white rounded font-medium text-xs border border-cyan-800/40 transition-colors shadow-sm"
+                      >
+                        <span>查看詳細資料 (即時雪況與纜車站點)</span>
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                    );
+                  })()}
                 </div>
               )}
 

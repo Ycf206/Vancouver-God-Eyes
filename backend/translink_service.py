@@ -81,45 +81,81 @@ def map_effect_zh(effect_code: str) -> str:
     mapping = {
         "PLATFORM_CHANGE": "月台更換",
         "DETOUR": "路線改道",
+        "DELAY": "班次延誤",
         "DELAYS": "班次延誤",
+        "CANCELLATION": "班次取消",
         "CANCELLED_SERVICE": "班次停駛",
         "NO_SERVICE": "暫停服務",
-        "MODIFIED_SERVICE": "服務調整",
-        "ADDITIONAL_SERVICE": "加開班次",
+        "STOP_CLOSURE": "站點暫停",
+        "STOP_MOVE": "站點遷移",
         "STOP_MOVED": "站點遷移",
+        "ELEVATORS": "電梯暫停",
         "ELEVATOR": "電梯暫停",
+        "ESCALATORS": "電扶梯暫停",
+        "STATION_ISSUE": "車站維護",
+        "SERVICE_CHANGE": "服務調整",
+        "MODIFIED_SERVICE": "服務調整",
+        "SCHEDULE_CHANGE": "時刻變更",
+        "ADDITIONAL_SERVICE": "加開班次",
+        "EXTRA_SERVICE": "加開班次",
+        "ADVISORY": "營運提示",
+        "INFORMATIONAL": "營運警報",
         "OTHER_EFFECT": "營運提示",
         "UNKNOWN_EFFECT": "一般通知"
     }
     return mapping.get(effect, "營運警報")
 
 def detect_transport_mode(alert: dict) -> str:
+    # 1. First trust TransLink's explicit numeric mode field if provided
     mode_val = alert.get("mode")
-    route_name = str(alert.get("routeLongName", "")).lower()
-    route_id = str(alert.get("routeId", "")).strip().lower()
-    text = f"{alert.get('alertText', '')} {alert.get('header', '')} {alert.get('description', '')}".lower()
-
-    # Check for SeaBus first
-    if mode_val == 4 or "seabus" in route_name or "seabus" in text:
+    if mode_val == 1 or mode_val == "1":
+        return "skytrain"
+    if mode_val == 2 or mode_val == "2":
+        return "wce"
+    if mode_val == 3 or mode_val == "3":
+        return "bus"
+    if mode_val == 4 or mode_val == "4":
         return "seabus"
 
-    # Check for West Coast Express
-    if mode_val == 2 or "west coast express" in route_name or "wce" in route_name or "west coast express" in text:
+    # 2. Check routeLongName and routeId
+    route_name = str(alert.get("routeLongName", "")).strip().lower()
+    route_id = str(alert.get("routeId", "")).strip().lower()
+
+    if "seabus" in route_name:
+        return "seabus"
+    if "west coast express" in route_name or route_name == "wce":
         return "wce"
-
-    # Check for SkyTrain lines explicitly
-    is_skytrain_route = any(k in route_name for k in ["expo line", "millennium line", "canada line"]) or route_id in ["992", "991", "980"]
-    if is_skytrain_route or (mode_val == 1 and not re.search(r'^\d{1,3}[a-z]?$', route_id)):
+    if any(k in route_name for k in ["expo line", "millennium line", "canada line", "skytrain"]) or route_id in ["992", "991", "980"]:
         return "skytrain"
-
-    # Check for Bus explicitly (route numbers like 99, 413, R1, N9, etc.)
-    if mode_val == 3 or "bus" in route_name or "rapidbus" in route_name or "b-line" in route_name or "route " in text or re.search(r'^\d{1,3}[a-z]?$', route_id):
+    if "bus" in route_name or "rapidbus" in route_name or "b-line" in route_name or re.search(r'^\d{1,3}[a-z]?$', route_id):
         return "bus"
 
-    if "skytrain" in text and "bus" not in text:
-        return "skytrain"
+    # 3. Check text content for unambiguous mode keywords
+    text = f"{alert.get('alertText', '')} {alert.get('header', '')} {alert.get('description', '')}".lower()
+
+    # If text mentions all or multiple transit modes (e.g. system-wide maintenance or fare notice), treat as general
+    modes_mentioned = 0
+    if "skytrain" in text or "expo line" in text or "millennium line" in text or "canada line" in text:
+        modes_mentioned += 1
+    if "seabus" in text:
+        modes_mentioned += 1
+    if "west coast express" in text:
+        modes_mentioned += 1
     if "bus" in text:
+        modes_mentioned += 1
+
+    if modes_mentioned >= 2 or "compasscard" in text or "compass card" in text:
+        return "general"
+
+    if "seabus" in text:
+        return "seabus"
+    if "west coast express" in text or " wce " in f" {text} ":
+        return "wce"
+    if any(k in text for k in ["skytrain", "expo line", "millennium line", "canada line"]):
+        return "skytrain"
+    if "bus" in text or "rapidbus" in text:
         return "bus"
+
     return "general"
 
 def extract_impacted_stations(text: str) -> list:
@@ -231,14 +267,15 @@ def fetch_translink_alerts_live() -> dict:
                 station_alerts_map[st_name]["alert_ids"].append(alert_id)
 
     # 2. Process All Alerts
-    for a in raw_alerts:
+    for idx, a in enumerate(raw_alerts):
         if not isinstance(a, dict):
             continue
         if a.get("closed") is True:
             continue
         
-        alert_id = str(a.get("id") or a.get("alertId") or f"alert_{len(processed_alerts)}")
         t_mode = detect_transport_mode(a)
+        raw_id = str(a.get("id") or a.get("alertId") or "alt")
+        alert_id = f"{raw_id}_{t_mode}_{idx}"
         effect_code = str(a.get("effect") or "GENERAL")
         effect_zh = map_effect_zh(effect_code)
         

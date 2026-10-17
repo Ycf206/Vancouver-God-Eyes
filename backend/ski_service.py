@@ -17,7 +17,7 @@ RESORTS_CONFIG = [
         "zoom": 14,
         "vertical_drop": "616 m",
         "official_url": "https://cypressmountain.com",
-        "skiresort_url": "https://www.skiresort.com/ski-resort/cypress-mountain/"
+        "skiresort_url": "https://www.skiresort.com/en/ski-resort/cypress-mountain/snow-report/"
     },
     {
         "id": "grouse",
@@ -30,7 +30,7 @@ RESORTS_CONFIG = [
         "zoom": 14,
         "vertical_drop": "400 m",
         "official_url": "https://www.grousemountain.com",
-        "skiresort_url": "https://www.skiresort.com/ski-resort/grouse-mountain/"
+        "skiresort_url": "https://www.skiresort.com/en/ski-resort/grouse-mountain/snow-report/"
     },
     {
         "id": "seymour",
@@ -43,7 +43,7 @@ RESORTS_CONFIG = [
         "zoom": 14,
         "vertical_drop": "330 m",
         "official_url": "https://mtseymour.ca",
-        "skiresort_url": "https://www.skiresort.com/ski-resort/mount-seymour/"
+        "skiresort_url": "https://www.skiresort.com/en/ski-resort/mount-seymour/snow-report/"
     }
 ]
 
