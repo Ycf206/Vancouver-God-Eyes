@@ -258,13 +258,17 @@ def fetch_translink_alerts_live() -> dict:
         }
         processed_alerts.append(item)
 
-        for st_name in impacted_stations:
-            if st_name not in station_alerts_map:
-                station_alerts_map[st_name] = {"critical": True, "count": 1, "alert_ids": [alert_id]}
-            else:
-                station_alerts_map[st_name]["critical"] = True
-                station_alerts_map[st_name]["count"] += 1
-                station_alerts_map[st_name]["alert_ids"].append(alert_id)
+        # 僅限明確為天車或水上巴士、且特定於少數車站 (1-3 站) 的緊急停駛/重大中斷，才標記車站
+        if banner_mode in ["skytrain", "seabus"] and 0 < len(impacted_stations) <= 3:
+            for st_name in impacted_stations:
+                if st_name.lower() in ["expo line", "canada line", "millennium line", "skytrain", "seabus", "entire line"]:
+                    continue
+                if st_name not in station_alerts_map:
+                    station_alerts_map[st_name] = {"critical": True, "count": 1, "alert_ids": [alert_id]}
+                else:
+                    station_alerts_map[st_name]["critical"] = True
+                    station_alerts_map[st_name]["count"] += 1
+                    station_alerts_map[st_name]["alert_ids"].append(alert_id)
 
     # 2. Process All Alerts
     for idx, a in enumerate(raw_alerts):
@@ -319,14 +323,25 @@ def fetch_translink_alerts_live() -> dict:
         }
         processed_alerts.append(item)
 
-        for st_name in impacted_stations:
-            if st_name not in station_alerts_map:
-                station_alerts_map[st_name] = {"critical": is_critical, "count": 1, "alert_ids": [alert_id]}
-            else:
-                if is_critical:
-                    station_alerts_map[st_name]["critical"] = True
-                station_alerts_map[st_name]["count"] += 1
-                station_alerts_map[st_name]["alert_ids"].append(alert_id)
+        # 僅限「天車」與「水上巴士」本身的特定車站警報才在地圖顯示三角標記
+        # 排除公車改道公告（即使公車行經天車站），且排除全線廣播或全網維護宣導
+        if t_mode in ["skytrain", "seabus"]:
+            is_line_wide = any(k in full_text.lower() for k in [
+                "entire line", "all stations", "system-wide", "system wide", "across the network", "regular service"
+            ]) or (len(impacted_stations) > 4) or (not impacted_stations and str(a.get("stationName") or "") in ["Expo Line", "Canada Line", "Millennium Line", "SkyTrain", "SeaBus"])
+
+            if not is_line_wide and 0 < len(impacted_stations) <= 4:
+                for st_name in impacted_stations:
+                    # 排除非車站的路線名稱
+                    if st_name.lower() in ["expo line", "canada line", "millennium line", "skytrain", "seabus", "west coast express"]:
+                        continue
+                    if st_name not in station_alerts_map:
+                        station_alerts_map[st_name] = {"critical": is_critical, "count": 1, "alert_ids": [alert_id]}
+                    else:
+                        if is_critical:
+                            station_alerts_map[st_name]["critical"] = True
+                        station_alerts_map[st_name]["count"] += 1
+                        station_alerts_map[st_name]["alert_ids"].append(alert_id)
 
     now_iso = datetime.datetime.utcnow().isoformat() + "Z"
     result = {

@@ -507,7 +507,10 @@ export default function AppMap() {
       let alertInfo = stationAlertsMap[st.name];
       if (!alertInfo) {
         for (const [k, val] of Object.entries(stationAlertsMap)) {
-          if (k.toLowerCase().includes(st.name.toLowerCase()) || st.name.toLowerCase().includes(k.toLowerCase())) {
+          const kNorm = k.trim().toLowerCase();
+          const stNameNorm = st.name.trim().toLowerCase();
+          const stDisplayNorm = st.displayName ? st.displayName.trim().toLowerCase() : '';
+          if (kNorm === stNameNorm || kNorm === stDisplayNorm || kNorm.replace(' station', '') === stNameNorm) {
             alertInfo = val;
             break;
           }
@@ -1756,7 +1759,21 @@ export default function AppMap() {
       }
     }
 
-    // 6. 海灘水質 (Beach Water Quality)
+    // 6. 消防栓 (Fire Hydrants - 高密度聚合與放大提示)
+    const turnedOnHydrants = !prev.fireHydrants && layers.fireHydrants;
+    if (turnedOnHydrants) {
+      if (z < 13.5) {
+        setZoomNotification({
+          show: true,
+          title: '已開啟消防栓圖層',
+          message: '全溫哥華逾 6,600 座消防栓，已啟用點位聚合渲染。請放大地圖以檢視各街區詳細位置資料。',
+          targetZoom: 14.5
+        });
+        return;
+      }
+    }
+
+    // 7. 海灘水質 (Beach Water Quality)
     const turnedOnBeachWater = !prev.beachWaterQuality && layers.beachWaterQuality;
     if (turnedOnBeachWater) {
       const map = mapRef.current?.getMap();
@@ -3183,40 +3200,99 @@ export default function AppMap() {
       });
     }
 
-    // Government Facilities: Fire Hydrants (消防栓 - 6,600+ 溫哥華市政消防栓，每1星期更新)
+    // Government Facilities: Fire Hydrants (消防栓 - 6,600+ 溫哥華市政消防栓，每1星期更新，高密度點位聚合)
     if (layers.fireHydrants) {
       style.sources['fire_hydrants'] = {
         type: 'geojson',
-        data: `${apiUrl}/api/geojson/road/fire_hydrants`
+        data: `${apiUrl}/api/geojson/road/fire_hydrants`,
+        cluster: true,
+        clusterMaxZoom: 14,
+        clusterRadius: 45
       };
+
+      // 1. Cluster background circle
+      style.layers.push({
+        id: 'fire-hydrants-cluster-layer',
+        type: 'circle',
+        source: 'fire_hydrants',
+        filter: ['has', 'point_count'],
+        paint: {
+          'circle-color': [
+            'step',
+            ['get', 'point_count'],
+            '#ef4444', // < 20
+            20,
+            '#dc2626', // 20 - 100
+            100,
+            '#b91c1c'  // 100+
+          ],
+          'circle-radius': [
+            'step',
+            ['get', 'point_count'],
+            15,
+            20,
+            20,
+            100,
+            26
+          ],
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#ffffff',
+          'circle-opacity': 0.92
+        }
+      });
+
+      // 2. Cluster count text
+      style.layers.push({
+        id: 'fire-hydrants-cluster-count',
+        type: 'symbol',
+        source: 'fire_hydrants',
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': '{point_count_abbreviated}',
+          'text-size': 12,
+          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold']
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+
+      // 3. Single unclustered points glow
       style.layers.push({
         id: 'fire-hydrants-glow',
         type: 'circle',
         source: 'fire_hydrants',
+        filter: ['!', ['has', 'point_count']],
         minzoom: 12,
         paint: {
           'circle-color': '#ef4444',
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 12, 2.5, 15, 6, 17, 10],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 12, 3, 15, 6, 17, 10],
           'circle-opacity': 0.35,
           'circle-blur': 0.8
         }
       });
+
+      // 4. Single unclustered points core
       style.layers.push({
         id: 'fire-hydrants-layer',
         type: 'circle',
         source: 'fire_hydrants',
+        filter: ['!', ['has', 'point_count']],
         minzoom: 12,
         paint: {
           'circle-color': '#dc2626',
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 12, 1.8, 15, 3.8, 17, 6],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 12, 2.2, 15, 4, 17, 6],
           'circle-stroke-width': 1.2,
           'circle-stroke-color': '#ffffff'
         }
       });
+
+      // 5. Single unclustered points icon
       style.layers.push({
         id: 'fire-hydrants-symbol-layer',
         type: 'symbol',
         source: 'fire_hydrants',
+        filter: ['!', ['has', 'point_count']],
         minzoom: 16,
         layout: {
           'text-field': '🧯',
@@ -4948,6 +5024,7 @@ export default function AppMap() {
           'street-lighting-cluster-layer',
           'street-lighting-layer',
           'street-lighting-symbol-layer',
+          'fire-hydrants-cluster-layer',
           'fire-hydrants-layer',
           'fire-hydrants-symbol-layer',
           'zoning-districts-fill'
@@ -7107,19 +7184,6 @@ export default function AppMap() {
                         💡 {props.tips}
                       </p>
                     )}
-
-                    <div className="pt-1.5 border-t border-gray-100 flex items-center justify-between text-[10px] text-gray-400">
-                      <span>CBSA & CBP 即時邊境資料</span>
-                      <a
-                        href={`https://www.google.com/maps/dir/?api=1&destination=${selectedFacility.lat},${selectedFacility.lon}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sky-600 hover:underline flex items-center gap-0.5 font-medium"
-                      >
-                        <Navigation className="w-2.5 h-2.5" />
-                        導航往此關口
-                      </a>
-                    </div>
                   </div>
                 );
               })()}
