@@ -11,7 +11,7 @@
       "properties": {
         "id": "bridge_traffic_lions_gate",
         "facility_type": "traffic_conditions",
-        "name": "獅門大橋 (Lions Gate Bridge) 即時路況",
+        "name": "獅門大橋",
         "bridge_name": "Lions Gate Bridge",
         "highway": "Hwy 99",
         "delay_gif": "https://www.th.gov.bc.ca/atis/lgcws/images/lions_gate/atis_delay.gif",

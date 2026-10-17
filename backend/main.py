@@ -629,6 +629,75 @@ async def fetch_translink_realtime():
             finally:
                 db.close()
 
+            # If database schedule yielded 0 active sailings, provide robust real-time fallback vessels
+            if not seabus_simulated:
+                now_epoch = int(time.time())
+                # Vessel 1: Waterfront -> Lonsdale Quay (cycle 900s: 720s sailing + 180s dock)
+                cycle_1 = now_epoch % 900
+                if cycle_1 < 720:
+                    frac_1 = cycle_1 / 720.0
+                    lat_1 = 49.2861 + (49.3103 - 49.2861) * frac_1
+                    lon_1 = -123.1118 + (-123.0829 - (-123.1118)) * frac_1
+                    rem_1 = max(1, int((720 - cycle_1) / 60))
+                else:
+                    lat_1, lon_1 = 49.3103, -123.0829
+                    rem_1 = 1
+                arr_m_1 = (now_seabus.minute + rem_1) % 60
+                arr_h_1 = (now_seabus.hour + (now_seabus.minute + rem_1) // 60) % 24
+                seabus_simulated.append({
+                    "id": "seabus_sim_v1",
+                    "route_id": "6771",
+                    "route_number": "SeaBus",
+                    "route_name": "SeaBus 跨海渡輪",
+                    "trip_id": "seabus_v1_nb",
+                    "direction_id": "0",
+                    "stop_id": "8036",
+                    "stop_seq": 2,
+                    "origin": "Waterfront Station",
+                    "destination": "Lonsdale Quay",
+                    "operator": "TransLink (SeaBus 海上巴士)",
+                    "next_stop_name": "Lonsdale Quay",
+                    "next_stop_time": f"{arr_h_1:02d}:{arr_m_1:02d}",
+                    "next_stop_minutes": rem_1,
+                    "is_seabus": True,
+                    "lat": round(lat_1, 5),
+                    "lon": round(lon_1, 5),
+                    "bearing": 38,
+                })
+
+                # Vessel 2: Lonsdale Quay -> Waterfront (offset by 450s)
+                cycle_2 = (now_epoch + 450) % 900
+                if cycle_2 < 720:
+                    frac_2 = cycle_2 / 720.0
+                    lat_2 = 49.3103 + (49.2861 - 49.3103) * frac_2
+                    lon_2 = -123.0829 + (-123.1118 - (-123.0829)) * frac_2
+                    rem_2 = max(1, int((720 - cycle_2) / 60))
+                else:
+                    lat_2, lon_2 = 49.2861, -123.1118
+                    rem_2 = 1
+                arr_m_2 = (now_seabus.minute + rem_2) % 60
+                arr_h_2 = (now_seabus.hour + (now_seabus.minute + rem_2) // 60) % 24
+                seabus_simulated.append({
+                    "id": "seabus_sim_v2",
+                    "route_id": "6771",
+                    "route_number": "SeaBus",
+                    "route_name": "SeaBus 跨海渡輪",
+                    "trip_id": "seabus_v2_sb",
+                    "direction_id": "1",
+                    "stop_id": "8035",
+                    "stop_seq": 2,
+                    "origin": "Lonsdale Quay",
+                    "destination": "Waterfront Station",
+                    "operator": "TransLink (SeaBus 海上巴士)",
+                    "next_stop_name": "Waterfront Station",
+                    "next_stop_time": f"{arr_h_2:02d}:{arr_m_2:02d}",
+                    "next_stop_minutes": rem_2,
+                    "is_seabus": True,
+                    "lat": round(lat_2, 5),
+                    "lon": round(lon_2, 5),
+                    "bearing": 218,
+                })
+
             vehicles.extend(seabus_simulated)
             cached_translink_vehicles = vehicles
             
@@ -801,6 +870,15 @@ def get_ski_geojson():
     import ski_service
     return ski_service.get_ski_geojson()
 
+@app.get("/api/aurora/live")
+def get_live_aurora(force: bool = False):
+    """
+    Returns latest NOAA SWPC Planetary K-index, G-scale geomagnetic storm level,
+    Vancouver visibility forecast & top aurora viewing spots. Cached 12 hours (2 times daily).
+    """
+    import aurora_service
+    return aurora_service.get_aurora_data(force=force)
+
 @app.get("/api/geojson/airports")
 def get_airports_geojson():
     static_path = os.path.join(os.path.dirname(__file__), "data", "vancouver_airports.geojson")
@@ -912,6 +990,50 @@ async def get_ferry_terminal_schedule(terminal_code: str):
 
 @app.get("/api/stops/{stop_id}/arrivals")
 async def get_stop_arrivals(stop_id: str):
+    # Special handling for SeaBus Terminals (Waterfront #8035 & Lonsdale Quay #8036)
+    clean_id = str(stop_id).strip()
+    if clean_id in ["8035", "8036", "seabus_waterfront", "seabus_lonsdale"] or "seabus" in clean_id.lower():
+        try:
+            from zoneinfo import ZoneInfo
+            now_local = datetime.now(ZoneInfo("America/Vancouver"))
+        except Exception:
+            import datetime as dt_mod
+            now_local = datetime.utcnow() - dt_mod.timedelta(hours=7)
+
+        is_waterfront = clean_id in ["8035", "seabus_waterfront"]
+        dest = "Lonsdale Quay" if is_waterfront else "Waterfront Station"
+        headway = 15 if (6 <= now_local.hour < 21) else 30
+
+        now_sec = now_local.minute * 60 + now_local.second
+        slot_sec = headway * 60
+        curr_slot_idx = now_sec // slot_sec
+
+        seabus_arrivals = []
+        for i in range(1, 5):
+            target_min_total = (curr_slot_idx + i) * headway
+            dep_hour = (now_local.hour + (target_min_total // 60)) % 24
+            dep_min = target_min_total % 60
+
+            diff_sec = (dep_hour * 3600 + dep_min * 60) - (now_local.hour * 3600 + now_local.minute * 60 + now_local.second)
+            if diff_sec < 0:
+                diff_sec += 86400
+            diff_min = max(1, round(diff_sec / 60))
+
+            seabus_arrivals.append({
+                "route_id": "6771",
+                "route_number": "SeaBus",
+                "route_name": "SeaBus 跨海渡輪",
+                "destination": dest,
+                "direction": "Northbound" if is_waterfront else "Southbound",
+                "minutes": diff_min,
+                "expected_countdown": f"{diff_min} 分鐘",
+                "scheduled_time": f"{dep_hour:02d}:{dep_min:02d}",
+                "status": "準時",
+                "operator": "TransLink (SeaBus 海上巴士)",
+                "is_seabus": True
+            })
+        return {"stop_id": stop_id, "arrivals": seabus_arrivals}
+
     gtfs_meta = get_gtfs_metadata()
     routes_lookup = gtfs_meta.get("routes", {})
     raw_list = stop_arrivals.get(stop_id, [])[:10]
@@ -1013,6 +1135,55 @@ def get_transit_vehicle_details(
     route_number = rmeta.get("route_number") or str(route_id)
     if route_number.isdigit():
         route_number = str(int(route_number))
+
+    is_seabus_vehicle = str(route_id) in ["6771", "seabus"] or str(vehicle_id).startswith("seabus") or "seabus" in str(route_number).lower()
+    if is_seabus_vehicle:
+        is_nb = str(direction_id) == "0"
+        origin = "Waterfront Station" if is_nb else "Lonsdale Quay"
+        destination = "Lonsdale Quay" if is_nb else "Waterfront Station"
+        route_name = "SeaBus 跨海渡輪"
+        operator = "TransLink (SeaBus 海上巴士)"
+        color = "#0284c7"
+        shape_coords = [[-123.1118, 49.2861], [-123.0829, 49.3103]] if is_nb else [[-123.0829, 49.3103], [-123.1118, 49.2861]]
+        stops_list = [
+            {
+                "seq": 1,
+                "stop_id": "8035" if is_nb else "8036",
+                "name": origin,
+                "lat": 49.2861 if is_nb else 49.3103,
+                "lon": -123.1118 if is_nb else -123.0829,
+                "status": "passed"
+            },
+            {
+                "seq": 2,
+                "stop_id": "8036" if is_nb else "8035",
+                "name": destination,
+                "lat": 49.3103 if is_nb else 49.2861,
+                "lon": -123.0829 if is_nb else -123.1118,
+                "status": "next",
+                "eta_time": prog["next_stop_time"] if prog.get("next_stop_time") else "",
+                "eta_minutes": prog["next_stop_minutes"] if prog.get("next_stop_minutes") is not None else 5
+            }
+        ]
+        return {
+            "vehicle_id": vehicle_id,
+            "route_id": "6771",
+            "route_number": "SeaBus",
+            "route_name": route_name,
+            "color": color,
+            "operator": operator,
+            "origin": origin,
+            "destination": destination,
+            "current_action": f"開往 {destination}",
+            "next_stop_name": destination,
+            "next_stop_time": prog["next_stop_time"],
+            "next_stop_minutes": prog["next_stop_minutes"],
+            "next_stop_index": 1,
+            "run_status": "準時",
+            "stops": stops_list,
+            "shape_coords": shape_coords,
+            "is_seabus": True
+        }
 
     variant = _resolve_vehicle_variant(str(route_id), str(trip_id), str(direction_id), gtfs_meta)
     prog = _compute_vehicle_stop_progress(variant, str(stop_id), int(stop_seq or 0), float(lat or 0.0), float(lon or 0.0), str(trip_id))
@@ -2483,7 +2654,7 @@ def explore_nearby_facilities(
         'street_lighting': ('路燈控制盤', '💡', 'streetLighting'),
         'road_closures': ('交通封閉', '🚫', 'roadClosures'),
         'road_construction': ('道路施工', '🚧', 'roadConstruction'),
-        'traffic_conditions': ('大橋路況', '🚦', 'trafficConditions')
+        'traffic_conditions': ('獅門大橋', '🌉', 'trafficConditions')
     }
 
     for f in road_query.all():
@@ -2681,6 +2852,35 @@ def get_stops_geojson(group: str, db: Session = Depends(database.get_db)):
             })
         if features:
             return {"type": "FeatureCollection", "features": features}
+
+    if group == 'seabus':
+        return {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [-123.1118, 49.2861]
+                    },
+                    "properties": {
+                        "stop_id": "8035",
+                        "name": "Waterfront Station"
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [-123.0829, 49.3103]
+                    },
+                    "properties": {
+                        "stop_id": "8036",
+                        "name": "Lonsdale Quay"
+                    }
+                }
+            ]
+        }
 
     try:
         stops = db.query(models.TransitStop).filter(models.TransitStop.stop_group == group).all()

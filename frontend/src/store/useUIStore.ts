@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 
 export type MapStyleType = 'street' | 'satellite' | 'light' | 'dark';
 
-export type ExploreTabType = 'weather' | 'news' | 'events' | 'ski' | 'fuel' | 'ev' | 'ferry' | 'cargo';
+export type ExploreTabType = 'weather' | 'news' | 'events' | 'ski' | 'aurora' | 'fuel' | 'ev' | 'ferry' | 'cargo';
 
 export interface SearchTarget {
   id: string;

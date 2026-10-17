@@ -5,11 +5,58 @@ import {
   Compass, X, Fuel, Zap, Ship, MapPin, 
   ChevronDown, RefreshCw, Package, CloudSun, Wind, AlertTriangle, Droplets, Gauge, Eye, Anchor, Navigation,
   Newspaper, ExternalLink, Search, CalendarDays, Calendar, Tag, Waves, CloudRain, Play, Pause, SkipBack, SkipForward,
-  MountainSnow
+  MountainSnow, Sparkles
 } from 'lucide-react';
 import { useUIStore, ExploreTabType } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
 import { formatShipEta, formatTimePreference } from '@/utils/time';
+
+interface AuroraVisibility {
+  level: string;
+  description: string;
+  chance_pct: number;
+  naked_eye: boolean;
+  badge_color: string;
+}
+
+interface AuroraSpot {
+  id: string;
+  name: string;
+  area: string;
+  lat: number;
+  lon: number;
+  zoom: number;
+  features: string;
+  drive_min: string;
+}
+
+interface AuroraHistoryItem {
+  time_tag: string;
+  kp: number;
+  a_running: number;
+  g_scale: string;
+  g_desc: string;
+  g_color: string;
+}
+
+interface AuroraData {
+  source: string;
+  source_url: string;
+  api_endpoint: string;
+  update_frequency: string;
+  last_updated: string;
+  latest: {
+    time_tag: string;
+    kp: number;
+    kp_int: number;
+    g_scale: string;
+    g_desc: string;
+    g_color: string;
+    visibility: AuroraVisibility;
+  };
+  history: AuroraHistoryItem[];
+  spots: AuroraSpot[];
+}
 
 interface SkiResort {
   id: string;
@@ -404,6 +451,10 @@ function ExploreContent() {
   // --- Ski tab states ---
   const [skiResorts, setSkiResorts] = useState<SkiResort[]>([]);
   const [loadingSki, setLoadingSki] = useState(false);
+
+  // --- Aurora tab states ---
+  const [auroraData, setAuroraData] = useState<AuroraData | null>(null);
+  const [loadingAurora, setLoadingAurora] = useState(false);
 
   // --- News tab states ---
   const [newsArticles, setNewsArticles] = useState<NewsArticle[]>([]);
@@ -1093,11 +1144,79 @@ function ExploreContent() {
     });
   };
 
+  // 8. Fetch Aurora SWPC Live Data
+  const fetchAuroraData = React.useCallback(async (force = false) => {
+    setLoadingAurora(true);
+    const apiUrl = getApiUrl();
+    try {
+      const res = await fetch(`${apiUrl}/api/aurora/live${force ? '?force=true' : ''}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      if (data && data.latest) {
+        setAuroraData(data);
+        setLoadingAurora(false);
+        return;
+      }
+    } catch (err) {
+      console.warn('Backend aurora API not responding, trying static cache:', err);
+    }
+    // Fallback to static cache if backend unreachable
+    try {
+      const staticRes = await fetch('/vancouver_aurora_cache.json');
+      const staticData = await staticRes.json();
+      if (staticData && staticData.latest) {
+        setAuroraData(staticData);
+      }
+    } catch (staticErr) {
+      console.error('Failed to load static aurora data:', staticErr);
+    } finally {
+      setLoadingAurora(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isExploreOpen || activeTab !== 'aurora') return;
+    fetchAuroraData();
+  }, [isExploreOpen, activeTab, fetchAuroraData]);
+
+  const handleSelectAuroraSpot = (spot: AuroraSpot) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap();
+    if (mapInstance) {
+      mapInstance.flyTo({
+        center: [spot.lon, spot.lat],
+        zoom: spot.zoom || 13.5,
+        essential: true
+      });
+    }
+    setSearchTarget({
+      id: `aurora_${spot.id}`,
+      title: spot.name,
+      subtitle: `${spot.area} · 極光觀測點`,
+      category: 'aurora_spot',
+      badge: '極光觀測點',
+      icon: '✨',
+      lat: spot.lat,
+      lon: spot.lon,
+      meta: {
+        local_area: spot.area,
+        properties: {
+          id: spot.id,
+          name: spot.name,
+          features: spot.features,
+          drive_min: spot.drive_min
+        }
+      },
+      zoom: spot.zoom || 13.5
+    });
+  };
+
   const exploreTabsRow1 = [
     { id: 'weather', label: '天氣', icon: CloudSun, iconColor: 'text-sky-400' },
     { id: 'news', label: '新聞', icon: Newspaper, iconColor: 'text-amber-400' },
     { id: 'events', label: '活動', icon: CalendarDays, iconColor: 'text-purple-400' },
     { id: 'ski', label: '滑雪', icon: MountainSnow, iconColor: 'text-cyan-300' },
+    { id: 'aurora', label: '極光', icon: Sparkles, iconColor: 'text-emerald-300' },
   ] as const;
 
   const exploreTabsRow2 = [
@@ -1134,8 +1253,8 @@ function ExploreContent() {
 
       {/* 探索分類分頁 - 2 行圖示按鈕組，Cursor 碰到後平滑展開文字（對標右上角按鈕），保留當前緊湊比例 */}
       <div className="flex flex-col gap-1 p-1 bg-[#10131a]/90 rounded-lg border border-[#232836] shrink-0 mb-2.5">
-        {/* 第 1 行：天氣, 新聞, 活動, 滑雪 */}
-        <div className="grid grid-cols-4 gap-1">
+        {/* 第 1 行：天氣, 新聞, 活動, 滑雪, 極光 */}
+        <div className="grid grid-cols-5 gap-1">
           {exploreTabsRow1.map((tab) => {
             const isActive = activeTab === tab.id;
             const Icon = tab.icon;
@@ -1958,6 +2077,229 @@ function ExploreContent() {
         </div>
       )}
 
+      {/* ==================== 極光分頁 (Aurora - NOAA SWPC Planetary K-index) ==================== */}
+      {activeTab === 'aurora' && (
+        <div className="flex flex-col flex-1 min-h-0 overflow-y-auto pr-1 gap-3 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
+          {/* Header Bar */}
+          <div className="flex items-center justify-between shrink-0">
+            <span className="text-xs text-gray-300 font-semibold flex items-center gap-1.5">
+              <Sparkles className="w-4 h-4 text-emerald-400" />
+              <span>大溫哥華極光指數與觀測預報</span>
+            </span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] text-emerald-400 bg-emerald-950/70 border border-emerald-800/60 px-1.5 py-0.5 rounded font-mono">
+                每天 2 次更新
+              </span>
+              <button
+                onClick={() => fetchAuroraData(true)}
+                disabled={loadingAurora}
+                className="p-1 hover:bg-[#252a38] text-gray-400 hover:text-white rounded transition-colors"
+                title="重新整理極光數據"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${loadingAurora ? 'animate-spin text-emerald-400' : ''}`} />
+              </button>
+            </div>
+          </div>
+
+          {loadingAurora && !auroraData ? (
+            <div className="py-12 flex flex-col items-center justify-center gap-2 text-xs text-gray-400">
+              <div className="w-5 h-5 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+              <span>載入 NOAA 太空天氣中心 K-index 數據...</span>
+            </div>
+          ) : auroraData ? (
+            <>
+              {/* 1. Hero Card: Current Planetary K-index */}
+              <div className="bg-gradient-to-br from-[#121824] via-[#101b2b] to-[#0d1f1f] rounded-xl p-3.5 border border-[#23383a] shadow-lg flex flex-col gap-3 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
+                <div className="flex items-center justify-between relative z-10">
+                  <div className="flex flex-col">
+                    <span className="text-[11px] font-medium text-gray-400 uppercase tracking-wider">
+                      行星 K-Index 指數 (Planetary Kp)
+                    </span>
+                    <div className="flex items-baseline gap-2 mt-0.5">
+                      <span className="text-3xl font-extrabold text-white tracking-tight">
+                        Kp {auroraData.latest.kp}
+                      </span>
+                      <span className="text-xs text-gray-400">/ 9.0</span>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <span 
+                      className="px-2.5 py-1 rounded-full text-xs font-bold shadow-sm flex items-center gap-1"
+                      style={{ 
+                        backgroundColor: `${auroraData.latest.g_color}25`, 
+                        color: auroraData.latest.g_color,
+                        borderColor: `${auroraData.latest.g_color}60`,
+                        borderWidth: '1px'
+                      }}
+                    >
+                      <Sparkles className="w-3 h-3" />
+                      {auroraData.latest.g_scale}
+                    </span>
+                    <span className="text-[10px] text-gray-400 mt-1">
+                      {auroraData.latest.g_desc}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Progress Meter Bar */}
+                <div className="flex flex-col gap-1 relative z-10">
+                  <div className="w-full bg-[#182030] h-2 rounded-full overflow-hidden border border-[#28354c] relative">
+                    <div 
+                      className="h-full rounded-full transition-all duration-700"
+                      style={{ 
+                        width: `${Math.min(100, Math.max(8, (auroraData.latest.kp / 9) * 100))}%`,
+                        backgroundColor: auroraData.latest.g_color
+                      }}
+                    />
+                  </div>
+                  <div className="flex justify-between text-[9px] text-gray-500 font-mono">
+                    <span>0 (平靜)</span>
+                    <span>3 (擾動)</span>
+                    <span className="text-yellow-400 font-bold">5 (G1)</span>
+                    <span className="text-amber-400 font-bold">6 (G2)</span>
+                    <span className="text-rose-400 font-bold">7+ (強烈)</span>
+                  </div>
+                </div>
+
+                {/* Visibility Evaluation for Vancouver */}
+                <div className="bg-[#0b121e]/80 p-2.5 rounded-lg border border-[#1e2c3e] flex flex-col gap-1 relative z-10">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold text-gray-200 flex items-center gap-1">
+                      <span>🍁 溫哥華觀測等級：</span>
+                      <span className="text-emerald-400 font-semibold">{auroraData.latest.visibility.level}</span>
+                    </span>
+                    <span className={`text-[9.5px] px-1.5 py-0.5 rounded font-bold ${auroraData.latest.visibility.badge_color}`}>
+                      {auroraData.latest.visibility.naked_eye ? '肉眼可見' : '相機/暗空'}
+                    </span>
+                  </div>
+                  <p className="text-[10.5px] text-gray-300 leading-relaxed">
+                    {auroraData.latest.visibility.description}
+                  </p>
+                  <div className="flex items-center justify-between pt-1 border-t border-[#182436] text-[10px] text-gray-400">
+                    <span>大溫可見機率預估</span>
+                    <span className="font-mono font-bold text-emerald-400">{auroraData.latest.visibility.chance_pct}%</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 2. Recent 48h Kp Trend (History) */}
+              <div className="bg-[#10141e] rounded-xl p-3 border border-[#232a38] flex flex-col gap-2 shadow-sm">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-gray-200 flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>過去 48 小時 K-Index 歷史走勢 (3h 間隔)</span>
+                  </span>
+                  <span className="text-[9.5px] text-gray-400 font-mono">NOAA SWPC</span>
+                </div>
+                <div className="grid grid-cols-8 gap-1 pt-1">
+                  {auroraData.history.slice(-8).map((h, idx) => {
+                    const timeOnly = h.time_tag.includes('T') ? h.time_tag.split('T')[1].slice(0, 5) : h.time_tag.slice(-5);
+                    const isLatest = idx === auroraData.history.slice(-8).length - 1;
+                    return (
+                      <div 
+                        key={idx} 
+                        className={`flex flex-col items-center justify-end p-1 rounded ${
+                          isLatest ? 'bg-cyan-950/60 border border-cyan-500/50' : 'bg-[#151a26]'
+                        }`}
+                        title={`${h.time_tag} · Kp ${h.kp} (${h.g_desc})`}
+                      >
+                        <span className="text-[9px] font-bold font-mono" style={{ color: h.g_color }}>
+                          {h.kp}
+                        </span>
+                        <div className="w-full bg-[#202738] h-10 rounded-sm flex items-end my-1 overflow-hidden">
+                          <div 
+                            className="w-full rounded-sm transition-all"
+                            style={{ 
+                              height: `${Math.min(100, Math.max(10, (h.kp / 9) * 100))}%`,
+                              backgroundColor: h.g_color 
+                            }}
+                          />
+                        </div>
+                        <span className="text-[8.5px] text-gray-400 font-mono truncate">
+                          {timeOnly}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="flex items-center justify-between text-[9.5px] text-gray-500 pt-1 border-t border-[#1a2233]">
+                  <span>最新觀測：{auroraData.latest.time_tag.replace('T', ' ')} UTC</span>
+                  <span>指數等級：Kp &ge; 5 觸發磁暴警報</span>
+                </div>
+              </div>
+
+              {/* 3. Top Aurora Spots in Metro Vancouver */}
+              <div className="bg-[#10141e] rounded-xl p-3 border border-[#232a38] flex flex-col gap-2 shadow-sm">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-gray-200 flex items-center gap-1.5">
+                    <Navigation className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>大溫哥華極光觀測勝地推薦</span>
+                  </span>
+                  <span className="text-[10px] text-gray-400 font-mono">4 大無光害點</span>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  {auroraData.spots.map((spot) => (
+                    <div 
+                      key={spot.id}
+                      className="bg-[#141924] hover:bg-[#1a2233] p-2.5 rounded-lg border border-[#222b3b] hover:border-emerald-500/40 transition-all flex flex-col gap-1.5 cursor-pointer group"
+                      onClick={() => handleSelectAuroraSpot(spot)}
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex flex-col min-w-0">
+                          <span className="font-bold text-xs text-white group-hover:text-emerald-300 transition-colors flex items-center gap-1 truncate">
+                            <span>✨</span>
+                            <span className="truncate">{spot.name}</span>
+                          </span>
+                          <span className="text-[10.5px] text-gray-400 mt-0.5 truncate">{spot.area}</span>
+                        </div>
+                        <span className="text-[9.5px] bg-[#222a3a] text-cyan-300 px-1.5 py-0.5 rounded font-mono shrink-0 ml-1">
+                          {spot.drive_min}
+                        </span>
+                      </div>
+                      <p className="text-[10.5px] text-gray-300 leading-snug">
+                        {spot.features}
+                      </p>
+                      <div className="flex items-center justify-between pt-1 border-t border-[#1c2434] text-[10px]">
+                        <span className="text-emerald-400 font-medium group-hover:underline flex items-center gap-0.5">
+                          <MapPin className="w-3 h-3" />
+                          在地圖上標記此地點
+                        </span>
+                        <a 
+                          href={`https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lon}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="text-cyan-400 hover:text-cyan-300 flex items-center gap-0.5 hover:underline"
+                        >
+                          <span>Google 導航</span>
+                          <ExternalLink className="w-2.5 h-2.5" />
+                        </a>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Source attribution footer */}
+              <div className="p-2 rounded-lg bg-[#0e121a] border border-[#1d2330] flex items-center justify-between text-[10px] text-gray-400">
+                <span className="truncate max-w-[240px]">資料來源：NOAA SWPC 太空天氣預測中心</span>
+                <a 
+                  href={auroraData.source_url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-emerald-400 hover:text-emerald-300 flex items-center gap-0.5 hover:underline shrink-0"
+                >
+                  <span>官方監測</span>
+                  <ExternalLink className="w-2.5 h-2.5" />
+                </a>
+              </div>
+            </>
+          ) : null}
+        </div>
+      )}
+
       {/* ==================== 2. 燃油分頁 (Fuel) ==================== */}
       {activeTab === 'fuel' && (
         <div className="flex flex-col flex-1 min-h-0">
@@ -2639,6 +2981,7 @@ function ExploreContent() {
           {activeTab === 'news' && `共收錄 ${filteredNews.length} 則大溫即時新聞 · 每 ${newsRefreshInterval || 15} 分鐘自動更新`}
           {activeTab === 'events' && `共收錄 ${filteredEvents.length} 項大溫熱門活動 · 來源 Daily Hive、Eventbrite 與 溫哥華旅遊局`}
           {activeTab === 'ski' && `大溫哥華 3 大滑雪場即時雪況 (賽普里斯山、松雞山、西摩山) · 每日更新`}
+          {activeTab === 'aurora' && 'NOAA SWPC 行星 K-Index 極光指數 · 溫哥華可見度預測 · 每天 2 次更新'}
           {activeTab === 'fuel' && `共收錄 ${filteredFuelStations.length} 間加油站`}
           {activeTab === 'ev' && `共收錄 ${evStations.length} 座充電站`}
           {activeTab === 'ferry' && `共 ${ferryRoutes.reduce((acc, r) => acc + (r?.vessels?.length || 0), 0)} 艘渡輪即時航行中`}

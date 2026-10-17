@@ -13,7 +13,7 @@ import {
   LocateFixed, Train, Compass, ZoomIn, X, Copy, Check, 
   Navigation, ExternalLink, Clock, Bike, Car, Info, 
   ChevronDown, ChevronUp, SlidersHorizontal, Fuel, Zap, Wifi, Waves, Play, Pause, CloudRain,
-  RotateCcw, MapPin, Crosshair, Activity, Ban, Cone, Lightbulb
+  RotateCcw, MapPin, Crosshair, Activity, Ban, Cone, Lightbulb, Ship
 } from 'lucide-react';
 
 // Fix Next.js App Router Web Worker crash
@@ -800,12 +800,19 @@ export default function AppMap() {
       }
     }
 
-    // 4. 巴士與天車 (全域圖層關閉時僅清除一般選取的巴士，不影響獨立搜尋的巴士路線與半徑探索)
-    if (selectedBus && !layers.bus && !searchedBusRoute) {
-      setSelectedBus(null);
-      setBusDetails(null);
-      if (searchTarget && searchTarget.category === 'bus') {
-        setSearchTarget(null);
+    // 4. 巴士與海上巴士 (全域圖層關閉時僅清除選取的車輛，不影響獨立搜尋的巴士路線與半徑探索)
+    if (selectedBus && !searchedBusRoute) {
+      if (selectedBus.is_seabus) {
+        if (!layers.seabusVehicles) {
+          setSelectedBus(null);
+          setBusDetails(null);
+        }
+      } else if (!layers.bus) {
+        setSelectedBus(null);
+        setBusDetails(null);
+        if (searchTarget && searchTarget.category === 'bus') {
+          setSearchTarget(null);
+        }
       }
     }
     const isStopExplorationActive = Boolean(
@@ -814,7 +821,16 @@ export default function AppMap() {
       selectedStop &&
       String(explorationSelectedFacility.id) === String(selectedStop.id)
     );
-    if (selectedStop && !layers.busStops && !isStopExplorationActive) {
+    const isSeaBusStop = Boolean(
+      selectedStop && (
+        selectedStop.id === '8035' || 
+        selectedStop.id === '8036' || 
+        selectedStop.name.includes('SeaBus') || 
+        selectedStop.name.includes('Lonsdale Quay') ||
+        selectedStop.name.includes('Waterfront')
+      )
+    );
+    if (selectedStop && !layers.busStops && !isStopExplorationActive && !(isSeaBusStop && layers.seabusRoutes)) {
       setSelectedStop(null);
     }
     if (selectedTrain && !layers.skytrainTrains) {
@@ -2527,7 +2543,7 @@ export default function AppMap() {
         source: 'traffic_conditions',
         minzoom: 11,
         layout: {
-          'text-field': '獅門大橋路況',
+          'text-field': '獅門大橋',
           'text-size': ['interpolate', ['linear'], ['zoom'], 11, 10, 14, 12],
           'text-offset': [0, 1.4],
           'text-anchor': 'top',
@@ -5126,12 +5142,20 @@ export default function AppMap() {
                     e.stopPropagation();
                     handleSelectBus(v);
                   }}
-                  className={`relative flex items-center justify-center w-6 h-6 bg-[#8b786d]/90 rounded-full cursor-pointer tooltip border-[1.5px] border-white shadow-md backdrop-blur-sm transition-transform hover:scale-125 z-20 ${
-                    isSelected ? 'ring-4 ring-amber-400/80 scale-125 z-30' : ''
+                  className={`relative flex items-center justify-center w-8 h-8 bg-gradient-to-tr from-sky-700 via-sky-600 to-cyan-500 rounded-full cursor-pointer tooltip border-2 border-white shadow-lg backdrop-blur-sm transition-all duration-200 hover:scale-125 z-30 ${
+                    isSelected ? 'ring-4 ring-amber-400 scale-125 z-40 shadow-xl' : ''
                   }`}
-                  title={`SeaBus${v.destination ? ` 往 ${v.destination}` : ''}`}
+                  title={`SeaBus 跨海渡輪${v.destination ? ` 往 ${v.destination}` : ''}`}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12h20"/><path d="M6 12l2-4h8l2 4"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                  <Ship className="w-4 h-4 text-white drop-shadow-sm" />
+                  {v.bearing !== undefined && (
+                    <div 
+                      className="absolute -top-1 w-2 h-2 pointer-events-none"
+                      style={{ transform: `rotate(${v.bearing}deg)` }}
+                    >
+                      <div className="w-1.5 h-1.5 bg-amber-300 rotate-45 mx-auto shadow-xs border-[0.5px] border-white"></div>
+                    </div>
+                  )}
                 </div>
               </Marker>
             );
@@ -5298,44 +5322,54 @@ export default function AppMap() {
             closeButton={false}
             closeOnClick={false}
           >
-            <div className="p-2 min-w-[240px] text-gray-800">
-              <div className="flex items-start justify-between pb-1.5 mb-2 border-b border-gray-100">
-                <div className="flex items-center gap-1.5 min-w-0 pr-2">
-                  <span className="text-base shrink-0">🚏</span>
-                  <div className="min-w-0">
-                    <h3 className="font-bold text-sm leading-tight text-gray-900 truncate max-w-[150px]">{selectedStop.name}</h3>
-                    <span className="text-[10px] text-gray-400 font-mono">#{selectedStop.id}</span>
+            <div className="p-2 min-w-[270px] max-w-[340px] text-gray-800">
+              {(() => {
+                const isSeaBusStop = selectedStop.id === '8035' || selectedStop.id === '8036' || selectedStop.name.includes('SeaBus') || selectedStop.name.includes('Lonsdale Quay') || selectedStop.name.includes('Waterfront');
+                const cleanStopName = selectedStop.name.replace(/\s*(?:Northbound|Southbound)\s*$/i, '').trim();
+                return (
+                  <div className="flex items-start justify-between pb-1.5 mb-2 border-b border-gray-100">
+                    <div className="flex items-center gap-1.5 min-w-0 pr-2">
+                      <span className="text-base shrink-0">{isSeaBusStop ? '⛴️' : '🚏'}</span>
+                      <div className="min-w-0">
+                        <h3 className="font-bold text-sm leading-tight text-gray-900 truncate max-w-[230px]" title={cleanStopName}>
+                          {cleanStopName}
+                        </h3>
+                        <span className="text-[10px] text-gray-400 font-mono">
+                          {isSeaBusStop ? `SeaBus 碼頭 #${selectedStop.id}` : `#${selectedStop.id}`}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1 shrink-0 -mt-0.5 -mr-0.5">
+                      <button
+                        onClick={() => copyCoordinatesToClipboard(selectedStop.lat, selectedStop.lon)}
+                        className="p-1 rounded-md text-gray-500 hover:text-cyan-600 hover:bg-cyan-50 transition-colors flex items-center justify-center shadow-xs border border-gray-100"
+                        title="複製坐標"
+                      >
+                        <Copy className="w-3.5 h-3.5" />
+                      </button>
+                      <a
+                        href={`https://www.google.com/maps/dir/?api=1&destination=${selectedStop.lat},${selectedStop.lon}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-1 rounded-md text-sky-600 hover:text-sky-700 hover:bg-sky-50 transition-colors flex items-center justify-center shadow-xs border border-sky-100"
+                        title="Google Map 導航至此"
+                      >
+                        <Navigation className="w-3.5 h-3.5 text-sky-600" />
+                      </a>
+                      <button
+                        onClick={() => {
+                          setSelectedStop(null);
+                          setSearchTarget(null);
+                        }}
+                        className="text-gray-400 hover:text-gray-700 text-xl font-light leading-none px-1 py-0.5 rounded transition-colors focus:outline-none ml-0.5"
+                        title="關閉"
+                      >
+                        &times;
+                      </button>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-1 shrink-0 -mt-0.5 -mr-0.5">
-                  <button
-                    onClick={() => copyCoordinatesToClipboard(selectedStop.lat, selectedStop.lon)}
-                    className="p-1 rounded-md text-gray-500 hover:text-cyan-600 hover:bg-cyan-50 transition-colors flex items-center justify-center shadow-xs border border-gray-100"
-                    title="複製坐標"
-                  >
-                    <Copy className="w-3.5 h-3.5" />
-                  </button>
-                  <a
-                    href={`https://www.google.com/maps/dir/?api=1&destination=${selectedStop.lat},${selectedStop.lon}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-1 rounded-md text-sky-600 hover:text-sky-700 hover:bg-sky-50 transition-colors flex items-center justify-center shadow-xs border border-sky-100"
-                    title="Google Map 導航至此"
-                  >
-                    <Navigation className="w-3.5 h-3.5 text-sky-600" />
-                  </a>
-                  <button
-                    onClick={() => {
-                      setSelectedStop(null);
-                      setSearchTarget(null);
-                    }}
-                    className="text-gray-400 hover:text-gray-700 text-xl font-light leading-none px-1 py-0.5 rounded transition-colors focus:outline-none ml-0.5"
-                    title="關閉"
-                  >
-                    &times;
-                  </button>
-                </div>
-              </div>
+                );
+              })()}
               {loadingArrivals ? (
                 <div className="text-xs text-gray-500 flex items-center gap-2 mt-2">
                   <div className="w-3 h-3 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
@@ -5345,22 +5379,27 @@ export default function AppMap() {
                 <div className="flex flex-col gap-1.5 mt-2">
                   {arrivals.map((arr, i) => {
                     const busNumber = arr.route_number || arr.route_id;
-                    const isRailOrFerry = typeof busNumber === 'string' && (busNumber.includes('Line') || busNumber.includes('SeaBus') || busNumber === 'WCE');
+                    const isSeaBus = typeof busNumber === 'string' && busNumber.includes('SeaBus');
+                    const isRailOrFerry = isSeaBus || (typeof busNumber === 'string' && (busNumber.includes('Line') || busNumber === 'WCE'));
                     return (
                       <div key={i} className="flex justify-between items-center text-xs gap-2">
                         <div className="flex items-center gap-1.5 min-w-0">
-                          <span className="font-bold px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-md shrink-0 font-mono">
+                          <span className={`font-bold px-2 py-0.5 rounded-md shrink-0 font-mono ${
+                            isSeaBus 
+                              ? 'bg-sky-100 text-sky-800 border border-sky-300' 
+                              : 'bg-emerald-100 text-emerald-800'
+                          }`}>
                             {isRailOrFerry ? busNumber : `巴士 ${busNumber}`}
                           </span>
                           {arr.destination && (
-                            <span className="text-[11px] text-gray-500 truncate">
+                            <span className="text-[11px] text-gray-600 truncate">
                               往 {arr.destination}
                             </span>
                           )}
                         </div>
                         <span className="text-gray-600 shrink-0">
                           {arr.minutes <= 0 ? (
-                            <span className="text-red-500 font-bold animate-pulse">即將進站</span>
+                            <span className="text-red-500 font-bold animate-pulse">{isSeaBus ? '即將開出' : '即將進站'}</span>
                           ) : (
                             <span><strong className="text-base text-gray-900">{arr.minutes}</strong> 分鐘</span>
                           )}
@@ -6283,13 +6322,15 @@ export default function AppMap() {
             className="z-50"
             offset={[0, -10]}
             maxWidth={
-              (selectedFacility.facility_type === 'traffic_cameras' || selectedFacility.facility_type === 'traffic_conditions') ? '400px' : 
+              selectedFacility.facility_type === 'traffic_conditions' ? '460px' :
+              selectedFacility.facility_type === 'traffic_cameras' ? '400px' : 
               (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting') ? '360px' : 
               '320px'
             }
           >
             <div className={`p-3.5 ${
-              (selectedFacility.facility_type === 'traffic_cameras' || selectedFacility.facility_type === 'traffic_conditions') ? 'w-[360px]' : 
+              selectedFacility.facility_type === 'traffic_conditions' ? 'w-[430px]' :
+              selectedFacility.facility_type === 'traffic_cameras' ? 'w-[360px]' : 
               (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting') ? 'w-[340px]' : 
               'w-[290px]'
             } max-w-[90vw] text-gray-800`}>
@@ -9007,12 +9048,12 @@ export default function AppMap() {
 
               {/* Traffic Conditions (即時路況 - Lions Gate Bridge 獅門大橋 ATIS/DriveBC) */}
               {selectedFacility.facility_type === 'traffic_conditions' && (
-                <div className="flex flex-col gap-2.5 text-xs">
-                  <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/30 flex flex-col gap-1.5">
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-emerald-500/10 p-2 rounded-lg border border-emerald-500/30 flex flex-col gap-1">
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-emerald-950 text-xs flex items-center gap-1.5">
                         <span className="text-base text-emerald-600 font-bold">🌉</span>
-                        <span className="truncate max-w-[190px]">{selectedFacility.name}</span>
+                        <span className="truncate max-w-[220px]">獅門大橋</span>
                       </span>
                       <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-600 text-white shrink-0">
                         每 1 小時更新
@@ -9023,57 +9064,61 @@ export default function AppMap() {
                     </div>
                   </div>
 
-                  {/* 預計延誤與更新時間 GIF */}
-                  <div className="bg-gray-900 rounded-lg p-2 border border-gray-700/60 flex flex-col gap-1 shadow-inner">
-                    <div className="flex items-center justify-between text-[11px] font-semibold text-gray-200">
-                      <span>⏱️ 預計延誤與更新時間</span>
-                      <span className="text-[10px] text-emerald-400 font-mono">LIVE ATIS</span>
+                  {/* 2-Column Compact Grid */}
+                  <div className="grid grid-cols-2 gap-2">
+                    {/* Left Column (Row span 2): queue_map.gif 車流排隊圖 */}
+                    <div className="row-span-2 bg-gray-900 rounded-lg p-1.5 border border-gray-700/60 flex flex-col gap-1 shadow-inner justify-between">
+                      <div className="flex items-center justify-between text-[10.5px] font-semibold text-gray-200">
+                        <span>🗺️ 車流排隊圖</span>
+                        <span className="text-[9px] text-emerald-400 font-mono">Queue</span>
+                      </div>
+                      <div className="w-full flex-1 overflow-hidden rounded bg-black flex items-center justify-center min-h-[170px] max-h-[210px]">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img 
+                          src="https://www.th.gov.bc.ca/atis/lgcws/images/lions_gate/queue_map.gif" 
+                          alt="Lions Gate Bridge Queue Map" 
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
                     </div>
-                    <div className="w-full overflow-hidden rounded bg-black flex items-center justify-center min-h-[44px]">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img 
-                        src="https://www.th.gov.bc.ca/atis/lgcws/images/lions_gate/atis_delay.gif" 
-                        alt="Lions Gate Bridge ATIS 預計延誤" 
-                        className="w-full object-contain"
-                        onError={(e) => {
-                          (e.target as HTMLElement).style.display = 'none';
-                        }}
-                      />
+
+                    {/* Right Column Row 1: atis_delay.gif 預計延誤 */}
+                    <div className="bg-gray-900 rounded-lg p-1.5 border border-gray-700/60 flex flex-col gap-1 shadow-inner">
+                      <div className="flex items-center justify-between text-[10.5px] font-semibold text-gray-200">
+                        <span>⏱️ 預計延誤時間</span>
+                        <span className="text-[9px] text-emerald-400 font-mono">LIVE</span>
+                      </div>
+                      <div className="w-full overflow-hidden rounded bg-black flex items-center justify-center min-h-[42px] max-h-[55px]">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img 
+                          src="https://www.th.gov.bc.ca/atis/lgcws/images/lions_gate/atis_delay.gif" 
+                          alt="Lions Gate Bridge ATIS 預計延誤" 
+                          className="w-full object-contain"
+                          onError={(e) => {
+                            (e.target as HTMLElement).style.display = 'none';
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Right Column Row 2: Camera 18 南向即時監視 */}
+                    <div className="bg-gray-900 rounded-lg p-1.5 border border-gray-700/60 flex flex-col gap-1 shadow-inner">
+                      <div className="flex items-center justify-between text-[10.5px] font-semibold text-gray-200">
+                        <span>📷 南向即時監視</span>
+                        <span className="text-[9px] text-cyan-400">#18</span>
+                      </div>
+                      <div className="w-full overflow-hidden rounded bg-black flex items-center justify-center h-[85px]">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img 
+                          src="https://www.drivebc.ca/images/18.jpg" 
+                          alt="DriveBC Lions Gate Bridge Camera 18" 
+                          className="w-full h-full object-cover rounded"
+                        />
+                      </div>
                     </div>
                   </div>
 
-                  {/* 即時現場圖片 DriveBC 18 */}
-                  <div className="bg-gray-900 rounded-lg p-2 border border-gray-700/60 flex flex-col gap-1 shadow-inner">
-                    <div className="flex items-center justify-between text-[11px] font-semibold text-gray-200">
-                      <span>📷 即時監視畫面 (DriveBC #18)</span>
-                      <span className="text-[10px] text-cyan-400">南向 South</span>
-                    </div>
-                    <div className="w-full overflow-hidden rounded bg-black flex items-center justify-center min-h-[140px]">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img 
-                        src="https://www.drivebc.ca/images/18.jpg" 
-                        alt="DriveBC Lions Gate Bridge Camera 18" 
-                        className="w-full h-auto object-cover rounded"
-                      />
-                    </div>
-                  </div>
-
-                  {/* 行車情況 / 車龍排隊圖 (Queue Map) */}
-                  <div className="bg-gray-900 rounded-lg p-2 border border-gray-700/60 flex flex-col gap-1 shadow-inner">
-                    <div className="flex items-center justify-between text-[11px] font-semibold text-gray-200">
-                      <span>🗺️ 行車情況與車流排隊圖 (Queue Map)</span>
-                    </div>
-                    <div className="w-full overflow-hidden rounded bg-black flex items-center justify-center min-h-[120px]">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img 
-                        src="https://www.th.gov.bc.ca/atis/lgcws/images/lions_gate/queue_map.gif" 
-                        alt="Lions Gate Bridge Queue Map" 
-                        className="w-full h-auto object-contain"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="pt-1">
+                  <div className="pt-0.5">
                     <a 
                       href="https://www.th.gov.bc.ca/atis/lgcws/index.html" 
                       target="_blank" 
@@ -9625,18 +9670,32 @@ export default function AppMap() {
             {/* Header */}
             <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-[#262b38] shrink-0">
               <div className="flex items-start gap-2.5 min-w-0">
-                <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5 shadow-sm">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/>
-                  </svg>
+                <div className={`w-8 h-8 rounded-lg ${
+                  selectedBus.is_seabus 
+                    ? 'bg-sky-500/20 border border-sky-500/40 text-sky-400' 
+                    : 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-400'
+                } flex items-center justify-center shrink-0 mt-0.5 shadow-sm`}>
+                  {selectedBus.is_seabus ? (
+                    <Ship className="w-4 h-4 text-sky-400" />
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/>
+                    </svg>
+                  )}
                 </div>
                 <div className="min-w-0">
                   <h3 className="font-bold text-white text-[15px] leading-snug tracking-tight truncate">
-                    {busNum} 去 {destName}
+                    {selectedBus.is_seabus ? `SeaBus 跨海渡輪 去 ${destName}` : `${busNum} 去 ${destName}`}
                   </h3>
                   <div className="flex items-center gap-1.5 mt-0.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_rgba(52,211,153,0.9)]"></span>
-                    <span className="text-[11px] font-semibold text-emerald-400">即時更新中</span>
+                    <span className={`w-2 h-2 rounded-full ${
+                      selectedBus.is_seabus ? 'bg-sky-400 shadow-[0_0_6px_rgba(56,189,248,0.9)]' : 'bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.9)]'
+                    } animate-pulse`}></span>
+                    <span className={`text-[11px] font-semibold ${
+                      selectedBus.is_seabus ? 'text-sky-400' : 'text-emerald-400'
+                    }`}>
+                      {selectedBus.is_seabus ? '海上渡輪即時航行中' : '即時更新中'}
+                    </span>
                     {selectedBus.id && (
                       <span className="text-[10px] text-gray-400 font-mono ml-1">#{selectedBus.id}</span>
                     )}

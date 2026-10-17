@@ -1,0 +1,82 @@
+{
+  "source": "美國國家海洋暨大氣總署太空天氣預測中心 (NOAA SWPC)",
+  "source_url": "https://www.swpc.noaa.gov/",
+  "api_endpoint": "https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json",
+  "update_frequency": "每天 2 次 (12 小時快取)",
+  "last_updated": "2026-10-17T03:30:00Z",
+  "latest": {
+    "time_tag": "2026-10-17T00:00:00",
+    "kp": 2.0,
+    "kp_int": 2,
+    "g_scale": "Quiet",
+    "g_desc": "平靜平穩 (Quiet)",
+    "g_color": "#3b82f6",
+    "visibility": {
+      "level": "不可見 (Quiet)",
+      "description": "地磁場處於平靜狀態。極光主要侷限於阿拉斯加、黃刀鎮等高緯度極圈附近，溫哥華目前無法觀測到極光。",
+      "chance_pct": 5,
+      "naked_eye": false,
+      "badge_color": "bg-slate-600 text-gray-200"
+    }
+  },
+  "history": [
+    { "time_tag": "2026-10-15T03:00:00", "kp": 1.67, "a_running": 6, "g_scale": "Quiet", "g_desc": "平靜平穩 (Quiet)", "g_color": "#3b82f6" },
+    { "time_tag": "2026-10-15T06:00:00", "kp": 1.33, "a_running": 5, "g_scale": "Quiet", "g_desc": "平靜平穩 (Quiet)", "g_color": "#3b82f6" },
+    { "time_tag": "2026-10-15T09:00:00", "kp": 2.0, "a_running": 7, "g_scale": "Quiet", "g_desc": "平靜平穩 (Quiet)", "g_color": "#3b82f6" },
+    { "time_tag": "2026-10-15T12:00:00", "kp": 2.67, "a_running": 12, "g_scale": "Quiet", "g_desc": "平靜平穩 (Quiet)", "g_color": "#3b82f6" },
+    { "time_tag": "2026-10-15T15:00:00", "kp": 3.0, "a_running": 15, "g_scale": "Unsettled", "g_desc": "輕微擾動 (Unsettled)", "g_color": "#06b6d4" },
+    { "time_tag": "2026-10-15T18:00:00", "kp": 2.33, "a_running": 9, "g_scale": "Quiet", "g_desc": "平靜平穩 (Quiet)", "g_color": "#3b82f6" },
+    { "time_tag": "2026-10-15T21:00:00", "kp": 1.67, "a_running": 6, "g_scale": "Quiet", "g_desc": "平靜平穩 (Quiet)", "g_color": "#3b82f6" },
+    { "time_tag": "2026-10-16T00:00:00", "kp": 2.0, "a_running": 7, "g_scale": "Quiet", "g_desc": "平靜平穩 (Quiet)", "g_color": "#3b82f6" },
+    { "time_tag": "2026-10-16T03:00:00", "kp": 2.33, "a_running": 9, "g_scale": "Quiet", "g_desc": "平靜平穩 (Quiet)", "g_color": "#3b82f6" },
+    { "time_tag": "2026-10-16T06:00:00", "kp": 2.67, "a_running": 12, "g_scale": "Quiet", "g_desc": "平靜平穩 (Quiet)", "g_color": "#3b82f6" },
+    { "time_tag": "2026-10-16T09:00:00", "kp": 2.0, "a_running": 7, "g_scale": "Quiet", "g_desc": "平靜平穩 (Quiet)", "g_color": "#3b82f6" },
+    { "time_tag": "2026-10-16T12:00:00", "kp": 1.67, "a_running": 6, "g_scale": "Quiet", "g_desc": "平靜平穩 (Quiet)", "g_color": "#3b82f6" },
+    { "time_tag": "2026-10-16T15:00:00", "kp": 3.33, "a_running": 18, "g_scale": "Unsettled", "g_desc": "輕微擾動 (Unsettled)", "g_color": "#06b6d4" },
+    { "time_tag": "2026-10-16T18:00:00", "kp": 3.67, "a_running": 22, "g_scale": "Unsettled", "g_desc": "輕微擾動 (Unsettled)", "g_color": "#06b6d4" },
+    { "time_tag": "2026-10-16T21:00:00", "kp": 2.33, "a_running": 9, "g_scale": "Quiet", "g_desc": "平靜平穩 (Quiet)", "g_color": "#3b82f6" },
+    { "time_tag": "2026-10-17T00:00:00", "kp": 2.0, "a_running": 7, "g_scale": "Quiet", "g_desc": "平靜平穩 (Quiet)", "g_color": "#3b82f6" }
+  ],
+  "spots": [
+    {
+      "id": "porteau_cove",
+      "name": "波特灣省立公園 (Porteau Cove)",
+      "area": "海天公路 · 斯闊米什方向 (Sea-to-Sky)",
+      "lat": 49.5583,
+      "lon": -123.2367,
+      "zoom": 13,
+      "features": "大溫最熱門極光聖地，面向豪灣無光害，可見完整極光倒影",
+      "drive_min": "從溫哥華市中心約 40 分鐘車程"
+    },
+    {
+      "id": "cypress_lookout",
+      "name": "賽普里斯山高空觀景台 (Cypress Lookout)",
+      "area": "西溫哥華 · 賽普里斯山 (West Vancouver)",
+      "lat": 49.3562,
+      "lon": -123.1978,
+      "zoom": 14,
+      "features": "高海拔俯瞰，可避開低層海面水氣與市區近地光害",
+      "drive_min": "從西溫約 20 分鐘車程"
+    },
+    {
+      "id": "iona_beach",
+      "name": "艾歐娜海灘防波堤 (Iona Beach Jetty)",
+      "area": "列治文 · 菲沙河北支流口 (Richmond)",
+      "lat": 49.2186,
+      "lon": -123.2125,
+      "zoom": 13,
+      "features": "向西北延伸 4 公里長堤，擁有 360 度海平線開闊北面視野",
+      "drive_min": "從列治文市中心約 20 分鐘車程"
+    },
+    {
+      "id": "spanish_banks",
+      "name": "西班牙海灘最西端 (Spanish Banks West)",
+      "area": "溫哥華西區 · UBC 鄰近海灣 (Point Grey)",
+      "lat": 49.2764,
+      "lon": -123.2268,
+      "zoom": 14,
+      "features": "溫哥華市區內最暗海岸，面向北岸群山，交通便利",
+      "drive_min": "從溫哥華市中心約 15 分鐘車程"
+    }
+  ]
+}
