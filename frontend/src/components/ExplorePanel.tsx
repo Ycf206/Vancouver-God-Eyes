@@ -1990,10 +1990,10 @@ function ExploreContent() {
     { id: 'weather', label: '天氣', icon: CloudSun, iconColor: 'text-sky-400' },
     { id: 'news', label: '新聞', icon: Newspaper, iconColor: 'text-amber-400' },
     { id: 'events', label: '活動', icon: CalendarDays, iconColor: 'text-purple-400' },
-    { id: 'beach', label: '沙灘水質', icon: Droplets, iconColor: 'text-teal-300' },
+    { id: 'beach', label: '沙灘水質', hoverLabel: '沙灘', icon: Droplets, iconColor: 'text-teal-300' },
     { id: 'ski', label: '滑雪', icon: MountainSnow, iconColor: 'text-cyan-300' },
     { id: 'aurora', label: '極光', icon: Sparkles, iconColor: 'text-emerald-300' },
-  ] as const;
+  ];
 
   const exploreTabsRow2 = [
     { id: 'fuel', label: '燃油', icon: Fuel, iconColor: 'text-emerald-400' },
@@ -2030,7 +2030,7 @@ function ExploreContent() {
       </div>
 
       {/* 探索分類分頁 - 2 行圖示按鈕組，Cursor 碰到後平滑展開文字（對標右上角按鈕），保留當前緊湊比例 */}
-      <div className="flex flex-col gap-1 p-1 bg-[#10131a]/90 rounded-lg border border-[#232836] shrink-0 mb-2.5">
+      <div className="flex flex-col gap-1 p-1 bg-[#10131a]/90 rounded-lg border border-[#232838] shrink-0 mb-2.5">
         {/* 第 1 行：天氣, 新聞, 活動, 沙灘水質, 滑雪, 極光 */}
         <div className="grid grid-cols-6 gap-1">
           {exploreTabsRow1.map((tab) => {
@@ -2049,7 +2049,7 @@ function ExploreContent() {
               >
                 <Icon className={`w-3.5 h-3.5 ${tab.iconColor} shrink-0 transition-transform duration-200 group-hover:scale-110`} />
                 <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[65px] group-hover:opacity-100 group-hover:ml-1 transition-all duration-300 whitespace-nowrap text-[10.5px]">
-                  {tab.label}
+                  {('hoverLabel' in tab && tab.hoverLabel) ? tab.hoverLabel : tab.label}
                 </span>
               </button>
             );
@@ -3428,7 +3428,7 @@ function ExploreContent() {
             <div className="flex items-center gap-1.5">
               <span className="text-xs font-bold text-white flex items-center gap-1.5">
                 <Droplets className="w-4 h-4 text-teal-400" />
-                <span>沙灘水質監控</span>
+                <span>沙灘水質</span>
               </span>
               <span className="text-[10px] text-teal-400 bg-teal-950/60 border border-teal-800/50 px-1.5 py-0.5 rounded font-mono font-medium">
                 每個月更新 1 次

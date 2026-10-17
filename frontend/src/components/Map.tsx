@@ -4243,7 +4243,7 @@ export default function AppMap() {
         paint: {
           'line-color': [
             'match',
-            ['to-string', ['get', 'speed_limit']],
+            ['to-string', ['case', ['<=', ['to-number', ['get', 'speed_limit']], 0], 30, ['get', 'speed_limit']]],
             '30', '#10b981',
             '40', '#f59e0b',
             '50', '#3b82f6',
@@ -4261,7 +4261,11 @@ export default function AppMap() {
         layout: {
           'symbol-placement': 'line',
           'symbol-spacing': 120,
-          'text-field': ['concat', ['to-string', ['get', 'speed_limit']], ' km/h'],
+          'text-field': [
+            'concat',
+            ['to-string', ['case', ['<=', ['to-number', ['get', 'speed_limit']], 0], 30, ['get', 'speed_limit']]],
+            ' km/h'
+          ],
           'text-size': ['interpolate', ['linear'], ['zoom'], 13, 9, 15, 11, 17, 13],
           'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
           'text-keep-upright': true
@@ -5113,13 +5117,20 @@ export default function AppMap() {
             });
           } else if (layerId === 'traffic-speed-limits-layer' || layerId === 'traffic-speed-limits-casing-layer') {
             setSelectedStop(null);
-            const props = feature.properties || {};
+            const props = { ...(feature.properties || {}) };
             const clickLon = e.lngLat?.lng ?? -123.1207;
             const clickLat = e.lngLat?.lat ?? 49.2827;
+            if (!props.speed_limit || Number(props.speed_limit) <= 0) {
+              const isRes = (props.segment_type || '').toLowerCase().includes('residential');
+              props.speed_limit = isRes ? 30 : 50;
+              if (props.name) {
+                props.name = props.name.replace(/限速 0 km\/h/g, `限速 ${props.speed_limit} km/h`);
+              }
+            }
             setSelectedFacility({
               id: props.object_id ? `speed_${props.object_id}` : `speed_${clickLon}_${clickLat}`,
               facility_type: 'traffic_speed_limits',
-              name: props.name || props.hblock || '速限管制路段',
+              name: props.name || (props.hblock ? `${props.hblock} (限速 ${props.speed_limit} km/h)` : '速限管制路段'),
               local_area: props.segment_type ? `分區: ${props.segment_type}` : '溫哥華市區道路',
               lon: clickLon,
               lat: clickLat,
@@ -10623,7 +10634,34 @@ export default function AppMap() {
         const nextStopName = busDetails?.next_stop_name || selectedBus.next_stop_name || '沿線行駛中';
         const nextStopTime = busDetails?.next_stop_time || selectedBus.next_stop_time || '';
         const nextStopMin = busDetails?.next_stop_minutes ?? selectedBus.next_stop_minutes;
-        const stopList = busDetails?.stops || [];
+
+        const seabusOriginName = destName.toLowerCase().includes('waterfront') ? 'Lonsdale Quay 朗斯代爾碼頭' : 'Waterfront Station 濱海站渡輪碼頭';
+        const seabusDestName = destName.toLowerCase().includes('waterfront') ? 'Waterfront Station 濱海站渡輪碼頭' : 'Lonsdale Quay 朗斯代爾碼頭';
+        const seabusOriginCoords = destName.toLowerCase().includes('waterfront') ? [-123.0815, 49.3105] : [-123.1118, 49.2861];
+        const seabusDestCoords = destName.toLowerCase().includes('waterfront') ? [-123.1118, 49.2861] : [-123.0815, 49.3105];
+
+        const seabusStops = selectedBus.is_seabus ? [
+          {
+            seq: 1,
+            stop_id: 'seabus_terminal_origin',
+            name: seabusOriginName,
+            lon: seabusOriginCoords[0],
+            lat: seabusOriginCoords[1],
+            status: 'passed'
+          },
+          {
+            seq: 2,
+            stop_id: 'seabus_terminal_dest',
+            name: seabusDestName,
+            lon: seabusDestCoords[0],
+            lat: seabusDestCoords[1],
+            status: 'next',
+            eta_minutes: nextStopMin ?? 5,
+            eta_time: nextStopTime || ''
+          }
+        ] : [];
+
+        const stopList = selectedBus.is_seabus ? seabusStops : (busDetails?.stops || []);
 
         return (
           <div className="fixed top-[72px] right-4 z-40 w-[340px] max-w-[calc(100vw-32px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-200 select-none">
@@ -10718,6 +10756,8 @@ export default function AppMap() {
                   <span>
                     {loadingBusDetails
                       ? '載入路線站點中...'
+                      : selectedBus.is_seabus
+                      ? `全航程 ${stopList.length} 個碼頭`
                       : `${stopList.length} 個站`}
                   </span>
                   {busDetails?.route_name && (

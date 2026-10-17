@@ -21,11 +21,25 @@ jobs:
         key: ${{ secrets.OCI_SSH_KEY }}
         envs: FLIGHTAWARE_API_KEY
         script: |
+          set -e
           cd ~/Vancouver-God-Eyes || cd ~/vancouver-gods-eye
           
-          # 更新程式碼
-          git pull
+          echo "Working directory: $(pwd)"
           
+          # 備份保護本機 .env 設定檔
+          [ -f .env ] && cp .env /tmp/godseye_root_env.bak || true
+          [ -f backend/.env ] && cp backend/.env /tmp/godseye_backend_env.bak || true
+
+          # 強制同步至遠端最新 commit，徹底避免本機快取與衝突阻止更新
+          git fetch origin main
+          git checkout main
+          git reset --hard origin/main
+          git clean -fd -e backend/.env -e .env
+
+          # 還原 .env 設定
+          [ -f /tmp/godseye_root_env.bak ] && cp /tmp/godseye_root_env.bak .env || true
+          [ -f /tmp/godseye_backend_env.bak ] && cp /tmp/godseye_backend_env.bak backend/.env || true
+
           # 如果 GitHub Secrets 有設定 FLIGHTAWARE_API_KEY，自動同步至 backend/.env 與根目錄 .env
           if [ -n "$FLIGHTAWARE_API_KEY" ]; then
             mkdir -p backend
@@ -44,5 +58,8 @@ jobs:
             echo "✅ FLIGHTAWARE_API_KEY successfully synced from GitHub Secrets"
           fi
           
-          # 重新建置並啟動 Docker 容器
+          echo "Current Git Commit on VM: $(git rev-parse HEAD)"
+
+          # 重新建置並啟動 Docker 容器 (強制重建前端鏡像，確保 Next.js 編譯最新程式碼)
+          docker compose build --no-cache frontend
           docker compose up -d --build
