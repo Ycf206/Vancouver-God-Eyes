@@ -317,6 +317,10 @@ class EventsService:
                     title = slug.replace('-', ' ').strip()
                     title = re.sub(r'\s+', ' ', title)
                     
+                    # 強制修正 RUSH Fifty Something 時間碼與連結
+                    if 'rush-fifty-something' in slug.lower():
+                        time_code = "2612151830"
+
                     try:
                         yy = int(time_code[0:2]) + 2000
                         mm = int(time_code[2:4])
@@ -335,6 +339,8 @@ class EventsService:
                         continue
                         
                     full_url = f"https://www.destinationvancouver.com/events/listings/{slug}-{time_code}"
+                    if 'rush-fifty-something' in slug.lower():
+                        full_url = "https://www.destinationvancouver.com/events/listings/RUSH-Fifty-Something-2612151830"
                     
                     lower_t = title.lower()
                     if any(w in lower_t for w in ['tour', 'concert', 'band', 'fighters', 'sing', 'music', 'symphony', 'orchestra', 'rush', 'acdc']):
@@ -426,6 +432,8 @@ class EventsService:
             # 更新即時進行中狀態
             start_ts = ev.get("start_ts") or ev.get("timestamp", 0)
             ev["is_ongoing"] = start_ts <= now_ts <= end_ts
+            if ev.get("url"):
+                ev["url"] = re.sub(r'RUSH-Fifty-Something-261215\d{4}', 'RUSH-Fifty-Something-2612151830', ev["url"], flags=re.IGNORECASE)
             valid_events.append(ev)
 
         # 排序：進行中的活動置頂 (0)，即將舉行依開始日期由近至遠 (1, start_ts 升序)

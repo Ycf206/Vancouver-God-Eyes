@@ -595,6 +595,7 @@ export default function AppMap() {
     lon: number;
   } | null>(null);
   const [copiedCoordsToast, setCopiedCoordsToast] = useState(false);
+  const [copiedFacilityToast, setCopiedFacilityToast] = useState(false);
 
   // 預載溫哥華市區 22 個 Local Area 邊界幾何，用於滑鼠即時社區判定
   useEffect(() => {
@@ -650,6 +651,24 @@ export default function AppMap() {
       navigator.clipboard.writeText(text);
       setCopiedCoordsToast(true);
       setTimeout(() => setCopiedCoordsToast(false), 2200);
+    }
+  }, []);
+
+  const copyFacilityDetailsToClipboard = useCallback((facility: RoadFacilityInfo) => {
+    const p = facility.properties || {};
+    const rawAddr = p.address || p.street_address || p.ADDRESS || p.location || p.civic_address || p.site_address || '';
+    const fullAddress = rawAddr 
+      ? (facility.local_area && !rawAddr.includes(facility.local_area) ? `${rawAddr} (${facility.local_area})` : rawAddr)
+      : (facility.local_area || '');
+
+    const text = fullAddress && fullAddress !== facility.name
+      ? `${facility.name}\n${fullAddress}`
+      : facility.name;
+
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+      setCopiedFacilityToast(true);
+      setTimeout(() => setCopiedFacilityToast(false), 2200);
     }
   }, []);
 
@@ -6989,9 +7008,9 @@ export default function AppMap() {
                 </div>
                 <div className="flex items-center gap-1 shrink-0 -mt-1 -mr-1">
                   <button
-                    onClick={() => copyCoordinatesToClipboard(selectedFacility.lat, selectedFacility.lon)}
+                    onClick={() => copyFacilityDetailsToClipboard(selectedFacility)}
                     className="p-1 rounded-md text-gray-500 hover:text-cyan-600 hover:bg-cyan-50 transition-colors flex items-center justify-center shadow-xs border border-gray-100"
-                    title="複製坐標"
+                    title="複製名稱及地址"
                   >
                     <Copy className="w-3.5 h-3.5" />
                   </button>
@@ -10396,7 +10415,7 @@ export default function AppMap() {
                         rel="noopener noreferrer"
                         className="flex items-center justify-center gap-1.5 py-1.5 px-3 bg-slate-800 hover:bg-slate-700 text-cyan-200 hover:text-white rounded font-medium text-xs border border-cyan-800/40 transition-colors shadow-sm"
                       >
-                        <span>查看詳細資料 (即時雪況與纜車站點)</span>
+                        <span>查看詳細資料</span>
                         <ExternalLink className="w-3.5 h-3.5" />
                       </a>
                     );
@@ -12053,6 +12072,14 @@ export default function AppMap() {
         <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-[#10141f]/95 border border-cyan-500/60 shadow-[0_8px_24px_rgba(6,182,212,0.3)] text-white px-4 py-2 rounded-full flex items-center gap-2 text-xs font-medium animate-in fade-in duration-200">
           <Check className="w-4 h-4 text-emerald-400" />
           <span>已複製經緯度座標至剪貼簿！</span>
+        </div>
+      )}
+
+      {/* 複製設施名稱及地址成功 Toast 提示 */}
+      {copiedFacilityToast && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-[#10141f]/95 border border-cyan-500/60 shadow-[0_8px_24px_rgba(6,182,212,0.3)] text-white px-4 py-2 rounded-full flex items-center gap-2 text-xs font-medium animate-in fade-in duration-200">
+          <Check className="w-4 h-4 text-emerald-400" />
+          <span>已複製設施名稱及地址至剪貼簿！</span>
         </div>
       )}
     </div>

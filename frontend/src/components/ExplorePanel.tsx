@@ -3595,26 +3595,14 @@ function ExploreContent() {
               </div>
             ) : (
               filteredAndSortedBeaches.map((beach) => {
-                const statusBadge = (() => {
+                const statusDot = (() => {
                   if (beach.status === 'warning') {
-                    return {
-                      bg: 'bg-rose-950/60 text-rose-300 border-rose-500/50',
-                      dot: 'bg-rose-400 shadow-[0_0_8px_rgba(244,63,94,0.6)]',
-                      text: '超標警告'
-                    };
+                    return 'bg-rose-400 shadow-[0_0_8px_rgba(244,63,94,0.6)]';
                   }
                   if (beach.status === 'advisory') {
-                    return {
-                      bg: 'bg-amber-950/60 text-amber-300 border-amber-500/50',
-                      dot: 'bg-amber-400 shadow-[0_0_8px_rgba(245,158,11,0.6)]',
-                      text: '需留意'
-                    };
+                    return 'bg-amber-400 shadow-[0_0_8px_rgba(245,158,11,0.6)]';
                   }
-                  return {
-                    bg: 'bg-emerald-950/60 text-emerald-300 border-emerald-500/50',
-                    dot: 'bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.6)]',
-                    text: '適合游泳'
-                  };
+                  return 'bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.6)]';
                 })();
 
                 return (
@@ -3623,11 +3611,11 @@ function ExploreContent() {
                     onClick={() => handleLocateBeach(beach)}
                     className="p-3 rounded-xl bg-[#141822] border border-[#232838] hover:border-teal-500/50 hover:bg-[#181d2a] transition-all shadow-sm flex flex-col gap-2 group cursor-pointer"
                   >
-                    {/* Top Row: Beach name & Status Badge */}
+                    {/* Top Row: Beach name & Navigation Icon Button */}
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0">
                         <div className="flex items-center gap-1.5">
-                          <span className={`w-2 h-2 rounded-full shrink-0 ${statusBadge.dot}`} />
+                          <span className={`w-2 h-2 rounded-full shrink-0 ${statusDot}`} />
                           <h4 className="text-xs font-bold text-white group-hover:text-teal-300 transition-colors truncate">
                             {beach.name}
                           </h4>
@@ -3637,11 +3625,16 @@ function ExploreContent() {
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-1 shrink-0">
-                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${statusBadge.bg}`}>
-                          {statusBadge.text}
-                        </span>
-                      </div>
+                      <a
+                        href={`https://www.google.com/maps/dir/?api=1&destination=${beach.center_lat},${beach.center_lon}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="p-1.5 rounded-lg bg-[#11141c] hover:bg-teal-950/70 border border-[#232838] hover:border-teal-500/50 text-teal-400 hover:text-teal-300 transition-colors shrink-0 shadow-sm"
+                        title="Google 導航至此"
+                      >
+                        <Navigation className="w-3.5 h-3.5" />
+                      </a>
                     </div>
 
                     {/* Metric Row: E. coli reading & sample date */}
@@ -3666,33 +3659,21 @@ function ExploreContent() {
                       </p>
                     )}
 
-                    {/* Actions: Google Maps Navigation & Official Health URL */}
-                    <div className="flex items-center justify-between pt-1 border-t border-[#1e2330] text-[10.5px]">
-                      <a
-                        href={`https://www.google.com/maps/dir/?api=1&destination=${beach.center_lat},${beach.center_lon}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#0e121a] hover:bg-teal-950/70 text-gray-300 hover:text-teal-300 border border-[#232838] hover:border-teal-500/50 transition-colors text-[10.5px] font-medium"
-                        title="使用 Google 地圖規劃導航路線至此海灘"
-                      >
-                        <Navigation className="w-3.5 h-3.5 text-teal-400" />
-                        <span>Google 導航至此</span>
-                      </a>
-
-                      {beach.advisory_url && (
+                    {/* Official Health URL if present */}
+                    {beach.advisory_url && (
+                      <div className="flex items-center justify-end pt-1 border-t border-[#1e2330] text-[10.5px]">
                         <a
                           href={beach.advisory_url}
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
-                          className="text-gray-400 hover:text-white flex items-center gap-1 transition-colors"
+                          className="text-gray-400 hover:text-teal-300 flex items-center gap-1 transition-colors"
                         >
                           <span>官方衛生局通告</span>
                           <ExternalLink className="w-3 h-3" />
                         </a>
-                      )}
-                    </div>
+                      </div>
+                    )}
                   </div>
                 );
               })
@@ -4281,6 +4262,7 @@ function ExploreContent() {
                       if (u.includes('destinationvancouver.com/events/') && !u.includes('/events/listings/')) {
                         u = u.replace('/events/', '/events/listings/');
                       }
+                      u = u.replace(/RUSH-Fifty-Something-261215\d{4}/i, 'RUSH-Fifty-Something-2612151830');
                       return u;
                     })()}
                     target="_blank"
