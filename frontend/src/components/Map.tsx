@@ -210,9 +210,20 @@ function isPointInPolygon2D(lon: number, lat: number, poly: number[][]): boolean
   return inside;
 }
 
+const DOWNTOWN_VANCOUVER_POLY = [
+  [-123.1420, 49.2870],
+  [-123.1180, 49.2910],
+  [-123.1090, 49.2880],
+  [-123.0950, 49.2840],
+  [-123.1000, 49.2730],
+  [-123.1250, 49.2730],
+  [-123.1390, 49.2800],
+  [-123.1420, 49.2870]
+];
+
 function isShipOnLand(lon: number, lat: number): boolean {
   if (!lon || !lat) return false;
-  return isPointInPolygon2D(lon, lat, STANLEY_PARK_EXCLUSION_POLY);
+  return isPointInPolygon2D(lon, lat, STANLEY_PARK_EXCLUSION_POLY) || isPointInPolygon2D(lon, lat, DOWNTOWN_VANCOUVER_POLY);
 }
 
 const HEAVY_LAYERS_CONFIG: Record<string, { label: string; prefixes: string[] }> = {
@@ -896,21 +907,54 @@ export default function AppMap() {
     if (!selectedMaritimeVessel) return null;
     let coords: [number, number][] = [];
 
+    // 判斷船隻是否為靜態泊靠 (繫泊或錨泊狀態不繪製穿透陸地的直線)
+    const isStationary = selectedMaritimeVessel.sog < 0.6 || 
+      (selectedMaritimeVessel.nav_status && (
+        selectedMaritimeVessel.nav_status.includes('繫泊') || 
+        selectedMaritimeVessel.nav_status.includes('錨泊') ||
+        selectedMaritimeVessel.nav_status.includes('Moored') ||
+        selectedMaritimeVessel.nav_status.includes('Anchor')
+      ));
+
     if (selectedMaritimeVessel.waypoints && selectedMaritimeVessel.waypoints.length >= 2) {
-      coords = selectedMaritimeVessel.waypoints.map(p => [p[0], p[1]] as [number, number]);
-    } else if (selectedMaritimeVessel.sog > 0.5) {
+      // 預設深水水路航道：去重並保留真實深水通道線段
+      const rawWp = selectedMaritimeVessel.waypoints;
+      const cleanWp: [number, number][] = [];
+      for (let i = 0; i < rawWp.length; i++) {
+        const pt = [rawWp[i][0], rawWp[i][1]] as [number, number];
+        if (cleanWp.length === 0) {
+          cleanWp.push(pt);
+        } else {
+          const last = cleanWp[cleanWp.length - 1];
+          if (Math.hypot(pt[0] - last[0], pt[1] - last[1]) > 0.0001) {
+            cleanWp.push(pt);
+          }
+        }
+      }
+      coords = cleanWp;
+    } else if (!isStationary && selectedMaritimeVessel.sog >= 0.6) {
+      // 航行中船隻：依即時航速與航向繪製「標準海事 6 分鐘推算航向向量 (ECDIS Dead Reckoning Vector)」
       const lon = selectedMaritimeVessel.lon;
       const lat = selectedMaritimeVessel.lat;
       const headingDeg = selectedMaritimeVessel.cog || selectedMaritimeVessel.heading || 0;
       const rad = (headingDeg * Math.PI) / 180.0;
-      const distKm = Math.min(Math.max(selectedMaritimeVessel.sog * 0.6, 2.5), 8.0);
+      // 6 分鐘預估前進距離 (節 * 0.1852 km)，嚴格限制在 0.3km ~ 1.5km 水面範圍，絕不盲目射向數公里外的陸地
+      const distKm = Math.min(Math.max(selectedMaritimeVessel.sog * 0.1852, 0.35), 1.5);
       const dLat = (distKm / 111.32) * Math.cos(rad);
       const dLon = (distKm / (111.32 * Math.cos((lat * Math.PI) / 180))) * Math.sin(rad);
-      coords = [
-        [lon - dLon * 0.3, lat - dLat * 0.3],
-        [lon, lat],
-        [lon + dLon, lat + dLat]
-      ];
+
+      const targetPt: [number, number] = [lon + dLon, lat + dLat];
+      if (!isShipOnLand(targetPt[0], targetPt[1])) {
+        coords = [
+          [lon, lat],
+          targetPt
+        ];
+      } else {
+        coords = [
+          [lon, lat],
+          [lon + dLon * 0.25, lat + dLat * 0.25]
+        ];
+      }
     }
 
     if (coords.length < 2) return null;
@@ -1860,6 +1904,9 @@ export default function AppMap() {
     }
     if (parkingMeterFilter?.creditCardOnly) {
       pmParams.set('credit_card_only', 'true');
+    }
+    if (parkingMeterFilter?.timePeriod) {
+      pmParams.set('time_period', parkingMeterFilter.timePeriod);
     }
     const pmQuery = pmParams.toString() ? `?${pmParams.toString()}` : '';
     style.sources['parking-meters'] = { 
@@ -3895,6 +3942,7 @@ export default function AppMap() {
     layers.parkingMeters, 
     parkingMeterFilter.maxRate,
     parkingMeterFilter.creditCardOnly,
+    parkingMeterFilter.timePeriod,
     radiusCircleGeoJSON,
     layers.accessibleParking, 
     layers.motorcycleParking, 
@@ -5832,34 +5880,75 @@ export default function AppMap() {
               </div>
 
               {/* Parking Meters Details */}
-              {selectedFacility.facility_type === 'parking_meters' && (
-                <div className="flex flex-col gap-1.5 text-xs">
-                  {selectedFacility.properties.rate_9am_6pm && (
-                    <div className="flex justify-between items-center bg-gray-50 p-1.5 rounded">
-                      <span className="text-gray-500">日間費率 (9am-6pm)</span>
-                      <span className="font-bold text-amber-700">{selectedFacility.properties.rate_9am_6pm} /小時</span>
+              {selectedFacility.facility_type === 'parking_meters' && (() => {
+                const activePeriod = selectedFacility.properties.active_period || (() => {
+                  try {
+                    const vancouverHour = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Vancouver" })).getHours();
+                    if (parkingMeterFilter.timePeriod === 'night') return 'night';
+                    if (parkingMeterFilter.timePeriod === 'day') return 'day';
+                    return (9 <= vancouverHour && vancouverHour < 18) ? 'day' : (18 <= vancouverHour && vancouverHour < 22) ? 'night' : 'free';
+                  } catch {
+                    return 'day';
+                  }
+                })();
+
+                return (
+                  <div className="flex flex-col gap-1.5 text-xs">
+                    {/* 當前時段生效費率橫幅 */}
+                    <div className="flex justify-between items-center bg-amber-500/10 border border-amber-500/30 p-2 rounded-lg">
+                      <div className="flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                        <span className="font-semibold text-amber-900 text-[11px]">
+                          目前時段: {activePeriod === 'day' ? '🌞 日間費率' : activePeriod === 'night' ? '🌙 夜間費率' : '💤 深夜免費時段'}
+                        </span>
+                      </div>
+                      <span className="font-bold text-amber-700 font-mono text-xs">
+                        {activePeriod === 'free' ? '免費停放' : activePeriod === 'night' ? (selectedFacility.properties.rate_6pm_10pm || selectedFacility.properties.rate_9am_6pm || '--') : (selectedFacility.properties.rate_9am_6pm || '--')}
+                        {activePeriod !== 'free' && ' /hr'}
+                      </span>
                     </div>
-                  )}
-                  {selectedFacility.properties.rate_6pm_10pm && (
-                    <div className="flex justify-between items-center bg-gray-50 p-1.5 rounded">
-                      <span className="text-gray-500">夜間費率 (6pm-10pm)</span>
-                      <span className="font-bold text-amber-700">{selectedFacility.properties.rate_6pm_10pm} /小時</span>
+
+                    {selectedFacility.properties.rate_9am_6pm && (
+                      <div className={`flex justify-between items-center p-1.5 rounded transition-colors ${
+                        activePeriod === 'day' ? 'bg-amber-100/70 border border-amber-300 font-medium' : 'bg-gray-50'
+                      }`}>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-gray-600">日間費率 (9am-6pm)</span>
+                          {activePeriod === 'day' && <span className="text-[9.5px] bg-amber-500 text-white px-1 py-0.2 rounded font-bold">生效中</span>}
+                        </div>
+                        <span className="font-bold text-amber-700">{selectedFacility.properties.rate_9am_6pm} /小時</span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.rate_6pm_10pm && (
+                      <div className={`flex justify-between items-center p-1.5 rounded transition-colors ${
+                        activePeriod === 'night' ? 'bg-amber-100/70 border border-amber-300 font-medium' : 'bg-gray-50'
+                      }`}>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-gray-600">夜間費率 (6pm-10pm)</span>
+                          {activePeriod === 'night' && <span className="text-[9.5px] bg-amber-500 text-white px-1 py-0.2 rounded font-bold">生效中</span>}
+                        </div>
+                        <span className="font-bold text-amber-700">{selectedFacility.properties.rate_6pm_10pm} /小時</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between text-gray-500 text-[11px]">
+                      <span>深夜時段 (10pm-9am)</span>
+                      <span className="text-emerald-700 font-medium">免費停放 (免收費)</span>
                     </div>
-                  )}
-                  {selectedFacility.properties.time_limit_9am_6pm && (
-                    <div className="flex justify-between text-gray-600">
-                      <span>停放限制</span>
-                      <span>{selectedFacility.properties.time_limit_9am_6pm}</span>
-                    </div>
-                  )}
-                  {selectedFacility.properties.credit_card && (
-                    <div className="flex justify-between text-gray-600">
-                      <span>支援信用卡</span>
-                      <span className="font-medium">{selectedFacility.properties.credit_card === 'Yes' ? '✅ 是' : '❌ 否'}</span>
-                    </div>
-                  )}
-                </div>
-              )}
+                    {selectedFacility.properties.time_limit_9am_6pm && (
+                      <div className="flex justify-between text-gray-600">
+                        <span>日間停放上限</span>
+                        <span>{selectedFacility.properties.time_limit_9am_6pm}</span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.credit_card && (
+                      <div className="flex justify-between text-gray-600">
+                        <span>支援信用卡感應</span>
+                        <span className="font-medium">{selectedFacility.properties.credit_card === 'Yes' ? '✅ 是' : '❌ 否'}</span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
 
               {/* Accessible Parking Details */}
               {selectedFacility.facility_type === 'accessible_parking' && (
@@ -8979,6 +9068,39 @@ export default function AppMap() {
 
           {parkingMeterFilterOpen ? (
             <div className="flex flex-col gap-2.5 text-xs">
+              {/* 計費時段切換 */}
+              <div className="flex flex-col gap-1 pb-2 border-b border-[#262b38]">
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-300">時段費率計算:</span>
+                  <span className="text-[10.5px] text-amber-400 font-medium">
+                    {(parkingMeterFilter.timePeriod || 'auto') === 'day' ? '🌞 日間標準' :
+                     parkingMeterFilter.timePeriod === 'night' ? '🌙 夜間標準' : '⏰ 依當前時間自動'}
+                  </span>
+                </div>
+                <div className="grid grid-cols-3 gap-1 mt-0.5">
+                  {[
+                    { id: 'auto', label: '⏰ 自動' },
+                    { id: 'day', label: '🌞 日間' },
+                    { id: 'night', label: '🌙 夜間' }
+                  ].map((p) => {
+                    const isSelected = (parkingMeterFilter.timePeriod || 'auto') === p.id;
+                    return (
+                      <button
+                        key={p.id}
+                        onClick={() => setParkingMeterFilter({ timePeriod: p.id as 'auto' | 'day' | 'night' })}
+                        className={`py-1 text-[11px] rounded font-medium transition-all ${
+                          isSelected
+                            ? 'bg-amber-500 text-gray-950 font-bold shadow-sm'
+                            : 'bg-[#1e2330] text-gray-300 hover:bg-[#282f40]'
+                        }`}
+                      >
+                        {p.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
               <div className="flex items-center justify-between">
                 <span className="text-gray-300">每小時最高費率:</span>
                 <span className="font-bold text-amber-400 font-mono">
@@ -9034,13 +9156,18 @@ export default function AppMap() {
               </label>
 
               <div className="text-[10px] text-gray-400 flex items-center justify-between">
-                <span>地圖即時過濾渲染</span>
-                <span className="text-amber-400 font-mono">即時生效</span>
+                <span>溫哥華時區動態計算</span>
+                <span className="text-amber-400 font-mono">10pm-9am 免費</span>
               </div>
             </div>
           ) : (
             <div className="flex items-center justify-between text-[11px] text-gray-300">
-              <span>目前篩選: <span className="text-amber-400 font-bold">{parkingMeterFilter.maxRate >= 20 ? '不限' : `≤ $${parkingMeterFilter.maxRate}/hr`}</span></span>
+              <span>
+                目前篩選: <span className="text-amber-400 font-bold">{parkingMeterFilter.maxRate >= 20 ? '不限' : `≤ $${parkingMeterFilter.maxRate}/hr`}</span>
+                <span className="text-gray-400 ml-1 font-mono text-[10px]">
+                  ({(parkingMeterFilter.timePeriod || 'auto') === 'day' ? '日間' : (parkingMeterFilter.timePeriod || 'auto') === 'night' ? '夜間' : '自動'})
+                </span>
+              </span>
               <button 
                 onClick={() => setParkingMeterFilterOpen(true)}
                 className="text-[10px] text-amber-400 hover:underline"

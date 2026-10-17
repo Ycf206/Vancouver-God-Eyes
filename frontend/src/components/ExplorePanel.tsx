@@ -993,25 +993,28 @@ function ExploreContent() {
     });
   };
 
-  const tabs = [
-    { id: 'ferry', label: '渡輪', icon: Ship, iconColor: 'text-sky-400' },
-    { id: 'cargo', label: '船運', icon: Anchor, iconColor: 'text-cyan-400' },
-    { id: 'fuel', label: '燃油', icon: Fuel, iconColor: 'text-amber-400' },
-    { id: 'ev', label: '充電', icon: Zap, iconColor: 'text-emerald-400' },
+  const exploreTabs = [
+    { id: 'weather', label: '天氣', icon: CloudSun, iconColor: 'text-sky-400' },
+    { id: 'news', label: '新聞', icon: Newspaper, iconColor: 'text-amber-400' },
+    { id: 'events', label: '活動', icon: CalendarDays, iconColor: 'text-purple-400' },
+    { id: 'ferry', label: '渡輪', icon: Ship, iconColor: 'text-cyan-400' },
+    { id: 'cargo', label: '船運', icon: Anchor, iconColor: 'text-blue-400' },
+    { id: 'fuel', label: '燃油', icon: Fuel, iconColor: 'text-emerald-400' },
+    { id: 'ev', label: '充電', icon: Zap, iconColor: 'text-yellow-400' },
   ] as const;
 
   return (
     <div 
-      className="fixed top-[72px] right-4 z-40 w-[380px] max-w-[calc(100vw-32px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-4 shadow-2xl border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-200 select-none overflow-hidden"
+      className="fixed top-[72px] right-4 z-40 w-[380px] max-w-[calc(100vw-32px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-200 select-none overflow-hidden"
       onClick={(e) => e.stopPropagation()}
     >
       {/* Header */}
-      <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#262b38] shrink-0">
+      <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-[#262b38] shrink-0">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0 shadow-sm">
+          <div className="w-7 h-7 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0 shadow-sm">
             <Compass className="w-4 h-4" />
           </div>
-          <h2 className="text-base font-bold text-white tracking-wide">探索</h2>
+          <h2 className="text-sm font-bold text-white tracking-wide">探索</h2>
         </div>
         <button
           onClick={() => {
@@ -1025,62 +1028,24 @@ function ExploreContent() {
         </button>
       </div>
 
-      {/* 探索分類分頁 - 第一行 (天氣 | 新聞 | 活動) */}
-      <div className="grid grid-cols-4 gap-1.5 p-1.5 bg-[#10131a] rounded-xl border border-[#232836] shrink-0 mb-1.5">
-        <button
-          onClick={() => setActiveTab('weather')}
-          className={`py-2 text-xs font-medium rounded-lg transition-all text-center flex items-center justify-center gap-1.5 ${
-            activeTab === 'weather'
-              ? 'bg-[#2b3345] text-white font-bold shadow-md ring-1 ring-[#3d4760]'
-              : 'text-gray-300 hover:text-white hover:bg-[#1a1f2b]'
-          }`}
-        >
-          <CloudSun className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-          <span>天氣</span>
-        </button>
-        <button
-          onClick={() => setActiveTab('news')}
-          className={`py-2 text-xs font-medium rounded-lg transition-all text-center flex items-center justify-center gap-1.5 ${
-            activeTab === 'news'
-              ? 'bg-[#2b3345] text-white font-bold shadow-md ring-1 ring-[#3d4760]'
-              : 'text-gray-300 hover:text-white hover:bg-[#1a1f2b]'
-          }`}
-        >
-          <Newspaper className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-          <span>新聞</span>
-        </button>
-        <button
-          onClick={() => setActiveTab('events')}
-          className={`py-2 text-xs font-medium rounded-lg transition-all text-center flex items-center justify-center gap-1.5 ${
-            activeTab === 'events'
-              ? 'bg-[#2b3345] text-white font-bold shadow-md ring-1 ring-[#3d4760]'
-              : 'text-gray-300 hover:text-white hover:bg-[#1a1f2b]'
-          }`}
-        >
-          <CalendarDays className="w-3.5 h-3.5 text-purple-400 shrink-0" />
-          <span>活動</span>
-        </button>
-        {/* 保留未來新增分頁空間 */}
-        <div className="col-span-1"></div>
-      </div>
-
-      {/* 探索分類分頁 - 第二行 (渡輪 > 船運 > 燃油 > 充電) */}
-      <div className="grid grid-cols-4 gap-1.5 p-1.5 bg-[#10131a] rounded-xl border border-[#232836] shrink-0 mb-3">
-        {tabs.map((tab) => {
+      {/* 探索分類分頁 - 精簡橫向膠囊列 (7 個分頁單列排列，大幅釋放縱向瀏覽空間) */}
+      <div className="flex items-center gap-1 p-1 bg-[#10131a]/90 rounded-lg border border-[#232836] shrink-0 mb-2.5 overflow-x-auto [&::-webkit-scrollbar]:hidden">
+        {exploreTabs.map((tab) => {
           const isActive = activeTab === tab.id;
           const Icon = tab.icon;
           return (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`py-2 text-xs font-medium rounded-lg transition-all text-center flex items-center justify-center gap-1.5 ${
+              className={`flex-1 min-w-[42px] py-1.5 px-1 text-[11px] font-medium rounded-md transition-all flex items-center justify-center gap-1 shrink-0 ${
                 isActive
-                  ? 'bg-[#2b3345] text-white font-bold shadow-md ring-1 ring-[#3d4760]'
-                  : 'text-gray-300 hover:text-white hover:bg-[#1a1f2b]'
+                  ? 'bg-[#262e3d] text-white font-bold shadow-sm ring-1 ring-[#3b455c]'
+                  : 'text-gray-400 hover:text-gray-200 hover:bg-[#161a24]'
               }`}
+              title={tab.label}
             >
               <Icon className={`w-3.5 h-3.5 ${tab.iconColor} shrink-0`} />
-              <span>{tab.label}</span>
+              <span className="truncate">{tab.label}</span>
             </button>
           );
         })}

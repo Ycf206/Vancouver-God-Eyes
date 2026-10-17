@@ -123,8 +123,9 @@ export interface UIState {
   parkingMeterFilter: {
     maxRate: number; // 0 = all
     creditCardOnly: boolean;
+    timePeriod: 'auto' | 'day' | 'night';
   };
-  setParkingMeterFilter: (filter: Partial<{ maxRate: number; creditCardOnly: boolean }>) => void;
+  setParkingMeterFilter: (filter: Partial<{ maxRate: number; creditCardOnly: boolean; timePeriod: 'auto' | 'day' | 'night' }>) => void;
   fuelFilter: {
     brands: string[]; // empty or ['all'] = all
   };
@@ -317,6 +318,7 @@ export const useUIStore = create<UIState>()(
       parkingMeterFilter: {
         maxRate: 0,
         creditCardOnly: false,
+        timePeriod: 'auto',
       },
       setParkingMeterFilter: (filter) =>
         set((state) => ({

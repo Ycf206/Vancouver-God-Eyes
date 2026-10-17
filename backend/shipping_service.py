@@ -69,16 +69,16 @@ PATH_BURRARD_OUTBOUND = [
     [-123.0850, 49.3015],  # Off Canada Place / SeaBus lane
     [-123.1120, 49.3085],  # North of Brockton Point (深水航道，避開史丹利公園)
     [-123.1385, 49.3145],  # Lions Gate Bridge center channel (First Narrows)
-    [-123.1650, 49.3240],  # First Narrows outer approach
-    [-123.2200, 49.3160],  # English Bay Traffic Separation Zone
-    [-123.2700, 49.3100]   # Pilot station / Strait of Georgia
+    [-123.1600, 49.3150],  # First Narrows outer fairway (避開北岸 Ambleside 陸地水域)
+    [-123.2200, 49.3120],  # English Bay Traffic Separation Zone
+    [-123.2700, 49.3050]   # Pilot station / Strait of Georgia
 ]
 
 # 航道 2: 布勒內灣主航道進港（外海進入溫哥華港）
 PATH_BURRARD_INBOUND = [
-    [-123.2700, 49.3100],  # Strait of Georgia entrance
-    [-123.2200, 49.3160],  # English Bay Fairway
-    [-123.1650, 49.3240],  # First Narrows west approach
+    [-123.2700, 49.3050],  # Strait of Georgia entrance
+    [-123.2200, 49.3120],  # English Bay Fairway
+    [-123.1600, 49.3150],  # First Narrows west approach
     [-123.1385, 49.3145],  # Lions Gate Bridge center span
     [-123.1120, 49.3085],  # North of Brockton Point
     [-123.0850, 49.3015],  # Central Harbour
@@ -98,24 +98,30 @@ PATH_BURRARD_TUG_PATROL = [
 
 # 航道 4: 一峽橋護航拖船巡邏線 (Seaspan Commodore，往返一峽橋與英吉利灣)
 PATH_FIRST_NARROWS_ESCORT = [
-    [-123.1700, 49.3230],  # 英吉利灣東口深水區
-    [-123.1500, 49.3190],  # 獅門橋西引道
+    [-123.1650, 49.3150],  # 英吉利灣東口深水區 (避開北岸陸地)
+    [-123.1500, 49.3148],  # 獅門橋西引道中央深水航道
     [-123.1385, 49.3145],  # 獅門橋主跨下方中央深水區
     [-123.1150, 49.3085],  # 內港入口
     [-123.1385, 49.3145],  # 掉頭折返
-    [-123.1500, 49.3190],
-    [-123.1700, 49.3230]
+    [-123.1500, 49.3148],
+    [-123.1650, 49.3150]
 ]
 
-# 航道 5: 菲沙河內河推船作業航線 (Island Defender，沿菲沙河主航道中心線)
+# 航道 5: 菲沙河內河推船作業航線 (Island Defender，沿菲沙河南臂深水航道中心線，絕不穿越列治文陸地)
 PATH_FRASER_RIVER = [
-    [-122.9900, 49.1990],  # 安納西斯島南側航道
-    [-122.9550, 49.2015],  # 菲沙河航道中心線
-    [-122.9250, 49.2050],  # 主航道
-    [-122.8950, 49.2100],  # 新西敏碼頭水域
-    [-122.9250, 49.2050],  # 掉頭折返
-    [-122.9550, 49.2015],
-    [-122.9900, 49.1990]
+    [-122.9800, 49.1580],  # 安納西斯島南側菲沙河主航道水面
+    [-122.9580, 49.1660],  # 途經安納西斯汽車碼頭外側深水區
+    [-122.9420, 49.1725],  # 亞歷克斯菲沙大橋 (Alex Fraser Bridge) 主跨下方
+    [-122.9200, 49.1810],  # 航道轉向菲沙薩里深水碼頭水域
+    [-122.8980, 49.1920],  # 菲沙薩里碼頭 (Fraser Surrey Docks) 外側主航道
+    [-122.8940, 49.2050],  # 帕圖洛橋 (Pattullo Bridge) 主跨下方
+    [-122.8900, 49.2140],  # 新西敏碼頭水面
+    [-122.8940, 49.2050],
+    [-122.8980, 49.1920],
+    [-122.9200, 49.1810],
+    [-122.9420, 49.1725],
+    [-122.9580, 49.1660],
+    [-122.9800, 49.1580]
 ]
 
 # 航道 6: 福溪水上渡輪往返航線 (Aquabus / False Creek Transit)
@@ -129,15 +135,17 @@ PATH_FALSE_CREEK = [
     [-123.1360, 49.2730]
 ]
 
-# 航道 7: 菲沙河北臂內河拖船航線 (Fraser River North Arm)
+# 航道 7: 菲沙河北臂內河拖船航線 (Fraser River North Arm，沿溫哥華與列治文交界水道中心線)
 PATH_FRASER_NORTH = [
-    [-123.1450, 49.2020],
-    [-123.1180, 49.2060],
-    [-123.0850, 49.2080],
-    [-123.0550, 49.2090],
-    [-123.0850, 49.2080],
-    [-123.1180, 49.2060],
-    [-123.1450, 49.2020]
+    [-123.1450, 49.2030],  # 菲沙河北臂主水道中心線
+    [-123.1280, 49.2045],  # 橡樹街大橋 (Oak St Bridge) 下方水面
+    [-123.1050, 49.2065],  # 北臂水道水面
+    [-123.0760, 49.2085],  # 騎士街大橋 (Knight St Bridge) 下方水面
+    [-123.0500, 49.2095],  # 米切爾島 (Mitchell Island) 北側水道水面
+    [-123.0760, 49.2085],
+    [-123.1050, 49.2065],
+    [-123.1280, 49.2045],
+    [-123.1450, 49.2030]
 ]
 
 def calculate_bearing(p1: List[float], p2: List[float]) -> float:
@@ -452,11 +460,11 @@ class MaritimeShippingService:
                 "type_code": 70,
                 "ship_type": "滾裝汽車載運船 (Pure Car Carrier)",
                 "type_group": "cargo",
-                "lat": 49.1720,
-                "lon": -122.9460,
-                "sog": 0.1,
-                "cog": 105.0,
-                "heading": 105.0,
+                "lat": 49.1665,
+                "lon": -122.9580,
+                "sog": 0.0,
+                "cog": 65.0,
+                "heading": 65.0,
                 "nav_status": "繫泊停靠碼頭 (Moored)",
                 "destination": "ANNACIS AUTO TERMINAL",
                 "eta": "10-15 05:00",
@@ -474,8 +482,8 @@ class MaritimeShippingService:
                 "type_code": 72,
                 "ship_type": "散裝硫磺/化肥船 (Bulk Carrier)",
                 "type_group": "cargo",
-                "lat": 49.3080,
-                "lon": -123.0310,
+                "lat": 49.3070,
+                "lon": -123.0560,
                 "sog": 0.0,
                 "cog": 270.0,
                 "heading": 270.0,

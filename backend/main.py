@@ -2230,6 +2230,7 @@ def get_road_facilities_geojson(
     interval: str = "10m", 
     max_rate: Optional[float] = None,
     credit_card_only: bool = False,
+    time_period: Optional[str] = "auto",
     db: Session = Depends(database.get_db)
 ):
     """
@@ -2333,8 +2334,42 @@ def get_road_facilities_geojson(
             props.update(f.details)
 
         if facility_type == 'parking_meters':
-            # Extract numeric rate for filtering and client-side styling
-            raw_rate = props.get('rate_9am_6pm') or props.get('r_mf_9a_6p') or props.get('rate') or ''
+            # 判斷時段：auto (根據溫哥華當地時間), day (日間 9am-6pm), night (夜間 6pm-10pm)
+            import datetime
+            try:
+                from zoneinfo import ZoneInfo
+                vancouver_now = datetime.datetime.now(ZoneInfo("America/Vancouver"))
+            except Exception:
+                vancouver_now = datetime.datetime.utcnow() - datetime.timedelta(hours=7)
+            
+            current_hour = vancouver_now.hour
+
+            # 決定當前查詢時段
+            period_mode = (time_period or "auto").lower()
+            if period_mode == "night":
+                active_period = "night"
+            elif period_mode == "day":
+                active_period = "day"
+            else:  # auto: 根據溫哥華目前時間自動判斷
+                if 9 <= current_hour < 18:
+                    active_period = "day"
+                elif 18 <= current_hour < 22:
+                    active_period = "night"
+                else:
+                    active_period = "free"  # 溫哥華路邊停車錶在 22:00 至次日 09:00 為免費時段
+
+            props['active_period'] = active_period
+            props['vancouver_time'] = vancouver_now.strftime("%H:%M")
+
+            # 根據判定時段提取費率
+            raw_rate = ''
+            if active_period == "night":
+                raw_rate = props.get('rate_6pm_10pm') or props.get('rate_9am_6pm') or props.get('rate') or ''
+            elif active_period == "free":
+                raw_rate = '0'
+            else:  # day
+                raw_rate = props.get('rate_9am_6pm') or props.get('r_mf_9a_6p') or props.get('rate') or ''
+
             rate_num = None
             rate_match = re.search(r'(\d+(?:\.\d+)?)', str(raw_rate))
             if rate_match:
@@ -2342,7 +2377,11 @@ def get_road_facilities_geojson(
                     rate_num = float(rate_match.group(1))
                 except ValueError:
                     rate_num = None
+            elif active_period == "free":
+                rate_num = 0.0
+
             props['rate_numeric'] = rate_num
+            props['effective_rate'] = f"${rate_num:.2f}" if rate_num is not None and active_period != "free" else "免費" if active_period == "free" else "未提供"
 
             if max_rate is not None and max_rate > 0:
                 if rate_num is not None and rate_num > max_rate:
