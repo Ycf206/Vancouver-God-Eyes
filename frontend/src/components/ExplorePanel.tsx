@@ -485,7 +485,9 @@ function ExploreContent() {
     setNewsRefreshInterval,
     transitAlertsRefreshInterval,
     setTransitAlertsRefreshInterval,
+    stationAlertsMap,
     setStationAlertsMap,
+    setTransitAlertsList,
     setSearchTarget,
     enableLayer,
     layers,
@@ -1790,6 +1792,7 @@ function ExploreContent() {
         const data = await res.json();
         if (data && Array.isArray(data.alerts)) {
           setTransitAlertsData(data);
+          setTransitAlertsList(data.alerts);
           if (data.station_alerts_map) {
             setStationAlertsMap(data.station_alerts_map);
           }
@@ -1807,6 +1810,7 @@ function ExploreContent() {
         const staticData = await staticRes.json();
         if (staticData && Array.isArray(staticData.alerts)) {
           setTransitAlertsData(staticData);
+          setTransitAlertsList(staticData.alerts);
           if (staticData.station_alerts_map) {
             setStationAlertsMap(staticData.station_alerts_map);
           }
@@ -1817,7 +1821,7 @@ function ExploreContent() {
     } finally {
       setLoadingTransitAlerts(false);
     }
-  }, [setStationAlertsMap]);
+  }, [setStationAlertsMap, setTransitAlertsList]);
 
   // Pre-load transit alerts on mount if not loaded
   useEffect(() => {
@@ -2667,6 +2671,15 @@ function ExploreContent() {
               <span className="text-[10px] text-cyan-400 bg-cyan-950/70 border border-cyan-800/60 px-1.5 py-0.5 rounded font-mono">
                 每日 1 次更新
               </span>
+              <a
+                href="https://www.skiresort.com/en/snow-reports/vancouver/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-1 hover:bg-[#252a38] text-gray-400 hover:text-cyan-400 rounded transition-colors"
+                title="前往 Skiresort 官方雪況網站"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
               <button
                 onClick={() => fetchSkiResorts(true)}
                 disabled={loadingSki}
@@ -2907,15 +2920,15 @@ function ExploreContent() {
               {/* 1. Hero Card: Current Planetary K-index */}
               <div className="bg-gradient-to-br from-[#121824] via-[#101b2b] to-[#0d1f1f] rounded-xl p-3.5 border border-[#23383a] shadow-lg flex flex-col gap-3 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
-                <div className="flex items-center justify-between relative z-10">
-                  <div className="flex flex-col">
-                    <span className="text-[11px] font-bold text-gray-200 tracking-wide">
+                <div className="flex items-center justify-between relative z-10 py-1">
+                  <div className="flex flex-col justify-center">
+                    <span className="text-[11.5px] font-bold text-gray-200 tracking-wide">
                       地磁極光指數 (Planetary Kp)
                     </span>
-                    <span className="text-[9.5px] text-gray-400 mt-0.5">
+                    <span className="text-[9.5px] text-gray-400 mt-1">
                       衡量全球地磁擾動與極光強度的標準指標 (0~9)
                     </span>
-                    <div className="flex items-baseline gap-2 mt-1">
+                    <div className="flex items-baseline gap-2 mt-1.5">
                       <span className="text-3xl font-extrabold text-white tracking-tight">
                         Kp {auroraData.latest?.kp ?? '--'}
                       </span>
@@ -3039,24 +3052,24 @@ function ExploreContent() {
                     <button
                       type="button"
                       onClick={() => setAuroraForecastTab('tonight')}
-                      className={`px-2 py-0.5 text-[10px] rounded transition-all font-medium ${
+                      className={`px-2.5 py-0.5 text-[10px] rounded transition-all font-medium ${
                         auroraForecastTab === 'tonight'
                           ? 'bg-emerald-600 text-white font-bold shadow-xs'
                           : 'text-gray-400 hover:text-white'
                       }`}
                     >
-                      今晚預測
+                      今晚
                     </button>
                     <button
                       type="button"
                       onClick={() => setAuroraForecastTab('tomorrow')}
-                      className={`px-2 py-0.5 text-[10px] rounded transition-all font-medium ${
+                      className={`px-2.5 py-0.5 text-[10px] rounded transition-all font-medium ${
                         auroraForecastTab === 'tomorrow'
                           ? 'bg-emerald-600 text-white font-bold shadow-xs'
                           : 'text-gray-400 hover:text-white'
                       }`}
                     >
-                      明晚預測
+                      明晚
                     </button>
                   </div>
                 </div>
@@ -3554,14 +3567,25 @@ function ExploreContent() {
               </span>
             </div>
 
-            <button
-              onClick={() => fetchBeachWater(true)}
-              disabled={loadingBeach}
-              className="p-1.5 rounded-lg bg-[#151922] text-gray-400 hover:text-teal-400 border border-[#232838] hover:border-teal-500/40 transition-all shrink-0 flex items-center justify-center disabled:opacity-50"
-              title="重新整理水質資料"
-            >
-              <RefreshCw className={`w-3.5 h-3.5 ${loadingBeach ? 'animate-spin text-teal-400' : ''}`} />
-            </button>
+            <div className="flex items-center gap-1.5">
+              <a
+                href="https://metrovancouver.org/services/liquid-waste/beaches-and-recreational-water-quality-monitoring"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-1 hover:bg-[#252a38] text-gray-400 hover:text-teal-400 rounded transition-colors"
+                title="前往 Metro Vancouver 官方海灘水質監測網站"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+              <button
+                onClick={() => fetchBeachWater(true)}
+                disabled={loadingBeach}
+                className="p-1 hover:bg-[#252a38] text-gray-400 hover:text-teal-400 rounded transition-colors disabled:opacity-50"
+                title="重新整理水質資料"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${loadingBeach ? 'animate-spin text-teal-400' : ''}`} />
+              </button>
+            </div>
           </div>
 
           {/* 開啟海灘水質圖層按鈕 (Highlight Layer Switch) */}
@@ -4491,14 +4515,25 @@ function ExploreContent() {
               </span>
             </div>
 
-            <button
-              onClick={() => fetchBorderCrossings(true)}
-              disabled={loadingBorder}
-              className="p-1.5 rounded-lg bg-[#151922] text-gray-400 hover:text-emerald-400 border border-[#232838] hover:border-emerald-500/40 transition-all shrink-0 flex items-center justify-center disabled:opacity-50"
-              title="重新整理邊境等候時間"
-            >
-              <RefreshCw className={`w-3.5 h-3.5 ${loadingBorder ? 'animate-spin text-emerald-400' : ''}`} />
-            </button>
+            <div className="flex items-center gap-1.5">
+              <a
+                href="https://www.cbsa-asfc.gc.ca/bwt-taf/menu-eng.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-1 hover:bg-[#252a38] text-gray-400 hover:text-emerald-400 rounded transition-colors"
+                title="前往 CBSA 官方邊境等候時間網站"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+              <button
+                onClick={() => fetchBorderCrossings(true)}
+                disabled={loadingBorder}
+                className="p-1.5 rounded-lg bg-[#151922] text-gray-400 hover:text-emerald-400 border border-[#232838] hover:border-emerald-500/40 transition-all shrink-0 flex items-center justify-center disabled:opacity-50"
+                title="重新整理邊境等候時間"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${loadingBorder ? 'animate-spin text-emerald-400' : ''}`} />
+              </button>
+            </div>
           </div>
 
           {/* 方向篩選按鈕 (Direction Filter) */}

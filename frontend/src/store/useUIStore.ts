@@ -109,6 +109,10 @@ export interface UIState {
   setTransitAlertsRefreshInterval: (interval: number) => void;
   stationAlertsMap: Record<string, { critical: boolean; count: number; alert_ids: string[] }>;
   setStationAlertsMap: (map: Record<string, { critical: boolean; count: number; alert_ids: string[] }>) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  transitAlertsList: any[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setTransitAlertsList: (alerts: any[]) => void;
   userLocation: {
     address: string;
     displayName?: string;
@@ -278,6 +282,8 @@ export const useUIStore = create<UIState>()(
       setTransitAlertsRefreshInterval: (interval) => set({ transitAlertsRefreshInterval: interval }),
       stationAlertsMap: {},
       setStationAlertsMap: (map) => set({ stationAlertsMap: map }),
+      transitAlertsList: [],
+      setTransitAlertsList: (alerts) => set({ transitAlertsList: alerts }),
       userLocation: null,
       setUserLocation: (loc) => set({ userLocation: loc }),
       isSettingsModalOpen: false,

@@ -1428,7 +1428,7 @@ POINT_CURATED_TYPES = (
     "hospitals", "police", "disaster_hubs", "car_sharing", "aed", 
     "fuel", "ev_charging", "tesla", "marine_terminals", "bike_racks", "wireless_facilities",
     "traffic_crosswalks", "litter_containers", "food_banks", "recycling", "van_wifi",
-    "traffic_conditions", "fire_hydrants"
+    "traffic_conditions"
 )
 
 def sync_curated_point_types(db: Session):

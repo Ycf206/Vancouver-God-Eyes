@@ -474,9 +474,41 @@ export default function AppMap() {
     evChargingFilter, setEvChargingFilter,
     isRadarActive, setIsRadarActive,
     radarFrameTime, radarHost, radarTilePath,
-    stationAlertsMap
+    stationAlertsMap, transitAlertsList, setTransitAlertsList
   } = useUIStore();
   const mapRef = useRef<MapRef>(null);
+
+  const [selectedStationAlertMarker, setSelectedStationAlertMarker] = useState<{
+    name: string;
+    displayName: string;
+    stop_id: string;
+    lat: number;
+    lon: number;
+    critical: boolean;
+    count: number;
+    alertIds: string[];
+  } | null>(null);
+
+  // 當關閉探索介面或切到非警報分頁時，關閉車站警報彈窗
+  useEffect(() => {
+    if (!isExploreOpen || exploreTab !== 'alerts') {
+      setSelectedStationAlertMarker(null);
+    }
+  }, [isExploreOpen, exploreTab]);
+
+  // 保底：若探索交通警報開啟但本地尚未加載 alerts 列表，預載靜態快取
+  useEffect(() => {
+    if (isExploreOpen && exploreTab === 'alerts' && (!transitAlertsList || transitAlertsList.length === 0)) {
+      fetch('/vancouver_translink_alerts_cache.json')
+        .then(res => res.json())
+        .then(data => {
+          if (data && Array.isArray(data.alerts)) {
+            setTransitAlertsList(data.alerts);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [isExploreOpen, exploreTab, transitAlertsList, setTransitAlertsList]);
 
   // Active Station Alert Warning Triangles (Non-critical: Yellow, Critical: Red)
   // 只有打開交通警報分頁時才在地圖上顯示黃/紅三角形標記，關閉探索介面或切到其他分頁時三角形自動隱藏
@@ -3250,7 +3282,7 @@ export default function AppMap() {
         layout: {
           'text-field': '{point_count_abbreviated}',
           'text-size': 12,
-          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold']
+          'text-font': ['Open Sans Bold']
         },
         paint: {
           'text-color': '#ffffff'
@@ -3263,10 +3295,10 @@ export default function AppMap() {
         type: 'circle',
         source: 'fire_hydrants',
         filter: ['!', ['has', 'point_count']],
-        minzoom: 12,
+        minzoom: 10,
         paint: {
           'circle-color': '#ef4444',
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 12, 3, 15, 6, 17, 10],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 2, 12, 3, 15, 6, 17, 10],
           'circle-opacity': 0.35,
           'circle-blur': 0.8
         }
@@ -3278,10 +3310,10 @@ export default function AppMap() {
         type: 'circle',
         source: 'fire_hydrants',
         filter: ['!', ['has', 'point_count']],
-        minzoom: 12,
+        minzoom: 10,
         paint: {
           'circle-color': '#dc2626',
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 12, 2.2, 15, 4, 17, 6],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 1.6, 12, 2.5, 15, 4.2, 17, 6],
           'circle-stroke-width': 1.2,
           'circle-stroke-color': '#ffffff'
         }
@@ -3293,10 +3325,10 @@ export default function AppMap() {
         type: 'symbol',
         source: 'fire_hydrants',
         filter: ['!', ['has', 'point_count']],
-        minzoom: 16,
+        minzoom: 15,
         layout: {
           'text-field': '🧯',
-          'text-size': ['interpolate', ['linear'], ['zoom'], 16, 11, 18, 15],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 15, 10, 18, 15],
           'text-allow-overlap': true,
           'text-ignore-placement': true
         }
@@ -6018,7 +6050,9 @@ export default function AppMap() {
             <div
               onClick={(e) => {
                 e.stopPropagation();
-                fetchSkytrainStationSchedule(String(marker.stop_id), marker.displayName, marker.lon, marker.lat);
+                setSelectedStationAlertMarker(marker);
+                setSelectedStop(null);
+                setSelectedFacility(null);
                 mapRef.current?.flyTo({ center: [marker.lon, marker.lat], zoom: 15.5, essential: true });
               }}
               className={`cursor-pointer group flex items-center justify-center transition-transform hover:scale-125 select-none ${
@@ -6046,6 +6080,173 @@ export default function AppMap() {
             </div>
           </Marker>
         ))}
+
+        {/* SkyTrain & SeaBus Station Warning Alert Info Popup */}
+        {selectedStationAlertMarker && (
+          <Popup
+            longitude={selectedStationAlertMarker.lon}
+            latitude={selectedStationAlertMarker.lat}
+            closeOnClick={false}
+            onClose={() => setSelectedStationAlertMarker(null)}
+            offset={[0, -28]}
+            className="z-50 station-alert-popup"
+            maxWidth="380px"
+          >
+            <div className="flex flex-col gap-2.5 text-xs text-gray-900 min-w-[280px] max-w-[340px] p-0.5">
+              {/* Header */}
+              <div className="flex items-start justify-between gap-2 pb-2 border-b border-gray-200">
+                <div className="flex items-center gap-2 min-w-0">
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
+                    selectedStationAlertMarker.critical 
+                      ? 'bg-red-100 text-red-600 border border-red-300' 
+                      : 'bg-amber-100 text-amber-600 border border-amber-300'
+                  }`}>
+                    <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                      <path d="M12 2L1 21h22L12 2zm0 3.5L20.3 19H3.7L12 5.5zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z" />
+                    </svg>
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="font-bold text-sm text-gray-900 truncate">
+                      {selectedStationAlertMarker.displayName || selectedStationAlertMarker.name}
+                    </h3>
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
+                        selectedStationAlertMarker.critical
+                          ? 'bg-red-600 text-white'
+                          : 'bg-amber-500 text-white'
+                      }`}>
+                        {selectedStationAlertMarker.critical ? '嚴重警報' : '營運提示'}
+                      </span>
+                      <span className="text-[11px] text-gray-500 font-medium">
+                        共 {selectedStationAlertMarker.count} 則警報
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Alert Details List */}
+              <div className="flex flex-col gap-2 max-h-[260px] overflow-y-auto pr-1">
+                {(() => {
+                  const matchingAlerts = (transitAlertsList || []).filter((a: any) => {
+                    if (selectedStationAlertMarker.alertIds?.includes(a.id)) return true;
+                    const stName = selectedStationAlertMarker.name.toLowerCase();
+                    const stDisplay = (selectedStationAlertMarker.displayName || '').toLowerCase();
+                    const impacted = (a.impacted_stations || []).map((s: string) => s.toLowerCase());
+                    return impacted.some((s: string) => s.includes(stName) || stName.includes(s) || (stDisplay && s.includes(stDisplay)));
+                  });
+
+                  if (matchingAlerts.length === 0) {
+                    return (
+                      <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-200 text-gray-600 text-[11.5px] leading-relaxed">
+                        ⚠️ 該站點目前有即時營運通報，請留意車站現場廣播、跑馬燈指示或至 TransLink 官網查詢。
+                      </div>
+                    );
+                  }
+
+                  return matchingAlerts.map((alt: any, idx: number) => {
+                    let displayTime = '--';
+                    if (alt.lastModified) {
+                      try {
+                        const d = new Date(alt.lastModified);
+                        if (!isNaN(d.getTime())) {
+                          const h = d.getHours().toString().padStart(2, '0');
+                          const m = d.getMinutes().toString().padStart(2, '0');
+                          displayTime = `${d.getMonth() + 1}月${d.getDate()}日 ${h}:${m}`;
+                        }
+                      } catch {
+                        displayTime = String(alt.lastModified);
+                      }
+                    }
+
+                    return (
+                      <div 
+                        key={alt.id || idx}
+                        className={`p-2.5 rounded-lg border flex flex-col gap-1.5 ${
+                          alt.critical 
+                            ? 'bg-red-50/70 border-red-200' 
+                            : 'bg-amber-50/60 border-amber-200'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between gap-1.5">
+                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                            alt.critical 
+                              ? 'bg-red-600 text-white' 
+                              : 'bg-amber-600 text-white'
+                          }`}>
+                            {alt.effect_zh || '營運提示'}
+                          </span>
+                          {alt.routeLongName && (
+                            <span className="text-[10.5px] font-semibold text-gray-700 truncate max-w-[150px]">
+                              {alt.routeLongName}
+                            </span>
+                          )}
+                        </div>
+
+                        <h4 className="font-bold text-xs text-gray-900 leading-snug">
+                          {alt.header || alt.alertText || '營運通知'}
+                        </h4>
+
+                        {alt.description && alt.description !== alt.header && (
+                          <p className="text-[11px] text-gray-700 leading-relaxed whitespace-pre-line line-clamp-4">
+                            {alt.description}
+                          </p>
+                        )}
+
+                        <div className="flex items-center justify-between pt-1 border-t border-gray-200/60 text-[10px] text-gray-500">
+                          <span>
+                            {displayTime !== '--' ? `更新：${displayTime}` : '即時通告'}
+                          </span>
+                          {alt.url && (
+                            <a
+                              href={alt.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-0.5 font-medium"
+                            >
+                              <span>官方通報</span>
+                              <ExternalLink className="w-2.5 h-2.5" />
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  });
+                })()}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center gap-2 pt-1.5 border-t border-gray-200">
+                <button
+                  type="button"
+                  onClick={() => {
+                    fetchSkytrainStationSchedule(
+                      String(selectedStationAlertMarker.stop_id), 
+                      selectedStationAlertMarker.displayName, 
+                      selectedStationAlertMarker.lon, 
+                      selectedStationAlertMarker.lat
+                    );
+                    setSelectedStationAlertMarker(null);
+                  }}
+                  className="flex-1 py-1.5 px-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition-colors flex items-center justify-center gap-1 shadow-xs cursor-pointer"
+                >
+                  <Clock className="w-3.5 h-3.5" />
+                  <span>即時到站時刻</span>
+                </button>
+                <a
+                  href={`https://www.google.com/maps/dir/?api=1&destination=${selectedStationAlertMarker.lat},${selectedStationAlertMarker.lon}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="py-1.5 px-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-xs font-semibold transition-colors flex items-center justify-center gap-1 border border-gray-300"
+                  title="使用 Google 地圖規劃路線"
+                >
+                  <Navigation className="w-3.5 h-3.5 text-blue-600" />
+                  <span>導航</span>
+                </a>
+              </div>
+            </div>
+          </Popup>
+        )}
 
         {/* BC Ferries Terminals (Merged under bcferriesRoutes '路線') */}
         {layers.bcferriesRoutes && ferryTerminals.map((t, i) => (
