@@ -334,6 +334,15 @@ export default function AppMap() {
     return '';
   }, []);
 
+  const copyCoordinatesToClipboard = useCallback((lat: number, lon: number) => {
+    const text = `${lat.toFixed(6)}, ${lon.toFixed(6)}`;
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+      setCopiedCoordsToast(true);
+      setTimeout(() => setCopiedCoordsToast(false), 2200);
+    }
+  }, []);
+
   const handleCopyCoordinates = useCallback(() => {
     if (!cursorCoords) return;
     const text = `${cursorCoords.lat.toFixed(5)}, ${cursorCoords.lng.toFixed(5)}`;
@@ -390,7 +399,7 @@ export default function AppMap() {
     return createGeoJSONCircle([radiusExploration.lon, radiusExploration.lat], radiusExploration.radiusM || 500);
   }, [radiusExploration, createGeoJSONCircle]);
 
-  // 半徑探索周邊設施查詢
+  // 半徑探索周邊設施查詢 (必定查詢範圍內全部項目，不受限於圖層開關狀態)
   useEffect(() => {
     if (!radiusExploration || !radiusExploration.active) {
       setNearbyFacilities([]);
@@ -398,8 +407,7 @@ export default function AppMap() {
     }
     setLoadingNearby(true);
     const apiUrl = getApiUrl();
-    const activeKeys = Object.entries(layers).filter(([, v]) => v).map(([k]) => k).join(',');
-    fetch(`${apiUrl}/api/explore/nearby?lat=${radiusExploration.lat}&lon=${radiusExploration.lon}&radius=${radiusExploration.radiusM || 500}&layers=${encodeURIComponent(activeKeys)}`)
+    fetch(`${apiUrl}/api/explore/nearby?lat=${radiusExploration.lat}&lon=${radiusExploration.lon}&radius=${radiusExploration.radiusM || 500}`)
       .then(res => res.json())
       .then(data => {
         setNearbyFacilities(data.items || []);
@@ -409,7 +417,7 @@ export default function AppMap() {
         console.error('Nearby exploration fetch error:', err);
         setLoadingNearby(false);
       });
-  }, [radiusExploration?.lat, radiusExploration?.lon, radiusExploration?.radiusM, radiusExploration?.active, layers]);
+  }, [radiusExploration?.lat, radiusExploration?.lon, radiusExploration?.radiusM, radiusExploration?.active]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleMapContextMenu = useCallback((e: any) => {
@@ -607,7 +615,12 @@ export default function AppMap() {
     // 1. 設施類別 (Facility)
     if (selectedFacility) {
       // 若為周邊半徑探索選取之設施，即便該圖層目前關閉，亦予以保留展示
-      const isExplorationActiveSelection = radiusExploration?.active && explorationSelectedFacility?.id === selectedFacility.id;
+      const isExplorationActiveSelection = Boolean(
+        radiusExploration?.active && 
+        explorationSelectedFacility && 
+        selectedFacility && 
+        String(explorationSelectedFacility.id) === String(selectedFacility.id)
+      );
       
       if (!isExplorationActiveSelection) {
         const type = selectedFacility.facility_type;
@@ -650,6 +663,8 @@ export default function AppMap() {
         else if (type === 'snow_removal_routes' && !layers.snowRemovalRoutes) facilityClosed = true;
         else if (type === 'traffic_crosswalks' && !layers.trafficCrosswalks) facilityClosed = true;
         else if (type === 'litter_containers' && !layers.litterContainers) facilityClosed = true;
+        else if (type === 'van_wifi' && !layers.vanWifi) facilityClosed = true;
+        else if (type === 'tide_stations' && !layers.tideStations) facilityClosed = true;
 
         if (facilityClosed) {
           setSelectedFacility(null);
@@ -680,7 +695,7 @@ export default function AppMap() {
       }
     }
 
-    // 4. 巴士與天車 (全域圖層關閉時僅清除一般選取的巴士，不影響獨立搜尋的巴士路線)
+    // 4. 巴士與天車 (全域圖層關閉時僅清除一般選取的巴士，不影響獨立搜尋的巴士路線與半徑探索)
     if (selectedBus && !layers.bus && !searchedBusRoute) {
       setSelectedBus(null);
       setBusDetails(null);
@@ -688,10 +703,24 @@ export default function AppMap() {
         setSearchTarget(null);
       }
     }
+    const isStopExplorationActive = Boolean(
+      radiusExploration?.active &&
+      explorationSelectedFacility &&
+      selectedStop &&
+      String(explorationSelectedFacility.id) === String(selectedStop.id)
+    );
+    if (selectedStop && !layers.busStops && !isStopExplorationActive) {
+      setSelectedStop(null);
+    }
     if (selectedTrain && !layers.skytrainTrains) {
       setSelectedTrain(null);
     }
-    const isStationExplorationActive = radiusExploration?.active && explorationSelectedFacility?.id === selectedSkytrainStation?.stop_id;
+    const isStationExplorationActive = Boolean(
+      radiusExploration?.active && 
+      explorationSelectedFacility && 
+      selectedSkytrainStation && 
+      String(explorationSelectedFacility.id) === String(selectedSkytrainStation.stop_id)
+    );
     if (selectedSkytrainStation && !layers.skytrainStops && !layers.skytrainRoutes && !isStationExplorationActive) {
       setSelectedSkytrainStation(null);
       if (searchTarget && searchTarget.category === 'skytrain') {
@@ -4513,13 +4542,30 @@ export default function AppMap() {
                   explorationSelectedFacility.facility_type === 'skytrain_stations' || 
                   explorationSelectedFacility.facility_type === 'skytrain_station'
                 ) {
+                  setSelectedFacility(null);
+                  setSelectedStop(null);
                   fetchSkytrainStationSchedule(
                     String(explorationSelectedFacility.id),
                     explorationSelectedFacility.name,
                     Number(explorationSelectedFacility.lon),
                     Number(explorationSelectedFacility.lat)
                   );
+                } else if (
+                  explorationSelectedFacility.facility_type === 'bus_stops' ||
+                  explorationSelectedFacility.facility_type === 'bus_stop'
+                ) {
+                  setSelectedFacility(null);
+                  setSelectedSkytrainStation(null);
+                  setSelectedStop({
+                    id: String(explorationSelectedFacility.id),
+                    name: explorationSelectedFacility.name,
+                    lon: Number(explorationSelectedFacility.lon),
+                    lat: Number(explorationSelectedFacility.lat)
+                  });
+                  fetchArrivals(String(explorationSelectedFacility.id));
                 } else {
+                  setSelectedStop(null);
+                  setSelectedSkytrainStation(null);
                   setSelectedFacility({
                     id: explorationSelectedFacility.id,
                     facility_type: explorationSelectedFacility.facility_type,
@@ -4536,7 +4582,8 @@ export default function AppMap() {
               {/* 頂部常駐標籤 (設施名稱與距離) */}
               <div className="mb-1.5 px-2.5 py-1 rounded-md bg-[#0f131c]/95 text-white text-[11px] font-bold whitespace-nowrap shadow-2xl border border-cyan-400/90 backdrop-blur-md flex items-center gap-1.5 ring-2 ring-cyan-500/30">
                 <span className="text-cyan-400">
-                  {explorationSelectedFacility.facility_type === 'aed' ? '⚡' :
+                  {explorationSelectedFacility.icon || (
+                   explorationSelectedFacility.facility_type === 'aed' ? '⚡' :
                    explorationSelectedFacility.facility_type === 'public_washrooms' ? '🚻' :
                    explorationSelectedFacility.facility_type === 'bike_racks' || explorationSelectedFacility.facility_type === 'shared_bikes' ? '🚲' :
                    explorationSelectedFacility.facility_type === 'litter_containers' ? '🗑️' :
@@ -4548,7 +4595,10 @@ export default function AppMap() {
                    explorationSelectedFacility.facility_type === 'hospitals' ? '🏥' :
                    explorationSelectedFacility.facility_type === 'schools' ? '🏫' :
                    explorationSelectedFacility.facility_type === 'libraries' ? '📚' :
-                   explorationSelectedFacility.facility_type === 'traffic_crosswalks' ? '🚶' : '📍'}
+                   explorationSelectedFacility.facility_type === 'fuel' ? '⛽' :
+                   explorationSelectedFacility.facility_type === 'van_wifi' ? '📶' :
+                   explorationSelectedFacility.facility_type === 'tide_stations' ? '🌊' :
+                   explorationSelectedFacility.facility_type === 'traffic_crosswalks' ? '🚶' : '📍')}
                 </span>
                 <span className="max-w-[150px] truncate">{explorationSelectedFacility.name}</span>
                 {(explorationSelectedFacility.distance_meters !== undefined || explorationSelectedFacility.distance_m !== undefined) && (
@@ -4563,7 +4613,8 @@ export default function AppMap() {
                 <span className="animate-ping absolute inline-flex h-9 w-9 rounded-full bg-cyan-400 opacity-75"></span>
                 <div className="relative flex items-center justify-center w-8 h-8 rounded-full bg-cyan-500 border-2 border-white shadow-[0_2px_16px_rgba(6,182,212,0.8)] text-white">
                   <span className="text-sm leading-none">
-                    {explorationSelectedFacility.facility_type === 'aed' ? '⚡' :
+                    {explorationSelectedFacility.icon || (
+                     explorationSelectedFacility.facility_type === 'aed' ? '⚡' :
                      explorationSelectedFacility.facility_type === 'public_washrooms' ? '🚻' :
                      explorationSelectedFacility.facility_type === 'bike_racks' || explorationSelectedFacility.facility_type === 'shared_bikes' ? '🚲' :
                      explorationSelectedFacility.facility_type === 'litter_containers' ? '🗑️' :
@@ -4575,7 +4626,10 @@ export default function AppMap() {
                      explorationSelectedFacility.facility_type === 'hospitals' ? '🏥' :
                      explorationSelectedFacility.facility_type === 'schools' ? '🏫' :
                      explorationSelectedFacility.facility_type === 'libraries' ? '📚' :
-                     explorationSelectedFacility.facility_type === 'traffic_crosswalks' ? '🚶' : '📍'}
+                     explorationSelectedFacility.facility_type === 'fuel' ? '⛽' :
+                     explorationSelectedFacility.facility_type === 'van_wifi' ? '📶' :
+                     explorationSelectedFacility.facility_type === 'tide_stations' ? '🌊' :
+                     explorationSelectedFacility.facility_type === 'traffic_crosswalks' ? '🚶' : '📍')}
                   </span>
                 </div>
               </div>
@@ -4767,11 +4821,47 @@ export default function AppMap() {
               setSelectedStop(null);
               setSearchTarget(null);
             }}
-            closeButton={true}
+            closeButton={false}
             closeOnClick={false}
           >
-            <div className="p-1 min-w-[215px] text-gray-800">
-              <h3 className="font-bold text-sm mb-2 pb-1 border-b">{selectedStop.name} <span className="text-xs text-gray-400">({selectedStop.id})</span></h3>
+            <div className="p-2 min-w-[240px] text-gray-800">
+              <div className="flex items-start justify-between pb-1.5 mb-2 border-b border-gray-100">
+                <div className="flex items-center gap-1.5 min-w-0 pr-2">
+                  <span className="text-base shrink-0">🚏</span>
+                  <div className="min-w-0">
+                    <h3 className="font-bold text-sm leading-tight text-gray-900 truncate max-w-[150px]">{selectedStop.name}</h3>
+                    <span className="text-[10px] text-gray-400 font-mono">#{selectedStop.id}</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1 shrink-0 -mt-0.5 -mr-0.5">
+                  <button
+                    onClick={() => copyCoordinatesToClipboard(selectedStop.lat, selectedStop.lon)}
+                    className="p-1 rounded-md text-gray-500 hover:text-cyan-600 hover:bg-cyan-50 transition-colors flex items-center justify-center shadow-xs border border-gray-100"
+                    title="複製坐標"
+                  >
+                    <Copy className="w-3.5 h-3.5" />
+                  </button>
+                  <a
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${selectedStop.lat},${selectedStop.lon}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-1 rounded-md text-sky-600 hover:text-sky-700 hover:bg-sky-50 transition-colors flex items-center justify-center shadow-xs border border-sky-100"
+                    title="Google Map 導航至此"
+                  >
+                    <Navigation className="w-3.5 h-3.5 text-sky-600" />
+                  </a>
+                  <button
+                    onClick={() => {
+                      setSelectedStop(null);
+                      setSearchTarget(null);
+                    }}
+                    className="text-gray-400 hover:text-gray-700 text-xl font-light leading-none px-1 py-0.5 rounded transition-colors focus:outline-none ml-0.5"
+                    title="關閉"
+                  >
+                    &times;
+                  </button>
+                </div>
+              </div>
               {loadingArrivals ? (
                 <div className="text-xs text-gray-500 flex items-center gap-2 mt-2">
                   <div className="w-3 h-3 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
@@ -5711,26 +5801,33 @@ export default function AppMap() {
                     )}
                   </div>
                 </div>
-                <div className="flex flex-col items-center gap-1 shrink-0 -mt-1 -mr-1">
-                  <button 
-                    onClick={() => {
-                      setSelectedFacility(null);
-                      setSearchTarget(null);
-                    }} 
-                    className="text-gray-400 hover:text-gray-700 text-2xl font-light leading-none px-1 py-0.5 rounded transition-colors focus:outline-none"
-                    title="關閉"
+                <div className="flex items-center gap-1 shrink-0 -mt-1 -mr-1">
+                  <button
+                    onClick={() => copyCoordinatesToClipboard(selectedFacility.lat, selectedFacility.lon)}
+                    className="p-1 rounded-md text-gray-500 hover:text-cyan-600 hover:bg-cyan-50 transition-colors flex items-center justify-center shadow-xs border border-gray-100"
+                    title="複製坐標"
                   >
-                    &times;
+                    <Copy className="w-3.5 h-3.5" />
                   </button>
                   <a
                     href={`https://www.google.com/maps/dir/?api=1&destination=${selectedFacility.lat},${selectedFacility.lon}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-1 rounded-md text-sky-600 hover:text-sky-700 hover:bg-sky-50 transition-colors flex items-center justify-center shadow-sm border border-sky-100"
-                    title="Google 導航至此"
+                    className="p-1 rounded-md text-sky-600 hover:text-sky-700 hover:bg-sky-50 transition-colors flex items-center justify-center shadow-xs border border-sky-100"
+                    title="Google Map 導航至此"
                   >
-                    <Compass className="w-3.5 h-3.5" />
+                    <Navigation className="w-3.5 h-3.5 text-sky-600" />
                   </a>
+                  <button 
+                    onClick={() => {
+                      setSelectedFacility(null);
+                      setSearchTarget(null);
+                    }} 
+                    className="text-gray-400 hover:text-gray-700 text-2xl font-light leading-none px-1 py-0.5 rounded transition-colors focus:outline-none ml-0.5"
+                    title="關閉"
+                  >
+                    &times;
+                  </button>
                 </div>
               </div>
 
@@ -8317,6 +8414,22 @@ export default function AppMap() {
                   </div>
                 </div>
               )}
+
+              {/* 設施通用坐標與複製按鈕 */}
+              <div className="flex items-center justify-between text-[11px] text-gray-500 pt-2.5 mt-2.5 border-t border-gray-100 font-mono">
+                <span className="flex items-center gap-1 text-gray-600">
+                  <span>📍</span>
+                  <span>{selectedFacility.lat.toFixed(6)}, {selectedFacility.lon.toFixed(6)}</span>
+                </span>
+                <button
+                  onClick={() => copyCoordinatesToClipboard(selectedFacility.lat, selectedFacility.lon)}
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-gray-100 hover:bg-cyan-50 hover:text-cyan-600 text-gray-700 transition-colors text-[10.5px] font-sans font-medium border border-gray-200/60 shadow-xs"
+                  title="複製坐標"
+                >
+                  <Copy className="w-3 h-3 text-cyan-600" />
+                  <span>複製坐標</span>
+                </button>
+              </div>
             </div>
           </Popup>
         )}
@@ -9199,13 +9312,34 @@ export default function AppMap() {
               </div>
               <div>
                 <h4 className="font-bold text-white text-xs">周邊半徑探索 (Nearby)</h4>
-                <div className="text-[10px] text-gray-400 font-mono truncate max-w-[190px]">
-                  {radiusExploration.lat.toFixed(4)}, {radiusExploration.lon.toFixed(4)}
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <span className="text-[10px] text-gray-400 font-mono truncate max-w-[130px]">
+                    {radiusExploration.lat.toFixed(5)}, {radiusExploration.lon.toFixed(5)}
+                  </span>
+                  <button
+                    onClick={() => copyCoordinatesToClipboard(radiusExploration.lat, radiusExploration.lon)}
+                    className="p-0.5 rounded text-gray-400 hover:text-cyan-300 hover:bg-cyan-500/20 transition-colors"
+                    title="複製中心點坐標"
+                  >
+                    <Copy className="w-3 h-3 text-cyan-400" />
+                  </button>
+                  <a
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${radiusExploration.lat},${radiusExploration.lon}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-0.5 rounded text-gray-400 hover:text-white hover:bg-blue-500/20 hover:text-blue-400 transition-colors"
+                    title="Google Map 導航至中心點"
+                  >
+                    <Navigation className="w-3 h-3 text-blue-400" />
+                  </a>
                 </div>
               </div>
             </div>
             <button
-              onClick={() => setRadiusExploration(null)}
+              onClick={() => {
+                setRadiusExploration(null);
+                setExplorationSelectedFacility(null);
+              }}
               className="text-gray-400 hover:text-white p-1 rounded hover:bg-[#252a38] transition-colors shrink-0"
               title="關閉探索"
             >
@@ -9256,7 +9390,7 @@ export default function AppMap() {
                 if (mins === undefined || mins === null || isNaN(mins)) {
                   mins = distM <= 50 ? 0.5 : Math.max(1, Math.round(distM / 80));
                 }
-                const isSelected = explorationSelectedFacility?.id === fac.id;
+                const isSelected = String(explorationSelectedFacility?.id) === String(fac.id);
                 return (
                   <div
                     key={`nearby-${idx}`}
@@ -9265,15 +9399,29 @@ export default function AppMap() {
                       const map = mapRef.current?.getMap();
                       map?.flyTo({ center: [fac.lon, fac.lat], zoom: 16.5, duration: 400 });
                       if (fac.facility_type === 'skytrain_stations' || fac.facility_type === 'skytrain_station') {
+                        setSelectedFacility(null);
+                        setSelectedStop(null);
                         fetchSkytrainStationSchedule(String(fac.id), fac.name, fac.lon, fac.lat);
+                      } else if (fac.facility_type === 'bus_stops' || fac.facility_type === 'bus_stop') {
+                        setSelectedFacility(null);
+                        setSelectedSkytrainStation(null);
+                        setSelectedStop({
+                          id: String(fac.id),
+                          name: fac.name,
+                          lon: Number(fac.lon),
+                          lat: Number(fac.lat)
+                        });
+                        fetchArrivals(String(fac.id));
                       } else {
+                        setSelectedStop(null);
+                        setSelectedSkytrainStation(null);
                         setSelectedFacility({
                           id: fac.id,
                           facility_type: fac.facility_type,
                           name: fac.name,
                           local_area: fac.local_area,
-                          lon: fac.lon,
-                          lat: fac.lat,
+                          lon: Number(fac.lon),
+                          lat: Number(fac.lat),
                           properties: fac.properties || {}
                         });
                       }
@@ -9286,7 +9434,8 @@ export default function AppMap() {
                   >
                     <div className="flex items-center gap-2 min-w-0">
                       <span className="text-sm shrink-0">
-                        {fac.facility_type === 'aed' ? '⚡' :
+                        {fac.icon || (
+                         fac.facility_type === 'aed' ? '⚡' :
                          fac.facility_type === 'public_washrooms' ? '🚻' :
                          fac.facility_type === 'bike_racks' ? '🚲' :
                          fac.facility_type === 'shared_bikes' ? '🚲' :
@@ -9299,14 +9448,17 @@ export default function AppMap() {
                          fac.facility_type === 'hospitals' ? '🏥' :
                          fac.facility_type === 'schools' ? '🏫' :
                          fac.facility_type === 'libraries' ? '📚' :
-                         fac.facility_type === 'traffic_crosswalks' ? '🚶' : '📍'}
+                         fac.facility_type === 'fuel' ? '⛽' :
+                         fac.facility_type === 'van_wifi' ? '📶' :
+                         fac.facility_type === 'tide_stations' ? '🌊' :
+                         fac.facility_type === 'traffic_crosswalks' ? '🚶' : '📍')}
                       </span>
                       <div className="min-w-0">
                         <div className="font-bold text-xs text-white truncate max-w-[170px]">
                           {fac.name}
                         </div>
                         <div className="text-[10px] text-gray-400 capitalize">
-                          {fac.category || fac.facility_type.replace(/_/g, ' ')}
+                          {fac.type_label || fac.category || fac.facility_type.replace(/_/g, ' ')}
                         </div>
                       </div>
                     </div>
@@ -9323,8 +9475,8 @@ export default function AppMap() {
               })
             ) : (
               <div className="py-6 text-center text-xs text-gray-400 bg-[#10131a] rounded-lg border border-[#232836] p-3 flex flex-col gap-1">
-                <span>範圍內未發現已開啟的設施</span>
-                <span className="text-[10.5px] text-gray-400">請嘗試開啟左側圖層（如單車、洗手間、AED等）或擴大搜尋半徑</span>
+                <span>範圍內未發現設施</span>
+                <span className="text-[10.5px] text-gray-500">請嘗試切換上方較大的搜尋半徑 (500m 或 1000m)</span>
               </div>
             )}
           </div>
@@ -9368,6 +9520,15 @@ export default function AppMap() {
             </div>
             
             <div className="flex items-center gap-1 shrink-0">
+              {/* 複製車站坐標按鈕 */}
+              <button
+                onClick={() => copyCoordinatesToClipboard(selectedSkytrainStation.lat, selectedSkytrainStation.lon)}
+                className="text-gray-400 hover:text-cyan-300 p-1.5 rounded-lg hover:bg-cyan-500/20 transition-colors"
+                title="複製車站坐標"
+              >
+                <Copy className="w-4 h-4 text-cyan-400" />
+              </button>
+
               {/* Google 導航按鈕 (跟隨其他圖層一致) */}
               <a
                 href={`https://www.google.com/maps/dir/?api=1&destination=${selectedSkytrainStation.lat},${selectedSkytrainStation.lon}`}

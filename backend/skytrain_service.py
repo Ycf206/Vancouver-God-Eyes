@@ -413,23 +413,41 @@ def get_skytrain_station_schedule(stop_id: str):
     target_name = st_info.get('name', '').strip()
     target_stop_id = str(st_info.get('stop_id', ''))
 
+    # 找出實際停靠且從本站出發（非終點下客）的所有合法路線與方向
     departures_by_dest = {}
+    valid_patterns = []
+    for pattern in patterns:
+        p_stations = pattern.get('stations', [])
+        for idx, s in enumerate(p_stations):
+            s_name = s.get('name', '').strip()
+            s_id = str(s.get('stop_id', ''))
+            if s_id == target_stop_id or s_name == target_name:
+                # 只有非終點站（後續仍有站點可前往 destination）才具有從本站出發的班次
+                if idx < len(p_stations) - 1:
+                    valid_patterns.append(pattern)
+                    dest_name = pattern.get('destination', '')
+                    line_name = pattern.get('line_name', '')
+                    key = f"{line_name} · 往 {dest_name}"
+                    if key not in departures_by_dest:
+                        departures_by_dest[key] = {
+                            'line_name': line_name,
+                            'color': pattern.get('color', '#0033a0'),
+                            'destination': dest_name,
+                            'direction': pattern.get('direction', ''),
+                            'line_id': pattern.get('line_id', 'expo'),
+                            'departures': []
+                        }
+                break
 
-    # 1. 先從當前地圖上行駛中的真實推算列車提取該站預計抵達班次
+    # 1. 先從當前地圖上行駛中且符合本站路線方向的推算列車提取預計抵達班次
     for train in active_trains:
         dest_name = train.get('destination', '')
         line_name = train.get('line_name', '')
         key = f"{line_name} · 往 {dest_name}"
 
+        # 嚴格過濾：僅處理屬於本站停靠之合法路線與方向
         if key not in departures_by_dest:
-            departures_by_dest[key] = {
-                'line_name': line_name,
-                'color': train.get('color', '#0033a0'),
-                'destination': dest_name,
-                'direction': train.get('direction', ''),
-                'line_id': train.get('line_id', 'expo'),
-                'departures': []
-            }
+            continue
 
         # 檢查該車是否停靠或即將停靠本站
         stops = train.get('stops', [])
@@ -487,7 +505,10 @@ def get_skytrain_station_schedule(stop_id: str):
         group['departures'] = group['departures'][:4]
 
     station_name = st_info.get('name') or ''
-    st_lines = st_info.get('lines', [])
+    # 精確取得屬於該車站的路線（非轉乘站 1 條，轉乘站 2 條）
+    st_lines = list(dict.fromkeys([p['line_name'] for p in valid_patterns]))
+    if not st_lines:
+        st_lines = st_info.get('lines', [])
     meta = _get_station_metadata(station_name, st_lines, str(st_info.get('stop_id', '')))
 
     return {

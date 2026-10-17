@@ -2514,6 +2514,69 @@ def explore_nearby_facilities(
                     'properties': {'stop_id': str(st_id), 'lines': st.get('lines', [])}
                 })
 
+    # Supplementary Gas Stations from fuel_service
+    is_fuel_allowed = not selected_layer_keys or 'fuel' in selected_layer_keys
+    if is_fuel_allowed:
+        try:
+            try:
+                import fuel_service
+            except ImportError:
+                from backend import fuel_service
+            gas_stations = fuel_service.load_vancouver_stations()
+            for gs in gas_stations:
+                dist = haversine_m(lat, lon, gs['lat'], gs['lon'])
+                if dist <= radius:
+                    walk_min = calc_walk_minutes(dist)
+                    nearby_items.append({
+                        'id': f"fuel_{gs.get('id', '')}",
+                        'name': gs.get('name') or gs.get('brand', '加油站'),
+                        'facility_type': 'fuel',
+                        'type_label': '加油站',
+                        'icon': '⛽',
+                        'layer_key': 'fuel',
+                        'local_area': gs.get('city', ''),
+                        'lat': gs['lat'],
+                        'lon': gs['lon'],
+                        'distance_m': dist,
+                        'distance_meters': dist,
+                        'walk_minutes': walk_min,
+                        'walking_minutes': walk_min,
+                        'properties': gs
+                    })
+        except Exception:
+            pass
+
+    # Supplementary Tide Stations from tides_service
+    is_tide_allowed = not selected_layer_keys or 'tideStations' in selected_layer_keys
+    if is_tide_allowed:
+        try:
+            try:
+                import tides_service
+            except ImportError:
+                from backend import tides_service
+            for ts in getattr(tides_service, 'STATIONS_CONFIG', []):
+                dist = haversine_m(lat, lon, ts['lat'], ts['lon'])
+                if dist <= radius:
+                    walk_min = calc_walk_minutes(dist)
+                    nearby_items.append({
+                        'id': f"tide_{ts.get('id', '')}",
+                        'name': ts.get('name', '潮汐水位站'),
+                        'facility_type': 'tide_stations',
+                        'type_label': '潮汐水位',
+                        'icon': '🌊',
+                        'layer_key': 'tideStations',
+                        'local_area': ts.get('area', ''),
+                        'lat': ts['lat'],
+                        'lon': ts['lon'],
+                        'distance_m': dist,
+                        'distance_meters': dist,
+                        'walk_minutes': walk_min,
+                        'walking_minutes': walk_min,
+                        'properties': ts
+                    })
+        except Exception:
+            pass
+
     # Sort all by distance ascending
     nearby_items.sort(key=lambda x: x['distance_m'])
 
@@ -2521,7 +2584,7 @@ def explore_nearby_facilities(
         'center': {'lat': lat, 'lon': lon},
         'radius_m': radius,
         'total': len(nearby_items),
-        'items': nearby_items[:120]
+        'items': nearby_items[:150]
     }
 
 @app.get("/api/geojson/stops/{group}")
