@@ -575,6 +575,7 @@ function ExploreContent() {
   // --- Aurora tab states ---
   const [auroraData, setAuroraData] = useState<AuroraData | null>(null);
   const [loadingAurora, setLoadingAurora] = useState(false);
+  const [auroraForecastTab, setAuroraForecastTab] = useState<'tonight' | 'tomorrow'>('tonight');
 
   // --- News tab states ---
   const [newsArticles, setNewsArticles] = useState<NewsArticle[]>([]);
@@ -600,12 +601,14 @@ function ExploreContent() {
   // --- Fuel tab states ---
   const [fuelType, setFuelType] = useState<'regular' | 'midgrade' | 'premium' | 'diesel'>('regular');
   const [fuelSortBy, setFuelSortBy] = useState<'best' | 'price' | 'distance'>('best');
+  const [fuelSearchQuery, setFuelSearchQuery] = useState('');
   const [onlyMajorChains, setOnlyMajorChains] = useState(false);
   const [fuelStations, setFuelStations] = useState<FuelStation[]>([]);
   const [loadingFuel, setLoadingFuel] = useState(false);
 
   // --- EV tab states ---
   const [evSortBy, setEvSortBy] = useState<'best' | 'price' | 'distance'>('best');
+  const [evSearchQuery, setEvSearchQuery] = useState('');
   const [hideFreeCharging, setHideFreeCharging] = useState(false);
   const [evStations, setEvStations] = useState<EVStation[]>([]);
   const [loadingEV, setLoadingEV] = useState(false);
@@ -1010,15 +1013,40 @@ function ExploreContent() {
       });
   }, [isExploreOpen, activeTab]);
 
-  // Filter major fuel chains if toggled
+  // Filter major fuel chains if toggled & search query
   const filteredFuelStations = useMemo(() => {
-    if (!onlyMajorChains) return fuelStations;
-    const majorBrands = ['CHEVRON', 'SHELL', 'PETRO-CANADA', 'ESSO', 'MOBIL', 'COSTCO'];
-    return fuelStations.filter((s) => {
-      const b = (s.brand || s.name || '').toUpperCase();
-      return majorBrands.some((mb) => b.includes(mb));
-    });
-  }, [fuelStations, onlyMajorChains]);
+    let list = fuelStations;
+    if (onlyMajorChains) {
+      const majorBrands = ['CHEVRON', 'SHELL', 'PETRO-CANADA', 'ESSO', 'MOBIL', 'COSTCO'];
+      list = list.filter((s) => {
+        const b = (s.brand || s.name || '').toUpperCase();
+        return majorBrands.some((mb) => b.includes(mb));
+      });
+    }
+    if (fuelSearchQuery.trim()) {
+      const q = fuelSearchQuery.trim().toLowerCase();
+      list = list.filter((s) => 
+        (s.name && s.name.toLowerCase().includes(q)) ||
+        (s.brand && s.brand.toLowerCase().includes(q)) ||
+        (s.address && s.address.toLowerCase().includes(q)) ||
+        (s.city && s.city.toLowerCase().includes(q))
+      );
+    }
+    return list;
+  }, [fuelStations, onlyMajorChains, fuelSearchQuery]);
+
+  // Filter EV stations by search query
+  const filteredEvStations = useMemo(() => {
+    if (!evSearchQuery.trim()) return evStations;
+    const q = evSearchQuery.trim().toLowerCase();
+    return evStations.filter((s) => 
+      (s.name && s.name.toLowerCase().includes(q)) ||
+      (s.operator && s.operator.toLowerCase().includes(q)) ||
+      (s.address && s.address.toLowerCase().includes(q)) ||
+      (s.connectors && s.connectors.toLowerCase().includes(q)) ||
+      (s.city && s.city.toLowerCase().includes(q))
+    );
+  }, [evStations, evSearchQuery]);
 
   // 船運排序：抵達時間由近至遠，已泊岸（繫泊停靠碼頭）排在最底
   const sortedShippingVessels = useMemo(() => {
@@ -2847,6 +2875,17 @@ function ExploreContent() {
               <span className="text-[10px] text-emerald-400 bg-emerald-950/70 border border-emerald-800/60 px-1.5 py-0.5 rounded font-mono">
                 每天 2 次更新
               </span>
+              {auroraData?.source_url && (
+                <a
+                  href={auroraData.source_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-1 hover:bg-[#252a38] text-gray-400 hover:text-emerald-400 rounded transition-colors"
+                  title="前往 NOAA SWPC 官方監測網站"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              )}
               <button
                 onClick={() => fetchAuroraData(true)}
                 disabled={loadingAurora}
@@ -2870,10 +2909,13 @@ function ExploreContent() {
                 <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
                 <div className="flex items-center justify-between relative z-10">
                   <div className="flex flex-col">
-                    <span className="text-[11px] font-medium text-gray-400 uppercase tracking-wider">
-                      行星 K-Index 指數 (Planetary Kp)
+                    <span className="text-[11px] font-bold text-gray-200 tracking-wide">
+                      地磁極光指數 (Planetary Kp)
                     </span>
-                    <div className="flex items-baseline gap-2 mt-0.5">
+                    <span className="text-[9.5px] text-gray-400 mt-0.5">
+                      衡量全球地磁擾動與極光強度的標準指標 (0~9)
+                    </span>
+                    <div className="flex items-baseline gap-2 mt-1">
                       <span className="text-3xl font-extrabold text-white tracking-tight">
                         Kp {auroraData.latest?.kp ?? '--'}
                       </span>
@@ -2986,7 +3028,76 @@ function ExploreContent() {
                 </div>
               </div>
 
-              {/* 3. Aurora Spots */}
+              {/* 3. Aurora Viewline Forecast Map (Tonight & Tomorrow Night) */}
+              <div className="bg-[#10141e] rounded-xl p-3 border border-[#232a38] flex flex-col gap-2.5 shadow-sm">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-gray-200 flex items-center gap-1.5">
+                    <Eye className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>極光觀測預測圖 (北美 Viewline)</span>
+                  </span>
+                  <div className="flex items-center gap-1 bg-[#141924] p-0.5 rounded-lg border border-[#232c3d]">
+                    <button
+                      type="button"
+                      onClick={() => setAuroraForecastTab('tonight')}
+                      className={`px-2 py-0.5 text-[10px] rounded transition-all font-medium ${
+                        auroraForecastTab === 'tonight'
+                          ? 'bg-emerald-600 text-white font-bold shadow-xs'
+                          : 'text-gray-400 hover:text-white'
+                      }`}
+                    >
+                      今晚預測
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setAuroraForecastTab('tomorrow')}
+                      className={`px-2 py-0.5 text-[10px] rounded transition-all font-medium ${
+                        auroraForecastTab === 'tomorrow'
+                          ? 'bg-emerald-600 text-white font-bold shadow-xs'
+                          : 'text-gray-400 hover:text-white'
+                      }`}
+                    >
+                      明晚預測
+                    </button>
+                  </div>
+                </div>
+
+                {/* Forecast Image with external view link */}
+                <div className="relative rounded-lg overflow-hidden border border-[#202738] bg-[#0c0f17] group">
+                  <a
+                    href={
+                      auroraForecastTab === 'tonight'
+                        ? 'https://services.swpc.noaa.gov/experimental/images/aurora_dashboard/tonights_static_viewline_forecast.png'
+                        : 'https://services.swpc.noaa.gov/experimental/images/aurora_dashboard/tomorrow_nights_static_viewline_forecast.png'
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block relative cursor-pointer"
+                    title="點擊在官方分頁查看高解析度預測原圖"
+                  >
+                    <img
+                      src={
+                        auroraForecastTab === 'tonight'
+                          ? 'https://services.swpc.noaa.gov/experimental/images/aurora_dashboard/tonights_static_viewline_forecast.png'
+                          : 'https://services.swpc.noaa.gov/experimental/images/aurora_dashboard/tomorrow_nights_static_viewline_forecast.png'
+                      }
+                      alt={auroraForecastTab === 'tonight' ? '今晚北美極光可見線預測圖' : '明晚北美極光可見線預測圖'}
+                      className="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                      loading="lazy"
+                    />
+                    <div className="absolute bottom-2 right-2 bg-black/80 backdrop-blur-md px-2 py-1 rounded text-[9.5px] text-gray-300 flex items-center gap-1 border border-white/10 group-hover:text-emerald-300 transition-colors shadow-md">
+                      <span>檢視原圖</span>
+                      <ExternalLink className="w-2.5 h-2.5" />
+                    </div>
+                  </a>
+                </div>
+
+                <div className="text-[10px] text-gray-400 leading-relaxed bg-[#0c1017] p-2 rounded-lg border border-[#1b2230]">
+                  <span className="text-gray-300 font-semibold">💡 觀測線說明：</span>
+                  紅色實線為極光預估南界觀測線（Viewline）。當紅線向南推移並涵蓋溫哥華（約北緯 49°）以南時，代表該晚極光可見機率大幅增加。
+                </div>
+              </div>
+
+              {/* 4. Aurora Spots */}
               <div className="bg-[#10141e] rounded-xl p-3 border border-[#232a38] flex flex-col gap-2 shadow-sm">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-gray-200 flex items-center gap-1.5">
@@ -3021,22 +3132,6 @@ function ExploreContent() {
                   ))}
                 </div>
               </div>
-
-              {/* Source attribution footer */}
-              <div className="p-2 rounded-lg bg-[#0e121a] border border-[#1d2330] flex items-center justify-between text-[10px] text-gray-400">
-                <span className="truncate max-w-[240px]">資料來源：NOAA SWPC 太空天氣預測中心</span>
-                {auroraData.source_url && (
-                  <a 
-                    href={auroraData.source_url} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-emerald-400 hover:text-emerald-300 flex items-center gap-0.5 hover:underline shrink-0"
-                  >
-                    <span>官方監測</span>
-                    <ExternalLink className="w-2.5 h-2.5" />
-                  </a>
-                )}
-              </div>
             </>
           ) : null}
         </div>
@@ -3062,6 +3157,27 @@ function ExploreContent() {
               >
                 <MapPin className="w-2.5 h-2.5" />
                 <span>設定個人位置</span>
+              </button>
+            )}
+          </div>
+
+          {/* Search Bar */}
+          <div className="relative mb-2.5 shrink-0">
+            <Search className="w-3.5 h-3.5 text-gray-500 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              type="text"
+              value={fuelSearchQuery}
+              onChange={(e) => setFuelSearchQuery(e.target.value)}
+              placeholder="搜尋加油站品牌、地址或城市..."
+              className="w-full bg-[#10131a] text-xs text-white placeholder-gray-500 pl-8 pr-7 py-1.5 rounded-lg border border-[#232838] focus:outline-none focus:border-amber-500/50 transition-colors"
+            />
+            {fuelSearchQuery && (
+              <button
+                onClick={() => setFuelSearchQuery('')}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white p-0.5"
+                title="清除搜尋"
+              >
+                <X className="w-3 h-3" />
               </button>
             )}
           </div>
@@ -3202,6 +3318,27 @@ function ExploreContent() {
             )}
           </div>
 
+          {/* Search Bar */}
+          <div className="relative mb-2.5 shrink-0">
+            <Search className="w-3.5 h-3.5 text-gray-500 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              type="text"
+              value={evSearchQuery}
+              onChange={(e) => setEvSearchQuery(e.target.value)}
+              placeholder="搜尋充電站名稱、營運商或地址..."
+              className="w-full bg-[#10131a] text-xs text-white placeholder-gray-500 pl-8 pr-7 py-1.5 rounded-lg border border-[#232838] focus:outline-none focus:border-emerald-500/50 transition-colors"
+            />
+            {evSearchQuery && (
+              <button
+                onClick={() => setEvSearchQuery('')}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white p-0.5"
+                title="清除搜尋"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            )}
+          </div>
+
           {/* 3 Sort Buttons: 最好 / 價格 / 距離 (Matches EV screenshot) */}
           <div className="grid grid-cols-3 gap-1 bg-[#10131a] p-1 rounded-lg border border-[#232836] mb-2.5 shrink-0">
             <button
@@ -3256,12 +3393,12 @@ function ExploreContent() {
                 <RefreshCw className="w-5 h-5 text-emerald-400 animate-spin" />
                 <span>讀取溫哥華各充電站資訊中...</span>
               </div>
-            ) : evStations.length === 0 ? (
-              <div className="py-12 text-center text-xs text-gray-400 bg-[#10131a] rounded-lg border border-[#232836]">
+            ) : filteredEvStations.length === 0 ? (
+              <div className="py-12 text-center text-xs text-gray-400 bg-[#10131a] rounded-lg border border-[#232838]">
                 暫無符合條件的充電站
               </div>
             ) : (
-              evStations.map((st) => {
+              filteredEvStations.map((st) => {
                 const distKm = Number(st.distance_km) || 0;
                 const distDisplay = distanceUnit === 'imperial'
                   ? `${(distKm * 0.621371).toFixed(1)} 英里`
@@ -3309,7 +3446,7 @@ function ExploreContent() {
           <div className="flex items-center justify-between mb-2 shrink-0">
             <span className="text-xs text-gray-300 font-medium flex items-center gap-1.5">
               <Ship className="w-3.5 h-3.5 text-cyan-400" />
-              <span>溫哥華港口即時船運 (AISStream)</span>
+              <span>溫哥華港口即時船運</span>
             </span>
             <div className="flex items-center gap-1.5">
               <span className="text-[10px] text-cyan-400 bg-cyan-950/70 border border-cyan-800/60 px-1.5 py-0.5 rounded font-mono">
@@ -4531,27 +4668,66 @@ function ExploreContent() {
       )}
 
       {/* Footer */}
-      <div className="mt-3 pt-2.5 border-t border-[#262b38] flex items-center justify-between text-[11px] text-gray-400 shrink-0">
-        <span className="font-mono text-[10px]">
-          {activeTab === 'weather' && (weather ? `${weather.city || '溫哥華'} · ${weather.condition || '多雲'} · ${formatTemp(weather.temperature)}` : '加拿大環境部氣象數據')}
-          {activeTab === 'news' && `共收錄 ${filteredNews.length} 則大溫即時新聞 · 每 ${newsRefreshInterval || 15} 分鐘自動更新`}
-          {activeTab === 'events' && `共收錄 ${filteredEvents.length} 項大溫熱門活動 · 來源 Daily Hive、Eventbrite 與 溫哥華旅遊局`}
-          {activeTab === 'beach' && `共監測大溫 ${beachList.length || 41} 座海灘水質 · 每個月更新 1 次 · 資料來源：大溫都會局 (Metro Vancouver)`}
-          {activeTab === 'ski' && `3 大滑雪場即時雪況 (賽普里斯山、松雞山、西摩山) · 每日更新`}
-          {activeTab === 'aurora' && 'NOAA SWPC 行星 K-Index 極光指數 · 溫哥華可見度預測 · 每天 2 次更新'}
-          {activeTab === 'fuel' && `共收錄 ${filteredFuelStations.length} 間加油站`}
-          {activeTab === 'ev' && `共收錄 ${evStations.length} 座充電站`}
-          {activeTab === 'ferry' && `共 ${ferryRoutes.reduce((acc, r) => acc + (r?.vessels?.length || 0), 0)} 艘渡輪即時航行中`}
-          {activeTab === 'cargo' && `共追蹤 ${sortedShippingVessels.length} 艘溫哥華港口商船 (依抵達時間近至遠排序)`}
-          {activeTab === 'alerts' && `共 ${filteredAndSortedAlerts.banners.length + filteredAndSortedAlerts.regular.length} 則 TransLink 即時運輸警報 · 每 ${transitAlertsRefreshInterval || 10} 分鐘自動更新`}
-          {activeTab === 'border' && '美加邊境 5 大陸路關口即時等候時間 · 每 5 分鐘自動更新 · CBSA & CBP 官方數據'}
-        </span>
+      <div className="mt-2.5 pt-2 border-t border-[#262b38] flex items-center justify-between text-[11px] text-gray-400 shrink-0">
+        <div className="flex flex-col text-[10.5px] leading-tight text-gray-400 min-w-0 pr-2">
+          {activeTab === 'weather' && (
+            <span>天氣數據：加拿大環境部 (api.weather.gc.ca)</span>
+          )}
+          {activeTab === 'news' && (
+            <span>共有 {filteredNews.length} 則即時新聞</span>
+          )}
+          {activeTab === 'events' && (
+            <span>共有 {filteredEvents.length} 項活動資料</span>
+          )}
+          {activeTab === 'beach' && (
+            <>
+              <span>共有 {beachList.length || 41} 座海灘水質</span>
+              <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：Metro Vancouver</span>
+            </>
+          )}
+          {activeTab === 'ski' && (
+            <>
+              <span>共有 {skiResorts.length || 3} 座滑雪場</span>
+              <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：Skiresort</span>
+            </>
+          )}
+          {activeTab === 'aurora' && (
+            <>
+              <span>共有 {(auroraData?.spots || []).length || 4} 個觀察點</span>
+              <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：NOAA SWPC</span>
+            </>
+          )}
+          {activeTab === 'fuel' && (
+            <span>共有 {filteredFuelStations.length} 間加油站</span>
+          )}
+          {activeTab === 'ev' && (
+            <span>共有 {filteredEvStations.length} 座充電站</span>
+          )}
+          {activeTab === 'ferry' && (
+            <span>共 {ferryRoutes.reduce((acc, r) => acc + (r?.vessels?.length || 0), 0)} 艘渡輪即時航行中</span>
+          )}
+          {activeTab === 'cargo' && (
+            <>
+              <span>共追蹤 {sortedShippingVessels.length} 艘溫哥華港口商船 (依抵達時間近至遠排序)</span>
+              <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：AISStream</span>
+            </>
+          )}
+          {activeTab === 'alerts' && (
+            <span>共 {filteredAndSortedAlerts.banners.length + filteredAndSortedAlerts.regular.length} 則 TransLink 即時運輸警報</span>
+          )}
+          {activeTab === 'border' && (
+            <>
+              <span>美加邊境 5 大陸路關口即時等候時間</span>
+              <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：CBSA & CBP</span>
+            </>
+          )}
+        </div>
         <button
           onClick={() => {
             setExploreOpen(false);
             setSearchTarget(null);
           }}
-          className="text-gray-400 hover:text-white hover:underline text-[11px]"
+          className="text-gray-400 hover:text-white hover:underline text-[11px] shrink-0"
         >
           關閉
         </button>
