@@ -4,11 +4,45 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Compass, X, Fuel, Zap, Ship, MapPin, 
   ChevronDown, RefreshCw, Package, CloudSun, Wind, AlertTriangle, Droplets, Gauge, Eye, Anchor, Navigation,
-  Newspaper, ExternalLink, Search, CalendarDays, Calendar, Tag, Waves, CloudRain, Play, Pause, SkipBack, SkipForward
+  Newspaper, ExternalLink, Search, CalendarDays, Calendar, Tag, Waves, CloudRain, Play, Pause, SkipBack, SkipForward,
+  MountainSnow
 } from 'lucide-react';
-import { useUIStore } from '@/store/useUIStore';
+import { useUIStore, ExploreTabType } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
 import { formatShipEta, formatTimePreference } from '@/utils/time';
+
+interface SkiResort {
+  id: string;
+  uid: number;
+  name: string;
+  english_name: string;
+  area: string;
+  lat: number;
+  lon: number;
+  zoom: number;
+  vertical_drop: string;
+  official_url: string;
+  skiresort_url: string;
+  status_raw: string;
+  status_zh: string;
+  is_open: boolean;
+  season_range: string;
+  slopes_open: number;
+  slopes_total: number | string;
+  slopes_label: string;
+  lifts_open: number;
+  lifts_total: number | string;
+  lifts_label: string;
+  snow_base: string;
+  snow_top: string;
+  altitude_base: string;
+  altitude_top: string;
+  last_snow: string;
+  night_skiing: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  weather?: any[];
+  data_source: string;
+}
 
 interface EventItem {
   id: string;
@@ -287,6 +321,8 @@ function ExploreContent() {
   const { 
     isExploreOpen, 
     setExploreOpen, 
+    exploreTab,
+    setExploreTab,
     userLocation, 
     setSettingsModalOpen,
     distanceUnit,
@@ -361,8 +397,13 @@ function ExploreContent() {
     );
   };
 
-  // 分頁：天氣, 新聞, 活動, 渡輪, 船運, 燃油, 充電
-  const [activeTab, setActiveTab] = useState<'weather' | 'news' | 'events' | 'ferry' | 'fuel' | 'ev' | 'cargo'>('weather');
+  // 分頁：天氣, 新聞, 活動, 滑雪, 燃油, 充電, 渡輪, 船運
+  const activeTab = exploreTab || 'weather';
+  const setActiveTab = setExploreTab;
+
+  // --- Ski tab states ---
+  const [skiResorts, setSkiResorts] = useState<SkiResort[]>([]);
+  const [loadingSki, setLoadingSki] = useState(false);
 
   // --- News tab states ---
   const [newsArticles, setNewsArticles] = useState<NewsArticle[]>([]);
@@ -993,14 +1034,77 @@ function ExploreContent() {
     });
   };
 
-  const exploreTabs = [
+  // 7. Fetch Ski Resorts Live Data
+  const fetchSkiResorts = React.useCallback(async (force = false) => {
+    setLoadingSki(true);
+    const apiUrl = getApiUrl();
+    try {
+      const res = await fetch(`${apiUrl}/api/ski/resorts${force ? '?refresh=true' : ''}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      if (data && Array.isArray(data.resorts)) {
+        setSkiResorts(data.resorts);
+        setLoadingSki(false);
+        return;
+      }
+    } catch (err) {
+      console.warn('Backend ski API not responding, trying static cache:', err);
+    }
+    // Fallback to static cache
+    try {
+      const staticRes = await fetch('/vancouver_ski_resorts.json');
+      const staticData = await staticRes.json();
+      if (staticData && Array.isArray(staticData.resorts)) {
+        setSkiResorts(staticData.resorts);
+      }
+    } catch (staticErr) {
+      console.error('Failed to load static ski data:', staticErr);
+    } finally {
+      setLoadingSki(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isExploreOpen || activeTab !== 'ski') return;
+    fetchSkiResorts();
+  }, [isExploreOpen, activeTab, fetchSkiResorts]);
+
+  const handleSelectSkiResort = (resort: SkiResort) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap();
+    if (mapInstance) {
+      mapInstance.flyTo({
+        center: [resort.lon, resort.lat],
+        zoom: 14.5,
+        essential: true
+      });
+    }
+    setSearchTarget({
+      id: `ski_${resort.id}`,
+      title: resort.name,
+      subtitle: `${resort.english_name} · ${resort.status_zh}`,
+      category: 'ski_resort',
+      badge: '滑雪場',
+      icon: '⛷️',
+      lat: resort.lat,
+      lon: resort.lon,
+      meta: resort,
+      zoom: 14.5
+    });
+  };
+
+  const exploreTabsRow1 = [
     { id: 'weather', label: '天氣', icon: CloudSun, iconColor: 'text-sky-400' },
     { id: 'news', label: '新聞', icon: Newspaper, iconColor: 'text-amber-400' },
     { id: 'events', label: '活動', icon: CalendarDays, iconColor: 'text-purple-400' },
-    { id: 'ferry', label: '渡輪', icon: Ship, iconColor: 'text-cyan-400' },
-    { id: 'cargo', label: '船運', icon: Anchor, iconColor: 'text-blue-400' },
+    { id: 'ski', label: '滑雪', icon: MountainSnow, iconColor: 'text-cyan-300' },
+  ] as const;
+
+  const exploreTabsRow2 = [
     { id: 'fuel', label: '燃油', icon: Fuel, iconColor: 'text-emerald-400' },
     { id: 'ev', label: '充電', icon: Zap, iconColor: 'text-yellow-400' },
+    { id: 'ferry', label: '渡輪', icon: Ship, iconColor: 'text-cyan-400' },
+    { id: 'cargo', label: '船運', icon: Anchor, iconColor: 'text-blue-400' },
   ] as const;
 
   return (
@@ -1028,27 +1132,57 @@ function ExploreContent() {
         </button>
       </div>
 
-      {/* 探索分類分頁 - 精簡橫向膠囊列 (7 個分頁單列排列，大幅釋放縱向瀏覽空間) */}
-      <div className="flex items-center gap-1 p-1 bg-[#10131a]/90 rounded-lg border border-[#232836] shrink-0 mb-2.5 overflow-x-auto [&::-webkit-scrollbar]:hidden">
-        {exploreTabs.map((tab) => {
-          const isActive = activeTab === tab.id;
-          const Icon = tab.icon;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 min-w-[42px] py-1.5 px-1 text-[11px] font-medium rounded-md transition-all flex items-center justify-center gap-1 shrink-0 ${
-                isActive
-                  ? 'bg-[#262e3d] text-white font-bold shadow-sm ring-1 ring-[#3b455c]'
-                  : 'text-gray-400 hover:text-gray-200 hover:bg-[#161a24]'
-              }`}
-              title={tab.label}
-            >
-              <Icon className={`w-3.5 h-3.5 ${tab.iconColor} shrink-0`} />
-              <span className="truncate">{tab.label}</span>
-            </button>
-          );
-        })}
+      {/* 探索分類分頁 - 2 行圖示按鈕組，Cursor 碰到後平滑展開文字（對標右上角按鈕），保留當前緊湊比例 */}
+      <div className="flex flex-col gap-1 p-1 bg-[#10131a]/90 rounded-lg border border-[#232836] shrink-0 mb-2.5">
+        {/* 第 1 行：天氣, 新聞, 活動, 滑雪 */}
+        <div className="grid grid-cols-4 gap-1">
+          {exploreTabsRow1.map((tab) => {
+            const isActive = activeTab === tab.id;
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as ExploreTabType)}
+                className={`flex items-center justify-center group py-1 px-1.5 rounded-md transition-all duration-200 text-xs font-semibold select-none min-h-[30px] ${
+                  isActive
+                    ? 'bg-[#252e3e] border border-cyan-500/70 text-white shadow-sm ring-1 ring-cyan-500/30'
+                    : 'text-gray-400 hover:text-gray-100 hover:bg-[#1a202c] border border-transparent hover:border-[#2b3548]'
+                }`}
+                title={tab.label}
+              >
+                <Icon className={`w-3.5 h-3.5 ${tab.iconColor} shrink-0 transition-transform duration-200 group-hover:scale-110`} />
+                <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[65px] group-hover:opacity-100 group-hover:ml-1.5 transition-all duration-300 whitespace-nowrap text-[11px]">
+                  {tab.label}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* 第 2 行：燃油, 充電, 渡輪, 船運 */}
+        <div className="grid grid-cols-4 gap-1">
+          {exploreTabsRow2.map((tab) => {
+            const isActive = activeTab === tab.id;
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as ExploreTabType)}
+                className={`flex items-center justify-center group py-1 px-1.5 rounded-md transition-all duration-200 text-xs font-semibold select-none min-h-[30px] ${
+                  isActive
+                    ? 'bg-[#252e3e] border border-cyan-500/70 text-white shadow-sm ring-1 ring-cyan-500/30'
+                    : 'text-gray-400 hover:text-gray-100 hover:bg-[#1a202c] border border-transparent hover:border-[#2b3548]'
+                }`}
+                title={tab.label}
+              >
+                <Icon className={`w-3.5 h-3.5 ${tab.iconColor} shrink-0 transition-transform duration-200 group-hover:scale-110`} />
+                <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[65px] group-hover:opacity-100 group-hover:ml-1.5 transition-all duration-300 whitespace-nowrap text-[11px]">
+                  {tab.label}
+                </span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* ==================== 0. 天氣分頁 (Weather - ECCC api.weather.gc.ca) ==================== */}
@@ -1592,6 +1726,161 @@ function ExploreContent() {
           ) : (
             <div className="py-12 text-center text-xs text-gray-400">目前無法取得即時天氣資料</div>
           )}
+        </div>
+      )}
+
+      {/* ==================== 滑雪分頁 (Ski Resorts - Skiresort.com Live Data) ==================== */}
+      {activeTab === 'ski' && (
+        <div className="flex flex-col flex-1 min-h-0">
+          <div className="flex items-center justify-between mb-2 shrink-0">
+            <span className="text-xs text-gray-300 font-semibold flex items-center gap-1.5">
+              <MountainSnow className="w-4 h-4 text-cyan-400" />
+              <span>大溫哥華 3 大滑雪場即時雪況</span>
+            </span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] text-cyan-400 bg-cyan-950/70 border border-cyan-800/60 px-1.5 py-0.5 rounded font-mono">
+                每日 1 次更新
+              </span>
+              <button
+                onClick={() => fetchSkiResorts(true)}
+                disabled={loadingSki}
+                className="p-1 hover:bg-[#252a38] text-gray-400 hover:text-white rounded transition-colors"
+                title="重新整理雪況"
+              >
+                <RefreshCw className={`w-3 h-3 ${loadingSki ? 'animate-spin text-cyan-400' : ''}`} />
+              </button>
+            </div>
+          </div>
+
+          <div className="flex-1 overflow-y-auto min-h-0 pr-1 flex flex-col gap-3 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
+            {/* 提示條 */}
+            <div className="bg-[#121622] border border-cyan-900/40 rounded-lg p-2 text-[11px] text-cyan-200/90 flex items-center gap-2">
+              <span className="text-base shrink-0">⛷️</span>
+              <span className="leading-snug">
+                已在地圖標註 3 大滑雪場。點擊雪場卡片或「在地圖上查看」，即可在地圖上自動彈跳至該雪場！
+              </span>
+            </div>
+
+            {loadingSki && skiResorts.length === 0 ? (
+              <div className="py-12 flex flex-col items-center justify-center gap-2 text-gray-400 text-xs">
+                <RefreshCw className="w-5 h-5 text-cyan-400 animate-spin" />
+                <span>讀取大溫哥華滑雪場即時雪報中...</span>
+              </div>
+            ) : skiResorts.length === 0 ? (
+              <div className="py-12 text-center text-xs text-gray-400 bg-[#10131a] rounded-lg border border-[#232836]">
+                暫無滑雪場資料
+              </div>
+            ) : (
+              skiResorts.map((resort) => {
+                const isOpen = resort.is_open;
+                return (
+                  <div
+                    key={resort.id}
+                    className="bg-[#12151e] border border-[#262c3c] hover:border-cyan-500/50 rounded-xl p-3.5 shadow-md flex flex-col gap-2.5 transition-all group"
+                  >
+                    {/* Header */}
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-start gap-2.5">
+                        <div className="w-8 h-8 rounded-lg bg-cyan-950/60 border border-cyan-800/50 flex items-center justify-center text-cyan-300 shrink-0 text-lg shadow-sm">
+                          ⛷️
+                        </div>
+                        <div className="flex flex-col min-w-0">
+                          <h4 className="text-sm font-bold text-white tracking-wide truncate group-hover:text-cyan-300 transition-colors">
+                            {resort.name}
+                          </h4>
+                          <span className="text-[11px] text-gray-400 truncate">
+                            {resort.english_name}
+                          </span>
+                        </div>
+                      </div>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border shrink-0 ${
+                        isOpen 
+                          ? 'bg-emerald-950/80 text-emerald-300 border-emerald-700/60' 
+                          : 'bg-slate-800/80 text-slate-300 border-slate-700/60'
+                      }`}>
+                        {resort.status_zh || resort.status_raw || '休園中'}
+                      </span>
+                    </div>
+
+                    <div className="text-[11px] text-gray-400 flex items-center gap-1">
+                      <MapPin className="w-3 h-3 text-cyan-400 shrink-0" />
+                      <span className="truncate">{resort.area}</span>
+                    </div>
+
+                    {/* Stats Grid */}
+                    <div className="grid grid-cols-2 gap-2 bg-[#0e1118] p-2.5 rounded-lg border border-[#1f2433] text-xs">
+                      {/* 雪道 */}
+                      <div className="flex flex-col">
+                        <span className="text-[10px] text-gray-400">雪道開放</span>
+                        <span className="font-mono font-bold text-white text-[12px] mt-0.5">
+                          {resort.slopes_label || `${resort.slopes_open} / ${resort.slopes_total} km`}
+                        </span>
+                      </div>
+                      {/* 纜車 */}
+                      <div className="flex flex-col">
+                        <span className="text-[10px] text-gray-400">纜車開放</span>
+                        <span className="font-mono font-bold text-white text-[12px] mt-0.5">
+                          {resort.lifts_label || `${resort.lifts_open} / ${resort.lifts_total} 座`}
+                        </span>
+                      </div>
+                      {/* 積雪深度 */}
+                      <div className="flex flex-col pt-1.5 border-t border-[#1a1f2c]">
+                        <span className="text-[10px] text-gray-400">積雪 (山底 / 山頂)</span>
+                        <span className="font-mono font-semibold text-cyan-300 text-[11px] mt-0.5">
+                          {resort.snow_base || '-'} / {resort.snow_top || '-'}
+                        </span>
+                      </div>
+                      {/* 海拔落差 */}
+                      <div className="flex flex-col pt-1.5 border-t border-[#1a1f2c]">
+                        <span className="text-[10px] text-gray-400">海拔落差 (垂直)</span>
+                        <span className="font-mono font-semibold text-gray-200 text-[11px] mt-0.5">
+                          {resort.altitude_base} - {resort.altitude_top} ({resort.vertical_drop})
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Additional Details */}
+                    <div className="flex items-center justify-between text-[11px] text-gray-400 px-0.5">
+                      <span className="flex items-center gap-1">
+                        <span>夜滑：</span>
+                        <span className={resort.night_skiing ? 'text-amber-300 font-medium' : 'text-gray-500'}>
+                          {resort.night_skiing ? '🌙 有夜間滑雪' : '無夜滑'}
+                        </span>
+                      </span>
+                      {resort.season_range && (
+                        <span className="text-[10px] text-gray-400 font-mono truncate max-w-[190px]">
+                          雪季: {resort.season_range}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex items-center gap-2 pt-1">
+                      <button
+                        onClick={() => handleSelectSkiResort(resort)}
+                        className="flex-1 py-1.5 px-2 bg-cyan-600/20 hover:bg-cyan-600/30 border border-cyan-500/50 hover:border-cyan-400 text-cyan-300 rounded-md font-medium text-xs transition-colors flex items-center justify-center gap-1 shadow-sm"
+                      >
+                        <Compass className="w-3.5 h-3.5" />
+                        <span>在地圖上查看</span>
+                      </button>
+                      {resort.official_url && (
+                        <a
+                          href={resort.official_url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="py-1.5 px-2.5 bg-[#1e2330] hover:bg-[#282f40] border border-[#2f374a] text-gray-300 hover:text-white rounded-md text-xs font-medium transition-colors flex items-center gap-1 shrink-0"
+                          title="雪場官方網站"
+                        >
+                          <span>官網</span>
+                          <ExternalLink className="w-3 h-3 text-gray-400" />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
         </div>
       )}
 
@@ -2349,6 +2638,7 @@ function ExploreContent() {
           {activeTab === 'weather' && (weather ? `${weather.city || '溫哥華'} · ${weather.condition || '多雲'} · ${formatTemp(weather.temperature)}` : '加拿大環境部氣象數據')}
           {activeTab === 'news' && `共收錄 ${filteredNews.length} 則大溫即時新聞 · 每 ${newsRefreshInterval || 15} 分鐘自動更新`}
           {activeTab === 'events' && `共收錄 ${filteredEvents.length} 項大溫熱門活動 · 來源 Daily Hive、Eventbrite 與 溫哥華旅遊局`}
+          {activeTab === 'ski' && `大溫哥華 3 大滑雪場即時雪況 (賽普里斯山、松雞山、西摩山) · 每日更新`}
           {activeTab === 'fuel' && `共收錄 ${filteredFuelStations.length} 間加油站`}
           {activeTab === 'ev' && `共收錄 ${evStations.length} 座充電站`}
           {activeTab === 'ferry' && `共 ${ferryRoutes.reduce((acc, r) => acc + (r?.vessels?.length || 0), 0)} 艘渡輪即時航行中`}

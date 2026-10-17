@@ -791,6 +791,16 @@ def get_tides_geojson():
     import tides_service
     return tides_service.get_tides_geojson()
 
+@app.get("/api/ski/resorts")
+def get_ski_resorts():
+    import ski_service
+    return ski_service.get_live_ski_data()
+
+@app.get("/api/ski/geojson")
+def get_ski_geojson():
+    import ski_service
+    return ski_service.get_ski_geojson()
+
 @app.get("/api/geojson/airports")
 def get_airports_geojson():
     static_path = os.path.join(os.path.dirname(__file__), "data", "vancouver_airports.geojson")
@@ -1218,7 +1228,7 @@ POINT_CURATED_TYPES = (
     "hospitals", "police", "disaster_hubs", "car_sharing", "aed", 
     "fuel", "ev_charging", "tesla", "marine_terminals", "bike_racks", "wireless_facilities",
     "traffic_crosswalks", "litter_containers", "food_banks", "recycling", "van_wifi",
-    "street_lighting", "traffic_conditions"
+    "traffic_conditions"
 )
 
 def sync_curated_point_types(db: Session):

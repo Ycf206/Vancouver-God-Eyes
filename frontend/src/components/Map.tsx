@@ -236,13 +236,86 @@ const HEAVY_LAYERS_CONFIG: Record<string, { label: string; prefixes: string[] }>
   bikeways: { label: '單車道路網', prefixes: ['bikeways'] },
   parkingMeters: { label: '收費錶', prefixes: ['parking-meters'] },
   trafficCrosswalks: { label: '斑馬線', prefixes: ['traffic-crosswalks'] },
-  streetLighting: { label: '路燈控制盤', prefixes: ['street-lighting'] },
+  streetLighting: { label: '路燈', prefixes: ['street-lighting', 'street_lighting'] },
 };
+
+const SKI_RESORT_POINTS = [
+  {
+    id: 'cypress',
+    uid: 425,
+    name: '賽普里斯山滑雪場',
+    english_name: 'Cypress Mountain',
+    area: '西溫哥華 · 賽普里斯省立公園 (West Vancouver)',
+    lat: 49.3957,
+    lon: -123.2045,
+    zoom: 14,
+    vertical_drop: '616 m',
+    official_url: 'https://cypressmountain.com',
+    skiresort_url: 'https://www.skiresort.com/ski-resort/cypress-mountain/',
+    status_zh: '季節休園',
+    is_open: false,
+    season_range: '12 Dec 2026 - 11 Apr 2027',
+    slopes_label: '0 of 51 km of slopes',
+    lifts_label: '0 of 7 lifts',
+    snow_base: '-',
+    snow_top: '-',
+    altitude_base: '824 m',
+    altitude_top: '1440 m',
+    night_skiing: true,
+  },
+  {
+    id: 'grouse',
+    uid: 427,
+    name: '松雞山滑雪場',
+    english_name: 'Grouse Mountain',
+    area: '北溫哥華 · 溫哥華之峰 (North Vancouver)',
+    lat: 49.3795,
+    lon: -123.0825,
+    zoom: 14,
+    vertical_drop: '400 m',
+    official_url: 'https://www.grousemountain.com',
+    skiresort_url: 'https://www.skiresort.com/ski-resort/grouse-mountain/',
+    status_zh: '季節休園',
+    is_open: false,
+    season_range: '19 Nov 2026 - 18 Apr 2027',
+    slopes_label: '0 of 33 km of slopes',
+    lifts_label: '0 of 5 lifts',
+    snow_base: '-',
+    snow_top: '-',
+    altitude_base: '850 m',
+    altitude_top: '1250 m',
+    night_skiing: true,
+  },
+  {
+    id: 'seymour',
+    uid: 443,
+    name: '西摩山滑雪場',
+    english_name: 'Mount Seymour',
+    area: '北溫哥華 · 西摩山省立公園 (North Vancouver)',
+    lat: 49.3672,
+    lon: -122.9486,
+    zoom: 14,
+    vertical_drop: '330 m',
+    official_url: 'https://mtseymour.ca',
+    skiresort_url: 'https://www.skiresort.com/ski-resort/mount-seymour/',
+    status_zh: '季節休園',
+    is_open: false,
+    season_range: '10 Dec 2026 - 11 Apr 2027',
+    slopes_label: '0 of 23 km of slopes',
+    lifts_label: '0 of 5 lifts',
+    snow_base: '-',
+    snow_top: '-',
+    altitude_base: '935 m',
+    altitude_top: '1265 m',
+    night_skiing: true,
+  }
+];
 
 export default function AppMap() {
   const { 
     layers, mapStyleType, searchTarget, setSearchTarget, isLayerPanelOpen, 
     contourInterval, timeFormat, distanceUnit, userLocation, setExploreOpen,
+    isExploreOpen, exploreTab,
     parkingMeterFilter, setParkingMeterFilter,
     radiusExploration, setRadiusExploration,
     fuelFilter, setFuelFilter,
@@ -279,6 +352,22 @@ export default function AppMap() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [nearbyFacilities, setNearbyFacilities] = useState<any[]>([]);
   const [loadingNearby, setLoadingNearby] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [mapSkiResorts, setMapSkiResorts] = useState<any[]>(SKI_RESORT_POINTS);
+
+  useEffect(() => {
+    if (isExploreOpen && exploreTab === 'ski') {
+      fetch('/vancouver_ski_resorts.json')
+        .then(res => res.json())
+        .then(data => {
+          if (data && Array.isArray(data.resorts) && data.resorts.length > 0) {
+            setMapSkiResorts(data.resorts);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [isExploreOpen, exploreTab]);
+
   const [skytrainDetailTab, setSkytrainDetailTab] = useState<'departures' | 'schedules' | 'facilities'>('departures');
   const [currentZoom, setCurrentZoom] = useState<number>(11);
   const [loadingHeavyLayers, setLoadingHeavyLayers] = useState<{ [key: string]: string }>({});
@@ -1394,15 +1483,15 @@ export default function AppMap() {
       }
     }
 
-    // 5. 路燈控制盤 (Street Lighting)
+    // 5. 路燈 (Street Lighting)
     const turnedOnStreetLighting = !prev.streetLighting && layers.streetLighting;
     if (turnedOnStreetLighting) {
       if (z < 12) {
         setZoomNotification({
           show: true,
-          title: '已開啟路燈控制盤圖層',
-          message: '全市設有 1,400+ 個路燈控制盤，縮放時以數字符號進行聚合顯示，放大可檢視具體點位。',
-          targetZoom: 13.5
+          title: '已開啟路燈圖層',
+          message: '全市設有 58,000+ 處路燈柱，資料量較龐大載入需數秒，地圖已啟用智慧圓圈叢集聚合顯示，放大可檢視單支燈柱。',
+          targetZoom: 14.5
         });
         return;
       }
@@ -3962,14 +4051,14 @@ export default function AppMap() {
       });
     }
 
-    // Utilities: Street Lighting Service Panels (路燈控制盤)
+    // Utilities: Street Lighting Poles (路燈柱)
     if (layers.streetLighting) {
       style.sources['street_lighting'] = { 
         type: 'geojson', 
         data: `${apiUrl}/api/geojson/road/street_lighting`,
         cluster: true,
-        clusterMaxZoom: 14,
-        clusterRadius: 45
+        clusterMaxZoom: 15,
+        clusterRadius: 50
       };
       // 叢集圓球
       style.layers.push({
@@ -3978,8 +4067,22 @@ export default function AppMap() {
         source: 'street_lighting',
         filter: ['has', 'point_count'],
         paint: {
-          'circle-color': '#ca8a04',
-          'circle-radius': ['step', ['get', 'point_count'], 14, 20, 18, 50, 22],
+          'circle-color': [
+            'step',
+            ['get', 'point_count'],
+            '#ca8a04',
+            50, '#d97706',
+            200, '#b45309',
+            1000, '#92400e'
+          ],
+          'circle-radius': [
+            'step',
+            ['get', 'point_count'],
+            15,
+            50, 19,
+            200, 23,
+            1000, 28
+          ],
           'circle-stroke-width': 2,
           'circle-stroke-color': '#fde047',
           'circle-opacity': 0.88
@@ -4007,7 +4110,7 @@ export default function AppMap() {
         source: 'street_lighting',
         filter: ['!', ['has', 'point_count']],
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 16, 6],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 12, 2.5, 15, 4.5, 17, 6],
           'circle-color': '#eab308',
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#fef08a'
@@ -4019,10 +4122,10 @@ export default function AppMap() {
         type: 'symbol',
         source: 'street_lighting',
         filter: ['!', ['has', 'point_count']],
-        minzoom: 15,
+        minzoom: 16,
         layout: {
           'text-field': '💡',
-          'text-size': ['interpolate', ['linear'], ['zoom'], 15, 10, 18, 14],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 16, 11, 18, 15],
           'text-allow-overlap': false
         }
       });
@@ -4690,7 +4793,7 @@ export default function AppMap() {
             const isBikeRack = layerId.startsWith('bike-racks');
             const isWireless = layerId.startsWith('wireless-facilities');
             const isTraffic = layerId.startsWith('traffic-conditions');
-            const isStreetLighting = layerId.startsWith('street-lighting');
+            const isStreetLighting = layerId.startsWith('street-lighting') || layerId.startsWith('street_lighting');
             const isCrosswalk = layerId.startsWith('traffic-crosswalks');
             const isLitter = layerId.startsWith('litter-containers');
             const isRecycling = layerId.startsWith('recycling');
@@ -4699,7 +4802,7 @@ export default function AppMap() {
             setSelectedFacility({
               id: props.id || (props.object_id ? `${props.facility_type || (isTraffic ? 'traffic_conditions' : (isStreetLighting ? 'street_lighting' : (isVanWifi ? 'van_wifi' : (isTideStation ? 'tide' : (isBikeRack ? 'bike_rack' : (isWireless ? 'wireless' : (isCrosswalk ? 'crosswalk' : (isLitter ? 'litter' : (isRecycling ? 'recycling' : 'fac')))))))))}_${props.object_id}` : ''),
               facility_type: props.facility_type || (isTraffic ? 'traffic_conditions' : (isStreetLighting ? 'street_lighting' : (isVanWifi ? 'van_wifi' : (isTideStation ? 'tide_stations' : (isFuel ? 'fuel' : (isTesla ? 'tesla' : (isMarineTerminal ? 'marine_terminals' : (isBikeRack ? 'bike_racks' : (isWireless ? 'wireless_facilities' : (isCrosswalk ? 'traffic_crosswalks' : (isLitter ? 'litter_containers' : (isRecycling ? 'recycling' : '')))))))))))),
-              name: props.name || (isTraffic ? '獅門大橋即時路況' : (isStreetLighting ? (props.service_panel_number ? `路燈控制盤 #${props.service_panel_number}` : '路燈控制盤') : (isVanWifi ? (props.site_name || 'VanWiFi 公共無線網絡') : (isTideStation ? (props.english_name || '潮汐水位') : (isCrosswalk ? (props.location ? `斑馬線 - ${props.location}` : '行人斑馬線') : (isLitter ? (props.address ? `垃圾箱 - ${props.address}` : '公用垃圾箱') : (isBikeRack ? (props.location ? `單車架 - ${props.location}` : '公用單車架') : (isWireless ? (props.site_name || `無線設施 #${props.pole_number || ''}`) : (isRecycling ? (props.brand || '環保回收站') : (props.brand || (isFuel ? '加油站' : (isTesla ? 'Tesla 站點' : (isMarineTerminal ? '港口碼頭' : ''))))))))))))),
+              name: props.name || (isTraffic ? '獅門大橋即時路況' : (isStreetLighting ? (props.pole_number ? `路燈柱 #${props.pole_number}` : (props.service_panel_number ? `路燈控制盤 #${props.service_panel_number}` : '路燈')) : (isVanWifi ? (props.site_name || 'VanWiFi 公共無線網絡') : (isTideStation ? (props.english_name || '潮汐水位') : (isCrosswalk ? (props.location ? `斑馬線 - ${props.location}` : '行人斑馬線') : (isLitter ? (props.address ? `垃圾箱 - ${props.address}` : '公用垃圾箱') : (isBikeRack ? (props.location ? `單車架 - ${props.location}` : '公用單車架') : (isWireless ? (props.site_name || `無線設施 #${props.pole_number || ''}`) : (isRecycling ? (props.brand || '環保回收站') : (props.brand || (isFuel ? '加油站' : (isTesla ? 'Tesla 站點' : (isMarineTerminal ? '港口碼頭' : ''))))))))))))),
               local_area: props.waterway || props.area || props.local_area || props.location || props.company || props.address || props.city || '',
               lon: coords[0],
               lat: coords[1],
@@ -5828,6 +5931,68 @@ export default function AppMap() {
             </>
           );
         })()}
+
+        {/* 滑雪場標記 (當開啟探索且分頁為滑雪時，在地圖上為 3 個滑雪場加上圖示，按下即彈去該地點) */}
+        {((isExploreOpen && exploreTab === 'ski') || (searchTarget && searchTarget.category === 'ski_resort')) && mapSkiResorts.map((resort) => {
+          const isSelected = selectedFacility?.id === `ski_${resort.id}` || searchTarget?.id === `ski_${resort.id}`;
+          return (
+            <Marker
+              key={`ski-resort-${resort.id}`}
+              longitude={resort.lon}
+              latitude={resort.lat}
+              anchor="bottom"
+            >
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedStop(null);
+                  setSelectedFacility({
+                    id: `ski_${resort.id}`,
+                    facility_type: 'ski_resort',
+                    name: resort.name,
+                    local_area: resort.area,
+                    lon: resort.lon,
+                    lat: resort.lat,
+                    properties: resort
+                  });
+                  mapRef.current?.flyTo({
+                    center: [resort.lon, resort.lat],
+                    zoom: 14.5,
+                    essential: true
+                  });
+                }}
+                className="group relative flex flex-col items-center cursor-pointer z-35 select-none"
+              >
+                {/* 標記光環與按鈕 */}
+                <div className={`relative flex items-center justify-center w-9 h-9 rounded-full border-2 shadow-xl backdrop-blur-md transition-all duration-300 group-hover:scale-125 ${
+                  isSelected 
+                    ? 'bg-cyan-500 border-white text-white scale-120 shadow-[0_0_20px_rgba(6,182,212,0.8)] ring-4 ring-cyan-400/40' 
+                    : 'bg-[#121927]/95 border-cyan-400/80 text-cyan-300 hover:border-cyan-300 shadow-[0_0_12px_rgba(6,182,212,0.4)]'
+                }`}>
+                  <span className="text-base">⛷️</span>
+                  {/* 小脈衝指示圈 */}
+                  <span className={`absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border border-white ${
+                    resort.is_open ? 'bg-emerald-400 animate-pulse' : 'bg-slate-400'
+                  }`} />
+                </div>
+
+                {/* 底部名牌 */}
+                <div className={`mt-1 px-2 py-0.5 rounded-md text-[11px] font-bold shadow-lg border backdrop-blur-md whitespace-nowrap transition-all duration-200 flex items-center gap-1.5 ${
+                  isSelected
+                    ? 'bg-cyan-950/95 text-cyan-200 border-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.4)]'
+                    : 'bg-[#141720]/95 text-gray-200 border-[#2f384d] group-hover:border-cyan-400 group-hover:text-white'
+                }`}>
+                  <span>{resort.name}</span>
+                  <span className={`text-[9.5px] px-1 py-0.2 rounded font-normal ${
+                    resort.is_open ? 'text-emerald-400 bg-emerald-950/80' : 'text-gray-400 bg-gray-800/80'
+                  }`}>
+                    {resort.status_zh || '休園中'}
+                  </span>
+                </div>
+              </div>
+            </Marker>
+          );
+        })}
 
         {/* Live Flight Detail Popup */}
         {selectedFlight && (() => {
@@ -9052,7 +9217,7 @@ export default function AppMap() {
                 </div>
               )}
 
-              {/* Street Lighting (路燈控制盤) Details */}
+              {/* Street Lighting (路燈柱) Details */}
               {selectedFacility.facility_type === 'street_lighting' && (
                 <div className="flex flex-col gap-2 text-xs">
                   <div className="bg-amber-400/10 p-2.5 rounded-lg border border-amber-400/30 flex flex-col gap-1.5">
@@ -9062,17 +9227,33 @@ export default function AppMap() {
                         <span className="truncate max-w-[190px]">{selectedFacility.name}</span>
                       </span>
                       <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-500 text-white shrink-0">
-                        路燈控制盤
+                        市政路燈
                       </span>
                     </div>
                     <div className="text-[11px] text-amber-900 font-medium">
-                      💡 溫哥華市政路燈控制箱與配電盤 (Service Panels)
+                      💡 溫哥華市政公用照明路燈柱 (Street Lighting Poles)
                     </div>
                   </div>
 
                   <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                    {selectedFacility.properties.service_panel_number && (
+                    {selectedFacility.properties.pole_number && (
                       <div className="flex justify-between items-center text-gray-600">
+                        <span>燈柱編號 (Pole #)</span>
+                        <span className="font-mono font-bold text-gray-900">
+                          #{selectedFacility.properties.pole_number}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.block_number && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>街區編號 (Block)</span>
+                        <span className="font-mono text-gray-800">
+                          {selectedFacility.properties.block_number}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.service_panel_number && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
                         <span>控制盤編號</span>
                         <span className="font-mono font-bold text-gray-900">
                           #{selectedFacility.properties.service_panel_number}
@@ -9081,7 +9262,7 @@ export default function AppMap() {
                     )}
                     {selectedFacility.properties.local_area && (
                       <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                        <span>市政社區分區</span>
+                        <span>所屬社區分區</span>
                         <span className="font-medium text-gray-800">
                           {selectedFacility.properties.local_area}
                         </span>
@@ -9100,6 +9281,88 @@ export default function AppMap() {
                       </span>
                     </div>
                   </div>
+                </div>
+              )}
+
+              {/* Ski Resort (滑雪場) Details */}
+              {selectedFacility.facility_type === 'ski_resort' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-cyan-500/10 p-2.5 rounded-lg border border-cyan-500/30 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-cyan-950 text-xs flex items-center gap-1.5">
+                        <span className="text-base text-cyan-600 font-bold">⛷️</span>
+                        <span className="truncate max-w-[180px]">{selectedFacility.name}</span>
+                      </span>
+                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded text-white shrink-0 ${
+                        selectedFacility.properties.is_open ? 'bg-emerald-500' : 'bg-slate-500'
+                      }`}>
+                        {selectedFacility.properties.status_zh || '休園中'}
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-cyan-900 font-medium flex items-center justify-between">
+                      <span>{selectedFacility.properties.english_name}</span>
+                      <span className="text-[10px] text-gray-500">{selectedFacility.properties.area}</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                    <div className="flex justify-between items-center text-gray-600">
+                      <span>雪道開放情況</span>
+                      <span className="font-mono font-bold text-gray-900">
+                        {selectedFacility.properties.slopes_label || '--'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <span>纜車開放數量</span>
+                      <span className="font-mono font-bold text-gray-900">
+                        {selectedFacility.properties.lifts_label || '--'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <span>積雪深度 (山底 / 山頂)</span>
+                      <span className="font-mono font-semibold text-cyan-700">
+                        {selectedFacility.properties.snow_base || '-'} / {selectedFacility.properties.snow_top || '-'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <span>雪場海拔 (垂直落差)</span>
+                      <span className="font-mono text-gray-800">
+                        {selectedFacility.properties.altitude_base} - {selectedFacility.properties.altitude_top} ({selectedFacility.properties.vertical_drop})
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <span>夜間滑雪 (Night Skiing)</span>
+                      <span className="font-medium text-gray-800">
+                        {selectedFacility.properties.night_skiing ? '🌙 有提供' : '無'}
+                      </span>
+                    </div>
+                    {selectedFacility.properties.season_range && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>預估營運雪季</span>
+                        <span className="font-medium text-gray-800 font-mono">
+                          {selectedFacility.properties.season_range}
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <span>即時數據更新頻率</span>
+                      <span className="font-medium text-emerald-700">
+                        每 1 日更新 (每日)
+                      </span>
+                    </div>
+                  </div>
+
+                  {selectedFacility.properties.official_url && (
+                    <a
+                      href={selectedFacility.properties.official_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-1 flex items-center justify-center gap-1.5 py-1.5 px-3 bg-cyan-600 hover:bg-cyan-500 text-white rounded font-medium text-xs transition-colors shadow-sm"
+                    >
+                      <span>前往雪場官方網站購票/通行證</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  )}
                 </div>
               )}
 

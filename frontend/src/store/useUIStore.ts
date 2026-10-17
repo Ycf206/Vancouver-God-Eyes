@@ -3,6 +3,8 @@ import { persist } from 'zustand/middleware';
 
 export type MapStyleType = 'street' | 'satellite' | 'light' | 'dark';
 
+export type ExploreTabType = 'weather' | 'news' | 'events' | 'ski' | 'fuel' | 'ev' | 'ferry' | 'cargo';
+
 export interface SearchTarget {
   id: string;
   title: string;
@@ -119,6 +121,8 @@ export interface UIState {
   isExploreOpen: boolean;
   setExploreOpen: (open: boolean) => void;
   toggleExplore: () => void;
+  exploreTab: ExploreTabType;
+  setExploreTab: (tab: ExploreTabType) => void;
   isExportModalOpen: boolean;
   setExportModalOpen: (open: boolean) => void;
   toggleExportModal: () => void;
@@ -266,6 +270,8 @@ export const useUIStore = create<UIState>()(
       isExploreOpen: false,
       setExploreOpen: (open) => set({ isExploreOpen: open }),
       toggleExplore: () => set((state) => ({ isExploreOpen: !state.isExploreOpen })),
+      exploreTab: 'weather',
+      setExploreTab: (tab) => set({ exploreTab: tab }),
       isExportModalOpen: false,
       setExportModalOpen: (open) => set({ isExportModalOpen: open }),
       toggleExportModal: () => set((state) => ({ isExportModalOpen: !state.isExportModalOpen })),
