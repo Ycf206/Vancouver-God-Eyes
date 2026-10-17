@@ -2,7 +2,7 @@
   "source": "Metro Vancouver ArcGIS Beach_Site_Area",
   "source_url": "https://gis.metrovancouver.org/arcgis/rest/services/Beach_Site_Area/FeatureServer/0/query?where=1=1&outFields=*&outSR=4326&f=json",
   "update_frequency": "每個月更新 1 次 (Monthly)",
-  "last_updated": "2026-10-17T05:16:59.304Z",
+  "last_updated": "2026-10-17T13:28:18.290Z",
   "total_count": 41,
   "beaches": [
     {

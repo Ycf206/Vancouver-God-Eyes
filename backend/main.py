@@ -1421,13 +1421,13 @@ CURATED_STATIC_TYPES = (
     "sewer_mains", "traffic_speed_limits", "bike_racks", "postal_code_fsa", "wireless_facilities",
     "traffic_crosswalks", "litter_containers", "food_banks", "recycling", "van_wifi",
     "road_closures", "road_construction", "street_lighting", "street_lighting_poles", "street_lighting_conduits", "traffic_conditions",
-    "beach_water_quality", "beach_water"
+    "beach_water_quality", "beach_water", "fire_hydrants", "zoning_districts"
 )
 POINT_CURATED_TYPES = (
     "hospitals", "police", "disaster_hubs", "car_sharing", "aed", 
     "fuel", "ev_charging", "tesla", "marine_terminals", "bike_racks", "wireless_facilities",
     "traffic_crosswalks", "litter_containers", "food_banks", "recycling", "van_wifi",
-    "traffic_conditions"
+    "traffic_conditions", "fire_hydrants"
 )
 
 def sync_curated_point_types(db: Session):
@@ -2694,9 +2694,11 @@ def explore_nearby_facilities(
         'hospitals': ('醫療院所', '🏥', 'hospitals'),
         'police': ('警局', '🚓', 'police'),
         'fire_halls': ('消防局', '🚒', 'fireHalls'),
+        'fire_hydrants': ('消防栓', '🧯', 'fireHydrants'),
         'van_wifi': ('VanWiFi 免費無線網路', '📶', 'vanWifi'),
         'tide_stations': ('潮汐水位', '🌊', 'tideStations'),
         'beach_water_quality': ('海灘水質', '🏖️', 'beachWaterQuality'),
+        'zoning_districts': ('土地規劃', '📐', 'zoningDistricts'),
         'street_lighting': ('路燈燈柱', '💡', 'streetLighting'),
         'street_lighting_poles': ('路燈燈柱', '💡', 'streetLighting'),
         'street_lighting_conduits': ('配電管線', '⚡', 'streetLightingConduits'),

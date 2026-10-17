@@ -237,8 +237,10 @@ const HEAVY_LAYERS_CONFIG: Record<string, { label: string; prefixes: string[] }>
   bikeways: { label: '單車道路網', prefixes: ['bikeways'] },
   parkingMeters: { label: '收費錶', prefixes: ['parking-meters'] },
   streetLighting: { label: '路燈燈柱', prefixes: ['street-lighting-poles', 'street_lighting_poles'] },
-  streetLightingConduits: { label: '路燈配電管線', prefixes: ['street-lighting-conduits', 'street_lighting_conduits', 'street-lighting-glow', 'street-lighting-layer'] },
+  streetLightingConduits: { label: '路燈電網', prefixes: ['street-lighting-conduits', 'street_lighting_conduits', 'street-lighting-glow', 'street-lighting-layer'] },
   beachWaterQuality: { label: '海灘水質', prefixes: ['beach-water', 'beach_water'] },
+  fireHydrants: { label: '消防栓', prefixes: ['fire-hydrants', 'fire_hydrants'] },
+  zoningDistricts: { label: '土地規劃', prefixes: ['zoning-districts', 'zoning_districts'] },
 };
 
 const SKI_RESORT_POINTS = [
@@ -329,7 +331,9 @@ export default function AppMap() {
   const mapRef = useRef<MapRef>(null);
 
   // Active Station Alert Warning Triangles (Non-critical: Yellow, Critical: Red)
+  // 只有打開交通警報分頁時才在地圖上顯示黃/紅三角形標記，關閉探索介面或切到其他分頁時三角形自動隱藏
   const activeStationAlertMarkers = useMemo(() => {
+    if (!isExploreOpen || exploreTab !== 'alerts') return [];
     if (!stationAlertsMap || Object.keys(stationAlertsMap).length === 0) return [];
     const list: Array<{
       name: string;
@@ -376,7 +380,7 @@ export default function AppMap() {
       }
     }
     return list;
-  }, [stationAlertsMap]);
+  }, [stationAlertsMap, isExploreOpen, exploreTab]);
 
   // Resize map canvas smoothly when side panel toggles
   useEffect(() => {
@@ -825,6 +829,8 @@ export default function AppMap() {
         else if (type === 'street_lighting' && !layers.streetLighting) facilityClosed = true;
         else if (type === 'street_lighting_conduits' && !layers.streetLightingConduits) facilityClosed = true;
         else if (type === 'beach_water_quality' && !layers.beachWaterQuality) facilityClosed = true;
+        else if (type === 'fire_hydrants' && !layers.fireHydrants) facilityClosed = true;
+        else if (type === 'zoning_districts' && !layers.zoningDistricts) facilityClosed = true;
 
         if (facilityClosed) {
           setSelectedFacility(null);
@@ -2995,6 +3001,50 @@ export default function AppMap() {
       });
     }
 
+    // Government Facilities: Fire Hydrants (消防栓 - 6,600+ 溫哥華市政消防栓，每1星期更新)
+    if (layers.fireHydrants) {
+      style.sources['fire_hydrants'] = {
+        type: 'geojson',
+        data: `${apiUrl}/api/geojson/road/fire_hydrants`
+      };
+      style.layers.push({
+        id: 'fire-hydrants-glow',
+        type: 'circle',
+        source: 'fire_hydrants',
+        minzoom: 12,
+        paint: {
+          'circle-color': '#ef4444',
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 12, 2.5, 15, 6, 17, 10],
+          'circle-opacity': 0.35,
+          'circle-blur': 0.8
+        }
+      });
+      style.layers.push({
+        id: 'fire-hydrants-layer',
+        type: 'circle',
+        source: 'fire_hydrants',
+        minzoom: 12,
+        paint: {
+          'circle-color': '#dc2626',
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 12, 1.8, 15, 3.8, 17, 6],
+          'circle-stroke-width': 1.2,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'fire-hydrants-symbol-layer',
+        type: 'symbol',
+        source: 'fire_hydrants',
+        minzoom: 16,
+        layout: {
+          'text-field': '🧯',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 16, 11, 18, 15],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        }
+      });
+    }
+
     // Government Facilities: Police (警察局與社區警務中心)
     if (layers.police) {
       style.layers.push({
@@ -3886,6 +3936,80 @@ export default function AppMap() {
       });
     }
 
+    // Geography: Zoning Districts (土地規劃分區 - 每3個月更新)
+    if (layers.zoningDistricts) {
+      style.sources['zoning_districts'] = {
+        type: 'geojson',
+        data: `${apiUrl}/api/geojson/road/zoning_districts`
+      };
+      // 土地規劃半透明多邊形填色 (依都市計畫土地使用類別著色)
+      style.layers.push({
+        id: 'zoning-districts-fill',
+        type: 'fill',
+        source: 'zoning_districts',
+        paint: {
+          'fill-color': [
+            'match',
+            ['get', 'zoning_category'],
+            'CD', '#818cf8',      // Comprehensive Development 綜合發展區 - 靛藍
+            'RS', '#34d399',      // One-Family Residential 單戶住宅區 - 翠綠
+            'RT', '#2dd4bf',      // Two-Family Residential 雙戶住宅區 - 青綠
+            'RM', '#38bdf8',      // Multiple Dwelling 多戶集合住宅 - 天藍
+            'C', '#fbbf24',       // Commercial 商業區 - 琥珀黃
+            'FC', '#f97316',      // False Creek 假溪特區 - 橙色
+            'M', '#a78bfa',       // Industrial 工業區 - 紫色
+            'I', '#c084fc',       // Industrial 輕工業區 - 紫羅蘭
+            'HA', '#f472b6',      // Historic Area 歷史街區 - 粉紅
+            'RA', '#a3e635',      // Limited Agriculture 農業與受限區 - 青檸
+            '#94a3b8'             // Default slate
+          ],
+          'fill-opacity': 0.28
+        }
+      });
+      // 土地規劃分區邊界外框線
+      style.layers.push({
+        id: 'zoning-districts-line',
+        type: 'line',
+        source: 'zoning_districts',
+        paint: {
+          'line-color': [
+            'match',
+            ['get', 'zoning_category'],
+            'CD', '#6366f1',
+            'RS', '#059669',
+            'RT', '#0d9488',
+            'RM', '#0284c7',
+            'C', '#d97706',
+            'FC', '#ea580c',
+            'M', '#7c3aed',
+            'I', '#9333ea',
+            'HA', '#db2777',
+            'RA', '#65a30d',
+            '#64748b'
+          ],
+          'line-width': ['interpolate', ['linear'], ['zoom'], 11, 1, 14, 2, 17, 3],
+          'line-opacity': 0.8
+        }
+      });
+      // 土地規劃分區代碼標籤 (例如 CD-1 (302), RS-1, C-2)
+      style.layers.push({
+        id: 'zoning-districts-label',
+        type: 'symbol',
+        source: 'zoning_districts',
+        minzoom: 13,
+        layout: {
+          'text-field': ['get', 'zoning_district'],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 9, 15, 11, 17, 13],
+          'text-allow-overlap': false
+        },
+        paint: {
+          'text-color': '#f8fafc',
+          'text-halo-color': '#0f172a',
+          'text-halo-width': 1.8
+        }
+      });
+    }
+
     // Utilities: Water Distribution Mains (自來水管道)
     if (layers.waterDistributionMains) {
       style.sources['water_distribution_mains'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/water_distribution_mains` };
@@ -4504,6 +4628,8 @@ export default function AppMap() {
     layers.streetLighting,
     layers.streetLightingConduits,
     layers.beachWaterQuality,
+    layers.fireHydrants,
+    layers.zoningDistricts,
     layers.trafficCrosswalks,
     layers.litterContainers,
     contourInterval,
@@ -4635,7 +4761,10 @@ export default function AppMap() {
           'road-construction-layer',
           'street-lighting-cluster-layer',
           'street-lighting-layer',
-          'street-lighting-symbol-layer'
+          'street-lighting-symbol-layer',
+          'fire-hydrants-layer',
+          'fire-hydrants-symbol-layer',
+          'zoning-districts-fill'
         ]}
         onClick={(e) => {
           if (contextMenu) {
@@ -4915,8 +5044,41 @@ export default function AppMap() {
             setSelectedFacility({
               id: props.id || `conduit_${clickLon}_${clickLat}`,
               facility_type: 'street_lighting_conduits',
-              name: `路燈地下配電管線 (${wireset})`,
+              name: `路燈電網 (${wireset})`,
               local_area: props.local_area || '溫哥華市政路燈配電管網',
+              lon: clickLon,
+              lat: clickLat,
+              properties: props
+            });
+          } else if (layerId.startsWith('fire-hydrants')) {
+            setSelectedStop(null);
+            const props = feature.properties || {};
+            const hydCoords = feature.geometry?.type === 'Point' 
+              ? (feature.geometry.coordinates as [number, number]) 
+              : [e.lngLat?.lng ?? -123.1207, e.lngLat?.lat ?? 49.2827];
+            const street = props.street || '';
+            const hydId = props.id || props.oldhydnum || '';
+            setSelectedFacility({
+              id: props.id || `hydrant_${hydCoords[0]}_${hydCoords[1]}`,
+              facility_type: 'fire_hydrants',
+              name: street ? `市政消防栓 (${street})` : (hydId ? `市政消防栓 #${hydId}` : '市政消防栓'),
+              local_area: props.geo_local_area ? `${props.geo_local_area} · 溫哥華消防局` : '溫哥華市政消防設施 (每1星期更新)',
+              lon: hydCoords[0],
+              lat: hydCoords[1],
+              properties: props
+            });
+          } else if (layerId.startsWith('zoning-districts')) {
+            setSelectedStop(null);
+            const props = feature.properties || {};
+            const clickLon = e.lngLat?.lng ?? -123.1207;
+            const clickLat = e.lngLat?.lat ?? 49.2827;
+            const dist = props.zoning_district || '';
+            const cat = props.zoning_category || '';
+            setSelectedFacility({
+              id: props.object_id ? `zoning_${props.object_id}` : `zoning_${clickLon}_${clickLat}`,
+              facility_type: 'zoning_districts',
+              name: dist ? `土地規劃分區 - ${dist}` : '土地規劃分區',
+              local_area: props.zoning_classification ? `${props.zoning_classification} (${cat})` : '溫哥華土地規劃分區 (每3個月更新)',
               lon: clickLon,
               lat: clickLat,
               properties: props
@@ -6524,14 +6686,14 @@ export default function AppMap() {
             maxWidth={
               selectedFacility.facility_type === 'traffic_conditions' ? '460px' :
               selectedFacility.facility_type === 'traffic_cameras' ? '400px' : 
-              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'beach_water_quality') ? '360px' : 
+              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'beach_water_quality' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'zoning_districts') ? '360px' : 
               '320px'
             }
           >
             <div className={`p-3.5 ${
               selectedFacility.facility_type === 'traffic_conditions' ? 'w-[430px]' :
               selectedFacility.facility_type === 'traffic_cameras' ? 'w-[360px]' : 
-              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'beach_water_quality') ? 'w-[340px]' : 
+              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'beach_water_quality' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'zoning_districts') ? 'w-[340px]' : 
               'w-[290px]'
             } max-w-[90vw] text-gray-800`}>
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
@@ -6542,6 +6704,8 @@ export default function AppMap() {
                     selectedFacility.facility_type === 'road_construction' ? 'bg-amber-500' :
                     (selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits') ? 'bg-amber-400' :
                     selectedFacility.facility_type === 'beach_water_quality' ? 'bg-teal-500' :
+                    selectedFacility.facility_type === 'fire_hydrants' ? 'bg-red-600' :
+                    selectedFacility.facility_type === 'zoning_districts' ? 'bg-indigo-600' :
                     selectedFacility.facility_type === 'van_wifi' ? 'bg-cyan-500' :
                     selectedFacility.facility_type === 'tide_stations' ? 'bg-blue-600' :
                     selectedFacility.facility_type === 'water_distribution_mains' ? 'bg-sky-500' :
@@ -9674,6 +9838,146 @@ export default function AppMap() {
                       <span>🌐 開啟衛生局官方水質公告</span>
                     </a>
                   )}
+                </div>
+              )}
+
+              {/* Fire Hydrants (消防栓) Details */}
+              {selectedFacility.facility_type === 'fire_hydrants' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-red-500/10 p-2.5 rounded-lg border border-red-500/30 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-red-950 text-xs flex items-center gap-1.5">
+                        <span className="text-base text-red-600 font-bold">🧯</span>
+                        <span className="truncate max-w-[190px]">{selectedFacility.name}</span>
+                      </span>
+                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded text-white shrink-0 ${
+                        selectedFacility.properties.status === 'IN_SERVICE' ? 'bg-emerald-600' : 'bg-amber-600'
+                      }`}>
+                        {selectedFacility.properties.status === 'IN_SERVICE' ? '正常供水' : (selectedFacility.properties.status || '消防栓')}
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-red-900 font-medium">
+                      🚒 溫哥華市政公用消防栓 (City of Vancouver Water Hydrants)
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                    {selectedFacility.properties.street && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>安裝位置 (Street)</span>
+                        <span className="font-medium text-gray-900 text-right max-w-[200px] truncate">
+                          {selectedFacility.properties.street}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.covwaterhydrantunittype && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>機型規格 (Unit Type)</span>
+                        <span className="font-mono font-bold text-gray-900">
+                          {selectedFacility.properties.covwaterhydrantunittype}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.color && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>外觀顏色 (Color)</span>
+                        <span className="font-medium text-gray-800">
+                          {selectedFacility.properties.color}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.code && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>製造商 (Manufacturer)</span>
+                        <span className="font-medium text-gray-800">
+                          {selectedFacility.properties.code}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.subsystem && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>配水子系統 (Subsystem)</span>
+                        <span className="font-mono text-gray-700">
+                          {selectedFacility.properties.subsystem}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.geo_local_area && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>所屬行政分區</span>
+                        <span className="font-medium text-gray-800">
+                          {selectedFacility.properties.geo_local_area}
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <span>資料更新頻率</span>
+                      <span className="font-medium text-red-600">
+                        每 1 星期更新 1 次 (Weekly)
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Zoning Districts (土地規劃分區) Details */}
+              {selectedFacility.facility_type === 'zoning_districts' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-indigo-500/10 p-2.5 rounded-lg border border-indigo-500/30 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-indigo-950 text-xs flex items-center gap-1.5">
+                        <span className="text-base text-indigo-600 font-bold">📐</span>
+                        <span className="truncate max-w-[190px]">{selectedFacility.name}</span>
+                      </span>
+                      {selectedFacility.properties.zoning_category && (
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-indigo-600 text-white shrink-0">
+                          {selectedFacility.properties.zoning_category}
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-[11px] text-indigo-900 font-medium">
+                      🏛️ 溫哥華都市土地規劃與使用分區 (Zoning Districts & Labels)
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                    {selectedFacility.properties.zoning_district && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>分區代碼 (District)</span>
+                        <span className="font-mono font-bold text-gray-900">
+                          {selectedFacility.properties.zoning_district}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.zoning_classification && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>土地規劃類別</span>
+                        <span className="font-medium text-gray-900 text-right max-w-[200px]">
+                          {selectedFacility.properties.zoning_classification}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.cd_1_number && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>CD-1 專屬編號</span>
+                        <span className="font-mono text-gray-700">
+                          #{selectedFacility.properties.cd_1_number}
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <span>主管機關</span>
+                      <span className="font-medium text-gray-800">
+                        City of Vancouver Planning Department
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <span>資料更新頻率</span>
+                      <span className="font-medium text-indigo-600">
+                        每 3 個月更新 1 次 (Quarterly)
+                      </span>
+                    </div>
+                  </div>
                 </div>
               )}
 

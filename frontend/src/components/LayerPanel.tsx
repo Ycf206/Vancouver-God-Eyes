@@ -9,13 +9,25 @@ import {
   Droplets, Bath, Leaf, Landmark, GraduationCap, BookOpen, UtensilsCrossed, Bed, Heart,
   PlaneTakeoff, Calendar, Car, ShieldAlert, LifeBuoy, HeartPulse, Mountain,
   Compass, MapPin, Fuel, Train, Anchor, ArrowRight, Snowflake, Fingerprint, Waves,
-  Gauge, Mail, Radio, Trash2, Soup, Recycle, RotateCcw, Wifi, Activity, Ban, Cone, Lightbulb
+  Gauge, Mail, Radio, Trash2, Soup, Recycle, RotateCcw, Wifi, Activity, Ban, Cone, Lightbulb, LandPlot
 } from 'lucide-react';
 
 // Helper component for Tesla Icon
 const TeslaIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
     <path d="M12 4.2c2.2 0 4.4.4 6.2 1.2.3.1.6 0 .7-.2l.7-1.1c.1-.2 0-.5-.2-.6C17.1 2.5 14.6 2 12 2S6.9 2.5 4.6 3.5c-.2.1-.3.4-.2.6l.7 1.1c.1.2.4.3.7.2 1.8-.8 4-1.2 6.2-1.2zm0 3.3c-1.7 0-3.3.3-4.8.9-.3.1-.4.4-.3.7l.6 1.8c.1.2.3.4.5.3 1.3-.4 2.6-.6 4-.6s2.7.2 4 .6c.2.1.4-.1.5-.3l.6-1.8c.1-.3 0-.6-.3-.7-1.5-.6-3.1-.9-4.8-.9zm1.3 4.2h-2.6v9.8c0 .3.2.5.5.5h1.6c.3 0 .5-.2.5-.5V11.7z"/>
+  </svg>
+);
+
+// Helper component for Fire Hydrant Icon
+const HydrantIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M5 20h14" />
+    <path d="M19 12h2a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1h-2" />
+    <path d="M5 12H3a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1h2" />
+    <path d="M9 4a3 3 0 0 1 6 0v2H9V4z" />
+    <path d="M7 6h10v14H7V6z" />
+    <circle cx="12" cy="13" r="2" />
   </svg>
 );
 
@@ -324,11 +336,19 @@ export default function LayerPanel() {
             <span className="text-[9px] text-rose-400/70 font-mono">GOVERNMENT</span>
           </div>
           <div className="grid grid-cols-2 gap-1">
-            <LayerButton layerKey="fireHalls" label="消防" icon={Flame} colorClass="text-rose-400" activeBg="bg-[#2a171a]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.15)]" />
-            <LayerButton layerKey="hospitals" label="醫療" icon={Hospital} colorClass="text-emerald-400" activeBg="bg-[#13271d]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
+            {/* Row 1: 警察 | 罪案地區 */}
             <LayerButton layerKey="police" label="警察" icon={ShieldAlert} colorClass="text-blue-400" activeBg="bg-[#142338]" activeBorder="border-blue-500/50" activeShadow="shadow-[0_0_6px_rgba(59,130,246,0.15)]" />
             <LayerButton layerKey="crimeAreas" label="罪案地區" icon={Fingerprint} colorClass="text-rose-400" activeBg="bg-[#2c1619]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.2)]" />
+
+            {/* Row 2: 消防 | 消防栓 */}
+            <LayerButton layerKey="fireHalls" label="消防" icon={Flame} colorClass="text-rose-400" activeBg="bg-[#2a171a]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.15)]" />
+            <LayerButton layerKey="fireHydrants" label="消防栓" icon={HydrantIcon} title="市政消防栓 (每1星期更新)" colorClass="text-red-400" activeBg="bg-[#2a171a]" activeBorder="border-red-500/50" activeShadow="shadow-[0_0_6px_rgba(239,68,68,0.15)]" />
+
+            {/* Row 3: 醫療 | 災害支援中心 */}
+            <LayerButton layerKey="hospitals" label="醫療" icon={Hospital} colorClass="text-emerald-400" activeBg="bg-[#13271d]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
             <LayerButton layerKey="disasterHubs" label="災害支援中心" icon={LifeBuoy} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
+
+            {/* Row 4: VanWiFi */}
             <LayerButton layerKey="vanWifi" label="VanWiFi" icon={Wifi} colorClass="text-cyan-400" activeBg="bg-[#102632]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.15)]" />
           </div>
         </div>
@@ -348,7 +368,7 @@ export default function LayerPanel() {
           <div className="grid grid-cols-2 gap-1">
             <LayerButton layerKey="waterDistributionMains" label="自來水管道" icon={Droplets} colorClass="text-sky-400" activeBg="bg-[#102436]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(14,165,233,0.15)]" />
             <LayerButton layerKey="sewerMains" label="污水管道" icon={Waves} colorClass="text-teal-400" activeBg="bg-[#102826]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
-            <LayerButton layerKey="streetLightingConduits" label="配電管線" icon={Zap} title="路燈配電管線 (每3個月更新)" colorClass="text-amber-300" activeBg="bg-[#2a2414]" activeBorder="border-amber-400/50" activeShadow="shadow-[0_0_6px_rgba(251,191,36,0.15)]" />
+            <LayerButton layerKey="streetLightingConduits" label="路燈電網" icon={Zap} title="路燈電網 (每3個月更新)" colorClass="text-amber-300" activeBg="bg-[#2a2414]" activeBorder="border-amber-400/50" activeShadow="shadow-[0_0_6px_rgba(251,191,36,0.15)]" />
             <LayerButton layerKey="streetLighting" label="路燈" icon={Lightbulb} title="路燈燈柱 (每3個月更新)" colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-400/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
           </div>
         </div>
@@ -366,10 +386,17 @@ export default function LayerPanel() {
             <span className="text-[9px] text-teal-500/70 font-mono">GEOGRAPHY</span>
           </div>
 
-          {/* 區域邊界、郵遞編號、潮汐水位與海灘水質按鈕 (等高線上方) */}
+          {/* 區域邊界、郵遞編號、土地規劃、潮汐水位與海灘水質按鈕 (等高線上方) */}
           <div className="grid grid-cols-2 gap-1">
+            {/* Row 1: 區域邊界 | 郵遞編號 */}
             <LayerButton layerKey="localAreaBoundary" label="區域邊界" icon={MapPin} colorClass="text-teal-400" activeBg="bg-[#122826]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
             <LayerButton layerKey="postalCodeFSA" label="郵遞編號" icon={Mail} colorClass="text-indigo-400" activeBg="bg-[#181a33]" activeBorder="border-indigo-500/50" activeShadow="shadow-[0_0_6px_rgba(99,102,241,0.15)]" />
+
+            {/* Row 2: 土地規劃 (區域邊界下方) */}
+            <LayerButton layerKey="zoningDistricts" label="土地規劃" icon={LandPlot} title="土地規劃分區 (每3個月更新)" colorClass="text-indigo-400" activeBg="bg-[#181a33]" activeBorder="border-indigo-500/50" activeShadow="shadow-[0_0_6px_rgba(99,102,241,0.15)]" />
+            <div></div>
+
+            {/* Row 3: 潮汐水位 | 海灘水質 (沙灘水質跟隨潮汐水位下移一行) */}
             <LayerButton layerKey="tideStations" label="潮汐水位" icon={Waves} colorClass="text-cyan-400" activeBg="bg-[#102730]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.15)]" />
             <LayerButton layerKey="beachWaterQuality" label="海灘水質" icon={Droplets} title="大溫海灘水質 (每個月更新)" colorClass="text-teal-300" activeBg="bg-[#0e2a2a]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
           </div>

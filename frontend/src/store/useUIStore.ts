@@ -90,6 +90,8 @@ export interface UIState {
     streetLighting: boolean;
     streetLightingConduits: boolean;
     beachWaterQuality: boolean;
+    fireHydrants: boolean;
+    zoningDistricts: boolean;
   };
   contourInterval: 'off' | '1m' | '2m' | '10m';
   setContourInterval: (interval: 'off' | '1m' | '2m' | '10m') => void;
@@ -259,6 +261,8 @@ export const useUIStore = create<UIState>()(
         streetLighting: false,
         streetLightingConduits: false,
         beachWaterQuality: false,
+        fireHydrants: false,
+        zoningDistricts: false,
       },
       timeFormat: '24h',
       setTimeFormat: (format) => set({ timeFormat: format }),

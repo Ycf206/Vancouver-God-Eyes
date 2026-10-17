@@ -471,7 +471,7 @@ function ExploreContent() {
   const [alertsSubTab, setAlertsSubTab] = useState<'all' | 'skytrain' | 'bus' | 'seabus' | 'wce'>('all');
   const [alertsSearchQuery, setAlertsSearchQuery] = useState<string>('');
   const [alertsEffectFilter, setAlertsEffectFilter] = useState<string>('all');
-  const [alertsSortBy, setAlertsSortBy] = useState<'severity' | 'newest'>('severity');
+  const [alertsSortBy, setAlertsSortBy] = useState<'severity' | 'newest' | 'oldest'>('severity');
 
   // 氣溫單位轉換輔助函式
   const formatTemp = (celsius?: number | string | null) => {
@@ -599,30 +599,55 @@ function ExploreContent() {
   const [beachSortBy, setBeachSortBy] = useState<'best' | 'worst' | 'name'>('best');
   const [beachLastUpdated, setBeachLastUpdated] = useState<string>('');
 
-  const fetchBeachWater = (force: boolean = false) => {
+  const fetchBeachWater = React.useCallback(async (force: boolean = false) => {
     setLoadingBeach(true);
     const apiUrl = getApiUrl();
-    fetch(`${apiUrl}/api/beach-water/live${force ? '?force=true' : ''}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data && Array.isArray(data.beaches)) {
+    try {
+      const res = await fetch(`${apiUrl}/api/beach-water/live${force ? '?force=true' : ''}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && Array.isArray(data.beaches) && data.beaches.length > 0) {
           setBeachList(data.beaches);
           if (data.last_updated) {
             setBeachLastUpdated(data.last_updated);
           }
+          setLoadingBeach(false);
+          return;
         }
-        setLoadingBeach(false);
-      })
-      .catch((err) => {
-        console.warn('Error fetching beach water:', err);
-        setLoadingBeach(false);
-      });
-  };
+      }
+    } catch (err) {
+      console.warn('Backend beach water API error, checking static cache:', err);
+    }
+
+    try {
+      const staticRes = await fetch('/vancouver_beach_water_cache.json');
+      if (staticRes.ok) {
+        const staticData = await staticRes.json();
+        if (staticData && Array.isArray(staticData.beaches) && staticData.beaches.length > 0) {
+          setBeachList(staticData.beaches);
+          if (staticData.last_updated) {
+            setBeachLastUpdated(staticData.last_updated);
+          }
+        }
+      }
+    } catch (staticErr) {
+      console.error('Failed to load static beach water cache:', staticErr);
+    } finally {
+      setLoadingBeach(false);
+    }
+  }, []);
+
+  // Pre-load beach water data on mount so filters and list work immediately without refresh
+  useEffect(() => {
+    if (beachList.length === 0) {
+      fetchBeachWater(false);
+    }
+  }, [fetchBeachWater, beachList.length]);
 
   useEffect(() => {
     if (!isExploreOpen || activeTab !== 'beach') return;
     fetchBeachWater(false);
-  }, [isExploreOpen, activeTab]);
+  }, [isExploreOpen, activeTab, fetchBeachWater]);
 
   const handleToggleBeachLayer = () => {
     const isCurrentlyOn = layers?.beachWaterQuality;
@@ -1517,6 +1542,13 @@ function ExploreContent() {
     }
   }, [setStationAlertsMap]);
 
+  // Pre-load transit alerts on mount if not loaded
+  useEffect(() => {
+    if (!transitAlertsData) {
+      fetchTranslinkAlerts(false);
+    }
+  }, [fetchTranslinkAlerts, transitAlertsData]);
+
   useEffect(() => {
     if (!isExploreOpen || activeTab !== 'alerts') return;
     fetchTranslinkAlerts();
@@ -1567,48 +1599,108 @@ function ExploreContent() {
     }
 
     const all = transitAlertsData.alerts;
-    const banners = all.filter((a) => a.is_banner);
+    let banners = all.filter((a) => a.is_banner);
     let regular = all.filter((a) => !a.is_banner);
 
+    // 1. 運具子分頁篩選 (同時套用於一般卡片與置頂警報)
     if (alertsSubTab !== 'all') {
       regular = regular.filter((a) => a.mode === alertsSubTab);
+      banners = banners.filter((a) => !a.mode || a.mode === alertsSubTab || a.mode === 'all');
     }
 
+    // 2. 影響性質篩選 (包含 TransLink 實際 API 回傳之各項 effect 與文字標籤)
     if (alertsEffectFilter !== 'all') {
-      regular = regular.filter((a) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const effectMatch = (a: any) => {
         const eff = (a.effect || '').toUpperCase();
-        if (alertsEffectFilter === 'PLATFORM_CHANGE') return eff === 'PLATFORM_CHANGE';
-        if (alertsEffectFilter === 'DETOUR') return eff === 'DETOUR';
-        if (alertsEffectFilter === 'DELAYS') return eff === 'DELAYS';
-        if (alertsEffectFilter === 'CANCELLED_SERVICE') return eff.includes('CANCEL') || eff.includes('NO_SERVICE');
-        if (alertsEffectFilter === 'ELEVATOR') return eff.includes('ELEVATOR') || (a.alertText && a.alertText.toLowerCase().includes('elevator'));
+        const header = (a.header || '').toLowerCase();
+        const text = (a.alertText || '').toLowerCase();
+        const desc = (a.description || '').toLowerCase();
+        const combined = `${eff} ${header} ${text} ${desc}`;
+
+        if (alertsEffectFilter === 'PLATFORM_CHANGE') {
+          return eff.includes('PLATFORM') || combined.includes('platform');
+        }
+        if (alertsEffectFilter === 'DETOUR') {
+          return (
+            eff.includes('DETOUR') || 
+            eff.includes('STOP_MOVE') || 
+            eff.includes('STOP_CLOSURE') || 
+            combined.includes('detour') || 
+            combined.includes('stop move') || 
+            combined.includes('stop closure')
+          );
+        }
+        if (alertsEffectFilter === 'DELAYS') {
+          return eff.includes('DELAY') || combined.includes('delay');
+        }
+        if (alertsEffectFilter === 'CANCELLED_SERVICE') {
+          return (
+            eff.includes('CANCEL') || 
+            eff.includes('NO_SERVICE') || 
+            eff.includes('SERVICE_CHANGE') || 
+            eff.includes('SCHEDULE_CHANGE') || 
+            combined.includes('cancel') || 
+            combined.includes('no service')
+          );
+        }
+        if (alertsEffectFilter === 'ELEVATOR') {
+          return (
+            eff.includes('ELEVATOR') || 
+            eff.includes('ESCALATOR') || 
+            eff.includes('STATION_ISSUE') || 
+            combined.includes('elevator') || 
+            combined.includes('escalator')
+          );
+        }
         return true;
-      });
+      };
+      regular = regular.filter(effectMatch);
+      banners = banners.filter(effectMatch);
     }
 
+    // 3. 關鍵字搜尋
     if (alertsSearchQuery.trim()) {
       const q = alertsSearchQuery.trim().toLowerCase();
-      regular = regular.filter((a) =>
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const searchMatch = (a: any) =>
         (a.header && a.header.toLowerCase().includes(q)) ||
         (a.alertText && a.alertText.toLowerCase().includes(q)) ||
         (a.description && a.description.toLowerCase().includes(q)) ||
         (a.routeLongName && a.routeLongName.toLowerCase().includes(q)) ||
         (a.routeId && a.routeId.toLowerCase().includes(q)) ||
-        (a.impacted_stations && a.impacted_stations.some((st) => st.toLowerCase().includes(q)))
-      );
+        (a.impacted_stations && a.impacted_stations.some((st: string) => st.toLowerCase().includes(q)));
+      regular = regular.filter(searchMatch);
+      banners = banners.filter(searchMatch);
     }
+
+    // 4. 排序邏輯 (嚴重性優先 / 日期新至舊 / 日期舊至新)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const calcSeverityScore = (a: any) => {
+      let score = 0;
+      if (a.is_banner) score += 1000;
+      if (a.critical) score += 500;
+      if (a.closed) score += 300;
+      const eff = (a.effect || '').toUpperCase();
+      if (eff.includes('CANCEL') || eff.includes('NO_SERVICE')) score += 200;
+      else if (eff.includes('DELAY')) score += 150;
+      else if (eff.includes('DETOUR') || eff.includes('STOP_CLOSURE')) score += 100;
+      else if (eff.includes('PLATFORM')) score += 80;
+      else if (eff.includes('ELEVATOR') || eff.includes('ESCALATOR')) score += 50;
+      if (a.advisory) score += 20;
+      return score;
+    };
 
     regular = [...regular].sort((a, b) => {
       if (alertsSortBy === 'severity') {
-        if (a.critical !== b.critical) {
-          return a.critical ? -1 : 1;
-        }
-        if (a.advisory !== b.advisory) {
-          return a.advisory ? -1 : 1;
-        }
+        const diff = calcSeverityScore(b) - calcSeverityScore(a);
+        if (diff !== 0) return diff;
       }
       const timeA = new Date(a.lastModified || a.startTime || 0).getTime();
       const timeB = new Date(b.lastModified || b.startTime || 0).getTime();
+      if (alertsSortBy === 'oldest') {
+        return timeA - timeB;
+      }
       return timeB - timeA;
     });
 
@@ -3129,82 +3221,130 @@ function ExploreContent() {
             </button>
           </div>
 
-          {/* 水質標準評級參考與統計列 */}
+          {/* 水質標準評級參考與 3 色快速篩選按鈕 (點擊切換篩選，再次點擊恢復全部) */}
           <div className="grid grid-cols-3 gap-1.5 shrink-0 text-center">
-            <div className="bg-[#10131a] border border-emerald-500/30 rounded-lg p-1.5 flex flex-col items-center">
-              <span className="text-[9.5px] text-emerald-400 font-medium">適合游泳</span>
-              <span className="text-xs font-bold text-white font-mono">{beachStats.safe} 座</span>
-              <span className="text-[8.5px] text-gray-500 font-mono">≤200 MPN</span>
-            </div>
-            <div className="bg-[#10131a] border border-amber-500/30 rounded-lg p-1.5 flex flex-col items-center">
-              <span className="text-[9.5px] text-amber-400 font-medium">需留意</span>
-              <span className="text-xs font-bold text-white font-mono">{beachStats.advisory} 座</span>
-              <span className="text-[8.5px] text-gray-500 font-mono">201-400</span>
-            </div>
-            <div className="bg-[#10131a] border border-rose-500/30 rounded-lg p-1.5 flex flex-col items-center">
-              <span className="text-[9.5px] text-rose-400 font-medium">超標警告</span>
-              <span className="text-xs font-bold text-white font-mono">{beachStats.warning} 座</span>
-              <span className="text-[8.5px] text-gray-500 font-mono">&gt;400 MPN</span>
-            </div>
-          </div>
-
-          {/* 搜尋列 */}
-          <div className="relative shrink-0">
-            <Search className="w-3.5 h-3.5 text-gray-500 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-            <input
-              type="text"
-              value={beachSearchQuery}
-              onChange={(e) => setBeachSearchQuery(e.target.value)}
-              placeholder="搜尋海灘名稱、所屬地區或市鎮..."
-              className="w-full bg-[#10131a] text-xs text-white placeholder-gray-500 pl-8 pr-7 py-1.5 rounded-lg border border-[#232838] focus:outline-none focus:border-teal-500/50 transition-colors"
-            />
-            {beachSearchQuery && (
-              <button
-                onClick={() => setBeachSearchQuery('')}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white p-0.5"
-                title="清除搜尋"
-              >
-                <X className="w-3 h-3" />
-              </button>
-            )}
-          </div>
-
-          {/* 篩選與排序 */}
-          <div className="flex items-center justify-between gap-1.5 shrink-0 text-xs">
-            {/* 狀態篩選 */}
-            <select
-              value={beachStatusFilter}
-              onChange={(e) => setBeachStatusFilter(e.target.value as any)}
-              className="bg-[#151922] text-gray-300 text-[11px] rounded-md px-2 py-1 border border-[#232838] focus:outline-none focus:border-teal-500/50 flex-1 min-w-0 cursor-pointer"
+            <button
+              onClick={() => setBeachStatusFilter((prev) => (prev === 'safe' ? 'all' : 'safe'))}
+              className={`rounded-lg p-1.5 flex flex-col items-center transition-all cursor-pointer ${
+                beachStatusFilter === 'safe'
+                  ? 'bg-emerald-950/90 border-2 border-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.35)] ring-1 ring-emerald-400/50'
+                  : 'bg-[#10131a] border border-emerald-500/30 hover:border-emerald-500/60 hover:bg-[#141d19]'
+              }`}
+              title="點擊快速篩選適合游泳海灘 (再次點擊恢復全部)"
             >
-              <option value="all">全部水質狀態</option>
-              <option value="safe">適合游泳 (良好)</option>
-              <option value="advisory">需留意 (邊緣)</option>
-              <option value="warning">超標警告 (不建議下水)</option>
-            </select>
+              <div className="flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                <span className="text-[10px] text-emerald-400 font-bold">適合游泳</span>
+              </div>
+              <span className="text-xs font-bold text-white font-mono mt-0.5">{beachStats.safe} 座</span>
+              <span className="text-[8.5px] text-gray-400 font-mono">≤200 MPN</span>
+            </button>
 
-            {/* 衛生局篩選 */}
+            <button
+              onClick={() => setBeachStatusFilter((prev) => (prev === 'advisory' ? 'all' : 'advisory'))}
+              className={`rounded-lg p-1.5 flex flex-col items-center transition-all cursor-pointer ${
+                beachStatusFilter === 'advisory'
+                  ? 'bg-amber-950/90 border-2 border-amber-400 shadow-[0_0_10px_rgba(245,158,11,0.35)] ring-1 ring-amber-400/50'
+                  : 'bg-[#10131a] border border-amber-500/30 hover:border-amber-500/60 hover:bg-[#1f1a14]'
+              }`}
+              title="點擊快速篩選需留意海灘 (再次點擊恢復全部)"
+            >
+              <div className="flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                <span className="text-[10px] text-amber-400 font-bold">需留意</span>
+              </div>
+              <span className="text-xs font-bold text-white font-mono mt-0.5">{beachStats.advisory} 座</span>
+              <span className="text-[8.5px] text-gray-400 font-mono">201-400</span>
+            </button>
+
+            <button
+              onClick={() => setBeachStatusFilter((prev) => (prev === 'warning' ? 'all' : 'warning'))}
+              className={`rounded-lg p-1.5 flex flex-col items-center transition-all cursor-pointer ${
+                beachStatusFilter === 'warning'
+                  ? 'bg-rose-950/90 border-2 border-rose-400 shadow-[0_0_10px_rgba(244,63,94,0.35)] ring-1 ring-rose-400/50'
+                  : 'bg-[#10131a] border border-rose-500/30 hover:border-rose-500/60 hover:bg-[#201417]'
+              }`}
+              title="點擊快速篩選超標警告海灘 (再次點擊恢復全部)"
+            >
+              <div className="flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
+                <span className="text-[10px] text-rose-400 font-bold">超標警告</span>
+              </div>
+              <span className="text-xs font-bold text-white font-mono mt-0.5">{beachStats.warning} 座</span>
+              <span className="text-[8.5px] text-gray-400 font-mono">&gt;400 MPN</span>
+            </button>
+          </div>
+
+          {/* 搜尋列 + 衛生局篩選 + 排序 (整合於同一橫行) */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            {/* 搜尋海灘輸入格 */}
+            <div className="relative flex-1 min-w-0">
+              <Search className="w-3.5 h-3.5 text-gray-500 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <input
+                type="text"
+                value={beachSearchQuery}
+                onChange={(e) => setBeachSearchQuery(e.target.value)}
+                placeholder="搜尋海灘名稱或市鎮..."
+                className="w-full bg-[#10131a] text-xs text-white placeholder-gray-500 pl-8 pr-7 py-1.5 rounded-lg border border-[#232838] focus:outline-none focus:border-teal-500/50 transition-colors"
+              />
+              {beachSearchQuery && (
+                <button
+                  onClick={() => setBeachSearchQuery('')}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white p-0.5"
+                  title="清除搜尋"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              )}
+            </div>
+
+            {/* 衛生局篩選 (搜尋格右方) */}
             <select
               value={beachAuthorityFilter}
               onChange={(e) => setBeachAuthorityFilter(e.target.value as any)}
-              className="bg-[#151922] text-gray-300 text-[11px] rounded-md px-2 py-1 border border-[#232838] focus:outline-none focus:border-teal-500/50 flex-1 min-w-0 cursor-pointer"
+              className="bg-[#151922] text-gray-300 text-[11px] rounded-lg px-2 py-1.5 border border-[#232838] focus:outline-none focus:border-teal-500/50 shrink-0 cursor-pointer w-[86px]"
+              title="篩選主管衛生局"
             >
-              <option value="all">全部衛生局</option>
-              <option value="vch">溫哥華沿海衛生局</option>
+              <option value="all">全衛生局</option>
+              <option value="vch">沿海衛生局</option>
               <option value="fraser">菲沙衛生局</option>
             </select>
 
-            {/* 排序 */}
+            {/* 排序 (搜尋格右方) */}
             <select
               value={beachSortBy}
               onChange={(e) => setBeachSortBy(e.target.value as any)}
-              className="bg-[#151922] text-gray-300 text-[11px] rounded-md px-2 py-1 border border-[#232838] focus:outline-none focus:border-teal-500/50 shrink-0 cursor-pointer"
+              className="bg-[#151922] text-gray-300 text-[11px] rounded-lg px-2 py-1.5 border border-[#232838] focus:outline-none focus:border-teal-500/50 shrink-0 cursor-pointer w-[76px]"
+              title="海灘水質排序"
             >
-              <option value="best">水質最優</option>
-              <option value="worst">數值最高</option>
-              <option value="name">名稱排序</option>
+              <option value="best">水質優</option>
+              <option value="worst">數值高</option>
+              <option value="name">名稱</option>
             </select>
           </div>
+
+          {/* 3 色按鈕目前篩選狀態提式列 */}
+          {beachStatusFilter !== 'all' && (
+            <div className="flex items-center justify-between px-2 py-1 bg-teal-950/40 border border-teal-500/30 rounded-md text-[10.5px] shrink-0">
+              <span className="text-teal-300 flex items-center gap-1">
+                <span>目前快速篩選：</span>
+                <strong className={
+                  beachStatusFilter === 'safe' ? 'text-emerald-400' :
+                  beachStatusFilter === 'advisory' ? 'text-amber-400' : 'text-rose-400'
+                }>
+                  {beachStatusFilter === 'safe' ? '適合游泳 (≤200 MPN)' :
+                   beachStatusFilter === 'advisory' ? '需留意 (201-400 MPN)' : '超標警告 (>400 MPN)'}
+                </strong>
+                <span className="text-gray-400">（{filteredAndSortedBeaches.length} 座）</span>
+              </span>
+              <button
+                onClick={() => setBeachStatusFilter('all')}
+                className="text-gray-400 hover:text-white underline text-[10px]"
+              >
+                重設顯示全部
+              </button>
+            </div>
+          )}
 
           {/* 海灘列表 (Beach Cards List) */}
           <div className="flex-1 overflow-y-auto space-y-2 pr-1 min-h-0 custom-scrollbar">
@@ -3329,7 +3469,7 @@ function ExploreContent() {
             <div className="flex items-center gap-1.5">
               <span className="text-xs font-bold text-white flex items-center gap-1.5">
                 <ShieldAlert className="w-4 h-4 text-rose-400" />
-                <span>TransLink 運輸警報</span>
+                <span>TransLink 交通警報</span>
               </span>
               <span className="text-[10px] text-rose-400 bg-rose-950/60 border border-rose-800/50 px-1.5 py-0.5 rounded font-mono font-bold">
                 {transitAlertsData?.total ?? 0} 則
@@ -3424,10 +3564,10 @@ function ExploreContent() {
               >
                 <option value="all">全部性質</option>
                 <option value="PLATFORM_CHANGE">月台更換</option>
-                <option value="DETOUR">路線改道</option>
+                <option value="DETOUR">路線改道 / 站點變更</option>
                 <option value="DELAYS">班次延誤</option>
                 <option value="CANCELLED_SERVICE">班次停駛 / 暫停服務</option>
-                <option value="ELEVATOR">電梯暫停</option>
+                <option value="ELEVATOR">電梯 / 電扶梯暫停</option>
               </select>
             </div>
 
@@ -3436,11 +3576,12 @@ function ExploreContent() {
               <span className="text-[11px] text-gray-400 shrink-0">排序:</span>
               <select
                 value={alertsSortBy}
-                onChange={(e) => setAlertsSortBy(e.target.value as 'severity' | 'newest')}
+                onChange={(e) => setAlertsSortBy(e.target.value as 'severity' | 'newest' | 'oldest')}
                 className="bg-[#151922] text-gray-300 text-[11px] rounded-md px-2 py-1 border border-[#232838] focus:outline-none focus:border-rose-500/50 cursor-pointer"
               >
                 <option value="severity">嚴重性優先</option>
-                <option value="newest">日期新至舊</option>
+                <option value="newest">發布新至舊</option>
+                <option value="oldest">發布舊至新</option>
               </select>
             </div>
           </div>
@@ -3455,7 +3596,7 @@ function ExploreContent() {
             ) : filteredAndSortedAlerts.banners.length === 0 && filteredAndSortedAlerts.regular.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 text-gray-400 bg-[#10131a] rounded-xl border border-[#232838] p-4 text-center">
                 <ShieldAlert className="w-8 h-8 text-emerald-400/80 mb-2" />
-                <span className="text-sm font-semibold text-gray-200">目前無符合條件的運輸警報</span>
+                <span className="text-sm font-semibold text-gray-200">目前無符合條件的交通警報</span>
                 <span className="text-xs text-gray-500 mt-1">目前大溫運具運行正常，或請調整篩選與搜尋關鍵字</span>
               </div>
             ) : (
