@@ -483,25 +483,7 @@ function ExploreContent() {
   };
 
   const handleToggleRadar = () => {
-    const nextActive = !isRadarActive;
-    setIsRadarActive(nextActive);
-    if (nextActive) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap();
-      if (mapInstance) {
-        const currentZoom = mapInstance.getZoom();
-        if (currentZoom > 7.5) {
-          mapInstance.flyTo({
-            center: [-123.12, 49.25],
-            zoom: 7,
-            pitch: 0,
-            bearing: 0,
-            duration: 1200,
-            essential: true
-          });
-        }
-      }
-    }
+    setIsRadarActive(!isRadarActive);
   };
 
   const handleLocateTideStation = (st: TideStation) => {

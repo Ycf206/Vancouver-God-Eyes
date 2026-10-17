@@ -12,7 +12,8 @@ import { getSkytrainStationMapUrls } from '@/utils/skytrainMaps';
 import { 
   LocateFixed, Train, Compass, ZoomIn, X, Copy, Check, 
   Navigation, ExternalLink, Clock, Bike, Car, Info, 
-  ChevronDown, ChevronUp, SlidersHorizontal, Fuel, Zap, Wifi, Waves, Play, Pause, CloudRain
+  ChevronDown, ChevronUp, SlidersHorizontal, Fuel, Zap, Wifi, Waves, Play, Pause, CloudRain,
+  RotateCcw, MapPin, Crosshair
 } from 'lucide-react';
 
 // Fix Next.js App Router Web Worker crash
@@ -276,6 +277,14 @@ export default function AppMap() {
     targetZoom: number;
   } | null>(null);
   const prevLayersRef = useRef(layers);
+  // 地圖右鍵自訂選單狀態
+  const [contextMenu, setContextMenu] = useState<{
+    x: number;
+    y: number;
+    lat: number;
+    lon: number;
+  } | null>(null);
+  const [copiedCoordsToast, setCopiedCoordsToast] = useState(false);
 
   // 預載溫哥華市區 22 個 Local Area 邊界幾何，用於滑鼠即時社區判定
   useEffect(() => {
@@ -405,15 +414,36 @@ export default function AppMap() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleMapContextMenu = useCallback((e: any) => {
     if (e && e.lngLat) {
-      e.preventDefault();
-      setRadiusExploration({
-        active: true,
+      if (e.preventDefault) e.preventDefault();
+      if (e.originalEvent?.preventDefault) e.originalEvent.preventDefault();
+      const x = e.point?.x ?? e.originalEvent?.clientX ?? 0;
+      const y = e.point?.y ?? e.originalEvent?.clientY ?? 0;
+      setContextMenu({
+        x,
+        y,
         lat: e.lngLat.lat,
-        lon: e.lngLat.lng,
-        radiusM: 500
+        lon: e.lngLat.lng
       });
     }
-  }, [setRadiusExploration]);
+  }, []);
+
+  // 點擊地圖外部或按下 ESC 時自動關閉右鍵選單
+  useEffect(() => {
+    const handleGlobalClick = () => {
+      setContextMenu(null);
+    };
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setContextMenu(null);
+    };
+    if (contextMenu) {
+      window.addEventListener('click', handleGlobalClick);
+      window.addEventListener('keydown', handleKeyDown);
+      return () => {
+        window.removeEventListener('click', handleGlobalClick);
+        window.removeEventListener('keydown', handleKeyDown);
+      };
+    }
+  }, [contextMenu]);
 
   // Selected Flight Route GeoJSON LineString / MultiLineString (Great Circle Trajectory)
   const routeGeoJSON = useMemo(() => {
@@ -1417,23 +1447,48 @@ export default function AppMap() {
     }
   }, [zoomNotification?.show]);
 
-  // 當開啟即時降水雷達回波時，自動縮放至能完整顯示雷達雲團動態的地圖大小 (Zoom 7 全域視角)
+  // 當開啟即時降水雷達回波時，自動記錄當前縮放比並縮放至能完整顯示雷達雲團動態的地圖大小 (Zoom 7 全域視角)
+  // 當關閉即時降水雷達回波時，自動回復打開前的地圖縮放比例與中心視角
   const prevRadarActiveRef = useRef(isRadarActive);
+  const preRadarViewStateRef = useRef<{ center: [number, number]; zoom: number; pitch: number; bearing: number } | null>(null);
+
   useEffect(() => {
+    const map = mapRef.current?.getMap();
+    if (!map) return;
+
     if (isRadarActive && !prevRadarActiveRef.current) {
-      const map = mapRef.current?.getMap();
-      if (map) {
-        const currentZoom = map.getZoom();
-        if (currentZoom > 7.5) {
-          map.flyTo({
-            center: [-123.12, 49.25],
-            zoom: 7,
-            pitch: 0,
-            bearing: 0,
-            duration: 1200,
-            essential: true
-          });
-        }
+      const currentZoom = map.getZoom();
+      const currentCenter = map.getCenter();
+      // 記錄開啟前的地圖縮放比與中心視角
+      preRadarViewStateRef.current = {
+        center: [currentCenter.lng, currentCenter.lat],
+        zoom: currentZoom,
+        pitch: map.getPitch(),
+        bearing: map.getBearing()
+      };
+
+      if (currentZoom > 7.5) {
+        map.flyTo({
+          center: [-123.12, 49.25],
+          zoom: 7,
+          pitch: 0,
+          bearing: 0,
+          duration: 1200,
+          essential: true
+        });
+      }
+    } else if (!isRadarActive && prevRadarActiveRef.current) {
+      // 關閉雷達時：回復開啟前的位置與縮放比
+      if (preRadarViewStateRef.current) {
+        map.flyTo({
+          center: preRadarViewStateRef.current.center,
+          zoom: preRadarViewStateRef.current.zoom,
+          pitch: preRadarViewStateRef.current.pitch,
+          bearing: preRadarViewStateRef.current.bearing,
+          duration: 1000,
+          essential: true
+        });
+        preRadarViewStateRef.current = null;
       }
     }
     prevRadarActiveRef.current = isRadarActive;
@@ -3984,6 +4039,9 @@ export default function AppMap() {
           'tide-stations-symbol-layer'
         ]}
         onClick={(e) => {
+          if (contextMenu) {
+            setContextMenu(null);
+          }
           // 若剛剛點擊了車輛、列車或標記，阻止地圖畫布背景點擊事件清理所選內容
           if (Date.now() - lastInteractiveItemClickRef.current < 450) {
             return;
@@ -9645,6 +9703,125 @@ export default function AppMap() {
               </div>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* 自訂地圖右鍵選單 (Custom Map Context Menu) */}
+      {contextMenu && (
+        <div 
+          style={{ 
+            left: `${Math.min(contextMenu.x, (typeof window !== 'undefined' ? window.innerWidth : 1200) - 250)}px`, 
+            top: `${Math.min(contextMenu.y, (typeof window !== 'undefined' ? window.innerHeight : 800) - 260)}px` 
+          }}
+          onClick={(e) => e.stopPropagation()}
+          className="fixed z-50 w-56 bg-[#11141d]/95 backdrop-blur-md border border-[#2b354a] rounded-xl shadow-[0_12px_40px_rgba(0,0,0,0.6)] p-1.5 flex flex-col gap-1 text-xs select-none animate-in fade-in zoom-in-95 duration-150"
+        >
+          {/* Header with Coordinates and Neighbourhood */}
+          <div className="px-2.5 py-1.5 bg-[#181d2a] rounded-lg border border-[#242d40] flex flex-col gap-0.5">
+            <div className="text-[11px] font-bold text-cyan-400 flex items-center gap-1 truncate">
+              <MapPin className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+              <span className="truncate">{getNeighbourhood(contextMenu.lon, contextMenu.lat)}</span>
+            </div>
+            <div className="font-mono text-[10px] text-gray-400">
+              {contextMenu.lat.toFixed(5)}°N, {Math.abs(contextMenu.lon).toFixed(5)}°W
+            </div>
+          </div>
+
+          <div className="h-px bg-[#202738] my-0.5" />
+
+          {/* Action 1: 複製經緯度 */}
+          <button
+            onClick={() => {
+              const text = `${contextMenu.lat.toFixed(6)}, ${contextMenu.lon.toFixed(6)}`;
+              if (typeof navigator !== 'undefined' && navigator.clipboard) {
+                navigator.clipboard.writeText(text);
+              }
+              setCopiedCoordsToast(true);
+              setTimeout(() => setCopiedCoordsToast(false), 2200);
+              setContextMenu(null);
+            }}
+            className="w-full px-2.5 py-1.5 rounded-lg text-gray-200 hover:text-white hover:bg-cyan-500/15 flex items-center gap-2 transition-colors text-left"
+          >
+            <Copy className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+            <span className="font-medium">複製經緯度</span>
+          </button>
+
+          {/* Action 2: 探索周邊半徑 */}
+          <button
+            onClick={() => {
+              setRadiusExploration({
+                active: true,
+                lat: contextMenu.lat,
+                lon: contextMenu.lon,
+                radiusM: 500
+              });
+              setContextMenu(null);
+            }}
+            className="w-full px-2.5 py-1.5 rounded-lg text-gray-200 hover:text-white hover:bg-emerald-500/15 flex items-center gap-2 transition-colors text-left"
+          >
+            <Compass className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+            <span className="font-medium">探索此處周邊半徑</span>
+          </button>
+
+          {/* Action 3: 平移置中此處 */}
+          <button
+            onClick={() => {
+              mapRef.current?.flyTo({
+                center: [contextMenu.lon, contextMenu.lat],
+                duration: 600,
+                essential: true
+              });
+              setContextMenu(null);
+            }}
+            className="w-full px-2.5 py-1.5 rounded-lg text-gray-200 hover:text-white hover:bg-sky-500/15 flex items-center gap-2 transition-colors text-left"
+          >
+            <Crosshair className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+            <span className="font-medium">移至此處中心</span>
+          </button>
+
+          {/* Action 4: 回復預設縮放比 */}
+          <button
+            onClick={() => {
+              mapRef.current?.flyTo({
+                center: [-123.05, 49.25],
+                zoom: 11,
+                pitch: 0,
+                bearing: 0,
+                duration: 900,
+                essential: true
+              });
+              setContextMenu(null);
+            }}
+            className="w-full px-2.5 py-1.5 rounded-lg text-gray-200 hover:text-white hover:bg-amber-500/15 flex items-center gap-2 transition-colors text-left"
+          >
+            <RotateCcw className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+            <span className="font-medium">回復預設視角與縮放比</span>
+          </button>
+
+          {/* Action 5: 關閉周邊探索 (若當前開啟) */}
+          {radiusExploration?.active && (
+            <>
+              <div className="h-px bg-[#202738] my-0.5" />
+              <button
+                onClick={() => {
+                  setRadiusExploration(null);
+                  setContextMenu(null);
+                }}
+                className="w-full px-2.5 py-1.5 rounded-lg text-rose-300 hover:text-rose-100 hover:bg-rose-500/15 flex items-center gap-2 transition-colors text-left"
+              >
+                <X className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+                <span className="font-medium">關閉周邊探索</span>
+              </button>
+            </>
+          )}
+        </div>
+      )}
+
+      {/* 複製經緯度成功 Toast 提示 */}
+      {copiedCoordsToast && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-[#10141f]/95 border border-cyan-500/60 shadow-[0_8px_24px_rgba(6,182,212,0.3)] text-white px-4 py-2 rounded-full flex items-center gap-2 text-xs font-medium animate-in fade-in duration-200">
+          <Check className="w-4 h-4 text-emerald-400" />
+          <span>已複製經緯度座標至剪貼簿！</span>
         </div>
       )}
     </div>

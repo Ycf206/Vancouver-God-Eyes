@@ -66,6 +66,196 @@ const LAYER_METADATA: Record<string, { label: string; url: string; category: str
   tideStations: { label: '潮汐水位', url: '/api/tides/stations/geojson', category: '地理' }
 };
 
+// 匯出地圖圖例圖標與色彩對照表
+const LAYER_LEGEND_MAP: Record<string, { label: string; icon: string; color: string }> = {
+  skytrainRoutes: { label: '天車路線', icon: '🚇', color: '#0284c7' },
+  skytrainStops: { label: '天車站點', icon: '🚉', color: '#0ea5e9' },
+  busRoutes: { label: '公車路線', icon: '🚌', color: '#f59e0b' },
+  busStops: { label: '公車站點', icon: '🚏', color: '#fbbf24' },
+  seabusRoutes: { label: '海上巴士', icon: '⛴️', color: '#06b6d4' },
+  seabusStops: { label: '海巴碼頭', icon: '⚓', color: '#0891b2' },
+  bcferriesRoutes: { label: 'BC渡輪', icon: '🛳️', color: '#3b82f6' },
+  bcferriesTerminals: { label: '渡輪碼頭', icon: '⚓', color: '#2563eb' },
+  marineTerminals: { label: '貨運碼頭', icon: '⚓', color: '#0891b2' },
+  bikeways: { label: '單車徑', icon: '🚲', color: '#14b8a6' },
+  bikeRacks: { label: '單車架', icon: '🚲', color: '#2dd4bf' },
+  parkingMeters: { label: '停車錶', icon: '🅿️', color: '#6366f1' },
+  accessibleParking: { label: '無障礙車位', icon: '♿', color: '#38bdf8' },
+  motorcycleParking: { label: '摩托車位', icon: '🏍️', color: '#f59e0b' },
+  evCharging: { label: '充電站', icon: '⚡', color: '#10b981' },
+  tesla: { label: 'Tesla超充', icon: '⚡', color: '#ef4444' },
+  trafficCrosswalks: { label: '斑馬線', icon: '🚶', color: '#eab308' },
+  trafficSpeedLimits: { label: '速限指示', icon: '🛑', color: '#ef4444' },
+  oneWayStreets: { label: '單行道', icon: '⬆️', color: '#38bdf8' },
+  snowRemovalRoutes: { label: '鏟雪幹道', icon: '❄️', color: '#38bdf8' },
+  fuel: { label: '加油站', icon: '⛽', color: '#f59e0b' },
+  carSharing: { label: '共享汽車', icon: '🚗', color: '#3b82f6' },
+  sharedBikes: { label: '共享單車', icon: '🚲', color: '#10b981' },
+  escooter: { label: '滑板車', icon: '🛴', color: '#84cc16' },
+  trafficCameras: { label: '路況相機', icon: '📷', color: '#06b6d4' },
+  safetyCameras: { label: '測速相機', icon: '🚨', color: '#f43f5e' },
+  waterDistributionMains: { label: '自來水管', icon: '💧', color: '#0ea5e9' },
+  sewerMains: { label: '污水管', icon: '〰️', color: '#14b8a6' },
+  wirelessFacilities: { label: '無線基站', icon: '📡', color: '#a855f7' },
+  postalCodeFSA: { label: '郵遞區號', icon: '📮', color: '#6366f1' },
+  localAreaBoundary: { label: '區域邊界', icon: '🗺️', color: '#14b8a6' },
+  contours: { label: '等高線', icon: '⛰️', color: '#14b8a6' },
+  schools: { label: '學校', icon: '🏫', color: '#3b82f6' },
+  libraries: { label: '圖書館', icon: '📚', color: '#f59e0b' },
+  foodVendors: { label: '街頭攤販', icon: '🍔', color: '#fb923c' },
+  foodBanks: { label: '食物銀行', icon: '🥫', color: '#10b981' },
+  recycling: { label: '環保回收', icon: '♻️', color: '#14b8a6' },
+  homelessShelters: { label: '庇護所', icon: '🏠', color: '#f43f5e' },
+  litterContainers: { label: '垃圾箱', icon: '🗑️', color: '#d97706' },
+  aed: { label: 'AED去顫器', icon: '❤️', color: '#ef4444' },
+  communityCentres: { label: '社區中心', icon: '🏢', color: '#8b5cf6' },
+  parks: { label: '城市公園', icon: '🌳', color: '#10b981' },
+  parksFacilities: { label: '康樂設施', icon: '👟', color: '#14b8a6' },
+  communityGardens: { label: '社區花園', icon: '🌸', color: '#84cc16' },
+  drinkingFountains: { label: '飲水台', icon: '💧', color: '#38bdf8' },
+  publicWashrooms: { label: '公廁', icon: '🚻', color: '#06b6d4' },
+  fireHalls: { label: '消防局', icon: '🚒', color: '#f43f5e' },
+  police: { label: '警察局', icon: '🚓', color: '#3b82f6' },
+  disasterHubs: { label: '防災中心', icon: '🛟', color: '#f59e0b' },
+  vanWifi: { label: 'VanWiFi', icon: '📶', color: '#06b6d4' },
+  hospitals: { label: '急診醫院', icon: '🏥', color: '#10b981' },
+  crimeAreas: { label: '罪案熱區', icon: '⚠️', color: '#e11d48' },
+  tideStations: { label: '潮汐水位', icon: '🌊', color: '#06b6d4' }
+};
+
+// 統一繪製圖例與水印標註至畫布底部 (支援即時預覽與高畫質匯出)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const drawMapAnnotations = (
+  ctx: CanvasRenderingContext2D,
+  width: number,
+  height: number,
+  mapInstance: any,
+  includeLegend: boolean,
+  includeWatermark: boolean,
+  activeLayerKeys: string[]
+) => {
+  // 1. 水印與中心座標條 (Watermark)
+  let watermarkHeight = 0;
+  if (includeWatermark) {
+    watermarkHeight = Math.max(34, Math.round(height * 0.048));
+    const yPos = height - watermarkHeight;
+
+    ctx.fillStyle = 'rgba(12, 16, 24, 0.95)';
+    ctx.fillRect(0, yPos, width, watermarkHeight);
+
+    ctx.fillStyle = '#06b6d4';
+    ctx.fillRect(0, yPos, width, Math.max(1.5, Math.round(width * 0.0015)));
+
+    const titleSize = Math.max(11, Math.round(watermarkHeight * 0.36));
+    ctx.font = `bold ${titleSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", "Segoe UI Emoji", Roboto, sans-serif`;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText("Vancouver God's Eye · 溫哥華天眼", Math.round(width * 0.015), yPos + watermarkHeight * 0.62);
+
+    try {
+      const center = mapInstance.getCenter();
+      const zoom = mapInstance.getZoom().toFixed(1);
+      const nowStr = new Date().toLocaleString('zh-TW', { hour12: false });
+      const infoText = `${center.lat.toFixed(4)}°N, ${Math.abs(center.lng).toFixed(4)}°W  |  Zoom ${zoom}  |  ${nowStr}`;
+      
+      const infoSize = Math.max(9, Math.round(watermarkHeight * 0.28));
+      ctx.font = `normal ${infoSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace`;
+      ctx.fillStyle = '#94a3b8';
+      const textWidth = ctx.measureText(infoText).width;
+      if (width - textWidth - Math.round(width * 0.015) > width * 0.35) {
+        ctx.fillText(infoText, width - textWidth - Math.round(width * 0.015), yPos + watermarkHeight * 0.62);
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  // 2. 地圖圖例橫條 (Legend Bar)
+  if (includeLegend && activeLayerKeys.length > 0) {
+    const fontSize = Math.max(10, Math.round(width * 0.0095));
+    ctx.font = `500 ${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", "Segoe UI Emoji", Roboto, sans-serif`;
+
+    const tagPadX = Math.round(fontSize * 0.6);
+    const dotR = Math.max(3, Math.round(fontSize * 0.3));
+    const itemGap = Math.round(fontSize * 0.7);
+    const rowHeight = Math.round(fontSize * 2.2);
+
+    const items = activeLayerKeys.map(k => {
+      const meta = LAYER_LEGEND_MAP[k] || { label: LAYER_METADATA[k]?.label || k, icon: '📍', color: '#06b6d4' };
+      const labelText = `${meta.icon} ${meta.label}`;
+      const itemW = dotR * 2 + 6 + ctx.measureText(labelText).width + tagPadX * 2;
+      return { ...meta, labelText, itemW };
+    });
+
+    // 分行排版
+    const rows: (typeof items)[] = [];
+    let curRow: typeof items = [];
+    const titleWidth = ctx.measureText("圖例").width + 16;
+    let curX = Math.round(width * 0.015) + titleWidth;
+    const maxW = width - Math.round(width * 0.015) * 2;
+
+    for (const item of items) {
+      if (curX + item.itemW > maxW && curRow.length > 0) {
+        rows.push(curRow);
+        curRow = [item];
+        curX = Math.round(width * 0.015) + item.itemW + itemGap;
+      } else {
+        curRow.push(item);
+        curX += item.itemW + itemGap;
+      }
+    }
+    if (curRow.length > 0) rows.push(curRow);
+
+    const totalLegendH = rows.length * rowHeight + Math.round(fontSize * 0.7);
+    const legendY = height - watermarkHeight - totalLegendH;
+
+    // 半透明科技暗底
+    ctx.fillStyle = 'rgba(10, 14, 22, 0.92)';
+    ctx.fillRect(0, legendY, width, totalLegendH);
+
+    // 頂部淡藍分隔線
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.35)';
+    ctx.fillRect(0, legendY, width, 1.5);
+
+    // 繪製「圖例」標籤
+    ctx.font = `bold ${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillText("圖例", Math.round(width * 0.015), legendY + rowHeight * 0.65);
+
+    // 繪製各圖層標籤膠囊 (Pill Tags)
+    rows.forEach((row, rIdx) => {
+      const rY = legendY + rIdx * rowHeight + Math.round(fontSize * 0.35);
+      let x = rIdx === 0 ? Math.round(width * 0.015) + titleWidth : Math.round(width * 0.015);
+
+      row.forEach(it => {
+        const pillH = rowHeight * 0.76;
+        const pillY = rY + (rowHeight - pillH) / 2;
+
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+        ctx.beginPath();
+        if (ctx.roundRect) {
+          ctx.roundRect(x, pillY, it.itemW, pillH, pillH / 2);
+        } else {
+          ctx.rect(x, pillY, it.itemW, pillH);
+        }
+        ctx.fill();
+
+        // 圖層專屬顏色圓點
+        ctx.fillStyle = it.color;
+        ctx.beginPath();
+        ctx.arc(x + tagPadX + dotR, pillY + pillH / 2, dotR, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 文字
+        ctx.font = `500 ${fontSize * 0.9}px -apple-system, BlinkMacSystemFont, "Segoe UI", "Segoe UI Emoji", Roboto, sans-serif`;
+        ctx.fillStyle = '#f1f5f9';
+        ctx.fillText(it.labelText, x + tagPadX + dotR * 2 + 6, pillY + pillH * 0.68);
+
+        x += it.itemW + itemGap;
+      });
+    });
+  }
+};
+
 export default function ExportModal() {
   const { 
     isExportModalOpen, setExportModalOpen, layers, mapStyleType, 
@@ -77,6 +267,7 @@ export default function ExportModal() {
   // 圖片匯出設定
   const [imageFormat, setImageFormat] = useState<'png' | 'jpeg'>('png');
   const [includeWatermark, setIncludeWatermark] = useState<boolean>(true);
+  const [includeLegend, setIncludeLegend] = useState<boolean>(true);
   const [previewDataUrl, setPreviewDataUrl] = useState<string>('');
   const [isExporting, setIsExporting] = useState<boolean>(false);
   const [copiedLink, setCopiedLink] = useState<boolean>(false);
@@ -118,6 +309,8 @@ export default function ExportModal() {
           ctx.fillRect(0, 0, previewCanvas.width, previewCanvas.height);
           // 繪製 WebGL 地圖畫布
           ctx.drawImage(mapCanvas, 0, 0, previewCanvas.width, previewCanvas.height);
+          // 繪製圖例與浮水印標註 (Draw Legend & Watermark)
+          drawMapAnnotations(ctx, previewCanvas.width, previewCanvas.height, mapInstance, includeLegend, includeWatermark, activeLayerKeys);
           const dataUrl = previewCanvas.toDataURL('image/jpeg', 0.88);
           if (dataUrl && dataUrl.length > 500) {
             setPreviewDataUrl(dataUrl);
@@ -142,7 +335,7 @@ export default function ExportModal() {
     setTimeout(() => {
       if (!captured) doCapture();
     }, 150);
-  }, []);
+  }, [activeLayerKeys, includeLegend, includeWatermark]);
 
   // 當開啟 Modal 或切換到圖片分頁時生成預覽
   useEffect(() => {
@@ -156,14 +349,14 @@ export default function ExportModal() {
     } else {
       setPreviewDataUrl('');
     }
-  }, [isExportModalOpen, updateMapPreview]);
+  }, [isExportModalOpen, updateMapPreview, includeLegend, includeWatermark]);
 
   useEffect(() => {
     if (isExportModalOpen && activeTab === 'image') {
       const t = setTimeout(updateMapPreview, 60);
       return () => clearTimeout(t);
     }
-  }, [isExportModalOpen, activeTab, updateMapPreview]);
+  }, [isExportModalOpen, activeTab, updateMapPreview, includeLegend, includeWatermark]);
 
   // 1. 匯出純淨地圖圖片
   const handleExportImage = () => {
@@ -204,37 +397,8 @@ export default function ExportModal() {
         // 2. 繪製純淨地圖畫布 (無任何側邊欄、設定窗、Popup 或搜尋框干擾)
         ctx.drawImage(mapCanvas, 0, 0);
 
-        // 3. 若使用者選擇包含資訊標註橫條 (Watermark & Info HUD)
-        if (includeWatermark) {
-          const bannerHeight = Math.max(52, Math.round(exportCanvas.height * 0.055));
-          const yPos = exportCanvas.height - bannerHeight;
-
-          // 繪製半透明現代暗色漸層條
-          ctx.fillStyle = 'rgba(14, 17, 24, 0.92)';
-          ctx.fillRect(0, yPos, exportCanvas.width, bannerHeight);
-
-          // 頂部科技亮青色飾條
-          ctx.fillStyle = '#06b6d4';
-          ctx.fillRect(0, yPos, exportCanvas.width, 2.5);
-
-          // 左側：系統標題與圖標
-          const titleSize = Math.max(14, Math.round(bannerHeight * 0.36));
-          ctx.font = `bold ${titleSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
-          ctx.fillStyle = '#ffffff';
-          ctx.fillText("Vancouver God's Eye · 溫哥華天眼", 24, yPos + bannerHeight * 0.58);
-
-          // 右側：經緯度中心、縮放層級與輸出時間
-          const center = mapInstance.getCenter();
-          const zoom = mapInstance.getZoom().toFixed(1);
-          const nowStr = new Date().toLocaleString('zh-TW', { hour12: false });
-          const infoText = `${center.lat.toFixed(4)}°N, ${Math.abs(center.lng).toFixed(4)}°W  |  Zoom ${zoom}  |  ${nowStr}`;
-          
-          const infoSize = Math.max(11, Math.round(bannerHeight * 0.28));
-          ctx.font = `normal ${infoSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace`;
-          ctx.fillStyle = '#94a3b8';
-          const textWidth = ctx.measureText(infoText).width;
-          ctx.fillText(infoText, exportCanvas.width - textWidth - 24, yPos + bannerHeight * 0.58);
-        }
+        // 3. 繪製地圖圖例與浮水印標註橫條 (Draw Legend & Watermark)
+        drawMapAnnotations(ctx, exportCanvas.width, exportCanvas.height, mapInstance, includeLegend, includeWatermark, activeLayerKeys);
 
         const mimeType = imageFormat === 'jpeg' ? 'image/jpeg' : 'image/png';
         const dataUrl = exportCanvas.toDataURL(mimeType, imageFormat === 'jpeg' ? 0.92 : undefined);
@@ -706,8 +870,17 @@ ${placemarksKML}
                   </div>
                 </div>
 
-                <div className="flex flex-col justify-center gap-2 bg-[#10131a] p-3 rounded-xl border border-[#262b38]">
-                  <span className="text-gray-400 font-medium">浮水印與座標標註:</span>
+                <div className="flex flex-col justify-center gap-1.5 bg-[#10131a] p-3 rounded-xl border border-[#262b38]">
+                  <span className="text-gray-400 font-medium">影像註解與標示:</span>
+                  <label className="flex items-center gap-2 text-gray-300 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={includeLegend}
+                      onChange={(e) => setIncludeLegend(e.target.checked)}
+                      className="rounded border-gray-600 accent-cyan-500"
+                    />
+                    <span className="text-[11.5px]">加上設施圖例橫條 (Legend)</span>
+                  </label>
                   <label className="flex items-center gap-2 text-gray-300 cursor-pointer">
                     <input
                       type="checkbox"
