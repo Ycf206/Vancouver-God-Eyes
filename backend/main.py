@@ -890,6 +890,38 @@ def get_translink_alerts(force: bool = False):
     return translink_service.get_translink_alerts(force=force)
 
 
+@app.get("/api/waze/summary")
+@app.get("/api/traffic/summary")
+def get_waze_traffic_summary(force: bool = False):
+    """
+    Returns real-time Waze traffic corridors delay summary, bottlenecks and alerts for Greater Vancouver.
+    Cached 2 minutes.
+    """
+    from waze_service import waze_service
+    return waze_service.get_corridors_summary(force=force)
+
+
+@app.get("/api/waze/jams")
+@app.get("/api/traffic/jams")
+def get_waze_jams(force: bool = False):
+    """
+    Returns real-time Waze traffic congestion jams as GeoJSON LineStrings.
+    """
+    from waze_service import waze_service
+    return waze_service.get_jams_geojson(force=force)
+
+
+@app.get("/api/waze/alerts")
+@app.get("/api/traffic/alerts")
+def get_waze_alerts(force: bool = False):
+    """
+    Returns real-time Waze user-reported incidents and road hazards as GeoJSON Points.
+    """
+    from waze_service import waze_service
+    return waze_service.get_alerts_geojson(force=force)
+
+
+
 @app.get("/api/beach-water/live")
 def get_live_beach_water(force: bool = False):
     """
@@ -1427,8 +1459,7 @@ CURATED_STATIC_TYPES = (
 POINT_CURATED_TYPES = (
     "hospitals", "police", "disaster_hubs", "car_sharing", "aed", 
     "fuel", "ev_charging", "tesla", "marine_terminals", "bike_racks", "wireless_facilities",
-    "traffic_crosswalks", "litter_containers", "food_banks", "recycling", "van_wifi",
-    "traffic_conditions"
+    "traffic_crosswalks", "litter_containers", "food_banks", "recycling", "van_wifi"
 )
 
 def sync_curated_point_types(db: Session):
@@ -2470,6 +2501,16 @@ def get_road_facilities_geojson(
     if facility_type == "tide_stations":
         import tides_service
         return tides_service.get_tides_geojson()
+
+    # Handle Waze Traffic Jams (LineString 色帶)
+    if facility_type in ("traffic_conditions", "traffic", "waze_traffic"):
+        from waze_service import waze_service
+        return waze_service.get_jams_geojson()
+
+    # Handle Waze Alerts / Crowd-Sourced Reports (Point 圖釘)
+    if facility_type in ("waze_alerts", "traffic_alerts", "traffic_reports"):
+        from waze_service import waze_service
+        return waze_service.get_alerts_geojson()
 
     # Handle Beach Water Quality
     if facility_type in ("beach_water_quality", "beach_water"):

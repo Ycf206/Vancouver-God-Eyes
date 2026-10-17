@@ -1281,6 +1281,46 @@ export default function AppMap() {
     };
   }, [layers.maritimeShipping, isExploreOpen, exploreTab]);
 
+  // Periodic polling for Waze traffic conditions and alerts (every 120s / 2 mins)
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+    if (layers.trafficConditions || layers.wazeAlerts || (isExploreOpen && exploreTab === 'traffic')) {
+      const pollWazeData = async () => {
+        const map = mapRef.current?.getMap();
+        if (!map) return;
+        const apiUrl = getApiUrl();
+        const t = Date.now();
+
+        if (layers.trafficConditions) {
+          try {
+            const res = await fetch(`${apiUrl}/api/geojson/road/traffic_conditions?t=${t}`);
+            if (res.ok) {
+              const data = await res.json();
+              const src = map.getSource('traffic_conditions') as any;
+              if (src && src.setData) src.setData(data);
+            }
+          } catch (_) {}
+        }
+
+        if (layers.wazeAlerts) {
+          try {
+            const res = await fetch(`${apiUrl}/api/geojson/road/waze_alerts?t=${t}`);
+            if (res.ok) {
+              const data = await res.json();
+              const src = map.getSource('waze_alerts') as any;
+              if (src && src.setData) src.setData(data);
+            }
+          } catch (_) {}
+        }
+      };
+
+      interval = setInterval(pollWazeData, 120000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [layers.trafficConditions, layers.wazeAlerts, isExploreOpen, exploreTab]);
+
   // Keep selectedMaritimeVessel synced when maritimeVessels updates
   useEffect(() => {
     if (!selectedMaritimeVessel) return;
@@ -1631,6 +1671,13 @@ export default function AppMap() {
   const updateScale = useCallback(() => {
     const map = mapRef.current?.getMap();
     if (!map) return;
+
+    try {
+      const z = map.getZoom();
+      if (typeof z === 'number' && !isNaN(z)) {
+        setCurrentZoom(z);
+      }
+    } catch (_) {}
 
     const scaleWidthPx = 120; // 固定物理長度 120px
 
@@ -2797,62 +2844,137 @@ export default function AppMap() {
       });
     }
 
-    // Road Facilities: Traffic Conditions (即時路況 - Lions Gate Bridge 獅門大橋 ATIS/DriveBC)
+    // Road Facilities: Traffic Conditions (Waze 即時路況色帶 LineString - Google Maps 風格)
     if (layers.trafficConditions) {
-      style.sources['traffic_conditions'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/traffic_conditions` };
-      // 外部發光波紋
+      style.sources['traffic_conditions'] = { 
+        type: 'geojson', 
+        data: `${apiUrl}/api/geojson/road/traffic_conditions` 
+      };
+      // 底層暗色描邊 (外框線條立體感)
       style.layers.push({
-        id: 'traffic-conditions-pulse-layer',
-        type: 'circle',
-        source: 'traffic_conditions',
-        paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 9, 14, 13, 20, 16, 26],
-          'circle-color': '#10b981',
-          'circle-opacity': 0.35,
-          'circle-stroke-width': 1.5,
-          'circle-stroke-color': '#34d399',
-          'circle-stroke-opacity': 0.7
-        }
-      });
-      // 核心圓點
-      style.layers.push({
-        id: 'traffic-conditions-layer',
-        type: 'circle',
-        source: 'traffic_conditions',
-        paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 9, 7, 13, 10, 16, 13],
-          'circle-color': '#059669',
-          'circle-stroke-width': 2.5,
-          'circle-stroke-color': '#ffffff'
-        }
-      });
-      // 圖示
-      style.layers.push({
-        id: 'traffic-conditions-symbol-layer',
-        type: 'symbol',
+        id: 'traffic-conditions-casing-layer',
+        type: 'line',
         source: 'traffic_conditions',
         layout: {
-          'text-field': '🚗',
-          'text-size': ['interpolate', ['linear'], ['zoom'], 10, 10, 14, 13],
-          'text-allow-overlap': true
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        paint: {
+          'line-color': [
+            'coalesce',
+            ['get', 'casing_color'],
+            '#450a0a'
+          ],
+          'line-width': ['interpolate', ['linear'], ['zoom'], 9, 4.5, 12, 7.5, 15, 11, 18, 15],
+          'line-opacity': 0.8
         }
       });
-      // 名稱標籤
+      // 核心路況色帶 (黃/橘/紅/深紅紫 Google Maps 壅塞分級)
+      style.layers.push({
+        id: 'traffic-conditions-layer',
+        type: 'line',
+        source: 'traffic_conditions',
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        paint: {
+          'line-color': [
+            'coalesce',
+            ['get', 'color'],
+            '#dc2626'
+          ],
+          'line-width': ['interpolate', ['linear'], ['zoom'], 9, 2.8, 12, 5.0, 15, 8.0, 18, 11],
+          'line-opacity': 0.95
+        }
+      });
+      // 路況主要幹道名稱與延誤標籤
       style.layers.push({
         id: 'traffic-conditions-label-layer',
         type: 'symbol',
         source: 'traffic_conditions',
-        minzoom: 11,
+        minzoom: 11.5,
         layout: {
-          'text-field': '獅門大橋',
-          'text-size': ['interpolate', ['linear'], ['zoom'], 11, 10, 14, 12],
+          'text-field': [
+            'case',
+            ['has', 'delay_min'],
+            ['concat', ['get', 'name'], ' (+', ['to-string', ['get', 'delay_min']], '分)'],
+            ['get', 'name']
+          ],
+          'symbol-placement': 'line-center',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 11.5, 10, 14, 12],
+          'text-offset': [0, -0.8],
+          'text-anchor': 'bottom',
+          'text-optional': true,
+          'text-allow-overlap': false
+        },
+        paint: {
+          'text-color': '#ffffff',
+          'text-halo-color': '#111827',
+          'text-halo-width': 2.5
+        }
+      });
+    }
+
+    // Road Facilities: Waze Alerts (大眾通報突發事故與路況圖釘 Point)
+    if (layers.wazeAlerts) {
+      style.sources['waze_alerts'] = { 
+        type: 'geojson', 
+        data: `${apiUrl}/api/geojson/road/waze_alerts` 
+      };
+      // 外層警示光環
+      style.layers.push({
+        id: 'waze-alerts-pulse-layer',
+        type: 'circle',
+        source: 'waze_alerts',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 9, 13, 13, 18, 16, 24],
+          'circle-color': ['coalesce', ['get', 'color'], '#ef4444'],
+          'circle-opacity': 0.28,
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': ['coalesce', ['get', 'color'], '#ef4444'],
+          'circle-stroke-opacity': 0.6
+        }
+      });
+      // 核心圖釘圓底
+      style.layers.push({
+        id: 'waze-alerts-layer',
+        type: 'circle',
+        source: 'waze_alerts',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 9, 8, 13, 12, 16, 16],
+          'circle-color': '#18181b',
+          'circle-stroke-width': 2,
+          'circle-stroke-color': ['coalesce', ['get', 'color'], '#ef4444']
+        }
+      });
+      // 事故類別表情符號圖示 (💥/⚠️/⛔/🚗/👮)
+      style.layers.push({
+        id: 'waze-alerts-symbol-layer',
+        type: 'symbol',
+        source: 'waze_alerts',
+        layout: {
+          'text-field': ['coalesce', ['get', 'icon'], '⚠️'],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 9, 10, 13, 13, 16, 16],
+          'text-allow-overlap': true
+        }
+      });
+      // 事故摘要標籤
+      style.layers.push({
+        id: 'waze-alerts-label-layer',
+        type: 'symbol',
+        source: 'waze_alerts',
+        minzoom: 12,
+        layout: {
+          'text-field': ['coalesce', ['get', 'type_label'], '突發事故'],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 12, 10, 15, 12],
           'text-offset': [0, 1.4],
           'text-anchor': 'top',
           'text-optional': true
         },
         paint: {
-          'text-color': '#34d399',
-          'text-halo-color': '#06281e',
+          'text-color': '#fef08a',
+          'text-halo-color': '#000000',
           'text-halo-width': 2
         }
       });
@@ -4917,6 +5039,7 @@ export default function AppMap() {
     layers.postalCodeFSA,
     layers.wirelessFacilities,
     layers.trafficConditions,
+    layers.wazeAlerts,
     layers.roadClosures,
     layers.roadConstruction,
     layers.streetLighting,
@@ -4944,9 +5067,19 @@ export default function AppMap() {
         maxZoom={20}
         mapStyle={mapStyle}
         style={{ width: '100%', height: '100%' }}
-        onMove={updateScale}
-        onZoom={updateScale}
-        onLoad={() => updateScale()}
+        onMove={(e: any) => {
+          updateScale();
+          if (e.viewState?.zoom !== undefined) setCurrentZoom(e.viewState.zoom);
+        }}
+        onZoom={(e: any) => {
+          updateScale();
+          if (e.viewState?.zoom !== undefined) setCurrentZoom(e.viewState.zoom);
+        }}
+        onLoad={(e: any) => {
+          updateScale();
+          const z = e.target?.getZoom ? e.target.getZoom() : e.viewState?.zoom;
+          if (z !== undefined) setCurrentZoom(z);
+        }}
         onMouseMove={handleMapMouseMove}
         onMouseLeave={handleMapMouseLeave}
         onContextMenu={handleMapContextMenu}
@@ -5045,10 +5178,13 @@ export default function AppMap() {
           'van-wifi-symbol-layer',
           'tide-stations-layer',
           'tide-stations-symbol-layer',
-          'traffic-conditions-pulse-layer',
+          'traffic-conditions-casing-layer',
           'traffic-conditions-layer',
-          'traffic-conditions-symbol-layer',
           'traffic-conditions-label-layer',
+          'waze-alerts-pulse-layer',
+          'waze-alerts-layer',
+          'waze-alerts-symbol-layer',
+          'waze-alerts-label-layer',
           'road-closures-casing-layer',
           'road-closures-layer',
           'road-construction-casing-layer',
@@ -5274,6 +5410,38 @@ export default function AppMap() {
               facility_type: 'postal_code_fsa',
               name: `郵遞編號分區 ${props.fsa || ''}`,
               local_area: props.province || '溫哥華前瞻轉運區 (FSA)',
+              lon: clickLon,
+              lat: clickLat,
+              properties: props
+            });
+          } else if (layerId === 'traffic-conditions-layer' || layerId === 'traffic-conditions-casing-layer' || layerId === 'traffic-conditions-label-layer') {
+            setSelectedStop(null);
+            const props = feature.properties || {};
+            const clickLon = e.lngLat?.lng ?? -123.1207;
+            const clickLat = e.lngLat?.lat ?? 49.2827;
+            setSelectedFacility({
+              id: props.id ? `traffic_${props.id}` : `traffic_${clickLon}_${clickLat}`,
+              facility_type: 'traffic_conditions',
+              name: props.name || '即時路況色帶',
+              local_area: props.street || props.corridor || props.city || '大溫主要幹道',
+              lon: clickLon,
+              lat: clickLat,
+              properties: props
+            });
+          } else if (layerId.startsWith('waze-alerts')) {
+            setSelectedStop(null);
+            const props = feature.properties || {};
+            let clickLon = e.lngLat?.lng ?? -123.1207;
+            let clickLat = e.lngLat?.lat ?? 49.2827;
+            if (feature.geometry?.type === 'Point' && Array.isArray(feature.geometry.coordinates)) {
+              clickLon = feature.geometry.coordinates[0];
+              clickLat = feature.geometry.coordinates[1];
+            }
+            setSelectedFacility({
+              id: props.id ? `waze_alert_${props.id}` : `waze_alert_${clickLon}_${clickLat}`,
+              facility_type: 'waze_alerts',
+              name: props.type_label ? `${props.icon || '⚠️'} ${props.type_label}` : '大眾即時通報',
+              local_area: props.street || props.city || '大溫突發事故',
               lon: clickLon,
               lat: clickLat,
               properties: props
@@ -7213,14 +7381,14 @@ export default function AppMap() {
             maxWidth={
               selectedFacility.facility_type === 'traffic_conditions' ? '460px' :
               selectedFacility.facility_type === 'traffic_cameras' ? '400px' : 
-              (selectedFacility.facility_type === 'border_crossing' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'beach_water_quality' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'zoning_districts') ? '360px' : 
+              (selectedFacility.facility_type === 'waze_alerts' || selectedFacility.facility_type === 'border_crossing' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'beach_water_quality' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'zoning_districts') ? '360px' : 
               '320px'
             }
           >
             <div className={`p-3.5 ${
               selectedFacility.facility_type === 'traffic_conditions' ? 'w-[430px]' :
               selectedFacility.facility_type === 'traffic_cameras' ? 'w-[360px]' : 
-              (selectedFacility.facility_type === 'border_crossing' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'beach_water_quality' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'zoning_districts') ? 'w-[340px]' : 
+              (selectedFacility.facility_type === 'waze_alerts' || selectedFacility.facility_type === 'border_crossing' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'beach_water_quality' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'zoning_districts') ? 'w-[340px]' : 
               'w-[290px]'
             } max-w-[90vw] text-gray-800`}>
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
@@ -7228,6 +7396,7 @@ export default function AppMap() {
                   <span className={`w-3 h-3 rounded-full flex-shrink-0 ${
                     selectedFacility.facility_type === 'border_crossing' ? 'bg-emerald-600 shadow-[0_0_6px_rgba(16,185,129,0.5)]' :
                     selectedFacility.facility_type === 'traffic_conditions' ? 'bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]' :
+                    selectedFacility.facility_type === 'waze_alerts' ? 'bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.5)]' :
                     selectedFacility.facility_type === 'road_closures' ? 'bg-rose-600' :
                     selectedFacility.facility_type === 'road_construction' ? 'bg-amber-500' :
                     (selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits') ? 'bg-amber-400' :
@@ -10014,91 +10183,245 @@ export default function AppMap() {
                 </div>
               )}
 
-              {/* Traffic Conditions (即時路況 - Lions Gate Bridge 獅門大橋 ATIS/DriveBC) */}
-              {selectedFacility.facility_type === 'traffic_conditions' && (
-                <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-emerald-500/10 p-2 rounded-lg border border-emerald-500/30 flex flex-col gap-1">
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-emerald-950 text-xs flex items-center gap-1.5">
-                        <span className="text-base text-emerald-600 font-bold">🌉</span>
-                        <span className="truncate max-w-[220px]">獅門大橋</span>
-                      </span>
-                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-600 text-white shrink-0">
-                        每 1 小時更新
-                      </span>
+              {/* Traffic Conditions (即時路況 - Waze Jams / Lions Gate Bridge) */}
+              {selectedFacility.facility_type === 'traffic_conditions' && (() => {
+                const props = selectedFacility.properties || {};
+                const isLionsGateATIS = selectedFacility.name?.includes('獅門大橋') && props.speed_kmh == null && props.delay_min == null;
+
+                if (isLionsGateATIS) {
+                  return (
+                    <div className="flex flex-col gap-2 text-xs">
+                      <div className="bg-emerald-500/10 p-2 rounded-lg border border-emerald-500/30 flex flex-col gap-1">
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-emerald-950 text-xs flex items-center gap-1.5">
+                            <span className="text-base text-emerald-600 font-bold">🌉</span>
+                            <span className="truncate max-w-[220px]">獅門大橋</span>
+                          </span>
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-600 text-white shrink-0">
+                            每 1 小時更新
+                          </span>
+                        </div>
+                        <div className="text-[11px] text-emerald-900 font-medium">
+                          DriveBC & ATIS 即時交通延誤、排隊車龍與南向現場監視
+                        </div>
+                      </div>
+
+                      {/* 2-Column Compact Grid */}
+                      <div className="grid grid-cols-2 gap-2">
+                        {/* Left Column (Row span 2): queue_map.gif 車流排隊圖 */}
+                        <div className="row-span-2 bg-gray-900 rounded-lg p-1.5 border border-gray-700/60 flex flex-col gap-1 shadow-inner justify-between">
+                          <div className="flex items-center justify-between text-[10.5px] font-semibold text-gray-200">
+                            <span>🗺️ 車流排隊圖</span>
+                            <span className="text-[9px] text-emerald-400 font-mono">Queue</span>
+                          </div>
+                          <div className="w-full flex-1 overflow-hidden rounded bg-black flex items-center justify-center min-h-[170px] max-h-[210px]">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img 
+                              src="https://www.th.gov.bc.ca/atis/lgcws/images/lions_gate/queue_map.gif" 
+                              alt="Lions Gate Bridge Queue Map" 
+                              className="w-full h-full object-contain"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Right Column Row 1: atis_delay.gif 預計延誤 */}
+                        <div className="bg-gray-900 rounded-lg p-1.5 border border-gray-700/60 flex flex-col gap-1 shadow-inner">
+                          <div className="flex items-center justify-between text-[10.5px] font-semibold text-gray-200">
+                            <span>⏱️ 預計延誤時間</span>
+                            <span className="text-[9px] text-emerald-400 font-mono">LIVE</span>
+                          </div>
+                          <div className="w-full overflow-hidden rounded bg-black flex items-center justify-center min-h-[42px] max-h-[55px]">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img 
+                              src="https://www.th.gov.bc.ca/atis/lgcws/images/lions_gate/atis_delay.gif" 
+                              alt="Lions Gate Bridge ATIS 預計延誤" 
+                              className="w-full object-contain"
+                              onError={(e) => {
+                                (e.target as HTMLElement).style.display = 'none';
+                              }}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Right Column Row 2: Camera 18 南向即時監視 */}
+                        <div className="bg-gray-900 rounded-lg p-1.5 border border-gray-700/60 flex flex-col gap-1 shadow-inner">
+                          <div className="flex items-center justify-between text-[10.5px] font-semibold text-gray-200">
+                            <span>📷 南向即時監視</span>
+                            <span className="text-[9px] text-cyan-400">#18</span>
+                          </div>
+                          <div className="w-full overflow-hidden rounded bg-black flex items-center justify-center h-[85px]">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img 
+                              src="https://www.drivebc.ca/images/18.jpg" 
+                              alt="DriveBC Lions Gate Bridge Camera 18" 
+                              className="w-full h-full object-cover rounded"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="pt-0.5">
+                        <a 
+                          href="https://www.th.gov.bc.ca/atis/lgcws/index.html" 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="w-full py-1.5 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                        >
+                          <Activity className="w-3.5 h-3.5" />
+                          <span>前往 ATIS 獅門大橋路況官網</span>
+                        </a>
+                      </div>
                     </div>
-                    <div className="text-[11px] text-emerald-900 font-medium">
-                      DriveBC & ATIS 即時交通延誤、排隊車龍與南向現場監視
+                  );
+                }
+
+                // Waze Jams Card
+                const speed = props.speed_kmh || 30;
+                const freeflow = props.freeflow_speed_kmh || 80;
+                const speedPct = Math.min(100, Math.max(10, Math.round((speed / freeflow) * 100)));
+                const delayMin = props.delay_min ?? (props.delay_sec ? Math.round(props.delay_sec / 60) : 0);
+                const levelColor = props.color || (props.level >= 3 ? '#dc2626' : props.level === 2 ? '#f97316' : '#eab308');
+
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    {/* Header Banner */}
+                    <div className="p-2.5 rounded-lg border flex flex-col gap-1.5" style={{ backgroundColor: `${levelColor}15`, borderColor: `${levelColor}40` }}>
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-gray-900 text-xs flex items-center gap-1.5">
+                          <span className="text-base">🚗</span>
+                          <span className="truncate max-w-[210px]">{props.name || selectedFacility.name}</span>
+                        </span>
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded text-white shrink-0" style={{ backgroundColor: levelColor }}>
+                          {props.level_label || '即時路況'}
+                        </span>
+                      </div>
+                      <div className="text-[11px] text-gray-700 font-medium">
+                        {props.street || props.corridor || '主要交通幹道'}
+                      </div>
+                    </div>
+
+                    {/* Delay & Speed Grid */}
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="p-2 rounded-lg bg-gray-50 border border-gray-200 flex flex-col">
+                        <span className="text-[10px] text-gray-500 font-medium">⏱️ 通過延誤時間</span>
+                        <span className="font-bold text-sm text-rose-600 mt-0.5">
+                          +{delayMin} 分鐘
+                        </span>
+                        <span className="text-[9.5px] text-gray-400 mt-0.5">
+                          {props.trend === 'worsening' ? '↗️ 車流回堵加劇中' : props.trend === 'improving' ? '↘️ 車流改善中' : '➡️ 車流穩定緩行'}
+                        </span>
+                      </div>
+                      <div className="p-2 rounded-lg bg-gray-50 border border-gray-200 flex flex-col">
+                        <span className="text-[10px] text-gray-500 font-medium">⚡ 當前平均車速</span>
+                        <div className="flex items-baseline gap-1 mt-0.5">
+                          <span className="font-bold text-sm text-gray-800">{speed}</span>
+                          <span className="text-[10px] text-gray-500">km/h</span>
+                          <span className="text-[9.5px] text-gray-400 font-normal">/ {freeflow}</span>
+                        </div>
+                        <div className="w-full bg-gray-200 h-1.5 rounded-full mt-1.5 overflow-hidden">
+                          <div className="h-full rounded-full transition-all duration-300" style={{ width: `${speedPct}%`, backgroundColor: levelColor }} />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Detailed Description */}
+                    {props.description && (
+                      <div className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-gray-700 text-[11px] leading-relaxed">
+                        <span className="font-semibold text-amber-700 mr-1">📌 路況說明:</span>
+                        {props.description}
+                      </div>
+                    )}
+
+                    {/* Actions */}
+                    <div className="pt-0.5 flex gap-1.5">
+                      <a 
+                        href="https://www.waze.com/livemap" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="flex-1 py-1.5 px-3 rounded-lg bg-[#33ccff] hover:bg-[#20b8eb] text-gray-900 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                      >
+                        <span>前往 Waze 即時路況</span>
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
                     </div>
                   </div>
+                );
+              })()}
 
-                  {/* 2-Column Compact Grid */}
-                  <div className="grid grid-cols-2 gap-2">
-                    {/* Left Column (Row span 2): queue_map.gif 車流排隊圖 */}
-                    <div className="row-span-2 bg-gray-900 rounded-lg p-1.5 border border-gray-700/60 flex flex-col gap-1 shadow-inner justify-between">
-                      <div className="flex items-center justify-between text-[10.5px] font-semibold text-gray-200">
-                        <span>🗺️ 車流排隊圖</span>
-                        <span className="text-[9px] text-emerald-400 font-mono">Queue</span>
+              {/* Waze Alerts (大眾通報 - 突發事故與路況圖釘) */}
+              {selectedFacility.facility_type === 'waze_alerts' && (() => {
+                const props = selectedFacility.properties || {};
+                const alertColor = props.color || '#ef4444';
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    {/* Header Banner */}
+                    <div className="p-2.5 rounded-lg border flex flex-col gap-1.5" style={{ backgroundColor: `${alertColor}15`, borderColor: `${alertColor}40` }}>
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-gray-900 text-xs flex items-center gap-1.5">
+                          <span className="text-base">{props.icon || '⚠️'}</span>
+                          <span className="truncate max-w-[200px]">{props.type_label || selectedFacility.name}</span>
+                        </span>
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded text-white shrink-0" style={{ backgroundColor: alertColor }}>
+                          大眾通報
+                        </span>
                       </div>
-                      <div className="w-full flex-1 overflow-hidden rounded bg-black flex items-center justify-center min-h-[170px] max-h-[210px]">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img 
-                          src="https://www.th.gov.bc.ca/atis/lgcws/images/lions_gate/queue_map.gif" 
-                          alt="Lions Gate Bridge Queue Map" 
-                          className="w-full h-full object-contain"
-                        />
+                      <div className="text-[11px] text-gray-700 font-medium">
+                        📍 {props.street || selectedFacility.local_area || '事故路段'}
                       </div>
                     </div>
 
-                    {/* Right Column Row 1: atis_delay.gif 預計延誤 */}
-                    <div className="bg-gray-900 rounded-lg p-1.5 border border-gray-700/60 flex flex-col gap-1 shadow-inner">
-                      <div className="flex items-center justify-between text-[10.5px] font-semibold text-gray-200">
-                        <span>⏱️ 預計延誤時間</span>
-                        <span className="text-[9px] text-emerald-400 font-mono">LIVE</span>
+                    {/* Metrics Grid */}
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="p-2 rounded-lg bg-gray-50 border border-gray-200 flex flex-col">
+                        <span className="text-[10px] text-gray-500 font-medium">⏱️ 預估車流延誤</span>
+                        <span className="font-bold text-sm text-rose-600 mt-0.5">
+                          +{props.delay_min || 0} 分鐘
+                        </span>
                       </div>
-                      <div className="w-full overflow-hidden rounded bg-black flex items-center justify-center min-h-[42px] max-h-[55px]">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img 
-                          src="https://www.th.gov.bc.ca/atis/lgcws/images/lions_gate/atis_delay.gif" 
-                          alt="Lions Gate Bridge ATIS 預計延誤" 
-                          className="w-full object-contain"
-                          onError={(e) => {
-                            (e.target as HTMLElement).style.display = 'none';
-                          }}
-                        />
+                      <div className="p-2 rounded-lg bg-gray-50 border border-gray-200 flex flex-col">
+                        <span className="text-[10px] text-gray-500 font-medium">🕒 回報時間</span>
+                        <span className="font-bold text-xs text-gray-800 mt-1">
+                          {props.report_time_str || '剛剛'}
+                        </span>
+                        {props.waze_confidence != null && (
+                          <span className="text-[9.5px] text-emerald-600 mt-0.5 font-medium">
+                            ✓ 社群可信度 {props.waze_confidence}%
+                          </span>
+                        )}
                       </div>
                     </div>
 
-                    {/* Right Column Row 2: Camera 18 南向即時監視 */}
-                    <div className="bg-gray-900 rounded-lg p-1.5 border border-gray-700/60 flex flex-col gap-1 shadow-inner">
-                      <div className="flex items-center justify-between text-[10.5px] font-semibold text-gray-200">
-                        <span>📷 南向即時監視</span>
-                        <span className="text-[9px] text-cyan-400">#18</span>
+                    {/* Incident Details Description */}
+                    {props.description && (
+                      <div className="p-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-700 text-[11px] leading-relaxed">
+                        <div className="font-semibold text-gray-900 mb-0.5">突發狀況詳情:</div>
+                        {props.description}
                       </div>
-                      <div className="w-full overflow-hidden rounded bg-black flex items-center justify-center h-[85px]">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img 
-                          src="https://www.drivebc.ca/images/18.jpg" 
-                          alt="DriveBC Lions Gate Bridge Camera 18" 
-                          className="w-full h-full object-cover rounded"
-                        />
+                    )}
+
+                    {/* Advice / Detour recommendation */}
+                    {props.advice && (
+                      <div className="p-2 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-[11px] leading-relaxed">
+                        <span className="font-semibold text-amber-800 mr-1">💡 避堵建議:</span>
+                        {props.advice}
                       </div>
+                    )}
+
+                    {/* Action Button */}
+                    <div className="pt-0.5">
+                      <a 
+                        href="https://www.waze.com/livemap" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="w-full py-1.5 px-3 rounded-lg bg-[#33ccff] hover:bg-[#20b8eb] text-gray-900 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                      >
+                        <span>在 Waze 查看完整路況</span>
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
                     </div>
                   </div>
-
-                  <div className="pt-0.5">
-                    <a 
-                      href="https://www.th.gov.bc.ca/atis/lgcws/index.html" 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="w-full py-1.5 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
-                    >
-                      <Activity className="w-3.5 h-3.5" />
-                      <span>前往 ATIS 獅門大橋路況官網</span>
-                    </a>
-                  </div>
-                </div>
-              )}
+                );
+              })()}
 
               {/* Road Closures (交通封閉) Details */}
               {selectedFacility.facility_type === 'road_closures' && (

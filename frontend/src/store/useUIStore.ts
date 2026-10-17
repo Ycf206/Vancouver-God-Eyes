@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 
 export type MapStyleType = 'street' | 'satellite' | 'light' | 'dark';
 
-export type ExploreTabType = 'weather' | 'news' | 'events' | 'ski' | 'aurora' | 'alerts' | 'fuel' | 'ev' | 'ferry' | 'cargo' | 'beach' | 'border';
+export type ExploreTabType = 'weather' | 'news' | 'events' | 'ski' | 'aurora' | 'alerts' | 'traffic' | 'fuel' | 'ev' | 'ferry' | 'cargo' | 'beach' | 'border';
 
 export interface SearchTarget {
   id: string;
@@ -85,6 +85,7 @@ export interface UIState {
     vanWifi: boolean;
     tideStations: boolean;
     trafficConditions: boolean;
+    wazeAlerts: boolean;
     roadClosures: boolean;
     roadConstruction: boolean;
     streetLighting: boolean;
@@ -139,6 +140,7 @@ export interface UIState {
   setExportModalOpen: (open: boolean) => void;
   toggleExportModal: () => void;
   toggleLayer: (layer: keyof UIState['layers']) => void;
+  enableLayer: (layer: keyof UIState['layers']) => void;
   resetAllLayers: () => void;
   parkingMeterFilter: {
     maxRate: number; // 0 = all
@@ -260,6 +262,7 @@ export const useUIStore = create<UIState>()(
         vanWifi: false,
         tideStations: false,
         trafficConditions: false,
+        wazeAlerts: false,
         roadClosures: false,
         roadConstruction: false,
         streetLighting: false,
@@ -332,7 +335,7 @@ export const useUIStore = create<UIState>()(
             searchTarget: nextSearchTarget,
           };
         }),
-      enableLayer: (layer) =>
+      enableLayer: (layer: keyof UIState['layers']) =>
         set((state) => ({
           layers: {
             ...state.layers,

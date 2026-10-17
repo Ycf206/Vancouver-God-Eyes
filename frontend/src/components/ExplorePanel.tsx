@@ -5,7 +5,8 @@ import {
   Compass, X, Fuel, Zap, Ship, MapPin, 
   ChevronDown, RefreshCw, Package, CloudSun, Wind, AlertTriangle, Droplets, Gauge, Eye, Anchor, Navigation,
   Newspaper, ExternalLink, Search, CalendarDays, Calendar, Tag, Waves, CloudRain, Play, Pause, SkipBack, SkipForward,
-  MountainSnow, Sparkles, Clock, ShieldAlert, BellRing, Train, Bus, ShieldCheck, LayoutGrid, TrainTrack
+  MountainSnow, Sparkles, Clock, ShieldAlert, BellRing, Train, Bus, ShieldCheck, LayoutGrid, TrainTrack,
+  Activity
 } from 'lucide-react';
 import { useUIStore, ExploreTabType } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
@@ -45,6 +46,59 @@ export interface TranslinkAlertsData {
   banners_count: number;
   alerts: TranslinkAlertItem[];
   station_alerts_map: Record<string, { critical: boolean; count: number; alert_ids: string[] }>;
+}
+
+export interface WazeCorridorItem {
+  id: string;
+  name: string;
+  route: string;
+  badge: string;
+  center: [number, number];
+  zoom: number;
+  status: string;
+  status_color: string;
+  current_speed_kmh: number;
+  freeflow_speed_kmh: number;
+  delay_min: number;
+  trend: string;
+  segments: Array<{
+    name: string;
+    delay_min: number;
+    speed_kmh: number;
+    level: number;
+    color: string;
+  }>;
+  incidents_count: number;
+  key_bottleneck: string;
+}
+
+export interface WazeIncidentItem {
+  id: string;
+  type: string;
+  type_label: string;
+  icon: string;
+  color: string;
+  street: string;
+  city: string;
+  delay_min: number;
+  report_time_str: string;
+  waze_confidence: number;
+  description: string;
+  advice: string;
+  updated_at: string;
+}
+
+export interface WazeSummaryData {
+  source: string;
+  source_url: string;
+  updated_at: string;
+  overall_congestion_score: number;
+  overall_status: string;
+  total_jams: number;
+  total_incidents: number;
+  worst_corridor: string;
+  corridors: WazeCorridorItem[];
+  top_alerts: WazeIncidentItem[];
 }
 
 interface AuroraVisibility {
@@ -509,6 +563,12 @@ function ExploreContent() {
   const [alertsSearchQuery, setAlertsSearchQuery] = useState<string>('');
   const [alertsEffectFilter, setAlertsEffectFilter] = useState<string>('all');
   const [alertsSortBy, setAlertsSortBy] = useState<'severity' | 'newest' | 'oldest'>('severity');
+
+  // --- Waze Live Traffic states ---
+  const [trafficSummary, setTrafficSummary] = useState<WazeSummaryData | null>(null);
+  const [loadingTraffic, setLoadingTraffic] = useState<boolean>(false);
+  const [trafficFilter, setTrafficFilter] = useState<'all' | 'severe' | 'bridges' | 'incidents'>('all');
+  const [trafficSearchQuery, setTrafficSearchQuery] = useState<string>('');
 
   // 氣溫單位轉換輔助函式
   const formatTemp = (celsius?: number | string | null) => {
@@ -2022,6 +2082,168 @@ function ExploreContent() {
     };
   }, [transitAlertsData]);
 
+  // 10. Fetch Waze Live Traffic & Jams Summary
+  const fetchTrafficSummary = React.useCallback(async (force = false) => {
+    setLoadingTraffic(true);
+    const apiUrl = getApiUrl();
+    try {
+      const res = await fetch(`${apiUrl}/api/waze/summary${force ? '?force=true' : ''}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && Array.isArray(data.corridors)) {
+          setTrafficSummary(data);
+          setLoadingTraffic(false);
+          return;
+        }
+      }
+    } catch (err) {
+      console.warn('Backend waze summary API error, falling back to static cache:', err);
+    }
+
+    try {
+      const staticRes = await fetch('/vancouver_waze_summary_cache.json');
+      if (staticRes.ok) {
+        const staticData = await staticRes.json();
+        if (staticData && Array.isArray(staticData.corridors)) {
+          setTrafficSummary(staticData);
+        }
+      }
+    } catch (staticErr) {
+      console.error('Failed to load static waze summary cache:', staticErr);
+    } finally {
+      setLoadingTraffic(false);
+    }
+  }, []);
+
+  // Pre-load traffic summary on mount or when traffic tab is clicked
+  useEffect(() => {
+    if (!trafficSummary) {
+      fetchTrafficSummary(false);
+    }
+  }, [fetchTrafficSummary, trafficSummary]);
+
+  useEffect(() => {
+    if (!isExploreOpen || activeTab !== 'traffic') return;
+    fetchTrafficSummary(false);
+    const timer = setInterval(() => {
+      fetchTrafficSummary(true);
+    }, 120000); // 2 分鐘自動輪詢更新
+    return () => clearInterval(timer);
+  }, [isExploreOpen, activeTab, fetchTrafficSummary]);
+
+  const handleFlyToCorridor = (corridor: WazeCorridorItem) => {
+    if (!layers.trafficConditions) {
+      enableLayer('trafficConditions');
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap();
+    if (mapInstance && corridor.center) {
+      mapInstance.flyTo({
+        center: corridor.center,
+        zoom: corridor.zoom || 13,
+        pitch: 35,
+        essential: true
+      });
+    }
+    setSearchTarget({
+      id: `corridor_${corridor.id}`,
+      title: corridor.name,
+      subtitle: `${corridor.route} · 延誤 +${corridor.delay_min} 分鐘`,
+      category: 'traffic_corridor',
+      badge: corridor.badge,
+      icon: '🚗',
+      lat: corridor.center[1],
+      lon: corridor.center[0],
+      zoom: corridor.zoom || 13,
+      meta: {
+        properties: {
+          name: corridor.name,
+          corridor: corridor.name,
+          street: corridor.route,
+          speed_kmh: corridor.current_speed_kmh,
+          freeflow_speed_kmh: corridor.freeflow_speed_kmh,
+          delay_min: corridor.delay_min,
+          level_label: corridor.status,
+          trend: corridor.trend,
+          description: corridor.key_bottleneck
+        }
+      }
+    });
+  };
+
+  const handleFlyToTrafficAlert = (alert: WazeIncidentItem) => {
+    if (!layers.wazeAlerts) {
+      enableLayer('wazeAlerts');
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap();
+    let coords: [number, number] = [-123.12, 49.25];
+    if (alert.id === 'alert_massey_accident') coords = [-123.076, 49.124];
+    else if (alert.id === 'alert_lions_stall') coords = [-123.138, 49.309];
+    else if (alert.id === 'alert_hwy1_hazard') coords = [-123.008, 49.255];
+    else if (alert.id === 'alert_knight_jam') coords = [-123.078, 49.198];
+    else if (alert.id === 'alert_ironworkers_debris') coords = [-123.025, 49.308];
+    else if (alert.id === 'alert_oak_police') coords = [-123.129, 49.202];
+
+    if (mapInstance) {
+      mapInstance.flyTo({
+        center: coords,
+        zoom: 15,
+        pitch: 30,
+        essential: true
+      });
+    }
+    setSearchTarget({
+      id: `alert_${alert.id}`,
+      title: `${alert.icon} ${alert.type_label}`,
+      subtitle: `${alert.street} · 延誤約 ${alert.delay_min} 分鐘`,
+      category: 'traffic_incident',
+      badge: '大眾通報',
+      icon: alert.icon || '⚠️',
+      lat: coords[1],
+      lon: coords[0],
+      zoom: 15,
+      meta: {
+        properties: alert
+      }
+    });
+  };
+
+  // Filtered corridors based on tab & query
+  const filteredCorridors = useMemo(() => {
+    if (!trafficSummary || !Array.isArray(trafficSummary.corridors)) return [];
+    let list = trafficSummary.corridors;
+    if (trafficFilter === 'severe') {
+      list = list.filter((c) => c.delay_min >= 10 || c.status.includes('嚴重') || c.status.includes('重度'));
+    } else if (trafficFilter === 'bridges') {
+      list = list.filter((c) => c.name.includes('橋') || c.name.includes('隧道') || c.name.includes('Bridge') || c.name.includes('Tunnel'));
+    }
+    if (trafficSearchQuery.trim()) {
+      const q = trafficSearchQuery.toLowerCase();
+      list = list.filter((c) => 
+        c.name.toLowerCase().includes(q) ||
+        c.route.toLowerCase().includes(q) ||
+        c.badge.toLowerCase().includes(q) ||
+        c.key_bottleneck.toLowerCase().includes(q)
+      );
+    }
+    return list;
+  }, [trafficSummary, trafficFilter, trafficSearchQuery]);
+
+  const filteredTrafficAlerts = useMemo(() => {
+    if (!trafficSummary || !Array.isArray(trafficSummary.top_alerts)) return [];
+    let list = trafficSummary.top_alerts;
+    if (trafficSearchQuery.trim()) {
+      const q = trafficSearchQuery.toLowerCase();
+      list = list.filter((a) =>
+        a.type_label.toLowerCase().includes(q) ||
+        a.street.toLowerCase().includes(q) ||
+        a.description.toLowerCase().includes(q)
+      );
+    }
+    return list;
+  }, [trafficSummary, trafficSearchQuery]);
+
   const exploreTabsRow1 = [
     { id: 'weather', label: '天氣', icon: CloudSun, iconColor: 'text-sky-400' },
     { id: 'news', label: '新聞', icon: Newspaper, iconColor: 'text-amber-400' },
@@ -2034,10 +2256,14 @@ function ExploreContent() {
   const exploreTabsRow2 = [
     { id: 'fuel', label: '燃油', icon: Fuel, iconColor: 'text-emerald-400' },
     { id: 'ev', label: '充電', icon: Zap, iconColor: 'text-yellow-400' },
+    { id: 'alerts', label: '交通警報', hoverLabel: '警報', icon: AlertTriangle, iconColor: 'text-rose-400' },
+    { id: 'traffic', label: '路況', icon: Activity, iconColor: 'text-orange-400' },
+    { id: 'border', label: '關口', icon: ShieldCheck, iconColor: 'text-emerald-400' },
+  ] as const;
+
+  const exploreTabsRow3 = [
     { id: 'ferry', label: '渡輪', icon: Ship, iconColor: 'text-cyan-400' },
     { id: 'cargo', label: '船運', icon: Anchor, iconColor: 'text-blue-400' },
-    { id: 'alerts', label: '交通警報', icon: AlertTriangle, iconColor: 'text-rose-400' },
-    { id: 'border', label: '關口', icon: ShieldCheck, iconColor: 'text-emerald-400' },
   ] as const;
 
   return (
@@ -2065,7 +2291,7 @@ function ExploreContent() {
         </button>
       </div>
 
-      {/* 探索分類分頁 - 2 行圖示按鈕組，Cursor 碰到後平滑展開文字（對標右上角按鈕），保留當前緊湊比例 */}
+      {/* 探索分類分頁 - 3 行圖示按鈕組，Cursor 碰到後平滑展開文字 */}
       <div className="flex flex-col gap-1 p-1 bg-[#10131a]/90 rounded-lg border border-[#232838] shrink-0 mb-2.5">
         {/* 第 1 行：天氣, 新聞, 活動, 沙灘水質, 滑雪, 極光 */}
         <div className="grid grid-cols-6 gap-1">
@@ -2092,9 +2318,34 @@ function ExploreContent() {
           })}
         </div>
 
-        {/* 第 2 行：燃油, 充電, 渡輪, 船運, 交通警報, 關口 (未開發) */}
-        <div className="grid grid-cols-6 gap-1">
+        {/* 第 2 行：燃油, 充電, 交通警報, 路況, 關口 */}
+        <div className="grid grid-cols-5 gap-1">
           {exploreTabsRow2.map((tab) => {
+            const isActive = activeTab === tab.id;
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as ExploreTabType)}
+                className={`flex items-center justify-center group py-1 px-1 rounded-md transition-all duration-200 text-xs font-semibold select-none min-h-[30px] ${
+                  isActive
+                    ? 'bg-[#252e3e] border border-cyan-500/70 text-white shadow-sm ring-1 ring-cyan-500/30'
+                    : 'text-gray-400 hover:text-gray-100 hover:bg-[#1a202c] border border-transparent hover:border-[#2b3548]'
+                }`}
+                title={tab.label}
+              >
+                <Icon className={`w-3.5 h-3.5 ${tab.iconColor} shrink-0 transition-transform duration-200 group-hover:scale-110`} />
+                <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[75px] group-hover:opacity-100 group-hover:ml-1 transition-all duration-300 whitespace-nowrap text-[10.5px]">
+                  {tab.label}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* 第 3 行：渡輪, 船運 */}
+        <div className="grid grid-cols-6 gap-1">
+          {exploreTabsRow3.map((tab) => {
             const isActive = activeTab === tab.id;
             const Icon = tab.icon;
             return (
@@ -4500,6 +4751,284 @@ function ExploreContent() {
         </div>
       )}
 
+      {/* ==================== 大溫即時路況分頁 (Waze Live Traffic & Jams) ==================== */}
+      {activeTab === 'traffic' && (
+        <div className="flex-1 flex flex-col min-h-0 space-y-2.5 overflow-hidden">
+          {/* Header Bar */}
+          <div className="flex items-center justify-between gap-1.5 shrink-0 pt-0.5">
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                <Activity className="w-4 h-4 text-orange-400" />
+                <span>大溫即時路況</span>
+              </span>
+              <span className="text-[10px] text-orange-400 bg-orange-950/70 border border-orange-800/60 px-1.5 py-0.5 rounded font-mono font-medium">
+                每 2 分鐘更新
+              </span>
+            </div>
+
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => fetchTrafficSummary(true)}
+                disabled={loadingTraffic}
+                className="p-1 rounded bg-[#1e2330] hover:bg-[#282f42] text-gray-300 hover:text-white transition-colors border border-[#2e364a]"
+                title="立即更新路況"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${loadingTraffic ? 'animate-spin text-orange-400' : ''}`} />
+              </button>
+              <a
+                href="https://www.waze.com/livemap"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[11px] text-cyan-400 hover:text-cyan-300 flex items-center gap-1 px-1.5 py-1 rounded bg-cyan-950/40 hover:bg-cyan-900/40 border border-cyan-800/40 transition-colors"
+                title="前往 Waze LiveMap 官方地圖"
+              >
+                <span>Waze 官網</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            </div>
+          </div>
+
+          {/* Quick Metrics & Overall Bottleneck Banner */}
+          <div className="bg-[#121622] rounded-lg p-2.5 border border-[#222838] flex flex-col gap-2 shrink-0 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-sm">🚦</span>
+                <div>
+                  <span className="text-[10px] text-gray-400 block leading-tight">全境壅塞指數</span>
+                  <span className="font-bold text-xs text-white">
+                    {trafficSummary?.overall_status || '大溫交通偏忙 (Moderate)'}
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs font-bold font-mono text-orange-400 bg-orange-500/10 px-2 py-0.5 rounded border border-orange-500/30">
+                  {trafficSummary?.overall_congestion_score || 68} / 100
+                </span>
+              </div>
+            </div>
+
+            {trafficSummary?.worst_corridor && (
+              <div className="text-[11px] bg-red-950/40 border border-red-800/50 rounded p-1.5 text-red-200 flex items-start gap-1.5 leading-snug">
+                <span className="text-xs shrink-0">⚠️</span>
+                <div>
+                  <span className="font-semibold text-red-300">最壅塞瓶頸：</span>
+                  <span>{trafficSummary.worst_corridor}</span>
+                </div>
+              </div>
+            )}
+
+            {/* Quick Stats Counter Pills */}
+            <div className="grid grid-cols-2 gap-1.5 text-[10.5px]">
+              <div className="bg-[#181d2a] rounded px-2 py-1 border border-[#262e42] flex items-center justify-between">
+                <span className="text-gray-400">主要幹道監測</span>
+                <span className="font-bold font-mono text-emerald-400">{trafficSummary?.total_jams || 8} 條</span>
+              </div>
+              <div className="bg-[#181d2a] rounded px-2 py-1 border border-[#262e42] flex items-center justify-between">
+                <span className="text-gray-400">突發大眾通報</span>
+                <span className="font-bold font-mono text-amber-400">{trafficSummary?.total_incidents || 6} 則</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Sub-Filter Tabs & Search Input */}
+          <div className="flex flex-col gap-1.5 shrink-0">
+            {/* Filter Pills */}
+            <div className="grid grid-cols-4 gap-1 p-0.5 bg-[#121622] rounded-lg border border-[#222838]">
+              {[
+                { key: 'all', label: '全部幹道' },
+                { key: 'severe', label: '嚴重壅塞' },
+                { key: 'bridges', label: '關鍵橋隧' },
+                { key: 'incidents', label: '突發事故' },
+              ].map((pill) => (
+                <button
+                  key={pill.key}
+                  onClick={() => setTrafficFilter(pill.key as any)}
+                  className={`py-1 text-[10.5px] rounded font-medium transition-all ${
+                    trafficFilter === pill.key
+                      ? 'bg-orange-600 text-white shadow-xs'
+                      : 'text-gray-400 hover:text-gray-200 hover:bg-[#1a2030]'
+                  }`}
+                >
+                  {pill.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Search Input */}
+            <div className="relative">
+              <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <input
+                type="text"
+                value={trafficSearchQuery}
+                onChange={(e) => setTrafficSearchQuery(e.target.value)}
+                placeholder="搜尋幹道 (如: 1號公路, 99號, 獅門大橋)..."
+                className="w-full bg-[#121622] border border-[#222838] focus:border-orange-500/70 rounded-lg pl-8 pr-7 py-1 text-xs text-gray-200 placeholder-gray-500 outline-none transition-colors"
+              />
+              {trafficSearchQuery && (
+                <button
+                  onClick={() => setTrafficSearchQuery('')}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white text-xs"
+                >
+                  &times;
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Scrollable List Content */}
+          <div className="flex-1 overflow-y-auto space-y-2 pr-0.5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
+            {/* If filter is 'incidents', show incident list first */}
+            {trafficFilter === 'incidents' ? (
+              filteredTrafficAlerts.length === 0 ? (
+                <div className="py-12 text-center text-gray-400 text-xs">
+                  目前查無相符的大眾事故通報
+                </div>
+              ) : (
+                filteredTrafficAlerts.map((alert) => (
+                  <div
+                    key={alert.id}
+                    onClick={() => handleFlyToTrafficAlert(alert)}
+                    className="group p-2.5 rounded-lg bg-[#141824] hover:bg-[#1a2032] border border-[#252c3e] hover:border-orange-500/50 transition-all cursor-pointer flex flex-col gap-1.5 shadow-sm"
+                  >
+                    <div className="flex items-center justify-between gap-1.5">
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        <span className="text-base shrink-0">{alert.icon || '⚠️'}</span>
+                        <span className="font-bold text-xs text-white truncate">
+                          {alert.type_label}
+                        </span>
+                      </div>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded text-white shrink-0" style={{ backgroundColor: alert.color || '#ef4444' }}>
+                        +{alert.delay_min} 分
+                      </span>
+                    </div>
+
+                    <div className="text-[11px] text-gray-300 font-medium flex items-center justify-between">
+                      <span className="truncate">📍 {alert.street}</span>
+                      <span className="text-[10px] text-gray-400 shrink-0">{alert.report_time_str}</span>
+                    </div>
+
+                    {alert.description && (
+                      <div className="text-[10.5px] text-gray-400 bg-[#0d1017] rounded p-1.5 border border-[#1e2333] leading-relaxed">
+                        {alert.description}
+                      </div>
+                    )}
+
+                    <div className="flex items-center justify-between pt-0.5 text-[10px]">
+                      <span className="text-emerald-400 font-medium">
+                        ✓ 社群回報可信度 {alert.waze_confidence}%
+                      </span>
+                      <span className="text-cyan-400 group-hover:underline flex items-center gap-0.5">
+                        在地圖查看圖釘 →
+                      </span>
+                    </div>
+                  </div>
+                ))
+              )
+            ) : (
+              /* Corridors List */
+              filteredCorridors.length === 0 ? (
+                <div className="py-12 text-center text-gray-400 text-xs">
+                  目前查無符合條件的主要幹道路況
+                </div>
+              ) : (
+                filteredCorridors.map((corridor) => {
+                  const statusBg = corridor.status_color === 'red' ? 'bg-red-950/80 text-red-200 border-red-800' :
+                    corridor.status_color === 'orange' ? 'bg-orange-950/80 text-orange-200 border-orange-800' :
+                    corridor.status_color === 'amber' ? 'bg-amber-950/80 text-amber-200 border-amber-800' :
+                    'bg-emerald-950/80 text-emerald-200 border-emerald-800';
+
+                  const delayColor = corridor.delay_min >= 12 ? 'text-rose-400' :
+                    corridor.delay_min >= 8 ? 'text-orange-400' : 'text-amber-400';
+
+                  return (
+                    <div
+                      key={corridor.id}
+                      onClick={() => handleFlyToCorridor(corridor)}
+                      className="group p-2.5 rounded-lg bg-[#141824] hover:bg-[#1a2032] border border-[#252c3e] hover:border-orange-500/50 transition-all cursor-pointer flex flex-col gap-2 shadow-sm"
+                    >
+                      {/* Top Row: Name + Badge + Status */}
+                      <div className="flex items-start justify-between gap-1.5">
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-1.5">
+                            <span className="font-bold text-xs text-white group-hover:text-orange-300 transition-colors">
+                              {corridor.name}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1.5 mt-0.5 text-[10px] text-gray-400">
+                            <span className="px-1 py-0.2 rounded bg-[#1e2436] text-gray-300 font-mono">
+                              {corridor.route}
+                            </span>
+                            <span>·</span>
+                            <span>{corridor.badge}</span>
+                          </div>
+                        </div>
+
+                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border shrink-0 ${statusBg}`}>
+                          {corridor.status}
+                        </span>
+                      </div>
+
+                      {/* Middle Row: Delay & Current Speed */}
+                      <div className="grid grid-cols-2 gap-1.5 bg-[#0e111a] p-1.5 rounded border border-[#1e2333]">
+                        <div className="flex flex-col">
+                          <span className="text-[9.5px] text-gray-400">預計通過延誤</span>
+                          <span className={`font-bold font-mono text-xs ${delayColor}`}>
+                            +{corridor.delay_min} 分鐘
+                          </span>
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-[9.5px] text-gray-400">平均車速 / 速限</span>
+                          <div className="flex items-baseline gap-1">
+                            <span className="font-bold font-mono text-xs text-white">
+                              {corridor.current_speed_kmh}
+                            </span>
+                            <span className="text-[9.5px] text-gray-400">/ {corridor.freeflow_speed_kmh} km/h</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Direction Segments Breakdown */}
+                      {corridor.segments && corridor.segments.length > 0 && (
+                        <div className="flex flex-col gap-1 text-[10px]">
+                          {corridor.segments.map((seg, idx) => (
+                            <div key={idx} className="flex items-center justify-between text-gray-300 px-1 py-0.5 rounded bg-[#181d2a]/60">
+                              <span className="truncate">{seg.name}</span>
+                              <div className="flex items-center gap-1.5 shrink-0 font-mono">
+                                <span className={seg.delay_min >= 10 ? 'text-rose-400 font-semibold' : 'text-amber-400'}>
+                                  +{seg.delay_min}分
+                                </span>
+                                <span className="text-gray-400">({seg.speed_kmh}km/h)</span>
+                                <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: seg.color }} />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Bottleneck description note */}
+                      {corridor.key_bottleneck && (
+                        <div className="text-[10px] text-amber-300/90 bg-amber-950/30 rounded p-1.5 border border-amber-900/30 flex items-start gap-1 leading-snug">
+                          <span className="shrink-0">⚠️</span>
+                          <span>{corridor.key_bottleneck}</span>
+                        </div>
+                      )}
+
+                      {/* Bottom row: Click to fly action */}
+                      <div className="flex items-center justify-between text-[10px] pt-0.5 text-gray-400 border-t border-[#1e2333]/70">
+                        <span>{corridor.trend === 'worsening' ? '↗️ 車流加劇中' : corridor.trend === 'improving' ? '↘️ 車流改善中' : '➡️ 車流穩定'}</span>
+                        <span className="text-cyan-400 group-hover:underline flex items-center gap-0.5">
+                          在地圖定位路況色帶 →
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })
+              )
+            )}
+          </div>
+        </div>
+      )}
+
       {/* ==================== 美加邊境關口分頁 (Border Crossings - Live CBSA & CBP) ==================== */}
       {activeTab === 'border' && (
         <div className="flex-1 flex flex-col min-h-0 space-y-2.5 overflow-hidden">
@@ -4749,6 +5278,12 @@ function ExploreContent() {
           )}
           {activeTab === 'alerts' && (
             <span>共 {filteredAndSortedAlerts.banners.length + filteredAndSortedAlerts.regular.length} 則 TransLink 即時運輸警報</span>
+          )}
+          {activeTab === 'traffic' && (
+            <>
+              <span>大溫哥華 8 大主要幹道即時通過延誤</span>
+              <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：Waze LiveMap</span>
+            </>
           )}
           {activeTab === 'border' && (
             <>

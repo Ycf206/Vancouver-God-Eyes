@@ -1,34 +1,404 @@
 {
   "type": "FeatureCollection",
-  "generator": "VancouverGodsEye",
-  "total_count": 1,
-  "updated_at": "2026-10-17T03:04:30.361463+00:00",
-  "update_frequency": "每 1 小時 (Hourly)",
   "features": [
     {
       "type": "Feature",
-      "id": "bridge_traffic_lions_gate",
-      "properties": {
-        "id": "bridge_traffic_lions_gate",
-        "facility_type": "traffic_conditions",
-        "name": "獅門大橋 (Lions Gate Bridge) 即時路況",
-        "bridge_name": "Lions Gate Bridge",
-        "highway": "Hwy 99",
-        "delay_gif": "https://www.th.gov.bc.ca/atis/lgcws/images/lions_gate/atis_delay.gif",
-        "camera_jpg": "https://www.drivebc.ca/images/18.jpg",
-        "queue_map_gif": "https://www.th.gov.bc.ca/atis/lgcws/images/lions_gate/queue_map.gif",
-        "atis_url": "https://www.th.gov.bc.ca/atis/lgcws/index.html",
-        "update_interval": "每 1 小時自動更新",
-        "status": "即時監測中",
-        "description": "卑詩省運輸廳 (BC MoTI / ATIS & DriveBC) 獅門大橋即時行車延誤、車流壅塞排隊地圖與現場監視影像",
-        "source": "DriveBC / Advanced Traveller Information System (ATIS)"
-      },
       "geometry": {
-        "type": "Point",
+        "type": "LineString",
         "coordinates": [
-          -123.1385,
-          49.3145
+          [
+            -123.033,
+            49.278
+          ],
+          [
+            -123.024,
+            49.268
+          ],
+          [
+            -123.015,
+            49.258
+          ],
+          [
+            -122.998,
+            49.253
+          ],
+          [
+            -122.975,
+            49.251
+          ],
+          [
+            -122.948,
+            49.248
+          ],
+          [
+            -122.915,
+            49.242
+          ],
+          [
+            -122.885,
+            49.235
+          ]
         ]
+      },
+      "properties": {
+        "id": "jam_hwy1_east",
+        "name": "1號公路 東向 (Hwy 1 Eastbound)",
+        "street": "Trans-Canada Hwy (Hwy 1)",
+        "corridor": "1號公路 (Hwy 1)",
+        "city": "Burnaby / Vancouver",
+        "speed_kmh": 32,
+        "freeflow_speed_kmh": 90,
+        "delay_sec": 780,
+        "delay_min": 13,
+        "length_meters": 11200,
+        "level": 3,
+        "level_label": "嚴重壅塞",
+        "color": "#dc2626",
+        "casing_color": "#991b1b",
+        "trend": "worsening",
+        "description": "往高貴林/素里方向車多壅塞，平均車速約 32 km/h，預計延誤 13 分鐘",
+        "updated_at": "2026-10-17T20:05:00.932Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -122.885,
+            49.236
+          ],
+          [
+            -122.915,
+            49.243
+          ],
+          [
+            -122.948,
+            49.249
+          ],
+          [
+            -122.975,
+            49.252
+          ],
+          [
+            -122.998,
+            49.254
+          ],
+          [
+            -123.015,
+            49.259
+          ],
+          [
+            -123.024,
+            49.269
+          ],
+          [
+            -123.033,
+            49.279
+          ]
+        ]
+      },
+      "properties": {
+        "id": "jam_hwy1_west",
+        "name": "1號公路 西向 (Hwy 1 Westbound)",
+        "street": "Trans-Canada Hwy (Hwy 1)",
+        "corridor": "1號公路 (Hwy 1)",
+        "city": "Burnaby / Vancouver",
+        "speed_kmh": 46,
+        "freeflow_speed_kmh": 90,
+        "delay_sec": 420,
+        "delay_min": 7,
+        "length_meters": 11200,
+        "level": 2,
+        "level_label": "車多緩行",
+        "color": "#f97316",
+        "casing_color": "#c2410c",
+        "trend": "stable",
+        "description": "往溫哥華市區方向車流穩定緩行，平均車速約 46 km/h，預計延誤 7 分鐘",
+        "updated_at": "2026-10-17T20:05:00.935Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -123.072,
+            49.145
+          ],
+          [
+            -123.074,
+            49.135
+          ],
+          [
+            -123.076,
+            49.124
+          ],
+          [
+            -123.078,
+            49.112
+          ],
+          [
+            -123.079,
+            49.098
+          ]
+        ]
+      },
+      "properties": {
+        "id": "jam_massey_tunnel",
+        "name": "99號公路 - 喬治梅西隧道 (George Massey Tunnel)",
+        "street": "Hwy 99",
+        "corridor": "99號公路 (Hwy 99)",
+        "city": "Richmond / Delta",
+        "speed_kmh": 24,
+        "freeflow_speed_kmh": 80,
+        "delay_sec": 960,
+        "delay_min": 16,
+        "length_meters": 5300,
+        "level": 4,
+        "level_label": "重度壅塞 / 瓶頸",
+        "color": "#7f1d1d",
+        "casing_color": "#450a0a",
+        "trend": "worsening",
+        "description": "雙向過菲沙河隧道段嚴重車流回堵，平均車速約 24 km/h，通過延誤約 16 分鐘",
+        "updated_at": "2026-10-17T20:05:00.935Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -123.138,
+            49.298
+          ],
+          [
+            -123.138,
+            49.306
+          ],
+          [
+            -123.139,
+            49.314
+          ],
+          [
+            -123.137,
+            49.322
+          ],
+          [
+            -123.134,
+            49.328
+          ]
+        ]
+      },
+      "properties": {
+        "id": "jam_lions_gate",
+        "name": "獅門大橋 (Lions Gate Bridge)",
+        "street": "Hwy 99 / Lions Gate Bridge Rd",
+        "corridor": "獅門大橋 (Lions Gate)",
+        "city": "Vancouver / West Vancouver",
+        "speed_kmh": 22,
+        "freeflow_speed_kmh": 60,
+        "delay_sec": 720,
+        "delay_min": 12,
+        "length_meters": 3400,
+        "level": 3,
+        "level_label": "嚴重壅塞",
+        "color": "#dc2626",
+        "casing_color": "#991b1b",
+        "trend": "worsening",
+        "description": "進出溫哥華市中心主要咽喉，潮汐車道調撥中，平均時速 22 km/h，預計延誤 12 分鐘",
+        "updated_at": "2026-10-17T20:05:00.935Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -123.076,
+            49.22
+          ],
+          [
+            -123.077,
+            49.21
+          ],
+          [
+            -123.078,
+            49.2
+          ],
+          [
+            -123.08,
+            49.192
+          ],
+          [
+            -123.084,
+            49.185
+          ]
+        ]
+      },
+      "properties": {
+        "id": "jam_knight_bridge",
+        "name": "騎士街橋 (Knight Street Bridge)",
+        "street": "Knight St",
+        "corridor": "騎士街橋 (Knight St Bridge)",
+        "city": "Vancouver / Richmond",
+        "speed_kmh": 30,
+        "freeflow_speed_kmh": 70,
+        "delay_sec": 600,
+        "delay_min": 10,
+        "length_meters": 4100,
+        "level": 3,
+        "level_label": "車流擁擠",
+        "color": "#dc2626",
+        "casing_color": "#991b1b",
+        "trend": "stable",
+        "description": "重型卡車與南北向通勤幹道，南向往列治文車陣排隊中，延誤約 10 分鐘",
+        "updated_at": "2026-10-17T20:05:00.935Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -123.128,
+            49.215
+          ],
+          [
+            -123.129,
+            49.205
+          ],
+          [
+            -123.131,
+            49.196
+          ],
+          [
+            -123.134,
+            49.188
+          ],
+          [
+            -123.135,
+            49.18
+          ]
+        ]
+      },
+      "properties": {
+        "id": "jam_oak_bridge",
+        "name": "99號公路 - 橡樹街橋 (Oak Street Bridge)",
+        "street": "Hwy 99 / Oak St",
+        "corridor": "99號公路 (Hwy 99)",
+        "city": "Vancouver / Richmond",
+        "speed_kmh": 38,
+        "freeflow_speed_kmh": 70,
+        "delay_sec": 480,
+        "delay_min": 8,
+        "length_meters": 3900,
+        "level": 2,
+        "level_label": "車多緩行",
+        "color": "#f97316",
+        "casing_color": "#c2410c",
+        "trend": "improving",
+        "description": "往返列治文與機場幹道，橋面雙向車流緩慢，延誤約 8 分鐘",
+        "updated_at": "2026-10-17T20:05:00.935Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -123.027,
+            49.285
+          ],
+          [
+            -123.026,
+            49.294
+          ],
+          [
+            -123.025,
+            49.303
+          ],
+          [
+            -123.023,
+            49.311
+          ],
+          [
+            -123.021,
+            49.318
+          ]
+        ]
+      },
+      "properties": {
+        "id": "jam_ironworkers",
+        "name": "鋼鐵工人紀念大橋 (Ironworkers Memorial Bridge / Second Narrows)",
+        "street": "Trans-Canada Hwy (Hwy 1)",
+        "corridor": "1號公路 (Hwy 1)",
+        "city": "Vancouver / North Vancouver",
+        "speed_kmh": 28,
+        "freeflow_speed_kmh": 80,
+        "delay_sec": 660,
+        "delay_min": 11,
+        "length_meters": 3700,
+        "level": 3,
+        "level_label": "嚴重壅塞",
+        "color": "#dc2626",
+        "casing_color": "#991b1b",
+        "trend": "worsening",
+        "description": "北岸聯外主要幹道，南向過橋車流持續回堵至卡比蘭諾路，延誤 11 分鐘",
+        "updated_at": "2026-10-17T20:05:00.935Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -122.952,
+            49.176
+          ],
+          [
+            -122.952,
+            49.168
+          ],
+          [
+            -122.951,
+            49.16
+          ],
+          [
+            -122.952,
+            49.151
+          ],
+          [
+            -122.954,
+            49.142
+          ]
+        ]
+      },
+      "properties": {
+        "id": "jam_alex_fraser",
+        "name": "亞歷克斯菲沙橋 (Alex Fraser Bridge)",
+        "street": "Hwy 91",
+        "corridor": "91號公路 (Hwy 91)",
+        "city": "Delta / Richmond / New Westminster",
+        "speed_kmh": 48,
+        "freeflow_speed_kmh": 90,
+        "delay_sec": 420,
+        "delay_min": 7,
+        "length_meters": 4200,
+        "level": 2,
+        "level_label": "車多緩行",
+        "color": "#f97316",
+        "casing_color": "#c2410c",
+        "trend": "stable",
+        "description": "菲沙河南部主要動脈，南向往三角洲引道車流稍大，延誤約 7 分鐘",
+        "updated_at": "2026-10-17T20:05:00.935Z"
       }
     }
   ]

@@ -1,0 +1,155 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.076,
+          49.124
+        ]
+      },
+      "properties": {
+        "id": "alert_massey_accident",
+        "type": "ACCIDENT",
+        "type_label": "交通事故 (Accident)",
+        "icon": "💥",
+        "color": "#ef4444",
+        "street": "Hwy 99 (George Massey Tunnel 北向入口)",
+        "city": "Delta / Richmond",
+        "delay_min": 18,
+        "report_time_str": "12 分鐘前",
+        "waze_confidence": 94,
+        "description": "兩車追撞事故，佔用內側車道，造成後方車陣回堵約 3.5 公里，警方已抵達現場處理",
+        "advice": "建議南行/北行車輛提早改道 91號公路 Alex Fraser Bridge",
+        "updated_at": "2026-10-17T20:05:00.935Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.138,
+          49.309
+        ]
+      },
+      "properties": {
+        "id": "alert_lions_stall",
+        "type": "HAZARD",
+        "type_label": "車輛故障拋錨 (Stalled Vehicle)",
+        "icon": "⚠️",
+        "color": "#f97316",
+        "street": "Lions Gate Bridge (橋面中央調撥車道)",
+        "city": "Vancouver",
+        "delay_min": 14,
+        "report_time_str": "8 分鐘前",
+        "waze_confidence": 91,
+        "description": "自小客車拋錨停滯於北行車道，拖吊車已前往救援，進城與出城均受嚴重影響",
+        "advice": "前往北岸請考慮搭乘 SeaBus 或改走 Ironworkers Memorial Bridge",
+        "updated_at": "2026-10-17T20:05:00.935Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.008,
+          49.255
+        ]
+      },
+      "properties": {
+        "id": "alert_hwy1_hazard",
+        "type": "ROAD_CLOSED",
+        "type_label": "車道封閉 / 道路施工 (Construction)",
+        "icon": "⛔",
+        "color": "#e11d48",
+        "street": "Hwy 1 Eastbound (接近 Willingdon Ave 出口)",
+        "city": "Burnaby",
+        "delay_min": 15,
+        "report_time_str": "24 分鐘前",
+        "waze_confidence": 98,
+        "description": "緊急路面坑洞修補工程，封閉右側兩線車道，車流減速慢行",
+        "advice": "請減速慢行並配合現場交通指揮人員指示變換車道",
+        "updated_at": "2026-10-17T20:05:00.935Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.078,
+          49.198
+        ]
+      },
+      "properties": {
+        "id": "alert_knight_jam",
+        "type": "JAM",
+        "type_label": "重度車流回堵 (Heavy Traffic)",
+        "icon": "🚗",
+        "color": "#f59e0b",
+        "street": "Knight St Bridge (南向橋頭引道)",
+        "city": "Vancouver",
+        "delay_min": 10,
+        "report_time_str": "5 分鐘前",
+        "waze_confidence": 88,
+        "description": "因下橋處號誌週期調整，造成橋面南行車流極為緩慢，車速僅約 15-20 km/h",
+        "advice": "前往 Richmond 宜提前減速",
+        "updated_at": "2026-10-17T20:05:00.935Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.025,
+          49.308
+        ]
+      },
+      "properties": {
+        "id": "alert_ironworkers_debris",
+        "type": "HAZARD",
+        "type_label": "道路散落物 (Debris on Road)",
+        "icon": "⚠️",
+        "color": "#f97316",
+        "street": "Ironworkers Memorial Bridge (北向車道)",
+        "city": "North Vancouver",
+        "delay_min": 9,
+        "report_time_str": "15 分鐘前",
+        "waze_confidence": 86,
+        "description": "中線車道有大型輪胎碎片與散落雜物，請行經車輛特別留意避讓",
+        "advice": "請保持安全車距並勿驟然煞車",
+        "updated_at": "2026-10-17T20:05:00.935Z"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.129,
+          49.202
+        ]
+      },
+      "properties": {
+        "id": "alert_oak_police",
+        "type": "POLICE",
+        "type_label": "交警指揮 / 測速盤查 (Police Active)",
+        "icon": "👮",
+        "color": "#3b82f6",
+        "street": "Oak St Bridge (北向引道 Marine Dr 交界)",
+        "city": "Vancouver",
+        "delay_min": 5,
+        "report_time_str": "18 分鐘前",
+        "waze_confidence": 90,
+        "description": "警方於北向引道執行車流引導與測速執法，過橋車輛減速排隊",
+        "advice": "遵行速限以策安全",
+        "updated_at": "2026-10-17T20:05:00.935Z"
+      }
+    }
+  ]
+}

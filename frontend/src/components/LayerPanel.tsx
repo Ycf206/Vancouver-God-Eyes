@@ -9,7 +9,7 @@ import {
   Droplets, Bath, Leaf, Landmark, GraduationCap, BookOpen, UtensilsCrossed, Bed, Heart,
   PlaneTakeoff, Calendar, Car, ShieldAlert, LifeBuoy, HeartPulse, Mountain,
   Compass, MapPin, Fuel, Train, Anchor, ArrowRight, Snowflake, Fingerprint, Waves,
-  Gauge, Mail, Radio, Trash2, Soup, Recycle, RotateCcw, Wifi, Activity, Ban, Cone, Lightbulb, LandPlot
+  Gauge, Mail, Radio, Trash2, Soup, Recycle, RotateCcw, Wifi, Activity, Ban, Cone, Lightbulb, LandPlot, Megaphone
 } from 'lucide-react';
 
 // Helper component for Tesla Icon
@@ -270,9 +270,12 @@ export default function LayerPanel() {
             <LayerButton layerKey="trafficCameras" label="交通攝影機" icon={Camera} colorClass="text-cyan-400" activeBg="bg-[#14262b]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.15)]" />
             <LayerButton layerKey="safetyCameras" label="路口安全相機" icon={Siren} colorClass="text-rose-400" activeBg="bg-[#2b171c]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.15)]" />
 
-            {/* Row 10: 鏟雪路線 | 路況 */}
-            <LayerButton layerKey="snowRemovalRoutes" label="鏟雪路線" icon={Snowflake} colorClass="text-sky-300" activeBg="bg-[#0f2938]" activeBorder="border-sky-400/50" activeShadow="shadow-[0_0_6px_rgba(56,189,248,0.2)]" />
-            <LayerButton layerKey="trafficConditions" label="路況" icon={Activity} title="即時路況 - Lions Gate Bridge (每小時更新)" colorClass="text-emerald-400" activeBg="bg-[#142820]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
+            {/* Row 10: 大眾通報 | 路況 */}
+            <LayerButton layerKey="wazeAlerts" label="大眾通報" icon={Megaphone} title="Waze 大眾通報即時突發事故與路況 (每 2~3 分鐘更新)" colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
+            <LayerButton layerKey="trafficConditions" label="路況" icon={Activity} title="Waze 即時路況色帶 (每 2~3 分鐘更新)" colorClass="text-emerald-400" activeBg="bg-[#142820]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
+
+            {/* Row 11: 鏟雪路線 */}
+            <LayerButton layerKey="snowRemovalRoutes" label="鏟雪路線" icon={Snowflake} title="鏟雪路線 (每星期更新)" colorClass="text-sky-300" activeBg="bg-[#0f2938]" activeBorder="border-sky-400/50" activeShadow="shadow-[0_0_6px_rgba(56,189,248,0.2)]" />
           </div>
         </div>
 
