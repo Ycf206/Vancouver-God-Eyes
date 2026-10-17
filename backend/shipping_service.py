@@ -5,9 +5,14 @@ import math
 import asyncio
 import logging
 from typing import Dict, Any, List, Optional, Tuple
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 logger = logging.getLogger("shipping_service")
+
+def get_dynamic_eta(hours_offset: float = 1.0) -> str:
+    """以當前時間動態推算預計抵達時間 (MM-DD HH:MM)，保證永不過期停留在舊日期"""
+    target = datetime.now() + timedelta(hours=hours_offset)
+    return target.strftime("%m-%d %H:%M")
 
 # ----------------- 陸地邊界多邊形遮罩 (Land Exclusion Masks) -----------------
 # 史丹利公園陸地邊界 (嚴格防止船隻在史丹利公園陸地行駛)
@@ -67,44 +72,48 @@ def is_point_on_vancouver_land(lon: float, lat: float) -> bool:
 PATH_BURRARD_OUTBOUND = [
     [-123.0600, 49.2980],  # Centerm / Vanterm container basin
     [-123.0850, 49.3015],  # Off Canada Place / SeaBus lane
-    [-123.1120, 49.3085],  # North of Brockton Point (深水航道，避開史丹利公園)
-    [-123.1385, 49.3145],  # Lions Gate Bridge center channel (First Narrows)
-    [-123.1600, 49.3150],  # First Narrows outer fairway (避開北岸 Ambleside 陸地水域)
-    [-123.2200, 49.3120],  # English Bay Traffic Separation Zone
+    [-123.1080, 49.3105],  # Northeast of Brockton Point in open water channel
+    [-123.1280, 49.3175],  # North of Stanley Park, channel center between Vancouver & North Van
+    [-123.1385, 49.3148],  # Lions Gate Bridge center channel (First Narrows)
+    [-123.1650, 49.3170],  # First Narrows outer approach (deep water)
+    [-123.2300, 49.3120],  # English Bay Traffic Separation Zone
     [-123.2700, 49.3050]   # Pilot station / Strait of Georgia
 ]
 
 # 航道 2: 布勒內灣主航道進港（外海進入溫哥華港）
 PATH_BURRARD_INBOUND = [
     [-123.2700, 49.3050],  # Strait of Georgia entrance
-    [-123.2200, 49.3120],  # English Bay Fairway
-    [-123.1600, 49.3150],  # First Narrows west approach
-    [-123.1385, 49.3145],  # Lions Gate Bridge center span
-    [-123.1120, 49.3085],  # North of Brockton Point
-    [-123.0850, 49.3015],  # Central Harbour
+    [-123.2300, 49.3120],  # English Bay Traffic Separation Zone
+    [-123.1650, 49.3170],  # First Narrows outer approach
+    [-123.1385, 49.3148],  # Lions Gate Bridge center span
+    [-123.1280, 49.3175],  # North of Stanley Park, channel center
+    [-123.1080, 49.3105],  # Northeast of Brockton Point
+    [-123.0850, 49.3015],  # Central Harbour / Canada Place
     [-123.0600, 49.2980]   # Vanterm / Centerm Basin
 ]
 
 # 航道 3: 布勒內灣核心港區作業拖船巡邏迴圈 (Seaspan Eagle，全程位於布勒內灣深水區，絕不進入史丹利公園)
 PATH_BURRARD_TUG_PATROL = [
-    [-123.1050, 49.3060],  # 布洛克頓角東側深水區 (東經 -123.105，安全水域)
+    [-123.1080, 49.3105],  # 布洛克頓角東北外側深水區
     [-123.0850, 49.3025],  # 加拿大廣場以北航道
     [-123.0600, 49.3000],  # 溫哥華貨櫃碼頭外側深水區
     [-123.0400, 49.2975],  # 二峽橋西側掉頭水域
     [-123.0600, 49.3015],  # 北岸 Seaspan 造船廠外側返航
     [-123.0850, 49.3040],  # 北岸 Lonsdale Quay 外側水域
-    [-123.1050, 49.3060]   # 回到布勒內灣巡邏起點 (閉合迴圈)
+    [-123.1080, 49.3105]   # 回到布勒內灣巡邏起點 (閉合迴圈)
 ]
 
-# 航道 4: 一峽橋護航拖船巡邏線 (Seaspan Commodore，往返一峽橋與英吉利灣)
+# 航道 4: 一峽橋護航拖船巡邏線 (Seaspan Commodore，往返一峽橋與英吉利灣，全程深水航道不穿透史丹利公園)
 PATH_FIRST_NARROWS_ESCORT = [
-    [-123.1650, 49.3150],  # 英吉利灣東口深水區 (避開北岸陸地)
-    [-123.1500, 49.3148],  # 獅門橋西引道中央深水航道
-    [-123.1385, 49.3145],  # 獅門橋主跨下方中央深水區
-    [-123.1150, 49.3085],  # 內港入口
-    [-123.1385, 49.3145],  # 掉頭折返
-    [-123.1500, 49.3148],
-    [-123.1650, 49.3150]
+    [-123.1650, 49.3170],  # 英吉利灣外海引道 (避開北岸陸地)
+    [-123.1500, 49.3160],  # 獅門橋西側外海中央航道
+    [-123.1385, 49.3148],  # 獅門橋主跨下方中央深水區
+    [-123.1280, 49.3175],  # 史丹利公園以北深水通道中心線 (避開陸地 Prospect Point)
+    [-123.1080, 49.3105],  # 布勒內港入口深水區
+    [-123.1280, 49.3175],  # 掉頭折返史丹利公園北通道
+    [-123.1385, 49.3148],  # 獅門橋主跨下方
+    [-123.1500, 49.3160],
+    [-123.1650, 49.3170]
 ]
 
 # 航道 5: 菲沙河內河推船作業航線 (Island Defender，沿菲沙河南臂深水航道中心線，絕不穿越列治文陸地)
@@ -124,15 +133,23 @@ PATH_FRASER_RIVER = [
     [-122.9800, 49.1580]
 ]
 
-# 航道 6: 福溪水上渡輪往返航線 (Aquabus / False Creek Transit)
+# 航道 6: 福溪水上渡輪往返航線 (False Creek Transit，沿福溪深水主航道中央線，避開 George Wainborn 等岸上公園)
 PATH_FALSE_CREEK = [
-    [-123.1360, 49.2730],
-    [-123.1280, 49.2710],
-    [-123.1180, 49.2720],
-    [-123.1080, 49.2720],
-    [-123.1180, 49.2720],
-    [-123.1280, 49.2710],
-    [-123.1360, 49.2730]
+    [-123.1420, 49.2760],  # 布勒橋外側開闊水域
+    [-123.1385, 49.2762],  # 布勒橋主跨下方水面
+    [-123.1325, 49.2740],  # 格蘭維爾島以北水面，格蘭維爾橋下
+    [-123.1265, 49.2718],  # 喬治溫伯恩公園南側水面
+    [-123.1210, 49.2700],  # 戴維林公園南側中央水面 (深水航道)
+    [-123.1150, 49.2710],  # 耶魯鎮碼頭水面
+    [-123.1100, 49.2725],  # 萬國廣場水面
+    [-123.1040, 49.2735],  # 科學世界水池水面 (掉頭處)
+    [-123.1100, 49.2725],
+    [-123.1150, 49.2710],
+    [-123.1210, 49.2700],
+    [-123.1265, 49.2718],
+    [-123.1325, 49.2740],
+    [-123.1385, 49.2762],
+    [-123.1420, 49.2760]
 ]
 
 # 航道 7: 菲沙河北臂內河拖船航線 (Fraser River North Arm，沿溫哥華與列治文交界水道中心線)
@@ -912,7 +929,7 @@ class MaritimeShippingService:
                 "heading": 80.0,
                 "nav_status": "繫泊停靠碼頭 (Moored)",
                 "destination": "GRANVILLE ISLAND MARINA",
-                "eta": "10-15 17:00",
+                "eta": get_dynamic_eta(1.5),
                 "length": 14,
                 "width": 4,
                 "draft": 1.8,
@@ -927,14 +944,14 @@ class MaritimeShippingService:
                 "type_code": 60,
                 "ship_type": "福溪水上觀光客船 (Water Taxi)",
                 "type_group": "passenger",
-                "lat": 49.2710,
+                "lat": 49.2700,
                 "lon": -123.1210,
                 "sog": 3.8,
                 "cog": 90.0,
                 "heading": 90.0,
                 "nav_status": "發動機航行中 (Underway)",
                 "destination": "DAVID LAM PARK 往 YALETOWN",
-                "eta": "10-15 14:15",
+                "eta": get_dynamic_eta(0.5),
                 "length": 11,
                 "width": 3,
                 "draft": 1.2,
@@ -951,14 +968,14 @@ class MaritimeShippingService:
                 "type_code": 37,
                 "ship_type": "巡航動力遊艇 (Cabin Cruiser)",
                 "type_group": "pleasure",
-                "lat": 49.2715,
-                "lon": -123.1280,
+                "lat": 49.2705,
+                "lon": -123.1285,
                 "sog": 0.0,
                 "cog": 95.0,
                 "heading": 95.0,
                 "nav_status": "繫泊停靠碼頭 (Moored)",
                 "destination": "FALSE CREEK YACHT CLUB",
-                "eta": "10-15 16:45",
+                "eta": get_dynamic_eta(2.0),
                 "length": 22,
                 "width": 6,
                 "draft": 1.9,
@@ -973,14 +990,14 @@ class MaritimeShippingService:
                 "type_code": 37,
                 "ship_type": "雙體豪華遊艇 (Catamaran)",
                 "type_group": "pleasure",
-                "lat": 49.2715,
+                "lat": 49.2725,
                 "lon": -123.1090,
                 "sog": 0.0,
                 "cog": 70.0,
                 "heading": 70.0,
                 "nav_status": "繫泊停靠碼頭 (Moored)",
                 "destination": "PLAZA OF NATIONS MARINA",
-                "eta": "10-15 18:20",
+                "eta": get_dynamic_eta(2.5),
                 "length": 25,
                 "width": 8,
                 "draft": 1.7,
@@ -995,14 +1012,14 @@ class MaritimeShippingService:
                 "type_code": 37,
                 "ship_type": "港內休閒快艇 (Speedboat)",
                 "type_group": "pleasure",
-                "lat": 49.2720,
-                "lon": -123.1050,
+                "lat": 49.2735,
+                "lon": -123.1040,
                 "sog": 0.0,
                 "cog": 85.0,
                 "heading": 85.0,
                 "nav_status": "繫泊停靠碼頭 (Moored)",
                 "destination": "SCIENCE WORLD BASIN",
-                "eta": "10-15 17:30",
+                "eta": get_dynamic_eta(3.0),
                 "length": 12,
                 "width": 3,
                 "draft": 1.1,
@@ -1234,6 +1251,21 @@ class MaritimeShippingService:
 
     def get_vessels(self) -> List[Dict[str, Any]]:
         self.update_simulation_tick()
+        now = datetime.now()
+        now_date_str = now.strftime("%m-%d")
+
+        # 動態補正所有船舶之 ETA，保證永不滯留在過去日期 (如 10-15)
+        for v in self.vessels.values():
+            if not v.get("is_live_ais"):
+                # 依 progress 或預設時間動態計算未來抵達時間
+                current_p = v.get("progress", 0.0)
+                remain_hrs = max(0.2, (1.0 - current_p) * 2.5) if v.get("waypoints") else 0.5
+                v["eta"] = (now + timedelta(hours=remain_hrs)).strftime("%m-%d %H:%M")
+            else:
+                eta = v.get("eta") or ""
+                if not eta or (len(eta) >= 5 and eta[:5] < now_date_str):
+                    v["eta"] = (now + timedelta(hours=1.5)).strftime("%m-%d %H:%M")
+
         # 最終輸出守衛：過濾掉任何可能落入陸地多邊形的船舶
         vessels = [v for v in self.vessels.values() if not is_point_on_vancouver_land(v.get("lon", 0.0), v.get("lat", 0.0))]
 

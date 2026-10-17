@@ -315,6 +315,154 @@ const SKI_RESORT_POINTS = [
   }
 ];
 
+const BORDER_CROSSING_POINTS = [
+  {
+    id: "peace_arch",
+    name: "和平門關卡 (Peace Arch / Douglas)",
+    english_name: "Peace Arch / Douglas Crossing",
+    highway: "BC Hwy 99 ↔ US I-5",
+    lat: 49.0022,
+    lon: -122.7567,
+    zoom: 15.5,
+    hours: "24 小時全天開放",
+    crossing_type: "旅客客車專用",
+    has_nexus: true,
+    has_commercial: false,
+    tips: "大溫前往西雅圖最繁忙之主要客運通道，建議週末善用 NEXUS 通道或改道太平洋公路。",
+    canada_bound: {
+      traveller_delay_min: 5,
+      traveller_status: "5 分鐘",
+      commercial_delay_min: null,
+      commercial_status: "不適用 (客運專用)",
+      nexus_open: true
+    },
+    us_bound: {
+      standard_delay_min: 10,
+      standard_status: "10 分鐘",
+      standard_lanes_open: 5,
+      nexus_delay_min: 0,
+      nexus_status: "免等候 (No Delay)",
+      nexus_lanes_open: 2
+    }
+  },
+  {
+    id: "pacific_highway",
+    name: "太平洋公路關卡 (Pacific Highway / 176 St)",
+    english_name: "Pacific Highway (Truck Crossing)",
+    highway: "BC Hwy 15 ↔ WA SR 543",
+    lat: 49.0020,
+    lon: -122.7350,
+    zoom: 15.5,
+    hours: "24 小時全天開放",
+    crossing_type: "客車及商業貨運",
+    has_nexus: true,
+    has_commercial: true,
+    tips: "大溫核心商業貨車通道與旅客替代通道，支援 FAST 商業快速車道與 NEXUS 車道。",
+    canada_bound: {
+      traveller_delay_min: 5,
+      traveller_status: "5 分鐘",
+      commercial_delay_min: 5,
+      commercial_status: "5 分鐘",
+      nexus_open: true
+    },
+    us_bound: {
+      standard_delay_min: 5,
+      standard_status: "5 分鐘",
+      standard_lanes_open: 3,
+      nexus_delay_min: 0,
+      nexus_status: "免等候 (No Delay)",
+      nexus_lanes_open: 1
+    }
+  },
+  {
+    id: "aldergrove",
+    name: "奧爾德格羅夫關卡 (Aldergrove / Lynden)",
+    english_name: "Aldergrove / Lynden",
+    highway: "BC Hwy 13 ↔ WA SR 539",
+    lat: 49.0021,
+    lon: -122.4845,
+    zoom: 15.5,
+    hours: "08:00 - 24:00 (一般車道), NEXUS (12:00 - 20:00)",
+    crossing_type: "旅客客車及部分商業",
+    has_nexus: true,
+    has_commercial: true,
+    tips: "位於蘭里與阿伯茨福德交界，前往貝靈漢避開週末和平門長龍的捷徑。",
+    canada_bound: {
+      traveller_delay_min: 0,
+      traveller_status: "免等候 (No Delay)",
+      commercial_delay_min: 0,
+      commercial_status: "免等候",
+      nexus_open: true
+    },
+    us_bound: {
+      standard_delay_min: 0,
+      standard_status: "免等候 (No Delay)",
+      standard_lanes_open: 2,
+      nexus_delay_min: 0,
+      nexus_status: "免等候",
+      nexus_lanes_open: 1
+    }
+  },
+  {
+    id: "abbotsford_huntingdon",
+    name: "阿伯茨福德關卡 (Abbotsford-Huntingdon / Sumas)",
+    english_name: "Abbotsford-Huntingdon / Sumas",
+    highway: "BC Hwy 11 ↔ WA SR 9",
+    lat: 49.0022,
+    lon: -122.2646,
+    zoom: 15.5,
+    hours: "24 小時全天開放",
+    crossing_type: "客車及商業貨運",
+    has_nexus: true,
+    has_commercial: true,
+    tips: "菲沙河谷東部重要通關樞紐，直達蘇馬斯 (Sumas)，往貝克山滑雪度假主要途徑。",
+    canada_bound: {
+      traveller_delay_min: 5,
+      traveller_status: "5 分鐘",
+      commercial_delay_min: 0,
+      commercial_status: "免等候",
+      nexus_open: true
+    },
+    us_bound: {
+      standard_delay_min: 5,
+      standard_status: "5 分鐘",
+      standard_lanes_open: 2,
+      nexus_delay_min: 0,
+      nexus_status: "免等候",
+      nexus_lanes_open: 1
+    }
+  },
+  {
+    id: "boundary_bay",
+    name: "羅伯茨角關卡 (Boundary Bay / Point Roberts)",
+    english_name: "Boundary Bay / Point Roberts",
+    highway: "56th St (Tsawwassen)",
+    lat: 49.0021,
+    lon: -123.0682,
+    zoom: 15.5,
+    hours: "24 小時全天開放",
+    crossing_type: "旅客客車及當地貨運",
+    has_nexus: false,
+    has_commercial: true,
+    tips: "南三角洲 Tsawwassen 進入美國飛地 Point Roberts 的唯一步行/陸路關卡。",
+    canada_bound: {
+      traveller_delay_min: 0,
+      traveller_status: "免等候 (No Delay)",
+      commercial_delay_min: 0,
+      commercial_status: "免等候",
+      nexus_open: false
+    },
+    us_bound: {
+      standard_delay_min: 0,
+      standard_status: "免等候 (No Delay)",
+      standard_lanes_open: 1,
+      nexus_delay_min: 0,
+      nexus_status: "免等候",
+      nexus_lanes_open: 0
+    }
+  }
+];
+
 export default function AppMap() {
   const { 
     layers, mapStyleType, searchTarget, setSearchTarget, isLayerPanelOpen, 
@@ -412,18 +560,22 @@ export default function AppMap() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [mapSkiResorts, setMapSkiResorts] = useState<any[]>(SKI_RESORT_POINTS);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [mapBorderCrossings, setMapBorderCrossings] = useState<any[]>(BORDER_CROSSING_POINTS);
+
   useEffect(() => {
-    if (isExploreOpen && exploreTab === 'ski') {
-      fetch('/vancouver_ski_resorts.json')
+    if ((isExploreOpen && exploreTab === 'border') || searchTarget?.category === 'border_crossing') {
+      const apiUrl = getApiUrl();
+      fetch(`${apiUrl}/api/border/wait-times`)
         .then(res => res.json())
         .then(data => {
-          if (data && Array.isArray(data.resorts) && data.resorts.length > 0) {
-            setMapSkiResorts(data.resorts);
+          if (data && Array.isArray(data.crossings) && data.crossings.length > 0) {
+            setMapBorderCrossings(data.crossings);
           }
         })
         .catch(() => {});
     }
-  }, [isExploreOpen, exploreTab]);
+  }, [isExploreOpen, exploreTab, searchTarget]);
 
   const [skytrainDetailTab, setSkytrainDetailTab] = useState<'departures' | 'schedules' | 'facilities'>('departures');
   const [currentZoom, setCurrentZoom] = useState<number>(11);
@@ -1051,18 +1203,29 @@ export default function AppMap() {
     }
   }, [skytrainTrains, selectedTrain]);
 
-  // Fetch initial maritime shipping vessels
+  // Fetch initial maritime shipping vessels and live poll
   useEffect(() => {
     const apiUrl = getApiUrl();
-    fetch(`${apiUrl}/api/shipping/vessels`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.vessels && Array.isArray(data.vessels)) {
-          setMaritimeVessels(data.vessels);
-        }
-      })
-      .catch(err => console.error('Failed to load initial maritime vessels:', err));
-  }, []);
+    const fetchVessels = () => {
+      fetch(`${apiUrl}/api/shipping/vessels`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.vessels && Array.isArray(data.vessels)) {
+            setMaritimeVessels(data.vessels);
+          }
+        })
+        .catch(err => console.error('Failed to load maritime vessels:', err));
+    };
+
+    fetchVessels();
+    let interval: NodeJS.Timeout | null = null;
+    if (layers.maritimeShipping || (isExploreOpen && exploreTab === 'cargo')) {
+      interval = setInterval(fetchVessels, 4000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [layers.maritimeShipping, isExploreOpen, exploreTab]);
 
   // Keep selectedMaritimeVessel synced when maritimeVessels updates
   useEffect(() => {
@@ -6395,6 +6558,62 @@ export default function AppMap() {
           );
         })}
 
+        {/* 美加邊境關口標記 (當開啟探索且分頁為關口時，或 searchTarget 為 border_crossing 時，在地圖上為 5 個關卡加上圖示，按下即彈去該地點) */}
+        {((isExploreOpen && exploreTab === 'border') || (searchTarget && searchTarget.category === 'border_crossing')) && mapBorderCrossings.map((crossing) => {
+          const isSelected = selectedFacility?.id === `border_${crossing.id}` || searchTarget?.id === `border_${crossing.id}`;
+          return (
+            <Marker
+              key={`border-crossing-${crossing.id}`}
+              longitude={crossing.lon}
+              latitude={crossing.lat}
+              anchor="bottom"
+            >
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedStop(null);
+                  setSelectedFacility({
+                    id: `border_${crossing.id}`,
+                    facility_type: 'border_crossing',
+                    name: crossing.name,
+                    local_area: crossing.highway,
+                    lon: crossing.lon,
+                    lat: crossing.lat,
+                    properties: crossing
+                  });
+                  mapRef.current?.flyTo({
+                    center: [crossing.lon, crossing.lat],
+                    zoom: crossing.zoom || 15.5,
+                    essential: true
+                  });
+                }}
+                className="group relative flex flex-col items-center cursor-pointer z-35 select-none"
+              >
+                {/* 標記光環與按鈕 */}
+                <div className={`relative flex items-center justify-center w-9 h-9 rounded-full border-2 shadow-xl backdrop-blur-md transition-all duration-300 group-hover:scale-125 ${
+                  isSelected 
+                    ? 'bg-emerald-500 border-white text-white scale-120 shadow-[0_0_20px_rgba(16,185,129,0.8)] ring-4 ring-emerald-400/40' 
+                    : 'bg-[#121927]/95 border-emerald-400/80 text-emerald-300 hover:border-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.4)]'
+                }`}>
+                  <span className="text-base">🛂</span>
+                </div>
+
+                {/* 底部名牌 */}
+                <div className={`mt-1 px-2 py-0.5 rounded-md text-[11px] font-bold shadow-lg border backdrop-blur-md whitespace-nowrap transition-all duration-200 flex items-center gap-1.5 ${
+                  isSelected
+                    ? 'bg-emerald-950/95 text-emerald-200 border-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.4)]'
+                    : 'bg-[#141720]/95 text-gray-200 border-[#2f384d] group-hover:border-emerald-400 group-hover:text-white'
+                }`}>
+                  <span>{crossing.name?.split('(')[0]?.trim() || crossing.name}</span>
+                  <span className="text-[9.5px] px-1 py-0.2 rounded font-normal text-cyan-300 bg-cyan-950/80">
+                    {crossing.highway?.split('↔')[0]?.trim()}
+                  </span>
+                </div>
+              </div>
+            </Marker>
+          );
+        })}
+
         {/* Live Flight Detail Popup */}
         {selectedFlight && (() => {
           const isDom = selectedFlight.is_domestic ?? false;
@@ -6686,19 +6905,20 @@ export default function AppMap() {
             maxWidth={
               selectedFacility.facility_type === 'traffic_conditions' ? '460px' :
               selectedFacility.facility_type === 'traffic_cameras' ? '400px' : 
-              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'beach_water_quality' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'zoning_districts') ? '360px' : 
+              (selectedFacility.facility_type === 'border_crossing' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'beach_water_quality' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'zoning_districts') ? '360px' : 
               '320px'
             }
           >
             <div className={`p-3.5 ${
               selectedFacility.facility_type === 'traffic_conditions' ? 'w-[430px]' :
               selectedFacility.facility_type === 'traffic_cameras' ? 'w-[360px]' : 
-              (selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'beach_water_quality' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'zoning_districts') ? 'w-[340px]' : 
+              (selectedFacility.facility_type === 'border_crossing' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'beach_water_quality' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'zoning_districts') ? 'w-[340px]' : 
               'w-[290px]'
             } max-w-[90vw] text-gray-800`}>
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
                 <div className="flex items-center gap-2">
                   <span className={`w-3 h-3 rounded-full flex-shrink-0 ${
+                    selectedFacility.facility_type === 'border_crossing' ? 'bg-emerald-600 shadow-[0_0_6px_rgba(16,185,129,0.5)]' :
                     selectedFacility.facility_type === 'traffic_conditions' ? 'bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]' :
                     selectedFacility.facility_type === 'road_closures' ? 'bg-rose-600' :
                     selectedFacility.facility_type === 'road_construction' ? 'bg-amber-500' :
@@ -6785,6 +7005,94 @@ export default function AppMap() {
                   </button>
                 </div>
               </div>
+
+              {/* Border Crossing Details */}
+              {selectedFacility.facility_type === 'border_crossing' && (() => {
+                const props = selectedFacility.properties || {};
+                const us = props.us_bound || {};
+                const ca = props.canada_bound || {};
+                return (
+                  <div className="space-y-2 text-xs">
+                    <div className="flex items-center justify-between bg-slate-50 p-2 rounded-lg border border-slate-200">
+                      <div>
+                        <span className="text-[10px] text-gray-500 block">所屬公路線</span>
+                        <span className="font-bold text-gray-800 text-xs">{props.highway || '美加邊境公路'}</span>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-[10px] text-gray-500 block">通關服務時間</span>
+                        <span className="font-mono text-emerald-700 font-semibold text-[11px]">{props.hours || '24 小時開放'}</span>
+                      </div>
+                    </div>
+
+                    {/* Wait times grid */}
+                    <div className="grid grid-cols-2 gap-2">
+                      {/* US Bound */}
+                      <div className="p-2 rounded-lg bg-sky-50/70 border border-sky-200 flex flex-col gap-1">
+                        <div className="flex items-center justify-between text-sky-900 font-bold text-[11px]">
+                          <span>🇺🇸 南向往美國 (CBP)</span>
+                        </div>
+                        <div className="flex justify-between items-baseline pt-0.5">
+                          <span className="text-gray-600 text-[10.5px]">一般客車:</span>
+                          <span className="font-bold font-mono text-sky-800">
+                            {us.standard_status || (us.standard_delay_min != null ? `${us.standard_delay_min} 分鐘` : '正常通行')}
+                          </span>
+                        </div>
+                        {us.standard_lanes_open != null && (
+                          <div className="text-[10px] text-gray-500">
+                            開放車道: {us.standard_lanes_open} 線
+                          </div>
+                        )}
+                        {props.has_nexus && (
+                          <div className="flex justify-between items-baseline pt-1 border-t border-sky-100 text-[10.5px]">
+                            <span className="text-emerald-700 font-medium">NEXUS:</span>
+                            <span className="font-bold font-mono text-emerald-700">
+                              {us.nexus_status || (us.nexus_delay_min === 0 ? '免等候' : `${us.nexus_delay_min} 分鐘`)}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Canada Bound */}
+                      <div className="p-2 rounded-lg bg-rose-50/70 border border-rose-200 flex flex-col gap-1">
+                        <div className="flex items-center justify-between text-rose-900 font-bold text-[11px]">
+                          <span>🇨🇦 北向往加拿大 (CBSA)</span>
+                        </div>
+                        <div className="flex justify-between items-baseline pt-0.5">
+                          <span className="text-gray-600 text-[10.5px]">一般客車:</span>
+                          <span className="font-bold font-mono text-rose-800">
+                            {ca.traveller_status || (ca.traveller_delay_min != null ? `${ca.traveller_delay_min} 分鐘` : '正常通行')}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-baseline pt-1 border-t border-rose-100 text-[10.5px]">
+                          <span className="text-gray-600">商業貨運:</span>
+                          <span className="font-mono text-gray-700 font-medium">
+                            {ca.commercial_status || '正常'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {props.tips && (
+                      <p className="text-[11px] text-gray-600 bg-amber-50/60 p-2 rounded-lg border border-amber-200 leading-relaxed">
+                        💡 {props.tips}
+                      </p>
+                    )}
+
+                    <div className="pt-1.5 border-t border-gray-100 flex items-center justify-between text-[10px] text-gray-400">
+                      <span>CBSA & CBP 即時邊境資料</span>
+                      <a
+                        href={`https://www.google.com/maps/dir/?api=1&destination=${selectedFacility.lat},${selectedFacility.lon}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sky-600 hover:underline flex items-center gap-0.5 font-medium"
+                      >
+                        <Navigation className="w-2.5 h-2.5" />
+                        導航往此關口
+                      </a>
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* Parking Meters Details */}
               {selectedFacility.facility_type === 'parking_meters' && (() => {

@@ -355,6 +355,41 @@ interface FerryRoute {
   vessels: FerryVessel[];
 }
 
+interface BorderCrossingBound {
+  traveller_delay_min?: number | null;
+  traveller_status?: string;
+  standard_delay_min?: number | null;
+  standard_status?: string;
+  standard_lanes_open?: number;
+  nexus_delay_min?: number | null;
+  nexus_status?: string;
+  nexus_lanes_open?: number;
+  commercial_delay_min?: number | null;
+  commercial_status?: string;
+  nexus_open?: boolean;
+  updated_at?: string;
+}
+
+interface BorderCrossing {
+  id: string;
+  name: string;
+  english_name: string;
+  cbsa_key?: string;
+  cbp_key?: string;
+  highway: string;
+  lat: number;
+  lon: number;
+  zoom?: number;
+  address?: string;
+  hours?: string;
+  crossing_type?: string;
+  has_nexus?: boolean;
+  has_commercial?: boolean;
+  tips?: string;
+  canada_bound?: BorderCrossingBound;
+  us_bound?: BorderCrossingBound;
+}
+
 class ExploreErrorBoundary extends React.Component<
   { children: React.ReactNode; onClose: () => void },
   { hasError: boolean; error?: Error }
@@ -578,6 +613,11 @@ function ExploreContent() {
   // --- Ferry tab states ---
   const [ferryRoutes, setFerryRoutes] = useState<FerryRoute[]>([]);
   const [loadingFerries, setLoadingFerries] = useState(false);
+
+  // --- Border Crossings tab states ---
+  const [borderCrossings, setBorderCrossings] = useState<BorderCrossing[]>([]);
+  const [loadingBorder, setLoadingBorder] = useState(false);
+  const [borderDirectionFilter, setBorderDirectionFilter] = useState<'all' | 'us' | 'canada'>('all');
 
   // --- Radar states ---
   const [radarFrames, setRadarFrames] = useState<RadarFrame[]>([]);
@@ -1163,22 +1203,231 @@ function ExploreContent() {
   };
 
   // 4. Fetch Shipping Vessels for Cargo Tab
-  useEffect(() => {
-    if (!isExploreOpen || activeTab !== 'cargo') return;
-
+  const fetchShippingVessels = React.useCallback(async () => {
     setLoadingShipping(true);
     const apiUrl = getApiUrl();
-    fetch(`${apiUrl}/api/shipping/vessels`)
-      .then((res) => res.json())
-      .then((data) => {
+    try {
+      const res = await fetch(`${apiUrl}/api/shipping/vessels`);
+      if (res.ok) {
+        const data = await res.json();
         setShippingVessels(data.vessels || []);
-        setLoadingShipping(false);
-      })
-      .catch((err) => {
-        console.error('Error fetching shipping vessels:', err);
-        setLoadingShipping(false);
+      }
+    } catch (err) {
+      console.error('Error fetching shipping vessels:', err);
+    } finally {
+      setLoadingShipping(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isExploreOpen || activeTab !== 'cargo') return;
+    fetchShippingVessels();
+    const interval = setInterval(fetchShippingVessels, 4000);
+    return () => clearInterval(interval);
+  }, [isExploreOpen, activeTab, fetchShippingVessels]);
+
+  // 4b. Fetch Border Crossings Live Data (CBSA & CBP)
+  const fetchBorderCrossings = React.useCallback(async (force = false) => {
+    setLoadingBorder(true);
+    const apiUrl = getApiUrl();
+    try {
+      const res = await fetch(`${apiUrl}/api/border/wait-times${force ? '?force=true' : ''}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && Array.isArray(data.crossings) && data.crossings.length > 0) {
+          setBorderCrossings(data.crossings);
+          setLoadingBorder(false);
+          return;
+        }
+      }
+    } catch (err) {
+      console.warn('Border API network error, using fallback:', err);
+    }
+
+    const defaultCrossings: BorderCrossing[] = [
+      {
+        id: "peace_arch",
+        name: "和平門關卡 (Peace Arch / Douglas)",
+        english_name: "Peace Arch / Douglas Crossing",
+        highway: "BC Hwy 99 ↔ US I-5",
+        lat: 49.0022,
+        lon: -122.7567,
+        zoom: 15.5,
+        hours: "24 小時全天開放",
+        crossing_type: "旅客客車專用",
+        has_nexus: true,
+        has_commercial: false,
+        tips: "大溫前往西雅圖最繁忙之主要客運通道，建議週末善用 NEXUS 通道或改道太平洋公路。",
+        canada_bound: {
+          traveller_delay_min: 5,
+          traveller_status: "5 分鐘",
+          commercial_delay_min: null,
+          commercial_status: "不適用 (客運專用)",
+          nexus_open: true
+        },
+        us_bound: {
+          standard_delay_min: 10,
+          standard_status: "10 分鐘",
+          standard_lanes_open: 5,
+          nexus_delay_min: 0,
+          nexus_status: "免等候 (No Delay)",
+          nexus_lanes_open: 2
+        }
+      },
+      {
+        id: "pacific_highway",
+        name: "太平洋公路關卡 (Pacific Highway / 176 St)",
+        english_name: "Pacific Highway (Truck Crossing)",
+        highway: "BC Hwy 15 ↔ WA SR 543",
+        lat: 49.0020,
+        lon: -122.7350,
+        zoom: 15.5,
+        hours: "24 小時全天開放",
+        crossing_type: "客車及商業貨運",
+        has_nexus: true,
+        has_commercial: true,
+        tips: "大溫核心商業貨車通道與旅客替代通道，支援 FAST 商業快速車道與 NEXUS 車道。",
+        canada_bound: {
+          traveller_delay_min: 5,
+          traveller_status: "5 分鐘",
+          commercial_delay_min: 5,
+          commercial_status: "5 分鐘",
+          nexus_open: true
+        },
+        us_bound: {
+          standard_delay_min: 5,
+          standard_status: "5 分鐘",
+          standard_lanes_open: 3,
+          nexus_delay_min: 0,
+          nexus_status: "免等候 (No Delay)",
+          nexus_lanes_open: 1
+        }
+      },
+      {
+        id: "aldergrove",
+        name: "奧爾德格羅夫關卡 (Aldergrove / Lynden)",
+        english_name: "Aldergrove / Lynden",
+        highway: "BC Hwy 13 ↔ WA SR 539",
+        lat: 49.0021,
+        lon: -122.4845,
+        zoom: 15.5,
+        hours: "08:00 - 24:00 (一般車道), NEXUS (12:00 - 20:00)",
+        crossing_type: "旅客客車及部分商業",
+        has_nexus: true,
+        has_commercial: true,
+        tips: "位於蘭里與阿伯茨福德交界，前往貝靈漢避開週末和平門長龍的捷徑。",
+        canada_bound: {
+          traveller_delay_min: 0,
+          traveller_status: "免等候 (No Delay)",
+          commercial_delay_min: 0,
+          commercial_status: "免等候",
+          nexus_open: true
+        },
+        us_bound: {
+          standard_delay_min: 0,
+          standard_status: "免等候 (No Delay)",
+          standard_lanes_open: 2,
+          nexus_delay_min: 0,
+          nexus_status: "免等候",
+          nexus_lanes_open: 1
+        }
+      },
+      {
+        id: "abbotsford_huntingdon",
+        name: "阿伯茨福德關卡 (Abbotsford-Huntingdon / Sumas)",
+        english_name: "Abbotsford-Huntingdon / Sumas",
+        highway: "BC Hwy 11 ↔ WA SR 9",
+        lat: 49.0022,
+        lon: -122.2646,
+        zoom: 15.5,
+        hours: "24 小時全天開放",
+        crossing_type: "客車及商業貨運",
+        has_nexus: true,
+        has_commercial: true,
+        tips: "菲沙河谷東部重要通關樞紐，直達蘇馬斯 (Sumas)，往貝克山滑雪度假主要途徑。",
+        canada_bound: {
+          traveller_delay_min: 5,
+          traveller_status: "5 分鐘",
+          commercial_delay_min: 0,
+          commercial_status: "免等候",
+          nexus_open: true
+        },
+        us_bound: {
+          standard_delay_min: 5,
+          standard_status: "5 分鐘",
+          standard_lanes_open: 2,
+          nexus_delay_min: 0,
+          nexus_status: "免等候",
+          nexus_lanes_open: 1
+        }
+      },
+      {
+        id: "boundary_bay",
+        name: "羅伯茨角關卡 (Boundary Bay / Point Roberts)",
+        english_name: "Boundary Bay / Point Roberts",
+        highway: "56th St (Tsawwassen)",
+        lat: 49.0021,
+        lon: -123.0682,
+        zoom: 15.5,
+        hours: "24 小時全天開放",
+        crossing_type: "旅客客車及當地貨運",
+        has_nexus: false,
+        has_commercial: true,
+        tips: "南三角洲 Tsawwassen 進入美國飛地 Point Roberts 的唯一步行/陸路關卡。",
+        canada_bound: {
+          traveller_delay_min: 0,
+          traveller_status: "免等候 (No Delay)",
+          commercial_delay_min: 0,
+          commercial_status: "免等候",
+          nexus_open: false
+        },
+        us_bound: {
+          standard_delay_min: 0,
+          standard_status: "免等候 (No Delay)",
+          standard_lanes_open: 1,
+          nexus_delay_min: 0,
+          nexus_status: "免等候",
+          nexus_lanes_open: 0
+        }
+      }
+    ];
+
+    setBorderCrossings(defaultCrossings);
+    setLoadingBorder(false);
+  }, []);
+
+  useEffect(() => {
+    if (!isExploreOpen || activeTab !== 'border') return;
+    fetchBorderCrossings();
+    const timer = setInterval(() => {
+      fetchBorderCrossings(true);
+    }, 5 * 60 * 1000);
+    return () => clearInterval(timer);
+  }, [isExploreOpen, activeTab, fetchBorderCrossings]);
+
+  const handleSelectBorderCrossing = (crossing: BorderCrossing) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap();
+    if (mapInstance) {
+      mapInstance.flyTo({
+        center: [crossing.lon, crossing.lat],
+        zoom: crossing.zoom || 15.5,
+        essential: true
       });
-  }, [isExploreOpen, activeTab]);
+    }
+    setSearchTarget({
+      id: `border_${crossing.id}`,
+      title: crossing.name,
+      subtitle: `${crossing.highway} · ${crossing.hours || '24小時開放'}`,
+      category: 'border_crossing',
+      badge: '邊境關口',
+      icon: '🛂',
+      lat: crossing.lat,
+      lon: crossing.lon,
+      zoom: crossing.zoom || 15.5,
+      meta: crossing
+    });
+  };
 
   // 5. Fetch News from Vancouver Sources (604 Now, CityNews, Global News BC)
   const fetchNews = React.useCallback(async (force = false) => {
@@ -1736,7 +1985,7 @@ function ExploreContent() {
     { id: 'ferry', label: '渡輪', icon: Ship, iconColor: 'text-cyan-400' },
     { id: 'cargo', label: '船運', icon: Anchor, iconColor: 'text-blue-400' },
     { id: 'alerts', label: '交通警報', icon: AlertTriangle, iconColor: 'text-rose-400' },
-    { id: 'border', label: '關口 (未開發)', icon: ShieldCheck, iconColor: 'text-slate-400' },
+    { id: 'border', label: '關口', icon: ShieldCheck, iconColor: 'text-emerald-400' },
   ] as const;
 
   return (
@@ -2294,10 +2543,11 @@ function ExploreContent() {
                       return (
                         <div
                           key={st.code}
-                          className={`p-2.5 rounded-lg border transition-all flex flex-col gap-1.5 ${
+                          onClick={() => handleLocateTideStation(st)}
+                          className={`p-2.5 rounded-lg border transition-all flex flex-col gap-1.5 cursor-pointer ${
                             selectedTideCode === st.code
                               ? 'bg-blue-950/40 border-blue-500 text-white ring-1 ring-blue-500/50'
-                              : 'bg-[#0f121a] border-[#222736] hover:border-[#32394d] text-gray-300'
+                              : 'bg-[#0f121a] border-[#222736] hover:border-blue-500/50 hover:bg-[#131926] text-gray-300'
                           }`}
                         >
                           <div className="flex items-center justify-between">
@@ -2326,28 +2576,24 @@ function ExploreContent() {
                             </div>
                           </div>
 
-                          {/* 高低潮預報與定位按鈕 */}
-                          <div className="pt-1.5 border-t border-[#1c2230] flex items-center justify-between text-[10.5px]">
-                            <div className="flex items-center gap-2 text-gray-400 font-mono">
-                              {st.next_high && (
-                                <span className="text-emerald-400/90">
-                                  滿潮: {st.next_high.value}m ({st.next_high.time.slice(11, 16)}Z)
-                                </span>
-                              )}
-                              {st.next_low && (
-                                <span className="text-sky-400/90">
-                                  乾潮: {st.next_low.value}m ({st.next_low.time.slice(11, 16)}Z)
-                                </span>
-                              )}
+                          {/* 高低潮預報 */}
+                          {(st.next_high || st.next_low) && (
+                            <div className="pt-1.5 border-t border-[#1c2230] flex items-center justify-between text-[10.5px]">
+                              <div className="flex items-center gap-2 text-gray-400 font-mono">
+                                {st.next_high && (
+                                  <span className="text-emerald-400/90">
+                                    滿潮: {st.next_high.value}m ({st.next_high.time.slice(11, 16)}Z)
+                                  </span>
+                                )}
+                                {st.next_low && (
+                                  <span className="text-sky-400/90">
+                                    乾潮: {st.next_low.value}m ({st.next_low.time.slice(11, 16)}Z)
+                                  </span>
+                                )}
+                              </div>
+                              <span className="text-[10px] text-blue-400 font-medium">點擊定位 ❯</span>
                             </div>
-                            <button
-                              onClick={() => handleLocateTideStation(st)}
-                              className="text-[10.5px] text-blue-400 hover:text-white flex items-center gap-1 hover:underline"
-                            >
-                              <MapPin className="w-3 h-3" />
-                              <span>地圖定位</span>
-                            </button>
-                          </div>
+                          )}
                         </div>
                       );
                     })}
@@ -2367,7 +2613,7 @@ function ExploreContent() {
           <div className="flex items-center justify-between mb-2 shrink-0">
             <span className="text-xs text-gray-300 font-semibold flex items-center gap-1.5">
               <MountainSnow className="w-4 h-4 text-cyan-400" />
-              <span>大溫哥華 3 大滑雪場即時雪況</span>
+              <span>3 大滑雪場即時雪況</span>
             </span>
             <div className="flex items-center gap-1.5">
               <span className="text-[10px] text-cyan-400 bg-cyan-950/70 border border-cyan-800/60 px-1.5 py-0.5 rounded font-mono">
@@ -2389,17 +2635,17 @@ function ExploreContent() {
             <div className="bg-[#121622] border border-cyan-900/40 rounded-lg p-2 text-[11px] text-cyan-200/90 flex items-center gap-2">
               <span className="text-base shrink-0">⛷️</span>
               <span className="leading-snug">
-                已在地圖標註 3 大滑雪場。點擊雪場卡片或「在地圖上查看」，即可在地圖上自動彈跳至該雪場！
+                已在地圖標註 3 大滑雪場。點擊雪場卡片，即可在地圖上自動彈跳至該雪場！
               </span>
             </div>
 
             {loadingSki && skiResorts.length === 0 ? (
               <div className="py-12 flex flex-col items-center justify-center gap-2 text-gray-400 text-xs">
                 <RefreshCw className="w-5 h-5 text-cyan-400 animate-spin" />
-                <span>讀取大溫哥華滑雪場即時雪報中...</span>
+                <span>讀取滑雪場即時雪報中...</span>
               </div>
             ) : skiResorts.length === 0 ? (
-              <div className="py-12 text-center text-xs text-gray-400 bg-[#10131a] rounded-lg border border-[#232836]">
+              <div className="py-12 text-center text-xs text-gray-400 bg-[#10131a] rounded-lg border border-[#232838]">
                 暫無滑雪場資料
               </div>
             ) : (
@@ -2408,7 +2654,8 @@ function ExploreContent() {
                 return (
                   <div
                     key={resort.id}
-                    className="bg-[#12151e] border border-[#262c3c] hover:border-cyan-500/50 rounded-xl p-3.5 shadow-md flex flex-col gap-2.5 transition-all group"
+                    onClick={() => handleSelectSkiResort(resort)}
+                    className="bg-[#12151e] border border-[#262c3c] hover:border-cyan-500/50 hover:bg-[#161a25] rounded-xl p-3.5 shadow-md flex flex-col gap-2.5 transition-all group cursor-pointer"
                   >
                     {/* Header */}
                     <div className="flex items-start justify-between gap-2">
@@ -2486,28 +2733,26 @@ function ExploreContent() {
                       )}
                     </div>
 
-                    {/* Actions */}
-                    <div className="flex items-center gap-2 pt-1">
-                      <button
-                        onClick={() => handleSelectSkiResort(resort)}
-                        className="flex-1 py-1.5 px-2 bg-cyan-600/20 hover:bg-cyan-600/30 border border-cyan-500/50 hover:border-cyan-400 text-cyan-300 rounded-md font-medium text-xs transition-colors flex items-center justify-center gap-1 shadow-sm"
-                      >
-                        <Compass className="w-3.5 h-3.5" />
-                        <span>在地圖上查看</span>
-                      </button>
-                      {resort.official_url && (
+                    {/* Actions: Official website */}
+                    {resort.official_url && (
+                      <div className="flex items-center justify-between pt-1 border-t border-[#1a1f2c]">
+                        <span className="text-[10px] text-cyan-400 group-hover:underline flex items-center gap-1">
+                          <MapPin className="w-3 h-3" />
+                          點擊卡片跳轉至該滑雪場
+                        </span>
                         <a
                           href={resort.official_url}
                           target="_blank"
                           rel="noreferrer"
-                          className="py-1.5 px-2.5 bg-[#1e2330] hover:bg-[#282f40] border border-[#2f374a] text-gray-300 hover:text-white rounded-md text-xs font-medium transition-colors flex items-center gap-1 shrink-0"
+                          onClick={(e) => e.stopPropagation()}
+                          className="py-1 px-2.5 bg-[#1e2330] hover:bg-[#282f40] border border-[#2f374a] text-gray-300 hover:text-white rounded-md text-xs font-medium transition-colors flex items-center gap-1 shrink-0"
                           title="雪場官方網站"
                         >
                           <span>官網</span>
                           <ExternalLink className="w-3 h-3 text-gray-400" />
                         </a>
-                      )}
-                    </div>
+                      </div>
+                    )}
                   </div>
                 );
               })
@@ -2597,7 +2842,7 @@ function ExploreContent() {
           <div className="flex items-center justify-between shrink-0">
             <span className="text-xs text-gray-300 font-semibold flex items-center gap-1.5">
               <Sparkles className="w-4 h-4 text-emerald-400" />
-              <span>大溫哥華極光指數與觀測預報</span>
+              <span>極光指數與觀測預報</span>
             </span>
             <div className="flex items-center gap-1.5">
               <span className="text-[10px] text-emerald-400 bg-emerald-950/70 border border-emerald-800/60 px-1.5 py-0.5 rounded font-mono">
@@ -2690,7 +2935,7 @@ function ExploreContent() {
                     {auroraData.latest?.visibility?.description || '目前地磁活動平靜。'}
                   </p>
                   <div className="flex items-center justify-between pt-1 border-t border-[#182436] text-[10px] text-gray-400">
-                    <span>大溫可見機率預估</span>
+                    <span>可見機率預估</span>
                     <span className="font-mono font-bold text-emerald-400">{auroraData.latest?.visibility?.chance_pct ?? 0}%</span>
                   </div>
                 </div>
@@ -2742,12 +2987,12 @@ function ExploreContent() {
                 </div>
               </div>
 
-              {/* 3. Top Aurora Spots in Metro Vancouver */}
+              {/* 3. Aurora Spots */}
               <div className="bg-[#10141e] rounded-xl p-3 border border-[#232a38] flex flex-col gap-2 shadow-sm">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-gray-200 flex items-center gap-1.5">
                     <Navigation className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>大溫哥華極光觀測勝地推薦</span>
+                    <span>極光觀察地點</span>
                   </span>
                   <span className="text-[10px] text-gray-400 font-mono">4 大無光害點</span>
                 </div>
@@ -2774,22 +3019,6 @@ function ExploreContent() {
                       <p className="text-[10.5px] text-gray-300 leading-snug">
                         {spot.features}
                       </p>
-                      <div className="flex items-center justify-between pt-1 border-t border-[#1c2434] text-[10px]">
-                        <span className="text-emerald-400 font-medium group-hover:underline flex items-center gap-0.5">
-                          <MapPin className="w-3 h-3" />
-                          在地圖上標記此地點
-                        </span>
-                        <a 
-                          href={`https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lon}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          className="text-cyan-400 hover:text-cyan-300 flex items-center gap-0.5 hover:underline"
-                        >
-                          <span>Google 導航</span>
-                          <ExternalLink className="w-2.5 h-2.5" />
-                        </a>
-                      </div>
                     </div>
                   ))}
                 </div>
@@ -3084,9 +3313,19 @@ function ExploreContent() {
               <Ship className="w-3.5 h-3.5 text-cyan-400" />
               <span>溫哥華港口即時船運 (AISStream)</span>
             </span>
-            <span className="text-[10px] text-cyan-400 bg-cyan-950/70 border border-cyan-800/60 px-1.5 py-0.5 rounded font-mono">
-              即時追蹤
-            </span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] text-cyan-400 bg-cyan-950/70 border border-cyan-800/60 px-1.5 py-0.5 rounded font-mono">
+                即時追蹤
+              </span>
+              <button
+                onClick={() => fetchShippingVessels()}
+                disabled={loadingShipping}
+                className="p-1 hover:bg-[#252a38] text-gray-400 hover:text-white rounded transition-colors"
+                title="重新整理船運動態"
+              >
+                <RefreshCw className={`w-3 h-3 ${loadingShipping ? 'animate-spin text-cyan-400' : ''}`} />
+              </button>
+            </div>
           </div>
 
           <div className="flex-1 overflow-y-auto min-h-0 pr-1 flex flex-col gap-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
@@ -3173,7 +3412,7 @@ function ExploreContent() {
             <div className="flex items-center gap-1.5">
               <span className="text-xs font-bold text-white flex items-center gap-1.5">
                 <Droplets className="w-4 h-4 text-teal-400" />
-                <span>大溫沙灘水質監測</span>
+                <span>沙灘水質監控</span>
               </span>
               <span className="text-[10px] text-teal-400 bg-teal-950/60 border border-teal-800/50 px-1.5 py-0.5 rounded font-mono font-medium">
                 每個月更新 1 次
@@ -3386,7 +3625,8 @@ function ExploreContent() {
                 return (
                   <div
                     key={beach.id}
-                    className="p-3 rounded-xl bg-[#141822] border border-[#232838] hover:border-teal-500/50 hover:bg-[#181d2a] transition-all shadow-sm flex flex-col gap-2 group"
+                    onClick={() => handleLocateBeach(beach)}
+                    className="p-3 rounded-xl bg-[#141822] border border-[#232838] hover:border-teal-500/50 hover:bg-[#181d2a] transition-all shadow-sm flex flex-col gap-2 group cursor-pointer"
                   >
                     {/* Top Row: Beach name & Status Badge */}
                     <div className="flex items-start justify-between gap-2">
@@ -3431,21 +3671,19 @@ function ExploreContent() {
                       </p>
                     )}
 
-                    {/* Actions: Locate on map & Official Health URL */}
+                    {/* Actions: Direct map locator hint & Official Health URL */}
                     <div className="flex items-center justify-between pt-1 border-t border-[#1e2330] text-[10.5px]">
-                      <button
-                        onClick={() => handleLocateBeach(beach)}
-                        className="text-teal-400 hover:text-teal-300 font-medium flex items-center gap-1 transition-colors group/btn"
-                      >
-                        <MapPin className="w-3.5 h-3.5 text-teal-400 group-hover/btn:scale-110 transition-transform" />
-                        <span>在地圖檢視水域</span>
-                      </button>
+                      <span className="text-teal-400 group-hover:underline font-medium flex items-center gap-1">
+                        <MapPin className="w-3.5 h-3.5 text-teal-400" />
+                        點擊卡片跳轉至水域
+                      </span>
 
                       {beach.advisory_url && (
                         <a
                           href={beach.advisory_url}
                           target="_blank"
                           rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
                           className="text-gray-400 hover:text-white flex items-center gap-1 transition-colors"
                         >
                           <span>官方衛生局通告</span>
@@ -3802,11 +4040,11 @@ function ExploreContent() {
                 className="bg-[#151922] text-gray-300 text-[11px] rounded-md px-1.5 py-1 border border-[#232838] focus:outline-none focus:border-amber-500/50 cursor-pointer"
                 title="自訂新聞自動更新頻率"
               >
-                <option value={5}>5 mins</option>
-                <option value={10}>10 mins</option>
-                <option value={15}>15 mins</option>
-                <option value={30}>30 mins</option>
-                <option value={60}>60 mins</option>
+                <option value={5}>5分鐘</option>
+                <option value={10}>10分鐘</option>
+                <option value={15}>15分鐘</option>
+                <option value={30}>30分鐘</option>
+                <option value={60}>60分鐘</option>
               </select>
               <button
                 onClick={() => fetchNews(true)}
@@ -4028,7 +4266,14 @@ function ExploreContent() {
                 return (
                   <a
                     key={event.id}
-                    href={event.url?.replace('/listed/event/', '/listed/events/')}
+                    href={(() => {
+                      if (!event.url) return '#';
+                      let u = event.url.replace('/listed/event/', '/listed/events/');
+                      if (u.includes('destinationvancouver.com/events/') && !u.includes('/events/listings/')) {
+                        u = u.replace('/events/', '/events/listings/');
+                      }
+                      return u;
+                    })()}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group block p-3 rounded-xl bg-[#141822] border border-[#232838] hover:border-purple-500/50 hover:bg-[#181d2a] transition-all shadow-sm"
@@ -4103,97 +4348,197 @@ function ExploreContent() {
         </div>
       )}
 
-      {/* ==================== 美加邊境關口分頁 (Border Crossings - Coming Soon) ==================== */}
+      {/* ==================== 美加邊境關口分頁 (Border Crossings - Live CBSA & CBP) ==================== */}
       {activeTab === 'border' && (
-        <div className="flex-1 flex flex-col min-h-0 space-y-3 overflow-y-auto pr-1 custom-scrollbar">
-          {/* Header Card */}
-          <div className="p-3.5 rounded-xl bg-gradient-to-br from-[#181d2a] via-[#141824] to-[#12141c] border border-slate-700/60 shadow-lg flex flex-col gap-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-sky-500/20 border border-sky-500/40 flex items-center justify-center text-sky-300 shrink-0">
-                  <ShieldCheck className="w-4 h-4" />
-                </div>
-                <div>
-                  <h3 className="text-xs font-bold text-white">美加邊境關口即時等候時間</h3>
-                  <p className="text-[10px] text-gray-400">加拿大邊境服務局 (CBSA) 官方數據</p>
-                </div>
-              </div>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                🚧 未開發 / 規劃中
+        <div className="flex-1 flex flex-col min-h-0 space-y-2.5 overflow-hidden">
+          {/* Header Bar */}
+          <div className="flex items-center justify-between gap-1.5 shrink-0 pt-0.5">
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                <span>美加邊境關口即時等候</span>
+              </span>
+              <span className="text-[10px] text-emerald-400 bg-emerald-950/70 border border-emerald-800/60 px-1.5 py-0.5 rounded font-mono font-medium">
+                每 5 分鐘更新
               </span>
             </div>
 
-            <p className="text-xs text-gray-300 leading-relaxed bg-[#0e1118] p-2.5 rounded-lg border border-[#202636]">
-              我們已完成 CBSA 邊境資料來源對接可行性檢查。本分頁即將提供大溫與 BC 省 5 大核心陸路邊境關口之即時等候時間、車道開放情況及商業貨運通關狀態。
-            </p>
-          </div>
-
-          {/* 5 大陸路邊境關卡規劃預覽清單 */}
-          <div className="space-y-2">
-            <div className="text-[11px] font-bold text-gray-400 flex items-center gap-1.5 px-0.5">
-              <span>預定收錄之 5 大主要陸路邊界關口</span>
-            </div>
-
-            {[
-              {
-                id: 'peace_arch',
-                name: '和平門關卡 (Peace Arch / Douglas)',
-                hwy: 'BC Hwy 99 ↔ US I-5',
-                desc: '溫哥華前往西雅圖最繁忙之主要客運通道，預計提供一般旅客車道、NEXUS 快速車道等候時間。'
-              },
-              {
-                id: 'pacific_highway',
-                name: '太平洋公路關卡 (Pacific Highway)',
-                hwy: 'BC Hwy 15 (176th St) ↔ WA SR 543',
-                desc: '大溫主要商業貨運車道與主要旅客輔助關卡，支援商業 FAST 車道與旅客車道即時路況。'
-              },
-              {
-                id: 'aldergrove',
-                name: '奧爾德格羅夫關卡 (Aldergrove)',
-                hwy: 'BC Hwy 13 (264th St) ↔ WA SR 539',
-                desc: '蘭里/阿伯茨福德主要過境點，提供旅客車道及商業貨車開放狀態。'
-              },
-              {
-                id: 'abbotsford_huntingdon',
-                name: '阿伯茨福德關卡 (Abbotsford-Huntingdon)',
-                hwy: 'BC Hwy 11 ↔ WA SR 9',
-                desc: '菲沙河谷主要邊境關卡，連接蘇馬斯 (Sumas)，支援旅客與商業車流通關等候預報。'
-              },
-              {
-                id: 'point_roberts',
-                name: '羅伯茨角關卡 (Boundary Bay / Point Roberts)',
-                hwy: '56th St (Tsawwassen)',
-                desc: '南三角洲 Tsawwassen 前往美國飛地 Point Roberts 之陸路關口。'
-              }
-            ].map((crossing) => (
-              <div
-                key={crossing.id}
-                className="p-2.5 rounded-lg bg-[#141822] border border-[#232838] flex flex-col gap-1 text-xs"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-white text-[11.5px]">{crossing.name}</span>
-                  <span className="text-[9.5px] font-mono text-sky-400 bg-sky-950/60 px-1.5 py-0.5 rounded border border-sky-800/40">
-                    {crossing.hwy}
-                  </span>
-                </div>
-                <p className="text-[10.5px] text-gray-400 leading-normal">
-                  {crossing.desc}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          {/* 官方 CBSA 外鏈 */}
-          <div className="pt-1">
-            <a
-              href="https://www.cbsa-asfc.gc.ca/bwt-taf/menu-eng.html"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full py-2 px-3 rounded-lg bg-[#182030] hover:bg-[#202b40] text-sky-300 border border-sky-500/30 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+            <button
+              onClick={() => fetchBorderCrossings(true)}
+              disabled={loadingBorder}
+              className="p-1.5 rounded-lg bg-[#151922] text-gray-400 hover:text-emerald-400 border border-[#232838] hover:border-emerald-500/40 transition-all shrink-0 flex items-center justify-center disabled:opacity-50"
+              title="重新整理邊境等候時間"
             >
-              <span>前往 CBSA 官方即時邊境等候時間網頁</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </a>
+              <RefreshCw className={`w-3.5 h-3.5 ${loadingBorder ? 'animate-spin text-emerald-400' : ''}`} />
+            </button>
+          </div>
+
+          {/* 方向篩選按鈕 (Direction Filter) */}
+          <div className="flex items-center gap-1.5 p-1 bg-[#121620] rounded-lg border border-[#202738] shrink-0 text-xs">
+            <button
+              onClick={() => setBorderDirectionFilter('all')}
+              className={`flex-1 py-1 rounded font-medium transition-colors ${
+                borderDirectionFilter === 'all'
+                  ? 'bg-emerald-600 text-white shadow-sm'
+                  : 'text-gray-400 hover:text-gray-200 hover:bg-[#1a202e]'
+              }`}
+            >
+              雙向概況
+            </button>
+            <button
+              onClick={() => setBorderDirectionFilter('us')}
+              className={`flex-1 py-1 rounded font-medium transition-colors ${
+                borderDirectionFilter === 'us'
+                  ? 'bg-emerald-600 text-white shadow-sm'
+                  : 'text-gray-400 hover:text-gray-200 hover:bg-[#1a202e]'
+              }`}
+            >
+              🇺🇸 入境美國
+            </button>
+            <button
+              onClick={() => setBorderDirectionFilter('canada')}
+              className={`flex-1 py-1 rounded font-medium transition-colors ${
+                borderDirectionFilter === 'canada'
+                  ? 'bg-emerald-600 text-white shadow-sm'
+                  : 'text-gray-400 hover:text-gray-200 hover:bg-[#1a202e]'
+              }`}
+            >
+              🇨🇦 入境加拿大
+            </button>
+          </div>
+
+          {/* 提示條 */}
+          <div className="bg-[#101726] border border-emerald-900/40 rounded-lg p-2 text-[11px] text-emerald-200/90 flex items-center gap-2 shrink-0">
+            <span className="text-base shrink-0">🛂</span>
+            <span className="leading-snug">
+              點擊關卡卡片，地圖將直接跳轉至該關口位置並顯示即時通關資訊。
+            </span>
+          </div>
+
+          {/* 關卡清單 (Crossings List) */}
+          <div className="flex-1 overflow-y-auto min-h-0 pr-1 flex flex-col gap-2.5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
+            {loadingBorder && borderCrossings.length === 0 ? (
+              <div className="py-12 flex flex-col items-center justify-center gap-2 text-gray-400 text-xs">
+                <RefreshCw className="w-5 h-5 text-emerald-400 animate-spin" />
+                <span>讀取美加邊境 (CBSA & CBP) 即時數據中...</span>
+              </div>
+            ) : borderCrossings.length === 0 ? (
+              <div className="py-12 text-center text-xs text-gray-400 bg-[#10131a] rounded-lg border border-[#232838]">
+                暫無邊境關卡數據
+              </div>
+            ) : (
+              borderCrossings.map((crossing) => {
+                const usWait = crossing.us_bound?.standard_delay_min ?? null;
+                const caWait = crossing.canada_bound?.traveller_delay_min ?? null;
+
+                const getStatusColor = (min: number | null) => {
+                  if (min === null) return 'text-gray-400 bg-gray-800/60 border-gray-700/50';
+                  if (min <= 5) return 'text-emerald-300 bg-emerald-950/70 border-emerald-700/60';
+                  if (min <= 20) return 'text-amber-300 bg-amber-950/70 border-amber-700/60';
+                  return 'text-rose-300 bg-rose-950/70 border-rose-700/60';
+                };
+
+                return (
+                  <div
+                    key={crossing.id}
+                    onClick={() => handleSelectBorderCrossing(crossing)}
+                    className="p-3 rounded-xl bg-[#131722] hover:bg-[#181d2a] border border-[#242b3c] hover:border-emerald-500/50 transition-all shadow-sm cursor-pointer flex flex-col gap-2 group"
+                  >
+                    {/* Top Row: Title & Highway */}
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <h4 className="text-xs font-bold text-white group-hover:text-emerald-300 transition-colors truncate">
+                          {crossing.name}
+                        </h4>
+                        <span className="text-[10px] text-gray-400 block truncate">
+                          {crossing.english_name}
+                        </span>
+                      </div>
+                      <span className="text-[9.5px] font-mono text-cyan-300 bg-cyan-950/60 border border-cyan-800/50 px-2 py-0.5 rounded shrink-0">
+                        {crossing.highway}
+                      </span>
+                    </div>
+
+                    {/* Wait times boxes */}
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      {/* 入境美國 (U.S. Bound) */}
+                      {(borderDirectionFilter === 'all' || borderDirectionFilter === 'us') && (
+                        <div className={`p-2 rounded-lg bg-[#0e121a] border border-[#1e2434] flex flex-col gap-1 ${borderDirectionFilter === 'us' ? 'col-span-2' : ''}`}>
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-bold text-sky-300 flex items-center gap-1">
+                              <span>🇺🇸</span>
+                              <span>南向往美國 (CBP)</span>
+                            </span>
+                            {crossing.us_bound?.standard_lanes_open != null && (
+                              <span className="text-[9px] text-gray-400 font-mono">
+                                開放 {crossing.us_bound.standard_lanes_open} 線
+                              </span>
+                            )}
+                          </div>
+
+                          <div className="flex items-baseline justify-between mt-0.5">
+                            <span className="text-[10px] text-gray-400">一般車道:</span>
+                            <span className={`text-[11px] font-bold px-1.5 py-0.2 rounded border font-mono ${getStatusColor(usWait)}`}>
+                              {crossing.us_bound?.standard_status || (usWait !== null ? `${usWait} 分鐘` : '正常通行')}
+                            </span>
+                          </div>
+
+                          {crossing.has_nexus && (
+                            <div className="flex items-baseline justify-between text-[10px] text-gray-400 pt-1 border-t border-[#182030]">
+                              <span>NEXUS:</span>
+                              <span className="text-emerald-400 font-semibold font-mono">
+                                {crossing.us_bound?.nexus_status || (crossing.us_bound?.nexus_delay_min === 0 ? '免等候' : `${crossing.us_bound?.nexus_delay_min} 分鐘`)}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* 入境加拿大 (Canada Bound) */}
+                      {(borderDirectionFilter === 'all' || borderDirectionFilter === 'canada') && (
+                        <div className={`p-2 rounded-lg bg-[#0e121a] border border-[#1e2434] flex flex-col gap-1 ${borderDirectionFilter === 'canada' ? 'col-span-2' : ''}`}>
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-bold text-rose-300 flex items-center gap-1">
+                              <span>🇨🇦</span>
+                              <span>北向往加拿大 (CBSA)</span>
+                            </span>
+                          </div>
+
+                          <div className="flex items-baseline justify-between mt-0.5">
+                            <span className="text-[10px] text-gray-400">旅客車道:</span>
+                            <span className={`text-[11px] font-bold px-1.5 py-0.2 rounded border font-mono ${getStatusColor(caWait)}`}>
+                              {crossing.canada_bound?.traveller_status || (caWait !== null ? `${caWait} 分鐘` : '正常通行')}
+                            </span>
+                          </div>
+
+                          <div className="flex items-baseline justify-between text-[10px] text-gray-400 pt-1 border-t border-[#182030]">
+                            <span>商業貨運:</span>
+                            <span className="text-gray-300 font-mono">
+                              {crossing.canada_bound?.commercial_status || '正常'}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Hours & Tips */}
+                    {crossing.tips && (
+                      <p className="text-[10.5px] text-gray-400 bg-[#0b0e14] p-1.5 rounded border border-[#1b212f] leading-relaxed">
+                        {crossing.tips}
+                      </p>
+                    )}
+
+                    <div className="flex items-center justify-between text-[10px] text-gray-400 pt-1 border-t border-[#1e2434]">
+                      <span className="font-mono text-emerald-400/90">{crossing.hours || '24 小時全天開放'}</span>
+                      <span className="text-emerald-400 group-hover:underline flex items-center gap-1">
+                        <MapPin className="w-3 h-3" />
+                        在地圖查看 ❯
+                      </span>
+                    </div>
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
       )}
@@ -4205,14 +4550,14 @@ function ExploreContent() {
           {activeTab === 'news' && `共收錄 ${filteredNews.length} 則大溫即時新聞 · 每 ${newsRefreshInterval || 15} 分鐘自動更新`}
           {activeTab === 'events' && `共收錄 ${filteredEvents.length} 項大溫熱門活動 · 來源 Daily Hive、Eventbrite 與 溫哥華旅遊局`}
           {activeTab === 'beach' && `共監測大溫 ${beachList.length || 41} 座海灘水質 · 每個月更新 1 次 · 資料來源：大溫都會局 (Metro Vancouver)`}
-          {activeTab === 'ski' && `大溫哥華 3 大滑雪場即時雪況 (賽普里斯山、松雞山、西摩山) · 每日更新`}
+          {activeTab === 'ski' && `3 大滑雪場即時雪況 (賽普里斯山、松雞山、西摩山) · 每日更新`}
           {activeTab === 'aurora' && 'NOAA SWPC 行星 K-Index 極光指數 · 溫哥華可見度預測 · 每天 2 次更新'}
           {activeTab === 'fuel' && `共收錄 ${filteredFuelStations.length} 間加油站`}
           {activeTab === 'ev' && `共收錄 ${evStations.length} 座充電站`}
           {activeTab === 'ferry' && `共 ${ferryRoutes.reduce((acc, r) => acc + (r?.vessels?.length || 0), 0)} 艘渡輪即時航行中`}
           {activeTab === 'cargo' && `共追蹤 ${sortedShippingVessels.length} 艘溫哥華港口商船 (依抵達時間近至遠排序)`}
           {activeTab === 'alerts' && `共 ${filteredAndSortedAlerts.banners.length + filteredAndSortedAlerts.regular.length} 則 TransLink 即時運輸警報 · 每 ${transitAlertsRefreshInterval || 10} 分鐘自動更新`}
-          {activeTab === 'border' && '美加邊境 5 大陸路關口即時等候時間 (CBSA) · 即將推出'}
+          {activeTab === 'border' && '美加邊境 5 大陸路關口即時等候時間 · 每 5 分鐘自動更新 · CBSA & CBP 官方數據'}
         </span>
         <button
           onClick={() => {

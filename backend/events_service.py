@@ -306,7 +306,7 @@ class EventsService:
             )
             with urllib.request.urlopen(req, timeout=12) as resp:
                 html_text = resp.read().decode('utf-8', errors='ignore')
-                url_matches = re.findall(r'https://www\.destinationvancouver\.com/events/([A-Za-z0-9\-_]+)-(\d{10})', html_text)
+                url_matches = re.findall(r'https://www\.destinationvancouver\.com/events/(?:listings/)?([A-Za-z0-9\-_]+)-(\d{10})', html_text)
                 
                 seen_slugs = set()
                 for slug, time_code in url_matches:
@@ -334,7 +334,7 @@ class EventsService:
                     if end_ts < now_ts - 2 * 3600 * 1000:
                         continue
                         
-                    full_url = f"https://www.destinationvancouver.com/events/{slug}-{time_code}"
+                    full_url = f"https://www.destinationvancouver.com/events/listings/{slug}-{time_code}"
                     
                     lower_t = title.lower()
                     if any(w in lower_t for w in ['tour', 'concert', 'band', 'fighters', 'sing', 'music', 'symphony', 'orchestra', 'rush', 'acdc']):
@@ -506,7 +506,7 @@ class EventsService:
             {
                 "id": "dv_fb_1",
                 "title": "Cirque du Soleil Luzia",
-                "url": "https://www.destinationvancouver.com/events/cirque-du-soleil-luzia-2611041900",
+                "url": "https://www.destinationvancouver.com/events/listings/cirque-du-soleil-luzia-2611041900",
                 "source": "Destination Vancouver",
                 "source_id": "destination_vancouver",
                 "start_date": "2026-11-04 19:00",
@@ -523,10 +523,10 @@ class EventsService:
             {
                 "id": "dv_fb_2",
                 "title": "RUSH Fifty Something Tour",
-                "url": "https://www.destinationvancouver.com/events/rush-fifty-something-2612151930",
+                "url": "https://www.destinationvancouver.com/events/listings/RUSH-Fifty-Something-2612151830",
                 "source": "Destination Vancouver",
                 "source_id": "destination_vancouver",
-                "start_date": "2026-12-15 19:30",
+                "start_date": "2026-12-15 18:30",
                 "end_date": "2026-12-15 22:30",
                 "start_ts": now_ts + 60 * 86400 * 1000,
                 "end_ts": now_ts + 60 * 86400 * 1000 + 3 * 3600 * 1000,

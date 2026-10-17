@@ -42,6 +42,7 @@ from weather_service import weather_service
 from shipping_service import shipping_service
 from news_service import news_service
 from events_service import events_service
+from border_service import border_service
 
 import math
 def calculate_bearing(p1, p2):
@@ -3531,6 +3532,18 @@ def get_latest_events(refresh: bool = False):
     包含音樂演出、體育賽事、節慶慶典、藝文展演等
     """
     return events_service.get_latest_events(force_refresh=refresh)
+
+
+# ==========================================
+# 🛂 Canada - US Border Crossings (CBSA & U.S. CBP Live Wait Times)
+# ==========================================
+@app.get("/api/border/wait-times")
+def get_border_wait_times(refresh: bool = False):
+    """
+    取得大溫哥華 5 大美加邊境關口即時等候時間 (CBSA 加拿大邊境局 & U.S. CBP 美國海關)
+    包含和平門 (Peace Arch)、太平洋公路 (Pacific Hwy)、奧爾德格羅夫 (Aldergrove)、阿伯茨福德 (Huntingdon/Sumas) 與邊界灣 (Point Roberts)
+    """
+    return border_service.get_border_wait_times(force_refresh=refresh)
 
 
 
