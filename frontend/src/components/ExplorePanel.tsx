@@ -1751,7 +1751,7 @@ function ExploreContent() {
                     </div>
                     <div>
                       <h4 className="text-xs font-bold text-white tracking-wide flex items-center gap-1.5">
-                        <span>大溫海岸潮汐水位</span>
+                        <span>海岸潮汐水位</span>
                         <span className="text-[9px] bg-blue-950/80 text-blue-400 border border-blue-800/60 px-1 py-0.2 rounded font-mono">
                           DFO / CHS 官方
                         </span>
