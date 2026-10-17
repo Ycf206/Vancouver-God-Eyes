@@ -17,12 +17,11 @@ export default function SettingsModal() {
     setDistanceUnit,
     temperatureUnit,
     setTemperatureUnit,
-    newsRefreshInterval,
-    setNewsRefreshInterval,
     userLocation,
     setUserLocation,
     setSearchTarget
   } = useUIStore();
+
 
   const [addressInput, setAddressInput] = useState('');
   const [isGeocoding, setIsGeocoding] = useState(false);
@@ -503,49 +502,8 @@ export default function SettingsModal() {
             </button>
           </div>
         </div>
-
-        <div className="w-full h-px bg-[#26282d]"></div>
-
-        {/* Setting 6: 新聞更新頻率 (News Refresh Interval) */}
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-between">
-            <label className="text-xs font-bold text-gray-200 flex items-center gap-1.5">
-              <Newspaper className="w-3.5 h-3.5 text-purple-400" />
-              <span>新聞更新頻率 (News Refresh Interval)</span>
-            </label>
-            <span className="text-[10px] text-gray-400">探索面板新聞分頁</span>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            {[
-              { val: 5, title: '5 分鐘', desc: '即時動態追蹤' },
-              { val: 15, title: '15 分鐘', desc: '系統預設平衡' },
-              { val: 30, title: '30 分鐘', desc: '低頻省流節約' },
-              { val: 60, title: '60 分鐘', desc: '每小時更新' },
-            ].map(opt => (
-              <button
-                key={opt.val}
-                type="button"
-                onClick={() => setNewsRefreshInterval(opt.val)}
-                className={`flex flex-col p-2 rounded-lg border text-left transition-all ${
-                  newsRefreshInterval === opt.val
-                    ? 'bg-purple-950/50 border-purple-500 text-white shadow-[0_0_8px_rgba(168,85,247,0.2)] ring-1 ring-purple-500/50'
-                    : 'bg-[#1a1e28] border-[#2c3242] text-gray-300 hover:bg-[#232938] hover:text-white'
-                }`}
-              >
-                <div className="flex items-center justify-between w-full">
-                  <span className="text-xs font-bold">{opt.title}</span>
-                  {newsRefreshInterval === opt.val && (
-                    <Check className="w-3.5 h-3.5 text-purple-400 shrink-0" />
-                  )}
-                </div>
-                <div className="text-[9.5px] text-gray-400 font-mono mt-0.5">{opt.desc}</div>
-              </button>
-            ))}
-          </div>
-        </div>
-
       </div>
+
 
       {/* Footer Status Indicator */}
       <div className="mt-4 pt-2.5 border-t border-[#262b38] flex items-center justify-between text-[10.5px] text-gray-400">

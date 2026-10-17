@@ -9,6 +9,7 @@ import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl, getWsUrl } from '@/utils/api';
 import { formatTimePreference, formatShipEta } from '@/utils/time';
 import { getSkytrainStationMapUrls } from '@/utils/skytrainMaps';
+import skytrainStationsData from '@/data/skytrainStations.json';
 import { 
   LocateFixed, Train, Compass, ZoomIn, X, Copy, Check, 
   Navigation, ExternalLink, Clock, Bike, Car, Info, 
@@ -321,9 +322,60 @@ export default function AppMap() {
     fuelFilter, setFuelFilter,
     evChargingFilter, setEvChargingFilter,
     isRadarActive, setIsRadarActive,
-    radarFrameTime, radarHost, radarTilePath
+    radarFrameTime, radarHost, radarTilePath,
+    stationAlertsMap
   } = useUIStore();
   const mapRef = useRef<MapRef>(null);
+
+  // Active Station Alert Warning Triangles (Non-critical: Yellow, Critical: Red)
+  const activeStationAlertMarkers = useMemo(() => {
+    if (!stationAlertsMap || Object.keys(stationAlertsMap).length === 0) return [];
+    const list: Array<{
+      name: string;
+      displayName: string;
+      stop_id: string;
+      lat: number;
+      lon: number;
+      critical: boolean;
+      count: number;
+      alertIds: string[];
+    }> = [];
+
+    const stationEntries = Object.values(skytrainStationsData as Record<string, {
+      name: string;
+      displayName: string;
+      stop_id: string;
+      lat: number;
+      lon: number;
+      lines: string[];
+    }>);
+
+    for (const st of stationEntries) {
+      let alertInfo = stationAlertsMap[st.name];
+      if (!alertInfo) {
+        for (const [k, val] of Object.entries(stationAlertsMap)) {
+          if (k.toLowerCase().includes(st.name.toLowerCase()) || st.name.toLowerCase().includes(k.toLowerCase())) {
+            alertInfo = val;
+            break;
+          }
+        }
+      }
+
+      if (alertInfo && alertInfo.count > 0) {
+        list.push({
+          name: st.name,
+          displayName: st.displayName,
+          stop_id: st.stop_id,
+          lat: st.lat,
+          lon: st.lon,
+          critical: alertInfo.critical,
+          count: alertInfo.count,
+          alertIds: alertInfo.alert_ids || []
+        });
+      }
+    }
+    return list;
+  }, [stationAlertsMap]);
 
   // Resize map canvas smoothly when side panel toggles
   useEffect(() => {
@@ -5322,7 +5374,7 @@ export default function AppMap() {
             closeButton={false}
             closeOnClick={false}
           >
-            <div className="p-2 min-w-[270px] max-w-[340px] text-gray-800">
+            <div className="p-2.5 min-w-[330px] max-w-[400px] text-gray-800">
               {(() => {
                 const isSeaBusStop = selectedStop.id === '8035' || selectedStop.id === '8036' || selectedStop.name.includes('SeaBus') || selectedStop.name.includes('Lonsdale Quay') || selectedStop.name.includes('Waterfront');
                 const cleanStopName = selectedStop.name.replace(/\s*(?:Northbound|Southbound)\s*$/i, '').trim();
@@ -5331,7 +5383,7 @@ export default function AppMap() {
                     <div className="flex items-center gap-1.5 min-w-0 pr-2">
                       <span className="text-base shrink-0">{isSeaBusStop ? '⛴️' : '🚏'}</span>
                       <div className="min-w-0">
-                        <h3 className="font-bold text-sm leading-tight text-gray-900 truncate max-w-[230px]" title={cleanStopName}>
+                        <h3 className="font-bold text-sm leading-tight text-gray-900 truncate max-w-[260px]" title={cleanStopName}>
                           {cleanStopName}
                         </h3>
                         <span className="text-[10px] text-gray-400 font-mono">
@@ -5382,7 +5434,7 @@ export default function AppMap() {
                     const isSeaBus = typeof busNumber === 'string' && busNumber.includes('SeaBus');
                     const isRailOrFerry = isSeaBus || (typeof busNumber === 'string' && (busNumber.includes('Line') || busNumber === 'WCE'));
                     return (
-                      <div key={i} className="flex justify-between items-center text-xs gap-2">
+                      <div key={i} className="flex justify-between items-center text-xs gap-3 py-0.5">
                         <div className="flex items-center gap-1.5 min-w-0">
                           <span className={`font-bold px-2 py-0.5 rounded-md shrink-0 font-mono ${
                             isSeaBus 
@@ -5392,12 +5444,12 @@ export default function AppMap() {
                             {isRailOrFerry ? busNumber : `巴士 ${busNumber}`}
                           </span>
                           {arr.destination && (
-                            <span className="text-[11px] text-gray-600 truncate">
+                            <span className="text-[11.5px] text-gray-600 truncate max-w-[170px]" title={arr.destination}>
                               往 {arr.destination}
                             </span>
                           )}
                         </div>
-                        <span className="text-gray-600 shrink-0">
+                        <span className="text-gray-600 shrink-0 whitespace-nowrap pl-2 text-right">
                           {arr.minutes <= 0 ? (
                             <span className="text-red-500 font-bold animate-pulse">{isSeaBus ? '即將開出' : '即將進站'}</span>
                           ) : (
@@ -5412,8 +5464,51 @@ export default function AppMap() {
                 <div className="text-xs text-gray-500 mt-2">目前沒有即將到站的班次</div>
               )}
             </div>
+
           </Popup>
         )}
+
+        {/* SkyTrain & SeaBus Station Warning Triangles for Active Alerts (Critical: Red, Non-critical: Yellow) */}
+        {activeStationAlertMarkers.map((marker) => (
+          <Marker
+            key={`st_alert_${marker.name}`}
+            longitude={marker.lon}
+            latitude={marker.lat}
+            anchor="bottom"
+            offset={[0, -14]}
+            style={{ zIndex: 45 }}
+          >
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                fetchSkytrainStationSchedule(String(marker.stop_id), marker.displayName, marker.lon, marker.lat);
+                mapRef.current?.flyTo({ center: [marker.lon, marker.lat], zoom: 15.5, essential: true });
+              }}
+              className={`cursor-pointer group flex items-center justify-center transition-transform hover:scale-125 select-none ${
+                marker.critical
+                  ? 'animate-pulse drop-shadow-[0_0_8px_rgba(239,68,68,0.9)]'
+                  : 'drop-shadow-[0_0_6px_rgba(234,179,8,0.9)]'
+              }`}
+              title={`${marker.name} · ${marker.critical ? '嚴重警報 (Critical Alert)' : '營運警報 (Advisory)'} (${marker.count} 則警報)`}
+            >
+              <div className={`flex items-center justify-center w-6 h-6 rounded-md border shadow-lg ${
+                marker.critical 
+                  ? 'bg-red-950/95 border-red-500 text-red-400' 
+                  : 'bg-amber-950/95 border-amber-500 text-amber-400'
+              }`}>
+                {marker.critical ? (
+                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                    <path d="M12 2L1 21h22L12 2zm0 3.5L20.3 19H3.7L12 5.5zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z" />
+                  </svg>
+                ) : (
+                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                    <path d="M12 2L1 21h22L12 2zm0 3.5L20.3 19H3.7L12 5.5zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z" />
+                  </svg>
+                )}
+              </div>
+            </div>
+          </Marker>
+        ))}
 
         {/* BC Ferries Terminals (Merged under bcferriesRoutes '路線') */}
         {layers.bcferriesRoutes && ferryTerminals.map((t, i) => (

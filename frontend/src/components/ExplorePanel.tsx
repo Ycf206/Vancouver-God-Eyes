@@ -5,11 +5,47 @@ import {
   Compass, X, Fuel, Zap, Ship, MapPin, 
   ChevronDown, RefreshCw, Package, CloudSun, Wind, AlertTriangle, Droplets, Gauge, Eye, Anchor, Navigation,
   Newspaper, ExternalLink, Search, CalendarDays, Calendar, Tag, Waves, CloudRain, Play, Pause, SkipBack, SkipForward,
-  MountainSnow, Sparkles
+  MountainSnow, Sparkles, Clock, ShieldAlert, BellRing, Train, Bus
 } from 'lucide-react';
 import { useUIStore, ExploreTabType } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
 import { formatShipEta, formatTimePreference } from '@/utils/time';
+import skytrainStationsData from '@/data/skytrainStations.json';
+
+export interface TranslinkAlertItem {
+  id: string;
+  alertId: string;
+  is_banner: boolean;
+  mode: string;
+  mode_name: string;
+  routeId: string;
+  routeLongName: string;
+  effect: string;
+  effect_zh: string;
+  critical: boolean;
+  advisory: boolean;
+  alertText: string;
+  header: string;
+  description: string;
+  url: string;
+  startTime: string | null;
+  endTime: string | null;
+  lastModified: string | null;
+  impacted_stations: string[];
+  closed: boolean;
+}
+
+export interface TranslinkAlertsData {
+  source: string;
+  source_url: string;
+  api_endpoint: string;
+  banner_endpoint: string;
+  updated_at: string;
+  total: number;
+  banners_count: number;
+  alerts: TranslinkAlertItem[];
+  station_alerts_map: Record<string, { critical: boolean; count: number; alert_ids: string[] }>;
+}
 
 interface AuroraVisibility {
   level: string;
@@ -339,12 +375,25 @@ class ExploreErrorBoundary extends React.Component<
           <div className="py-8 text-center flex flex-col items-center gap-3">
             <AlertTriangle className="w-8 h-8 text-amber-400" />
             <p className="text-xs text-gray-300">探索面板載入遇到暫時性問題</p>
-            <button
-              onClick={() => this.setState({ hasError: false })}
-              className="px-3.5 py-1.5 text-xs bg-emerald-600 hover:bg-emerald-500 text-white rounded-md font-semibold transition-colors shadow-sm"
-            >
-              重新整理
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => {
+                  try {
+                    useUIStore.getState().setExploreTab('weather');
+                  } catch (_) {}
+                  this.setState({ hasError: false });
+                }}
+                className="px-3.5 py-1.5 text-xs bg-emerald-600 hover:bg-emerald-500 text-white rounded-md font-semibold transition-colors shadow-sm"
+              >
+                返回天氣分頁
+              </button>
+              <button
+                onClick={() => this.setState({ hasError: false })}
+                className="px-3 py-1.5 text-xs bg-[#252a38] hover:bg-[#32384a] text-gray-300 rounded-md font-medium transition-colors"
+              >
+                重新整理
+              </button>
+            </div>
           </div>
         </div>
       );
@@ -376,6 +425,10 @@ function ExploreContent() {
     temperatureUnit,
     timeFormat,
     newsRefreshInterval,
+    setNewsRefreshInterval,
+    transitAlertsRefreshInterval,
+    setTransitAlertsRefreshInterval,
+    setStationAlertsMap,
     setSearchTarget,
     enableLayer,
     isRadarActive,
@@ -387,6 +440,14 @@ function ExploreContent() {
     radarTilePath,
     setRadarTilePath
   } = useUIStore();
+
+  // --- TransLink Alerts states ---
+  const [transitAlertsData, setTransitAlertsData] = useState<TranslinkAlertsData | null>(null);
+  const [loadingTransitAlerts, setLoadingTransitAlerts] = useState<boolean>(false);
+  const [alertsSubTab, setAlertsSubTab] = useState<'all' | 'skytrain' | 'bus' | 'seabus' | 'wce'>('all');
+  const [alertsSearchQuery, setAlertsSearchQuery] = useState<string>('');
+  const [alertsEffectFilter, setAlertsEffectFilter] = useState<string>('all');
+  const [alertsSortBy, setAlertsSortBy] = useState<'severity' | 'newest'>('severity');
 
   // 氣溫單位轉換輔助函式
   const formatTemp = (celsius?: number | string | null) => {
@@ -1148,14 +1209,88 @@ function ExploreContent() {
   const fetchAuroraData = React.useCallback(async (force = false) => {
     setLoadingAurora(true);
     const apiUrl = getApiUrl();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const normalizeAurora = (raw: any): AuroraData | null => {
+      if (!raw) return null;
+      if (Array.isArray(raw)) {
+        const historyItems: AuroraHistoryItem[] = [];
+        for (let i = 1; i < raw.length; i++) {
+          const row = raw[i];
+          if (Array.isArray(row) && row.length >= 2) {
+            const timeTag = String(row[0]);
+            const kpVal = parseFloat(row[1]) || 0;
+            let gScale = 'G0';
+            let gDesc = '平靜 (Quiet)';
+            let gColor = '#10b981';
+            if (kpVal >= 7) { gScale = 'G3+'; gDesc = '強烈磁暴 (Strong)'; gColor = '#f43f5e'; }
+            else if (kpVal >= 6) { gScale = 'G2'; gDesc = '中度磁暴 (Moderate)'; gColor = '#f97316'; }
+            else if (kpVal >= 5) { gScale = 'G1'; gDesc = '輕度磁暴 (Minor)'; gColor = '#eab308'; }
+            else if (kpVal >= 4) { gScale = 'Active'; gDesc = '活躍 (Active)'; gColor = '#38bdf8'; }
+            else if (kpVal >= 3) { gScale = 'Unsettled'; gDesc = '擾動 (Unsettled)'; gColor = '#34d399'; }
+            historyItems.push({
+              time_tag: timeTag,
+              kp: kpVal,
+              a_running: 0,
+              g_scale: gScale,
+              g_desc: gDesc,
+              g_color: gColor
+            });
+          }
+        }
+        const last = historyItems[historyItems.length - 1] || {
+          time_tag: new Date().toISOString(),
+          kp: 1.67,
+          a_running: 0,
+          g_scale: 'G0',
+          g_desc: '平靜 (Quiet)',
+          g_color: '#10b981'
+        };
+        return {
+          source: 'NOAA Space Weather Prediction Center (SWPC)',
+          source_url: 'https://www.swpc.noaa.gov/products/planetary-k-index',
+          api_endpoint: 'https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json',
+          update_frequency: '每天 2 次 (每 3 小時觀測)',
+          last_updated: last.time_tag,
+          latest: {
+            ...last,
+            kp_int: Math.round(last.kp),
+            visibility: {
+              level: last.kp >= 6 ? '極高 (High)' : last.kp >= 5 ? '中等 (Moderate)' : '低 (Low)',
+              description: last.kp >= 5 ? '大溫哥華地區暗空處有機會以相機或肉眼觀測到極光' : '目前地磁平靜，大溫哥華地區暫無明顯極光活動。',
+              chance_pct: Math.min(95, Math.round(last.kp * 10)),
+              naked_eye: last.kp >= 6,
+              badge_color: last.kp >= 6 ? 'text-rose-400 bg-rose-950/60' : 'text-emerald-400 bg-emerald-950/60'
+            }
+          },
+          history: historyItems,
+          spots: [
+            { id: "cypress", name: "Cypress Mountain 觀景台", area: "West Vancouver", lat: 49.3565, lon: -123.1812, zoom: 13, features: "俯瞰溫哥華海灣，北面暗空無遮擋", drive_min: "距市中心約 35 分鐘" },
+            { id: "porteau", name: "Porteau Cove 省立公園", area: "Sea-to-Sky Highway", lat: 49.5583, lon: -123.2389, zoom: 13, features: "大溫最知名暗空勝地，向北面峽灣開闊無光害", drive_min: "距市中心約 45 分鐘" },
+            { id: "ionabeach", name: "Iona Beach Regional Park", area: "Richmond", lat: 49.2185, lon: -123.2125, zoom: 13, features: "平坦開闊海堤，向西北方視野無阻", drive_min: "距市中心約 30 分鐘" },
+            { id: "boundarybay", name: "Boundary Bay Regional Park", area: "Delta / Tsawwassen", lat: 49.0333, lon: -123.0333, zoom: 12.5, features: "南方大暗空海灣，開闊地平線適合長焦與腳架", drive_min: "距市中心約 40 分鐘" }
+          ]
+        };
+      }
+      if (raw && raw.latest) {
+        return {
+          ...raw,
+          history: Array.isArray(raw.history) ? raw.history : [],
+          spots: Array.isArray(raw.spots) ? raw.spots : []
+        };
+      }
+      return null;
+    };
+
     try {
       const res = await fetch(`${apiUrl}/api/aurora/live${force ? '?force=true' : ''}`);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      if (data && data.latest) {
-        setAuroraData(data);
-        setLoadingAurora(false);
-        return;
+      if (res.ok) {
+        const rawJson = await res.json();
+        const norm = normalizeAurora(rawJson);
+        if (norm) {
+          setAuroraData(norm);
+          setLoadingAurora(false);
+          return;
+        }
       }
     } catch (err) {
       console.warn('Backend aurora API not responding, trying static cache:', err);
@@ -1163,9 +1298,12 @@ function ExploreContent() {
     // Fallback to static cache if backend unreachable
     try {
       const staticRes = await fetch('/vancouver_aurora_cache.json');
-      const staticData = await staticRes.json();
-      if (staticData && staticData.latest) {
-        setAuroraData(staticData);
+      if (staticRes.ok) {
+        const staticData = await staticRes.json();
+        const norm = normalizeAurora(staticData);
+        if (norm) {
+          setAuroraData(norm);
+        }
       }
     } catch (staticErr) {
       console.error('Failed to load static aurora data:', staticErr);
@@ -1211,6 +1349,157 @@ function ExploreContent() {
     });
   };
 
+  // 9. Fetch TransLink Live Alerts (SkyTrain, Bus, SeaBus, WCE)
+  const fetchTranslinkAlerts = React.useCallback(async (force = false) => {
+    setLoadingTransitAlerts(true);
+    const apiUrl = getApiUrl();
+    try {
+      const res = await fetch(`${apiUrl}/api/translink/alerts${force ? '?force=true' : ''}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && Array.isArray(data.alerts)) {
+          setTransitAlertsData(data);
+          if (data.station_alerts_map) {
+            setStationAlertsMap(data.station_alerts_map);
+          }
+          setLoadingTransitAlerts(false);
+          return;
+        }
+      }
+    } catch (err) {
+      console.warn('Backend translink alerts API error, falling back to static cache:', err);
+    }
+
+    try {
+      const staticRes = await fetch('/vancouver_translink_alerts_cache.json');
+      if (staticRes.ok) {
+        const staticData = await staticRes.json();
+        if (staticData && Array.isArray(staticData.alerts)) {
+          setTransitAlertsData(staticData);
+          if (staticData.station_alerts_map) {
+            setStationAlertsMap(staticData.station_alerts_map);
+          }
+        }
+      }
+    } catch (staticErr) {
+      console.error('Failed to load static translink alerts cache:', staticErr);
+    } finally {
+      setLoadingTransitAlerts(false);
+    }
+  }, [setStationAlertsMap]);
+
+  useEffect(() => {
+    if (!isExploreOpen || activeTab !== 'alerts') return;
+    fetchTranslinkAlerts();
+  }, [isExploreOpen, activeTab, fetchTranslinkAlerts]);
+
+  useEffect(() => {
+    if (!isExploreOpen || activeTab !== 'alerts') return;
+    const intervalMin = transitAlertsRefreshInterval || 10;
+    if (intervalMin <= 0) return;
+    const timer = setInterval(() => {
+      fetchTranslinkAlerts(true);
+    }, intervalMin * 60 * 1000);
+    return () => clearInterval(timer);
+  }, [isExploreOpen, activeTab, transitAlertsRefreshInterval, fetchTranslinkAlerts]);
+
+  const handleStationClick = (stationName: string) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const stationInfo = (skytrainStationsData as Record<string, any>)[stationName];
+    if (stationInfo) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap();
+      if (mapInstance) {
+        mapInstance.flyTo({
+          center: [stationInfo.lon, stationInfo.lat],
+          zoom: 16,
+          essential: true
+        });
+      }
+      setSearchTarget({
+        id: `station_${stationInfo.stop_id}`,
+        title: stationInfo.displayName || stationInfo.name,
+        subtitle: `${stationInfo.lines?.join(' · ') || '大眾運輸車站'}`,
+        category: 'skytrain_station',
+        badge: 'TransLink 車站',
+        icon: '🚇',
+        lat: stationInfo.lat,
+        lon: stationInfo.lon,
+        zoom: 16,
+        meta: { stop_id: stationInfo.stop_id }
+      });
+    }
+  };
+
+  // Filtered & sorted alerts
+  const filteredAndSortedAlerts = useMemo(() => {
+    if (!transitAlertsData || !Array.isArray(transitAlertsData.alerts)) {
+      return { banners: [], regular: [] };
+    }
+
+    const all = transitAlertsData.alerts;
+    const banners = all.filter((a) => a.is_banner);
+    let regular = all.filter((a) => !a.is_banner);
+
+    if (alertsSubTab !== 'all') {
+      regular = regular.filter((a) => a.mode === alertsSubTab);
+    }
+
+    if (alertsEffectFilter !== 'all') {
+      regular = regular.filter((a) => {
+        const eff = (a.effect || '').toUpperCase();
+        if (alertsEffectFilter === 'PLATFORM_CHANGE') return eff === 'PLATFORM_CHANGE';
+        if (alertsEffectFilter === 'DETOUR') return eff === 'DETOUR';
+        if (alertsEffectFilter === 'DELAYS') return eff === 'DELAYS';
+        if (alertsEffectFilter === 'CANCELLED_SERVICE') return eff.includes('CANCEL') || eff.includes('NO_SERVICE');
+        if (alertsEffectFilter === 'ELEVATOR') return eff.includes('ELEVATOR') || (a.alertText && a.alertText.toLowerCase().includes('elevator'));
+        return true;
+      });
+    }
+
+    if (alertsSearchQuery.trim()) {
+      const q = alertsSearchQuery.trim().toLowerCase();
+      regular = regular.filter((a) =>
+        (a.header && a.header.toLowerCase().includes(q)) ||
+        (a.alertText && a.alertText.toLowerCase().includes(q)) ||
+        (a.description && a.description.toLowerCase().includes(q)) ||
+        (a.routeLongName && a.routeLongName.toLowerCase().includes(q)) ||
+        (a.routeId && a.routeId.toLowerCase().includes(q)) ||
+        (a.impacted_stations && a.impacted_stations.some((st) => st.toLowerCase().includes(q)))
+      );
+    }
+
+    regular = [...regular].sort((a, b) => {
+      if (alertsSortBy === 'severity') {
+        if (a.critical !== b.critical) {
+          return a.critical ? -1 : 1;
+        }
+        if (a.advisory !== b.advisory) {
+          return a.advisory ? -1 : 1;
+        }
+      }
+      const timeA = new Date(a.lastModified || a.startTime || 0).getTime();
+      const timeB = new Date(b.lastModified || b.startTime || 0).getTime();
+      return timeB - timeA;
+    });
+
+    return { banners, regular };
+  }, [transitAlertsData, alertsSubTab, alertsEffectFilter, alertsSearchQuery, alertsSortBy]);
+
+  const alertsCounts = useMemo(() => {
+    if (!transitAlertsData || !Array.isArray(transitAlertsData.alerts)) {
+      return { all: 0, skytrain: 0, bus: 0, seabus: 0, wce: 0 };
+    }
+    const list = transitAlertsData.alerts;
+    return {
+      all: list.length,
+      skytrain: list.filter((a) => a.mode === 'skytrain').length,
+      bus: list.filter((a) => a.mode === 'bus').length,
+      seabus: list.filter((a) => a.mode === 'seabus').length,
+      wce: list.filter((a) => a.mode === 'wce').length
+    };
+  }, [transitAlertsData]);
+
   const exploreTabsRow1 = [
     { id: 'weather', label: '天氣', icon: CloudSun, iconColor: 'text-sky-400' },
     { id: 'news', label: '新聞', icon: Newspaper, iconColor: 'text-amber-400' },
@@ -1220,10 +1509,14 @@ function ExploreContent() {
   ] as const;
 
   const exploreTabsRow2 = [
-    { id: 'fuel', label: '燃油', icon: Fuel, iconColor: 'text-emerald-400' },
-    { id: 'ev', label: '充電', icon: Zap, iconColor: 'text-yellow-400' },
     { id: 'ferry', label: '渡輪', icon: Ship, iconColor: 'text-cyan-400' },
     { id: 'cargo', label: '船運', icon: Anchor, iconColor: 'text-blue-400' },
+    { id: 'alerts', label: '警報', icon: AlertTriangle, iconColor: 'text-rose-400' },
+  ] as const;
+
+  const exploreTabsRow3 = [
+    { id: 'fuel', label: '燃油', icon: Fuel, iconColor: 'text-emerald-400' },
+    { id: 'ev', label: '充電', icon: Zap, iconColor: 'text-yellow-400' },
   ] as const;
 
   return (
@@ -1251,7 +1544,7 @@ function ExploreContent() {
         </button>
       </div>
 
-      {/* 探索分類分頁 - 2 行圖示按鈕組，Cursor 碰到後平滑展開文字（對標右上角按鈕），保留當前緊湊比例 */}
+      {/* 探索分類分頁 - 3 行圖示按鈕組，Cursor 碰到後平滑展開文字（對標右上角按鈕），保留當前緊湊比例 */}
       <div className="flex flex-col gap-1 p-1 bg-[#10131a]/90 rounded-lg border border-[#232836] shrink-0 mb-2.5">
         {/* 第 1 行：天氣, 新聞, 活動, 滑雪, 極光 */}
         <div className="grid grid-cols-5 gap-1">
@@ -1278,9 +1571,34 @@ function ExploreContent() {
           })}
         </div>
 
-        {/* 第 2 行：燃油, 充電, 渡輪, 船運 */}
-        <div className="grid grid-cols-4 gap-1">
+        {/* 第 2 行：渡輪, 船運, 警報 */}
+        <div className="grid grid-cols-3 gap-1">
           {exploreTabsRow2.map((tab) => {
+            const isActive = activeTab === tab.id;
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as ExploreTabType)}
+                className={`flex items-center justify-center group py-1 px-1.5 rounded-md transition-all duration-200 text-xs font-semibold select-none min-h-[30px] ${
+                  isActive
+                    ? 'bg-[#252e3e] border border-cyan-500/70 text-white shadow-sm ring-1 ring-cyan-500/30'
+                    : 'text-gray-400 hover:text-gray-100 hover:bg-[#1a202c] border border-transparent hover:border-[#2b3548]'
+                }`}
+                title={tab.label}
+              >
+                <Icon className={`w-3.5 h-3.5 ${tab.iconColor} shrink-0 transition-transform duration-200 group-hover:scale-110`} />
+                <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[65px] group-hover:opacity-100 group-hover:ml-1.5 transition-all duration-300 whitespace-nowrap text-[11px]">
+                  {tab.label}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* 第 3 行：燃油, 充電 */}
+        <div className="grid grid-cols-2 gap-1">
+          {exploreTabsRow3.map((tab) => {
             const isActive = activeTab === tab.id;
             const Icon = tab.icon;
             return (
@@ -2118,7 +2436,7 @@ function ExploreContent() {
                     </span>
                     <div className="flex items-baseline gap-2 mt-0.5">
                       <span className="text-3xl font-extrabold text-white tracking-tight">
-                        Kp {auroraData.latest.kp}
+                        Kp {auroraData.latest?.kp ?? '--'}
                       </span>
                       <span className="text-xs text-gray-400">/ 9.0</span>
                     </div>
@@ -2127,17 +2445,17 @@ function ExploreContent() {
                     <span 
                       className="px-2.5 py-1 rounded-full text-xs font-bold shadow-sm flex items-center gap-1"
                       style={{ 
-                        backgroundColor: `${auroraData.latest.g_color}25`, 
-                        color: auroraData.latest.g_color,
-                        borderColor: `${auroraData.latest.g_color}60`,
+                        backgroundColor: `${auroraData.latest?.g_color || '#10b981'}25`, 
+                        color: auroraData.latest?.g_color || '#10b981',
+                        borderColor: `${auroraData.latest?.g_color || '#10b981'}60`,
                         borderWidth: '1px'
                       }}
                     >
                       <Sparkles className="w-3 h-3" />
-                      {auroraData.latest.g_scale}
+                      {auroraData.latest?.g_scale || 'G0'}
                     </span>
                     <span className="text-[10px] text-gray-400 mt-1">
-                      {auroraData.latest.g_desc}
+                      {auroraData.latest?.g_desc || ''}
                     </span>
                   </div>
                 </div>
@@ -2148,8 +2466,8 @@ function ExploreContent() {
                     <div 
                       className="h-full rounded-full transition-all duration-700"
                       style={{ 
-                        width: `${Math.min(100, Math.max(8, (auroraData.latest.kp / 9) * 100))}%`,
-                        backgroundColor: auroraData.latest.g_color
+                        width: `${Math.min(100, Math.max(8, ((auroraData.latest?.kp || 0) / 9) * 100))}%`,
+                        backgroundColor: auroraData.latest?.g_color || '#10b981'
                       }}
                     />
                   </div>
@@ -2167,18 +2485,18 @@ function ExploreContent() {
                   <div className="flex items-center justify-between">
                     <span className="text-[11px] font-bold text-gray-200 flex items-center gap-1">
                       <span>🍁 溫哥華觀測等級：</span>
-                      <span className="text-emerald-400 font-semibold">{auroraData.latest.visibility.level}</span>
+                      <span className="text-emerald-400 font-semibold">{auroraData.latest?.visibility?.level || '低'}</span>
                     </span>
-                    <span className={`text-[9.5px] px-1.5 py-0.5 rounded font-bold ${auroraData.latest.visibility.badge_color}`}>
-                      {auroraData.latest.visibility.naked_eye ? '肉眼可見' : '相機/暗空'}
+                    <span className={`text-[9.5px] px-1.5 py-0.5 rounded font-bold ${auroraData.latest?.visibility?.badge_color || 'bg-gray-800 text-gray-300'}`}>
+                      {auroraData.latest?.visibility?.naked_eye ? '肉眼可見' : '相機/暗空'}
                     </span>
                   </div>
                   <p className="text-[10.5px] text-gray-300 leading-relaxed">
-                    {auroraData.latest.visibility.description}
+                    {auroraData.latest?.visibility?.description || '目前地磁活動平靜。'}
                   </p>
                   <div className="flex items-center justify-between pt-1 border-t border-[#182436] text-[10px] text-gray-400">
                     <span>大溫可見機率預估</span>
-                    <span className="font-mono font-bold text-emerald-400">{auroraData.latest.visibility.chance_pct}%</span>
+                    <span className="font-mono font-bold text-emerald-400">{auroraData.latest?.visibility?.chance_pct ?? 0}%</span>
                   </div>
                 </div>
               </div>
@@ -2193,9 +2511,9 @@ function ExploreContent() {
                   <span className="text-[9.5px] text-gray-400 font-mono">NOAA SWPC</span>
                 </div>
                 <div className="grid grid-cols-8 gap-1 pt-1">
-                  {auroraData.history.slice(-8).map((h, idx) => {
+                  {(auroraData.history || []).slice(-8).map((h, idx) => {
                     const timeOnly = h.time_tag.includes('T') ? h.time_tag.split('T')[1].slice(0, 5) : h.time_tag.slice(-5);
-                    const isLatest = idx === auroraData.history.slice(-8).length - 1;
+                    const isLatest = idx === (auroraData.history || []).slice(-8).length - 1;
                     return (
                       <div 
                         key={idx} 
@@ -2224,7 +2542,7 @@ function ExploreContent() {
                   })}
                 </div>
                 <div className="flex items-center justify-between text-[9.5px] text-gray-500 pt-1 border-t border-[#1a2233]">
-                  <span>最新觀測：{auroraData.latest.time_tag.replace('T', ' ')} UTC</span>
+                  <span>最新觀測：{auroraData.latest?.time_tag ? auroraData.latest.time_tag.replace('T', ' ') : '--'} UTC</span>
                   <span>指數等級：Kp &ge; 5 觸發磁暴警報</span>
                 </div>
               </div>
@@ -2240,7 +2558,7 @@ function ExploreContent() {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  {auroraData.spots.map((spot) => (
+                  {(auroraData.spots || []).map((spot) => (
                     <div 
                       key={spot.id}
                       className="bg-[#141924] hover:bg-[#1a2233] p-2.5 rounded-lg border border-[#222b3b] hover:border-emerald-500/40 transition-all flex flex-col gap-1.5 cursor-pointer group"
@@ -2285,15 +2603,17 @@ function ExploreContent() {
               {/* Source attribution footer */}
               <div className="p-2 rounded-lg bg-[#0e121a] border border-[#1d2330] flex items-center justify-between text-[10px] text-gray-400">
                 <span className="truncate max-w-[240px]">資料來源：NOAA SWPC 太空天氣預測中心</span>
-                <a 
-                  href={auroraData.source_url} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-emerald-400 hover:text-emerald-300 flex items-center gap-0.5 hover:underline shrink-0"
-                >
-                  <span>官方監測</span>
-                  <ExternalLink className="w-2.5 h-2.5" />
-                </a>
+                {auroraData.source_url && (
+                  <a 
+                    href={auroraData.source_url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-emerald-400 hover:text-emerald-300 flex items-center gap-0.5 hover:underline shrink-0"
+                  >
+                    <span>官方監測</span>
+                    <ExternalLink className="w-2.5 h-2.5" />
+                  </a>
+                )}
               </div>
             </>
           ) : null}
@@ -2650,6 +2970,309 @@ function ExploreContent() {
         </div>
       )}
 
+      {/* ==================== TransLink 即時警報分頁 (Transit Live Alerts) ==================== */}
+      {activeTab === 'alerts' && (
+        <div className="flex-1 flex flex-col min-h-0 space-y-2.5 overflow-hidden">
+          {/* Header Controls: Title, Auto-refresh frequency dropdown & manual refresh button */}
+          <div className="flex items-center justify-between gap-1.5 shrink-0 pt-0.5">
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                <ShieldAlert className="w-4 h-4 text-rose-400" />
+                <span>TransLink 運輸警報</span>
+              </span>
+              <span className="text-[10px] text-rose-400 bg-rose-950/60 border border-rose-800/50 px-1.5 py-0.5 rounded font-mono font-bold">
+                {transitAlertsData?.total ?? 0} 則
+              </span>
+            </div>
+
+            <div className="flex items-center gap-1.5 shrink-0">
+              <select
+                value={transitAlertsRefreshInterval}
+                onChange={(e) => setTransitAlertsRefreshInterval(Number(e.target.value))}
+                className="bg-[#151922] text-gray-300 text-[11px] rounded-lg px-2 py-1 border border-[#232838] focus:outline-none focus:border-rose-500/50 cursor-pointer"
+                title="自訂警報自動更新頻率"
+              >
+                <option value={0}>手動更新</option>
+                <option value={5}>每 5 分鐘</option>
+                <option value={10}>每 10 分鐘 (預設)</option>
+                <option value={15}>每 15 分鐘</option>
+                <option value={30}>每 30 分鐘</option>
+              </select>
+              <button
+                onClick={() => fetchTranslinkAlerts(true)}
+                disabled={loadingTransitAlerts}
+                className="p-1.5 rounded-lg bg-[#151922] text-gray-400 hover:text-rose-400 border border-[#232838] hover:border-rose-500/40 transition-all shrink-0 flex items-center justify-center disabled:opacity-50"
+                title="立即重新整理警報"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${loadingTransitAlerts ? 'animate-spin text-rose-400' : ''}`} />
+              </button>
+            </div>
+          </div>
+
+          {/* 3.1 運具子分頁: 全部, 天車, 巴士, 水上巴士, 西岸快車 */}
+          <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5 shrink-0">
+            {[
+              { id: 'all', label: '全部', count: alertsCounts.all },
+              { id: 'skytrain', label: '天車', count: alertsCounts.skytrain },
+              { id: 'bus', label: '巴士', count: alertsCounts.bus },
+              { id: 'seabus', label: '水上巴士', count: alertsCounts.seabus },
+              { id: 'wce', label: '西岸快車', count: alertsCounts.wce },
+            ].map((sub) => {
+              const isSelected = alertsSubTab === sub.id;
+              return (
+                <button
+                  key={sub.id}
+                  onClick={() => setAlertsSubTab(sub.id as any)}
+                  className={`px-2.5 py-1 text-xs rounded-lg font-medium transition-all shrink-0 flex items-center gap-1 ${
+                    isSelected
+                      ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40 shadow-sm font-semibold'
+                      : 'bg-[#151922] text-gray-400 hover:text-white border border-[#232838] hover:bg-[#1c2230]'
+                  }`}
+                >
+                  <span>{sub.label}</span>
+                  <span className={`text-[10px] px-1 rounded-full font-mono ${
+                    isSelected ? 'bg-rose-500/30 text-rose-200' : 'bg-[#232838] text-gray-400'
+                  }`}>
+                    {sub.count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* 3.2 搜尋功能 */}
+          <div className="relative shrink-0">
+            <Search className="w-3.5 h-3.5 text-gray-500 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              type="text"
+              value={alertsSearchQuery}
+              onChange={(e) => setAlertsSearchQuery(e.target.value)}
+              placeholder="搜尋警報內容、路線或受影響車站..."
+              className="w-full bg-[#10131a] text-xs text-white placeholder-gray-500 pl-8 pr-7 py-1.5 rounded-lg border border-[#232838] focus:outline-none focus:border-rose-500/50 transition-colors"
+            />
+            {alertsSearchQuery && (
+              <button
+                onClick={() => setAlertsSearchQuery('')}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white p-0.5"
+                title="清除搜尋"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            )}
+          </div>
+
+          {/* 3.3 篩選功能 (影響性質) & 3.4 排序功能 */}
+          <div className="flex items-center justify-between gap-2 shrink-0 text-xs">
+            {/* 影響性質篩選 */}
+            <div className="flex items-center gap-1 flex-1 min-w-0">
+              <span className="text-[11px] text-gray-400 shrink-0">性質:</span>
+              <select
+                value={alertsEffectFilter}
+                onChange={(e) => setAlertsEffectFilter(e.target.value)}
+                className="bg-[#151922] text-gray-300 text-[11px] rounded-md px-2 py-1 border border-[#232838] focus:outline-none focus:border-rose-500/50 truncate w-full cursor-pointer"
+              >
+                <option value="all">全部性質</option>
+                <option value="PLATFORM_CHANGE">月台更換</option>
+                <option value="DETOUR">路線改道</option>
+                <option value="DELAYS">班次延誤</option>
+                <option value="CANCELLED_SERVICE">班次停駛 / 暫停服務</option>
+                <option value="ELEVATOR">電梯暫停</option>
+              </select>
+            </div>
+
+            {/* 排序功能 */}
+            <div className="flex items-center gap-1 shrink-0">
+              <span className="text-[11px] text-gray-400 shrink-0">排序:</span>
+              <select
+                value={alertsSortBy}
+                onChange={(e) => setAlertsSortBy(e.target.value as 'severity' | 'newest')}
+                className="bg-[#151922] text-gray-300 text-[11px] rounded-md px-2 py-1 border border-[#232838] focus:outline-none focus:border-rose-500/50 cursor-pointer"
+              >
+                <option value="severity">嚴重性優先</option>
+                <option value="newest">日期新至舊</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Alerts List */}
+          <div className="flex-1 overflow-y-auto space-y-2 pr-1 min-h-0 custom-scrollbar">
+            {loadingTransitAlerts && !transitAlertsData ? (
+              <div className="flex flex-col items-center justify-center py-12 text-gray-400">
+                <RefreshCw className="w-6 h-6 animate-spin text-rose-400 mb-2" />
+                <span className="text-xs">正在載入 TransLink 即時警報...</span>
+              </div>
+            ) : filteredAndSortedAlerts.banners.length === 0 && filteredAndSortedAlerts.regular.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 text-gray-400 bg-[#10131a] rounded-xl border border-[#232838] p-4 text-center">
+                <ShieldAlert className="w-8 h-8 text-emerald-400/80 mb-2" />
+                <span className="text-sm font-semibold text-gray-200">目前無符合條件的運輸警報</span>
+                <span className="text-xs text-gray-500 mt-1">目前大溫運具運行正常，或請調整篩選與搜尋關鍵字</span>
+              </div>
+            ) : (
+              <>
+                {/* 3.6 橫幅緊急通知置頂 (Banner alerts - Always on top) */}
+                {filteredAndSortedAlerts.banners.map((b) => (
+                  <div
+                    key={b.id}
+                    className="p-3.5 rounded-xl bg-gradient-to-br from-red-950/90 via-[#2c0e14] to-[#1a0c10] border border-red-500/80 shadow-[0_0_15px_rgba(239,68,68,0.25)] flex flex-col gap-2 relative overflow-hidden ring-1 ring-red-500/40"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-1.5">
+                        <span className="relative flex h-2.5 w-2.5">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+                        </span>
+                        <span className="text-xs font-bold text-red-300 uppercase tracking-wider flex items-center gap-1">
+                          <BellRing className="w-3.5 h-3.5 text-red-400" />
+                          <span>系統全網緊急廣播</span>
+                        </span>
+                      </div>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-500 text-white font-mono shrink-0">
+                        EMERGENCY
+                      </span>
+                    </div>
+
+                    <h4 className="text-xs font-bold text-white leading-snug">
+                      {b.header || b.alertText}
+                    </h4>
+
+                    {b.description && (
+                      <p className="text-[11px] text-gray-200 leading-relaxed whitespace-pre-line bg-black/30 p-2 rounded-lg border border-red-500/20">
+                        {b.description}
+                      </p>
+                    )}
+
+                    {b.impacted_stations && b.impacted_stations.length > 0 && (
+                      <div className="flex flex-wrap items-center gap-1 pt-1">
+                        <span className="text-[10.5px] text-red-300">影響車站：</span>
+                        {b.impacted_stations.map((st) => (
+                          <button
+                            key={st}
+                            onClick={() => handleStationClick(st)}
+                            className="text-[10.5px] px-2 py-0.5 rounded-md bg-red-900/60 hover:bg-red-800 text-red-200 border border-red-600/50 flex items-center gap-0.5 transition-colors"
+                            title={`在地圖定位 ${st} 站`}
+                          >
+                            <MapPin className="w-2.5 h-2.5 text-red-400" />
+                            <span>{st}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+
+                {/* 3.5 Regular Alert Cards */}
+                {filteredAndSortedAlerts.regular.map((item) => {
+                  const modeBg =
+                    item.mode === 'skytrain'
+                      ? 'bg-blue-500/15 text-blue-300 border-blue-500/30'
+                      : item.mode === 'bus'
+                      ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+                      : item.mode === 'seabus'
+                      ? 'bg-cyan-500/15 text-cyan-300 border-cyan-500/30'
+                      : item.mode === 'wce'
+                      ? 'bg-purple-500/15 text-purple-300 border-purple-500/30'
+                      : 'bg-gray-500/15 text-gray-300 border-gray-500/30';
+
+                  return (
+                    <div
+                      key={item.id}
+                      className="p-3 rounded-xl bg-[#131620] hover:bg-[#181d2a] border border-[#232838] hover:border-[#333d54] transition-all flex flex-col gap-2 shadow-sm"
+                    >
+                      {/* Card Header: Mode Badge, Effect Badge, Severity Badge */}
+                      <div className="flex items-start justify-between gap-1.5 flex-wrap">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className={`text-[10.5px] px-2 py-0.5 rounded-md font-semibold border ${modeBg} flex items-center gap-1`}>
+                            {item.mode === 'skytrain' && <Train className="w-3 h-3" />}
+                            {item.mode === 'bus' && <Bus className="w-3 h-3" />}
+                            {item.mode === 'seabus' && <Ship className="w-3 h-3" />}
+                            <span>{item.mode_name}</span>
+                          </span>
+
+                          {item.routeLongName && item.routeLongName !== item.mode_name && (
+                            <span className="text-[10.5px] text-gray-300 font-bold bg-[#1c2230] px-2 py-0.5 rounded-md border border-[#2b3548] truncate max-w-[170px]" title={item.routeLongName}>
+                              {item.routeLongName}
+                            </span>
+                          )}
+
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#1c2230] text-gray-300 border border-[#2b3548]">
+                            {item.effect_zh}
+                          </span>
+                        </div>
+
+                        {/* Critical / Advisory indicator */}
+                        {item.critical ? (
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-red-950/80 text-red-300 border border-red-700/60 flex items-center gap-1 shrink-0 animate-pulse">
+                            <span className="w-2 h-2 rounded-full bg-red-400"></span>
+                            <span>嚴重影響</span>
+                          </span>
+                        ) : (
+                          <span className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-amber-950/60 text-amber-300 border border-amber-800/50 flex items-center gap-1 shrink-0">
+                            <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+                            <span>營運提示</span>
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Header / Summary */}
+                      <h4 className="text-xs font-bold text-white leading-snug">
+                        {item.header || item.alertText}
+                      </h4>
+
+                      {/* Description if available and different from header */}
+                      {item.description && item.description.trim() !== (item.header || '').trim() && (
+                        <p className="text-[11px] text-gray-300 leading-relaxed whitespace-pre-line bg-[#0d1017] p-2 rounded-lg border border-[#1e2332]">
+                          {item.description}
+                        </p>
+                      )}
+
+                      {/* Impacted Stations Tags */}
+                      {item.impacted_stations && item.impacted_stations.length > 0 && (
+                        <div className="flex flex-wrap items-center gap-1 pt-1 border-t border-[#1a1f2c]">
+                          <span className="text-[10px] text-gray-400">受影響車站：</span>
+                          {item.impacted_stations.map((st) => (
+                            <button
+                              key={st}
+                              onClick={() => handleStationClick(st)}
+                              className="text-[10px] px-1.5 py-0.5 rounded bg-[#1a2130] hover:bg-emerald-950 text-cyan-300 hover:text-emerald-300 border border-[#28354c] hover:border-emerald-500/50 flex items-center gap-0.5 transition-colors cursor-pointer"
+                              title={`點擊定位 ${st} 站`}
+                            >
+                              <MapPin className="w-2.5 h-2.5 text-cyan-400" />
+                              <span>{st}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Footer: Date and External Link */}
+                      <div className="flex items-center justify-between text-[10px] text-gray-400 pt-1 border-t border-[#1a1f2c]">
+                        <span className="font-mono">
+                          {item.lastModified
+                            ? `更新：${new Date(item.lastModified).toLocaleDateString()} ${new Date(item.lastModified).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+                            : item.startTime
+                            ? `生效：${new Date(item.startTime).toLocaleDateString()}`
+                            : '即時更新'}
+                        </span>
+                        {item.url && (
+                          <a
+                            href={item.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-rose-400 hover:text-rose-300 flex items-center gap-0.5 hover:underline"
+                          >
+                            <span>官方警報詳情</span>
+                            <ExternalLink className="w-2.5 h-2.5" />
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* ==================== 5. 新聞分頁 (Vancouver News - 604 Now, CityNews, Global News BC, Daily Hive) ==================== */}
       {activeTab === 'news' && (
         <div className="flex-1 flex flex-col min-h-0 space-y-2.5 overflow-hidden">
@@ -2680,14 +3303,28 @@ function ExploreContent() {
               })}
             </div>
 
-            <button
-              onClick={() => fetchNews(true)}
-              disabled={loadingNews}
-              className="p-1.5 rounded-lg bg-[#151922] text-gray-400 hover:text-amber-400 border border-[#232838] hover:border-amber-500/40 transition-all shrink-0 flex items-center justify-center disabled:opacity-50"
-              title="重新整理新聞"
-            >
-              <RefreshCw className={`w-3.5 h-3.5 ${loadingNews ? 'animate-spin text-amber-400' : ''}`} />
-            </button>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <select
+                value={newsRefreshInterval || 15}
+                onChange={(e) => setNewsRefreshInterval(Number(e.target.value))}
+                className="bg-[#151922] text-gray-300 text-[11px] rounded-lg px-2 py-1 border border-[#232838] focus:outline-none focus:border-amber-500/50 cursor-pointer"
+                title="自訂新聞自動更新頻率"
+              >
+                <option value={5}>每 5 分鐘</option>
+                <option value={10}>每 10 分鐘</option>
+                <option value={15}>每 15 分鐘 (預設)</option>
+                <option value={30}>每 30 分鐘</option>
+                <option value={60}>每 60 分鐘</option>
+              </select>
+              <button
+                onClick={() => fetchNews(true)}
+                disabled={loadingNews}
+                className="p-1.5 rounded-lg bg-[#151922] text-gray-400 hover:text-amber-400 border border-[#232838] hover:border-amber-500/40 transition-all shrink-0 flex items-center justify-center disabled:opacity-50"
+                title="立即重新整理新聞"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${loadingNews ? 'animate-spin text-amber-400' : ''}`} />
+              </button>
+            </div>
           </div>
 
           {/* News Search Bar */}
@@ -2986,6 +3623,7 @@ function ExploreContent() {
           {activeTab === 'ev' && `共收錄 ${evStations.length} 座充電站`}
           {activeTab === 'ferry' && `共 ${ferryRoutes.reduce((acc, r) => acc + (r?.vessels?.length || 0), 0)} 艘渡輪即時航行中`}
           {activeTab === 'cargo' && `共追蹤 ${sortedShippingVessels.length} 艘溫哥華港口商船 (依抵達時間近至遠排序)`}
+          {activeTab === 'alerts' && `共 ${filteredAndSortedAlerts.banners.length + filteredAndSortedAlerts.regular.length} 則 TransLink 即時運輸警報 · 每 ${transitAlertsRefreshInterval || 10} 分鐘自動更新`}
         </span>
         <button
           onClick={() => {

@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 
 export type MapStyleType = 'street' | 'satellite' | 'light' | 'dark';
 
-export type ExploreTabType = 'weather' | 'news' | 'events' | 'ski' | 'aurora' | 'fuel' | 'ev' | 'ferry' | 'cargo';
+export type ExploreTabType = 'weather' | 'news' | 'events' | 'ski' | 'aurora' | 'alerts' | 'fuel' | 'ev' | 'ferry' | 'cargo';
 
 export interface SearchTarget {
   id: string;
@@ -101,6 +101,10 @@ export interface UIState {
   setTemperatureUnit: (unit: 'celsius' | 'fahrenheit') => void;
   newsRefreshInterval: number;
   setNewsRefreshInterval: (interval: number) => void;
+  transitAlertsRefreshInterval: number;
+  setTransitAlertsRefreshInterval: (interval: number) => void;
+  stationAlertsMap: Record<string, { critical: boolean; count: number; alert_ids: string[] }>;
+  setStationAlertsMap: (map: Record<string, { critical: boolean; count: number; alert_ids: string[] }>) => void;
   userLocation: {
     address: string;
     displayName?: string;
@@ -262,6 +266,10 @@ export const useUIStore = create<UIState>()(
       setTemperatureUnit: (unit) => set({ temperatureUnit: unit }),
       newsRefreshInterval: 15,
       setNewsRefreshInterval: (interval) => set({ newsRefreshInterval: interval }),
+      transitAlertsRefreshInterval: 10,
+      setTransitAlertsRefreshInterval: (interval) => set({ transitAlertsRefreshInterval: interval }),
+      stationAlertsMap: {},
+      setStationAlertsMap: (map) => set({ stationAlertsMap: map }),
       userLocation: null,
       setUserLocation: (loc) => set({ userLocation: loc }),
       isSettingsModalOpen: false,
@@ -397,6 +405,7 @@ export const useUIStore = create<UIState>()(
         distanceUnit: state.distanceUnit,
         temperatureUnit: state.temperatureUnit,
         newsRefreshInterval: state.newsRefreshInterval,
+        transitAlertsRefreshInterval: state.transitAlertsRefreshInterval,
         userLocation: state.userLocation,
       }),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -411,6 +420,7 @@ export const useUIStore = create<UIState>()(
           distanceUnit: persistedState?.distanceUnit || 'metric',
           temperatureUnit: persistedState?.temperatureUnit || 'celsius',
           newsRefreshInterval: persistedState?.newsRefreshInterval ?? 15,
+          transitAlertsRefreshInterval: persistedState?.transitAlertsRefreshInterval ?? 10,
           userLocation: persistedState?.userLocation || null,
           layers: {
             ...currentState.layers,

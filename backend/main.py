@@ -879,6 +879,16 @@ def get_live_aurora(force: bool = False):
     import aurora_service
     return aurora_service.get_aurora_data(force=force)
 
+@app.get("/api/translink/alerts")
+def get_translink_alerts(force: bool = False):
+    """
+    Returns latest TransLink live alerts and emergency banners across all modes (SkyTrain, Bus, SeaBus, WCE).
+    Cached 5 minutes.
+    """
+    import translink_service
+    return translink_service.get_translink_alerts(force=force)
+
+
 @app.get("/api/geojson/airports")
 def get_airports_geojson():
     static_path = os.path.join(os.path.dirname(__file__), "data", "vancouver_airports.geojson")
