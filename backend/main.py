@@ -1474,6 +1474,7 @@ def sync_curated_point_types(db: Session):
                         static_geojson = json.load(f)
                     if facility_type in ("aed", "car_sharing", "bike_racks", "wireless_facilities", "traffic_crosswalks", "litter_containers", "food_banks", "recycling"):
                         db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).delete()
+                    facs_to_add = []
                     for feat in static_geojson.get("features", []):
                         props = feat.get("properties", {})
                         geom_type = feat.get("geometry", {}).get("type")
@@ -1492,7 +1493,9 @@ def sync_curated_point_types(db: Session):
                                 details={k: v for k, v in props.items() if k not in ("id", "facility_type", "name", "local_area")},
                                 last_updated=datetime.utcnow()
                             )
-                            db.merge(fac)
+                            facs_to_add.append(fac)
+                    if facs_to_add:
+                        db.bulk_save_objects(facs_to_add)
                     db.commit()
                     _db_synced_curated_types.add(facility_type)
                 except Exception as e:
@@ -2494,7 +2497,7 @@ def get_road_facilities_geojson(
             static_geojson_path = os.path.join(os.path.dirname(__file__), "data", "vancouver_contours.geojson")
 
         if os.path.exists(static_geojson_path):
-            return FileResponse(static_geojson_path, media_type="application/json", headers={"Cache-Control": "no-cache, must-revalidate"})
+            return FileResponse(static_geojson_path, media_type="application/json", headers={"Cache-Control": "public, max-age=3600, stale-while-revalidate=86400"})
         return {"type": "FeatureCollection", "features": []}
 
     # Handle Tide Stations
@@ -2527,35 +2530,31 @@ def get_road_facilities_geojson(
     if facility_type in ("street_lighting", "street_lighting_poles"):
         poles_path = os.path.join(os.path.dirname(__file__), "data", "vancouver_street_lighting_poles.geojson")
         if os.path.exists(poles_path):
-            return FileResponse(poles_path, media_type="application/json", headers={"Cache-Control": "no-cache, must-revalidate"})
+            return FileResponse(poles_path, media_type="application/json", headers={"Cache-Control": "public, max-age=3600, stale-while-revalidate=86400"})
 
     # Handle Street Lighting Conduits
     if facility_type in ("street_lighting_conduits", "street_conduits"):
         conduits_path = os.path.join(os.path.dirname(__file__), "data", "vancouver_street_lighting_conduits.geojson")
         if os.path.exists(conduits_path):
-            return FileResponse(conduits_path, media_type="application/json", headers={"Cache-Control": "no-cache, must-revalidate"})
+            return FileResponse(conduits_path, media_type="application/json", headers={"Cache-Control": "public, max-age=3600, stale-while-revalidate=86400"})
 
-    # 2. Prioritize verified curated static GeoJSON files (hospitals/UPCC, police, etc.)
-    if facility_type in CURATED_STATIC_TYPES:
-        filename = f"vancouver_{facility_type}.geojson"
-        static_geojson_path = os.path.join(os.path.dirname(__file__), "data", filename)
-        if os.path.exists(static_geojson_path):
-            if facility_type in POINT_CURATED_TYPES and facility_type not in _db_synced_curated_types:
-                sync_curated_point_types(db)
-            return FileResponse(static_geojson_path, media_type="application/json", headers={"Cache-Control": "no-cache, must-revalidate"})
+    # 2. Prioritize verified precompiled static GeoJSON files (instant zero-copy static serving)
+    static_geojson_path = os.path.join(os.path.dirname(__file__), "data", f"vancouver_{facility_type}.geojson")
+    if os.path.exists(static_geojson_path):
+        return FileResponse(static_geojson_path, media_type="application/json", headers={"Cache-Control": "public, max-age=3600, stale-while-revalidate=86400"})
 
     facilities = db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).all()
     
     # Auto-import on-the-fly if not yet populated in DB
     if not facilities:
         # 1. Check for precompiled verified GeoJSON in backend/data/
-        static_geojson_path = os.path.join(os.path.dirname(__file__), "data", f"vancouver_{facility_type}.geojson")
         if os.path.exists(static_geojson_path):
             try:
                 with open(static_geojson_path, "r", encoding="utf-8") as f:
                     static_geojson = json.load(f)
                 
-                # Auto-populate DB for future queries & search
+                # Auto-populate DB for future queries & search using bulk save
+                facs_to_add = []
                 for feat in static_geojson.get("features", []):
                     props = feat.get("properties", {})
                     coords = feat.get("geometry", {}).get("coordinates", [])
@@ -2573,15 +2572,16 @@ def get_road_facilities_geojson(
                             details={k: v for k, v in props.items() if k not in ("id", "facility_type", "name", "local_area")},
                             last_updated=datetime.utcnow()
                         )
-                        db.merge(fac)
+                        facs_to_add.append(fac)
+                if facs_to_add:
+                    db.bulk_save_objects(facs_to_add)
                 db.commit()
-                return static_geojson
+                return FileResponse(static_geojson_path, media_type="application/json", headers={"Cache-Control": "public, max-age=3600, stale-while-revalidate=86400"})
             except Exception as e:
                 db.rollback()
                 print(f"Error populating {facility_type} from static geojson: {e}")
                 if os.path.exists(static_geojson_path):
-                    with open(static_geojson_path, "r", encoding="utf-8") as f:
-                        return json.load(f)
+                    return FileResponse(static_geojson_path, media_type="application/json", headers={"Cache-Control": "public, max-age=3600, stale-while-revalidate=86400"})
 
         # 2. Try online API import
         try:

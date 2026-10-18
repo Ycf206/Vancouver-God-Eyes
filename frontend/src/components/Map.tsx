@@ -639,9 +639,12 @@ export default function AppMap() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (window as any).__godsEyeMapRef = mapRef;
     }
-    const apiUrl = getApiUrl();
-    fetch(`${apiUrl}/api/geojson/road/local_area_boundary`)
-      .then(res => res.json())
+    fetch('/vancouver_local_area_boundary.geojson')
+      .then(res => {
+        if (!res.ok) throw new Error('Local fetch failed');
+        return res.json();
+      })
+      .catch(() => fetch(`${apiUrl}/api/geojson/road/local_area_boundary`).then(r => r.json()))
       .then(data => {
         if (data?.features && Array.isArray(data.features)) {
           localAreaBoundariesRef.current = data.features;
@@ -2493,37 +2496,37 @@ export default function AppMap() {
     style.sources['motorcycle-parking'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/motorcycle_parking` };
     style.sources['ev-charging'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/ev_charging` };
     style.sources['escooter'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/escooter` };
-    style.sources['shared-bikes'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/shared_bikes` };
-    style.sources['bikeways'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/bikeways` };
+    style.sources['shared-bikes'] = { type: 'geojson', data: '/vancouver_shared_bikes.geojson' };
+    style.sources['bikeways'] = { type: 'geojson', data: '/vancouver_bikeways.geojson' };
     style.sources['fire-halls'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/fire_halls` };
     style.sources['community-centres'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/community_centres` };
     style.sources['traffic-cameras'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/traffic_cameras` };
-    style.sources['safety-cameras'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/safety_cameras` };
-    style.sources['hospitals'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/hospitals` };
-    style.sources['parks'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/parks` };
-    style.sources['parks-facilities'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/parks_facilities` };
-    style.sources['community-gardens'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/community_gardens` };
-    style.sources['drinking-fountains'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/drinking_fountains` };
-    style.sources['public-washrooms'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/public_washrooms` };
-    style.sources['schools'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/schools` };
-    style.sources['libraries'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/libraries` };
-    style.sources['food-vendors'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/food_vendors` };
-    style.sources['food-banks'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/food_banks` };
-    style.sources['recycling'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/recycling` };
-    style.sources['homeless-shelters'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/homeless_shelters` };
-    style.sources['car-sharing'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/car_sharing?v=2` };
-    style.sources['police'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/police` };
-    style.sources['disaster-hubs'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/disaster_hubs` };
-    style.sources['local-area-boundary'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/local_area_boundary` };
+    style.sources['safety-cameras'] = { type: 'geojson', data: '/vancouver_safety_cameras.geojson' };
+    style.sources['hospitals'] = { type: 'geojson', data: '/vancouver_hospitals.geojson' };
+    style.sources['parks'] = { type: 'geojson', data: '/vancouver_parks.geojson' };
+    style.sources['parks-facilities'] = { type: 'geojson', data: '/vancouver_parks_facilities.geojson' };
+    style.sources['community-gardens'] = { type: 'geojson', data: '/vancouver_community_gardens.geojson' };
+    style.sources['drinking-fountains'] = { type: 'geojson', data: '/vancouver_drinking_fountains.geojson' };
+    style.sources['public-washrooms'] = { type: 'geojson', data: '/vancouver_public_washrooms.geojson' };
+    style.sources['schools'] = { type: 'geojson', data: '/vancouver_schools.geojson' };
+    style.sources['libraries'] = { type: 'geojson', data: '/vancouver_libraries.geojson' };
+    style.sources['food-vendors'] = { type: 'geojson', data: '/vancouver_food_vendors.geojson' };
+    style.sources['food-banks'] = { type: 'geojson', data: '/vancouver_food_banks.geojson' };
+    style.sources['recycling'] = { type: 'geojson', data: '/vancouver_recycling.geojson' };
+    style.sources['homeless-shelters'] = { type: 'geojson', data: '/vancouver_homeless_shelters.geojson' };
+    style.sources['car-sharing'] = { type: 'geojson', data: '/vancouver_car_sharing.geojson' };
+    style.sources['police'] = { type: 'geojson', data: '/vancouver_police.geojson' };
+    style.sources['disaster-hubs'] = { type: 'geojson', data: '/vancouver_disaster_hubs.geojson' };
+    style.sources['local-area-boundary'] = { type: 'geojson', data: '/vancouver_local_area_boundary.geojson' };
     style.sources['fuel'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/fuel` };
-    style.sources['tesla'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/tesla` };
-    style.sources['marine_terminals'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/marine_terminals` };
-    style.sources['aed'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/aed` };
+    style.sources['tesla'] = { type: 'geojson', data: '/vancouver_tesla.geojson' };
+    style.sources['marine_terminals'] = { type: 'geojson', data: '/vancouver_marine_terminals.geojson' };
+    style.sources['aed'] = { type: 'geojson', data: '/vancouver_aed.geojson' };
 
     // VanWiFi (溫哥華官方免費公共 WiFi)
     style.sources['van-wifi'] = { 
       type: 'geojson', 
-      data: `${apiUrl}/api/geojson/road/van_wifi`,
+      data: '/vancouver_van_wifi.geojson',
       cluster: true,
       clusterMaxZoom: 14,
       clusterRadius: 45
@@ -2547,7 +2550,7 @@ export default function AppMap() {
 
     // Crime Areas (罪案地區 - 各區犯罪率面圖層)
     if (layers.crimeAreas) {
-      style.sources['crime_areas'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/crime_areas` };
+      style.sources['crime_areas'] = { type: 'geojson', data: '/vancouver_crime_areas.geojson' };
       style.layers.push({
         id: 'crime-areas-fill',
         type: 'fill',
@@ -2822,7 +2825,7 @@ export default function AppMap() {
 
     // Road Facilities: One-Way Streets (單程路 LineString with Directional Arrows)
     if (layers.oneWayStreets) {
-      style.sources['one_way_streets'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/one_way_streets` };
+      style.sources['one_way_streets'] = { type: 'geojson', data: '/vancouver_one_way_streets.geojson' };
       style.layers.push({
         id: 'one-way-streets-casing-layer',
         type: 'line',
@@ -2876,7 +2879,7 @@ export default function AppMap() {
 
     // Road Facilities: Snow Removal Routes (鏟雪路線 LineString / MultiLineString with Ice Blue Styling)
     if (layers.snowRemovalRoutes) {
-      style.sources['snow_removal_routes'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/snow_removal_routes` };
+      style.sources['snow_removal_routes'] = { type: 'geojson', data: '/vancouver_snow_removal_routes.geojson' };
       style.layers.push({
         id: 'snow-removal-routes-casing-layer',
         type: 'line',
@@ -3441,7 +3444,7 @@ export default function AppMap() {
     if (layers.fireHydrants) {
       style.sources['fire_hydrants'] = {
         type: 'geojson',
-        data: `${apiUrl}/api/geojson/road/fire_hydrants`,
+        data: '/vancouver_fire_hydrants.geojson',
         cluster: true,
         clusterMaxZoom: 14,
         clusterRadius: 45
@@ -4538,7 +4541,7 @@ export default function AppMap() {
     if (layers.zoningDistricts) {
       style.sources['zoning_districts'] = {
         type: 'geojson',
-        data: `${apiUrl}/api/geojson/road/zoning_districts`
+        data: '/vancouver_zoning_districts.geojson'
       };
       // 土地規劃半透明多邊形填色 (依都市計畫土地使用類別著色)
       style.layers.push({
@@ -4610,7 +4613,7 @@ export default function AppMap() {
 
     // Utilities: Water Distribution Mains (自來水管道)
     if (layers.waterDistributionMains) {
-      style.sources['water_distribution_mains'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/water_distribution_mains` };
+      style.sources['water_distribution_mains'] = { type: 'geojson', data: '/vancouver_water_distribution_mains.geojson' };
       style.layers.push({
         id: 'water-distribution-mains-layer',
         type: 'line',
@@ -4631,7 +4634,7 @@ export default function AppMap() {
 
     // Utilities: Sewer Mains (污水管道)
     if (layers.sewerMains) {
-      style.sources['sewer_mains'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/sewer_mains` };
+      style.sources['sewer_mains'] = { type: 'geojson', data: '/vancouver_sewer_mains.geojson' };
       style.layers.push({
         id: 'sewer-mains-layer',
         type: 'line',
@@ -4652,7 +4655,7 @@ export default function AppMap() {
 
     // Road: Traffic Speed Limits (限速路段)
     if (layers.trafficSpeedLimits) {
-      style.sources['traffic_speed_limits'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/traffic_speed_limits` };
+      style.sources['traffic_speed_limits'] = { type: 'geojson', data: '/vancouver_traffic_speed_limits.geojson' };
       style.layers.push({
         id: 'traffic-speed-limits-casing-layer',
         type: 'line',
@@ -4717,7 +4720,7 @@ export default function AppMap() {
     if (layers.bikeRacks) {
       style.sources['bike_racks'] = { 
         type: 'geojson', 
-        data: `${apiUrl}/api/geojson/road/bike_racks`,
+        data: '/vancouver_bike_racks.geojson',
         cluster: true,
         clusterMaxZoom: 14,
         clusterRadius: 50
@@ -4790,7 +4793,7 @@ export default function AppMap() {
 
     // Geography: Postal Code FSA (郵遞編號分區)
     if (layers.postalCodeFSA) {
-      style.sources['postal_code_fsa'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/postal_code_fsa` };
+      style.sources['postal_code_fsa'] = { type: 'geojson', data: '/vancouver_postal_code_fsa.geojson' };
       style.layers.push({
         id: 'postal-code-fsa-fill',
         type: 'fill',
@@ -4831,7 +4834,7 @@ export default function AppMap() {
 
     // Utilities: Wireless Facilities (無線設施)
     if (layers.wirelessFacilities) {
-      style.sources['wireless_facilities'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/wireless_facilities` };
+      style.sources['wireless_facilities'] = { type: 'geojson', data: '/vancouver_wireless_facilities.geojson' };
       style.layers.push({
         id: 'wireless-facilities-layer',
         type: 'circle',
@@ -4861,7 +4864,7 @@ export default function AppMap() {
     if (layers.streetLightingConduits) {
       style.sources['street_lighting_conduits'] = { 
         type: 'geojson', 
-        data: `${apiUrl}/api/geojson/road/street_lighting_conduits`
+        data: '/vancouver_street_lighting_conduits.geojson'
       };
       // 路燈配電管線外發光
       style.layers.push({
@@ -4892,7 +4895,7 @@ export default function AppMap() {
     if (layers.streetLighting) {
       style.sources['street_lighting_poles'] = { 
         type: 'geojson', 
-        data: `${apiUrl}/api/geojson/road/street_lighting_poles`
+        data: '/vancouver_street_lighting_poles.geojson'
       };
       // 外層暖黃微光光暈
       style.layers.push({
@@ -4987,7 +4990,7 @@ export default function AppMap() {
     if (layers.trafficCrosswalks) {
       style.sources['traffic_crosswalks'] = { 
         type: 'geojson', 
-        data: `${apiUrl}/api/geojson/road/traffic_crosswalks`,
+        data: '/vancouver_traffic_crosswalks.geojson',
         cluster: true,
         clusterMaxZoom: 14,
         clusterRadius: 50
@@ -5062,7 +5065,7 @@ export default function AppMap() {
     if (layers.litterContainers) {
       style.sources['litter_containers'] = { 
         type: 'geojson', 
-        data: `${apiUrl}/api/geojson/road/litter_containers`,
+        data: '/vancouver_litter_containers.geojson',
         cluster: true,
         clusterMaxZoom: 14,
         clusterRadius: 50
