@@ -2110,6 +2110,17 @@ function ExploreContent() {
       if (res.ok) {
         const data = await res.json();
         if (data && Array.isArray(data.corridors)) {
+          if (!Array.isArray(data.major_roads) || data.major_roads.length === 0) {
+            try {
+              const staticRes = await fetch('/vancouver_traffic_summary_cache.json');
+              if (staticRes.ok) {
+                const staticData = await staticRes.json();
+                if (staticData && Array.isArray(staticData.major_roads) && staticData.major_roads.length > 0) {
+                  data.major_roads = staticData.major_roads;
+                }
+              }
+            } catch (_) {}
+          }
           setTrafficSummary(data);
           setLoadingTraffic(false);
           return;
@@ -2213,7 +2224,7 @@ function ExploreContent() {
     }
     setSearchTarget({
       id: `alert_${alert.id}`,
-      title: `${alert.icon || '⚠️'} ${alert.type_label || alert.subtype_zh || alert.type_zh || '即時通報'}`,
+      title: `${alert.type_label || alert.subtype_zh || alert.type_zh || '即時通報'}`,
       subtitle: `${alert.street || alert.city || '事故路段'} · 延誤約 ${alert.delay_min ?? alert.delay_minutes ?? 0} 分鐘`,
       category: 'traffic_incident',
       badge: '即時通報',
@@ -2222,6 +2233,7 @@ function ExploreContent() {
       lon: coords[0],
       zoom: 15,
       meta: {
+        local_area: alert.street || alert.city || '大溫突發事故',
         properties: {
           ...alert,
           facility_type: 'traffic_alerts'

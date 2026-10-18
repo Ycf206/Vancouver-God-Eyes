@@ -246,8 +246,8 @@ export default function LayerPanel() {
             <LayerButton layerKey="oneWayStreets" label="單程路" icon={ArrowRight} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
             <LayerButton layerKey="trafficSpeedLimits" label="限速路段" icon={Gauge} colorClass="text-emerald-400" activeBg="bg-[#142820]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
 
-            {/* Row 4: 斑馬線 | 共享汽車 */}
-            <LayerButton layerKey="trafficCrosswalks" label="斑馬線" icon={Footprints} colorClass="text-yellow-400" activeBg="bg-[#2a2414]" activeBorder="border-yellow-500/50" activeShadow="shadow-[0_0_6px_rgba(234,179,8,0.15)]" />
+            {/* Row 4: 行人穿越道 | 共享汽車 */}
+            <LayerButton layerKey="trafficCrosswalks" label="行人穿越道" icon={Footprints} colorClass="text-yellow-400" activeBg="bg-[#2a2414]" activeBorder="border-yellow-500/50" activeShadow="shadow-[0_0_6px_rgba(234,179,8,0.15)]" />
             <LayerButton layerKey="carSharing" label="共享汽車" icon={Car} colorClass="text-sky-400" activeBg="bg-[#102336]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(56,189,248,0.15)]" />
 
             {/* Row 5: 單車徑 | 單車架 */}

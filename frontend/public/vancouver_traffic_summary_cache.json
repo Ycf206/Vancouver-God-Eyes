@@ -470,5 +470,1180 @@
       ],
       "source": "TomTom Crowd-Sourced Reports"
     }
-  ]
+  ],
+  "major_roads": [
+    {
+      "id": "mrn_georgia_se",
+      "name": "Georgia Street (southeast to Main St)",
+      "english_name": "Georgia Street (southeast to Main St)",
+      "route": "Downtown",
+      "badge": "Major Road Network - Downtown",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Georgia Street (southeast to Main St))",
+      "center": [
+        -123.111,
+        49.2785
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "mrn_howe",
+      "name": "Howe Street",
+      "english_name": "Howe Street",
+      "route": "Downtown",
+      "badge": "Major Road Network - Downtown",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Howe Street)",
+      "center": [
+        -123.1255,
+        49.278
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "mrn_nelson",
+      "name": "Nelson Street (northwest to Howe St)",
+      "english_name": "Nelson Street (northwest to Howe St)",
+      "route": "Downtown",
+      "badge": "Major Road Network - Downtown",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Nelson Street (northwest to Howe St))",
+      "center": [
+        -123.122,
+        49.2785
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "mrn_seymour",
+      "name": "Seymour Street",
+      "english_name": "Seymour Street",
+      "route": "Downtown",
+      "badge": "Major Road Network - Downtown",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Seymour Street)",
+      "center": [
+        -123.12,
+        49.28
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "mrn_smithe",
+      "name": "Smithe Street (northwest to Howe St)",
+      "english_name": "Smithe Street (northwest to Howe St)",
+      "route": "Downtown",
+      "badge": "Major Road Network - Downtown",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Smithe Street (northwest to Howe St))",
+      "center": [
+        -123.1205,
+        49.2775
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "mrn_hastings",
+      "name": "Hastings Street (west to Burrard St)",
+      "english_name": "Hastings Street (west to Burrard St)",
+      "route": "East–west",
+      "badge": "Major Road Network - East–west",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Hastings Street (west to Burrard St))",
+      "center": [
+        -123.08,
+        49.2812
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "mrn_mcgill",
+      "name": "McGill Street (west to Nanaimo St)",
+      "english_name": "McGill Street (west to Nanaimo St)",
+      "route": "East–west",
+      "badge": "Major Road Network - East–west",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (McGill Street (west to Nanaimo St))",
+      "center": [
+        -123.051,
+        49.2865
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "mrn_dundas",
+      "name": "Dundas Street (east to Nanaimo St)",
+      "english_name": "Dundas Street (east to Nanaimo St)",
+      "route": "East–west",
+      "badge": "Major Road Network - East–west",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Dundas Street (east to Nanaimo St))",
+      "center": [
+        -123.056,
+        49.2835
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "mrn_powell",
+      "name": "Powell Street (west to Hawks Ave)",
+      "english_name": "Powell Street (west to Hawks Ave)",
+      "route": "East–west",
+      "badge": "Major Road Network - East–west",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Powell Street (west to Hawks Ave))",
+      "center": [
+        -123.09,
+        49.283
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "mrn_east_1st",
+      "name": "East 1st Avenue",
+      "english_name": "East 1st Avenue",
+      "route": "East–west",
+      "badge": "Major Road Network - East–west",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (East 1st Avenue)",
+      "center": [
+        -123.065,
+        49.269
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "mrn_terminal",
+      "name": "Terminal Avenue",
+      "english_name": "Terminal Avenue",
+      "route": "East–west",
+      "badge": "Major Road Network - East–west",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Terminal Avenue)",
+      "center": [
+        -123.09,
+        49.273
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "mrn_broadway",
+      "name": "Broadway",
+      "english_name": "Broadway",
+      "route": "East–west",
+      "badge": "Major Road Network - East–west",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Broadway)",
+      "center": [
+        -123.125,
+        49.2635
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "mrn_west_10th",
+      "name": "West 10th Avenue (east to Alma St)",
+      "english_name": "West 10th Avenue (east to Alma St)",
+      "route": "East–west",
+      "badge": "Major Road Network - East–west",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (West 10th Avenue (east to Alma St))",
+      "center": [
+        -123.19,
+        49.2625
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "mrn_grandview",
+      "name": "Grandview Highway (west to Nanaimo St)",
+      "english_name": "Grandview Highway (west to Nanaimo St)",
+      "route": "East–west",
+      "badge": "Major Road Network - East–west",
+      "current_speed_kmh": 60,
+      "freeflow_speed_kmh": 60,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Grandview Highway (west to Nanaimo St))",
+      "center": [
+        -123.045,
+        49.2575
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "mrn_41st_ave",
+      "name": "41st Avenue",
+      "english_name": "41st Avenue",
+      "route": "East–west",
+      "badge": "Major Road Network - East–west",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (41st Avenue)",
+      "center": [
+        -123.125,
+        49.2335
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "mrn_70th_ave",
+      "name": "70th Avenue",
+      "english_name": "70th Avenue",
+      "route": "East–west",
+      "badge": "Major Road Network - East–west",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (70th Avenue)",
+      "center": [
+        -123.135,
+        49.2085
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "mrn_boundary",
+      "name": "Boundary Road (north to Hastings St)",
+      "english_name": "Boundary Road (north to Hastings St)",
+      "route": "North–south",
+      "badge": "Major Road Network - North–south",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Boundary Road (north to Hastings St))",
+      "center": [
+        -123.0235,
+        49.265
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "mrn_clark",
+      "name": "Clark Drive (north to Powell St)",
+      "english_name": "Clark Drive (north to Powell St)",
+      "route": "North–south",
+      "badge": "Major Road Network - North–south",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Clark Drive (north to Powell St))",
+      "center": [
+        -123.078,
+        49.272
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "mrn_knight",
+      "name": "Knight Street",
+      "english_name": "Knight Street",
+      "route": "North–south",
+      "badge": "Major Road Network - North–south",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Knight Street)",
+      "center": [
+        -123.078,
+        49.23
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "mrn_main_st",
+      "name": "Main Street (between Broadway & Georgia St)",
+      "english_name": "Main Street (between Broadway & Georgia St)",
+      "route": "North–south",
+      "badge": "Major Road Network - North–south",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Main Street (between Broadway & Georgia St))",
+      "center": [
+        -123.1,
+        49.27
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "mrn_oak_st",
+      "name": "Oak Street (north to Broadway)",
+      "english_name": "Oak Street (north to Broadway)",
+      "route": "North–south",
+      "badge": "Major Road Network - North–south",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Oak Street (north to Broadway))",
+      "center": [
+        -123.1285,
+        49.245
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "mrn_cambie",
+      "name": "Cambie Street",
+      "english_name": "Cambie Street",
+      "route": "North–south",
+      "badge": "Major Road Network - North–south",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Cambie Street)",
+      "center": [
+        -123.1155,
+        49.245
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "mrn_granville",
+      "name": "Granville Street",
+      "english_name": "Granville Street",
+      "route": "North–south",
+      "badge": "Major Road Network - North–south",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Granville Street)",
+      "center": [
+        -123.1385,
+        49.245
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "mrn_kingsway",
+      "name": "Kingsway",
+      "english_name": "Kingsway",
+      "route": "Other",
+      "badge": "Major Road Network - Other",
+      "current_speed_kmh": 55,
+      "freeflow_speed_kmh": 55,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Kingsway)",
+      "center": [
+        -123.065,
+        49.245
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "mrn_marine_dr",
+      "name": "Marine Drive",
+      "english_name": "Marine Drive",
+      "route": "Other",
+      "badge": "Major Road Network - Other",
+      "current_speed_kmh": 60,
+      "freeflow_speed_kmh": 60,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Marine Drive)",
+      "center": [
+        -123.115,
+        49.21
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_burrard",
+      "name": "Burrard Street",
+      "english_name": "Burrard Street",
+      "route": "Downtown",
+      "badge": "Other Major Thoroughfare - Downtown",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Burrard Street)",
+      "center": [
+        -123.1235,
+        49.2835
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_cordova",
+      "name": "Cordova Street",
+      "english_name": "Cordova Street",
+      "route": "Downtown",
+      "badge": "Other Major Thoroughfare - Downtown",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Cordova Street)",
+      "center": [
+        -123.108,
+        49.283
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_davie",
+      "name": "Davie Street",
+      "english_name": "Davie Street",
+      "route": "Downtown",
+      "badge": "Other Major Thoroughfare - Downtown",
+      "current_speed_kmh": 40,
+      "freeflow_speed_kmh": 40,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Davie Street)",
+      "center": [
+        -123.131,
+        49.279
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_denman",
+      "name": "Denman Street",
+      "english_name": "Denman Street",
+      "route": "Downtown",
+      "badge": "Other Major Thoroughfare - Downtown",
+      "current_speed_kmh": 40,
+      "freeflow_speed_kmh": 40,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Denman Street)",
+      "center": [
+        -123.138,
+        49.29
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_dunsmuir",
+      "name": "Dunsmuir Street",
+      "english_name": "Dunsmuir Street",
+      "route": "Downtown",
+      "badge": "Other Major Thoroughfare - Downtown",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Dunsmuir Street)",
+      "center": [
+        -123.117,
+        49.2825
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_georgia_dw",
+      "name": "Georgia Street (Downtown)",
+      "english_name": "Georgia Street (Downtown)",
+      "route": "Downtown",
+      "badge": "Other Major Thoroughfare - Downtown",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Georgia Street (Downtown))",
+      "center": [
+        -123.12,
+        49.284
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_pacific_blvd",
+      "name": "Pacific Boulevard",
+      "english_name": "Pacific Boulevard",
+      "route": "Downtown",
+      "badge": "Other Major Thoroughfare - Downtown",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Pacific Boulevard)",
+      "center": [
+        -123.12,
+        49.273
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_robson",
+      "name": "Robson Street",
+      "english_name": "Robson Street",
+      "route": "Downtown",
+      "badge": "Other Major Thoroughfare - Downtown",
+      "current_speed_kmh": 40,
+      "freeflow_speed_kmh": 40,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Robson Street)",
+      "center": [
+        -123.124,
+        49.284
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_thurlow",
+      "name": "Thurlow Street",
+      "english_name": "Thurlow Street",
+      "route": "Downtown",
+      "badge": "Other Major Thoroughfare - Downtown",
+      "current_speed_kmh": 40,
+      "freeflow_speed_kmh": 40,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Thurlow Street)",
+      "center": [
+        -123.128,
+        49.2845
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_4th_ave",
+      "name": "4th Avenue",
+      "english_name": "4th Avenue",
+      "route": "Westside",
+      "badge": "Other Major Thoroughfare - Westside",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (4th Avenue)",
+      "center": [
+        -123.16,
+        49.268
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_12th_ave_w",
+      "name": "12th Avenue (West)",
+      "english_name": "12th Avenue (West)",
+      "route": "Westside",
+      "badge": "Other Major Thoroughfare - Westside",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (12th Avenue (West))",
+      "center": [
+        -123.14,
+        49.2605
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_16th_ave_w",
+      "name": "16th Avenue (West)",
+      "english_name": "16th Avenue (West)",
+      "route": "Westside",
+      "badge": "Other Major Thoroughfare - Westside",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (16th Avenue (West))",
+      "center": [
+        -123.145,
+        49.2565
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_king_edward_w",
+      "name": "King Edward Avenue (West)",
+      "english_name": "King Edward Avenue (West)",
+      "route": "Westside",
+      "badge": "Other Major Thoroughfare - Westside",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (King Edward Avenue (West))",
+      "center": [
+        -123.14,
+        49.2485
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_33rd_ave_w",
+      "name": "33rd Avenue (West)",
+      "english_name": "33rd Avenue (West)",
+      "route": "Westside",
+      "badge": "Other Major Thoroughfare - Westside",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (33rd Avenue (West))",
+      "center": [
+        -123.14,
+        49.241
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_41st_ave_hwy99",
+      "name": "41st Avenue (part of Hwy 99)",
+      "english_name": "41st Avenue (part of Hwy 99)",
+      "route": "Westside",
+      "badge": "Other Major Thoroughfare - Westside",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (41st Avenue (part of Hwy 99))",
+      "center": [
+        -123.155,
+        49.2335
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_49th_ave_w",
+      "name": "49th Avenue (West)",
+      "english_name": "49th Avenue (West)",
+      "route": "Westside",
+      "badge": "Other Major Thoroughfare - Westside",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (49th Avenue (West))",
+      "center": [
+        -123.14,
+        49.226
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_57th_ave_w",
+      "name": "57th Avenue (West)",
+      "english_name": "57th Avenue (West)",
+      "route": "Westside",
+      "badge": "Other Major Thoroughfare - Westside",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (57th Avenue (West))",
+      "center": [
+        -123.14,
+        49.2185
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_alma",
+      "name": "Alma Street",
+      "english_name": "Alma Street",
+      "route": "Westside",
+      "badge": "Other Major Thoroughfare - Westside",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Alma Street)",
+      "center": [
+        -123.186,
+        49.26
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_arbutus",
+      "name": "Arbutus Street / West Boulevard",
+      "english_name": "Arbutus Street / West Boulevard",
+      "route": "Westside",
+      "badge": "Other Major Thoroughfare - Westside",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Arbutus Street / West Boulevard)",
+      "center": [
+        -123.153,
+        49.245
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_macdonald",
+      "name": "Macdonald Street",
+      "english_name": "Macdonald Street",
+      "route": "Westside",
+      "badge": "Other Major Thoroughfare - Westside",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Macdonald Street)",
+      "center": [
+        -123.168,
+        49.255
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_prior_venables",
+      "name": "Prior Street / Venables Street",
+      "english_name": "Prior Street / Venables Street",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Prior Street / Venables Street)",
+      "center": [
+        -123.08,
+        49.2765
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_2nd_gt_northern",
+      "name": "2nd Ave / Great Northern Way / 6th Ave",
+      "english_name": "2nd Ave / Great Northern Way / 6th Ave",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (2nd Ave / Great Northern Way / 6th Ave)",
+      "center": [
+        -123.09,
+        49.2665
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_12th_ave_e",
+      "name": "12th Avenue (East)",
+      "english_name": "12th Avenue (East)",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (12th Avenue (East))",
+      "center": [
+        -123.085,
+        49.2605
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_16th_ave_e",
+      "name": "16th Avenue (East)",
+      "english_name": "16th Avenue (East)",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (16th Avenue (East))",
+      "center": [
+        -123.085,
+        49.2565
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_22nd_ave",
+      "name": "22nd Avenue (west to Nanaimo St)",
+      "english_name": "22nd Avenue (west to Nanaimo St)",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (22nd Avenue (west to Nanaimo St))",
+      "center": [
+        -123.06,
+        49.251
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_29th_ave",
+      "name": "29th Avenue (west to Nanaimo St)",
+      "english_name": "29th Avenue (west to Nanaimo St)",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (29th Avenue (west to Nanaimo St))",
+      "center": [
+        -123.055,
+        49.2445
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_33rd_ave_e",
+      "name": "33rd Avenue (East)",
+      "english_name": "33rd Avenue (East)",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (33rd Avenue (East))",
+      "center": [
+        -123.085,
+        49.241
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_king_edward_e",
+      "name": "King Edward Avenue (East)",
+      "english_name": "King Edward Avenue (East)",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (King Edward Avenue (East))",
+      "center": [
+        -123.085,
+        49.2485
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_41st_ave_e",
+      "name": "41st Avenue (east to Kingsway)",
+      "english_name": "41st Avenue (east to Kingsway)",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (41st Avenue (east to Kingsway))",
+      "center": [
+        -123.065,
+        49.2335
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_49th_ave_e",
+      "name": "49th Avenue (East)",
+      "english_name": "49th Avenue (East)",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (49th Avenue (East))",
+      "center": [
+        -123.085,
+        49.226
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_54th_ave",
+      "name": "54th Avenue (east to Tyne St)",
+      "english_name": "54th Avenue (east to Tyne St)",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (54th Avenue (east to Tyne St))",
+      "center": [
+        -123.035,
+        49.2215
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_57th_ave_e",
+      "name": "57th Avenue (east to Argyle Dr)",
+      "english_name": "57th Avenue (east to Argyle Dr)",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (57th Avenue (east to Argyle Dr))",
+      "center": [
+        -123.065,
+        49.2185
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_main_st_e",
+      "name": "Main Street",
+      "english_name": "Main Street",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Main Street)",
+      "center": [
+        -123.1,
+        49.25
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_fraser",
+      "name": "Fraser Street",
+      "english_name": "Fraser Street",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Fraser Street)",
+      "center": [
+        -123.09,
+        49.24
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_windsor",
+      "name": "Windsor Street",
+      "english_name": "Windsor Street",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Windsor Street)",
+      "center": [
+        -123.085,
+        49.245
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_commercial_vic",
+      "name": "Commercial Drive / Victoria Drive",
+      "english_name": "Commercial Drive / Victoria Drive",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Commercial Drive / Victoria Drive)",
+      "center": [
+        -123.068,
+        49.26
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_nanaimo",
+      "name": "Nanaimo Street",
+      "english_name": "Nanaimo Street",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Nanaimo Street)",
+      "center": [
+        -123.056,
+        49.245
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_renfrew",
+      "name": "Renfrew Street",
+      "english_name": "Renfrew Street",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Renfrew Street)",
+      "center": [
+        -123.044,
+        49.25
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_rupert_kerr",
+      "name": "Rupert Street / Kerr Street",
+      "english_name": "Rupert Street / Kerr Street",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Rupert Street / Kerr Street)",
+      "center": [
+        -123.033,
+        49.235
+      ],
+      "zoom": 14
+    },
+    {
+      "id": "oth_joyce",
+      "name": "Joyce Street",
+      "english_name": "Joyce Street",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "status": "順暢 (Free Flow)",
+      "trend": "steady",
+      "key_bottleneck": "全線車流順暢 (Joyce Street)",
+      "center": [
+        -123.028,
+        49.237
+      ],
+      "zoom": 14
+    }
+  ],
+  "total_roads_count": 72,
+  "freeflow_roads_count": 72,
+  "severe_roads_count": 0
 }

@@ -472,7 +472,7 @@ export default function AppMap() {
   const { 
     layers, mapStyleType, searchTarget, setSearchTarget, isLayerPanelOpen, 
     contourInterval, timeFormat, distanceUnit, userLocation, setExploreOpen,
-    isExploreOpen, exploreTab, setExploreTab,
+    isExploreOpen, exploreTab, setExploreTab, setSettingsModalOpen,
     parkingMeterFilter, setParkingMeterFilter,
     radiusExploration, setRadiusExploration,
     fuelFilter, setFuelFilter,
@@ -5738,11 +5738,15 @@ export default function AppMap() {
                 props.name = props.name.replace(/限速 0 km\/h/g, `限速 ${props.speed_limit} km/h`);
               }
             }
+            const cleanSpeedRoadName = (props.hblock || props.name || '速限管制路段')
+              .replace(/\s*\(限速.*?\)/g, '')
+              .replace(/\s*\(Speed.*?\)/g, '')
+              .trim();
             setSelectedFacility({
               id: props.object_id ? `speed_${props.object_id}` : `speed_${clickLon}_${clickLat}`,
               facility_type: 'traffic_speed_limits',
-              name: props.name || (props.hblock ? `${props.hblock} (限速 ${props.speed_limit} km/h)` : '速限管制路段'),
-              local_area: props.segment_type ? `分區: ${props.segment_type}` : '溫哥華市區道路',
+              name: cleanSpeedRoadName,
+              local_area: '限速路段',
               lon: clickLon,
               lat: clickLat,
               properties: props
@@ -5784,10 +5788,11 @@ export default function AppMap() {
               clickLon = feature.geometry.coordinates[0];
               clickLat = feature.geometry.coordinates[1];
             }
+            const alertCat = props.type_label || props.subtype_zh || props.type_zh || props.category_zh || props.category || '即時通報';
             setSelectedFacility({
               id: props.id ? `traffic_alert_${props.id}` : `traffic_alert_${clickLon}_${clickLat}`,
               facility_type: 'traffic_alerts',
-              name: props.type_label ? `${props.icon || '⚠️'} ${props.type_label}` : '大眾即時通報',
+              name: alertCat,
               local_area: props.street || props.city || '大溫突發事故',
               lon: clickLon,
               lat: clickLat,
@@ -5975,8 +5980,8 @@ export default function AppMap() {
             setSelectedFacility({
               id: props.id || (props.object_id ? `${props.facility_type || derivedFacilityType || 'fac'}_${props.object_id}` : ''),
               facility_type: props.facility_type || (isTraffic ? 'traffic_conditions' : (isStreetLighting ? 'street_lighting' : (isVanWifi ? 'van_wifi' : (isTideStation ? 'tide_stations' : (isFuel ? 'fuel' : (isTesla ? 'tesla' : (isMarineTerminal ? 'marine_terminals' : (isBikeRack ? 'bike_racks' : (isWireless ? 'wireless_facilities' : (isCrosswalk ? 'traffic_crosswalks' : (isLitter ? 'litter_containers' : (isRecycling ? 'recycling' : derivedFacilityType)))))))))))),
-              name: props.name || (isTraffic ? '獅門大橋即時路況' : (isStreetLighting ? (props.pole_number ? `路燈柱 #${props.pole_number}` : (props.service_panel_number ? `路燈控制盤 #${props.service_panel_number}` : '路燈')) : (isVanWifi ? (props.site_name || 'VanWiFi 公共無線網絡') : (isTideStation ? (props.english_name || '潮汐水位') : (isCrosswalk ? (props.location ? `斑馬線 - ${props.location}` : '行人斑馬線') : (isLitter ? (props.address ? `垃圾箱 - ${props.address}` : '公用垃圾箱') : (isBikeRack ? (props.location ? `單車架 - ${props.location}` : '公用單車架') : (isWireless ? (props.site_name || `無線設施 #${props.pole_number || ''}`) : (isRecycling ? (props.brand || '環保回收站') : (props.brand || (isFuel ? '加油站' : (isTesla ? 'Tesla 站點' : (isMarineTerminal ? '港口碼頭' : ''))))))))))))),
-              local_area: props.waterway || props.area || props.local_area || props.location || props.company || props.address || props.city || '',
+              name: props.name || (isTraffic ? '獅門大橋即時路況' : (isStreetLighting ? (props.pole_number ? `路燈柱 #${props.pole_number}` : (props.service_panel_number ? `路燈控制盤 #${props.service_panel_number}` : '路燈')) : (isVanWifi ? (props.site_name || 'VanWiFi 公共無線網絡') : (isTideStation ? (props.english_name || '潮汐水位') : (isCrosswalk ? (props.location || '行人穿越道') : (isLitter ? (props.address ? `垃圾箱 - ${props.address}` : '公用垃圾箱') : (isBikeRack ? (props.location ? `單車架 - ${props.location}` : '公用單車架') : (isWireless ? (props.site_name || `無線設施 #${props.pole_number || ''}`) : (isRecycling ? (props.brand || '環保回收站') : (props.brand || (isFuel ? '加油站' : (isTesla ? 'Tesla 站點' : (isMarineTerminal ? '港口碼頭' : ''))))))))))))),
+              local_area: isCrosswalk ? '行人穿越道' : (props.waterway || props.area || props.local_area || props.location || props.company || props.address || props.city || ''),
               lon: coords[0],
               lat: coords[1],
               properties: props
@@ -7986,9 +7991,33 @@ export default function AppMap() {
                     selectedFacility.facility_type === 'homeless_shelters' ? 'bg-rose-500' : 'bg-violet-500'
                   }`}></span>
                   <div className="min-w-0">
-                    <h3 className="font-bold text-gray-900 text-sm leading-snug break-words">{selectedFacility.name}</h3>
-                    {selectedFacility.local_area && (
-                      <span className="text-[11px] text-gray-400 block leading-snug break-words">{selectedFacility.local_area}</span>
+                    <h3 className="font-bold text-gray-900 text-sm leading-snug break-words">
+                      {(() => {
+                        if (selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident') {
+                          return selectedFacility.properties?.type_label || selectedFacility.properties?.subtype_zh || selectedFacility.properties?.type_zh || selectedFacility.properties?.category_zh || (selectedFacility.name || '').replace(/^[^\w\u4e00-\u9fa5]+/, '').trim() || '即時通報';
+                        }
+                        if (selectedFacility.facility_type === 'traffic_speed_limits') {
+                          return (selectedFacility.properties?.hblock || selectedFacility.name || '').replace(/\s*\(限速.*?\)/g, '').replace(/\s*\(Speed.*?\)/g, '').trim();
+                        }
+                        if (selectedFacility.facility_type === 'traffic_crosswalks') {
+                          return (selectedFacility.properties?.location || selectedFacility.name || '').replace(/^斑馬線\s*-\s*/, '').trim();
+                        }
+                        if (selectedFacility.facility_type === 'car_sharing') {
+                          if (selectedFacility.properties?.operator === 'Modo') return 'Modo Co-op';
+                          return (selectedFacility.name || 'Evo Car Share').replace(/\s*\(\d+\s*車位專用站點\)/g, '').trim();
+                        }
+                        return selectedFacility.name;
+                      })()}
+                    </h3>
+                    {(selectedFacility.local_area || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || (selectedFacility.facility_type === 'car_sharing' && selectedFacility.properties?.operator === 'Modo')) && (
+                      <span className="text-[11px] text-gray-400 block leading-snug break-words">
+                        {(() => {
+                          if (selectedFacility.facility_type === 'traffic_speed_limits') return '限速路段';
+                          if (selectedFacility.facility_type === 'traffic_crosswalks') return '行人穿越道';
+                          if (selectedFacility.facility_type === 'car_sharing' && selectedFacility.properties?.operator === 'Modo') return 'Vancouver, BC';
+                          return selectedFacility.local_area;
+                        })()}
+                      </span>
                     )}
                   </div>
                 </div>
@@ -8175,11 +8204,6 @@ export default function AppMap() {
                     <span className="text-sky-700 font-medium">專用車位數</span>
                     <span className="font-bold text-sky-800 text-sm">{selectedFacility.properties.spaces || 1} 格</span>
                   </div>
-                  {selectedFacility.properties.location && (
-                    <div className="text-gray-600">
-                      <span className="text-gray-400">位置：</span>{selectedFacility.properties.location}
-                    </div>
-                  )}
                   {selectedFacility.properties.type && (
                     <div className="text-gray-500 text-[11px]">
                       {selectedFacility.properties.type}
@@ -8191,11 +8215,6 @@ export default function AppMap() {
               {/* Motorcycle Parking Details */}
               {selectedFacility.facility_type === 'motorcycle_parking' && (
                 <div className="flex flex-col gap-1.5 text-xs">
-                  {selectedFacility.properties.street && (
-                    <div className="text-gray-700 font-medium">
-                      {selectedFacility.properties.block} {selectedFacility.properties.street}
-                    </div>
-                  )}
                   {selectedFacility.properties.time_limit && (
                     <div className="flex justify-between text-gray-600 bg-orange-50 p-1.5 rounded">
                       <span className="text-orange-700">時間限制</span>
@@ -8284,7 +8303,7 @@ export default function AppMap() {
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-xs flex items-center gap-1.5">
                         <span>🚗</span>
-                        <span>{selectedFacility.properties.operator_name || (selectedFacility.properties.operator === 'Modo' ? 'Modo Co-op' : 'Evo Car Share')}</span>
+                        <span>{selectedFacility.properties.operator === 'Modo' ? '車位專用站點 (往返式原站還車)' : '車位專用站點'}</span>
                       </span>
                       <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded text-white ${
                         selectedFacility.properties.operator === 'Modo' ? 'bg-red-600' : 'bg-cyan-600'
@@ -8301,27 +8320,17 @@ export default function AppMap() {
                   </div>
 
                   <div className="bg-gray-50 p-2 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                    {selectedFacility.properties.vehicle_type && (
-                      <div className="flex justify-between items-start gap-2 text-gray-600">
-                        <span className="shrink-0 text-gray-500">提供車種</span>
-                        <span className="font-semibold text-gray-800 text-right leading-relaxed">
-                          {selectedFacility.properties.vehicle_type}
-                        </span>
-                      </div>
-                    )}
+                    <div className="flex justify-between items-start gap-2 text-gray-600">
+                      <span className="shrink-0 text-gray-500">提供車種</span>
+                      <span className="font-semibold text-gray-800 text-right leading-relaxed">
+                        {selectedFacility.properties.operator === 'Modo' ? '視乎站點位置' : 'Toyota Corolla/Prius Hybrid'}
+                      </span>
+                    </div>
                     {selectedFacility.properties.pricing && (
                       <div className="flex justify-between items-start gap-2 text-gray-600">
                         <span className="shrink-0 text-gray-500">計費方案</span>
                         <span className="font-bold text-emerald-700 text-right leading-relaxed">
                           {selectedFacility.properties.pricing}
-                        </span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.address && (
-                      <div className="flex justify-between items-start gap-2 text-gray-600">
-                        <span className="shrink-0 text-gray-500">站點位置</span>
-                        <span className="font-medium text-gray-800 text-right leading-relaxed">
-                          {selectedFacility.properties.address}
                         </span>
                       </div>
                     )}
@@ -8336,7 +8345,7 @@ export default function AppMap() {
                         selectedFacility.properties.operator === 'Modo' ? 'bg-red-600 hover:bg-red-700' : 'bg-cyan-600 hover:bg-cyan-700'
                       }`}
                     >
-                      前往 {selectedFacility.properties.operator || '共享汽車'} 官網 / App ↗
+                      {selectedFacility.properties.operator === 'Modo' ? '前往 Modo 官網 ↗' : '前往 Evo 官網 ↗'}
                     </a>
                   </div>
                 </div>
@@ -9899,7 +9908,14 @@ export default function AppMap() {
                       {userDistanceToFuel ? (
                         <span className="font-bold text-amber-800 shrink-0">約 {userDistanceToFuel}</span>
                       ) : (
-                        <span className="text-gray-400 truncate">可在右上角「⚙️ 設定」中輸入地址</span>
+                        <button
+                          type="button"
+                          onClick={() => setSettingsModalOpen(true)}
+                          className="text-gray-500 hover:text-amber-700 underline font-normal truncate cursor-pointer transition-colors"
+                          title="點擊設定個人位置"
+                        >
+                          輸入個人位置
+                        </button>
                       )}
                     </div>
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-600 text-white shrink-0">
@@ -10164,16 +10180,8 @@ export default function AppMap() {
                   </div>
 
                   <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                    {selectedFacility.properties.hblock && (
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>街區路段</span>
-                        <span className="font-bold text-gray-900 text-right truncate max-w-[190px]">
-                          {selectedFacility.properties.hblock}
-                        </span>
-                      </div>
-                    )}
                     {selectedFacility.properties.streetuse && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <div className="flex justify-between items-center text-gray-600">
                         <span>道路等級分類</span>
                         <span className="font-semibold text-gray-800 text-right">
                           {selectedFacility.properties.streetuse}
@@ -10384,39 +10392,28 @@ export default function AppMap() {
               {/* Traffic Speed Limits (限速路段) Details */}
               {selectedFacility.facility_type === 'traffic_speed_limits' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/25 flex flex-col gap-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-amber-950 text-xs flex items-center gap-1.5">
-                        <span className="text-base text-amber-600 font-bold">⏱️</span>
-                        <span className="truncate max-w-[190px]">{selectedFacility.properties.hblock || selectedFacility.name}</span>
-                      </span>
-                      <span className="text-xs font-black px-2 py-0.5 rounded bg-amber-600 text-white shrink-0 tracking-wide">
-                        {selectedFacility.properties.speed_limit || '30'} km/h
-                      </span>
-                    </div>
-                    <div className="text-[11px] text-amber-900 font-medium">
-                      ⚠️ 本路段道路速限為 {selectedFacility.properties.speed_limit || '30'} 公里/小時，請小心駕駛
-                    </div>
+                  <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/25 flex items-center justify-between gap-2">
+                    <span className="text-[11px] text-amber-900 font-medium flex items-center gap-1.5 leading-snug">
+                      <span className="text-base text-amber-600 font-bold shrink-0">⏱️</span>
+                      <span>本路段為限速道路，請小心駕駛。</span>
+                    </span>
+                    <span className="text-xs font-black px-2 py-0.5 rounded bg-amber-600 text-white shrink-0 tracking-wide">
+                      {selectedFacility.properties.speed_limit || '30'} km/h
+                    </span>
                   </div>
 
-                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                    {selectedFacility.properties.hblock && (
+                  {selectedFacility.properties.segment_type && (
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
                       <div className="flex justify-between items-center text-gray-600">
-                        <span>街區門牌 (Block)</span>
-                        <span className="font-bold text-gray-900 text-right truncate max-w-[190px]">
-                          {selectedFacility.properties.hblock}
-                        </span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.segment_type && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                        <span>路段屬性 (Zone Type)</span>
+                        <span>路段屬性</span>
                         <span className="font-semibold text-gray-800 text-right">
-                          {selectedFacility.properties.segment_type === 'Residential' ? '住宅區 (Residential)' : selectedFacility.properties.segment_type}
+                          {selectedFacility.properties.segment_type === 'Residential' 
+                            ? '住宅區' 
+                            : String(selectedFacility.properties.segment_type).replace(/\s*\([^)]*\)/g, '').trim()}
                         </span>
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -10602,19 +10599,14 @@ export default function AppMap() {
               {/* Traffic Crosswalks (斑馬線) Details */}
               {selectedFacility.facility_type === 'traffic_crosswalks' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-yellow-500/10 p-2.5 rounded-lg border border-yellow-500/25 flex flex-col gap-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-yellow-950 text-xs flex items-center gap-1.5">
-                        <span className="text-base text-yellow-600 font-bold">🚶</span>
-                        <span className="truncate max-w-[190px]">{selectedFacility.properties.location || selectedFacility.name}</span>
-                      </span>
-                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-yellow-500 text-gray-900 shrink-0">
-                        行人斑馬線
-                      </span>
-                    </div>
-                    <div className="text-[11px] text-yellow-900 font-medium">
-                      🚶 溫哥華市區交通行人穿越安全設施 (Traffic Crosswalk)
-                    </div>
+                  <div className="bg-yellow-500/10 p-2.5 rounded-lg border border-yellow-500/25 flex items-center justify-between gap-2">
+                    <span className="text-[11px] text-yellow-950 font-medium flex items-center gap-1.5 leading-snug">
+                      <span className="text-base text-yellow-600 font-bold shrink-0">🚶</span>
+                      <span>只要行人合法進入穿越道，車輛就必須完全停下來禮讓。</span>
+                    </span>
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-yellow-500 text-white shrink-0 shadow-xs">
+                      注意閃燈
+                    </span>
                   </div>
 
                   <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
