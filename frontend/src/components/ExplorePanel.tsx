@@ -5273,30 +5273,47 @@ function ExploreContent() {
                     className="p-3 rounded-xl bg-[#131722] hover:bg-[#181d2a] border border-[#242b3c] hover:border-emerald-500/50 transition-all shadow-sm cursor-pointer flex flex-col gap-2 group"
                   >
                     {/* Top Row: Title, English name, and Hours Badge */}
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="flex items-baseline gap-1.5 min-w-0">
-                        <h4 className="text-xs font-bold text-white group-hover:text-emerald-400 transition-colors shrink-0">
-                          {zhName}
-                        </h4>
-                        {enName && (
-                          <span className="text-[10px] text-gray-400 truncate">
-                            ({enName})
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex flex-col min-w-0">
+                        <div className="flex items-baseline gap-1.5 flex-wrap">
+                          <h4 className="text-xs font-bold text-white group-hover:text-emerald-400 transition-colors">
+                            {zhName}
+                          </h4>
+                          {enName && (
+                            <span className="text-[10px] text-gray-400">
+                              ({enName})
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="shrink-0 text-right">
+                        {crossing.hours && (crossing.hours.includes(',') || crossing.hours.length > 20) ? (
+                          <div className="flex flex-col items-end gap-0.5">
+                            <span className="text-[9.5px] font-mono text-emerald-400 bg-emerald-950/70 border border-emerald-800/50 px-1.5 py-0.5 rounded leading-tight">
+                              08:00 - 24:00 (一般車道)
+                            </span>
+                            <span className="text-[9px] font-mono text-emerald-500/90 leading-tight">
+                              NEXUS (12:00 - 20:00)
+                            </span>
+                          </div>
+                        ) : (
+                          <span className="text-[9.5px] font-mono text-emerald-400/90 bg-emerald-950/60 border border-emerald-800/40 px-2 py-0.5 rounded whitespace-nowrap">
+                            {crossing.hours || '24 小時全天開放'}
                           </span>
                         )}
                       </div>
-                      <span className="text-[9.5px] font-mono text-emerald-400/90 bg-emerald-950/60 border border-emerald-800/40 px-2 py-0.5 rounded shrink-0">
-                        {crossing.hours || '24 小時全天開放'}
-                      </span>
                     </div>
 
                     {/* Second Row: Highway Connection & Type Badge */}
-                    <div className="flex items-center gap-1.5 text-[10px]">
-                      <span className="text-gray-500 shrink-0">連接幹道:</span>
-                      <span className="font-mono text-cyan-300/90 bg-cyan-950/40 border border-cyan-800/30 px-1.5 py-0.5 rounded truncate max-w-[210px]" title={crossing.highway}>
-                        {crossing.highway}
-                      </span>
+                    <div className="flex items-center justify-between gap-1.5 text-[10px] flex-wrap">
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        <span className="text-gray-500 shrink-0">連接幹道:</span>
+                        <span className="font-mono text-cyan-300/90 bg-cyan-950/40 border border-cyan-800/30 px-1.5 py-0.5 rounded leading-tight" title={crossing.highway}>
+                          {crossing.highway}
+                        </span>
+                      </div>
                       {crossing.crossing_type && (
-                        <span className="text-[9.5px] text-gray-400 bg-[#161a26] border border-[#232a3c] px-1.5 py-0.5 rounded shrink-0 ml-auto">
+                        <span className="text-[9.5px] text-gray-400 bg-[#161a26] border border-[#232a3c] px-1.5 py-0.5 rounded shrink-0">
                           {crossing.crossing_type}
                         </span>
                       )}
