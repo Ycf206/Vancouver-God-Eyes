@@ -1337,7 +1337,7 @@ function ExploreContent() {
     const defaultCrossings: BorderCrossing[] = [
       {
         id: "peace_arch",
-        name: "和平門關卡 (Peace Arch / Douglas)",
+        name: "和平門關卡",
         english_name: "Peace Arch / Douglas Crossing",
         highway: "BC Hwy 99 ↔ US I-5",
         lat: 49.0022,
@@ -1366,7 +1366,7 @@ function ExploreContent() {
       },
       {
         id: "pacific_highway",
-        name: "太平洋公路關卡 (Pacific Highway / 176 St)",
+        name: "太平洋公路關卡",
         english_name: "Pacific Highway (Truck Crossing)",
         highway: "BC Hwy 15 ↔ WA SR 543",
         lat: 49.0020,
@@ -1395,7 +1395,7 @@ function ExploreContent() {
       },
       {
         id: "aldergrove",
-        name: "奧爾德格羅夫關卡 (Aldergrove / Lynden)",
+        name: "奧爾德格羅夫關卡",
         english_name: "Aldergrove / Lynden",
         highway: "BC Hwy 13 ↔ WA SR 539",
         lat: 49.0021,
@@ -1424,7 +1424,7 @@ function ExploreContent() {
       },
       {
         id: "abbotsford_huntingdon",
-        name: "阿伯茨福德關卡 (Abbotsford-Huntingdon / Sumas)",
+        name: "阿伯茨福德關卡",
         english_name: "Abbotsford-Huntingdon / Sumas",
         highway: "BC Hwy 11 ↔ WA SR 9",
         lat: 49.0022,
@@ -1434,7 +1434,7 @@ function ExploreContent() {
         crossing_type: "客車及商業貨運",
         has_nexus: true,
         has_commercial: true,
-        tips: "菲沙河谷東部重要通關樞紐，直達蘇馬斯 (Sumas)，往貝克山滑雪度假主要途徑。",
+        tips: "菲沙河谷東部重要通關樞搞，直達蘇馬斯 (Sumas)，往貝克山滑雪度假主要途徑。",
         canada_bound: {
           traveller_delay_min: 5,
           traveller_status: "5 分鐘",
@@ -1453,7 +1453,7 @@ function ExploreContent() {
       },
       {
         id: "boundary_bay",
-        name: "羅伯茨角關卡 (Boundary Bay / Point Roberts)",
+        name: "羅伯茨角關卡",
         english_name: "Boundary Bay / Point Roberts",
         highway: "56th St (Tsawwassen)",
         lat: 49.0021,
@@ -3168,11 +3168,11 @@ function ExploreContent() {
           ) : auroraData ? (
             <>
               {/* 1. Hero Card: Current Planetary K-index */}
-              <div className="bg-gradient-to-br from-[#121824] via-[#101b2b] to-[#0d1f1f] rounded-xl p-3.5 border border-[#23383a] shadow-lg flex flex-col gap-3 relative overflow-hidden">
+              <div className="bg-gradient-to-br from-[#121824] via-[#101b2b] to-[#0d1f1f] rounded-xl p-3.5 border border-[#23383a] shadow-lg flex flex-col gap-3 relative overflow-hidden shrink-0">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
                 <div className="flex items-center justify-between relative z-10 py-1">
                   <div className="flex flex-col justify-center">
-                    <span className="text-[11.5px] font-bold text-gray-200 tracking-wide">
+                    <span className="text-xs font-bold text-gray-200 tracking-wide leading-normal">
                       地磁極光指數 (Planetary Kp)
                     </span>
                     <span className="text-[9.5px] text-gray-400 mt-1">
@@ -3246,7 +3246,7 @@ function ExploreContent() {
               </div>
 
               {/* 2. Recent 48h Kp Trend (History) */}
-              <div className="bg-[#10141e] rounded-xl p-3 border border-[#232a38] flex flex-col gap-2 shadow-sm">
+              <div className="bg-[#10141e] rounded-xl p-3 border border-[#232a38] flex flex-col gap-2 shadow-sm shrink-0">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-gray-200 flex items-center gap-1.5">
                     <Clock className="w-3.5 h-3.5 text-cyan-400" />
@@ -3292,7 +3292,7 @@ function ExploreContent() {
               </div>
 
               {/* 3. Aurora Viewline Forecast Map (Tonight & Tomorrow Night) */}
-              <div className="bg-[#10141e] rounded-xl p-3 border border-[#232a38] flex flex-col gap-2.5 shadow-sm">
+              <div className="bg-[#10141e] rounded-xl p-3 border border-[#232a38] flex flex-col gap-2.5 shadow-sm shrink-0">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-gray-200 flex items-center gap-1.5">
                     <Eye className="w-3.5 h-3.5 text-emerald-400" />
@@ -3361,7 +3361,7 @@ function ExploreContent() {
               </div>
 
               {/* 4. Aurora Spots */}
-              <div className="bg-[#10141e] rounded-xl p-3 border border-[#232a38] flex flex-col gap-2 shadow-sm">
+              <div className="bg-[#10141e] rounded-xl p-3 border border-[#232a38] flex flex-col gap-2 shadow-sm shrink-0">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-gray-200 flex items-center gap-1.5">
                     <Navigation className="w-3.5 h-3.5 text-emerald-400" />
@@ -4040,7 +4040,7 @@ function ExploreContent() {
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
                         className="p-1.5 rounded-lg bg-[#11141c] hover:bg-teal-950/70 border border-[#232838] hover:border-teal-500/50 text-teal-400 hover:text-teal-300 transition-colors shrink-0 shadow-sm"
-                        title="Google 導航至此"
+                        title="Google Map 導航至此"
                       >
                         <Navigation className="w-3.5 h-3.5" />
                       </a>
@@ -4729,14 +4729,14 @@ function ExploreContent() {
         </div>
       )}
 
-      {/* ==================== 大溫即時路況分頁 (Waze Live Traffic & Jams) ==================== */}
+      {/* ==================== 即時路況分頁 (Waze Live Traffic & Jams) ==================== */}
       {activeTab === 'traffic' && (
-        <div className="flex-1 flex flex-col min-h-0 space-y-2.5 overflow-hidden">
+        <div className="flex-1 flex flex-col min-h-0 space-y-1.5 overflow-hidden">
           {/* Header Bar */}
           <div className="flex items-center justify-between gap-1.5 shrink-0 pt-0.5">
             <span className="text-xs font-bold text-white flex items-center gap-1.5">
               <Activity className="w-4 h-4 text-orange-400" />
-              <span>大溫即時路況</span>
+              <span>即時路況</span>
             </span>
 
             <div className="flex items-center gap-1.5">
@@ -4763,50 +4763,36 @@ function ExploreContent() {
             </div>
           </div>
 
-          {/* Quick Metrics & Overall Bottleneck Banner */}
-          <div className="bg-[#121622] rounded-lg p-2.5 border border-[#222838] flex flex-col gap-2 shrink-0 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="text-sm">🚦</span>
-                <div>
-                  <span className="text-[10px] text-gray-400 block leading-tight">全境壅塞指數</span>
-                  <span className="font-bold text-xs text-white">
-                    {trafficSummary?.overall_status || '大溫交通偏忙 (Moderate)'}
-                  </span>
-                </div>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-xs font-bold font-mono text-orange-400 bg-orange-500/10 px-2 py-0.5 rounded border border-orange-500/30">
-                  {trafficSummary?.overall_congestion_score || 68} / 100
+          {/* Quick Metrics & Overall Bottleneck Banner (Compact) */}
+          <div className="bg-[#121622] rounded-lg px-2.5 py-1.5 border border-[#222838] flex flex-col gap-1 shrink-0 shadow-sm">
+            <div className="flex items-center justify-between text-xs">
+              <div className="flex items-center gap-1.5 min-w-0">
+                <span className="text-xs">🚦</span>
+                <span className="font-semibold text-white truncate text-[11px]">
+                  {trafficSummary?.overall_status || '交通偏忙'}
                 </span>
+                <span className="text-[10px] font-bold font-mono text-orange-400 bg-orange-500/10 px-1.5 py-0.2 rounded border border-orange-500/30 shrink-0">
+                  {trafficSummary?.overall_congestion_score || 68}/100
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 text-[10px] text-gray-400 font-mono shrink-0">
+                <span>幹道 <strong className="text-emerald-400">{trafficSummary?.total_jams || 8}</strong></span>
+                <span>·</span>
+                <span>通報 <strong className="text-amber-400">{trafficSummary?.total_incidents || 6}</strong></span>
               </div>
             </div>
 
             {trafficSummary?.worst_corridor && (
-              <div className="text-[11px] bg-red-950/40 border border-red-800/50 rounded p-1.5 text-red-200 flex items-start gap-1.5 leading-snug">
-                <span className="text-xs shrink-0">⚠️</span>
-                <div>
-                  <span className="font-semibold text-red-300">最壅塞瓶頸：</span>
-                  <span>{trafficSummary.worst_corridor}</span>
-                </div>
+              <div className="text-[10px] bg-red-950/40 border border-red-800/40 rounded px-2 py-0.5 text-red-200 flex items-center gap-1.5 truncate">
+                <span className="text-[10px] shrink-0">⚠️</span>
+                <span className="text-red-300 font-medium shrink-0">瓶頸：</span>
+                <span className="truncate text-gray-300">{trafficSummary.worst_corridor}</span>
               </div>
             )}
-
-            {/* Quick Stats Counter Pills */}
-            <div className="grid grid-cols-2 gap-1.5 text-[10.5px]">
-              <div className="bg-[#181d2a] rounded px-2 py-1 border border-[#262e42] flex items-center justify-between">
-                <span className="text-gray-400">主要幹道監測</span>
-                <span className="font-bold font-mono text-emerald-400">{trafficSummary?.total_jams || 8} 條</span>
-              </div>
-              <div className="bg-[#181d2a] rounded px-2 py-1 border border-[#262e42] flex items-center justify-between">
-                <span className="text-gray-400">突發大眾通報</span>
-                <span className="font-bold font-mono text-amber-400">{trafficSummary?.total_incidents || 6} 則</span>
-              </div>
-            </div>
           </div>
 
-          {/* Sub-Filter Tabs & Search Input */}
-          <div className="flex flex-col gap-1.5 shrink-0">
+          {/* Sub-Filter Tabs & Search Input (Compact) */}
+          <div className="flex flex-col gap-1 shrink-0">
             {/* Filter Pills */}
             <div className="grid grid-cols-4 gap-1 p-0.5 bg-[#121622] rounded-lg border border-[#222838]">
               {[
@@ -4818,9 +4804,9 @@ function ExploreContent() {
                 <button
                   key={pill.key}
                   onClick={() => setTrafficFilter(pill.key as any)}
-                  className={`py-1 text-[10.5px] rounded font-medium transition-all ${
+                  className={`py-0.5 text-[10px] rounded font-medium transition-all ${
                     trafficFilter === pill.key
-                      ? 'bg-orange-600 text-white shadow-xs'
+                      ? 'bg-orange-600 text-white shadow-xs font-semibold'
                       : 'text-gray-400 hover:text-gray-200 hover:bg-[#1a2030]'
                   }`}
                 >
@@ -4831,13 +4817,13 @@ function ExploreContent() {
 
             {/* Search Input */}
             <div className="relative">
-              <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <Search className="w-3 h-3 text-gray-400 absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="text"
                 value={trafficSearchQuery}
                 onChange={(e) => setTrafficSearchQuery(e.target.value)}
                 placeholder="搜尋幹道 (如: 1號公路, 99號, 獅門大橋)..."
-                className="w-full bg-[#121622] border border-[#222838] focus:border-orange-500/70 rounded-lg pl-8 pr-7 py-1 text-xs text-gray-200 placeholder-gray-500 outline-none transition-colors"
+                className="w-full bg-[#121622] border border-[#222838] focus:border-orange-500/70 rounded-lg pl-7 pr-6 py-0.5 text-[11px] text-gray-200 placeholder-gray-500 outline-none transition-colors"
               />
               {trafficSearchQuery && (
                 <button
@@ -4988,12 +4974,9 @@ function ExploreContent() {
                         </div>
                       )}
 
-                      {/* Bottom row: Click to fly action */}
-                      <div className="flex items-center justify-between text-[10px] pt-0.5 text-gray-400 border-t border-[#1e2333]/70">
+                      {/* Bottom row: Trend indicator */}
+                      <div className="flex items-center text-[10px] pt-0.5 text-gray-400 border-t border-[#1e2333]/70">
                         <span>{corridor.trend === 'worsening' ? '↗️ 車流加劇中' : corridor.trend === 'improving' ? '↘️ 車流改善中' : '➡️ 車流穩定'}</span>
-                        <span className="text-cyan-400 group-hover:underline flex items-center gap-0.5">
-                          在地圖定位路況色帶 →
-                        </span>
                       </div>
                     </div>
                   );
@@ -5095,6 +5078,8 @@ function ExploreContent() {
               </div>
             ) : (
               borderCrossings.map((crossing) => {
+                const zhName = (crossing.name || '').split('(')[0].trim() || crossing.name;
+                const enName = crossing.english_name || ((crossing.name || '').match(/\((.*?)\)/)?.[1]) || '';
                 const usWait = crossing.us_bound?.standard_delay_min ?? null;
                 const caWait = crossing.canada_bound?.traveller_delay_min ?? null;
 
@@ -5114,12 +5099,14 @@ function ExploreContent() {
                     {/* Top Row: Title & Highway */}
                     <div className="flex items-start justify-between gap-2">
                       <div className="min-w-0">
-                        <h4 className="text-xs font-bold text-white group-hover:text-emerald-300 transition-colors truncate">
-                          {crossing.name}
+                        <h4 className="text-xs font-bold text-white group-hover:text-emerald-300 transition-colors">
+                          {zhName}
                         </h4>
-                        <span className="text-[10px] text-gray-400 block truncate">
-                          {crossing.english_name}
-                        </span>
+                        {enName && (
+                          <span className="text-[10px] text-gray-400 block font-normal leading-tight mt-0.5">
+                            {enName}
+                          </span>
+                        )}
                       </div>
                       <span className="text-[9.5px] font-mono text-cyan-300 bg-cyan-950/60 border border-cyan-800/50 px-2 py-0.5 rounded shrink-0">
                         {crossing.highway}

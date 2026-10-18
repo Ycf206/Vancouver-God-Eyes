@@ -12537,7 +12537,7 @@ export default function AppMap() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-white p-1.5 rounded-lg hover:bg-blue-500/20 hover:text-blue-400 transition-colors"
-                title="Google 導航至此車站"
+                title="Google Map 導航至此"
               >
                 <Navigation className="w-4 h-4 text-blue-400" />
               </a>

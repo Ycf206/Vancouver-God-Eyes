@@ -16,7 +16,7 @@ class BorderService:
         return {
             "peace_arch": {
                 "id": "peace_arch",
-                "name": "和平門關卡 (Peace Arch / Douglas)",
+                "name": "和平門關卡",
                 "english_name": "Peace Arch / Douglas Crossing",
                 "cbsa_key": "Douglas",
                 "cbp_key": "Peace Arch",
@@ -52,7 +52,7 @@ class BorderService:
             },
             "pacific_highway": {
                 "id": "pacific_highway",
-                "name": "太平洋公路關卡 (Pacific Highway / 176 St)",
+                "name": "太平洋公路關卡",
                 "english_name": "Pacific Highway (Truck Crossing)",
                 "cbsa_key": "Pacific Highway",
                 "cbp_key": "Pacific Highway",
@@ -88,7 +88,7 @@ class BorderService:
             },
             "aldergrove": {
                 "id": "aldergrove",
-                "name": "奧爾德格羅夫關卡 (Aldergrove / Lynden)",
+                "name": "奧爾德格羅夫關卡",
                 "english_name": "Aldergrove / Lynden",
                 "cbsa_key": "Aldergrove",
                 "cbp_key": "Lynden",
@@ -124,7 +124,7 @@ class BorderService:
             },
             "abbotsford_huntingdon": {
                 "id": "abbotsford_huntingdon",
-                "name": "阿伯茨福德關卡 (Abbotsford-Huntingdon / Sumas)",
+                "name": "阿伯茨福德關卡",
                 "english_name": "Abbotsford-Huntingdon / Sumas",
                 "cbsa_key": "Abbotsford-Huntingdon",
                 "cbp_key": "Sumas",
@@ -160,7 +160,7 @@ class BorderService:
             },
             "point_roberts": {
                 "id": "point_roberts",
-                "name": "邊界灣關卡 (Boundary Bay / Point Roberts)",
+                "name": "邊界灣關卡",
                 "english_name": "Boundary Bay / Point Roberts",
                 "cbsa_key": "Boundary Bay",
                 "cbp_key": "Point Roberts",
