@@ -603,6 +603,11 @@ export default function AppMap() {
     'Local Street': true,
     'Shared Lanes': true,
   });
+  const [safetyCamerasLegendOpen, setSafetyCamerasLegendOpen] = useState(true);
+  const [safetyCamerasFilter, setSafetyCamerasFilter] = useState<{ redLightSpeed: boolean; redLightOnly: boolean }>({
+    redLightSpeed: true,
+    redLightOnly: true,
+  });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [nearbyFacilities, setNearbyFacilities] = useState<any[]>([]);
@@ -960,8 +965,12 @@ export default function AppMap() {
     } else if (selectedFacility.facility_type === 'bikeways') {
       const bType = selectedFacility.properties?.bikeway_type;
       if (bType && bikewaysFilter[bType] === false) setSelectedFacility(null);
+    } else if (selectedFacility.facility_type === 'safety_cameras') {
+      const hasSpeed = Boolean(selectedFacility.properties?.has_speed);
+      if (hasSpeed && !safetyCamerasFilter.redLightSpeed) setSelectedFacility(null);
+      if (!hasSpeed && !safetyCamerasFilter.redLightOnly) setSelectedFacility(null);
     }
-  }, [selectedFacility, carSharingFilter, bikewaysFilter]);
+  }, [selectedFacility, carSharingFilter, bikewaysFilter, safetyCamerasFilter]);
   const [selectedBus, setSelectedBus] = useState<Vehicle | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [busDetails, setBusDetails] = useState<any | null>(null);
@@ -3985,17 +3994,28 @@ export default function AppMap() {
 
     // Road Facilities: Intersection Safety Cameras (Red Light & Speed Enforcement)
     if (layers.safetyCameras) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let safetyCamFilterExpr: any = undefined;
+      if (!safetyCamerasFilter.redLightSpeed && !safetyCamerasFilter.redLightOnly) {
+        safetyCamFilterExpr = ['==', ['to-string', ['get', 'id']], '__none__'];
+      } else if (safetyCamerasFilter.redLightSpeed && !safetyCamerasFilter.redLightOnly) {
+        safetyCamFilterExpr = ['==', ['boolean', ['get', 'has_speed'], false], true];
+      } else if (!safetyCamerasFilter.redLightSpeed && safetyCamerasFilter.redLightOnly) {
+        safetyCamFilterExpr = ['!=', ['boolean', ['get', 'has_speed'], false], true];
+      }
+
       style.layers.push({
         id: 'safety-cameras-layer',
         type: 'circle',
         source: 'safety-cameras',
+        filter: safetyCamFilterExpr,
         paint: {
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': [
             'case',
             ['boolean', ['get', 'has_speed'], false],
-            '#e11d48',
-            '#f97316'
+            '#111827', // 黑色: 闖紅燈+超速
+            '#dc2626'  // 紅色: 闖紅燈
           ],
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
@@ -4005,9 +4025,15 @@ export default function AppMap() {
         id: 'safety-cameras-symbol-layer',
         type: 'symbol',
         source: 'safety-cameras',
+        filter: safetyCamFilterExpr,
         minzoom: 15,
         layout: {
-          'text-field': '🚨',
+          'text-field': [
+            'case',
+            ['boolean', ['get', 'has_speed'], false],
+            '🚨',
+            '🛑'
+          ],
           'text-size': ['interpolate', ['linear'], ['zoom'], 15, 11, 17, 14],
           'text-allow-overlap': true,
           'text-ignore-placement': true
@@ -5409,6 +5435,8 @@ export default function AppMap() {
     bikewaysFilter['Shared Lanes'],
     layers.trafficCameras,
     layers.safetyCameras,
+    safetyCamerasFilter.redLightSpeed,
+    safetyCamerasFilter.redLightOnly,
     layers.fireHalls,
     layers.police,
     layers.disasterHubs,
@@ -5478,8 +5506,10 @@ export default function AppMap() {
         return 'top-[192px] md:top-[72px] left-4 md:left-[880px]';
       case 3:
         return 'top-[252px] md:top-[72px] left-4 md:left-[1190px]';
+      case 4:
+        return 'top-[312px] md:top-[72px] left-4 md:left-[1480px]';
       default:
-        return 'top-[312px] md:top-[220px] left-4 md:left-[256px]';
+        return 'top-[372px] md:top-[220px] left-4 md:left-[256px]';
     }
   };
 
@@ -8056,7 +8086,7 @@ export default function AppMap() {
                     selectedFacility.facility_type === 'shared_bikes' ? 'bg-emerald-500' :
                     selectedFacility.facility_type === 'bikeways' ? 'bg-teal-500' :
                     selectedFacility.facility_type === 'traffic_cameras' ? 'bg-cyan-500' :
-                    selectedFacility.facility_type === 'safety_cameras' ? 'bg-rose-600' :
+                    selectedFacility.facility_type === 'safety_cameras' ? (selectedFacility.properties?.has_speed ? 'bg-gray-950 border border-gray-400 shadow-[0_0_6px_rgba(0,0,0,0.6)]' : 'bg-red-600 shadow-[0_0_6px_rgba(239,68,68,0.5)]') :
                     selectedFacility.facility_type === 'hospitals' ? 'bg-emerald-500' :
                     selectedFacility.facility_type === 'fire_halls' ? 'bg-rose-500' :
                     selectedFacility.facility_type === 'police' ? 'bg-blue-600' :
@@ -8580,11 +8610,6 @@ export default function AppMap() {
                           <span>🚴 {cleanTypeZh}</span>
                         </span>
                       </div>
-                      {selectedFacility.properties.aaa_network && !selectedFacility.properties.aaa_network.includes('一般單車路網') && (
-                        <div className="text-[11px] font-medium text-emerald-700 pt-1 border-t border-gray-200/70">
-                          ✅ {selectedFacility.properties.aaa_network}
-                        </div>
-                      )}
                     </div>
 
                     <div className="bg-gray-50 p-2 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
@@ -8915,42 +8940,26 @@ export default function AppMap() {
               {/* Intersection Safety Cameras Details */}
               {selectedFacility.facility_type === 'safety_cameras' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  <div className={`p-2.5 rounded-lg border flex flex-col gap-1.5 ${
-                    selectedFacility.properties.has_speed
-                      ? 'bg-rose-50/90 border-rose-200 text-rose-950'
-                      : 'bg-amber-50/90 border-amber-200 text-amber-950'
-                  }`}>
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-xs flex items-center gap-1.5">
-                        <span>{selectedFacility.properties.has_speed ? '🚨' : '🛑'}</span>
-                        <span>{selectedFacility.properties.camera_type || '路口安全攝影機'}</span>
-                      </span>
-                      <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${
-                        selectedFacility.properties.has_speed ? 'bg-rose-600 text-white' : 'bg-amber-600 text-white'
-                      }`}>
-                        {selectedFacility.properties.has_speed ? '雙向取締' : '闖紅燈取締'}
-                      </span>
-                    </div>
-                    
-                    <div className="text-[11px] leading-relaxed pt-1 border-t border-rose-200/60 font-medium">
-                      {selectedFacility.properties.has_speed ? (
-                        <span>此路口同時具備<strong>闖紅燈照相</strong>與<strong>超速自動取締</strong>功能。</span>
-                      ) : (
-                        <span>此路口具備<strong>闖紅燈自動照相取締</strong>功能。</span>
-                      )}
-                    </div>
+                  <div className="p-2.5 rounded-lg border border-rose-200 bg-rose-50/90 text-rose-950 flex items-center justify-between gap-2">
+                    <span className="font-bold text-xs flex items-center gap-1.5 min-w-0">
+                      <span>{selectedFacility.properties.has_speed ? '🚨' : '🛑'}</span>
+                      <span className="truncate">{selectedFacility.properties.has_speed ? '闖紅燈 + 超速照相' : '闖紅燈照相取締'}</span>
+                    </span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-600 text-white shrink-0 shadow-xs whitespace-nowrap">
+                      安全相機
+                    </span>
                   </div>
 
                   <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1 text-[11px]">
                     <div className="flex justify-between items-center text-gray-600">
-                      <span>官方路口名稱</span>
+                      <span>行政區</span>
+                      <span className="font-semibold text-gray-800">溫哥華市</span>
+                    </div>
+                    <div className="flex justify-between items-center text-gray-600">
+                      <span>路口</span>
                       <span className="font-semibold text-gray-800 text-right truncate max-w-[170px]">
                         {selectedFacility.properties.official_intersection || selectedFacility.name}
                       </span>
-                    </div>
-                    <div className="flex justify-between items-center text-gray-600">
-                      <span>所屬行政區</span>
-                      <span className="font-semibold text-gray-800">溫哥華市 (City of Vancouver)</span>
                     </div>
                     <div className="flex justify-between items-center text-gray-600">
                       <span>執法主管機關</span>
@@ -12898,6 +12907,129 @@ export default function AppMap() {
                 className="text-[10px] text-emerald-400 hover:underline"
               >
                 篩選/展開
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* 路口安全相機圖例與篩選 (Intersection Safety Cameras Legend & Filter Popup) */}
+      {layers.safetyCameras && (
+        <div className={`fixed z-30 w-[260px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-rose-500/40 select-none animate-in fade-in duration-200 ${
+          getFloatingPanelPos((layers.parkingMeters ? 1 : 0) + (layers.fuel ? 1 : 0) + ((layers.evCharging || layers.tesla) ? 1 : 0) + (layers.carSharing ? 1 : 0) + (layers.bikeways ? 1 : 0))
+        }`}>
+          <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
+            <div className="flex items-center gap-2">
+              <span className="p-1 rounded bg-rose-500/20 text-rose-400">
+                <span className="text-xs">🚨</span>
+              </span>
+              <div className="flex flex-col">
+                <span className="font-bold text-xs text-white">安全相機篩選</span>
+                <span className="text-[9.5px] text-gray-400">點擊項目可開關篩選</span>
+              </div>
+            </div>
+            <button
+              onClick={() => setSafetyCamerasLegendOpen(!safetyCamerasLegendOpen)}
+              className="text-gray-400 hover:text-white p-0.5 rounded hover:bg-[#252a38] transition-colors"
+              title={safetyCamerasLegendOpen ? "收合" : "展開"}
+            >
+              {safetyCamerasLegendOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            </button>
+          </div>
+
+          {safetyCamerasLegendOpen ? (
+            <div className="flex flex-col gap-2 text-xs">
+              {/* 闖紅燈 + 超速 (黑色) */}
+              <button
+                type="button"
+                onClick={() => setSafetyCamerasFilter(prev => ({ ...prev, redLightSpeed: !prev.redLightSpeed }))}
+                className={`w-full flex items-center justify-between p-2 rounded-lg border text-left transition-all ${
+                  safetyCamerasFilter.redLightSpeed
+                    ? 'bg-slate-900/90 border-gray-600 shadow-[0_0_8px_rgba(255,255,255,0.08)]'
+                    : 'bg-[#10141e]/50 border-[#262b38] opacity-45 hover:opacity-75'
+                }`}
+                title={safetyCamerasFilter.redLightSpeed ? "點擊隱藏此類型" : "點擊顯示此類型"}
+              >
+                <div className="flex items-center gap-2">
+                  <span className={`w-3.5 h-3.5 rounded-full shrink-0 border border-white transition-all ${
+                    safetyCamerasFilter.redLightSpeed ? 'bg-black shadow-[0_0_6px_rgba(255,255,255,0.5)]' : 'bg-gray-600 border-gray-500'
+                  }`} />
+                  <span className={`font-bold text-xs ${safetyCamerasFilter.redLightSpeed ? 'text-white' : 'text-gray-400 line-through'}`}>
+                    闖紅燈 + 超速
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${
+                    safetyCamerasFilter.redLightSpeed ? 'text-gray-200 bg-gray-800' : 'text-gray-500 bg-gray-800/40'
+                  }`}>
+                    雙向取締
+                  </span>
+                  <div className={`w-7 h-4 rounded-full transition-colors p-0.5 flex items-center ${
+                    safetyCamerasFilter.redLightSpeed ? 'bg-rose-600 justify-end' : 'bg-gray-700 justify-start'
+                  }`}>
+                    <span className="w-3 h-3 rounded-full bg-white shadow-xs" />
+                  </div>
+                </div>
+              </button>
+
+              {/* 闖紅燈 (紅色) */}
+              <button
+                type="button"
+                onClick={() => setSafetyCamerasFilter(prev => ({ ...prev, redLightOnly: !prev.redLightOnly }))}
+                className={`w-full flex items-center justify-between p-2 rounded-lg border text-left transition-all ${
+                  safetyCamerasFilter.redLightOnly
+                    ? 'bg-rose-950/40 border-rose-700/60 shadow-[0_0_8px_rgba(225,29,72,0.15)]'
+                    : 'bg-[#10141e]/50 border-[#262b38] opacity-45 hover:opacity-75'
+                }`}
+                title={safetyCamerasFilter.redLightOnly ? "點擊隱藏此類型" : "點擊顯示此類型"}
+              >
+                <div className="flex items-center gap-2">
+                  <span className={`w-3.5 h-3.5 rounded-full shrink-0 border border-white transition-all ${
+                    safetyCamerasFilter.redLightOnly ? 'bg-red-600 shadow-[0_0_8px_rgba(225,29,72,0.7)]' : 'bg-gray-600 border-gray-500'
+                  }`} />
+                  <span className={`font-bold text-xs ${safetyCamerasFilter.redLightOnly ? 'text-white' : 'text-gray-400 line-through'}`}>
+                    闖紅燈
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${
+                    safetyCamerasFilter.redLightOnly ? 'text-rose-300 bg-rose-900/50' : 'text-gray-500 bg-gray-800/40'
+                  }`}>
+                    單項取締
+                  </span>
+                  <div className={`w-7 h-4 rounded-full transition-colors p-0.5 flex items-center ${
+                    safetyCamerasFilter.redLightOnly ? 'bg-rose-600 justify-end' : 'bg-gray-700 justify-start'
+                  }`}>
+                    <span className="w-3 h-3 rounded-full bg-white shadow-xs" />
+                  </div>
+                </div>
+              </button>
+
+              {(!safetyCamerasFilter.redLightSpeed || !safetyCamerasFilter.redLightOnly) && (
+                <div className="pt-1 flex justify-end">
+                  <button
+                    onClick={() => setSafetyCamerasFilter({ redLightSpeed: true, redLightOnly: true })}
+                    className="text-[10px] text-rose-400 hover:text-rose-300 underline"
+                  >
+                    重設全部顯示
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="flex items-center justify-between text-[11px] text-gray-300">
+              <div className="flex items-center gap-2">
+                <span className={`w-2.5 h-2.5 rounded-full border border-white ${safetyCamerasFilter.redLightSpeed ? 'bg-black' : 'bg-gray-600'}`} />
+                <span className={`w-2.5 h-2.5 rounded-full border border-white ${safetyCamerasFilter.redLightOnly ? 'bg-red-600' : 'bg-gray-600'}`} />
+                <span className="text-gray-400 text-[10px]">
+                  {safetyCamerasFilter.redLightSpeed && safetyCamerasFilter.redLightOnly ? '全部顯示' : '已自訂篩選'}
+                </span>
+              </div>
+              <button 
+                onClick={() => setSafetyCamerasLegendOpen(true)}
+                className="text-[10px] text-rose-400 hover:underline"
+              >
+                展開
               </button>
             </div>
           )}

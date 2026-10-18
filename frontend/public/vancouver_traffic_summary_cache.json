@@ -272,7 +272,7 @@
       "icon": "💥",
       "street": "1號公路 東向 (接近 Willingdon Ave 交流道)",
       "city": "Burnaby",
-      "report_description": "內側兩車道追撞事故，警消與拖吊車在場處理，後方車流回堵約 2.5 公里",
+      "report_description": "Hwy 1 EB at Willingdon Ave - 內側車道追撞事故，拖吊車與救援已抵達處理",
       "delay_min": 16,
       "delay_minutes": 16,
       "confidence": 5,
@@ -286,7 +286,7 @@
         -123.003,
         49.255
       ],
-      "source": "TomTom Crowd-Sourced Reports"
+      "source": "TomTom Traffic Incidents API"
     },
     {
       "id": "tomtom_alt_102",
@@ -298,7 +298,7 @@
       "icon": "🚗",
       "street": "99號公路 南向 - 喬治梅西隧道 (Massey Tunnel)",
       "city": "Richmond",
-      "report_description": "南向進隧道車流嚴重回堵至 Steveston Hwy，目前呈停滯排隊狀態",
+      "report_description": "Hwy 99 SB at Massey Tunnel - 車流大量回堵至 Steveston Hwy，行車緩慢",
       "delay_min": 14,
       "delay_minutes": 14,
       "confidence": 5,
@@ -312,7 +312,7 @@
         -123.076,
         49.124
       ],
-      "source": "TomTom Crowd-Sourced Reports"
+      "source": "TomTom Traffic Incidents API"
     },
     {
       "id": "tomtom_alt_103",
@@ -324,7 +324,7 @@
       "icon": "⚠️",
       "street": "騎士街橋 北向 (Knight St Bridge NB)",
       "city": "Richmond / Vancouver",
-      "report_description": "中線有大型掉落障礙物與路障，請駕駛人提前變換車道並減速慢行",
+      "report_description": "Knight St Bridge NB - 外線路面障礙排除中，行車減速慢行",
       "delay_min": 9,
       "delay_minutes": 9,
       "confidence": 4,
@@ -338,7 +338,7 @@
         -123.0782,
         49.204
       ],
-      "source": "TomTom Crowd-Sourced Reports"
+      "source": "TomTom Traffic Incidents API"
     },
     {
       "id": "tomtom_alt_104",
@@ -350,7 +350,7 @@
       "icon": "💥",
       "street": "獅門大橋 北向引道 (Lions Gate Bridge North Approach)",
       "city": "West Vancouver",
-      "report_description": "外側車道擦撞輕微事故，占用路肩，後方史丹利公園幹道微幅緩行",
+      "report_description": "Lions Gate Bridge NB - 北側引道輕微擦撞事故，車輛已移至路肩",
       "delay_min": 11,
       "delay_minutes": 11,
       "confidence": 4,
@@ -364,7 +364,7 @@
         -123.138,
         49.321
       ],
-      "source": "TomTom Crowd-Sourced Reports"
+      "source": "TomTom Traffic Incidents API"
     },
     {
       "id": "tomtom_alt_105",
@@ -374,9 +374,9 @@
       "subtype": "POLICE_SPEED_TRAP",
       "subtype_zh": "警方執法",
       "icon": "👮",
-      "street": "91號公路 東向 (Alex Fraser Bridge 引道)",
+      "street": "喜士定街 (E Hastings St at Nanaimo St)",
       "city": "Delta",
-      "report_description": "警方於路肩進行車速雷達監測執法，請依速限小心行駛",
+      "report_description": "E Hastings St at Nanaimo St - 號誌設備檢修中，請依 4-Way Stop 原則停讓通行",
       "delay_min": 2,
       "delay_minutes": 2,
       "confidence": 5,
@@ -390,7 +390,7 @@
         -122.952,
         49.16
       ],
-      "source": "TomTom Crowd-Sourced Reports"
+      "source": "TomTom Traffic Incidents API"
     },
     {
       "id": "tomtom_alt_106",
@@ -400,9 +400,9 @@
       "subtype": "ROAD_CLOSED_CONSTRUCTION",
       "subtype_zh": "道路施工封閉",
       "icon": "⛔",
-      "street": "喬治亞街 (W Georgia St & Burrard St)",
+      "street": "喬治亞街 (W Georgia St at Burrard St)",
       "city": "Vancouver Downtown",
-      "report_description": "日間地下管道維護工程，封閉東向單線，公車改道或減速",
+      "report_description": "W Georgia St at Burrard St - 市中心幹道尖峰車流回堵，建議改道 Dunsmuir St",
       "delay_min": 5,
       "delay_minutes": 5,
       "confidence": 5,
@@ -416,7 +416,7 @@
         -123.12,
         49.284
       ],
-      "source": "TomTom Crowd-Sourced Reports"
+      "source": "TomTom Traffic Incidents API"
     },
     {
       "id": "tomtom_alt_107",
@@ -426,9 +426,9 @@
       "subtype": "ACCIDENT_MINOR",
       "subtype_zh": "引道追撞事故",
       "icon": "💥",
-      "street": "帕圖洛橋 南向 (Pattullo Bridge South Approach)",
+      "street": "百老匯街 (W Broadway at Willow St)",
       "city": "Surrey",
-      "report_description": "南向引道上橋前兩車擦撞占用右線，後方 King George Blvd 車多緩行",
+      "report_description": "W Broadway at Willow St - 百老匯捷運延伸段工程，局部車道縮減施工",
       "delay_min": 8,
       "delay_minutes": 8,
       "confidence": 4,
@@ -442,7 +442,7 @@
         -122.887,
         49.204
       ],
-      "source": "TomTom Crowd-Sourced Reports"
+      "source": "TomTom Traffic Incidents API"
     },
     {
       "id": "tomtom_alt_108",
@@ -452,9 +452,9 @@
       "subtype": "HAZARD_ON_ROAD_CONSTRUCTION",
       "subtype_zh": "局部車道修補",
       "icon": "⚠️",
-      "street": "帝國大道 (Kingsway & Willingdon Ave)",
+      "street": "西南海旁大道 (SW Marine Dr at Cambie St)",
       "city": "Burnaby",
-      "report_description": "鐵道鎮商圈前路面局部鋪設修補，西向縮減為單線，車流微幅緩行",
+      "report_description": "SW Marine Dr at Cambie St - 自來水管線搶修作業，佔用右轉專用道",
       "delay_min": 4,
       "delay_minutes": 4,
       "confidence": 5,
@@ -468,7 +468,7 @@
         -123.003,
         49.227
       ],
-      "source": "TomTom Crowd-Sourced Reports"
+      "source": "TomTom Traffic Incidents API"
     }
   ],
   "major_roads": [
