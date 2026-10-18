@@ -596,6 +596,14 @@ export default function AppMap() {
   const [evFilterOpen, setEvFilterOpen] = useState(true);
   const [carSharingLegendOpen, setCarSharingLegendOpen] = useState(true);
   const [bikewaysLegendOpen, setBikewaysLegendOpen] = useState(true);
+  const [carSharingFilter, setCarSharingFilter] = useState<{ evo: boolean; modo: boolean }>({ evo: true, modo: true });
+  const [bikewaysFilter, setBikewaysFilter] = useState<Record<string, boolean>>({
+    'Protected Bike Lanes': true,
+    'Painted Lanes': true,
+    'Local Street': true,
+    'Shared Lanes': true,
+  });
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [nearbyFacilities, setNearbyFacilities] = useState<any[]>([]);
   const [loadingNearby, setLoadingNearby] = useState(false);
@@ -941,6 +949,19 @@ export default function AppMap() {
   const [loadingSchedule, setLoadingSchedule] = useState(false);
   const [selectedFerry, setSelectedFerry] = useState<FerryVehicle | null>(null);
   const [selectedFacility, setSelectedFacility] = useState<RoadFacilityInfo | null>(null);
+
+  // Auto-dismiss popup if the selected facility is filtered out
+  useEffect(() => {
+    if (!selectedFacility) return;
+    if (selectedFacility.facility_type === 'car_sharing') {
+      const op = selectedFacility.properties?.operator;
+      if (op === 'Evo' && !carSharingFilter.evo) setSelectedFacility(null);
+      if (op === 'Modo' && !carSharingFilter.modo) setSelectedFacility(null);
+    } else if (selectedFacility.facility_type === 'bikeways') {
+      const bType = selectedFacility.properties?.bikeway_type;
+      if (bType && bikewaysFilter[bType] === false) setSelectedFacility(null);
+    }
+  }, [selectedFacility, carSharingFilter, bikewaysFilter]);
   const [selectedBus, setSelectedBus] = useState<Vehicle | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [busDetails, setBusDetails] = useState<any | null>(null);
@@ -2944,10 +2965,21 @@ export default function AppMap() {
 
     // Road Facilities: Bikeways (單車徑 LineString — 4 種高對比度鮮明配色)
     if (layers.bikeways) {
+      const activeBikewayTypes = Object.entries(bikewaysFilter)
+        .filter(([, active]) => active)
+        .map(([type]) => type);
+
+      const bikewayMapFilter = 
+        activeBikewayTypes.length === 4 ? undefined :
+        activeBikewayTypes.length === 0 ? ['==', ['get', 'bikeway_type'], '__NONE__'] :
+        activeBikewayTypes.length === 1 ? ['==', ['get', 'bikeway_type'], activeBikewayTypes[0]] :
+        ['any', ...activeBikewayTypes.map(t => ['==', ['get', 'bikeway_type'], t])];
+
       style.layers.push({
         id: 'bikeways-casing-layer',
         type: 'line',
         source: 'bikeways',
+        ...(bikewayMapFilter ? { filter: bikewayMapFilter } : {}),
         layout: {
           'line-join': 'round',
           'line-cap': 'round'
@@ -2962,6 +2994,7 @@ export default function AppMap() {
         id: 'bikeways-layer',
         type: 'line',
         source: 'bikeways',
+        ...(bikewayMapFilter ? { filter: bikewayMapFilter } : {}),
         layout: {
           'line-join': 'round',
           'line-cap': 'round'
@@ -3507,10 +3540,20 @@ export default function AppMap() {
 
     // Road Facilities: Car Sharing (共享汽車 - Evo & Modo)
     if (layers.carSharing) {
+      const activeCarOps: string[] = [];
+      if (carSharingFilter.evo) activeCarOps.push('Evo');
+      if (carSharingFilter.modo) activeCarOps.push('Modo');
+
+      const carFilter = 
+        activeCarOps.length === 2 ? undefined :
+        activeCarOps.length === 1 ? ['==', ['get', 'operator'], activeCarOps[0]] :
+        ['==', ['get', 'operator'], '__NONE__'];
+
       style.layers.push({
         id: 'car-sharing-layer',
         type: 'circle',
         source: 'car-sharing',
+        ...(carFilter ? { filter: carFilter } : {}),
         paint: {
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': ['match', ['get', 'operator'], 'Evo', '#0284c7', 'Modo', '#e11d48', '#0284c7'],
@@ -3523,6 +3566,7 @@ export default function AppMap() {
         type: 'symbol',
         source: 'car-sharing',
         minzoom: 14,
+        ...(carFilter ? { filter: carFilter } : {}),
         layout: {
           'text-field': '🚗',
           'text-size': ['interpolate', ['linear'], ['zoom'], 14, 10, 17, 13],
@@ -5337,8 +5381,14 @@ export default function AppMap() {
     layers.evCharging, 
     layers.escooter,
     layers.carSharing,
+    carSharingFilter.evo,
+    carSharingFilter.modo,
     layers.sharedBikes,
     layers.bikeways,
+    bikewaysFilter['Protected Bike Lanes'],
+    bikewaysFilter['Painted Lanes'],
+    bikewaysFilter['Local Street'],
+    bikewaysFilter['Shared Lanes'],
     layers.trafficCameras,
     layers.safetyCameras,
     layers.fireHalls,
@@ -7968,7 +8018,7 @@ export default function AppMap() {
                     selectedFacility.facility_type === 'tide_stations' ? 'bg-blue-600' :
                     selectedFacility.facility_type === 'water_distribution_mains' ? 'bg-sky-500' :
                     selectedFacility.facility_type === 'sewer_mains' ? 'bg-teal-500' :
-                    selectedFacility.facility_type === 'traffic_speed_limits' ? 'bg-amber-500' :
+                    selectedFacility.facility_type === 'traffic_speed_limits' ? 'bg-emerald-500' :
                     selectedFacility.facility_type === 'postal_code_fsa' ? 'bg-indigo-600' :
                     selectedFacility.facility_type === 'bike_racks' ? 'bg-teal-600' :
                     selectedFacility.facility_type === 'wireless_facilities' ? 'bg-purple-600' :
@@ -8056,8 +8106,8 @@ export default function AppMap() {
                     {(selectedFacility.local_area || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || (selectedFacility.facility_type === 'car_sharing' && selectedFacility.properties?.operator === 'Modo')) && (
                       <span className="text-[11px] text-gray-400 block leading-snug break-words">
                         {(() => {
-                          if (selectedFacility.facility_type === 'traffic_speed_limits') return '限速路段';
-                          if (selectedFacility.facility_type === 'traffic_crosswalks') return '行人穿越道';
+                          if (selectedFacility.facility_type === 'traffic_speed_limits') return 'Vancouver, BC';
+                          if (selectedFacility.facility_type === 'traffic_crosswalks') return 'Vancouver, BC';
                           if (selectedFacility.facility_type === 'car_sharing' && selectedFacility.properties?.operator === 'Modo') return 'Vancouver, BC';
                           if (selectedFacility.facility_type === 'bikeways') return 'Vancouver, BC';
                           if (selectedFacility.facility_type === 'bike_racks') return 'Vancouver, BC';
@@ -10446,18 +10496,18 @@ export default function AppMap() {
               {/* Traffic Speed Limits (限速路段) Details */}
               {selectedFacility.facility_type === 'traffic_speed_limits' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/25 flex items-center justify-between gap-2">
-                    <span className="text-[11px] text-amber-900 font-medium flex items-center gap-1.5 leading-snug">
-                      <span className="text-base text-amber-600 font-bold shrink-0">⏱️</span>
+                  <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/25 flex items-center justify-between gap-2">
+                    <span className="text-[11px] text-emerald-950 font-medium flex items-center gap-1.5 leading-snug">
+                      <span className="text-base text-emerald-600 font-bold shrink-0">⏱️</span>
                       <span>本路段為限速道路，請小心駕駛。</span>
                     </span>
-                    <span className="text-xs font-black px-2 py-0.5 rounded bg-amber-600 text-white shrink-0 tracking-wide">
-                      {selectedFacility.properties.speed_limit || '30'} km/h
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-600 text-white shrink-0 tracking-wider shadow-xs">
+                      限速路段
                     </span>
                   </div>
 
-                  {selectedFacility.properties.segment_type && (
-                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                    {selectedFacility.properties.segment_type && (
                       <div className="flex justify-between items-center text-gray-600">
                         <span>路段屬性</span>
                         <span className="font-semibold text-gray-800 text-right">
@@ -10466,8 +10516,14 @@ export default function AppMap() {
                             : String(selectedFacility.properties.segment_type).replace(/\s*\([^)]*\)/g, '').trim()}
                         </span>
                       </div>
+                    )}
+                    <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties.segment_type ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                      <span>道路限速</span>
+                      <span className="font-bold text-emerald-700 text-right">
+                        限速 {selectedFacility.properties.speed_limit || '30'} km/h
+                      </span>
                     </div>
-                  )}
+                  </div>
                 </div>
               )}
 
@@ -10654,28 +10710,18 @@ export default function AppMap() {
                       <span>只要行人合法進入穿越道，車輛就必須完全停下來禮讓。</span>
                     </span>
                     <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-yellow-500 text-white shrink-0 shadow-xs">
-                      注意閃燈
+                      行人穿越道
                     </span>
                   </div>
 
-                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                    {selectedFacility.properties.location && (
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>路口 / 位置</span>
-                        <span className="font-bold text-gray-900 text-right truncate max-w-[190px]">
-                          {selectedFacility.properties.location}
-                        </span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.object_id && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                        <span>設施編號 (ID)</span>
-                        <span className="font-mono text-gray-700">
-                          #{selectedFacility.properties.object_id}
-                        </span>
-                      </div>
-                    )}
-                  </div>
+                  {selectedFacility.properties.object_id && (
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex justify-between items-center text-[11px] text-gray-600">
+                      <span>設施編號 (ID)</span>
+                      <span className="font-mono text-gray-700">
+                        #{selectedFacility.properties.object_id}
+                      </span>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -12582,9 +12628,9 @@ export default function AppMap() {
         </div>
       )}
 
-      {/* 共享汽車營運品牌圖例 (Car Sharing Legend Popup) */}
+      {/* 共享汽車營運品牌圖例與篩選 (Car Sharing Legend & Filter Popup) */}
       {layers.carSharing && (
-        <div className={`fixed z-30 w-[240px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-cyan-500/40 select-none animate-in fade-in duration-200 ${
+        <div className={`fixed z-30 w-[250px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-cyan-500/40 select-none animate-in fade-in duration-200 ${
           getFloatingPanelPos((layers.parkingMeters ? 1 : 0) + (layers.fuel ? 1 : 0) + ((layers.evCharging || layers.tesla) ? 1 : 0))
         }`}>
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
@@ -12592,7 +12638,10 @@ export default function AppMap() {
               <span className="p-1 rounded bg-cyan-500/20 text-cyan-400">
                 <Car className="w-3.5 h-3.5" />
               </span>
-              <span className="font-bold text-xs text-white">共享汽車圖例</span>
+              <div className="flex flex-col">
+                <span className="font-bold text-xs text-white">共享汽車篩選</span>
+                <span className="text-[9.5px] text-gray-400">點擊項目可開關圖層</span>
+              </div>
             </div>
             <button
               onClick={() => setCarSharingLegendOpen(!carSharingLegendOpen)}
@@ -12605,48 +12654,107 @@ export default function AppMap() {
 
           {carSharingLegendOpen ? (
             <div className="flex flex-col gap-2 text-xs">
-              <div className="flex items-center justify-between p-2 rounded-lg bg-cyan-950/40 border border-cyan-800/40">
+              {/* Evo Car Share Switch */}
+              <button
+                type="button"
+                onClick={() => setCarSharingFilter(prev => ({ ...prev, evo: !prev.evo }))}
+                className={`w-full flex items-center justify-between p-2 rounded-lg border text-left transition-all ${
+                  carSharingFilter.evo 
+                    ? 'bg-cyan-950/40 border-cyan-700/60 shadow-[0_0_8px_rgba(6,182,212,0.15)]' 
+                    : 'bg-[#10141e]/50 border-[#262b38] opacity-45 hover:opacity-75'
+                }`}
+                title={carSharingFilter.evo ? "點擊隱藏 Evo 站點" : "點擊顯示 Evo 站點"}
+              >
                 <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-cyan-500 shrink-0 shadow-[0_0_8px_rgba(6,182,212,0.7)]" />
-                  <span className="font-bold text-white text-xs">Evo Car Share</span>
+                  <span className={`w-3 h-3 rounded-full shrink-0 transition-all ${
+                    carSharingFilter.evo ? 'bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,0.7)]' : 'bg-gray-600'
+                  }`} />
+                  <span className={`font-bold text-xs ${carSharingFilter.evo ? 'text-white' : 'text-gray-400 line-through'}`}>
+                    Evo Car Share
+                  </span>
                 </div>
-                <span className="text-[10px] text-cyan-300 font-mono bg-cyan-900/50 px-1.5 py-0.5 rounded">
-                  自由取還
-                </span>
-              </div>
+                <div className="flex items-center gap-2">
+                  <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${
+                    carSharingFilter.evo ? 'text-cyan-300 bg-cyan-900/50' : 'text-gray-500 bg-gray-800/40'
+                  }`}>
+                    自由取還
+                  </span>
+                  <div className={`w-7 h-4 rounded-full transition-colors p-0.5 flex items-center ${
+                    carSharingFilter.evo ? 'bg-cyan-600 justify-end' : 'bg-gray-700 justify-start'
+                  }`}>
+                    <span className="w-3 h-3 rounded-full bg-white shadow-xs" />
+                  </div>
+                </div>
+              </button>
 
-              <div className="flex items-center justify-between p-2 rounded-lg bg-red-950/40 border border-red-800/40">
+              {/* Modo Co-op Switch */}
+              <button
+                type="button"
+                onClick={() => setCarSharingFilter(prev => ({ ...prev, modo: !prev.modo }))}
+                className={`w-full flex items-center justify-between p-2 rounded-lg border text-left transition-all ${
+                  carSharingFilter.modo 
+                    ? 'bg-red-950/40 border-red-700/60 shadow-[0_0_8px_rgba(239,68,68,0.15)]' 
+                    : 'bg-[#10141e]/50 border-[#262b38] opacity-45 hover:opacity-75'
+                }`}
+                title={carSharingFilter.modo ? "點擊隱藏 Modo 站點" : "點擊顯示 Modo 站點"}
+              >
                 <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-red-600 shrink-0 shadow-[0_0_8px_rgba(239,68,68,0.7)]" />
-                  <span className="font-bold text-white text-xs">Modo Co-op</span>
+                  <span className={`w-3 h-3 rounded-full shrink-0 transition-all ${
+                    carSharingFilter.modo ? 'bg-red-600 shadow-[0_0_8px_rgba(239,68,68,0.7)]' : 'bg-gray-600'
+                  }`} />
+                  <span className={`font-bold text-xs ${carSharingFilter.modo ? 'text-white' : 'text-gray-400 line-through'}`}>
+                    Modo Co-op
+                  </span>
                 </div>
-                <span className="text-[10px] text-red-300 font-mono bg-red-900/50 px-1.5 py-0.5 rounded">
-                  原站還車
-                </span>
-              </div>
+                <div className="flex items-center gap-2">
+                  <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${
+                    carSharingFilter.modo ? 'text-red-300 bg-red-900/50' : 'text-gray-500 bg-gray-800/40'
+                  }`}>
+                    原站還車
+                  </span>
+                  <div className={`w-7 h-4 rounded-full transition-colors p-0.5 flex items-center ${
+                    carSharingFilter.modo ? 'bg-red-600 justify-end' : 'bg-gray-700 justify-start'
+                  }`}>
+                    <span className="w-3 h-3 rounded-full bg-white shadow-xs" />
+                  </div>
+                </div>
+              </button>
+
+              {(!carSharingFilter.evo || !carSharingFilter.modo) && (
+                <div className="flex items-center justify-between pt-1 border-t border-[#262b38] text-[10.5px]">
+                  <span className="text-gray-400">已過濾部分品牌</span>
+                  <button
+                    type="button"
+                    onClick={() => setCarSharingFilter({ evo: true, modo: true })}
+                    className="text-cyan-400 hover:text-cyan-300 hover:underline"
+                  >
+                    重設全部顯示
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <div className="flex items-center justify-between text-[11px] text-gray-300">
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-cyan-500 inline-block" />
-                <span className="text-[10.5px] text-gray-300 font-medium">Evo (藍)</span>
-                <span className="w-2.5 h-2.5 rounded-full bg-red-600 inline-block ml-1" />
-                <span className="text-[10.5px] text-gray-300 font-medium">Modo (紅)</span>
+                <span className={`w-2.5 h-2.5 rounded-full inline-block ${carSharingFilter.evo ? 'bg-cyan-500' : 'bg-gray-600'}`} />
+                <span className={`text-[10.5px] font-medium ${carSharingFilter.evo ? 'text-gray-300' : 'text-gray-500 line-through'}`}>Evo</span>
+                <span className={`w-2.5 h-2.5 rounded-full inline-block ml-1 ${carSharingFilter.modo ? 'bg-red-600' : 'bg-gray-600'}`} />
+                <span className={`text-[10.5px] font-medium ${carSharingFilter.modo ? 'text-gray-300' : 'text-gray-500 line-through'}`}>Modo</span>
               </div>
               <button 
                 onClick={() => setCarSharingLegendOpen(true)}
                 className="text-[10px] text-cyan-400 hover:underline"
               >
-                展開
+                篩選/展開
               </button>
             </div>
           )}
         </div>
       )}
 
-      {/* 單車徑分級圖例 (Bikeways Legend Popup) */}
+      {/* 單車徑分級圖例與篩選 (Bikeways Legend & Filter Popup) */}
       {layers.bikeways && (
-        <div className={`fixed z-30 w-[260px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-emerald-500/40 select-none animate-in fade-in duration-200 ${
+        <div className={`fixed z-30 w-[270px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-emerald-500/40 select-none animate-in fade-in duration-200 ${
           getFloatingPanelPos((layers.parkingMeters ? 1 : 0) + (layers.fuel ? 1 : 0) + ((layers.evCharging || layers.tesla) ? 1 : 0) + (layers.carSharing ? 1 : 0))
         }`}>
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
@@ -12654,7 +12762,10 @@ export default function AppMap() {
               <span className="p-1 rounded bg-emerald-500/20 text-emerald-400">
                 <Bike className="w-3.5 h-3.5" />
               </span>
-              <span className="font-bold text-xs text-white">單車徑路網圖例</span>
+              <div className="flex flex-col">
+                <span className="font-bold text-xs text-white">單車徑路網篩選</span>
+                <span className="text-[9.5px] text-gray-400">點擊項目可開關車道</span>
+              </div>
             </div>
             <button
               onClick={() => setBikewaysLegendOpen(!bikewaysLegendOpen)}
@@ -12667,51 +12778,96 @@ export default function AppMap() {
 
           {bikewaysLegendOpen ? (
             <div className="flex flex-col gap-1.5 text-xs">
-              <div className="flex items-center justify-between p-1.5 rounded bg-[#10141e] border border-emerald-500/30">
-                <div className="flex items-center gap-2">
-                  <span className="w-5 h-1.5 rounded-full bg-[#10b981] shrink-0 shadow-[0_0_6px_rgba(16,185,129,0.7)]" />
-                  <span className="text-gray-200 text-[11px] font-medium">受保護獨立單車道</span>
-                </div>
-                <span className="text-[9.5px] text-emerald-400 font-mono">Protected</span>
-              </div>
+              {[
+                { key: 'Protected Bike Lanes', label: '受保護獨立單車道', tag: 'Protected', color: '#10b981', borderActive: 'border-emerald-500/50', bgActive: 'bg-emerald-950/30', tagColor: 'text-emerald-400', toggleBg: 'bg-emerald-600' },
+                { key: 'Painted Lanes', label: '路面標線單車道', tag: 'Painted', color: '#0ea5e9', borderActive: 'border-sky-500/50', bgActive: 'bg-sky-950/30', tagColor: 'text-sky-400', toggleBg: 'bg-sky-600' },
+                { key: 'Local Street', label: '社區慢速單車街', tag: 'Local Street', color: '#f59e0b', borderActive: 'border-amber-500/50', bgActive: 'bg-amber-950/30', tagColor: 'text-amber-400', toggleBg: 'bg-amber-600' },
+                { key: 'Shared Lanes', label: '混合共用車道', tag: 'Shared', color: '#a855f7', borderActive: 'border-purple-500/50', bgActive: 'bg-purple-950/30', tagColor: 'text-purple-400', toggleBg: 'bg-purple-600' },
+              ].map((item) => {
+                const isActive = bikewaysFilter[item.key] !== false;
+                return (
+                  <button
+                    type="button"
+                    key={item.key}
+                    onClick={() => {
+                      setBikewaysFilter(prev => ({
+                        ...prev,
+                        [item.key]: !isActive
+                      }));
+                    }}
+                    className={`w-full flex items-center justify-between p-1.5 rounded border text-left transition-all ${
+                      isActive 
+                        ? `${item.bgActive} ${item.borderActive} shadow-xs` 
+                        : 'bg-[#10141e]/50 border-[#262b38] opacity-45 hover:opacity-75'
+                    }`}
+                    title={isActive ? `點擊隱藏 ${item.label}` : `點擊顯示 ${item.label}`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span 
+                        className="w-5 h-1.5 rounded-full shrink-0 transition-all" 
+                        style={{ 
+                          backgroundColor: isActive ? item.color : '#4b5563',
+                          boxShadow: isActive ? `0 0 6px ${item.color}B3` : 'none'
+                        }} 
+                      />
+                      <span className={`text-[11px] font-medium transition-colors ${isActive ? 'text-gray-200' : 'text-gray-500 line-through'}`}>
+                        {item.label}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className={`text-[9.5px] font-mono ${isActive ? item.tagColor : 'text-gray-600'}`}>
+                        {item.tag}
+                      </span>
+                      <div className={`w-6 h-3.5 rounded-full transition-colors p-0.5 flex items-center ${
+                        isActive ? item.toggleBg + ' justify-end' : 'bg-gray-700 justify-start'
+                      }`}>
+                        <span className="w-2.5 h-2.5 rounded-full bg-white shadow-xs" />
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
 
-              <div className="flex items-center justify-between p-1.5 rounded bg-[#10141e] border border-sky-500/30">
-                <div className="flex items-center gap-2">
-                  <span className="w-5 h-1.5 rounded-full bg-[#0ea5e9] shrink-0 shadow-[0_0_6px_rgba(14,165,233,0.7)]" />
-                  <span className="text-gray-200 text-[11px] font-medium">路面標線單車道</span>
+              {Object.values(bikewaysFilter).some(v => v === false) && (
+                <div className="flex items-center justify-between pt-1 border-t border-[#262b38] text-[10.5px]">
+                  <span className="text-gray-400">已自訂篩選</span>
+                  <button
+                    type="button"
+                    onClick={() => setBikewaysFilter({
+                      'Protected Bike Lanes': true,
+                      'Painted Lanes': true,
+                      'Local Street': true,
+                      'Shared Lanes': true,
+                    })}
+                    className="text-emerald-400 hover:text-emerald-300 hover:underline"
+                  >
+                    重設全部顯示
+                  </button>
                 </div>
-                <span className="text-[9.5px] text-sky-400 font-mono">Painted</span>
-              </div>
-
-              <div className="flex items-center justify-between p-1.5 rounded bg-[#10141e] border border-amber-500/30">
-                <div className="flex items-center gap-2">
-                  <span className="w-5 h-1.5 rounded-full bg-[#f59e0b] shrink-0 shadow-[0_0_6px_rgba(245,158,11,0.7)]" />
-                  <span className="text-gray-200 text-[11px] font-medium">社區慢速單車街</span>
-                </div>
-                <span className="text-[9.5px] text-amber-400 font-mono">Local Street</span>
-              </div>
-
-              <div className="flex items-center justify-between p-1.5 rounded bg-[#10141e] border border-purple-500/30">
-                <div className="flex items-center gap-2">
-                  <span className="w-5 h-1.5 rounded-full bg-[#a855f7] shrink-0 shadow-[0_0_6px_rgba(168,85,247,0.7)]" />
-                  <span className="text-gray-200 text-[11px] font-medium">混合共用車道</span>
-                </div>
-                <span className="text-[9.5px] text-purple-400 font-mono">Shared</span>
-              </div>
+              )}
             </div>
           ) : (
             <div className="flex items-center justify-between text-[11px] text-gray-300">
               <div className="flex items-center gap-1.5">
-                <span className="w-3 h-1 rounded-full bg-[#10b981]" title="受保護獨立道" />
-                <span className="w-3 h-1 rounded-full bg-[#0ea5e9]" title="路面標線" />
-                <span className="w-3 h-1 rounded-full bg-[#f59e0b]" title="社區慢速街" />
-                <span className="w-3 h-1 rounded-full bg-[#a855f7]" title="混合共用" />
+                {[
+                  { key: 'Protected Bike Lanes', color: '#10b981', label: '受保護獨立道' },
+                  { key: 'Painted Lanes', color: '#0ea5e9', label: '路面標線' },
+                  { key: 'Local Street', color: '#f59e0b', label: '社區慢速街' },
+                  { key: 'Shared Lanes', color: '#a855f7', label: '混合共用' },
+                ].map(item => (
+                  <span 
+                    key={item.key}
+                    className="w-3 h-1 rounded-full transition-colors"
+                    style={{ backgroundColor: bikewaysFilter[item.key] !== false ? item.color : '#4b5563' }}
+                    title={`${item.label} (${bikewaysFilter[item.key] !== false ? '已開啟' : '已關閉'})`}
+                  />
+                ))}
               </div>
               <button 
                 onClick={() => setBikewaysLegendOpen(true)}
                 className="text-[10px] text-emerald-400 hover:underline"
               >
-                展開
+                篩選/展開
               </button>
             </div>
           )}
