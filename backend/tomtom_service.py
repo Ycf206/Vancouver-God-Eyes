@@ -78,8 +78,9 @@ class TomTomTrafficService:
         if not api_key:
             return TRANSPARENT_1X1_PNG
 
-        # 只取得與顯示大溫哥華地區 (Metro Vancouver) 的圖磚，嚴格過濾美國與其他城市
-        # Metro Vancouver: 西界 -123.35, 東界 -122.40, 南界 49.001 (排除美加邊界以南/華盛頓州), 北界 49.42
+        # 只取得與顯示核心5區 (Vancouver, Richmond, Burnaby, North Van, New West) 的圖磚
+        # 嚴格排除 Surrey, Coquitlam, Delta 以節省 TomTom API 圖磚配額
+        # 西界 -123.28, 東界 -122.87, 南界 49.12, 北界 49.38
         import math
         n = 2.0 ** z
         tile_lon_min = x / n * 360.0 - 180.0
@@ -87,7 +88,7 @@ class TomTomTrafficService:
         tile_lat_min = math.degrees(math.atan(math.sinh(math.pi * (1 - 2 * (y + 1) / n))))
         tile_lat_max = math.degrees(math.atan(math.sinh(math.pi * (1 - 2 * y / n))))
 
-        if tile_lon_max < -123.35 or tile_lon_min > -122.40 or tile_lat_max < 49.001 or tile_lat_min > 49.42:
+        if tile_lon_max < -123.28 or tile_lon_min > -122.87 or tile_lat_max < 49.12 or tile_lat_min > 49.38:
             return TRANSPARENT_1X1_PNG
 
         valid_styles = {"absolute", "relative", "relative0", "relative0-dark", "relative-delay", "reduced-sensitivity"}
@@ -175,17 +176,16 @@ class TomTomTrafficService:
                 "corridor_group": "massey",
                 "name": "99號公路 - 喬治梅西隧道 (George Massey Tunnel)",
                 "highway": "Hwy 99",
-                "direction": "雙向 (列治文 ↔ 三角洲)",
-                "city": "Richmond / Delta",
+                "direction": "雙向 (列治文 99 號公路主通道)",
+                "city": "Richmond",
                 "freeflow_speed": 80,
                 "probe_point": (49.124, -123.076),
-                "length_km": 6.5,
+                "length_km": 5.0,
                 "coordinates": [
                     [-123.072, 49.145],
                     [-123.074, 49.135],
                     [-123.076, 49.124],
-                    [-123.078, 49.112],
-                    [-123.079, 49.098],
+                    [-123.078, 49.120],
                 ],
             },
             {
@@ -261,24 +261,6 @@ class TomTomTrafficService:
                 ],
             },
             {
-                "id": "alex_fraser_bridge",
-                "corridor_group": "alex_fraser",
-                "name": "亞歷克斯菲沙橋 (Alex Fraser Bridge / Hwy 91)",
-                "highway": "Hwy 91",
-                "direction": "雙向 (列治文/新西敏 ↔ 三角洲/素里)",
-                "city": "Richmond / Delta",
-                "freeflow_speed": 90,
-                "probe_point": (49.160, -122.952),
-                "length_km": 6.0,
-                "coordinates": [
-                    [-122.938, 49.182],
-                    [-122.946, 49.172],
-                    [-122.952, 49.160],
-                    [-122.955, 49.145],
-                    [-122.958, 49.132],
-                ],
-            },
-            {
                 "id": "granville_street",
                 "corridor_group": "granville",
                 "name": "固蘭湖街與橋樑 (Granville St & Granville Bridge)",
@@ -299,30 +281,15 @@ class TomTomTrafficService:
                 ],
             },
             {
-                "id": "port_mann",
-                "corridor_group": "port_mann",
-                "name": "曼恩港大橋 (Port Mann Bridge / Hwy 1)",
-                "highway": "Hwy 1",
-                "direction": "雙向 (高貴林 ↔ 素里/菲沙河谷)",
-                "city": "Coquitlam / Surrey",
-                "freeflow_speed": 90,
-                "probe_point": (49.220, -122.815),
-                "length_km": 5.5,
-                "coordinates": [
-                    [-122.845, 49.232],
-                    [-122.805, 49.208],
-                ],
-            },
-            {
                 "id": "pattullo",
                 "corridor_group": "pattullo",
                 "name": "帕圖洛橋 (Pattullo Bridge)",
                 "highway": "King George Blvd",
-                "direction": "雙向 (新西敏 ↔ 素里中心)",
-                "city": "New Westminster / Surrey",
+                "direction": "雙向 (新西敏聯外通道)",
+                "city": "New Westminster",
                 "freeflow_speed": 50,
                 "probe_point": (49.206, -122.895),
-                "length_km": 3.0,
+                "length_km": 2.5,
                 "coordinates": [
                     [-122.903, 49.208],
                     [-122.887, 49.204],
@@ -384,32 +351,16 @@ class TomTomTrafficService:
                 "corridor_group": "lougheed",
                 "name": "洛歇公路 (Lougheed Hwy / Hwy 7)",
                 "highway": "Hwy 7",
-                "direction": "雙向 (本拿比布蘭特伍德 ↔ 高貴林市中心)",
-                "city": "Burnaby / Coquitlam",
+                "direction": "雙向 (本拿比布蘭特伍德 ↔ 本拿比東端)",
+                "city": "Burnaby",
                 "freeflow_speed": 70,
                 "probe_point": (49.266, -122.998),
-                "length_km": 10.0,
+                "length_km": 7.0,
                 "coordinates": [
                     [-123.024, 49.266],
                     [-122.998, 49.266],
                     [-122.915, 49.252],
-                    [-122.800, 49.273],
-                ],
-            },
-            {
-                "id": "hwy17",
-                "corridor_group": "hwy17",
-                "name": "17號公路 - 南岸快速路 (SFPR / Hwy 17)",
-                "highway": "Hwy 17",
-                "direction": "雙向 (三角洲渡輪碼頭 ↔ 素里港區)",
-                "city": "Delta / Surrey",
-                "freeflow_speed": 80,
-                "probe_point": (49.155, -122.958),
-                "length_km": 11.0,
-                "coordinates": [
-                    [-123.060, 49.098],
-                    [-122.958, 49.155],
-                    [-122.880, 49.200],
+                    [-122.885, 49.248],
                 ],
             },
             {
@@ -417,15 +368,15 @@ class TomTomTrafficService:
                 "corridor_group": "hwy91",
                 "name": "91號公路列治文段 (Hwy 91 East-West Connector)",
                 "highway": "Hwy 91",
-                "direction": "雙向 (列治文中心 ↔ 新西敏/安娜西斯島)",
-                "city": "Richmond / Delta",
+                "direction": "雙向 (列治文東西向快速道)",
+                "city": "Richmond",
                 "freeflow_speed": 90,
                 "probe_point": (49.178, -123.050),
-                "length_km": 8.0,
+                "length_km": 6.5,
                 "coordinates": [
                     [-123.105, 49.178],
                     [-123.080, 49.182],
-                    [-122.952, 49.168],
+                    [-122.965, 49.172],
                 ],
             },
         ]
@@ -439,7 +390,6 @@ class TomTomTrafficService:
                         "knight_st_bridge": "knight_bridge",
                         "ironworkers_bridge": "ironworkers",
                         "oak_st_bridge": "oak_bridge",
-                        "alex_fraser_bridge": "alex_fraser",
                         "granville_street": "granville",
                     }
                     for c in corridors:
@@ -481,7 +431,7 @@ class TomTomTrafficService:
         url = (
             "https://api.tomtom.com/traffic/services/5/incidentDetails"
             f"?key={urllib.parse.quote(api_key)}"
-            "&bbox=-123.35,49.00,-122.65,49.40"
+            "&bbox=-123.28,49.12,-122.87,49.38"
             f"&fields={urllib.parse.quote(fields)}"
             "&language=en-GB&timeValidityFilter=present"
         )
@@ -499,7 +449,7 @@ class TomTomTrafficService:
         """
         向 BC 省政府官方 DriveBC Open511 API (免費免 Key) 抓取大溫哥華即時道路事件與事故作為補充與備援
         """
-        url = "https://api.open511.gov.bc.ca/events?status=ACTIVE&bbox=-123.35,49.00,-122.65,49.40&format=json&limit=25"
+        url = "https://api.open511.gov.bc.ca/events?status=ACTIVE&bbox=-123.28,49.12,-122.87,49.38&format=json&limit=25"
         req = urllib.request.Request(url, headers={"User-Agent": self.user_agent})
         try:
             with urllib.request.urlopen(req, timeout=4.5) as resp:
@@ -676,7 +626,7 @@ class TomTomTrafficService:
         api_key = self.get_tomtom_api_key()
         base_corridors = self._get_base_corridors_definition()
 
-        # 1. 只針對 8 個核心走廊探針點查詢 TomTom Flow Segment Data (平行查詢，每次更新僅耗 8 次 API Call)
+        # 1. 只針對 7 個核心走廊探針點查詢 TomTom Flow Segment Data (平行查詢，每次更新僅耗 7 次 API Call)
         key_corridor_ids = {
             "hwy1_east",
             "hwy1_west",
@@ -685,7 +635,6 @@ class TomTomTrafficService:
             "knight_st_bridge",
             "ironworkers_bridge",
             "oak_st_bridge",
-            "alex_fraser_bridge",
         }
         flow_results: Dict[str, Dict[str, Any]] = {}
         if api_key:
@@ -1019,7 +968,6 @@ class TomTomTrafficService:
         m_lions = _get_m("lions_gate", 60)
         m_iron = _get_m("ironworkers_bridge", 80)
         m_oak = _get_m("oak_st_bridge", 70)
-        m_alex = _get_m("alex_fraser_bridge", 90)
 
         corridors = [
             {
@@ -1219,39 +1167,6 @@ class TomTomTrafficService:
                 ],
                 "incidents_count": 0,
                 "key_bottleneck": "往列治文與機場分流匝道" if m_oak["delay_min"] >= 5 else "橋面與機場支線暢通",
-            },
-            {
-                "id": "alex_fraser",
-                "name": "亞歷克斯菲沙橋 (Alex Fraser Bridge)",
-                "english_name": "Hwy 91 Alex Fraser Bridge",
-                "route": "Hwy 91",
-                "badge": "91號公路斜張橋",
-                "center": [-122.952, 49.160],
-                "zoom": 13.5,
-                "status": m_alex["status"],
-                "status_color": m_alex["status_color"],
-                "current_speed_kmh": m_alex["speed_kmh"],
-                "freeflow_speed_kmh": m_alex["freeflow_kmh"],
-                "delay_min": m_alex["delay_min"],
-                "trend": m_alex["trend"],
-                "segments": [
-                    {
-                        "name": "南向 (往三角洲/素里)",
-                        "delay_min": m_alex["delay_min"],
-                        "speed_kmh": m_alex["speed_kmh"],
-                        "level": m_alex["level"],
-                        "color": m_alex["color"],
-                    },
-                    {
-                        "name": "北向 (往列治文/新西敏)",
-                        "delay_min": max(0, m_alex["delay_min"] - 1),
-                        "speed_kmh": min(m_alex["freeflow_kmh"], m_alex["speed_kmh"] + 4),
-                        "level": m_alex["level"],
-                        "color": m_alex["color"],
-                    },
-                ],
-                "incidents_count": 0,
-                "key_bottleneck": "南向引道路段車多" if m_alex["delay_min"] >= 5 else "斜張橋雙向車流順暢",
             },
         ]
 

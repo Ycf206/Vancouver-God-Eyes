@@ -4875,9 +4875,9 @@ function ExploreContent() {
                   城市路況：{(trafficSummary?.overall_status || '全線暢通').replace(/大溫/g, '').replace(/\(Free Flow\)/g, '').replace(/\(Light Traffic\)/g, '').replace(/\(Moderate Traffic\)/g, '').replace(/\(Heavy Congestion\)/g, '').trim()}
                 </span>
                 {(() => {
-                  const totalCount = trafficSummary?.total_roads_count || ((trafficSummary?.corridors?.length || 7) + (trafficSummary?.major_roads?.length || 58));
+                  const totalCount = trafficSummary?.total_roads_count || ((trafficSummary?.corridors?.length || 6) + (trafficSummary?.major_roads?.length || 58));
                   const freeflowCount = trafficSummary?.freeflow_roads_count ?? (
-                    (trafficSummary?.corridors?.filter(c => (c.delay_min || 0) <= 1)?.length || 7) +
+                    (trafficSummary?.corridors?.filter(c => (c.delay_min || 0) <= 1)?.length || 6) +
                     (trafficSummary?.major_roads?.filter(r => (r.delay_min || 0) <= 1)?.length || 58)
                   );
                   return (
@@ -4897,7 +4897,7 @@ function ExploreContent() {
                 })()}
               </div>
               <div className="flex items-center gap-1.5 text-[10px] text-gray-400 font-mono shrink-0">
-                <span>7大動脈 <strong className="text-emerald-400">{trafficSummary?.corridors?.length || 7}</strong></span>
+                <span>主要動脈 <strong className="text-emerald-400">{trafficSummary?.corridors?.length || 6}</strong></span>
                 <span>·</span>
                 <span>即時通報 <strong className="text-amber-400">{trafficSummary?.total_incidents ?? 0}</strong></span>
               </div>
@@ -4916,6 +4916,18 @@ function ExploreContent() {
                 <span className="truncate text-gray-300">{trafficSummary.worst_corridor}</span>
               </div>
             )}
+
+            {/* 路況色彩圖例 (Fast to Slow) */}
+            <div className="flex items-center justify-between px-1.5 py-1 text-[10px] text-gray-400 border-t border-[#1e2332] bg-black/20 rounded">
+              <span className="text-emerald-400 font-medium">暢通 (Fast)</span>
+              <div className="flex items-center gap-1">
+                <span className="w-5 h-2 rounded-[2px] bg-[#68bc73]" title="暢通無阻 (綠色)" />
+                <span className="w-5 h-2 rounded-[2px] bg-[#f8cb47]" title="順暢微緩 (黃色)" />
+                <span className="w-5 h-2 rounded-[2px] bg-[#e75344]" title="車多緩行 / 壅塞 (紅色)" />
+                <span className="w-5 h-2 rounded-[2px] bg-[#822119]" title="嚴重停滯 / 封閉 (深紅褐)" />
+              </div>
+              <span className="text-rose-400 font-medium">繁忙 (Slow)</span>
+            </div>
           </div>
 
           {/* Sub-Filter Tabs & Search Input (Compact) */}
@@ -4923,7 +4935,7 @@ function ExploreContent() {
             {/* Filter Pills */}
             <div className="grid grid-cols-4 gap-1 p-0.5 bg-[#121622] rounded-lg border border-[#222838]">
               {[
-                { key: 'all', label: '7大幹道' },
+                { key: 'all', label: '主要幹道' },
                 { key: 'major_roads', label: '主要道路' },
                 { key: 'severe', label: '嚴重壅塞' },
                 { key: 'incidents', label: '即時通報' },

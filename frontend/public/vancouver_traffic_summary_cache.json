@@ -223,42 +223,6 @@
       ],
       "incidents_count": 0,
       "key_bottleneck": "全線車流順暢，無明顯延誤"
-    },
-    {
-      "id": "alex_fraser",
-      "name": "亞歷克斯菲沙橋 (Alex Fraser Bridge)",
-      "english_name": "Hwy 91 Alex Fraser Bridge",
-      "route": "Hwy 91",
-      "badge": "91號公路斜張橋",
-      "center": [
-        -122.952,
-        49.16
-      ],
-      "zoom": 13.5,
-      "status": "暢通無阻",
-      "status_color": "emerald",
-      "current_speed_kmh": 83,
-      "freeflow_speed_kmh": 90,
-      "delay_min": 0,
-      "trend": "stable",
-      "segments": [
-        {
-          "name": "南向 (往三角洲/素里)",
-          "delay_min": 0,
-          "speed_kmh": 83,
-          "level": 0,
-          "color": "#10b981"
-        },
-        {
-          "name": "北向 (往列治文/新西敏)",
-          "delay_min": 0,
-          "speed_kmh": 83,
-          "level": 0,
-          "color": "#10b981"
-        }
-      ],
-      "incidents_count": 1,
-      "key_bottleneck": "全線車流順暢，無明顯延誤"
     }
   ],
   "top_alerts": [
@@ -1643,7 +1607,7 @@
       "zoom": 14
     }
   ],
-  "total_roads_count": 72,
+  "total_roads_count": 71,
   "freeflow_roads_count": 72,
   "severe_roads_count": 0
 }

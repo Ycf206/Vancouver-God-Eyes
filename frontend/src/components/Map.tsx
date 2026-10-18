@@ -2948,7 +2948,7 @@ export default function AppMap() {
         type: 'raster',
         tiles: [`${apiUrl}/api/traffic/tiles/{z}/{x}/{y}.png?style=relative&thickness=2`],
         tileSize: 256,
-        bounds: [-123.32, 49.001, -122.40, 49.42],
+        bounds: [-123.28, 49.12, -122.87, 49.38],
         minzoom: 6,
         maxzoom: 19
       };
@@ -8542,6 +8542,12 @@ export default function AppMap() {
                   </div>
 
                   <div className="bg-gray-50 p-2 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                    {selectedFacility.properties.station_id && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>站點編號</span>
+                        <span className="font-medium font-mono text-gray-800">#{selectedFacility.properties.station_id}</span>
+                      </div>
+                    )}
                     <div className="flex justify-between items-center text-gray-600">
                       <span>營運系統</span>
                       <span className="font-semibold text-gray-800">溫哥華公共共享單車</span>
@@ -8550,12 +8556,6 @@ export default function AppMap() {
                       <div className="flex justify-between items-center text-gray-600">
                         <span>營運單位</span>
                         <span className="font-medium text-gray-800">{selectedFacility.properties.operator}</span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.station_id && (
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>站點編號 (ID)</span>
-                        <span className="font-medium font-mono text-gray-800">#{selectedFacility.properties.station_id}</span>
                       </div>
                     )}
                     {selectedFacility.properties.covered && selectedFacility.properties.covered !== '未標明' && (
@@ -11936,7 +11936,34 @@ export default function AppMap() {
         </div>
       )}
 
-      {/* 搜尋路線時若尚未選取車輛，在右上方顯示精簡提示卡 */}
+      {/* 路況顏色圖例 (Traffic Flow Speed Legend: Fast to Slow) */}
+      {layers.trafficConditions && (
+        <div 
+          className={`absolute ${
+            layers.crimeAreas ? 'bottom-[155px]' : 'bottom-6'
+          } left-4 z-20 bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl px-3.5 py-2.5 shadow-2xl border border-[#2a2f3d] select-none animate-in fade-in duration-200 flex flex-col gap-1.5`}
+        >
+          <div className="flex items-center justify-between gap-3 text-[11px] font-semibold text-gray-200">
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>即時路況圖例</span>
+            </div>
+            <span className="text-[10px] text-gray-400 font-mono">TomTom Flow</span>
+          </div>
+
+          <div className="flex items-center gap-2 pt-0.5">
+            <span className="text-[11px] font-medium text-emerald-400 shrink-0">暢通 (Fast)</span>
+            <div className="flex items-center gap-1">
+              <span className="w-6 h-2.5 rounded-[2px] bg-[#68bc73] shadow-xs" title="暢通無阻 (自由流速)" />
+              <span className="w-6 h-2.5 rounded-[2px] bg-[#f8cb47] shadow-xs" title="順暢微緩" />
+              <span className="w-6 h-2.5 rounded-[2px] bg-[#e75344] shadow-xs" title="車多緩行 / 壅塞" />
+              <span className="w-6 h-2.5 rounded-[2px] bg-[#822119] shadow-xs" title="嚴重停滯 / 封閉" />
+            </div>
+            <span className="text-[11px] font-medium text-rose-400 shrink-0">繁忙 (Slow)</span>
+          </div>
+        </div>
+      )}
+
       {searchedBusRoute && !selectedBus && (
         <div className="fixed top-[72px] right-4 z-40 bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl px-4 py-3 shadow-2xl border border-[#2a2f3d] flex items-center gap-3 animate-in fade-in slide-in-from-right-4 duration-200 select-none max-w-[calc(100vw-32px)]">
           <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0 shadow-sm">
@@ -13765,15 +13792,15 @@ export default function AppMap() {
       {/* 交通攝影機圖片放大檢視 Modal (Webcam Image Lightbox) */}
       {enlargedCameraImage && (
         <div 
-          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200"
+          className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 pt-20 sm:pt-24 pb-6 animate-in fade-in duration-200"
           onClick={() => setEnlargedCameraImage(null)}
         >
           <div 
-            className="relative max-w-4xl w-full bg-[#161922] border border-cyan-500/40 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[92vh]"
+            className="relative max-w-4xl w-full bg-[#161922] border border-cyan-500/40 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[82vh]"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="flex items-center justify-between px-4 py-3 bg-[#1e2330] border-b border-gray-700/60">
+            <div className="flex items-center justify-between px-4 py-3 bg-[#1e2330] border-b border-gray-700/60 shrink-0">
               <div className="flex items-center gap-2.5 min-w-0">
                 <span className="text-base text-cyan-400">📷</span>
                 <div className="flex flex-col min-w-0">
@@ -13808,13 +13835,13 @@ export default function AppMap() {
             </div>
 
             {/* Modal Body / Image */}
-            <div className="p-3 sm:p-5 flex items-center justify-center bg-black/90 overflow-auto flex-1 min-h-[300px]">
+            <div className="p-3 sm:p-4 flex items-center justify-center bg-black/95 overflow-hidden flex-1 min-h-0">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={enlargedCameraImage.src}
                 alt={enlargedCameraImage.alt}
                 referrerPolicy="no-referrer"
-                className="max-w-full max-h-[72vh] object-contain rounded-lg shadow-2xl border border-white/10"
+                className="max-w-full max-h-[58vh] sm:max-h-[60vh] object-contain rounded-lg shadow-2xl border border-white/10"
                 onError={(e) => {
                   const target = e.currentTarget;
                   if (target.src !== enlargedCameraImage.directSrc) {
@@ -13825,7 +13852,7 @@ export default function AppMap() {
             </div>
 
             {/* Modal Footer */}
-            <div className="px-4 py-2 bg-[#1a1e29] border-t border-gray-800 flex items-center justify-between text-[11px] text-gray-400">
+            <div className="px-4 py-2 bg-[#1a1e29] border-t border-gray-800 flex items-center justify-between text-[11px] text-gray-400 shrink-0">
               <span>點擊背景或右上角 ✕ 關閉</span>
               <span className="text-cyan-400 font-mono text-[10.5px]">HD 即時路況畫面</span>
             </div>
