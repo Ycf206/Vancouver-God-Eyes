@@ -4,7 +4,17 @@ import requests
 from datetime import datetime, timezone
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data")
+FRONTEND_DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "frontend", "public")
 os.makedirs(DATA_DIR, exist_ok=True)
+
+def save_geojson_dual(filename, data, indent=None):
+    b_path = os.path.join(DATA_DIR, filename)
+    with open(b_path, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=indent)
+    if os.path.exists(FRONTEND_DATA_DIR):
+        f_path = os.path.join(FRONTEND_DATA_DIR, filename)
+        with open(f_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=indent)
 
 HEADERS = {
     "User-Agent": "VancouverGodsEye/1.0"
@@ -70,17 +80,15 @@ def generate_road_closures():
             "geometry": geometry
         })
     
-    out_file = os.path.join(DATA_DIR, "vancouver_road_closures.geojson")
-    with open(out_file, "w", encoding="utf-8") as f:
-        json.dump({
-            "type": "FeatureCollection",
-            "generator": "VancouverGodsEye",
-            "total_count": len(features),
-            "updated_at": datetime.now(timezone.utc).isoformat(),
-            "update_frequency": "每星期 1 次 (Weekly)",
-            "features": features
-        }, f, ensure_ascii=False, indent=2)
-    print(f"[OK] Saved {len(features)} road closures to {out_file}")
+    save_geojson_dual("vancouver_road_closures.geojson", {
+        "type": "FeatureCollection",
+        "generator": "VancouverGodsEye",
+        "total_count": len(features),
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+        "update_frequency": "每星期 1 次 (Weekly)",
+        "features": features
+    }, indent=2)
+    print(f"[OK] Saved {len(features)} road closures to backend and frontend")
 
 def generate_road_construction():
     print("Generating Road Construction (road-ahead-projects-under-construction)...")
@@ -115,17 +123,15 @@ def generate_road_construction():
             "geometry": geometry
         })
     
-    out_file = os.path.join(DATA_DIR, "vancouver_road_construction.geojson")
-    with open(out_file, "w", encoding="utf-8") as f:
-        json.dump({
-            "type": "FeatureCollection",
-            "generator": "VancouverGodsEye",
-            "total_count": len(features),
-            "updated_at": datetime.now(timezone.utc).isoformat(),
-            "update_frequency": "每星期 1 次 (Weekly)",
-            "features": features
-        }, f, ensure_ascii=False, indent=2)
-    print(f"[OK] Saved {len(features)} road construction projects to {out_file}")
+    save_geojson_dual("vancouver_road_construction.geojson", {
+        "type": "FeatureCollection",
+        "generator": "VancouverGodsEye",
+        "total_count": len(features),
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+        "update_frequency": "每星期 1 次 (Weekly)",
+        "features": features
+    }, indent=2)
+    print(f"[OK] Saved {len(features)} road construction projects to backend and frontend")
 
 def generate_street_lighting():
     generate_street_lighting_poles()
@@ -161,17 +167,15 @@ def generate_street_lighting_poles():
             },
             "geometry": geometry
         })
-    out_file = os.path.join(DATA_DIR, "vancouver_street_lighting_poles.geojson")
-    with open(out_file, "w", encoding="utf-8") as f:
-        json.dump({
-            "type": "FeatureCollection",
-            "generator": "VancouverGodsEye",
-            "total_count": len(features),
-            "updated_at": datetime.now(timezone.utc).isoformat(),
-            "update_frequency": "每3個月更新 1 次 (Quarterly)",
-            "features": features
-        }, f, ensure_ascii=False)
-    print(f"[OK] Saved {len(features)} street lighting poles to {out_file}")
+    save_geojson_dual("vancouver_street_lighting_poles.geojson", {
+        "type": "FeatureCollection",
+        "generator": "VancouverGodsEye",
+        "total_count": len(features),
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+        "update_frequency": "每3個月更新 1 次 (Quarterly)",
+        "features": features
+    })
+    print(f"[OK] Saved {len(features)} street lighting poles to backend and frontend")
 
 def generate_street_lighting_conduits():
     print("Generating Street Lighting Conduits (street-lighting-conduits)...")
@@ -201,17 +205,15 @@ def generate_street_lighting_conduits():
             "geometry": geometry
         })
     
-    out_file = os.path.join(DATA_DIR, "vancouver_street_lighting_conduits.geojson")
-    with open(out_file, "w", encoding="utf-8") as f:
-        json.dump({
-            "type": "FeatureCollection",
-            "generator": "VancouverGodsEye",
-            "total_count": len(features),
-            "updated_at": datetime.now(timezone.utc).isoformat(),
-            "update_frequency": "每3個月更新 1 次 (Quarterly)",
-            "features": features
-        }, f, ensure_ascii=False)
-    print(f"[OK] Saved {len(features)} street lighting conduits to {out_file}")
+    save_geojson_dual("vancouver_street_lighting_conduits.geojson", {
+        "type": "FeatureCollection",
+        "generator": "VancouverGodsEye",
+        "total_count": len(features),
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+        "update_frequency": "每3個月更新 1 次 (Quarterly)",
+        "features": features
+    })
+    print(f"[OK] Saved {len(features)} street lighting conduits to backend and frontend")
 
 def generate_traffic_conditions():
     print("Generating Traffic Conditions GeoJSON (Lions Gate Bridge ATIS)...")
@@ -240,17 +242,15 @@ def generate_traffic_conditions():
             }
         }
     ]
-    out_file = os.path.join(DATA_DIR, "vancouver_traffic_conditions.geojson")
-    with open(out_file, "w", encoding="utf-8") as f:
-        json.dump({
-            "type": "FeatureCollection",
-            "generator": "VancouverGodsEye",
-            "total_count": len(features),
-            "updated_at": datetime.now(timezone.utc).isoformat(),
-            "update_frequency": "每 1 小時 (Hourly)",
-            "features": features
-        }, f, ensure_ascii=False, indent=2)
-    print(f"[OK] Saved traffic conditions to {out_file}")
+    save_geojson_dual("vancouver_traffic_conditions.geojson", {
+        "type": "FeatureCollection",
+        "generator": "VancouverGodsEye",
+        "total_count": len(features),
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+        "update_frequency": "每 1 小時 (Hourly)",
+        "features": features
+    }, indent=2)
+    print(f"[OK] Saved traffic conditions to backend and frontend")
 
 if __name__ == "__main__":
     generate_road_closures()

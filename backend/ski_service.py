@@ -194,6 +194,13 @@ def get_live_ski_data(force_refresh=False):
         os.makedirs(os.path.dirname(CACHE_FILE), exist_ok=True)
         with open(CACHE_FILE, "w", encoding="utf-8") as f:
             json.dump(payload, f, ensure_ascii=False, indent=2)
+
+        front_pub = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "frontend", "public")
+        if os.path.exists(front_pub):
+            with open(os.path.join(front_pub, "vancouver_ski_resorts_cache.json"), "w", encoding="utf-8") as f:
+                json.dump(payload, f, ensure_ascii=False, indent=2)
+            with open(os.path.join(front_pub, "vancouver_ski_resorts.json"), "w", encoding="utf-8") as f:
+                json.dump(payload, f, ensure_ascii=False, indent=2)
     except Exception as e:
         print(f"[SkiService] Failed to write disk cache: {e}")
 

@@ -236,6 +236,11 @@ def fetch_noaa_aurora_data() -> dict:
         os.makedirs(os.path.dirname(CACHE_FILE), exist_ok=True)
         with open(CACHE_FILE, "w", encoding="utf-8") as f:
             json.dump(result, f, ensure_ascii=False, indent=2)
+
+        front_pub = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "frontend", "public")
+        if os.path.exists(front_pub):
+            with open(os.path.join(front_pub, "vancouver_aurora_cache.json"), "w", encoding="utf-8") as f:
+                json.dump(result, f, ensure_ascii=False, indent=2)
     except Exception as e:
         print(f"[AuroraService] Error saving cache: {e}")
 
