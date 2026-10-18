@@ -2169,6 +2169,7 @@ function ExploreContent() {
       zoom: corridor.zoom || 13,
       meta: {
         properties: {
+          facility_type: 'traffic_conditions',
           name: corridor.name,
           corridor: corridor.name,
           street: corridor.route || corridor.english_name || corridor.name,
@@ -2217,7 +2218,10 @@ function ExploreContent() {
       lon: coords[0],
       zoom: 15,
       meta: {
-        properties: alert
+        properties: {
+          ...alert,
+          facility_type: 'traffic_alerts'
+        }
       }
     });
   };
@@ -4779,11 +4783,11 @@ function ExploreContent() {
                 每 5 分鐘更新
               </span>
               <a
-                href="https://plan.tomtom.com/"
+                href="https://plan.tomtom.com/en/?p=49.24943,-123.12845,11.71z"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-1 hover:bg-[#252a38] text-gray-400 hover:text-orange-400 rounded transition-colors"
-                title="前往 TomTom Plan 官方即時路況地圖"
+                title="前往 TomTom 即時路況"
               >
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
@@ -5037,6 +5041,19 @@ function ExploreContent() {
                 })
               )
             )}
+          </div>
+
+          {/* Bottom Action Button: Link to TomTom Live Traffic */}
+          <div className="pt-1 border-t border-[#222838] shrink-0">
+            <a
+              href="https://plan.tomtom.com/en/?p=49.24943,-123.12845,11.71z"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full py-2 px-3 rounded-lg bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+            >
+              <span>前往 TomTom 即時路況</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
           </div>
         </div>
       )}

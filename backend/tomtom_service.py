@@ -68,9 +68,10 @@ class TomTomTrafficService:
     def get_tomtom_api_key(self) -> str:
         return _load_env_key("TOMTOM_API_KEY")
 
-    def get_flow_tile(self, z: int, x: int, y: int, style: str = "relative") -> bytes:
+    def get_flow_tile(self, z: int, x: int, y: int, style: str = "relative", thickness: int = 2) -> bytes:
         """
         向 TomTom Traffic Flow Tiles v4 取得即時路況柵格圖磚 (綠/黃/橙/紅全路網連續路況)
+        thickness 範圍為 1..20 (TomTom 預設為 10)，設為 2 可讓密集街道線條極致纖細清晰。
         內建 3 分鐘記憶體快取以大幅節省每日免費配額。
         """
         api_key = self.get_tomtom_api_key()
@@ -81,15 +82,17 @@ class TomTomTrafficService:
         if style not in valid_styles:
             style = "relative"
 
+        clamped_thickness = max(1, min(20, int(thickness)))
+
         now = time.time()
-        cache_key = (style, int(z), int(x), int(y))
+        cache_key = (f"{style}_t{clamped_thickness}", int(z), int(x), int(y))
         cached = self.tile_cache.get(cache_key)
         if cached and (now - cached[0] < self.tile_cache_ttl):
             return cached[1]
 
         url = (
             f"https://api.tomtom.com/traffic/map/4/tile/flow/{style}/{z}/{x}/{y}.png"
-            f"?key={urllib.parse.quote(api_key)}&tileSize=256"
+            f"?key={urllib.parse.quote(api_key)}&tileSize=256&thickness={clamped_thickness}"
         )
         req = urllib.request.Request(url, headers={"User-Agent": self.user_agent})
         try:
@@ -235,7 +238,7 @@ class TomTomTrafficService:
                 "direction": "雙向 (溫哥華南部 ↔ 列治文北部)",
                 "city": "Vancouver / Richmond",
                 "freeflow_speed": 70,
-                "probe_point": (49.195, -123.1265),
+                "probe_point": (49.2015, -123.1259),
                 "length_km": 4.2,
                 "coordinates": [
                     [-123.124, 49.209],
@@ -438,11 +441,12 @@ class TomTomTrafficService:
     def _fetch_tomtom_segment_flow(self, lat: float, lon: float, api_key: str) -> Optional[Dict[str, Any]]:
         """
         向 TomTom Flow Segment Data API v4 查詢指定座標點路段的即時車速與自由流車速
+        使用 zoom=10 強制鎖定主要高速公路與跨海大橋主幹道 (FRC0~FRC2)，避免誤吸橋下 30 km/h 平面小街。
         """
         if not api_key:
             return None
         url = (
-            f"https://api.tomtom.com/traffic/services/4/flowSegmentData/relative0/12/json"
+            f"https://api.tomtom.com/traffic/services/4/flowSegmentData/relative0/10/json"
             f"?point={lat},{lon}&unit=KMPH&key={urllib.parse.quote(api_key)}"
         )
         req = urllib.request.Request(url, headers={"User-Agent": self.user_agent})
@@ -763,26 +767,36 @@ class TomTomTrafficService:
 
         for b in base_corridors:
             cid = b["id"]
-            freeflow = float(b["freeflow_speed"])
+            base_freeflow = float(b["freeflow_speed"])
+            freeflow = base_freeflow
+            length_km = float(b.get("length_km", 5.0))
             flow = flow_results.get(cid)
 
             if flow and "currentSpeed" in flow:
-                cur_speed = float(flow.get("currentSpeed", freeflow))
-                ff_speed = float(flow.get("freeFlowSpeed", freeflow)) or freeflow
+                raw_cur = float(flow.get("currentSpeed", base_freeflow))
+                raw_ff = float(flow.get("freeFlowSpeed", base_freeflow)) or base_freeflow
                 cur_tt = float(flow.get("currentTravelTime", 0))
                 ff_tt = float(flow.get("freeFlowTravelTime", 0))
                 road_closure = bool(flow.get("roadClosure", False))
 
-                if cur_tt > 0 and ff_tt > 0:
-                    # 依走廊實際長度比例換算延誤分鐘數
-                    raw_delay_sec = max(0.0, cur_tt - ff_tt)
-                    delay_min = round(raw_delay_sec / 60.0, 1)
+                # 防止座標若意外吸附到橋下/平面慢速支線 (如 30 km/h) 時失真：保留主幹道基準自由流車速並按即時暢通比例換算
+                if raw_ff < base_freeflow * 0.75:
+                    ratio = min(1.0, max(0.15, raw_cur / max(10.0, raw_ff)))
+                    freeflow = base_freeflow
+                    cur_speed = round(base_freeflow * ratio, 1)
                 else:
-                    length_km = float(b.get("length_km", 5.0))
-                    t_cur = (length_km / max(10.0, cur_speed)) * 60.0
-                    t_ff = (length_km / max(10.0, ff_speed)) * 60.0
-                    delay_min = max(0.0, round(t_cur - t_ff, 1))
-                freeflow = ff_speed
+                    freeflow = raw_ff
+                    cur_speed = raw_cur
+
+                # TomTom flowSegmentData 的 travelTime 僅為取樣點單一感測路段 (~150m-300m)，
+                # 必須依走廊完整里程 (length_km) 與車速比推算整條幹道/橋隧的真實通過延誤分鐘數
+                t_ff_corridor_min = (length_km / max(15.0, freeflow)) * 60.0
+                if cur_tt > 0 and ff_tt > 0 and raw_ff >= base_freeflow * 0.75:
+                    tt_ratio = max(1.0, cur_tt / max(1.0, ff_tt))
+                    delay_min = max(0.0, round(t_ff_corridor_min * (tt_ratio - 1.0), 1))
+                else:
+                    t_cur_corridor_min = (length_km / max(10.0, cur_speed)) * 60.0
+                    delay_min = max(0.0, round(t_cur_corridor_min - t_ff_corridor_min, 1))
             else:
                 # 若尚未取得特定支線或本地未設定 API Key，預設依真實離峰/無事故暢通狀態推算 (絕不寫死假塞車)
                 cur_speed = freeflow
@@ -1163,7 +1177,7 @@ class TomTomTrafficService:
 
         self.cached_corridors_summary = {
             "source": "TomTom Real-Time Traffic & DriveBC",
-            "source_url": "https://plan.tomtom.com/",
+            "source_url": "https://plan.tomtom.com/en/?p=49.24943,-123.12845,11.71z",
             "has_tomtom_key": bool(api_key),
             "updated_at": now_iso,
             "overall_congestion_score": congestion_score,

@@ -2896,7 +2896,7 @@ export default function AppMap() {
     if (layers.trafficConditions) {
       style.sources['tomtom_traffic_flow'] = {
         type: 'raster',
-        tiles: [`${apiUrl}/api/traffic/tiles/{z}/{x}/{y}.png?style=relative`],
+        tiles: [`${apiUrl}/api/traffic/tiles/{z}/{x}/{y}.png?style=relative&thickness=2`],
         tileSize: 256,
         minzoom: 6,
         maxzoom: 19
@@ -7904,9 +7904,9 @@ export default function AppMap() {
             maxWidth="none"
           >
             <div className={`p-3.5 ${
-              selectedFacility.facility_type === 'traffic_conditions' ? 'w-[430px]' :
+              (selectedFacility.facility_type === 'traffic_conditions' || selectedFacility.facility_type === 'traffic_corridor') ? 'w-[430px]' :
               selectedFacility.facility_type === 'traffic_cameras' ? 'w-[360px]' : 
-              (selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'border_crossing' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'beach_water_quality' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'zoning_districts') ? 'w-[340px]' : 
+              (selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'border_crossing' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'beach_water_quality' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'zoning_districts') ? 'w-[340px]' : 
               'w-[290px]'
             } max-w-[90vw] text-gray-800`}>
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
@@ -7914,8 +7914,8 @@ export default function AppMap() {
                   <span className={`w-3 h-3 rounded-full flex-shrink-0 ${
                     selectedFacility.facility_type === 'public_trees' ? 'bg-emerald-600' :
                     selectedFacility.facility_type === 'border_crossing' ? 'bg-emerald-600 shadow-[0_0_6px_rgba(16,185,129,0.5)]' :
-                    selectedFacility.facility_type === 'traffic_conditions' ? 'bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]' :
-                    selectedFacility.facility_type === 'traffic_alerts' ? 'bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.5)]' :
+                    (selectedFacility.facility_type === 'traffic_conditions' || selectedFacility.facility_type === 'traffic_corridor') ? 'bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]' :
+                    (selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident') ? 'bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.5)]' :
                     selectedFacility.facility_type === 'road_closures' ? 'bg-rose-600' :
                     selectedFacility.facility_type === 'road_construction' ? 'bg-amber-500' :
                     (selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits') ? 'bg-amber-400' :
@@ -10735,7 +10735,7 @@ export default function AppMap() {
               )}
 
               {/* Traffic Conditions (即時路況 - TomTom 主要公路與橋樑 / 獅門大橋 ATIS) */}
-              {selectedFacility.facility_type === 'traffic_conditions' && (() => {
+              {(selectedFacility.facility_type === 'traffic_conditions' || selectedFacility.facility_type === 'traffic_corridor') && (() => {
                 const props = selectedFacility.properties || {};
                 const isLionsGateATIS = selectedFacility.name?.includes('獅門大橋') && props.speed_kmh == null && props.delay_min == null;
 
@@ -10865,7 +10865,7 @@ export default function AppMap() {
                     {/* Actions */}
                     <div className="pt-0.5 flex gap-1.5">
                       <a 
-                        href="https://plan.tomtom.com/" 
+                        href="https://plan.tomtom.com/en/?p=49.24943,-123.12845,11.71z" 
                         target="_blank" 
                         rel="noopener noreferrer" 
                         className="flex-1 py-1.5 px-3 rounded-lg bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
@@ -10879,7 +10879,7 @@ export default function AppMap() {
               })()}
 
               {/* Traffic Alerts (TomTom 突發事故與路況圖釘 — 已移除重複顯示之次級標題框) */}
-              {selectedFacility.facility_type === 'traffic_alerts' && (() => {
+              {(selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident') && (() => {
                 const props = selectedFacility.properties || {};
                 const delayMin = props.delay_min ?? props.delay_minutes ?? (props.delay_sec ? Math.round(props.delay_sec / 60) : 5);
                 const reportTime = props.report_time_str || props.time_display || 'TomTom 即時偵測';
@@ -10928,12 +10928,12 @@ export default function AppMap() {
                     {/* Action Button */}
                     <div className="pt-0.5">
                       <a 
-                        href="https://plan.tomtom.com/" 
+                        href="https://plan.tomtom.com/en/?p=49.24943,-123.12845,11.71z" 
                         target="_blank" 
                         rel="noopener noreferrer" 
                         className="w-full py-1.5 px-3 rounded-lg bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
                       >
-                        <span>在 TomTom 查看完整路況</span>
+                        <span>前往 TomTom 即時路況</span>
                         <ExternalLink className="w-3.5 h-3.5" />
                       </a>
                     </div>

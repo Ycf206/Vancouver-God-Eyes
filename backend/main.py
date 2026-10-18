@@ -946,14 +946,14 @@ def get_tomtom_alerts(force: bool = False):
 
 
 @app.get("/api/traffic/tiles/{z}/{x}/{y}.png")
-def get_tomtom_traffic_tile(z: int, x: int, y: int, style: str = "relative"):
+def get_tomtom_traffic_tile(z: int, x: int, y: int, style: str = "relative", thickness: int = 2):
     """
     Proxies and caches TomTom Traffic Flow Raster Tiles v4 (relative green/yellow/orange/red full road network overlay).
     Cached 3 minutes to protect TomTom free tier quota and keep API key server-side.
     """
     from fastapi.responses import Response
     from tomtom_service import tomtom_service
-    png_bytes = tomtom_service.get_flow_tile(z, x, y, style=style)
+    png_bytes = tomtom_service.get_flow_tile(z, x, y, style=style, thickness=thickness)
     return Response(
         content=png_bytes,
         media_type="image/png",
