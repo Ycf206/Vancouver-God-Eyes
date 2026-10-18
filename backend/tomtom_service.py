@@ -45,10 +45,10 @@ def _load_env_key(key_name: str) -> str:
     return ""
 
 
-class WazeService:
+class TomTomTrafficService:
     """
     TomTom Real-Time Traffic Flow & Incidents + DriveBC Open511 Engine for Metro Vancouver.
-    Maintains backward-compatible class/method names (`waze_service`) for all FastAPI routes.
+    Provides real-time TomTom Traffic Flow Tiles, Segment Speeds, and Traffic Incidents for Metro Vancouver.
     """
 
     def __init__(self):
@@ -68,7 +68,7 @@ class WazeService:
     def get_tomtom_api_key(self) -> str:
         return _load_env_key("TOMTOM_API_KEY")
 
-    def get_flow_tile(self, z: int, x: int, y: int, style: str = "relative0") -> bytes:
+    def get_flow_tile(self, z: int, x: int, y: int, style: str = "relative") -> bytes:
         """
         向 TomTom Traffic Flow Tiles v4 取得即時路況柵格圖磚 (綠/黃/橙/紅全路網連續路況)
         內建 3 分鐘記憶體快取以大幅節省每日免費配額。
@@ -79,7 +79,7 @@ class WazeService:
 
         valid_styles = {"absolute", "relative", "relative0", "relative0-dark", "relative-delay", "reduced-sensitivity"}
         if style not in valid_styles:
-            style = "relative0"
+            style = "relative"
 
         now = time.time()
         cache_key = (style, int(z), int(x), int(y))
@@ -89,7 +89,7 @@ class WazeService:
 
         url = (
             f"https://api.tomtom.com/traffic/map/4/tile/flow/{style}/{z}/{x}/{y}.png"
-            f"?key={urllib.parse.quote(api_key)}&tileSize=256&thickness=6"
+            f"?key={urllib.parse.quote(api_key)}&tileSize=256"
         )
         req = urllib.request.Request(url, headers={"User-Agent": self.user_agent})
         try:
@@ -597,9 +597,9 @@ class WazeService:
                     except Exception:
                         pass
 
-        # 2. 取得即時突發事故與通報 (優先使用 TomTom Traffic Incidents v5，並結合 DriveBC Open511 官方實況)
+        # 2. 取得即時突發事故與通報 (全面使用 TomTom Traffic Incidents v5；僅於未設定 API Key 時以 DriveBC 備援)
         tomtom_incidents = self._fetch_tomtom_incidents(api_key) if api_key else []
-        drivebc_events = self._fetch_drivebc_open511_incidents()
+        drivebc_events = self._fetch_drivebc_open511_incidents() if not tomtom_incidents else []
 
         alert_features: List[Dict[str, Any]] = []
         extra_jam_features: List[Dict[str, Any]] = []
@@ -663,7 +663,7 @@ class WazeService:
                     },
                     "properties": {
                         "id": str(props.get("id", f"tt_{idx}")),
-                        "facility_type": "waze_alerts",
+                        "facility_type": "traffic_alerts",
                         "type": t_code,
                         "type_zh": type_zh,
                         "subtype_zh": event_desc or type_zh,
@@ -677,7 +677,7 @@ class WazeService:
                         "delay_min": delay_min,
                         "delay_minutes": delay_min,
                         "confidence": 5,
-                        "waze_confidence": 96,
+                        "confidence_pct": 96,
                         "pub_time": int(now * 1000),
                         "time_display": "TomTom 即時",
                         "report_time_str": "TomTom 即時偵測",
@@ -732,7 +732,7 @@ class WazeService:
                 },
                 "properties": {
                     "id": str(ev.get("id", f"dbc_{idx}")),
-                    "facility_type": "waze_alerts",
+                    "facility_type": "traffic_alerts",
                     "type": t_code,
                     "type_zh": type_zh,
                     "subtype_zh": type_zh,
@@ -746,7 +746,7 @@ class WazeService:
                     "delay_min": delay_m,
                     "delay_minutes": delay_m,
                     "confidence": 5,
-                    "waze_confidence": 98,
+                    "confidence_pct": 98,
                     "pub_time": int(now * 1000),
                     "time_display": "DriveBC 官方",
                     "report_time_str": "DriveBC 官方即時",
@@ -1185,7 +1185,7 @@ class WazeService:
                 with open(os.path.join(CACHE_DIR, "vancouver_traffic_conditions.geojson"), "w", encoding="utf-8") as f:
                     json.dump(self.cached_jams_geojson, f, ensure_ascii=False, indent=2)
             if self.cached_alerts_geojson:
-                with open(os.path.join(CACHE_DIR, "vancouver_waze_alerts.geojson"), "w", encoding="utf-8") as f:
+                with open(os.path.join(CACHE_DIR, "vancouver_traffic_alerts.geojson"), "w", encoding="utf-8") as f:
                     json.dump(self.cached_alerts_geojson, f, ensure_ascii=False, indent=2)
 
             pub_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "frontend", "public"))
@@ -1194,10 +1194,10 @@ class WazeService:
                     with open(os.path.join(pub_dir, "vancouver_traffic_conditions.geojson"), "w", encoding="utf-8") as f:
                         json.dump(self.cached_jams_geojson, f, ensure_ascii=False, indent=2)
                 if self.cached_alerts_geojson:
-                    with open(os.path.join(pub_dir, "vancouver_waze_alerts.geojson"), "w", encoding="utf-8") as f:
+                    with open(os.path.join(pub_dir, "vancouver_traffic_alerts.geojson"), "w", encoding="utf-8") as f:
                         json.dump(self.cached_alerts_geojson, f, ensure_ascii=False, indent=2)
                 if self.cached_corridors_summary:
-                    with open(os.path.join(pub_dir, "vancouver_waze_summary_cache.json"), "w", encoding="utf-8") as f:
+                    with open(os.path.join(pub_dir, "vancouver_traffic_summary_cache.json"), "w", encoding="utf-8") as f:
                         json.dump(self.cached_corridors_summary, f, ensure_ascii=False, indent=2)
         except Exception as e:
             print(f"[TomTomTraffic] Error saving static caches: {e}")
@@ -1215,4 +1215,4 @@ class WazeService:
         return self.cached_corridors_summary or {"corridors": [], "top_alerts": []}
 
 
-waze_service = WazeService()
+tomtom_service = TomTomTrafficService()

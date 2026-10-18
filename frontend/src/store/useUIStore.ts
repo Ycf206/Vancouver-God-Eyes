@@ -85,7 +85,7 @@ export interface UIState {
     vanWifi: boolean;
     tideStations: boolean;
     trafficConditions: boolean;
-    wazeAlerts: boolean;
+    trafficAlerts: boolean;
     roadClosures: boolean;
     roadConstruction: boolean;
     streetLighting: boolean;
@@ -263,7 +263,7 @@ export const useUIStore = create<UIState>()(
         vanWifi: false,
         tideStations: false,
         trafficConditions: false,
-        wazeAlerts: false,
+        trafficAlerts: false,
         roadClosures: false,
         roadConstruction: false,
         streetLighting: false,

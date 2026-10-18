@@ -263,8 +263,8 @@
   ],
   "top_alerts": [
     {
-      "id": "waze_alt_101",
-      "facility_type": "waze_alerts",
+      "id": "tomtom_alt_101",
+      "facility_type": "traffic_alerts",
       "type": "ACCIDENT",
       "type_zh": "交通事故",
       "subtype": "ACCIDENT_MAJOR",
@@ -286,11 +286,11 @@
         -123.003,
         49.255
       ],
-      "source": "Waze Crowd-Sourced Reports"
+      "source": "TomTom Crowd-Sourced Reports"
     },
     {
-      "id": "waze_alt_102",
-      "facility_type": "waze_alerts",
+      "id": "tomtom_alt_102",
+      "facility_type": "traffic_alerts",
       "type": "JAM",
       "type_zh": "車流壅塞",
       "subtype": "JAM_STAND_STILL_TRAFFIC",
@@ -312,11 +312,11 @@
         -123.076,
         49.124
       ],
-      "source": "Waze Crowd-Sourced Reports"
+      "source": "TomTom Crowd-Sourced Reports"
     },
     {
-      "id": "waze_alt_103",
-      "facility_type": "waze_alerts",
+      "id": "tomtom_alt_103",
+      "facility_type": "traffic_alerts",
       "type": "HAZARD",
       "type_zh": "路面障礙",
       "subtype": "HAZARD_ON_ROAD_OBJECT",
@@ -338,11 +338,11 @@
         -123.0782,
         49.204
       ],
-      "source": "Waze Crowd-Sourced Reports"
+      "source": "TomTom Crowd-Sourced Reports"
     },
     {
-      "id": "waze_alt_104",
-      "facility_type": "waze_alerts",
+      "id": "tomtom_alt_104",
+      "facility_type": "traffic_alerts",
       "type": "ACCIDENT",
       "type_zh": "交通事故",
       "subtype": "ACCIDENT_MINOR",
@@ -364,11 +364,11 @@
         -123.138,
         49.321
       ],
-      "source": "Waze Crowd-Sourced Reports"
+      "source": "TomTom Crowd-Sourced Reports"
     },
     {
-      "id": "waze_alt_105",
-      "facility_type": "waze_alerts",
+      "id": "tomtom_alt_105",
+      "facility_type": "traffic_alerts",
       "type": "POLICE",
       "type_zh": "警方執法",
       "subtype": "POLICE_SPEED_TRAP",
@@ -390,11 +390,11 @@
         -122.952,
         49.16
       ],
-      "source": "Waze Crowd-Sourced Reports"
+      "source": "TomTom Crowd-Sourced Reports"
     },
     {
-      "id": "waze_alt_106",
-      "facility_type": "waze_alerts",
+      "id": "tomtom_alt_106",
+      "facility_type": "traffic_alerts",
       "type": "ROAD_CLOSED",
       "type_zh": "道路施工封閉",
       "subtype": "ROAD_CLOSED_CONSTRUCTION",
@@ -416,11 +416,11 @@
         -123.12,
         49.284
       ],
-      "source": "Waze Crowd-Sourced Reports"
+      "source": "TomTom Crowd-Sourced Reports"
     },
     {
-      "id": "waze_alt_107",
-      "facility_type": "waze_alerts",
+      "id": "tomtom_alt_107",
+      "facility_type": "traffic_alerts",
       "type": "ACCIDENT",
       "type_zh": "交通事故",
       "subtype": "ACCIDENT_MINOR",
@@ -442,11 +442,11 @@
         -122.887,
         49.204
       ],
-      "source": "Waze Crowd-Sourced Reports"
+      "source": "TomTom Crowd-Sourced Reports"
     },
     {
-      "id": "waze_alt_108",
-      "facility_type": "waze_alerts",
+      "id": "tomtom_alt_108",
+      "facility_type": "traffic_alerts",
       "type": "HAZARD",
       "type_zh": "路面施工",
       "subtype": "HAZARD_ON_ROAD_CONSTRUCTION",
@@ -468,7 +468,7 @@
         -123.003,
         49.227
       ],
-      "source": "Waze Crowd-Sourced Reports"
+      "source": "TomTom Crowd-Sourced Reports"
     }
   ]
 }

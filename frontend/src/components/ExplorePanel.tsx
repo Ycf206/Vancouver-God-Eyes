@@ -48,7 +48,7 @@ export interface TranslinkAlertsData {
   station_alerts_map: Record<string, { critical: boolean; count: number; alert_ids: string[] }>;
 }
 
-export interface WazeCorridorItem {
+export interface TrafficCorridorItem {
   id: string;
   name: string;
   english_name?: string;
@@ -73,7 +73,7 @@ export interface WazeCorridorItem {
   key_bottleneck?: string;
 }
 
-export interface WazeIncidentItem {
+export interface TrafficIncidentItem {
   id: string;
   type?: string;
   type_label?: string;
@@ -89,7 +89,7 @@ export interface WazeIncidentItem {
   report_time_str?: string;
   time_display?: string;
   confidence?: number;
-  waze_confidence?: number;
+  confidence_pct?: number;
   description?: string;
   report_description?: string;
   lon?: number;
@@ -99,7 +99,7 @@ export interface WazeIncidentItem {
   updated_at?: string;
 }
 
-export interface WazeSummaryData {
+export interface TrafficSummaryData {
   source: string;
   source_url: string;
   updated_at: string;
@@ -108,8 +108,8 @@ export interface WazeSummaryData {
   total_jams: number;
   total_incidents: number;
   worst_corridor: string;
-  corridors: WazeCorridorItem[];
-  top_alerts: WazeIncidentItem[];
+  corridors: TrafficCorridorItem[];
+  top_alerts: TrafficIncidentItem[];
 }
 
 interface AuroraVisibility {
@@ -579,8 +579,8 @@ function ExploreContent() {
   const [alertsEffectFilter, setAlertsEffectFilter] = useState<string>('all');
   const [alertsSortBy, setAlertsSortBy] = useState<'severity' | 'newest' | 'oldest'>('severity');
 
-  // --- Waze Live Traffic states ---
-  const [trafficSummary, setTrafficSummary] = useState<WazeSummaryData | null>(null);
+  // --- TomTom Live Traffic states ---
+  const [trafficSummary, setTrafficSummary] = useState<TrafficSummaryData | null>(null);
   const [loadingTraffic, setLoadingTraffic] = useState<boolean>(false);
   const [trafficFilter, setTrafficFilter] = useState<'all' | 'severe' | 'bridges' | 'incidents'>('all');
   const [trafficSearchQuery, setTrafficSearchQuery] = useState<string>('');
@@ -2116,7 +2116,7 @@ function ExploreContent() {
     }
 
     try {
-      const staticRes = await fetch('/vancouver_waze_summary_cache.json');
+      const staticRes = await fetch('/vancouver_traffic_summary_cache.json');
       if (staticRes.ok) {
         const staticData = await staticRes.json();
         if (staticData && Array.isArray(staticData.corridors)) {
@@ -2124,7 +2124,7 @@ function ExploreContent() {
         }
       }
     } catch (staticErr) {
-      console.error('Failed to load static waze summary cache:', staticErr);
+      console.error('Failed to load static traffic summary cache:', staticErr);
     } finally {
       setLoadingTraffic(false);
     }
@@ -2146,7 +2146,7 @@ function ExploreContent() {
     return () => clearInterval(timer);
   }, [isExploreOpen, activeTab, fetchTrafficSummary]);
 
-  const handleFlyToCorridor = (corridor: WazeCorridorItem) => {
+  const handleFlyToCorridor = (corridor: TrafficCorridorItem) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap();
     if (mapInstance && corridor.center) {
@@ -2183,7 +2183,7 @@ function ExploreContent() {
     });
   };
 
-  const handleFlyToTrafficAlert = (alert: WazeIncidentItem) => {
+  const handleFlyToTrafficAlert = (alert: TrafficIncidentItem) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap();
     let coords: [number, number] = [-123.12, 49.25];
@@ -4923,7 +4923,7 @@ function ExploreContent() {
 
                     <div className="flex items-center justify-between pt-0.5 text-[10px]">
                       <span className="text-emerald-400 font-medium">
-                        ✓ 資料可信度 {alert.waze_confidence ?? (alert.confidence ? (alert.confidence <= 5 ? alert.confidence * 20 : alert.confidence) : 95)}%
+                        ✓ 資料可信度 {alert.confidence_pct ?? (alert.confidence ? (alert.confidence <= 5 ? alert.confidence * 20 : alert.confidence) : 95)}%
                       </span>
                       <span className="text-cyan-400 group-hover:underline flex items-center gap-0.5">
                         在地圖查看圖釘 →
@@ -5295,8 +5295,8 @@ function ExploreContent() {
           )}
           {activeTab === 'traffic' && (
             <>
-              <span>大溫哥華 8 大主要幹道即時通過延誤</span>
-              <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：Waze LiveMap</span>
+              <span>大溫哥華 7 大主要幹道與橋隧即時延誤</span>
+              <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：TomTom Traffic API</span>
             </>
           )}
           {activeTab === 'border' && (

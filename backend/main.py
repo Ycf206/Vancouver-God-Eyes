@@ -917,46 +917,43 @@ def get_translink_alerts(force: bool = False):
     return translink_service.get_translink_alerts(force=force)
 
 
-@app.get("/api/waze/summary")
 @app.get("/api/traffic/summary")
-def get_waze_traffic_summary(force: bool = False):
+def get_tomtom_traffic_summary(force: bool = False):
     """
-    Returns real-time TomTom & DriveBC traffic corridors delay summary, bottlenecks and alerts for Greater Vancouver.
+    Returns real-time TomTom traffic corridors delay summary, bottlenecks and alerts for Greater Vancouver.
     Cached 5 minutes.
     """
-    from waze_service import waze_service
-    return waze_service.get_corridors_summary(force=force)
+    from tomtom_service import tomtom_service
+    return tomtom_service.get_corridors_summary(force=force)
 
 
-@app.get("/api/waze/jams")
 @app.get("/api/traffic/jams")
-def get_waze_jams(force: bool = False):
+def get_tomtom_jams(force: bool = False):
     """
     Returns real-time TomTom traffic corridor speed/delay LineStrings as GeoJSON.
     """
-    from waze_service import waze_service
-    return waze_service.get_jams_geojson(force=force)
+    from tomtom_service import tomtom_service
+    return tomtom_service.get_jams_geojson(force=force)
 
 
-@app.get("/api/waze/alerts")
 @app.get("/api/traffic/alerts")
-def get_waze_alerts(force: bool = False):
+def get_tomtom_alerts(force: bool = False):
     """
-    Returns real-time TomTom & DriveBC traffic incidents and road hazards as GeoJSON Points.
+    Returns real-time TomTom traffic incidents and road hazards as GeoJSON Points.
     """
-    from waze_service import waze_service
-    return waze_service.get_alerts_geojson(force=force)
+    from tomtom_service import tomtom_service
+    return tomtom_service.get_alerts_geojson(force=force)
 
 
 @app.get("/api/traffic/tiles/{z}/{x}/{y}.png")
-def get_tomtom_traffic_tile(z: int, x: int, y: int, style: str = "relative0"):
+def get_tomtom_traffic_tile(z: int, x: int, y: int, style: str = "relative"):
     """
-    Proxies and caches TomTom Traffic Flow Raster Tiles v4 (relative0 green/yellow/orange/red full road network overlay).
+    Proxies and caches TomTom Traffic Flow Raster Tiles v4 (relative green/yellow/orange/red full road network overlay).
     Cached 3 minutes to protect TomTom free tier quota and keep API key server-side.
     """
     from fastapi.responses import Response
-    from waze_service import waze_service
-    png_bytes = waze_service.get_flow_tile(z, x, y, style=style)
+    from tomtom_service import tomtom_service
+    png_bytes = tomtom_service.get_flow_tile(z, x, y, style=style)
     return Response(
         content=png_bytes,
         media_type="image/png",
@@ -1525,7 +1522,7 @@ CURATED_STATIC_TYPES = (
     "sewer_mains", "traffic_speed_limits", "bike_racks", "postal_code_fsa", "wireless_facilities",
     "traffic_crosswalks", "litter_containers", "food_banks", "recycling", "van_wifi",
     "road_closures", "road_construction", "street_lighting", "street_lighting_poles", "street_lighting_conduits", "traffic_conditions",
-    "beach_water_quality", "beach_water", "fire_hydrants", "zoning_districts", "waze_alerts", "public_trees"
+    "beach_water_quality", "beach_water", "fire_hydrants", "zoning_districts", "traffic_alerts", "public_trees"
 )
 POINT_CURATED_TYPES = (
     "hospitals", "police", "disaster_hubs", "car_sharing", "aed", 
@@ -2612,21 +2609,21 @@ def get_road_facilities_geojson(
         import tides_service
         return tides_service.get_tides_geojson()
 
-    # Handle Waze Traffic Jams (LineString 色帶)
-    if facility_type in ("traffic_conditions", "traffic", "waze_traffic"):
+    # Handle TomTom Traffic Corridors (LineString 色帶)
+    if facility_type in ("traffic_conditions", "traffic"):
         try:
-            from waze_service import waze_service
-            return waze_service.get_jams_geojson()
+            from tomtom_service import tomtom_service
+            return tomtom_service.get_jams_geojson()
         except Exception as e:
-            print(f"[WazeService] Fallback to static jams: {e}")
+            print(f"[TomTomTraffic] Fallback to static jams: {e}")
 
-    # Handle Waze Alerts / Crowd-Sourced Reports (Point 圖釘)
-    if facility_type in ("waze_alerts", "traffic_alerts", "traffic_reports"):
+    # Handle TomTom Traffic Alerts / Incidents (Point 圖釘)
+    if facility_type in ("traffic_alerts", "traffic_reports"):
         try:
-            from waze_service import waze_service
-            return waze_service.get_alerts_geojson()
+            from tomtom_service import tomtom_service
+            return tomtom_service.get_alerts_geojson()
         except Exception as e:
-            print(f"[WazeService] Fallback to static alerts: {e}")
+            print(f"[TomTomTraffic] Fallback to static alerts: {e}")
 
     # Handle Beach Water Quality
     if facility_type in ("beach_water_quality", "beach_water"):

@@ -1043,7 +1043,7 @@ export default function AppMap() {
         else if (type === 'van_wifi' && !layers.vanWifi) facilityClosed = true;
         else if (type === 'tide_stations' && !layers.tideStations) facilityClosed = true;
         else if (type === 'traffic_conditions' && !layers.trafficConditions && !(isExploreOpen && exploreTab === 'traffic') && selectedFacility.id !== 'lions_gate_bridge_atis') facilityClosed = true;
-        else if (type === 'waze_alerts' && !layers.wazeAlerts && !(isExploreOpen && exploreTab === 'traffic')) facilityClosed = true;
+        else if (type === 'traffic_alerts' && !layers.trafficAlerts) facilityClosed = true;
         else if (type === 'road_closures' && !layers.roadClosures) facilityClosed = true;
         else if (type === 'road_construction' && !layers.roadConstruction) facilityClosed = true;
         else if (type === 'street_lighting' && !layers.streetLighting) facilityClosed = true;
@@ -1064,7 +1064,7 @@ export default function AppMap() {
           setSearchTarget(null);
         }
       }
-      if (!layers.wazeAlerts && !(isExploreOpen && exploreTab === 'traffic')) {
+      if (!layers.trafficAlerts && !(isExploreOpen && exploreTab === 'traffic')) {
         if (searchTarget?.category === 'traffic_incident') {
           setSearchTarget(null);
         }
@@ -1348,19 +1348,19 @@ export default function AppMap() {
     };
   }, [layers.maritimeShipping, isExploreOpen, exploreTab]);
 
-  // Periodic polling for Waze traffic conditions and alerts (every 120s / 2 mins)
+  // Periodic polling for TomTom traffic corridors and alerts (every 180s / 3 mins)
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
-    if (layers.trafficConditions || layers.wazeAlerts || (isExploreOpen && exploreTab === 'traffic')) {
-      const pollWazeData = async () => {
+    if (layers.trafficAlerts || (isExploreOpen && exploreTab === 'traffic')) {
+      const pollTomTomData = async () => {
         const map = mapRef.current?.getMap();
         if (!map) return;
         const apiUrl = getApiUrl();
         const t = Date.now();
 
-        if (layers.trafficConditions || (isExploreOpen && exploreTab === 'traffic')) {
+        if (isExploreOpen && exploreTab === 'traffic') {
           try {
-            const res = await fetch(`${apiUrl}/api/geojson/road/traffic_conditions?t=${t}`);
+            const res = await fetch(`${apiUrl}/api/traffic/jams?t=${t}`);
             if (res.ok) {
               const data = await res.json();
               const src = map.getSource('traffic_conditions') as any;
@@ -1385,27 +1385,27 @@ export default function AppMap() {
           }
         }
 
-        if (layers.wazeAlerts || (isExploreOpen && exploreTab === 'traffic')) {
+        if (layers.trafficAlerts) {
           try {
-            const res = await fetch(`${apiUrl}/api/geojson/road/waze_alerts?t=${t}`);
+            const res = await fetch(`${apiUrl}/api/traffic/alerts?t=${t}`);
             if (res.ok) {
               const data = await res.json();
-              const src = map.getSource('waze_alerts') as any;
+              const src = map.getSource('traffic_alerts') as any;
               if (src && src.setData) src.setData(data);
             } else {
-              const staticRes = await fetch('/vancouver_waze_alerts.geojson');
+              const staticRes = await fetch('/vancouver_traffic_alerts.geojson');
               if (staticRes.ok) {
                 const data = await staticRes.json();
-                const src = map.getSource('waze_alerts') as any;
+                const src = map.getSource('traffic_alerts') as any;
                 if (src && src.setData) src.setData(data);
               }
             }
           } catch (_) {
             try {
-              const staticRes = await fetch('/vancouver_waze_alerts.geojson');
+              const staticRes = await fetch('/vancouver_traffic_alerts.geojson');
               if (staticRes.ok) {
                 const data = await staticRes.json();
-                const src = map.getSource('waze_alerts') as any;
+                const src = map.getSource('traffic_alerts') as any;
                 if (src && src.setData) src.setData(data);
               }
             } catch { /* empty */ }
@@ -1413,13 +1413,13 @@ export default function AppMap() {
         }
       };
 
-      pollWazeData();
-      interval = setInterval(pollWazeData, 120000);
+      pollTomTomData();
+      interval = setInterval(pollTomTomData, 180000);
     }
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [layers.trafficConditions, layers.wazeAlerts, isExploreOpen, exploreTab]);
+  }, [layers.trafficAlerts, isExploreOpen, exploreTab]);
 
   // 當離開探索 - 路況分頁時，若開啟著獅門大橋 popup 則自動關閉
   useEffect(() => {
@@ -2892,6 +2892,26 @@ export default function AppMap() {
       });
     }
 
+    // Road Facilities: TomTom Full-Street Live Traffic Flow Tiles (路況圖層：全大溫全部街道綠/黃/紅即時暢通度)
+    if (layers.trafficConditions) {
+      style.sources['tomtom_traffic_flow'] = {
+        type: 'raster',
+        tiles: [`${apiUrl}/api/traffic/tiles/{z}/{x}/{y}.png?style=relative`],
+        tileSize: 256,
+        minzoom: 6,
+        maxzoom: 19
+      };
+      style.layers.push({
+        id: 'tomtom-traffic-flow-layer',
+        type: 'raster',
+        source: 'tomtom_traffic_flow',
+        paint: {
+          'raster-opacity': 0.95,
+          'raster-fade-duration': 150
+        }
+      });
+    }
+
     if (labelTiles.length > 0) {
       style.layers.push({
         id: 'esri-labels-layer',
@@ -3050,49 +3070,27 @@ export default function AppMap() {
       });
     }
 
-    // Road Facilities: Traffic Conditions (TomTom 全域即時路況瓦片 + 關鍵幹道精算色帶 LineString)
-    const isTrafficVisible = layers.trafficConditions || (isExploreOpen && exploreTab === 'traffic');
-    if (isTrafficVisible) {
-      // 1. TomTom Traffic Flow Raster Tiles v4 (relative0 全大溫路網綠/黃/橘/紅即時車流瓦片)
-      style.sources['tomtom_traffic_flow'] = {
-        type: 'raster',
-        tiles: [`${apiUrl}/api/traffic/tiles/{z}/{x}/{y}.png?style=relative0`],
-        tileSize: 256,
-        minzoom: 6,
-        maxzoom: 19
-      };
-      style.layers.push({
-        id: 'tomtom-traffic-flow-layer',
-        type: 'raster',
-        source: 'tomtom_traffic_flow',
-        paint: {
-          'raster-opacity': 0.88,
-          'raster-fade-duration': 150
-        }
-      });
-
-      // 2. 關鍵動脈與橋隧精算向量走廊 (支援點擊查看即時車速與延誤 Popup)
+    // Explore Traffic Tab: Major Highways & Bridges Only (探索 - 路況分頁：僅顯示 7 大主要公路與跨海橋隧之綠/黃/紅暢通度)
+    const isExploreTrafficCorridorsVisible = isExploreOpen && exploreTab === 'traffic';
+    if (isExploreTrafficCorridorsVisible) {
       style.sources['traffic_conditions'] = { 
         type: 'geojson', 
         data: `${apiUrl}/api/traffic/jams` 
       };
 
-      // 篩選模式：若用戶未開啟全局路況圖層，僅進入「探索 - 路況」時，地圖只顯示 7 大關鍵動脈與跨海橋隧
-      // 若用戶主動開啟了全局路況圖層，則無條件呈現全大溫所有主要道路與即時路況色帶
-      const trafficLayerFilter = (!layers.trafficConditions && (isExploreOpen && exploreTab === 'traffic'))
-        ? ['any',
-            ['==', ['get', 'is_key_corridor'], true],
-            ['in', ['get', 'corridor_group'], ['literal', ['hwy1', 'massey', 'lions_gate', 'knight', 'ironworkers', 'oak', 'alex_fraser']]],
-            ['in', ['get', 'id'], ['literal', ['hwy1_east', 'hwy1_west', 'massey_tunnel', 'lions_gate', 'knight_st_bridge', 'ironworkers_bridge', 'oak_st_bridge', 'alex_fraser_bridge']]]
-          ]
-        : undefined;
+      const trafficLayerFilter = [
+        'any',
+        ['==', ['get', 'is_key_corridor'], true],
+        ['in', ['get', 'corridor_group'], ['literal', ['hwy1', 'massey', 'lions_gate', 'knight', 'ironworkers', 'oak', 'alex_fraser']]],
+        ['in', ['get', 'id'], ['literal', ['hwy1_east', 'hwy1_west', 'massey_tunnel', 'lions_gate', 'knight_st_bridge', 'ironworkers_bridge', 'oak_st_bridge', 'alex_fraser_bridge']]]
+      ];
 
       // 底層暗色描邊 (外框線條立體感)
       style.layers.push({
         id: 'traffic-conditions-casing-layer',
         type: 'line',
         source: 'traffic_conditions',
-        ...(trafficLayerFilter ? { filter: trafficLayerFilter } : {}),
+        filter: trafficLayerFilter,
         layout: {
           'line-join': 'round',
           'line-cap': 'round'
@@ -3107,12 +3105,12 @@ export default function AppMap() {
           'line-opacity': 0.82
         }
       });
-      // 核心路況色帶 (綠/黃/橘/紅/深紅紫 TomTom 實際車速分級)
+      // 核心路況色帶 (綠/黃/橘/紅 TomTom 主要公路與橋樑車速分級)
       style.layers.push({
         id: 'traffic-conditions-layer',
         type: 'line',
         source: 'traffic_conditions',
-        ...(trafficLayerFilter ? { filter: trafficLayerFilter } : {}),
+        filter: trafficLayerFilter,
         layout: {
           'line-join': 'round',
           'line-cap': 'round'
@@ -3127,13 +3125,13 @@ export default function AppMap() {
           'line-opacity': 0.95
         }
       });
-      // 路況主要幹道名稱與延誤標籤
+      // 主要公路與橋樑名稱及延誤標籤
       style.layers.push({
         id: 'traffic-conditions-label-layer',
         type: 'symbol',
         source: 'traffic_conditions',
         minzoom: 11.5,
-        ...(trafficLayerFilter ? { filter: trafficLayerFilter } : {}),
+        filter: trafficLayerFilter,
         layout: {
           'text-field': [
             'case',
@@ -3156,18 +3154,17 @@ export default function AppMap() {
       });
     }
 
-    // Road Facilities: Traffic Alerts (TomTom & DriveBC 即時突發事故與路況圖釘 Point)
-    const isAlertsVisible = layers.wazeAlerts || (isExploreOpen && exploreTab === 'traffic');
-    if (isAlertsVisible) {
-      style.sources['waze_alerts'] = { 
+    // Road Facilities: Traffic Alerts (TomTom 即時突發事故與路況圖釘 Point — 僅於開啟「大眾通報」圖層時顯示)
+    if (layers.trafficAlerts) {
+      style.sources['traffic_alerts'] = { 
         type: 'geojson', 
         data: `${apiUrl}/api/traffic/alerts` 
       };
       // 外層警示微光光環 (柔和呼吸光芒)
       style.layers.push({
-        id: 'waze-alerts-pulse-layer',
+        id: 'traffic-alerts-pulse-layer',
         type: 'circle',
-        source: 'waze_alerts',
+        source: 'traffic_alerts',
         paint: {
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 9, 13, 13, 19, 16, 25],
           'circle-color': ['coalesce', ['get', 'color'], '#ef4444'],
@@ -3179,9 +3176,9 @@ export default function AppMap() {
       });
       // 核心高對比徽章底座 (白邊立體飽和圓標)
       style.layers.push({
-        id: 'waze-alerts-layer',
+        id: 'traffic-alerts-layer',
         type: 'circle',
-        source: 'waze_alerts',
+        source: 'traffic_alerts',
         paint: {
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 9, 8.5, 13, 12, 16, 16],
           'circle-color': ['coalesce', ['get', 'color'], '#ef4444'],
@@ -3189,11 +3186,11 @@ export default function AppMap() {
           'circle-stroke-color': '#ffffff'
         }
       });
-      // 事故類別表情符號圖示 (💥/⚠️/⛔/🚗/👮)
+      // 事故類別表情符號圖示 (💥/⚠️/⛔/🚧/🚗)
       style.layers.push({
-        id: 'waze-alerts-symbol-layer',
+        id: 'traffic-alerts-symbol-layer',
         type: 'symbol',
-        source: 'waze_alerts',
+        source: 'traffic_alerts',
         layout: {
           'text-field': ['coalesce', ['get', 'icon'], '⚠️'],
           'text-size': ['interpolate', ['linear'], ['zoom'], 9, 10, 13, 13, 16, 17],
@@ -3202,9 +3199,9 @@ export default function AppMap() {
       });
       // 事故摘要標籤 (典雅白字搭配深色陰影)
       style.layers.push({
-        id: 'waze-alerts-label-layer',
+        id: 'traffic-alerts-label-layer',
         type: 'symbol',
-        source: 'waze_alerts',
+        source: 'traffic_alerts',
         minzoom: 12,
         layout: {
           'text-field': ['coalesce', ['get', 'type_label'], ['get', 'subtype_zh'], ['get', 'type_zh'], '大眾通報'],
@@ -5383,7 +5380,7 @@ export default function AppMap() {
     layers.postalCodeFSA,
     layers.wirelessFacilities,
     layers.trafficConditions,
-    layers.wazeAlerts,
+    layers.trafficAlerts,
     layers.roadClosures,
     layers.roadConstruction,
     layers.streetLighting,
@@ -5527,10 +5524,10 @@ export default function AppMap() {
           'traffic-conditions-casing-layer',
           'traffic-conditions-layer',
           'traffic-conditions-label-layer',
-          'waze-alerts-pulse-layer',
-          'waze-alerts-layer',
-          'waze-alerts-symbol-layer',
-          'waze-alerts-label-layer',
+          'traffic-alerts-pulse-layer',
+          'traffic-alerts-layer',
+          'traffic-alerts-symbol-layer',
+          'traffic-alerts-label-layer',
           'road-closures-casing-layer',
           'road-closures-layer',
           'road-construction-casing-layer',
@@ -5777,7 +5774,7 @@ export default function AppMap() {
               lat: clickLat,
               properties: props
             });
-          } else if (layerId.startsWith('waze-alerts')) {
+          } else if (layerId.startsWith('traffic-alerts')) {
             setSelectedStop(null);
             const props = feature.properties || {};
             let clickLon = e.lngLat?.lng ?? -123.1207;
@@ -5787,8 +5784,8 @@ export default function AppMap() {
               clickLat = feature.geometry.coordinates[1];
             }
             setSelectedFacility({
-              id: props.id ? `waze_alert_${props.id}` : `waze_alert_${clickLon}_${clickLat}`,
-              facility_type: 'waze_alerts',
+              id: props.id ? `traffic_alert_${props.id}` : `traffic_alert_${clickLon}_${clickLat}`,
+              facility_type: 'traffic_alerts',
               name: props.type_label ? `${props.icon || '⚠️'} ${props.type_label}` : '大眾即時通報',
               local_area: props.street || props.city || '大溫突發事故',
               lon: clickLon,
@@ -7909,7 +7906,7 @@ export default function AppMap() {
             <div className={`p-3.5 ${
               selectedFacility.facility_type === 'traffic_conditions' ? 'w-[430px]' :
               selectedFacility.facility_type === 'traffic_cameras' ? 'w-[360px]' : 
-              (selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'waze_alerts' || selectedFacility.facility_type === 'border_crossing' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'beach_water_quality' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'zoning_districts') ? 'w-[340px]' : 
+              (selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'border_crossing' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'beach_water_quality' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'zoning_districts') ? 'w-[340px]' : 
               'w-[290px]'
             } max-w-[90vw] text-gray-800`}>
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
@@ -7918,7 +7915,7 @@ export default function AppMap() {
                     selectedFacility.facility_type === 'public_trees' ? 'bg-emerald-600' :
                     selectedFacility.facility_type === 'border_crossing' ? 'bg-emerald-600 shadow-[0_0_6px_rgba(16,185,129,0.5)]' :
                     selectedFacility.facility_type === 'traffic_conditions' ? 'bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]' :
-                    selectedFacility.facility_type === 'waze_alerts' ? 'bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.5)]' :
+                    selectedFacility.facility_type === 'traffic_alerts' ? 'bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.5)]' :
                     selectedFacility.facility_type === 'road_closures' ? 'bg-rose-600' :
                     selectedFacility.facility_type === 'road_construction' ? 'bg-amber-500' :
                     (selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits') ? 'bg-amber-400' :
@@ -10737,7 +10734,7 @@ export default function AppMap() {
                 </div>
               )}
 
-              {/* Traffic Conditions (即時路況 - Waze Jams / Lions Gate Bridge) */}
+              {/* Traffic Conditions (即時路況 - TomTom 主要公路與橋樑 / 獅門大橋 ATIS) */}
               {selectedFacility.facility_type === 'traffic_conditions' && (() => {
                 const props = selectedFacility.properties || {};
                 const isLionsGateATIS = selectedFacility.name?.includes('獅門大橋') && props.speed_kmh == null && props.delay_min == null;
@@ -10745,19 +10742,13 @@ export default function AppMap() {
                 if (isLionsGateATIS) {
                   return (
                     <div className="flex flex-col gap-2 text-xs">
-                      <div className="bg-emerald-500/10 p-2 rounded-lg border border-emerald-500/30 flex flex-col gap-1">
-                        <div className="flex items-center justify-between">
-                          <span className="font-bold text-emerald-950 text-xs flex items-center gap-1.5">
-                            <span className="text-base text-emerald-600 font-bold">🌉</span>
-                            <span className="truncate max-w-[220px]">獅門大橋</span>
-                          </span>
-                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-600 text-white shrink-0">
-                            每 1 小時更新
-                          </span>
-                        </div>
-                        <div className="text-[11px] text-emerald-900 font-medium">
+                      <div className="bg-emerald-500/10 p-2 rounded-lg border border-emerald-500/30 flex items-center justify-between gap-2">
+                        <span className="text-[11px] text-emerald-900 font-medium">
                           DriveBC & ATIS 即時交通延誤、排隊車龍與南向現場監視
-                        </div>
+                        </span>
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-600 text-white shrink-0">
+                          每 1 小時更新
+                        </span>
                       </div>
 
                       {/* 2-Column Compact Grid */}
@@ -10839,22 +10830,6 @@ export default function AppMap() {
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
-                    {/* Header Banner */}
-                    <div className="p-2.5 rounded-lg border flex flex-col gap-1.5" style={{ backgroundColor: `${levelColor}15`, borderColor: `${levelColor}40` }}>
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="font-bold text-gray-900 text-xs flex items-center gap-1.5">
-                          <span className="text-base">🚗</span>
-                          <span>{props.name || selectedFacility.name}</span>
-                        </span>
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded text-white shrink-0" style={{ backgroundColor: levelColor }}>
-                          {props.level_label || (isFreeFlow ? '暢通無阻' : '即時路況')}
-                        </span>
-                      </div>
-                      <div className="text-[11px] text-gray-700 font-medium">
-                        {props.street || props.corridor || '主要交通幹道'}
-                      </div>
-                    </div>
-
                     {/* Delay & Speed Grid */}
                     <div className="grid grid-cols-2 gap-2">
                       <div className="p-2 rounded-lg bg-gray-50 border border-gray-200 flex flex-col">
@@ -10903,34 +10878,16 @@ export default function AppMap() {
                 );
               })()}
 
-              {/* Traffic Alerts (TomTom & DriveBC 突發事故與路況圖釘) */}
-              {selectedFacility.facility_type === 'waze_alerts' && (() => {
+              {/* Traffic Alerts (TomTom 突發事故與路況圖釘 — 已移除重複顯示之次級標題框) */}
+              {selectedFacility.facility_type === 'traffic_alerts' && (() => {
                 const props = selectedFacility.properties || {};
-                const alertColor = props.color || '#ef4444';
                 const delayMin = props.delay_min ?? props.delay_minutes ?? (props.delay_sec ? Math.round(props.delay_sec / 60) : 5);
-                const reportTime = props.report_time_str || props.time_display || '即時';
-                const confidenceVal = props.waze_confidence ?? (props.confidence != null ? (props.confidence <= 5 ? props.confidence * 20 : props.confidence) : 95);
+                const reportTime = props.report_time_str || props.time_display || 'TomTom 即時偵測';
+                const confidenceVal = props.confidence_pct ?? (props.confidence != null ? (props.confidence <= 5 ? props.confidence * 20 : props.confidence) : 96);
                 const desc = props.description || props.report_description;
-                const typeName = props.type_label || props.subtype_zh || props.type_zh || selectedFacility.name;
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
-                    {/* Header Banner */}
-                    <div className="p-2.5 rounded-lg border flex flex-col gap-1.5" style={{ backgroundColor: `${alertColor}15`, borderColor: `${alertColor}40` }}>
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="font-bold text-gray-900 text-xs flex items-center gap-1.5">
-                          <span className="text-base">{props.icon || '⚠️'}</span>
-                          <span>{typeName}</span>
-                        </span>
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded text-white shrink-0" style={{ backgroundColor: alertColor }}>
-                          即時路況通報
-                        </span>
-                      </div>
-                      <div className="text-[11px] text-gray-700 font-medium">
-                        📍 {props.street || selectedFacility.local_area || '事故路段'}
-                      </div>
-                    </div>
-
                     {/* Metrics Grid */}
                     <div className="grid grid-cols-2 gap-2">
                       <div className="p-2 rounded-lg bg-gray-50 border border-gray-200 flex flex-col">

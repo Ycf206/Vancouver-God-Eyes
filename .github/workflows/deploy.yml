@@ -79,6 +79,6 @@ jobs:
           
           echo "Current Git Commit on VM: $(git rev-parse HEAD)"
 
-          # 重新建置並啟動 Docker 容器 (強制重建前端與後端鏡像，確保編譯最新程式碼)
-          docker compose build --no-cache frontend backend
-          docker compose up -d --build
+          # 重新建置並強制重啟前端與後端容器，確保編譯並載入最新程式碼
+          docker compose build frontend backend
+          docker compose up -d --force-recreate frontend backend nginx

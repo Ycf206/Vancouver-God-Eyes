@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generator": "VancouverGodsEye-WazeJams",
+  "generator": "VancouverGodsEye-TomTomTraffic",
   "updated_at": "2026-10-18T02:36:18.039237+00:00",
   "update_interval": "每 2~3 分鐘自動更新 (Polling)",
   "total_count": 19,
