@@ -212,7 +212,7 @@ class WazeService:
             },
             {
                 "id": "port_mann",
-                "corridor_group": "hwy1",
+                "corridor_group": "port_mann",
                 "name": "曼恩港大橋 (Port Mann Bridge / Hwy 1)",
                 "highway": "Hwy 1",
                 "direction": "雙向 (高貴林 ↔ 素里/菲沙河谷)",
@@ -650,6 +650,8 @@ class WazeService:
                     "properties": {
                         "id": b["id"],
                         "facility_type": "traffic_conditions",
+                        "corridor_group": b.get("corridor_group", ""),
+                        "is_key_corridor": b.get("corridor_group", "") in ["hwy1", "massey", "lions_gate", "knight", "ironworkers", "oak", "alex_fraser"],
                         "name": b["name"],
                         "street": b["name"],
                         "highway": b["highway"],

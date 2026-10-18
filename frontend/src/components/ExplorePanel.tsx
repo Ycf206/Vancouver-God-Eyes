@@ -2142,9 +2142,6 @@ function ExploreContent() {
   }, [isExploreOpen, activeTab, fetchTrafficSummary]);
 
   const handleFlyToCorridor = (corridor: WazeCorridorItem) => {
-    if (!layers.trafficConditions) {
-      enableLayer('trafficConditions');
-    }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap();
     if (mapInstance && corridor.center) {
@@ -2182,9 +2179,6 @@ function ExploreContent() {
   };
 
   const handleFlyToTrafficAlert = (alert: WazeIncidentItem) => {
-    if (!layers.wazeAlerts) {
-      enableLayer('wazeAlerts');
-    }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap();
     let coords: [number, number] = [-123.12, 49.25];

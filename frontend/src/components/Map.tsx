@@ -1031,6 +1031,7 @@ export default function AppMap() {
         else if (type === 'van_wifi' && !layers.vanWifi) facilityClosed = true;
         else if (type === 'tide_stations' && !layers.tideStations) facilityClosed = true;
         else if (type === 'traffic_conditions' && !layers.trafficConditions && !(isExploreOpen && exploreTab === 'traffic') && selectedFacility.id !== 'lions_gate_bridge_atis') facilityClosed = true;
+        else if (type === 'waze_alerts' && !layers.wazeAlerts && !(isExploreOpen && exploreTab === 'traffic')) facilityClosed = true;
         else if (type === 'road_closures' && !layers.roadClosures) facilityClosed = true;
         else if (type === 'road_construction' && !layers.roadConstruction) facilityClosed = true;
         else if (type === 'street_lighting' && !layers.streetLighting) facilityClosed = true;
@@ -1041,6 +1042,17 @@ export default function AppMap() {
 
         if (facilityClosed) {
           setSelectedFacility(null);
+          setSearchTarget(null);
+        }
+      }
+
+      if (!layers.trafficConditions && !(isExploreOpen && exploreTab === 'traffic')) {
+        if (searchTarget?.category === 'traffic_corridor') {
+          setSearchTarget(null);
+        }
+      }
+      if (!layers.wazeAlerts && !(isExploreOpen && exploreTab === 'traffic')) {
+        if (searchTarget?.category === 'traffic_incident') {
           setSearchTarget(null);
         }
       }
@@ -1292,7 +1304,7 @@ export default function AppMap() {
         const apiUrl = getApiUrl();
         const t = Date.now();
 
-        if (layers.trafficConditions) {
+        if (layers.trafficConditions || (isExploreOpen && exploreTab === 'traffic')) {
           try {
             const res = await fetch(`${apiUrl}/api/geojson/road/traffic_conditions?t=${t}`);
             if (res.ok) {
@@ -1319,7 +1331,7 @@ export default function AppMap() {
           }
         }
 
-        if (layers.wazeAlerts) {
+        if (layers.wazeAlerts || (isExploreOpen && exploreTab === 'traffic')) {
           try {
             const res = await fetch(`${apiUrl}/api/geojson/road/waze_alerts?t=${t}`);
             if (res.ok) {
@@ -2900,16 +2912,29 @@ export default function AppMap() {
     }
 
     // Road Facilities: Traffic Conditions (Waze 即時路況色帶 LineString - Google Maps 風格)
-    if (layers.trafficConditions) {
+    const isTrafficVisible = layers.trafficConditions || (isExploreOpen && exploreTab === 'traffic');
+    if (isTrafficVisible) {
       style.sources['traffic_conditions'] = { 
         type: 'geojson', 
         data: '/vancouver_traffic_conditions.geojson' 
       };
+
+      // 篩選模式：若用戶未開啟全局路況圖層，僅進入「探索 - 路況」時，地圖只顯示 7 大關鍵動脈與跨海橋隧
+      // 若用戶主動開啟了全局路況圖層，則無條件呈現全大溫所有 19 條主要道路與即時塞車色帶
+      const trafficLayerFilter = (!layers.trafficConditions && (isExploreOpen && exploreTab === 'traffic'))
+        ? ['any',
+            ['==', ['get', 'is_key_corridor'], true],
+            ['in', ['get', 'corridor_group'], ['literal', ['hwy1', 'massey', 'lions_gate', 'knight', 'ironworkers', 'oak', 'alex_fraser']]],
+            ['in', ['get', 'id'], ['literal', ['hwy1_east', 'hwy1_west', 'massey_tunnel', 'lions_gate', 'knight_st_bridge', 'ironworkers_bridge', 'oak_st_bridge', 'alex_fraser_bridge']]]
+          ]
+        : undefined;
+
       // 底層暗色描邊 (外框線條立體感)
       style.layers.push({
         id: 'traffic-conditions-casing-layer',
         type: 'line',
         source: 'traffic_conditions',
+        ...(trafficLayerFilter ? { filter: trafficLayerFilter } : {}),
         layout: {
           'line-join': 'round',
           'line-cap': 'round'
@@ -2929,6 +2954,7 @@ export default function AppMap() {
         id: 'traffic-conditions-layer',
         type: 'line',
         source: 'traffic_conditions',
+        ...(trafficLayerFilter ? { filter: trafficLayerFilter } : {}),
         layout: {
           'line-join': 'round',
           'line-cap': 'round'
@@ -2949,6 +2975,7 @@ export default function AppMap() {
         type: 'symbol',
         source: 'traffic_conditions',
         minzoom: 11.5,
+        ...(trafficLayerFilter ? { filter: trafficLayerFilter } : {}),
         layout: {
           'text-field': [
             'case',
@@ -2972,7 +2999,8 @@ export default function AppMap() {
     }
 
     // Road Facilities: Waze Alerts (大眾通報突發事故與路況圖釘 Point)
-    if (layers.wazeAlerts) {
+    const isAlertsVisible = layers.wazeAlerts || (isExploreOpen && exploreTab === 'traffic');
+    if (isAlertsVisible) {
       style.sources['waze_alerts'] = { 
         type: 'geojson', 
         data: '/vancouver_waze_alerts.geojson' 
@@ -5209,7 +5237,9 @@ export default function AppMap() {
     layers.litterContainers,
     layers.publicTrees,
     contourInterval,
-    mapStyleType
+    mapStyleType,
+    isExploreOpen,
+    exploreTab
   ]);
 
   return (

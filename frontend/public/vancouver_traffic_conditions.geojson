@@ -1,7 +1,7 @@
 {
   "type": "FeatureCollection",
   "generator": "VancouverGodsEye-WazeJams",
-  "updated_at": "2026-10-18T02:26:29.542933+00:00",
+  "updated_at": "2026-10-18T02:36:18.039237+00:00",
   "update_interval": "每 2~3 分鐘自動更新 (Polling)",
   "total_count": 19,
   "features": [
@@ -2324,6 +2324,8 @@
       "properties": {
         "id": "hwy1_east",
         "facility_type": "traffic_conditions",
+        "corridor_group": "hwy1",
+        "is_key_corridor": true,
         "name": "1號公路 東向 (Hwy 1 Eastbound)",
         "street": "1號公路 東向 (Hwy 1 Eastbound)",
         "highway": "Hwy 1",
@@ -2339,7 +2341,7 @@
         "level_desc": "重度壅塞",
         "color": "#ef4444",
         "incidents_near": 2,
-        "pub_time": 1792290389542,
+        "pub_time": 1792290978039,
         "source": "Waze Live Traffic Feed"
       }
     },
@@ -4662,6 +4664,8 @@
       "properties": {
         "id": "hwy1_west",
         "facility_type": "traffic_conditions",
+        "corridor_group": "hwy1",
+        "is_key_corridor": true,
         "name": "1號公路 西向 (Hwy 1 Westbound)",
         "street": "1號公路 西向 (Hwy 1 Westbound)",
         "highway": "Hwy 1",
@@ -4677,7 +4681,7 @@
         "level_desc": "中度緩行",
         "color": "#f97316",
         "incidents_near": 1,
-        "pub_time": 1792290389542,
+        "pub_time": 1792290978039,
         "source": "Waze Live Traffic Feed"
       }
     },
@@ -6000,6 +6004,8 @@
       "properties": {
         "id": "massey_tunnel",
         "facility_type": "traffic_conditions",
+        "corridor_group": "massey",
+        "is_key_corridor": true,
         "name": "99號公路 - 喬治梅西隧道 (George Massey Tunnel)",
         "street": "99號公路 - 喬治梅西隧道 (George Massey Tunnel)",
         "highway": "Hwy 99",
@@ -6015,7 +6021,7 @@
         "level_desc": "嚴重停滯",
         "color": "#9333ea",
         "incidents_near": 1,
-        "pub_time": 1792290389542,
+        "pub_time": 1792290978039,
         "source": "Waze Live Traffic Feed"
       }
     },
@@ -7158,6 +7164,8 @@
       "properties": {
         "id": "lions_gate",
         "facility_type": "traffic_conditions",
+        "corridor_group": "lions_gate",
+        "is_key_corridor": true,
         "name": "獅門大橋 (Lions Gate Bridge / First Narrows)",
         "street": "獅門大橋 (Lions Gate Bridge / First Narrows)",
         "highway": "Hwy 99",
@@ -7173,7 +7181,7 @@
         "level_desc": "重度壅塞",
         "color": "#ef4444",
         "incidents_near": 1,
-        "pub_time": 1792290389542,
+        "pub_time": 1792290978039,
         "source": "Waze Live Traffic Feed"
       }
     },
@@ -8124,6 +8132,8 @@
       "properties": {
         "id": "knight_st_bridge",
         "facility_type": "traffic_conditions",
+        "corridor_group": "knight",
+        "is_key_corridor": true,
         "name": "騎士街橋 (Knight Street Bridge)",
         "street": "騎士街橋 (Knight Street Bridge)",
         "highway": "Knight St",
@@ -8139,7 +8149,7 @@
         "level_desc": "重度壅塞",
         "color": "#ef4444",
         "incidents_near": 1,
-        "pub_time": 1792290389542,
+        "pub_time": 1792290978039,
         "source": "Waze Live Traffic Feed"
       }
     },
@@ -9426,6 +9436,8 @@
       "properties": {
         "id": "ironworkers_bridge",
         "facility_type": "traffic_conditions",
+        "corridor_group": "ironworkers",
+        "is_key_corridor": true,
         "name": "鋼鐵工人紀念大橋 (Ironworkers Memorial / Second Narrows)",
         "street": "鋼鐵工人紀念大橋 (Ironworkers Memorial / Second Narrows)",
         "highway": "Hwy 1",
@@ -9441,7 +9453,7 @@
         "level_desc": "中度緩行",
         "color": "#f97316",
         "incidents_near": 0,
-        "pub_time": 1792290389542,
+        "pub_time": 1792290978039,
         "source": "Waze Live Traffic Feed"
       }
     },
@@ -10356,6 +10368,8 @@
       "properties": {
         "id": "oak_st_bridge",
         "facility_type": "traffic_conditions",
+        "corridor_group": "oak",
+        "is_key_corridor": true,
         "name": "橡樹街橋 (Oak Street Bridge / Hwy 99)",
         "street": "橡樹街橋 (Oak Street Bridge / Hwy 99)",
         "highway": "Hwy 99",
@@ -10371,7 +10385,7 @@
         "level_desc": "中度緩行",
         "color": "#f97316",
         "incidents_near": 0,
-        "pub_time": 1792290389542,
+        "pub_time": 1792290978039,
         "source": "Waze Live Traffic Feed"
       }
     },
@@ -12050,6 +12064,8 @@
       "properties": {
         "id": "alex_fraser_bridge",
         "facility_type": "traffic_conditions",
+        "corridor_group": "alex_fraser",
+        "is_key_corridor": true,
         "name": "亞歷克斯菲沙橋 (Alex Fraser Bridge / Hwy 91)",
         "street": "亞歷克斯菲沙橋 (Alex Fraser Bridge / Hwy 91)",
         "highway": "Hwy 91",
@@ -12065,7 +12081,7 @@
         "level_desc": "中度緩行",
         "color": "#f97316",
         "incidents_near": 1,
-        "pub_time": 1792290389542,
+        "pub_time": 1792290978039,
         "source": "Waze Live Traffic Feed"
       }
     },
@@ -12468,6 +12484,8 @@
       "properties": {
         "id": "granville_street",
         "facility_type": "traffic_conditions",
+        "corridor_group": "granville",
+        "is_key_corridor": false,
         "name": "固蘭湖街與橋樑 (Granville St & Granville Bridge)",
         "street": "固蘭湖街與橋樑 (Granville St & Granville Bridge)",
         "highway": "Granville St",
@@ -12483,7 +12501,7 @@
         "level_desc": "中度緩行",
         "color": "#f97316",
         "incidents_near": 0,
-        "pub_time": 1792290389542,
+        "pub_time": 1792290978039,
         "source": "Waze Live Traffic Feed"
       }
     },
@@ -13130,6 +13148,8 @@
       "properties": {
         "id": "port_mann",
         "facility_type": "traffic_conditions",
+        "corridor_group": "port_mann",
+        "is_key_corridor": false,
         "name": "曼恩港大橋 (Port Mann Bridge / Hwy 1)",
         "street": "曼恩港大橋 (Port Mann Bridge / Hwy 1)",
         "highway": "Hwy 1",
@@ -13145,7 +13165,7 @@
         "level_desc": "中度緩行",
         "color": "#f97316",
         "incidents_near": 0,
-        "pub_time": 1792290389542,
+        "pub_time": 1792290978039,
         "source": "Waze Live Traffic Feed"
       }
     },
@@ -13596,6 +13616,8 @@
       "properties": {
         "id": "pattullo",
         "facility_type": "traffic_conditions",
+        "corridor_group": "pattullo",
+        "is_key_corridor": false,
         "name": "帕圖洛橋 (Pattullo Bridge)",
         "street": "帕圖洛橋 (Pattullo Bridge)",
         "highway": "King George Blvd",
@@ -13611,7 +13633,7 @@
         "level_desc": "重度壅塞",
         "color": "#ef4444",
         "incidents_near": 1,
-        "pub_time": 1792290389542,
+        "pub_time": 1792290978039,
         "source": "Waze Live Traffic Feed"
       }
     },
@@ -15138,6 +15160,8 @@
       "properties": {
         "id": "broadway",
         "facility_type": "traffic_conditions",
+        "corridor_group": "broadway",
+        "is_key_corridor": false,
         "name": "百老匯大道 (Broadway Corridor)",
         "street": "百老匯大道 (Broadway Corridor)",
         "highway": "Broadway",
@@ -15153,7 +15177,7 @@
         "level_desc": "中度緩行",
         "color": "#f97316",
         "incidents_near": 0,
-        "pub_time": 1792290389542,
+        "pub_time": 1792290978039,
         "source": "Waze Live Traffic Feed"
       }
     },
@@ -17640,6 +17664,8 @@
       "properties": {
         "id": "kingsway",
         "facility_type": "traffic_conditions",
+        "corridor_group": "kingsway",
+        "is_key_corridor": false,
         "name": "帝國大道 (Kingsway Arterial)",
         "street": "帝國大道 (Kingsway Arterial)",
         "highway": "Kingsway",
@@ -17655,7 +17681,7 @@
         "level_desc": "中度緩行",
         "color": "#f97316",
         "incidents_near": 1,
-        "pub_time": 1792290389542,
+        "pub_time": 1792290978039,
         "source": "Waze Live Traffic Feed"
       }
     },
@@ -19394,6 +19420,8 @@
       "properties": {
         "id": "marine_drive",
         "facility_type": "traffic_conditions",
+        "corridor_group": "marine_drive",
+        "is_key_corridor": false,
         "name": "海旁大道 (SW & SE Marine Drive)",
         "street": "海旁大道 (SW & SE Marine Drive)",
         "highway": "Marine Dr",
@@ -19409,7 +19437,7 @@
         "level_desc": "輕微車多",
         "color": "#eab308",
         "incidents_near": 0,
-        "pub_time": 1792290389542,
+        "pub_time": 1792290978039,
         "source": "Waze Live Traffic Feed"
       }
     },
@@ -22060,6 +22088,8 @@
       "properties": {
         "id": "lougheed",
         "facility_type": "traffic_conditions",
+        "corridor_group": "lougheed",
+        "is_key_corridor": false,
         "name": "洛歇公路 (Lougheed Hwy / Hwy 7)",
         "street": "洛歇公路 (Lougheed Hwy / Hwy 7)",
         "highway": "Hwy 7",
@@ -22075,7 +22105,7 @@
         "level_desc": "中度緩行",
         "color": "#f97316",
         "incidents_near": 0,
-        "pub_time": 1792290389542,
+        "pub_time": 1792290978039,
         "source": "Waze Live Traffic Feed"
       }
     },
@@ -25006,6 +25036,8 @@
       "properties": {
         "id": "hwy17",
         "facility_type": "traffic_conditions",
+        "corridor_group": "hwy17",
+        "is_key_corridor": false,
         "name": "17號公路 - 南岸快速路 (SFPR / Hwy 17)",
         "street": "17號公路 - 南岸快速路 (SFPR / Hwy 17)",
         "highway": "Hwy 17",
@@ -25021,7 +25053,7 @@
         "level_desc": "輕微車多",
         "color": "#eab308",
         "incidents_near": 0,
-        "pub_time": 1792290389542,
+        "pub_time": 1792290978039,
         "source": "Waze Live Traffic Feed"
       }
     },
@@ -26208,6 +26240,8 @@
       "properties": {
         "id": "hwy91_richmond",
         "facility_type": "traffic_conditions",
+        "corridor_group": "hwy91",
+        "is_key_corridor": false,
         "name": "91號公路列治文段 (Hwy 91 East-West Connector)",
         "street": "91號公路列治文段 (Hwy 91 East-West Connector)",
         "highway": "Hwy 91",
@@ -26223,7 +26257,7 @@
         "level_desc": "中度緩行",
         "color": "#f97316",
         "incidents_near": 0,
-        "pub_time": 1792290389542,
+        "pub_time": 1792290978039,
         "source": "Waze Live Traffic Feed"
       }
     },
@@ -26470,6 +26504,8 @@
       "properties": {
         "id": "burrard_bridge",
         "facility_type": "traffic_conditions",
+        "corridor_group": "burrard",
+        "is_key_corridor": false,
         "name": "布勒橋 (Burrard Street Bridge)",
         "street": "布勒橋 (Burrard Street Bridge)",
         "highway": "Burrard St",
@@ -26485,7 +26521,7 @@
         "level_desc": "輕微車多",
         "color": "#eab308",
         "incidents_near": 0,
-        "pub_time": 1792290389542,
+        "pub_time": 1792290978039,
         "source": "Waze Live Traffic Feed"
       }
     },
@@ -26768,6 +26804,8 @@
       "properties": {
         "id": "cambie_bridge",
         "facility_type": "traffic_conditions",
+        "corridor_group": "cambie",
+        "is_key_corridor": false,
         "name": "甘比橋 (Cambie Street Bridge)",
         "street": "甘比橋 (Cambie Street Bridge)",
         "highway": "Cambie St",
@@ -26783,7 +26821,7 @@
         "level_desc": "輕微車多",
         "color": "#eab308",
         "incidents_near": 0,
-        "pub_time": 1792290389542,
+        "pub_time": 1792290978039,
         "source": "Waze Live Traffic Feed"
       }
     }
