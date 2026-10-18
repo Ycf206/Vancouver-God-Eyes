@@ -1454,7 +1454,7 @@ CURATED_STATIC_TYPES = (
     "sewer_mains", "traffic_speed_limits", "bike_racks", "postal_code_fsa", "wireless_facilities",
     "traffic_crosswalks", "litter_containers", "food_banks", "recycling", "van_wifi",
     "road_closures", "road_construction", "street_lighting", "street_lighting_poles", "street_lighting_conduits", "traffic_conditions",
-    "beach_water_quality", "beach_water", "fire_hydrants", "zoning_districts"
+    "beach_water_quality", "beach_water", "fire_hydrants", "zoning_districts", "waze_alerts", "public_trees"
 )
 POINT_CURATED_TYPES = (
     "hospitals", "police", "disaster_hubs", "car_sharing", "aed", 
@@ -2504,13 +2504,19 @@ def get_road_facilities_geojson(
 
     # Handle Waze Traffic Jams (LineString 色帶)
     if facility_type in ("traffic_conditions", "traffic", "waze_traffic"):
-        from waze_service import waze_service
-        return waze_service.get_jams_geojson()
+        try:
+            from waze_service import waze_service
+            return waze_service.get_jams_geojson()
+        except Exception as e:
+            print(f"[WazeService] Fallback to static jams: {e}")
 
     # Handle Waze Alerts / Crowd-Sourced Reports (Point 圖釘)
     if facility_type in ("waze_alerts", "traffic_alerts", "traffic_reports"):
-        from waze_service import waze_service
-        return waze_service.get_alerts_geojson()
+        try:
+            from waze_service import waze_service
+            return waze_service.get_alerts_geojson()
+        except Exception as e:
+            print(f"[WazeService] Fallback to static alerts: {e}")
 
     # Handle Beach Water Quality
     if facility_type in ("beach_water_quality", "beach_water"):

@@ -241,6 +241,7 @@ const HEAVY_LAYERS_CONFIG: Record<string, { label: string; prefixes: string[] }>
   beachWaterQuality: { label: '海灘水質', prefixes: ['beach-water', 'beach_water'] },
   fireHydrants: { label: '消防栓', prefixes: ['fire-hydrants', 'fire_hydrants'] },
   zoningDistricts: { label: '土地規劃', prefixes: ['zoning-districts', 'zoning_districts'] },
+  publicTrees: { label: '街道樹木', prefixes: ['public-trees', 'public_trees'] },
 };
 
 const SKI_RESORT_POINTS = [
@@ -1298,8 +1299,24 @@ export default function AppMap() {
               const data = await res.json();
               const src = map.getSource('traffic_conditions') as any;
               if (src && src.setData) src.setData(data);
+            } else {
+              const staticRes = await fetch('/vancouver_traffic_conditions.geojson');
+              if (staticRes.ok) {
+                const data = await staticRes.json();
+                const src = map.getSource('traffic_conditions') as any;
+                if (src && src.setData) src.setData(data);
+              }
             }
-          } catch (_) {}
+          } catch (_) {
+            try {
+              const staticRes = await fetch('/vancouver_traffic_conditions.geojson');
+              if (staticRes.ok) {
+                const data = await staticRes.json();
+                const src = map.getSource('traffic_conditions') as any;
+                if (src && src.setData) src.setData(data);
+              }
+            } catch { /* empty */ }
+          }
         }
 
         if (layers.wazeAlerts) {
@@ -1309,17 +1326,68 @@ export default function AppMap() {
               const data = await res.json();
               const src = map.getSource('waze_alerts') as any;
               if (src && src.setData) src.setData(data);
+            } else {
+              const staticRes = await fetch('/vancouver_waze_alerts.geojson');
+              if (staticRes.ok) {
+                const data = await staticRes.json();
+                const src = map.getSource('waze_alerts') as any;
+                if (src && src.setData) src.setData(data);
+              }
             }
-          } catch (_) {}
+          } catch (_) {
+            try {
+              const staticRes = await fetch('/vancouver_waze_alerts.geojson');
+              if (staticRes.ok) {
+                const data = await staticRes.json();
+                const src = map.getSource('waze_alerts') as any;
+                if (src && src.setData) src.setData(data);
+              }
+            } catch { /* empty */ }
+          }
         }
       };
 
+      pollWazeData();
       interval = setInterval(pollWazeData, 120000);
     }
     return () => {
       if (interval) clearInterval(interval);
     };
   }, [layers.trafficConditions, layers.wazeAlerts, isExploreOpen, exploreTab]);
+
+  // 當開啟探索 - 路況分頁時，自動顯示早前設定的獅門大橋位置資訊 popup
+  useEffect(() => {
+    if (isExploreOpen && exploreTab === 'traffic') {
+      setSelectedStop(null);
+      setSelectedSkytrainStation(null);
+      setSelectedTerminal(null);
+      setSelectedFlight(null);
+      setSelectedStationAlertMarker(null);
+      setSelectedMaritimeVessel(null);
+      setSelectedFacility({
+        id: 'lions_gate_bridge_atis',
+        facility_type: 'traffic_conditions',
+        name: '獅門大橋 (Lions Gate Bridge)',
+        local_area: '史丹利公園 ↔ 西溫/北溫',
+        lon: -123.1385,
+        lat: 49.3148,
+        properties: {
+          name: '獅門大橋 (Lions Gate Bridge)',
+          speed_kmh: null,
+          delay_min: null,
+          is_atis: true
+        }
+      });
+      mapRef.current?.flyTo({
+        center: [-123.1385, 49.3148],
+        zoom: 14.5,
+        duration: 600,
+        essential: true
+      });
+    } else if (selectedFacility?.id === 'lions_gate_bridge_atis' && (!isExploreOpen || exploreTab !== 'traffic')) {
+      setSelectedFacility(null);
+    }
+  }, [isExploreOpen, exploreTab]);
 
   // Keep selectedMaritimeVessel synced when maritimeVessels updates
   useEffect(() => {
@@ -1858,6 +1926,20 @@ export default function AppMap() {
       const map = mapRef.current?.getMap();
       if (map) {
         map.flyTo({ center: [-123.16, 49.28], zoom: 12.5, duration: 600 });
+      }
+    }
+
+    // 8. 街道樹木 (Public Trees - 高密度聚合與放大提示)
+    const turnedOnPublicTrees = !prev.publicTrees && layers.publicTrees;
+    if (turnedOnPublicTrees) {
+      if (z < 13.5) {
+        setZoomNotification({
+          show: true,
+          title: '已開啟街道樹木圖層',
+          message: '全溫哥華逾 15 萬棵公有街道樹木，已啟用點位聚合渲染。請放大地圖以檢視各街區詳細樹種與位置資料。',
+          targetZoom: 14.5
+        });
+        return;
       }
     }
 
@@ -2848,7 +2930,7 @@ export default function AppMap() {
     if (layers.trafficConditions) {
       style.sources['traffic_conditions'] = { 
         type: 'geojson', 
-        data: `${apiUrl}/api/geojson/road/traffic_conditions` 
+        data: '/vancouver_traffic_conditions.geojson' 
       };
       // 底層暗色描邊 (外框線條立體感)
       style.layers.push({
@@ -2920,7 +3002,7 @@ export default function AppMap() {
     if (layers.wazeAlerts) {
       style.sources['waze_alerts'] = { 
         type: 'geojson', 
-        data: `${apiUrl}/api/geojson/road/waze_alerts` 
+        data: '/vancouver_waze_alerts.geojson' 
       };
       // 外層警示光環
       style.layers.push({
@@ -3451,6 +3533,109 @@ export default function AppMap() {
         layout: {
           'text-field': '🧯',
           'text-size': ['interpolate', ['linear'], ['zoom'], 15, 10, 18, 15],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        }
+      });
+    }
+
+    // Nature Facilities: Public Trees (街道樹木 - 溫哥華公有街道樹木，每1個月更新，高密度點位聚合渲染)
+    if (layers.publicTrees) {
+      style.sources['public_trees'] = {
+        type: 'geojson',
+        data: '/vancouver_public_trees.geojson',
+        cluster: true,
+        clusterMaxZoom: 14,
+        clusterRadius: 45
+      };
+
+      // 1. Cluster background circle
+      style.layers.push({
+        id: 'public-trees-cluster-layer',
+        type: 'circle',
+        source: 'public_trees',
+        filter: ['has', 'point_count'],
+        paint: {
+          'circle-color': [
+            'step',
+            ['get', 'point_count'],
+            '#10b981', // < 20
+            20,
+            '#059669', // 20 - 100
+            100,
+            '#047857'  // 100+
+          ],
+          'circle-radius': [
+            'step',
+            ['get', 'point_count'],
+            15,
+            20,
+            20,
+            100,
+            26
+          ],
+          'circle-stroke-width': 2,
+          'circle-stroke-color': '#ffffff',
+          'circle-opacity': 0.92
+        }
+      });
+
+      // 2. Cluster count text
+      style.layers.push({
+        id: 'public-trees-cluster-count',
+        type: 'symbol',
+        source: 'public_trees',
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': '{point_count_abbreviated}',
+          'text-size': 12,
+          'text-font': ['Open Sans Bold']
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+
+      // 3. Single unclustered points glow
+      style.layers.push({
+        id: 'public-trees-glow',
+        type: 'circle',
+        source: 'public_trees',
+        filter: ['!', ['has', 'point_count']],
+        minzoom: 11,
+        paint: {
+          'circle-color': '#34d399',
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2, 13, 3, 15, 6, 17, 10],
+          'circle-opacity': 0.35,
+          'circle-blur': 0.8
+        }
+      });
+
+      // 4. Single unclustered points core
+      style.layers.push({
+        id: 'public-trees-layer',
+        type: 'circle',
+        source: 'public_trees',
+        filter: ['!', ['has', 'point_count']],
+        minzoom: 11,
+        paint: {
+          'circle-color': '#059669',
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 1.8, 13, 2.8, 15, 4.5, 17, 6.5],
+          'circle-stroke-width': 1.2,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+
+      // 5. Single unclustered points icon
+      style.layers.push({
+        id: 'public-trees-symbol-layer',
+        type: 'symbol',
+        source: 'public_trees',
+        filter: ['!', ['has', 'point_count']],
+        minzoom: 15.5,
+        layout: {
+          'text-field': '🌳',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 15.5, 10, 18, 15],
           'text-allow-overlap': true,
           'text-ignore-placement': true
         }
@@ -5049,6 +5234,7 @@ export default function AppMap() {
     layers.zoningDistricts,
     layers.trafficCrosswalks,
     layers.litterContainers,
+    layers.publicTrees,
     contourInterval,
     mapStyleType
   ]);
@@ -5195,7 +5381,10 @@ export default function AppMap() {
           'fire-hydrants-cluster-layer',
           'fire-hydrants-layer',
           'fire-hydrants-symbol-layer',
-          'zoning-districts-fill'
+          'zoning-districts-fill',
+          'public-trees-cluster-layer',
+          'public-trees-layer',
+          'public-trees-symbol-layer'
         ]}
         onClick={(e) => {
           if (contextMenu) {
@@ -5551,6 +5740,23 @@ export default function AppMap() {
               local_area: props.zoning_classification ? `${props.zoning_classification} (${cat})` : '溫哥華土地規劃分區 (每3個月更新)',
               lon: clickLon,
               lat: clickLat,
+              properties: props
+            });
+          } else if (layerId.startsWith('public-trees')) {
+            setSelectedStop(null);
+            const props = feature.properties || {};
+            const treeCoords = feature.geometry?.type === 'Point' 
+              ? (feature.geometry.coordinates as [number, number]) 
+              : [e.lngLat?.lng ?? -123.1207, e.lngLat?.lat ?? 49.2827];
+            const treeId = props.tree_id || props.id || '';
+            const cName = props.common_name || props.name || '街道樹木';
+            setSelectedFacility({
+              id: props.id || `tree_${treeId || `${treeCoords[0]}_${treeCoords[1]}`}`,
+              facility_type: 'public_trees',
+              name: cName,
+              local_area: props.neighbourhood_name ? `${props.neighbourhood_name} · ${props.address || '街道樹木'}` : (props.address || '溫哥華市政公有林木 (每1個月更新)'),
+              lon: treeCoords[0],
+              lat: treeCoords[1],
               properties: props
             });
           } else if (
@@ -6255,12 +6461,13 @@ export default function AppMap() {
             longitude={selectedStationAlertMarker.lon}
             latitude={selectedStationAlertMarker.lat}
             closeOnClick={false}
+            closeButton={false}
             onClose={() => setSelectedStationAlertMarker(null)}
             offset={[0, -28]}
             className="z-50 station-alert-popup"
             maxWidth="380px"
           >
-            <div className="flex flex-col gap-2.5 text-xs text-gray-900 min-w-[280px] max-w-[340px] p-0.5">
+            <div className="flex flex-col gap-2 text-xs text-gray-900 min-w-[280px] max-w-[340px] p-0.5">
               {/* Header */}
               <div className="flex items-start justify-between gap-2 pb-2 border-b border-gray-200">
                 <div className="flex items-center gap-2 min-w-0">
@@ -6291,6 +6498,16 @@ export default function AppMap() {
                     </div>
                   </div>
                 </div>
+
+                {/* 右上角關閉按鈕 */}
+                <button
+                  type="button"
+                  onClick={() => setSelectedStationAlertMarker(null)}
+                  className="p-1 rounded-md text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer shrink-0"
+                  title="關閉"
+                >
+                  <X className="w-4 h-4" />
+                </button>
               </div>
 
               {/* Alert Details List */}
@@ -6381,36 +6598,6 @@ export default function AppMap() {
                     );
                   });
                 })()}
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex items-center gap-2 pt-1.5 border-t border-gray-200">
-                <button
-                  type="button"
-                  onClick={() => {
-                    fetchSkytrainStationSchedule(
-                      String(selectedStationAlertMarker.stop_id), 
-                      selectedStationAlertMarker.displayName, 
-                      selectedStationAlertMarker.lon, 
-                      selectedStationAlertMarker.lat
-                    );
-                    setSelectedStationAlertMarker(null);
-                  }}
-                  className="flex-1 py-1.5 px-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition-colors flex items-center justify-center gap-1 shadow-xs cursor-pointer"
-                >
-                  <Clock className="w-3.5 h-3.5" />
-                  <span>即時到站時刻</span>
-                </button>
-                <a
-                  href={`https://www.google.com/maps/dir/?api=1&destination=${selectedStationAlertMarker.lat},${selectedStationAlertMarker.lon}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="py-1.5 px-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-xs font-semibold transition-colors flex items-center justify-center gap-1 border border-gray-300"
-                  title="使用 Google 地圖規劃路線"
-                >
-                  <Navigation className="w-3.5 h-3.5 text-blue-600" />
-                  <span>導航</span>
-                </a>
               </div>
             </div>
           </Popup>
@@ -7090,6 +7277,49 @@ export default function AppMap() {
           );
         })}
 
+        {/* 獅門大橋即時路況標記 (當開啟探索且分頁為路況時顯示) */}
+        {isExploreOpen && exploreTab === 'traffic' && (
+          <Marker
+            longitude={-123.1385}
+            latitude={49.3148}
+            anchor="bottom"
+          >
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedStop(null);
+                setSelectedFacility({
+                  id: 'lions_gate_bridge_atis',
+                  facility_type: 'traffic_conditions',
+                  name: '獅門大橋 (Lions Gate Bridge)',
+                  local_area: '史丹利公園 ↔ 西溫/北溫',
+                  lon: -123.1385,
+                  lat: 49.3148,
+                  properties: {
+                    name: '獅門大橋 (Lions Gate Bridge)',
+                    speed_kmh: null,
+                    delay_min: null,
+                    is_atis: true
+                  }
+                });
+                mapRef.current?.flyTo({
+                  center: [-123.1385, 49.3148],
+                  zoom: 14.5,
+                  essential: true
+                });
+              }}
+              className="group relative flex flex-col items-center cursor-pointer z-35 select-none"
+            >
+              <div className="relative flex items-center justify-center w-9 h-9 rounded-full border-2 shadow-xl backdrop-blur-md transition-all duration-300 group-hover:scale-125 bg-[#121927]/95 border-emerald-400 text-white shadow-[0_0_12px_rgba(16,185,129,0.5)]">
+                <span className="text-base">🌉</span>
+              </div>
+              <div className="mt-1 px-2 py-0.5 rounded-md text-[11px] font-bold shadow-lg border backdrop-blur-md whitespace-nowrap bg-[#141720]/95 text-emerald-200 border-emerald-400">
+                <span>獅門大橋</span>
+              </div>
+            </div>
+          </Marker>
+        )}
+
         {/* Live Flight Detail Popup */}
         {selectedFlight && (() => {
           const isDom = selectedFlight.is_domestic ?? false;
@@ -7381,19 +7611,20 @@ export default function AppMap() {
             maxWidth={
               selectedFacility.facility_type === 'traffic_conditions' ? '460px' :
               selectedFacility.facility_type === 'traffic_cameras' ? '400px' : 
-              (selectedFacility.facility_type === 'waze_alerts' || selectedFacility.facility_type === 'border_crossing' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'beach_water_quality' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'zoning_districts') ? '360px' : 
+              (selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'waze_alerts' || selectedFacility.facility_type === 'border_crossing' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'beach_water_quality' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'zoning_districts') ? '360px' : 
               '320px'
             }
           >
             <div className={`p-3.5 ${
               selectedFacility.facility_type === 'traffic_conditions' ? 'w-[430px]' :
               selectedFacility.facility_type === 'traffic_cameras' ? 'w-[360px]' : 
-              (selectedFacility.facility_type === 'waze_alerts' || selectedFacility.facility_type === 'border_crossing' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'beach_water_quality' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'zoning_districts') ? 'w-[340px]' : 
+              (selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'waze_alerts' || selectedFacility.facility_type === 'border_crossing' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'beach_water_quality' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'zoning_districts') ? 'w-[340px]' : 
               'w-[290px]'
             } max-w-[90vw] text-gray-800`}>
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
                 <div className="flex items-center gap-2">
                   <span className={`w-3 h-3 rounded-full flex-shrink-0 ${
+                    selectedFacility.facility_type === 'public_trees' ? 'bg-emerald-600' :
                     selectedFacility.facility_type === 'border_crossing' ? 'bg-emerald-600 shadow-[0_0_6px_rgba(16,185,129,0.5)]' :
                     selectedFacility.facility_type === 'traffic_conditions' ? 'bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]' :
                     selectedFacility.facility_type === 'waze_alerts' ? 'bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.5)]' :
@@ -10903,6 +11134,100 @@ export default function AppMap() {
                         每 3 個月更新 1 次 (Quarterly)
                       </span>
                     </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Public Trees (公有街道樹木) Details */}
+              {selectedFacility.facility_type === 'public_trees' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/30 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-emerald-950 text-xs flex items-center gap-1.5">
+                        <span className="text-base text-emerald-600 font-bold">🌳</span>
+                        <span className="truncate max-w-[190px]">{selectedFacility.name}</span>
+                      </span>
+                      {selectedFacility.properties.tree_id && (
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-600 text-white shrink-0">
+                          #{selectedFacility.properties.tree_id}
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-[11px] text-emerald-900 font-medium">
+                      🌳 溫哥華市政公有街道樹木 (Vancouver Public Trees)
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                    {(selectedFacility.properties.genus_name || selectedFacility.properties.species_name) && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>學名 (Botanical Name)</span>
+                        <span className="font-mono font-semibold text-gray-900 text-right max-w-[190px] truncate">
+                          {[selectedFacility.properties.genus_name, selectedFacility.properties.species_name, selectedFacility.properties.cultivar_name].filter(Boolean).join(' ')}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.diameter_inches !== undefined && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>胸徑 (DBH Diameter)</span>
+                        <span className="font-mono font-bold text-emerald-700">
+                          {selectedFacility.properties.diameter_inches}&quot; ({selectedFacility.properties.diameter_cm || Math.round(Number(selectedFacility.properties.diameter_inches) * 2.54)} cm)
+                        </span>
+                      </div>
+                    )}
+                    {(selectedFacility.properties.address || selectedFacility.properties.std_street) && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>街道地址</span>
+                        <span className="font-medium text-gray-800 text-right max-w-[200px] truncate">
+                          {selectedFacility.properties.address || `${selectedFacility.properties.civic_number || ''} ${selectedFacility.properties.std_street || ''}`}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.neighbourhood_name && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>所屬街區 (Neighbourhood)</span>
+                        <span className="font-medium text-gray-800">
+                          {selectedFacility.properties.neighbourhood_name}
+                        </span>
+                      </div>
+                    )}
+                    {(selectedFacility.properties.date_planted || selectedFacility.properties.planted_year) && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>栽植日期 / 年份</span>
+                        <span className="font-mono text-gray-700">
+                          {selectedFacility.properties.date_planted || `${selectedFacility.properties.planted_year} 年`}
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <span>主管機關</span>
+                      <span className="font-medium text-gray-800">
+                        City of Vancouver Board of Parks and Recreation
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <span>資料更新頻率</span>
+                      <span className="font-medium text-emerald-600">
+                        每 1 個月更新 1 次 (Monthly)
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <span>經緯座標</span>
+                      <span className="font-mono text-gray-700">
+                        {selectedFacility.lat.toFixed(5)}, {selectedFacility.lon.toFixed(5)}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="pt-1">
+                    <a
+                      href="https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/public-trees/records/?lang=en"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-medium text-xs transition-colors shadow-sm gap-1.5"
+                    >
+                      <span>開啟 Vancouver Open Data 樹木資料庫 ↗</span>
+                    </a>
                   </div>
                 </div>
               )}

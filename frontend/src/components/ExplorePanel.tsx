@@ -1539,12 +1539,12 @@ function ExploreContent() {
     if (!isExploreOpen || activeTab !== 'news') return;
     fetchNews();
 
-    const intervalMin = newsRefreshInterval || 15;
+    const intervalMin = 5;
     const timer = setInterval(() => {
       fetchNews(true);
     }, intervalMin * 60 * 1000);
     return () => clearInterval(timer);
-  }, [isExploreOpen, activeTab, newsRefreshInterval, fetchNews]);
+  }, [isExploreOpen, activeTab, fetchNews]);
 
   const filteredNews = useMemo(() => {
     let list = newsArticles;
@@ -1897,13 +1897,12 @@ function ExploreContent() {
 
   useEffect(() => {
     if (!isExploreOpen || activeTab !== 'alerts') return;
-    const intervalMin = transitAlertsRefreshInterval || 10;
-    if (intervalMin <= 0) return;
+    const intervalMin = 5;
     const timer = setInterval(() => {
       fetchTranslinkAlerts(true);
     }, intervalMin * 60 * 1000);
     return () => clearInterval(timer);
-  }, [isExploreOpen, activeTab, transitAlertsRefreshInterval, fetchTranslinkAlerts]);
+  }, [isExploreOpen, activeTab, fetchTranslinkAlerts]);
 
   const handleStationClick = (stationName: string) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -2920,7 +2919,7 @@ function ExploreContent() {
             </span>
             <div className="flex items-center gap-1.5">
               <span className="text-[10px] text-cyan-400 bg-cyan-950/70 border border-cyan-800/60 px-1.5 py-0.5 rounded font-mono">
-                每日 1 次更新
+                每日更新 1 次
               </span>
               <a
                 href="https://www.skiresort.com/en/snow-reports/vancouver/"
@@ -2934,10 +2933,10 @@ function ExploreContent() {
               <button
                 onClick={() => fetchSkiResorts(true)}
                 disabled={loadingSki}
-                className="p-1 hover:bg-[#252a38] text-gray-400 hover:text-white rounded transition-colors"
-                title="重新整理雪況"
+                className="p-1 hover:bg-[#252a38] text-gray-400 hover:text-white rounded transition-colors disabled:opacity-50"
+                title="重新整理"
               >
-                <RefreshCw className={`w-3 h-3 ${loadingSki ? 'animate-spin text-cyan-400' : ''}`} />
+                <RefreshCw className={`w-3.5 h-3.5 ${loadingSki ? 'animate-spin text-cyan-400' : ''}`} />
               </button>
             </div>
           </div>
@@ -3137,7 +3136,7 @@ function ExploreContent() {
             </span>
             <div className="flex items-center gap-1.5">
               <span className="text-[10px] text-emerald-400 bg-emerald-950/70 border border-emerald-800/60 px-1.5 py-0.5 rounded font-mono">
-                每天 2 次更新
+                每日更新 2 次
               </span>
               {auroraData?.source_url && (
                 <a
@@ -3153,8 +3152,8 @@ function ExploreContent() {
               <button
                 onClick={() => fetchAuroraData(true)}
                 disabled={loadingAurora}
-                className="p-1 hover:bg-[#252a38] text-gray-400 hover:text-white rounded transition-colors"
-                title="重新整理極光數據"
+                className="p-1 hover:bg-[#252a38] text-gray-400 hover:text-white rounded transition-colors disabled:opacity-50"
+                title="重新整理"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${loadingAurora ? 'animate-spin text-emerald-400' : ''}`} />
               </button>
@@ -3720,7 +3719,7 @@ function ExploreContent() {
                 onClick={() => fetchShippingVessels()}
                 disabled={loadingShipping}
                 className="p-1 hover:bg-[#252a38] text-gray-400 hover:text-white rounded transition-colors"
-                title="重新整理船運動態"
+                title="重新整理"
               >
                 <RefreshCw className={`w-3 h-3 ${loadingShipping ? 'animate-spin text-cyan-400' : ''}`} />
               </button>
@@ -3808,17 +3807,15 @@ function ExploreContent() {
         <div className="flex-1 flex flex-col min-h-0 space-y-2.5 overflow-hidden">
           {/* Header Controls: Title, Monthly update indicator & manual refresh button */}
           <div className="flex items-center justify-between gap-1.5 shrink-0 pt-0.5">
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs font-bold text-white flex items-center gap-1.5">
-                <Droplets className="w-4 h-4 text-teal-400" />
-                <span>沙灘水質</span>
-              </span>
-              <span className="text-[10px] text-teal-400 bg-teal-950/60 border border-teal-800/50 px-1.5 py-0.5 rounded font-mono font-medium">
-                每個月更新 1 次
-              </span>
-            </div>
+            <span className="text-xs font-bold text-white flex items-center gap-1.5">
+              <Droplets className="w-4 h-4 text-teal-400" />
+              <span>沙灘水質</span>
+            </span>
 
             <div className="flex items-center gap-1.5">
+              <span className="text-[10px] text-teal-400 bg-teal-950/70 border border-teal-800/60 px-1.5 py-0.5 rounded font-mono">
+                每月更新 1 次
+              </span>
               <a
                 href="https://metrovancouver.org/services/liquid-waste/beaches-and-recreational-water-quality-monitoring"
                 target="_blank"
@@ -3831,8 +3828,8 @@ function ExploreContent() {
               <button
                 onClick={() => fetchBeachWater(true)}
                 disabled={loadingBeach}
-                className="p-1 hover:bg-[#252a38] text-gray-400 hover:text-teal-400 rounded transition-colors disabled:opacity-50"
-                title="重新整理水質資料"
+                className="p-1 hover:bg-[#252a38] text-gray-400 hover:text-white rounded transition-colors disabled:opacity-50"
+                title="重新整理"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${loadingBeach ? 'animate-spin text-teal-400' : ''}`} />
               </button>
@@ -4110,24 +4107,14 @@ function ExploreContent() {
             </div>
 
             <div className="flex items-center gap-1.5 shrink-0">
-              <select
-                value={transitAlertsRefreshInterval}
-                onChange={(e) => setTransitAlertsRefreshInterval(Number(e.target.value))}
-                className="bg-[#151922] text-gray-300 text-[11px] rounded-lg px-2 py-1 border border-[#232838] focus:outline-none focus:border-rose-500/50 cursor-pointer"
-                title="自訂警報自動更新頻率"
-              >
-                <option value={0}>手動更新</option>
-                <option value={2}>每 2 分鐘</option>
-                <option value={5}>每 5 分鐘</option>
-                <option value={10}>每 10 分鐘 (預設)</option>
-                <option value={15}>每 15 分鐘</option>
-                <option value={30}>每 30 分鐘</option>
-              </select>
+              <span className="text-[10px] text-rose-400 bg-rose-950/70 border border-rose-800/60 px-1.5 py-0.5 rounded font-mono font-medium">
+                每 5 分鐘更新
+              </span>
               <button
                 onClick={() => fetchTranslinkAlerts(true)}
                 disabled={loadingTransitAlerts}
-                className="p-1.5 rounded-lg bg-[#151922] text-gray-400 hover:text-rose-400 border border-[#232838] hover:border-rose-500/40 transition-all shrink-0 flex items-center justify-center disabled:opacity-50"
-                title="立即重新整理警報"
+                className="p-1 hover:bg-[#252a38] text-gray-400 hover:text-white rounded transition-colors disabled:opacity-50"
+                title="重新整理"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${loadingTransitAlerts ? 'animate-spin text-rose-400' : ''}`} />
               </button>
@@ -4436,23 +4423,14 @@ function ExploreContent() {
             </div>
 
             <div className="flex items-center gap-1.5 shrink-0">
-              <select
-                value={newsRefreshInterval || 15}
-                onChange={(e) => setNewsRefreshInterval(Number(e.target.value))}
-                className="bg-[#151922] text-gray-300 text-[11px] rounded-md px-1.5 py-1 border border-[#232838] focus:outline-none focus:border-amber-500/50 cursor-pointer"
-                title="自訂新聞自動更新頻率"
-              >
-                <option value={5}>5分鐘</option>
-                <option value={10}>10分鐘</option>
-                <option value={15}>15分鐘</option>
-                <option value={30}>30分鐘</option>
-                <option value={60}>60分鐘</option>
-              </select>
+              <span className="text-[10px] text-amber-400 bg-amber-950/70 border border-amber-800/60 px-1.5 py-0.5 rounded font-mono font-medium">
+                每 5 分鐘更新
+              </span>
               <button
                 onClick={() => fetchNews(true)}
                 disabled={loadingNews}
-                className="p-1.5 rounded-lg bg-[#151922] text-gray-400 hover:text-amber-400 border border-[#232838] hover:border-amber-500/40 transition-all shrink-0 flex items-center justify-center disabled:opacity-50"
-                title="立即重新整理新聞"
+                className="p-1 hover:bg-[#252a38] text-gray-400 hover:text-white rounded transition-colors disabled:opacity-50"
+                title="重新整理"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${loadingNews ? 'animate-spin text-amber-400' : ''}`} />
               </button>
@@ -4612,7 +4590,7 @@ function ExploreContent() {
               onClick={() => fetchEvents(true)}
               disabled={loadingEvents}
               className="p-1.5 rounded-lg bg-[#151922] text-gray-400 hover:text-purple-400 border border-[#232838] hover:border-purple-500/40 transition-all shrink-0 flex items-center justify-center disabled:opacity-50"
-              title="重新整理活動"
+              title="重新整理"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${loadingEvents ? 'animate-spin text-purple-400' : ''}`} />
             </button>
@@ -4756,35 +4734,32 @@ function ExploreContent() {
         <div className="flex-1 flex flex-col min-h-0 space-y-2.5 overflow-hidden">
           {/* Header Bar */}
           <div className="flex items-center justify-between gap-1.5 shrink-0 pt-0.5">
+            <span className="text-xs font-bold text-white flex items-center gap-1.5">
+              <Activity className="w-4 h-4 text-orange-400" />
+              <span>大溫即時路況</span>
+            </span>
+
             <div className="flex items-center gap-1.5">
-              <span className="text-xs font-bold text-white flex items-center gap-1.5">
-                <Activity className="w-4 h-4 text-orange-400" />
-                <span>大溫即時路況</span>
-              </span>
               <span className="text-[10px] text-orange-400 bg-orange-950/70 border border-orange-800/60 px-1.5 py-0.5 rounded font-mono font-medium">
                 每 2 分鐘更新
               </span>
-            </div>
-
-            <div className="flex items-center gap-1">
-              <button
-                onClick={() => fetchTrafficSummary(true)}
-                disabled={loadingTraffic}
-                className="p-1 rounded bg-[#1e2330] hover:bg-[#282f42] text-gray-300 hover:text-white transition-colors border border-[#2e364a]"
-                title="立即更新路況"
-              >
-                <RefreshCw className={`w-3.5 h-3.5 ${loadingTraffic ? 'animate-spin text-orange-400' : ''}`} />
-              </button>
               <a
                 href="https://www.waze.com/livemap"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[11px] text-cyan-400 hover:text-cyan-300 flex items-center gap-1 px-1.5 py-1 rounded bg-cyan-950/40 hover:bg-cyan-900/40 border border-cyan-800/40 transition-colors"
+                className="p-1 hover:bg-[#252a38] text-gray-400 hover:text-orange-400 rounded transition-colors"
                 title="前往 Waze LiveMap 官方地圖"
               >
-                <span>Waze 官網</span>
-                <ExternalLink className="w-3 h-3" />
+                <ExternalLink className="w-3.5 h-3.5" />
               </a>
+              <button
+                onClick={() => fetchTrafficSummary(true)}
+                disabled={loadingTraffic}
+                className="p-1 hover:bg-[#252a38] text-gray-400 hover:text-white rounded transition-colors disabled:opacity-50"
+                title="重新整理"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${loadingTraffic ? 'animate-spin text-orange-400' : ''}`} />
+              </button>
             </div>
           </div>
 
@@ -5057,8 +5032,8 @@ function ExploreContent() {
               <button
                 onClick={() => fetchBorderCrossings(true)}
                 disabled={loadingBorder}
-                className="p-1.5 rounded-lg bg-[#151922] text-gray-400 hover:text-emerald-400 border border-[#232838] hover:border-emerald-500/40 transition-all shrink-0 flex items-center justify-center disabled:opacity-50"
-                title="重新整理邊境等候時間"
+                className="p-1 hover:bg-[#252a38] text-gray-400 hover:text-white rounded transition-colors disabled:opacity-50"
+                title="重新整理"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${loadingBorder ? 'animate-spin text-emerald-400' : ''}`} />
               </button>

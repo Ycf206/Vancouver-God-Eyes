@@ -93,6 +93,7 @@ export interface UIState {
     beachWaterQuality: boolean;
     fireHydrants: boolean;
     zoningDistricts: boolean;
+    publicTrees: boolean;
   };
   contourInterval: 'off' | '1m' | '2m' | '10m';
   setContourInterval: (interval: 'off' | '1m' | '2m' | '10m') => void;
@@ -270,6 +271,7 @@ export const useUIStore = create<UIState>()(
         beachWaterQuality: false,
         fireHydrants: false,
         zoningDistricts: false,
+        publicTrees: false,
       },
       timeFormat: '24h',
       setTimeFormat: (format) => set({ timeFormat: format }),

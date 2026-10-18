@@ -323,6 +323,10 @@ export default function LayerPanel() {
             <LayerButton layerKey="communityCentres" label="社區中心" icon={Building2} colorClass="text-violet-400" activeBg="bg-[#211a2f]" activeBorder="border-violet-500/50" activeShadow="shadow-[0_0_6px_rgba(139,92,246,0.15)]" />
             <LayerButton layerKey="drinkingFountains" label="飲水器" icon={Droplets} colorClass="text-sky-400" activeBg="bg-[#142533]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(56,189,248,0.15)]" />
             <LayerButton layerKey="publicWashrooms" label="公共廁所" icon={Bath} colorClass="text-cyan-400" activeBg="bg-[#13272e]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.15)]" />
+
+            {/* Row 4: 樹木 (每1個月更新，高密度點位聚合渲染) */}
+            <LayerButton layerKey="publicTrees" label="樹木" icon={Trees} title="街道樹木 (每1個月更新，高密度點位聚合)" colorClass="text-emerald-400" activeBg="bg-[#14291f]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
+            <div></div>
           </div>
         </div>
 
