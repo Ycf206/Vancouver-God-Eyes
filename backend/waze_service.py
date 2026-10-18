@@ -209,6 +209,186 @@ class WazeService:
                 "base_delay_sec": 360,
                 "level": 2,
                 "incidents_near": 0
+            },
+            {
+                "id": "port_mann",
+                "corridor_group": "hwy1",
+                "name": "曼恩港大橋 (Port Mann Bridge / Hwy 1)",
+                "highway": "Hwy 1",
+                "direction": "雙向 (高貴林 ↔ 素里/菲沙河谷)",
+                "city": "Coquitlam / Surrey",
+                "freeflow_speed": 90,
+                "coordinates": [
+                    [-122.845, 49.232],
+                    [-122.805, 49.208]
+                ],
+                "base_speed": 42,
+                "base_delay_sec": 480,
+                "level": 2,
+                "incidents_near": 0
+            },
+            {
+                "id": "pattullo",
+                "corridor_group": "pattullo",
+                "name": "帕圖洛橋 (Pattullo Bridge)",
+                "highway": "King George Blvd",
+                "direction": "雙向 (新西敏 ↔ 素里中心)",
+                "city": "New Westminster / Surrey",
+                "freeflow_speed": 50,
+                "coordinates": [
+                    [-122.903, 49.208],
+                    [-122.887, 49.204]
+                ],
+                "base_speed": 24,
+                "base_delay_sec": 540,
+                "level": 3,
+                "incidents_near": 1
+            },
+            {
+                "id": "broadway",
+                "corridor_group": "broadway",
+                "name": "百老匯大道 (Broadway Corridor)",
+                "highway": "Broadway",
+                "direction": "雙向 (UBC/西區 ↔ 市中心南 ↔ 商業街)",
+                "city": "Vancouver",
+                "freeflow_speed": 50,
+                "coordinates": [
+                    [-123.186, 49.264],
+                    [-123.138, 49.263],
+                    [-123.100, 49.263],
+                    [-123.069, 49.262]
+                ],
+                "base_speed": 24,
+                "base_delay_sec": 420,
+                "level": 2,
+                "incidents_near": 0
+            },
+            {
+                "id": "kingsway",
+                "corridor_group": "kingsway",
+                "name": "帝國大道 (Kingsway Arterial)",
+                "highway": "Kingsway",
+                "direction": "雙向 (溫哥華 ↔ 本拿比鐵道鎮 Metrotown ↔ 愛德蒙斯)",
+                "city": "Vancouver / Burnaby",
+                "freeflow_speed": 50,
+                "coordinates": [
+                    [-123.099, 49.258],
+                    [-123.056, 49.241],
+                    [-123.003, 49.227],
+                    [-122.955, 49.213]
+                ],
+                "base_speed": 28,
+                "base_delay_sec": 360,
+                "level": 2,
+                "incidents_near": 1
+            },
+            {
+                "id": "marine_drive",
+                "corridor_group": "marine_drive",
+                "name": "海旁大道 (SW & SE Marine Drive)",
+                "highway": "Marine Dr",
+                "direction": "雙向 (UBC/溫哥華南區 ↔ 本拿比西南)",
+                "city": "Vancouver / Burnaby",
+                "freeflow_speed": 60,
+                "coordinates": [
+                    [-123.139, 49.204],
+                    [-123.100, 49.210],
+                    [-123.078, 49.210],
+                    [-123.024, 49.202]
+                ],
+                "base_speed": 38,
+                "base_delay_sec": 300,
+                "level": 1,
+                "incidents_near": 0
+            },
+            {
+                "id": "lougheed",
+                "corridor_group": "lougheed",
+                "name": "洛歇公路 (Lougheed Hwy / Hwy 7)",
+                "highway": "Hwy 7",
+                "direction": "雙向 (本拿比布蘭特伍德 ↔ 高貴林市中心)",
+                "city": "Burnaby / Coquitlam",
+                "freeflow_speed": 70,
+                "coordinates": [
+                    [-123.024, 49.266],
+                    [-122.998, 49.266],
+                    [-122.915, 49.252],
+                    [-122.800, 49.273]
+                ],
+                "base_speed": 40,
+                "base_delay_sec": 420,
+                "level": 2,
+                "incidents_near": 0
+            },
+            {
+                "id": "hwy17",
+                "corridor_group": "hwy17",
+                "name": "17號公路 - 南岸快速路 (SFPR / Hwy 17)",
+                "highway": "Hwy 17",
+                "direction": "雙向 (三角洲渡輪碼頭 ↔ 素里港區)",
+                "city": "Delta / Surrey",
+                "freeflow_speed": 80,
+                "coordinates": [
+                    [-123.060, 49.098],
+                    [-122.958, 49.155],
+                    [-122.880, 49.200]
+                ],
+                "base_speed": 55,
+                "base_delay_sec": 240,
+                "level": 1,
+                "incidents_near": 0
+            },
+            {
+                "id": "hwy91_richmond",
+                "corridor_group": "hwy91",
+                "name": "91號公路列治文段 (Hwy 91 East-West Connector)",
+                "highway": "Hwy 91",
+                "direction": "雙向 (列治文中心 ↔ 新西敏/安娜西斯島)",
+                "city": "Richmond / Delta",
+                "freeflow_speed": 90,
+                "coordinates": [
+                    [-123.105, 49.178],
+                    [-123.080, 49.182],
+                    [-122.952, 49.168]
+                ],
+                "base_speed": 45,
+                "base_delay_sec": 380,
+                "level": 2,
+                "incidents_near": 0
+            },
+            {
+                "id": "burrard_bridge",
+                "corridor_group": "burrard",
+                "name": "布勒橋 (Burrard Street Bridge)",
+                "highway": "Burrard St",
+                "direction": "雙向 (溫哥華市中心 ↔ 基斯蘭奴 Kitsilano)",
+                "city": "Vancouver",
+                "freeflow_speed": 50,
+                "coordinates": [
+                    [-123.131, 49.278],
+                    [-123.144, 49.272]
+                ],
+                "base_speed": 30,
+                "base_delay_sec": 200,
+                "level": 1,
+                "incidents_near": 0
+            },
+            {
+                "id": "cambie_bridge",
+                "corridor_group": "cambie",
+                "name": "甘比橋 (Cambie Street Bridge)",
+                "highway": "Cambie St",
+                "direction": "雙向 (市中心體育館 ↔ 溫哥華市政廳)",
+                "city": "Vancouver",
+                "freeflow_speed": 50,
+                "coordinates": [
+                    [-123.116, 49.276],
+                    [-123.116, 49.266]
+                ],
+                "base_speed": 32,
+                "base_delay_sec": 180,
+                "level": 1,
+                "incidents_near": 0
             }
         ]
         snapped_file = os.path.join(os.path.dirname(__file__), "data", "snapped_corridors.json")
@@ -339,6 +519,42 @@ class WazeService:
                 "report_rating": 4,
                 "pub_millis": int((time.time() - 1800) * 1000),
                 "time_display": "30 分鐘前"
+            },
+            {
+                "id": "waze_alt_107",
+                "type": "ACCIDENT",
+                "type_zh": "交通事故",
+                "subtype": "ACCIDENT_MINOR",
+                "subtype_zh": "引道追撞事故",
+                "icon": "💥",
+                "street": "帕圖洛橋 南向 (Pattullo Bridge South Approach)",
+                "city": "Surrey",
+                "location": {"x": -122.887, "y": 49.204},
+                "report_description": "南向引道上橋前兩車擦撞占用右線，後方 King George Blvd 車多緩行",
+                "delay_minutes": 8,
+                "confidence": 4,
+                "reliability": 8,
+                "report_rating": 4,
+                "pub_millis": int((time.time() - 420) * 1000),
+                "time_display": "7 分鐘前"
+            },
+            {
+                "id": "waze_alt_108",
+                "type": "HAZARD",
+                "type_zh": "路面施工",
+                "subtype": "HAZARD_ON_ROAD_CONSTRUCTION",
+                "subtype_zh": "局部車道修補",
+                "icon": "⚠️",
+                "street": "帝國大道 (Kingsway & Willingdon Ave)",
+                "city": "Burnaby",
+                "location": {"x": -123.003, "y": 49.227},
+                "report_description": "鐵道鎮商圈前路面局部鋪設修補，西向縮減為單線，車流微幅緩行",
+                "delay_minutes": 4,
+                "confidence": 5,
+                "reliability": 9,
+                "report_rating": 4,
+                "pub_millis": int((time.time() - 900) * 1000),
+                "time_display": "15 分鐘前"
             }
         ]
 
@@ -402,11 +618,13 @@ class WazeService:
                             "properties": {
                                 "id": str(j.get("id")),
                                 "facility_type": "traffic_conditions",
+                                "name": street,
                                 "street": street,
                                 "city": j.get("city", "Metro Vancouver"),
                                 "speed_kmh": round(speed, 1),
                                 "delay_seconds": delay_s,
                                 "delay_minutes": round(delay_s / 60, 1),
+                                "delay_min": round(delay_s / 60, 1),
                                 "length_meters": int(j.get("length", 1000)),
                                 "level": lvl,
                                 "level_desc": "輕微車多" if lvl == 1 else ("中度緩行" if lvl == 2 else ("重度壅塞" if lvl == 3 else "嚴重停滯")),
@@ -416,7 +634,7 @@ class WazeService:
                             }
                         })
 
-        # 若無外部 live_jams，以大溫 8 大實測關鍵橋隧 LineString 補全色帶
+        # 若無外部 live_jams，以大溫實測關鍵骨幹路網 LineString 補全色帶
         if not jam_features:
             for b in self._get_base_corridors_definition():
                 lvl = b["level"]
@@ -432,6 +650,7 @@ class WazeService:
                     "properties": {
                         "id": b["id"],
                         "facility_type": "traffic_conditions",
+                        "name": b["name"],
                         "street": b["name"],
                         "highway": b["highway"],
                         "city": b["city"],
@@ -440,6 +659,7 @@ class WazeService:
                         "freeflow_speed": b["freeflow_speed"],
                         "delay_seconds": delay_s,
                         "delay_minutes": round(delay_s / 60, 1),
+                        "delay_min": round(delay_s / 60, 1),
                         "length_meters": 2200,
                         "level": lvl,
                         "level_desc": "輕微車多" if lvl == 1 else ("中度緩行" if lvl == 2 else ("重度壅塞" if lvl == 3 else "嚴重停滯")),
@@ -709,7 +929,7 @@ class WazeService:
             "total_incidents": len(alert_features),
             "worst_corridor": "99號公路 (喬治梅西隧道) 與 1號公路 (東向)",
             "corridors": corridors,
-            "top_alerts": [feat["properties"] for feat in alert_features[:6]]
+            "top_alerts": [feat["properties"] for feat in alert_features[:8]]
         }
 
         self.last_fetch_time = now

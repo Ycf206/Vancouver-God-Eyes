@@ -3021,7 +3021,7 @@ export default function AppMap() {
         source: 'waze_alerts',
         minzoom: 12,
         layout: {
-          'text-field': ['coalesce', ['get', 'type_label'], '突發事故'],
+          'text-field': ['coalesce', ['get', 'type_label'], ['get', 'subtype_zh'], ['get', 'type_zh'], '大眾通報'],
           'text-size': ['interpolate', ['linear'], ['zoom'], 12, 10, 15, 12],
           'text-offset': [0, 1.45],
           'text-anchor': 'top',

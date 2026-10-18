@@ -4765,10 +4765,15 @@ function ExploreContent() {
         <div className="flex-1 flex flex-col min-h-0 space-y-1.5 overflow-hidden">
           {/* Header Bar */}
           <div className="flex items-center justify-between gap-1.5 shrink-0 pt-0.5">
-            <span className="text-xs font-bold text-white flex items-center gap-1.5">
-              <Activity className="w-4 h-4 text-orange-400" />
-              <span>即時路況</span>
-            </span>
+            <div className="flex items-center gap-1.5 min-w-0">
+              <span className="text-xs font-bold text-white flex items-center gap-1.5 shrink-0">
+                <Activity className="w-4 h-4 text-orange-400" />
+                <span>路況</span>
+              </span>
+              <span className="text-[10px] text-gray-400 truncate">
+                · 7 大動脈與橋隧通勤精算
+              </span>
+            </div>
 
             <div className="flex items-center gap-1.5">
               <span className="text-[10px] text-orange-400 bg-orange-950/70 border border-orange-800/60 px-1.5 py-0.5 rounded font-mono font-medium">
@@ -4807,9 +4812,9 @@ function ExploreContent() {
                 </span>
               </div>
               <div className="flex items-center gap-1.5 text-[10px] text-gray-400 font-mono shrink-0">
-                <span>幹道 <strong className="text-emerald-400">{trafficSummary?.total_jams || 8}</strong></span>
+                <span>7大動脈 <strong className="text-emerald-400">{trafficSummary?.corridors?.length || 7}</strong></span>
                 <span>·</span>
-                <span>通報 <strong className="text-amber-400">{trafficSummary?.total_incidents || 6}</strong></span>
+                <span>大眾通報 <strong className="text-amber-400">{trafficSummary?.total_incidents || 8}</strong></span>
               </div>
             </div>
 
@@ -4827,10 +4832,10 @@ function ExploreContent() {
             {/* Filter Pills */}
             <div className="grid grid-cols-4 gap-1 p-0.5 bg-[#121622] rounded-lg border border-[#222838]">
               {[
-                { key: 'all', label: '全部幹道' },
+                { key: 'all', label: '7大幹道' },
                 { key: 'severe', label: '嚴重壅塞' },
                 { key: 'bridges', label: '關鍵橋隧' },
-                { key: 'incidents', label: '突發事故' },
+                { key: 'incidents', label: '大眾通報' },
               ].map((pill) => (
                 <button
                   key={pill.key}
@@ -4853,7 +4858,7 @@ function ExploreContent() {
                 type="text"
                 value={trafficSearchQuery}
                 onChange={(e) => setTrafficSearchQuery(e.target.value)}
-                placeholder="搜尋幹道 (如: 1號公路, 99號, 獅門大橋)..."
+                placeholder="搜尋幹道與通報 (如: 1號公路, 99號, 獅門大橋)..."
                 className="w-full bg-[#121622] border border-[#222838] focus:border-orange-500/70 rounded-lg pl-7 pr-6 py-0.5 text-[11px] text-gray-200 placeholder-gray-500 outline-none transition-colors"
               />
               {trafficSearchQuery && (

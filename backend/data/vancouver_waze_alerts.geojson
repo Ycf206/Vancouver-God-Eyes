@@ -1,9 +1,9 @@
 {
   "type": "FeatureCollection",
   "generator": "VancouverGodsEye-WazeAlerts",
-  "updated_at": "2026-10-18T02:08:38.911066+00:00",
+  "updated_at": "2026-10-18T02:26:29.542933+00:00",
   "update_interval": "每 2~3 分鐘自動更新 (Polling)",
-  "total_count": 6,
+  "total_count": 8,
   "features": [
     {
       "type": "Feature",
@@ -31,7 +31,7 @@
         "confidence": 5,
         "reliability": 9,
         "report_rating": 4,
-        "pub_time": 1792288838911,
+        "pub_time": 1792289909542,
         "time_display": "8 分鐘前",
         "lon": -123.003,
         "lat": 49.255,
@@ -68,7 +68,7 @@
         "confidence": 5,
         "reliability": 10,
         "report_rating": 5,
-        "pub_time": 1792288998911,
+        "pub_time": 1792290069542,
         "time_display": "5 分鐘前",
         "lon": -123.076,
         "lat": 49.124,
@@ -105,7 +105,7 @@
         "confidence": 4,
         "reliability": 8,
         "report_rating": 4,
-        "pub_time": 1792288598911,
+        "pub_time": 1792289669542,
         "time_display": "12 分鐘前",
         "lon": -123.0782,
         "lat": 49.204,
@@ -142,7 +142,7 @@
         "confidence": 4,
         "reliability": 8,
         "report_rating": 3,
-        "pub_time": 1792288358911,
+        "pub_time": 1792289429542,
         "time_display": "16 分鐘前",
         "lon": -123.138,
         "lat": 49.321,
@@ -179,7 +179,7 @@
         "confidence": 5,
         "reliability": 9,
         "report_rating": 5,
-        "pub_time": 1792288718911,
+        "pub_time": 1792289789542,
         "time_display": "10 分鐘前",
         "lon": -122.952,
         "lat": 49.16,
@@ -216,13 +216,87 @@
         "confidence": 5,
         "reliability": 10,
         "report_rating": 4,
-        "pub_time": 1792287518911,
+        "pub_time": 1792288589542,
         "time_display": "30 分鐘前",
         "lon": -123.12,
         "lat": 49.284,
         "coordinates": [
           -123.12,
           49.284
+        ],
+        "source": "Waze Crowd-Sourced Reports"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "waze_alt_107",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.887,
+          49.204
+        ]
+      },
+      "properties": {
+        "id": "waze_alt_107",
+        "facility_type": "waze_alerts",
+        "type": "ACCIDENT",
+        "type_zh": "交通事故",
+        "subtype": "ACCIDENT_MINOR",
+        "subtype_zh": "引道追撞事故",
+        "icon": "💥",
+        "street": "帕圖洛橋 南向 (Pattullo Bridge South Approach)",
+        "city": "Surrey",
+        "report_description": "南向引道上橋前兩車擦撞占用右線，後方 King George Blvd 車多緩行",
+        "delay_min": 8,
+        "delay_minutes": 8,
+        "confidence": 4,
+        "reliability": 8,
+        "report_rating": 4,
+        "pub_time": 1792289969542,
+        "time_display": "7 分鐘前",
+        "lon": -122.887,
+        "lat": 49.204,
+        "coordinates": [
+          -122.887,
+          49.204
+        ],
+        "source": "Waze Crowd-Sourced Reports"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "waze_alt_108",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.003,
+          49.227
+        ]
+      },
+      "properties": {
+        "id": "waze_alt_108",
+        "facility_type": "waze_alerts",
+        "type": "HAZARD",
+        "type_zh": "路面施工",
+        "subtype": "HAZARD_ON_ROAD_CONSTRUCTION",
+        "subtype_zh": "局部車道修補",
+        "icon": "⚠️",
+        "street": "帝國大道 (Kingsway & Willingdon Ave)",
+        "city": "Burnaby",
+        "report_description": "鐵道鎮商圈前路面局部鋪設修補，西向縮減為單線，車流微幅緩行",
+        "delay_min": 4,
+        "delay_minutes": 4,
+        "confidence": 5,
+        "reliability": 9,
+        "report_rating": 4,
+        "pub_time": 1792289489542,
+        "time_display": "15 分鐘前",
+        "lon": -123.003,
+        "lat": 49.227,
+        "coordinates": [
+          -123.003,
+          49.227
         ],
         "source": "Waze Crowd-Sourced Reports"
       }
