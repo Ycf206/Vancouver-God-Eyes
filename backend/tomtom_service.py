@@ -652,9 +652,8 @@ class TomTomTrafficService:
                     except Exception:
                         pass
 
-        # 2. 取得即時突發事故與通報 (全面使用 TomTom Traffic Incidents v5；僅於未設定 API Key 時以 DriveBC 備援)
+        # 2. 取得即時突發事故與通報 (嚴格只使用 TomTom Traffic Incidents v5，無資料時保持空白)
         tomtom_incidents = self._fetch_tomtom_incidents(api_key) if api_key else []
-        drivebc_events = self._fetch_drivebc_open511_incidents() if not tomtom_incidents else []
 
         alert_features: List[Dict[str, Any]] = []
         extra_jam_features: List[Dict[str, Any]] = []
@@ -674,13 +673,13 @@ class TomTomTrafficService:
             delay_min = max(1, round(delay_s / 60)) if delay_s > 0 else (3 if mag == 1 else (7 if mag == 2 else (12 if mag >= 3 else 2)))
 
             events_list = props.get("events") or []
-            event_desc = ", ".join([e.get("description", "") for e in events_list if e.get("description")]) or "道路交通事件"
+            event_desc = ", ".join([e.get("description", "") for e in events_list if e.get("description")]) or "Traffic Incident"
             road_nums = props.get("roadNumbers") or []
             from_loc = props.get("from") or ""
             to_loc = props.get("to") or ""
-            street_name = " / ".join(road_nums) if road_nums else (from_loc or "大溫主要幹道")
+            street_name = " / ".join(road_nums) if road_nums else (from_loc or "Vancouver, BC")
             if from_loc and to_loc:
-                route_desc = f"{from_loc} 往 {to_loc} ({event_desc})"
+                route_desc = f"{from_loc} to {to_loc} ({event_desc})"
             else:
                 route_desc = event_desc
 
@@ -743,76 +742,7 @@ class TomTomTrafficService:
                     },
                 })
 
-        # 補充 DriveBC Open511 官方即時事件 (若離峰時段或無其他通報，確保顯示 BC 省交通廳真實道路事件)
-        for idx, ev in enumerate(drivebc_events):
-            if len(alert_features) >= 20:
-                break
-            geog = ev.get("geography") or {}
-            gtype = geog.get("type", "")
-            gcoords = geog.get("coordinates") or []
-            pt_lon, pt_lat = None, None
-            if gtype == "Point" and len(gcoords) >= 2 and isinstance(gcoords[0], (int, float)):
-                pt_lon, pt_lat = float(gcoords[0]), float(gcoords[1])
-            elif gtype == "LineString" and len(gcoords) >= 1 and isinstance(gcoords[0], list):
-                mid = gcoords[len(gcoords) // 2]
-                if len(mid) >= 2:
-                    pt_lon, pt_lat = float(mid[0]), float(mid[1])
-
-            if pt_lon is None or pt_lat is None:
-                continue
-
-            ev_type = str(ev.get("event_type", "INCIDENT")).upper()
-            severity = str(ev.get("severity", "MINOR")).upper()
-            roads = ev.get("roads") or []
-            road_name = roads[0].get("name", "大溫幹道") if roads else "大溫幹道"
-            headline = ev.get("headline") or "DriveBC 道路通告"
-            desc_text = ev.get("description") or headline
-
-            if ev_type == "CONSTRUCTION":
-                t_code, type_zh, icon, a_color = "CONSTRUCTION", "道路施工 (DriveBC)", "🚧", "#f59e0b"
-                delay_m = 5 if severity == "MODERATE" else (10 if severity == "MAJOR" else 2)
-            elif "CLOSED" in desc_text.upper():
-                t_code, type_zh, icon, a_color = "ROAD_CLOSED", "道路管制 (DriveBC)", "⛔", "#e11d48"
-                delay_m = 12
-            else:
-                t_code, type_zh, icon, a_color = "INCIDENT", "突發路況 (DriveBC)", "⚠️", "#ef4444" if severity == "MAJOR" else "#f97316"
-                delay_m = 10 if severity == "MAJOR" else 4
-
-            alert_features.append({
-                "type": "Feature",
-                "id": f"drivebc_{ev.get('id', idx)}",
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [pt_lon, pt_lat],
-                },
-                "properties": {
-                    "id": str(ev.get("id", f"dbc_{idx}")),
-                    "facility_type": "traffic_alerts",
-                    "type": t_code,
-                    "type_zh": type_zh,
-                    "subtype_zh": type_zh,
-                    "type_label": type_zh,
-                    "icon": icon,
-                    "color": a_color,
-                    "street": road_name,
-                    "city": "Metro Vancouver",
-                    "report_description": desc_text,
-                    "description": desc_text,
-                    "delay_min": delay_m,
-                    "delay_minutes": delay_m,
-                    "confidence": 5,
-                    "confidence_pct": 98,
-                    "pub_time": int(now * 1000),
-                    "time_display": "DriveBC 官方",
-                    "report_time_str": "DriveBC 官方即時",
-                    "lon": pt_lon,
-                    "lat": pt_lat,
-                    "coordinates": [pt_lon, pt_lat],
-                    "source": "DriveBC Open511 Official Feed",
-                },
-            })
-
-        # 3. 計算 17 條主要幹道與 7 大關鍵走廊的即時車速與狀態
+        # 3. 計算 17 條主要幹道與關鍵走廊的即時車速與狀態
         jam_features: List[Dict[str, Any]] = []
         corridor_metrics: Dict[str, Dict[str, Any]] = {}
 

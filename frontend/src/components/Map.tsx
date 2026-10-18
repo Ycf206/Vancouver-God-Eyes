@@ -1425,22 +1425,12 @@ export default function AppMap() {
               const src = map.getSource('traffic_alerts') as any;
               if (src && src.setData) src.setData(data);
             } else {
-              const staticRes = await fetch('/vancouver_traffic_alerts.geojson');
-              if (staticRes.ok) {
-                const data = await staticRes.json();
-                const src = map.getSource('traffic_alerts') as any;
-                if (src && src.setData) src.setData(data);
-              }
+              const src = map.getSource('traffic_alerts') as any;
+              if (src && src.setData) src.setData({ type: 'FeatureCollection', features: [] });
             }
           } catch (_) {
-            try {
-              const staticRes = await fetch('/vancouver_traffic_alerts.geojson');
-              if (staticRes.ok) {
-                const data = await staticRes.json();
-                const src = map.getSource('traffic_alerts') as any;
-                if (src && src.setData) src.setData(data);
-              }
-            } catch { /* empty */ }
+            const src = map.getSource('traffic_alerts') as any;
+            if (src && src.setData) src.setData({ type: 'FeatureCollection', features: [] });
           }
         }
       };
@@ -8151,9 +8141,10 @@ export default function AppMap() {
                         return selectedFacility.name;
                       })()}
                     </h3>
-                    {(selectedFacility.local_area || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || (selectedFacility.facility_type === 'car_sharing' && selectedFacility.properties?.operator === 'Modo')) && (
+                    {(selectedFacility.local_area || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || (selectedFacility.facility_type === 'car_sharing' && selectedFacility.properties?.operator === 'Modo')) && (
                       <span className="text-[11px] text-gray-400 block leading-snug break-words">
                         {(() => {
+                          if (selectedFacility.facility_type === 'snow_removal_routes') return 'Vancouver, BC';
                           if (selectedFacility.facility_type === 'traffic_speed_limits') return 'Vancouver, BC';
                           if (selectedFacility.facility_type === 'traffic_crosswalks') return 'Vancouver, BC';
                           if (selectedFacility.facility_type === 'car_sharing' && selectedFacility.properties?.operator === 'Modo') return 'Vancouver, BC';
@@ -8163,6 +8154,14 @@ export default function AppMap() {
                           if (selectedFacility.facility_type === 'tesla') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                           if (selectedFacility.facility_type === 'road_closures') return 'Vancouver, BC';
                           if (selectedFacility.facility_type === 'road_construction') return 'Vancouver, BC';
+                          if (selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident') {
+                            const rawStreet = selectedFacility.properties?.street || selectedFacility.local_area || '';
+                            const match = rawStreet.match(/\(([^)]+)\)/);
+                            if (match) return match[1].trim();
+                            const en = rawStreet.replace(/[\u4e00-\u9fa5]+/g, '').replace(/^[\s\-\–\—\:\/]+|[\s\-\–\—\:\/]+$/g, '').trim();
+                            if (en) return en;
+                            return selectedFacility.properties?.from || 'Vancouver, BC';
+                          }
                           return selectedFacility.local_area;
                         })()}
                       </span>
@@ -10352,23 +10351,13 @@ export default function AppMap() {
               {/* Snow Removal Routes (鏟雪路線) Details */}
               {selectedFacility.facility_type === 'snow_removal_routes' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex flex-col gap-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-sky-950 text-xs flex items-center gap-1.5">
-                        <span className="text-base text-sky-600 font-bold">❄️</span>
-                        <span className="truncate max-w-[200px]">{selectedFacility.name}</span>
-                      </span>
-                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded text-white shrink-0 ${
-                        selectedFacility.properties.priority === 1 ? 'bg-sky-700' : 'bg-sky-600'
-                      }`}>
-                        {selectedFacility.properties.priority === 1 ? '第 1 優先' : '第 2 優先'}
-                      </span>
-                    </div>
-                    <div className="text-[11px] text-sky-900 font-medium">
+                  <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex items-center gap-2">
+                    <span className="text-base text-sky-600 font-bold shrink-0">❄️</span>
+                    <span className="text-[11px] text-sky-900 font-medium leading-snug">
                       {selectedFacility.properties.priority === 1 
-                        ? '🚛 市府第 1 優先清掃主要幹道與急救動線' 
-                        : '🚜 市府第 2 優先清掃重要陡坡、學校及主要單車道'}
-                    </div>
+                        ? '清掃主要幹道與急救動線' 
+                        : '清掃重要陡坡、學校及主要單車道'}
+                    </span>
                   </div>
 
                   <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
@@ -10376,15 +10365,7 @@ export default function AppMap() {
                       <div className="flex justify-between items-center text-gray-600">
                         <span>路線屬性</span>
                         <span className="font-bold text-gray-900 text-right truncate max-w-[190px]">
-                          {selectedFacility.properties.route_type_zh}
-                        </span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.priority_zh && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                        <span>優先級別</span>
-                        <span className="font-semibold text-gray-800 text-right">
-                          {selectedFacility.properties.priority_zh}
+                          {(selectedFacility.properties.route_type_zh || '').replace(/\s*\([^)]*\)/g, '').trim()}
                         </span>
                       </div>
                     )}
@@ -10396,12 +10377,6 @@ export default function AppMap() {
                         </span>
                       </div>
                     )}
-                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                      <span>資料更新頻率</span>
-                      <span className="font-medium text-gray-700">
-                        每 1 個月更新
-                      </span>
-                    </div>
                   </div>
                 </div>
               )}
@@ -11050,7 +11025,6 @@ export default function AppMap() {
                 const delayMin = props.delay_min ?? props.delay_minutes ?? (props.delay_sec ? Math.round(props.delay_sec / 60) : 5);
                 const reportTime = props.report_time_str || props.time_display || 'TomTom 即時偵測';
                 const confidenceVal = props.confidence_pct ?? (props.confidence != null ? (props.confidence <= 5 ? props.confidence * 20 : props.confidence) : 96);
-                const desc = props.description || props.report_description;
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
@@ -11074,22 +11048,6 @@ export default function AppMap() {
                         )}
                       </div>
                     </div>
-
-                    {/* Incident Details Description */}
-                    {desc && (
-                      <div className="p-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-700 text-[11px] leading-relaxed">
-                        <div className="font-semibold text-gray-900 mb-0.5">突發狀況詳情:</div>
-                        {desc}
-                      </div>
-                    )}
-
-                    {/* Advice / Detour recommendation */}
-                    {props.advice && (
-                      <div className="p-2 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-[11px] leading-relaxed">
-                        <span className="font-semibold text-amber-800 mr-1">💡 避堵建議:</span>
-                        {props.advice}
-                      </div>
-                    )}
 
                     {/* Action Button */}
                     <div className="pt-0.5">
