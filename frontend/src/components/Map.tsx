@@ -7189,24 +7189,42 @@ export default function AppMap() {
             offset={[0, -12]}
             maxWidth="none"
           >
-            <div className="p-3.5 w-[320px] sm:w-[350px] max-w-[88vw] text-gray-800">
+            <div className="p-3.5 w-[340px] max-w-[90vw] text-gray-800">
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
-                <div className="flex items-center gap-2 min-w-0 pr-2">
-                  <span className="text-xl shrink-0">{selectedAirport.properties?.icon || '🛫'}</span>
+                <div className="flex items-start gap-2 min-w-0 pr-2">
+                  <span className={`w-3 h-3 rounded-full flex-shrink-0 mt-1 ${
+                    selectedAirport.properties?.sub_type === 'international_airport'
+                      ? 'bg-sky-500'
+                      : selectedAirport.properties?.sub_type === 'seaplane_base' || selectedAirport.properties?.sub_type === 'south_terminal'
+                      ? 'bg-teal-500'
+                      : 'bg-emerald-500'
+                  }`}></span>
                   <div className="min-w-0">
-                    <h3 className="font-bold text-gray-900 text-sm leading-tight truncate">
+                    <h3 className="font-bold text-gray-900 text-sm leading-snug break-words">
                       {selectedAirport.properties?.name}
                     </h3>
-                    <span className="text-[10px] text-gray-500 font-mono block truncate">
-                      {selectedAirport.properties?.name_en || ''}
-                    </span>
+                    {(selectedAirport.properties?.name_en || selectedAirport.properties?.local_area) && (
+                      <span className="text-[11px] text-gray-400 block leading-snug break-words mt-0.5">
+                        {selectedAirport.properties?.name_en || selectedAirport.properties?.local_area}
+                      </span>
+                    )}
                   </div>
                 </div>
                 <div className="flex items-center gap-1 shrink-0 -mt-1 -mr-1">
                   <button
-                    onClick={() => copyCoordinatesToClipboard(selectedAirport.geometry.coordinates[1], selectedAirport.geometry.coordinates[0])}
+                    onClick={() =>
+                      copyFacilityDetailsToClipboard({
+                        id: selectedAirport.properties?.id || 'airport',
+                        facility_type: 'airports',
+                        name: selectedAirport.properties?.name || '機場設施',
+                        local_area: selectedAirport.properties?.local_area || '',
+                        lon: selectedAirport.geometry.coordinates[0],
+                        lat: selectedAirport.geometry.coordinates[1],
+                        properties: selectedAirport.properties || {}
+                      })
+                    }
                     className="p-1 rounded-md text-gray-500 hover:text-cyan-600 hover:bg-cyan-50 transition-colors flex items-center justify-center shadow-xs border border-gray-100"
-                    title="複製坐標"
+                    title="複製名稱及地址"
                   >
                     <Copy className="w-3.5 h-3.5" />
                   </button>
@@ -7234,44 +7252,93 @@ export default function AppMap() {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-1.5 text-xs">
-                {selectedAirport.properties?.iata && (
-                  <div className="flex justify-between items-center py-0.5 border-b border-gray-50">
-                    <span className="text-gray-500">機場代碼</span>
-                    <span className="font-mono font-bold text-sky-700">
-                      IATA: {selectedAirport.properties.iata} / ICAO: {selectedAirport.properties.icao}
+              <div className="flex flex-col gap-2 text-xs">
+                <div className="bg-sky-50/80 p-2.5 rounded border border-sky-200 flex flex-col gap-1.5 text-[11px]">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">設施類別</span>
+                    <span className="font-bold text-sky-900 bg-sky-100/80 px-1.5 py-0.5 rounded">
+                      {selectedAirport.properties?.badge || '航空設施'}
                     </span>
                   </div>
-                )}
-                {selectedAirport.properties?.address && (
-                  <div className="flex justify-between items-start py-0.5 border-b border-gray-50">
-                    <span className="text-gray-500 shrink-0">地址</span>
-                    <span className="text-right text-gray-700">{selectedAirport.properties.address}</span>
-                  </div>
-                )}
-                {selectedAirport.properties?.transit_access && (
-                  <div className="flex justify-between items-start py-0.5 border-b border-gray-50">
-                    <span className="text-gray-500 shrink-0">大眾交通</span>
-                    <span className="text-right font-medium text-emerald-700">{selectedAirport.properties.transit_access}</span>
-                  </div>
-                )}
-                {selectedAirport.properties?.runways && (
-                  <div className="flex justify-between items-start py-0.5 border-b border-gray-50">
-                    <span className="text-gray-500 shrink-0">跑道長度</span>
-                    <span className="text-right text-gray-600 font-mono text-[11px]">{selectedAirport.properties.runways}</span>
-                  </div>
-                )}
-                {selectedAirport.properties?.operators && (
-                  <div className="flex justify-between items-start py-0.5 border-b border-gray-50">
-                    <span className="text-gray-500 shrink-0">主要航司</span>
-                    <span className="text-right text-gray-700">{selectedAirport.properties.operators}</span>
-                  </div>
-                )}
+                  {selectedAirport.properties?.iata && (
+                    <div className="flex justify-between items-center text-gray-600">
+                      <span className="shrink-0">機場代碼</span>
+                      <span className="font-mono font-bold text-sky-800 text-right">
+                        IATA: {selectedAirport.properties.iata} / ICAO: {selectedAirport.properties.icao}
+                      </span>
+                    </div>
+                  )}
+                  {selectedAirport.properties?.address && (
+                    <div className="flex justify-between items-start gap-2 text-gray-600">
+                      <span className="shrink-0">設施地址</span>
+                      <span className="font-semibold text-gray-800 text-right leading-snug">
+                        {selectedAirport.properties.address}
+                      </span>
+                    </div>
+                  )}
+                  {selectedAirport.properties?.local_area && (
+                    <div className="flex justify-between items-center text-gray-600">
+                      <span className="shrink-0">所在區域</span>
+                      <span className="font-medium text-gray-800 text-right">
+                        {selectedAirport.properties.local_area}
+                      </span>
+                    </div>
+                  )}
+                  {selectedAirport.properties?.transit_access && (
+                    <div className="flex justify-between items-start gap-2 text-gray-600">
+                      <span className="shrink-0">大眾交通</span>
+                      <span className="font-medium text-emerald-700 text-right leading-snug">
+                        {selectedAirport.properties.transit_access}
+                      </span>
+                    </div>
+                  )}
+                  {selectedAirport.properties?.runways && (
+                    <div className="flex justify-between items-start gap-2 text-gray-600">
+                      <span className="shrink-0">跑道長度</span>
+                      <span className="text-right text-gray-700 font-mono text-[10.5px] leading-snug">
+                        {selectedAirport.properties.runways}
+                      </span>
+                    </div>
+                  )}
+                  {selectedAirport.properties?.operators && (
+                    <div className="flex justify-between items-start gap-2 text-gray-600">
+                      <span className="shrink-0">主要航司</span>
+                      <span className="text-right font-medium text-gray-800 leading-snug">
+                        {selectedAirport.properties.operators}
+                      </span>
+                    </div>
+                  )}
+                  {selectedAirport.properties?.destinations && (
+                    <div className="flex justify-between items-start gap-2 text-gray-600">
+                      <span className="shrink-0">直航航點</span>
+                      <span className="text-right font-medium text-gray-800 leading-snug">
+                        {selectedAirport.properties.destinations}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
                 {selectedAirport.properties?.highlights && (
-                  <div className="mt-1 p-2 bg-emerald-50 rounded-lg text-[11px] text-emerald-800 border border-emerald-100">
+                  <div className="p-2 bg-emerald-50/80 rounded border border-emerald-200 text-[11px] text-emerald-900 leading-relaxed">
                     {selectedAirport.properties.highlights}
                   </div>
                 )}
+              </div>
+
+              {/* 設施通用坐標與複製按鈕 */}
+              <div className="flex items-center justify-between text-[11px] text-gray-500 pt-2.5 mt-2.5 border-t border-gray-100 font-mono">
+                <span className="flex items-center gap-1 text-gray-600">
+                  <span>📍</span>
+                  <span>{selectedAirport.geometry.coordinates[1].toFixed(6)}, {selectedAirport.geometry.coordinates[0].toFixed(6)}</span>
+                </span>
+                <button
+                  onClick={() => copyCoordinatesToClipboard(selectedAirport.geometry.coordinates[1], selectedAirport.geometry.coordinates[0])}
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-gray-100 hover:bg-cyan-50 hover:text-cyan-600 text-gray-700 transition-colors text-[10.5px] font-sans font-medium border border-gray-200/60 shadow-xs"
+                  title="複製坐標"
+                >
+                  <Copy className="w-3 h-3 text-cyan-600" />
+                  <span>複製坐標</span>
+                </button>
               </div>
             </div>
           </Popup>
@@ -7883,9 +7950,9 @@ export default function AppMap() {
                     selectedFacility.facility_type === 'homeless_shelters' ? 'bg-rose-500' : 'bg-violet-500'
                   }`}></span>
                   <div className="min-w-0">
-                    <h3 className="font-bold text-gray-900 text-sm leading-tight truncate">{selectedFacility.name}</h3>
+                    <h3 className="font-bold text-gray-900 text-sm leading-snug break-words">{selectedFacility.name}</h3>
                     {selectedFacility.local_area && (
-                      <span className="text-[11px] text-gray-400 block truncate">{selectedFacility.local_area}</span>
+                      <span className="text-[11px] text-gray-400 block leading-snug break-words">{selectedFacility.local_area}</span>
                     )}
                   </div>
                 </div>
