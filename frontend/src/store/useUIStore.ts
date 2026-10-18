@@ -205,7 +205,7 @@ export const useUIStore = create<UIState>()(
         traffic: true,
         bus: true,
         busRoutes: true,
-        busStops: false,
+        busStops: true,
         skytrainTrains: true,
         skytrainRoutes: true,
         skytrainStops: true,
@@ -316,34 +316,67 @@ export const useUIStore = create<UIState>()(
               (layer === 'evCharging' && (st.category === 'ev_charging' || st.id?.startsWith('ev_'))) ||
               (layer === 'vanWifi' && (st.category === 'van_wifi' || st.id?.startsWith('vanwifi_'))) ||
               (layer === 'airports' && st.category === 'airports') ||
-              (layer === 'bcferriesTerminals' && st.category === 'ferry_terminal') ||
+              ((layer === 'bcferriesTerminals' || layer === 'bcferriesRoutes') && st.category === 'ferry_terminal') ||
               (layer === 'bcferriesVehicles' && st.category === 'ferry_vehicle') ||
+              (layer === 'maritimeShipping' && st.category === 'maritime_vessel') ||
               (layer === 'marineTerminals' && st.category === 'marine_terminals') ||
               (layer === 'oneWayStreets' && (st.category === 'one_way_streets' || st.id?.startsWith('oneway_'))) ||
               (layer === 'snowRemovalRoutes' && (st.category === 'snow_removal_routes' || st.id?.startsWith('snow_'))) ||
               (layer === 'waterDistributionMains' && (st.category === 'water_distribution_mains' || st.id?.startsWith('water_'))) ||
               (layer === 'sewerMains' && (st.category === 'sewer_mains' || st.id?.startsWith('sewer_'))) ||
-              (layer === 'skytrainRoutes' && st.category === 'skytrain') ||
+              ((layer === 'skytrainRoutes' || layer === 'skytrainStops') && st.category === 'skytrain') ||
+              ((layer === 'seabusRoutes' || layer === 'seabusStops') && st.category === 'seabus') ||
+              ((layer === 'busRoutes' || layer === 'busStops') && (st.category === 'bus_stop' || st.category === 'bus_route')) ||
               (layer === 'bus' && st.category === 'bus');
             if (isTargetMatch) {
               nextSearchTarget = null;
             }
           }
+          const updatedLayers = {
+            ...state.layers,
+            [layer]: nextActive,
+          };
+          if (layer === 'skytrainRoutes' || layer === 'skytrainStops') {
+            updatedLayers.skytrainRoutes = nextActive;
+            updatedLayers.skytrainStops = nextActive;
+          } else if (layer === 'bcferriesRoutes' || layer === 'bcferriesTerminals') {
+            updatedLayers.bcferriesRoutes = nextActive;
+            updatedLayers.bcferriesTerminals = nextActive;
+          } else if (layer === 'busRoutes' || layer === 'busStops') {
+            updatedLayers.busRoutes = nextActive;
+            updatedLayers.busStops = nextActive;
+          } else if (layer === 'seabusRoutes' || layer === 'seabusStops') {
+            updatedLayers.seabusRoutes = nextActive;
+            updatedLayers.seabusStops = nextActive;
+          }
           return {
-            layers: {
-              ...state.layers,
-              [layer]: nextActive,
-            },
+            layers: updatedLayers,
             searchTarget: nextSearchTarget,
           };
         }),
       enableLayer: (layer: keyof UIState['layers']) =>
-        set((state) => ({
-          layers: {
+        set((state) => {
+          const updatedLayers = {
             ...state.layers,
             [layer]: true,
-          },
-        })),
+          };
+          if (layer === 'skytrainRoutes' || layer === 'skytrainStops') {
+            updatedLayers.skytrainRoutes = true;
+            updatedLayers.skytrainStops = true;
+          } else if (layer === 'bcferriesRoutes' || layer === 'bcferriesTerminals') {
+            updatedLayers.bcferriesRoutes = true;
+            updatedLayers.bcferriesTerminals = true;
+          } else if (layer === 'busRoutes' || layer === 'busStops') {
+            updatedLayers.busRoutes = true;
+            updatedLayers.busStops = true;
+          } else if (layer === 'seabusRoutes' || layer === 'seabusStops') {
+            updatedLayers.seabusRoutes = true;
+            updatedLayers.seabusStops = true;
+          }
+          return {
+            layers: updatedLayers,
+          };
+        }),
       resetAllLayers: () =>
         set((state) => {
           const allFalseLayers = Object.keys(state.layers).reduce((acc, k) => {

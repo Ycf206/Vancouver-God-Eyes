@@ -1022,9 +1022,14 @@ export default function AppMap() {
         else if (type === 'parking_meters' && !layers.parkingMeters) facilityClosed = true;
         else if (type === 'accessible_parking' && !layers.accessibleParking) facilityClosed = true;
         else if (type === 'motorcycle_parking' && !layers.motorcycleParking) facilityClosed = true;
+        else if (type === 'car_sharing' && !layers.carSharing) facilityClosed = true;
         else if (type === 'shared_bikes' && !layers.sharedBikes) facilityClosed = true;
+        else if (type === 'bikeways' && !layers.bikeways) facilityClosed = true;
         else if (type === 'escooter' && !layers.escooter) facilityClosed = true;
         else if (type === 'contours' && !layers.contours) facilityClosed = true;
+        else if (type === 'local_area_boundary' && !layers.localAreaBoundary) facilityClosed = true;
+        else if (type === 'marine_terminals' && !layers.marineTerminals) facilityClosed = true;
+        else if (type === 'crime_areas' && !layers.crimeAreas) facilityClosed = true;
         else if (type === 'traffic_speed_limits' && !layers.trafficSpeedLimits) facilityClosed = true;
         else if (type === 'bike_racks' && !layers.bikeRacks) facilityClosed = true;
         else if (type === 'postal_code_fsa' && !layers.postalCodeFSA) facilityClosed = true;
@@ -1046,6 +1051,7 @@ export default function AppMap() {
         else if (type === 'beach_water_quality' && !layers.beachWaterQuality) facilityClosed = true;
         else if (type === 'fire_hydrants' && !layers.fireHydrants) facilityClosed = true;
         else if (type === 'zoning_districts' && !layers.zoningDistricts) facilityClosed = true;
+        else if (type === 'public_trees' && !layers.publicTrees) facilityClosed = true;
 
         if (facilityClosed) {
           setSelectedFacility(null);
@@ -1073,8 +1079,8 @@ export default function AppMap() {
       }
     }
 
-    // 3. BC Ferries 碼頭與船隻 (碼頭已合併於 bcferriesRoutes '路線' 圖層下)
-    if (selectedTerminal && !layers.bcferriesRoutes && !layers.bcferriesTerminals) {
+    // 3. BC Ferries 碼頭與船隻、以及港口船運商船
+    if (selectedTerminal && !layers.bcferriesRoutes) {
       setSelectedTerminal(null);
       if (searchTarget && searchTarget.category === 'ferry_terminal') {
         setSearchTarget(null);
@@ -1083,6 +1089,12 @@ export default function AppMap() {
     if (selectedFerry && !layers.bcferriesVehicles) {
       setSelectedFerry(null);
       if (searchTarget && searchTarget.category === 'ferry_vehicle') {
+        setSearchTarget(null);
+      }
+    }
+    if (selectedMaritimeVessel && !layers.maritimeShipping) {
+      setSelectedMaritimeVessel(null);
+      if (searchTarget && searchTarget.category === 'maritime_vessel') {
         setSearchTarget(null);
       }
     }
@@ -1117,8 +1129,22 @@ export default function AppMap() {
         selectedStop.name.includes('Waterfront')
       )
     );
-    if (selectedStop && !layers.busStops && !isStopExplorationActive && !(isSeaBusStop && layers.seabusRoutes)) {
-      setSelectedStop(null);
+    if (selectedStop && !isStopExplorationActive) {
+      if (isSeaBusStop) {
+        if (!layers.seabusRoutes) {
+          setSelectedStop(null);
+          if (searchTarget && searchTarget.category === 'seabus') {
+            setSearchTarget(null);
+          }
+        }
+      } else {
+        if (!layers.busRoutes) {
+          setSelectedStop(null);
+          if (searchTarget && searchTarget.category === 'bus_stop') {
+            setSearchTarget(null);
+          }
+        }
+      }
     }
     if (selectedTrain && !layers.skytrainTrains) {
       setSelectedTrain(null);
@@ -1129,7 +1155,7 @@ export default function AppMap() {
       selectedSkytrainStation && 
       String(explorationSelectedFacility.id) === String(selectedSkytrainStation.stop_id)
     );
-    if (selectedSkytrainStation && !layers.skytrainStops && !layers.skytrainRoutes && !isStationExplorationActive) {
+    if (selectedSkytrainStation && !layers.skytrainRoutes && !isStationExplorationActive) {
       setSelectedSkytrainStation(null);
       if (searchTarget && searchTarget.category === 'skytrain') {
         setSearchTarget(null);
@@ -1150,13 +1176,15 @@ export default function AppMap() {
         setSearchTarget(null);
       } else if (searchTarget.category === 'airports' && !layers.airports) {
         setSearchTarget(null);
-      } else if (searchTarget.category === 'ferry_terminal' && !layers.bcferriesRoutes && !layers.bcferriesTerminals) {
+      } else if (searchTarget.category === 'ferry_terminal' && !layers.bcferriesRoutes) {
         setSearchTarget(null);
       } else if (searchTarget.category === 'ferry_vehicle' && !layers.bcferriesVehicles) {
         setSearchTarget(null);
+      } else if (searchTarget.category === 'maritime_vessel' && !layers.maritimeShipping) {
+        setSearchTarget(null);
       }
     }
-  }, [layers, selectedFacility, selectedAirport, selectedTerminal, selectedFerry, selectedBus, searchedBusRoute, selectedTrain, selectedSkytrainStation, searchTarget, setSearchTarget]);
+  }, [layers, selectedFacility, selectedAirport, selectedTerminal, selectedFerry, selectedMaritimeVessel, selectedBus, searchedBusRoute, selectedStop, selectedTrain, selectedSkytrainStation, searchTarget, setSearchTarget, isExploreOpen, exploreTab, radiusExploration, explorationSelectedFacility]);
 
 
   const fetchSkytrainStationSchedule = React.useCallback((stopId: string, stopName?: string, lon?: number, lat?: number) => {
@@ -2506,10 +2534,8 @@ export default function AppMap() {
       };
     }
 
-    if (layers.skytrainRoutes || layers.skytrainStops) {
-      if (layers.skytrainRoutes) {
-        style.sources['skytrain-tracks'] = { type: 'geojson', data: `${apiUrl}/api/geojson/tracks/skytrain` };
-      }
+    if (layers.skytrainRoutes) {
+      style.sources['skytrain-tracks'] = { type: 'geojson', data: `${apiUrl}/api/geojson/tracks/skytrain` };
       style.sources['skytrain-stops'] = { type: 'geojson', data: `${apiUrl}/api/geojson/stops/skytrain` };
     }
     if (layers.busRoutes && !searchedBusRoute && !selectedBus) {
@@ -2724,20 +2750,18 @@ export default function AppMap() {
       });
     }
 
-    // SkyTrain Routes & Stops (Merged under skytrainRoutes / skytrainStops)
-    if (layers.skytrainRoutes || layers.skytrainStops) {
-      if (layers.skytrainRoutes) {
-        style.layers.push({
-          id: 'skytrain-tracks-layer',
-          type: 'line',
-          source: 'skytrain-tracks',
-          paint: {
-            'line-color': ['get', 'color'],
-            'line-width': 3,
-            'line-opacity': 0.8
-          }
-        });
-      }
+    // SkyTrain Routes & Stops (Merged under skytrainRoutes)
+    if (layers.skytrainRoutes) {
+      style.layers.push({
+        id: 'skytrain-tracks-layer',
+        type: 'line',
+        source: 'skytrain-tracks',
+        paint: {
+          'line-color': ['get', 'color'],
+          'line-width': 3,
+          'line-opacity': 0.8
+        }
+      });
 
       // 1. 車站透明點擊感應層 (22px 寬容感應，徹底解決手機與電腦難以精確點擊的問題)
       style.layers.push({
@@ -5927,9 +5951,13 @@ export default function AppMap() {
             const isRecycling = layerId.startsWith('recycling');
             const isVanWifi = layerId.startsWith('van-wifi');
             const isTideStation = layerId.startsWith('tide-stations');
+            const derivedFacilityType = layerId
+              .replace(/-(?:symbol|cluster|casing|label|glow|hit|inner|fill|line|outline)-layer$/, '')
+              .replace(/-(?:layer|fill|line|label|glow|arrows)$/, '')
+              .replace(/-/g, '_');
             setSelectedFacility({
-              id: props.id || (props.object_id ? `${props.facility_type || (isTraffic ? 'traffic_conditions' : (isStreetLighting ? 'street_lighting' : (isVanWifi ? 'van_wifi' : (isTideStation ? 'tide' : (isBikeRack ? 'bike_rack' : (isWireless ? 'wireless' : (isCrosswalk ? 'crosswalk' : (isLitter ? 'litter' : (isRecycling ? 'recycling' : 'fac')))))))))}_${props.object_id}` : ''),
-              facility_type: props.facility_type || (isTraffic ? 'traffic_conditions' : (isStreetLighting ? 'street_lighting' : (isVanWifi ? 'van_wifi' : (isTideStation ? 'tide_stations' : (isFuel ? 'fuel' : (isTesla ? 'tesla' : (isMarineTerminal ? 'marine_terminals' : (isBikeRack ? 'bike_racks' : (isWireless ? 'wireless_facilities' : (isCrosswalk ? 'traffic_crosswalks' : (isLitter ? 'litter_containers' : (isRecycling ? 'recycling' : '')))))))))))),
+              id: props.id || (props.object_id ? `${props.facility_type || derivedFacilityType || 'fac'}_${props.object_id}` : ''),
+              facility_type: props.facility_type || (isTraffic ? 'traffic_conditions' : (isStreetLighting ? 'street_lighting' : (isVanWifi ? 'van_wifi' : (isTideStation ? 'tide_stations' : (isFuel ? 'fuel' : (isTesla ? 'tesla' : (isMarineTerminal ? 'marine_terminals' : (isBikeRack ? 'bike_racks' : (isWireless ? 'wireless_facilities' : (isCrosswalk ? 'traffic_crosswalks' : (isLitter ? 'litter_containers' : (isRecycling ? 'recycling' : derivedFacilityType)))))))))))),
               name: props.name || (isTraffic ? '獅門大橋即時路況' : (isStreetLighting ? (props.pole_number ? `路燈柱 #${props.pole_number}` : (props.service_panel_number ? `路燈控制盤 #${props.service_panel_number}` : '路燈')) : (isVanWifi ? (props.site_name || 'VanWiFi 公共無線網絡') : (isTideStation ? (props.english_name || '潮汐水位') : (isCrosswalk ? (props.location ? `斑馬線 - ${props.location}` : '行人斑馬線') : (isLitter ? (props.address ? `垃圾箱 - ${props.address}` : '公用垃圾箱') : (isBikeRack ? (props.location ? `單車架 - ${props.location}` : '公用單車架') : (isWireless ? (props.site_name || `無線設施 #${props.pole_number || ''}`) : (isRecycling ? (props.brand || '環保回收站') : (props.brand || (isFuel ? '加油站' : (isTesla ? 'Tesla 站點' : (isMarineTerminal ? '港口碼頭' : ''))))))))))))),
               local_area: props.waterway || props.area || props.local_area || props.location || props.company || props.address || props.city || '',
               lon: coords[0],
