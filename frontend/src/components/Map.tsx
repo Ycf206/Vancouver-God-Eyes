@@ -1042,8 +1042,8 @@ export default function AppMap() {
         else if (type === 'litter_containers' && !layers.litterContainers) facilityClosed = true;
         else if (type === 'van_wifi' && !layers.vanWifi) facilityClosed = true;
         else if (type === 'tide_stations' && !layers.tideStations) facilityClosed = true;
-        else if (type === 'traffic_conditions' && !layers.trafficConditions && !(isExploreOpen && exploreTab === 'traffic') && selectedFacility.id !== 'lions_gate_bridge_atis') facilityClosed = true;
-        else if (type === 'traffic_alerts' && !layers.trafficAlerts) facilityClosed = true;
+        else if ((type === 'traffic_conditions' || type === 'traffic_corridor') && !layers.trafficConditions && !(isExploreOpen && exploreTab === 'traffic') && selectedFacility.id !== 'lions_gate_bridge_atis' && selectedFacility.id !== searchTarget?.id) facilityClosed = true;
+        else if ((type === 'traffic_alerts' || type === 'traffic_incident') && !layers.trafficAlerts && !(isExploreOpen && exploreTab === 'traffic') && selectedFacility.id !== searchTarget?.id) facilityClosed = true;
         else if (type === 'road_closures' && !layers.roadClosures) facilityClosed = true;
         else if (type === 'road_construction' && !layers.roadConstruction) facilityClosed = true;
         else if (type === 'street_lighting' && !layers.streetLighting) facilityClosed = true;
@@ -1059,12 +1059,12 @@ export default function AppMap() {
         }
       }
 
-      if (!layers.trafficConditions && !(isExploreOpen && exploreTab === 'traffic')) {
+      if (!layers.trafficConditions && !(isExploreOpen && exploreTab === 'traffic') && searchTarget?.id !== selectedFacility?.id) {
         if (searchTarget?.category === 'traffic_corridor') {
           setSearchTarget(null);
         }
       }
-      if (!layers.trafficAlerts && !(isExploreOpen && exploreTab === 'traffic')) {
+      if (!layers.trafficAlerts && !(isExploreOpen && exploreTab === 'traffic') && searchTarget?.id !== selectedFacility?.id) {
         if (searchTarget?.category === 'traffic_incident') {
           setSearchTarget(null);
         }
@@ -2892,12 +2892,13 @@ export default function AppMap() {
       });
     }
 
-    // Road Facilities: TomTom Full-Street Live Traffic Flow Tiles (路況圖層：全大溫全部街道綠/黃/紅即時暢通度)
+    // Road Facilities: TomTom Full-Street Live Traffic Flow Tiles (路況圖層：全大溫全部街道綠/黃/紅即時暢通度，僅限大溫哥華區域)
     if (layers.trafficConditions) {
       style.sources['tomtom_traffic_flow'] = {
         type: 'raster',
         tiles: [`${apiUrl}/api/traffic/tiles/{z}/{x}/{y}.png?style=relative&thickness=2`],
         tileSize: 256,
+        bounds: [-123.32, 49.001, -122.40, 49.42],
         minzoom: 6,
         maxzoom: 19
       };
@@ -3204,7 +3205,7 @@ export default function AppMap() {
         source: 'traffic_alerts',
         minzoom: 12,
         layout: {
-          'text-field': ['coalesce', ['get', 'type_label'], ['get', 'subtype_zh'], ['get', 'type_zh'], '大眾通報'],
+          'text-field': ['coalesce', ['get', 'type_label'], ['get', 'subtype_zh'], ['get', 'type_zh'], '即時通報'],
           'text-size': ['interpolate', ['linear'], ['zoom'], 12, 10, 15, 12],
           'text-offset': [0, 1.45],
           'text-anchor': 'top',
@@ -7609,6 +7610,25 @@ export default function AppMap() {
               <div className="mt-1 px-2 py-0.5 rounded-md text-[11px] font-bold shadow-lg border backdrop-blur-md whitespace-nowrap bg-[#141720]/95 text-emerald-200 border-emerald-400">
                 <span>獅門大橋</span>
               </div>
+            </div>
+          </Marker>
+        )}
+
+        {/* 即時通報選中圖釘 (當在探索分頁點選通報時，在地圖上精準顯示標記圖釘) */}
+        {selectedFacility && (selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident') && selectedFacility.lat && selectedFacility.lon && (
+          <Marker
+            longitude={selectedFacility.lon}
+            latitude={selectedFacility.lat}
+            anchor="bottom"
+          >
+            <div className="relative flex flex-col items-center cursor-pointer z-40 select-none animate-pulse">
+              <div 
+                className="w-8 h-8 rounded-full border-2 border-white shadow-[0_0_15px_rgba(239,68,68,0.8)] flex items-center justify-center text-white text-sm"
+                style={{ backgroundColor: selectedFacility.properties?.color || '#ef4444' }}
+              >
+                <span>{selectedFacility.properties?.icon || '⚠️'}</span>
+              </div>
+              <div className="w-1.5 h-1.5 bg-red-600 rounded-full mt-0.5 shadow-sm" />
             </div>
           </Marker>
         )}

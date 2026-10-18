@@ -78,6 +78,18 @@ class TomTomTrafficService:
         if not api_key:
             return TRANSPARENT_1X1_PNG
 
+        # 只取得與顯示大溫哥華地區 (Metro Vancouver) 的圖磚，嚴格過濾美國與其他城市
+        # Metro Vancouver: 西界 -123.35, 東界 -122.40, 南界 49.001 (排除美加邊界以南/華盛頓州), 北界 49.42
+        import math
+        n = 2.0 ** z
+        tile_lon_min = x / n * 360.0 - 180.0
+        tile_lon_max = (x + 1) / n * 360.0 - 180.0
+        tile_lat_min = math.degrees(math.atan(math.sinh(math.pi * (1 - 2 * (y + 1) / n))))
+        tile_lat_max = math.degrees(math.atan(math.sinh(math.pi * (1 - 2 * y / n))))
+
+        if tile_lon_max < -123.35 or tile_lon_min > -122.40 or tile_lat_max < 49.001 or tile_lat_min > 49.42:
+            return TRANSPARENT_1X1_PNG
+
         valid_styles = {"absolute", "relative", "relative0", "relative0-dark", "relative-delay", "reduced-sensitivity"}
         if style not in valid_styles:
             style = "relative"
@@ -565,6 +577,96 @@ class TomTomTrafficService:
                 "status_color": "purple",
                 "trend": "worsening",
             }
+
+    def _get_major_roads_definition(self) -> List[Dict[str, Any]]:
+        """
+        Major Road Network & Other Major Thoroughfares defined from MajorRoad.txt
+        All displayed in English as requested.
+        """
+        return [
+            # Major Road Network - Downtown
+            {"id": "mrn_georgia_se", "name": "Georgia Street (southeast to Main St)", "group": "Major Road Network - Downtown", "freeflow": 50, "coords": [-123.1110, 49.2785], "length_km": 1.6},
+            {"id": "mrn_howe", "name": "Howe Street", "group": "Major Road Network - Downtown", "freeflow": 50, "coords": [-123.1255, 49.2780], "length_km": 1.8},
+            {"id": "mrn_nelson", "name": "Nelson Street (northwest to Howe St)", "group": "Major Road Network - Downtown", "freeflow": 50, "coords": [-123.1220, 49.2785], "length_km": 1.4},
+            {"id": "mrn_seymour", "name": "Seymour Street", "group": "Major Road Network - Downtown", "freeflow": 50, "coords": [-123.1200, 49.2800], "length_km": 1.8},
+            {"id": "mrn_smithe", "name": "Smithe Street (northwest to Howe St)", "group": "Major Road Network - Downtown", "freeflow": 50, "coords": [-123.1205, 49.2775], "length_km": 1.4},
+
+            # Major Road Network - East–west
+            {"id": "mrn_hastings", "name": "Hastings Street (west to Burrard St)", "group": "Major Road Network - East–west", "freeflow": 50, "coords": [-123.0800, 49.2812], "length_km": 5.8},
+            {"id": "mrn_mcgill", "name": "McGill Street (west to Nanaimo St)", "group": "Major Road Network - East–west", "freeflow": 50, "coords": [-123.0510, 49.2865], "length_km": 1.5},
+            {"id": "mrn_dundas", "name": "Dundas Street (east to Nanaimo St)", "group": "Major Road Network - East–west", "freeflow": 50, "coords": [-123.0560, 49.2835], "length_km": 1.8},
+            {"id": "mrn_powell", "name": "Powell Street (west to Hawks Ave)", "group": "Major Road Network - East–west", "freeflow": 50, "coords": [-123.0900, 49.2830], "length_km": 2.2},
+            {"id": "mrn_east_1st", "name": "East 1st Avenue", "group": "Major Road Network - East–west", "freeflow": 50, "coords": [-123.0650, 49.2690], "length_km": 4.5},
+            {"id": "mrn_terminal", "name": "Terminal Avenue", "group": "Major Road Network - East–west", "freeflow": 50, "coords": [-123.0900, 49.2730], "length_km": 2.4},
+            {"id": "mrn_broadway", "name": "Broadway", "group": "Major Road Network - East–west", "freeflow": 50, "coords": [-123.1250, 49.2635], "length_km": 7.8},
+            {"id": "mrn_west_10th", "name": "West 10th Avenue (east to Alma St)", "group": "Major Road Network - East–west", "freeflow": 50, "coords": [-123.1900, 49.2625], "length_km": 2.6},
+            {"id": "mrn_grandview", "name": "Grandview Highway (west to Nanaimo St)", "group": "Major Road Network - East–west", "freeflow": 60, "coords": [-123.0450, 49.2575], "length_km": 3.6},
+            {"id": "mrn_41st_ave", "name": "41st Avenue", "group": "Major Road Network - East–west", "freeflow": 50, "coords": [-123.1250, 49.2335], "length_km": 8.5},
+            {"id": "mrn_70th_ave", "name": "70th Avenue", "group": "Major Road Network - East–west", "freeflow": 50, "coords": [-123.1350, 49.2085], "length_km": 2.8},
+
+            # Major Road Network - North–south
+            {"id": "mrn_boundary", "name": "Boundary Road (north to Hastings St)", "group": "Major Road Network - North–south", "freeflow": 50, "coords": [-123.0235, 49.2650], "length_km": 7.2},
+            {"id": "mrn_clark", "name": "Clark Drive (north to Powell St)", "group": "Major Road Network - North–south", "freeflow": 50, "coords": [-123.0780, 49.2720], "length_km": 3.0},
+            {"id": "mrn_knight", "name": "Knight Street", "group": "Major Road Network - North–south", "freeflow": 50, "coords": [-123.0780, 49.2300], "length_km": 5.4},
+            {"id": "mrn_main_st", "name": "Main Street (between Broadway & Georgia St)", "group": "Major Road Network - North–south", "freeflow": 50, "coords": [-123.1000, 49.2700], "length_km": 2.2},
+            {"id": "mrn_oak_st", "name": "Oak Street (north to Broadway)", "group": "Major Road Network - North–south", "freeflow": 50, "coords": [-123.1285, 49.2450], "length_km": 4.8},
+            {"id": "mrn_cambie", "name": "Cambie Street", "group": "Major Road Network - North–south", "freeflow": 50, "coords": [-123.1155, 49.2450], "length_km": 6.2},
+            {"id": "mrn_granville", "name": "Granville Street", "group": "Major Road Network - North–south", "freeflow": 50, "coords": [-123.1385, 49.2450], "length_km": 7.5},
+
+            # Major Road Network - Other
+            {"id": "mrn_kingsway", "name": "Kingsway", "group": "Major Road Network - Other", "freeflow": 55, "coords": [-123.0650, 49.2450], "length_km": 6.8},
+            {"id": "mrn_marine_dr", "name": "Marine Drive", "group": "Major Road Network - Other", "freeflow": 60, "coords": [-123.1150, 49.2100], "length_km": 10.5},
+
+            # Other major thoroughfares - Downtown
+            {"id": "oth_burrard", "name": "Burrard Street", "group": "Other Major Thoroughfare - Downtown", "freeflow": 50, "coords": [-123.1235, 49.2835], "length_km": 2.5},
+            {"id": "oth_cordova", "name": "Cordova Street", "group": "Other Major Thoroughfare - Downtown", "freeflow": 50, "coords": [-123.1080, 49.2830], "length_km": 2.0},
+            {"id": "oth_davie", "name": "Davie Street", "group": "Other Major Thoroughfare - Downtown", "freeflow": 40, "coords": [-123.1310, 49.2790], "length_km": 1.6},
+            {"id": "oth_denman", "name": "Denman Street", "group": "Other Major Thoroughfare - Downtown", "freeflow": 40, "coords": [-123.1380, 49.2900], "length_km": 1.4},
+            {"id": "oth_dunsmuir", "name": "Dunsmuir Street", "group": "Other Major Thoroughfare - Downtown", "freeflow": 50, "coords": [-123.1170, 49.2825], "length_km": 1.5},
+            {"id": "oth_georgia_dw", "name": "Georgia Street (Downtown)", "group": "Other Major Thoroughfare - Downtown", "freeflow": 50, "coords": [-123.1200, 49.2840], "length_km": 2.2},
+            {"id": "oth_pacific_blvd", "name": "Pacific Boulevard", "group": "Other Major Thoroughfare - Downtown", "freeflow": 50, "coords": [-123.1200, 49.2730], "length_km": 2.8},
+            {"id": "oth_robson", "name": "Robson Street", "group": "Other Major Thoroughfare - Downtown", "freeflow": 40, "coords": [-123.1240, 49.2840], "length_km": 2.0},
+            {"id": "oth_thurlow", "name": "Thurlow Street", "group": "Other Major Thoroughfare - Downtown", "freeflow": 40, "coords": [-123.1280, 49.2845], "length_km": 1.5},
+
+            # Other major thoroughfares - East–west (west of Ontario St)
+            {"id": "oth_4th_ave", "name": "4th Avenue", "group": "Other Major Thoroughfare - Westside", "freeflow": 50, "coords": [-123.1600, 49.2680], "length_km": 4.5},
+            {"id": "oth_12th_ave_w", "name": "12th Avenue (West)", "group": "Other Major Thoroughfare - Westside", "freeflow": 50, "coords": [-123.1400, 49.2605], "length_km": 3.8},
+            {"id": "oth_16th_ave_w", "name": "16th Avenue (West)", "group": "Other Major Thoroughfare - Westside", "freeflow": 50, "coords": [-123.1450, 49.2565], "length_km": 5.2},
+            {"id": "oth_king_edward_w", "name": "King Edward Avenue (West)", "group": "Other Major Thoroughfare - Westside", "freeflow": 50, "coords": [-123.1400, 49.2485], "length_km": 4.6},
+            {"id": "oth_33rd_ave_w", "name": "33rd Avenue (West)", "group": "Other Major Thoroughfare - Westside", "freeflow": 50, "coords": [-123.1400, 49.2410], "length_km": 4.2},
+            {"id": "oth_41st_ave_hwy99", "name": "41st Avenue (part of Hwy 99)", "group": "Other Major Thoroughfare - Westside", "freeflow": 50, "coords": [-123.1550, 49.2335], "length_km": 4.0},
+            {"id": "oth_49th_ave_w", "name": "49th Avenue (West)", "group": "Other Major Thoroughfare - Westside", "freeflow": 50, "coords": [-123.1400, 49.2260], "length_km": 5.0},
+            {"id": "oth_57th_ave_w", "name": "57th Avenue (West)", "group": "Other Major Thoroughfare - Westside", "freeflow": 50, "coords": [-123.1400, 49.2185], "length_km": 4.8},
+
+            # Other major thoroughfares - North–south (west of Ontario St)
+            {"id": "oth_alma", "name": "Alma Street", "group": "Other Major Thoroughfare - Westside", "freeflow": 50, "coords": [-123.1860, 49.2600], "length_km": 2.2},
+            {"id": "oth_arbutus", "name": "Arbutus Street / West Boulevard", "group": "Other Major Thoroughfare - Westside", "freeflow": 50, "coords": [-123.1530, 49.2450], "length_km": 5.8},
+            {"id": "oth_macdonald", "name": "Macdonald Street", "group": "Other Major Thoroughfare - Westside", "freeflow": 50, "coords": [-123.1680, 49.2550], "length_km": 3.6},
+
+            # Other major thoroughfares - East–west (east of Ontario St)
+            {"id": "oth_prior_venables", "name": "Prior Street / Venables Street", "group": "Other Major Thoroughfare - Eastside", "freeflow": 50, "coords": [-123.0800, 49.2765], "length_km": 2.8},
+            {"id": "oth_2nd_gt_northern", "name": "2nd Ave / Great Northern Way / 6th Ave", "group": "Other Major Thoroughfare - Eastside", "freeflow": 50, "coords": [-123.0900, 49.2665], "length_km": 3.4},
+            {"id": "oth_12th_ave_e", "name": "12th Avenue (East)", "group": "Other Major Thoroughfare - Eastside", "freeflow": 50, "coords": [-123.0850, 49.2605], "length_km": 4.0},
+            {"id": "oth_16th_ave_e", "name": "16th Avenue (East)", "group": "Other Major Thoroughfare - Eastside", "freeflow": 50, "coords": [-123.0850, 49.2565], "length_km": 4.2},
+            {"id": "oth_22nd_ave", "name": "22nd Avenue (west to Nanaimo St)", "group": "Other Major Thoroughfare - Eastside", "freeflow": 50, "coords": [-123.0600, 49.2510], "length_km": 2.0},
+            {"id": "oth_29th_ave", "name": "29th Avenue (west to Nanaimo St)", "group": "Other Major Thoroughfare - Eastside", "freeflow": 50, "coords": [-123.0550, 49.2445], "length_km": 2.2},
+            {"id": "oth_33rd_ave_e", "name": "33rd Avenue (East)", "group": "Other Major Thoroughfare - Eastside", "freeflow": 50, "coords": [-123.0850, 49.2410], "length_km": 4.0},
+            {"id": "oth_king_edward_e", "name": "King Edward Avenue (East)", "group": "Other Major Thoroughfare - Eastside", "freeflow": 50, "coords": [-123.0850, 49.2485], "length_km": 4.2},
+            {"id": "oth_41st_ave_e", "name": "41st Avenue (east to Kingsway)", "group": "Other Major Thoroughfare - Eastside", "freeflow": 50, "coords": [-123.0650, 49.2335], "length_km": 3.2},
+            {"id": "oth_49th_ave_e", "name": "49th Avenue (East)", "group": "Other Major Thoroughfare - Eastside", "freeflow": 50, "coords": [-123.0850, 49.2260], "length_km": 4.8},
+            {"id": "oth_54th_ave", "name": "54th Avenue (east to Tyne St)", "group": "Other Major Thoroughfare - Eastside", "freeflow": 50, "coords": [-123.0350, 49.2215], "length_km": 2.4},
+            {"id": "oth_57th_ave_e", "name": "57th Avenue (east to Argyle Dr)", "group": "Other Major Thoroughfare - Eastside", "freeflow": 50, "coords": [-123.0650, 49.2185], "length_km": 2.6},
+
+            # Other major thoroughfares - North–south (east of Ontario St)
+            {"id": "oth_main_st_e", "name": "Main Street", "group": "Other Major Thoroughfare - Eastside", "freeflow": 50, "coords": [-123.1000, 49.2500], "length_km": 5.2},
+            {"id": "oth_fraser", "name": "Fraser Street", "group": "Other Major Thoroughfare - Eastside", "freeflow": 50, "coords": [-123.0900, 49.2400], "length_km": 6.0},
+            {"id": "oth_windsor", "name": "Windsor Street", "group": "Other Major Thoroughfare - Eastside", "freeflow": 50, "coords": [-123.0850, 49.2450], "length_km": 4.0},
+            {"id": "oth_commercial_vic", "name": "Commercial Drive / Victoria Drive", "group": "Other Major Thoroughfare - Eastside", "freeflow": 50, "coords": [-123.0680, 49.2600], "length_km": 5.6},
+            {"id": "oth_nanaimo", "name": "Nanaimo Street", "group": "Other Major Thoroughfare - Eastside", "freeflow": 50, "coords": [-123.0560, 49.2450], "length_km": 5.5},
+            {"id": "oth_renfrew", "name": "Renfrew Street", "group": "Other Major Thoroughfare - Eastside", "freeflow": 50, "coords": [-123.0440, 49.2500], "length_km": 4.8},
+            {"id": "oth_rupert_kerr", "name": "Rupert Street / Kerr Street", "group": "Other Major Thoroughfare - Eastside", "freeflow": 50, "coords": [-123.0330, 49.2350], "length_km": 6.2},
+            {"id": "oth_joyce", "name": "Joyce Street", "group": "Other Major Thoroughfare - Eastside", "freeflow": 50, "coords": [-123.0280, 49.2370], "length_km": 3.0},
+        ]
 
     def refresh(self, force: bool = False):
         now = time.time()
@@ -1153,21 +1255,78 @@ class TomTomTrafficService:
             },
         ]
 
-        # 計算整體大溫壅塞指數 (0~100) 與瓶頸摘要
-        avg_ratio = sum(
-            (c["current_speed_kmh"] / max(1.0, c["freeflow_speed_kmh"])) for c in corridors
-        ) / max(1, len(corridors))
-        max_delay = max((c["delay_min"] for c in corridors), default=0)
-        congestion_score = max(5, min(98, int(round((1.0 - avg_ratio) * 100)) + (max_delay * 2)))
+        # 5. 計算主要道路 (Major Road Network + Other major thoroughfares from MajorRoad.txt)
+        major_roads_defs = self._get_major_roads_definition()
+        major_roads: List[Dict[str, Any]] = []
 
-        if congestion_score < 22 and max_delay <= 2:
-            overall_status = "大溫全線暢通 (Free Flow)"
-        elif congestion_score < 45:
-            overall_status = "大溫大致順暢 (Light Traffic)"
-        elif congestion_score < 70:
-            overall_status = "大溫局部車多 (Moderate Traffic)"
+        for rd in major_roads_defs:
+            ff_spd = rd["freeflow"]
+            coords = rd["coords"]
+            rd_delay = 0.0
+            rd_speed = float(ff_spd)
+            # 檢查附近是否有即時事故通報影響
+            near_alert = None
+            for af in alert_features:
+                ap = af["properties"]
+                dist = ((ap["lat"] - coords[1]) ** 2 + (ap["lon"] - coords[0]) ** 2) ** 0.5
+                if dist < 0.012: # ~1.0 km 內
+                    near_alert = ap
+                    break
+
+            if near_alert:
+                alert_delay = float(near_alert.get("delay_min", 4.0))
+                rd_delay = alert_delay
+                rd_speed = max(18.0, round(ff_spd * 0.6))
+
+            rd_cls = self._classify_congestion(rd_speed, ff_spd, rd_delay)
+
+            # 英文狀態描述 (依使用者要求：除了 7 大幹道，主要道路清單請用英文顯示)
+            en_status = "Free Flow"
+            if rd_delay >= 8 or rd_cls["level"] >= 3:
+                en_status = "Heavy Traffic"
+            elif rd_delay >= 3 or rd_cls["level"] == 2:
+                en_status = "Moderate Traffic"
+            elif rd_delay >= 1 or rd_cls["level"] == 1:
+                en_status = "Light Traffic"
+
+            major_roads.append({
+                "id": rd["id"],
+                "name": rd["name"],
+                "english_name": rd["name"],
+                "route": rd["group"].split("-")[-1].strip(),
+                "badge": rd["group"],
+                "group": rd["group"],
+                "status": en_status,
+                "status_zh": rd_cls["status"],
+                "status_color": rd_cls["status_color"],
+                "color": rd_cls["color"],
+                "current_speed_kmh": int(round(rd_speed)),
+                "freeflow_speed_kmh": ff_spd,
+                "delay_min": int(round(rd_delay)),
+                "length_km": rd["length_km"],
+                "trend": rd_cls["trend"],
+                "center": coords,
+                "zoom": 14.5,
+                "key_bottleneck": f"Near {near_alert.get('street', 'arterial')}: {near_alert.get('description', '')}" if near_alert else "Normal flow along arterial"
+            })
+
+        # 計算全體道路 (7大幹道 + 主要道路) 暢通數量與城市整體路況
+        # 使用者要求：大溫全線暢通(Free Flow) 刪除大溫 和(Free Flow), 顯示城市整體路況
+        # 後面數字 "5/100" 分子是暢通的數量, 分母是所有 MajorRoad.txt 的道路 (包括 7 大幹道, Major Road Network 和 Other major thoroughfares)
+        all_monitored_roads = corridors + major_roads
+        total_roads_count = len(all_monitored_roads)
+        freeflow_roads_count = sum(1 for r in all_monitored_roads if r["delay_min"] <= 1)
+        severe_roads_count = sum(1 for r in all_monitored_roads if r["delay_min"] >= 5 or (isinstance(r.get("status"), str) and ("Heavy" in r["status"] or "嚴重" in r["status"] or "重度" in r["status"])))
+
+        # 城市整體路況 (無 "大溫" 與 "(Free Flow)")
+        if severe_roads_count == 0 and freeflow_roads_count >= int(total_roads_count * 0.9):
+            city_status = "全線暢通"
+        elif severe_roads_count <= 2 and freeflow_roads_count >= int(total_roads_count * 0.75):
+            city_status = "大致順暢"
+        elif severe_roads_count <= 5:
+            city_status = "局部車多"
         else:
-            overall_status = "大溫交通繁忙 (Heavy Congestion)"
+            city_status = "交通繁忙"
 
         worst_c = max(corridors, key=lambda x: x["delay_min"])
         if worst_c["delay_min"] >= 3:
@@ -1181,11 +1340,15 @@ class TomTomTrafficService:
             "has_tomtom_key": bool(api_key),
             "updated_at": now_iso,
             "overall_congestion_score": congestion_score,
-            "overall_status": overall_status,
+            "overall_status": city_status,
+            "freeflow_roads_count": freeflow_roads_count,
+            "total_roads_count": total_roads_count,
+            "severe_roads_count": severe_roads_count,
             "total_jams": sum(1 for c in corridors if c["delay_min"] >= 3),
             "total_incidents": len(alert_features),
             "worst_corridor": worst_corridor,
             "corridors": corridors,
+            "major_roads": major_roads,
             "top_alerts": [feat["properties"] for feat in alert_features[:12]],
         }
 

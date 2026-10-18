@@ -270,8 +270,8 @@ export default function LayerPanel() {
             <LayerButton layerKey="trafficCameras" label="交通攝影機" icon={Camera} colorClass="text-cyan-400" activeBg="bg-[#14262b]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.15)]" />
             <LayerButton layerKey="safetyCameras" label="路口安全相機" icon={Siren} colorClass="text-rose-400" activeBg="bg-[#2b171c]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.15)]" />
 
-            {/* Row 10: 大眾通報 | 路況 */}
-            <LayerButton layerKey="trafficAlerts" label="大眾通報" icon={Megaphone} title="大眾通報：TomTom 即時標出事故、封路、施工與危險障礙點" colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
+            {/* Row 10: 即時通報 | 路況 */}
+            <LayerButton layerKey="trafficAlerts" label="即時通報" icon={Megaphone} title="即時通報：TomTom 即時標出事故、封路、施工與危險障礙點" colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
             <LayerButton layerKey="trafficConditions" label="路況" icon={Activity} title="即時路況：TomTom 全大溫街道即時暢通度 (綠/黃/紅)" colorClass="text-emerald-400" activeBg="bg-[#142820]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
 
             {/* Row 11: 鏟雪路線 */}

@@ -105,10 +105,14 @@ export interface TrafficSummaryData {
   updated_at: string;
   overall_congestion_score: number;
   overall_status: string;
+  freeflow_roads_count?: number;
+  total_roads_count?: number;
+  severe_roads_count?: number;
   total_jams: number;
   total_incidents: number;
   worst_corridor: string;
   corridors: TrafficCorridorItem[];
+  major_roads?: TrafficCorridorItem[];
   top_alerts: TrafficIncidentItem[];
 }
 
@@ -582,7 +586,7 @@ function ExploreContent() {
   // --- TomTom Live Traffic states ---
   const [trafficSummary, setTrafficSummary] = useState<TrafficSummaryData | null>(null);
   const [loadingTraffic, setLoadingTraffic] = useState<boolean>(false);
-  const [trafficFilter, setTrafficFilter] = useState<'all' | 'severe' | 'bridges' | 'incidents'>('all');
+  const [trafficFilter, setTrafficFilter] = useState<'all' | 'major_roads' | 'severe' | 'incidents'>('all');
   const [trafficSearchQuery, setTrafficSearchQuery] = useState<string>('');
 
   // 氣溫單位轉換輔助函式
@@ -2209,10 +2213,10 @@ function ExploreContent() {
     }
     setSearchTarget({
       id: `alert_${alert.id}`,
-      title: `${alert.icon || '⚠️'} ${alert.type_label || alert.subtype_zh || alert.type_zh || '大眾通報'}`,
+      title: `${alert.icon || '⚠️'} ${alert.type_label || alert.subtype_zh || alert.type_zh || '即時通報'}`,
       subtitle: `${alert.street || alert.city || '事故路段'} · 延誤約 ${alert.delay_min ?? alert.delay_minutes ?? 0} 分鐘`,
       category: 'traffic_incident',
-      badge: '大眾通報',
+      badge: '即時通報',
       icon: alert.icon || '⚠️',
       lat: coords[1],
       lon: coords[0],
@@ -2226,15 +2230,10 @@ function ExploreContent() {
     });
   };
 
-  // Filtered corridors based on tab & query
+  // Filtered corridors (7大幹道) based on query
   const filteredCorridors = useMemo(() => {
     if (!trafficSummary || !Array.isArray(trafficSummary.corridors)) return [];
     let list = trafficSummary.corridors;
-    if (trafficFilter === 'severe') {
-      list = list.filter((c) => (c.delay_min || 0) >= 10 || (c.status && (c.status.includes('嚴重') || c.status.includes('重度'))));
-    } else if (trafficFilter === 'bridges') {
-      list = list.filter((c) => (c.name && (c.name.includes('橋') || c.name.includes('隧道') || c.name.includes('Bridge') || c.name.includes('Tunnel'))));
-    }
     if (trafficSearchQuery.trim()) {
       const q = trafficSearchQuery.toLowerCase().trim();
       list = list.filter((c) => 
@@ -2246,7 +2245,54 @@ function ExploreContent() {
       );
     }
     return list;
-  }, [trafficSummary, trafficFilter, trafficSearchQuery]);
+  }, [trafficSummary, trafficSearchQuery]);
+
+  // Filtered major roads (主要道路 - Major Road Network + Other major thoroughfares from MajorRoad.txt)
+  const filteredMajorRoads = useMemo(() => {
+    if (!trafficSummary || !Array.isArray(trafficSummary.major_roads)) return [];
+    let list = trafficSummary.major_roads;
+    if (trafficSearchQuery.trim()) {
+      const q = trafficSearchQuery.toLowerCase().trim();
+      list = list.filter((c) => 
+        (c.name && c.name.toLowerCase().includes(q)) ||
+        (c.english_name && c.english_name.toLowerCase().includes(q)) ||
+        (c.route && c.route.toLowerCase().includes(q)) ||
+        (c.badge && c.badge.toLowerCase().includes(q)) ||
+        (c.key_bottleneck && c.key_bottleneck.toLowerCase().includes(q))
+      );
+    }
+    return list;
+  }, [trafficSummary, trafficSearchQuery]);
+
+  // Filtered severe roads (嚴重壅塞 - 篩選出目前全線有延誤或壅塞之幹道與主要道路)
+  const filteredSevereRoads = useMemo(() => {
+    if (!trafficSummary) return [];
+    const all = [
+      ...(trafficSummary.corridors || []),
+      ...(trafficSummary.major_roads || [])
+    ];
+    let list = all.filter((c) => 
+      (c.delay_min || 0) >= 3 || 
+      (c.status && (
+        c.status.toLowerCase().includes('heavy') || 
+        c.status.toLowerCase().includes('moderate') || 
+        c.status.includes('嚴重') || 
+        c.status.includes('重度') || 
+        c.status.includes('車多')
+      ))
+    );
+    if (trafficSearchQuery.trim()) {
+      const q = trafficSearchQuery.toLowerCase().trim();
+      list = list.filter((c) => 
+        (c.name && c.name.toLowerCase().includes(q)) ||
+        (c.english_name && c.english_name.toLowerCase().includes(q)) ||
+        (c.route && c.route.toLowerCase().includes(q)) ||
+        (c.badge && c.badge.toLowerCase().includes(q)) ||
+        (c.key_bottleneck && c.key_bottleneck.toLowerCase().includes(q))
+      );
+    }
+    return list;
+  }, [trafficSummary, trafficSearchQuery]);
 
   const filteredTrafficAlerts = useMemo(() => {
     if (!trafficSummary || !Array.isArray(trafficSummary.top_alerts)) return [];
@@ -4773,13 +4819,10 @@ function ExploreContent() {
                 <Activity className="w-4 h-4 text-orange-400" />
                 <span>路況</span>
               </span>
-              <span className="text-[10px] text-gray-400 truncate">
-                · TomTom 7 大動脈與橋隧即時精算
-              </span>
             </div>
 
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] text-orange-400 bg-orange-950/70 border border-orange-800/60 px-1.5 py-0.5 rounded font-mono font-medium">
+              <span className="text-[10px] text-orange-400 bg-orange-950/70 border border-orange-800/60 px-1.5 py-0.5 rounded font-mono font-medium whitespace-nowrap shrink-0">
                 每 5 分鐘更新
               </span>
               <a
@@ -4808,17 +4851,29 @@ function ExploreContent() {
               <div className="flex items-center gap-1.5 min-w-0">
                 <span className="text-xs">🚦</span>
                 <span className="font-semibold text-white truncate text-[11px]">
-                  {trafficSummary?.overall_status || '全區暢通'}
+                  城市路況：{(trafficSummary?.overall_status || '全線暢通').replace(/大溫/g, '').replace(/\(Free Flow\)/g, '').replace(/\(Light Traffic\)/g, '').replace(/\(Moderate Traffic\)/g, '').replace(/\(Heavy Congestion\)/g, '').trim()}
                 </span>
-                <span className={`text-[10px] font-bold font-mono px-1.5 py-0.2 rounded border shrink-0 ${
-                  (trafficSummary?.overall_congestion_score ?? 18) < 35
-                    ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30'
-                    : (trafficSummary?.overall_congestion_score ?? 18) < 60
-                    ? 'text-amber-400 bg-amber-500/10 border-amber-500/30'
-                    : 'text-orange-400 bg-orange-500/10 border-orange-500/30'
-                }`}>
-                  {trafficSummary?.overall_congestion_score ?? 18}/100
-                </span>
+                {(() => {
+                  const totalCount = trafficSummary?.total_roads_count || ((trafficSummary?.corridors?.length || 7) + (trafficSummary?.major_roads?.length || 58));
+                  const freeflowCount = trafficSummary?.freeflow_roads_count ?? (
+                    (trafficSummary?.corridors?.filter(c => (c.delay_min || 0) <= 1)?.length || 7) +
+                    (trafficSummary?.major_roads?.filter(r => (r.delay_min || 0) <= 1)?.length || 58)
+                  );
+                  return (
+                    <span 
+                      title={`暢通道路：${freeflowCount} / ${totalCount} 條 (所有主要幹道與主要道路)`}
+                      className={`text-[10px] font-bold font-mono px-1.5 py-0.2 rounded border shrink-0 ${
+                        freeflowCount / Math.max(1, totalCount) >= 0.85
+                          ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30'
+                          : freeflowCount / Math.max(1, totalCount) >= 0.65
+                          ? 'text-amber-400 bg-amber-500/10 border-amber-500/30'
+                          : 'text-orange-400 bg-orange-500/10 border-orange-500/30'
+                      }`}
+                    >
+                      {freeflowCount}/{totalCount}
+                    </span>
+                  );
+                })()}
               </div>
               <div className="flex items-center gap-1.5 text-[10px] text-gray-400 font-mono shrink-0">
                 <span>7大動脈 <strong className="text-emerald-400">{trafficSummary?.corridors?.length || 7}</strong></span>
@@ -4848,8 +4903,8 @@ function ExploreContent() {
             <div className="grid grid-cols-4 gap-1 p-0.5 bg-[#121622] rounded-lg border border-[#222838]">
               {[
                 { key: 'all', label: '7大幹道' },
+                { key: 'major_roads', label: '主要道路' },
                 { key: 'severe', label: '嚴重壅塞' },
-                { key: 'bridges', label: '關鍵橋隧' },
                 { key: 'incidents', label: '即時通報' },
               ].map((pill) => (
                 <button
@@ -4937,13 +4992,27 @@ function ExploreContent() {
                 ))
               )
             ) : (
-              /* Corridors List */
-              filteredCorridors.length === 0 ? (
-                <div className="py-12 text-center text-gray-400 text-xs">
-                  {trafficFilter === 'severe' ? '🎉 目前全大溫 7 大幹道均無嚴重壅塞路段' : '目前查無符合條件的主要幹道路況'}
-                </div>
-              ) : (
-                filteredCorridors.map((corridor) => {
+              /* Corridors / Major Roads / Severe Congestion List */
+              (() => {
+                const activeList = trafficFilter === 'all' 
+                  ? filteredCorridors 
+                  : trafficFilter === 'major_roads' 
+                  ? filteredMajorRoads 
+                  : filteredSevereRoads;
+
+                if (activeList.length === 0) {
+                  return (
+                    <div className="py-12 text-center text-gray-400 text-xs">
+                      {trafficFilter === 'severe'
+                        ? '🎉 目前全大溫主要幹道與主要道路均無嚴重壅塞路段'
+                        : trafficFilter === 'major_roads'
+                        ? '目前查無符合條件的主要道路'
+                        : '目前查無符合條件的 7 大幹道路況'}
+                    </div>
+                  );
+                }
+
+                return activeList.map((corridor) => {
                   const statusBg = corridor.status_color === 'red' ? 'bg-red-950/80 text-red-200 border-red-800' :
                     corridor.status_color === 'orange' ? 'bg-orange-950/80 text-orange-200 border-orange-800' :
                     corridor.status_color === 'amber' ? 'bg-amber-950/80 text-amber-200 border-amber-800' :
@@ -4952,6 +5021,10 @@ function ExploreContent() {
                   const delayColor = corridor.delay_min >= 12 ? 'text-rose-400' :
                     corridor.delay_min >= 8 ? 'text-orange-400' :
                     corridor.delay_min >= 3 ? 'text-amber-400' : 'text-emerald-400';
+
+                  // 2.6: 除了 7 大幹道，主要道路清單請用英文顯示
+                  const isMajorRoadTab = trafficFilter === 'major_roads';
+                  const displayName = isMajorRoadTab ? (corridor.english_name || corridor.name) : corridor.name;
 
                   return (
                     <div
@@ -4964,7 +5037,7 @@ function ExploreContent() {
                         <div className="min-w-0">
                           <div className="flex items-center gap-1.5">
                             <span className="font-bold text-xs text-white group-hover:text-orange-300 transition-colors">
-                              {corridor.name}
+                              {displayName}
                             </span>
                           </div>
                           <div className="flex items-center gap-1.5 mt-0.5 text-[10px] text-gray-400">
@@ -4986,13 +5059,15 @@ function ExploreContent() {
                       {/* Middle Row: Delay & Current Speed */}
                       <div className="grid grid-cols-2 gap-1.5 bg-[#0e111a] p-1.5 rounded border border-[#1e2333]">
                         <div className="flex flex-col">
-                          <span className="text-[9.5px] text-gray-400">預計通過延誤</span>
+                          <span className="text-[9.5px] text-gray-400">{isMajorRoadTab ? 'Est. Delay' : '預計通過延誤'}</span>
                           <span className={`font-bold font-mono text-xs ${delayColor}`}>
-                            {corridor.delay_min <= 0 ? '+0 分鐘 (順暢)' : `+${corridor.delay_min} 分鐘`}
+                            {corridor.delay_min <= 0 
+                              ? (isMajorRoadTab ? '+0 min (Free Flow)' : '+0 分鐘 (順暢)') 
+                              : (isMajorRoadTab ? `+${corridor.delay_min} min` : `+${corridor.delay_min} 分鐘`)}
                           </span>
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-[9.5px] text-gray-400">平均車速 / 速限</span>
+                          <span className="text-[9.5px] text-gray-400">{isMajorRoadTab ? 'Speed / Limit' : '平均車速 / 速限'}</span>
                           <div className="flex items-baseline gap-1">
                             <span className="font-bold font-mono text-xs text-white">
                               {corridor.current_speed_kmh}
@@ -5002,7 +5077,7 @@ function ExploreContent() {
                         </div>
                       </div>
 
-                      {/* Direction Segments Breakdown */}
+                      {/* Direction Segments Breakdown (if available) */}
                       {corridor.segments && corridor.segments.length > 0 && (
                         <div className="flex flex-col gap-1 text-[10px]">
                           {corridor.segments.map((seg, idx) => (
@@ -5034,17 +5109,36 @@ function ExploreContent() {
 
                       {/* Bottom row: Trend indicator */}
                       <div className="flex items-center text-[10px] pt-0.5 text-gray-400 border-t border-[#1e2333]/70">
-                        <span>{corridor.trend === 'worsening' ? '↗️ 車流加劇中' : corridor.trend === 'improving' ? '↘️ 車流改善中' : corridor.delay_min <= 1 ? '✅ 全線車流順暢' : '➡️ 車流穩定'}</span>
+                        <span>{corridor.trend === 'worsening' ? (isMajorRoadTab ? '↗️ Congestion building' : '↗️ 車流加劇中') : corridor.trend === 'improving' ? (isMajorRoadTab ? '↘️ Conditions easing' : '↘️ 車流改善中') : corridor.delay_min <= 1 ? (isMajorRoadTab ? '✅ Free flow' : '✅ 全線車流順暢') : (isMajorRoadTab ? '➡️ Flow steady' : '➡️ 車流穩定')}</span>
                       </div>
                     </div>
                   );
-                })
-              )
+                });
+              })()
             )}
           </div>
 
+          {/* 2.7: 底部文字: 共 x 條主要幹道及橋隧 (x代表該分頁的清單總數), 然後下一行: 資料來源：TomTom */}
+          <div className="flex flex-col text-[10.5px] text-gray-400 px-1 pt-1 border-t border-[#1e2333]/70 shrink-0">
+            {(() => {
+              const currentTabItemCount = trafficFilter === 'all'
+                ? filteredCorridors.length
+                : trafficFilter === 'major_roads'
+                ? filteredMajorRoads.length
+                : trafficFilter === 'severe'
+                ? filteredSevereRoads.length
+                : filteredTrafficAlerts.length;
+              return (
+                <>
+                  <span className="font-medium text-gray-300">共 {currentTabItemCount} 條主要幹道及橋隧</span>
+                  <span className="text-[9.5px] text-gray-500">資料來源：TomTom</span>
+                </>
+              );
+            })()}
+          </div>
+
           {/* Bottom Action Button: Link to TomTom Live Traffic */}
-          <div className="pt-1 border-t border-[#222838] shrink-0">
+          <div className="pt-0.5 shrink-0">
             <a
               href="https://plan.tomtom.com/en/?p=49.24943,-123.12845,11.71z"
               target="_blank"
@@ -5310,12 +5404,21 @@ function ExploreContent() {
           {activeTab === 'alerts' && (
             <span>共 {filteredAndSortedAlerts.banners.length + filteredAndSortedAlerts.regular.length} 則 TransLink 即時運輸警報</span>
           )}
-          {activeTab === 'traffic' && (
-            <>
-              <span>大溫哥華 7 大主要幹道與橋隧即時延誤</span>
-              <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：TomTom Traffic API</span>
-            </>
-          )}
+          {activeTab === 'traffic' && (() => {
+            const currentTabItemCount = trafficFilter === 'all'
+              ? filteredCorridors.length
+              : trafficFilter === 'major_roads'
+              ? filteredMajorRoads.length
+              : trafficFilter === 'severe'
+              ? filteredSevereRoads.length
+              : filteredTrafficAlerts.length;
+            return (
+              <>
+                <span>共 {currentTabItemCount} 條主要幹道及橋隧</span>
+                <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：TomTom</span>
+              </>
+            );
+          })()}
           {activeTab === 'border' && (
             <>
               <span>美加邊境 5 大陸路關口即時等候時間</span>
