@@ -86,7 +86,27 @@ def update_road_closures():
         if not geometry:
             continue
 
-        proj_name = r.get("project") or r.get("location") or r.get("street") or f"交通封閉項目 #{idx+1}"
+        url = r.get("url_link") or ""
+        proj_val = r.get("project") or ""
+        loc_val = r.get("location") or ""
+        street_val = r.get("street") or ""
+        comp_date_val = r.get("comp_date") or ""
+        sched_val = ""
+
+        if "3d8e433d" in url:
+            proj_val = proj_val or "Hawks Ave Closure Pilot"
+            loc_val = loc_val or "Hawks Ave Closure Pilot"
+            street_val = street_val or "Hawks Ave"
+            sched_val = "Mar 19, 2025 - Jan 1, 2028"
+            comp_date_val = comp_date_val or "2028-01-01"
+        elif "36e847e9" in url:
+            proj_val = proj_val or "W 14th Av, Birch St, and Alder St"
+            loc_val = loc_val or "W 14th Av, Birch St, and Alder St"
+            street_val = street_val or "W 14th Av, Birch St, and Alder St"
+            sched_val = "Jul 27, 2026 - Oct 19, 2026; Weekdays; 7:00 AM - 3:00 PM"
+            comp_date_val = comp_date_val or "2026-10-19"
+
+        proj_name = proj_val or loc_val or street_val or f"交通封閉項目 #{idx+1}"
         feat_id = f"closure_{idx+1}"
         features.append({
             "type": "Feature",
@@ -95,11 +115,12 @@ def update_road_closures():
                 "id": feat_id,
                 "facility_type": "road_closures",
                 "name": proj_name,
-                "project": r.get("project") or "",
-                "street": r.get("street") or "",
-                "location": r.get("location") or "",
-                "comp_date": r.get("comp_date") or "",
-                "url_link": r.get("url_link") or "",
+                "project": proj_val,
+                "street": street_val,
+                "location": loc_val,
+                "schedule": sched_val,
+                "comp_date": comp_date_val,
+                "url_link": url,
                 "geo_point_2d": pt
             },
             "geometry": geometry

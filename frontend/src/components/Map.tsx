@@ -8103,7 +8103,7 @@ export default function AppMap() {
                         return selectedFacility.name;
                       })()}
                     </h3>
-                    {(selectedFacility.local_area || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || (selectedFacility.facility_type === 'car_sharing' && selectedFacility.properties?.operator === 'Modo')) && (
+                    {(selectedFacility.local_area || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || (selectedFacility.facility_type === 'car_sharing' && selectedFacility.properties?.operator === 'Modo')) && (
                       <span className="text-[11px] text-gray-400 block leading-snug break-words">
                         {(() => {
                           if (selectedFacility.facility_type === 'traffic_speed_limits') return 'Vancouver, BC';
@@ -8113,6 +8113,7 @@ export default function AppMap() {
                           if (selectedFacility.facility_type === 'bike_racks') return 'Vancouver, BC';
                           if (selectedFacility.facility_type === 'shared_bikes') return 'Vancouver, BC';
                           if (selectedFacility.facility_type === 'tesla') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
+                          if (selectedFacility.facility_type === 'road_closures') return 'Vancouver, BC';
                           return selectedFacility.local_area;
                         })()}
                       </span>
@@ -8333,7 +8334,7 @@ export default function AppMap() {
               {selectedFacility.facility_type === 'ev_charging' && (
                 <div className="flex flex-col gap-1.5 text-xs">
                   <div className="flex justify-between items-center bg-emerald-50 p-1.5 rounded">
-                    <span className="text-emerald-700 font-medium">充電接口 (Ports)</span>
+                    <span className="text-emerald-700 font-medium">充電接口</span>
                     <span className="font-bold text-emerald-800 text-sm">{selectedFacility.properties.ports || 2} 個</span>
                   </div>
                   {selectedFacility.properties.connectors && (
@@ -8367,7 +8368,7 @@ export default function AppMap() {
               {selectedFacility.facility_type === 'escooter' && (
                 <div className="flex flex-col gap-1.5 text-xs">
                   <div className="flex justify-between items-center bg-lime-50 p-1.5 rounded">
-                    <span className="text-lime-800 font-medium">車位容量 (Capacity)</span>
+                    <span className="text-lime-800 font-medium">車位容量</span>
                     <span className="font-bold text-lime-900 text-sm">{selectedFacility.properties.station_size || '—'} 輛</span>
                   </div>
                   {selectedFacility.properties.station_number && (
@@ -8422,7 +8423,7 @@ export default function AppMap() {
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-xs flex items-center gap-1.5">
                         <span>🚗</span>
-                        <span>{selectedFacility.properties.operator === 'Modo' ? '車位專用站點 (往返式原站還車)' : '車位專用站點'}</span>
+                        <span>車位專用站點</span>
                       </span>
                       <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded text-white ${
                         selectedFacility.properties.operator === 'Modo' ? 'bg-red-600' : 'bg-cyan-600'
@@ -11059,53 +11060,36 @@ export default function AppMap() {
               {/* Road Closures (交通封閉) Details */}
               {selectedFacility.facility_type === 'road_closures' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-rose-500/10 p-2.5 rounded-lg border border-rose-500/30 flex flex-col gap-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-rose-950 text-xs flex items-center gap-1.5">
-                        <span className="text-base text-rose-600 font-bold">⛔</span>
-                        <span className="truncate max-w-[190px]">{selectedFacility.name}</span>
-                      </span>
-                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-600 text-white shrink-0">
-                        交通封閉
-                      </span>
-                    </div>
-                    <div className="text-[11px] text-rose-900 font-medium">
-                      🚫 溫哥華市政道路前瞻封閉管制工程 (Road Ahead)
-                    </div>
+                  <div className="bg-rose-500/10 p-2.5 rounded-lg border border-rose-500/30 flex items-center justify-between gap-2">
+                    <span className="text-[11px] text-rose-950 font-medium flex items-center gap-1.5 leading-snug">
+                      <span className="text-base text-rose-600 font-bold shrink-0">⛔</span>
+                      <span>道路前瞻封閉管制工程</span>
+                    </span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-600 text-white shrink-0 shadow-xs whitespace-nowrap">
+                      交通封閉
+                    </span>
                   </div>
 
-                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                    {selectedFacility.properties.project && (
-                      <div className="flex justify-between items-start text-gray-600">
-                        <span className="shrink-0">工程項目</span>
-                        <span className="font-bold text-gray-900 text-right truncate max-w-[190px]">
-                          {selectedFacility.properties.project}
-                        </span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.location && (
-                      <div className="flex justify-between items-start text-gray-600 pt-1 border-t border-gray-100">
-                        <span className="shrink-0">封閉區間</span>
-                        <span className="font-medium text-gray-800 text-right truncate max-w-[190px]">
-                          {selectedFacility.properties.location}
-                        </span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.comp_date && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                        <span>預計完工日期</span>
-                        <span className="font-bold text-rose-600 font-mono">
-                          {selectedFacility.properties.comp_date}
-                        </span>
-                      </div>
-                    )}
-                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                      <span>資料更新頻率</span>
-                      <span className="font-medium text-gray-700">
-                        每日更新 1 次
-                      </span>
+                  {(selectedFacility.properties.schedule || selectedFacility.properties.comp_date) && (
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                      {selectedFacility.properties.schedule && (
+                        <div className="flex justify-between items-start text-gray-600">
+                          <span className="shrink-0">預計封閉時程</span>
+                          <span className="font-medium text-gray-800 text-right font-mono text-[10.5px]">
+                            {selectedFacility.properties.schedule}
+                          </span>
+                        </div>
+                      )}
+                      {selectedFacility.properties.comp_date && (
+                        <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties.schedule ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span>預計完工日期</span>
+                          <span className="font-bold text-rose-600 font-mono">
+                            {selectedFacility.properties.comp_date}
+                          </span>
+                        </div>
+                      )}
                     </div>
-                  </div>
+                  )}
 
                   {selectedFacility.properties.url_link && (
                     <a
@@ -12628,7 +12612,7 @@ export default function AppMap() {
                   onChange={(e) => setEvChargingFilter({ freeOnly: e.target.checked })}
                   className="rounded border-gray-600 accent-emerald-500"
                 />
-                <span>只顯示免費充電站點 (Free Only)</span>
+                <span>只顯示免費充電站點</span>
               </label>
 
               <div className="text-[10px] text-gray-400 flex items-center justify-between">

@@ -1517,10 +1517,11 @@
       "properties": {
         "id": "closure_19",
         "facility_type": "road_closures",
-        "name": "交通封閉項目 #19",
-        "project": "",
-        "street": "",
-        "location": "",
+        "name": "W 14th Av, Birch St, and Alder St",
+        "project": "W 14th Av, Birch St, and Alder St",
+        "street": "W 14th Av, Birch St, and Alder St",
+        "location": "W 14th Av, Birch St, and Alder St",
+        "schedule": "Jul 27, 2026 - Oct 19, 2026; Weekdays; 7:00 AM - 3:00 PM",
         "comp_date": "2026-10-19",
         "url_link": "http://vanmapp1.vancouver.ca/roadahead/events/details/36e847e9-5152-4900-9585-e1feb81c1e82",
         "geo_point_2d": {
@@ -1570,11 +1571,12 @@
       "properties": {
         "id": "closure_20",
         "facility_type": "road_closures",
-        "name": "交通封閉項目 #20",
-        "project": "",
-        "street": "",
-        "location": "",
-        "comp_date": "2028-01-02",
+        "name": "Hawks Ave Closure Pilot",
+        "project": "Hawks Ave Closure Pilot",
+        "street": "Hawks Ave",
+        "location": "Hawks Ave Closure Pilot",
+        "schedule": "Mar 19, 2025 - Jan 1, 2028",
+        "comp_date": "2028-01-01",
         "url_link": "http://vanmapp1.vancouver.ca/roadahead/events/details/3d8e433d-215c-4c98-acdf-1f504e12625f",
         "geo_point_2d": {
           "lon": -123.08738867600971,
