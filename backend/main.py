@@ -921,8 +921,8 @@ def get_translink_alerts(force: bool = False):
 @app.get("/api/traffic/summary")
 def get_waze_traffic_summary(force: bool = False):
     """
-    Returns real-time Waze traffic corridors delay summary, bottlenecks and alerts for Greater Vancouver.
-    Cached 2 minutes.
+    Returns real-time TomTom & DriveBC traffic corridors delay summary, bottlenecks and alerts for Greater Vancouver.
+    Cached 5 minutes.
     """
     from waze_service import waze_service
     return waze_service.get_corridors_summary(force=force)
@@ -932,7 +932,7 @@ def get_waze_traffic_summary(force: bool = False):
 @app.get("/api/traffic/jams")
 def get_waze_jams(force: bool = False):
     """
-    Returns real-time Waze traffic congestion jams as GeoJSON LineStrings.
+    Returns real-time TomTom traffic corridor speed/delay LineStrings as GeoJSON.
     """
     from waze_service import waze_service
     return waze_service.get_jams_geojson(force=force)
@@ -942,10 +942,26 @@ def get_waze_jams(force: bool = False):
 @app.get("/api/traffic/alerts")
 def get_waze_alerts(force: bool = False):
     """
-    Returns real-time Waze user-reported incidents and road hazards as GeoJSON Points.
+    Returns real-time TomTom & DriveBC traffic incidents and road hazards as GeoJSON Points.
     """
     from waze_service import waze_service
     return waze_service.get_alerts_geojson(force=force)
+
+
+@app.get("/api/traffic/tiles/{z}/{x}/{y}.png")
+def get_tomtom_traffic_tile(z: int, x: int, y: int, style: str = "relative0"):
+    """
+    Proxies and caches TomTom Traffic Flow Raster Tiles v4 (relative0 green/yellow/orange/red full road network overlay).
+    Cached 3 minutes to protect TomTom free tier quota and keep API key server-side.
+    """
+    from fastapi.responses import Response
+    from waze_service import waze_service
+    png_bytes = waze_service.get_flow_tile(z, x, y, style=style)
+    return Response(
+        content=png_bytes,
+        media_type="image/png",
+        headers={"Cache-Control": "public, max-age=180"}
+    )
 
 
 

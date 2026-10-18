@@ -2097,12 +2097,12 @@ function ExploreContent() {
     };
   }, [transitAlertsData]);
 
-  // 10. Fetch Waze Live Traffic & Jams Summary
+  // 10. Fetch TomTom & DriveBC Live Traffic Summary
   const fetchTrafficSummary = React.useCallback(async (force = false) => {
     setLoadingTraffic(true);
     const apiUrl = getApiUrl();
     try {
-      const res = await fetch(`${apiUrl}/api/waze/summary${force ? '?force=true' : ''}`);
+      const res = await fetch(`${apiUrl}/api/traffic/summary${force ? '?force=true' : ''}`);
       if (res.ok) {
         const data = await res.json();
         if (data && Array.isArray(data.corridors)) {
@@ -2112,7 +2112,7 @@ function ExploreContent() {
         }
       }
     } catch (err) {
-      console.warn('Backend waze summary API error, falling back to static cache:', err);
+      console.warn('Backend traffic summary API error, falling back to static cache:', err);
     }
 
     try {
@@ -4759,7 +4759,7 @@ function ExploreContent() {
         </div>
       )}
 
-      {/* ==================== 即時路況分頁 (Waze Live Traffic & Jams) ==================== */}
+      {/* ==================== 即時路況分頁 (TomTom & DriveBC Live Traffic) ==================== */}
       {activeTab === 'traffic' && (
         <div className="flex-1 flex flex-col min-h-0 space-y-1.5 overflow-hidden">
           {/* Header Bar */}
@@ -4770,20 +4770,20 @@ function ExploreContent() {
                 <span>路況</span>
               </span>
               <span className="text-[10px] text-gray-400 truncate">
-                · 7 大動脈與橋隧通勤精算
+                · TomTom 7 大動脈與橋隧即時精算
               </span>
             </div>
 
             <div className="flex items-center gap-1.5">
               <span className="text-[10px] text-orange-400 bg-orange-950/70 border border-orange-800/60 px-1.5 py-0.5 rounded font-mono font-medium">
-                每 2 分鐘更新
+                每 5 分鐘更新
               </span>
               <a
-                href="https://www.waze.com/livemap"
+                href="https://plan.tomtom.com/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-1 hover:bg-[#252a38] text-gray-400 hover:text-orange-400 rounded transition-colors"
-                title="前往 Waze LiveMap 官方地圖"
+                title="前往 TomTom Plan 官方即時路況地圖"
               >
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
@@ -4804,23 +4804,35 @@ function ExploreContent() {
               <div className="flex items-center gap-1.5 min-w-0">
                 <span className="text-xs">🚦</span>
                 <span className="font-semibold text-white truncate text-[11px]">
-                  {trafficSummary?.overall_status || '交通偏忙'}
+                  {trafficSummary?.overall_status || '全區暢通'}
                 </span>
-                <span className="text-[10px] font-bold font-mono text-orange-400 bg-orange-500/10 px-1.5 py-0.2 rounded border border-orange-500/30 shrink-0">
-                  {trafficSummary?.overall_congestion_score || 68}/100
+                <span className={`text-[10px] font-bold font-mono px-1.5 py-0.2 rounded border shrink-0 ${
+                  (trafficSummary?.overall_congestion_score ?? 18) < 35
+                    ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30'
+                    : (trafficSummary?.overall_congestion_score ?? 18) < 60
+                    ? 'text-amber-400 bg-amber-500/10 border-amber-500/30'
+                    : 'text-orange-400 bg-orange-500/10 border-orange-500/30'
+                }`}>
+                  {trafficSummary?.overall_congestion_score ?? 18}/100
                 </span>
               </div>
               <div className="flex items-center gap-1.5 text-[10px] text-gray-400 font-mono shrink-0">
                 <span>7大動脈 <strong className="text-emerald-400">{trafficSummary?.corridors?.length || 7}</strong></span>
                 <span>·</span>
-                <span>大眾通報 <strong className="text-amber-400">{trafficSummary?.total_incidents || 8}</strong></span>
+                <span>即時通報 <strong className="text-amber-400">{trafficSummary?.total_incidents ?? 0}</strong></span>
               </div>
             </div>
 
             {trafficSummary?.worst_corridor && (
-              <div className="text-[10px] bg-red-950/40 border border-red-800/40 rounded px-2 py-0.5 text-red-200 flex items-center gap-1.5 truncate">
-                <span className="text-[10px] shrink-0">⚠️</span>
-                <span className="text-red-300 font-medium shrink-0">瓶頸：</span>
+              <div className={`text-[10px] rounded px-2 py-0.5 flex items-center gap-1.5 truncate border ${
+                (trafficSummary?.overall_congestion_score ?? 18) < 35
+                  ? 'bg-emerald-950/40 border-emerald-800/40 text-emerald-200'
+                  : 'bg-red-950/40 border-red-800/40 text-red-200'
+              }`}>
+                <span className="text-[10px] shrink-0">{(trafficSummary?.overall_congestion_score ?? 18) < 35 ? '✅' : '⚠️'}</span>
+                <span className={`font-medium shrink-0 ${(trafficSummary?.overall_congestion_score ?? 18) < 35 ? 'text-emerald-300' : 'text-red-300'}`}>
+                  {(trafficSummary?.overall_congestion_score ?? 18) < 35 ? '路況：' : '瓶頸：'}
+                </span>
                 <span className="truncate text-gray-300">{trafficSummary.worst_corridor}</span>
               </div>
             )}
@@ -4834,7 +4846,7 @@ function ExploreContent() {
                 { key: 'all', label: '7大幹道' },
                 { key: 'severe', label: '嚴重壅塞' },
                 { key: 'bridges', label: '關鍵橋隧' },
-                { key: 'incidents', label: '大眾通報' },
+                { key: 'incidents', label: '即時通報' },
               ].map((pill) => (
                 <button
                   key={pill.key}
@@ -4877,7 +4889,7 @@ function ExploreContent() {
             {trafficFilter === 'incidents' ? (
               filteredTrafficAlerts.length === 0 ? (
                 <div className="py-12 text-center text-gray-400 text-xs">
-                  目前查無相符的大眾事故通報
+                  目前查無相符的突發事故通報
                 </div>
               ) : (
                 filteredTrafficAlerts.map((alert) => (
@@ -4911,7 +4923,7 @@ function ExploreContent() {
 
                     <div className="flex items-center justify-between pt-0.5 text-[10px]">
                       <span className="text-emerald-400 font-medium">
-                        ✓ 社群回報可信度 {alert.waze_confidence ?? (alert.confidence ? (alert.confidence <= 5 ? alert.confidence * 20 : alert.confidence) : 90)}%
+                        ✓ 資料可信度 {alert.waze_confidence ?? (alert.confidence ? (alert.confidence <= 5 ? alert.confidence * 20 : alert.confidence) : 95)}%
                       </span>
                       <span className="text-cyan-400 group-hover:underline flex items-center gap-0.5">
                         在地圖查看圖釘 →
@@ -4924,7 +4936,7 @@ function ExploreContent() {
               /* Corridors List */
               filteredCorridors.length === 0 ? (
                 <div className="py-12 text-center text-gray-400 text-xs">
-                  目前查無符合條件的主要幹道路況
+                  {trafficFilter === 'severe' ? '🎉 目前全大溫 7 大幹道均無嚴重壅塞路段' : '目前查無符合條件的主要幹道路況'}
                 </div>
               ) : (
                 filteredCorridors.map((corridor) => {
@@ -4934,7 +4946,8 @@ function ExploreContent() {
                     'bg-emerald-950/80 text-emerald-200 border-emerald-800';
 
                   const delayColor = corridor.delay_min >= 12 ? 'text-rose-400' :
-                    corridor.delay_min >= 8 ? 'text-orange-400' : 'text-amber-400';
+                    corridor.delay_min >= 8 ? 'text-orange-400' :
+                    corridor.delay_min >= 3 ? 'text-amber-400' : 'text-emerald-400';
 
                   return (
                     <div
@@ -4971,7 +4984,7 @@ function ExploreContent() {
                         <div className="flex flex-col">
                           <span className="text-[9.5px] text-gray-400">預計通過延誤</span>
                           <span className={`font-bold font-mono text-xs ${delayColor}`}>
-                            +{corridor.delay_min} 分鐘
+                            {corridor.delay_min <= 0 ? '+0 分鐘 (順暢)' : `+${corridor.delay_min} 分鐘`}
                           </span>
                         </div>
                         <div className="flex flex-col">
@@ -4992,7 +5005,7 @@ function ExploreContent() {
                             <div key={idx} className="flex items-center justify-between text-gray-300 px-1 py-0.5 rounded bg-[#181d2a]/60">
                               <span className="truncate">{seg.name}</span>
                               <div className="flex items-center gap-1.5 shrink-0 font-mono">
-                                <span className={seg.delay_min >= 10 ? 'text-rose-400 font-semibold' : 'text-amber-400'}>
+                                <span className={seg.delay_min >= 10 ? 'text-rose-400 font-semibold' : seg.delay_min >= 3 ? 'text-amber-400' : 'text-emerald-400'}>
                                   +{seg.delay_min}分
                                 </span>
                                 <span className="text-gray-400">({seg.speed_kmh}km/h)</span>
@@ -5005,15 +5018,19 @@ function ExploreContent() {
 
                       {/* Bottleneck description note */}
                       {corridor.key_bottleneck && (
-                        <div className="text-[10px] text-amber-300/90 bg-amber-950/30 rounded p-1.5 border border-amber-900/30 flex items-start gap-1 leading-snug">
-                          <span className="shrink-0">⚠️</span>
+                        <div className={`text-[10px] rounded p-1.5 border flex items-start gap-1 leading-snug ${
+                          corridor.delay_min <= 2
+                            ? 'text-emerald-300/90 bg-emerald-950/30 border-emerald-900/30'
+                            : 'text-amber-300/90 bg-amber-950/30 border-amber-900/30'
+                        }`}>
+                          <span className="shrink-0">{corridor.delay_min <= 2 ? '✅' : '⚠️'}</span>
                           <span>{corridor.key_bottleneck}</span>
                         </div>
                       )}
 
                       {/* Bottom row: Trend indicator */}
                       <div className="flex items-center text-[10px] pt-0.5 text-gray-400 border-t border-[#1e2333]/70">
-                        <span>{corridor.trend === 'worsening' ? '↗️ 車流加劇中' : corridor.trend === 'improving' ? '↘️ 車流改善中' : '➡️ 車流穩定'}</span>
+                        <span>{corridor.trend === 'worsening' ? '↗️ 車流加劇中' : corridor.trend === 'improving' ? '↘️ 車流改善中' : corridor.delay_min <= 1 ? '✅ 全線車流順暢' : '➡️ 車流穩定'}</span>
                       </div>
                     </div>
                   );

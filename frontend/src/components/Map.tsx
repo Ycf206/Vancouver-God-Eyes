@@ -3050,16 +3050,35 @@ export default function AppMap() {
       });
     }
 
-    // Road Facilities: Traffic Conditions (Waze 即時路況色帶 LineString - Google Maps 風格)
+    // Road Facilities: Traffic Conditions (TomTom 全域即時路況瓦片 + 關鍵幹道精算色帶 LineString)
     const isTrafficVisible = layers.trafficConditions || (isExploreOpen && exploreTab === 'traffic');
     if (isTrafficVisible) {
+      // 1. TomTom Traffic Flow Raster Tiles v4 (relative0 全大溫路網綠/黃/橘/紅即時車流瓦片)
+      style.sources['tomtom_traffic_flow'] = {
+        type: 'raster',
+        tiles: [`${apiUrl}/api/traffic/tiles/{z}/{x}/{y}.png?style=relative0`],
+        tileSize: 256,
+        minzoom: 6,
+        maxzoom: 19
+      };
+      style.layers.push({
+        id: 'tomtom-traffic-flow-layer',
+        type: 'raster',
+        source: 'tomtom_traffic_flow',
+        paint: {
+          'raster-opacity': 0.88,
+          'raster-fade-duration': 150
+        }
+      });
+
+      // 2. 關鍵動脈與橋隧精算向量走廊 (支援點擊查看即時車速與延誤 Popup)
       style.sources['traffic_conditions'] = { 
         type: 'geojson', 
-        data: '/vancouver_traffic_conditions.geojson' 
+        data: `${apiUrl}/api/traffic/jams` 
       };
 
       // 篩選模式：若用戶未開啟全局路況圖層，僅進入「探索 - 路況」時，地圖只顯示 7 大關鍵動脈與跨海橋隧
-      // 若用戶主動開啟了全局路況圖層，則無條件呈現全大溫所有 19 條主要道路與即時塞車色帶
+      // 若用戶主動開啟了全局路況圖層，則無條件呈現全大溫所有主要道路與即時路況色帶
       const trafficLayerFilter = (!layers.trafficConditions && (isExploreOpen && exploreTab === 'traffic'))
         ? ['any',
             ['==', ['get', 'is_key_corridor'], true],
@@ -3082,13 +3101,13 @@ export default function AppMap() {
           'line-color': [
             'coalesce',
             ['get', 'casing_color'],
-            '#450a0a'
+            '#064e3b'
           ],
           'line-width': ['interpolate', ['linear'], ['zoom'], 9, 4.5, 12, 7.5, 15, 11, 18, 15],
-          'line-opacity': 0.8
+          'line-opacity': 0.82
         }
       });
-      // 核心路況色帶 (黃/橘/紅/深紅紫 Google Maps 壅塞分級)
+      // 核心路況色帶 (綠/黃/橘/紅/深紅紫 TomTom 實際車速分級)
       style.layers.push({
         id: 'traffic-conditions-layer',
         type: 'line',
@@ -3102,7 +3121,7 @@ export default function AppMap() {
           'line-color': [
             'coalesce',
             ['get', 'color'],
-            '#dc2626'
+            '#10b981'
           ],
           'line-width': ['interpolate', ['linear'], ['zoom'], 9, 2.8, 12, 5.0, 15, 8.0, 18, 11],
           'line-opacity': 0.95
@@ -3118,9 +3137,9 @@ export default function AppMap() {
         layout: {
           'text-field': [
             'case',
-            ['has', 'delay_min'],
+            ['>', ['to-number', ['coalesce', ['get', 'delay_min'], 0]], 0],
             ['concat', ['get', 'name'], ' (+', ['to-string', ['get', 'delay_min']], '分)'],
-            ['get', 'name']
+            ['concat', ['get', 'name'], ' (暢通)']
           ],
           'symbol-placement': 'line-center',
           'text-size': ['interpolate', ['linear'], ['zoom'], 11.5, 10, 14, 12],
@@ -3137,12 +3156,12 @@ export default function AppMap() {
       });
     }
 
-    // Road Facilities: Waze Alerts (大眾通報突發事故與路況圖釘 Point)
+    // Road Facilities: Traffic Alerts (TomTom & DriveBC 即時突發事故與路況圖釘 Point)
     const isAlertsVisible = layers.wazeAlerts || (isExploreOpen && exploreTab === 'traffic');
     if (isAlertsVisible) {
       style.sources['waze_alerts'] = { 
         type: 'geojson', 
-        data: '/vancouver_waze_alerts.geojson' 
+        data: `${apiUrl}/api/traffic/alerts` 
       };
       // 外層警示微光光環 (柔和呼吸光芒)
       style.layers.push({
@@ -10810,24 +10829,25 @@ export default function AppMap() {
                   );
                 }
 
-                // Waze Jams Card
-                const speed = props.speed_kmh || 30;
+                // TomTom Live Traffic Corridor Card
+                const speed = props.speed_kmh || 60;
                 const freeflow = props.freeflow_speed_kmh || 80;
                 const speedPct = Math.min(100, Math.max(10, Math.round((speed / freeflow) * 100)));
                 const delayMin = props.delay_min ?? (props.delay_sec ? Math.round(props.delay_sec / 60) : 0);
-                const levelColor = props.color || (props.level >= 3 ? '#dc2626' : props.level === 2 ? '#f97316' : '#eab308');
+                const levelColor = props.color || (props.level >= 3 ? '#dc2626' : props.level === 2 ? '#f97316' : props.level === 1 ? '#eab308' : '#10b981');
+                const isFreeFlow = delayMin <= 1 || props.level === 0;
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
                     {/* Header Banner */}
                     <div className="p-2.5 rounded-lg border flex flex-col gap-1.5" style={{ backgroundColor: `${levelColor}15`, borderColor: `${levelColor}40` }}>
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between gap-2">
                         <span className="font-bold text-gray-900 text-xs flex items-center gap-1.5">
                           <span className="text-base">🚗</span>
-                          <span className="truncate max-w-[210px]">{props.name || selectedFacility.name}</span>
+                          <span>{props.name || selectedFacility.name}</span>
                         </span>
                         <span className="text-[10px] font-bold px-1.5 py-0.5 rounded text-white shrink-0" style={{ backgroundColor: levelColor }}>
-                          {props.level_label || '即時路況'}
+                          {props.level_label || (isFreeFlow ? '暢通無阻' : '即時路況')}
                         </span>
                       </div>
                       <div className="text-[11px] text-gray-700 font-medium">
@@ -10839,11 +10859,11 @@ export default function AppMap() {
                     <div className="grid grid-cols-2 gap-2">
                       <div className="p-2 rounded-lg bg-gray-50 border border-gray-200 flex flex-col">
                         <span className="text-[10px] text-gray-500 font-medium">⏱️ 通過延誤時間</span>
-                        <span className="font-bold text-sm text-rose-600 mt-0.5">
-                          +{delayMin} 分鐘
+                        <span className={`font-bold text-sm mt-0.5 ${isFreeFlow ? 'text-emerald-600' : delayMin >= 8 ? 'text-rose-600' : 'text-amber-600'}`}>
+                          {delayMin <= 0 ? '+0 分鐘 (順暢)' : `+${delayMin} 分鐘`}
                         </span>
                         <span className="text-[9.5px] text-gray-400 mt-0.5">
-                          {props.trend === 'worsening' ? '↗️ 車流回堵加劇中' : props.trend === 'improving' ? '↘️ 車流改善中' : '➡️ 車流穩定緩行'}
+                          {props.trend === 'worsening' ? '↗️ 車流回堵加劇中' : props.trend === 'improving' ? '↘️ 車流改善中' : isFreeFlow ? '✅ 全線車流順暢' : '➡️ 車流穩定'}
                         </span>
                       </div>
                       <div className="p-2 rounded-lg bg-gray-50 border border-gray-200 flex flex-col">
@@ -10861,8 +10881,8 @@ export default function AppMap() {
 
                     {/* Detailed Description */}
                     {props.description && (
-                      <div className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-gray-700 text-[11px] leading-relaxed">
-                        <span className="font-semibold text-amber-700 mr-1">📌 路況說明:</span>
+                      <div className={`p-2 rounded-lg border text-gray-700 text-[11px] leading-relaxed ${isFreeFlow ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-amber-500/10 border-amber-500/20'}`}>
+                        <span className={`font-semibold mr-1 ${isFreeFlow ? 'text-emerald-700' : 'text-amber-700'}`}>📌 路況說明:</span>
                         {props.description}
                       </div>
                     )}
@@ -10870,12 +10890,12 @@ export default function AppMap() {
                     {/* Actions */}
                     <div className="pt-0.5 flex gap-1.5">
                       <a 
-                        href="https://www.waze.com/livemap" 
+                        href="https://plan.tomtom.com/" 
                         target="_blank" 
                         rel="noopener noreferrer" 
-                        className="flex-1 py-1.5 px-3 rounded-lg bg-[#33ccff] hover:bg-[#20b8eb] text-gray-900 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                        className="flex-1 py-1.5 px-3 rounded-lg bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
                       >
-                        <span>前往 Waze 即時路況</span>
+                        <span>前往 TomTom 即時路況</span>
                         <ExternalLink className="w-3.5 h-3.5" />
                       </a>
                     </div>
@@ -10883,13 +10903,13 @@ export default function AppMap() {
                 );
               })()}
 
-              {/* Waze Alerts (大眾通報 - 突發事故與路況圖釘) */}
+              {/* Traffic Alerts (TomTom & DriveBC 突發事故與路況圖釘) */}
               {selectedFacility.facility_type === 'waze_alerts' && (() => {
                 const props = selectedFacility.properties || {};
                 const alertColor = props.color || '#ef4444';
                 const delayMin = props.delay_min ?? props.delay_minutes ?? (props.delay_sec ? Math.round(props.delay_sec / 60) : 5);
-                const reportTime = props.report_time_str || props.time_display || '剛剛';
-                const confidenceVal = props.waze_confidence ?? (props.confidence != null ? (props.confidence <= 5 ? props.confidence * 20 : props.confidence) : 90);
+                const reportTime = props.report_time_str || props.time_display || '即時';
+                const confidenceVal = props.waze_confidence ?? (props.confidence != null ? (props.confidence <= 5 ? props.confidence * 20 : props.confidence) : 95);
                 const desc = props.description || props.report_description;
                 const typeName = props.type_label || props.subtype_zh || props.type_zh || selectedFacility.name;
 
@@ -10897,13 +10917,13 @@ export default function AppMap() {
                   <div className="flex flex-col gap-2 text-xs">
                     {/* Header Banner */}
                     <div className="p-2.5 rounded-lg border flex flex-col gap-1.5" style={{ backgroundColor: `${alertColor}15`, borderColor: `${alertColor}40` }}>
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between gap-2">
                         <span className="font-bold text-gray-900 text-xs flex items-center gap-1.5">
                           <span className="text-base">{props.icon || '⚠️'}</span>
-                          <span className="truncate max-w-[200px]">{typeName}</span>
+                          <span>{typeName}</span>
                         </span>
                         <span className="text-[10px] font-bold px-1.5 py-0.5 rounded text-white shrink-0" style={{ backgroundColor: alertColor }}>
-                          大眾通報
+                          即時路況通報
                         </span>
                       </div>
                       <div className="text-[11px] text-gray-700 font-medium">
@@ -10926,7 +10946,7 @@ export default function AppMap() {
                         </span>
                         {confidenceVal != null && (
                           <span className="text-[9.5px] text-emerald-600 mt-0.5 font-medium">
-                            ✓ 社群可信度 {confidenceVal}%
+                            ✓ 資料可信度 {confidenceVal}%
                           </span>
                         )}
                       </div>
@@ -10951,12 +10971,12 @@ export default function AppMap() {
                     {/* Action Button */}
                     <div className="pt-0.5">
                       <a 
-                        href="https://www.waze.com/livemap" 
+                        href="https://plan.tomtom.com/" 
                         target="_blank" 
                         rel="noopener noreferrer" 
-                        className="w-full py-1.5 px-3 rounded-lg bg-[#33ccff] hover:bg-[#20b8eb] text-gray-900 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                        className="w-full py-1.5 px-3 rounded-lg bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
                       >
-                        <span>在 Waze 查看完整路況</span>
+                        <span>在 TomTom 查看完整路況</span>
                         <ExternalLink className="w-3.5 h-3.5" />
                       </a>
                     </div>

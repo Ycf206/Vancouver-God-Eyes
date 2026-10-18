@@ -15,11 +15,12 @@ jobs:
       uses: appleboy/ssh-action@v1.0.3
       env:
         FLIGHTAWARE_API_KEY: ${{ secrets.FLIGHTAWARE_API_KEY }}
+        TOMTOM_API_KEY: ${{ secrets.TOMTOM_API_KEY }}
       with:
         host: ${{ secrets.OCI_HOST_IP }}
         username: ubuntu
         key: ${{ secrets.OCI_SSH_KEY }}
-        envs: FLIGHTAWARE_API_KEY
+        envs: FLIGHTAWARE_API_KEY,TOMTOM_API_KEY
         script: |
           set -e
           cd ~/Vancouver-God-Eyes || cd ~/vancouver-gods-eye
@@ -56,6 +57,24 @@ jobs:
               echo "FLIGHTAWARE_API_KEY=$FLIGHTAWARE_API_KEY" >> .env
             fi
             echo "✅ FLIGHTAWARE_API_KEY successfully synced from GitHub Secrets"
+          fi
+
+          # 如果 GitHub Secrets 有設定 TOMTOM_API_KEY，自動同步至 backend/.env 與根目錄 .env
+          if [ -n "$TOMTOM_API_KEY" ]; then
+            mkdir -p backend
+            touch backend/.env
+            if grep -q "^TOMTOM_API_KEY=" backend/.env 2>/dev/null; then
+              sed -i "s|^TOMTOM_API_KEY=.*|TOMTOM_API_KEY=$TOMTOM_API_KEY|" backend/.env
+            else
+              echo "TOMTOM_API_KEY=$TOMTOM_API_KEY" >> backend/.env
+            fi
+            touch .env
+            if grep -q "^TOMTOM_API_KEY=" .env 2>/dev/null; then
+              sed -i "s|^TOMTOM_API_KEY=.*|TOMTOM_API_KEY=$TOMTOM_API_KEY|" .env
+            else
+              echo "TOMTOM_API_KEY=$TOMTOM_API_KEY" >> .env
+            fi
+            echo "✅ TOMTOM_API_KEY successfully synced from GitHub Secrets"
           fi
           
           echo "Current Git Commit on VM: $(git rev-parse HEAD)"

@@ -1,12 +1,12 @@
 {
-  "source": "Waze Live Traffic & Jams",
-  "source_url": "https://www.waze.com/livemap",
+  "source": "TomTom Real-Time Traffic & DriveBC Open511",
+  "source_url": "https://plan.tomtom.com/",
   "updated_at": "2026-10-18T02:36:18.039237+00:00",
-  "overall_congestion_score": 68,
-  "overall_status": "大溫交通偏忙 (Moderate Congestion)",
+  "overall_congestion_score": 18,
+  "overall_status": "全區大致暢通 (Free Flow)",
   "total_jams": 19,
   "total_incidents": 8,
-  "worst_corridor": "99號公路 (喬治梅西隧道) 與 1號公路 (東向)",
+  "worst_corridor": "全區 7 大主要幹道與跨海橋隧車流順暢",
   "corridors": [
     {
       "id": "hwy1",
@@ -19,30 +19,30 @@
         49.258
       ],
       "zoom": 13.5,
-      "status": "嚴重壅塞",
-      "status_color": "rose",
-      "current_speed_kmh": 34,
+      "status": "暢通無阻",
+      "status_color": "emerald",
+      "current_speed_kmh": 83,
       "freeflow_speed_kmh": 90,
-      "delay_min": 14,
-      "trend": "up",
+      "delay_min": 0,
+      "trend": "stable",
       "segments": [
         {
           "name": "東向 (往本拿比/高貴林/Port Mann)",
-          "delay_min": 12,
-          "speed_kmh": 34,
-          "level": 3,
-          "color": "#ef4444"
+          "delay_min": 0,
+          "speed_kmh": 83,
+          "level": 0,
+          "color": "#10b981"
         },
         {
           "name": "西向 (往溫哥華市區/卡西爾隧道)",
-          "delay_min": 7,
-          "speed_kmh": 46,
-          "level": 2,
-          "color": "#f97316"
+          "delay_min": 0,
+          "speed_kmh": 83,
+          "level": 0,
+          "color": "#10b981"
         }
       ],
       "incidents_count": 2,
-      "key_bottleneck": "Willingdon Ave 至 Grandview Hwy 區間"
+      "key_bottleneck": "全線車流順暢，無明顯延誤"
     },
     {
       "id": "massey_tunnel",
@@ -54,31 +54,31 @@
         -123.076,
         49.124
       ],
-      "zoom": 14.0,
-      "status": "嚴重回堵",
-      "status_color": "purple",
-      "current_speed_kmh": 22,
+      "zoom": 14,
+      "status": "暢通無阻",
+      "status_color": "emerald",
+      "current_speed_kmh": 74,
       "freeflow_speed_kmh": 80,
-      "delay_min": 14,
-      "trend": "up",
+      "delay_min": 0,
+      "trend": "stable",
       "segments": [
         {
           "name": "南向 (往 Delta / Surrey / 美加邊境)",
-          "delay_min": 14,
-          "speed_kmh": 22,
-          "level": 4,
-          "color": "#9333ea"
+          "delay_min": 0,
+          "speed_kmh": 74,
+          "level": 0,
+          "color": "#10b981"
         },
         {
           "name": "北向 (往 Richmond / Vancouver 市區)",
-          "delay_min": 5,
-          "speed_kmh": 52,
-          "level": 2,
-          "color": "#f97316"
+          "delay_min": 0,
+          "speed_kmh": 74,
+          "level": 0,
+          "color": "#10b981"
         }
       ],
       "incidents_count": 1,
-      "key_bottleneck": "南向進隧道車流排隊至 Steveston Hwy"
+      "key_bottleneck": "全線車流順暢，無明顯延誤"
     },
     {
       "id": "knight_bridge",
@@ -91,30 +91,30 @@
         49.204
       ],
       "zoom": 14.5,
-      "status": "重度壅塞",
-      "status_color": "rose",
-      "current_speed_kmh": 29,
+      "status": "暢通無阻",
+      "status_color": "emerald",
+      "current_speed_kmh": 64,
       "freeflow_speed_kmh": 70,
-      "delay_min": 9,
-      "trend": "down",
+      "delay_min": 0,
+      "trend": "stable",
       "segments": [
         {
           "name": "北向 (往溫哥華東南區)",
-          "delay_min": 9,
-          "speed_kmh": 29,
-          "level": 3,
-          "color": "#ef4444"
+          "delay_min": 0,
+          "speed_kmh": 64,
+          "level": 0,
+          "color": "#10b981"
         },
         {
           "name": "南向 (往列治文/91號公路)",
-          "delay_min": 4,
-          "speed_kmh": 48,
-          "level": 1,
-          "color": "#eab308"
+          "delay_min": 0,
+          "speed_kmh": 64,
+          "level": 0,
+          "color": "#10b981"
         }
       ],
       "incidents_count": 1,
-      "key_bottleneck": "北向橋面有掉落障礙物占用中線"
+      "key_bottleneck": "全線車流順暢，無明顯延誤"
     },
     {
       "id": "lions_gate",
@@ -127,30 +127,30 @@
         49.3145
       ],
       "zoom": 14.5,
-      "status": "車多緩行",
-      "status_color": "amber",
-      "current_speed_kmh": 26,
+      "status": "暢通無阻",
+      "status_color": "emerald",
+      "current_speed_kmh": 55,
       "freeflow_speed_kmh": 60,
-      "delay_min": 11,
+      "delay_min": 0,
       "trend": "stable",
       "segments": [
         {
           "name": "北向 (往北溫/西溫/海天公路)",
-          "delay_min": 11,
-          "speed_kmh": 26,
-          "level": 3,
-          "color": "#ef4444"
+          "delay_min": 0,
+          "speed_kmh": 55,
+          "level": 0,
+          "color": "#10b981"
         },
         {
           "name": "南向 (往溫哥華市中心/史丹利公園)",
-          "delay_min": 3,
-          "speed_kmh": 45,
-          "level": 1,
-          "color": "#eab308"
+          "delay_min": 0,
+          "speed_kmh": 55,
+          "level": 0,
+          "color": "#10b981"
         }
       ],
       "incidents_count": 1,
-      "key_bottleneck": "北向引道路肩擦撞事故"
+      "key_bottleneck": "全線車流順暢，無明顯延誤"
     },
     {
       "id": "ironworkers",
@@ -162,31 +162,31 @@
         -123.0255,
         49.297
       ],
-      "zoom": 14.0,
-      "status": "中度緩行",
-      "status_color": "amber",
-      "current_speed_kmh": 38,
+      "zoom": 14,
+      "status": "暢通無阻",
+      "status_color": "emerald",
+      "current_speed_kmh": 74,
       "freeflow_speed_kmh": 80,
-      "delay_min": 8,
+      "delay_min": 0,
       "trend": "stable",
       "segments": [
         {
           "name": "南向 (往溫哥華/喜士定街)",
-          "delay_min": 8,
-          "speed_kmh": 38,
-          "level": 2,
-          "color": "#f97316"
+          "delay_min": 0,
+          "speed_kmh": 74,
+          "level": 0,
+          "color": "#10b981"
         },
         {
           "name": "北向 (往北溫哥華/Main St)",
-          "delay_min": 4,
-          "speed_kmh": 55,
-          "level": 1,
-          "color": "#eab308"
+          "delay_min": 0,
+          "speed_kmh": 74,
+          "level": 0,
+          "color": "#10b981"
         }
       ],
       "incidents_count": 0,
-      "key_bottleneck": "南向進卡西爾隧道前減速車流"
+      "key_bottleneck": "全線車流順暢，無明顯延誤"
     },
     {
       "id": "oak_bridge",
@@ -199,30 +199,30 @@
         49.195
       ],
       "zoom": 14.5,
-      "status": "順暢微緩",
-      "status_color": "yellow",
-      "current_speed_kmh": 48,
+      "status": "暢通無阻",
+      "status_color": "emerald",
+      "current_speed_kmh": 64,
       "freeflow_speed_kmh": 70,
-      "delay_min": 6,
-      "trend": "down",
+      "delay_min": 0,
+      "trend": "stable",
       "segments": [
         {
           "name": "南向 (往列治文/機場 YVR)",
-          "delay_min": 6,
-          "speed_kmh": 42,
-          "level": 2,
-          "color": "#f97316"
+          "delay_min": 0,
+          "speed_kmh": 64,
+          "level": 0,
+          "color": "#10b981"
         },
         {
           "name": "北向 (往溫哥華市區)",
-          "delay_min": 2,
-          "speed_kmh": 58,
-          "level": 1,
-          "color": "#eab308"
+          "delay_min": 0,
+          "speed_kmh": 64,
+          "level": 0,
+          "color": "#10b981"
         }
       ],
       "incidents_count": 0,
-      "key_bottleneck": "往列治文機場分流處車多"
+      "key_bottleneck": "全線車流順暢，無明顯延誤"
     },
     {
       "id": "alex_fraser",
@@ -235,30 +235,30 @@
         49.16
       ],
       "zoom": 13.5,
-      "status": "車多緩行",
-      "status_color": "amber",
-      "current_speed_kmh": 48,
+      "status": "暢通無阻",
+      "status_color": "emerald",
+      "current_speed_kmh": 83,
       "freeflow_speed_kmh": 90,
-      "delay_min": 7,
+      "delay_min": 0,
       "trend": "stable",
       "segments": [
         {
           "name": "南向 (往三角洲/素里)",
-          "delay_min": 7,
-          "speed_kmh": 48,
-          "level": 2,
-          "color": "#f97316"
+          "delay_min": 0,
+          "speed_kmh": 83,
+          "level": 0,
+          "color": "#10b981"
         },
         {
           "name": "北向 (往列治文/新西敏)",
-          "delay_min": 3,
-          "speed_kmh": 68,
-          "level": 1,
-          "color": "#eab308"
+          "delay_min": 0,
+          "speed_kmh": 83,
+          "level": 0,
+          "color": "#10b981"
         }
       ],
       "incidents_count": 1,
-      "key_bottleneck": "南向引道路段車速放緩"
+      "key_bottleneck": "全線車流順暢，無明顯延誤"
     }
   ],
   "top_alerts": [
