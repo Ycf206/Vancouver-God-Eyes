@@ -42,7 +42,7 @@ export function getSkytrainStationMapUrls(stationName: string): StationMapEntry 
     return stationMapLookup.get(norm)!;
   }
   // Fallback to substring matching
-  for (const [key, urls] of stationMapLookup.entries()) {
+  for (const [key, urls] of Array.from(stationMapLookup.entries())) {
     if (key && (key.includes(norm) || norm.includes(key))) {
       return urls;
     }

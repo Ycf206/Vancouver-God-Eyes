@@ -8,7 +8,10 @@ from google.transit import gtfs_realtime_pb2
 import database
 import models
 import os
+import logging
 from datetime import datetime
+
+logger = logging.getLogger(__name__)
 
 try:
     models.Base.metadata.create_all(bind=database.engine)
@@ -33,8 +36,25 @@ active_connections: list[WebSocket] = []
 stop_arrivals = {}
 cached_translink_vehicles: list[dict] = []
 cached_bcferries_vehicles: list[dict] = []
+cached_bcferries_raw_data: dict = {"timestamp": 0.0, "data": None}
 cached_flight_schedules: dict = {}
 cached_skytrain_trains: list[dict] = []
+
+
+async def broadcast_ws(message: dict):
+    """Broadcast JSON message to all active WebSocket connections and prune dead sockets."""
+    if not active_connections:
+        return
+    dead_connections = []
+    for connection in list(active_connections):
+        try:
+            await connection.send_json(message)
+        except Exception:
+            dead_connections.append(connection)
+    for dead in dead_connections:
+        if dead in active_connections:
+            active_connections.remove(dead)
+
 
 import flights
 import skytrain_service
@@ -74,7 +94,12 @@ async def websocket_endpoint(websocket: WebSocket):
         while True:
             await websocket.receive_text()
     except WebSocketDisconnect:
-        active_connections.remove(websocket)
+        pass
+    except Exception:
+        pass
+    finally:
+        if websocket in active_connections:
+            active_connections.remove(websocket)
 
 
 
@@ -135,11 +160,12 @@ def _interpolate_along_path(coords: list, progress: float):
 
 
 async def fetch_bcferries_realtime():
-    global cached_bcferries_vehicles
+    global cached_bcferries_vehicles, cached_bcferries_raw_data
     while True:
         try:
-            r = requests.get('https://www.bcferriesapi.ca/v2/', timeout=10)
+            r = await asyncio.to_thread(requests.get, 'https://www.bcferriesapi.ca/v2/', timeout=10)
             data = r.json()
+            cached_bcferries_raw_data = {"timestamp": time.time(), "data": data}
             ferry_paths = get_bc_ferries_paths()
             
             terminals = {
@@ -266,13 +292,7 @@ async def fetch_bcferries_realtime():
             cached_bcferries_vehicles = vehicles
             print(f"[BC Ferries] Found {len(vehicles)} ships currently sailing.")
             
-            if active_connections:
-                message = {"type": "bc_ferries_update", "data": vehicles}
-                for connection in list(active_connections):
-                    try:
-                        await connection.send_json(message)
-                    except Exception:
-                        pass
+            await broadcast_ws({"type": "bc_ferries_update", "data": vehicles})
                     
         except Exception as e:
             print(f"Error in BC Ferries fetch: {e}")
@@ -282,6 +302,12 @@ async def fetch_bcferries_realtime():
 
 _gtfs_metadata_cache = None
 trip_realtime_etas = {}
+
+try:
+    from zoneinfo import ZoneInfo as _ZoneInfo
+    _VAN_TZ = _ZoneInfo("America/Vancouver")
+except Exception:
+    _VAN_TZ = None
 
 def get_gtfs_metadata():
     global _gtfs_metadata_cache
@@ -307,8 +333,11 @@ def get_gtfs_metadata():
 
 def _format_vancouver_hhmm(unix_ts: float) -> str:
     try:
-        from zoneinfo import ZoneInfo
-        dt = datetime.fromtimestamp(unix_ts, ZoneInfo("America/Vancouver"))
+        if _VAN_TZ is not None:
+            dt = datetime.fromtimestamp(unix_ts, _VAN_TZ)
+        else:
+            from zoneinfo import ZoneInfo
+            dt = datetime.fromtimestamp(unix_ts, ZoneInfo("America/Vancouver"))
     except Exception:
         import datetime as dt_mod
         dt = dt_mod.datetime.utcfromtimestamp(unix_ts) - dt_mod.timedelta(hours=7)
@@ -375,7 +404,7 @@ def _project_bus_next_stop_idx(stops: list, lat: float, lon: float):
     return best_seg_idx
 
 
-def _compute_vehicle_stop_progress(variant: dict, stop_id: str, stop_seq: int, lat: float, lon: float, trip_id: str):
+def _compute_vehicle_stop_progress(variant: dict, stop_id: str, stop_seq: int, lat: float, lon: float, trip_id: str, include_stops: bool = True):
     """Determine next stop, origin, destination, and stop-by-stop status & ETAs for a live bus."""
     if not variant:
         return {
@@ -438,6 +467,16 @@ def _compute_vehicle_stop_progress(variant: dict, stop_id: str, stop_seq: int, l
             base_next_min = 2
         base_next_ts = now_ts + base_next_min * 60
 
+    next_stop_time_str = _format_vancouver_hhmm(base_next_ts)
+    if not include_stops:
+        return {
+            "next_stop_name": next_stop_obj["name"],
+            "next_stop_time": next_stop_time_str,
+            "next_stop_minutes": base_next_min,
+            "next_stop_index": next_idx,
+            "stops": [],
+        }
+
     enriched_stops = []
     for idx, s in enumerate(stops):
         sid = str(s["stop_id"])
@@ -447,7 +486,7 @@ def _compute_vehicle_stop_progress(variant: dict, stop_id: str, stop_seq: int, l
             eta_min = None
         elif idx == next_idx:
             st_status = "next"
-            eta_time_str = _format_vancouver_hhmm(base_next_ts)
+            eta_time_str = next_stop_time_str
             eta_min = base_next_min
         else:
             st_status = "upcoming"
@@ -473,16 +512,19 @@ def _compute_vehicle_stop_progress(variant: dict, stop_id: str, stop_seq: int, l
 
     return {
         "next_stop_name": next_stop_obj["name"],
-        "next_stop_time": _format_vancouver_hhmm(base_next_ts),
+        "next_stop_time": next_stop_time_str,
         "next_stop_minutes": base_next_min,
         "next_stop_index": next_idx,
         "stops": enriched_stops,
     }
 
 
+_cached_db_route_ids = None
+_cached_db_seabus_ids = None
+
 async def fetch_translink_realtime():
     """Fetches VehiclePositions and enriches with GTFS static bus numbers, origins, destinations & next stops."""
-    global cached_translink_vehicles
+    global cached_translink_vehicles, _cached_db_route_ids, _cached_db_seabus_ids
     TRANSLINK_API_KEY = os.getenv("TRANSLINK_API_KEY", "OAsdtyJoPO0odcN6Ivhy")
     url = f"https://gtfsapi.translink.ca/v3/gtfsposition?apikey={TRANSLINK_API_KEY}"
     
@@ -492,21 +534,24 @@ async def fetch_translink_realtime():
             routes_lookup = gtfs_meta.get("routes", {})
             variant_route_ids = {v["route_id"] for v in gtfs_meta.get("variants", {}).values()}
 
-            # Query the DB for the current active IDs!
-            db = database.SessionLocal()
-            try:
-                valid_routes = db.query(models.TransitRoute).all()
-                valid_route_ids = {r.route_id for r in valid_routes} | variant_route_ids
-                seabus_ids = {r.route_id for r in valid_routes if r.route_group == 'seabus'} | {"6771"}
-            except Exception:
-                valid_route_ids = variant_route_ids
-                seabus_ids = {"6771"}
-            finally:
-                db.close()
+            if _cached_db_route_ids is None:
+                db = database.SessionLocal()
+                try:
+                    valid_routes = db.query(models.TransitRoute).all()
+                    if valid_routes:
+                        _cached_db_route_ids = {r.route_id for r in valid_routes} | variant_route_ids
+                        _cached_db_seabus_ids = {r.route_id for r in valid_routes if r.route_group == 'seabus'} | {"6771"}
+                except Exception:
+                    pass
+                finally:
+                    db.close()
+
+            valid_route_ids = _cached_db_route_ids or variant_route_ids
+            seabus_ids = _cached_db_seabus_ids or {"6771"}
                 
             loop = asyncio.get_event_loop()
             headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
-            response = await loop.run_in_executor(None, lambda: requests.get(url, headers=headers))
+            response = await loop.run_in_executor(None, lambda: requests.get(url, headers=headers, timeout=12))
             
             feed = gtfs_realtime_pb2.FeedMessage()
             feed.ParseFromString(response.content)
@@ -528,7 +573,7 @@ async def fetch_translink_realtime():
                         rmeta = routes_lookup.get(route_id, {})
                         route_number = rmeta.get("route_number") or route_id
                         variant = _resolve_vehicle_variant(route_id, trip_id, direction_id, gtfs_meta)
-                        prog = _compute_vehicle_stop_progress(variant, stop_id, stop_seq, lat, lon, trip_id)
+                        prog = _compute_vehicle_stop_progress(variant, stop_id, stop_seq, lat, lon, trip_id, include_stops=False)
 
                         origin = variant.get("origin", "") if variant else ""
                         destination = variant.get("destination", "") if variant else rmeta.get("long_name", "")
@@ -702,13 +747,7 @@ async def fetch_translink_realtime():
             vehicles.extend(seabus_simulated)
             cached_translink_vehicles = vehicles
             
-            if active_connections:
-                message = {"type": "vehicles_update", "data": vehicles}
-                for connection in list(active_connections):
-                    try:
-                        await connection.send_json(message)
-                    except Exception:
-                        pass
+            await broadcast_ws({"type": "vehicles_update", "data": vehicles})
                     
         except Exception as e:
             print(f"Error fetching TransLink data: {e}")
@@ -730,7 +769,7 @@ async def fetch_translink_trip_updates():
 
             loop = asyncio.get_event_loop()
             headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
-            response = await loop.run_in_executor(None, lambda: requests.get(url, headers=headers))
+            response = await loop.run_in_executor(None, lambda: requests.get(url, headers=headers, timeout=12))
             
             feed = gtfs_realtime_pb2.FeedMessage()
             feed.ParseFromString(response.content)
@@ -789,13 +828,7 @@ async def broadcast_skytrain_simulation():
         try:
             trains = skytrain_service.get_estimated_skytrain_trains()
             cached_skytrain_trains = trains
-            if active_connections:
-                message = {"type": "skytrain_trains_update", "data": trains}
-                for connection in list(active_connections):
-                    try:
-                        await connection.send_json(message)
-                    except Exception:
-                        pass
+            await broadcast_ws({"type": "skytrain_trains_update", "data": trains})
         except Exception as e:
             print(f"Error in SkyTrain simulation broadcast: {e}")
         await asyncio.sleep(4)
@@ -804,13 +837,7 @@ async def broadcast_maritime_vessels():
     while True:
         try:
             vessels = shipping_service.get_vessels()
-            if active_connections:
-                message = {"type": "maritime_vessels_update", "data": vessels}
-                for connection in list(active_connections):
-                    try:
-                        await connection.send_json(message)
-                    except Exception:
-                        pass
+            await broadcast_ws({"type": "maritime_vessels_update", "data": vessels})
         except Exception as e:
             print(f"Error in maritime vessels broadcast: {e}")
         await asyncio.sleep(4)
@@ -958,10 +985,17 @@ async def health_check():
 
 
 @app.get("/api/ferries/terminals/{terminal_code}/schedule")
+@app.get("/api/bcferries/schedule/{terminal_code}")
 async def get_ferry_terminal_schedule(terminal_code: str):
+    global cached_bcferries_raw_data
     try:
-        r = requests.get('https://www.bcferriesapi.ca/v2/', timeout=10)
-        data = r.json()
+        now_ts = time.time()
+        if cached_bcferries_raw_data.get("data") and (now_ts - cached_bcferries_raw_data.get("timestamp", 0.0) < 60.0):
+            data = cached_bcferries_raw_data["data"]
+        else:
+            r = await asyncio.to_thread(requests.get, 'https://www.bcferriesapi.ca/v2/', timeout=10)
+            data = r.json()
+            cached_bcferries_raw_data = {"timestamp": now_ts, "data": data}
         
         schedule = []
         import datetime
@@ -1196,6 +1230,9 @@ def get_transit_vehicle_details(
     if route_number.isdigit():
         route_number = str(int(route_number))
 
+    variant = _resolve_vehicle_variant(str(route_id), str(trip_id), str(direction_id), gtfs_meta)
+    prog = _compute_vehicle_stop_progress(variant, str(stop_id), int(stop_seq or 0), float(lat or 0.0), float(lon or 0.0), str(trip_id))
+
     is_seabus_vehicle = str(route_id) in ["6771", "seabus"] or str(vehicle_id).startswith("seabus") or "seabus" in str(route_number).lower()
     if is_seabus_vehicle:
         is_nb = str(direction_id) == "0"
@@ -1205,6 +1242,27 @@ def get_transit_vehicle_details(
         operator = "TransLink (SeaBus 海上巴士)"
         color = "#0284c7"
         shape_coords = [[-123.1118, 49.2861], [-123.0829, 49.3103]] if is_nb else [[-123.0829, 49.3103], [-123.1118, 49.2861]]
+        dest_lat = 49.3103 if is_nb else 49.2861
+        dest_lon = -123.0829 if is_nb else -123.1118
+
+        eta_min = prog.get("next_stop_minutes")
+        eta_time = prog.get("next_stop_time") or ""
+        for cached_v in cached_translink_vehicles:
+            if str(cached_v.get("id")) == str(vehicle_id):
+                if cached_v.get("next_stop_minutes") is not None:
+                    eta_min = cached_v["next_stop_minutes"]
+                if cached_v.get("next_stop_time"):
+                    eta_time = cached_v["next_stop_time"]
+                break
+        if eta_min is None:
+            if lat and lon:
+                dist_km = math.hypot((dest_lat - lat) * 111.0, (dest_lon - lon) * 73.0)
+                eta_min = max(1, min(12, int(round(dist_km / 0.28))))
+            else:
+                eta_min = 5
+        if not eta_time:
+            eta_time = _format_vancouver_hhmm(time.time() + eta_min * 60)
+
         stops_list = [
             {
                 "seq": 1,
@@ -1218,11 +1276,11 @@ def get_transit_vehicle_details(
                 "seq": 2,
                 "stop_id": "8036" if is_nb else "8035",
                 "name": destination,
-                "lat": 49.3103 if is_nb else 49.2861,
-                "lon": -123.0829 if is_nb else -123.1118,
+                "lat": dest_lat,
+                "lon": dest_lon,
                 "status": "next",
-                "eta_time": prog["next_stop_time"] if prog.get("next_stop_time") else "",
-                "eta_minutes": prog["next_stop_minutes"] if prog.get("next_stop_minutes") is not None else 5
+                "eta_time": eta_time,
+                "eta_minutes": eta_min
             }
         ]
         return {
@@ -1236,17 +1294,14 @@ def get_transit_vehicle_details(
             "destination": destination,
             "current_action": f"開往 {destination}",
             "next_stop_name": destination,
-            "next_stop_time": prog["next_stop_time"],
-            "next_stop_minutes": prog["next_stop_minutes"],
+            "next_stop_time": eta_time,
+            "next_stop_minutes": eta_min,
             "next_stop_index": 1,
             "run_status": "準時",
             "stops": stops_list,
             "shape_coords": shape_coords,
             "is_seabus": True
         }
-
-    variant = _resolve_vehicle_variant(str(route_id), str(trip_id), str(direction_id), gtfs_meta)
-    prog = _compute_vehicle_stop_progress(variant, str(stop_id), int(stop_seq or 0), float(lat or 0.0), float(lon or 0.0), str(trip_id))
 
     if variant:
         origin = variant.get("origin", "")
@@ -1463,6 +1518,23 @@ POINT_CURATED_TYPES = (
 )
 
 def sync_curated_point_types(db: Session):
+    missing_types = [ft for ft in POINT_CURATED_TYPES if ft not in _db_synced_curated_types]
+    if not missing_types:
+        return
+
+    try:
+        existing_rows = (
+            db.query(models.RoadFacility.facility_type)
+            .filter(models.RoadFacility.facility_type.in_(missing_types))
+            .distinct()
+            .all()
+        )
+        for (ft,) in existing_rows:
+            _db_synced_curated_types.add(ft)
+    except Exception:
+        # DB is offline or unreachable; skip DB sync so /api/search falls back to static JSON immediately
+        return
+
     for facility_type in POINT_CURATED_TYPES:
         if facility_type not in _db_synced_curated_types:
             filename = f"vancouver_{facility_type}.geojson"
@@ -1472,18 +1544,21 @@ def sync_curated_point_types(db: Session):
                     import json
                     with open(static_geojson_path, "r", encoding="utf-8") as f:
                         static_geojson = json.load(f)
-                    if facility_type in ("aed", "car_sharing", "bike_racks", "wireless_facilities", "traffic_crosswalks", "litter_containers", "food_banks", "recycling"):
-                        db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).delete()
+                    db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).delete()
                     facs_to_add = []
+                    seen_ids = set()
                     for feat in static_geojson.get("features", []):
                         props = feat.get("properties", {})
                         geom_type = feat.get("geometry", {}).get("type")
                         coords = feat.get("geometry", {}).get("coordinates", [])
                         if geom_type == "Point" and len(coords) >= 2 and isinstance(coords[0], (int, float)):
                             lon, lat = coords[0], coords[1]
-                            fac_id = feat.get("id") or props.get("id") or f"{facility_type}_{lon}_{lat}"
+                            fac_id = str(feat.get("id") or props.get("id") or f"{facility_type}_{lon}_{lat}")
+                            if fac_id in seen_ids:
+                                continue
+                            seen_ids.add(fac_id)
                             fac = models.RoadFacility(
-                                id=str(fac_id),
+                                id=fac_id,
                                 facility_type=facility_type,
                                 name=props.get("name", "Unknown"),
                                 local_area=props.get("local_area") or props.get("municipality", ""),
@@ -1500,6 +1575,7 @@ def sync_curated_point_types(db: Session):
                     _db_synced_curated_types.add(facility_type)
                 except Exception as e:
                     db.rollback()
+                    _db_synced_curated_types.add(facility_type)
                     print(f"Error syncing {facility_type} to DB: {e}")
 
 _search_fsa_cache = None
@@ -2273,6 +2349,13 @@ def get_webcam_images(url: str):
                     "alt": alt
                 })
 
+        if len(webcam_images_cache) > 200:
+            expired_keys = [k for k, (t_val, _) in webcam_images_cache.items() if now - t_val >= 300]
+            for k in expired_keys:
+                webcam_images_cache.pop(k, None)
+            if len(webcam_images_cache) > 200:
+                oldest_key = min(webcam_images_cache, key=lambda k: webcam_images_cache[k][0])
+                webcam_images_cache.pop(oldest_key, None)
         webcam_images_cache[url] = (now, images)
         return {"images": images}
     except Exception as e:
@@ -2283,6 +2366,7 @@ from fastapi import Response
 from fastapi.responses import FileResponse
 
 webcam_image_bytes_cache = {}
+MAX_WEBCAM_BYTES_CACHE_ITEMS = 120
 
 @app.get("/api/webcam/proxy")
 def proxy_webcam_image(url: str):
@@ -2308,6 +2392,13 @@ def proxy_webcam_image(url: str):
         r = requests.get(url, headers=headers, timeout=18)
         if r.status_code == 200 and r.content:
             mtype = r.headers.get("content-type", "image/jpeg")
+            if len(webcam_image_bytes_cache) >= MAX_WEBCAM_BYTES_CACHE_ITEMS:
+                expired = [k for k, (t_val, _, _) in webcam_image_bytes_cache.items() if now - t_val >= 180]
+                for k in expired:
+                    webcam_image_bytes_cache.pop(k, None)
+                if len(webcam_image_bytes_cache) >= MAX_WEBCAM_BYTES_CACHE_ITEMS:
+                    oldest_key = min(webcam_image_bytes_cache, key=lambda k: webcam_image_bytes_cache[k][0])
+                    webcam_image_bytes_cache.pop(oldest_key, None)
             webcam_image_bytes_cache[url] = (now, r.content, mtype)
             return Response(
                 content=r.content,
@@ -2980,6 +3071,9 @@ def get_stops_geojson(group: str, db: Session = Depends(database.get_db)):
             ]
         }
 
+    if group in _stops_geojson_cache:
+        return _stops_geojson_cache[group]
+
     try:
         stops = db.query(models.TransitStop).filter(models.TransitStop.stop_group == group).all()
     except Exception:
@@ -2998,36 +3092,136 @@ def get_stops_geojson(group: str, db: Session = Depends(database.get_db)):
                 "name": stop.name
             }
         })
-    return {"type": "FeatureCollection", "features": features}
+
+    if not features and group == 'bus':
+        gtfs_meta = get_gtfs_metadata()
+        variants = gtfs_meta.get("variants", {})
+        routes_lookup = gtfs_meta.get("routes", {})
+        seen_stops = set()
+        for v in variants.values():
+            rid = str(v.get("route_id", ""))
+            rnum = str(routes_lookup.get(rid, {}).get("route_number", "")).upper()
+            if rnum in ("99", "R1", "R2", "R3", "R4", "R5", "R6"):
+                for s in v.get("stops", []):
+                    sid = str(s.get("stop_id", ""))
+                    if sid and sid not in seen_stops and s.get("lon") and s.get("lat"):
+                        seen_stops.add(sid)
+                        features.append({
+                            "type": "Feature",
+                            "geometry": {
+                                "type": "Point",
+                                "coordinates": [s["lon"], s["lat"]]
+                            },
+                            "properties": {
+                                "stop_id": sid,
+                                "name": s.get("name", "")
+                            }
+                        })
+
+    result_fc = {"type": "FeatureCollection", "features": features}
+    if features:
+        _stops_geojson_cache[group] = result_fc
+    return result_fc
+
+
+_stops_geojson_cache: dict = {}
+_tracks_geojson_cache: dict = {}
 
 @app.get("/api/geojson/tracks/{group}")
 def get_tracks_geojson(group: str, db: Session = Depends(database.get_db)):
     """group can be 'bus', 'skytrain', or 'seabus'"""
-    results = db.query(
-        models.TransitShape.shape_id,
-        models.TransitShape.route_id,
-        models.TransitRoute.color,
-        func.ST_AsGeoJSON(models.TransitShape.geom).label('geojson')
-    ).join(
-        models.TransitRoute, models.TransitShape.route_id == models.TransitRoute.route_id
-    ).filter(
-        models.TransitShape.route_group == group
-    ).all()
-    
+    if group in _tracks_geojson_cache:
+        return _tracks_geojson_cache[group]
+
     features = []
-    for row in results:
-        geometry = json.loads(row.geojson) if row.geojson else None
-        if geometry:
+    try:
+        results = db.query(
+            models.TransitShape.shape_id,
+            models.TransitShape.route_id,
+            models.TransitRoute.color,
+            func.ST_AsGeoJSON(models.TransitShape.geom).label('geojson')
+        ).join(
+            models.TransitRoute, models.TransitShape.route_id == models.TransitRoute.route_id
+        ).filter(
+            models.TransitShape.route_group == group
+        ).all()
+        
+        for row in results:
+            geometry = json.loads(row.geojson) if row.geojson else None
+            if geometry:
+                features.append({
+                    "type": "Feature",
+                    "geometry": geometry,
+                    "properties": {
+                        "shape_id": row.shape_id,
+                        "route_id": row.route_id,
+                        "color": row.color
+                    }
+                })
+    except Exception:
+        features = []
+
+    if not features:
+        if group == 'skytrain':
+            st_data = skytrain_service.get_skytrain_data()
+            for pat_key, pat in st_data.get("patterns", {}).items():
+                coords = pat.get("shape_coords", [])
+                if len(coords) >= 2:
+                    features.append({
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "LineString",
+                            "coordinates": coords
+                        },
+                        "properties": {
+                            "shape_id": pat_key,
+                            "route_id": pat.get("line_name", "SkyTrain"),
+                            "color": pat.get("color", "#0033a0")
+                        }
+                    })
+        elif group == 'seabus':
             features.append({
                 "type": "Feature",
-                "geometry": geometry,
+                "geometry": {
+                    "type": "LineString",
+                    "coordinates": [[-123.1118, 49.2861], [-123.0829, 49.3103]]
+                },
                 "properties": {
-                    "shape_id": row.shape_id,
-                    "route_id": row.route_id,
-                    "color": row.color
+                    "shape_id": "seabus_track",
+                    "route_id": "6771",
+                    "color": "#8b786d"
                 }
             })
-    return {"type": "FeatureCollection", "features": features}
+        elif group == 'bus':
+            gtfs_meta = get_gtfs_metadata()
+            variants = gtfs_meta.get("variants", {})
+            routes_lookup = gtfs_meta.get("routes", {})
+            seen_routes = set()
+            for vkey, v in variants.items():
+                rid = str(v.get("route_id", ""))
+                rmeta = routes_lookup.get(rid, {})
+                rnum = str(rmeta.get("route_number", "")).upper()
+                if rnum in ("99", "R1", "R2", "R3", "R4", "R5", "R6") and rid not in seen_routes:
+                    coords = v.get("shape_coords", [])
+                    if len(coords) >= 2:
+                        seen_routes.add(rid)
+                        features.append({
+                            "type": "Feature",
+                            "geometry": {
+                                "type": "LineString",
+                                "coordinates": coords
+                            },
+                            "properties": {
+                                "shape_id": vkey,
+                                "route_id": rid,
+                                "color": v.get("color") or rmeta.get("color") or "#22c55e"
+                            }
+                        })
+
+    result_fc = {"type": "FeatureCollection", "features": features}
+    if features:
+        _tracks_geojson_cache[group] = result_fc
+    return result_fc
 
 @app.get("/api/debug/counts")
 def get_debug_counts(db: Session = Depends(database.get_db)):
@@ -3293,6 +3487,8 @@ async def get_fuel_stations_api(
 # ==========================================
 # ⚡ EV Charging Stations API
 # ==========================================
+_ev_geojson_cache: dict = {"mtime": 0.0, "data": None}
+
 @app.get("/api/ev/stations")
 def get_ev_stations_api(
     lat: Optional[float] = None,
@@ -3311,8 +3507,14 @@ def get_ev_stations_api(
     if not os.path.exists(geojson_path):
         return {"stations": [], "total": 0}
     try:
-        with open(geojson_path, "r", encoding="utf-8") as f:
-            data = json.load(f)
+        mtime = os.path.getmtime(geojson_path)
+        if _ev_geojson_cache["data"] is not None and _ev_geojson_cache["mtime"] == mtime:
+            data = _ev_geojson_cache["data"]
+        else:
+            with open(geojson_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            _ev_geojson_cache["mtime"] = mtime
+            _ev_geojson_cache["data"] = data
     except Exception as e:
         logger.error(f"Error loading vancouver_ev_charging.geojson: {e}")
         return {"stations": [], "total": 0}

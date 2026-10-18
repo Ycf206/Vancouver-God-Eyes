@@ -233,6 +233,9 @@ interface BeachItem {
   last_value: number | null;
   last_timestamp: number | null;
   last_date: string;
+  last_sample_date?: string;
+  notes?: string;
+  advisory_url?: string;
   status: 'safe' | 'advisory' | 'warning' | 'unknown';
   status_label: string;
   status_color: string;
@@ -382,6 +385,7 @@ interface EVStation {
   name: string;
   address: string;
   local_area: string;
+  city?: string;
   operator: string;
   connectors: string;
   ports: number;
@@ -1117,6 +1121,7 @@ function ExploreContent() {
       (s.operator && s.operator.toLowerCase().includes(q)) ||
       (s.address && s.address.toLowerCase().includes(q)) ||
       (s.connectors && s.connectors.toLowerCase().includes(q)) ||
+      (s.local_area && s.local_area.toLowerCase().includes(q)) ||
       (s.city && s.city.toLowerCase().includes(q))
     );
   }, [evStations, evSearchQuery]);
@@ -4077,7 +4082,7 @@ function ExploreContent() {
                       <div className="text-right">
                         <span className="text-[9.5px] text-gray-400 block">最新採樣日期</span>
                         <span className="font-mono text-gray-300 text-[10.5px]">
-                          {beach.last_sample_date || '每月更新'}
+                          {beach.last_date || beach.last_sample_date || '每月更新'}
                         </span>
                       </div>
                     </div>
@@ -4089,10 +4094,10 @@ function ExploreContent() {
                     )}
 
                     {/* Official Health URL if present */}
-                    {beach.advisory_url && (
+                    {(beach.advisory_url || beach.internet_link) && (
                       <div className="flex items-center justify-end pt-1 border-t border-[#1e2330] text-[10.5px]">
                         <a
-                          href={beach.advisory_url}
+                          href={beach.advisory_url || beach.internet_link}
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}

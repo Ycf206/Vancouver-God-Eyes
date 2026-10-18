@@ -1,0 +1,1937 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS29",
+      "properties": {
+        "id": "ev_cov_VCS29",
+        "facility_type": "ev_charging",
+        "name": "Sunset Beach Easy Park Lot",
+        "address": "Beach Ave and Cardero St",
+        "local_area": "West End",
+        "operator": "Easy Park / Park Board",
+        "connectors": "J1772",
+        "ports": 2,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.283154999495224,
+        "lon": -123.1421729994179
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1421729994179,
+          49.283154999495224
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS30",
+      "properties": {
+        "id": "ev_cov_VCS30",
+        "facility_type": "ev_charging",
+        "name": "Sunset Beach Easy Park Lot",
+        "address": "Beach Ave and Broughton St",
+        "local_area": "West End",
+        "operator": "Easy Park / Park Board",
+        "connectors": "J1772",
+        "ports": 2,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.27873599866283,
+        "lon": -123.13720899997011
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13720899997011,
+          49.27873599866283
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS35",
+      "properties": {
+        "id": "ev_cov_VCS35",
+        "facility_type": "ev_charging",
+        "name": "P1 of Vancouver Main Library parkade",
+        "address": "775 Hamilton St",
+        "local_area": "Downtown",
+        "operator": "Easypark",
+        "connectors": "J1773",
+        "ports": 3,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "Regular parking fees apply",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.279516858982845,
+        "lon": -123.11516599984326
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11516599984326,
+          49.279516858982845
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS09",
+      "properties": {
+        "id": "ev_cov_VCS09",
+        "facility_type": "ev_charging",
+        "name": "P1 of Mt. Pleasant Community Centre lot",
+        "address": "1 Kingsway",
+        "local_area": "Mount Pleasant",
+        "operator": "Easypark",
+        "connectors": "J1772",
+        "ports": 1,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.26413138916266,
+        "lon": -123.10017319992684
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10017319992684,
+          49.26413138916266
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS39",
+      "properties": {
+        "id": "ev_cov_VCS39",
+        "facility_type": "ev_charging",
+        "name": "P1 of Mt. Pleasant Community Centre lot",
+        "address": "1 Kingsway",
+        "local_area": "Mount Pleasant",
+        "operator": "Easypark",
+        "connectors": "J1772",
+        "ports": 1,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.26415939929445,
+        "lon": -123.10020540015736
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10020540015736,
+          49.26415939929445
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS50",
+      "properties": {
+        "id": "ev_cov_VCS50",
+        "facility_type": "ev_charging",
+        "name": "Adjacent to Pacific Coliseum, access off Miller Dr. at N. Renfrew St.",
+        "address": "225 N Renfrew St",
+        "local_area": "Hastings-Sunrise",
+        "operator": "Pacific National Exhibition",
+        "connectors": "J1772",
+        "ports": 2,
+        "voltage": "240 VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.28638477943181,
+        "lon": -123.04349450018482
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.04349450018482,
+          49.28638477943181
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS52",
+      "properties": {
+        "id": "ev_cov_VCS52",
+        "facility_type": "ev_charging",
+        "name": "Access lot from westbound E Hastings St west of Hwy 1",
+        "address": "3311 E Hastings St",
+        "local_area": "Hastings-Sunrise",
+        "operator": "City of Vancouver",
+        "connectors": "CHAdeMO",
+        "ports": 1,
+        "voltage": "400VAC",
+        "power_kw": 7.2,
+        "cost": "$0.38 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.28146799880418,
+        "lon": -123.0338130000933
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0338130000933,
+          49.28146799880418
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS53",
+      "properties": {
+        "id": "ev_cov_VCS53",
+        "facility_type": "ev_charging",
+        "name": "Curbside",
+        "address": "959-979 Mainland St",
+        "local_area": "Downtown",
+        "operator": "City of Vancouver",
+        "connectors": "J1772",
+        "ports": 3,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.27692321917253,
+        "lon": -123.11926106080364
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11926106080364,
+          49.27692321917253
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS61",
+      "properties": {
+        "id": "ev_cov_VCS61",
+        "facility_type": "ev_charging",
+        "name": "Parking lot off of 44th Ave",
+        "address": "646 E 44th Ave",
+        "local_area": "Sunset",
+        "operator": "City of Vancouver",
+        "connectors": "J1772",
+        "ports": 2,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.22977563887732,
+        "lon": -123.09136000049641
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09136000049641,
+          49.22977563887732
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS66",
+      "properties": {
+        "id": "ev_cov_VCS66",
+        "facility_type": "ev_charging",
+        "name": "Kensington Community Centre",
+        "address": "5175 Dumfries St",
+        "local_area": "Kensington-Cedar Cottage",
+        "operator": "City of Vancouver",
+        "connectors": "J1772",
+        "ports": 3,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.237784629237474,
+        "lon": -123.07490849933102
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.07490849933102,
+          49.237784629237474
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS67",
+      "properties": {
+        "id": "ev_cov_VCS67",
+        "facility_type": "ev_charging",
+        "name": "Champlain Community Centre",
+        "address": "3350 Maquinna Dr",
+        "local_area": "Killarney",
+        "operator": "City of Vancouver",
+        "connectors": "J1772",
+        "ports": 3,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.215026469478715,
+        "lon": -123.03226410024742
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.03226410024742,
+          49.215026469478715
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS76",
+      "properties": {
+        "id": "ev_cov_VCS76",
+        "facility_type": "ev_charging",
+        "name": "Curbside on Richards St",
+        "address": "860 Richards St",
+        "local_area": "Downtown",
+        "operator": "City of Vancouver",
+        "connectors": "CHAdeMO",
+        "ports": 2,
+        "voltage": "400VAC",
+        "power_kw": 7.2,
+        "cost": "$0.38 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.279322389511066,
+        "lon": -123.11900359938359
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11900359938359,
+          49.279322389511066
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS81",
+      "properties": {
+        "id": "ev_cov_VCS81",
+        "facility_type": "ev_charging",
+        "name": "Underground",
+        "address": "2221 Main St",
+        "local_area": "Mount Pleasant",
+        "operator": "Easypark",
+        "connectors": "CHAdeMO/CCS",
+        "ports": 1,
+        "voltage": "400VAC",
+        "power_kw": 7.2,
+        "cost": "$0.38 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.26515489900705,
+        "lon": -123.10121619970512
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10121619970512,
+          49.26515489900705
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS89",
+      "properties": {
+        "id": "ev_cov_VCS89",
+        "facility_type": "ev_charging",
+        "name": "McCleery Golf Course",
+        "address": "7188 Macdonald St",
+        "local_area": "Kerrisdale",
+        "operator": "Easypark",
+        "connectors": "J1772",
+        "ports": 3,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.220979999139054,
+        "lon": -123.16864000065736
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.16864000065736,
+          49.220979999139054
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS92",
+      "properties": {
+        "id": "ev_cov_VCS92",
+        "facility_type": "ev_charging",
+        "name": "Sunrise Park",
+        "address": "1950 Windermere St",
+        "local_area": "Hastings-Sunrise",
+        "operator": "City of Vancouver",
+        "connectors": "J1772",
+        "ports": 2,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.266207268730106,
+        "lon": -123.03641970015961
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.03641970015961,
+          49.266207268730106
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS94",
+      "properties": {
+        "id": "ev_cov_VCS94",
+        "facility_type": "ev_charging",
+        "name": "Granville Park",
+        "address": "Pine St & W 14th Ave",
+        "local_area": "Fairview",
+        "operator": "City of Vancouver",
+        "connectors": "J1772",
+        "ports": 2,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.25755418886109,
+        "lon": -123.1435587005347
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1435587005347,
+          49.25755418886109
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS95",
+      "properties": {
+        "id": "ev_cov_VCS95",
+        "facility_type": "ev_charging",
+        "name": "Ebune Park",
+        "address": "950 W 71st Ave",
+        "local_area": "Marpole",
+        "operator": "City of Vancouver",
+        "connectors": "J1772",
+        "ports": 2,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.20685599868063,
+        "lon": -123.12965670028812
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12965670028812,
+          49.20685599868063
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS101",
+      "properties": {
+        "id": "ev_cov_VCS101",
+        "facility_type": "ev_charging",
+        "name": "Dunbar CC",
+        "address": "4747 Dunbar St",
+        "local_area": "Dunbar-Southlands",
+        "operator": "Park Board",
+        "connectors": "J1772",
+        "ports": 4,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.24398205875343,
+        "lon": -123.18674919934331
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.18674919934331,
+          49.24398205875343
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS102",
+      "properties": {
+        "id": "ev_cov_VCS102",
+        "facility_type": "ev_charging",
+        "name": "Undergound",
+        "address": "2221 Main St",
+        "local_area": "Mount Pleasant",
+        "operator": "Easypark",
+        "connectors": "CHAdeMO/CCS",
+        "ports": 1,
+        "voltage": "400VAC",
+        "power_kw": 7.2,
+        "cost": "$0.38 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.265158838740625,
+        "lon": -123.10120920053575
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10120920053575,
+          49.265158838740625
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS104",
+      "properties": {
+        "id": "ev_cov_VCS104",
+        "facility_type": "ev_charging",
+        "name": "Sunrise Park",
+        "address": "1950 Windermere St",
+        "local_area": "Victoria-Fraserview",
+        "operator": "City of Vancouver",
+        "connectors": "CHAdeMO/CCS",
+        "ports": 2,
+        "voltage": "400VAC",
+        "power_kw": 7.2,
+        "cost": "$0.38 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.22590199905591,
+        "lon": -123.05616899964578
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05616899964578,
+          49.22590199905591
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS13",
+      "properties": {
+        "id": "ev_cov_VCS13",
+        "facility_type": "ev_charging",
+        "name": "Hillcrest Community Centre",
+        "address": "4575 Clancy Loranger Way",
+        "local_area": "Riley Park",
+        "operator": "Park Board",
+        "connectors": "J1772",
+        "ports": 3,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.24368099862675,
+        "lon": -123.1065510001002
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1065510001002,
+          49.24368099862675
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS51",
+      "properties": {
+        "id": "ev_cov_VCS51",
+        "facility_type": "ev_charging",
+        "name": "Lot behind mall, access from lane off of 49th Ave.",
+        "address": "1025 W 49th Ave",
+        "local_area": "Oakridge",
+        "operator": "Telus / Retailer",
+        "connectors": "J1772",
+        "ports": 2,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.22688599941139,
+        "lon": -123.12908500063563
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12908500063563,
+          49.22688599941139
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS55",
+      "properties": {
+        "id": "ev_cov_VCS55",
+        "facility_type": "ev_charging",
+        "name": "Upper parking lot at City Hall (access from Yukon)",
+        "address": "453 W. 12th Ave",
+        "local_area": "Mount Pleasant",
+        "operator": "City of Vancouver",
+        "connectors": "CHAdeMO",
+        "ports": 2,
+        "voltage": "400VAC",
+        "power_kw": 7.2,
+        "cost": "$0.38 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.26109299924619,
+        "lon": -123.1131800002575
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1131800002575,
+          49.26109299924619
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS59",
+      "properties": {
+        "id": "ev_cov_VCS59",
+        "facility_type": "ev_charging",
+        "name": "Curbside on Beach Cres",
+        "address": "451 Beach Crescent",
+        "local_area": "Downtown",
+        "operator": "City of Vancouver",
+        "connectors": "CHAdeMO",
+        "ports": 2,
+        "voltage": "400VAC",
+        "power_kw": 7.2,
+        "cost": "$0.38 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.272513998910085,
+        "lon": -123.12832999999034
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12832999999034,
+          49.272513998910085
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS62",
+      "properties": {
+        "id": "ev_cov_VCS62",
+        "facility_type": "ev_charging",
+        "name": "Parking lot off of 44th Ave",
+        "address": "646 E 44th Ave",
+        "local_area": "Sunset",
+        "operator": "City of Vancouver",
+        "connectors": "CHAdeMO",
+        "ports": 2,
+        "voltage": "400VAC",
+        "power_kw": 7.2,
+        "cost": "$0.38 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.229928609362695,
+        "lon": -123.09135339981748
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09135339981748,
+          49.229928609362695
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS78",
+      "properties": {
+        "id": "ev_cov_VCS78",
+        "facility_type": "ev_charging",
+        "name": "Curbside on Richards St",
+        "address": "860 Richards St",
+        "local_area": "Downtown",
+        "operator": "City of Vancouver",
+        "connectors": "J1772",
+        "ports": 1,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.27935407929086,
+        "lon": -123.11894880063002
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11894880063002,
+          49.27935407929086
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS79",
+      "properties": {
+        "id": "ev_cov_VCS79",
+        "facility_type": "ev_charging",
+        "name": "Curbside on Thornton St",
+        "address": "1200 Thornton St",
+        "local_area": "Strathcona",
+        "operator": "City of Vancouver",
+        "connectors": "CHAdeMO",
+        "ports": 2,
+        "voltage": "400VAC",
+        "power_kw": 7.2,
+        "cost": "$0.38 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.27459799879927,
+        "lon": -123.09241999935442
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09241999935442,
+          49.27459799879927
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS87",
+      "properties": {
+        "id": "ev_cov_VCS87",
+        "facility_type": "ev_charging",
+        "name": "Fraserview Golf Course",
+        "address": "7800 Vivian Dr",
+        "local_area": "Hastings-Sunrise",
+        "operator": "Easypark",
+        "connectors": "J1772",
+        "ports": 3,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.26689299948404,
+        "lon": -123.03643199991508
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.03643199991508,
+          49.26689299948404
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS91",
+      "properties": {
+        "id": "ev_cov_VCS91",
+        "facility_type": "ev_charging",
+        "name": "Collingwood Park",
+        "address": "5275 McKinnon St",
+        "local_area": "Renfrew-Collingwood",
+        "operator": "City of Vancouver",
+        "connectors": "J1772",
+        "ports": 2,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.237301529062655,
+        "lon": -123.0359183999793
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0359183999793,
+          49.237301529062655
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS93",
+      "properties": {
+        "id": "ev_cov_VCS93",
+        "facility_type": "ev_charging",
+        "name": "Maple Grove Park",
+        "address": "Yew and W 51st Street",
+        "local_area": "Kerrisdale",
+        "operator": "City of Vancouver",
+        "connectors": "J1772",
+        "ports": 2,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.22243552940421,
+        "lon": -123.15919839978652
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.15919839978652,
+          49.22243552940421
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS96",
+      "properties": {
+        "id": "ev_cov_VCS96",
+        "facility_type": "ev_charging",
+        "name": "Nanaimo Park",
+        "address": "E 47th Ave and Nanaimo St",
+        "local_area": "Victoria-Fraserview",
+        "operator": "City of Vancouver",
+        "connectors": "J1772",
+        "ports": 2,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.22763591942339,
+        "lon": -123.05901619994043
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05901619994043,
+          49.22763591942339
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS103",
+      "properties": {
+        "id": "ev_cov_VCS103",
+        "facility_type": "ev_charging",
+        "name": "Collingwood Park",
+        "address": "5275 McKinnon St",
+        "local_area": "Renfrew-Collingwood",
+        "operator": "City of Vancouver",
+        "connectors": "CHAdeMO/CCS",
+        "ports": 2,
+        "voltage": "400VAC",
+        "power_kw": 7.2,
+        "cost": "$0.38 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.237301529062655,
+        "lon": -123.0359183999793
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0359183999793,
+          49.237301529062655
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS108",
+      "properties": {
+        "id": "ev_cov_VCS108",
+        "facility_type": "ev_charging",
+        "name": "Nanaimo Park",
+        "address": "E 47th Ave and Nanaimo St",
+        "local_area": "Victoria-Fraserview",
+        "operator": "City of Vancouver",
+        "connectors": "CHAdeMO/CCS",
+        "ports": 2,
+        "voltage": "400VAC",
+        "power_kw": 7.2,
+        "cost": "$0.38 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.22766979867333,
+        "lon": -123.05898900036433
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05898900036433,
+          49.22766979867333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS110",
+      "properties": {
+        "id": "ev_cov_VCS110",
+        "facility_type": "ev_charging",
+        "name": "Maple @ 45th",
+        "address": "6100 Maple St",
+        "local_area": "Kerrisdale",
+        "operator": "City of Vancouver",
+        "connectors": "CHAdeMO/CCS",
+        "ports": 2,
+        "voltage": "400VAC",
+        "power_kw": 7.2,
+        "cost": "$0.38 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.230694229298116,
+        "lon": -123.15209300029865
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.15209300029865,
+          49.230694229298116
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS31",
+      "properties": {
+        "id": "ev_cov_VCS31",
+        "facility_type": "ev_charging",
+        "name": "Sunset Beach Easy Park Lot",
+        "address": "Beach Ave and Bute St",
+        "local_area": "West End",
+        "operator": "Easy Park / Park Board",
+        "connectors": "J1772",
+        "ports": 2,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.27873599866283,
+        "lon": -123.13720899997011
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13720899997011,
+          49.27873599866283
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS07",
+      "properties": {
+        "id": "ev_cov_VCS07",
+        "facility_type": "ev_charging",
+        "name": "Arbutus St. southbound, adjacent to tennis courts",
+        "address": "1305 Arbutus St",
+        "local_area": "Kitsilano",
+        "operator": "City of Vancouver",
+        "connectors": "J1772",
+        "ports": 3,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.273911948761985,
+        "lon": -123.15265619939477
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.15265619939477,
+          49.273911948761985
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS44",
+      "properties": {
+        "id": "ev_cov_VCS44",
+        "facility_type": "ev_charging",
+        "name": "Curbside opposite Vancouver Aquarium",
+        "address": "845 Avison Way",
+        "local_area": "Vancouver",
+        "operator": "Vancouver Aquarium",
+        "connectors": "J1772",
+        "ports": 2,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.299533999187936,
+        "lon": -123.1302199993813
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1302199993813,
+          49.299533999187936
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS47",
+      "properties": {
+        "id": "ev_cov_VCS47",
+        "facility_type": "ev_charging",
+        "name": "Sunset Community Centre (NW corner of lot)",
+        "address": "272 E 53rd Ave",
+        "local_area": "Sunset",
+        "operator": "City of Vancouver",
+        "connectors": "J1772",
+        "ports": 5,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.222281998751384,
+        "lon": -123.10008999996074
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10008999996074,
+          49.222281998751384
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS49",
+      "properties": {
+        "id": "ev_cov_VCS49",
+        "facility_type": "ev_charging",
+        "name": "main parking lot, adjacent to west side of ice rink",
+        "address": "1001 Cotton Dr",
+        "local_area": "Grandview-Woodland",
+        "operator": "Park Board",
+        "connectors": "J1772",
+        "ports": 4,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.27602903875964,
+        "lon": -123.07129509973213
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.07129509973213,
+          49.27602903875964
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS56",
+      "properties": {
+        "id": "ev_cov_VCS56",
+        "facility_type": "ev_charging",
+        "name": "Upper parking lot at City Hall (access from Yukon)",
+        "address": "453 W. 12th Ave",
+        "local_area": "Mount Pleasant",
+        "operator": "City of Vancouver",
+        "connectors": "J1772",
+        "ports": 2,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.261219998705364,
+        "lon": -123.11373999969001
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11373999969001,
+          49.261219998705364
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS70",
+      "properties": {
+        "id": "ev_cov_VCS70",
+        "facility_type": "ev_charging",
+        "name": "Killarney Community Centre",
+        "address": "6260 Killarney St",
+        "local_area": "Killarney",
+        "operator": "City of Vancouver",
+        "connectors": "J1772",
+        "ports": 3,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.22695486863059,
+        "lon": -123.04484709939611
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.04484709939611,
+          49.22695486863059
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS74",
+      "properties": {
+        "id": "ev_cov_VCS74",
+        "facility_type": "ev_charging",
+        "name": "Park Board Head Office",
+        "address": "2099 Beach Ave",
+        "local_area": "Vancouver",
+        "operator": "City of Vancouver",
+        "connectors": "J1772",
+        "ports": 3,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.29103764886917,
+        "lon": -123.14500479984366
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14500479984366,
+          49.29103764886917
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS82",
+      "properties": {
+        "id": "ev_cov_VCS82",
+        "facility_type": "ev_charging",
+        "name": "Curbside on 11th",
+        "address": "1674 E 11th",
+        "local_area": "Kensington-Cedar Cottage",
+        "operator": "City of Vancouver",
+        "connectors": "CHAdeMO/CCS",
+        "ports": 2,
+        "voltage": "400VAC",
+        "power_kw": 7.2,
+        "cost": "$0.38 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.26045999914628,
+        "lon": -123.07019000048312
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.07019000048312,
+          49.26045999914628
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS86",
+      "properties": {
+        "id": "ev_cov_VCS86",
+        "facility_type": "ev_charging",
+        "name": "Trout Lake",
+        "address": "3360 Victoria Dr",
+        "local_area": "Kensington-Cedar Cottage",
+        "operator": "City of Vancouver",
+        "connectors": "J1772",
+        "ports": 3,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.25665197890284,
+        "lon": -123.06570620058483
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.06570620058483,
+          49.25665197890284
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS88",
+      "properties": {
+        "id": "ev_cov_VCS88",
+        "facility_type": "ev_charging",
+        "name": "Langara Golf Course",
+        "address": "6706 Alberta St",
+        "local_area": "Oakridge",
+        "operator": "Easypark",
+        "connectors": "J1772",
+        "ports": 3,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.22407499880693,
+        "lon": -123.11264500009608
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11264500009608,
+          49.22407499880693
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS90",
+      "properties": {
+        "id": "ev_cov_VCS90",
+        "facility_type": "ev_charging",
+        "name": "Jericho Pump Station",
+        "address": "3900 Pt Grey Rd",
+        "local_area": "West Point Grey",
+        "operator": "Easypark",
+        "connectors": "J1772",
+        "ports": 6,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.27099146944479,
+        "lon": -123.1912032005563
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1912032005563,
+          49.27099146944479
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS97",
+      "properties": {
+        "id": "ev_cov_VCS97",
+        "facility_type": "ev_charging",
+        "name": "Dunbar @ W. 6th",
+        "address": "W 6th Ave and Dunbar St",
+        "local_area": "Kitsilano",
+        "operator": "City of Vancouver",
+        "connectors": "J1772",
+        "ports": 2,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.26669795871344,
+        "lon": -123.18364639969073
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.18364639969073,
+          49.26669795871344
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS98",
+      "properties": {
+        "id": "ev_cov_VCS98",
+        "facility_type": "ev_charging",
+        "name": "Maple @ 45th",
+        "address": "6100 Maple St",
+        "local_area": "Kerrisdale",
+        "operator": "City of Vancouver",
+        "connectors": "J1772",
+        "ports": 2,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.23064494913689,
+        "lon": -123.152105699932
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.152105699932,
+          49.23064494913689
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS100",
+      "properties": {
+        "id": "ev_cov_VCS100",
+        "facility_type": "ev_charging",
+        "name": "Almond Park Playground",
+        "address": "3600 W 12th Ave",
+        "local_area": "Kitsilano",
+        "operator": "City of Vancouver",
+        "connectors": "J1772",
+        "ports": 2,
+        "voltage": "240VAC",
+        "power_kw": 7.2,
+        "cost": "$0.31 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.26147863907568,
+        "lon": -123.18398469941687
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.18398469941687,
+          49.26147863907568
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS105",
+      "properties": {
+        "id": "ev_cov_VCS105",
+        "facility_type": "ev_charging",
+        "name": "Maple Grove Park",
+        "address": "Yew and 51st Street",
+        "local_area": "Kerrisdale",
+        "operator": "City of Vancouver",
+        "connectors": "CHAdeMO/CCS",
+        "ports": 2,
+        "voltage": "400VAC",
+        "power_kw": 7.2,
+        "cost": "$0.38 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.22486699909835,
+        "lon": -123.15908399998246
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.15908399998246,
+          49.22486699909835
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS106",
+      "properties": {
+        "id": "ev_cov_VCS106",
+        "facility_type": "ev_charging",
+        "name": "Granville Park",
+        "address": "W 14th Ave & Pine St",
+        "local_area": "Fairview",
+        "operator": "City of Vancouver",
+        "connectors": "CHAdeMO/CCS",
+        "ports": 2,
+        "voltage": "400VAC",
+        "power_kw": 7.2,
+        "cost": "$0.38 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.25753928936748,
+        "lon": -123.1435600000067
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1435600000067,
+          49.25753928936748
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS107",
+      "properties": {
+        "id": "ev_cov_VCS107",
+        "facility_type": "ev_charging",
+        "name": "Ebune Park",
+        "address": "950 W 71st Ave",
+        "local_area": "Marpole",
+        "operator": "City of Vancouver",
+        "connectors": "CHAdeMO/CCS",
+        "ports": 2,
+        "voltage": "400VAC",
+        "power_kw": 7.2,
+        "cost": "$0.38 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.206861978727076,
+        "lon": -123.12970800018505
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12970800018505,
+          49.206861978727076
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS109",
+      "properties": {
+        "id": "ev_cov_VCS109",
+        "facility_type": "ev_charging",
+        "name": "Dunbar @ W. 6th",
+        "address": "W 6th Ave and Dunbar St",
+        "local_area": "Kitsilano",
+        "operator": "City of Vancouver",
+        "connectors": "CHAdeMO/CCS",
+        "ports": 2,
+        "voltage": "400VAC",
+        "power_kw": 7.2,
+        "cost": "$0.38 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.26676969914343,
+        "lon": -123.18363900008023
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.18363900008023,
+          49.26676969914343
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_cov_VCS112",
+      "properties": {
+        "id": "ev_cov_VCS112",
+        "facility_type": "ev_charging",
+        "name": "Almond Park Playground",
+        "address": "3600 W 12th Ave",
+        "local_area": "Kitsilano",
+        "operator": "City of Vancouver",
+        "connectors": "CHAdeMO/CCS",
+        "ports": 2,
+        "voltage": "400VAC",
+        "power_kw": 7.2,
+        "cost": "$0.38 kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.261487999295305,
+        "lon": -123.18398200052448
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.18398200052448,
+          49.261487999295305
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_tesla_pacific_centre",
+      "properties": {
+        "id": "ev_tesla_pacific_centre",
+        "facility_type": "ev_charging",
+        "name": "Tesla Supercharger - Pacific Centre",
+        "address": "700 W Georgia St, Vancouver",
+        "local_area": "Downtown",
+        "operator": "Tesla",
+        "connectors": "Tesla · CCS",
+        "ports": 20,
+        "voltage": "480V DC",
+        "power_kw": 250,
+        "cost": ".42/kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.2831,
+        "lon": -123.1171
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1171,
+          49.2831
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_tesla_grandview",
+      "properties": {
+        "id": "ev_tesla_grandview",
+        "facility_type": "ev_charging",
+        "name": "Tesla Supercharger - Grandview Central",
+        "address": "2929 E 22nd Ave, Vancouver",
+        "local_area": "Renfrew-Collingwood",
+        "operator": "Tesla",
+        "connectors": "Tesla · CCS",
+        "ports": 16,
+        "voltage": "480V DC",
+        "power_kw": 250,
+        "cost": ".39/kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.252,
+        "lon": -123.0425
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0425,
+          49.252
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_tesla_broadway",
+      "properties": {
+        "id": "ev_tesla_broadway",
+        "facility_type": "ev_charging",
+        "name": "Tesla Supercharger - Broadway Tech Centre",
+        "address": "2985 Virtual Way, Vancouver",
+        "local_area": "Hastings-Sunrise",
+        "operator": "Tesla",
+        "connectors": "Tesla · CCS",
+        "ports": 12,
+        "voltage": "480V DC",
+        "power_kw": 250,
+        "cost": ".39/kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.2618,
+        "lon": -123.0401
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0401,
+          49.2618
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_tesla_oakridge",
+      "properties": {
+        "id": "ev_tesla_oakridge",
+        "facility_type": "ev_charging",
+        "name": "Tesla Supercharger - Cambie / 41st",
+        "address": "555 W 41st Ave, Vancouver",
+        "local_area": "Oakridge",
+        "operator": "Tesla",
+        "connectors": "Tesla · CCS",
+        "ports": 12,
+        "voltage": "480V DC",
+        "power_kw": 250,
+        "cost": ".39/kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.2335,
+        "lon": -123.1189
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1189,
+          49.2335
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_bchydro_hornby",
+      "properties": {
+        "id": "ev_bchydro_hornby",
+        "facility_type": "ev_charging",
+        "name": "BC Hydro EV - Downtown Hornby",
+        "address": "750 Hornby St, Vancouver",
+        "local_area": "Downtown",
+        "operator": "BC Hydro",
+        "connectors": "CCS · CHAdeMO",
+        "ports": 4,
+        "voltage": "400V DC",
+        "power_kw": 100,
+        "cost": ".35/kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.2828,
+        "lon": -123.1205
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1205,
+          49.2828
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_bchydro_marine_gateway",
+      "properties": {
+        "id": "ev_bchydro_marine_gateway",
+        "facility_type": "ev_charging",
+        "name": "BC Hydro EV - Marine Gateway",
+        "address": "450 SW Marine Dr, Vancouver",
+        "local_area": "Marpole",
+        "operator": "BC Hydro",
+        "connectors": "CCS · CHAdeMO",
+        "ports": 4,
+        "voltage": "400V DC",
+        "power_kw": 100,
+        "cost": ".35/kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.2098,
+        "lon": -123.1175
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1175,
+          49.2098
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_bchydro_kingsway",
+      "properties": {
+        "id": "ev_bchydro_kingsway",
+        "facility_type": "ev_charging",
+        "name": "BC Hydro EV - Kingsway & Victoria",
+        "address": "1900 Kingsway, Vancouver",
+        "local_area": "Kensington-Cedar Cottage",
+        "operator": "BC Hydro",
+        "connectors": "CCS · CHAdeMO",
+        "ports": 4,
+        "voltage": "400V DC",
+        "power_kw": 100,
+        "cost": ".35/kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.2458,
+        "lon": -123.0672
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0672,
+          49.2458
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_electrify_canada_canadian_tire",
+      "properties": {
+        "id": "ev_electrify_canada_canadian_tire",
+        "facility_type": "ev_charging",
+        "name": "Electrify Canada - Grandview Hwy",
+        "address": "2830 Bentall St, Vancouver",
+        "local_area": "Grandview-Woodland",
+        "operator": "Electrify Canada",
+        "connectors": "CCS · CHAdeMO",
+        "ports": 6,
+        "voltage": "800V DC",
+        "power_kw": 350,
+        "cost": ".44/kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.2575,
+        "lon": -123.0378
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0378,
+          49.2575
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_flo_science_world",
+      "properties": {
+        "id": "ev_flo_science_world",
+        "facility_type": "ev_charging",
+        "name": "FLO DC Fast - Science World",
+        "address": "1455 Quebec St, Vancouver",
+        "local_area": "Strathcona",
+        "operator": "FLO",
+        "connectors": "CCS · CHAdeMO",
+        "ports": 4,
+        "voltage": "400V DC",
+        "power_kw": 50,
+        "cost": ".33/kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.2735,
+        "lon": -123.1042
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1042,
+          49.2735
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_chargepoint_waterfront",
+      "properties": {
+        "id": "ev_chargepoint_waterfront",
+        "facility_type": "ev_charging",
+        "name": "ChargePoint - Waterfront Station",
+        "address": "200 Granville St, Vancouver",
+        "local_area": "Downtown",
+        "operator": "ChargePoint",
+        "connectors": "J1772 · CCS",
+        "ports": 6,
+        "voltage": "240V / 400V",
+        "power_kw": 62.5,
+        "cost": ".32/kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.2858,
+        "lon": -123.113
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.113,
+          49.2858
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_tesla_brentwood",
+      "properties": {
+        "id": "ev_tesla_brentwood",
+        "facility_type": "ev_charging",
+        "name": "Tesla Supercharger - The Amazing Brentwood",
+        "address": "4567 Lougheed Hwy, Burnaby",
+        "local_area": "Brentwood",
+        "operator": "Tesla",
+        "connectors": "Tesla · CCS",
+        "ports": 20,
+        "voltage": "480V DC",
+        "power_kw": 250,
+        "cost": ".39/kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.2678,
+        "lon": -123.0012
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0012,
+          49.2678
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_tesla_metrotown",
+      "properties": {
+        "id": "ev_tesla_metrotown",
+        "facility_type": "ev_charging",
+        "name": "Tesla Supercharger - Metropolis at Metrotown",
+        "address": "4700 Kingsway, Burnaby",
+        "local_area": "Metrotown",
+        "operator": "Tesla",
+        "connectors": "Tesla · CCS",
+        "ports": 24,
+        "voltage": "480V DC",
+        "power_kw": 250,
+        "cost": ".39/kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.2275,
+        "lon": -122.998
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.998,
+          49.2275
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_tesla_richmond_centre",
+      "properties": {
+        "id": "ev_tesla_richmond_centre",
+        "facility_type": "ev_charging",
+        "name": "Tesla Supercharger - Richmond Centre",
+        "address": "6551 No. 3 Rd, Richmond",
+        "local_area": "Richmond City Centre",
+        "operator": "Tesla",
+        "connectors": "Tesla · CCS",
+        "ports": 20,
+        "voltage": "480V DC",
+        "power_kw": 250,
+        "cost": ".39/kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.1672,
+        "lon": -123.1365
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1365,
+          49.1672
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_tesla_north_van",
+      "properties": {
+        "id": "ev_tesla_north_van",
+        "facility_type": "ev_charging",
+        "name": "Tesla Supercharger - Capilano Mall",
+        "address": "935 Marine Dr, North Vancouver",
+        "local_area": "Marine-Hamilton",
+        "operator": "Tesla",
+        "connectors": "Tesla · CCS",
+        "ports": 12,
+        "voltage": "480V DC",
+        "power_kw": 250,
+        "cost": ".39/kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.3218,
+        "lon": -123.0965
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0965,
+          49.3218
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ev_tesla_park_royal",
+      "properties": {
+        "id": "ev_tesla_park_royal",
+        "facility_type": "ev_charging",
+        "name": "Tesla Supercharger - Park Royal",
+        "address": "2002 Park Royal S, West Vancouver",
+        "local_area": "Park Royal",
+        "operator": "Tesla",
+        "connectors": "Tesla · CCS",
+        "ports": 16,
+        "voltage": "480V DC",
+        "power_kw": 250,
+        "cost": ".39/kWh",
+        "is_free": false,
+        "access": "Public",
+        "lat": 49.3255,
+        "lon": -123.136
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.136,
+          49.3255
+        ]
+      }
+    }
+  ]
+}

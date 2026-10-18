@@ -160,9 +160,9 @@ interface SkytrainStationSchedule {
     }>;
   }>;
   first_last?: {
-    weekday?: { first_train: string; last_train: string };
-    saturday?: { first_train: string; last_train: string };
-    sunday_holiday?: { first_train: string; last_train: string };
+    weekday?: { first_train?: string; last_train?: string; first?: string; last?: string };
+    saturday?: { first_train?: string; last_train?: string; first?: string; last?: string };
+    sunday_holiday?: { first_train?: string; last_train?: string; first?: string; last?: string };
   };
   frequencies?: {
     peak?: string;
@@ -175,6 +175,10 @@ interface SkytrainStationSchedule {
   fare_zone?: string;
   has_park_and_ride?: boolean;
   has_bike_parkade?: boolean;
+  facilities?: {
+    bike_parkade?: boolean;
+    park_and_ride?: boolean;
+  };
   is_accessible?: boolean;
   updated_at: string;
 }
@@ -644,7 +648,7 @@ export default function AppMap() {
         if (!res.ok) throw new Error('Local fetch failed');
         return res.json();
       })
-      .catch(() => fetch(`${apiUrl}/api/geojson/road/local_area_boundary`).then(r => r.json()))
+      .catch(() => fetch(`${getApiUrl()}/api/geojson/road/local_area_boundary`).then(r => r.json()))
       .then(data => {
         if (data?.features && Array.isArray(data.features)) {
           localAreaBoundariesRef.current = data.features;
@@ -1212,6 +1216,25 @@ export default function AppMap() {
           updated_at: new Date().toLocaleTimeString('en-US', { hour12: false })
         });
         setLoadingStationSchedule(false);
+      });
+  }, []);
+
+  const fetchArrivals = React.useCallback((stopId: string) => {
+    if (!stopId) return;
+    setLoadingArrivals(true);
+    setArrivals([]);
+    fetch(`${getApiUrl()}/api/stops/${encodeURIComponent(stopId)}/arrivals`)
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to fetch stop arrivals');
+        return res.json();
+      })
+      .then((data) => {
+        setArrivals(data.arrivals || []);
+        setLoadingArrivals(false);
+      })
+      .catch(() => {
+        setArrivals([]);
+        setLoadingArrivals(false);
       });
   }, []);
 
@@ -2384,12 +2407,16 @@ export default function AppMap() {
 
   useEffect(() => {
     const wsUrl = getWsUrl();
-    let ws: WebSocket;
+    let ws: WebSocket | null = null;
+    let isDisposed = false;
+    let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
     
     const connect = () => {
+      if (isDisposed) return;
       ws = new WebSocket(wsUrl);
       ws.onopen = () => console.log('✅ Connected to Live Traffic WebSocket');
       ws.onmessage = (event) => {
+        if (isDisposed) return;
         try {
           const message = JSON.parse(event.data);
           if (message.type === 'vehicles_update') {
@@ -2405,11 +2432,22 @@ export default function AppMap() {
           console.error('Error parsing websocket message', e);
         }
       };
-      ws.onclose = () => setTimeout(connect, 5000);
+      ws.onclose = () => {
+        if (!isDisposed) {
+          reconnectTimer = setTimeout(connect, 5000);
+        }
+      };
     };
     
     connect();
-    return () => { if (ws) ws.close(); };
+    return () => {
+      isDisposed = true;
+      if (reconnectTimer) clearTimeout(reconnectTimer);
+      if (ws) {
+        ws.onclose = null;
+        ws.close();
+      }
+    };
   }, []);
 
 
@@ -2468,75 +2506,149 @@ export default function AppMap() {
       };
     }
 
-    style.sources['skytrain-tracks'] = { type: 'geojson', data: `${apiUrl}/api/geojson/tracks/skytrain` };
-    style.sources['skytrain-stops'] = { type: 'geojson', data: `${apiUrl}/api/geojson/stops/skytrain` };
-    style.sources['bus-tracks'] = { type: 'geojson', data: `${apiUrl}/api/geojson/tracks/bus` };
-    style.sources['bus-stops'] = { type: 'geojson', data: `${apiUrl}/api/geojson/stops/bus` };
-    style.sources['seabus-tracks'] = { type: 'geojson', data: `${apiUrl}/api/geojson/tracks/seabus` };
-    style.sources['seabus-stops'] = { type: 'geojson', data: `${apiUrl}/api/geojson/stops/seabus` };
-    const pmParams = new URLSearchParams();
-    if (parkingMeterFilter?.maxRate !== undefined && parkingMeterFilter.maxRate < 20) {
-      pmParams.set('max_rate', parkingMeterFilter.maxRate.toString());
+    if (layers.skytrainRoutes || layers.skytrainStops) {
+      if (layers.skytrainRoutes) {
+        style.sources['skytrain-tracks'] = { type: 'geojson', data: `${apiUrl}/api/geojson/tracks/skytrain` };
+      }
+      style.sources['skytrain-stops'] = { type: 'geojson', data: `${apiUrl}/api/geojson/stops/skytrain` };
     }
-    if (parkingMeterFilter?.creditCardOnly) {
-      pmParams.set('credit_card_only', 'true');
+    if (layers.busRoutes && !searchedBusRoute && !selectedBus) {
+      style.sources['bus-tracks'] = { type: 'geojson', data: `${apiUrl}/api/geojson/tracks/bus` };
+      style.sources['bus-stops'] = { type: 'geojson', data: `${apiUrl}/api/geojson/stops/bus` };
     }
-    if (parkingMeterFilter?.timePeriod) {
-      pmParams.set('time_period', parkingMeterFilter.timePeriod);
+    if (layers.seabusRoutes) {
+      style.sources['seabus-tracks'] = { type: 'geojson', data: `${apiUrl}/api/geojson/tracks/seabus` };
+      style.sources['seabus-stops'] = { type: 'geojson', data: `${apiUrl}/api/geojson/stops/seabus` };
     }
-    const pmQuery = pmParams.toString() ? `?${pmParams.toString()}` : '';
-    style.sources['parking-meters'] = { 
-      type: 'geojson', 
-      data: `${apiUrl}/api/geojson/road/parking_meters${pmQuery}`,
-      cluster: true,
-      clusterMaxZoom: 14,
-      clusterRadius: 50
-    };
-    style.sources['accessible-parking'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/accessible_parking` };
-    style.sources['motorcycle-parking'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/motorcycle_parking` };
-    style.sources['ev-charging'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/ev_charging` };
-    style.sources['escooter'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/escooter` };
-    style.sources['shared-bikes'] = { type: 'geojson', data: '/vancouver_shared_bikes.geojson' };
-    style.sources['bikeways'] = { type: 'geojson', data: '/vancouver_bikeways.geojson' };
-    style.sources['fire-halls'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/fire_halls` };
-    style.sources['community-centres'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/community_centres` };
-    style.sources['traffic-cameras'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/traffic_cameras` };
-    style.sources['safety-cameras'] = { type: 'geojson', data: '/vancouver_safety_cameras.geojson' };
-    style.sources['hospitals'] = { type: 'geojson', data: '/vancouver_hospitals.geojson' };
-    style.sources['parks'] = { type: 'geojson', data: '/vancouver_parks.geojson' };
-    style.sources['parks-facilities'] = { type: 'geojson', data: '/vancouver_parks_facilities.geojson' };
-    style.sources['community-gardens'] = { type: 'geojson', data: '/vancouver_community_gardens.geojson' };
-    style.sources['drinking-fountains'] = { type: 'geojson', data: '/vancouver_drinking_fountains.geojson' };
-    style.sources['public-washrooms'] = { type: 'geojson', data: '/vancouver_public_washrooms.geojson' };
-    style.sources['schools'] = { type: 'geojson', data: '/vancouver_schools.geojson' };
-    style.sources['libraries'] = { type: 'geojson', data: '/vancouver_libraries.geojson' };
-    style.sources['food-vendors'] = { type: 'geojson', data: '/vancouver_food_vendors.geojson' };
-    style.sources['food-banks'] = { type: 'geojson', data: '/vancouver_food_banks.geojson' };
-    style.sources['recycling'] = { type: 'geojson', data: '/vancouver_recycling.geojson' };
-    style.sources['homeless-shelters'] = { type: 'geojson', data: '/vancouver_homeless_shelters.geojson' };
-    style.sources['car-sharing'] = { type: 'geojson', data: '/vancouver_car_sharing.geojson' };
-    style.sources['police'] = { type: 'geojson', data: '/vancouver_police.geojson' };
-    style.sources['disaster-hubs'] = { type: 'geojson', data: '/vancouver_disaster_hubs.geojson' };
-    style.sources['local-area-boundary'] = { type: 'geojson', data: '/vancouver_local_area_boundary.geojson' };
-    style.sources['fuel'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/fuel` };
-    style.sources['tesla'] = { type: 'geojson', data: '/vancouver_tesla.geojson' };
-    style.sources['marine_terminals'] = { type: 'geojson', data: '/vancouver_marine_terminals.geojson' };
-    style.sources['aed'] = { type: 'geojson', data: '/vancouver_aed.geojson' };
+    if (layers.parkingMeters) {
+      const pmParams = new URLSearchParams();
+      if (parkingMeterFilter?.maxRate !== undefined && parkingMeterFilter.maxRate < 20) {
+        pmParams.set('max_rate', parkingMeterFilter.maxRate.toString());
+      }
+      if (parkingMeterFilter?.creditCardOnly) {
+        pmParams.set('credit_card_only', 'true');
+      }
+      if (parkingMeterFilter?.timePeriod) {
+        pmParams.set('time_period', parkingMeterFilter.timePeriod);
+      }
+      const pmQuery = pmParams.toString() ? `?${pmParams.toString()}` : '';
+      style.sources['parking-meters'] = { 
+        type: 'geojson', 
+        data: `${apiUrl}/api/geojson/road/parking_meters${pmQuery}`,
+        cluster: true,
+        clusterMaxZoom: 14,
+        clusterRadius: 50
+      };
+    }
+    if (layers.accessibleParking) {
+      style.sources['accessible-parking'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/accessible_parking` };
+    }
+    if (layers.motorcycleParking) {
+      style.sources['motorcycle-parking'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/motorcycle_parking` };
+    }
+    if (layers.evCharging) {
+      style.sources['ev-charging'] = { type: 'geojson', data: '/vancouver_ev_charging.geojson' };
+    }
+    if (layers.escooter) {
+      style.sources['escooter'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/escooter` };
+    }
+    if (layers.sharedBikes) {
+      style.sources['shared-bikes'] = { type: 'geojson', data: '/vancouver_shared_bikes.geojson' };
+    }
+    if (layers.bikeways) {
+      style.sources['bikeways'] = { type: 'geojson', data: '/vancouver_bikeways.geojson' };
+    }
+    if (layers.fireHalls) {
+      style.sources['fire-halls'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/fire_halls` };
+    }
+    if (layers.communityCentres) {
+      style.sources['community-centres'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/community_centres` };
+    }
+    if (layers.trafficCameras) {
+      style.sources['traffic-cameras'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/traffic_cameras` };
+    }
+    if (layers.safetyCameras) {
+      style.sources['safety-cameras'] = { type: 'geojson', data: '/vancouver_safety_cameras.geojson' };
+    }
+    if (layers.hospitals) {
+      style.sources['hospitals'] = { type: 'geojson', data: '/vancouver_hospitals.geojson' };
+    }
+    if (layers.parks) {
+      style.sources['parks'] = { type: 'geojson', data: '/vancouver_parks.geojson' };
+    }
+    if (layers.parksFacilities) {
+      style.sources['parks-facilities'] = { type: 'geojson', data: '/vancouver_parks_facilities.geojson' };
+    }
+    if (layers.communityGardens) {
+      style.sources['community-gardens'] = { type: 'geojson', data: '/vancouver_community_gardens.geojson' };
+    }
+    if (layers.drinkingFountains) {
+      style.sources['drinking-fountains'] = { type: 'geojson', data: '/vancouver_drinking_fountains.geojson' };
+    }
+    if (layers.publicWashrooms) {
+      style.sources['public-washrooms'] = { type: 'geojson', data: '/vancouver_public_washrooms.geojson' };
+    }
+    if (layers.schools) {
+      style.sources['schools'] = { type: 'geojson', data: '/vancouver_schools.geojson' };
+    }
+    if (layers.libraries) {
+      style.sources['libraries'] = { type: 'geojson', data: '/vancouver_libraries.geojson' };
+    }
+    if (layers.foodVendors) {
+      style.sources['food-vendors'] = { type: 'geojson', data: '/vancouver_food_vendors.geojson' };
+    }
+    if (layers.foodBanks) {
+      style.sources['food-banks'] = { type: 'geojson', data: '/vancouver_food_banks.geojson' };
+    }
+    if (layers.recycling) {
+      style.sources['recycling'] = { type: 'geojson', data: '/vancouver_recycling.geojson' };
+    }
+    if (layers.homelessShelters) {
+      style.sources['homeless-shelters'] = { type: 'geojson', data: '/vancouver_homeless_shelters.geojson' };
+    }
+    if (layers.carSharing) {
+      style.sources['car-sharing'] = { type: 'geojson', data: '/vancouver_car_sharing.geojson' };
+    }
+    if (layers.police) {
+      style.sources['police'] = { type: 'geojson', data: '/vancouver_police.geojson' };
+    }
+    if (layers.disasterHubs) {
+      style.sources['disaster-hubs'] = { type: 'geojson', data: '/vancouver_disaster_hubs.geojson' };
+    }
+    if (layers.localAreaBoundary) {
+      style.sources['local-area-boundary'] = { type: 'geojson', data: '/vancouver_local_area_boundary.geojson' };
+    }
+    if (layers.fuel) {
+      style.sources['fuel'] = { type: 'geojson', data: '/vancouver_fuel.geojson' };
+    }
+    if (layers.tesla) {
+      style.sources['tesla'] = { type: 'geojson', data: '/vancouver_tesla.geojson' };
+    }
+    if (layers.marineTerminals) {
+      style.sources['marine_terminals'] = { type: 'geojson', data: '/vancouver_marine_terminals.geojson' };
+    }
+    if (layers.aed) {
+      style.sources['aed'] = { type: 'geojson', data: '/vancouver_aed.geojson' };
+    }
 
     // VanWiFi (溫哥華官方免費公共 WiFi)
-    style.sources['van-wifi'] = { 
-      type: 'geojson', 
-      data: '/vancouver_van_wifi.geojson',
-      cluster: true,
-      clusterMaxZoom: 14,
-      clusterRadius: 45
-    };
+    if (layers.vanWifi) {
+      style.sources['van-wifi'] = { 
+        type: 'geojson', 
+        data: '/vancouver_van_wifi.geojson',
+        cluster: true,
+        clusterMaxZoom: 14,
+        clusterRadius: 45
+      };
+    }
 
     // Coastal Tide Stations (大溫海岸潮汐與即時水位站)
-    style.sources['tide-stations'] = {
-      type: 'geojson',
-      data: `${apiUrl}/api/geojson/road/tide_stations`
-    };
+    if (layers.tideStations) {
+      style.sources['tide-stations'] = {
+        type: 'geojson',
+        data: `${apiUrl}/api/geojson/road/tide_stations`
+      };
+    }
 
     // RainViewer Radar (即時降水雷達回波 - 免費 API 最高支援至 7 級，設定 maxzoom: 7 避免請求超額瓦片造成 "Zoom Level Not Supported")
     if (isRadarActive && radarTilePath) {
@@ -3068,7 +3180,7 @@ export default function AppMap() {
 
     // Road Facilities: Road Closures (交通封閉)
     if (layers.roadClosures) {
-      style.sources['road_closures'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/road_closures` };
+      style.sources['road_closures'] = { type: 'geojson', data: '/vancouver_road_closures.geojson' };
       // 外框底線
       style.layers.push({
         id: 'road-closures-casing-layer',
@@ -3104,7 +3216,7 @@ export default function AppMap() {
 
     // Road Facilities: Road Construction (道路施工)
     if (layers.roadConstruction) {
-      style.sources['road_construction'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/road_construction` };
+      style.sources['road_construction'] = { type: 'geojson', data: '/vancouver_road_construction.geojson' };
       // 外框底線
       style.layers.push({
         id: 'road-construction-casing-layer',
@@ -5253,7 +5365,6 @@ export default function AppMap() {
     >
       <Map
         ref={mapRef}
-        preserveDrawingBuffer={true}
         canvasContextAttributes={{ preserveDrawingBuffer: true, antialias: true }}
         initialViewState={{ longitude: -123.05, latitude: 49.25, zoom: 11, pitch: 0, bearing: 0 }}
         maxZoom={20}
@@ -12731,11 +12842,11 @@ export default function AppMap() {
                     <span className="text-gray-400 font-medium">平日 (Mon-Fri)</span>
                     <div className="flex justify-between items-center text-[10.5px]">
                       <span className="text-gray-400">首班</span>
-                      <span className="font-mono text-emerald-400 font-bold">{selectedSkytrainStation.first_last?.weekday?.first || '05:08'}</span>
+                      <span className="font-mono text-emerald-400 font-bold">{selectedSkytrainStation.first_last?.weekday?.first_train || selectedSkytrainStation.first_last?.weekday?.first || '05:08'}</span>
                     </div>
                     <div className="flex justify-between items-center text-[10.5px]">
                       <span className="text-gray-400">尾班</span>
-                      <span className="font-mono text-amber-400 font-bold">{selectedSkytrainStation.first_last?.weekday?.last || '01:15'}</span>
+                      <span className="font-mono text-amber-400 font-bold">{selectedSkytrainStation.first_last?.weekday?.last_train || selectedSkytrainStation.first_last?.weekday?.last || '01:15'}</span>
                     </div>
                   </div>
 
@@ -12743,11 +12854,11 @@ export default function AppMap() {
                     <span className="text-gray-400 font-medium">週六 (Sat)</span>
                     <div className="flex justify-between items-center text-[10.5px]">
                       <span className="text-gray-400">首班</span>
-                      <span className="font-mono text-emerald-400 font-bold">{selectedSkytrainStation.first_last?.saturday?.first || '06:08'}</span>
+                      <span className="font-mono text-emerald-400 font-bold">{selectedSkytrainStation.first_last?.saturday?.first_train || selectedSkytrainStation.first_last?.saturday?.first || '06:08'}</span>
                     </div>
                     <div className="flex justify-between items-center text-[10.5px]">
                       <span className="text-gray-400">尾班</span>
-                      <span className="font-mono text-amber-400 font-bold">{selectedSkytrainStation.first_last?.saturday?.last || '01:15'}</span>
+                      <span className="font-mono text-amber-400 font-bold">{selectedSkytrainStation.first_last?.saturday?.last_train || selectedSkytrainStation.first_last?.saturday?.last || '01:15'}</span>
                     </div>
                   </div>
 
@@ -12755,11 +12866,11 @@ export default function AppMap() {
                     <span className="text-gray-400 font-medium">週日/假期 (Sun/Hol)</span>
                     <div className="flex justify-between items-center text-[10.5px]">
                       <span className="text-gray-400">首班</span>
-                      <span className="font-mono text-emerald-400 font-bold">{selectedSkytrainStation.first_last?.sunday_holiday?.first || '07:08'}</span>
+                      <span className="font-mono text-emerald-400 font-bold">{selectedSkytrainStation.first_last?.sunday_holiday?.first_train || selectedSkytrainStation.first_last?.sunday_holiday?.first || '07:08'}</span>
                     </div>
                     <div className="flex justify-between items-center text-[10.5px]">
                       <span className="text-gray-400">尾班</span>
-                      <span className="font-mono text-amber-400 font-bold">{selectedSkytrainStation.first_last?.sunday_holiday?.last || '00:15'}</span>
+                      <span className="font-mono text-amber-400 font-bold">{selectedSkytrainStation.first_last?.sunday_holiday?.last_train || selectedSkytrainStation.first_last?.sunday_holiday?.last || '00:15'}</span>
                     </div>
                   </div>
                 </div>
@@ -12854,8 +12965,8 @@ export default function AppMap() {
                     <span className="text-gray-400 flex items-center gap-1.5">
                       <Bike className="w-3.5 h-3.5 text-teal-400" /> 單車停放庫 (Bike Parkade)
                     </span>
-                    <span className={selectedSkytrainStation.facilities?.bike_parkade ? 'text-teal-400 font-medium' : 'text-gray-400'}>
-                      {selectedSkytrainStation.facilities?.bike_parkade ? '提供室內單車庫' : '設有室外單車架'}
+                    <span className={(selectedSkytrainStation.has_bike_parkade ?? selectedSkytrainStation.facilities?.bike_parkade) ? 'text-teal-400 font-medium' : 'text-gray-400'}>
+                      {(selectedSkytrainStation.has_bike_parkade ?? selectedSkytrainStation.facilities?.bike_parkade) ? '提供室內單車庫' : '設有室外單車架'}
                     </span>
                   </div>
 
@@ -12863,8 +12974,8 @@ export default function AppMap() {
                     <span className="text-gray-400 flex items-center gap-1.5">
                       <Car className="w-3.5 h-3.5 text-amber-400" /> 轉乘停車場 (Park & Ride)
                     </span>
-                    <span className={selectedSkytrainStation.facilities?.park_and_ride ? 'text-amber-400 font-medium' : 'text-gray-400'}>
-                      {selectedSkytrainStation.facilities?.park_and_ride ? '設有轉乘停車場' : '無專用轉乘停車場'}
+                    <span className={(selectedSkytrainStation.has_park_and_ride ?? selectedSkytrainStation.facilities?.park_and_ride) ? 'text-amber-400 font-medium' : 'text-gray-400'}>
+                      {(selectedSkytrainStation.has_park_and_ride ?? selectedSkytrainStation.facilities?.park_and_ride) ? '設有轉乘停車場' : '無專用轉乘停車場'}
                     </span>
                   </div>
 

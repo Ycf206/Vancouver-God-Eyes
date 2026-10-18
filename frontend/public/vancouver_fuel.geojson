@@ -1,0 +1,1630 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "way/83338506",
+      "properties": {
+        "id": "way/83338506",
+        "name": "Chevron",
+        "brand": "Chevron",
+        "address": "1900 Burrard Street",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.268679,
+        "lon": -123.145324
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.145324,
+          49.268679
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "way/83338678",
+      "properties": {
+        "id": "way/83338678",
+        "name": "Petro-Canada",
+        "brand": "Petro-Canada",
+        "address": "1743 Burrard Street",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.269985,
+        "lon": -123.145914
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.145914,
+          49.269985
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "way/153929627",
+      "properties": {
+        "id": "way/153929627",
+        "name": "Chevron",
+        "brand": "Chevron",
+        "address": "196 Southeast Marine Drive",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "24/7",
+        "operator": "Chevron",
+        "wheelchair": "",
+        "lat": 49.210904,
+        "lon": -123.10264
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10264,
+          49.210904
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "way/155091243",
+      "properties": {
+        "id": "way/155091243",
+        "name": "Esso",
+        "brand": "Esso",
+        "address": "688 Southeast Marine Drive",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "24/7",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.210578,
+        "lon": -123.091624
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.091624,
+          49.210578
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "way/155091246",
+      "properties": {
+        "id": "way/155091246",
+        "name": "Petro-Canada",
+        "brand": "Petro-Canada",
+        "address": "710 Southeast Marine Drive",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "Mo-Fr 06:00-23:00; Sa 07:00-23:00; Su 08:00-22:00",
+        "operator": "Petro-Canada",
+        "wheelchair": "",
+        "lat": 49.210637,
+        "lon": -123.090643
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.090643,
+          49.210637
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "way/155375835",
+      "properties": {
+        "id": "way/155375835",
+        "name": "Shell",
+        "brand": "Shell",
+        "address": "Vancouver Station",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "Shell",
+        "wheelchair": "",
+        "lat": 49.234466,
+        "lon": -123.184904
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.184904,
+          49.234466
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "way/155936806",
+      "properties": {
+        "id": "way/155936806",
+        "name": "Chevron",
+        "brand": "Chevron",
+        "address": "Vancouver Station",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "Chevron",
+        "wheelchair": "",
+        "lat": 49.21046,
+        "lon": -123.12982
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12982,
+          49.21046
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "way/156136151",
+      "properties": {
+        "id": "way/156136151",
+        "name": "Esso",
+        "brand": "Esso",
+        "address": "Vancouver Station",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.226303,
+        "lon": -123.12865
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12865,
+          49.226303
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "way/156418085",
+      "properties": {
+        "id": "way/156418085",
+        "name": "Shell",
+        "brand": "Shell",
+        "address": "1503",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "24/7",
+        "operator": "Shell",
+        "wheelchair": "",
+        "lat": 49.234639,
+        "lon": -123.139969
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.139969,
+          49.234639
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "way/156420586",
+      "properties": {
+        "id": "way/156420586",
+        "name": "Esso",
+        "brand": "Esso",
+        "address": "1010 West King Edward Avenue",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "06:00-22:00",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.248902,
+        "lon": -123.128042
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.128042,
+          49.248902
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "way/156420591",
+      "properties": {
+        "id": "way/156420591",
+        "name": "Shell",
+        "brand": "Shell",
+        "address": "4110 Oak Street",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "24/7",
+        "operator": "Shell",
+        "wheelchair": "",
+        "lat": 49.248913,
+        "lon": -123.127202
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.127202,
+          49.248913
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "way/165265164",
+      "properties": {
+        "id": "way/165265164",
+        "name": "Shell",
+        "brand": "Shell",
+        "address": "Vancouver Station",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.224443,
+        "lon": -123.040674
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.040674,
+          49.224443
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "way/320879522",
+      "properties": {
+        "id": "way/320879522",
+        "name": "Chevron",
+        "brand": "Chevron",
+        "address": "Vancouver Station",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.259146,
+        "lon": -123.061771
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.061771,
+          49.259146
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "way/358531242",
+      "properties": {
+        "id": "way/358531242",
+        "name": "Shell",
+        "brand": "Shell",
+        "address": "2103 West Broadway",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "24/7",
+        "operator": "Shell",
+        "wheelchair": "",
+        "lat": 49.264067,
+        "lon": -123.153472
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.153472,
+          49.264067
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "way/390157716",
+      "properties": {
+        "id": "way/390157716",
+        "name": "Chevron",
+        "brand": "Chevron",
+        "address": "Vancouver Station",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "24/7",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.245026,
+        "lon": -123.153789
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.153789,
+          49.245026
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "way/397336068",
+      "properties": {
+        "id": "way/397336068",
+        "name": "Chevron",
+        "brand": "Chevron",
+        "address": "8884 Granville Street",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "Chevron",
+        "wheelchair": "",
+        "lat": 49.205405,
+        "lon": -123.140194
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.140194,
+          49.205405
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "way/842434374",
+      "properties": {
+        "id": "way/842434374",
+        "name": "Shell",
+        "brand": "Shell",
+        "address": "Vancouver Station",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.263494,
+        "lon": -123.203527
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.203527,
+          49.263494
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "way/870968474",
+      "properties": {
+        "id": "way/870968474",
+        "name": "Esso",
+        "brand": "Esso",
+        "address": "1795 West Broadway",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "24/7",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.263993,
+        "lon": -123.145355
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.145355,
+          49.263993
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "way/1093483363",
+      "properties": {
+        "id": "way/1093483363",
+        "name": "Esso",
+        "brand": "Esso",
+        "address": "1205 Davie Street",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "24/7",
+        "operator": "",
+        "wheelchair": "yes",
+        "lat": 49.279219,
+        "lon": -123.129971
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.129971,
+          49.279219
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "way/1156518969",
+      "properties": {
+        "id": "way/1156518969",
+        "name": "Chevron",
+        "brand": "Chevron",
+        "address": "2748 Main Street",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "24/7",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.260443,
+        "lon": -123.100648
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.100648,
+          49.260443
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "way/1178374530",
+      "properties": {
+        "id": "way/1178374530",
+        "name": "Petro Pass",
+        "brand": "Petro",
+        "address": "1501 Powell Street",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "Petro Canada",
+        "wheelchair": "",
+        "lat": 49.282945,
+        "lon": -123.073642
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.073642,
+          49.282945
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "way/1181212709",
+      "properties": {
+        "id": "way/1181212709",
+        "name": "Chevron",
+        "brand": "Chevron",
+        "address": "Vancouver Station",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.258535,
+        "lon": -123.028001
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.028001,
+          49.258535
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "way/1191885300",
+      "properties": {
+        "id": "way/1191885300",
+        "name": "Chevron",
+        "brand": "Chevron",
+        "address": "6808 Victoria Drive",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.222029,
+        "lon": -123.065472
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.065472,
+          49.222029
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "way/1235258245",
+      "properties": {
+        "id": "way/1235258245",
+        "name": "Mobil",
+        "brand": "Mobil",
+        "address": "350 Southeast Marine Drive",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "Mo-Su 06:00-22:00",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.210237,
+        "lon": -123.099066
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.099066,
+          49.210237
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/255435370",
+      "properties": {
+        "id": "node/255435370",
+        "name": "Shell",
+        "brand": "Shell",
+        "address": "1396 East 41st Avenue",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "Shell",
+        "wheelchair": "",
+        "lat": 49.232429,
+        "lon": -123.077454
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.077454,
+          49.232429
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/291466861",
+      "properties": {
+        "id": "node/291466861",
+        "name": "Petro-Canada",
+        "brand": "Petro-Canada",
+        "address": "2398 East 1st Avenue",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "Mo-Fr 06:30-23:00; Sa-Su 07:00-23:00",
+        "operator": "Petro-Canada",
+        "wheelchair": "",
+        "lat": 49.26927,
+        "lon": -123.057039
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.057039,
+          49.26927
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/291466862",
+      "properties": {
+        "id": "node/291466862",
+        "name": "Chevron",
+        "brand": "Chevron",
+        "address": "Vancouver Station",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "24/7",
+        "operator": "Chevron",
+        "wheelchair": "",
+        "lat": 49.269129,
+        "lon": -123.056105
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.056105,
+          49.269129
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/635894589",
+      "properties": {
+        "id": "node/635894589",
+        "name": "Petro-Canada",
+        "brand": "Petro-Canada",
+        "address": "2808 West Broadway",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "24/7",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.263855,
+        "lon": -123.168633
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.168633,
+          49.263855
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/638774895",
+      "properties": {
+        "id": "node/638774895",
+        "name": "Chevron",
+        "brand": "Chevron",
+        "address": "Vancouver Station",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.257353,
+        "lon": -123.168024
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.168024,
+          49.257353
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/700544471",
+      "properties": {
+        "id": "node/700544471",
+        "name": "Husky",
+        "brand": "Husky",
+        "address": "4933 Victoria Drive",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.239752,
+        "lon": -123.065658
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.065658,
+          49.239752
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/700544479",
+      "properties": {
+        "id": "node/700544479",
+        "name": "Esso",
+        "brand": "Esso",
+        "address": "2001 Kingsway",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.245338,
+        "lon": -123.06474
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.06474,
+          49.245338
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/700544626",
+      "properties": {
+        "id": "node/700544626",
+        "name": "Petro-Canada",
+        "brand": "Petro-Canada",
+        "address": "6502 Victoria Drive",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.224936,
+        "lon": -123.06534
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.06534,
+          49.224936
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/700544627",
+      "properties": {
+        "id": "node/700544627",
+        "name": "Chevron",
+        "brand": "Chevron",
+        "address": "Vancouver Station",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.224991,
+        "lon": -123.054358
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.054358,
+          49.224991
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/700713932",
+      "properties": {
+        "id": "node/700713932",
+        "name": "Chevron",
+        "brand": "Chevron",
+        "address": "7309 Knight Street",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "24/7",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.217921,
+        "lon": -123.077444
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.077444,
+          49.217921
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/700713935",
+      "properties": {
+        "id": "node/700713935",
+        "name": "Shell",
+        "brand": "Shell",
+        "address": "1295 East 12th Avenue",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.25991,
+        "lon": -123.077906
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.077906,
+          49.25991
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/700713936",
+      "properties": {
+        "id": "node/700713936",
+        "name": "Super Save Gas",
+        "brand": "Super Save Gas",
+        "address": "Vancouver Station",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.259847,
+        "lon": -123.0771
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0771,
+          49.259847
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/700713937",
+      "properties": {
+        "id": "node/700713937",
+        "name": "Petro-Canada",
+        "brand": "Petro-Canada",
+        "address": "1289 East Broadway",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "24/7",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.262655,
+        "lon": -123.077967
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.077967,
+          49.262655
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/700713944",
+      "properties": {
+        "id": "node/700713944",
+        "name": "Petro-Canada",
+        "brand": "Petro-Canada",
+        "address": "7282 Knight Street",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "24/7",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.218387,
+        "lon": -123.076672
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.076672,
+          49.218387
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/700713956",
+      "properties": {
+        "id": "node/700713956",
+        "name": "Petro-Canada",
+        "brand": "Petro-Canada",
+        "address": "1390 East 33rd Avenue",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.239975,
+        "lon": -123.076799
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.076799,
+          49.239975
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/705752895",
+      "properties": {
+        "id": "node/705752895",
+        "name": "Chevron",
+        "brand": "Chevron",
+        "address": "Vancouver Station",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.237191,
+        "lon": -123.065055
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.065055,
+          49.237191
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/721620228",
+      "properties": {
+        "id": "node/721620228",
+        "name": "Chevron",
+        "brand": "Chevron",
+        "address": "Vancouver Station",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "24/7",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.244998,
+        "lon": -123.15374
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.15374,
+          49.244998
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/765294772",
+      "properties": {
+        "id": "node/765294772",
+        "name": "Esso",
+        "brand": "Esso",
+        "address": "5702 Granville Street",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "24/7",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.233907,
+        "lon": -123.1392
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1392,
+          49.233907
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/769695108",
+      "properties": {
+        "id": "node/769695108",
+        "name": "Petro-Canada",
+        "brand": "Petro-Canada",
+        "address": "5680 Oak Street",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.234217,
+        "lon": -123.127645
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.127645,
+          49.234217
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/822444320",
+      "properties": {
+        "id": "node/822444320",
+        "name": "Petro-Canada",
+        "brand": "Petro-Canada",
+        "address": "2277 Kingsway",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "24/7",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.242334,
+        "lon": -123.058286
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.058286,
+          49.242334
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/822487115",
+      "properties": {
+        "id": "node/822487115",
+        "name": "Chevron",
+        "brand": "Chevron",
+        "address": "5736 Main Street",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "24/7",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.232726,
+        "lon": -123.10117
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10117,
+          49.232726
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/955335838",
+      "properties": {
+        "id": "node/955335838",
+        "name": "Petro-Canada",
+        "brand": "Petro-Canada",
+        "address": "2890 East Hastings Street",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "24/7",
+        "operator": "Petro-Canada",
+        "wheelchair": "",
+        "lat": 49.280893,
+        "lon": -123.044473
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.044473,
+          49.280893
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/1428432161",
+      "properties": {
+        "id": "node/1428432161",
+        "name": "Shell",
+        "brand": "Shell",
+        "address": "8686 Granville Street",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "Shell",
+        "wheelchair": "yes",
+        "lat": 49.207309,
+        "lon": -123.1402
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1402,
+          49.207309
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/1498234902",
+      "properties": {
+        "id": "node/1498234902",
+        "name": "Esso",
+        "brand": "Esso",
+        "address": "709 Southwest Marine Drive",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "Husky",
+        "wheelchair": "",
+        "lat": 49.208062,
+        "lon": -123.122973
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.122973,
+          49.208062
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/2494631076",
+      "properties": {
+        "id": "node/2494631076",
+        "name": "Chevron",
+        "brand": "Chevron",
+        "address": "2902 Grandview Highway",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "24/7",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.257899,
+        "lon": -123.043807
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.043807,
+          49.257899
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3390314406",
+      "properties": {
+        "id": "node/3390314406",
+        "name": "Petro-Canada",
+        "brand": "Petro-Canada",
+        "address": "Vancouver Station",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.219932,
+        "lon": -123.040841
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.040841,
+          49.219932
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/4401404985",
+      "properties": {
+        "id": "node/4401404985",
+        "name": "Esso",
+        "brand": "Esso",
+        "address": "Vancouver Station",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.257888,
+        "lon": -123.033199
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.033199,
+          49.257888
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/5237345867",
+      "properties": {
+        "id": "node/5237345867",
+        "name": "Chevron",
+        "brand": "Chevron",
+        "address": "Vancouver Station",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "Chevron",
+        "wheelchair": "",
+        "lat": 49.294579,
+        "lon": -123.118252
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.118252,
+          49.294579
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/5413453021",
+      "properties": {
+        "id": "node/5413453021",
+        "name": "Esso",
+        "brand": "Esso",
+        "address": "3502 East Hastings Street",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "24/7",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.280948,
+        "lon": -123.02785
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.02785,
+          49.280948
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/5844910192",
+      "properties": {
+        "id": "node/5844910192",
+        "name": "Shell",
+        "brand": "Shell",
+        "address": "1896 East Hastings Street",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "24/7",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.28091,
+        "lon": -123.066018
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.066018,
+          49.28091
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/7064559432",
+      "properties": {
+        "id": "node/7064559432",
+        "name": "Chevron",
+        "brand": "Chevron",
+        "address": "Kingsway",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "24/7",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.236054,
+        "lon": -123.045498
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.045498,
+          49.236054
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/7243219270",
+      "properties": {
+        "id": "node/7243219270",
+        "name": "Petro-Canada",
+        "brand": "Petro-Canada",
+        "address": "1896 West 4th Avenue",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "Mo-Sa 06:30-23:00; Su 08:00-23:00",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.267855,
+        "lon": -123.147551
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.147551,
+          49.267855
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/7498872985",
+      "properties": {
+        "id": "node/7498872985",
+        "name": "False Creek Fuels",
+        "brand": "False Creek Fuels",
+        "address": "1655 Whyte Avenue",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "06:00-20:00",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.275663,
+        "lon": -123.138105
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.138105,
+          49.275663
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/8920851129",
+      "properties": {
+        "id": "node/8920851129",
+        "name": "Shell",
+        "brand": "Shell",
+        "address": "8655 Boundary Road",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "24/7",
+        "operator": "",
+        "wheelchair": "yes",
+        "lat": 49.204735,
+        "lon": -123.023924
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.023924,
+          49.204735
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/9002098321",
+      "properties": {
+        "id": "node/9002098321",
+        "name": "Petro-Canada",
+        "brand": "Petro-Canada",
+        "address": "1675 Rupert Street",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.269775,
+        "lon": -123.034138
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.034138,
+          49.269775
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/9002098332",
+      "properties": {
+        "id": "node/9002098332",
+        "name": "Chevron",
+        "brand": "Chevron",
+        "address": "1720 Rupert Street",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "24/7",
+        "operator": "Chevron",
+        "wheelchair": "",
+        "lat": 49.269146,
+        "lon": -123.033158
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.033158,
+          49.269146
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/9703693175",
+      "properties": {
+        "id": "node/9703693175",
+        "name": "Esso",
+        "brand": "Esso",
+        "address": "4064 East King Edward Avenue",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.248935,
+        "lon": -123.089728
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.089728,
+          49.248935
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11259005575",
+      "properties": {
+        "id": "node/11259005575",
+        "name": "Chevron",
+        "brand": "Chevron",
+        "address": "1955 Powell Street",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.285045,
+        "lon": -123.064402
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.064402,
+          49.285045
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/11352865799",
+      "properties": {
+        "id": "node/11352865799",
+        "name": "Mobil",
+        "brand": "Mobil",
+        "address": "3191 Grandview Highway",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.258724,
+        "lon": -123.034524
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.034524,
+          49.258724
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/12805621511",
+      "properties": {
+        "id": "node/12805621511",
+        "name": "Chevron",
+        "brand": "Chevron",
+        "address": "1212 East Hastings Street",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "",
+        "operator": "",
+        "wheelchair": "",
+        "lat": 49.280996,
+        "lon": -123.078694
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.078694,
+          49.280996
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/13894235638",
+      "properties": {
+        "id": "node/13894235638",
+        "name": "Shell",
+        "brand": "Shell",
+        "address": "1785 Main Street",
+        "city": "Vancouver",
+        "province": "BC",
+        "amenity": "fuel",
+        "opening_hours": "24/7",
+        "operator": "Shell",
+        "wheelchair": "",
+        "lat": 49.269464,
+        "lon": -123.101224
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.101224,
+          49.269464
+        ]
+      }
+    }
+  ]
+}

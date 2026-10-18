@@ -24,12 +24,21 @@ def haversine_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> fl
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
     return round(R * c, 2)
 
+_raw_stations_cache: Dict[str, Any] = {
+    "mtime": 0.0,
+    "stations": []
+}
+
 def load_vancouver_stations() -> List[Dict[str, Any]]:
-    """Load curated Metro Vancouver gas stations from vancouver_fuel.geojson."""
+    """Load curated Metro Vancouver gas stations from vancouver_fuel.geojson (with mtime cache)."""
     geojson_path = os.path.join(os.path.dirname(__file__), "data", "vancouver_fuel.geojson")
     if not os.path.exists(geojson_path):
         return []
     try:
+        mtime = os.path.getmtime(geojson_path)
+        if _raw_stations_cache["stations"] and _raw_stations_cache["mtime"] == mtime:
+            return _raw_stations_cache["stations"]
+
         with open(geojson_path, "r", encoding="utf-8") as f:
             data = json.load(f)
         stations = []
@@ -49,10 +58,12 @@ def load_vancouver_stations() -> List[Dict[str, Any]]:
                 "lat": lat,
                 "lon": lon,
             })
+        _raw_stations_cache["mtime"] = mtime
+        _raw_stations_cache["stations"] = stations
         return stations
     except Exception as e:
         logger.error(f"Error reading vancouver_fuel.geojson: {e}")
-        return []
+        return _raw_stations_cache["stations"] or []
 
 def generate_base_prices(station_id: str, brand: str) -> Dict[str, float]:
     """Generate realistic Metro Vancouver benchmark prices (cents/L) with brand adjustments."""
