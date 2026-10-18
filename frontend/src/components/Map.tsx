@@ -8484,7 +8484,7 @@ export default function AppMap() {
                       </span>
                     </div>
                     <div className="flex justify-between items-baseline pt-1 border-t border-emerald-200/60">
-                      <span className="text-gray-600 text-[11px]">車柱容量 (Docks)</span>
+                      <span className="text-gray-600 text-[11px]">車柱容量</span>
                       <span className="font-bold text-emerald-800 text-sm">
                         {selectedFacility.properties.capacity ? `${selectedFacility.properties.capacity} 格` : '未標明'}
                       </span>
@@ -8540,10 +8540,12 @@ export default function AppMap() {
                 
                 const cleanTypeZh = (selectedFacility.properties.bikeway_type_zh || '單車專用道').replace(/\s*\([^)]*\)/g, '').trim();
 
-                const dirRaw = String(selectedFacility.properties.bikeway_direction || '');
-                const isTwoWay = dirRaw.includes('Bidirectional') || dirRaw.includes('Two-Way') || dirRaw.includes('雙向') || dirRaw.includes('Two Way');
-                const isOneWay = dirRaw.includes('One-Way') || dirRaw.includes('One Way') || dirRaw.includes('單向');
-                const dirZh = isTwoWay ? '雙向通行' : isOneWay ? '單向通行' : dirRaw.replace(/\s*\([^)]*\)/g, '').trim();
+                const dirRaw = String(selectedFacility.properties.bikeway_direction || '').trim();
+                const dirLower = dirRaw.toLowerCase();
+                const isTwoWay = dirLower.includes('bidirectional') || dirLower.includes('two-way') || dirLower.includes('two way') || dirRaw.includes('雙向');
+                const isContraFlow = dirLower.includes('cflow') || dirLower.includes('contra') || dirLower.includes('counter') || dirRaw.includes('逆向');
+                const isOneWay = dirLower.includes('one-way') || dirLower.includes('one way') || dirLower === 'ow' || dirRaw.includes('單向');
+                const dirZh = isTwoWay ? '雙向通行' : isContraFlow ? '逆向通行' : isOneWay ? '單向通行' : dirRaw.replace(/\s*\([^)]*\)/g, '').trim();
 
                 const surfaceZh = selectedFacility.properties.surface_type 
                   ? String(selectedFacility.properties.surface_type).replace(/\s*\([^)]*\)/g, '').trim() 
@@ -10541,16 +10543,8 @@ export default function AppMap() {
                   </div>
 
                   <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                    {selectedFacility.properties.location && (
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>設置地點</span>
-                        <span className="font-bold text-gray-900 text-right truncate max-w-[190px]">
-                          {selectedFacility.properties.location}
-                        </span>
-                      </div>
-                    )}
                     {selectedFacility.properties.num_racks && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <div className="flex justify-between items-center text-gray-600">
                         <span>單車架數量</span>
                         <span className="font-bold text-teal-700">
                           {selectedFacility.properties.num_racks} 組
@@ -10558,18 +10552,46 @@ export default function AppMap() {
                       </div>
                     )}
                     {selectedFacility.properties.rack_type && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties.num_racks ? 'pt-1 border-t border-gray-100' : ''}`}>
                         <span>車架規格款式</span>
                         <span className="font-medium text-gray-800">
-                          {selectedFacility.properties.rack_type}
+                          {(() => {
+                            const r = String(selectedFacility.properties.rack_type).trim().toLowerCase();
+                            if (r === 'hanger') return '掛架';
+                            if (r === 'u-rack' || r === 'urack') return '倒U型架';
+                            if (r.includes('post') && r.includes('ring')) return '柱環型架';
+                            if (r === 'heart') return '心形架';
+                            if (r === 'mountains') return '群山造型架';
+                            if (r === 'leaf') return '葉片造型架';
+                            if (r === 'petal') return '花瓣造型架';
+                            if (r === 'corral') return '單車專用圍欄';
+                            if (r === 'other') return '其他';
+                            return selectedFacility.properties.rack_type;
+                          })()}
                         </span>
                       </div>
                     )}
                     {selectedFacility.properties.status && (
                       <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
                         <span>設施狀態</span>
-                        <span className="font-semibold text-gray-800">
-                          {selectedFacility.properties.status === 'Active' ? '使用中 (Active)' : selectedFacility.properties.status}
+                        <span className={`font-semibold ${
+                          ['inservice', 'active'].includes(String(selectedFacility.properties.status).toLowerCase()) 
+                            ? 'text-emerald-700' 
+                            : String(selectedFacility.properties.status).toLowerCase() === 'planned' 
+                              ? 'text-blue-700' 
+                              : 'text-gray-800'
+                        }`}>
+                          {(() => {
+                            const s = String(selectedFacility.properties.status).trim().toLowerCase();
+                            if (s === 'inservice' || s === 'active') return '服務中';
+                            if (s === 'planned') return '已計劃';
+                            if (s === 'removed') return '已拆除';
+                            if (s === 'removedtemp') return '暫時拆除';
+                            if (s === 'missing') return '待修復 / 遺失';
+                            if (s === 'outofservice') return '暫停服務';
+                            if (s === 'unknown') return '未知狀態';
+                            return selectedFacility.properties.status;
+                          })()}
                         </span>
                       </div>
                     )}
