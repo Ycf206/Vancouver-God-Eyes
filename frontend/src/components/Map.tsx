@@ -8087,7 +8087,7 @@ export default function AppMap() {
                     selectedFacility.facility_type === 'drinking_fountains' ? 'bg-sky-500' :
                     selectedFacility.facility_type === 'public_washrooms' ? 'bg-cyan-500' :
                     selectedFacility.facility_type === 'schools' ? 'bg-blue-500' :
-                    selectedFacility.facility_type === 'libraries' ? 'bg-amber-500' :
+                    selectedFacility.facility_type === 'libraries' ? 'bg-orange-500' :
                     selectedFacility.facility_type === 'food_vendors' ? 'bg-orange-500' :
                     selectedFacility.facility_type === 'food_banks' ? 'bg-emerald-500' :
                     selectedFacility.facility_type === 'recycling' ? 'bg-teal-600' :
@@ -8137,6 +8137,20 @@ export default function AppMap() {
                           title = title.replace(/^Tesla\s*[-–—:]*\s*/i, '').trim();
                           title = title.replace(/Tesla\s*(?:超級充電站|目的地充電站|充電站|服務與體驗中心)?/gi, '').replace(/^[-–—\s]+|[-–—\s]+$/g, '').trim();
                           return title || selectedFacility.properties?.display_name || selectedFacility.name;
+                        }
+                        if (selectedFacility.facility_type === 'food_vendors') {
+                          const bizName = selectedFacility.properties?.business_name;
+                          const rawName = selectedFacility.name || '';
+                          let cleanName = rawName.replace(/\s*\([^)]*\)/g, '').trim();
+                          if (!cleanName || cleanName === '餐車攤商') {
+                            if (bizName && bizName !== '餐車攤商') {
+                              cleanName = bizName.replace(/\s*\([^)]*\)/g, '').trim();
+                            }
+                          }
+                          if (!cleanName || cleanName === '餐車攤商') {
+                            cleanName = selectedFacility.properties?.description || selectedFacility.properties?.food_type || '街頭食品攤販';
+                          }
+                          return cleanName;
                         }
                         return selectedFacility.name;
                       })()}
@@ -9423,25 +9437,29 @@ export default function AppMap() {
               {/* Schools Details */}
               {selectedFacility.facility_type === 'schools' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-blue-50/80 p-2.5 rounded border border-blue-200 flex flex-col gap-1.5 text-[11px]">
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">學校類別</span>
+                  <div className="bg-blue-500/10 p-2.5 rounded-lg border border-blue-500/25 flex items-center justify-between gap-2">
+                    <span className="font-bold text-xs text-blue-950 flex items-center gap-1.5">
+                      <span>🏫</span>
+                      <span>設施類別</span>
+                    </span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-600 text-white shrink-0 shadow-xs whitespace-nowrap">
+                      學校
+                    </span>
+                  </div>
+
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                    <div className="flex justify-between items-center text-gray-600">
+                      <span>資助類別</span>
                       <span className="font-bold text-blue-900 bg-blue-100/80 px-1.5 py-0.5 rounded">
                         {selectedFacility.properties.school_category_zh || selectedFacility.properties.school_category || '學校'}
                       </span>
                     </div>
                     {selectedFacility.properties.address && (
                       <div className="flex justify-between items-center text-gray-600">
-                        <span>校園地址</span>
+                        <span>地址</span>
                         <span className="font-semibold text-gray-800 text-right truncate max-w-[170px]">
                           {selectedFacility.properties.address}
                         </span>
-                      </div>
-                    )}
-                    {selectedFacility.local_area && (
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>所在學區</span>
-                        <span className="font-medium text-gray-800">{selectedFacility.local_area}</span>
                       </div>
                     )}
                   </div>
@@ -9451,36 +9469,34 @@ export default function AppMap() {
               {/* Libraries Details */}
               {selectedFacility.facility_type === 'libraries' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-amber-50/80 p-2.5 rounded border border-amber-200 flex flex-col gap-1.5 text-[11px]">
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">圖書館分館</span>
-                      <span className="font-bold text-amber-900 bg-amber-100/80 px-1.5 py-0.5 rounded">
-                        {selectedFacility.properties.branch_name || selectedFacility.name}
-                      </span>
-                    </div>
-                    {selectedFacility.properties.address && (
+                  <div className="bg-orange-500/10 p-2.5 rounded-lg border border-orange-500/25 flex items-center justify-between gap-2">
+                    <span className="font-bold text-xs text-orange-950 flex items-center gap-1.5">
+                      <span>📚</span>
+                      <span>設施類別</span>
+                    </span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-orange-600 text-white shrink-0 shadow-xs whitespace-nowrap">
+                      圖書館
+                    </span>
+                  </div>
+
+                  {selectedFacility.properties.address && (
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
                       <div className="flex justify-between items-center text-gray-600">
                         <span>館址地址</span>
                         <span className="font-semibold text-gray-800 text-right truncate max-w-[170px]">
                           {selectedFacility.properties.address}
                         </span>
                       </div>
-                    )}
-                    {selectedFacility.local_area && (
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>服務轄區</span>
-                        <span className="font-medium text-gray-800">{selectedFacility.local_area}</span>
-                      </div>
-                    )}
-                  </div>
+                    </div>
+                  )}
 
                   {selectedFacility.properties.urllink && (
-                    <div className="pt-1 border-t border-gray-100">
+                    <div className="pt-1">
                       <a
                         href={selectedFacility.properties.urllink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-amber-600 hover:bg-amber-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
+                        className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-orange-600 hover:bg-orange-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
                       >
                         前往 VPL 溫哥華市立圖書館官網 ↗
                       </a>
@@ -9492,25 +9508,35 @@ export default function AppMap() {
               {/* Food Vendors Details */}
               {selectedFacility.facility_type === 'food_vendors' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-orange-50/80 p-2.5 rounded border border-orange-200 flex flex-col gap-1.5 text-[11px]">
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">營業狀態</span>
+                  <div className="bg-orange-500/10 p-2.5 rounded-lg border border-orange-500/25 flex items-center justify-between gap-2">
+                    <span className="font-bold text-xs text-orange-950 flex items-center gap-1.5">
+                      <span>🍱</span>
+                      <span>設施類別</span>
+                    </span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-orange-600 text-white shrink-0 shadow-xs whitespace-nowrap">
+                      食品攤販
+                    </span>
+                  </div>
+
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                    <div className="flex justify-between items-center text-gray-600">
+                      <span>營業狀態</span>
                       <span className="font-bold text-emerald-800 bg-emerald-100/80 px-1.5 py-0.5 rounded">
                         {selectedFacility.properties.status || '營運中'}
                       </span>
                     </div>
+                    {selectedFacility.properties.vendor_code && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>攤販編號</span>
+                        <span className="font-mono font-bold text-gray-800">{selectedFacility.properties.vendor_code}</span>
+                      </div>
+                    )}
                     {selectedFacility.properties.description && (
                       <div className="flex justify-between items-center text-gray-600">
                         <span>餐飲特色</span>
                         <span className="font-bold text-orange-900">
                           {selectedFacility.properties.description}
                         </span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.vendor_code && (
-                      <div className="flex justify-between items-center text-gray-500 text-[10px]">
-                        <span>攤販編號</span>
-                        <span className="font-mono text-gray-700">{selectedFacility.properties.vendor_code}</span>
                       </div>
                     )}
                   </div>
@@ -9588,28 +9614,34 @@ export default function AppMap() {
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
-                    <div className="bg-emerald-50/90 p-2.5 rounded-lg border border-emerald-200 flex flex-col gap-1.5 text-[11px]">
-                      {org && (
-                        <div className="flex justify-between items-center">
-                          <span className="text-gray-600">主辦機構</span>
-                          <span className="font-bold text-emerald-950 bg-emerald-100/80 px-1.5 py-0.5 rounded">
-                            {org}
-                          </span>
-                        </div>
-                      )}
-                      {selectedFacility.local_area && (
-                        <div className="flex justify-between items-center text-gray-600">
-                          <span>所在社區</span>
-                          <span className="font-medium text-gray-800">{selectedFacility.local_area}</span>
-                        </div>
-                      )}
-                      {addr && (
-                        <div className="flex justify-between items-center text-gray-600">
-                          <span>詳細地址</span>
-                          <span className="font-medium text-gray-800 text-right">{addr}</span>
-                        </div>
-                      )}
+                    <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/25 flex items-center justify-between gap-2">
+                      <span className="font-bold text-xs text-emerald-950 flex items-center gap-1.5">
+                        <span>🥫</span>
+                        <span>設施類別</span>
+                      </span>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-600 text-white shrink-0 shadow-xs whitespace-nowrap">
+                        食物銀行
+                      </span>
                     </div>
+
+                    {(org || addr) && (
+                      <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                        {org && (
+                          <div className="flex justify-between items-center text-gray-600">
+                            <span>主辦機構</span>
+                            <span className="font-bold text-gray-900 text-right">
+                              {org}
+                            </span>
+                          </div>
+                        )}
+                        {addr && (
+                          <div className={`flex justify-between items-center text-gray-600 ${org ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                            <span>詳細地址</span>
+                            <span className="font-medium text-gray-800 text-right">{addr}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
 
                     <div className="grid grid-cols-2 gap-1.5 text-[11px]">
                       <div className="bg-gray-50 p-2 rounded border border-gray-100 flex items-center justify-between">
