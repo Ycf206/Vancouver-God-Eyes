@@ -21,7 +21,7 @@ class WazeService:
         """
         大溫哥華 8 大主要壅塞幹道與聯外關鍵橋隧基準線型 (LineString 座標)
         """
-        return [
+        corridors = [
             {
                 "id": "hwy1_east",
                 "corridor_group": "hwy1",
@@ -211,6 +211,25 @@ class WazeService:
                 "incidents_near": 0
             }
         ]
+        snapped_file = os.path.join(os.path.dirname(__file__), "data", "snapped_corridors.json")
+        if os.path.exists(snapped_file):
+            try:
+                with open(snapped_file, "r", encoding="utf-8") as f:
+                    snapped_data = json.load(f)
+                    aliases = {
+                        "knight_st_bridge": "knight_bridge",
+                        "ironworkers_bridge": "ironworkers",
+                        "oak_st_bridge": "oak_bridge",
+                        "alex_fraser_bridge": "alex_fraser",
+                        "granville_street": "granville"
+                    }
+                    for c in corridors:
+                        key = aliases.get(c["id"], c["id"])
+                        if key in snapped_data:
+                            c["coordinates"] = snapped_data[key]
+            except Exception as e:
+                print(f"[WazeService] Error loading snapped_corridors: {e}")
+        return corridors
 
     def _get_base_alerts_definition(self) -> List[Dict[str, Any]]:
         """
@@ -495,9 +514,9 @@ class WazeService:
                         "id": a["id"],
                         "facility_type": "waze_alerts",
                         "type": a["type"],
-                        "type_zh": a["type_zh"],
-                        "subtype": a["subtype"],
-                        "subtype_zh": a["subtype_zh"],
+                        "type_zh": a.get("type_zh", "突發事故"),
+                        "subtype": a.get("subtype", ""),
+                        "subtype_zh": a.get("subtype_zh") or a.get("type_zh", "突發事故"),
                         "icon": a["icon"],
                         "street": a["street"],
                         "city": a["city"],

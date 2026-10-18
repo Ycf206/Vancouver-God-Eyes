@@ -1030,7 +1030,7 @@ export default function AppMap() {
         else if (type === 'litter_containers' && !layers.litterContainers) facilityClosed = true;
         else if (type === 'van_wifi' && !layers.vanWifi) facilityClosed = true;
         else if (type === 'tide_stations' && !layers.tideStations) facilityClosed = true;
-        else if (type === 'traffic_conditions' && !layers.trafficConditions) facilityClosed = true;
+        else if (type === 'traffic_conditions' && !layers.trafficConditions && !(isExploreOpen && exploreTab === 'traffic') && selectedFacility.id !== 'lions_gate_bridge_atis') facilityClosed = true;
         else if (type === 'road_closures' && !layers.roadClosures) facilityClosed = true;
         else if (type === 'road_construction' && !layers.roadConstruction) facilityClosed = true;
         else if (type === 'street_lighting' && !layers.streetLighting) facilityClosed = true;
@@ -3004,30 +3004,30 @@ export default function AppMap() {
         type: 'geojson', 
         data: '/vancouver_waze_alerts.geojson' 
       };
-      // 外層警示光環
+      // 外層警示微光光環 (柔和呼吸光芒)
       style.layers.push({
         id: 'waze-alerts-pulse-layer',
         type: 'circle',
         source: 'waze_alerts',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 9, 13, 13, 18, 16, 24],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 9, 13, 13, 19, 16, 25],
           'circle-color': ['coalesce', ['get', 'color'], '#ef4444'],
-          'circle-opacity': 0.28,
-          'circle-stroke-width': 1.5,
+          'circle-opacity': 0.18,
+          'circle-stroke-width': 1.2,
           'circle-stroke-color': ['coalesce', ['get', 'color'], '#ef4444'],
-          'circle-stroke-opacity': 0.6
+          'circle-stroke-opacity': 0.45
         }
       });
-      // 核心圖釘圓底
+      // 核心高對比徽章底座 (白邊立體飽和圓標)
       style.layers.push({
         id: 'waze-alerts-layer',
         type: 'circle',
         source: 'waze_alerts',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 9, 8, 13, 12, 16, 16],
-          'circle-color': '#18181b',
-          'circle-stroke-width': 2,
-          'circle-stroke-color': ['coalesce', ['get', 'color'], '#ef4444']
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 9, 8.5, 13, 12, 16, 16],
+          'circle-color': ['coalesce', ['get', 'color'], '#ef4444'],
+          'circle-stroke-width': 2.5,
+          'circle-stroke-color': '#ffffff'
         }
       });
       // 事故類別表情符號圖示 (💥/⚠️/⛔/🚗/👮)
@@ -3037,11 +3037,11 @@ export default function AppMap() {
         source: 'waze_alerts',
         layout: {
           'text-field': ['coalesce', ['get', 'icon'], '⚠️'],
-          'text-size': ['interpolate', ['linear'], ['zoom'], 9, 10, 13, 13, 16, 16],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 9, 10, 13, 13, 16, 17],
           'text-allow-overlap': true
         }
       });
-      // 事故摘要標籤
+      // 事故摘要標籤 (典雅白字搭配深色陰影)
       style.layers.push({
         id: 'waze-alerts-label-layer',
         type: 'symbol',
@@ -3050,14 +3050,14 @@ export default function AppMap() {
         layout: {
           'text-field': ['coalesce', ['get', 'type_label'], '突發事故'],
           'text-size': ['interpolate', ['linear'], ['zoom'], 12, 10, 15, 12],
-          'text-offset': [0, 1.4],
+          'text-offset': [0, 1.45],
           'text-anchor': 'top',
           'text-optional': true
         },
         paint: {
-          'text-color': '#fef08a',
-          'text-halo-color': '#000000',
-          'text-halo-width': 2
+          'text-color': '#ffffff',
+          'text-halo-color': '#0f172a',
+          'text-halo-width': 2.5
         }
       });
     }

@@ -4992,17 +4992,15 @@ function ExploreContent() {
         <div className="flex-1 flex flex-col min-h-0 space-y-2.5 overflow-hidden">
           {/* Header Bar */}
           <div className="flex items-center justify-between gap-1.5 shrink-0 pt-0.5">
+            <span className="text-xs font-bold text-white flex items-center gap-1.5">
+              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <span>美加邊境關口即時等候</span>
+            </span>
+
             <div className="flex items-center gap-1.5">
-              <span className="text-xs font-bold text-white flex items-center gap-1.5">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                <span>美加邊境關口即時等候</span>
-              </span>
               <span className="text-[10px] text-emerald-400 bg-emerald-950/70 border border-emerald-800/60 px-1.5 py-0.5 rounded font-mono font-medium">
                 每 5 分鐘更新
               </span>
-            </div>
-
-            <div className="flex items-center gap-1.5">
               <a
                 href="https://www.cbsa-asfc.gc.ca/bwt-taf/menu-eng.html"
                 target="_blank"
