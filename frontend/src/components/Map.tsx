@@ -472,7 +472,7 @@ export default function AppMap() {
   const { 
     layers, mapStyleType, searchTarget, setSearchTarget, isLayerPanelOpen, 
     contourInterval, timeFormat, distanceUnit, userLocation, setExploreOpen,
-    isExploreOpen, exploreTab,
+    isExploreOpen, exploreTab, setExploreTab,
     parkingMeterFilter, setParkingMeterFilter,
     radiusExploration, setRadiusExploration,
     fuelFilter, setFuelFilter,
@@ -8045,7 +8045,7 @@ export default function AppMap() {
                       {/* US Bound */}
                       <div className="p-2 rounded-lg bg-sky-50/70 border border-sky-200 flex flex-col gap-1">
                         <div className="flex items-center justify-between text-sky-900 font-bold text-[11px]">
-                          <span>🇺🇸 南向往美國 (CBP)</span>
+                          <span>🇺🇸 入境美國 (CBP)</span>
                         </div>
                         <div className="flex justify-between items-baseline pt-0.5">
                           <span className="text-gray-600 text-[10.5px]">一般客車:</span>
@@ -8071,7 +8071,7 @@ export default function AppMap() {
                       {/* Canada Bound */}
                       <div className="p-2 rounded-lg bg-rose-50/70 border border-rose-200 flex flex-col gap-1">
                         <div className="flex items-center justify-between text-rose-900 font-bold text-[11px]">
-                          <span>🇨🇦 北向往加拿大 (CBSA)</span>
+                          <span>🇨🇦 入境加拿大 (CBSA)</span>
                         </div>
                         <div className="flex justify-between items-baseline pt-0.5">
                           <span className="text-gray-600 text-[10.5px]">一般客車:</span>
@@ -9892,44 +9892,25 @@ export default function AppMap() {
               {/* Gas Station (Fuel) Details */}
               {selectedFacility.facility_type === 'fuel' && (
                 <div className="flex flex-col gap-2.5 text-xs">
-                  {/* Brand & Address Header Card */}
-                  <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/25 flex flex-col gap-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-amber-950 text-xs flex items-center gap-1.5">
-                        <span className="text-base">⛽</span>
-                        <span>{selectedFacility.properties.brand || selectedFacility.name || '溫哥華加油站'}</span>
-                      </span>
-                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-600 text-white">
-                        {selectedFacility.properties.opening_hours || '24/7'}
-                      </span>
+                  {/* Distance & Hours Header Card */}
+                  <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/25 flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-1.5 text-[11px] text-gray-500 min-w-0">
+                      <span className="text-amber-700 font-medium shrink-0">📍 離個人位置:</span>
+                      {userDistanceToFuel ? (
+                        <span className="font-bold text-amber-800 shrink-0">約 {userDistanceToFuel}</span>
+                      ) : (
+                        <span className="text-gray-400 truncate">可在右上角「⚙️ 設定」中輸入地址</span>
+                      )}
                     </div>
-                    <div className="text-[11px] text-gray-700 flex items-center gap-1">
-                      <span className="text-gray-400">📍</span>
-                      <span className="truncate">{selectedFacility.properties.address || selectedFacility.local_area || '溫哥華市區'}</span>
-                    </div>
-                    {userDistanceToFuel ? (
-                      <div className="flex items-center justify-between pt-1 border-t border-amber-500/20 text-[11px]">
-                        <span className="text-gray-500">離個人設定位置</span>
-                        <span className="font-bold text-amber-700">約 {userDistanceToFuel}</span>
-                      </div>
-                    ) : (
-                      <div className="flex items-center justify-between pt-1 border-t border-amber-500/20 text-[10.5px] text-gray-400">
-                        <span>離個人位置</span>
-                        <span>可在右上角「⚙️ 設定」中輸入地址</span>
-                      </div>
-                    )}
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-600 text-white shrink-0">
+                      {selectedFacility.properties.opening_hours || '24/7'}
+                    </span>
                   </div>
 
                   {/* Gas Prices Grid */}
                   <div className="flex flex-col gap-1.5">
                     <div className="flex items-center justify-between text-[11px] text-gray-500 font-medium">
                       <span>即時參考油價 (加分/公升 ¢/L)</span>
-                      <div className="flex items-center gap-1">
-                        <span className="text-[9.5px] text-amber-800 bg-amber-100/70 border border-amber-300 px-1 py-0.5 rounded font-mono">
-                          每 5 分鐘更新
-                        </span>
-                        <span className="text-[9.5px] text-amber-700/80 font-mono bg-amber-50 px-1 py-0.5 rounded">GasBuddy · BC</span>
-                      </div>
                     </div>
 
                     {loadingFuelPrices ? (
@@ -9971,20 +9952,25 @@ export default function AppMap() {
                     )}
                   </div>
 
-                  {/* Actions: Navigation & Compare in Explore */}
+                  {/* Actions: GasBuddy Link & Compare in Explore */}
                   <div className="grid grid-cols-2 gap-2 pt-1 border-t border-gray-100">
                     <a
-                      href={`https://www.google.com/maps/dir/?api=1&destination=${selectedFacility.lat},${selectedFacility.lon}`}
+                      href="https://www.gasbuddy.com/gasprices/british-columbia/vancouver"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center justify-center py-1.5 px-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded font-medium text-xs transition-colors shadow-sm gap-1"
+                      title="前往 GasBuddy 溫哥華即時油價網頁"
                     >
-                      <span>🗺️</span>
-                      <span>Google 導航</span>
+                      <span>⛽</span>
+                      <span>GasBuddy</span>
+                      <ExternalLink className="w-3 h-3 ml-0.5 opacity-90" />
                     </a>
                     <button
                       type="button"
-                      onClick={() => setExploreOpen(true)}
+                      onClick={() => {
+                        setExploreTab('fuel');
+                        setExploreOpen(true);
+                      }}
                       className="inline-flex items-center justify-center py-1.5 px-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded font-medium text-xs transition-colors border border-gray-200 gap-1"
                     >
                       <span>🧭</span>
@@ -11442,20 +11428,21 @@ export default function AppMap() {
               {/* Public Trees (公有街道樹木) Details */}
               {selectedFacility.facility_type === 'public_trees' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/30 flex flex-col gap-1.5">
+                  <div className="bg-emerald-50/90 p-2.5 rounded-lg border border-emerald-200 flex flex-col gap-1.5 text-[11px]">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-emerald-950 text-xs flex items-center gap-1.5">
-                        <span className="text-base text-emerald-600 font-bold">🌳</span>
-                        <span className="truncate max-w-[190px]">{selectedFacility.name}</span>
+                      <span className="font-bold text-emerald-950 flex items-center gap-1.5">
+                        <span className="text-base text-emerald-600">🌳</span>
+                        <span>溫哥華市政公有街道樹木</span>
                       </span>
                       {selectedFacility.properties.tree_id && (
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-600 text-white shrink-0">
+                        <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-emerald-600 text-white shrink-0">
                           #{selectedFacility.properties.tree_id}
                         </span>
                       )}
                     </div>
-                    <div className="text-[11px] text-emerald-900 font-medium">
-                      🌳 溫哥華市政公有街道樹木 (Vancouver Public Trees)
+                    <div className="flex justify-between items-center text-emerald-800 text-[10.5px] pt-1 border-t border-emerald-200/60">
+                      <span>主管機關</span>
+                      <span className="font-medium text-right truncate max-w-[190px]">Vancouver Board of Parks & Rec</span>
                     </div>
                   </div>
 
@@ -11494,18 +11481,12 @@ export default function AppMap() {
                     )}
                     {(selectedFacility.properties.date_planted || selectedFacility.properties.planted_year) && (
                       <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                        <span>栽植日期 / 年份</span>
+                        <span>栽植年份</span>
                         <span className="font-mono text-gray-700">
-                          {selectedFacility.properties.date_planted || `${selectedFacility.properties.planted_year} 年`}
+                          {selectedFacility.properties.date_planted ? String(selectedFacility.properties.date_planted).slice(0, 10) : `${selectedFacility.properties.planted_year} 年`}
                         </span>
                       </div>
                     )}
-                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                      <span>主管機關</span>
-                      <span className="font-medium text-gray-800">
-                        City of Vancouver Board of Parks and Recreation
-                      </span>
-                    </div>
                     <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
                       <span>資料更新頻率</span>
                       <span className="font-medium text-emerald-600">

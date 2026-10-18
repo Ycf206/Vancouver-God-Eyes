@@ -2313,6 +2313,15 @@ function ExploreContent() {
     return list;
   }, [trafficSummary, trafficSearchQuery]);
 
+  // Filtered border crossings based on direction (雙向 / 入境美國 / 入境加拿大)
+  const filteredBorderCrossings = useMemo(() => {
+    return borderCrossings.filter((crossing) => {
+      if (borderDirectionFilter === 'us') return crossing.us_bound != null;
+      if (borderDirectionFilter === 'canada') return crossing.canada_bound != null;
+      return true;
+    });
+  }, [borderCrossings, borderDirectionFilter]);
+
   const exploreTabsRow1 = [
     { id: 'weather', label: '天氣', icon: CloudSun, iconColor: 'text-sky-400' },
     { id: 'news', label: '新聞', icon: Newspaper, iconColor: 'text-amber-400' },
@@ -5220,27 +5229,19 @@ function ExploreContent() {
             </button>
           </div>
 
-          {/* 提示條 */}
-          <div className="bg-[#101726] border border-emerald-900/40 rounded-lg p-2 text-[11px] text-emerald-200/90 flex items-center gap-2 shrink-0">
-            <span className="text-base shrink-0">🛂</span>
-            <span className="leading-snug">
-              點擊關卡卡片，地圖將直接跳轉至該關口位置並顯示即時通關資訊。
-            </span>
-          </div>
-
           {/* 關卡清單 (Crossings List) */}
           <div className="flex-1 overflow-y-auto min-h-0 pr-1 flex flex-col gap-2.5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
-            {loadingBorder && borderCrossings.length === 0 ? (
+            {loadingBorder && filteredBorderCrossings.length === 0 ? (
               <div className="py-12 flex flex-col items-center justify-center gap-2 text-gray-400 text-xs">
                 <RefreshCw className="w-5 h-5 text-emerald-400 animate-spin" />
                 <span>讀取美加邊境 (CBSA & CBP) 即時數據中...</span>
               </div>
-            ) : borderCrossings.length === 0 ? (
+            ) : filteredBorderCrossings.length === 0 ? (
               <div className="py-12 text-center text-xs text-gray-400 bg-[#10131a] rounded-lg border border-[#232838]">
-                暫無邊境關卡數據
+                暫無此方向關卡數據
               </div>
             ) : (
-              borderCrossings.map((crossing) => {
+              filteredBorderCrossings.map((crossing) => {
                 const zhName = (crossing.name || '').split('(')[0].trim() || crossing.name;
                 const enName = crossing.english_name || ((crossing.name || '').match(/\((.*?)\)/)?.[1]) || '';
                 const usWait = crossing.us_bound?.standard_delay_min ?? null;
@@ -5259,21 +5260,34 @@ function ExploreContent() {
                     onClick={() => handleSelectBorderCrossing(crossing)}
                     className="p-3 rounded-xl bg-[#131722] hover:bg-[#181d2a] border border-[#242b3c] hover:border-emerald-500/50 transition-all shadow-sm cursor-pointer flex flex-col gap-2 group"
                   >
-                    {/* Top Row: Title & Highway */}
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="min-w-0">
-                        <h4 className="text-xs font-bold text-white group-hover:text-emerald-300 transition-colors">
+                    {/* Top Row: Title, English name, and Hours Badge */}
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-baseline gap-1.5 min-w-0">
+                        <h4 className="text-xs font-bold text-white group-hover:text-emerald-400 transition-colors shrink-0">
                           {zhName}
                         </h4>
                         {enName && (
-                          <span className="text-[10px] text-gray-400 block font-normal leading-tight mt-0.5">
-                            {enName}
+                          <span className="text-[10px] text-gray-400 truncate">
+                            ({enName})
                           </span>
                         )}
                       </div>
-                      <span className="text-[9.5px] font-mono text-cyan-300 bg-cyan-950/60 border border-cyan-800/50 px-2 py-0.5 rounded shrink-0">
+                      <span className="text-[9.5px] font-mono text-emerald-400/90 bg-emerald-950/60 border border-emerald-800/40 px-2 py-0.5 rounded shrink-0">
+                        {crossing.hours || '24 小時全天開放'}
+                      </span>
+                    </div>
+
+                    {/* Second Row: Highway Connection & Type Badge */}
+                    <div className="flex items-center gap-1.5 text-[10px]">
+                      <span className="text-gray-500 shrink-0">連接幹道:</span>
+                      <span className="font-mono text-cyan-300/90 bg-cyan-950/40 border border-cyan-800/30 px-1.5 py-0.5 rounded truncate max-w-[210px]" title={crossing.highway}>
                         {crossing.highway}
                       </span>
+                      {crossing.crossing_type && (
+                        <span className="text-[9.5px] text-gray-400 bg-[#161a26] border border-[#232a3c] px-1.5 py-0.5 rounded shrink-0 ml-auto">
+                          {crossing.crossing_type}
+                        </span>
+                      )}
                     </div>
 
                     {/* Wait times boxes */}
@@ -5284,7 +5298,7 @@ function ExploreContent() {
                           <div className="flex items-center justify-between">
                             <span className="text-[10px] font-bold text-sky-300 flex items-center gap-1">
                               <span>🇺🇸</span>
-                              <span>南向往美國 (CBP)</span>
+                              <span>入境美國 (CBP)</span>
                             </span>
                             {crossing.us_bound?.standard_lanes_open != null && (
                               <span className="text-[9px] text-gray-400 font-mono">
@@ -5317,7 +5331,7 @@ function ExploreContent() {
                           <div className="flex items-center justify-between">
                             <span className="text-[10px] font-bold text-rose-300 flex items-center gap-1">
                               <span>🇨🇦</span>
-                              <span>北向往加拿大 (CBSA)</span>
+                              <span>入境加拿大 (CBSA)</span>
                             </span>
                           </div>
 
@@ -5338,20 +5352,23 @@ function ExploreContent() {
                       )}
                     </div>
 
-                    {/* Hours & Tips */}
+                    {/* Tips */}
                     {crossing.tips && (
-                      <p className="text-[10.5px] text-gray-400 bg-[#0b0e14] p-1.5 rounded border border-[#1b212f] leading-relaxed">
-                        {crossing.tips}
-                      </p>
+                      <div className="text-[10px] text-gray-300/85 bg-[#10141f] p-2 rounded-lg border border-[#1f283c] flex items-start gap-1.5 leading-relaxed">
+                        <span className="text-cyan-400/90 text-xs shrink-0 mt-0.5">ℹ️</span>
+                        <span>{crossing.tips}</span>
+                      </div>
                     )}
-
-                    <div className="flex items-center justify-between text-[10px] text-gray-400 pt-1 border-t border-[#1e2434]">
-                      <span className="font-mono text-emerald-400/90">{crossing.hours || '24 小時全天開放'}</span>
-                    </div>
                   </div>
                 );
               })
             )}
+          </div>
+
+          {/* 1.4: 底部文字: 共 x 大陸路關口 (x代表該分頁的清單數量), 然後下一行: 資料來源：CBSA & CBP */}
+          <div className="flex flex-col text-[10.5px] text-gray-400 px-1 pt-1 border-t border-[#1e2333]/70 shrink-0">
+            <span className="font-medium text-gray-300">共 {filteredBorderCrossings.length} 大陸路關口</span>
+            <span className="text-[9.5px] text-gray-500">資料來源：CBSA & CBP</span>
           </div>
         </div>
       )}
@@ -5421,7 +5438,7 @@ function ExploreContent() {
           })()}
           {activeTab === 'border' && (
             <>
-              <span>美加邊境 5 大陸路關口即時等候時間</span>
+              <span>共 {filteredBorderCrossings.length} 大陸路關口</span>
               <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：CBSA & CBP</span>
             </>
           )}
