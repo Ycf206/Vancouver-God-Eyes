@@ -11,16 +11,17 @@
       "properties": {
         "id": "construction_1",
         "facility_type": "road_construction",
-        "name": "道路施工項目 #1",
-        "project": "",
-        "street": "",
-        "location": "",
-        "comp_date": "2027-02-16",
+        "name": "E King Edward Av, St Catherines St to Kingsway",
+        "project": "E King Edward Av, St Catherines St to Kingsway",
+        "street": "E King Edward Av",
+        "location": "E King Edward Av, St Catherines St to Kingsway",
+        "comp_date": "2027-03-05",
         "url_link": "http://vanmapp1.vancouver.ca/roadahead/events/details/0a4e0683-e652-49af-b3ef-d40722ba1732",
         "geo_point_2d": {
           "lon": -123.07903620540942,
           "lat": 49.248524039014
-        }
+        },
+        "schedule": "Sep 14, 2026 - Mar 5, 2027; Weekdays; 7:00 AM - 3:00 PM"
       },
       "geometry": {
         "coordinates": [
@@ -97,10 +98,10 @@
       "properties": {
         "id": "construction_3",
         "facility_type": "road_construction",
-        "name": "道路施工項目 #3",
-        "project": "",
-        "street": "",
-        "location": "",
+        "name": "Dunbar West Sewer Package",
+        "project": "Dunbar West Sewer Package",
+        "street": "Dunbar St",
+        "location": "Dunbar West Sewer Package",
         "comp_date": "2026-10-01",
         "url_link": "http://vanmapp1.vancouver.ca/roadahead/events/details/15675431-2744-452d-8953-b27b0d4c1fb3",
         "geo_point_2d": {
@@ -2979,10 +2980,10 @@
       "properties": {
         "id": "construction_39",
         "facility_type": "road_construction",
-        "name": "道路施工項目 #39",
-        "project": "",
-        "street": "",
-        "location": "",
+        "name": "Placeholder - Mt Pleasant Substation Transformer Install",
+        "project": "Placeholder - Mt Pleasant Substation Transformer Install",
+        "street": "Mt Pleasant",
+        "location": "Placeholder - Mt Pleasant Substation Transformer Install",
         "comp_date": "2027-04-01",
         "url_link": "http://vanmapp1.vancouver.ca/roadahead/events/details/a484ab1c-a79f-42cb-91b7-dd9231d1f35b",
         "geo_point_2d": {
@@ -3554,10 +3555,10 @@
       "properties": {
         "id": "construction_48",
         "facility_type": "road_construction",
-        "name": "道路施工項目 #48",
-        "project": "",
-        "street": "",
-        "location": "",
+        "name": "E. 49th Ave Streets Renewal, Knight to Killarney",
+        "project": "E. 49th Ave Streets Renewal, Knight to Killarney",
+        "street": "E 49th Ave",
+        "location": "E. 49th Ave Streets Renewal, Knight to Killarney",
         "comp_date": "2026-11-16",
         "url_link": "http://vanmapp1.vancouver.ca/roadahead/events/details/5418cb71-8d34-4fdf-afdd-8171f0c25fb4",
         "geo_point_2d": {
@@ -4591,10 +4592,10 @@
       "properties": {
         "id": "construction_63",
         "facility_type": "road_construction",
-        "name": "道路施工項目 #63",
-        "project": "",
+        "name": "2026 RRFB Program",
+        "project": "2026 RRFB Program",
         "street": "",
-        "location": "",
+        "location": "2026 RRFB Program",
         "comp_date": "2026-12-02",
         "url_link": "http://vanmapp1.vancouver.ca/roadahead/events/details/c19571ad-2b48-46f8-bf06-17b3e1d4027a",
         "geo_point_2d": {

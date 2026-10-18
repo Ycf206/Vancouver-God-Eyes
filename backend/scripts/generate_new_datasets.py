@@ -125,7 +125,35 @@ def generate_road_construction():
         if not geometry:
             continue
 
-        proj_name = r.get("project") or r.get("location") or r.get("street") or f"道路施工項目 #{idx+1}"
+        url = r.get("url_link") or ""
+        proj_val = r.get("project") or ""
+        street_val = r.get("street") or ""
+        loc_val = r.get("location") or ""
+        comp_date_val = r.get("comp_date") or ""
+        sched_val = None
+
+        if "0a4e0683" in url:
+            proj_val = proj_val or "E King Edward Av, St Catherines St to Kingsway"
+            loc_val = loc_val or "E King Edward Av, St Catherines St to Kingsway"
+            street_val = street_val or "E King Edward Av"
+            sched_val = "Sep 14, 2026 - Mar 5, 2027; Weekdays; 7:00 AM - 3:00 PM"
+            comp_date_val = comp_date_val or "2027-03-05"
+        elif "15675431" in url:
+            proj_val = proj_val or "Dunbar West Sewer Package"
+            loc_val = loc_val or "Dunbar West Sewer Package"
+            street_val = street_val or "Dunbar St"
+        elif "a484ab1c" in url:
+            proj_val = proj_val or "Placeholder - Mt Pleasant Substation Transformer Install"
+            loc_val = loc_val or "Placeholder - Mt Pleasant Substation Transformer Install"
+        elif "5418cb71" in url:
+            proj_val = proj_val or "E. 49th Ave Streets Renewal, Knight to Killarney"
+            loc_val = loc_val or "E. 49th Ave Streets Renewal, Knight to Killarney"
+            street_val = street_val or "E 49th Ave"
+        elif "c19571ad" in url:
+            proj_val = proj_val or "2026 RRFB Program"
+            loc_val = loc_val or "2026 RRFB Program"
+
+        proj_name = proj_val or loc_val or street_val or f"道路施工項目 #{idx+1}"
         feat_id = f"construction_{idx+1}"
         features.append({
             "type": "Feature",
@@ -134,11 +162,12 @@ def generate_road_construction():
                 "id": feat_id,
                 "facility_type": "road_construction",
                 "name": proj_name,
-                "project": r.get("project") or "",
-                "street": r.get("street") or "",
-                "location": r.get("location") or "",
-                "comp_date": r.get("comp_date") or "",
-                "url_link": r.get("url_link") or "",
+                "project": proj_val,
+                "street": street_val,
+                "location": loc_val,
+                "schedule": sched_val,
+                "comp_date": comp_date_val,
+                "url_link": url,
                 "geo_point_2d": pt
             },
             "geometry": geometry

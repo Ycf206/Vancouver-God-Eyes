@@ -14,7 +14,7 @@ import {
   LocateFixed, Train, Compass, ZoomIn, X, Copy, Check, 
   Navigation, ExternalLink, Clock, Bike, Car, Info, 
   ChevronDown, ChevronUp, SlidersHorizontal, Fuel, Zap, Wifi, Waves, Play, Pause, CloudRain,
-  RotateCcw, MapPin, Crosshair, Activity, Ban, Cone, Lightbulb, Ship
+  RotateCcw, RotateCw, MapPin, Crosshair, Activity, Ban, Cone, Lightbulb, Ship
 } from 'lucide-react';
 
 // Fix Next.js App Router Web Worker crash
@@ -1649,6 +1649,24 @@ export default function AppMap() {
   const [webcamLoadedCount, setWebcamLoadedCount] = useState(0);
   const [webcamImgReadyMap, setWebcamImgReadyMap] = useState<Record<number, boolean>>({});
   const [webcamRefreshKey, setWebcamRefreshKey] = useState(0);
+  const [enlargedCameraImage, setEnlargedCameraImage] = useState<{
+    src: string;
+    directSrc: string;
+    alt: string;
+    title: string;
+    direction: string;
+  } | null>(null);
+
+  // Close camera lightbox on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && enlargedCameraImage) {
+        setEnlargedCameraImage(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [enlargedCameraImage]);
 
   // Fetch webcam images when a traffic camera is selected, and reserve extra time to preload image bytes
   useEffect(() => {
@@ -8103,7 +8121,7 @@ export default function AppMap() {
                         return selectedFacility.name;
                       })()}
                     </h3>
-                    {(selectedFacility.local_area || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || (selectedFacility.facility_type === 'car_sharing' && selectedFacility.properties?.operator === 'Modo')) && (
+                    {(selectedFacility.local_area || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || (selectedFacility.facility_type === 'car_sharing' && selectedFacility.properties?.operator === 'Modo')) && (
                       <span className="text-[11px] text-gray-400 block leading-snug break-words">
                         {(() => {
                           if (selectedFacility.facility_type === 'traffic_speed_limits') return 'Vancouver, BC';
@@ -8114,6 +8132,7 @@ export default function AppMap() {
                           if (selectedFacility.facility_type === 'shared_bikes') return 'Vancouver, BC';
                           if (selectedFacility.facility_type === 'tesla') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                           if (selectedFacility.facility_type === 'road_closures') return 'Vancouver, BC';
+                          if (selectedFacility.facility_type === 'road_construction') return 'Vancouver, BC';
                           return selectedFacility.local_area;
                         })()}
                       </span>
@@ -8768,16 +8787,16 @@ export default function AppMap() {
               {selectedFacility.facility_type === 'traffic_cameras' && (
                 <div className="flex flex-col gap-2 text-xs">
                   <div className="flex items-center justify-between text-[11px] text-gray-500 bg-cyan-50/70 p-1.5 rounded">
-                    <span className="flex items-center gap-1 text-cyan-800 font-medium">
-                      <span>📷 即時路況畫面</span>
-                      <span className="text-[10px] text-cyan-600">（每 1 小時自動更新）</span>
+                    <span className="flex items-center gap-1.5 text-cyan-800 font-medium">
+                      <span>📷</span>
+                      <span>即時路況畫面</span>
                     </span>
                     <button
                       onClick={() => setWebcamRefreshKey(k => k + 1)}
-                      className="px-1.5 py-0.5 bg-white border border-cyan-200 text-cyan-700 hover:bg-cyan-100 rounded text-[10px] font-medium transition-colors"
-                      title="立即重新整理圖片"
+                      className="p-1 bg-white border border-cyan-200 text-cyan-700 hover:bg-cyan-100 rounded-md transition-colors shadow-2xs flex items-center justify-center"
+                      title="重新整理即時畫面"
                     >
-                      重新整理 🔄
+                      <RotateCw className="w-3.5 h-3.5" />
                     </button>
                   </div>
 
@@ -8790,7 +8809,7 @@ export default function AppMap() {
                       </div>
                       <div className="flex flex-col items-center gap-1 text-center">
                         <span className="text-[11px] font-bold text-cyan-300 tracking-wide">
-                          正在從溫哥華交通局 API 載入即時路況圖片...
+                          正在從交通局 API 載入即時路況圖片...
                         </span>
                         <span className="text-[10px] text-gray-400">
                           {webcamImages.length > 0
@@ -8816,7 +8835,22 @@ export default function AppMap() {
                         const directSrc = `${img.url}?t=${hourlyTimestamp}_${webcamRefreshKey}`;
                         const isImgReady = webcamImgReadyMap[idx];
                         return (
-                          <div key={idx} className="relative rounded overflow-hidden border border-gray-200 bg-slate-900 aspect-[4/3] group shadow-sm">
+                          <div
+                            key={idx}
+                            onClick={() => {
+                              if (isImgReady) {
+                                setEnlargedCameraImage({
+                                  src: proxySrc,
+                                  directSrc: directSrc,
+                                  alt: img.alt || img.direction,
+                                  title: selectedFacility.name || '即時路況攝影機',
+                                  direction: img.direction
+                                });
+                              }
+                            }}
+                            className="relative rounded overflow-hidden border border-gray-200 bg-slate-900 aspect-[4/3] group shadow-sm cursor-zoom-in"
+                            title="點擊放大檢視畫面"
+                          >
                             {!isImgReady && (
                               <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900 text-cyan-400 gap-1 z-10">
                                 <div className="w-4 h-4 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
@@ -8843,6 +8877,13 @@ export default function AppMap() {
                                 }
                               }}
                             />
+                            {/* Hover overlay hint */}
+                            <div className="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none z-10">
+                              <span className="bg-black/75 backdrop-blur-xs text-white text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1 shadow-md">
+                                <ZoomIn className="w-3 h-3 text-cyan-300" />
+                                <span>點擊放大</span>
+                              </span>
+                            </div>
                             <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-1 pt-3 text-[10px] font-medium text-white truncate text-center z-20">
                               {img.direction}
                             </div>
@@ -8864,7 +8905,7 @@ export default function AppMap() {
                         rel="noopener noreferrer"
                         className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-cyan-700 hover:bg-cyan-800 text-white rounded font-medium text-xs transition-colors shadow-sm"
                       >
-                        前往溫哥華官方路況網頁 ↗
+                        前往官方路況網頁 ↗
                       </a>
                     </div>
                   )}
@@ -11108,53 +11149,36 @@ export default function AppMap() {
               {/* Road Construction (道路施工) Details */}
               {selectedFacility.facility_type === 'road_construction' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/30 flex flex-col gap-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-amber-950 text-xs flex items-center gap-1.5">
-                        <span className="text-base text-amber-600 font-bold">🚧</span>
-                        <span className="truncate max-w-[190px]">{selectedFacility.name}</span>
-                      </span>
-                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-600 text-white shrink-0">
-                        道路施工
-                      </span>
-                    </div>
-                    <div className="text-[11px] text-amber-900 font-medium">
-                      ⚠️ 溫哥華市政進行中道路工程項目 (Projects Under Construction)
-                    </div>
+                  <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/30 flex items-center justify-between gap-2">
+                    <span className="text-[11px] text-amber-950 font-medium flex items-center gap-1.5 leading-snug">
+                      <span className="text-base text-amber-600 font-bold shrink-0">🚧</span>
+                      <span>進行中道路工程項目</span>
+                    </span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-600 text-white shrink-0 shadow-xs whitespace-nowrap">
+                      道路施工
+                    </span>
                   </div>
 
-                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                    {selectedFacility.properties.project && (
-                      <div className="flex justify-between items-start text-gray-600">
-                        <span className="shrink-0">施工項目</span>
-                        <span className="font-bold text-gray-900 text-right truncate max-w-[190px]">
-                          {selectedFacility.properties.project}
-                        </span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.location && (
-                      <div className="flex justify-between items-start text-gray-600 pt-1 border-t border-gray-100">
-                        <span className="shrink-0">施工地點</span>
-                        <span className="font-medium text-gray-800 text-right truncate max-w-[190px]">
-                          {selectedFacility.properties.location}
-                        </span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.comp_date && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                        <span>預估完工日期</span>
-                        <span className="font-bold text-amber-600 font-mono">
-                          {selectedFacility.properties.comp_date}
-                        </span>
-                      </div>
-                    )}
-                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                      <span>資料更新頻率</span>
-                      <span className="font-medium text-gray-700">
-                        每日更新 1 次
-                      </span>
+                  {(selectedFacility.properties.schedule || selectedFacility.properties.comp_date) && (
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                      {selectedFacility.properties.schedule && (
+                        <div className="flex justify-between items-start text-gray-600">
+                          <span className="shrink-0">預計施工時程</span>
+                          <span className="font-medium text-gray-800 text-right font-mono text-[10.5px]">
+                            {selectedFacility.properties.schedule}
+                          </span>
+                        </div>
+                      )}
+                      {selectedFacility.properties.comp_date && (
+                        <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties.schedule ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span>預估完工日期</span>
+                          <span className="font-bold text-amber-600 font-mono">
+                            {selectedFacility.properties.comp_date}
+                          </span>
+                        </div>
+                      )}
                     </div>
-                  </div>
+                  )}
 
                   {selectedFacility.properties.url_link && (
                     <a
@@ -13603,6 +13627,77 @@ export default function AppMap() {
         <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-[#10141f]/95 border border-cyan-500/60 shadow-[0_8px_24px_rgba(6,182,212,0.3)] text-white px-4 py-2 rounded-full flex items-center gap-2 text-xs font-medium animate-in fade-in duration-200">
           <Check className="w-4 h-4 text-emerald-400" />
           <span>已複製設施名稱及地址至剪貼簿！</span>
+        </div>
+      )}
+
+      {/* 交通攝影機圖片放大檢視 Modal (Webcam Image Lightbox) */}
+      {enlargedCameraImage && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200"
+          onClick={() => setEnlargedCameraImage(null)}
+        >
+          <div 
+            className="relative max-w-4xl w-full bg-[#161922] border border-cyan-500/40 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[92vh]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-4 py-3 bg-[#1e2330] border-b border-gray-700/60">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <span className="text-base text-cyan-400">📷</span>
+                <div className="flex flex-col min-w-0">
+                  <h4 className="text-sm font-bold text-gray-100 truncate">
+                    {enlargedCameraImage.title}
+                  </h4>
+                  <div className="flex items-center gap-2 text-[11px] text-gray-400">
+                    <span className="text-cyan-300 font-semibold">{enlargedCameraImage.direction}</span>
+                    <span>·</span>
+                    <span>即時路況影像</span>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <a
+                  href={enlargedCameraImage.directSrc}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-cyan-300 hover:bg-white/10 transition-colors flex items-center gap-1 text-xs"
+                  title="於新分頁開啟原始圖片"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+                <button
+                  onClick={() => setEnlargedCameraImage(null)}
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+                  title="關閉 (Esc)"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Body / Image */}
+            <div className="p-3 sm:p-5 flex items-center justify-center bg-black/90 overflow-auto flex-1 min-h-[300px]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={enlargedCameraImage.src}
+                alt={enlargedCameraImage.alt}
+                referrerPolicy="no-referrer"
+                className="max-w-full max-h-[72vh] object-contain rounded-lg shadow-2xl border border-white/10"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (target.src !== enlargedCameraImage.directSrc) {
+                    target.src = enlargedCameraImage.directSrc;
+                  }
+                }}
+              />
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-4 py-2 bg-[#1a1e29] border-t border-gray-800 flex items-center justify-between text-[11px] text-gray-400">
+              <span>點擊背景或右上角 ✕ 關閉</span>
+              <span className="text-cyan-400 font-mono text-[10.5px]">HD 即時路況畫面</span>
+            </div>
+          </div>
         </div>
       )}
     </div>
