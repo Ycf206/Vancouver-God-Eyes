@@ -8476,7 +8476,7 @@ export default function AppMap() {
                       href="https://vancouver.ca/home-property-development/disaster-support-hubs.aspx"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center w-full py-1 px-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded font-medium text-[11px] transition-colors text-center"
+                      className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-amber-600 hover:bg-amber-700 text-white rounded font-medium text-xs transition-colors shadow-sm text-center"
                     >
                       查看溫哥華市政府災害中心專頁 ↗
                     </a>

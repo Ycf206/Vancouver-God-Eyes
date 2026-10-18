@@ -228,7 +228,7 @@ export default function LayerPanel() {
         <div className="flex flex-col gap-1.5">
           <div className="text-[10px] font-bold text-amber-400 tracking-wider flex items-center justify-between">
             <div className="flex items-center gap-1">
-              <CircleDollarSign className="w-3 h-3 text-amber-400" />
+              <Route className="w-3 h-3 text-amber-400" />
               <span>道路</span>
             </div>
             <span className="text-[9px] text-amber-500/70 font-mono">ROAD</span>
