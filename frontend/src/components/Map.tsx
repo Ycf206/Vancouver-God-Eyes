@@ -6429,152 +6429,166 @@ export default function AppMap() {
         ))}
 
         {/* SkyTrain & SeaBus Station Warning Alert Info Popup */}
-        {selectedStationAlertMarker && (
-          <Popup
-            longitude={selectedStationAlertMarker.lon}
-            latitude={selectedStationAlertMarker.lat}
-            closeOnClick={false}
-            closeButton={false}
-            onClose={() => setSelectedStationAlertMarker(null)}
-            offset={[0, -28]}
-            className="z-50 station-alert-popup"
-            maxWidth="380px"
-          >
-            <div className="flex flex-col gap-2 text-xs text-gray-900 min-w-[280px] max-w-[340px] p-0.5">
-              {/* Header */}
-              <div className="flex items-start justify-between gap-2 pb-2 border-b border-gray-200">
-                <div className="flex items-center gap-2 min-w-0">
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
-                    selectedStationAlertMarker.critical 
-                      ? 'bg-red-100 text-red-600 border border-red-300' 
-                      : 'bg-amber-100 text-amber-600 border border-amber-300'
-                  }`}>
-                    <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                      <path d="M12 2L1 21h22L12 2zm0 3.5L20.3 19H3.7L12 5.5zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z" />
-                    </svg>
-                  </div>
-                  <div className="min-w-0">
-                    <h3 className="font-bold text-sm text-gray-900 truncate">
-                      {selectedStationAlertMarker.displayName || selectedStationAlertMarker.name}
-                    </h3>
-                    <div className="flex items-center gap-1.5 mt-0.5">
-                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
-                        selectedStationAlertMarker.critical
-                          ? 'bg-red-600 text-white'
-                          : 'bg-amber-500 text-white'
-                      }`}>
-                        {selectedStationAlertMarker.critical ? '嚴重警報' : '營運提示'}
-                      </span>
-                      <span className="text-[11px] text-gray-500 font-medium">
-                        共 {selectedStationAlertMarker.count} 則警報
-                      </span>
+        {selectedStationAlertMarker && (() => {
+          const matchingAlerts = (transitAlertsList || []).filter((a: any) => {
+            if (selectedStationAlertMarker.alertIds?.includes(a.id)) return true;
+            const stName = selectedStationAlertMarker.name.toLowerCase();
+            const stDisplay = (selectedStationAlertMarker.displayName || '').toLowerCase();
+            const impacted = (a.impacted_stations || []).map((s: string) => s.toLowerCase());
+            return impacted.some((s: string) => s.includes(stName) || stName.includes(s) || (stDisplay && s.includes(stDisplay)));
+          });
+          const officialAlertUrl = matchingAlerts.find((a: any) => a.url)?.url || 'https://www.translink.ca/alerts';
+
+          return (
+            <Popup
+              longitude={selectedStationAlertMarker.lon}
+              latitude={selectedStationAlertMarker.lat}
+              closeOnClick={false}
+              closeButton={false}
+              onClose={() => setSelectedStationAlertMarker(null)}
+              offset={[0, -28]}
+              className="z-50 station-alert-popup"
+              maxWidth="380px"
+            >
+              <div className="flex flex-col gap-2 text-xs text-gray-900 min-w-[280px] max-w-[340px] p-0.5">
+                {/* Header */}
+                <div className="flex items-start justify-between gap-2 pb-2 border-b border-gray-200">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
+                      selectedStationAlertMarker.critical 
+                        ? 'bg-red-100 text-red-600 border border-red-300' 
+                        : 'bg-amber-100 text-amber-600 border border-amber-300'
+                    }`}>
+                      <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                        <path d="M12 2L1 21h22L12 2zm0 3.5L20.3 19H3.7L12 5.5zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z" />
+                      </svg>
                     </div>
+                    <div className="min-w-0">
+                      <h3 className="font-bold text-sm text-gray-900 truncate">
+                        {selectedStationAlertMarker.displayName || selectedStationAlertMarker.name}
+                      </h3>
+                      <div className="flex items-center gap-1.5 mt-0.5">
+                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
+                          selectedStationAlertMarker.critical
+                            ? 'bg-red-600 text-white'
+                            : 'bg-amber-500 text-white'
+                        }`}>
+                          {selectedStationAlertMarker.critical ? '嚴重警報' : '營運提示'}
+                        </span>
+                        <span className="text-[11px] text-gray-500 font-medium">
+                          共 {selectedStationAlertMarker.count} 則警報
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 右上角按鈕組：官方通報圖示 + 關閉按鈕 */}
+                  <div className="flex items-center gap-1 shrink-0">
+                    {officialAlertUrl && (
+                      <a
+                        href={officialAlertUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-1 rounded-md text-gray-500 hover:text-blue-600 hover:bg-blue-50 transition-colors cursor-pointer flex items-center justify-center"
+                        title="前往 TransLink 官方通報"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => setSelectedStationAlertMarker(null)}
+                      className="p-1 rounded-md text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer"
+                      title="關閉"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
 
-                {/* 右上角關閉按鈕 */}
-                <button
-                  type="button"
-                  onClick={() => setSelectedStationAlertMarker(null)}
-                  className="p-1 rounded-md text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer shrink-0"
-                  title="關閉"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-
-              {/* Alert Details List */}
-              <div className="flex flex-col gap-2 max-h-[260px] overflow-y-auto pr-1">
-                {(() => {
-                  const matchingAlerts = (transitAlertsList || []).filter((a: any) => {
-                    if (selectedStationAlertMarker.alertIds?.includes(a.id)) return true;
-                    const stName = selectedStationAlertMarker.name.toLowerCase();
-                    const stDisplay = (selectedStationAlertMarker.displayName || '').toLowerCase();
-                    const impacted = (a.impacted_stations || []).map((s: string) => s.toLowerCase());
-                    return impacted.some((s: string) => s.includes(stName) || stName.includes(s) || (stDisplay && s.includes(stDisplay)));
-                  });
-
-                  if (matchingAlerts.length === 0) {
-                    return (
-                      <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-200 text-gray-600 text-[11.5px] leading-relaxed">
-                        ⚠️ 該站點目前有即時營運通報，請留意車站現場廣播、跑馬燈指示或至 TransLink 官網查詢。
-                      </div>
-                    );
-                  }
-
-                  return matchingAlerts.map((alt: any, idx: number) => {
-                    let displayTime = '--';
-                    if (alt.lastModified) {
-                      try {
-                        const d = new Date(alt.lastModified);
-                        if (!isNaN(d.getTime())) {
-                          const h = d.getHours().toString().padStart(2, '0');
-                          const m = d.getMinutes().toString().padStart(2, '0');
-                          displayTime = `${d.getMonth() + 1}月${d.getDate()}日 ${h}:${m}`;
+                {/* Alert Details List */}
+                <div className="flex flex-col gap-2 max-h-[260px] overflow-y-auto pr-1">
+                  {matchingAlerts.length === 0 ? (
+                    <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-200 text-gray-600 text-[11.5px] leading-relaxed">
+                      ⚠️ 該站點目前有即時營運通報，請留意車站現場廣播、跑馬燈指示或至 TransLink 官網查詢。
+                    </div>
+                  ) : (
+                    matchingAlerts.map((alt: any, idx: number) => {
+                      let displayTime = '--';
+                      if (alt.lastModified) {
+                        try {
+                          const d = new Date(alt.lastModified);
+                          if (!isNaN(d.getTime())) {
+                            const h = d.getHours().toString().padStart(2, '0');
+                            const m = d.getMinutes().toString().padStart(2, '0');
+                            displayTime = `${d.getMonth() + 1}月${d.getDate()}日 ${h}:${m}`;
+                          }
+                        } catch {
+                          displayTime = String(alt.lastModified);
                         }
-                      } catch {
-                        displayTime = String(alt.lastModified);
                       }
-                    }
 
-                    return (
-                      <div 
-                        key={alt.id || idx}
-                        className={`p-2.5 rounded-lg border flex flex-col gap-1.5 ${
-                          alt.critical 
-                            ? 'bg-red-50/70 border-red-200' 
-                            : 'bg-amber-50/60 border-amber-200'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between gap-1.5">
-                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                      return (
+                        <div 
+                          key={alt.id || idx}
+                          className={`p-2.5 rounded-lg border flex flex-col gap-1.5 ${
                             alt.critical 
-                              ? 'bg-red-600 text-white' 
-                              : 'bg-amber-600 text-white'
-                          }`}>
-                            {alt.effect_zh || '營運提示'}
-                          </span>
-                          {alt.routeLongName && (
-                            <span className="text-[10.5px] font-semibold text-gray-700 truncate max-w-[150px]">
-                              {alt.routeLongName}
+                              ? 'bg-red-50/70 border-red-200' 
+                              : 'bg-amber-50/60 border-amber-200'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between gap-1.5">
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                                alt.critical 
+                                ? 'bg-red-600 text-white' 
+                                : 'bg-amber-600 text-white'
+                              }`}>
+                                {alt.effect_zh || '營運提示'}
+                              </span>
+                              {alt.routeLongName && (
+                                <span className="text-[10.5px] font-semibold text-gray-700 truncate max-w-[150px]">
+                                  {alt.routeLongName}
+                                </span>
+                              )}
+                            </div>
+                            {alt.url && (
+                              <a
+                                href={alt.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="p-0.5 rounded text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors shrink-0 flex items-center justify-center"
+                                title="前往官方通報"
+                              >
+                                <ExternalLink className="w-3.5 h-3.5" />
+                              </a>
+                            )}
+                          </div>
+
+                          <h4 className="font-bold text-xs text-gray-900 leading-snug">
+                            {alt.header || alt.alertText || '營運通知'}
+                          </h4>
+
+                          {alt.description && alt.description !== alt.header && (
+                            <p className="text-[11px] text-gray-700 leading-relaxed whitespace-pre-line line-clamp-4">
+                              {alt.description}
+                            </p>
+                          )}
+
+                          <div className="flex items-center justify-between pt-1 border-t border-gray-200/60 text-[10px] text-gray-500">
+                            <span>
+                              {displayTime !== '--' ? `更新：${displayTime}` : '即時通告'}
                             </span>
-                          )}
+                          </div>
                         </div>
-
-                        <h4 className="font-bold text-xs text-gray-900 leading-snug">
-                          {alt.header || alt.alertText || '營運通知'}
-                        </h4>
-
-                        {alt.description && alt.description !== alt.header && (
-                          <p className="text-[11px] text-gray-700 leading-relaxed whitespace-pre-line line-clamp-4">
-                            {alt.description}
-                          </p>
-                        )}
-
-                        <div className="flex items-center justify-between pt-1 border-t border-gray-200/60 text-[10px] text-gray-500">
-                          <span>
-                            {displayTime !== '--' ? `更新：${displayTime}` : '即時通告'}
-                          </span>
-                          {alt.url && (
-                            <a
-                              href={alt.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-0.5 font-medium"
-                            >
-                              <span>官方通報</span>
-                              <ExternalLink className="w-2.5 h-2.5" />
-                            </a>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  });
-                })()}
+                      );
+                    })
+                  )}
+                </div>
               </div>
-            </div>
-          </Popup>
-        )}
+            </Popup>
+          );
+        })()}
 
         {/* BC Ferries Terminals (Merged under bcferriesRoutes '路線') */}
         {layers.bcferriesRoutes && ferryTerminals.map((t, i) => (

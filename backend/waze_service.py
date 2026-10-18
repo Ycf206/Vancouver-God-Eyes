@@ -498,6 +498,9 @@ class WazeService:
                             "report_rating": a.get("reportRating", 4),
                             "pub_time": a.get("pubMillis", int(time.time() * 1000)),
                             "time_display": "剛剛",
+                            "lon": lon,
+                            "lat": lat,
+                            "coordinates": [lon, lat],
                             "source": "Waze Crowd-Sourced Reports"
                         }
                     })
@@ -529,6 +532,9 @@ class WazeService:
                         "report_rating": a["report_rating"],
                         "pub_time": a["pub_millis"],
                         "time_display": a["time_display"],
+                        "lon": a["location"]["x"],
+                        "lat": a["location"]["y"],
+                        "coordinates": [a["location"]["x"], a["location"]["y"]],
                         "source": "Waze Crowd-Sourced Reports"
                     }
                 })
@@ -548,6 +554,7 @@ class WazeService:
                 "id": "hwy1",
                 "name": "1號公路 (Hwy 1)",
                 "english_name": "Trans-Canada Hwy",
+                "route": "Trans-Canada Hwy",
                 "badge": "東西向大動脈",
                 "center": [-123.015, 49.258],
                 "zoom": 13.5,
@@ -568,6 +575,7 @@ class WazeService:
                 "id": "massey_tunnel",
                 "name": "喬治梅西隧道 (George Massey Tunnel)",
                 "english_name": "Hwy 99 Massey Tunnel",
+                "route": "Hwy 99",
                 "badge": "99號公路南北主通道",
                 "center": [-123.076, 49.124],
                 "zoom": 14.0,
@@ -588,6 +596,7 @@ class WazeService:
                 "id": "knight_bridge",
                 "name": "騎士街橋 (Knight Street Bridge)",
                 "english_name": "Knight St Bridge",
+                "route": "Knight St",
                 "badge": "重型貨運與南區樞紐",
                 "center": [-123.0782, 49.204],
                 "zoom": 14.5,
@@ -608,6 +617,7 @@ class WazeService:
                 "id": "lions_gate",
                 "name": "獅門大橋 (Lions Gate Bridge)",
                 "english_name": "Hwy 99 Lions Gate",
+                "route": "Hwy 99",
                 "badge": "北岸關鍵跨海橋",
                 "center": [-123.1384, 49.3145],
                 "zoom": 14.5,
@@ -628,6 +638,7 @@ class WazeService:
                 "id": "ironworkers",
                 "name": "鋼鐵工人紀念大橋 (Ironworkers Memorial)",
                 "english_name": "Second Narrows Bridge",
+                "route": "Hwy 1",
                 "badge": "1號公路跨海東段",
                 "center": [-123.0255, 49.297],
                 "zoom": 14.0,
@@ -648,6 +659,7 @@ class WazeService:
                 "id": "oak_bridge",
                 "name": "橡樹街橋 (Oak Street Bridge)",
                 "english_name": "Hwy 99 Oak St Bridge",
+                "route": "Hwy 99",
                 "badge": "溫哥華南端進出列治文",
                 "center": [-123.125, 49.195],
                 "zoom": 14.5,
@@ -668,6 +680,7 @@ class WazeService:
                 "id": "alex_fraser",
                 "name": "亞歷克斯菲沙橋 (Alex Fraser Bridge)",
                 "english_name": "Hwy 91 Alex Fraser Bridge",
+                "route": "Hwy 91",
                 "badge": "91號公路斜張橋",
                 "center": [-122.952, 49.160],
                 "zoom": 13.5,

@@ -1,7 +1,7 @@
 {
   "source": "Waze Live Traffic & Jams",
   "source_url": "https://www.waze.com/livemap",
-  "updated_at": "2026-10-18T01:34:37.491632+00:00",
+  "updated_at": "2026-10-18T02:08:38.911066+00:00",
   "overall_congestion_score": 68,
   "overall_status": "大溫交通偏忙 (Moderate Congestion)",
   "total_jams": 9,
@@ -12,6 +12,7 @@
       "id": "hwy1",
       "name": "1號公路 (Hwy 1)",
       "english_name": "Trans-Canada Hwy",
+      "route": "Trans-Canada Hwy",
       "badge": "東西向大動脈",
       "center": [
         -123.015,
@@ -47,6 +48,7 @@
       "id": "massey_tunnel",
       "name": "喬治梅西隧道 (George Massey Tunnel)",
       "english_name": "Hwy 99 Massey Tunnel",
+      "route": "Hwy 99",
       "badge": "99號公路南北主通道",
       "center": [
         -123.076,
@@ -82,6 +84,7 @@
       "id": "knight_bridge",
       "name": "騎士街橋 (Knight Street Bridge)",
       "english_name": "Knight St Bridge",
+      "route": "Knight St",
       "badge": "重型貨運與南區樞紐",
       "center": [
         -123.0782,
@@ -117,6 +120,7 @@
       "id": "lions_gate",
       "name": "獅門大橋 (Lions Gate Bridge)",
       "english_name": "Hwy 99 Lions Gate",
+      "route": "Hwy 99",
       "badge": "北岸關鍵跨海橋",
       "center": [
         -123.1384,
@@ -152,6 +156,7 @@
       "id": "ironworkers",
       "name": "鋼鐵工人紀念大橋 (Ironworkers Memorial)",
       "english_name": "Second Narrows Bridge",
+      "route": "Hwy 1",
       "badge": "1號公路跨海東段",
       "center": [
         -123.0255,
@@ -187,6 +192,7 @@
       "id": "oak_bridge",
       "name": "橡樹街橋 (Oak Street Bridge)",
       "english_name": "Hwy 99 Oak St Bridge",
+      "route": "Hwy 99",
       "badge": "溫哥華南端進出列治文",
       "center": [
         -123.125,
@@ -222,6 +228,7 @@
       "id": "alex_fraser",
       "name": "亞歷克斯菲沙橋 (Alex Fraser Bridge)",
       "english_name": "Hwy 91 Alex Fraser Bridge",
+      "route": "Hwy 91",
       "badge": "91號公路斜張橋",
       "center": [
         -122.952,
@@ -266,12 +273,19 @@
       "street": "1號公路 東向 (接近 Willingdon Ave 交流道)",
       "city": "Burnaby",
       "report_description": "內側兩車道追撞事故，警消與拖吊車在場處理，後方車流回堵約 2.5 公里",
+      "delay_min": 16,
       "delay_minutes": 16,
       "confidence": 5,
       "reliability": 9,
       "report_rating": 4,
-      "pub_time": 1792286797491,
+      "pub_time": 1792288838911,
       "time_display": "8 分鐘前",
+      "lon": -123.003,
+      "lat": 49.255,
+      "coordinates": [
+        -123.003,
+        49.255
+      ],
       "source": "Waze Crowd-Sourced Reports"
     },
     {
@@ -285,12 +299,19 @@
       "street": "99號公路 南向 - 喬治梅西隧道 (Massey Tunnel)",
       "city": "Richmond",
       "report_description": "南向進隧道車流嚴重回堵至 Steveston Hwy，目前呈停滯排隊狀態",
+      "delay_min": 14,
       "delay_minutes": 14,
       "confidence": 5,
       "reliability": 10,
       "report_rating": 5,
-      "pub_time": 1792286957491,
+      "pub_time": 1792288998911,
       "time_display": "5 分鐘前",
+      "lon": -123.076,
+      "lat": 49.124,
+      "coordinates": [
+        -123.076,
+        49.124
+      ],
       "source": "Waze Crowd-Sourced Reports"
     },
     {
@@ -304,12 +325,19 @@
       "street": "騎士街橋 北向 (Knight St Bridge NB)",
       "city": "Richmond / Vancouver",
       "report_description": "中線有大型掉落障礙物與路障，請駕駛人提前變換車道並減速慢行",
+      "delay_min": 9,
       "delay_minutes": 9,
       "confidence": 4,
       "reliability": 8,
       "report_rating": 4,
-      "pub_time": 1792286557491,
+      "pub_time": 1792288598911,
       "time_display": "12 分鐘前",
+      "lon": -123.0782,
+      "lat": 49.204,
+      "coordinates": [
+        -123.0782,
+        49.204
+      ],
       "source": "Waze Crowd-Sourced Reports"
     },
     {
@@ -323,12 +351,19 @@
       "street": "獅門大橋 北向引道 (Lions Gate Bridge North Approach)",
       "city": "West Vancouver",
       "report_description": "外側車道擦撞輕微事故，占用路肩，後方史丹利公園幹道微幅緩行",
+      "delay_min": 11,
       "delay_minutes": 11,
       "confidence": 4,
       "reliability": 8,
       "report_rating": 3,
-      "pub_time": 1792286317491,
+      "pub_time": 1792288358911,
       "time_display": "16 分鐘前",
+      "lon": -123.138,
+      "lat": 49.321,
+      "coordinates": [
+        -123.138,
+        49.321
+      ],
       "source": "Waze Crowd-Sourced Reports"
     },
     {
@@ -342,12 +377,19 @@
       "street": "91號公路 東向 (Alex Fraser Bridge 引道)",
       "city": "Delta",
       "report_description": "警方於路肩進行車速雷達監測執法，請依速限小心行駛",
+      "delay_min": 2,
       "delay_minutes": 2,
       "confidence": 5,
       "reliability": 9,
       "report_rating": 5,
-      "pub_time": 1792286677491,
+      "pub_time": 1792288718911,
       "time_display": "10 分鐘前",
+      "lon": -122.952,
+      "lat": 49.16,
+      "coordinates": [
+        -122.952,
+        49.16
+      ],
       "source": "Waze Crowd-Sourced Reports"
     },
     {
@@ -361,12 +403,19 @@
       "street": "喬治亞街 (W Georgia St & Burrard St)",
       "city": "Vancouver Downtown",
       "report_description": "日間地下管道維護工程，封閉東向單線，公車改道或減速",
+      "delay_min": 5,
       "delay_minutes": 5,
       "confidence": 5,
       "reliability": 10,
       "report_rating": 4,
-      "pub_time": 1792285477491,
+      "pub_time": 1792287518911,
       "time_display": "30 分鐘前",
+      "lon": -123.12,
+      "lat": 49.284,
+      "coordinates": [
+        -123.12,
+        49.284
+      ],
       "source": "Waze Crowd-Sourced Reports"
     }
   ]

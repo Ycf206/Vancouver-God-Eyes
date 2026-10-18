@@ -51,8 +51,9 @@ export interface TranslinkAlertsData {
 export interface WazeCorridorItem {
   id: string;
   name: string;
-  route: string;
-  badge: string;
+  english_name?: string;
+  route?: string;
+  badge?: string;
   center: [number, number];
   zoom: number;
   status: string;
@@ -61,31 +62,41 @@ export interface WazeCorridorItem {
   freeflow_speed_kmh: number;
   delay_min: number;
   trend: string;
-  segments: Array<{
+  segments?: Array<{
     name: string;
     delay_min: number;
     speed_kmh: number;
     level: number;
     color: string;
   }>;
-  incidents_count: number;
-  key_bottleneck: string;
+  incidents_count?: number;
+  key_bottleneck?: string;
 }
 
 export interface WazeIncidentItem {
   id: string;
-  type: string;
-  type_label: string;
-  icon: string;
-  color: string;
-  street: string;
-  city: string;
-  delay_min: number;
-  report_time_str: string;
-  waze_confidence: number;
-  description: string;
-  advice: string;
-  updated_at: string;
+  type?: string;
+  type_label?: string;
+  type_zh?: string;
+  subtype?: string;
+  subtype_zh?: string;
+  icon?: string;
+  color?: string;
+  street?: string;
+  city?: string;
+  delay_min?: number;
+  delay_minutes?: number;
+  report_time_str?: string;
+  time_display?: string;
+  confidence?: number;
+  waze_confidence?: number;
+  description?: string;
+  report_description?: string;
+  lon?: number;
+  lat?: number;
+  coordinates?: [number, number];
+  advice?: string;
+  updated_at?: string;
 }
 
 export interface WazeSummaryData {
@@ -2147,9 +2158,9 @@ function ExploreContent() {
     setSearchTarget({
       id: `corridor_${corridor.id}`,
       title: corridor.name,
-      subtitle: `${corridor.route} · 延誤 +${corridor.delay_min} 分鐘`,
+      subtitle: `${corridor.route || corridor.english_name || corridor.badge || '主要幹道'} · 延誤 +${corridor.delay_min || 0} 分鐘`,
       category: 'traffic_corridor',
-      badge: corridor.badge,
+      badge: corridor.badge || '主要幹道',
       icon: '🚗',
       lat: corridor.center[1],
       lon: corridor.center[0],
@@ -2158,7 +2169,7 @@ function ExploreContent() {
         properties: {
           name: corridor.name,
           corridor: corridor.name,
-          street: corridor.route,
+          street: corridor.route || corridor.english_name || corridor.name,
           speed_kmh: corridor.current_speed_kmh,
           freeflow_speed_kmh: corridor.freeflow_speed_kmh,
           delay_min: corridor.delay_min,
@@ -2177,7 +2188,11 @@ function ExploreContent() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap();
     let coords: [number, number] = [-123.12, 49.25];
-    if (alert.id === 'alert_massey_accident') coords = [-123.076, 49.124];
+    if (alert.coordinates && alert.coordinates.length === 2) {
+      coords = [alert.coordinates[0], alert.coordinates[1]];
+    } else if (alert.lon !== undefined && alert.lat !== undefined) {
+      coords = [alert.lon, alert.lat];
+    } else if (alert.id === 'alert_massey_accident') coords = [-123.076, 49.124];
     else if (alert.id === 'alert_lions_stall') coords = [-123.138, 49.309];
     else if (alert.id === 'alert_hwy1_hazard') coords = [-123.008, 49.255];
     else if (alert.id === 'alert_knight_jam') coords = [-123.078, 49.198];
@@ -2194,8 +2209,8 @@ function ExploreContent() {
     }
     setSearchTarget({
       id: `alert_${alert.id}`,
-      title: `${alert.icon} ${alert.type_label}`,
-      subtitle: `${alert.street} · 延誤約 ${alert.delay_min} 分鐘`,
+      title: `${alert.icon || '⚠️'} ${alert.type_label || alert.subtype_zh || alert.type_zh || '大眾通報'}`,
+      subtitle: `${alert.street || alert.city || '事故路段'} · 延誤約 ${alert.delay_min ?? alert.delay_minutes ?? 0} 分鐘`,
       category: 'traffic_incident',
       badge: '大眾通報',
       icon: alert.icon || '⚠️',
@@ -2213,17 +2228,18 @@ function ExploreContent() {
     if (!trafficSummary || !Array.isArray(trafficSummary.corridors)) return [];
     let list = trafficSummary.corridors;
     if (trafficFilter === 'severe') {
-      list = list.filter((c) => c.delay_min >= 10 || c.status.includes('嚴重') || c.status.includes('重度'));
+      list = list.filter((c) => (c.delay_min || 0) >= 10 || (c.status && (c.status.includes('嚴重') || c.status.includes('重度'))));
     } else if (trafficFilter === 'bridges') {
-      list = list.filter((c) => c.name.includes('橋') || c.name.includes('隧道') || c.name.includes('Bridge') || c.name.includes('Tunnel'));
+      list = list.filter((c) => (c.name && (c.name.includes('橋') || c.name.includes('隧道') || c.name.includes('Bridge') || c.name.includes('Tunnel'))));
     }
     if (trafficSearchQuery.trim()) {
-      const q = trafficSearchQuery.toLowerCase();
+      const q = trafficSearchQuery.toLowerCase().trim();
       list = list.filter((c) => 
-        c.name.toLowerCase().includes(q) ||
-        c.route.toLowerCase().includes(q) ||
-        c.badge.toLowerCase().includes(q) ||
-        c.key_bottleneck.toLowerCase().includes(q)
+        (c.name && c.name.toLowerCase().includes(q)) ||
+        (c.english_name && c.english_name.toLowerCase().includes(q)) ||
+        (c.route && c.route.toLowerCase().includes(q)) ||
+        (c.badge && c.badge.toLowerCase().includes(q)) ||
+        (c.key_bottleneck && c.key_bottleneck.toLowerCase().includes(q))
       );
     }
     return list;
@@ -2233,12 +2249,17 @@ function ExploreContent() {
     if (!trafficSummary || !Array.isArray(trafficSummary.top_alerts)) return [];
     let list = trafficSummary.top_alerts;
     if (trafficSearchQuery.trim()) {
-      const q = trafficSearchQuery.toLowerCase();
-      list = list.filter((a) =>
-        a.type_label.toLowerCase().includes(q) ||
-        a.street.toLowerCase().includes(q) ||
-        a.description.toLowerCase().includes(q)
-      );
+      const q = trafficSearchQuery.toLowerCase().trim();
+      list = list.filter((a) => {
+        const typeLabel = a.type_label || a.subtype_zh || a.type_zh || '';
+        const street = a.street || a.city || '';
+        const desc = a.description || a.report_description || '';
+        return (
+          typeLabel.toLowerCase().includes(q) ||
+          street.toLowerCase().includes(q) ||
+          desc.toLowerCase().includes(q)
+        );
+      });
     }
     return list;
   }, [trafficSummary, trafficSearchQuery]);
@@ -4865,28 +4886,28 @@ function ExploreContent() {
                       <div className="flex items-center gap-1.5 min-w-0">
                         <span className="text-base shrink-0">{alert.icon || '⚠️'}</span>
                         <span className="font-bold text-xs text-white truncate">
-                          {alert.type_label}
+                          {alert.type_label || alert.subtype_zh || alert.type_zh || '事故通報'}
                         </span>
                       </div>
                       <span className="text-[10px] font-bold px-1.5 py-0.5 rounded text-white shrink-0" style={{ backgroundColor: alert.color || '#ef4444' }}>
-                        +{alert.delay_min} 分
+                        +{alert.delay_min ?? alert.delay_minutes ?? 0} 分
                       </span>
                     </div>
 
                     <div className="text-[11px] text-gray-300 font-medium flex items-center justify-between">
-                      <span className="truncate">📍 {alert.street}</span>
-                      <span className="text-[10px] text-gray-400 shrink-0">{alert.report_time_str}</span>
+                      <span className="truncate">📍 {alert.street || alert.city || '大溫路段'}</span>
+                      <span className="text-[10px] text-gray-400 shrink-0">{alert.report_time_str || alert.time_display || '即時回報'}</span>
                     </div>
 
-                    {alert.description && (
+                    {(alert.description || alert.report_description) && (
                       <div className="text-[10.5px] text-gray-400 bg-[#0d1017] rounded p-1.5 border border-[#1e2333] leading-relaxed">
-                        {alert.description}
+                        {alert.description || alert.report_description}
                       </div>
                     )}
 
                     <div className="flex items-center justify-between pt-0.5 text-[10px]">
                       <span className="text-emerald-400 font-medium">
-                        ✓ 社群回報可信度 {alert.waze_confidence}%
+                        ✓ 社群回報可信度 {alert.waze_confidence ?? (alert.confidence ? (alert.confidence <= 5 ? alert.confidence * 20 : alert.confidence) : 90)}%
                       </span>
                       <span className="text-cyan-400 group-hover:underline flex items-center gap-0.5">
                         在地圖查看圖釘 →
@@ -4926,11 +4947,13 @@ function ExploreContent() {
                             </span>
                           </div>
                           <div className="flex items-center gap-1.5 mt-0.5 text-[10px] text-gray-400">
-                            <span className="px-1 py-0.2 rounded bg-[#1e2436] text-gray-300 font-mono">
-                              {corridor.route}
-                            </span>
-                            <span>·</span>
-                            <span>{corridor.badge}</span>
+                            {(corridor.route || corridor.english_name) && (
+                              <span className="px-1 py-0.2 rounded bg-[#1e2436] text-gray-300 font-mono">
+                                {corridor.route || corridor.english_name}
+                              </span>
+                            )}
+                            {(corridor.route || corridor.english_name) && corridor.badge && <span>·</span>}
+                            {corridor.badge && <span>{corridor.badge}</span>}
                           </div>
                         </div>
 
