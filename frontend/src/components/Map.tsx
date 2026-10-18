@@ -1073,8 +1073,8 @@ export default function AppMap() {
       }
     }
 
-    // 3. BC Ferries 碼頭與船隻
-    if (selectedTerminal && !layers.bcferriesTerminals) {
+    // 3. BC Ferries 碼頭與船隻 (碼頭已合併於 bcferriesRoutes '路線' 圖層下)
+    if (selectedTerminal && !layers.bcferriesRoutes && !layers.bcferriesTerminals) {
       setSelectedTerminal(null);
       if (searchTarget && searchTarget.category === 'ferry_terminal') {
         setSearchTarget(null);
@@ -1150,7 +1150,7 @@ export default function AppMap() {
         setSearchTarget(null);
       } else if (searchTarget.category === 'airports' && !layers.airports) {
         setSearchTarget(null);
-      } else if (searchTarget.category === 'ferry_terminal' && !layers.bcferriesTerminals) {
+      } else if (searchTarget.category === 'ferry_terminal' && !layers.bcferriesRoutes && !layers.bcferriesTerminals) {
         setSearchTarget(null);
       } else if (searchTarget.category === 'ferry_vehicle' && !layers.bcferriesVehicles) {
         setSearchTarget(null);
@@ -5838,7 +5838,7 @@ export default function AppMap() {
               id: props.id || `hydrant_${hydCoords[0]}_${hydCoords[1]}`,
               facility_type: 'fire_hydrants',
               name: street ? `市政消防栓 (${street})` : (hydId ? `市政消防栓 #${hydId}` : '市政消防栓'),
-              local_area: props.geo_local_area ? `${props.geo_local_area} · 溫哥華消防局` : '溫哥華市政消防設施 (每1星期更新)',
+              local_area: props.geo_local_area ? `${props.geo_local_area} · 溫哥華消防局` : '溫哥華市政消防設施',
               lon: hydCoords[0],
               lat: hydCoords[1],
               properties: props
@@ -6433,8 +6433,11 @@ export default function AppMap() {
             }}
             closeButton={false}
             closeOnClick={false}
+            className="z-50"
+            offset={[0, -8]}
+            maxWidth="none"
           >
-            <div className="p-2.5 min-w-[330px] max-w-[400px] text-gray-800">
+            <div className="p-2.5 w-[340px] sm:w-[360px] max-w-[88vw] text-gray-800">
               {(() => {
                 const isSeaBusStop = selectedStop.id === '8035' || selectedStop.id === '8036' || selectedStop.name.includes('SeaBus') || selectedStop.name.includes('Lonsdale Quay') || selectedStop.name.includes('Waterfront');
                 const cleanStopName = selectedStop.name.replace(/\s*(?:Northbound|Southbound)\s*$/i, '').trim();
@@ -6443,7 +6446,7 @@ export default function AppMap() {
                     <div className="flex items-center gap-1.5 min-w-0 pr-2">
                       <span className="text-base shrink-0">{isSeaBusStop ? '⛴️' : '🚏'}</span>
                       <div className="min-w-0">
-                        <h3 className="font-bold text-sm leading-tight text-gray-900 truncate max-w-[260px]" title={cleanStopName}>
+                        <h3 className="font-bold text-sm leading-tight text-gray-900 truncate max-w-[215px]" title={cleanStopName}>
                           {cleanStopName}
                         </h3>
                         <span className="text-[10px] text-gray-400 font-mono">
@@ -6592,7 +6595,7 @@ export default function AppMap() {
               onClose={() => setSelectedStationAlertMarker(null)}
               offset={[0, -28]}
               className="z-50 station-alert-popup"
-              maxWidth="380px"
+              maxWidth="none"
             >
               <div className="flex flex-col gap-2 text-xs text-gray-900 min-w-[280px] max-w-[340px] p-0.5">
                 {/* Header */}
@@ -6748,6 +6751,11 @@ export default function AppMap() {
                 title={t.properties?.name || 'Ferry Terminal'}
                 onClick={(e) => {
                   e.stopPropagation();
+                  lastInteractiveItemClickRef.current = Date.now();
+                  setSelectedStop(null);
+                  setSelectedFacility(null);
+                  setSelectedFerry(null);
+                  setSelectedAirport(null);
                   setSelectedTerminal(t);
                   setLoadingSchedule(true);
                   const apiUrl = getApiUrl();
@@ -6795,23 +6803,42 @@ export default function AppMap() {
             closeButton={false}
             className="z-50"
             offset={[0, -10]}
-            maxWidth="400px"
+            maxWidth="none"
           >
             <div className="p-3.5 w-[330px] sm:w-[360px] max-w-[88vw] overflow-hidden">
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
-                <div className="flex items-start gap-2 pt-0.5">
+                <div className="flex items-start gap-2 pt-0.5 min-w-0 pr-2">
                   <span className="w-2.5 h-2.5 bg-[#0060a9] rounded-full flex-shrink-0 mt-1.5 shadow-sm"></span>
-                  <h3 className="font-bold text-gray-900 text-base leading-snug pr-2">{selectedTerminal.properties?.name}</h3>
+                  <h3 className="font-bold text-gray-900 text-base leading-snug truncate">{selectedTerminal.properties?.name}</h3>
                 </div>
-                <button 
-                  onClick={() => {
-                    setSelectedTerminal(null);
-                    setSearchTarget(null);
-                  }} 
-                  className="text-gray-400 hover:text-gray-700 text-2xl font-light leading-none px-1 py-0.5 rounded transition-colors focus:outline-none -mt-1"
-                >
-                  &times;
-                </button>
+                <div className="flex items-center gap-1 shrink-0 -mt-0.5 -mr-0.5">
+                  <button
+                    onClick={() => copyCoordinatesToClipboard(selectedTerminal.geometry.coordinates[1], selectedTerminal.geometry.coordinates[0])}
+                    className="p-1 rounded-md text-gray-500 hover:text-cyan-600 hover:bg-cyan-50 transition-colors flex items-center justify-center shadow-xs border border-gray-100"
+                    title="複製坐標"
+                  >
+                    <Copy className="w-3.5 h-3.5" />
+                  </button>
+                  <a
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${selectedTerminal.geometry.coordinates[1]},${selectedTerminal.geometry.coordinates[0]}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-1 rounded-md text-sky-600 hover:text-sky-700 hover:bg-sky-50 transition-colors flex items-center justify-center shadow-xs border border-sky-100"
+                    title="Google Map 導航至此"
+                  >
+                    <Navigation className="w-3.5 h-3.5 text-sky-600" />
+                  </a>
+                  <button 
+                    onClick={() => {
+                      setSelectedTerminal(null);
+                      setSearchTarget(null);
+                    }} 
+                    className="text-gray-400 hover:text-gray-700 text-2xl font-light leading-none px-1 py-0.5 rounded transition-colors focus:outline-none ml-0.5"
+                    title="關閉"
+                  >
+                    &times;
+                  </button>
+                </div>
               </div>
               
               <div>
@@ -6881,7 +6908,7 @@ export default function AppMap() {
             closeButton={false}
             className="z-50"
             offset={[0, -14]}
-            maxWidth="360px"
+            maxWidth="none"
           >
             <div className="p-3.5 w-[310px] sm:w-[330px] max-w-[88vw] text-gray-800">
               <div className="flex items-start justify-between pb-2 mb-2.5 border-b border-gray-100">
@@ -6975,7 +7002,7 @@ export default function AppMap() {
             closeButton={false}
             className="z-50"
             offset={[0, -14]}
-            maxWidth="380px"
+            maxWidth="none"
           >
             <div className="p-3.5 w-[320px] sm:w-[350px] max-w-[90vw] text-gray-800">
               <div className="flex items-start justify-between pb-2 mb-2.5 border-b border-gray-100">
@@ -7102,6 +7129,11 @@ export default function AppMap() {
                 title={props.name}
                 onClick={(e) => {
                   e.stopPropagation();
+                  lastInteractiveItemClickRef.current = Date.now();
+                  setSelectedStop(null);
+                  setSelectedFacility(null);
+                  setSelectedTerminal(null);
+                  setSelectedFerry(null);
                   setSelectedAirport(ap);
                 }}
               >
@@ -7127,32 +7159,51 @@ export default function AppMap() {
             closeButton={false}
             className="z-50"
             offset={[0, -12]}
-            maxWidth="360px"
+            maxWidth="none"
           >
             <div className="p-3.5 w-[320px] sm:w-[350px] max-w-[88vw] text-gray-800">
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
-                <div className="flex items-center gap-2">
-                  <span className="text-xl">{selectedAirport.properties?.icon || '🛫'}</span>
-                  <div>
-                    <h3 className="font-bold text-gray-900 text-sm leading-tight">
+                <div className="flex items-center gap-2 min-w-0 pr-2">
+                  <span className="text-xl shrink-0">{selectedAirport.properties?.icon || '🛫'}</span>
+                  <div className="min-w-0">
+                    <h3 className="font-bold text-gray-900 text-sm leading-tight truncate">
                       {selectedAirport.properties?.name}
                     </h3>
-                    <span className="text-[10px] text-gray-500 font-mono">
+                    <span className="text-[10px] text-gray-500 font-mono block truncate">
                       {selectedAirport.properties?.name_en || ''}
                     </span>
                   </div>
                 </div>
-                <button
-                  onClick={() => {
-                    setSelectedAirport(null);
-                    if (searchTarget?.category === 'airports') {
-                      setSearchTarget(null);
-                    }
-                  }}
-                  className="text-gray-400 hover:text-gray-700 text-2xl font-light leading-none px-1 py-0.5 -mt-1"
-                >
-                  &times;
-                </button>
+                <div className="flex items-center gap-1 shrink-0 -mt-1 -mr-1">
+                  <button
+                    onClick={() => copyCoordinatesToClipboard(selectedAirport.geometry.coordinates[1], selectedAirport.geometry.coordinates[0])}
+                    className="p-1 rounded-md text-gray-500 hover:text-cyan-600 hover:bg-cyan-50 transition-colors flex items-center justify-center shadow-xs border border-gray-100"
+                    title="複製坐標"
+                  >
+                    <Copy className="w-3.5 h-3.5" />
+                  </button>
+                  <a
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${selectedAirport.geometry.coordinates[1]},${selectedAirport.geometry.coordinates[0]}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-1 rounded-md text-sky-600 hover:text-sky-700 hover:bg-sky-50 transition-colors flex items-center justify-center shadow-xs border border-sky-100"
+                    title="Google Map 導航至此"
+                  >
+                    <Navigation className="w-3.5 h-3.5 text-sky-600" />
+                  </a>
+                  <button
+                    onClick={() => {
+                      setSelectedAirport(null);
+                      if (searchTarget?.category === 'airports') {
+                        setSearchTarget(null);
+                      }
+                    }}
+                    className="text-gray-400 hover:text-gray-700 text-2xl font-light leading-none px-1 py-0.5 rounded transition-colors focus:outline-none ml-0.5"
+                    title="關閉"
+                  >
+                    &times;
+                  </button>
+                </div>
               </div>
 
               <div className="flex flex-col gap-1.5 text-xs">
@@ -7512,7 +7563,7 @@ export default function AppMap() {
             closeButton={false}
             className="z-50"
             offset={[0, -14]}
-            maxWidth="370px"
+            maxWidth="none"
           >
             <div className="p-3.5 w-[320px] sm:w-[350px] max-w-[90vw] text-gray-800">
               {/* Header */}
@@ -7739,12 +7790,7 @@ export default function AppMap() {
             closeButton={false}
             className="z-50"
             offset={[0, -10]}
-            maxWidth={
-              selectedFacility.facility_type === 'traffic_conditions' ? '460px' :
-              selectedFacility.facility_type === 'traffic_cameras' ? '400px' : 
-              (selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'waze_alerts' || selectedFacility.facility_type === 'border_crossing' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'beach_water_quality' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'zoning_districts') ? '360px' : 
-              '320px'
-            }
+            maxWidth="none"
           >
             <div className={`p-3.5 ${
               selectedFacility.facility_type === 'traffic_conditions' ? 'w-[430px]' :
@@ -7753,7 +7799,7 @@ export default function AppMap() {
               'w-[290px]'
             } max-w-[90vw] text-gray-800`}>
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 min-w-0 pr-2">
                   <span className={`w-3 h-3 rounded-full flex-shrink-0 ${
                     selectedFacility.facility_type === 'public_trees' ? 'bg-emerald-600' :
                     selectedFacility.facility_type === 'border_crossing' ? 'bg-emerald-600 shadow-[0_0_6px_rgba(16,185,129,0.5)]' :
@@ -7808,10 +7854,10 @@ export default function AppMap() {
                     selectedFacility.facility_type === 'contours' ? 'bg-teal-700' :
                     selectedFacility.facility_type === 'homeless_shelters' ? 'bg-rose-500' : 'bg-violet-500'
                   }`}></span>
-                  <div>
-                    <h3 className="font-bold text-gray-900 text-sm leading-tight">{selectedFacility.name}</h3>
+                  <div className="min-w-0">
+                    <h3 className="font-bold text-gray-900 text-sm leading-tight truncate">{selectedFacility.name}</h3>
                     {selectedFacility.local_area && (
-                      <span className="text-[11px] text-gray-400">{selectedFacility.local_area}</span>
+                      <span className="text-[11px] text-gray-400 block truncate">{selectedFacility.local_area}</span>
                     )}
                   </div>
                 </div>
@@ -9364,17 +9410,17 @@ export default function AppMap() {
                         </div>
                       )}
                       {addr && (
-                        <div className="flex justify-between items-center text-gray-600">
-                          <span>詳細地址</span>
+                        <div className="flex justify-between items-center text-gray-600 gap-2">
+                          <span className="shrink-0 whitespace-nowrap">詳細地址</span>
                           <span className="font-medium text-gray-800 text-right max-w-[200px] truncate" title={addr}>{addr}</span>
                         </div>
                       )}
                     </div>
 
                     {hours && (
-                      <div className="bg-gray-50 p-2 rounded border border-gray-100 text-[11px] flex justify-between items-center">
-                        <span className="text-gray-500">營業時間</span>
-                        <span className="font-semibold text-gray-800 font-mono">{hours}</span>
+                      <div className="bg-gray-50 p-2 rounded border border-gray-100 text-[11px] flex justify-between items-start gap-3">
+                        <span className="text-gray-500 shrink-0 whitespace-nowrap">營業時間</span>
+                        <span className="font-semibold text-gray-800 font-mono text-right leading-snug">{hours}</span>
                       </div>
                     )}
 
@@ -11236,12 +11282,6 @@ export default function AppMap() {
                         </span>
                       </div>
                     )}
-                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                      <span>資料更新頻率</span>
-                      <span className="font-medium text-red-600">
-                        每 6 個月更新
-                      </span>
-                    </div>
                   </div>
                 </div>
               )}
@@ -11386,17 +11426,6 @@ export default function AppMap() {
                         {selectedFacility.lat.toFixed(5)}, {selectedFacility.lon.toFixed(5)}
                       </span>
                     </div>
-                  </div>
-
-                  <div className="pt-1">
-                    <a
-                      href="https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/public-trees/records/?lang=en"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-medium text-xs transition-colors shadow-sm gap-1.5"
-                    >
-                      <span>開啟 Vancouver Open Data 樹木資料庫 ↗</span>
-                    </a>
                   </div>
                 </div>
               )}
