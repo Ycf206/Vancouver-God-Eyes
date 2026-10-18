@@ -7,7 +7,7 @@ from typing import List, Dict, Any, Optional
 
 logger = logging.getLogger(__name__)
 
-# Cache for gas station prices (TTL: 20 minutes)
+# Cache for gas station prices (TTL: 5 minutes)
 _fuel_cache: Dict[str, Any] = {
     "timestamp": 0,
     "stations": []
@@ -135,8 +135,8 @@ async def get_fuel_stations_data(user_lat: Optional[float] = None, user_lon: Opt
     global _fuel_cache
     now = time.time()
     
-    # Refresh cache if older than 1200 seconds (20 mins)
-    if now - _fuel_cache["timestamp"] > 1200 or not _fuel_cache["stations"]:
+    # Refresh cache if older than 300 seconds (5 mins)
+    if now - _fuel_cache["timestamp"] > 300 or not _fuel_cache["stations"]:
         raw_stations = load_vancouver_stations()
         center_lat = user_lat if user_lat is not None else 49.2827
         center_lon = user_lon if user_lon is not None else -123.1207

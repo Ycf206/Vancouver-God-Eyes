@@ -32,7 +32,8 @@
         "report_rating": 4,
         "pub_time": 1792286797491,
         "time_display": "8 分鐘前",
-        "source": "Waze Crowd-Sourced Reports"
+        "source": "Waze Crowd-Sourced Reports",
+        "delay_min": 16
       }
     },
     {
@@ -62,7 +63,8 @@
         "report_rating": 5,
         "pub_time": 1792286957491,
         "time_display": "5 分鐘前",
-        "source": "Waze Crowd-Sourced Reports"
+        "source": "Waze Crowd-Sourced Reports",
+        "delay_min": 14
       }
     },
     {
@@ -92,7 +94,8 @@
         "report_rating": 4,
         "pub_time": 1792286557491,
         "time_display": "12 分鐘前",
-        "source": "Waze Crowd-Sourced Reports"
+        "source": "Waze Crowd-Sourced Reports",
+        "delay_min": 9
       }
     },
     {
@@ -122,7 +125,8 @@
         "report_rating": 3,
         "pub_time": 1792286317491,
         "time_display": "16 分鐘前",
-        "source": "Waze Crowd-Sourced Reports"
+        "source": "Waze Crowd-Sourced Reports",
+        "delay_min": 11
       }
     },
     {
@@ -152,7 +156,8 @@
         "report_rating": 5,
         "pub_time": 1792286677491,
         "time_display": "10 分鐘前",
-        "source": "Waze Crowd-Sourced Reports"
+        "source": "Waze Crowd-Sourced Reports",
+        "delay_min": 2
       }
     },
     {
@@ -182,7 +187,8 @@
         "report_rating": 4,
         "pub_time": 1792285477491,
         "time_display": "30 分鐘前",
-        "source": "Waze Crowd-Sourced Reports"
+        "source": "Waze Crowd-Sourced Reports",
+        "delay_min": 5
       }
     }
   ]

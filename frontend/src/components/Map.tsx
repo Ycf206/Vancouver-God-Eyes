@@ -1355,39 +1355,12 @@ export default function AppMap() {
     };
   }, [layers.trafficConditions, layers.wazeAlerts, isExploreOpen, exploreTab]);
 
-  // 當開啟探索 - 路況分頁時，自動顯示早前設定的獅門大橋位置資訊 popup
+  // 當離開探索 - 路況分頁時，若開啟著獅門大橋 popup 則自動關閉
   useEffect(() => {
-    if (isExploreOpen && exploreTab === 'traffic') {
-      setSelectedStop(null);
-      setSelectedSkytrainStation(null);
-      setSelectedTerminal(null);
-      setSelectedFlight(null);
-      setSelectedStationAlertMarker(null);
-      setSelectedMaritimeVessel(null);
-      setSelectedFacility({
-        id: 'lions_gate_bridge_atis',
-        facility_type: 'traffic_conditions',
-        name: '獅門大橋 (Lions Gate Bridge)',
-        local_area: '史丹利公園 ↔ 西溫/北溫',
-        lon: -123.1385,
-        lat: 49.3148,
-        properties: {
-          name: '獅門大橋 (Lions Gate Bridge)',
-          speed_kmh: null,
-          delay_min: null,
-          is_atis: true
-        }
-      });
-      mapRef.current?.flyTo({
-        center: [-123.1385, 49.3148],
-        zoom: 14.5,
-        duration: 600,
-        essential: true
-      });
-    } else if (selectedFacility?.id === 'lions_gate_bridge_atis' && (!isExploreOpen || exploreTab !== 'traffic')) {
+    if (selectedFacility?.id === 'lions_gate_bridge_atis' && (!isExploreOpen || exploreTab !== 'traffic')) {
       setSelectedFacility(null);
     }
-  }, [isExploreOpen, exploreTab]);
+  }, [isExploreOpen, exploreTab, selectedFacility]);
 
   // Keep selectedMaritimeVessel synced when maritimeVessels updates
   useEffect(() => {
@@ -9087,6 +9060,11 @@ export default function AppMap() {
                       </a>
                     </div>
                   )}
+
+                  <div className="flex justify-between items-center bg-gray-50 p-2 rounded border border-gray-100 text-[11px] text-gray-600">
+                    <span>資料更新頻率</span>
+                    <span className="font-medium text-gray-700">每 3 個月更新</span>
+                  </div>
                 </div>
               )}
 
@@ -9349,6 +9327,10 @@ export default function AppMap() {
                           <span className="font-medium text-gray-700">{selectedFacility.properties.municipality}</span>
                         </div>
                       )}
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>資料更新頻率</span>
+                        <span className="font-medium text-gray-700">每 1 個月更新</span>
+                      </div>
                     </div>
 
                     <div className="bg-rose-50 p-2 rounded text-[11px] text-rose-900 border border-rose-100 leading-relaxed">
@@ -9607,7 +9589,12 @@ export default function AppMap() {
                   <div className="flex flex-col gap-1.5">
                     <div className="flex items-center justify-between text-[11px] text-gray-500 font-medium">
                       <span>即時參考油價 (加分/公升 ¢/L)</span>
-                      <span className="text-[9.5px] text-amber-700/80 font-mono bg-amber-50 px-1 py-0.5 rounded">GasBuddy · BC</span>
+                      <div className="flex items-center gap-1">
+                        <span className="text-[9.5px] text-amber-800 bg-amber-100/70 border border-amber-300 px-1 py-0.5 rounded font-mono">
+                          每 5 分鐘更新
+                        </span>
+                        <span className="text-[9.5px] text-amber-700/80 font-mono bg-amber-50 px-1 py-0.5 rounded">GasBuddy · BC</span>
+                      </div>
                     </div>
 
                     {loadingFuelPrices ? (
@@ -9923,6 +9910,12 @@ export default function AppMap() {
                         </span>
                       </div>
                     )}
+                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <span>資料更新頻率</span>
+                      <span className="font-medium text-gray-700">
+                        每 1 個月更新
+                      </span>
+                    </div>
                   </div>
                 </div>
               )}
@@ -10202,6 +10195,10 @@ export default function AppMap() {
                         </span>
                       </div>
                     )}
+                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <span>資料更新頻率</span>
+                      <span className="font-medium text-gray-700">年度更新</span>
+                    </div>
                   </div>
                 </div>
               )}
@@ -10273,6 +10270,10 @@ export default function AppMap() {
                         </a>
                       </div>
                     )}
+                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <span>資料更新頻率</span>
+                      <span className="font-medium text-gray-700">每 6 個月更新</span>
+                    </div>
                   </div>
                 </div>
               )}
@@ -10409,6 +10410,10 @@ export default function AppMap() {
                       <span className="font-mono text-gray-700">
                         {selectedFacility.lat.toFixed(4)}, {selectedFacility.lon.toFixed(4)}
                       </span>
+                    </div>
+                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <span>資料更新頻率</span>
+                      <span className="font-medium text-gray-700">年度更新</span>
                     </div>
                   </div>
                 </div>
@@ -10583,6 +10588,12 @@ export default function AppMap() {
               {selectedFacility.facility_type === 'waze_alerts' && (() => {
                 const props = selectedFacility.properties || {};
                 const alertColor = props.color || '#ef4444';
+                const delayMin = props.delay_min ?? props.delay_minutes ?? (props.delay_sec ? Math.round(props.delay_sec / 60) : 5);
+                const reportTime = props.report_time_str || props.time_display || '剛剛';
+                const confidenceVal = props.waze_confidence ?? (props.confidence != null ? (props.confidence <= 5 ? props.confidence * 20 : props.confidence) : 90);
+                const desc = props.description || props.report_description;
+                const typeName = props.type_label || props.subtype_zh || props.type_zh || selectedFacility.name;
+
                 return (
                   <div className="flex flex-col gap-2 text-xs">
                     {/* Header Banner */}
@@ -10590,7 +10601,7 @@ export default function AppMap() {
                       <div className="flex items-center justify-between">
                         <span className="font-bold text-gray-900 text-xs flex items-center gap-1.5">
                           <span className="text-base">{props.icon || '⚠️'}</span>
-                          <span className="truncate max-w-[200px]">{props.type_label || selectedFacility.name}</span>
+                          <span className="truncate max-w-[200px]">{typeName}</span>
                         </span>
                         <span className="text-[10px] font-bold px-1.5 py-0.5 rounded text-white shrink-0" style={{ backgroundColor: alertColor }}>
                           大眾通報
@@ -10606,27 +10617,27 @@ export default function AppMap() {
                       <div className="p-2 rounded-lg bg-gray-50 border border-gray-200 flex flex-col">
                         <span className="text-[10px] text-gray-500 font-medium">⏱️ 預估車流延誤</span>
                         <span className="font-bold text-sm text-rose-600 mt-0.5">
-                          +{props.delay_min || 0} 分鐘
+                          +{delayMin} 分鐘
                         </span>
                       </div>
                       <div className="p-2 rounded-lg bg-gray-50 border border-gray-200 flex flex-col">
                         <span className="text-[10px] text-gray-500 font-medium">🕒 回報時間</span>
                         <span className="font-bold text-xs text-gray-800 mt-1">
-                          {props.report_time_str || '剛剛'}
+                          {reportTime}
                         </span>
-                        {props.waze_confidence != null && (
+                        {confidenceVal != null && (
                           <span className="text-[9.5px] text-emerald-600 mt-0.5 font-medium">
-                            ✓ 社群可信度 {props.waze_confidence}%
+                            ✓ 社群可信度 {confidenceVal}%
                           </span>
                         )}
                       </div>
                     </div>
 
                     {/* Incident Details Description */}
-                    {props.description && (
+                    {desc && (
                       <div className="p-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-700 text-[11px] leading-relaxed">
                         <div className="font-semibold text-gray-900 mb-0.5">突發狀況詳情:</div>
-                        {props.description}
+                        {desc}
                       </div>
                     )}
 
@@ -10700,7 +10711,7 @@ export default function AppMap() {
                     <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
                       <span>資料更新頻率</span>
                       <span className="font-medium text-gray-700">
-                        每星期 1 次 (Weekly)
+                        每日更新 1 次
                       </span>
                     </div>
                   </div>
@@ -10765,7 +10776,7 @@ export default function AppMap() {
                     <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
                       <span>資料更新頻率</span>
                       <span className="font-medium text-gray-700">
-                        每星期 1 次 (Weekly)
+                        每日更新 1 次
                       </span>
                     </div>
                   </div>
@@ -11070,7 +11081,7 @@ export default function AppMap() {
                     <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
                       <span>資料更新頻率</span>
                       <span className="font-medium text-red-600">
-                        每 1 星期更新 1 次 (Weekly)
+                        每 6 個月更新
                       </span>
                     </div>
                   </div>

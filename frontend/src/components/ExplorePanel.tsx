@@ -3410,18 +3410,23 @@ function ExploreContent() {
                 ? '距離個人位置 10 公里範圍內的加油站'
                 : '溫哥華 10 公里範圍內的加油站'}
             </span>
-            {!userLocation?.confirmed && (
-              <button
-                onClick={() => {
-                  setExploreOpen(false);
-                  setSettingsModalOpen(true);
-                }}
-                className="text-[10.5px] text-emerald-400 hover:text-emerald-300 font-medium hover:underline flex items-center gap-0.5"
-              >
-                <MapPin className="w-2.5 h-2.5" />
-                <span>設定個人位置</span>
-              </button>
-            )}
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] text-amber-400 bg-amber-950/70 border border-amber-800/60 px-1.5 py-0.5 rounded font-mono">
+                每 5 分鐘更新
+              </span>
+              {!userLocation?.confirmed && (
+                <button
+                  onClick={() => {
+                    setExploreOpen(false);
+                    setSettingsModalOpen(true);
+                  }}
+                  className="text-[10.5px] text-emerald-400 hover:text-emerald-300 font-medium hover:underline flex items-center gap-0.5"
+                >
+                  <MapPin className="w-2.5 h-2.5" />
+                  <span>設定個人位置</span>
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Search Bar */}
@@ -4586,14 +4591,19 @@ function ExploreContent() {
               })}
             </div>
 
-            <button
-              onClick={() => fetchEvents(true)}
-              disabled={loadingEvents}
-              className="p-1.5 rounded-lg bg-[#151922] text-gray-400 hover:text-purple-400 border border-[#232838] hover:border-purple-500/40 transition-all shrink-0 flex items-center justify-center disabled:opacity-50"
-              title="重新整理"
-            >
-              <RefreshCw className={`w-3.5 h-3.5 ${loadingEvents ? 'animate-spin text-purple-400' : ''}`} />
-            </button>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <span className="text-[10px] text-purple-400 bg-purple-950/70 border border-purple-800/60 px-1.5 py-0.5 rounded font-mono">
+                每 30 分鐘更新
+              </span>
+              <button
+                onClick={() => fetchEvents(true)}
+                disabled={loadingEvents}
+                className="p-1.5 rounded-lg bg-[#151922] text-gray-400 hover:text-purple-400 border border-[#232838] hover:border-purple-500/40 transition-all shrink-0 flex items-center justify-center disabled:opacity-50"
+                title="重新整理"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${loadingEvents ? 'animate-spin text-purple-400' : ''}`} />
+              </button>
+            </div>
           </div>
 
           {/* Events Search Bar */}

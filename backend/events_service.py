@@ -36,7 +36,7 @@ class EventsService:
             "destination_vancouver": []
         }
         self.last_fetch_time: float = 0.0
-        self.cache_ttl: float = 600.0  # 10 minutes cache
+        self.cache_ttl: float = 1800.0  # 30 minutes cache
         self.user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
 
     def fetch_dailyhive_events(self) -> List[Dict[str, Any]]:
