@@ -8376,65 +8376,66 @@ export default function AppMap() {
                   }
                 })();
 
+                const formatTimeLimit = (val?: string) => {
+                  if (!val) return '';
+                  const s = String(val).trim();
+                  if (/no\s*time\s*limit/i.test(s) || /no\s*limit/i.test(s)) return '無時限';
+                  return s.replace(/小時/g, 'hr').replace(/\bHours?\b/gi, 'hr').replace(/\bHrs\b/gi, 'hr');
+                };
+
                 return (
-                  <div className="flex flex-col gap-1.5 text-xs">
-                    {/* 當前時段生效費率橫幅 */}
-                    <div className="flex justify-between items-center bg-amber-500/10 border border-amber-500/30 p-2 rounded-lg">
-                      <div className="flex items-center gap-1.5">
-                        <Clock className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                        <span className="font-semibold text-amber-900 text-[11px]">
-                          目前時段: {activePeriod === 'day' ? `🌞 日間費率 (${dayRangeStr})` : activePeriod === 'night' ? `🌙 夜間費率 (${nightRangeStr})` : `💤 深夜免費時段 (${freeRangeStr})`}
+                  <div className="flex flex-col gap-2 text-xs">
+                    {/* 1.1 橙色區塊在現有文字上方補上“道路設施” (左上), 右上橙底白字”停車收費錶” */}
+                    <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/25 flex flex-col gap-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-amber-950 text-xs">道路設施</span>
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-600 text-white shrink-0 shadow-xs">
+                          停車收費錶
                         </span>
                       </div>
-                      <span className="font-bold text-amber-700 font-mono text-xs">
-                        {activePeriod === 'free' ? '免費停放' : activePeriod === 'night' ? (selectedFacility.properties.rate_6pm_10pm || selectedFacility.properties.rate_9am_6pm || '--') : (selectedFacility.properties.rate_9am_6pm || '--')}
-                        {activePeriod !== 'free' && ' /hr'}
-                      </span>
+                      {/* 1.2 目前時段只需說明現在甚麼時段和時間，不用右方顯示價錢/免費 */}
+                      <div className="pt-1 border-t border-amber-500/20 flex items-center gap-1.5 text-amber-900 text-[11px] font-medium leading-snug">
+                        <Clock className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                        <span>
+                          目前時段: {activePeriod === 'day' ? `🌞 日間 (${dayRangeStr})` : activePeriod === 'night' ? `🌙 夜間 (${nightRangeStr})` : `💤 深夜 (${freeRangeStr})`}
+                        </span>
+                      </div>
                     </div>
 
-                    {selectedFacility.properties.rate_9am_6pm && (
-                      <div className={`flex justify-between items-center p-1.5 rounded transition-colors ${
-                        activePeriod === 'day' ? 'bg-amber-100/70 border border-amber-300 font-medium' : 'bg-gray-50'
-                      }`}>
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-gray-600">日間費率 ({dayRangeStr})</span>
-                          {activePeriod === 'day' && <span className="text-[9.5px] bg-amber-500 text-white px-1 py-0.2 rounded font-bold">生效中</span>}
+                    {/* 1.6 橙區塊下邊的時段資料全部放入同一灰底區塊, 之後加一分隔線再在線下方放入支援信用卡 */}
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                      {selectedFacility.properties.rate_9am_6pm && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>日間費率 ({dayRangeStr})</span>
+                          <span className="font-bold text-gray-800">{selectedFacility.properties.rate_9am_6pm} /hr</span>
                         </div>
-                        <span className="font-bold text-amber-700">{selectedFacility.properties.rate_9am_6pm} /小時</span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.rate_6pm_10pm && (
-                      <div className={`flex justify-between items-center p-1.5 rounded transition-colors ${
-                        activePeriod === 'night' ? 'bg-amber-100/70 border border-amber-300 font-medium' : 'bg-gray-50'
-                      }`}>
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-gray-600">夜間費率 ({nightRangeStr})</span>
-                          {activePeriod === 'night' && <span className="text-[9.5px] bg-amber-500 text-white px-1 py-0.2 rounded font-bold">生效中</span>}
+                      )}
+                      {selectedFacility.properties.rate_6pm_10pm && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>夜間費率 ({nightRangeStr})</span>
+                          <span className="font-bold text-gray-800">{selectedFacility.properties.rate_6pm_10pm} /hr</span>
                         </div>
-                        <span className="font-bold text-amber-700">{selectedFacility.properties.rate_6pm_10pm} /小時</span>
+                      )}
+                      {/* 1.3 刪除生效中以防斷開2行；1.5 免費停放後方不用再加 (免收費) */}
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>深夜時段 ({freeRangeStr})</span>
+                        <span className="font-semibold text-emerald-700">免費停放</span>
                       </div>
-                    )}
-                    <div className={`flex justify-between items-center p-1.5 rounded transition-colors ${
-                      activePeriod === 'free' ? 'bg-emerald-100/70 border border-emerald-300 font-medium' : 'bg-gray-50'
-                    }`}>
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-gray-600">深夜時段 ({freeRangeStr})</span>
-                        {activePeriod === 'free' && <span className="text-[9.5px] bg-emerald-600 text-white px-1 py-0.2 rounded font-bold">生效中</span>}
-                      </div>
-                      <span className="text-emerald-700 font-medium">免費停放 (免收費)</span>
+                      {/* 1.4 日間上限小時轉回英文 /hr, No Time Limit 改成中文無時限 */}
+                      {selectedFacility.properties.time_limit_9am_6pm && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>日間停放上限</span>
+                          <span className="font-medium text-gray-800">{formatTimeLimit(selectedFacility.properties.time_limit_9am_6pm)}</span>
+                        </div>
+                      )}
+                      {/* 1.6 分隔線下方放入支援信用卡 */}
+                      {selectedFacility.properties.credit_card && (
+                        <div className="pt-1.5 border-t border-gray-200/60 flex justify-between items-center text-gray-600">
+                          <span>支援信用卡感應</span>
+                          <span className="font-medium text-gray-800">{selectedFacility.properties.credit_card === 'Yes' ? '是' : '否'}</span>
+                        </div>
+                      )}
                     </div>
-                    {selectedFacility.properties.time_limit_9am_6pm && (
-                      <div className="flex justify-between text-gray-600">
-                        <span>日間停放上限</span>
-                        <span>{String(selectedFacility.properties.time_limit_9am_6pm).replace(/\b(?:Hr|Hrs|Hours?)\b/gi, '小時').trim()}</span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.credit_card && (
-                      <div className="flex justify-between text-gray-600">
-                        <span>支援信用卡感應</span>
-                        <span className="font-medium">{selectedFacility.properties.credit_card === 'Yes' ? '是' : '否'}</span>
-                      </div>
-                    )}
                   </div>
                 );
               })()}
@@ -8442,37 +8443,51 @@ export default function AppMap() {
               {/* Accessible Parking Details */}
               {selectedFacility.facility_type === 'accessible_parking' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex flex-col gap-2">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-[11px] text-sky-950 font-medium flex items-center gap-1.5 leading-snug">
-                        <span className="text-base text-sky-600 font-bold shrink-0">♿</span>
-                        <span>必須持有有效的 SPARC BC 殘障人士停車許可證。</span>
-                      </span>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-500 text-white shrink-0 shadow-xs whitespace-nowrap">
+                  {/* 4.1 淺藍色區塊在現有文字上方補上“道路設施” (區塊左上), 右上淺藍底白字”無障礙停車位” */}
+                  <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-sky-950 text-xs">道路設施</span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-sky-600 text-white shrink-0 shadow-xs whitespace-nowrap">
                         無障礙停車位
                       </span>
                     </div>
 
-                    <div className="pt-2 border-t border-sky-500/20 flex justify-between items-center text-gray-700">
-                      <span className="text-[11px] font-medium text-sky-900">專用車位數</span>
-                      <span className="font-bold text-sky-950 text-sm font-mono">{selectedFacility.properties.spaces || 1} 格</span>
+                    {/* 4.2 淺藍色區塊內下半部份保留說明文字”必須持有...” */}
+                    <div className="pt-1 border-t border-sky-500/20 text-[11px] text-sky-950 font-medium flex items-center gap-1.5 leading-snug">
+                      <span className="text-base text-sky-600 font-bold shrink-0">♿</span>
+                      <span>必須持有有效的 SPARC BC 殘障人士停車許可證。</span>
                     </div>
+                  </div>
+
+                  {/* 4.3 專用車位數搬至淺藍區塊下方, 並以灰底區塊顯示資料 */}
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex justify-between items-center text-[11px]">
+                    <span className="text-gray-600">專用車位數</span>
+                    <span className="font-bold text-gray-900 font-mono">{selectedFacility.properties.spaces || 1} 格</span>
                   </div>
                 </div>
               )}
 
               {/* Motorcycle Parking Details */}
               {selectedFacility.facility_type === 'motorcycle_parking' && (
-                <div className="flex flex-col gap-1.5 text-xs">
+                <div className="flex flex-col gap-2 text-xs">
+                  {/* 3.1 橙色區塊左方是文字”道路設施”, 右方是橙底白字”摩托車停車位” */}
+                  <div className="bg-orange-500/10 p-2.5 rounded-lg border border-orange-500/25 flex items-center justify-between">
+                    <span className="font-bold text-orange-950 text-xs">道路設施</span>
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-orange-600 text-white shrink-0 shadow-xs">
+                      摩托車停車位
+                    </span>
+                  </div>
+
+                  {/* 3.2 區塊下方資料加入灰底區塊顯示”時間限制” (如有資料) */}
                   {selectedFacility.properties.time_limit && (() => {
                     const rawTimeLimit = String(selectedFacility.properties.time_limit || '').trim();
                     const isYes = /^(y|yes|true)$/i.test(rawTimeLimit);
                     const isNo = /^(n|no|false)$/i.test(rawTimeLimit);
-                    const displayTimeLimit = isYes ? '是' : isNo ? '否' : rawTimeLimit.replace(/\b(?:Hr|Hrs|Hours?)\b/gi, '小時');
+                    const displayTimeLimit = isYes ? '是' : isNo ? '否' : rawTimeLimit.replace(/\b(?:Hr|Hrs|Hours?)\b/gi, 'hr');
                     return (
-                      <div className="flex justify-between text-gray-600 bg-orange-50 p-1.5 rounded">
-                        <span className="text-orange-700">時間限制</span>
-                        <span className="font-bold text-orange-800">{displayTimeLimit}</span>
+                      <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex justify-between items-center text-[11px]">
+                        <span className="text-gray-600">時間限制</span>
+                        <span className="font-semibold text-gray-800">{displayTimeLimit}</span>
                       </div>
                     );
                   })()}
@@ -8562,63 +8577,79 @@ export default function AppMap() {
               )}
 
               {/* Car Sharing Details (Evo & Modo) */}
-              {selectedFacility.facility_type === 'car_sharing' && (
-                <div className="flex flex-col gap-2 text-xs">
-                  <div className={`p-2.5 rounded border flex flex-col gap-1 ${
-                    selectedFacility.properties.operator === 'Modo' 
-                      ? 'bg-red-50/80 border-red-200 text-red-950' 
-                      : 'bg-cyan-50/80 border-cyan-200 text-cyan-950'
-                  }`}>
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-xs flex items-center gap-1.5">
-                        <span>🚗</span>
-                        <span>車位專用站點</span>
-                      </span>
-                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded text-white ${
-                        selectedFacility.properties.operator === 'Modo' ? 'bg-red-600' : 'bg-cyan-600'
-                      }`}>
-                        {selectedFacility.properties.operator || '共享汽車'}
-                      </span>
-                    </div>
-                    {selectedFacility.properties.capacity && (
-                      <div className="flex justify-between items-baseline pt-1 border-t border-black/10">
-                        <span className="text-gray-600 text-[11px]">車位規模</span>
-                        <span className="font-bold text-sm text-gray-900">{selectedFacility.properties.capacity}</span>
-                      </div>
-                    )}
-                  </div>
+              {selectedFacility.facility_type === 'car_sharing' && (() => {
+                const isModo = selectedFacility.properties.operator === 'Modo';
+                const rawCap = String(selectedFacility.properties.capacity || '').trim();
+                const displayCap = rawCap.includes('車位') ? rawCap : rawCap ? `${rawCap} 車位` : '';
 
-                  <div className="bg-gray-50 p-2 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                    <div className="flex justify-between items-start gap-2 text-gray-600">
-                      <span className="shrink-0 text-gray-500">提供車種</span>
-                      <span className="font-semibold text-gray-800 text-right leading-relaxed">
-                        {selectedFacility.properties.operator === 'Modo' ? '視乎站點位置' : 'Toyota Corolla/Prius Hybrid'}
-                      </span>
-                    </div>
-                    {selectedFacility.properties.pricing && (
-                      <div className="flex justify-between items-start gap-2 text-gray-600">
-                        <span className="shrink-0 text-gray-500">計費方案</span>
-                        <span className="font-bold text-emerald-700 text-right leading-relaxed">
-                          {selectedFacility.properties.pricing}
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    {/* 彩色資訊卡片 (Evo: 淺藍 / Modo: 紅色) */}
+                    <div className={`p-2.5 rounded-lg border flex flex-col gap-1.5 ${
+                      isModo 
+                        ? 'bg-red-500/10 border-red-500/25 text-red-950' 
+                        : 'bg-sky-500/10 border-sky-500/25 text-sky-950'
+                    }`}>
+                      {/* 上半部：左上「道路設施 - 共享汽車」，右上品牌標籤 */}
+                      <div className="flex items-center justify-between">
+                        <span className={`font-bold text-xs ${isModo ? 'text-red-950' : 'text-sky-950'}`}>
+                          道路設施 - 共享汽車
+                        </span>
+                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded text-white shrink-0 shadow-xs ${
+                          isModo ? 'bg-red-600' : 'bg-sky-600'
+                        }`}>
+                          {isModo ? 'MODO' : 'EVO'}
                         </span>
                       </div>
-                    )}
-                  </div>
 
-                  <div className="pt-1 border-t border-gray-100">
-                    <a
-                      href={selectedFacility.properties.app_url || (selectedFacility.properties.operator === 'Modo' ? "https://modo.coop" : "https://evo.ca")}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={`inline-flex items-center justify-center w-full py-1.5 px-3 text-white rounded font-medium text-xs transition-colors shadow-sm ${
-                        selectedFacility.properties.operator === 'Modo' ? 'bg-red-600 hover:bg-red-700' : 'bg-cyan-600 hover:bg-cyan-700'
-                      }`}
-                    >
-                      {selectedFacility.properties.operator === 'Modo' ? '前往 Modo 官網 ↗' : '前往 Evo 官網 ↗'}
-                    </a>
+                      {/* 下半部：左方「車位專用站點」，右方「x 車位」 */}
+                      <div className={`pt-1 border-t flex justify-between items-center ${
+                        isModo ? 'border-red-500/20 text-red-950' : 'border-sky-500/20 text-sky-950'
+                      }`}>
+                        <span className="font-medium text-[11px] flex items-center gap-1.5">
+                          <span>🚗</span>
+                          <span>車位專用站點</span>
+                        </span>
+                        {displayCap && (
+                          <span className={`font-bold text-xs font-mono ${isModo ? 'text-red-900' : 'text-sky-900'}`}>
+                            {displayCap}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                      <div className="flex justify-between items-start gap-2 text-gray-600">
+                        <span className="shrink-0 text-gray-500">提供車種</span>
+                        <span className="font-semibold text-gray-800 text-right leading-relaxed">
+                          {isModo ? '視乎站點位置' : 'Toyota Corolla/Prius Hybrid'}
+                        </span>
+                      </div>
+                      {selectedFacility.properties.pricing && (
+                        <div className="flex justify-between items-start gap-2 text-gray-600">
+                          <span className="shrink-0 text-gray-500">計費方案</span>
+                          <span className="font-bold text-emerald-700 text-right leading-relaxed">
+                            {selectedFacility.properties.pricing}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="pt-1 border-t border-gray-100">
+                      <a
+                        href={selectedFacility.properties.app_url || (isModo ? "https://modo.coop" : "https://evo.ca")}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`inline-flex items-center justify-center w-full py-1.5 px-3 text-white rounded font-medium text-xs transition-colors shadow-sm ${
+                          isModo ? 'bg-red-600 hover:bg-red-700' : 'bg-sky-600 hover:bg-sky-700'
+                        }`}
+                      >
+                        {isModo ? '前往 Modo 官方網頁 ↗' : '前往 Evo 官方網頁 ↗'}
+                      </a>
+                    </div>
                   </div>
-                </div>
-              )}
+                );
+              })()}
 
               {/* Shared Bikes (Mobi by Rogers) Station Details */}
               {selectedFacility.facility_type === 'shared_bikes' && (
@@ -10306,10 +10337,18 @@ export default function AppMap() {
 
               {/* Gas Station (Fuel) Details */}
               {selectedFacility.facility_type === 'fuel' && (
-                <div className="flex flex-col gap-2.5 text-xs">
-                  {/* Distance & Hours Header Card */}
-                  <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/25 flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-1.5 text-[11px] text-gray-500 min-w-0">
+                <div className="flex flex-col gap-2 text-xs">
+                  {/* 2.1 橙色區塊在現有文字上方補上“道路設施” (左上), 右上橙底白字”加油站” */}
+                  <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/25 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-amber-950 text-xs">道路設施</span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-600 text-white shrink-0 shadow-xs">
+                        加油站
+                      </span>
+                    </div>
+
+                    {/* 2.2 橙色區塊中下方保留”離個人位置”及”輸入個人位置” */}
+                    <div className="pt-1 border-t border-amber-500/20 flex items-center gap-1.5 text-[11px] text-gray-600">
                       <span className="text-amber-700 font-medium shrink-0">📍 離個人位置:</span>
                       {userDistanceToFuel ? (
                         <span className="font-bold text-amber-800 shrink-0">約 {userDistanceToFuel}</span>
@@ -10324,7 +10363,12 @@ export default function AppMap() {
                         </button>
                       )}
                     </div>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-600 text-white shrink-0">
+                  </div>
+
+                  {/* 2.2 灰底區塊左方是”營業時間”, 右方是時間資料 */}
+                  <div className="bg-gray-50 p-2 rounded border border-gray-100 flex items-center justify-between text-[11px]">
+                    <span className="text-gray-600 font-medium">營業時間</span>
+                    <span className="font-semibold text-gray-800">
                       {(() => {
                         const rawHours = selectedFacility.properties.opening_hours;
                         if (!rawHours || rawHours === '24/7' || rawHours.toLowerCase() === '24 hours') {
@@ -10346,8 +10390,9 @@ export default function AppMap() {
 
                   {/* Gas Prices Grid */}
                   <div className="flex flex-col gap-1.5">
+                    {/* 2.3 即時參考油價刪除中文 (加分/公升) */}
                     <div className="flex items-center justify-between text-[11px] text-gray-500 font-medium">
-                      <span>即時參考油價 (加分/公升 ¢/L)</span>
+                      <span>即時參考油價 (¢/L)</span>
                     </div>
 
                     {loadingFuelPrices ? (
@@ -10582,17 +10627,23 @@ export default function AppMap() {
                 </div>
               )}
 
-              {/* One-Way Streets (單程路) Details */}
+              {/* One-Way Streets (單程路段) Details */}
               {selectedFacility.facility_type === 'one_way_streets' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/25 flex items-center justify-between gap-2">
-                    <span className="text-[11px] text-amber-900 font-medium flex items-center gap-1.5 leading-snug">
+                  {/* 5.2 橙色區塊在現有文字上方補上“道路設施” (左上), 右上橙底白字”單程路段” */}
+                  <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/25 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-amber-950 text-xs">道路設施</span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-600 text-white shrink-0 shadow-xs whitespace-nowrap">
+                        單程路段
+                      </span>
+                    </div>
+
+                    {/* 5.3 橙色區塊內下半部份保留說明文字”單向行車路段...”, 並在最後補上句號 */}
+                    <div className="pt-1 border-t border-amber-500/20 text-[11px] text-amber-900 font-medium flex items-center gap-1.5 leading-snug">
                       <span className="text-base text-amber-600 font-bold shrink-0">➡️</span>
-                      <span>單向行車路段，請依地面標線與箭頭方向行駛</span>
-                    </span>
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-600 text-white shrink-0 shadow-xs whitespace-nowrap">
-                      單程管制
-                    </span>
+                      <span>單向行車路段，請依地面標線與箭頭方向行駛。</span>
+                    </div>
                   </div>
 
                   <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
@@ -10782,14 +10833,20 @@ export default function AppMap() {
               {/* Traffic Speed Limits (限速路段) Details */}
               {selectedFacility.facility_type === 'traffic_speed_limits' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/25 flex items-center justify-between gap-2">
-                    <span className="text-[11px] text-emerald-950 font-medium flex items-center gap-1.5 leading-snug">
+                  {/* 6.1 綠色區塊在現有文字上方補上“道路設施” (左上), 右上綠底白字”限速路段” */}
+                  <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/25 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-emerald-950 text-xs">道路設施</span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-600 text-white shrink-0 shadow-xs tracking-wider">
+                        限速路段
+                      </span>
+                    </div>
+
+                    {/* 6.2 綠色區塊內下半部份保留說明文字”本路段為...” */}
+                    <div className="pt-1 border-t border-emerald-500/20 text-[11px] text-emerald-950 font-medium flex items-center gap-1.5 leading-snug">
                       <span className="text-base text-emerald-600 font-bold shrink-0">⏱️</span>
                       <span>本路段為限速道路，請小心駕駛。</span>
-                    </span>
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-600 text-white shrink-0 tracking-wider shadow-xs">
-                      限速路段
-                    </span>
+                    </div>
                   </div>
 
                   <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
@@ -10985,14 +11042,20 @@ export default function AppMap() {
               {/* Traffic Crosswalks (斑馬線) Details */}
               {selectedFacility.facility_type === 'traffic_crosswalks' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-yellow-500/10 p-2.5 rounded-lg border border-yellow-500/25 flex items-center justify-between gap-2">
-                    <span className="text-[11px] text-yellow-950 font-medium flex items-center gap-1.5 leading-snug">
+                  {/* 7.1 黃色區塊在現有文字上方補上“道路設施” (左上), 右上黃底白字”行人穿越道” */}
+                  <div className="bg-yellow-500/10 p-2.5 rounded-lg border border-yellow-500/25 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-yellow-950 text-xs">道路設施</span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-yellow-600 text-white shrink-0 shadow-xs">
+                        行人穿越道
+                      </span>
+                    </div>
+
+                    {/* 7.2 黃色區塊內下半部份保留說明文字”只要行人...” */}
+                    <div className="pt-1 border-t border-yellow-500/20 text-[11px] text-yellow-950 font-medium flex items-center gap-1.5 leading-snug">
                       <span className="text-base text-yellow-600 font-bold shrink-0">🚶</span>
                       <span>只要行人合法進入穿越道，車輛就必須完全停下來禮讓。</span>
-                    </span>
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-yellow-500 text-white shrink-0 shadow-xs">
-                      行人穿越道
-                    </span>
+                    </div>
                   </div>
 
                   {selectedFacility.properties.object_id && (
