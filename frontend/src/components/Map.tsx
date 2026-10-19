@@ -5988,8 +5988,8 @@ export default function AppMap() {
             setSelectedFacility({
               id: props.id || `hydrant_${hydCoords[0]}_${hydCoords[1]}`,
               facility_type: 'fire_hydrants',
-              name: street ? `市政消防栓 (${street})` : (hydId ? `市政消防栓 #${hydId}` : '市政消防栓'),
-              local_area: props.geo_local_area ? `${props.geo_local_area} · 溫哥華消防局` : '溫哥華市政消防設施',
+              name: street || (hydId ? `市政消防栓 #${hydId}` : '市政消防栓'),
+              local_area: props.geo_local_area || 'Vancouver, BC',
               lon: hydCoords[0],
               lat: hydCoords[1],
               properties: props
@@ -8161,12 +8161,22 @@ export default function AppMap() {
                         if (selectedFacility.facility_type === 'wireless_facilities') {
                           return selectedFacility.properties?.map_id || selectedFacility.properties?.site_id || selectedFacility.name;
                         }
+                        if (selectedFacility.facility_type === 'fire_hydrants') {
+                          return selectedFacility.properties?.street || selectedFacility.name;
+                        }
                         return selectedFacility.name;
                       })()}
                     </h3>
-                    {(selectedFacility.local_area || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'public_trees' || (selectedFacility.facility_type === 'car_sharing' && selectedFacility.properties?.operator === 'Modo')) && (
+                    {(selectedFacility.local_area || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || (selectedFacility.facility_type === 'car_sharing' && selectedFacility.properties?.operator === 'Modo')) && (
                       <span className="text-[11px] text-gray-400 block leading-snug break-words">
                         {(() => {
+                          if (selectedFacility.facility_type === 'schools') return selectedFacility.properties?.address || selectedFacility.properties?.street_address || selectedFacility.local_area || 'Vancouver, BC';
+                          if (selectedFacility.facility_type === 'police') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
+                          if (selectedFacility.facility_type === 'fire_halls') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
+                          if (selectedFacility.facility_type === 'fire_hydrants') {
+                            const area = selectedFacility.properties?.geo_local_area || selectedFacility.local_area;
+                            return (area ? area.replace(/\s*·\s*溫哥華消防局.*/, '') : '') || 'Vancouver, BC';
+                          }
                           if (selectedFacility.facility_type === 'parks') return selectedFacility.properties?.street_address || selectedFacility.local_area || 'Vancouver, BC';
                           if (selectedFacility.facility_type === 'parks_facilities') return selectedFacility.properties?.park_name || selectedFacility.local_area || 'Vancouver, BC';
                           if (selectedFacility.facility_type === 'community_gardens') return 'Vancouver, BC';
@@ -8682,20 +8692,24 @@ export default function AppMap() {
 
               {/* Fire Halls Details */}
               {selectedFacility.facility_type === 'fire_halls' && (
-                <div className="flex flex-col gap-1.5 text-xs">
-                  {selectedFacility.properties.address && (
-                    <div className="bg-rose-50 p-2 rounded text-gray-700">
-                      <span className="text-rose-800 font-medium block text-[11px] mb-0.5">局址地址</span>
-                      <span className="font-bold text-rose-950 text-sm">{selectedFacility.properties.address}</span>
-                    </div>
-                  )}
-                  <div className="flex justify-between items-center text-gray-600 pt-1">
-                    <span>服務轄區</span>
-                    <span className="font-medium text-gray-800">{selectedFacility.local_area || selectedFacility.properties.geo_local_area || '溫哥華市'}</span>
+                <div className="flex flex-col gap-2 text-xs">
+                  {/* 3.2 紅區塊只有:左方是緊急求助撥打 911, 右方是紅底白字"消防" */}
+                  <div className="bg-rose-500/10 p-2.5 rounded-lg border border-rose-500/25 flex items-center justify-between gap-2">
+                    <span className="font-bold text-xs text-rose-950 flex items-center gap-1.5">
+                      <span className="text-base text-rose-600 font-bold">🚒</span>
+                      <span>緊急求助撥打 911</span>
+                    </span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-600 text-white shrink-0 shadow-xs whitespace-nowrap">
+                      消防
+                    </span>
                   </div>
-                  <div className="flex justify-between items-center text-gray-500 text-[11px] pt-1 border-t border-gray-100">
-                    <span>緊急求助</span>
-                    <span className="font-bold text-rose-600">撥打 911</span>
+
+                  {/* 3.3 紅區塊下方:服務轄區 */}
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex justify-between items-center text-[11px] text-gray-600">
+                    <span>服務轄區</span>
+                    <span className="font-medium text-gray-800">
+                      {selectedFacility.local_area || selectedFacility.properties.geo_local_area || '溫哥華市'}
+                    </span>
                   </div>
                 </div>
               )}
@@ -8703,44 +8717,44 @@ export default function AppMap() {
               {/* Police (警察) Details */}
               {selectedFacility.facility_type === 'police' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-blue-50/80 p-2.5 rounded border border-blue-200 flex flex-col gap-1 text-[11px]">
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">執法機關</span>
+                  {/* 2.2 藍區塊只有:左方是報案指引, 右方是藍底白字"警察" */}
+                  <div className="bg-blue-500/10 p-2.5 rounded-lg border border-blue-500/25 flex items-center justify-between gap-2">
+                    <span className="text-[11px] text-blue-950 font-medium flex items-center gap-1.5 leading-snug">
+                      <span className="text-base text-blue-600 font-bold shrink-0">🚨</span>
+                      <span>重大緊急危難撥打 911；非緊急 604-717-3321</span>
+                    </span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-600 text-white shrink-0 shadow-xs whitespace-nowrap">
+                      警察
+                    </span>
+                  </div>
+
+                  {/* 2.1 & 2.3 藍區塊下方: 執法機關, 開放時間, 聯絡專線 */}
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                    <div className="flex justify-between items-center text-gray-600">
+                      <span>執法機關</span>
                       <span className="font-bold text-blue-900 bg-blue-100/80 px-1.5 py-0.5 rounded">
                         {selectedFacility.properties.operator || 'Vancouver Police Department (VPD)'}
                       </span>
                     </div>
-                    {selectedFacility.properties.address && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-blue-100">
-                        <span>設施地址</span>
-                        <span className="font-bold text-gray-900 text-right truncate max-w-[170px]">
-                          {selectedFacility.properties.address}
-                        </span>
-                      </div>
-                    )}
                     {selectedFacility.properties.opening_hours && (
-                      <div className="flex justify-between items-center text-gray-600">
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
                         <span>開放時間</span>
                         <span className="font-medium text-emerald-800 text-right">
                           {selectedFacility.properties.opening_hours}
                         </span>
                       </div>
                     )}
+                    {selectedFacility.properties.phone && (
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>聯絡專線</span>
+                        <a href={`tel:${selectedFacility.properties.phone.split(' ')[0]}`} className="font-bold text-blue-600 hover:underline">
+                          📞 {selectedFacility.properties.phone}
+                        </a>
+                      </div>
+                    )}
                   </div>
 
-                  {selectedFacility.properties.phone && (
-                    <div className="bg-gray-50 p-2 rounded border border-gray-100 flex justify-between items-center text-[11px]">
-                      <span className="text-gray-500">聯絡專線</span>
-                      <a href={`tel:${selectedFacility.properties.phone.split(' ')[0]}`} className="font-bold text-blue-600 hover:underline">
-                        📞 {selectedFacility.properties.phone}
-                      </a>
-                    </div>
-                  )}
-
-                  <div className="bg-amber-50/80 p-2 rounded border border-amber-200 text-[11px] text-amber-900">
-                    <span className="font-bold block mb-0.5">🚨 報案指引：</span>
-                    <span>重大緊急危難請即刻撥打 <strong>911</strong>；非緊急報案請撥 <strong>604-717-3321</strong>。</span>
-                  </div>
+                  {/* 2.4 原本下方的獨立報案指引已刪除 */}
 
                   {selectedFacility.properties.website && (
                     <div className="pt-1 border-t border-gray-100">
@@ -11479,51 +11493,49 @@ export default function AppMap() {
               {/* Fire Hydrants (消防栓) Details */}
               {selectedFacility.facility_type === 'fire_hydrants' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-red-500/10 p-2.5 rounded-lg border border-red-500/30 flex flex-col gap-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-red-950 text-xs flex items-center gap-1.5">
-                        <span className="text-base text-red-600 font-bold">🧯</span>
-                        <span className="truncate max-w-[190px]">{selectedFacility.name}</span>
-                      </span>
-                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded text-white shrink-0 ${
-                        selectedFacility.properties.status === 'IN_SERVICE' ? 'bg-emerald-600' : 'bg-amber-600'
-                      }`}>
-                        {selectedFacility.properties.status === 'IN_SERVICE' ? '正常供水' : (selectedFacility.properties.status || '消防栓')}
-                      </span>
-                    </div>
-                    <div className="text-[11px] text-red-900 font-medium">
-                      🚒 溫哥華市政公用消防栓 (City of Vancouver Water Hydrants)
-                    </div>
+                  {/* 4.2 紅區塊只有:市政消防栓, 右方是紅底白字"消防" */}
+                  <div className="bg-red-500/10 p-2.5 rounded-lg border border-red-500/25 flex items-center justify-between gap-2">
+                    <span className="font-bold text-xs text-red-950 flex items-center gap-1.5">
+                      <span className="text-base text-red-600 font-bold">🧯</span>
+                      <span>市政消防栓</span>
+                    </span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-red-600 text-white shrink-0 shadow-xs whitespace-nowrap">
+                      消防
+                    </span>
                   </div>
 
+                  {/* 4.3 紅區塊下方: (刪除安裝位置, 所屬行政分區 ) 機型規格、外觀顏色、製造商、配水子系統 */}
                   <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                    {selectedFacility.properties.street && (
+                    {selectedFacility.properties.covwaterhydrantunittype ? (
                       <div className="flex justify-between items-center text-gray-600">
-                        <span>安裝位置 (Street)</span>
-                        <span className="font-medium text-gray-900 text-right max-w-[200px] truncate">
-                          {selectedFacility.properties.street}
-                        </span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.covwaterhydrantunittype && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                        <span>機型規格 (Unit Type)</span>
+                        <span>機型規格</span>
                         <span className="font-mono font-bold text-gray-900">
                           {selectedFacility.properties.covwaterhydrantunittype}
                         </span>
                       </div>
+                    ) : (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>機型規格</span>
+                        <span className="font-mono font-bold text-gray-900">標準公用規格</span>
+                      </div>
                     )}
                     {selectedFacility.properties.color && (
                       <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                        <span>外觀顏色 (Color)</span>
+                        <span>外觀顏色</span>
                         <span className="font-medium text-gray-800">
-                          {selectedFacility.properties.color}
+                          {({
+                            'Blue': '藍色',
+                            'Green': '綠色',
+                            'Yellow': '黃色',
+                            'Red': '紅色',
+                            'White/Blue': '白/藍色'
+                          } as Record<string, string>)[selectedFacility.properties.color] || selectedFacility.properties.color}
                         </span>
                       </div>
                     )}
                     {selectedFacility.properties.code && (
                       <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                        <span>製造商 (Manufacturer)</span>
+                        <span>製造商</span>
                         <span className="font-medium text-gray-800">
                           {selectedFacility.properties.code}
                         </span>
@@ -11531,17 +11543,9 @@ export default function AppMap() {
                     )}
                     {selectedFacility.properties.subsystem && (
                       <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                        <span>配水子系統 (Subsystem)</span>
+                        <span>配水子系統</span>
                         <span className="font-mono text-gray-700">
                           {selectedFacility.properties.subsystem}
-                        </span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.geo_local_area && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                        <span>所屬行政分區</span>
-                        <span className="font-medium text-gray-800">
-                          {selectedFacility.properties.geo_local_area}
                         </span>
                       </div>
                     )}
