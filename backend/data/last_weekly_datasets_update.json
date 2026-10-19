@@ -1,0 +1,9 @@
+{
+  "last_updated": "2026-10-19T08:27:49.015518+00:00",
+  "cycle": "weekly",
+  "datasets": [
+    "vancouver_road_closures",
+    "vancouver_road_construction",
+    "vancouver_fire_hydrants"
+  ]
+}
