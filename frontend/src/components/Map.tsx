@@ -2938,7 +2938,7 @@ export default function AppMap() {
         type: 'raster',
         tiles: [`${apiUrl}/api/traffic/tiles/{z}/{x}/{y}.png?style=relative&thickness=2`],
         tileSize: 256,
-        bounds: [-123.28, 49.12, -122.87, 49.38],
+        bounds: [-123.28, 49.12, -122.885, 49.39],
         minzoom: 6,
         maxzoom: 19
       };
@@ -8158,12 +8158,17 @@ export default function AppMap() {
                           const clean = raw.replace(/^垃圾箱\s*[-–—:]*\s*/, '').trim();
                           return clean || addr || '市政公共垃圾箱';
                         }
+                        if (selectedFacility.facility_type === 'wireless_facilities') {
+                          return selectedFacility.properties?.map_id || selectedFacility.properties?.site_id || selectedFacility.name;
+                        }
                         return selectedFacility.name;
                       })()}
                     </h3>
-                    {(selectedFacility.local_area || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || (selectedFacility.facility_type === 'car_sharing' && selectedFacility.properties?.operator === 'Modo')) && (
+                    {(selectedFacility.local_area || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'wireless_facilities' || (selectedFacility.facility_type === 'car_sharing' && selectedFacility.properties?.operator === 'Modo')) && (
                       <span className="text-[11px] text-gray-400 block leading-snug break-words">
                         {(() => {
+                          if (selectedFacility.facility_type === 'aed') return selectedFacility.properties?.ADDRESS || selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
+                          if (selectedFacility.facility_type === 'wireless_facilities') return selectedFacility.properties?.company || '電信商';
                           if (selectedFacility.facility_type === 'snow_removal_routes') return 'Vancouver, BC';
                           if (selectedFacility.facility_type === 'traffic_speed_limits') return 'Vancouver, BC';
                           if (selectedFacility.facility_type === 'traffic_crosswalks') return 'Vancouver, BC';
@@ -9867,35 +9872,45 @@ export default function AppMap() {
                 );
               })()}
 
-              {/* AED (自動體外心臟去顫器) Details */}
+              {/* AED (自動體外心臟電擊去顫器) Details */}
               {selectedFacility.facility_type === 'aed' && (() => {
-                const facName = selectedFacility.properties?.FACILITY_NAME || selectedFacility.name;
-                const addr = selectedFacility.properties?.ADDRESS || selectedFacility.properties?.address;
                 const locDesc = selectedFacility.properties?.LOCATION_DESCRIPTION || selectedFacility.properties?.location_description;
                 const objId = selectedFacility.properties?.OBJECTID ?? selectedFacility.properties?.object_id;
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
-                    <div className="bg-red-50/90 p-2.5 rounded-lg border border-red-200 flex flex-col gap-1 text-[11px]">
+                    {/* 紅色區塊：左方自動體外心臟電擊去顫器，右方AED，下方急救重要提示 */}
+                    <div className="bg-red-50/90 p-2.5 rounded-lg border border-red-200 flex flex-col gap-1.5 text-[11px]">
                       <div className="flex items-center justify-between">
                         <span className="font-bold text-xs text-red-950 flex items-center gap-1.5">
                           <span>⚡</span>
-                          <span>AED 自動體外心臟去顫器</span>
+                          <span>自動體外心臟電擊去顫器</span>
                         </span>
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-red-600 text-white">
-                          {objId != null ? `#${objId}` : 'BC PAD'}
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-red-600 text-white shrink-0">
+                          AED
                         </span>
                       </div>
-                      <div className="text-[11px] font-medium text-red-800 pt-1 border-t border-red-200/60">
-                        心臟驟停急救設備 · 溫哥華公共場所配置
+                      <div className="text-[11px] text-red-800 pt-1.5 border-t border-red-200/60 leading-relaxed font-medium">
+                        ⚠️ 若發現疑似心臟驟停患者，請<strong>立即撥打 911</strong>，依照語音指引施救。
                       </div>
                     </div>
 
+                    {/* 紅區塊下方顯示設備編號 */}
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>設備編號</span>
+                        <span className="font-mono font-bold text-gray-900">
+                          {objId != null ? `#${objId}` : 'BC PAD'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* 詳細擺放位置 (已刪除英文 Location Details) */}
                     {locDesc && (
                       <div className="bg-amber-50/90 p-2.5 rounded-lg border border-amber-200 text-[11px] flex flex-col gap-1">
                         <span className="font-bold text-amber-900 flex items-center gap-1">
                           <span>📍</span>
-                          <span>詳細擺放位置 (Location Details)</span>
+                          <span>詳細擺放位置</span>
                         </span>
                         <span className="font-semibold text-gray-900 leading-relaxed break-words">
                           {locDesc}
@@ -9903,44 +9918,13 @@ export default function AppMap() {
                       </div>
                     )}
 
-                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                      <div className="flex justify-between items-start text-gray-600 gap-2">
-                        <span className="shrink-0">設置場所</span>
-                        <span className="font-bold text-gray-900 text-right max-w-[180px] break-words">
-                          {facName}
-                        </span>
-                      </div>
-                      {addr && (
-                        <div className="flex justify-between items-start text-gray-600 gap-2 pt-1 border-t border-gray-100">
-                          <span className="shrink-0">所在地址</span>
-                          <span className="font-semibold text-gray-800 text-right max-w-[180px] break-words">
-                            {addr}
-                          </span>
-                        </div>
-                      )}
-                      {selectedFacility.properties.municipality && (
-                        <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                          <span>所屬轄區</span>
-                          <span className="font-medium text-gray-700">{selectedFacility.properties.municipality}</span>
-                        </div>
-                      )}
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                        <span>資料更新頻率</span>
-                        <span className="font-medium text-gray-700">每 1 個月更新</span>
-                      </div>
-                    </div>
-
-                    <div className="bg-rose-50 p-2 rounded text-[11px] text-rose-900 border border-rose-100 leading-relaxed">
-                      <span className="font-bold block mb-0.5">⚠️ 急救重要提示：</span>
-                      <span>若發現疑似心臟驟停患者，請<strong>立即撥打 911</strong>，同時派人取用此處 AED 依照語音指引施救。</span>
-                    </div>
-
+                    {/* 最底部連結按鈕：紅底白字風格 */}
                     <div className="flex flex-col gap-1.5 pt-1 border-t border-gray-100">
                       <a
                         href="https://bcpadprogram.ca/"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200/80 rounded font-medium text-xs transition-colors"
+                        className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-red-600 hover:bg-red-700 text-white rounded font-medium text-xs transition-colors shadow-xs"
                       >
                         前往 BC PAD 心臟去顫器登記計畫 ↗
                       </a>
@@ -10769,43 +10753,22 @@ export default function AppMap() {
               {/* Wireless Facilities (無線設施) Details */}
               {selectedFacility.facility_type === 'wireless_facilities' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-purple-500/10 p-2.5 rounded-lg border border-purple-500/25 flex flex-col gap-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-purple-950 text-xs flex items-center gap-1.5">
-                        <span className="text-base text-purple-600 font-bold">📡</span>
-                        <span className="truncate max-w-[190px]">{selectedFacility.properties.company || '電信運營商'}</span>
-                      </span>
-                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-600 text-white shrink-0">
-                        {selectedFacility.properties.facility_type_label || '基地台'}
-                      </span>
-                    </div>
-                    <div className="text-[11px] text-purple-900 font-medium">
-                      📶 {selectedFacility.name}
-                    </div>
+                  <div className="bg-purple-500/10 p-2.5 rounded-lg border border-purple-500/25 flex items-center justify-between">
+                    <span className="font-bold text-purple-950 text-xs flex items-center gap-1.5">
+                      <span className="text-base text-purple-600 font-bold">📡</span>
+                      <span>{selectedFacility.properties.facility_type_label || 'Microcell'}</span>
+                    </span>
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-600 text-white shrink-0">
+                      無線設施
+                    </span>
                   </div>
 
                   <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                    {selectedFacility.properties.company && (
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>營運電信商 (Carrier)</span>
-                        <span className="font-bold text-purple-900">
-                          {selectedFacility.properties.company}
-                        </span>
-                      </div>
-                    )}
                     {selectedFacility.properties.pole_number && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                        <span>附掛燈桿編號 (Pole)</span>
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>附掛燈桿編號</span>
                         <span className="font-mono font-medium text-gray-800 text-right truncate max-w-[180px]">
                           {selectedFacility.properties.pole_number}
-                        </span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.map_id && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                        <span>站點代碼 (Site ID)</span>
-                        <span className="font-mono text-gray-800">
-                          {selectedFacility.properties.map_id}
                         </span>
                       </div>
                     )}
@@ -10833,10 +10796,6 @@ export default function AppMap() {
                         </a>
                       </div>
                     )}
-                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                      <span>資料更新頻率</span>
-                      <span className="font-medium text-gray-700">每 6 個月更新</span>
-                    </div>
                   </div>
                 </div>
               )}

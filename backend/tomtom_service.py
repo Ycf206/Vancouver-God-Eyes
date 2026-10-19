@@ -4,10 +4,18 @@ import json
 import time
 import os
 import base64
+import math
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from typing import Dict, Any, List, Optional, Tuple
 from zoneinfo import ZoneInfo
+
+try:
+    from PIL import Image
+    import io
+    HAS_PIL = True
+except ImportError:
+    HAS_PIL = False
 
 CACHE_DIR = os.path.join(os.path.dirname(__file__), "data")
 
@@ -15,6 +23,83 @@ CACHE_DIR = os.path.join(os.path.dirname(__file__), "data")
 TRANSPARENT_1X1_PNG = base64.b64decode(
     "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQI12NgAAIAAAUAAeImBZsAAAAASUVORK5CYII="
 )
+
+
+def _is_coord_in_allowed_cities(lat: float, lon: float) -> bool:
+    """
+    嚴格局限於 5 個核心城市：Vancouver, Richmond, Burnaby, North Vancouver, New Westminster
+    徹底排除：Surrey, Coquitlam, Delta, White Rock
+    """
+    if lat < 49.115 or lat > 49.39 or lon < -123.28 or lon > -122.885:
+        return False
+    # 排除 Delta (列治文以南菲沙河南支流以南)
+    if lon > -123.03 and lat < 49.155:
+        return False
+    if lon > -122.98 and lat < 49.18:
+        return False
+    if lon > -122.95 and lat < 49.193:
+        return False
+    # 排除 Surrey (新西敏菲沙河南岸與東南岸)
+    if lon > -122.92 and lat < 49.198:
+        return False
+    if lon > -122.892 and lat < 49.205:
+        return False
+    return True
+
+
+def mask_tile_to_allowed_cities(tile_bytes: bytes, z: int, x: int, y: int) -> bytes:
+    """
+    對 TomTom 柵格圖磚進行像素級遮罩，將落於 Surrey、Delta、Coquitlam 等排除區的像素 Alpha 通道設為 0 (完全透明)。
+    保護低縮放層級 (例如 Zoom 9~11) 下不渲染任何排除城市的街道路況。
+    """
+    if not HAS_PIL or not tile_bytes:
+        return tile_bytes
+    try:
+        im = Image.open(io.BytesIO(tile_bytes)).convert("RGBA")
+        width, height = im.size
+        n = 2.0 ** z
+
+        lons = [(x + px / float(width)) / n * 360.0 - 180.0 for px in range(width)]
+        lats = [
+            math.degrees(math.atan(math.sinh(math.pi * (1.0 - 2.0 * (y + py / float(height)) / n))))
+            for py in range(height)
+        ]
+
+        # 快速檢查四個角點與中心點，若全部都在允許範圍內，直接回傳原圖
+        if (
+            _is_coord_in_allowed_cities(lats[0], lons[0])
+            and _is_coord_in_allowed_cities(lats[0], lons[-1])
+            and _is_coord_in_allowed_cities(lats[-1], lons[0])
+            and _is_coord_in_allowed_cities(lats[-1], lons[-1])
+            and _is_coord_in_allowed_cities(lats[height // 2], lons[width // 2])
+        ):
+            return tile_bytes
+
+        r, g, b, a = im.split()
+        alpha_bytes = bytearray(a.tobytes())
+        modified = False
+
+        for py in range(height):
+            lat_val = lats[py]
+            row_offset = py * width
+            for px in range(width):
+                if alpha_bytes[row_offset + px] == 0:
+                    continue
+                if not _is_coord_in_allowed_cities(lat_val, lons[px]):
+                    alpha_bytes[row_offset + px] = 0
+                    modified = True
+
+        if not modified:
+            return tile_bytes
+
+        a_new = Image.frombytes("L", (width, height), bytes(alpha_bytes))
+        im.putalpha(a_new)
+        out = io.BytesIO()
+        im.save(out, format="PNG", optimize=True)
+        return out.getvalue()
+    except Exception as e:
+        print(f"[TomTomTraffic] Tile mask error: {e}")
+        return tile_bytes
 
 
 def _load_env_key(key_name: str) -> str:
@@ -79,16 +164,23 @@ class TomTomTrafficService:
             return TRANSPARENT_1X1_PNG
 
         # 只取得與顯示核心5區 (Vancouver, Richmond, Burnaby, North Van, New West) 的圖磚
-        # 嚴格排除 Surrey, Coquitlam, Delta 以節省 TomTom API 圖磚配額
-        # 西界 -123.28, 東界 -122.87, 南界 49.12, 北界 49.38
-        import math
+        # 嚴格排除 Surrey, Coquitlam, Delta, White Rock 以節省 TomTom API 圖磚配額
+        # 1. 瓦片若整體超出邊界，直接回傳透明圖磚，完全不呼叫 TomTom API (節省配額)
         n = 2.0 ** z
         tile_lon_min = x / n * 360.0 - 180.0
         tile_lon_max = (x + 1) / n * 360.0 - 180.0
         tile_lat_min = math.degrees(math.atan(math.sinh(math.pi * (1 - 2 * (y + 1) / n))))
         tile_lat_max = math.degrees(math.atan(math.sinh(math.pi * (1 - 2 * y / n))))
 
-        if tile_lon_max < -123.28 or tile_lon_min > -122.87 or tile_lat_max < 49.12 or tile_lat_min > 49.38:
+        if tile_lon_max < -123.28 or tile_lon_min > -122.885 or tile_lat_max < 49.115 or tile_lat_min > 49.39:
+            return TRANSPARENT_1X1_PNG
+        if tile_lon_min > -122.95 and tile_lat_max < 49.193:
+            return TRANSPARENT_1X1_PNG
+        if tile_lon_min > -123.03 and tile_lat_max < 49.155:
+            return TRANSPARENT_1X1_PNG
+        if tile_lon_min > -122.92 and tile_lat_max < 49.198:
+            return TRANSPARENT_1X1_PNG
+        if tile_lon_min > -122.892 and tile_lat_max < 49.205:
             return TRANSPARENT_1X1_PNG
 
         valid_styles = {"absolute", "relative", "relative0", "relative0-dark", "relative-delay", "reduced-sensitivity"}
@@ -111,7 +203,8 @@ class TomTomTrafficService:
         try:
             with urllib.request.urlopen(req, timeout=5.0) as resp:
                 if resp.status == 200:
-                    data = resp.read()
+                    raw_data = resp.read()
+                    data = mask_tile_to_allowed_cities(raw_data, z, x, y)
                     if len(self.tile_cache) > 2000:
                         # 清理過期圖磚
                         cutoff = now - self.tile_cache_ttl
@@ -431,7 +524,7 @@ class TomTomTrafficService:
         url = (
             "https://api.tomtom.com/traffic/services/5/incidentDetails"
             f"?key={urllib.parse.quote(api_key)}"
-            "&bbox=-123.28,49.12,-122.87,49.38"
+            "&bbox=-123.28,49.115,-122.885,49.39"
             f"&fields={urllib.parse.quote(fields)}"
             "&language=en-GB&timeValidityFilter=present"
         )
@@ -449,7 +542,7 @@ class TomTomTrafficService:
         """
         向 BC 省政府官方 DriveBC Open511 API (免費免 Key) 抓取大溫哥華即時道路事件與事故作為補充與備援
         """
-        url = "https://api.open511.gov.bc.ca/events?status=ACTIVE&bbox=-123.28,49.12,-122.87,49.38&format=json&limit=25"
+        url = "https://api.open511.gov.bc.ca/events?status=ACTIVE&bbox=-123.28,49.115,-122.885,49.39&format=json&limit=25"
         req = urllib.request.Request(url, headers={"User-Agent": self.user_agent})
         try:
             with urllib.request.urlopen(req, timeout=4.5) as resp:
@@ -707,7 +800,7 @@ class TomTomTrafficService:
                 if len(mid) >= 2:
                     pt_lon, pt_lat = float(mid[0]), float(mid[1])
 
-            if pt_lon is not None and pt_lat is not None and icon_cat != 6:
+            if pt_lon is not None and pt_lat is not None and icon_cat != 6 and _is_coord_in_allowed_cities(pt_lat, pt_lon):
                 alert_features.append({
                     "type": "Feature",
                     "id": f"tomtom_inc_{props.get('id', idx)}",
