@@ -925,7 +925,7 @@ def fetch_flightaware_schedules(allow_api_call: bool = True) -> Dict[str, Any]:
             "airport": "YVR",
             "airport_name": "Vancouver International Airport (溫哥華國際機場)",
             "updated_at": van_now.isoformat(),
-            "source": "FlightAware AeroAPI (官方權威航班排程)",
+            "source": "FlightAware AeroAPI",
             "total_arrivals": len(arrivals),
             "total_departures": len(departures),
             "arrivals": arrivals,

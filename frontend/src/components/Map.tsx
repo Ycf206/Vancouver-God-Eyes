@@ -7328,11 +7328,11 @@ export default function AppMap() {
                   }`}></span>
                   <div className="min-w-0">
                     <h3 className="font-bold text-gray-900 text-sm leading-snug break-words">
-                      {selectedAirport.properties?.name}
+                      {selectedAirport.properties?.name_en || selectedAirport.properties?.name}
                     </h3>
-                    {(selectedAirport.properties?.name_en || selectedAirport.properties?.local_area) && (
+                    {(selectedAirport.properties?.address || selectedAirport.properties?.local_area) && (
                       <span className="text-[11px] text-gray-400 block leading-snug break-words mt-0.5">
-                        {selectedAirport.properties?.name_en || selectedAirport.properties?.local_area}
+                        {selectedAirport.properties?.address || selectedAirport.properties?.local_area || 'Vancouver, BC'}
                       </span>
                     )}
                   </div>
@@ -7343,8 +7343,8 @@ export default function AppMap() {
                       copyFacilityDetailsToClipboard({
                         id: selectedAirport.properties?.id || 'airport',
                         facility_type: 'airports',
-                        name: selectedAirport.properties?.name || '機場設施',
-                        local_area: selectedAirport.properties?.local_area || '',
+                        name: selectedAirport.properties?.name_en || selectedAirport.properties?.name || '機場設施',
+                        local_area: selectedAirport.properties?.address || '',
                         lon: selectedAirport.geometry.coordinates[0],
                         lat: selectedAirport.geometry.coordinates[1],
                         properties: selectedAirport.properties || {}
@@ -7380,13 +7380,19 @@ export default function AppMap() {
               </div>
 
               <div className="flex flex-col gap-2 text-xs">
-                <div className="bg-sky-50/80 p-2.5 rounded border border-sky-200 flex flex-col gap-1.5 text-[11px]">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">設施類別</span>
-                    <span className="font-bold text-sky-900 bg-sky-100/80 px-1.5 py-0.5 rounded">
-                      {selectedAirport.properties?.badge || '航空設施'}
-                    </span>
-                  </div>
+                {/* 1.1 淺藍區塊只有:左方是設施類別, 右方是淺藍底白字"航空" */}
+                <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex items-center justify-between gap-2">
+                  <span className="font-bold text-xs text-sky-950 flex items-center gap-1.5">
+                    <span className="text-base text-sky-600 font-bold">🛫</span>
+                    <span>{selectedAirport.properties?.badge || '航空設施'}</span>
+                  </span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-600 text-white shrink-0 shadow-xs whitespace-nowrap">
+                    航空
+                  </span>
+                </div>
+
+                {/* 1.3 現在所有資料放到淺藍色區塊下方 (刪除設施地址、設施類別、所在區域) */}
+                <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
                   {selectedAirport.properties?.iata && (
                     <div className="flex justify-between items-center text-gray-600">
                       <span className="shrink-0">機場代碼</span>
@@ -7395,24 +7401,8 @@ export default function AppMap() {
                       </span>
                     </div>
                   )}
-                  {selectedAirport.properties?.address && (
-                    <div className="flex justify-between items-start gap-2 text-gray-600">
-                      <span className="shrink-0">設施地址</span>
-                      <span className="font-semibold text-gray-800 text-right leading-snug">
-                        {selectedAirport.properties.address}
-                      </span>
-                    </div>
-                  )}
-                  {selectedAirport.properties?.local_area && (
-                    <div className="flex justify-between items-center text-gray-600">
-                      <span className="shrink-0">所在區域</span>
-                      <span className="font-medium text-gray-800 text-right">
-                        {selectedAirport.properties.local_area}
-                      </span>
-                    </div>
-                  )}
                   {selectedAirport.properties?.transit_access && (
-                    <div className="flex justify-between items-start gap-2 text-gray-600">
+                    <div className={`flex justify-between items-start gap-2 text-gray-600 ${selectedAirport.properties?.iata ? 'pt-1 border-t border-gray-100' : ''}`}>
                       <span className="shrink-0">大眾交通</span>
                       <span className="font-medium text-emerald-700 text-right leading-snug">
                         {selectedAirport.properties.transit_access}
@@ -7420,7 +7410,7 @@ export default function AppMap() {
                     </div>
                   )}
                   {selectedAirport.properties?.runways && (
-                    <div className="flex justify-between items-start gap-2 text-gray-600">
+                    <div className="flex justify-between items-start gap-2 text-gray-600 pt-1 border-t border-gray-100">
                       <span className="shrink-0">跑道長度</span>
                       <span className="text-right text-gray-700 font-mono text-[10.5px] leading-snug">
                         {selectedAirport.properties.runways}
@@ -7428,7 +7418,7 @@ export default function AppMap() {
                     </div>
                   )}
                   {selectedAirport.properties?.operators && (
-                    <div className="flex justify-between items-start gap-2 text-gray-600">
+                    <div className="flex justify-between items-start gap-2 text-gray-600 pt-1 border-t border-gray-100">
                       <span className="shrink-0">主要航司</span>
                       <span className="text-right font-medium text-gray-800 leading-snug">
                         {selectedAirport.properties.operators}
@@ -7436,7 +7426,7 @@ export default function AppMap() {
                     </div>
                   )}
                   {selectedAirport.properties?.destinations && (
-                    <div className="flex justify-between items-start gap-2 text-gray-600">
+                    <div className="flex justify-between items-start gap-2 text-gray-600 pt-1 border-t border-gray-100">
                       <span className="shrink-0">直航航點</span>
                       <span className="text-right font-medium text-gray-800 leading-snug">
                         {selectedAirport.properties.destinations}
@@ -7444,12 +7434,6 @@ export default function AppMap() {
                     </div>
                   )}
                 </div>
-
-                {selectedAirport.properties?.highlights && (
-                  <div className="p-2 bg-emerald-50/80 rounded border border-emerald-200 text-[11px] text-emerald-900 leading-relaxed">
-                    {selectedAirport.properties.highlights}
-                  </div>
-                )}
               </div>
 
               {/* 設施通用坐標與複製按鈕 */}
@@ -13458,70 +13442,94 @@ export default function AppMap() {
               <div className="bg-[#10131a] rounded-lg border border-[#232836] p-2.5 flex flex-col gap-2">
                 <div className="flex items-center gap-1.5 text-blue-400 font-bold">
                   <Clock className="w-3.5 h-3.5" />
-                  <span>首班車 / 尾班車時刻 (First & Last Trains)</span>
+                  <span>首班車 / 尾班車時刻</span>
                 </div>
 
                 <div className="grid grid-cols-3 gap-1.5 text-[11px]">
-                  <div className="bg-[#181d28] p-2 rounded border border-[#292f3f] flex flex-col gap-1">
-                    <span className="text-gray-400 font-medium">平日 (Mon-Fri)</span>
-                    <div className="flex justify-between items-center text-[10.5px]">
-                      <span className="text-gray-400">首班</span>
-                      <span className="font-mono text-emerald-400 font-bold">{selectedSkytrainStation.first_last?.weekday?.first_train || selectedSkytrainStation.first_last?.weekday?.first || '05:08'}</span>
+                  <div className="bg-[#181d28] p-2 rounded border border-[#292f3f] flex flex-col gap-1.5">
+                    <span className="text-gray-300 font-semibold border-b border-[#292f3f] pb-1 text-xs">平日</span>
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-[10px] text-emerald-400 font-bold flex items-center gap-1 shrink-0">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>首班車
+                      </span>
+                      <span className="font-mono text-emerald-300 font-medium text-[10.5px] leading-snug pl-2.5 break-words">
+                        {selectedSkytrainStation.first_last?.weekday?.first_train || selectedSkytrainStation.first_last?.weekday?.first || '05:08'}
+                      </span>
                     </div>
-                    <div className="flex justify-between items-center text-[10.5px]">
-                      <span className="text-gray-400">尾班</span>
-                      <span className="font-mono text-amber-400 font-bold">{selectedSkytrainStation.first_last?.weekday?.last_train || selectedSkytrainStation.first_last?.weekday?.last || '01:15'}</span>
-                    </div>
-                  </div>
-
-                  <div className="bg-[#181d28] p-2 rounded border border-[#292f3f] flex flex-col gap-1">
-                    <span className="text-gray-400 font-medium">週六 (Sat)</span>
-                    <div className="flex justify-between items-center text-[10.5px]">
-                      <span className="text-gray-400">首班</span>
-                      <span className="font-mono text-emerald-400 font-bold">{selectedSkytrainStation.first_last?.saturday?.first_train || selectedSkytrainStation.first_last?.saturday?.first || '06:08'}</span>
-                    </div>
-                    <div className="flex justify-between items-center text-[10.5px]">
-                      <span className="text-gray-400">尾班</span>
-                      <span className="font-mono text-amber-400 font-bold">{selectedSkytrainStation.first_last?.saturday?.last_train || selectedSkytrainStation.first_last?.saturday?.last || '01:15'}</span>
+                    <div className="flex flex-col gap-0.5 pt-1 border-t border-[#232836]">
+                      <span className="text-[10px] text-amber-400 font-bold flex items-center gap-1 shrink-0">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0"></span>尾班車
+                      </span>
+                      <span className="font-mono text-amber-300 font-medium text-[10.5px] leading-snug pl-2.5 break-words">
+                        {selectedSkytrainStation.first_last?.weekday?.last_train || selectedSkytrainStation.first_last?.weekday?.last || '01:15'}
+                      </span>
                     </div>
                   </div>
 
-                  <div className="bg-[#181d28] p-2 rounded border border-[#292f3f] flex flex-col gap-1">
-                    <span className="text-gray-400 font-medium">週日/假期 (Sun/Hol)</span>
-                    <div className="flex justify-between items-center text-[10.5px]">
-                      <span className="text-gray-400">首班</span>
-                      <span className="font-mono text-emerald-400 font-bold">{selectedSkytrainStation.first_last?.sunday_holiday?.first_train || selectedSkytrainStation.first_last?.sunday_holiday?.first || '07:08'}</span>
+                  <div className="bg-[#181d28] p-2 rounded border border-[#292f3f] flex flex-col gap-1.5">
+                    <span className="text-gray-300 font-semibold border-b border-[#292f3f] pb-1 text-xs">週六</span>
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-[10px] text-emerald-400 font-bold flex items-center gap-1 shrink-0">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>首班車
+                      </span>
+                      <span className="font-mono text-emerald-300 font-medium text-[10.5px] leading-snug break-words">
+                        {selectedSkytrainStation.first_last?.saturday?.first_train || selectedSkytrainStation.first_last?.saturday?.first || '06:08'}
+                      </span>
                     </div>
-                    <div className="flex justify-between items-center text-[10.5px]">
-                      <span className="text-gray-400">尾班</span>
-                      <span className="font-mono text-amber-400 font-bold">{selectedSkytrainStation.first_last?.sunday_holiday?.last_train || selectedSkytrainStation.first_last?.sunday_holiday?.last || '00:15'}</span>
+                    <div className="flex flex-col gap-0.5 pt-1 border-t border-[#232836]">
+                      <span className="text-[10px] text-amber-400 font-bold flex items-center gap-1 shrink-0">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0"></span>尾班車
+                      </span>
+                      <span className="font-mono text-amber-300 font-medium text-[10.5px] leading-snug break-words">
+                        {selectedSkytrainStation.first_last?.saturday?.last_train || selectedSkytrainStation.first_last?.saturday?.last || '01:15'}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="bg-[#181d28] p-2 rounded border border-[#292f3f] flex flex-col gap-1.5">
+                    <span className="text-gray-300 font-semibold border-b border-[#292f3f] pb-1 text-xs">週日 / 假日</span>
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-[10px] text-emerald-400 font-bold flex items-center gap-1 shrink-0">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>首班車
+                      </span>
+                      <span className="font-mono text-emerald-300 font-medium text-[10.5px] leading-snug break-words">
+                        {selectedSkytrainStation.first_last?.sunday_holiday?.first_train || selectedSkytrainStation.first_last?.sunday_holiday?.first || '07:08'}
+                      </span>
+                    </div>
+                    <div className="flex flex-col gap-0.5 pt-1 border-t border-[#232836]">
+                      <span className="text-[10px] text-amber-400 font-bold flex items-center gap-1 shrink-0">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0"></span>尾班車
+                      </span>
+                      <span className="font-mono text-amber-300 font-medium text-[10.5px] leading-snug break-words">
+                        {selectedSkytrainStation.first_last?.sunday_holiday?.last_train || selectedSkytrainStation.first_last?.sunday_holiday?.last || '00:15'}
+                      </span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* 列車發車頻率 (Frequencies) */}
+              {/* 列車發車頻率 */}
               <div className="bg-[#10131a] rounded-lg border border-[#232836] p-2.5 flex flex-col gap-2">
                 <div className="flex items-center gap-1.5 text-blue-400 font-bold">
                   <Train className="w-3.5 h-3.5" />
-                  <span>列車發車班距頻率 (Train Frequencies)</span>
+                  <span>列車發車班距頻率</span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-1.5 text-[11px]">
                   <div className="bg-[#181d28] p-2 rounded border border-[#292f3f] flex items-center justify-between">
-                    <span className="text-gray-400">尖峰時段 (Peak)</span>
+                    <span className="text-gray-400">尖峰時段</span>
                     <span className="font-bold text-white font-mono">{selectedSkytrainStation.frequencies?.peak || '2 - 3.5 分鐘'}</span>
                   </div>
                   <div className="bg-[#181d28] p-2 rounded border border-[#292f3f] flex items-center justify-between">
-                    <span className="text-gray-400">日間離峰 (Midday)</span>
+                    <span className="text-gray-400">日間離峰</span>
                     <span className="font-bold text-white font-mono">{selectedSkytrainStation.frequencies?.midday || '3 - 6 分鐘'}</span>
                   </div>
                   <div className="bg-[#181d28] p-2 rounded border border-[#292f3f] flex items-center justify-between">
-                    <span className="text-gray-400">晚間時段 (Evening)</span>
+                    <span className="text-gray-400">晚間時段</span>
                     <span className="font-bold text-white font-mono">{selectedSkytrainStation.frequencies?.evening || '6 - 8 分鐘'}</span>
                   </div>
                   <div className="bg-[#181d28] p-2 rounded border border-[#292f3f] flex items-center justify-between">
-                    <span className="text-gray-400">深夜時段 (Late Night)</span>
+                    <span className="text-gray-400">深夜時段</span>
                     <span className="font-bold text-white font-mono">{selectedSkytrainStation.frequencies?.late_night || '10 - 15 分鐘'}</span>
                   </div>
                 </div>
@@ -13535,7 +13543,7 @@ export default function AppMap() {
           {/* Tab 3: 車站出入口地圖與設施指引 */}
           {skytrainDetailTab === 'facilities' && (
             <div className="overflow-y-auto flex-1 flex flex-col gap-2.5 pr-1 text-xs [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
-              {/* TransLink 官方車站出入口地圖 (Station Map) */}
+              {/* TransLink 官方車站出入口地圖 */}
               <a
                 href={selectedSkytrainStation.station_map_url || selectedSkytrainStation.entrance_map_url || "https://www.translink.ca/schedules-and-maps/skytrain"}
                 target="_blank"
@@ -13546,14 +13554,14 @@ export default function AppMap() {
                 <div className="flex items-center gap-2 min-w-0">
                   <ExternalLink className="w-4 h-4 text-blue-400 group-hover:scale-110 transition-transform shrink-0" />
                   <div className="flex flex-col min-w-0">
-                    <span className="font-bold text-white truncate">TransLink 官方出入口地圖 (Station Map)</span>
+                    <span className="font-bold text-white truncate">TransLink 官方出入口地圖</span>
                     <span className="text-[10px] text-blue-300/80">各出入口街道位置、月台層與轉乘動線</span>
                   </div>
                 </div>
                 <span className="text-[10px] bg-blue-500/30 text-blue-200 px-2 py-0.5 rounded font-mono shrink-0 ml-1">PDF 官網</span>
               </a>
 
-              {/* TransLink 無障礙電梯地圖 (Accessible Elevator Map) */}
+              {/* TransLink 無障礙電梯地圖 */}
               {selectedSkytrainStation.entrance_map_url && selectedSkytrainStation.entrance_map_url !== selectedSkytrainStation.station_map_url && (
                 <a
                   href={selectedSkytrainStation.entrance_map_url}
@@ -13575,19 +13583,19 @@ export default function AppMap() {
 
               {/* 車站設施清單 */}
               <div className="bg-[#10131a] rounded-lg border border-[#232836] p-2.5 flex flex-col gap-2">
-                <span className="font-bold text-white text-xs">車站服務與設施 (Facilities)</span>
+                <span className="font-bold text-white text-xs">車站服務與設施</span>
 
                 <div className="flex flex-col gap-1.5 text-[11px]">
                   <div className="flex items-center justify-between py-1 border-b border-[#262b38]/60">
                     <span className="text-gray-400 flex items-center gap-1.5">
-                      <span>♿</span> 無障礙設施 (Accessibility)
+                      <span>♿</span> 無障礙設施
                     </span>
                     <span className="text-emerald-400 font-medium">全線配置升降電梯 / 盲道</span>
                   </div>
 
                   <div className="flex items-center justify-between py-1 border-b border-[#262b38]/60">
                     <span className="text-gray-400 flex items-center gap-1.5">
-                      <Bike className="w-3.5 h-3.5 text-teal-400" /> 單車停放庫 (Bike Parkade)
+                      <Bike className="w-3.5 h-3.5 text-teal-400" /> 單車停放庫
                     </span>
                     <span className={(selectedSkytrainStation.has_bike_parkade ?? selectedSkytrainStation.facilities?.bike_parkade) ? 'text-teal-400 font-medium' : 'text-gray-400'}>
                       {(selectedSkytrainStation.has_bike_parkade ?? selectedSkytrainStation.facilities?.bike_parkade) ? '提供室內單車庫' : '設有室外單車架'}
@@ -13596,7 +13604,7 @@ export default function AppMap() {
 
                   <div className="flex items-center justify-between py-1 border-b border-[#262b38]/60">
                     <span className="text-gray-400 flex items-center gap-1.5">
-                      <Car className="w-3.5 h-3.5 text-amber-400" /> 轉乘停車場 (Park & Ride)
+                      <Car className="w-3.5 h-3.5 text-amber-400" /> 轉乘停車場
                     </span>
                     <span className={(selectedSkytrainStation.has_park_and_ride ?? selectedSkytrainStation.facilities?.park_and_ride) ? 'text-amber-400 font-medium' : 'text-gray-400'}>
                       {(selectedSkytrainStation.has_park_and_ride ?? selectedSkytrainStation.facilities?.park_and_ride) ? '設有轉乘停車場' : '無專用轉乘停車場'}

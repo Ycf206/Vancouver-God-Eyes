@@ -78,28 +78,6 @@
         "type": "Point",
         "coordinates": [-123.1147, 49.2894]
       }
-    },
-    {
-      "type": "Feature",
-      "id": "spot_flight_path_park",
-      "properties": {
-        "id": "spot_flight_path_park",
-        "facility_type": "airports",
-        "sub_type": "flight_watching",
-        "name": "飛機迷賞機公園 (Flight Path Park)",
-        "name_en": "Larry Berg Flight Path Park",
-        "badge": "最佳賞機點",
-        "icon": "📸",
-        "address": "Russ Baker Way, Richmond, BC",
-        "transit_access": "Templeton Station (步行約 15 分鐘)",
-        "local_area": "Richmond / Sea Island",
-        "highlights": "位於 YVR 26L/26R 跑道正下方，近距離感受巨無霸波音 777、空巴 A350 降落震撼風壓，設有飛機跑道造景與航空資訊牌",
-        "wiki_url": "https://www.yvr.ca/en/passengers/community-and-environment/flight-path-park"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [-123.1558, 49.2016]
-      }
     }
   ]
 }

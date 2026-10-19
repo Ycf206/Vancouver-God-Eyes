@@ -774,12 +774,14 @@ export default function FlightScheduleModal() {
         {/* Footer */}
         <div className="px-5 py-2.5 border-t border-[#21252e] bg-[#111318] text-[11px] text-gray-400 flex items-center justify-between shrink-0 flex-wrap gap-2">
           <div className="flex items-center gap-2">
-            <span>📡 資料來源：{data?.source || 'FlightAware AeroAPI (官方即時航班計畫)'}</span>
+            <span>
+              📡 資料來源：
+              {data?.source
+                ? data.source.replace(/\s*\(官方[^\)]*排程\)/g, '').replace(/\s*\(官方[^\)]*計畫\)/g, '').trim()
+                : 'FlightAware AeroAPI'}
+            </span>
             <span className="text-gray-500">·</span>
             <span className="text-gray-400">系統即時倒數更新</span>
-          </div>
-          <div className="flex items-center gap-2 text-gray-400 font-mono text-[10px]">
-            <span>點擊任一班次可於大地圖上繪製精準大圓航線與起迄樞紐標籤</span>
           </div>
         </div>
       </div>

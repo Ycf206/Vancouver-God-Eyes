@@ -1496,19 +1496,6 @@ SEARCH_AIRPORTS = [
         "zoom": 15,
         "layer_key": "airports",
         "keywords": ["coal harbour", "harbour air", "seaplane", "水上飛機", "煤港", "cxh", "cyhc", "canada place", "waterfront"]
-    },
-    {
-        "id": "spot_flight_path_park",
-        "title": "飛機迷賞機公園 (Flight Path Park)",
-        "subtitle": "Larry Berg Flight Path Park · 跑道賞機點",
-        "category": "airports",
-        "badge": "最佳賞機點",
-        "icon": "📸",
-        "lon": -123.1558,
-        "lat": 49.2016,
-        "zoom": 16,
-        "layer_key": "airports",
-        "keywords": ["flight path park", "賞機公園", "看飛機", "larry berg", "跑道"]
     }
 ]
 
