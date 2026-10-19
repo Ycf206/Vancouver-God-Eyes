@@ -2242,10 +2242,31 @@ function ExploreContent() {
     });
   };
 
-  // Filtered corridors (7大幹道) based on query
+  // Helper to ensure traffic items strictly adhere to allowed cities (Vancouver, Richmond, Burnaby, North Vancouver)
+  // and exclude Surrey, Coquitlam, Delta, New Westminster, Pattullo, Alex Fraser.
+  const isTrafficExcluded = (item: any): boolean => {
+    if (!item) return false;
+    const str = `${item.id || ''} ${item.corridor_group || ''} ${item.name || ''} ${item.english_name || ''} ${item.street || ''} ${item.city || ''} ${item.badge || ''} ${item.route || ''} ${item.description || ''} ${item.report_description || ''} ${item.key_bottleneck || ''}`.toLowerCase();
+    return (
+      str.includes('surrey') ||
+      str.includes('coquitlam') ||
+      str.includes('delta') ||
+      str.includes('new westminster') ||
+      str.includes('pattullo') ||
+      str.includes('alex fraser') ||
+      str.includes('alex_fraser') ||
+      str.includes('新西敏') ||
+      str.includes('素里') ||
+      str.includes('高貴林') ||
+      str.includes('三角洲') ||
+      str.includes('帕圖洛')
+    );
+  };
+
+  // Filtered corridors (主要動脈) based on query
   const filteredCorridors = useMemo(() => {
     if (!trafficSummary || !Array.isArray(trafficSummary.corridors)) return [];
-    let list = trafficSummary.corridors;
+    let list = trafficSummary.corridors.filter((c) => !isTrafficExcluded(c));
     if (trafficSearchQuery.trim()) {
       const q = trafficSearchQuery.toLowerCase().trim();
       list = list.filter((c) => 
@@ -2262,7 +2283,7 @@ function ExploreContent() {
   // Filtered major roads (主要道路 - Major Road Network + Other major thoroughfares from MajorRoad.txt)
   const filteredMajorRoads = useMemo(() => {
     if (!trafficSummary || !Array.isArray(trafficSummary.major_roads)) return [];
-    let list = trafficSummary.major_roads;
+    let list = trafficSummary.major_roads.filter((c) => !isTrafficExcluded(c));
     if (trafficSearchQuery.trim()) {
       const q = trafficSearchQuery.toLowerCase().trim();
       list = list.filter((c) => 
@@ -2282,7 +2303,7 @@ function ExploreContent() {
     const all = [
       ...(trafficSummary.corridors || []),
       ...(trafficSummary.major_roads || [])
-    ];
+    ].filter((c) => !isTrafficExcluded(c));
     let list = all.filter((c) => 
       (c.delay_min || 0) >= 3 || 
       (c.status && (
@@ -2308,7 +2329,7 @@ function ExploreContent() {
 
   const filteredTrafficAlerts = useMemo(() => {
     if (!trafficSummary || !Array.isArray(trafficSummary.top_alerts)) return [];
-    let list = trafficSummary.top_alerts;
+    let list = trafficSummary.top_alerts.filter((a) => !isTrafficExcluded(a));
     if (trafficSearchQuery.trim()) {
       const q = trafficSearchQuery.toLowerCase().trim();
       list = list.filter((a) => {
@@ -4875,8 +4896,8 @@ function ExploreContent() {
                   城市路況：{(trafficSummary?.overall_status || '全線暢通').replace(/大溫/g, '').replace(/\(Free Flow\)/g, '').replace(/\(Light Traffic\)/g, '').replace(/\(Moderate Traffic\)/g, '').replace(/\(Heavy Congestion\)/g, '').trim()}
                 </span>
                 {(() => {
-                  const corridors = trafficSummary?.corridors || [];
-                  const majorRoads = trafficSummary?.major_roads || [];
+                  const corridors = (trafficSummary?.corridors || []).filter(c => !isTrafficExcluded(c));
+                  const majorRoads = (trafficSummary?.major_roads || []).filter(c => !isTrafficExcluded(c));
                   const allRoads = [...corridors, ...majorRoads];
                   const totalCount = allRoads.length > 0 
                     ? allRoads.length 
@@ -4902,7 +4923,7 @@ function ExploreContent() {
                 })()}
               </div>
               <div className="flex items-center gap-1.5 text-[10px] text-gray-400 font-mono shrink-0">
-                <span>主要動脈 <strong className="text-emerald-400">{trafficSummary?.corridors?.length || 6}</strong></span>
+                <span>主要動脈 <strong className="text-emerald-400">{(trafficSummary?.corridors || []).filter(c => !isTrafficExcluded(c)).length || 6}</strong></span>
                 <span>·</span>
                 <span>即時通報 <strong className="text-amber-400">{trafficSummary?.total_incidents ?? 0}</strong></span>
               </div>

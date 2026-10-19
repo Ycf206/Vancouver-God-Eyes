@@ -27,23 +27,37 @@ TRANSPARENT_1X1_PNG = base64.b64decode(
 
 def _is_coord_in_allowed_cities(lat: float, lon: float) -> bool:
     """
-    嚴格局限於 5 個核心城市：Vancouver, Richmond, Burnaby, North Vancouver, New Westminster
-    徹底排除：Surrey, Coquitlam, Delta, White Rock
+    嚴格局限於 4 個核心城市：Vancouver, Richmond, Burnaby, North Vancouver
+    徹底排除：Surrey, Coquitlam, Delta, New Westminster, White Rock
     """
-    if lat < 49.115 or lat > 49.39 or lon < -123.28 or lon > -122.885:
+    # 總體外圍邊界 (西至 UBC/西溫 -123.28, 東至本拿比/北溫邊界 -122.892, 南至列治文南端 49.115, 北至北溫山區 49.39)
+    if lat < 49.115 or lat > 49.39 or lon < -123.28 or lon > -122.892:
         return False
-    # 排除 Delta (列治文以南菲沙河南支流以南)
-    if lon > -123.03 and lat < 49.155:
+
+    # 1. 徹底排除 Delta (列治文以南、菲沙河南支流以南及 Annacis Island)
+    if lon > -123.05 and lat < 49.155:
         return False
-    if lon > -122.98 and lat < 49.18:
+    if lon > -122.98 and lat < 49.175:
         return False
-    if lon > -122.95 and lat < 49.193:
+    if lon > -122.96 and lat < 49.190:
         return False
-    # 排除 Surrey (新西敏菲沙河南岸與東南岸)
-    if lon > -122.92 and lat < 49.198:
+
+    # 2. 徹底排除 New Westminster 與 Surrey (菲沙河北岸新西敏全境與南岸素里全境)
+    # Queensborough (新西敏菲沙河島區) 與周邊南支流
+    if lon > -122.955 and lat < 49.206:
         return False
-    if lon > -122.892 and lat < 49.205:
+    # 新西敏市區與濱河區 (以 10th Ave 為本拿比與新西敏界線，10th Ave 以南全數排除)
+    if lon > -122.945 and lat < 49.215:
         return False
+    if lon > -122.930 and lat < 49.223:
+        return False
+    if lon > -122.910 and lat < 49.230:
+        return False
+    if lon > -122.895 and lat < 49.236:
+        return False
+
+    # 3. 徹底排除 Coquitlam (高貴林)
+    # North Road (約 -122.892) 以東全數排除 (外圍邊界 lon > -122.892 已過濾)
     return True
 
 
@@ -163,8 +177,8 @@ class TomTomTrafficService:
         if not api_key:
             return TRANSPARENT_1X1_PNG
 
-        # 只取得與顯示核心5區 (Vancouver, Richmond, Burnaby, North Van, New West) 的圖磚
-        # 嚴格排除 Surrey, Coquitlam, Delta, White Rock 以節省 TomTom API 圖磚配額
+        # 只取得與顯示 4 核心城市 (Vancouver, Richmond, Burnaby, North Vancouver) 的圖磚
+        # 嚴格排除 Surrey, Coquitlam, Delta, New Westminster 以節省 TomTom API 圖磚配額
         # 1. 瓦片若整體超出邊界，直接回傳透明圖磚，完全不呼叫 TomTom API (節省配額)
         n = 2.0 ** z
         tile_lon_min = x / n * 360.0 - 180.0
@@ -172,15 +186,13 @@ class TomTomTrafficService:
         tile_lat_min = math.degrees(math.atan(math.sinh(math.pi * (1 - 2 * (y + 1) / n))))
         tile_lat_max = math.degrees(math.atan(math.sinh(math.pi * (1 - 2 * y / n))))
 
-        if tile_lon_max < -123.28 or tile_lon_min > -122.885 or tile_lat_max < 49.115 or tile_lat_min > 49.39:
+        if tile_lon_max < -123.28 or tile_lon_min > -122.892 or tile_lat_max < 49.115 or tile_lat_min > 49.39:
             return TRANSPARENT_1X1_PNG
-        if tile_lon_min > -122.95 and tile_lat_max < 49.193:
+        if tile_lon_min > -122.955 and tile_lat_max < 49.206:
             return TRANSPARENT_1X1_PNG
-        if tile_lon_min > -123.03 and tile_lat_max < 49.155:
+        if tile_lon_min > -123.05 and tile_lat_max < 49.155:
             return TRANSPARENT_1X1_PNG
-        if tile_lon_min > -122.92 and tile_lat_max < 49.198:
-            return TRANSPARENT_1X1_PNG
-        if tile_lon_min > -122.892 and tile_lat_max < 49.205:
+        if tile_lon_min > -122.98 and tile_lat_max < 49.175:
             return TRANSPARENT_1X1_PNG
 
         valid_styles = {"absolute", "relative", "relative0", "relative0-dark", "relative-delay", "reduced-sensitivity"}
@@ -227,11 +239,11 @@ class TomTomTrafficService:
                 "corridor_group": "hwy1",
                 "name": "1號公路 東向 (Hwy 1 Eastbound)",
                 "highway": "Hwy 1",
-                "direction": "東向 (往本拿比/高貴林/Port Mann)",
+                "direction": "東向 (往本拿比東段)",
                 "city": "Burnaby / Vancouver",
                 "freeflow_speed": 90,
                 "probe_point": (49.258, -123.015),
-                "length_km": 12.0,
+                "length_km": 11.5,
                 "coordinates": [
                     [-123.033, 49.278],
                     [-123.024, 49.268],
@@ -240,7 +252,7 @@ class TomTomTrafficService:
                     [-122.975, 49.251],
                     [-122.948, 49.248],
                     [-122.915, 49.242],
-                    [-122.885, 49.235],
+                    [-122.895, 49.236],
                 ],
             },
             {
@@ -252,9 +264,9 @@ class TomTomTrafficService:
                 "city": "Burnaby / Vancouver",
                 "freeflow_speed": 90,
                 "probe_point": (49.254, -122.998),
-                "length_km": 12.0,
+                "length_km": 11.5,
                 "coordinates": [
-                    [-122.885, 49.236],
+                    [-122.895, 49.237],
                     [-122.915, 49.243],
                     [-122.948, 49.249],
                     [-122.975, 49.252],
@@ -374,21 +386,6 @@ class TomTomTrafficService:
                 ],
             },
             {
-                "id": "pattullo",
-                "corridor_group": "pattullo",
-                "name": "帕圖洛橋 (Pattullo Bridge)",
-                "highway": "King George Blvd",
-                "direction": "雙向 (新西敏聯外通道)",
-                "city": "New Westminster",
-                "freeflow_speed": 50,
-                "probe_point": (49.206, -122.895),
-                "length_km": 2.5,
-                "coordinates": [
-                    [-122.903, 49.208],
-                    [-122.887, 49.204],
-                ],
-            },
-            {
                 "id": "broadway",
                 "corridor_group": "broadway",
                 "name": "百老匯大道 (Broadway Corridor)",
@@ -453,7 +450,7 @@ class TomTomTrafficService:
                     [-123.024, 49.266],
                     [-122.998, 49.266],
                     [-122.915, 49.252],
-                    [-122.885, 49.248],
+                    [-122.895, 49.249],
                 ],
             },
             {
@@ -524,7 +521,7 @@ class TomTomTrafficService:
         url = (
             "https://api.tomtom.com/traffic/services/5/incidentDetails"
             f"?key={urllib.parse.quote(api_key)}"
-            "&bbox=-123.28,49.115,-122.885,49.39"
+            "&bbox=-123.28,49.115,-122.892,49.39"
             f"&fields={urllib.parse.quote(fields)}"
             "&language=en-GB&timeValidityFilter=present"
         )

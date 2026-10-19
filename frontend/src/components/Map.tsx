@@ -2938,7 +2938,7 @@ export default function AppMap() {
         type: 'raster',
         tiles: [`${apiUrl}/api/traffic/tiles/{z}/{x}/{y}.png?style=relative&thickness=2`],
         tileSize: 256,
-        bounds: [-123.28, 49.12, -122.885, 49.39],
+        bounds: [-123.28, 49.115, -122.892, 49.39],
         minzoom: 6,
         maxzoom: 19
       };
@@ -3134,8 +3134,8 @@ export default function AppMap() {
       const trafficLayerFilter = [
         'any',
         ['==', ['get', 'is_key_corridor'], true],
-        ['in', ['get', 'corridor_group'], ['literal', ['hwy1', 'massey', 'lions_gate', 'knight', 'ironworkers', 'oak', 'alex_fraser']]],
-        ['in', ['get', 'id'], ['literal', ['hwy1_east', 'hwy1_west', 'massey_tunnel', 'lions_gate', 'knight_st_bridge', 'ironworkers_bridge', 'oak_st_bridge', 'alex_fraser_bridge']]]
+        ['in', ['get', 'corridor_group'], ['literal', ['hwy1', 'massey', 'lions_gate', 'knight', 'ironworkers', 'oak']]],
+        ['in', ['get', 'id'], ['literal', ['hwy1_east', 'hwy1_west', 'massey_tunnel', 'lions_gate', 'knight_st_bridge', 'ironworkers_bridge', 'oak_st_bridge']]]
       ];
 
       // 底層暗色描邊 (外框線條立體感)

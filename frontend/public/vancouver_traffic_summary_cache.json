@@ -27,7 +27,7 @@
       "trend": "stable",
       "segments": [
         {
-          "name": "東向 (往本拿比/高貴林/Port Mann)",
+          "name": "東向 (往本拿比東段)",
           "delay_min": 0,
           "speed_kmh": 83,
           "level": 0,
@@ -63,7 +63,7 @@
       "trend": "stable",
       "segments": [
         {
-          "name": "南向 (往 Delta / Surrey / 美加邊境)",
+          "name": "南向 (列治文往南隧道引道)",
           "delay_min": 0,
           "speed_kmh": 74,
           "level": 0,
