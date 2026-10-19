@@ -1514,7 +1514,10 @@ CURATED_STATIC_TYPES = (
 POINT_CURATED_TYPES = (
     "hospitals", "police", "disaster_hubs", "car_sharing", "aed", 
     "fuel", "ev_charging", "tesla", "marine_terminals", "bike_racks", "wireless_facilities",
-    "traffic_crosswalks", "litter_containers", "food_banks", "recycling", "van_wifi"
+    "traffic_crosswalks", "litter_containers", "food_banks", "recycling", "van_wifi",
+    "schools", "libraries", "food_vendors", "homeless_shelters", "parks", "parks_facilities",
+    "community_gardens", "community_centres", "drinking_fountains", "public_washrooms", "fire_halls",
+    "traffic_cameras", "safety_cameras", "shared_bikes", "escooter"
 )
 
 def sync_curated_point_types(db: Session):
@@ -1715,6 +1718,165 @@ def get_search_bikeway_items():
     _search_bikeways_cache = items
     return _search_bikeways_cache
 
+_search_facilities_cache = None
+
+FACILITY_SEARCH_CONFIGS = [
+    ("schools", "學校", "🏫", "schools", 16),
+    ("libraries", "圖書館", "📚", "libraries", 16),
+    ("food_banks", "食物銀行", "🥫", "foodBanks", 16),
+    ("food_vendors", "食品攤販", "🍱", "foodVendors", 17),
+    ("homeless_shelters", "庇護所", "🏠", "homelessShelters", 16),
+    ("parks", "公園", "🌲", "parks", 15),
+    ("parks_facilities", "休憩設施", "🛝", "parksFacilities", 16),
+    ("community_gardens", "社區花園", "🌻", "communityGardens", 16),
+    ("community_centres", "社區中心", "🏛️", "communityCentres", 16),
+    ("drinking_fountains", "飲水器", "💧", "drinkingFountains", 17),
+    ("public_washrooms", "公共廁所", "🚻", "publicWashrooms", 17),
+    ("fire_halls", "消防局", "🚒", "fireHalls", 16),
+    ("police", "警察局", "👮", "police", 16),
+    ("disaster_hubs", "災害支援中心", "🛟", "disasterHubs", 16),
+    ("hospitals", "醫療機構", "🏥", "hospitals", 15),
+    ("recycling", "環保回收", "♻️", "recycling", 16),
+    ("van_wifi", "VanWiFi", "📶", "vanWifi", 17),
+    ("aed", "AED 去顫器", "💓", "aed", 17),
+    ("fuel", "加油站", "⛽", "fuel", 16),
+    ("tesla", "TESLA", "⚡", "tesla", 16),
+    ("ev_charging", "充電站", "⚡", "evCharging", 16),
+    ("car_sharing", "共享汽車", "🚗", "carSharing", 16),
+    ("shared_bikes", "共享單車", "🚲", "sharedBikes", 16),
+    ("bike_racks", "單車架", "🚲", "bikeRacks", 17),
+    ("safety_cameras", "路口安全相機", "🚨", "safetyCameras", 16),
+    ("traffic_cameras", "交通攝影機", "📷", "trafficCameras", 16),
+    ("marine_terminals", "港口碼頭", "⚓", "marineTerminals", 15),
+    ("traffic_crosswalks", "行人穿越道", "🚶", "trafficCrosswalks", 17),
+    ("traffic_speed_limits", "速限路段", "🚦", "trafficSpeedLimits", 15),
+    ("wireless_facilities", "無線設施", "📡", "wirelessFacilities", 16),
+    ("litter_containers", "垃圾箱", "🗑️", "litterContainers", 17),
+    ("beach_water_quality", "海灘水質", "🏖️", "beachWaterQuality", 15),
+    ("beach_water", "海灘水質", "🏖️", "beachWaterQuality", 15),
+    ("zoning_districts", "土地規劃", "🏛️", "zoningDistricts", 15),
+]
+
+def get_search_facilities_items():
+    global _search_facilities_cache
+    if _search_facilities_cache is not None:
+        return _search_facilities_cache
+
+    items = []
+    base_data_dir = os.path.join(os.path.dirname(__file__), "data")
+
+    for ftype, badge, icon, layer_key, zoom in FACILITY_SEARCH_CONFIGS:
+        fname = f"vancouver_{ftype}.geojson"
+        fpath = os.path.join(base_data_dir, fname)
+        if not os.path.exists(fpath):
+            continue
+        try:
+            with open(fpath, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            for feat in data.get("features", []):
+                props = feat.get("properties") or {}
+                geom = feat.get("geometry") or {}
+                coords = geom.get("coordinates")
+                if not coords:
+                    continue
+
+                rep_lon, rep_lat = None, None
+                gtype = geom.get("type")
+                if gtype == "Point" and len(coords) >= 2 and isinstance(coords[0], (int, float)):
+                    rep_lon, rep_lat = float(coords[0]), float(coords[1])
+                elif gtype in ("Polygon", "MultiPolygon", "LineString", "MultiLineString"):
+                    all_pts = []
+                    def _collect_pts(c):
+                        if len(c) == 2 and isinstance(c[0], (int, float)):
+                            all_pts.append(c)
+                        else:
+                            for sub in c:
+                                _collect_pts(sub)
+                    _collect_pts(coords)
+                    if all_pts:
+                        rep_lon = sum(p[0] for p in all_pts) / len(all_pts)
+                        rep_lat = sum(p[1] for p in all_pts) / len(all_pts)
+
+                if rep_lon is None or rep_lat is None:
+                    continue
+
+                raw_name = str(props.get("name") or "").strip()
+                title = raw_name
+                if ftype == "schools":
+                    title = raw_name or "學校"
+                elif ftype == "parks_facilities":
+                    title = props.get("park_name") or raw_name or "休憩設施"
+                elif ftype == "drinking_fountains":
+                    title = props.get("location") or props.get("park_or_site") or raw_name or "飲水器"
+                elif ftype == "public_washrooms":
+                    title = re.sub(r"\s*公園公廁$|\s*公廁$|\s*公共洗手間$|\s*洗手間$", "", raw_name).strip() or raw_name or "公共廁所"
+                elif ftype == "parking_meters":
+                    meter_id = props.get("meter_id")
+                    title = f"#{meter_id}" if meter_id else (re.sub(r"^停車收費錶\s*[-–—#:]*\s*|^收費錶\s*[-–—#:]*\s*", "", raw_name) or "收費錶")
+                elif ftype == "zoning_districts":
+                    title = props.get("zoning_district") or raw_name or "都市土地規劃"
+                elif not title:
+                    title = badge
+
+                addr = str(props.get("address") or props.get("street_address") or props.get("location") or props.get("street") or props.get("station_location") or "").strip()
+                local_area = str(props.get("local_area") or props.get("neighbourhood") or "").strip()
+                category_extra = str(props.get("school_category_zh") or props.get("facility_type_name") or props.get("brand") or props.get("category") or "").strip()
+
+                sub_parts = [badge]
+                if category_extra and category_extra != badge and category_extra != title:
+                    sub_parts.append(category_extra)
+                if addr and addr != title:
+                    sub_parts.append(addr)
+                elif local_area and local_area != title:
+                    sub_parts.append(local_area)
+
+                subtitle = " · ".join(sub_parts)
+
+                search_words = [
+                    title,
+                    raw_name,
+                    addr,
+                    local_area,
+                    badge,
+                    ftype,
+                    category_extra,
+                    str(props.get("school_category") or ""),
+                    str(props.get("organization") or ""),
+                    str(props.get("description") or ""),
+                    str(props.get("zoning_classification") or ""),
+                    str(props.get("zoning_district") or "")
+                ]
+                search_text = " ".join(s for s in search_words if s).lower()
+
+                fac_id = str(feat.get("id") or props.get("id") or f"{ftype}_{rep_lon}_{rep_lat}")
+                items.append({
+                    "id": fac_id,
+                    "title": title,
+                    "subtitle": subtitle,
+                    "category": ftype,
+                    "badge": badge,
+                    "icon": icon,
+                    "lon": rep_lon,
+                    "lat": rep_lat,
+                    "zoom": zoom,
+                    "layer_key": layer_key,
+                    "search_text": search_text,
+                    "address_lower": addr.lower(),
+                    "title_lower": title.lower(),
+                    "meta": {
+                        "id": fac_id,
+                        "facility_type": ftype,
+                        "name": title,
+                        "local_area": local_area,
+                        "properties": props
+                    }
+                })
+        except Exception as e:
+            print(f"Error indexing {ftype} for search: {e}")
+
+    _search_facilities_cache = items
+    return _search_facilities_cache
+
 _search_query_cache = {}
 
 @app.get("/api/search")
@@ -1912,302 +2074,38 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
     except Exception as e:
         print(f"Error searching stops: {e}")
 
-    # 3. 搜尋道路設施與政府機構 (Road & Gov Facilities)
+    # 3. 搜尋設施、學校、公園、政府機構等全圖層資料 (All Point/Polygon Facilities)
     try:
-        facilities = db.query(models.RoadFacility).filter(
-            models.RoadFacility.name.ilike(f"%{q_clean}%") |
-            models.RoadFacility.local_area.ilike(f"%{q_clean}%")
-        ).limit(25).all()
+        fac_candidates = []
+        for fac in get_search_facilities_items():
+            if q_clean in fac["search_text"]:
+                score = 1
+                if fac["title_lower"] == q_clean:
+                    score = 10
+                elif fac["title_lower"].startswith(q_clean):
+                    score = 8
+                elif q_clean in fac["title_lower"]:
+                    score = 6
+                elif fac["address_lower"] and q_clean in fac["address_lower"]:
+                    score = 5
+                elif q_clean in fac["badge"].lower():
+                    score = 4
+                fac_candidates.append((score, fac))
 
-        for f in facilities:
-            ftype = f.facility_type
-            badge = "市政設施"
-            icon = "📍"
-            layer_key = None
-            zoom = 16
-
-            if ftype == 'fire_halls':
-                badge = "消防"
-                icon = "🚒"
-                layer_key = "fireHalls"
-            elif ftype == 'police':
-                badge = "警察局"
-                icon = "👮"
-                layer_key = "police"
-                zoom = 16
-            elif ftype == 'disaster_hubs':
-                badge = "災害支援中心"
-                icon = "🛟"
-                layer_key = "disasterHubs"
-                zoom = 16
-            elif ftype == 'hospitals':
-                badge = "醫療"
-                icon = "🏥"
-                layer_key = "hospitals"
-                zoom = 15
-            elif ftype == 'community_centres':
-                badge = "社區中心"
-                icon = "🏛️"
-                layer_key = "communityCentres"
-            elif ftype == 'ev_charging':
-                badge = "充電站"
-                icon = "⚡"
-                layer_key = "evCharging"
-            elif ftype == 'tesla':
-                badge = "TESLA"
-                icon = "⚡"
-                layer_key = "tesla"
-                zoom = 16
-            elif ftype == 'fuel':
-                badge = "加油站"
-                icon = "⛽"
-                layer_key = "fuel"
-                zoom = 16
-            elif ftype == 'car_sharing':
-                badge = "共享汽車"
-                icon = "🚗"
-                layer_key = "carSharing"
-                zoom = 16
-            elif ftype == 'shared_bikes':
-                badge = "共享單車"
-                icon = "🚲"
-                layer_key = "sharedBikes"
-                zoom = 16
-            elif ftype == 'escooter':
-                badge = "共享滑板車"
-                icon = "🛴"
-                layer_key = "escooter"
-                zoom = 17
-            elif ftype == 'bike_racks':
-                badge = "單車架"
-                icon = "🚲"
-                layer_key = "bikeRacks"
-                zoom = 17
-            elif ftype == 'parking_meters':
-                badge = "收費錶"
-                icon = "🅿️"
-                layer_key = "parkingMeters"
-                zoom = 17
-            elif ftype == 'accessible_parking':
-                badge = "無障礙車位"
-                icon = "♿"
-                layer_key = "accessibleParking"
-                zoom = 17
-            elif ftype == 'motorcycle_parking':
-                badge = "摩托車位"
-                icon = "🏍"
-                layer_key = "motorcycleParking"
-                zoom = 17
-            elif ftype == 'traffic_cameras':
-                badge = "交通攝影機"
-                icon = "📷"
-                layer_key = "trafficCameras"
-                zoom = 16
-            elif ftype == 'safety_cameras':
-                badge = "路口安全相機"
-                icon = "🚨"
-                layer_key = "safetyCameras"
-                zoom = 16
-            elif ftype == 'traffic_crosswalks':
-                badge = "斑馬線"
-                icon = "🚶"
-                layer_key = "trafficCrosswalks"
-                zoom = 17
-            elif ftype == 'traffic_speed_limits':
-                badge = "限速路段"
-                icon = "🚦"
-                layer_key = "trafficSpeedLimits"
-                zoom = 15
-            elif ftype == 'marine_terminals':
-                badge = "碼頭"
-                icon = "⚓"
-                layer_key = "marineTerminals"
-                zoom = 15
-            elif ftype == 'wireless_facilities':
-                badge = "無線設施"
-                icon = "📡"
-                layer_key = "wirelessFacilities"
-                zoom = 16
-            elif ftype == 'litter_containers':
-                badge = "垃圾箱"
-                icon = "🗑️"
-                layer_key = "litterContainers"
-                zoom = 17
-            elif ftype == 'aed':
-                badge = "AED 去顫器"
-                icon = "💓"
-                layer_key = "aed"
-                zoom = 17
-            elif ftype == 'parks':
-                badge = "公園"
-                icon = "🌲"
-                layer_key = "parks"
-                zoom = 15
-            elif ftype == 'parks_facilities':
-                badge = "休憩設施"
-                icon = "🛝"
-                layer_key = "parksFacilities"
-                zoom = 16
-            elif ftype == 'community_gardens':
-                badge = "社區花園"
-                icon = "🌻"
-                layer_key = "communityGardens"
-                zoom = 16
-            elif ftype == 'drinking_fountains':
-                badge = "飲水器"
-                icon = "💧"
-                layer_key = "drinkingFountains"
-                zoom = 17
-            elif ftype == 'public_washrooms':
-                badge = "公共廁所"
-                icon = "🚻"
-                layer_key = "publicWashrooms"
-                zoom = 17
-            elif ftype == 'schools':
-                badge = "學校"
-                icon = "🏫"
-                layer_key = "schools"
-                zoom = 16
-            elif ftype == 'libraries':
-                badge = "圖書館"
-                icon = "📚"
-                layer_key = "libraries"
-                zoom = 16
-            elif ftype == 'food_vendors':
-                badge = "食品攤販"
-                icon = "🍱"
-                layer_key = "foodVendors"
-                zoom = 17
-            elif ftype == 'homeless_shelters':
-                badge = "庇護所"
-                icon = "🏠"
-                layer_key = "homelessShelters"
-                zoom = 16
-            elif ftype == 'food_banks':
-                badge = "食物銀行"
-                icon = "🥫"
-                layer_key = "foodBanks"
-                zoom = 16
-            elif ftype == 'recycling':
-                badge = "環保回收"
-                icon = "♻️"
-                layer_key = "recycling"
-                zoom = 16
-            elif ftype == 'postal_code_fsa':
-                badge = "郵遞編號"
-                icon = "📮"
-                layer_key = "postalCodeFSA"
-                zoom = 13
-
-            sub_parts = [badge]
-            if ftype == 'police':
-                sub_parts.append("溫哥華市警局 (VPD)")
-            elif ftype == 'disaster_hubs':
-                sub_parts.append("災後緊急集結點")
-            elif ftype == 'fuel' and f.details and isinstance(f.details, dict):
-                brand = f.details.get('brand') or f.details.get('operator')
-                if brand:
-                    sub_parts.append(str(brand))
-            elif ftype == 'tesla' and f.details and isinstance(f.details, dict):
-                ttype = f.details.get('charger_type') or "Supercharger"
-                sub_parts.append(str(ttype))
-            elif ftype == 'marine_terminals':
-                sub_parts.append("溫哥華港碼頭")
-            elif ftype == 'safety_cameras' and f.details and isinstance(f.details, dict) and f.details.get('camera_type'):
-                sub_parts.append(str(f.details.get('camera_type')))
-            elif ftype == 'hospitals' and f.details and isinstance(f.details, dict):
-                if f.details.get('chinese_name'):
-                    sub_parts.append(str(f.details.get('chinese_name')))
-                elif f.local_area:
-                    sub_parts.append(f.local_area)
-            elif ftype == 'shared_bikes' and f.details and isinstance(f.details, dict):
-                sub_parts.append("Mobi")
-                if f.details.get('station_id'):
-                    sub_parts.append(f"#{f.details.get('station_id')}")
-                if f.details.get('capacity'):
-                    sub_parts.append(f"{f.details.get('capacity')} 柱")
-            elif ftype == 'parks' and f.details and isinstance(f.details, dict):
-                if f.details.get('neighbourhood'):
-                    sub_parts.append(str(f.details.get('neighbourhood')))
-                if f.details.get('hectare'):
-                    sub_parts.append(f"{f.details.get('hectare')} 公頃")
-            elif ftype == 'parks_facilities' and f.details and isinstance(f.details, dict):
-                if f.details.get('park_name'):
-                    sub_parts.append(str(f.details.get('park_name')))
-                if f.details.get('facility_type_name'):
-                    sub_parts.append(str(f.details.get('facility_type_name')))
-            elif ftype == 'community_gardens' and f.details and isinstance(f.details, dict):
-                if f.details.get('plots'):
-                    sub_parts.append(f"{f.details.get('plots')} 區劃")
-                elif f.local_area:
-                    sub_parts.append(f.local_area)
-            elif ftype == 'drinking_fountains' and f.details and isinstance(f.details, dict):
-                if f.details.get('in_operation'):
-                    sub_parts.append(str(f.details.get('in_operation')))
-                if f.details.get('location'):
-                    sub_parts.append(str(f.details.get('location')))
-            elif ftype == 'public_washrooms' and f.details and isinstance(f.details, dict):
-                if f.details.get('washroom_type'):
-                    sub_parts.append(str(f.details.get('washroom_type')))
-                if f.details.get('wheelchair_access'):
-                    sub_parts.append(str(f.details.get('wheelchair_access')))
-            elif ftype == 'schools' and f.details and isinstance(f.details, dict):
-                if f.details.get('school_category_zh'):
-                    sub_parts.append(str(f.details.get('school_category_zh')))
-                if f.details.get('address'):
-                    sub_parts.append(str(f.details.get('address')))
-            elif ftype == 'libraries' and f.details and isinstance(f.details, dict):
-                if f.details.get('address'):
-                    sub_parts.append(str(f.details.get('address')))
-                elif f.local_area:
-                    sub_parts.append(f.local_area)
-            elif ftype == 'food_vendors' and f.details and isinstance(f.details, dict):
-                if f.details.get('description'):
-                    sub_parts.append(str(f.details.get('description')))
-                if f.details.get('location_desc'):
-                    sub_parts.append(str(f.details.get('location_desc')))
-            elif ftype == 'homeless_shelters' and f.details and isinstance(f.details, dict):
-                if f.details.get('category'):
-                    sub_parts.append(str(f.details.get('category')))
-                if f.details.get('meals'):
-                    sub_parts.append(str(f.details.get('meals')))
-            elif ftype == 'food_banks' and f.details and isinstance(f.details, dict):
-                if f.details.get('organization'):
-                    sub_parts.append(str(f.details.get('organization')))
-                if f.details.get('provides_meals') == 'Yes':
-                    sub_parts.append('供餐 🍲')
-                if f.details.get('provides_hampers') == 'Yes':
-                    sub_parts.append('食物籃 🧺')
-            elif ftype == 'recycling' and f.details and isinstance(f.details, dict):
-                if f.details.get('brand'):
-                    sub_parts.append(str(f.details.get('brand')))
-                if f.details.get('materials') and isinstance(f.details.get('materials'), list):
-                    sub_parts.append("資源回收站")
-            elif f.local_area:
-                sub_parts.append(f.local_area)
-            if f.details and isinstance(f.details, dict):
-                addr = f.details.get('address') or f.details.get('location') or f.details.get('street')
-                if addr and str(addr) != f.name:
-                    sub_parts.append(str(addr))
-
+        fac_candidates.sort(key=lambda x: -x[0])
+        for score, fac in fac_candidates[:35]:
             results.append({
-                "id": f.id,
-                "title": f.name,
-                "subtitle": " · ".join(sub_parts),
-                "category": ftype,
-                "badge": badge,
-                "icon": icon,
-                "lon": f.lon,
-                "lat": f.lat,
-                "zoom": zoom,
-                "layer_key": layer_key,
-                "meta": {
-                    "id": f.id,
-                    "facility_type": f.facility_type,
-                    "name": f.name,
-                    "local_area": f.local_area,
-                    "properties": f.details or {}
-                }
+                "id": fac["id"],
+                "title": fac["title"],
+                "subtitle": fac["subtitle"],
+                "category": fac["category"],
+                "badge": fac["badge"],
+                "icon": fac["icon"],
+                "lon": fac["lon"],
+                "lat": fac["lat"],
+                "zoom": fac["zoom"],
+                "layer_key": fac["layer_key"],
+                "meta": fac["meta"]
             })
     except Exception as e:
         print(f"Error searching facilities: {e}")

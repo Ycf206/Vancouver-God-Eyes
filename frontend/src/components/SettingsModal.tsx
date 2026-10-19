@@ -109,6 +109,17 @@ export default function SettingsModal() {
         setAddressInput(`GPS 定位 (${lat.toFixed(4)}, ${lon.toFixed(4)})`);
         setIsEditingAddress(false);
         setIsGpsLoading(false);
+        setSearchTarget({
+          id: 'user_gps_location',
+          title: '目前 GPS 即時位置',
+          subtitle: `${lat.toFixed(5)}, ${lon.toFixed(5)}`,
+          category: 'gps',
+          badge: 'GPS 即時定位',
+          icon: '📍',
+          lat,
+          lon,
+          zoom: 16
+        });
       },
       (err) => {
         console.error('Geolocation error:', err);
