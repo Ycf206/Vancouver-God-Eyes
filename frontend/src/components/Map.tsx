@@ -8200,9 +8200,10 @@ export default function AppMap() {
                         return selectedFacility.name;
                       })()}
                     </h3>
-                    {(selectedFacility.local_area || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || (selectedFacility.facility_type === 'car_sharing' && selectedFacility.properties?.operator === 'Modo')) && (
+                    {(selectedFacility.local_area || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || (selectedFacility.facility_type === 'car_sharing' && selectedFacility.properties?.operator === 'Modo')) && (
                       <span className="text-[11px] text-gray-400 block leading-snug break-words">
                         {(() => {
+                          if (selectedFacility.facility_type === 'safety_cameras') return 'Vancouver, BC';
                           if (selectedFacility.facility_type === 'tide_stations') return 'British Columbia';
                           if (selectedFacility.facility_type === 'hospitals') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                           if (selectedFacility.facility_type === 'disaster_hubs') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
@@ -8359,6 +8360,11 @@ export default function AppMap() {
 
               {/* Parking Meters Details */}
               {selectedFacility.facility_type === 'parking_meters' && (() => {
+                const is12h = timeFormat === '12h';
+                const dayRangeStr = is12h ? '9:00 AM - 6:00 PM' : '09:00 - 18:00';
+                const nightRangeStr = is12h ? '6:00 PM - 10:00 PM' : '18:00 - 22:00';
+                const freeRangeStr = is12h ? '10:00 PM - 9:00 AM' : '22:00 - 09:00';
+
                 const activePeriod = selectedFacility.properties.active_period || (() => {
                   try {
                     const vancouverHour = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Vancouver" })).getHours();
@@ -8377,7 +8383,7 @@ export default function AppMap() {
                       <div className="flex items-center gap-1.5">
                         <Clock className="w-3.5 h-3.5 text-amber-600 shrink-0" />
                         <span className="font-semibold text-amber-900 text-[11px]">
-                          目前時段: {activePeriod === 'day' ? '🌞 日間費率' : activePeriod === 'night' ? '🌙 夜間費率' : '💤 深夜免費時段'}
+                          目前時段: {activePeriod === 'day' ? `🌞 日間費率 (${dayRangeStr})` : activePeriod === 'night' ? `🌙 夜間費率 (${nightRangeStr})` : `💤 深夜免費時段 (${freeRangeStr})`}
                         </span>
                       </div>
                       <span className="font-bold text-amber-700 font-mono text-xs">
@@ -8391,7 +8397,7 @@ export default function AppMap() {
                         activePeriod === 'day' ? 'bg-amber-100/70 border border-amber-300 font-medium' : 'bg-gray-50'
                       }`}>
                         <div className="flex items-center gap-1.5">
-                          <span className="text-gray-600">日間費率 (9am-6pm)</span>
+                          <span className="text-gray-600">日間費率 ({dayRangeStr})</span>
                           {activePeriod === 'day' && <span className="text-[9.5px] bg-amber-500 text-white px-1 py-0.2 rounded font-bold">生效中</span>}
                         </div>
                         <span className="font-bold text-amber-700">{selectedFacility.properties.rate_9am_6pm} /小時</span>
@@ -8402,26 +8408,31 @@ export default function AppMap() {
                         activePeriod === 'night' ? 'bg-amber-100/70 border border-amber-300 font-medium' : 'bg-gray-50'
                       }`}>
                         <div className="flex items-center gap-1.5">
-                          <span className="text-gray-600">夜間費率 (6pm-10pm)</span>
+                          <span className="text-gray-600">夜間費率 ({nightRangeStr})</span>
                           {activePeriod === 'night' && <span className="text-[9.5px] bg-amber-500 text-white px-1 py-0.2 rounded font-bold">生效中</span>}
                         </div>
                         <span className="font-bold text-amber-700">{selectedFacility.properties.rate_6pm_10pm} /小時</span>
                       </div>
                     )}
-                    <div className="flex justify-between text-gray-500 text-[11px]">
-                      <span>深夜時段 (10pm-9am)</span>
+                    <div className={`flex justify-between items-center p-1.5 rounded transition-colors ${
+                      activePeriod === 'free' ? 'bg-emerald-100/70 border border-emerald-300 font-medium' : 'bg-gray-50'
+                    }`}>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-gray-600">深夜時段 ({freeRangeStr})</span>
+                        {activePeriod === 'free' && <span className="text-[9.5px] bg-emerald-600 text-white px-1 py-0.2 rounded font-bold">生效中</span>}
+                      </div>
                       <span className="text-emerald-700 font-medium">免費停放 (免收費)</span>
                     </div>
                     {selectedFacility.properties.time_limit_9am_6pm && (
                       <div className="flex justify-between text-gray-600">
                         <span>日間停放上限</span>
-                        <span>{selectedFacility.properties.time_limit_9am_6pm}</span>
+                        <span>{String(selectedFacility.properties.time_limit_9am_6pm).replace(/\b(?:Hr|Hrs|Hours?)\b/gi, '小時').trim()}</span>
                       </div>
                     )}
                     {selectedFacility.properties.credit_card && (
                       <div className="flex justify-between text-gray-600">
                         <span>支援信用卡感應</span>
-                        <span className="font-medium">{selectedFacility.properties.credit_card === 'Yes' ? '✅ 是' : '❌ 否'}</span>
+                        <span className="font-medium">{selectedFacility.properties.credit_card === 'Yes' ? '是' : '否'}</span>
                       </div>
                     )}
                   </div>
@@ -8453,12 +8464,18 @@ export default function AppMap() {
               {/* Motorcycle Parking Details */}
               {selectedFacility.facility_type === 'motorcycle_parking' && (
                 <div className="flex flex-col gap-1.5 text-xs">
-                  {selectedFacility.properties.time_limit && (
-                    <div className="flex justify-between text-gray-600 bg-orange-50 p-1.5 rounded">
-                      <span className="text-orange-700">時間限制</span>
-                      <span className="font-bold text-orange-800">{selectedFacility.properties.time_limit}</span>
-                    </div>
-                  )}
+                  {selectedFacility.properties.time_limit && (() => {
+                    const rawTimeLimit = String(selectedFacility.properties.time_limit || '').trim();
+                    const isYes = /^(y|yes|true)$/i.test(rawTimeLimit);
+                    const isNo = /^(n|no|false)$/i.test(rawTimeLimit);
+                    const displayTimeLimit = isYes ? '是' : isNo ? '否' : rawTimeLimit.replace(/\b(?:Hr|Hrs|Hours?)\b/gi, '小時');
+                    return (
+                      <div className="flex justify-between text-gray-600 bg-orange-50 p-1.5 rounded">
+                        <span className="text-orange-700">時間限制</span>
+                        <span className="font-bold text-orange-800">{displayTimeLimit}</span>
+                      </div>
+                    );
+                  })()}
                 </div>
               )}
 
@@ -9023,16 +9040,6 @@ export default function AppMap() {
                   </div>
 
                   <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1 text-[11px]">
-                    <div className="flex justify-between items-center text-gray-600">
-                      <span>行政區</span>
-                      <span className="font-semibold text-gray-800">溫哥華市</span>
-                    </div>
-                    <div className="flex justify-between items-center text-gray-600">
-                      <span>路口</span>
-                      <span className="font-semibold text-gray-800 text-right truncate max-w-[170px]">
-                        {selectedFacility.properties.official_intersection || selectedFacility.name}
-                      </span>
-                    </div>
                     <div className="flex justify-between items-center text-gray-600">
                       <span>執法主管機關</span>
                       <span className="font-semibold text-gray-800">RoadSafetyBC / ICBC / VPD</span>
@@ -10318,7 +10325,22 @@ export default function AppMap() {
                       )}
                     </div>
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-600 text-white shrink-0">
-                      {selectedFacility.properties.opening_hours || '24/7'}
+                      {(() => {
+                        const rawHours = selectedFacility.properties.opening_hours;
+                        if (!rawHours || rawHours === '24/7' || rawHours.toLowerCase() === '24 hours') {
+                          return '24/7';
+                        }
+                        if (timeFormat === '12h') {
+                          return rawHours.replace(/(\d{1,2}):(\d{2})/g, (_m: string, h: string, m: string) => {
+                            let hour = parseInt(h, 10);
+                            const suffix = hour >= 12 ? 'PM' : 'AM';
+                            if (hour > 12) hour -= 12;
+                            if (hour === 0) hour = 12;
+                            return `${hour}:${m} ${suffix}`;
+                          });
+                        }
+                        return rawHours;
+                      })()}
                     </span>
                   </div>
 
@@ -10784,7 +10806,7 @@ export default function AppMap() {
                     <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties.segment_type ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                       <span>道路限速</span>
                       <span className="font-bold text-emerald-700 text-right">
-                        限速 {selectedFacility.properties.speed_limit || '30'} km/h
+                        {selectedFacility.properties.speed_limit || '30'} km/h
                       </span>
                     </div>
                   </div>
