@@ -2714,22 +2714,22 @@ function ExploreContent() {
                         <span>+</span>
                       </div>
 
-                      {/* 4 大風險分類標示 (對標截圖) */}
+                      {/* 4 大風險分類標示 (中文版) */}
                       <div className="grid grid-cols-4 text-center mt-1 pt-1 border-t border-[#232838] text-[9.5px]">
                         <div className="text-sky-300 font-medium">
-                          <div>Low Risk</div>
+                          <div>低風險</div>
                           <div className="text-[8.5px] text-gray-400">(1-3)</div>
                         </div>
                         <div className="text-yellow-300 font-medium">
-                          <div>Moderate</div>
+                          <div>中風險</div>
                           <div className="text-[8.5px] text-gray-400">(4-6)</div>
                         </div>
                         <div className="text-rose-400 font-medium">
-                          <div>High</div>
+                          <div>高風險</div>
                           <div className="text-[8.5px] text-gray-400">(7-10)</div>
                         </div>
                         <div className="text-amber-600 font-medium">
-                          <div>Very High</div>
+                          <div>極高風險</div>
                           <div className="text-[8.5px] text-gray-400">(10+)</div>
                         </div>
                       </div>
@@ -4875,11 +4875,16 @@ function ExploreContent() {
                   城市路況：{(trafficSummary?.overall_status || '全線暢通').replace(/大溫/g, '').replace(/\(Free Flow\)/g, '').replace(/\(Light Traffic\)/g, '').replace(/\(Moderate Traffic\)/g, '').replace(/\(Heavy Congestion\)/g, '').trim()}
                 </span>
                 {(() => {
-                  const totalCount = trafficSummary?.total_roads_count || ((trafficSummary?.corridors?.length || 6) + (trafficSummary?.major_roads?.length || 58));
-                  const freeflowCount = trafficSummary?.freeflow_roads_count ?? (
-                    (trafficSummary?.corridors?.filter(c => (c.delay_min || 0) <= 1)?.length || 6) +
-                    (trafficSummary?.major_roads?.filter(r => (r.delay_min || 0) <= 1)?.length || 58)
-                  );
+                  const corridors = trafficSummary?.corridors || [];
+                  const majorRoads = trafficSummary?.major_roads || [];
+                  const allRoads = [...corridors, ...majorRoads];
+                  const totalCount = allRoads.length > 0 
+                    ? allRoads.length 
+                    : (trafficSummary?.total_roads_count || 71);
+                  const computedFreeflow = allRoads.length > 0 
+                    ? allRoads.filter(r => (r.delay_min || 0) <= 1).length 
+                    : (trafficSummary?.freeflow_roads_count ?? totalCount);
+                  const freeflowCount = Math.min(computedFreeflow, totalCount);
                   return (
                     <span 
                       title={`暢通道路：${freeflowCount} / ${totalCount} 條 (所有主要幹道與主要道路)`}
@@ -5150,38 +5155,6 @@ function ExploreContent() {
               })()
             )}
           </div>
-
-          {/* 2.7: 底部文字: 共 x 條主要幹道及橋隧 (x代表該分頁的清單總數), 然後下一行: 資料來源：TomTom */}
-          <div className="flex flex-col text-[10.5px] text-gray-400 px-1 pt-1 border-t border-[#1e2333]/70 shrink-0">
-            {(() => {
-              const currentTabItemCount = trafficFilter === 'all'
-                ? filteredCorridors.length
-                : trafficFilter === 'major_roads'
-                ? filteredMajorRoads.length
-                : trafficFilter === 'severe'
-                ? filteredSevereRoads.length
-                : filteredTrafficAlerts.length;
-              return (
-                <>
-                  <span className="font-medium text-gray-300">共 {currentTabItemCount} 條主要幹道及橋隧</span>
-                  <span className="text-[9.5px] text-gray-500">資料來源：TomTom</span>
-                </>
-              );
-            })()}
-          </div>
-
-          {/* Bottom Action Button: Link to TomTom Live Traffic */}
-          <div className="pt-0.5 shrink-0">
-            <a
-              href="https://plan.tomtom.com/en/?p=49.24943,-123.12845,11.71z"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full py-2 px-3 rounded-lg bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
-            >
-              <span>前往 TomTom 即時路況</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </a>
-          </div>
         </div>
       )}
 
@@ -5392,14 +5365,6 @@ function ExploreContent() {
                         </div>
                       )}
                     </div>
-
-                    {/* Tips */}
-                    {crossing.tips && (
-                      <div className="text-[10px] text-gray-300/85 bg-[#10141f] p-2 rounded-lg border border-[#1f283c] flex items-start gap-1.5 leading-relaxed">
-                        <span className="text-cyan-400/90 text-xs shrink-0 mt-0.5">ℹ️</span>
-                        <span>{crossing.tips}</span>
-                      </div>
-                    )}
                   </div>
                 );
               })
