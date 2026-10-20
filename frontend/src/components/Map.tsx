@@ -8047,7 +8047,7 @@ export default function AppMap() {
           >
             <div className={`p-3.5 ${
               (selectedFacility.facility_type === 'traffic_conditions' || selectedFacility.facility_type === 'traffic_corridor') ? 'w-[430px]' :
-              selectedFacility.facility_type === 'traffic_cameras' ? 'w-[360px]' : 
+              (selectedFacility.facility_type === 'traffic_cameras' || selectedFacility.facility_type === 'community_gardens') ? 'w-[360px]' : 
               (selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'border_crossing' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'beach_water_quality' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'zoning_districts') ? 'w-[340px]' : 
               'w-[290px]'
             } max-w-[90vw] text-gray-800`}>
@@ -8184,7 +8184,9 @@ export default function AppMap() {
                           return (selectedFacility.name || '').replace(/^停車收費錶\s*/, '').replace(/^收費錶\s*/, '').trim() || (selectedFacility.properties?.meter_id ? `#${selectedFacility.properties.meter_id}` : selectedFacility.name);
                         }
                         if (selectedFacility.facility_type === 'drinking_fountains') {
-                          return selectedFacility.properties?.location || selectedFacility.properties?.park_or_site || selectedFacility.name;
+                          const rawName = selectedFacility.properties?.name || selectedFacility.name || '';
+                          const cleanName = rawName.replace(/^Fountain location:\s*/i, '').trim();
+                          return cleanName || selectedFacility.properties?.location || '飲水器';
                         }
                         if (selectedFacility.facility_type === 'public_washrooms') {
                           return (selectedFacility.name || '').replace(/\s*(?:公園公廁|公廁|公共洗手間|洗手間)\s*$/g, '').trim() || selectedFacility.name;
@@ -8962,18 +8964,18 @@ export default function AppMap() {
               {/* Community Centres Details */}
               {selectedFacility.facility_type === 'community_centres' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  {/* 4.3 紫區塊只有:左方是設施類別, 右方是紫底白字"社區中心" */}
+                  {/* 29.2 市政文娛休閒中心改成生活設施 */}
                   <div className="bg-purple-500/10 p-2.5 rounded-lg border border-purple-500/25 flex items-center justify-between">
                     <span className="font-bold text-purple-950 text-xs flex items-center gap-1.5">
                       <span className="text-base text-purple-600 font-bold">🏛️</span>
-                      <span>市政文娛休閒中心</span>
+                      <span>生活設施</span>
                     </span>
                     <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-600 text-white shrink-0">
                       社區中心
                     </span>
                   </div>
 
-                  {/* 4.4 前往社區中心網址 */}
+                  {/* 29.3 前往 Vancouver Board of Parks and Recreation 官方網頁 */}
                   <div className="pt-1 border-t border-gray-100">
                     <a 
                       href="https://vancouver.ca/parks-recreation-culture/community-and-cultural-centres.aspx" 
@@ -8981,7 +8983,7 @@ export default function AppMap() {
                       rel="noopener noreferrer"
                       className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-purple-600 hover:bg-purple-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
                     >
-                      前往社區中心官方網站 ↗
+                      前往 Vancouver Board of Parks and Recreation 官方網頁 ↗
                     </a>
                   </div>
                 </div>
@@ -9347,20 +9349,17 @@ export default function AppMap() {
               {/* Parks Details */}
               {selectedFacility.facility_type === 'parks' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  {/* 1.4 綠區塊只有:左方是設施類別, 右方是綠底白字"公園" */}
+                  {/* 26.1 市政公共綠地改成公園設施 */}
                   <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/25 flex items-center justify-between">
                     <span className="font-bold text-emerald-950 text-xs flex items-center gap-1.5">
                       <span className="text-base text-emerald-600 font-bold">🌲</span>
-                      <span>市政公共綠地</span>
+                      <span>公園設施</span>
                     </span>
                     <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-600 text-white shrink-0">
                       公園
                     </span>
                   </div>
 
-                  {/* 1.1 把現在所有資料放到綠色區塊下方 */}
-                  {/* 1.3 刪除公園地址 */}
-                  {/* 1.5 綠區塊下方顯示: 綠地面積, 休閒設施, 園區廁所 */}
                   <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
                     <div className="flex justify-between items-center text-gray-600">
                       <span>綠地面積</span>
@@ -9392,14 +9391,15 @@ export default function AppMap() {
                     </div>
                   )}
 
+                  {/* 26.2 前往 Vancouver Board of Parks and Recreation 官方網頁 */}
                   <div className="pt-1 border-t border-gray-100">
                     <a
-                      href={`https://vancouver.ca/parks-recreation-culture/find-a-park.aspx`}
+                      href="https://vancouver.ca/parks-recreation-culture/parks-and-recreation.aspx"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
                     >
-                      前往溫哥華公園局官方頁面 ↗
+                      前往 Vancouver Board of Parks and Recreation 官方網頁 ↗
                     </a>
                   </div>
                 </div>
@@ -9408,63 +9408,66 @@ export default function AppMap() {
               {/* Parks Facilities Details */}
               {selectedFacility.facility_type === 'parks_facilities' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  {/* 2.3 顏色區塊只有:左方是設施類別, 右方是顏色底白字"休憩設施" */}
+                  {/* 27.1 綠色區塊左方「公園設施」，右方綠底白字「休憩」 */}
                   <div className="bg-teal-500/10 p-2.5 rounded-lg border border-teal-500/25 flex items-center justify-between">
                     <span className="font-bold text-teal-950 text-xs flex items-center gap-1.5">
                       <span className="text-base text-teal-600 font-bold">🛝</span>
-                      <span>{selectedFacility.properties.facility_type_name || selectedFacility.name}</span>
+                      <span>公園設施</span>
                     </span>
                     <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-teal-600 text-white shrink-0">
-                      休憩設施
+                      休憩
                     </span>
                   </div>
 
-                  {/* 2.1 把現在所有資料放到顏色區塊下方 */}
-                  {/* 2.4 刪除所在公園 */}
+                  {/* 27.2 & 27.3 灰底區塊：設施名稱與設施數量 */}
                   <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                    <div className="flex justify-between items-center text-gray-600">
+                      <span>設施</span>
+                      <span className="font-semibold text-gray-900 text-right">
+                        {selectedFacility.properties.facility_type_name || selectedFacility.name}
+                      </span>
+                    </div>
                     {selectedFacility.properties.facility_count != null && (
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>設施數量 / 規模</span>
+                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <span>設施數量</span>
                         <span className="font-bold text-gray-800">{selectedFacility.properties.facility_count} 座</span>
                       </div>
                     )}
                   </div>
 
-                  {selectedFacility.properties.facility_url && (
-                    <div className="pt-1 border-t border-gray-100">
-                      <a
-                        href={selectedFacility.properties.facility_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-teal-600 hover:bg-teal-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
-                      >
-                        查看設施預約與使用指南 ↗
-                      </a>
-                    </div>
-                  )}
+                  {/* 27.4 底部加入前往 Vancouver Board of Parks and Recreation 官方網頁 */}
+                  <div className="pt-1 border-t border-gray-100">
+                    <a
+                      href="https://vancouver.ca/parks-recreation-culture/parks-and-recreation.aspx"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-teal-600 hover:bg-teal-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
+                    >
+                      前往 Vancouver Board of Parks and Recreation 官方網頁 ↗
+                    </a>
+                  </div>
                 </div>
               )}
 
               {/* Community Gardens Details */}
               {selectedFacility.facility_type === 'community_gardens' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  {/* 3.3 淺綠區塊只有:左方是設施類別, 右方是淺綠底白字"社區花園" */}
+                  {/* 28.1 社區共享花園改成公園設施 */}
                   <div className="bg-lime-500/10 p-2.5 rounded-lg border border-lime-500/25 flex items-center justify-between">
                     <span className="font-bold text-lime-950 text-xs flex items-center gap-1.5">
                       <span className="text-base text-lime-600 font-bold">🌻</span>
-                      <span>社區共享花園</span>
+                      <span>公園設施</span>
                     </span>
                     <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-lime-600 text-white shrink-0">
                       社區花園
                     </span>
                   </div>
 
-                  {/* 3.1 把現在所有資料放到淺綠色區塊下方 */}
-                  {/* 3.4 淺綠區塊下方顯示: 營運組織, 成立年份, 耕作畦位, 社區果樹 */}
+                  {/* 28.2 灰色區塊內無 emoji，耕作畦位下方若有果樹則加分隔線顯示品種 */}
                   <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
                     <div className="flex justify-between items-center text-gray-600">
-                      <span>營運組織</span>
-                      <span className="font-medium text-gray-800 text-right truncate max-w-[180px]">
+                      <span className="shrink-0">營運組織</span>
+                      <span className="font-medium text-gray-800 text-right leading-snug">
                         {selectedFacility.properties.managing_org || '志工/社區共同維護'}
                       </span>
                     </div>
@@ -9480,20 +9483,29 @@ export default function AppMap() {
                         {selectedFacility.properties.plots != null ? `${selectedFacility.properties.plots} 格` : '未載明'}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                      <span>社區果樹</span>
-                      <span className="font-bold text-emerald-800">
-                        {selectedFacility.properties.food_trees != null ? `${selectedFacility.properties.food_trees} 棵` : '無'}
-                      </span>
-                    </div>
-                  </div>
 
-                  {selectedFacility.properties.food_tree_varieties && (
-                    <div className="bg-emerald-50/60 p-2 rounded text-[11px] text-emerald-900 border border-emerald-100">
-                      <span className="font-semibold block mb-0.5">🍎 果樹品種：</span>
-                      <span>{selectedFacility.properties.food_tree_varieties}</span>
-                    </div>
-                  )}
+                    {((selectedFacility.properties.food_trees != null && selectedFacility.properties.food_trees > 0) || selectedFacility.properties.food_tree_varieties) && (
+                      <>
+                        <div className="border-t border-gray-200/60 my-0.5" />
+                        {selectedFacility.properties.food_trees != null && (
+                          <div className="flex justify-between items-center text-gray-600">
+                            <span>社區果樹</span>
+                            <span className="font-bold text-emerald-800">
+                              {selectedFacility.properties.food_trees} 棵
+                            </span>
+                          </div>
+                        )}
+                        {selectedFacility.properties.food_tree_varieties && (
+                          <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties.food_trees != null ? 'pt-1 border-t border-gray-100' : ''}`}>
+                            <span className="shrink-0">果樹品種</span>
+                            <span className="font-medium text-gray-800 text-right">
+                              {selectedFacility.properties.food_tree_varieties}
+                            </span>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
 
                   {selectedFacility.properties.website && (
                     <div className="pt-1 border-t border-gray-100">
@@ -9511,99 +9523,169 @@ export default function AppMap() {
               )}
 
               {/* Drinking Fountains Details */}
-              {selectedFacility.facility_type === 'drinking_fountains' && (
-                <div className="flex flex-col gap-2 text-xs">
-                  {/* 5.2 淺藍區塊只有:左方是設施類別, 右方是淺藍底白字"飲水器" */}
-                  <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex items-center justify-between">
-                    <span className="font-bold text-sky-950 text-xs flex items-center gap-1.5">
-                      <span className="text-base text-sky-600 font-bold">💧</span>
-                      <span>公共戶外直飲水設施</span>
-                    </span>
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-sky-500 text-white shrink-0">
-                      飲水器
-                    </span>
-                  </div>
+              {selectedFacility.facility_type === 'drinking_fountains' && (() => {
+                const inOp = selectedFacility.properties.in_operation;
+                const loc = selectedFacility.properties.location;
+                const pf = selectedFacility.properties.pet_friendly;
+                const maintainer = selectedFacility.properties.maintainer;
 
-                  {/* 5.1 把現在所有資料放到淺藍色區塊下方 */}
-                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                    <div className="flex justify-between items-center text-gray-600">
-                      <span>開放營運</span>
-                      <span className="font-semibold text-gray-800">
-                        {selectedFacility.properties.in_operation || '全年開放'}
+                const formatPetFriendly = (raw?: string | null) => {
+                  if (!raw) return null;
+                  const s = String(raw).trim().toUpperCase();
+                  if (s === 'Y' || s === 'YES' || s.includes('友善') || s === '是') return '是';
+                  if (s === 'N' || s === 'NO' || s.includes('一般') || s === '否') return '否';
+                  return raw;
+                };
+                const pfZh = formatPetFriendly(pf);
+
+                const formatInOp = (raw?: string | null) => {
+                  if (!raw) return null;
+                  const s = String(raw).trim().toLowerCase();
+                  if (s.includes('spring') && s.includes('fall')) return '春季至秋季開放';
+                  if (s.includes('year')) return '全年開放';
+                  if (s.includes('may') && s.includes('october')) return '5月至10月開放';
+                  return raw;
+                };
+                const inOpZh = formatInOp(inOp);
+
+                const formatMaintainer = (raw?: string | null) => {
+                  if (!raw) return null;
+                  const s = String(raw).trim();
+                  if (s.toLowerCase() === 'parks') return '公園局 (Parks)';
+                  if (s.toLowerCase() === 'engineering') return '工程局 (Engineering)';
+                  return raw;
+                };
+                const maintainerZh = formatMaintainer(maintainer);
+
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    {/* 30.5 公共戶外直飲水設施改成公園設施 */}
+                    <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex items-center justify-between">
+                      <span className="font-bold text-sky-950 text-xs flex items-center gap-1.5">
+                        <span className="text-base text-sky-600 font-bold">💧</span>
+                        <span>公園設施</span>
+                      </span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-sky-500 text-white shrink-0">
+                        飲水器
                       </span>
                     </div>
-                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                      <span>寵物友善</span>
-                      <span className="font-medium text-gray-800">
-                        {String(selectedFacility.properties.pet_friendly || '一般飲水').replace(/[🐾🐶🐱\s]+$/g, '').trim()}
-                      </span>
+
+                    {/* 30.6 灰底資料掛序：開放營運(不加粗) -> 詳細位置 -> 寵物友善(是/否) -> 管理維護單位 */}
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                      {inOpZh && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>開放營運</span>
+                          <span className="font-normal text-gray-800">
+                            {inOpZh}
+                          </span>
+                        </div>
+                      )}
+                      {loc && (
+                        <div className={`flex justify-between items-center text-gray-600 ${inOpZh ? 'pt-1 border-t border-gray-100' : ''}`}>
+                          <span className="shrink-0">詳細位置</span>
+                          <span className="font-medium text-gray-800 text-right">{loc}</span>
+                        </div>
+                      )}
+                      {pfZh && (
+                        <div className={`flex justify-between items-center text-gray-600 ${(inOpZh || loc) ? 'pt-1 border-t border-gray-100' : ''}`}>
+                          <span>寵物友善</span>
+                          <span className="font-medium text-gray-800">{pfZh}</span>
+                        </div>
+                      )}
+                      {maintainerZh && (
+                        <div className={`flex justify-between items-center text-gray-600 ${(inOpZh || loc || pfZh) ? 'pt-1 border-t border-gray-100' : ''}`}>
+                          <span>管理維護單位</span>
+                          <span className="font-medium text-gray-800">{maintainerZh}</span>
+                        </div>
+                      )}
                     </div>
-                    {selectedFacility.properties.park_or_site && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                        <span>所屬場域</span>
-                        <span className="font-medium text-gray-800 text-right truncate max-w-[170px]">{selectedFacility.properties.park_or_site}</span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.maintainer && (
-                      <div className="flex justify-between items-center text-gray-500 text-[10px] pt-1 border-t border-gray-100">
-                        <span>管理維護單位</span>
-                        <span className="font-medium text-gray-700">{selectedFacility.properties.maintainer}</span>
-                      </div>
-                    )}
                   </div>
-                </div>
-              )}
+                );
+              })()}
 
               {/* Public Washrooms Details */}
-              {selectedFacility.facility_type === 'public_washrooms' && (
-                <div className="flex flex-col gap-2 text-xs">
-                  {/* 6.2 淺藍區塊只有:左方是設施類別, 右方是淺藍底白字"公共廁所" */}
-                  <div className="bg-cyan-500/10 p-2.5 rounded-lg border border-cyan-500/25 flex items-center justify-between">
-                    <span className="font-bold text-cyan-950 text-xs flex items-center gap-1.5">
-                      <span className="text-base text-cyan-600 font-bold">🚻</span>
-                      <span>市政公共洗手間</span>
-                    </span>
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-cyan-600 text-white shrink-0">
-                      公共廁所
-                    </span>
-                  </div>
+              {selectedFacility.facility_type === 'public_washrooms' && (() => {
+                const loc = selectedFacility.properties.location;
+                const rawType = selectedFacility.properties.washroom_type || selectedFacility.properties.type;
+                const formatWashroomType = (t?: string) => {
+                  if (!t) return null;
+                  if (t === 'LargeAPT') return '自動洗手間 (Large APT)';
+                  if (t === 'SmallAPT') return '自動洗手間 (Small APT)';
+                  if (t === 'ComfortStation') return '常設洗手間 (Comfort Station)';
+                  if (t === 'Community Center') return '社區中心洗手間';
+                  return t;
+                };
+                const washType = formatWashroomType(rawType);
 
-                  {/* 6.1 把現在所有資料放到淺藍色區塊下方 */}
-                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                    <div className="flex justify-between items-center text-gray-600">
-                      <span>公廁類型</span>
-                      <span className="font-semibold text-gray-800">
-                        {selectedFacility.properties.washroom_type || '公共洗手間'}
+                const rawWheelchair = selectedFacility.properties.wheelchair_access;
+                const wheelchairZh = (() => {
+                  if (!rawWheelchair) return null;
+                  const s = String(rawWheelchair).toLowerCase();
+                  if (s.includes('yes') || s.includes('無障礙') || s === 'y' || s === '是') return '是';
+                  if (s.includes('no') || s.includes('一般') || s === 'n' || s === '否') return '否';
+                  return null;
+                })();
+
+                const formatHours = (h?: string) => {
+                  if (!h) return null;
+                  return h.replace(/24hrs\s*-\s*24hrs/gi, '24hrs');
+                };
+                const summerH = formatHours(selectedFacility.properties.summer_hours);
+                const winterH = formatHours(selectedFacility.properties.winter_hours);
+
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    {/* 31.2 市政公共洗手間改成公園設施，右方淺藍底白字公共洗手間 */}
+                    <div className="bg-cyan-500/10 p-2.5 rounded-lg border border-cyan-500/25 flex items-center justify-between">
+                      <span className="font-bold text-cyan-950 text-xs flex items-center gap-1.5">
+                        <span className="text-base text-cyan-600 font-bold">🚻</span>
+                        <span>公園設施</span>
+                      </span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-cyan-600 text-white shrink-0">
+                        公共洗手間
                       </span>
                     </div>
-                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                      <span>無障礙規格</span>
-                      <span className="font-medium text-gray-800">
-                        {String(selectedFacility.properties.wheelchair_access || '一般規格').replace(/[♿🐾🐶🐱\s]+$/g, '').trim()}
-                      </span>
-                    </div>
-                    {selectedFacility.properties.summer_hours && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                        <span>夏季開放時間</span>
-                        <span className="font-semibold text-emerald-800">{selectedFacility.properties.summer_hours}</span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.winter_hours && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                        <span>冬季開放時間</span>
-                        <span className="font-medium text-gray-700">{selectedFacility.properties.winter_hours}</span>
-                      </div>
-                    )}
-                  </div>
 
-                  {selectedFacility.properties.notes && (
-                    <div className="bg-gray-50 p-2 rounded text-[11px] text-gray-600 border border-gray-100">
-                      <span className="font-semibold block mb-0.5 text-gray-700">備註說明：</span>
-                      <span>{selectedFacility.properties.notes}</span>
+                    {/* 31.5 灰底資料掛序：詳細位置 -> 公廁類型(不粗體) -> 無障礙規格(是/否) -> 夏季開放時間 -> 冬季開放時間 */}
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                      {loc && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span className="shrink-0">詳細位置</span>
+                          <span className="font-medium text-gray-800 text-right">{loc}</span>
+                        </div>
+                      )}
+                      {washType && (
+                        <div className={`flex justify-between items-center text-gray-600 ${loc ? 'pt-1 border-t border-gray-100' : ''}`}>
+                          <span>公廁類型</span>
+                          <span className="font-normal text-gray-800">
+                            {washType}
+                          </span>
+                        </div>
+                      )}
+                      {wheelchairZh && (
+                        <div className={`flex justify-between items-center text-gray-600 ${(loc || washType) ? 'pt-1 border-t border-gray-100' : ''}`}>
+                          <span>無障礙規格</span>
+                          <span className="font-medium text-gray-800">
+                            {wheelchairZh}
+                          </span>
+                        </div>
+                      )}
+                      {summerH && (
+                        <div className={`flex justify-between items-center text-gray-600 ${(loc || washType || wheelchairZh) ? 'pt-1 border-t border-gray-100' : ''}`}>
+                          <span>夏季開放時間</span>
+                          <span className="font-medium text-gray-800">{summerH}</span>
+                        </div>
+                      )}
+                      {winterH && (
+                        <div className={`flex justify-between items-center text-gray-600 ${(loc || washType || wheelchairZh || summerH) ? 'pt-1 border-t border-gray-100' : ''}`}>
+                          <span>冬季開放時間</span>
+                          <span className="font-medium text-gray-700">{winterH}</span>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              )}
+                  </div>
+                );
+              })()}
 
               {/* Schools Details */}
               {selectedFacility.facility_type === 'schools' && (
@@ -11867,11 +11949,11 @@ export default function AppMap() {
               {/* Public Trees (公有街道樹木) Details */}
               {selectedFacility.facility_type === 'public_trees' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  {/* 7.3 綠區塊只有:左方是設施類別, 右方是淺綠底白字"樹木" */}
+                  {/* 32.2 市政公有街道樹木改成公園設施 */}
                   <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/25 flex items-center justify-between">
                     <span className="font-bold text-emerald-950 text-xs flex items-center gap-1.5">
                       <span className="text-base text-emerald-600 font-bold">🌳</span>
-                      <span>市政公有街道樹木</span>
+                      <span>公園設施</span>
                     </span>
                     <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-600 text-white shrink-0">
                       樹木

@@ -300,7 +300,11 @@ export default function LayerPanel() {
             <LayerButton layerKey="homelessShelters" label="無家者庇護所" icon={Bed} colorClass="text-rose-400" activeBg="bg-[#2a171d]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.15)]" />
             <LayerButton layerKey="litterContainers" label="垃圾箱" icon={Trash2} colorClass="text-amber-400" activeBg="bg-[#282115]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
             <LayerButton layerKey="aed" label="AED 去顫器" icon={HeartPulse} colorClass="text-red-400" activeBg="bg-[#2c1518]" activeBorder="border-red-500/50" activeShadow="shadow-[0_0_6px_rgba(239,68,68,0.15)]" />
+            {/* 29.1 社區中心按鈕放在無線設施上方 (無線設施移下一行) */}
+            <LayerButton layerKey="communityCentres" label="社區中心" icon={Building2} colorClass="text-violet-400" activeBg="bg-[#211a2f]" activeBorder="border-violet-500/50" activeShadow="shadow-[0_0_6px_rgba(139,92,246,0.15)]" />
+            <div></div>
             <LayerButton layerKey="wirelessFacilities" label="無線設施" icon={Radio} colorClass="text-purple-400" activeBg="bg-[#241733]" activeBorder="border-purple-500/50" activeShadow="shadow-[0_0_6px_rgba(168,85,247,0.15)]" />
+            <div></div>
           </div>
         </div>
 
@@ -317,16 +321,14 @@ export default function LayerPanel() {
             <span className="text-[9px] text-emerald-500/70 font-mono">NATURE</span>
           </div>
           <div className="grid grid-cols-2 gap-1">
-            <LayerButton layerKey="parks" label="公園" icon={Trees} colorClass="text-emerald-400" activeBg="bg-[#14291f]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
+            <LayerButton layerKey="parks" label="公園" icon={Trees} colorClass="text-emerald-400" activeBg="bg-[#14291f]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(168,85,247,0.15)]" />
             <LayerButton layerKey="parksFacilities" label="休憩設施" icon={Footprints} colorClass="text-teal-400" activeBg="bg-[#122826]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
             <LayerButton layerKey="communityGardens" label="社區花園" icon={Flower2} colorClass="text-lime-400" activeBg="bg-[#1e2a14]" activeBorder="border-lime-500/50" activeShadow="shadow-[0_0_6px_rgba(132,204,22,0.15)]" />
-            <LayerButton layerKey="communityCentres" label="社區中心" icon={Building2} colorClass="text-violet-400" activeBg="bg-[#211a2f]" activeBorder="border-violet-500/50" activeShadow="shadow-[0_0_6px_rgba(139,92,246,0.15)]" />
-            <LayerButton layerKey="drinkingFountains" label="飲水器" icon={Droplets} colorClass="text-sky-400" activeBg="bg-[#142533]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(56,189,248,0.15)]" />
-            <LayerButton layerKey="publicWashrooms" label="公共廁所" icon={Bath} colorClass="text-cyan-400" activeBg="bg-[#13272e]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.15)]" />
-
-            {/* Row 4: 樹木 */}
+            {/* 32.1 樹木按鈕放在社區中心的位置 (社區中心已搬到生活圖層) */}
             <LayerButton layerKey="publicTrees" label="樹木" icon={Trees} title="街道樹木" colorClass="text-emerald-400" activeBg="bg-[#14291f]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
-            <div></div>
+            <LayerButton layerKey="drinkingFountains" label="飲水器" icon={Droplets} colorClass="text-sky-400" activeBg="bg-[#142533]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(56,189,248,0.15)]" />
+            {/* 31.1 公共廁所改成公共洗手間 */}
+            <LayerButton layerKey="publicWashrooms" label="公共洗手間" icon={Bath} colorClass="text-cyan-400" activeBg="bg-[#13272e]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.15)]" />
           </div>
         </div>
 
