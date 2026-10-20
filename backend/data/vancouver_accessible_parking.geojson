@@ -1,0 +1,3917 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12192699980345,
+          49.284200998945536
+        ]
+      },
+      "properties": {
+        "id": "acc_1",
+        "facility_type": "accessible_parking",
+        "name": "North Side 1000 Alberni St",
+        "local_area": "West End",
+        "object_id": 1,
+        "location": "North Side 1000 Alberni St",
+        "street_name": "Alberni St",
+        "block": 1000,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.16131700046863,
+          49.23677999911697
+        ]
+      },
+      "properties": {
+        "id": "acc_2",
+        "facility_type": "accessible_parking",
+        "name": "West Side  5400 Balsam St",
+        "local_area": "Arbutus Ridge",
+        "object_id": 2,
+        "location": "West Side  5400 Balsam St",
+        "street_name": "Balsam St",
+        "block": 5400,
+        "type": "Accessible Parking Space",
+        "description": "Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.16135100054922,
+          49.233617998634955
+        ]
+      },
+      "properties": {
+        "id": "acc_3",
+        "facility_type": "accessible_parking",
+        "name": "East Side  5800 Balsam St",
+        "local_area": "Kerrisdale",
+        "object_id": 3,
+        "location": "East Side  5800 Balsam St",
+        "street_name": "Balsam St",
+        "block": 5800,
+        "type": "Accessible Parking Space",
+        "description": "Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.06926499963103,
+          49.27572999894454
+        ]
+      },
+      "properties": {
+        "id": "acc_8",
+        "facility_type": "accessible_parking",
+        "name": "South Side 1700 Parker St",
+        "local_area": "Grandview-Woodland",
+        "object_id": 8,
+        "location": "South Side 1700 Parker St",
+        "street_name": "Parker St",
+        "block": 1700,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.06924199953224,
+          49.27397999908466
+        ]
+      },
+      "properties": {
+        "id": "acc_11",
+        "facility_type": "accessible_parking",
+        "name": "North Side 1700 William St",
+        "local_area": "Grandview-Woodland",
+        "object_id": 11,
+        "location": "North Side 1700 William St",
+        "street_name": "William St",
+        "block": 1700,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.15848399995153,
+          49.23781099889855
+        ]
+      },
+      "properties": {
+        "id": "acc_12",
+        "facility_type": "accessible_parking",
+        "name": "West Side  5300 Yew St",
+        "local_area": "Arbutus Ridge",
+        "object_id": 12,
+        "location": "West Side  5300 Yew St",
+        "street_name": "Yew St",
+        "block": 5300,
+        "type": "Accessible Parking Space",
+        "description": "Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.16168600019044,
+          49.23460199885558
+        ]
+      },
+      "properties": {
+        "id": "acc_14",
+        "facility_type": "accessible_parking",
+        "name": "South Side 2400 W 41st Av",
+        "local_area": "Arbutus Ridge",
+        "object_id": 14,
+        "location": "South Side 2400 W 41st Av",
+        "street_name": "W 41st Av",
+        "block": 2400,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12979599979353,
+          49.288054998864645
+        ]
+      },
+      "properties": {
+        "id": "acc_22",
+        "facility_type": "accessible_parking",
+        "name": "West Side  700 Broughton St",
+        "local_area": "West End",
+        "object_id": 22,
+        "location": "West Side  700 Broughton St",
+        "street_name": "Broughton St",
+        "block": 700,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13559599982548,
+          49.291634999240536
+        ]
+      },
+      "properties": {
+        "id": "acc_23",
+        "facility_type": "accessible_parking",
+        "name": "North Side 1800 Robson St",
+        "local_area": "West End",
+        "object_id": 23,
+        "location": "North Side 1800 Robson St",
+        "street_name": "Robson St",
+        "block": 1800,
+        "type": "2HR Accessible Parking Space",
+        "description": "2HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13773800042377,
+          49.28795999941129
+        ]
+      },
+      "properties": {
+        "id": "acc_24",
+        "facility_type": "accessible_parking",
+        "name": "West Side  1000 Bidwell St",
+        "local_area": "West End",
+        "object_id": 24,
+        "location": "West Side  1000 Bidwell St",
+        "street_name": "Bidwell St",
+        "block": 1000,
+        "type": "Accessible Parking Space",
+        "description": "Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14060500028144,
+          49.28782199944117
+        ]
+      },
+      "properties": {
+        "id": "acc_25",
+        "facility_type": "accessible_parking",
+        "name": "South Side 1700 Pendrell St",
+        "local_area": "West End",
+        "object_id": 25,
+        "location": "South Side 1700 Pendrell St",
+        "street_name": "Pendrell St",
+        "block": 1700,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.04941599999347,
+          49.28095499945296
+        ]
+      },
+      "properties": {
+        "id": "acc_27",
+        "facility_type": "accessible_parking",
+        "name": "West Side  400 Slocan St",
+        "local_area": "Hastings-Sunrise",
+        "object_id": 27,
+        "location": "West Side  400 Slocan St",
+        "street_name": "Slocan St",
+        "block": 400,
+        "type": "Accessible Parking Space",
+        "description": "Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1134399994372,
+          49.282942999407496
+        ]
+      },
+      "properties": {
+        "id": "acc_30",
+        "facility_type": "accessible_parking",
+        "name": "East Side  500 Richards St",
+        "local_area": "Downtown",
+        "object_id": 30,
+        "location": "East Side  500 Richards St",
+        "street_name": "Richards St",
+        "block": 500,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.03234899975214,
+          49.23741099889252
+        ]
+      },
+      "properties": {
+        "id": "acc_33",
+        "facility_type": "accessible_parking",
+        "name": "North Side 3400 Crowley Drive",
+        "local_area": "Renfrew-Collingwood",
+        "object_id": 33,
+        "location": "North Side 3400 Crowley Drive",
+        "street_name": "Crowley Drive",
+        "block": 3400,
+        "type": "2HR Accessible Parking Space",
+        "description": "2HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13839399990682,
+          49.2580139989911
+        ]
+      },
+      "properties": {
+        "id": "acc_37",
+        "facility_type": "accessible_parking",
+        "name": "North Side 1400 W 15th Av",
+        "local_area": "Fairview",
+        "object_id": 37,
+        "location": "North Side 1400 W 15th Av",
+        "street_name": "W 15th Av",
+        "block": 1400,
+        "type": "2HR Accessible Parking Space",
+        "description": "2HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13892500060884,
+          49.265323998776765
+        ]
+      },
+      "properties": {
+        "id": "acc_39",
+        "facility_type": "accessible_parking",
+        "name": "South Side 1500 W 7th Av",
+        "local_area": "Fairview",
+        "object_id": 39,
+        "location": "South Side 1500 W 7th Av",
+        "street_name": "W 7th Av",
+        "block": 1500,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1193520005688,
+          49.274781999014614
+        ]
+      },
+      "properties": {
+        "id": "acc_40",
+        "facility_type": "accessible_parking",
+        "name": "West Side  1000 Cambie St",
+        "local_area": "Downtown",
+        "object_id": 40,
+        "location": "West Side  1000 Cambie St",
+        "street_name": "Cambie St",
+        "block": 1000,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1012809996189,
+          49.24241399936494
+        ]
+      },
+      "properties": {
+        "id": "acc_45",
+        "facility_type": "accessible_parking",
+        "name": "East Side  4700 Main St",
+        "local_area": "Riley Park",
+        "object_id": 45,
+        "location": "East Side  4700 Main St",
+        "street_name": "Main St",
+        "block": 4700,
+        "type": "1HR Accessible Parking Space",
+        "description": "1HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.03263299985703,
+          49.2326039993469
+        ]
+      },
+      "properties": {
+        "id": "acc_46",
+        "facility_type": "accessible_parking",
+        "name": "North Side 3300 Kingsway",
+        "local_area": "Renfrew-Collingwood",
+        "object_id": 46,
+        "location": "North Side 3300 Kingsway",
+        "street_name": "Kingsway",
+        "block": 3300,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.02561799999387,
+          49.23231099894783
+        ]
+      },
+      "properties": {
+        "id": "acc_51",
+        "facility_type": "accessible_parking",
+        "name": "North Side 3600 Kingsway",
+        "local_area": "Renfrew-Collingwood",
+        "object_id": 51,
+        "location": "North Side 3600 Kingsway",
+        "street_name": "Kingsway",
+        "block": 3600,
+        "type": "2HR Accessible Parking Space",
+        "description": "2HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14011499963138,
+          49.286124998943436
+        ]
+      },
+      "properties": {
+        "id": "acc_52",
+        "facility_type": "accessible_parking",
+        "name": "South Side 1600 Davie St",
+        "local_area": "West End",
+        "object_id": 52,
+        "location": "South Side 1600 Davie St",
+        "street_name": "Davie St",
+        "block": 1600,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.03891099969316,
+          49.280855998970786
+        ]
+      },
+      "properties": {
+        "id": "acc_53",
+        "facility_type": "accessible_parking",
+        "name": "West Side  400 Lillooet St",
+        "local_area": "Hastings-Sunrise",
+        "object_id": 53,
+        "location": "West Side  400 Lillooet St",
+        "street_name": "Lillooet St",
+        "block": 400,
+        "type": "Accessible Parking Space",
+        "description": "Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.18551699947251,
+          49.246110999009346
+        ]
+      },
+      "properties": {
+        "id": "acc_54",
+        "facility_type": "accessible_parking",
+        "name": "South Side 3600 W 29th Av",
+        "local_area": "Dunbar-Southlands",
+        "object_id": 54,
+        "location": "South Side 3600 W 29th Av",
+        "street_name": "W 29th Av",
+        "block": 3600,
+        "type": "2HR Accessible Parking Space",
+        "description": "2HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1219420005427,
+          49.27621899885393
+        ]
+      },
+      "properties": {
+        "id": "acc_59",
+        "facility_type": "accessible_parking",
+        "name": "West Side  1100 Homer St",
+        "local_area": "Downtown",
+        "object_id": 59,
+        "location": "West Side  1100 Homer St",
+        "street_name": "Homer St",
+        "block": 1100,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.15714199943413,
+          49.26380799872989
+        ]
+      },
+      "properties": {
+        "id": "acc_62",
+        "facility_type": "accessible_parking",
+        "name": "South Side 2200 W Broadway",
+        "local_area": "Kitsilano",
+        "object_id": 62,
+        "location": "South Side 2200 W Broadway",
+        "street_name": "W Broadway",
+        "block": 2200,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.08286600040384,
+          49.27406099884908
+        ]
+      },
+      "properties": {
+        "id": "acc_64",
+        "facility_type": "accessible_parking",
+        "name": "West Side  1200 Raymur Av",
+        "local_area": "Strathcona",
+        "object_id": 64,
+        "location": "West Side  1200 Raymur Av",
+        "street_name": "Raymur Av",
+        "block": 1200,
+        "type": "2HR Accessible Parking Space",
+        "description": "2HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10160099999096,
+          49.258359998915104
+        ]
+      },
+      "properties": {
+        "id": "acc_65",
+        "facility_type": "accessible_parking",
+        "name": "South Side 100 E 14th Av",
+        "local_area": "Mount Pleasant",
+        "object_id": 65,
+        "location": "South Side 100 E 14th Av",
+        "street_name": "E 14th Av",
+        "block": 100,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11603200034287,
+          49.23175699872622
+        ]
+      },
+      "properties": {
+        "id": "acc_68",
+        "facility_type": "accessible_parking",
+        "name": "East Side  5800 Cambie St",
+        "local_area": "Oakridge",
+        "object_id": 68,
+        "location": "East Side  5800 Cambie St",
+        "street_name": "Cambie St",
+        "block": 5800,
+        "type": "2HR Accessible Parking Space",
+        "description": "2HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.15574200037719,
+          49.247022998650515
+        ]
+      },
+      "properties": {
+        "id": "acc_69",
+        "facility_type": "accessible_parking",
+        "name": "North Side 2100 Eddington Drive",
+        "local_area": "Arbutus Ridge",
+        "object_id": 69,
+        "location": "North Side 2100 Eddington Drive",
+        "street_name": "Eddington Drive",
+        "block": 2100,
+        "type": "2HR Accessible Parking Space",
+        "description": "2HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10841099995736,
+          49.28316479875809
+        ]
+      },
+      "properties": {
+        "id": "acc_75",
+        "facility_type": "accessible_parking",
+        "name": "South Side 100 W Cordova St",
+        "local_area": "Downtown",
+        "object_id": 75,
+        "location": "South Side 100 W Cordova St",
+        "street_name": "W Cordova St",
+        "block": 100,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09307699983863,
+          49.27148999915528
+        ]
+      },
+      "properties": {
+        "id": "acc_79",
+        "facility_type": "accessible_parking",
+        "name": "South Side 500 Terminal Av",
+        "local_area": "Strathcona",
+        "object_id": 79,
+        "location": "South Side 500 Terminal Av",
+        "street_name": "Terminal Av",
+        "block": 500,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14292600008152,
+          49.27057699908654
+        ]
+      },
+      "properties": {
+        "id": "acc_80",
+        "facility_type": "accessible_parking",
+        "name": "South Side 1600 W 1st Av",
+        "local_area": "Fairview",
+        "object_id": 80,
+        "location": "South Side 1600 W 1st Av",
+        "street_name": "W 1st Av",
+        "block": 1600,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09926599999372,
+          49.28232999869402
+        ]
+      },
+      "properties": {
+        "id": "acc_81",
+        "facility_type": "accessible_parking",
+        "name": "North Side 200 E Cordova St",
+        "local_area": "Strathcona",
+        "object_id": 81,
+        "location": "North Side 200 E Cordova St",
+        "street_name": "E Cordova St",
+        "block": 200,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09085700063507,
+          49.22637699902032
+        ]
+      },
+      "properties": {
+        "id": "acc_83",
+        "facility_type": "accessible_parking",
+        "name": "West Side  6400 Fraser St",
+        "local_area": "Sunset",
+        "object_id": 83,
+        "location": "West Side  6400 Fraser St",
+        "street_name": "Fraser St",
+        "block": 6400,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10460699972859,
+          49.263719998803786
+        ]
+      },
+      "properties": {
+        "id": "acc_86",
+        "facility_type": "accessible_parking",
+        "name": "South Side 0 E 8th Av",
+        "local_area": "Mount Pleasant",
+        "object_id": 86,
+        "location": "South Side 0 E 8th Av",
+        "street_name": "E 8th Av",
+        "block": 0,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14304799967583,
+          49.26621999944171
+        ]
+      },
+      "properties": {
+        "id": "acc_88",
+        "facility_type": "accessible_parking",
+        "name": "South Side 1600 W 6th Av",
+        "local_area": "Fairview",
+        "object_id": 88,
+        "location": "South Side 1600 W 6th Av",
+        "street_name": "W 6th Av",
+        "block": 1600,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.126062000504,
+          49.27503799873479
+        ]
+      },
+      "properties": {
+        "id": "acc_92",
+        "facility_type": "accessible_parking",
+        "name": "North Side 500 Drake St",
+        "local_area": "Downtown",
+        "object_id": 92,
+        "location": "North Side 500 Drake St",
+        "street_name": "Drake St",
+        "block": 500,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.211583000159,
+          49.26392999866858
+        ]
+      },
+      "properties": {
+        "id": "acc_95",
+        "facility_type": "accessible_parking",
+        "name": "North Side 4500 W 10th Av",
+        "local_area": "West Point Grey",
+        "object_id": 95,
+        "location": "North Side 4500 W 10th Av",
+        "street_name": "W 10th Av",
+        "block": 4500,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12532300063614,
+          49.26221099935782
+        ]
+      },
+      "properties": {
+        "id": "acc_97",
+        "facility_type": "accessible_parking",
+        "name": "East Side  2600 Laurel St",
+        "local_area": "Fairview",
+        "object_id": 97,
+        "location": "East Side  2600 Laurel St",
+        "street_name": "Laurel St",
+        "block": 2600,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12315799971023,
+          49.262424999048314
+        ]
+      },
+      "properties": {
+        "id": "acc_98",
+        "facility_type": "accessible_parking",
+        "name": "North Side 800 W 10th Av",
+        "local_area": "Fairview",
+        "object_id": 98,
+        "location": "North Side 800 W 10th Av",
+        "street_name": "W 10th Av",
+        "block": 800,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12082490013368,
+          49.26238049933892
+        ]
+      },
+      "properties": {
+        "id": "acc_100",
+        "facility_type": "accessible_parking",
+        "name": "North Side 700 W 10th Av",
+        "local_area": "Fairview",
+        "object_id": 100,
+        "location": "North Side 700 W 10th Av",
+        "street_name": "W 10th Av",
+        "block": 700,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1138169996664,
+          49.2667009994923
+        ]
+      },
+      "properties": {
+        "id": "acc_106",
+        "facility_type": "accessible_parking",
+        "name": "North Side 400 W 5th Av",
+        "local_area": "Mount Pleasant",
+        "object_id": 106,
+        "location": "North Side 400 W 5th Av",
+        "street_name": "W 5th Av",
+        "block": 400,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12532299974087,
+          49.26215799868723
+        ]
+      },
+      "properties": {
+        "id": "acc_107",
+        "facility_type": "accessible_parking",
+        "name": "East Side  2600 Laurel St",
+        "local_area": "Fairview",
+        "object_id": 107,
+        "location": "East Side  2600 Laurel St",
+        "street_name": "Laurel St",
+        "block": 2600,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10375900058347,
+          49.27766799916285
+        ]
+      },
+      "properties": {
+        "id": "acc_111",
+        "facility_type": "accessible_parking",
+        "name": "North Side 0 Expo Blvd",
+        "local_area": "Downtown",
+        "object_id": 111,
+        "location": "North Side 0 Expo Blvd",
+        "street_name": "Expo Blvd",
+        "block": 0,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11638799994276,
+          49.28105999911041
+        ]
+      },
+      "properties": {
+        "id": "acc_121",
+        "facility_type": "accessible_parking",
+        "name": "East Side  700 Richard St",
+        "local_area": "Downtown",
+        "object_id": 121,
+        "location": "East Side  700 Richard St",
+        "street_name": "Richard St",
+        "block": 700,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13698599973536,
+          49.283300998797316
+        ]
+      },
+      "properties": {
+        "id": "acc_125",
+        "facility_type": "accessible_parking",
+        "name": "West Side  1200 Broughton St",
+        "local_area": "West End",
+        "object_id": 125,
+        "location": "West Side  1200 Broughton St",
+        "street_name": "Broughton St",
+        "block": 1200,
+        "type": "3HR Accessible Parking Space",
+        "description": "3HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11041899940093,
+          49.26655299928857
+        ]
+      },
+      "properties": {
+        "id": "acc_131",
+        "facility_type": "accessible_parking",
+        "name": "South Side 200 W 5th Av",
+        "local_area": "Mount Pleasant",
+        "object_id": 131,
+        "location": "South Side 200 W 5th Av",
+        "street_name": "W 5th Av",
+        "block": 200,
+        "type": "Accessible Parking Space",
+        "description": "Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05649400051371,
+          49.27116899927112
+        ]
+      },
+      "properties": {
+        "id": "acc_132",
+        "facility_type": "accessible_parking",
+        "name": "East Side  1500 Nanaimo St",
+        "local_area": "Hastings-Sunrise",
+        "object_id": 132,
+        "location": "East Side  1500 Nanaimo St",
+        "street_name": "Nanaimo St",
+        "block": 1500,
+        "type": "2HR Accessible Parking Space",
+        "description": "2HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10285899997879,
+          49.26428399876857
+        ]
+      },
+      "properties": {
+        "id": "acc_134",
+        "facility_type": "accessible_parking",
+        "name": "East Side  2300 Quebec St",
+        "local_area": "Mount Pleasant",
+        "object_id": 134,
+        "location": "East Side  2300 Quebec St",
+        "street_name": "Quebec St",
+        "block": 2300,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10936820004693,
+          49.26990849907534
+        ]
+      },
+      "properties": {
+        "id": "acc_135",
+        "facility_type": "accessible_parking",
+        "name": "East Side  1700 Columbia St",
+        "local_area": "Mount Pleasant",
+        "object_id": 135,
+        "location": "East Side  1700 Columbia St",
+        "street_name": "Columbia St",
+        "block": 1700,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09308150064248,
+          49.283933298963106
+        ]
+      },
+      "properties": {
+        "id": "acc_142",
+        "facility_type": "accessible_parking",
+        "name": "South Side 500 Alexander St",
+        "local_area": "Strathcona",
+        "object_id": 142,
+        "location": "South Side 500 Alexander St",
+        "street_name": "Alexander St",
+        "block": 500,
+        "type": "Accessible Parking Space",
+        "description": "Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.119885699793,
+          49.277444699212026
+        ]
+      },
+      "properties": {
+        "id": "acc_143",
+        "facility_type": "accessible_parking",
+        "name": "East Side  900 Homer St",
+        "local_area": "Downtown",
+        "object_id": 143,
+        "location": "East Side  900 Homer St",
+        "street_name": "Homer St",
+        "block": 900,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.16745800035248,
+          49.258684999511544
+        ]
+      },
+      "properties": {
+        "id": "acc_145",
+        "facility_type": "accessible_parking",
+        "name": "North Side 2700 W 15th Av",
+        "local_area": "Kitsilano",
+        "object_id": 145,
+        "location": "North Side 2700 W 15th Av",
+        "street_name": "W 15th Av",
+        "block": 2700,
+        "type": "Accessible Parking Space",
+        "description": "Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13685999970711,
+          49.279925999404306
+        ]
+      },
+      "properties": {
+        "id": "acc_148",
+        "facility_type": "accessible_parking",
+        "name": "North Side 1200 Pacific St",
+        "local_area": "West End",
+        "object_id": 148,
+        "location": "North Side 1200 Pacific St",
+        "street_name": "Pacific St",
+        "block": 1200,
+        "type": "Accessible Parking Space",
+        "description": "Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10191569933949,
+          49.243263298712634
+        ]
+      },
+      "properties": {
+        "id": "acc_149",
+        "facility_type": "accessible_parking",
+        "name": "South Side 100 E 30th Av",
+        "local_area": "Riley Park",
+        "object_id": 149,
+        "location": "South Side 100 E 30th Av",
+        "street_name": "E 30th Av",
+        "block": 100,
+        "type": "3HR Accessible Parking Space",
+        "description": "3HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12019729988121,
+          49.27978099935252
+        ]
+      },
+      "properties": {
+        "id": "acc_150",
+        "facility_type": "accessible_parking",
+        "name": "East Side  800 Seymour St",
+        "local_area": "Downtown",
+        "object_id": 150,
+        "location": "East Side  800 Seymour St",
+        "street_name": "Seymour St",
+        "block": 800,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.06398960048995,
+          49.264523898909694
+        ]
+      },
+      "properties": {
+        "id": "acc_151",
+        "facility_type": "accessible_parking",
+        "name": "West Side  2200 Semlin Dr",
+        "local_area": "Grandview-Woodland",
+        "object_id": 151,
+        "location": "West Side  2200 Semlin Dr",
+        "street_name": "Semlin Dr",
+        "block": 2200,
+        "type": "Accessible Parking Space",
+        "description": "Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.06691600037283,
+          49.27667399938666
+        ]
+      },
+      "properties": {
+        "id": "acc_156",
+        "facility_type": "accessible_parking",
+        "name": "North Side 1800 Venables St",
+        "local_area": "Grandview-Woodland",
+        "object_id": 156,
+        "location": "North Side 1800 Venables St",
+        "street_name": "Venables St",
+        "block": 1800,
+        "type": "Accessible Parking Space",
+        "description": "Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05869319969754,
+          49.26041869907752
+        ]
+      },
+      "properties": {
+        "id": "acc_158",
+        "facility_type": "accessible_parking",
+        "name": "North Side 2200 E 11th Av",
+        "local_area": "Kensington-Cedar Cottage",
+        "object_id": 158,
+        "location": "North Side 2200 E 11th Av",
+        "street_name": "E 11th Av",
+        "block": 2200,
+        "type": "Accessible Parking Space",
+        "description": "Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12054799957721,
+          49.26238049892783
+        ]
+      },
+      "properties": {
+        "id": "acc_160",
+        "facility_type": "accessible_parking",
+        "name": "North Side 700 W 10th Av",
+        "local_area": "Fairview",
+        "object_id": 160,
+        "location": "North Side 700 W 10th Av",
+        "street_name": "W 10th Av",
+        "block": 700,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12035419970226,
+          49.26238049947275
+        ]
+      },
+      "properties": {
+        "id": "acc_162",
+        "facility_type": "accessible_parking",
+        "name": "North Side 700 W 10th Av",
+        "local_area": "Fairview",
+        "object_id": 162,
+        "location": "North Side 700 W 10th Av",
+        "street_name": "W 10th Av",
+        "block": 700,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12164700010516,
+          49.282821999017216
+        ]
+      },
+      "properties": {
+        "id": "acc_6",
+        "facility_type": "accessible_parking",
+        "name": "West Side  700 Hornby St",
+        "local_area": "Downtown",
+        "object_id": 6,
+        "location": "West Side  700 Hornby St",
+        "street_name": "Hornby St",
+        "block": 700,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.15980699939941,
+          49.23684199897807
+        ]
+      },
+      "properties": {
+        "id": "acc_10",
+        "facility_type": "accessible_parking",
+        "name": "East Side  5400 Vine St",
+        "local_area": "Arbutus Ridge",
+        "object_id": 10,
+        "location": "East Side  5400 Vine St",
+        "street_name": "Vine St",
+        "block": 5400,
+        "type": "Accessible Parking Space",
+        "description": "Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10114600038541,
+          49.26218899920195
+        ]
+      },
+      "properties": {
+        "id": "acc_13",
+        "facility_type": "accessible_parking",
+        "name": "West Side  2500 Main St",
+        "local_area": "Mount Pleasant",
+        "object_id": 13,
+        "location": "West Side  2500 Main St",
+        "street_name": "Main St",
+        "block": 2500,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10113000031343,
+          49.25012199919255
+        ]
+      },
+      "properties": {
+        "id": "acc_16",
+        "facility_type": "accessible_parking",
+        "name": "West Side  3900 Main St",
+        "local_area": "Riley Park",
+        "object_id": 16,
+        "location": "West Side  3900 Main St",
+        "street_name": "Main St",
+        "block": 3900,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.06954799946539,
+          49.26764699945767
+        ]
+      },
+      "properties": {
+        "id": "acc_17",
+        "facility_type": "accessible_parking",
+        "name": "East Side  1900 Commercial Drive",
+        "local_area": "Grandview-Woodland",
+        "object_id": 17,
+        "location": "East Side  1900 Commercial Drive",
+        "street_name": "Commercial Drive",
+        "block": 1900,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09907699972273,
+          49.28036399940703
+        ]
+      },
+      "properties": {
+        "id": "acc_19",
+        "facility_type": "accessible_parking",
+        "name": "South Side 200 E Pender St",
+        "local_area": "Strathcona",
+        "object_id": 19,
+        "location": "South Side 200 E Pender St",
+        "street_name": "E Pender St",
+        "block": 200,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13780000023301,
+          49.29017599929735
+        ]
+      },
+      "properties": {
+        "id": "acc_26",
+        "facility_type": "accessible_parking",
+        "name": "South Side 1800 Barclay St",
+        "local_area": "West End",
+        "object_id": 26,
+        "location": "South Side 1800 Barclay St",
+        "street_name": "Barclay St",
+        "block": 1800,
+        "type": "2HR Accessible Parking Space",
+        "description": "2HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.17304699948305,
+          49.2640869994891
+        ]
+      },
+      "properties": {
+        "id": "acc_29",
+        "facility_type": "accessible_parking",
+        "name": "South Side 3000 W Broadway",
+        "local_area": "Kitsilano",
+        "object_id": 29,
+        "location": "South Side 3000 W Broadway",
+        "street_name": "W Broadway",
+        "block": 3000,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1325309998555,
+          49.28935899940953
+        ]
+      },
+      "properties": {
+        "id": "acc_31",
+        "facility_type": "accessible_parking",
+        "name": "West Side  800 Cardero St",
+        "local_area": "West End",
+        "object_id": 31,
+        "location": "West Side  800 Cardero St",
+        "street_name": "Cardero St",
+        "block": 800,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12666500060435,
+          49.275621998665414
+        ]
+      },
+      "properties": {
+        "id": "acc_32",
+        "facility_type": "accessible_parking",
+        "name": "West Side  1200 Seymour St",
+        "local_area": "Downtown",
+        "object_id": 32,
+        "location": "West Side  1200 Seymour St",
+        "street_name": "Seymour St",
+        "block": 1200,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05775699989317,
+          49.281353999241446
+        ]
+      },
+      "properties": {
+        "id": "acc_34",
+        "facility_type": "accessible_parking",
+        "name": "East Side  300 Garden Drive",
+        "local_area": "Grandview-Woodland",
+        "object_id": 34,
+        "location": "East Side  300 Garden Drive",
+        "street_name": "Garden Drive",
+        "block": 300,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.06549600066049,
+          49.230670998619125
+        ]
+      },
+      "properties": {
+        "id": "acc_36",
+        "facility_type": "accessible_parking",
+        "name": "East Side  5800 Victoria Drive",
+        "local_area": "Victoria-Fraserview",
+        "object_id": 36,
+        "location": "East Side  5800 Victoria Drive",
+        "street_name": "Victoria Drive",
+        "block": 5800,
+        "type": "2HR Accessible Parking Space",
+        "description": "2HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09080100019965,
+          49.228808999313344
+        ]
+      },
+      "properties": {
+        "id": "acc_42",
+        "facility_type": "accessible_parking",
+        "name": "West Side  6100 Fraser St",
+        "local_area": "Sunset",
+        "object_id": 42,
+        "location": "West Side  6100 Fraser St",
+        "street_name": "Fraser St",
+        "block": 6100,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.18236000014217,
+          49.23462499884741
+        ]
+      },
+      "properties": {
+        "id": "acc_48",
+        "facility_type": "accessible_parking",
+        "name": "South Side 3500 W 41st Av",
+        "local_area": "Dunbar-Southlands",
+        "object_id": 48,
+        "location": "South Side 3500 W 41st Av",
+        "street_name": "W 41st Av",
+        "block": 3500,
+        "type": "2HR Accessible Parking Space",
+        "description": "2HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11594099987657,
+          49.23463199935723
+        ]
+      },
+      "properties": {
+        "id": "acc_49",
+        "facility_type": "accessible_parking",
+        "name": "East Side  5500 Cambie St",
+        "local_area": "Riley Park",
+        "object_id": 49,
+        "location": "East Side  5500 Cambie St",
+        "street_name": "Cambie St",
+        "block": 5500,
+        "type": "2HR Accessible Parking Space",
+        "description": "2HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1150469994304,
+          49.254718998740756
+        ]
+      },
+      "properties": {
+        "id": "acc_50",
+        "facility_type": "accessible_parking",
+        "name": "East Side  3400 Cambie St",
+        "local_area": "Riley Park",
+        "object_id": 50,
+        "location": "East Side  3400 Cambie St",
+        "street_name": "Cambie St",
+        "block": 3400,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12802499953162,
+          49.29041599933995
+        ]
+      },
+      "properties": {
+        "id": "acc_56",
+        "facility_type": "accessible_parking",
+        "name": "North Side 1400 W Hastings St",
+        "local_area": "Downtown",
+        "object_id": 56,
+        "location": "North Side 1400 W Hastings St",
+        "street_name": "W Hastings St",
+        "block": 1400,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.18509200014913,
+          49.24860699873872
+        ]
+      },
+      "properties": {
+        "id": "acc_57",
+        "facility_type": "accessible_parking",
+        "name": "East Side  4200 Dunbar St",
+        "local_area": "Dunbar-Southlands",
+        "object_id": 57,
+        "location": "East Side  4200 Dunbar St",
+        "street_name": "Dunbar St",
+        "block": 4200,
+        "type": "2HR Accessible Parking Space",
+        "description": "2HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12844700050017,
+          49.27945299864607
+        ]
+      },
+      "properties": {
+        "id": "acc_60",
+        "facility_type": "accessible_parking",
+        "name": "East Side  1100 Burrard St",
+        "local_area": "Downtown",
+        "object_id": 60,
+        "location": "East Side  1100 Burrard St",
+        "street_name": "Burrard St",
+        "block": 1100,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.15782800065243,
+          49.23476899950834
+        ]
+      },
+      "properties": {
+        "id": "acc_61",
+        "facility_type": "accessible_parking",
+        "name": "West Side  5600 Yew St",
+        "local_area": "Arbutus Ridge",
+        "object_id": 61,
+        "location": "West Side  5600 Yew St",
+        "street_name": "Yew St",
+        "block": 5600,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.17621100061693,
+          49.26427799902489
+        ]
+      },
+      "properties": {
+        "id": "acc_63",
+        "facility_type": "accessible_parking",
+        "name": "North Side 3200 W Broadway",
+        "local_area": "Kitsilano",
+        "object_id": 63,
+        "location": "North Side 3200 W Broadway",
+        "street_name": "W Broadway",
+        "block": 3200,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.06981800053792,
+          49.264712998854755
+        ]
+      },
+      "properties": {
+        "id": "acc_70",
+        "facility_type": "accessible_parking",
+        "name": "West Side  2200 Commercial Drive",
+        "local_area": "Grandview-Woodland",
+        "object_id": 70,
+        "location": "West Side  2200 Commercial Drive",
+        "street_name": "Commercial Drive",
+        "block": 2200,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1018029997472,
+          49.283800998748646
+        ]
+      },
+      "properties": {
+        "id": "acc_71",
+        "facility_type": "accessible_parking",
+        "name": "South Side 100 Alexander St",
+        "local_area": "Downtown",
+        "object_id": 71,
+        "location": "South Side 100 Alexander St",
+        "street_name": "Alexander St",
+        "block": 100,
+        "type": "2HR Accessible Parking Space",
+        "description": "2HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12306300011495,
+          49.27532569915378
+        ]
+      },
+      "properties": {
+        "id": "acc_73",
+        "facility_type": "accessible_parking",
+        "name": "East Side  1100 Homer St",
+        "local_area": "Downtown",
+        "object_id": 73,
+        "location": "East Side  1100 Homer St",
+        "street_name": "Homer St",
+        "block": 1100,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09971499971043,
+          49.26192169922481
+        ]
+      },
+      "properties": {
+        "id": "acc_74",
+        "facility_type": "accessible_parking",
+        "name": "South Side 200 E 10th Av",
+        "local_area": "Mount Pleasant",
+        "object_id": 74,
+        "location": "South Side 200 E 10th Av",
+        "street_name": "E 10th Av",
+        "block": 200,
+        "type": "2HR Accessible Parking Space",
+        "description": "2HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13145000008532,
+          49.27380999913353
+        ]
+      },
+      "properties": {
+        "id": "acc_77",
+        "facility_type": "accessible_parking",
+        "name": "West Side  1500 Granville St",
+        "local_area": "Downtown",
+        "object_id": 77,
+        "location": "West Side  1500 Granville St",
+        "street_name": "Granville St",
+        "block": 1500,
+        "type": "3HR Accessible Parking Space - Under Granville St. Bridge",
+        "description": "3HR Accessible Parking Space - Under Granville St. Bridge",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13205899962935,
+          49.281014998903515
+        ]
+      },
+      "properties": {
+        "id": "acc_78",
+        "facility_type": "accessible_parking",
+        "name": "North Side 1100 Davie St",
+        "local_area": "West End",
+        "object_id": 78,
+        "location": "North Side 1100 Davie St",
+        "street_name": "Davie St",
+        "block": 1100,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12787700010396,
+          49.27859199938002
+        ]
+      },
+      "properties": {
+        "id": "acc_82",
+        "facility_type": "accessible_parking",
+        "name": "South Side 1100 Hornby St",
+        "local_area": "Downtown",
+        "object_id": 82,
+        "location": "South Side 1100 Hornby St",
+        "street_name": "Hornby St",
+        "block": 1100,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.18339000041476,
+          49.26852099942411
+        ]
+      },
+      "properties": {
+        "id": "acc_87",
+        "facility_type": "accessible_parking",
+        "name": "South Side 3500 W 4th Av",
+        "local_area": "Kitsilano",
+        "object_id": 87,
+        "location": "South Side 3500 W 4th Av",
+        "street_name": "W 4th Av",
+        "block": 3500,
+        "type": "3HR Accessible Parking Space",
+        "description": "3HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0940230002604,
+          49.273873998774455
+        ]
+      },
+      "properties": {
+        "id": "acc_91",
+        "facility_type": "accessible_parking",
+        "name": "North Side 400 National Av",
+        "local_area": "Strathcona",
+        "object_id": 91,
+        "location": "North Side 400 National Av",
+        "street_name": "National Av",
+        "block": 400,
+        "type": "2HR Accessible Parking Space",
+        "description": "2HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11389499974383,
+          49.26669799919033
+        ]
+      },
+      "properties": {
+        "id": "acc_93",
+        "facility_type": "accessible_parking",
+        "name": "North Side 400 W 5th Av",
+        "local_area": "Mount Pleasant",
+        "object_id": 93,
+        "location": "North Side 400 W 5th Av",
+        "street_name": "W 5th Av",
+        "block": 400,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.20308299932167,
+          49.26392599913636
+        ]
+      },
+      "properties": {
+        "id": "acc_96",
+        "facility_type": "accessible_parking",
+        "name": "West Side  2500 Discovery St",
+        "local_area": "West Point Grey",
+        "object_id": 96,
+        "location": "West Side  2500 Discovery St",
+        "street_name": "Discovery St",
+        "block": 2500,
+        "type": "Accessible Parking Space",
+        "description": "Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12073569974153,
+          49.26238049903488
+        ]
+      },
+      "properties": {
+        "id": "acc_101",
+        "facility_type": "accessible_parking",
+        "name": "North Side 700 W 10th Av",
+        "local_area": "Fairview",
+        "object_id": 101,
+        "location": "North Side 700 W 10th Av",
+        "street_name": "W 10th Av",
+        "block": 700,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12093099960198,
+          49.26339199929941
+        ]
+      },
+      "properties": {
+        "id": "acc_102",
+        "facility_type": "accessible_parking",
+        "name": "North Side 700 W Broadway",
+        "local_area": "Fairview",
+        "object_id": 102,
+        "location": "North Side 700 W Broadway",
+        "street_name": "W Broadway",
+        "block": 700,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12288799991173,
+          49.262424998688225
+        ]
+      },
+      "properties": {
+        "id": "acc_108",
+        "facility_type": "accessible_parking",
+        "name": "North Side 800 W 10th Av",
+        "local_area": "Fairview",
+        "object_id": 108,
+        "location": "North Side 800 W 10th Av",
+        "street_name": "W 10th Av",
+        "block": 800,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14515199941795,
+          49.2688679987204
+        ]
+      },
+      "properties": {
+        "id": "acc_110",
+        "facility_type": "accessible_parking",
+        "name": "South Side 1700 W 3rd Av",
+        "local_area": "Fairview",
+        "object_id": 110,
+        "location": "South Side 1700 W 3rd Av",
+        "street_name": "W 3rd Av",
+        "block": 1700,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.08103599956117,
+          49.25271999905233
+        ]
+      },
+      "properties": {
+        "id": "acc_113",
+        "facility_type": "accessible_parking",
+        "name": "North Side 1100 Kingsway",
+        "local_area": "Kensington-Cedar Cottage",
+        "object_id": 113,
+        "location": "North Side 1100 Kingsway",
+        "street_name": "Kingsway",
+        "block": 1100,
+        "type": "3HR Accessible Parking Space",
+        "description": "3HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05661900060048,
+          49.23258599917365
+        ]
+      },
+      "properties": {
+        "id": "acc_115",
+        "facility_type": "accessible_parking",
+        "name": "West Side  5700 St. Margarets St",
+        "local_area": "Victoria-Fraserview",
+        "object_id": 115,
+        "location": "West Side  5700 St. Margarets St",
+        "street_name": "St. Margarets St",
+        "block": 5700,
+        "type": "Accessible Parking Spaces - 9am-3pm",
+        "description": "Accessible Parking Spaces - 9am-3pm",
+        "spaces": 2,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.15507200048535,
+          49.268371999332494
+        ]
+      },
+      "properties": {
+        "id": "acc_116",
+        "facility_type": "accessible_parking",
+        "name": "East Side  1900 Yew St",
+        "local_area": "Kitsilano",
+        "object_id": 116,
+        "location": "East Side  1900 Yew St",
+        "street_name": "Yew St",
+        "block": 1900,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.20589899991688,
+          49.26822799923647
+        ]
+      },
+      "properties": {
+        "id": "acc_117",
+        "facility_type": "accessible_parking",
+        "name": "East Side  2000 Trimble St",
+        "local_area": "West Point Grey",
+        "object_id": 117,
+        "location": "East Side  2000 Trimble St",
+        "street_name": "Trimble St",
+        "block": 2000,
+        "type": "Accessible Parking Space - 8am-5pm Mon-Fri",
+        "description": "Accessible Parking Space - 8am-5pm Mon-Fri",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11097999998589,
+          49.26464499930689
+        ]
+      },
+      "properties": {
+        "id": "acc_118",
+        "facility_type": "accessible_parking",
+        "name": "West Side  2300 Alberta St",
+        "local_area": "Mount Pleasant",
+        "object_id": 118,
+        "location": "West Side  2300 Alberta St",
+        "street_name": "Alberta St",
+        "block": 2300,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11976599995526,
+          49.282791998654915
+        ]
+      },
+      "properties": {
+        "id": "acc_126",
+        "facility_type": "accessible_parking",
+        "name": "West Side  700 Howe St",
+        "local_area": "Downtown",
+        "object_id": 126,
+        "location": "West Side  700 Howe St",
+        "street_name": "Howe St",
+        "block": 700,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10531000025435,
+          49.24352399935592
+        ]
+      },
+      "properties": {
+        "id": "acc_133",
+        "facility_type": "accessible_parking",
+        "name": "West Side  4500 Ontario St",
+        "local_area": "Riley Park",
+        "object_id": 133,
+        "location": "West Side  4500 Ontario St",
+        "street_name": "Ontario St",
+        "block": 4500,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0337089999938,
+          49.25134399910035
+        ]
+      },
+      "properties": {
+        "id": "acc_137",
+        "facility_type": "accessible_parking",
+        "name": "East Side  3700 Rupert St",
+        "local_area": "Renfrew-Collingwood",
+        "object_id": 137,
+        "location": "East Side  3700 Rupert St",
+        "street_name": "Rupert St",
+        "block": 3700,
+        "type": "Accessible Parking Spaces - 8am-5pm School Days",
+        "description": "Accessible Parking Spaces - 8am-5pm School Days",
+        "spaces": 2,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.02352430044489,
+          49.20152789943107
+        ]
+      },
+      "properties": {
+        "id": "acc_138",
+        "facility_type": "accessible_parking",
+        "name": "West Side  8800 Boundary Rd",
+        "local_area": "Killarney",
+        "object_id": 138,
+        "location": "West Side  8800 Boundary Rd",
+        "street_name": "Boundary Rd",
+        "block": 8800,
+        "type": "Accessible Parking Space",
+        "description": "Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.18357300043816,
+          49.26963199945849
+        ]
+      },
+      "properties": {
+        "id": "acc_146",
+        "facility_type": "accessible_parking",
+        "name": "East Side  1800 Dunbar St",
+        "local_area": "Kitsilano",
+        "object_id": 146,
+        "location": "East Side  1800 Dunbar St",
+        "street_name": "Dunbar St",
+        "block": 1800,
+        "type": "Accessible Parking Space",
+        "description": "Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0576549005765,
+          49.22460909906648
+        ]
+      },
+      "properties": {
+        "id": "acc_147",
+        "facility_type": "accessible_parking",
+        "name": "East Side  6500 Berkeley St",
+        "local_area": "Victoria-Fraserview",
+        "object_id": 147,
+        "location": "East Side  6500 Berkeley St",
+        "street_name": "Berkeley St",
+        "block": 6500,
+        "type": "Accessible Parking Space",
+        "description": "Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11678499954452,
+          49.213718999298145
+        ]
+      },
+      "properties": {
+        "id": "acc_152",
+        "facility_type": "accessible_parking",
+        "name": "East Side  7800 Cambie St",
+        "local_area": "Marpole",
+        "object_id": 152,
+        "location": "East Side  7800 Cambie St",
+        "street_name": "Cambie St",
+        "block": 7800,
+        "type": "Accessible Parking Space",
+        "description": "Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1436990004983,
+          49.256736999488574
+        ]
+      },
+      "properties": {
+        "id": "acc_153",
+        "facility_type": "accessible_parking",
+        "name": "West Side  3200 Pine St",
+        "local_area": "Shaughnessy",
+        "object_id": 153,
+        "location": "West Side  3200 Pine St",
+        "street_name": "Pine St",
+        "block": 3200,
+        "type": "Accessible Parking Space - 8am-Noon Sundays",
+        "description": "Accessible Parking Space - 8am-Noon Sundays",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.15570299985751,
+          49.2330989987011
+        ]
+      },
+      "properties": {
+        "id": "acc_154",
+        "facility_type": "accessible_parking",
+        "name": "West Side  5800 West Blvd",
+        "local_area": "Kerrisdale",
+        "object_id": 154,
+        "location": "West Side  5800 West Blvd",
+        "street_name": "West Blvd",
+        "block": 5800,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12045010043084,
+          49.26238049938306
+        ]
+      },
+      "properties": {
+        "id": "acc_161",
+        "facility_type": "accessible_parking",
+        "name": "North Side 700 W 10th Av",
+        "local_area": "Fairview",
+        "object_id": 161,
+        "location": "North Side 700 W 10th Av",
+        "street_name": "W 10th Av",
+        "block": 700,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12026370047589,
+          49.26238049925773
+        ]
+      },
+      "properties": {
+        "id": "acc_163",
+        "facility_type": "accessible_parking",
+        "name": "North Side 700 W 10th Av",
+        "local_area": "Fairview",
+        "object_id": 163,
+        "location": "North Side 700 W 10th Av",
+        "street_name": "W 10th Av",
+        "block": 700,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.06919299987933,
+          49.27124699899509
+        ]
+      },
+      "properties": {
+        "id": "acc_4",
+        "facility_type": "accessible_parking",
+        "name": "South Side 1700 Grant St",
+        "local_area": "Grandview-Woodland",
+        "object_id": 4,
+        "location": "South Side 1700 Grant St",
+        "street_name": "Grant St",
+        "block": 1700,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12127299933371,
+          49.28292499921728
+        ]
+      },
+      "properties": {
+        "id": "acc_5",
+        "facility_type": "accessible_parking",
+        "name": "East Side  700 Hornby St",
+        "local_area": "Downtown",
+        "object_id": 5,
+        "location": "East Side  700 Hornby St",
+        "street_name": "Hornby St",
+        "block": 700,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.06986500037047,
+          49.27217999871068
+        ]
+      },
+      "properties": {
+        "id": "acc_7",
+        "facility_type": "accessible_parking",
+        "name": "North Side 1600 Kitchener St",
+        "local_area": "Grandview-Woodland",
+        "object_id": 7,
+        "location": "North Side 1600 Kitchener St",
+        "street_name": "Kitchener St",
+        "block": 1600,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10135199978986,
+          49.28031999908004
+        ]
+      },
+      "properties": {
+        "id": "acc_9",
+        "facility_type": "accessible_parking",
+        "name": "South Side 100 E Pender St",
+        "local_area": "Downtown",
+        "object_id": 9,
+        "location": "South Side 100 E Pender St",
+        "street_name": "E Pender St",
+        "block": 100,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10106700066224,
+          49.247101998759256
+        ]
+      },
+      "properties": {
+        "id": "acc_15",
+        "facility_type": "accessible_parking",
+        "name": "East Side  4200 Main St",
+        "local_area": "Riley Park",
+        "object_id": 15,
+        "location": "East Side  4200 Main St",
+        "street_name": "Main St",
+        "block": 4200,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09788599977165,
+          49.27859299893085
+        ]
+      },
+      "properties": {
+        "id": "acc_18",
+        "facility_type": "accessible_parking",
+        "name": "North Side 200 E Georgia St",
+        "local_area": "Strathcona",
+        "object_id": 18,
+        "location": "North Side 200 E Georgia St",
+        "street_name": "E Georgia St",
+        "block": 200,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.15009500058238,
+          49.26802399898172
+        ]
+      },
+      "properties": {
+        "id": "acc_20",
+        "facility_type": "accessible_parking",
+        "name": "South Side 1900 W 4th Av",
+        "local_area": "Kitsilano",
+        "object_id": 20,
+        "location": "South Side 1900 W 4th Av",
+        "street_name": "W 4th Av",
+        "block": 1900,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14754000068409,
+          49.267973999500086
+        ]
+      },
+      "properties": {
+        "id": "acc_21",
+        "facility_type": "accessible_parking",
+        "name": "South Side 1800 W 4th Av",
+        "local_area": "Kitsilano",
+        "object_id": 21,
+        "location": "South Side 1800 W 4th Av",
+        "street_name": "W 4th Av",
+        "block": 1800,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.16486800066396,
+          49.2639399991654
+        ]
+      },
+      "properties": {
+        "id": "acc_28",
+        "facility_type": "accessible_parking",
+        "name": "South Side 2600 W Broadway",
+        "local_area": "Kitsilano",
+        "object_id": 28,
+        "location": "South Side 2600 W Broadway",
+        "street_name": "W Broadway",
+        "block": 2600,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.06542900018869,
+          49.23308799932909
+        ]
+      },
+      "properties": {
+        "id": "acc_35",
+        "facility_type": "accessible_parking",
+        "name": "East Side  5600 Victoria Drive",
+        "local_area": "Kensington-Cedar Cottage",
+        "object_id": 35,
+        "location": "East Side  5600 Victoria Drive",
+        "street_name": "Victoria Drive",
+        "block": 5600,
+        "type": "2HR Accessible Parking Space",
+        "description": "2HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13872170057134,
+          49.26246089949997
+        ]
+      },
+      "properties": {
+        "id": "acc_38",
+        "facility_type": "accessible_parking",
+        "name": "West Side  2600 Granville St",
+        "local_area": "Fairview",
+        "object_id": 38,
+        "location": "West Side  2600 Granville St",
+        "street_name": "Granville St",
+        "block": 2600,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.16268899952559,
+          49.26405999951339
+        ]
+      },
+      "properties": {
+        "id": "acc_41",
+        "facility_type": "accessible_parking",
+        "name": "North Side 2500 W Broadway",
+        "local_area": "Kitsilano",
+        "object_id": 41,
+        "location": "North Side 2500 W Broadway",
+        "street_name": "W Broadway",
+        "block": 2500,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0906560005292,
+          49.22671399896477
+        ]
+      },
+      "properties": {
+        "id": "acc_43",
+        "facility_type": "accessible_parking",
+        "name": "East Side  6300 Fraser St",
+        "local_area": "Sunset",
+        "object_id": 43,
+        "location": "East Side  6300 Fraser St",
+        "street_name": "Fraser St",
+        "block": 6300,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14609500058924,
+          49.263618999285214
+        ]
+      },
+      "properties": {
+        "id": "acc_44",
+        "facility_type": "accessible_parking",
+        "name": "South Side 1800 W Broadway",
+        "local_area": "Kitsilano",
+        "object_id": 44,
+        "location": "South Side 1800 W Broadway",
+        "street_name": "W Broadway",
+        "block": 1800,
+        "type": "Accessible Parking Space",
+        "description": "Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05268399937583,
+          49.23950299947846
+        ]
+      },
+      "properties": {
+        "id": "acc_47",
+        "facility_type": "accessible_parking",
+        "name": "North Side 2500 Kingsway",
+        "local_area": "Renfrew-Collingwood",
+        "object_id": 47,
+        "location": "North Side 2500 Kingsway",
+        "street_name": "Kingsway",
+        "block": 2500,
+        "type": "2HR Accessible Parking Space",
+        "description": "2HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14091599932044,
+          49.211327999226896
+        ]
+      },
+      "properties": {
+        "id": "acc_55",
+        "facility_type": "accessible_parking",
+        "name": "South Side 1500 W 66th Av",
+        "local_area": "Marpole",
+        "object_id": 55,
+        "location": "South Side 1500 W 66th Av",
+        "street_name": "W 66th Av",
+        "block": 1500,
+        "type": "2HR Accessible Parking Space",
+        "description": "2HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13069879938129,
+          49.276833198746274
+        ]
+      },
+      "properties": {
+        "id": "acc_58",
+        "facility_type": "accessible_parking",
+        "name": "West Side  1300 Hornby St",
+        "local_area": "Downtown",
+        "object_id": 58,
+        "location": "West Side  1300 Hornby St",
+        "street_name": "Hornby St",
+        "block": 1300,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10161299950624,
+          49.259285998793686
+        ]
+      },
+      "properties": {
+        "id": "acc_66",
+        "facility_type": "accessible_parking",
+        "name": "South Side 100 E 13th Av",
+        "local_area": "Mount Pleasant",
+        "object_id": 66,
+        "location": "South Side 100 E 13th Av",
+        "street_name": "E 13th Av",
+        "block": 100,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.03938200037915,
+          49.289482999275485
+        ]
+      },
+      "properties": {
+        "id": "acc_67",
+        "facility_type": "accessible_parking",
+        "name": "North Side 3100 New Brighton Road",
+        "local_area": "Hastings-Sunrise",
+        "object_id": 67,
+        "location": "North Side 3100 New Brighton Road",
+        "street_name": "New Brighton Road",
+        "block": 3100,
+        "type": "2HR Accessible Parking Space",
+        "description": "2HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10559000012701,
+          49.2715709991149
+        ]
+      },
+      "properties": {
+        "id": "acc_72",
+        "facility_type": "accessible_parking",
+        "name": "North Side 0 Athletes Way",
+        "local_area": "Mount Pleasant",
+        "object_id": 72,
+        "location": "North Side 0 Athletes Way",
+        "street_name": "Athletes Way",
+        "block": 0,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11802100012197,
+          49.2687207989668
+        ]
+      },
+      "properties": {
+        "id": "acc_76",
+        "facility_type": "accessible_parking",
+        "name": "East Side  400 Moberly Road",
+        "local_area": "Fairview",
+        "object_id": 76,
+        "location": "East Side  400 Moberly Road",
+        "street_name": "Moberly Road",
+        "block": 400,
+        "type": "2HR Accessible Parking Space",
+        "description": "2HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09000400052956,
+          49.255392999150054
+        ]
+      },
+      "properties": {
+        "id": "acc_84",
+        "facility_type": "accessible_parking",
+        "name": "West Side  3300 Fraser St",
+        "local_area": "Riley Park",
+        "object_id": 84,
+        "location": "West Side  3300 Fraser St",
+        "street_name": "Fraser St",
+        "block": 3300,
+        "type": "2HR Accessible Parking Space",
+        "description": "2HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09074000051612,
+          49.229960998991494
+        ]
+      },
+      "properties": {
+        "id": "acc_85",
+        "facility_type": "accessible_parking",
+        "name": "West Side  6000 Fraser St",
+        "local_area": "Sunset",
+        "object_id": 85,
+        "location": "West Side  6000 Fraser St",
+        "street_name": "Fraser St",
+        "block": 6000,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14765199944317,
+          49.27064299918677
+        ]
+      },
+      "properties": {
+        "id": "acc_89",
+        "facility_type": "accessible_parking",
+        "name": "South Side 1800 W 1st Av",
+        "local_area": "Kitsilano",
+        "object_id": 89,
+        "location": "South Side 1800 W 1st Av",
+        "street_name": "W 1st Av",
+        "block": 1800,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.18491799958075,
+          49.248041998847334
+        ]
+      },
+      "properties": {
+        "id": "acc_90",
+        "facility_type": "accessible_parking",
+        "name": "South Side 3500 W 27th Av",
+        "local_area": "Dunbar-Southlands",
+        "object_id": 90,
+        "location": "South Side 3500 W 27th Av",
+        "street_name": "W 27th Av",
+        "block": 3500,
+        "type": "3HR Accessible Parking Space",
+        "description": "3HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.2055849996125,
+          49.26718299881397
+        ]
+      },
+      "properties": {
+        "id": "acc_94",
+        "facility_type": "accessible_parking",
+        "name": "South Side 4300 W 6th Av",
+        "local_area": "West Point Grey",
+        "object_id": 94,
+        "location": "South Side 4300 W 6th Av",
+        "street_name": "W 6th Av",
+        "block": 4300,
+        "type": "Accessible Parking Space - 8am-5pm Mon-Fri",
+        "description": "Accessible Parking Space - 8am-5pm Mon-Fri",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12300199979961,
+          49.26242799871941
+        ]
+      },
+      "properties": {
+        "id": "acc_99",
+        "facility_type": "accessible_parking",
+        "name": "North Side 800 W 10th Av",
+        "local_area": "Fairview",
+        "object_id": 99,
+        "location": "North Side 800 W 10th Av",
+        "street_name": "W 10th Av",
+        "block": 800,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10551999987274,
+          49.271570999196726
+        ]
+      },
+      "properties": {
+        "id": "acc_103",
+        "facility_type": "accessible_parking",
+        "name": "North Side 0 Athletes Way",
+        "local_area": "Mount Pleasant",
+        "object_id": 103,
+        "location": "North Side 0 Athletes Way",
+        "street_name": "Athletes Way",
+        "block": 0,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1314229995035,
+          49.27383099943688
+        ]
+      },
+      "properties": {
+        "id": "acc_104",
+        "facility_type": "accessible_parking",
+        "name": "West Side  1500 Granville St",
+        "local_area": "Downtown",
+        "object_id": 104,
+        "location": "West Side  1500 Granville St",
+        "street_name": "Granville St",
+        "block": 1500,
+        "type": "3HR Accessible Parking Space - Under Granville St. Bridge",
+        "description": "3HR Accessible Parking Space - Under Granville St. Bridge",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12599200064652,
+          49.27500499887341
+        ]
+      },
+      "properties": {
+        "id": "acc_105",
+        "facility_type": "accessible_parking",
+        "name": "North Side 500 Drake St",
+        "local_area": "Downtown",
+        "object_id": 105,
+        "location": "North Side 500 Drake St",
+        "street_name": "Drake St",
+        "block": 500,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12064859947677,
+          49.262380499167556
+        ]
+      },
+      "properties": {
+        "id": "acc_109",
+        "facility_type": "accessible_parking",
+        "name": "North Side 700 W 10th Av",
+        "local_area": "Fairview",
+        "object_id": 109,
+        "location": "North Side 700 W 10th Av",
+        "street_name": "W 10th Av",
+        "block": 700,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.03666400021248,
+          49.234803999255426
+        ]
+      },
+      "properties": {
+        "id": "acc_112",
+        "facility_type": "accessible_parking",
+        "name": "East Side  5400 Cecil St",
+        "local_area": "Renfrew-Collingwood",
+        "object_id": 112,
+        "location": "East Side  5400 Cecil St",
+        "street_name": "Cecil St",
+        "block": 5400,
+        "type": "3HR Accessible Parking Space",
+        "description": "3HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12193100004183,
+          49.27235799876514
+        ]
+      },
+      "properties": {
+        "id": "acc_114",
+        "facility_type": "accessible_parking",
+        "name": "North Side 100 Drake St",
+        "local_area": "Downtown",
+        "object_id": 114,
+        "location": "North Side 100 Drake St",
+        "street_name": "Drake St",
+        "block": 100,
+        "type": "3HR Accessible Parking Space",
+        "description": "3HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "North Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.06996799931616,
+          49.25812199949223
+        ]
+      },
+      "properties": {
+        "id": "acc_119",
+        "facility_type": "accessible_parking",
+        "name": "West Side  2900 Commercial Dr",
+        "local_area": "Kensington-Cedar Cottage",
+        "object_id": 119,
+        "location": "West Side  2900 Commercial Dr",
+        "street_name": "Commercial Dr",
+        "block": 2900,
+        "type": "3HR Accessible Parking Space",
+        "description": "3HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12174500032648,
+          49.263559998880574
+        ]
+      },
+      "properties": {
+        "id": "acc_120",
+        "facility_type": "accessible_parking",
+        "name": "East Side  2400 Willow St",
+        "local_area": "Fairview",
+        "object_id": 120,
+        "location": "East Side  2400 Willow St",
+        "street_name": "Willow St",
+        "block": 2400,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0545370006049,
+          49.28136999930887
+        ]
+      },
+      "properties": {
+        "id": "acc_122",
+        "facility_type": "accessible_parking",
+        "name": "East Side  300 Kamloops St",
+        "local_area": "Hastings-Sunrise",
+        "object_id": 122,
+        "location": "East Side  300 Kamloops St",
+        "street_name": "Kamloops St",
+        "block": 300,
+        "type": "3HR Accessible Parking Space",
+        "description": "3HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14150600048642,
+          49.28545999896185
+        ]
+      },
+      "properties": {
+        "id": "acc_123",
+        "facility_type": "accessible_parking",
+        "name": "West Side  1200 Bidwell St",
+        "local_area": "West End",
+        "object_id": 123,
+        "location": "West Side  1200 Bidwell St",
+        "street_name": "Bidwell St",
+        "block": 1200,
+        "type": "3HR Accessible Parking Space",
+        "description": "3HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13807799984606,
+          49.2050999986229
+        ]
+      },
+      "properties": {
+        "id": "acc_124",
+        "facility_type": "accessible_parking",
+        "name": "South Side 1400 W 73rd Av",
+        "local_area": "Marpole",
+        "object_id": 124,
+        "location": "South Side 1400 W 73rd Av",
+        "street_name": "W 73rd Av",
+        "block": 1400,
+        "type": "Accessible Parking Space",
+        "description": "Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.02563399954362,
+          49.28168299871419
+        ]
+      },
+      "properties": {
+        "id": "acc_127",
+        "facility_type": "accessible_parking",
+        "name": "East Side  300 Kootenay St",
+        "local_area": "Hastings-Sunrise",
+        "object_id": 127,
+        "location": "East Side  300 Kootenay St",
+        "street_name": "Kootenay St",
+        "block": 300,
+        "type": "3HR Accessible Parking Space",
+        "description": "3HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.04662500031247,
+          49.28077899931272
+        ]
+      },
+      "properties": {
+        "id": "acc_128",
+        "facility_type": "accessible_parking",
+        "name": "East Side  400 Kaslo St",
+        "local_area": "Hastings-Sunrise",
+        "object_id": 128,
+        "location": "East Side  400 Kaslo St",
+        "street_name": "Kaslo St",
+        "block": 400,
+        "type": "3HR Accessible Parking Space",
+        "description": "3HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12464300016471,
+          49.264241999128416
+        ]
+      },
+      "properties": {
+        "id": "acc_129",
+        "facility_type": "accessible_parking",
+        "name": "South Side 900 W 8th Av",
+        "local_area": "Fairview",
+        "object_id": 129,
+        "location": "South Side 900 W 8th Av",
+        "street_name": "W 8th Av",
+        "block": 900,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.18510100032306,
+          49.2492009989623
+        ]
+      },
+      "properties": {
+        "id": "acc_130",
+        "facility_type": "accessible_parking",
+        "name": "East Side  4100 Dunbar St",
+        "local_area": "Dunbar-Southlands",
+        "object_id": 130,
+        "location": "East Side  4100 Dunbar St",
+        "street_name": "Dunbar St",
+        "block": 4100,
+        "type": "3HR Accessible Parking Space",
+        "description": "3HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "East Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05159370005545,
+          49.20586869919402
+        ]
+      },
+      "properties": {
+        "id": "acc_136",
+        "facility_type": "accessible_parking",
+        "name": "South Side 2700 E Kent Av S",
+        "local_area": "Killarney",
+        "object_id": 136,
+        "location": "South Side 2700 E Kent Av S",
+        "street_name": "E Kent Av S",
+        "block": 2700,
+        "type": "3HR Accessible Parking Space",
+        "description": "3HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10196899951747,
+          49.28130499863304
+        ]
+      },
+      "properties": {
+        "id": "acc_139",
+        "facility_type": "accessible_parking",
+        "name": "South Side 100 E Hastings St",
+        "local_area": "Downtown",
+        "object_id": 139,
+        "location": "South Side 100 E Hastings St",
+        "street_name": "E Hastings St",
+        "block": 100,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14295179935928,
+          49.26883559932799
+        ]
+      },
+      "properties": {
+        "id": "acc_140",
+        "facility_type": "accessible_parking",
+        "name": "South Side 1600 W 3rd Av",
+        "local_area": "Fairview",
+        "object_id": 140,
+        "location": "South Side 1600 W 3rd Av",
+        "street_name": "W 3rd Av",
+        "block": 1600,
+        "type": "Metered Accessible Parking Space",
+        "description": "Metered Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.08965839949686,
+          49.25368559919732
+        ]
+      },
+      "properties": {
+        "id": "acc_141",
+        "facility_type": "accessible_parking",
+        "name": "South Side 700 E 19th Av",
+        "local_area": "Kensington-Cedar Cottage",
+        "object_id": 141,
+        "location": "South Side 700 E 19th Av",
+        "street_name": "E 19th Av",
+        "block": 700,
+        "type": "3HR Accessible Parking Space - 9am-6pm",
+        "description": "3HR Accessible Parking Space - 9am-6pm",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.03662100037563,
+          49.2363219987525
+        ]
+      },
+      "properties": {
+        "id": "acc_144",
+        "facility_type": "accessible_parking",
+        "name": "West Side  5200 McKinnon St",
+        "local_area": "Renfrew-Collingwood",
+        "object_id": 144,
+        "location": "West Side  5200 McKinnon St",
+        "street_name": "McKinnon St",
+        "block": 5200,
+        "type": "3HR Accessible Parking Space",
+        "description": "3HR Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09147899956709,
+          49.28324909876865
+        ]
+      },
+      "properties": {
+        "id": "acc_155",
+        "facility_type": "accessible_parking",
+        "name": "West Side  100 Princess Av",
+        "local_area": "Strathcona",
+        "object_id": 155,
+        "location": "West Side  100 Princess Av",
+        "street_name": "Princess Av",
+        "block": 100,
+        "type": "Accessible Parking Spaces",
+        "description": "Accessible Parking Spaces",
+        "spaces": 2,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.18186389986295,
+          49.26532199914806
+        ]
+      },
+      "properties": {
+        "id": "acc_157",
+        "facility_type": "accessible_parking",
+        "name": "West Side  2300 Collingwood St",
+        "local_area": "Kitsilano",
+        "object_id": 157,
+        "location": "West Side  2300 Collingwood St",
+        "street_name": "Collingwood St",
+        "block": 2300,
+        "type": "Accessible Parking Space",
+        "description": "Accessible Parking Space",
+        "spaces": 1,
+        "side": "West Side"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12088580057498,
+          49.24802209937783
+        ]
+      },
+      "properties": {
+        "id": "acc_159",
+        "facility_type": "accessible_parking",
+        "name": "South Side 700 W 26th Av",
+        "local_area": "South Cambie",
+        "object_id": 159,
+        "location": "South Side 700 W 26th Av",
+        "street_name": "W 26th Av",
+        "block": 700,
+        "type": "Accessible Parking Space",
+        "description": "Accessible Parking Space",
+        "spaces": 1,
+        "side": "South Side"
+      }
+    }
+  ]
+}

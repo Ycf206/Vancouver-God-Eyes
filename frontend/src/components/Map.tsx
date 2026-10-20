@@ -8598,31 +8598,60 @@ export default function AppMap() {
               })()}
 
               {/* Accessible Parking Details */}
-              {selectedFacility.facility_type === 'accessible_parking' && (
-                <div className="flex flex-col gap-2 text-xs">
-                  {/* 4.1 淺藍色區塊在現有文字上方補上“道路設施” (區塊左上), 右上淺藍底白字”無障礙停車位” */}
-                  <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex flex-col gap-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-sky-950 text-xs">道路設施</span>
-                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-sky-600 text-white shrink-0 shadow-xs whitespace-nowrap">
-                        無障礙停車位
-                      </span>
+              {selectedFacility.facility_type === 'accessible_parking' && (() => {
+                const formatAccessibleParkingType = (val?: any) => {
+                  if (!val) return '一般';
+                  const s = String(val).trim();
+                  if (/^metered/i.test(s)) return '收費';
+                  if (/^2\s*hr/i.test(s)) return '2小時';
+                  if (/^1\s*hr/i.test(s)) return '1小時';
+                  if (/^3\s*hr/i.test(s)) {
+                    if (s.includes('9am-6pm')) return '3小時 (09:00 - 18:00)';
+                    if (/granville/i.test(s)) return '3小時 (固蘭湖街橋下)';
+                    return '3小時';
+                  }
+                  if (/^accessible\s*parking\s*spaces?$/i.test(s)) return '一般';
+                  if (s.includes('9am-3pm')) return '一般 (09:00 - 15:00)';
+                  if (s.includes('8am-5pm') && /mon-fri/i.test(s)) return '一般 (週一至五 08:00 - 17:00)';
+                  if (s.includes('8am-5pm') && /school/i.test(s)) return '一般 (上課日 08:00 - 17:00)';
+                  if (/sundays/i.test(s)) return '一般 (週日 08:00 - 12:00)';
+                  return s.replace(/Accessible\s*Parking\s*Spaces?/i, '一般').trim() || '一般';
+                };
+
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    {/* 4.1 淺藍色區塊在現有文字上方補上“道路設施” (區塊左上), 右上淺藍底白字”無障礙停車位” */}
+                    <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex flex-col gap-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-sky-950 text-xs">道路設施</span>
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-sky-600 text-white shrink-0 shadow-xs whitespace-nowrap">
+                          無障礙停車位
+                        </span>
+                      </div>
+
+                      {/* 4.2 淺藍色區塊內下半部份保留說明文字”必須持有...” */}
+                      <div className="pt-1 border-t border-sky-500/20 text-[11px] text-sky-950 font-medium flex items-center gap-1.5 leading-snug">
+                        <span className="text-base text-sky-600 font-bold shrink-0">♿</span>
+                        <span>必須持有有效的 SPARC BC 殘障人士停車許可證。</span>
+                      </div>
                     </div>
 
-                    {/* 4.2 淺藍色區塊內下半部份保留說明文字”必須持有...” */}
-                    <div className="pt-1 border-t border-sky-500/20 text-[11px] text-sky-950 font-medium flex items-center gap-1.5 leading-snug">
-                      <span className="text-base text-sky-600 font-bold shrink-0">♿</span>
-                      <span>必須持有有效的 SPARC BC 殘障人士停車許可證。</span>
+                    {/* 4.3 種類在灰色區塊中專用車位數上方 */}
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>種類</span>
+                        <span className="font-semibold text-gray-800">
+                          {formatAccessibleParkingType(selectedFacility.properties?.type)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
+                        <span>專用車位數</span>
+                        <span className="font-bold text-gray-900 font-mono">{selectedFacility.properties?.spaces || 1} 格</span>
+                      </div>
                     </div>
                   </div>
-
-                  {/* 4.3 專用車位數搬至淺藍區塊下方, 並以灰底區塊顯示資料 */}
-                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex justify-between items-center text-[11px]">
-                    <span className="text-gray-600">專用車位數</span>
-                    <span className="font-bold text-gray-900 font-mono">{selectedFacility.properties.spaces || 1} 格</span>
-                  </div>
-                </div>
-              )}
+                );
+              })()}
 
               {/* Motorcycle Parking Details */}
               {selectedFacility.facility_type === 'motorcycle_parking' && (() => {
@@ -11098,36 +11127,50 @@ export default function AppMap() {
               )}
 
               {/* One-Way Streets (單程路段) Details */}
-              {selectedFacility.facility_type === 'one_way_streets' && (
-                <div className="flex flex-col gap-2 text-xs">
-                  {/* 5.2 橙色區塊在現有文字上方補上“道路設施” (左上), 右上橙底白字”單程路段” */}
-                  <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/25 flex flex-col gap-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-amber-950 text-xs">道路設施</span>
-                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-600 text-white shrink-0 shadow-xs whitespace-nowrap">
-                        單程路段
-                      </span>
-                    </div>
+              {selectedFacility.facility_type === 'one_way_streets' && (() => {
+                const formatStreetAttribute = (val?: any) => {
+                  if (!val) return '';
+                  const s = String(val).trim();
+                  if (/^arterial$/i.test(s)) return '主幹道';
+                  if (/^residential$/i.test(s)) return '住宅區';
+                  if (/^secondary\s*arterial$/i.test(s)) return '次幹道';
+                  if (/^collector$/i.test(s)) return '集散道';
+                  if (/^secondary\s*arterial\s*\/\s*collector$/i.test(s)) return '次幹道 / 集散道';
+                  if (/^(?:lane|alley|lane\s*\/\s*alley)$/i.test(s)) return '後巷';
+                  return s.replace(/\s*\([^)]*\)/g, '').trim();
+                };
 
-                    {/* 5.3 橙色區塊內下半部份保留說明文字”單向行車路段...”, 並在最後補上句號 */}
-                    <div className="pt-1 border-t border-amber-500/20 text-[11px] text-amber-900 font-medium flex items-center gap-1.5 leading-snug">
-                      <span className="text-base text-amber-600 font-bold shrink-0">➡️</span>
-                      <span>單向行車路段，請依地面標線與箭頭方向行駛。</span>
-                    </div>
-                  </div>
-
-                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                    {selectedFacility.properties.streetuse && (
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>道路等級分類</span>
-                        <span className="font-semibold text-gray-800 text-right">
-                          {selectedFacility.properties.streetuse}
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    {/* 5.2 橙色區塊在現有文字上方補上“道路設施” (左上), 右上橙底白字”單程路段” */}
+                    <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/25 flex flex-col gap-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-amber-950 text-xs">道路設施</span>
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-600 text-white shrink-0 shadow-xs whitespace-nowrap">
+                          單程路段
                         </span>
                       </div>
-                    )}
+
+                      {/* 5.3 橙色區塊內下半部份保留說明文字”單向行車路段...”, 並在最後補上句號 */}
+                      <div className="pt-1 border-t border-amber-500/20 text-[11px] text-amber-900 font-medium flex items-center gap-1.5 leading-snug">
+                        <span className="text-base text-amber-600 font-bold shrink-0">➡️</span>
+                        <span>單向行車路段，請依地面標線與箭頭方向行駛。</span>
+                      </div>
+                    </div>
+
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                      {selectedFacility.properties.streetuse && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>路段屬性</span>
+                          <span className="font-semibold text-gray-800 text-right">
+                            {formatStreetAttribute(selectedFacility.properties.streetuse)}
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              )}
+                );
+              })()}
 
               {/* Snow Removal Routes (鏟雪路線) Details */}
               {selectedFacility.facility_type === 'snow_removal_routes' && (
@@ -11306,44 +11349,57 @@ export default function AppMap() {
               })()}
 
               {/* Traffic Speed Limits (限速路段) Details */}
-              {selectedFacility.facility_type === 'traffic_speed_limits' && (
-                <div className="flex flex-col gap-2 text-xs">
-                  {/* 6.1 綠色區塊在現有文字上方補上“道路設施” (左上), 右上綠底白字”限速路段” */}
-                  <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/25 flex flex-col gap-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-emerald-950 text-xs">道路設施</span>
-                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-600 text-white shrink-0 shadow-xs tracking-wider">
-                        限速路段
-                      </span>
-                    </div>
+              {selectedFacility.facility_type === 'traffic_speed_limits' && (() => {
+                const formatStreetAttribute = (val?: any) => {
+                  if (!val) return '';
+                  const s = String(val).trim();
+                  if (/^arterial$/i.test(s)) return '主幹道';
+                  if (/^residential$/i.test(s)) return '住宅區';
+                  if (/^secondary\s*arterial$/i.test(s)) return '次幹道';
+                  if (/^collector$/i.test(s)) return '集散道';
+                  if (/^secondary\s*arterial\s*\/\s*collector$/i.test(s)) return '次幹道 / 集散道';
+                  if (/^(?:lane|alley|lane\s*\/\s*alley)$/i.test(s)) return '後巷';
+                  if (/^leased$/i.test(s)) return '專用路段';
+                  return s.replace(/\s*\([^)]*\)/g, '').trim();
+                };
 
-                    {/* 6.2 綠色區塊內下半部份保留說明文字”本路段為...” */}
-                    <div className="pt-1 border-t border-emerald-500/20 text-[11px] text-emerald-950 font-medium flex items-center gap-1.5 leading-snug">
-                      <span className="text-base text-emerald-600 font-bold shrink-0">⏱️</span>
-                      <span>本路段為限速道路，請小心駕駛。</span>
-                    </div>
-                  </div>
-
-                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                    {selectedFacility.properties.segment_type && (
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>路段屬性</span>
-                        <span className="font-semibold text-gray-800 text-right">
-                          {selectedFacility.properties.segment_type === 'Residential' 
-                            ? '住宅區' 
-                            : String(selectedFacility.properties.segment_type).replace(/\s*\([^)]*\)/g, '').trim()}
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    {/* 6.1 綠色區塊在現有文字上方補上“道路設施” (左上), 右上綠底白字”限速路段” */}
+                    <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/25 flex flex-col gap-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-emerald-950 text-xs">道路設施</span>
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-600 text-white shrink-0 shadow-xs tracking-wider">
+                          限速路段
                         </span>
                       </div>
-                    )}
-                    <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties.segment_type ? 'pt-1.5 border-t border-gray-100' : ''}`}>
-                      <span>道路限速</span>
-                      <span className="font-bold text-emerald-700 text-right">
-                        {selectedFacility.properties.speed_limit || '30'} km/h
-                      </span>
+
+                      {/* 6.2 綠色區塊內下半部份保留說明文字”本路段為...” */}
+                      <div className="pt-1 border-t border-emerald-500/20 text-[11px] text-emerald-950 font-medium flex items-center gap-1.5 leading-snug">
+                        <span className="text-base text-emerald-600 font-bold shrink-0">⏱️</span>
+                        <span>本路段為限速道路，請小心駕駛。</span>
+                      </div>
+                    </div>
+
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                      {selectedFacility.properties.segment_type && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>路段屬性</span>
+                          <span className="font-semibold text-gray-800 text-right">
+                            {formatStreetAttribute(selectedFacility.properties.segment_type)}
+                          </span>
+                        </div>
+                      )}
+                      <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties.segment_type ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                        <span>道路限速</span>
+                        <span className="font-bold text-emerald-700 text-right">
+                          {selectedFacility.properties.speed_limit || '30'} km/h
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
+                );
+              })()}
 
               {/* Bike Racks (單車架) Details */}
               {selectedFacility.facility_type === 'bike_racks' && (
