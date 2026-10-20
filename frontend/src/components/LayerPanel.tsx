@@ -9,7 +9,7 @@ import {
   Droplets, Bath, Leaf, Landmark, GraduationCap, BookOpen, UtensilsCrossed, Bed, Heart,
   PlaneTakeoff, Calendar, Car, ShieldAlert, LifeBuoy, HeartPulse, Mountain,
   Compass, MapPin, Fuel, Train, Anchor, ArrowRight, Snowflake, Fingerprint, Waves,
-  Gauge, Mail, Radio, Trash2, Soup, Recycle, RotateCcw, Wifi, Activity, Ban, Cone, Lightbulb, LandPlot, Megaphone
+  Gauge, Mail, Radio, Trash2, Soup, Recycle, RotateCcw, Wifi, Activity, Ban, Cone, Lightbulb, LandPlot, Megaphone, Palette
 } from 'lucide-react';
 
 // Helper component for Tesla Icon
@@ -300,11 +300,12 @@ export default function LayerPanel() {
             <LayerButton layerKey="homelessShelters" label="無家者庇護所" icon={Bed} colorClass="text-rose-400" activeBg="bg-[#2a171d]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.15)]" />
             <LayerButton layerKey="litterContainers" label="垃圾箱" icon={Trash2} colorClass="text-amber-400" activeBg="bg-[#282115]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
             <LayerButton layerKey="aed" label="AED 去顫器" icon={HeartPulse} colorClass="text-red-400" activeBg="bg-[#2c1518]" activeBorder="border-red-500/50" activeShadow="shadow-[0_0_6px_rgba(239,68,68,0.15)]" />
-            {/* 29.1 社區中心按鈕放在無線設施上方 (無線設施移下一行) */}
+            {/* 29.1 社區中心按鈕放在生活類別 */}
             <LayerButton layerKey="communityCentres" label="社區中心" icon={Building2} colorClass="text-violet-400" activeBg="bg-[#211a2f]" activeBorder="border-violet-500/50" activeShadow="shadow-[0_0_6px_rgba(139,92,246,0.15)]" />
             <div></div>
+            {/* 45.2 無線設施右移至AED下方，公共藝術放在無線設施左方 */}
+            <LayerButton layerKey="publicArt" label="公共藝術" icon={Palette} colorClass="text-fuchsia-400" activeBg="bg-[#2a1428]" activeBorder="border-fuchsia-500/50" activeShadow="shadow-[0_0_6px_rgba(217,70,239,0.15)]" />
             <LayerButton layerKey="wirelessFacilities" label="無線設施" icon={Radio} colorClass="text-purple-400" activeBg="bg-[#241733]" activeBorder="border-purple-500/50" activeShadow="shadow-[0_0_6px_rgba(168,85,247,0.15)]" />
-            <div></div>
           </div>
         </div>
 

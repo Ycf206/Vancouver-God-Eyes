@@ -1755,6 +1755,7 @@ FACILITY_SEARCH_CONFIGS = [
     ("beach_water_quality", "海灘水質", "🏖️", "beachWaterQuality", 15),
     ("beach_water", "海灘水質", "🏖️", "beachWaterQuality", 15),
     ("zoning_districts", "土地規劃", "🏛️", "zoningDistricts", 15),
+    ("public_art", "公共藝術", "🎨", "publicArt", 16),
 ]
 
 def get_search_facilities_items():
@@ -1815,12 +1816,14 @@ def get_search_facilities_items():
                     title = f"#{meter_id}" if meter_id else (re.sub(r"^停車收費錶\s*[-–—#:]*\s*|^收費錶\s*[-–—#:]*\s*", "", raw_name) or "收費錶")
                 elif ftype == "zoning_districts":
                     title = props.get("zoning_district") or raw_name or "都市土地規劃"
+                elif ftype == "public_art":
+                    title = props.get("sitename") or props.get("title_of_work") or raw_name or "公共藝術"
                 elif not title:
                     title = badge
 
-                addr = str(props.get("address") or props.get("street_address") or props.get("location") or props.get("street") or props.get("station_location") or "").strip()
+                addr = str(props.get("siteaddress") or props.get("address") or props.get("street_address") or props.get("location") or props.get("street") or props.get("station_location") or "").strip()
                 local_area = str(props.get("local_area") or props.get("neighbourhood") or "").strip()
-                category_extra = str(props.get("school_category_zh") or props.get("facility_type_name") or props.get("brand") or props.get("category") or "").strip()
+                category_extra = str(props.get("school_category_zh") or props.get("facility_type_name") or props.get("brand") or props.get("category") or ("公共藝術" if ftype == "public_art" else "")).strip()
 
                 sub_parts = [badge]
                 if category_extra and category_extra != badge and category_extra != title:
@@ -1840,6 +1843,13 @@ def get_search_facilities_items():
                     badge,
                     ftype,
                     category_extra,
+                    str(props.get("title_of_work") or ""),
+                    str(props.get("sitename") or ""),
+                    str(props.get("siteaddress") or ""),
+                    str(props.get("primarymaterial") or ""),
+                    str(props.get("ownership") or ""),
+                    str(props.get("artistprojectstatement") or ""),
+                    str(props.get("type") or ""),
                     str(props.get("school_category") or ""),
                     str(props.get("organization") or ""),
                     str(props.get("description") or ""),
@@ -1927,7 +1937,7 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
 
         matching_routes.sort(key=lambda x: (-x[0], len(x[2]), x[2]))
 
-        for score, rid, rnum, rlong, rmeta in matching_routes[:8]:
+        for score, rid, rnum, rlong, rmeta in matching_routes:
             def_vkey = default_variants.get(f"{rid}_0") or default_variants.get(f"{rid}_1")
             variant = variants_lookup.get(def_vkey) if def_vkey else None
 
@@ -2021,13 +2031,13 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
         stops = db.query(models.TransitStop).filter(
             models.TransitStop.name.ilike(f"%{q_clean}%") |
             models.TransitStop.stop_id.ilike(f"{q_clean}%")
-        ).limit(30).all()
+        ).limit(300).all()
 
         skytrain_stops = [s for s in stops if s.stop_group == 'skytrain']
         seabus_stops = [s for s in stops if s.stop_group == 'seabus']
         bus_stops = [s for s in stops if s.stop_group == 'bus']
 
-        for s in skytrain_stops[:6]:
+        for s in skytrain_stops:
             results.append({
                 "id": f"stop_{s.stop_id}",
                 "title": s.name,
@@ -2042,7 +2052,7 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                 "meta": {"stop_id": s.stop_id, "name": s.name}
             })
 
-        for s in seabus_stops[:2]:
+        for s in seabus_stops:
             results.append({
                 "id": f"stop_{s.stop_id}",
                 "title": s.name,
@@ -2057,7 +2067,7 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                 "meta": {"stop_id": s.stop_id, "name": s.name}
             })
 
-        for s in bus_stops[:6]:
+        for s in bus_stops:
             results.append({
                 "id": f"stop_{s.stop_id}",
                 "title": s.name,
@@ -2093,7 +2103,7 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                 fac_candidates.append((score, fac))
 
         fac_candidates.sort(key=lambda x: -x[0])
-        for score, fac in fac_candidates[:35]:
+        for score, fac in fac_candidates:
             results.append({
                 "id": fac["id"],
                 "title": fac["title"],
@@ -2131,8 +2141,6 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                     "layer_key": "maritimeShipping",
                     "meta": v
                 })
-                if len(results) >= 25:
-                    break
     except Exception as e:
         print(f"Error searching maritime vessels: {e}")
 
@@ -2141,10 +2149,8 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
         for item in get_search_fsa_items():
             fsa_code = item["meta"].get("fsa", "").lower()
             fsa_name = item["title"].lower()
-            if q_clean in fsa_code or q_clean in fsa_name or (q_clean in ("郵遞", "郵區", "fsa", "postal") and len(results) < 20):
+            if q_clean in fsa_code or q_clean in fsa_name or (q_clean in ("郵遞", "郵區", "fsa", "postal")):
                 results.append(item)
-                if len(results) >= 25:
-                    break
     except Exception as e:
         print(f"Error searching FSA: {e}")
 
@@ -2152,10 +2158,8 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
     try:
         for item in get_search_local_area_items():
             area_name = item["meta"].get("name", "").lower()
-            if q_clean in area_name or (q_clean in ("邊界", "分區", "boundary", "neighborhood", "neighbourhood") and len(results) < 20):
+            if q_clean in area_name or (q_clean in ("邊界", "分區", "boundary", "neighborhood", "neighbourhood")):
                 results.append(item)
-                if len(results) >= 25:
-                    break
     except Exception as e:
         print(f"Error searching local area boundaries: {e}")
 
@@ -2163,14 +2167,12 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
     try:
         for item in get_search_bikeway_items():
             bw_name = item["title"].lower()
-            if q_clean in bw_name or (q_clean in ("單車徑", "bike", "bikeway") and len(results) < 20):
+            if q_clean in bw_name or (q_clean in ("單車徑", "bike", "bikeway")):
                 results.append(item)
-                if len(results) >= 25:
-                    break
     except Exception as e:
         print(f"Error searching bikeways: {e}")
 
-    final_results = results[:30]
+    final_results = results
     if len(_search_query_cache) > 200:
         _search_query_cache.clear()
     _search_query_cache[q_clean] = final_results

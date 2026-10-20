@@ -207,13 +207,13 @@ export default function TopBar() {
 
         {/* 搜尋下拉選單 (Dropdown Results) */}
         {isOpen && query.trim().length > 0 && (
-          <div className="absolute top-[44px] left-0 w-full bg-[#1e2025]/95 backdrop-blur-md border border-[#373a40] rounded-lg shadow-2xl overflow-hidden z-[100] max-h-[380px] flex flex-col">
-            <div className="flex items-center justify-between px-3.5 py-2 border-b border-[#2d2e34] bg-[#191a1e]/80 text-[11px] text-gray-400">
+          <div className="absolute top-[44px] left-0 w-full bg-[#1e2025]/95 backdrop-blur-md border border-[#373a40] rounded-lg shadow-2xl overflow-hidden z-[100] max-h-[460px] max-h-[70vh] flex flex-col">
+            <div className="flex items-center justify-between px-3.5 py-2 border-b border-[#2d2e34] bg-[#191a1e]/80 text-[11px] text-gray-400 shrink-0">
               <span>圖層項目搜尋結果</span>
               <span>{results.length} 筆項目</span>
             </div>
 
-            <div className="overflow-y-auto divide-y divide-[#2a2c33]/60 py-1">
+            <div className="overflow-y-auto flex-1 min-h-0 divide-y divide-[#2a2c33]/60 py-1 [scrollbar-width:thin] [scrollbar-color:#4a4d57_transparent]">
               {results.length > 0 ? (
                 results.map((item) => (
                   <button
@@ -253,6 +253,7 @@ export default function TopBar() {
                       item.category === 'traffic_crosswalks' ? 'bg-yellow-950/80 text-yellow-300 border-yellow-800/60' :
                       item.category === 'litter_containers' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
                       item.category === 'wireless_facilities' ? 'bg-purple-950/80 text-purple-300 border-purple-800/60' :
+                      item.category === 'public_art' ? 'bg-fuchsia-950/80 text-fuchsia-300 border-fuchsia-800/60 font-semibold' :
                       item.category === 'community_centres' ? 'bg-violet-950/80 text-violet-300 border-violet-800/60' :
                       item.category === 'escooter' ? 'bg-lime-950/80 text-lime-300 border-lime-800/60' :
                       item.category === 'ev_charging' ? 'bg-emerald-950/80 text-emerald-300 border-emerald-800/60' :

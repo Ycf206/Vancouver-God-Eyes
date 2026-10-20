@@ -80,6 +80,7 @@ export interface UIState {
     bikeRacks: boolean;
     postalCodeFSA: boolean;
     wirelessFacilities: boolean;
+    publicArt: boolean;
     trafficCrosswalks: boolean;
     litterContainers: boolean;
     vanWifi: boolean;
@@ -258,6 +259,7 @@ export const useUIStore = create<UIState>()(
         bikeRacks: false,
         postalCodeFSA: false,
         wirelessFacilities: false,
+        publicArt: false,
         trafficCrosswalks: false,
         litterContainers: false,
         vanWifi: false,

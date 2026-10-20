@@ -1067,6 +1067,7 @@ export default function AppMap() {
         else if (type === 'bike_racks' && !layers.bikeRacks) facilityClosed = true;
         else if (type === 'postal_code_fsa' && !layers.postalCodeFSA) facilityClosed = true;
         else if (type === 'wireless_facilities' && !layers.wirelessFacilities) facilityClosed = true;
+        else if (type === 'public_art' && !layers.publicArt) facilityClosed = true;
         else if (type === 'water_distribution_mains' && !layers.waterDistributionMains) facilityClosed = true;
         else if (type === 'sewer_mains' && !layers.sewerMains) facilityClosed = true;
         else if (type === 'one_way_streets' && !layers.oneWayStreets) facilityClosed = true;
@@ -5094,6 +5095,34 @@ export default function AppMap() {
       });
     }
 
+    // Lifestyle: Public Art (公共藝術)
+    if (layers.publicArt) {
+      style.sources['public_art'] = { type: 'geojson', data: '/vancouver_public_art.geojson' };
+      style.layers.push({
+        id: 'public-art-layer',
+        type: 'circle',
+        source: 'public_art',
+        minzoom: 11,
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3, 14, 5.5, 16, 8, 18, 10],
+          'circle-color': '#c026d3',
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'public-art-symbol-layer',
+        type: 'symbol',
+        source: 'public_art',
+        minzoom: 14,
+        layout: {
+          'text-field': '🎨',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 14, 11, 18, 15],
+          'text-allow-overlap': false
+        }
+      });
+    }
+
     // Utilities: Street Lighting Conduits (路燈地下配電管線)
     if (layers.streetLightingConduits) {
       style.sources['street_lighting_conduits'] = { 
@@ -5469,6 +5498,7 @@ export default function AppMap() {
     layers.bikeRacks,
     layers.postalCodeFSA,
     layers.wirelessFacilities,
+    layers.publicArt,
     layers.trafficConditions,
     layers.trafficAlerts,
     layers.roadClosures,
@@ -5613,6 +5643,8 @@ export default function AppMap() {
           'postal-code-fsa-fill',
           'wireless-facilities-layer',
           'wireless-facilities-symbol-layer',
+          'public-art-layer',
+          'public-art-symbol-layer',
           'traffic-crosswalks-cluster-layer',
           'traffic-crosswalks-layer',
           'traffic-crosswalks-symbol-layer',
@@ -6038,6 +6070,7 @@ export default function AppMap() {
             layerId.startsWith('shared-bikes') ||
             layerId.startsWith('bike-racks') ||
             layerId.startsWith('wireless-facilities') ||
+            layerId.startsWith('public-art') ||
             layerId.startsWith('traffic-conditions') ||
             layerId.startsWith('traffic-crosswalks') ||
             layerId.startsWith('litter-containers') ||
@@ -6072,6 +6105,7 @@ export default function AppMap() {
             const isMarineTerminal = layerId.startsWith('marine-terminals');
             const isBikeRack = layerId.startsWith('bike-racks');
             const isWireless = layerId.startsWith('wireless-facilities');
+            const isPublicArt = layerId.startsWith('public-art');
             const isTraffic = layerId.startsWith('traffic-conditions');
             const isStreetLighting = layerId.startsWith('street-lighting') || layerId.startsWith('street_lighting');
             const isCrosswalk = layerId.startsWith('traffic-crosswalks');
@@ -6084,10 +6118,10 @@ export default function AppMap() {
               .replace(/-(?:layer|fill|line|label|glow|arrows)$/, '')
               .replace(/-/g, '_');
             setSelectedFacility({
-              id: props.id || (props.object_id ? `${props.facility_type || derivedFacilityType || 'fac'}_${props.object_id}` : ''),
-              facility_type: props.facility_type || (isTraffic ? 'traffic_conditions' : (isStreetLighting ? 'street_lighting' : (isVanWifi ? 'van_wifi' : (isTideStation ? 'tide_stations' : (isFuel ? 'fuel' : (isTesla ? 'tesla' : (isMarineTerminal ? 'marine_terminals' : (isBikeRack ? 'bike_racks' : (isWireless ? 'wireless_facilities' : (isCrosswalk ? 'traffic_crosswalks' : (isLitter ? 'litter_containers' : (isRecycling ? 'recycling' : derivedFacilityType)))))))))))),
-              name: props.name || (isTraffic ? '獅門大橋即時路況' : (isStreetLighting ? (props.pole_number ? `路燈柱 #${props.pole_number}` : (props.service_panel_number ? `路燈控制盤 #${props.service_panel_number}` : '路燈')) : (isVanWifi ? (props.site_name || 'VanWiFi 公共無線網絡') : (isTideStation ? (props.english_name || '潮汐水位') : (isCrosswalk ? (props.location || '行人穿越道') : (isLitter ? (props.address ? `垃圾箱 - ${props.address}` : '公用垃圾箱') : (isBikeRack ? (props.location ? `單車架 - ${props.location}` : '公用單車架') : (isWireless ? (props.site_name || `無線設施 #${props.pole_number || ''}`) : (isRecycling ? (props.brand || '環保回收站') : (props.brand || (isFuel ? '加油站' : (isTesla ? 'Tesla 站點' : (isMarineTerminal ? '港口碼頭' : ''))))))))))))),
-              local_area: isCrosswalk ? '行人穿越道' : (props.waterway || props.area || props.local_area || props.location || props.company || props.address || props.city || ''),
+              id: props.id || (props.object_id ? `${props.facility_type || derivedFacilityType || 'fac'}_${props.object_id}` : (props.registryid ? `art_${props.registryid}` : '')),
+              facility_type: props.facility_type || (isPublicArt ? 'public_art' : (isTraffic ? 'traffic_conditions' : (isStreetLighting ? 'street_lighting' : (isVanWifi ? 'van_wifi' : (isTideStation ? 'tide_stations' : (isFuel ? 'fuel' : (isTesla ? 'tesla' : (isMarineTerminal ? 'marine_terminals' : (isBikeRack ? 'bike_racks' : (isWireless ? 'wireless_facilities' : (isCrosswalk ? 'traffic_crosswalks' : (isLitter ? 'litter_containers' : (isRecycling ? 'recycling' : derivedFacilityType))))))))))))),
+              name: props.name || (isPublicArt ? (props.sitename || props.title_of_work || '公共藝術') : (isTraffic ? '獅門大橋即時路況' : (isStreetLighting ? (props.pole_number ? `路燈柱 #${props.pole_number}` : (props.service_panel_number ? `路燈控制盤 #${props.service_panel_number}` : '路燈')) : (isVanWifi ? (props.site_name || 'VanWiFi 公共無線網絡') : (isTideStation ? (props.english_name || '潮汐水位') : (isCrosswalk ? (props.location || '行人穿越道') : (isLitter ? (props.address ? `垃圾箱 - ${props.address}` : '公用垃圾箱') : (isBikeRack ? (props.location ? `單車架 - ${props.location}` : '公用單車架') : (isWireless ? (props.site_name || `無線設施 #${props.pole_number || ''}`) : (isRecycling ? (props.brand || '環保回收站') : (props.brand || (isFuel ? '加油站' : (isTesla ? 'Tesla 站點' : (isMarineTerminal ? '港口碼頭' : '')))))))))))))),
+              local_area: isPublicArt ? (props.siteaddress || props.local_area || '') : (isCrosswalk ? '行人穿越道' : (props.waterway || props.area || props.local_area || props.location || props.company || props.address || props.city || '')),
               lon: coords[0],
               lat: coords[1],
               properties: props
@@ -8048,7 +8082,7 @@ export default function AppMap() {
             <div className={`p-3.5 ${
               (selectedFacility.facility_type === 'traffic_conditions' || selectedFacility.facility_type === 'traffic_corridor') ? 'w-[430px]' :
               (selectedFacility.facility_type === 'traffic_cameras' || selectedFacility.facility_type === 'community_gardens') ? 'w-[360px]' : 
-              (selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'border_crossing' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'beach_water_quality' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'zoning_districts') ? 'w-[340px]' : 
+              (selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'border_crossing' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'beach_water_quality' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'zoning_districts') ? 'w-[340px]' : 
               'w-[290px]'
             } max-w-[90vw] text-gray-800`}>
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
@@ -8072,6 +8106,7 @@ export default function AppMap() {
                     selectedFacility.facility_type === 'postal_code_fsa' ? 'bg-indigo-600' :
                     selectedFacility.facility_type === 'bike_racks' ? 'bg-teal-600' :
                     selectedFacility.facility_type === 'wireless_facilities' ? 'bg-purple-600' :
+                    selectedFacility.facility_type === 'public_art' ? 'bg-fuchsia-600' :
                     selectedFacility.facility_type === 'traffic_crosswalks' ? 'bg-yellow-500' :
                     selectedFacility.facility_type === 'litter_containers' ? 'bg-amber-600' :
                     selectedFacility.facility_type === 'tesla' ? 'bg-red-600' :
@@ -8180,6 +8215,9 @@ export default function AppMap() {
                         if (selectedFacility.facility_type === 'wireless_facilities') {
                           return selectedFacility.properties?.map_id || selectedFacility.properties?.site_id || selectedFacility.name;
                         }
+                        if (selectedFacility.facility_type === 'public_art') {
+                          return selectedFacility.properties?.sitename || selectedFacility.properties?.title_of_work || selectedFacility.name || '公共藝術';
+                        }
                         if (selectedFacility.facility_type === 'parking_meters') {
                           return (selectedFacility.name || '').replace(/^停車收費錶\s*/, '').replace(/^收費錶\s*/, '').trim() || (selectedFacility.properties?.meter_id ? `#${selectedFacility.properties.meter_id}` : selectedFacility.name);
                         }
@@ -8215,7 +8253,7 @@ export default function AppMap() {
                         return selectedFacility.name;
                       })()}
                     </h3>
-                    {(selectedFacility.local_area || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || (selectedFacility.facility_type === 'car_sharing' && selectedFacility.properties?.operator === 'Modo')) && (
+                    {(selectedFacility.local_area || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || (selectedFacility.facility_type === 'car_sharing' && selectedFacility.properties?.operator === 'Modo')) && (
                       <span className="text-[11px] text-gray-400 block leading-snug break-words">
                         {(() => {
                           if (selectedFacility.facility_type === 'escooter') return 'Vancouver, BC';
@@ -8242,6 +8280,7 @@ export default function AppMap() {
                           if (selectedFacility.facility_type === 'public_trees') return selectedFacility.properties?.address || `${selectedFacility.properties?.civic_number || ''} ${selectedFacility.properties?.std_street || ''}`.trim() || selectedFacility.local_area || 'Vancouver, BC';
                           if (selectedFacility.facility_type === 'aed') return selectedFacility.properties?.ADDRESS || selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                           if (selectedFacility.facility_type === 'wireless_facilities') return selectedFacility.properties?.company || '電信商';
+                          if (selectedFacility.facility_type === 'public_art') return selectedFacility.properties?.siteaddress || selectedFacility.local_area || 'Vancouver, BC';
                           if (selectedFacility.facility_type === 'snow_removal_routes') return 'Vancouver, BC';
                           if (selectedFacility.facility_type === 'traffic_speed_limits') return 'Vancouver, BC';
                           if (selectedFacility.facility_type === 'traffic_crosswalks') return 'Vancouver, BC';
@@ -8581,7 +8620,7 @@ export default function AppMap() {
                     {selectedFacility.properties.station_number && (
                       <div className="flex justify-between items-center text-gray-600">
                         <span>站點編號</span>
-                        <span className="font-medium font-mono text-gray-800">#{selectedFacility.properties.station_number}</span>
+                        <span className="font-medium font-mono text-gray-800">#{String(selectedFacility.properties.station_number).replace(/^#+/, '')}</span>
                       </div>
                     )}
                     {selectedFacility.properties.station_size && (
@@ -10467,15 +10506,18 @@ export default function AppMap() {
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
-                    {/* 1.2 藍區塊只有:左方改成"海岸潮汐水位" (下方的字刪去), 右方是淺藍底白字"潮汐水位" */}
-                    <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex items-center justify-between gap-2">
-                      <span className="font-bold text-xs text-sky-950 flex items-center gap-1.5">
-                        <span className="text-base text-sky-600 font-bold">🌊</span>
+                    {/* 1.2 藍區塊:左上方為“地理資料”, 右方是淺藍底白字"潮汐水位", 下半部保留說明文字 */}
+                    <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex flex-col gap-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-xs text-sky-950">地理資料</span>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-600 text-white shrink-0 shadow-xs whitespace-nowrap">
+                          潮汐水位
+                        </span>
+                      </div>
+                      <div className="pt-1 border-t border-sky-500/20 text-[11px] text-sky-950 font-medium flex items-center gap-1.5 leading-snug">
+                        <span className="text-base text-sky-600 font-bold shrink-0">🌊</span>
                         <span>海岸潮汐水位</span>
-                      </span>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-600 text-white shrink-0 shadow-xs whitespace-nowrap">
-                        潮汐水位
-                      </span>
+                      </div>
                     </div>
 
                     <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-2 text-[11px]">
@@ -10892,11 +10934,11 @@ export default function AppMap() {
               {/* Water Distribution Mains (自來水管道) Details */}
               {selectedFacility.facility_type === 'water_distribution_mains' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  {/* 4.1 淺藍區塊只有:左方是設施類別, 右方是淺藍底白字"自來水管道" */}
+                  {/* 4.1 淺藍區塊:左方是公共事業, 右方是淺藍底白字"自來水管道" */}
                   <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex items-center justify-between gap-2">
                     <span className="font-bold text-xs text-sky-950 flex items-center gap-1.5">
                       <span className="text-base text-sky-600 font-bold">💧</span>
-                      <span>設施類別</span>
+                      <span>公共事業</span>
                     </span>
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-600 text-white shrink-0 shadow-xs whitespace-nowrap">
                       自來水管道
@@ -10951,11 +10993,11 @@ export default function AppMap() {
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
-                    {/* 5.1 淺藍區塊只有:左方是設施類別, 右方是淺藍底白字"污水管道" */}
+                    {/* 5.1 淺藍區塊:左方是公共事業, 右方是淺藍底白字"污水管道" */}
                     <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex items-center justify-between gap-2">
                       <span className="font-bold text-xs text-sky-950 flex items-center gap-1.5">
                         <span className="text-base text-sky-600 font-bold">🌊</span>
-                        <span>設施類別</span>
+                        <span>公共事業</span>
                       </span>
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-600 text-white shrink-0 shadow-xs whitespace-nowrap">
                         污水管道
@@ -11212,6 +11254,111 @@ export default function AppMap() {
                   </div>
                 </div>
               )}
+
+              {/* Public Art (公共藝術) Details */}
+              {selectedFacility.facility_type === 'public_art' && (() => {
+                const props = selectedFacility.properties || {};
+                const rawType = props.type ? String(props.type).trim() : '';
+                const typeMap: Record<string, string> = {
+                  'Figurative': '寫實',
+                  'Sculpture': '雕塑',
+                  'Fountain or water feature': '噴泉/水景',
+                  'Memorial or monument': '紀念',
+                  'Relief': '浮雕',
+                  'Totem pole': '圖騰',
+                  'Mosaic': '馬賽克',
+                  'Site-integrated work': '場域整合',
+                  'Mural': '壁畫',
+                  'Two-dimensional artwork': '平面藝術',
+                  'Media work': '新媒體藝術',
+                  'Gateway': '入口景觀',
+                  'Welcome figure': '迎賓雕像',
+                  'Other': '其他',
+                };
+                const translatedType = rawType ? (typeMap[rawType] || Object.entries(typeMap).find(([k]) => k.toLowerCase() === rawType.toLowerCase())?.[1] || rawType || '其他') : null;
+
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    {/* 45.3.2 顏色底區塊：左方是”設施類別”, 右方顏色底白字是“公共藝術” */}
+                    <div className="bg-fuchsia-500/10 p-2.5 rounded-lg border border-fuchsia-500/25 flex items-center justify-between">
+                      <span className="font-bold text-fuchsia-950 text-xs flex items-center gap-1.5">
+                        <span className="text-base text-fuchsia-600 font-bold">🎨</span>
+                        <span>設施類別</span>
+                      </span>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-fuchsia-600 text-white shrink-0 shadow-xs whitespace-nowrap">
+                        公共藝術
+                      </span>
+                    </div>
+
+                    {/* 45.3.3 灰底資料拉排序由上至下: 藝術標題, 中文藝術種類, 主要材料, 產權所屬, 設置位置 (完整文字) */}
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                      {props.title_of_work && (
+                        <div className="flex justify-between items-start text-gray-600 gap-2">
+                          <span className="shrink-0 text-gray-500">藝術標題</span>
+                          <span className="font-semibold text-gray-900 text-right break-words leading-relaxed">
+                            {props.title_of_work}
+                          </span>
+                        </div>
+                      )}
+                      {translatedType && (
+                        <div className={`flex justify-between items-center text-gray-600 ${props.title_of_work ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span className="shrink-0 text-gray-500">藝術種類</span>
+                          <span className="font-medium text-gray-800">
+                            {translatedType}
+                          </span>
+                        </div>
+                      )}
+                      {props.primarymaterial && (
+                        <div className={`flex justify-between items-start text-gray-600 gap-2 ${(props.title_of_work || translatedType) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span className="shrink-0 text-gray-500">主要材料</span>
+                          <span className="font-medium text-gray-800 text-right break-words leading-relaxed">
+                            {props.primarymaterial}
+                          </span>
+                        </div>
+                      )}
+                      {props.ownership && (
+                        <div className={`flex justify-between items-start text-gray-600 gap-2 ${(props.title_of_work || translatedType || props.primarymaterial) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span className="shrink-0 text-gray-500">產權所屬</span>
+                          <span className="font-medium text-gray-800 text-right break-words">
+                            {props.ownership}
+                          </span>
+                        </div>
+                      )}
+                      {props.locationonsite && (
+                        <div className={`flex justify-between items-start text-gray-600 gap-2 ${(props.title_of_work || translatedType || props.primarymaterial || props.ownership) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span className="shrink-0 text-gray-500">設置位置</span>
+                          <span className="font-medium text-gray-800 text-right break-words leading-relaxed">
+                            {props.locationonsite}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* (新灰色區塊) 創作理念 (artistprojectstatement) */}
+                    {props.artistprojectstatement && (
+                      <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1 text-[11px]">
+                        <span className="font-semibold text-gray-700">創作理念</span>
+                        <p className="text-gray-600 text-[11px] leading-relaxed max-h-36 overflow-y-auto whitespace-pre-line pr-1 break-words">
+                          {props.artistprojectstatement}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* 45.3.4 加入連結按鈕 (url) */}
+                    {props.url && (
+                      <a
+                        href={props.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-700 active:scale-[0.99] text-white font-medium text-xs shadow-xs transition-colors"
+                      >
+                        <span>前往溫哥華公共藝術官方檔案</span>
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                    )}
+                  </div>
+                );
+              })()}
 
               {/* Traffic Crosswalks (斑馬線) Details */}
               {selectedFacility.facility_type === 'traffic_crosswalks' && (
@@ -11694,18 +11841,18 @@ export default function AppMap() {
               {/* Street Lighting Conduits (路燈地下配電管線) Details */}
               {selectedFacility.facility_type === 'street_lighting_conduits' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  {/* 6.2 黃區塊只有:左方是設施類別, 右方是黃底白字"路燈電網" */}
+                  {/* 6.2 黃區塊:左方是公共事業, 右方是黃底白字"路燈電網" */}
                   <div className="bg-amber-400/10 p-2.5 rounded-lg border border-amber-400/30 flex items-center justify-between gap-2">
                     <span className="font-bold text-xs text-amber-950 flex items-center gap-1.5">
                       <span className="text-base text-amber-500 font-bold">⚡</span>
-                      <span>設施類別</span>
+                      <span>公共事業</span>
                     </span>
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-500 text-white shrink-0 shadow-xs whitespace-nowrap">
                       路燈電網
                     </span>
                   </div>
 
-                  {/* 6.3 刪除英文Wireset, Underground Conduit & 6.4 刪除資料更新頻率, 點選位置 */}
+                  {/* 6.3 刪除英文Wireset, Underground Conduit & 6.4 刪除資料更新頻率, 點選位置, 主管機關 */}
                   <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
                     <div className="flex justify-between items-center text-gray-600">
                       <span>線組規格</span>
@@ -11717,12 +11864,6 @@ export default function AppMap() {
                       <span>管線類型</span>
                       <span className="font-medium text-gray-800">
                         地下供電導管
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                      <span>主管機關</span>
-                      <span className="font-medium text-gray-800">
-                        City of Vancouver Engineering Services
                       </span>
                     </div>
                   </div>
@@ -11915,27 +12056,22 @@ export default function AppMap() {
               {/* Zoning Districts (土地規劃分區) Details */}
               {selectedFacility.facility_type === 'zoning_districts' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-purple-500/10 p-2.5 rounded-lg border border-purple-500/25 flex items-center justify-between gap-2">
-                    <span className="font-bold text-xs text-purple-950 flex items-center gap-1.5">
-                      <span className="text-base text-purple-600 font-bold">📐</span>
+                  <div className="bg-purple-500/10 p-2.5 rounded-lg border border-purple-500/25 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-purple-950 text-xs">地理資料</span>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-purple-600 text-white shrink-0 shadow-xs whitespace-nowrap">
+                        土地規劃
+                      </span>
+                    </div>
+                    <div className="pt-1 border-t border-purple-500/20 text-[11px] text-purple-950 font-medium flex items-center gap-1.5 leading-snug">
+                      <span className="text-base text-purple-600 font-bold shrink-0">📐</span>
                       <span>都市土地規劃與使用分區</span>
-                    </span>
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-600 text-white shrink-0 shadow-xs whitespace-nowrap">
-                      土地規劃
-                    </span>
+                    </div>
                   </div>
 
                   <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                    {selectedFacility.properties.zoning_district && (
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>分區代碼</span>
-                        <span className="font-mono font-bold text-gray-900">
-                          {selectedFacility.properties.zoning_district}
-                        </span>
-                      </div>
-                    )}
                     {selectedFacility.properties.zoning_classification && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <div className="flex justify-between items-center text-gray-600">
                         <span>土地規劃類別</span>
                         <span className="font-medium text-gray-900 text-right max-w-[200px]">
                           {selectedFacility.properties.zoning_classification}
@@ -11943,7 +12079,7 @@ export default function AppMap() {
                       </div>
                     )}
                     {selectedFacility.properties.cd_1_number && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties.zoning_classification ? 'pt-1 border-t border-gray-100' : ''}`}>
                         <span>CD-1 專屬編號</span>
                         <span className="font-mono text-gray-700">
                           #{selectedFacility.properties.cd_1_number}
