@@ -8086,7 +8086,14 @@ export default function AppMap() {
                     selectedFacility.facility_type === 'escooter' ? 'bg-lime-500' :
                     selectedFacility.facility_type === 'car_sharing' ? (selectedFacility.properties?.operator === 'Modo' ? 'bg-red-600 shadow-[0_0_6px_rgba(239,68,68,0.5)]' : 'bg-cyan-500 shadow-[0_0_6px_rgba(6,182,212,0.5)]') :
                     selectedFacility.facility_type === 'shared_bikes' ? 'bg-emerald-500' :
-                    selectedFacility.facility_type === 'bikeways' ? 'bg-teal-500' :
+                    selectedFacility.facility_type === 'bikeways' ? (() => {
+                      const t = selectedFacility.properties?.bikeway_type;
+                      if (t === 'Protected Bike Lanes') return 'bg-emerald-500';
+                      if (t === 'Painted Lanes') return 'bg-sky-500';
+                      if (t === 'Local Street') return 'bg-amber-500';
+                      if (t === 'Shared Lanes') return 'bg-purple-500';
+                      return 'bg-teal-500';
+                    })() :
                     selectedFacility.facility_type === 'traffic_cameras' ? 'bg-cyan-500' :
                     selectedFacility.facility_type === 'safety_cameras' ? (selectedFacility.properties?.has_speed ? 'bg-gray-950 border border-gray-400 shadow-[0_0_6px_rgba(0,0,0,0.6)]' : 'bg-red-600 shadow-[0_0_6px_rgba(239,68,68,0.5)]') :
                     selectedFacility.facility_type === 'hospitals' ? 'bg-emerald-500' :
@@ -8200,9 +8207,10 @@ export default function AppMap() {
                         return selectedFacility.name;
                       })()}
                     </h3>
-                    {(selectedFacility.local_area || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || (selectedFacility.facility_type === 'car_sharing' && selectedFacility.properties?.operator === 'Modo')) && (
+                    {(selectedFacility.local_area || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || (selectedFacility.facility_type === 'car_sharing' && selectedFacility.properties?.operator === 'Modo')) && (
                       <span className="text-[11px] text-gray-400 block leading-snug break-words">
                         {(() => {
+                          if (selectedFacility.facility_type === 'escooter') return 'Vancouver, BC';
                           if (selectedFacility.facility_type === 'safety_cameras') return 'Vancouver, BC';
                           if (selectedFacility.facility_type === 'tide_stations') return 'British Columbia';
                           if (selectedFacility.facility_type === 'hospitals') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
@@ -8496,83 +8504,117 @@ export default function AppMap() {
 
               {/* EV Charging Details */}
               {selectedFacility.facility_type === 'ev_charging' && (
-                <div className="flex flex-col gap-1.5 text-xs">
-                  <div className="flex justify-between items-center bg-emerald-50 p-1.5 rounded">
-                    <span className="text-emerald-700 font-medium">充電接口</span>
-                    <span className="font-bold text-emerald-800 text-sm">{selectedFacility.properties.ports || 2} 個</span>
+                <div className="flex flex-col gap-2 text-xs">
+                  {/* 13.1 綠色區塊在現有文字上方補上“道路設施” (左上), 右上綠底白字”電動車充電站” */}
+                  <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/25 flex items-center justify-between">
+                    <span className="font-bold text-emerald-950 text-xs">道路設施</span>
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-600 text-white shrink-0 shadow-xs">
+                      電動車充電站
+                    </span>
                   </div>
-                  {selectedFacility.properties.connectors && (
-                    <div className="flex justify-between text-gray-600">
-                      <span>接口規格</span>
-                      <span className="font-medium text-gray-800">{selectedFacility.properties.connectors}</span>
+
+                  {/* 13.2 綠色區塊下方資料文字用灰底顯示, 次序由上至下：營運單位 (分隔線), 接口規格, 充電接口, 電壓, 充電費用 */}
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                    {selectedFacility.properties.operator && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>營運單位</span>
+                        <span className="font-semibold text-gray-800">{selectedFacility.properties.operator}</span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.operator && (
+                      <div className="border-t border-gray-200/60 my-0.5" />
+                    )}
+                    {selectedFacility.properties.connectors && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>接口規格</span>
+                        <span className="font-medium text-gray-800">{selectedFacility.properties.connectors}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between items-center text-gray-600">
+                      <span>充電接口</span>
+                      <span className="font-bold text-emerald-700">{selectedFacility.properties.ports || 2} 個</span>
                     </div>
-                  )}
-                  {selectedFacility.properties.voltage && (
-                    <div className="flex justify-between text-gray-600">
-                      <span>電壓</span>
-                      <span className="font-medium text-gray-800">{selectedFacility.properties.voltage}</span>
-                    </div>
-                  )}
-                  {selectedFacility.properties.cost && (
-                    <div className="flex justify-between text-gray-600">
-                      <span>充電費用</span>
-                      <span className="font-bold text-emerald-700">{selectedFacility.properties.cost}</span>
-                    </div>
-                  )}
-                  {selectedFacility.properties.operator && (
-                    <div className="flex justify-between text-gray-500 text-[11px] pt-1 border-t border-gray-100">
-                      <span>營運單位</span>
-                      <span>{selectedFacility.properties.operator}</span>
-                    </div>
-                  )}
+                    {selectedFacility.properties.voltage && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>電壓</span>
+                        <span className="font-medium text-gray-800">{selectedFacility.properties.voltage}</span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.cost && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>充電費用</span>
+                        <span className="font-bold text-emerald-700">{selectedFacility.properties.cost}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
 
               {/* E-Scooter Station Details */}
               {selectedFacility.facility_type === 'escooter' && (
-                <div className="flex flex-col gap-1.5 text-xs">
-                  <div className="flex justify-between items-center bg-lime-50 p-1.5 rounded">
-                    <span className="text-lime-800 font-medium">車位容量</span>
-                    <span className="font-bold text-lime-900 text-sm">{selectedFacility.properties.station_size || '—'} 輛</span>
+                <div className="flex flex-col gap-2 text-xs">
+                  {/* 12.2 淺綠色區塊在現有文字上方補上“道路設施” (左上), 右上淺綠底白字”共享滑板車” */}
+                  <div className="bg-lime-500/10 p-2.5 rounded-lg border border-lime-500/25 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-lime-950 text-xs">道路設施</span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-lime-600 text-white shrink-0 shadow-xs">
+                        共享滑板車
+                      </span>
+                    </div>
+                    {/* 12.2 下半部：說明文字 */}
+                    <div className="pt-1 border-t border-lime-500/20 text-[11px] text-lime-950 font-medium flex items-center gap-1.5 leading-snug">
+                      <span>🛴</span>
+                      <span>溫哥華公共共享滑板車</span>
+                    </div>
                   </div>
-                  {selectedFacility.properties.station_number && (
-                    <div className="flex justify-between text-gray-600">
-                      <span>站點編號</span>
-                      <span className="font-medium text-gray-800">{selectedFacility.properties.station_number}</span>
-                    </div>
-                  )}
-                  {selectedFacility.properties.placement && (
-                    <div className="flex justify-between text-gray-600">
-                      <span>設施位置</span>
-                      <span className="font-medium text-gray-800">
-                        {(() => {
-                          const p = String(selectedFacility.properties.placement).trim();
-                          if (/on-?roadway/i.test(p)) return '車道';
-                          if (/off-?street/i.test(p)) return '離街';
-                          return p;
-                        })()}
-                      </span>
-                    </div>
-                  )}
-                  {selectedFacility.properties.jurisdiction && (
-                    <div className="flex justify-between text-gray-600">
-                      <span>管轄屬性</span>
-                      <span className="font-medium text-gray-800">
-                        {(() => {
-                          const j = String(selectedFacility.properties.jurisdiction).trim();
-                          if (/public/i.test(j)) return '公共';
-                          if (/private/i.test(j)) return '私人';
-                          return j;
-                        })()}
-                      </span>
-                    </div>
-                  )}
-                  {selectedFacility.properties.installation_date && (
-                    <div className="flex justify-between text-gray-500 text-[11px] pt-1 border-t border-gray-100">
-                      <span>啟用日期</span>
-                      <span>{String(selectedFacility.properties.installation_date).slice(0, 10)}</span>
-                    </div>
-                  )}
+
+                  {/* 12.3 灰底文字：車位用量移至站點編號下方 */}
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                    {selectedFacility.properties.station_number && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>站點編號</span>
+                        <span className="font-medium font-mono text-gray-800">#{selectedFacility.properties.station_number}</span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.station_size && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>車位用量</span>
+                        <span className="font-bold text-lime-900">{selectedFacility.properties.station_size} 車位</span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.placement && (
+                      <div className="flex justify-between text-gray-600">
+                        <span>設施位置</span>
+                        <span className="font-medium text-gray-800">
+                          {(() => {
+                            const p = String(selectedFacility.properties.placement).trim();
+                            if (/on-?roadway/i.test(p)) return '車道';
+                            if (/off-?street/i.test(p)) return '離街';
+                            return p;
+                          })()}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.jurisdiction && (
+                      <div className="flex justify-between text-gray-600">
+                        <span>管轄屬性</span>
+                        <span className="font-medium text-gray-800">
+                          {(() => {
+                            const j = String(selectedFacility.properties.jurisdiction).trim();
+                            if (/public/i.test(j)) return '公共';
+                            if (/private/i.test(j)) return '私人';
+                            return j;
+                          })()}
+                        </span>
+                      </div>
+                    )}
+                    {selectedFacility.properties.installation_date && (
+                      <div className="flex justify-between text-gray-500 text-[10.5px] pt-1 border-t border-gray-100">
+                        <span>啟用日期</span>
+                        <span>{String(selectedFacility.properties.installation_date).slice(0, 10)}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
 
@@ -8654,35 +8696,37 @@ export default function AppMap() {
               {/* Shared Bikes (Mobi by Rogers) Station Details */}
               {selectedFacility.facility_type === 'shared_bikes' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  <div className="p-2.5 rounded bg-emerald-50 border border-emerald-100 flex flex-col gap-1">
+                  {/* 11.1 綠色區塊在現有文字上方補上“道路設施” (左上), 右上綠底白字”共享單車” */}
+                  <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/25 flex flex-col gap-1.5">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-emerald-900 flex items-center gap-1.5">
-                        <span>🚲</span>
-                        <span>Mobi by Rogers</span>
-                      </span>
-                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-600 text-white shrink-0">
+                      <span className="font-bold text-emerald-950 text-xs">道路設施</span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-600 text-white shrink-0 shadow-xs">
                         共享單車
                       </span>
                     </div>
-                    <div className="flex justify-between items-baseline pt-1 border-t border-emerald-200/60">
-                      <span className="text-gray-600 text-[11px]">車柱容量</span>
-                      <span className="font-bold text-emerald-800 text-sm">
-                        {selectedFacility.properties.capacity ? `${selectedFacility.properties.capacity} 格` : '未標明'}
-                      </span>
+                    {/* 11.2 下半部：說明文字 */}
+                    <div className="pt-1 border-t border-emerald-500/20 text-[11px] text-emerald-950 font-medium flex items-center gap-1.5 leading-snug">
+                      <span>🚲</span>
+                      <span>溫哥華公共共享單車</span>
                     </div>
                   </div>
 
-                  <div className="bg-gray-50 p-2 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
                     {selectedFacility.properties.station_id && (
                       <div className="flex justify-between items-center text-gray-600">
                         <span>站點編號</span>
                         <span className="font-medium font-mono text-gray-800">#{selectedFacility.properties.station_id}</span>
                       </div>
                     )}
-                    <div className="flex justify-between items-center text-gray-600">
-                      <span>營運系統</span>
-                      <span className="font-semibold text-gray-800">溫哥華公共共享單車</span>
-                    </div>
+                    {/* 11.3 左方“車柱用量”, 右方 “x 車位” 移至站點編號下方 */}
+                    {selectedFacility.properties.capacity && (
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>車柱用量</span>
+                        <span className="font-bold text-emerald-700">
+                          {selectedFacility.properties.capacity} 車位
+                        </span>
+                      </div>
+                    )}
                     {selectedFacility.properties.operator && (
                       <div className="flex justify-between items-center text-gray-600">
                         <span>營運單位</span>
@@ -8713,13 +8757,20 @@ export default function AppMap() {
               {/* Bikeways (單車徑 LineString) Details */}
               {selectedFacility.facility_type === 'bikeways' && (() => {
                 const bType = selectedFacility.properties.bikeway_type || '';
-                const bColor =
-                  bType === 'Protected Bike Lanes' ? '#10b981' :
-                  bType === 'Painted Lanes' ? '#0ea5e9' :
-                  bType === 'Local Street' ? '#f59e0b' :
-                  bType === 'Shared Lanes' ? '#a855f7' : '#10b981';
-                
-                const cleanTypeZh = (selectedFacility.properties.bikeway_type_zh || '單車專用道').replace(/\s*\([^)]*\)/g, '').trim();
+                const theme = 
+                  bType === 'Protected Bike Lanes' ? { bg: 'bg-emerald-500/10 border-emerald-500/25 text-emerald-950', badge: 'bg-emerald-600', borderT: 'border-emerald-500/20' } :
+                  bType === 'Painted Lanes' ? { bg: 'bg-sky-500/10 border-sky-500/25 text-sky-950', badge: 'bg-sky-600', borderT: 'border-sky-500/20' } :
+                  bType === 'Local Street' ? { bg: 'bg-amber-500/10 border-amber-500/25 text-amber-950', badge: 'bg-amber-600', borderT: 'border-amber-500/20' } :
+                  bType === 'Shared Lanes' ? { bg: 'bg-purple-500/10 border-purple-500/25 text-purple-950', badge: 'bg-purple-600', borderT: 'border-purple-500/20' } :
+                  { bg: 'bg-teal-500/10 border-teal-500/25 text-teal-950', badge: 'bg-teal-600', borderT: 'border-teal-500/20' };
+
+                const bikewayLabel = (() => {
+                  if (bType === 'Protected Bike Lanes') return '受保護獨立單車道';
+                  if (bType === 'Painted Lanes') return '路面標線單車道';
+                  if (bType === 'Local Street') return '社區慢速單車街';
+                  if (bType === 'Shared Lanes') return '混合共用車道';
+                  return (selectedFacility.properties.bikeway_type_zh || '單車專用道').replace(/\s*\([^)]*\)/g, '').trim();
+                })();
 
                 const dirRaw = String(selectedFacility.properties.bikeway_direction || '').trim();
                 const dirLower = dirRaw.toLowerCase();
@@ -8734,12 +8785,17 @@ export default function AppMap() {
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
-                    <div className="p-2.5 rounded bg-gray-50 border border-gray-200 flex flex-col gap-1">
+                    {/* 9.1 & 9.2 顏色區塊：左上「道路設施」，右上顏色底白字「單車徑」，下半部「🚴 {種類}」（不加獨立顏色圓點） */}
+                    <div className={`p-2.5 rounded-lg border flex flex-col gap-1.5 ${theme.bg}`}>
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-gray-900 flex items-center gap-1.5">
-                          <span className="w-3 h-3 rounded-full shrink-0 border border-white shadow-sm" style={{ backgroundColor: bColor }}></span>
-                          <span>🚴 {cleanTypeZh}</span>
+                        <span className="font-bold text-xs">道路設施</span>
+                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded text-white shrink-0 shadow-xs ${theme.badge}`}>
+                          單車徑
                         </span>
+                      </div>
+                      <div className={`pt-1 border-t ${theme.borderT} text-[11px] font-medium flex items-center gap-1.5 leading-snug`}>
+                        <span>🚴</span>
+                        <span>{bikewayLabel}</span>
                       </div>
                     </div>
 
@@ -8931,18 +8987,29 @@ export default function AppMap() {
               {/* Traffic Cameras Details */}
               {selectedFacility.facility_type === 'traffic_cameras' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  <div className="flex items-center justify-between text-[11px] text-gray-500 bg-cyan-50/70 p-1.5 rounded">
-                    <span className="flex items-center gap-1.5 text-cyan-800 font-medium">
-                      <span>📷</span>
-                      <span>即時路況畫面</span>
-                    </span>
-                    <button
-                      onClick={() => setWebcamRefreshKey(k => k + 1)}
-                      className="p-1 bg-white border border-cyan-200 text-cyan-700 hover:bg-cyan-100 rounded-md transition-colors shadow-2xs flex items-center justify-center"
-                      title="重新整理即時畫面"
-                    >
-                      <RotateCw className="w-3.5 h-3.5" />
-                    </button>
+                  {/* 16.1 淺藍色區塊：左上「道路設施」，右上淺藍底白字「交通攝影機」，下半部保留「即時路況畫面」與重新整理按鈕 */}
+                  <div className="bg-cyan-500/10 p-2.5 rounded-lg border border-cyan-500/25 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-cyan-950 text-xs">道路設施</span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-cyan-600 text-white shrink-0 shadow-xs">
+                        交通攝影機
+                      </span>
+                    </div>
+
+                    <div className="pt-1 border-t border-cyan-500/20 flex items-center justify-between text-[11px] text-gray-500">
+                      <span className="flex items-center gap-1.5 text-cyan-800 font-medium">
+                        <span>📷</span>
+                        <span>即時路況畫面</span>
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setWebcamRefreshKey(k => k + 1)}
+                        className="p-1 bg-white border border-cyan-200 text-cyan-700 hover:bg-cyan-100 rounded-md transition-colors shadow-2xs flex items-center justify-center cursor-pointer"
+                        title="重新整理即時畫面"
+                      >
+                        <RotateCw className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
 
                   {loadingWebcam ? (
@@ -9041,38 +9108,32 @@ export default function AppMap() {
                       目前暫無可用鏡頭畫面
                     </div>
                   )}
-
-                  {selectedFacility.properties?.url && (
-                    <div className="pt-1 border-t border-gray-100">
-                      <a
-                        href={selectedFacility.properties.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-cyan-700 hover:bg-cyan-800 text-white rounded font-medium text-xs transition-colors shadow-sm"
-                      >
-                        前往官方路況網頁 ↗
-                      </a>
-                    </div>
-                  )}
                 </div>
               )}
 
               {/* Intersection Safety Cameras Details */}
               {selectedFacility.facility_type === 'safety_cameras' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  <div className="p-2.5 rounded-lg border border-rose-200 bg-rose-50/90 text-rose-950 flex items-center justify-between gap-2">
-                    <span className="font-bold text-xs flex items-center gap-1.5 min-w-0">
+                  {/* 17.1 紅色區塊：左上「道路設施」，右上紅底白字「路口安全相機」，下半部保留取締文字 */}
+                  <div className="bg-rose-500/10 p-2.5 rounded-lg border border-rose-500/25 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-rose-950 text-xs">道路設施</span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-600 text-white shrink-0 shadow-xs whitespace-nowrap">
+                        路口安全相機
+                      </span>
+                    </div>
+
+                    {/* 17.2 下半部：「闖紅燈及超速照相取締」 */}
+                    <div className="pt-1 border-t border-rose-500/20 text-[11px] text-rose-950 font-medium flex items-center gap-1.5 leading-snug">
                       <span>{selectedFacility.properties.has_speed ? '🚨' : '🛑'}</span>
-                      <span className="truncate">{selectedFacility.properties.has_speed ? '闖紅燈 + 超速照相' : '闖紅燈照相取締'}</span>
-                    </span>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-600 text-white shrink-0 shadow-xs whitespace-nowrap">
-                      安全相機
-                    </span>
+                      <span>{selectedFacility.properties.has_speed ? '闖紅燈及超速照相取締' : '闖紅燈照相取締'}</span>
+                    </div>
                   </div>
 
+                  {/* 17.3 執法機關 */}
                   <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1 text-[11px]">
                     <div className="flex justify-between items-center text-gray-600">
-                      <span>執法主管機關</span>
+                      <span>執法機關</span>
                       <span className="font-semibold text-gray-800">RoadSafetyBC / ICBC / VPD</span>
                     </div>
                   </div>
@@ -9083,6 +9144,7 @@ export default function AppMap() {
                     <span>• 超速違規：依超速區間罰款 $138 ~ $483 CAD 及記扣點數</span>
                   </div>
 
+                  {/* 17.4 前往 RoadSafetyBC官方網頁 */}
                   <div className="pt-1 border-t border-gray-100">
                     <a
                       href="https://www2.gov.bc.ca/gov/content/transportation/driving-and-cycling/roadsafetybc/intersection-safety-cameras/where-the-cameras-are"
@@ -9090,7 +9152,7 @@ export default function AppMap() {
                       rel="noopener noreferrer"
                       className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-rose-600 hover:bg-rose-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
                     >
-                      查看 BC 省道路安全局官方清單 ↗
+                      前往 RoadSafetyBC官方網頁 ↗
                     </a>
                   </div>
                 </div>
@@ -9739,7 +9801,7 @@ export default function AppMap() {
                       .trim();
                   };
 
-                  const mealMatches = [...text.matchAll(/(Breakfast|Lunch|Dinner|Coffee|Meal|Hamper|Distribution)[^.,;\n]*?(?:at\s*)?(\d{1,2}(?::\d{2})?\s*(?:am|pm)?\s*(?:-|to)\s*\d{1,2}(?::\d{2})?\s*(?:am|pm|noon)?)/gi)];
+                  const mealMatches = Array.from(text.matchAll(/(Breakfast|Lunch|Dinner|Coffee|Meal|Hamper|Distribution)[^.,;\n]*?(?:at\s*)?(\d{1,2}(?::\d{2})?\s*(?:am|pm)?\s*(?:-|to)\s*\d{1,2}(?::\d{2})?\s*(?:am|pm|noon)?)/gi));
                   if (mealMatches.length > 0) {
                     const mealNameZh: Record<string, string> = {
                       breakfast: '早餐時段',
@@ -9764,7 +9826,7 @@ export default function AppMap() {
                   }
 
                   if (lines.length === 0) {
-                    const dayTimeMatches = [...text.matchAll(/(?:(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*[,\s\-\/&]*)+(?:from\s+)?(\d{1,2}(?::\d{2})?\s*(?:am|pm)?\s*(?:-|to)\s*\d{1,2}(?::\d{2})?\s*(?:am|pm|noon)?)/gi)];
+                    const dayTimeMatches = Array.from(text.matchAll(/(?:(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*[,\s\-\/&]*)+(?:from\s+)?(\d{1,2}(?::\d{2})?\s*(?:am|pm)?\s*(?:-|to)\s*\d{1,2}(?::\d{2})?\s*(?:am|pm|noon)?)/gi));
                     for (const dtm of dayTimeMatches) {
                       const rawLbl = dtm[0].replace(dtm[1], '').replace(/from/i, '').trim();
                       const label = cleanDayLabel(rawLbl) || '開放時段';
@@ -10873,14 +10935,20 @@ export default function AppMap() {
               {/* Bike Racks (單車架) Details */}
               {selectedFacility.facility_type === 'bike_racks' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-teal-500/10 p-2.5 rounded-lg border border-teal-500/25 flex items-center justify-between gap-2">
-                    <span className="text-[11px] text-teal-950 font-medium flex items-center gap-1.5 leading-snug">
-                      <span className="text-base text-teal-600 font-bold shrink-0">🚲</span>
-                      <span>溫哥華市政公共自行車停放設施</span>
-                    </span>
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-600 text-white shrink-0 shadow-xs whitespace-nowrap">
-                      單車架
-                    </span>
+                  {/* 10.2 綠色區塊：左上「道路設施」，右上綠底白字「單車架」 */}
+                  <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/25 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-emerald-950 text-xs">道路設施</span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-600 text-white shrink-0 shadow-xs whitespace-nowrap">
+                        單車架
+                      </span>
+                    </div>
+
+                    {/* 10.3 說明文字：「溫哥華市政公共單車停放設施」 */}
+                    <div className="pt-1 border-t border-emerald-500/20 text-[11px] text-emerald-950 font-medium flex items-center gap-1.5 leading-snug">
+                      <span className="text-base text-emerald-600 font-bold shrink-0">🚲</span>
+                      <span>溫哥華市政公共單車停放設施</span>
+                    </div>
                   </div>
 
                   <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
@@ -10908,30 +10976,6 @@ export default function AppMap() {
                             if (r === 'corral') return '單車專用圍欄';
                             if (r === 'other') return '其他';
                             return selectedFacility.properties.rack_type;
-                          })()}
-                        </span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.status && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                        <span>設施狀態</span>
-                        <span className={`font-semibold ${
-                          ['inservice', 'active'].includes(String(selectedFacility.properties.status).toLowerCase()) 
-                            ? 'text-emerald-700' 
-                            : String(selectedFacility.properties.status).toLowerCase() === 'planned' 
-                              ? 'text-blue-700' 
-                              : 'text-gray-800'
-                        }`}>
-                          {(() => {
-                            const s = String(selectedFacility.properties.status).trim().toLowerCase();
-                            if (s === 'inservice' || s === 'active') return '服務中';
-                            if (s === 'planned') return '已計劃';
-                            if (s === 'removed') return '已拆除';
-                            if (s === 'removedtemp') return '暫時拆除';
-                            if (s === 'missing') return '待修復 / 遺失';
-                            if (s === 'outofservice') return '暫停服務';
-                            if (s === 'unknown') return '未知狀態';
-                            return selectedFacility.properties.status;
                           })()}
                         </span>
                       </div>
@@ -11416,7 +11460,7 @@ export default function AppMap() {
                       className="w-full py-1.5 px-3 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
                     >
                       <Ban className="w-3.5 h-3.5" />
-                      <span>查看 Road Ahead 官網封閉詳情</span>
+                      <span>查看 Road Ahead 封閉詳情</span>
                     </a>
                   )}
                 </div>
@@ -11447,7 +11491,7 @@ export default function AppMap() {
                       )}
                       {selectedFacility.properties.comp_date && (
                         <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties.schedule ? 'pt-1.5 border-t border-gray-100' : ''}`}>
-                          <span>預估完工日期</span>
+                          <span>預計完工日期</span>
                           <span className="font-bold text-amber-600 font-mono">
                             {selectedFacility.properties.comp_date}
                           </span>
