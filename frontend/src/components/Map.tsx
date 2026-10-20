@@ -8204,6 +8204,9 @@ export default function AppMap() {
                         if (selectedFacility.facility_type === 'tide_stations') {
                           return selectedFacility.properties?.english_name || selectedFacility.name?.replace(/[\u4e00-\u9fa5（）\(\)]+/g, '').trim() || selectedFacility.name;
                         }
+                        if (selectedFacility.facility_type === 'food_banks') {
+                          return selectedFacility.properties?.program_name || selectedFacility.properties?.name || selectedFacility.name;
+                        }
                         return selectedFacility.name;
                       })()}
                     </h3>
@@ -9608,7 +9611,7 @@ export default function AppMap() {
                   <div className="bg-blue-500/10 p-2.5 rounded-lg border border-blue-500/25 flex items-center justify-between gap-2">
                     <span className="font-bold text-xs text-blue-950 flex items-center gap-1.5">
                       <span>🏫</span>
-                      <span>設施類別</span>
+                      <span>生活設施</span>
                     </span>
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-600 text-white shrink-0 shadow-xs whitespace-nowrap">
                       學校
@@ -9632,7 +9635,7 @@ export default function AppMap() {
                   <div className="bg-orange-500/10 p-2.5 rounded-lg border border-orange-500/25 flex items-center justify-between gap-2">
                     <span className="font-bold text-xs text-orange-950 flex items-center gap-1.5">
                       <span>📚</span>
-                      <span>設施類別</span>
+                      <span>生活設施</span>
                     </span>
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-orange-600 text-white shrink-0 shadow-xs whitespace-nowrap">
                       圖書館
@@ -9647,7 +9650,7 @@ export default function AppMap() {
                         rel="noopener noreferrer"
                         className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-orange-600 hover:bg-orange-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
                       >
-                        前往 VPL 溫哥華市立圖書館官網 ↗
+                        前往 Vancouver Public Library 官方網頁 ↗
                       </a>
                     </div>
                   )}
@@ -9660,7 +9663,7 @@ export default function AppMap() {
                   <div className="bg-orange-500/10 p-2.5 rounded-lg border border-orange-500/25 flex items-center justify-between gap-2">
                     <span className="font-bold text-xs text-orange-950 flex items-center gap-1.5">
                       <span>🍱</span>
-                      <span>設施類別</span>
+                      <span>生活設施</span>
                     </span>
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-orange-600 text-white shrink-0 shadow-xs whitespace-nowrap">
                       食品攤販
@@ -9700,261 +9703,296 @@ export default function AppMap() {
               )}
 
               {/* Homeless Shelters Details */}
-              {selectedFacility.facility_type === 'homeless_shelters' && (
-                <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-rose-500/10 p-2.5 rounded-lg border border-rose-500/25 flex items-center justify-between gap-2">
-                    <span className="font-bold text-xs text-rose-950 flex items-center gap-1.5">
-                      <span>🏠</span>
-                      <span>設施類別</span>
-                    </span>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-600 text-white shrink-0 shadow-xs whitespace-nowrap">
-                      無家者庇護所
-                    </span>
-                  </div>
+              {selectedFacility.facility_type === 'homeless_shelters' && (() => {
+                const formatShelterYesNo = (val?: string) => {
+                  if (!val || val === '未註記' || val.toLowerCase() === 'unknown') return '不詳';
+                  if (val.includes('有') || val.includes('允許') || val.includes('可') || /^(yes|true)$/i.test(val)) return '是';
+                  if (val.includes('無') || val.includes('不可') || /^(no|false)$/i.test(val)) return '否';
+                  return val;
+                };
 
-                  {selectedFacility.properties.category && (
-                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex justify-between items-center text-[11px] text-gray-600">
-                      <span>收容對象</span>
-                      <span className="font-semibold text-gray-800">
-                        {(() => {
-                          const cat = String(selectedFacility.properties.category);
-                          if (/Adults\s*\(all\s*gender\)/i.test(cat) || /All\s*gender/i.test(cat)) return '成人';
-                          if (/Men\s*&\s*Women/i.test(cat)) return '男性與女性';
-                          if (/^Men$/i.test(cat.trim())) return '男性';
-                          if (/^Women$/i.test(cat.trim())) return '女性';
-                          if (/Youth/i.test(cat)) return '青年';
-                          return cat.replace(/Men/g, '男性').replace(/Women/g, '女性').replace(/Adults/g, '成人').replace(/Youth/g, '青年');
-                        })()}
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    <div className="bg-rose-500/10 p-2.5 rounded-lg border border-rose-500/25 flex items-center justify-between gap-2">
+                      <span className="font-bold text-xs text-rose-950 flex items-center gap-1.5">
+                        <span>🏠</span>
+                        <span>生活設施</span>
+                      </span>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-600 text-white shrink-0 shadow-xs whitespace-nowrap">
+                        無家者庇護所
                       </span>
                     </div>
-                  )}
 
-                  <div className="grid grid-cols-3 gap-1 text-[10.5px]">
-                    <div className="bg-gray-50 p-1.5 rounded border border-gray-100 text-center">
-                      <span className="text-gray-500 block text-[9.5px]">供餐</span>
-                      <span className="font-semibold text-gray-800">{selectedFacility.properties.meals || '未註記'}</span>
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-2 text-[11px]">
+                      {selectedFacility.properties.category && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>收容對象</span>
+                          <span className="font-semibold text-gray-800">
+                            {(() => {
+                              const cat = String(selectedFacility.properties.category);
+                              if (/Adults\s*\(all\s*gender\)/i.test(cat) || /All\s*gender/i.test(cat)) return '成人';
+                              if (/Men\s*&\s*Women/i.test(cat)) return '男性與女性';
+                              if (/^Men$/i.test(cat.trim())) return '男性';
+                              if (/^Women$/i.test(cat.trim())) return '女性';
+                              if (/Youth/i.test(cat)) return '青年';
+                              return cat.replace(/Men/g, '男性').replace(/Women/g, '女性').replace(/Adults/g, '成人').replace(/Youth/g, '青年');
+                            })()}
+                          </span>
+                        </div>
+                      )}
+
+                      {/* 24.2 一列三欄橫向顯示 (是/否) meal, pets, carts */}
+                      <div className="grid grid-cols-3 gap-1.5 text-center pt-1.5 border-t border-gray-200/60">
+                        <div className="bg-white p-1 rounded border border-gray-100 flex flex-col items-center">
+                          <span className="text-[10px] text-gray-500">膳食</span>
+                          <span className={`text-[11px] font-bold ${formatShelterYesNo(selectedFacility.properties.meals || selectedFacility.properties.meal) === '是' ? 'text-emerald-700' : 'text-gray-700'}`}>
+                            {formatShelterYesNo(selectedFacility.properties.meals || selectedFacility.properties.meal)}
+                          </span>
+                        </div>
+                        <div className="bg-white p-1 rounded border border-gray-100 flex flex-col items-center">
+                          <span className="text-[10px] text-gray-500">寵物</span>
+                          <span className={`text-[11px] font-bold ${formatShelterYesNo(selectedFacility.properties.pets) === '是' ? 'text-emerald-700' : 'text-gray-700'}`}>
+                            {formatShelterYesNo(selectedFacility.properties.pets)}
+                          </span>
+                        </div>
+                        <div className="bg-white p-1 rounded border border-gray-100 flex flex-col items-center">
+                          <span className="text-[10px] text-gray-500">推車</span>
+                          <span className={`text-[11px] font-bold ${formatShelterYesNo(selectedFacility.properties.carts) === '是' ? 'text-emerald-700' : 'text-gray-700'}`}>
+                            {formatShelterYesNo(selectedFacility.properties.carts)}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="bg-gray-50 p-1.5 rounded border border-gray-100 text-center">
-                      <span className="text-gray-500 block text-[9.5px]">寵物</span>
-                      <span className="font-semibold text-gray-800">{selectedFacility.properties.pets || '未註記'}</span>
-                    </div>
-                    <div className="bg-gray-50 p-1.5 rounded border border-gray-100 text-center">
-                      <span className="text-gray-500 block text-[9.5px]">推車</span>
-                      <span className="font-semibold text-gray-800">{selectedFacility.properties.carts || '未註記'}</span>
-                    </div>
+
+                    {/* 24.3 如有電話或官方網站，在下方新增一個獨立灰色區塊 */}
+                    {(selectedFacility.properties.phone || selectedFacility.properties.website) && (
+                      <div className="flex flex-col gap-1.5 bg-gray-50 p-2.5 rounded border border-gray-100 text-[11px]">
+                        {selectedFacility.properties.phone && (
+                          <div className="flex justify-between items-center text-gray-600">
+                            <span>聯絡專線</span>
+                            <a href={`tel:${selectedFacility.properties.phone}`} className="font-bold text-rose-600 hover:underline">
+                              {selectedFacility.properties.phone}
+                            </a>
+                          </div>
+                        )}
+                        {selectedFacility.properties.website && (
+                          <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties.phone ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                            <span>官方網站</span>
+                            <a 
+                              href={selectedFacility.properties.website}
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              className="font-semibold text-rose-600 hover:underline"
+                            >
+                              前往官方網站 ↗
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
-
-                  {selectedFacility.properties.phone && (
-                    <div className="flex justify-between items-center bg-gray-50 p-2 rounded border border-gray-100 text-[11px]">
-                      <span className="text-gray-500">聯絡專線</span>
-                      <a href={`tel:${selectedFacility.properties.phone}`} className="font-bold text-rose-600 hover:underline">
-                        📞 {selectedFacility.properties.phone}
-                      </a>
-                    </div>
-                  )}
-                </div>
-              )}
+                );
+              })()}
 
               {/* Food Banks & Low-Cost Food Programs Details */}
               {selectedFacility.facility_type === 'food_banks' && (() => {
                 const props = selectedFacility.properties || {};
-                const org = props.organization;
-                const desc = props.description;
-                const addr = props.address;
-                const providesMeals = props.provides_meals === 'Yes';
-                const providesHampers = props.provides_hampers === 'Yes';
+                const org = props.organization_name || props.organization;
+                const pop = props.program_population_served || props.population_served;
+                const referral = props.requires_referral;
                 const daysOpen = props.days_open;
+                const desc = props.description;
                 const phone = props.signup_phone_number;
                 const email = props.signup_email;
-                const pop = props.population_served;
+                const signupReq = props.signup_required;
+                const wheelchair = props.wheelchair_accessible;
+                const costMeals = props.cost_of_meals;
+                const costHampers = props.cost_of_hampers;
 
-                const parseFoodBankHours = (rawDays?: string, rawDesc?: string, rawComment?: string) => {
-                  const lines: { label: string; value: string }[] = [];
-                  const text = `${rawDesc || ''} ${rawComment || ''}`.replace(/\s+/g, ' ');
-
-                  const translateDays = (raw?: string) => {
-                    if (!raw || raw.toLowerCase() === 'unknown') return '';
-                    return raw
-                      .replace(/MON/g, '週一')
-                      .replace(/TUE/g, '週二')
-                      .replace(/WED/g, '週三')
-                      .replace(/THU/g, '週四')
-                      .replace(/FRI/g, '週五')
-                      .replace(/SAT/g, '週六')
-                      .replace(/SUN/g, '週日')
-                      .replace(/,\s*/g, '、');
-                  };
-
-                  const cleanDayLabel = (lbl: string) => {
-                    return lbl
-                      .replace(/Mondays?/gi, '週一')
-                      .replace(/Tuesdays?|Tues/gi, '週二')
-                      .replace(/Wednesdays?|Weds?/gi, '週三')
-                      .replace(/Thursdays?|Thurs?/gi, '週四')
-                      .replace(/Fridays?|Fri/gi, '週五')
-                      .replace(/Saturdays?|Sat/gi, '週六')
-                      .replace(/Sundays?|Sun/gi, '週日')
-                      .replace(/weekdays/gi, '平日 (週一至週五)')
-                      .replace(/daily/gi, '每日')
-                      .replace(/every/gi, '每')
-                      .replace(/,/g, '、')
-                      .trim();
-                  };
-
-                  const mealMatches = Array.from(text.matchAll(/(Breakfast|Lunch|Dinner|Coffee|Meal|Hamper|Distribution)[^.,;\n]*?(?:at\s*)?(\d{1,2}(?::\d{2})?\s*(?:am|pm)?\s*(?:-|to)\s*\d{1,2}(?::\d{2})?\s*(?:am|pm|noon)?)/gi));
-                  if (mealMatches.length > 0) {
-                    const mealNameZh: Record<string, string> = {
-                      breakfast: '早餐時段',
-                      lunch: '午餐時段',
-                      dinner: '晚餐時段',
-                      coffee: '咖啡茶點',
-                      meal: '供餐時段',
-                      hamper: '食物籃發放',
-                      distribution: '物資分發'
-                    };
-                    const seen = new Set<string>();
-                    for (const m of mealMatches) {
-                      const type = m[1].toLowerCase();
-                      const label = mealNameZh[type] || m[1];
-                      const val = m[2].trim().replace('-', ' - ');
-                      const key = `${label}_${val}`;
-                      if (!seen.has(key)) {
-                        seen.add(key);
-                        lines.push({ label, value: val });
-                      }
-                    }
-                  }
-
-                  if (lines.length === 0) {
-                    const dayTimeMatches = Array.from(text.matchAll(/(?:(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*[,\s\-\/&]*)+(?:from\s+)?(\d{1,2}(?::\d{2})?\s*(?:am|pm)?\s*(?:-|to)\s*\d{1,2}(?::\d{2})?\s*(?:am|pm|noon)?)/gi));
-                    for (const dtm of dayTimeMatches) {
-                      const rawLbl = dtm[0].replace(dtm[1], '').replace(/from/i, '').trim();
-                      const label = cleanDayLabel(rawLbl) || '開放時段';
-                      lines.push({ label, value: dtm[1].trim().replace('-', ' - ') });
-                    }
-                  }
-
-                  if (lines.length === 0) {
-                    const generalTime = text.match(/(\d{1,2}(?::\d{2})?\s*(?:am|pm)\s*(?:-|to)\s*\d{1,2}(?::\d{2})?\s*(?:am|pm|noon))/i);
-                    if (generalTime) {
-                      lines.push({ label: '開放時段', value: generalTime[1].trim().replace('-', ' - ') });
-                    }
-                  }
-
-                  const dayStr = translateDays(rawDays);
-                  if (lines.length > 0) {
-                    if (dayStr) {
-                      lines.unshift({ label: '開放日', value: dayStr });
-                    }
-                  } else {
-                    if (dayStr) {
-                      lines.push({ label: '開放日', value: dayStr });
-                      lines.push({ label: '開放時間', value: '依機構公告 / 需預約' });
-                    } else {
-                      lines.push({ label: '開放時間', value: '請洽詢機構 / 預約制' });
-                    }
-                  }
-
-                  return lines;
+                const formatTriState = (val?: string | null) => {
+                  if (val === null || val === undefined || val === '') return null;
+                  const s = String(val).trim();
+                  if (s.toLowerCase() === 'unknown' || s === '不詳') return '不詳';
+                  if (/^(yes|y|true|是)$/i.test(s)) return '是';
+                  if (/^(no|n|false|否)$/i.test(s)) return '否';
+                  return s;
                 };
 
-                const formattedHours = parseFoodBankHours(daysOpen, desc, props.comment);
+                const formatDaysOpen = (raw?: string | null) => {
+                  if (!raw || raw.toLowerCase() === 'unknown') return '不詳';
+                  if (raw === 'MON, TUE, WED, THU, FRI, SAT, SUN') return '每日 (週一至週日)';
+                  if (raw === 'MON, TUE, WED, THU, FRI') return '平日 (週一至週五)';
+                  return raw
+                    .replace(/\bMON\b/g, '週一')
+                    .replace(/\bTUE\b/g, '週二')
+                    .replace(/\bWED\b/g, '週三')
+                    .replace(/\bTHU\b/g, '週四')
+                    .replace(/\bFRI\b/g, '週五')
+                    .replace(/\bSAT\b/g, '週六')
+                    .replace(/\bSUN\b/g, '週日')
+                    .replace(/,\s*/g, '、');
+                };
+
+                const formatCost = (cost?: any) => {
+                  if (cost === null || cost === undefined || cost === '') return null;
+                  if (cost === 0 || cost === '0') return '免費';
+                  if (typeof cost === 'number' || /^\d+(\.\d+)?$/.test(String(cost))) return `$${cost}`;
+                  return String(cost);
+                };
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
+                    {/* 22.1 綠色區塊：左上「生活設施」，右上綠底白字「食物銀行」 */}
                     <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/25 flex items-center justify-between gap-2">
                       <span className="font-bold text-xs text-emerald-950 flex items-center gap-1.5">
                         <span>🥫</span>
-                        <span>設施類別</span>
+                        <span>生活設施</span>
                       </span>
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-600 text-white shrink-0 shadow-xs whitespace-nowrap">
                         食物銀行
                       </span>
                     </div>
 
-                    {(org || addr) && (
-                      <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                        {org && (
-                          <div className="flex justify-between items-center text-gray-600">
-                            <span>主辦機構</span>
-                            <span className="font-bold text-gray-900 text-right">
-                              {org}
-                            </span>
-                          </div>
-                        )}
-                        {addr && (
-                          <div className={`flex justify-between items-center text-gray-600 ${org ? 'pt-1.5 border-t border-gray-100' : ''}`}>
-                            <span>詳細地址</span>
-                            <span className="font-medium text-gray-800 text-right">{addr}</span>
-                          </div>
-                        )}
-                      </div>
-                    )}
+                    {/* 22.5 & 22.6 綠色區塊下方資料以同一灰底區塊顯示，無emoji */}
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                      {org && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>主辦機構</span>
+                          <span className="font-bold text-gray-900 text-right">
+                            {org}
+                          </span>
+                        </div>
+                      )}
 
-                    <div className="grid grid-cols-2 gap-1.5 text-[11px]">
-                      <div className="bg-gray-50 p-2 rounded border border-gray-100 flex items-center justify-between">
-                        <span className="text-gray-500">免費/平價熱食</span>
-                        <span className={`font-bold ${providesMeals ? 'text-emerald-700' : 'text-gray-500'}`}>
-                          {providesMeals ? '🍲 有供餐' : '無'}
-                        </span>
+                      {pop && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span className="shrink-0">服務對象</span>
+                          <span className="font-medium text-gray-800 text-right">
+                            {pop}
+                          </span>
+                        </div>
+                      )}
+
+                      {referral !== null && referral !== undefined && referral !== '' && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>轉介</span>
+                          <span className="font-medium text-gray-800">
+                            {formatTriState(referral)}
+                          </span>
+                        </div>
+                      )}
+
+                      {/* 分隔線 */}
+                      {(org || pop || (referral !== null && referral !== undefined && referral !== '')) && (
+                        <div className="border-t border-gray-200/60 my-0.5" />
+                      )}
+
+                      {/* 營運時間改成用 days_open，不用顯示時間 */}
+                      {daysOpen && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>營運時間</span>
+                          <span className="font-medium text-gray-800 text-right">
+                            {formatDaysOpen(daysOpen)}
+                          </span>
+                        </div>
+                      )}
+
+                      {/* 分隔線 */}
+                      <div className="border-t border-gray-200/60 my-0.5" />
+
+                      {/* 一列四欄橫向顯示 (是/否/不詳) */}
+                      <div className="grid grid-cols-4 gap-1 text-center py-1">
+                        <div className="bg-white p-1 rounded border border-gray-100 flex flex-col items-center">
+                          <span className="text-[10px] text-gray-500">膳食</span>
+                          <span className={`text-[11px] font-bold ${formatTriState(props.provides_meals) === '是' ? 'text-emerald-700' : 'text-gray-700'}`}>
+                            {formatTriState(props.provides_meals) || '不詳'}
+                          </span>
+                        </div>
+                        <div className="bg-white p-1 rounded border border-gray-100 flex flex-col items-center">
+                          <span className="text-[10px] text-gray-500">外送</span>
+                          <span className={`text-[11px] font-bold ${formatTriState(props.delivery_available) === '是' ? 'text-emerald-700' : 'text-gray-700'}`}>
+                            {formatTriState(props.delivery_available) || '不詳'}
+                          </span>
+                        </div>
+                        <div className="bg-white p-1 rounded border border-gray-100 flex flex-col items-center">
+                          <span className="text-[10px] text-gray-500">物資包</span>
+                          <span className={`text-[11px] font-bold ${formatTriState(props.provides_hampers) === '是' ? 'text-emerald-700' : 'text-gray-700'}`}>
+                            {formatTriState(props.provides_hampers) || '不詳'}
+                          </span>
+                        </div>
+                        <div className="bg-white p-1 rounded border border-gray-100 flex flex-col items-center">
+                          <span className="text-[10px] text-gray-500">外帶</span>
+                          <span className={`text-[11px] font-bold ${formatTriState(props.takeout_available) === '是' ? 'text-emerald-700' : 'text-gray-700'}`}>
+                            {formatTriState(props.takeout_available) || '不詳'}
+                          </span>
+                        </div>
                       </div>
-                      <div className="bg-gray-50 p-2 rounded border border-gray-100 flex items-center justify-between">
-                        <span className="text-gray-500">食材食物籃</span>
-                        <span className={`font-bold ${providesHampers ? 'text-emerald-700' : 'text-gray-500'}`}>
-                          {providesHampers ? '🧺 有提供' : '無'}
-                        </span>
-                      </div>
+
+                      {costMeals !== null && costMeals !== undefined && costMeals !== '' && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>膳食費用</span>
+                          <span className="font-semibold text-emerald-800">
+                            {formatCost(costMeals)}
+                          </span>
+                        </div>
+                      )}
+
+                      {costHampers !== null && costHampers !== undefined && costHampers !== '' && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>物資包費用</span>
+                          <span className="font-semibold text-emerald-800">
+                            {formatCost(costHampers)}
+                          </span>
+                        </div>
+                      )}
+
+                      {wheelchair !== null && wheelchair !== undefined && wheelchair !== '' && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>無障礙設施</span>
+                          <span className="font-medium text-gray-800">
+                            {formatTriState(wheelchair)}
+                          </span>
+                        </div>
+                      )}
+
+                      {/* 分隔線 */}
+                      {((signupReq !== null && signupReq !== undefined && signupReq !== '') || phone || email) && (
+                        <div className="border-t border-gray-200/60 my-0.5" />
+                      )}
+
+                      {signupReq !== null && signupReq !== undefined && signupReq !== '' && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>預先登記</span>
+                          <span className="font-medium text-gray-800">
+                            {formatTriState(signupReq)}
+                          </span>
+                        </div>
+                      )}
+
+                      {email && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>登記電郵</span>
+                          <a href={`mailto:${email}`} className="font-mono text-emerald-600 hover:underline">
+                            {email}
+                          </a>
+                        </div>
+                      )}
+
+                      {phone && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>登記電話</span>
+                          <a href={`tel:${phone}`} className="font-bold text-emerald-600 hover:underline">
+                            {phone}
+                          </a>
+                        </div>
+                      )}
                     </div>
 
-                    {formattedHours.length > 0 && (
-                      <div className="bg-gray-50 p-2.5 rounded border border-gray-100 text-[11px] flex flex-col gap-1.5">
-                        <div className="text-gray-500 font-semibold flex items-center gap-1 mb-0.5">
-                          <span>🕒</span>
-                          <span>開放 / 營運時間</span>
-                        </div>
-                        <div className="flex flex-col gap-1 divide-y divide-gray-100">
-                          {formattedHours.map((row, idx) => (
-                            <div key={idx} className={`flex justify-between items-center text-[11px] ${idx > 0 ? 'pt-1' : ''}`}>
-                              <span className="text-gray-600 font-medium">{row.label}</span>
-                              <span className="font-mono font-semibold text-right text-gray-900">
-                                {row.value}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
+                    {/* 22.6 以下新灰色區塊：詳情 (description) */}
                     {desc && (
-                      <div className="bg-gray-50/90 p-2 rounded border border-gray-100 text-[11px] text-gray-700 leading-relaxed">
-                        {desc}
-                      </div>
-                    )}
-
-                    {pop && (
-                      <div className="text-[10px] text-gray-500 bg-gray-50 p-1.5 rounded border border-gray-100">
-                        服務對象：{pop}
-                      </div>
-                    )}
-
-                    {(phone || email) && (
-                      <div className="flex flex-col gap-1 bg-gray-50 p-2 rounded border border-gray-100 text-[11px]">
-                        {phone && (
-                          <div className="flex justify-between items-center">
-                            <span className="text-gray-500">預約諮詢電話</span>
-                            <a href={`tel:${phone}`} className="font-bold text-emerald-600 hover:underline">
-                              📞 {phone}
-                            </a>
-                          </div>
-                        )}
-                        {email && (
-                          <div className="flex justify-between items-center">
-                            <span className="text-gray-500">聯絡 Email</span>
-                            <a href={`mailto:${email}`} className="font-mono text-emerald-600 hover:underline">
-                              ✉️ {email}
-                            </a>
-                          </div>
-                        )}
+                      <div className="bg-gray-50/90 p-2.5 rounded border border-gray-100 text-[11px] text-gray-700 leading-relaxed">
+                        <span className="font-semibold text-gray-800 block mb-1">詳情</span>
+                        <span>{desc}</span>
                       </div>
                     )}
                   </div>
@@ -9979,7 +10017,21 @@ export default function AppMap() {
                   }
                 }
 
-                // 整理組織營業時間顯示文字，統一顯示格式
+                // 23.2 營運時間根據設定的選擇顯示 12 或 24 小時
+                const formatTimeRange = (timeRangeStr: string) => {
+                  if (timeFormat === '12h') {
+                    return timeRangeStr.replace(/(\d{1,2}):(\d{2})/g, (_m, h, m) => {
+                      let hour = parseInt(h, 10);
+                      const suffix = hour >= 12 ? 'PM' : 'AM';
+                      if (hour > 12) hour -= 12;
+                      if (hour === 0) hour = 12;
+                      return `${hour}:${m} ${suffix}`;
+                    }).replace('-', ' - ');
+                  } else {
+                    return timeRangeStr.replace('-', ' - ');
+                  }
+                };
+
                 const parseOpeningHours = (raw?: string) => {
                   if (!raw || !raw.trim()) return [];
                   const parts = raw.split(';').map(p => p.trim()).filter(Boolean);
@@ -10017,15 +10069,15 @@ export default function AppMap() {
                     }
                     const stdMatch = part.match(/^([A-Za-z,\-]+)\s+(\d{1,2}:\d{2}\s*-\s*\d{1,2}:\d{2})$/);
                     if (stdMatch) {
-                      lines.push({ label: translateDays(stdMatch[1].trim()), value: stdMatch[2].replace('-', ' - ') });
+                      lines.push({ label: translateDays(stdMatch[1].trim()), value: formatTimeRange(stdMatch[2]) });
                       continue;
                     }
                     if (part.includes('Bottle Depot')) {
-                      lines.push({ label: '一般營業', value: '09:00 - 18:00' });
-                      lines.push({ label: '回收中心 (Bottle Depot)', value: '07:30 - 18:00' });
+                      lines.push({ label: '一般營業', value: formatTimeRange('09:00 - 18:00') });
+                      lines.push({ label: '回收中心 (Bottle Depot)', value: formatTimeRange('07:30 - 18:00') });
                       continue;
                     }
-                    lines.push({ label: '營業時間', value: part });
+                    lines.push({ label: '營業時間', value: formatTimeRange(part) });
                   }
 
                   if (offHolidays.length > 0) {
@@ -10044,83 +10096,84 @@ export default function AppMap() {
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
+                    {/* 23.1 綠色區塊：左上「生活設施」，右上綠底白字「環保回收」 */}
                     <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/25 flex items-center justify-between gap-2">
                       <span className="font-bold text-xs text-emerald-950 flex items-center gap-1.5">
                         <span>♻️</span>
-                        <span>設施類別</span>
+                        <span>生活設施</span>
                       </span>
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-600 text-white shrink-0 shadow-xs whitespace-nowrap">
                         環保回收
                       </span>
                     </div>
 
-                    {brand && (
-                      <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex justify-between items-center text-[11px] text-gray-600">
-                        <span>品牌 / 營運商</span>
-                        <span className="font-bold text-emerald-900 font-mono">{brand}</span>
-                      </div>
-                    )}
-
-                    {formattedHours.length > 0 && (
-                      <div className="bg-gray-50 p-2.5 rounded border border-gray-100 text-[11px] flex flex-col gap-1.5">
-                        <div className="text-gray-500 font-semibold flex items-center gap-1 mb-0.5">
-                          <span>🕒</span>
-                          <span>營業時間</span>
+                    {/* 23.3 綠色區塊下方的資料以同一灰底區塊顯示，無emoji */}
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-2 text-[11px]">
+                      {/* 23.4 品牌/營運商刪去品牌 -> 營運商 */}
+                      {brand && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>營運商</span>
+                          <span className="font-bold text-emerald-900 font-mono">{brand}</span>
                         </div>
-                        <div className="flex flex-col gap-1 divide-y divide-gray-100">
-                          {formattedHours.map((row, idx) => (
-                            <div key={idx} className={`flex justify-between items-center text-[11px] ${idx > 0 ? 'pt-1' : ''}`}>
-                              <span className="text-gray-600 font-medium">{row.label}</span>
-                              <span className={`font-mono text-right ${row.value.includes('公休') || row.value.includes('休息') ? 'text-rose-600 font-medium' : 'text-gray-900 font-semibold'}`}>
-                                {row.value}
+                      )}
+
+                      {formattedHours.length > 0 && (
+                        <div className={`flex flex-col gap-1.5 ${brand ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span className="text-gray-500 font-semibold">營業時間</span>
+                          <div className="flex flex-col gap-1 divide-y divide-gray-100">
+                            {formattedHours.map((row, idx) => (
+                              <div key={idx} className={`flex justify-between items-center text-[11px] ${idx > 0 ? 'pt-1' : ''}`}>
+                                <span className="text-gray-600 font-medium">{row.label}</span>
+                                <span className={`font-mono text-right ${row.value.includes('公休') || row.value.includes('休息') ? 'text-rose-600 font-medium' : 'text-gray-900 font-semibold'}`}>
+                                  {row.value}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* 可回收品項列表 */}
+                      {materials && materials.length > 0 && (
+                        <div className={`flex flex-col gap-1 ${(brand || formattedHours.length > 0) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span className="text-[10.5px] font-bold text-gray-600">
+                            接收回收項目 ({materials.length} 項)：
+                          </span>
+                          <div className="flex flex-wrap gap-1 mt-0.5 max-h-[120px] overflow-y-auto pr-1">
+                            {materials.map((mat, idx) => (
+                              <span 
+                                key={idx}
+                                className="text-[10px] px-1.5 py-0.5 bg-white text-emerald-800 rounded border border-emerald-200 font-medium shadow-xs"
+                              >
+                                {mat}
                               </span>
-                            </div>
-                          ))}
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
+                    </div>
 
-                    {/* 可回收品項列表 */}
-                    {materials && materials.length > 0 && (
-                      <div className="flex flex-col gap-1 bg-gray-50/90 p-2 rounded border border-gray-100">
-                        <span className="text-[10.5px] font-bold text-gray-600 flex items-center gap-1">
-                          <span>📦</span>
-                          <span>接收回收項目 ({materials.length} 項)：</span>
-                        </span>
-                        <div className="flex flex-wrap gap-1 mt-0.5 max-h-[120px] overflow-y-auto pr-1">
-                          {materials.map((mat, idx) => (
-                            <span 
-                              key={idx}
-                              className="text-[10px] px-1.5 py-0.5 bg-white text-emerald-800 rounded border border-emerald-200 font-medium shadow-xs"
-                            >
-                              {mat}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* 電話與官方網站 */}
+                    {/* 23.5 如有電話或官方網站，在下方新增一個獨立灰色區塊 */}
                     {(phone || website) && (
-                      <div className="flex flex-col gap-1 bg-gray-50 p-2 rounded border border-gray-100 text-[11px]">
+                      <div className="flex flex-col gap-1.5 bg-gray-50 p-2.5 rounded border border-gray-100 text-[11px]">
                         {phone && (
-                          <div className="flex justify-between items-center">
-                            <span className="text-gray-500">諮詢電話</span>
+                          <div className="flex justify-between items-center text-gray-600">
+                            <span>諮詢電話</span>
                             <a href={`tel:${phone}`} className="font-bold text-emerald-600 hover:underline">
-                              📞 {phone}
+                              {phone}
                             </a>
                           </div>
                         )}
                         {website && (
-                          <div className="flex justify-between items-center">
-                            <span className="text-gray-500">官方網站</span>
+                          <div className={`flex justify-between items-center text-gray-600 ${phone ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                            <span>官方網站</span>
                             <a 
                               href={website} 
                               target="_blank" 
                               rel="noopener noreferrer" 
-                              className="font-semibold text-emerald-600 hover:underline flex items-center gap-1"
+                              className="font-semibold text-emerald-600 hover:underline"
                             >
-                              <span>🌐 前往官方網站</span>
+                              前往官方網站 ↗
                             </a>
                           </div>
                         )}
@@ -10724,18 +10777,23 @@ export default function AppMap() {
               {/* Snow Removal Routes (鏟雪路線) Details */}
               {selectedFacility.facility_type === 'snow_removal_routes' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-1.5 min-w-0">
+                  {/* 18.1 淺藍色區塊：左上「道路設施」，右上淺藍底白字「第 x 優先」，下半部保留說明文字「清掃...」 */}
+                  <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex flex-col gap-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-sky-950 text-xs">道路設施</span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-sky-600 text-white shrink-0 shadow-xs whitespace-nowrap">
+                        {selectedFacility.properties.priority === 1 ? '第 1 優先' : '第 2 優先'}
+                      </span>
+                    </div>
+
+                    <div className="pt-1 border-t border-sky-500/20 text-[11px] text-sky-950 font-medium flex items-center gap-1.5 leading-snug">
                       <span className="text-base text-sky-600 font-bold shrink-0">❄️</span>
-                      <span className="text-[11px] text-sky-900 font-medium leading-snug truncate">
+                      <span>
                         {selectedFacility.properties.priority === 1 
                           ? '清掃主要幹道與急救動線' 
                           : '清掃重要陡坡、學校及主要單車道'}
                       </span>
                     </div>
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-sky-600 text-white shrink-0 shadow-xs whitespace-nowrap">
-                      {selectedFacility.properties.priority === 1 ? '第 1 優先' : '第 2 優先'}
-                    </span>
                   </div>
 
                   <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
@@ -11119,7 +11177,6 @@ export default function AppMap() {
                 const model = props.model_type;
                 const cap = props.capacity;
                 const status = props.service_status;
-                const owner = props.owner;
 
                 const formatServiceStatus = (raw?: string) => {
                   if (!raw) return '';
@@ -11129,22 +11186,13 @@ export default function AppMap() {
                   return raw;
                 };
 
-                const formatOwner = (raw?: string) => {
-                  if (!raw) return '';
-                  if (raw === 'City of Vancouver') return '溫哥華市';
-                  if (raw.startsWith('Contractor')) {
-                    return raw.replace(/^Contractor\s*[-–—:]*\s*/, '承包商 - ');
-                  }
-                  if (raw === 'Business Improvement Area') return '商業促進區 (BIA)';
-                  return raw;
-                };
-
                 return (
                   <div className="flex flex-col gap-2 text-xs">
+                    {/* 25.1 設施類別改成生活設施 */}
                     <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/25 flex items-center justify-between gap-2">
                       <span className="font-bold text-xs text-amber-950 flex items-center gap-1.5">
                         <span className="text-base text-amber-600 font-bold shrink-0">🗑️</span>
-                        <span>設施類別</span>
+                        <span>生活設施</span>
                       </span>
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-600 text-white shrink-0 shadow-xs whitespace-nowrap">
                         垃圾箱
@@ -11173,14 +11221,6 @@ export default function AppMap() {
                           <span>服務運作狀態</span>
                           <span className="font-semibold text-emerald-700">
                             {formatServiceStatus(status)}
-                          </span>
-                        </div>
-                      )}
-                      {owner && (
-                        <div className={`flex justify-between items-center text-gray-600 ${(model || cap || status) ? 'pt-1 border-t border-gray-100' : ''}`}>
-                          <span>管理所屬單位</span>
-                          <span className="text-gray-700 font-medium">
-                            {formatOwner(owner)}
                           </span>
                         </div>
                       )}
