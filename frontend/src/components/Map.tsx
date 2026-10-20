@@ -597,6 +597,7 @@ export default function AppMap() {
   const [motorcycleFilterOpen, setMotorcycleFilterOpen] = useState(true);
   const [fuelFilterOpen, setFuelFilterOpen] = useState(true);
   const [evFilterOpen, setEvFilterOpen] = useState(true);
+  const [showTimePeriodInfo, setShowTimePeriodInfo] = useState(false);
   const [carSharingLegendOpen, setCarSharingLegendOpen] = useState(true);
   const [bikewaysLegendOpen, setBikewaysLegendOpen] = useState(true);
   const [carSharingFilter, setCarSharingFilter] = useState<{ evo: boolean; modo: boolean }>({ evo: true, modo: true });
@@ -8503,12 +8504,89 @@ export default function AppMap() {
                           停車收費錶
                         </span>
                       </div>
-                      {/* 1.2 目前時段只需說明現在甚麼時段和時間，不用右方顯示價錢/免費 */}
-                      <div className="pt-1 border-t border-amber-500/20 flex items-center gap-1.5 text-amber-900 text-[11px] font-medium leading-snug">
-                        <Clock className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                        <span>
-                          目前時段: {activePeriod === 'day' ? `🌞 日間 (${dayRangeStr})` : activePeriod === 'night' ? `🌙 夜間 (${nightRangeStr})` : `💤 深夜 (${freeRangeStr})`}
-                        </span>
+                      {/* 1.2 目前時段與右方時段資訊觸碰鍵 */}
+                      <div className="pt-1 border-t border-amber-500/20 flex items-center justify-between text-amber-900 text-[11px] font-medium leading-snug">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <Clock className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                          <span>
+                            目前時段: {activePeriod === 'day' ? `🌞 日間 (${dayRangeStr})` : activePeriod === 'night' ? `🌙 夜間 (${nightRangeStr})` : `💤 深夜 (${freeRangeStr})`}
+                          </span>
+                        </div>
+
+                        {/* 時段資訊觸碰鍵 */}
+                        <div className="relative group/timeInfo shrink-0">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setShowTimePeriodInfo(prev => !prev);
+                            }}
+                            className="p-1 rounded-full text-amber-700 hover:text-amber-950 hover:bg-amber-500/20 active:scale-95 transition-all cursor-pointer flex items-center justify-center"
+                            title="查看時段說明"
+                            aria-label="查看時段說明"
+                          >
+                            <Info className="w-3.5 h-3.5" />
+                          </button>
+
+                          {/* 懸浮/觸碰小資訊界面 */}
+                          <div
+                            onClick={(e) => e.stopPropagation()}
+                            className={`absolute right-0 top-full mt-1.5 w-[220px] z-50 bg-[#161922]/95 backdrop-blur-md text-gray-100 p-2.5 rounded-lg shadow-2xl border border-gray-700/80 transition-all duration-150 flex flex-col gap-1.5 text-xs select-none ${
+                              showTimePeriodInfo
+                                ? 'opacity-100 scale-100 pointer-events-auto'
+                                : 'opacity-0 scale-95 pointer-events-none group-hover/timeInfo:opacity-100 group-hover/timeInfo:scale-100 group-hover/timeInfo:pointer-events-auto'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between pb-1.5 border-b border-gray-700/60">
+                              <span className="font-bold text-white text-[11px] flex items-center gap-1">
+                                <Clock className="w-3 h-3 text-amber-400" />
+                                停車時段說明
+                              </span>
+                              <span className="text-[9.5px] text-amber-400/90 font-mono">溫哥華標準時間</span>
+                            </div>
+
+                            <div className="flex flex-col gap-1 text-[11px]">
+                              {/* 日間時段 */}
+                              <div className={`flex items-center justify-between px-1.5 py-1 rounded transition-colors ${
+                                activePeriod === 'day' ? 'bg-amber-500/20 text-white font-bold ring-1 ring-amber-500/40' : 'text-gray-300'
+                              }`}>
+                                <span className="flex items-center gap-1.5">
+                                  <span>🌞</span>
+                                  <span>日間時段</span>
+                                </span>
+                                <span className="font-mono text-amber-300">
+                                  {dayRangeStr}
+                                </span>
+                              </div>
+
+                              {/* 夜間時段 */}
+                              <div className={`flex items-center justify-between px-1.5 py-1 rounded transition-colors ${
+                                activePeriod === 'night' ? 'bg-amber-500/20 text-white font-bold ring-1 ring-amber-500/40' : 'text-gray-300'
+                              }`}>
+                                <span className="flex items-center gap-1.5">
+                                  <span>🌙</span>
+                                  <span>夜間時段</span>
+                                </span>
+                                <span className="font-mono text-amber-300">
+                                  {nightRangeStr}
+                                </span>
+                              </div>
+
+                              {/* 深夜免費 */}
+                              <div className={`flex items-center justify-between px-1.5 py-1 rounded transition-colors pt-1 border-t border-gray-700/40 ${
+                                activePeriod === 'free' ? 'bg-emerald-500/20 text-white font-bold ring-1 ring-emerald-500/40' : 'text-gray-400'
+                              }`}>
+                                <span className="flex items-center gap-1.5">
+                                  <span>💤</span>
+                                  <span>深夜免費</span>
+                                </span>
+                                <span className="font-mono text-emerald-400">
+                                  {freeRangeStr}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
 
@@ -8718,11 +8796,89 @@ export default function AppMap() {
                           摩托車停車位
                         </span>
                       </div>
-                      <div className="pt-1 border-t border-orange-500/20 flex items-center gap-1.5 text-orange-900 text-[11px] font-medium leading-snug">
-                        <Clock className="w-3.5 h-3.5 text-orange-600 shrink-0" />
-                        <span>
-                          目前時段: {activePeriod === 'day' ? `🌞 日間 (${dayRangeStr})` : activePeriod === 'night' ? `🌙 夜間 (${nightRangeStr})` : `💤 深夜 (${freeRangeStr})`}
-                        </span>
+                      {/* 2.2 目前時段與右方時段資訊觸碰鍵 */}
+                      <div className="pt-1 border-t border-orange-500/20 flex items-center justify-between text-orange-900 text-[11px] font-medium leading-snug">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <Clock className="w-3.5 h-3.5 text-orange-600 shrink-0" />
+                          <span>
+                            目前時段: {activePeriod === 'day' ? `🌞 日間 (${dayRangeStr})` : activePeriod === 'night' ? `🌙 夜間 (${nightRangeStr})` : `💤 深夜 (${freeRangeStr})`}
+                          </span>
+                        </div>
+
+                        {/* 時段資訊觸碰鍵 */}
+                        <div className="relative group/timeInfo shrink-0">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setShowTimePeriodInfo(prev => !prev);
+                            }}
+                            className="p-1 rounded-full text-orange-700 hover:text-orange-950 hover:bg-orange-500/20 active:scale-95 transition-all cursor-pointer flex items-center justify-center"
+                            title="查看時段說明"
+                            aria-label="查看時段說明"
+                          >
+                            <Info className="w-3.5 h-3.5" />
+                          </button>
+
+                          {/* 懸浮/觸碰小資訊界面 */}
+                          <div
+                            onClick={(e) => e.stopPropagation()}
+                            className={`absolute right-0 top-full mt-1.5 w-[220px] z-50 bg-[#161922]/95 backdrop-blur-md text-gray-100 p-2.5 rounded-lg shadow-2xl border border-gray-700/80 transition-all duration-150 flex flex-col gap-1.5 text-xs select-none ${
+                              showTimePeriodInfo
+                                ? 'opacity-100 scale-100 pointer-events-auto'
+                                : 'opacity-0 scale-95 pointer-events-none group-hover/timeInfo:opacity-100 group-hover/timeInfo:scale-100 group-hover/timeInfo:pointer-events-auto'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between pb-1.5 border-b border-gray-700/60">
+                              <span className="font-bold text-white text-[11px] flex items-center gap-1">
+                                <Clock className="w-3 h-3 text-orange-400" />
+                                停車時段說明
+                              </span>
+                              <span className="text-[9.5px] text-orange-400/90 font-mono">溫哥華標準時間</span>
+                            </div>
+
+                            <div className="flex flex-col gap-1 text-[11px]">
+                              {/* 日間時段 */}
+                              <div className={`flex items-center justify-between px-1.5 py-1 rounded transition-colors ${
+                                activePeriod === 'day' ? 'bg-orange-500/20 text-white font-bold ring-1 ring-orange-500/40' : 'text-gray-300'
+                              }`}>
+                                <span className="flex items-center gap-1.5">
+                                  <span>🌞</span>
+                                  <span>日間時段</span>
+                                </span>
+                                <span className="font-mono text-orange-300">
+                                  {dayRangeStr}
+                                </span>
+                              </div>
+
+                              {/* 夜間時段 */}
+                              <div className={`flex items-center justify-between px-1.5 py-1 rounded transition-colors ${
+                                activePeriod === 'night' ? 'bg-orange-500/20 text-white font-bold ring-1 ring-orange-500/40' : 'text-gray-300'
+                              }`}>
+                                <span className="flex items-center gap-1.5">
+                                  <span>🌙</span>
+                                  <span>夜間時段</span>
+                                </span>
+                                <span className="font-mono text-orange-300">
+                                  {nightRangeStr}
+                                </span>
+                              </div>
+
+                              {/* 深夜免費 */}
+                              <div className={`flex items-center justify-between px-1.5 py-1 rounded transition-colors pt-1 border-t border-gray-700/40 ${
+                                activePeriod === 'free' ? 'bg-emerald-500/20 text-white font-bold ring-1 ring-emerald-500/40' : 'text-gray-400'
+                              }`}>
+                                <span className="flex items-center gap-1.5">
+                                  <span>💤</span>
+                                  <span>深夜免費</span>
+                                </span>
+                                <span className="font-mono text-emerald-400">
+                                  {freeRangeStr}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
 
