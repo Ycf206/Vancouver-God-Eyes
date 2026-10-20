@@ -150,6 +150,12 @@ export interface UIState {
     timePeriod: 'auto' | 'day' | 'night';
   };
   setParkingMeterFilter: (filter: Partial<{ maxRate: number; creditCardOnly: boolean; timePeriod: 'auto' | 'day' | 'night' }>) => void;
+  motorcycleParkingFilter: {
+    maxRate: number; // 20 = all
+    creditCardOnly: boolean;
+    timePeriod: 'auto' | 'day' | 'night';
+  };
+  setMotorcycleParkingFilter: (filter: Partial<{ maxRate: number; creditCardOnly: boolean; timePeriod: 'auto' | 'day' | 'night' }>) => void;
   fuelFilter: {
     brands: string[]; // empty or ['all'] = all
   };
@@ -389,6 +395,16 @@ export const useUIStore = create<UIState>()(
             layers: allFalseLayers,
             contourInterval: 'off',
             searchTarget: null,
+            parkingMeterFilter: {
+              maxRate: 0,
+              creditCardOnly: false,
+              timePeriod: 'auto',
+            },
+            motorcycleParkingFilter: {
+              maxRate: 20,
+              creditCardOnly: false,
+              timePeriod: 'auto',
+            },
           };
         }),
       parkingMeterFilter: {
@@ -400,6 +416,18 @@ export const useUIStore = create<UIState>()(
         set((state) => ({
           parkingMeterFilter: {
             ...state.parkingMeterFilter,
+            ...filter,
+          },
+        })),
+      motorcycleParkingFilter: {
+        maxRate: 20,
+        creditCardOnly: false,
+        timePeriod: 'auto',
+      },
+      setMotorcycleParkingFilter: (filter) =>
+        set((state) => ({
+          motorcycleParkingFilter: {
+            ...state.motorcycleParkingFilter,
             ...filter,
           },
         })),

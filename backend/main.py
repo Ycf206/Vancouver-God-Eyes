@@ -1756,6 +1756,7 @@ FACILITY_SEARCH_CONFIGS = [
     ("beach_water", "海灘水質", "🏖️", "beachWaterQuality", 15),
     ("zoning_districts", "土地規劃", "🏛️", "zoningDistricts", 15),
     ("public_art", "公共藝術", "🎨", "publicArt", 16),
+    ("motorcycle_parking", "摩托車位", "🏍️", "motorcycleParking", 17),
 ]
 
 def get_search_facilities_items():
@@ -1818,12 +1819,15 @@ def get_search_facilities_items():
                     title = props.get("zoning_district") or raw_name or "都市土地規劃"
                 elif ftype == "public_art":
                     title = props.get("sitename") or props.get("title_of_work") or raw_name or "公共藝術"
+                elif ftype == "motorcycle_parking":
+                    mid = props.get("meter_id")
+                    title = f"#{mid}" if mid else (raw_name or "摩托車停車位")
                 elif not title:
                     title = badge
 
                 addr = str(props.get("siteaddress") or props.get("address") or props.get("street_address") or props.get("location") or props.get("street") or props.get("station_location") or "").strip()
                 local_area = str(props.get("local_area") or props.get("neighbourhood") or "").strip()
-                category_extra = str(props.get("school_category_zh") or props.get("facility_type_name") or props.get("brand") or props.get("category") or ("公共藝術" if ftype == "public_art" else "")).strip()
+                category_extra = str(props.get("school_category_zh") or props.get("facility_type_name") or props.get("brand") or props.get("category") or ("公共藝術" if ftype == "public_art" else ("摩托車位" if ftype == "motorcycle_parking" else ""))).strip()
 
                 sub_parts = [badge]
                 if category_extra and category_extra != badge and category_extra != title:
@@ -1843,6 +1847,10 @@ def get_search_facilities_items():
                     badge,
                     ftype,
                     category_extra,
+                    str(props.get("meter_id") or ""),
+                    str(props.get("street") or ""),
+                    str(props.get("meter_head") or ""),
+                    str(props.get("mobile_payment_number") or ""),
                     str(props.get("title_of_work") or ""),
                     str(props.get("sitename") or ""),
                     str(props.get("siteaddress") or ""),
@@ -2531,8 +2539,9 @@ def get_road_facilities_geojson(
 
     # 2. Prioritize verified precompiled static GeoJSON files (instant zero-copy static serving)
     static_geojson_path = os.path.join(os.path.dirname(__file__), "data", f"vancouver_{facility_type}.geojson")
-    if os.path.exists(static_geojson_path):
-        return FileResponse(static_geojson_path, media_type="application/json", headers={"Cache-Control": "public, max-age=3600, stale-while-revalidate=86400"})
+    if facility_type not in ('parking_meters', 'motorcycle_parking'):
+        if os.path.exists(static_geojson_path):
+            return FileResponse(static_geojson_path, media_type="application/json", headers={"Cache-Control": "public, max-age=3600, stale-while-revalidate=86400"})
 
     facilities = db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).all()
     
@@ -2567,11 +2576,13 @@ def get_road_facilities_geojson(
                 if facs_to_add:
                     db.bulk_save_objects(facs_to_add)
                 db.commit()
-                return FileResponse(static_geojson_path, media_type="application/json", headers={"Cache-Control": "public, max-age=3600, stale-while-revalidate=86400"})
+                if facility_type not in ('parking_meters', 'motorcycle_parking'):
+                    return FileResponse(static_geojson_path, media_type="application/json", headers={"Cache-Control": "public, max-age=3600, stale-while-revalidate=86400"})
+                facilities = db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).all()
             except Exception as e:
                 db.rollback()
                 print(f"Error populating {facility_type} from static geojson: {e}")
-                if os.path.exists(static_geojson_path):
+                if os.path.exists(static_geojson_path) and facility_type not in ('parking_meters', 'motorcycle_parking'):
                     return FileResponse(static_geojson_path, media_type="application/json", headers={"Cache-Control": "public, max-age=3600, stale-while-revalidate=86400"})
 
         # 2. Try online API import
@@ -2587,7 +2598,32 @@ def get_road_facilities_geojson(
         static_geojson_path = os.path.join(os.path.dirname(__file__), "data", f"vancouver_{facility_type}.geojson")
         if os.path.exists(static_geojson_path):
             with open(static_geojson_path, "r", encoding="utf-8") as f:
-                return json.load(f)
+                static_data = json.load(f)
+            if facility_type not in ('parking_meters', 'motorcycle_parking'):
+                return static_data
+            class MockFacility:
+                def __init__(self, id, ftype, name, local_area, lon, lat, details):
+                    self.id = id
+                    self.facility_type = ftype
+                    self.name = name
+                    self.local_area = local_area
+                    self.lon = lon
+                    self.lat = lat
+                    self.details = details
+            facilities = []
+            for feat in static_data.get("features", []):
+                coords = feat.get("geometry", {}).get("coordinates", [])
+                p = feat.get("properties", {})
+                if len(coords) >= 2:
+                    facilities.append(MockFacility(
+                        feat.get("id") or p.get("id"),
+                        facility_type,
+                        p.get("name", "Unknown"),
+                        p.get("local_area", ""),
+                        coords[0],
+                        coords[1],
+                        p
+                    ))
             
     features = []
     for f in facilities:
@@ -2600,7 +2636,7 @@ def get_road_facilities_geojson(
         if f.details and isinstance(f.details, dict):
             props.update(f.details)
 
-        if facility_type == 'parking_meters':
+        if facility_type in ('parking_meters', 'motorcycle_parking'):
             # 判斷時段：auto (根據溫哥華當地時間), day (日間 9am-6pm), night (夜間 6pm-10pm)
             import datetime
             try:

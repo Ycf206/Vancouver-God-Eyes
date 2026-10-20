@@ -254,6 +254,7 @@ export default function TopBar() {
                       item.category === 'litter_containers' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
                       item.category === 'wireless_facilities' ? 'bg-purple-950/80 text-purple-300 border-purple-800/60' :
                       item.category === 'public_art' ? 'bg-fuchsia-950/80 text-fuchsia-300 border-fuchsia-800/60 font-semibold' :
+                      item.category === 'motorcycle_parking' ? 'bg-orange-950/80 text-orange-300 border-orange-800/60 font-semibold' :
                       item.category === 'community_centres' ? 'bg-violet-950/80 text-violet-300 border-violet-800/60' :
                       item.category === 'escooter' ? 'bg-lime-950/80 text-lime-300 border-lime-800/60' :
                       item.category === 'ev_charging' ? 'bg-emerald-950/80 text-emerald-300 border-emerald-800/60' :

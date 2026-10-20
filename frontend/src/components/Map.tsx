@@ -474,6 +474,7 @@ export default function AppMap() {
     contourInterval, timeFormat, distanceUnit, userLocation, setExploreOpen,
     isExploreOpen, exploreTab, setExploreTab, setSettingsModalOpen,
     parkingMeterFilter, setParkingMeterFilter,
+    motorcycleParkingFilter, setMotorcycleParkingFilter,
     radiusExploration, setRadiusExploration,
     fuelFilter, setFuelFilter,
     evChargingFilter, setEvChargingFilter,
@@ -593,6 +594,7 @@ export default function AppMap() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const localAreaBoundariesRef = useRef<any[]>([]);
   const [parkingMeterFilterOpen, setParkingMeterFilterOpen] = useState(true);
+  const [motorcycleFilterOpen, setMotorcycleFilterOpen] = useState(true);
   const [fuelFilterOpen, setFuelFilterOpen] = useState(true);
   const [evFilterOpen, setEvFilterOpen] = useState(true);
   const [carSharingLegendOpen, setCarSharingLegendOpen] = useState(true);
@@ -2612,7 +2614,18 @@ export default function AppMap() {
       style.sources['accessible-parking'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/accessible_parking` };
     }
     if (layers.motorcycleParking) {
-      style.sources['motorcycle-parking'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/motorcycle_parking` };
+      const mpParams = new URLSearchParams();
+      if (motorcycleParkingFilter?.maxRate !== undefined && motorcycleParkingFilter.maxRate < 20) {
+        mpParams.set('max_rate', motorcycleParkingFilter.maxRate.toString());
+      }
+      if (motorcycleParkingFilter?.creditCardOnly) {
+        mpParams.set('credit_card_only', 'true');
+      }
+      if (motorcycleParkingFilter?.timePeriod) {
+        mpParams.set('time_period', motorcycleParkingFilter.timePeriod);
+      }
+      const mpQuery = mpParams.toString() ? `?${mpParams.toString()}` : '';
+      style.sources['motorcycle-parking'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/motorcycle_parking${mpQuery}` };
     }
     if (layers.evCharging) {
       style.sources['ev-charging'] = { type: 'geojson', data: '/vancouver_ev_charging.geojson' };
@@ -5442,6 +5455,9 @@ export default function AppMap() {
     radiusCircleGeoJSON,
     layers.accessibleParking, 
     layers.motorcycleParking, 
+    motorcycleParkingFilter.maxRate,
+    motorcycleParkingFilter.creditCardOnly,
+    motorcycleParkingFilter.timePeriod,
     layers.evCharging, 
     layers.escooter,
     layers.carSharing,
@@ -8082,7 +8098,7 @@ export default function AppMap() {
             <div className={`p-3.5 ${
               (selectedFacility.facility_type === 'traffic_conditions' || selectedFacility.facility_type === 'traffic_corridor') ? 'w-[430px]' :
               (selectedFacility.facility_type === 'traffic_cameras' || selectedFacility.facility_type === 'community_gardens') ? 'w-[360px]' : 
-              (selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'border_crossing' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'beach_water_quality' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'zoning_districts') ? 'w-[340px]' : 
+              (selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'border_crossing' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'beach_water_quality' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'zoning_districts' || selectedFacility.facility_type === 'motorcycle_parking') ? 'w-[340px]' : 
               'w-[290px]'
             } max-w-[90vw] text-gray-800`}>
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
@@ -8221,6 +8237,14 @@ export default function AppMap() {
                         if (selectedFacility.facility_type === 'parking_meters') {
                           return (selectedFacility.name || '').replace(/^停車收費錶\s*/, '').replace(/^收費錶\s*/, '').trim() || (selectedFacility.properties?.meter_id ? `#${selectedFacility.properties.meter_id}` : selectedFacility.name);
                         }
+                        if (selectedFacility.facility_type === 'motorcycle_parking') {
+                          const mid = selectedFacility.properties?.meter_id;
+                          if (mid) return `#${String(mid).replace(/^#+/, '')}`;
+                          const street = selectedFacility.properties?.street;
+                          const block = selectedFacility.properties?.block;
+                          if (street) return `${block ? block + ' ' : ''}${street}`.trim();
+                          return '摩托車停車位';
+                        }
                         if (selectedFacility.facility_type === 'drinking_fountains') {
                           const rawName = selectedFacility.properties?.name || selectedFacility.name || '';
                           const cleanName = rawName.replace(/^Fountain location:\s*/i, '').trim();
@@ -8253,7 +8277,7 @@ export default function AppMap() {
                         return selectedFacility.name;
                       })()}
                     </h3>
-                    {(selectedFacility.local_area || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || (selectedFacility.facility_type === 'car_sharing' && selectedFacility.properties?.operator === 'Modo')) && (
+                    {(selectedFacility.local_area || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'motorcycle_parking' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || (selectedFacility.facility_type === 'car_sharing' && selectedFacility.properties?.operator === 'Modo')) && (
                       <span className="text-[11px] text-gray-400 block leading-snug break-words">
                         {(() => {
                           if (selectedFacility.facility_type === 'escooter') return 'Vancouver, BC';
@@ -8281,6 +8305,7 @@ export default function AppMap() {
                           if (selectedFacility.facility_type === 'aed') return selectedFacility.properties?.ADDRESS || selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                           if (selectedFacility.facility_type === 'wireless_facilities') return selectedFacility.properties?.company || '電信商';
                           if (selectedFacility.facility_type === 'public_art') return selectedFacility.properties?.siteaddress || selectedFacility.local_area || 'Vancouver, BC';
+                          if (selectedFacility.facility_type === 'motorcycle_parking') return selectedFacility.properties?.local_area || selectedFacility.local_area || 'Vancouver, BC';
                           if (selectedFacility.facility_type === 'snow_removal_routes') return 'Vancouver, BC';
                           if (selectedFacility.facility_type === 'traffic_speed_limits') return 'Vancouver, BC';
                           if (selectedFacility.facility_type === 'traffic_crosswalks') return 'Vancouver, BC';
@@ -8431,12 +8456,42 @@ export default function AppMap() {
                   }
                 })();
 
-                const formatTimeLimit = (val?: string) => {
-                  if (!val) return '';
+                const formatTimeLimit = (val?: any) => {
+                  if (val === null || val === undefined || val === '') return null;
                   const s = String(val).trim();
-                  if (/no\s*time\s*limit/i.test(s) || /no\s*limit/i.test(s)) return '無時限';
+                  if (/^no(?:\s*time\s*limit)?$/i.test(s) || /no\s*limit/i.test(s)) return '無時限';
                   return s.replace(/小時/g, 'hr').replace(/\bHours?\b/gi, 'hr').replace(/\bHrs\b/gi, 'hr');
                 };
+
+                const formatMeterHead = (val?: any) => {
+                  if (!val) return null;
+                  const s = String(val).trim();
+                  if (/pay\s*station/i.test(s)) return '繳費機';
+                  if (/dual/i.test(s)) return '雙向';
+                  if (/zone\s*only/i.test(s)) return '區域';
+                  if (/single/i.test(s)) return '單一';
+                  return s;
+                };
+
+                const formatRate = (val?: any) => {
+                  if (!val) return null;
+                  const s = String(val).trim();
+                  if (s.toLowerCase().includes('/hr') || s.toLowerCase().includes('/小時')) return s;
+                  return `${s} /hr`;
+                };
+
+                const formatCreditCard = (val?: any) => {
+                  if (val === null || val === undefined || val === '') return null;
+                  const s = String(val).trim().toLowerCase();
+                  if (s === 'yes' || s === 'true' || s === '1') return '是';
+                  if (s === 'no' || s === 'false' || s === '0') return '否';
+                  return String(val);
+                };
+
+                const props = selectedFacility.properties || {};
+                const hasSec1 = Boolean(props.rate_9am_6pm || props.rate_6pm_10pm);
+                const hasSec2 = Boolean(props.time_limit_9am_6pm || props.time_limit_6pm_10pm || props.time_limit_weekend_9am_6pm || props.time_limit_weekend_6pm_10pm || props.am_rush_hours || props.pm_rush_hours);
+                const hasSec3 = Boolean(props.meter_head || props.mobile_payment_number || props.credit_card);
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
@@ -8457,37 +8512,84 @@ export default function AppMap() {
                       </div>
                     </div>
 
-                    {/* 1.6 橙區塊下邊的時段資料全部放入同一灰底區塊, 之後加一分隔線再在線下方放入支援信用卡 */}
+                    {/* 1.2 灰底區塊資料拉排序由上至下 (以下資料不是null才顯示) */}
                     <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                      {selectedFacility.properties.rate_9am_6pm && (
+                      {props.rate_9am_6pm && (
                         <div className="flex justify-between items-center text-gray-600">
-                          <span>日間費率 ({dayRangeStr})</span>
-                          <span className="font-bold text-gray-800">{selectedFacility.properties.rate_9am_6pm} /hr</span>
+                          <span>日間費率</span>
+                          <span className="font-bold text-gray-800">{formatRate(props.rate_9am_6pm)}</span>
                         </div>
                       )}
-                      {selectedFacility.properties.rate_6pm_10pm && (
-                        <div className="flex justify-between items-center text-gray-600">
-                          <span>夜間費率 ({nightRangeStr})</span>
-                          <span className="font-bold text-gray-800">{selectedFacility.properties.rate_6pm_10pm} /hr</span>
+                      {props.rate_6pm_10pm && (
+                        <div className={`flex justify-between items-center text-gray-600 ${props.rate_9am_6pm ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span>夜間費率</span>
+                          <span className="font-bold text-gray-800">{formatRate(props.rate_6pm_10pm)}</span>
                         </div>
                       )}
-                      {/* 1.3 刪除生效中以防斷開2行；1.5 免費停放後方不用再加 (免收費) */}
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>深夜時段 ({freeRangeStr})</span>
-                        <span className="font-semibold text-emerald-700">免費停放</span>
-                      </div>
-                      {/* 1.4 日間上限小時轉回英文 /hr, No Time Limit 改成中文無時限 */}
-                      {selectedFacility.properties.time_limit_9am_6pm && (
+
+                      {/* 分隔線 1 */}
+                      {hasSec1 && hasSec2 && (
+                        <div className="border-t border-gray-200/80 my-0.5" />
+                      )}
+
+                      {props.time_limit_9am_6pm && (
                         <div className="flex justify-between items-center text-gray-600">
-                          <span>日間停放上限</span>
-                          <span className="font-medium text-gray-800">{formatTimeLimit(selectedFacility.properties.time_limit_9am_6pm)}</span>
+                          <span>平日日間停放上限</span>
+                          <span className="font-medium text-gray-800">{formatTimeLimit(props.time_limit_9am_6pm)}</span>
                         </div>
                       )}
-                      {/* 1.6 分隔線下方放入支援信用卡 */}
-                      {selectedFacility.properties.credit_card && (
-                        <div className="pt-1.5 border-t border-gray-200/60 flex justify-between items-center text-gray-600">
-                          <span>支援信用卡感應</span>
-                          <span className="font-medium text-gray-800">{selectedFacility.properties.credit_card === 'Yes' ? '是' : '否'}</span>
+                      {props.time_limit_6pm_10pm && (
+                        <div className={`flex justify-between items-center text-gray-600 ${props.time_limit_9am_6pm ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span>平日夜間停放上限</span>
+                          <span className="font-medium text-gray-800">{formatTimeLimit(props.time_limit_6pm_10pm)}</span>
+                        </div>
+                      )}
+                      {props.time_limit_weekend_9am_6pm && (
+                        <div className={`flex justify-between items-center text-gray-600 ${(props.time_limit_9am_6pm || props.time_limit_6pm_10pm) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span>週末日間停放上限</span>
+                          <span className="font-medium text-gray-800">{formatTimeLimit(props.time_limit_weekend_9am_6pm)}</span>
+                        </div>
+                      )}
+                      {props.time_limit_weekend_6pm_10pm && (
+                        <div className={`flex justify-between items-center text-gray-600 ${(props.time_limit_9am_6pm || props.time_limit_6pm_10pm || props.time_limit_weekend_9am_6pm) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span>週末夜間停放上限</span>
+                          <span className="font-medium text-gray-800">{formatTimeLimit(props.time_limit_weekend_6pm_10pm)}</span>
+                        </div>
+                      )}
+                      {props.am_rush_hours && (
+                        <div className={`flex justify-between items-center text-gray-600 ${(props.time_limit_9am_6pm || props.time_limit_6pm_10pm || props.time_limit_weekend_9am_6pm || props.time_limit_weekend_6pm_10pm) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span>日間禁停限制</span>
+                          <span className="font-medium text-amber-800 font-mono text-[10.5px]">{props.am_rush_hours}</span>
+                        </div>
+                      )}
+                      {props.pm_rush_hours && (
+                        <div className={`flex justify-between items-center text-gray-600 ${(props.time_limit_9am_6pm || props.time_limit_6pm_10pm || props.time_limit_weekend_9am_6pm || props.time_limit_weekend_6pm_10pm || props.am_rush_hours) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span>夜間禁停限制</span>
+                          <span className="font-medium text-amber-800 font-mono text-[10.5px]">{props.pm_rush_hours}</span>
+                        </div>
+                      )}
+
+                      {/* 分隔線 2 */}
+                      {(hasSec1 || hasSec2) && hasSec3 && (
+                        <div className="border-t border-gray-200/80 my-0.5" />
+                      )}
+
+                      {props.meter_head && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>收費錶類型</span>
+                          <span className="font-medium text-gray-800">{formatMeterHead(props.meter_head)}</span>
+                        </div>
+                      )}
+                      {props.mobile_payment_number && (
+                        <div className={`flex justify-between items-center text-gray-600 ${props.meter_head ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span>手機支付區域代碼</span>
+                          <span className="font-mono font-bold text-gray-900">{props.mobile_payment_number}</span>
+                        </div>
+                      )}
+                      {props.credit_card && (
+                        <div className={`flex justify-between items-center text-gray-600 ${(props.meter_head || props.mobile_payment_number) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span>支援信用卡</span>
+                          <span className="font-medium text-gray-800">{formatCreditCard(props.credit_card)}</span>
                         </div>
                       )}
                     </div>
@@ -8523,31 +8625,170 @@ export default function AppMap() {
               )}
 
               {/* Motorcycle Parking Details */}
-              {selectedFacility.facility_type === 'motorcycle_parking' && (
-                <div className="flex flex-col gap-2 text-xs">
-                  {/* 3.1 橙色區塊左方是文字”道路設施”, 右方是橙底白字”摩托車停車位” */}
-                  <div className="bg-orange-500/10 p-2.5 rounded-lg border border-orange-500/25 flex items-center justify-between">
-                    <span className="font-bold text-orange-950 text-xs">道路設施</span>
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-orange-600 text-white shrink-0 shadow-xs">
-                      摩托車停車位
-                    </span>
-                  </div>
+              {selectedFacility.facility_type === 'motorcycle_parking' && (() => {
+                const is12h = timeFormat === '12h';
+                const dayRangeStr = is12h ? '9:00 AM - 6:00 PM' : '09:00 - 18:00';
+                const nightRangeStr = is12h ? '6:00 PM - 10:00 PM' : '18:00 - 22:00';
+                const freeRangeStr = is12h ? '10:00 PM - 9:00 AM' : '22:00 - 09:00';
 
-                  {/* 3.2 區塊下方資料加入灰底區塊顯示”時間限制” (如有資料) */}
-                  {selectedFacility.properties.time_limit && (() => {
-                    const rawTimeLimit = String(selectedFacility.properties.time_limit || '').trim();
-                    const isYes = /^(y|yes|true)$/i.test(rawTimeLimit);
-                    const isNo = /^(n|no|false)$/i.test(rawTimeLimit);
-                    const displayTimeLimit = isYes ? '是' : isNo ? '否' : rawTimeLimit.replace(/\b(?:Hr|Hrs|Hours?)\b/gi, 'hr');
-                    return (
-                      <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex justify-between items-center text-[11px]">
-                        <span className="text-gray-600">時間限制</span>
-                        <span className="font-semibold text-gray-800">{displayTimeLimit}</span>
+                const activePeriod = selectedFacility.properties.active_period || (() => {
+                  try {
+                    const vancouverHour = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Vancouver" })).getHours();
+                    if (motorcycleParkingFilter.timePeriod === 'night') return 'night';
+                    if (motorcycleParkingFilter.timePeriod === 'day') return 'day';
+                    return (9 <= vancouverHour && vancouverHour < 18) ? 'day' : (18 <= vancouverHour && vancouverHour < 22) ? 'night' : 'free';
+                  } catch {
+                    return 'day';
+                  }
+                })();
+
+                const formatTimeLimit = (val?: any) => {
+                  if (val === null || val === undefined || val === '') return null;
+                  const s = String(val).trim();
+                  if (/^no(?:\s*time\s*limit)?$/i.test(s) || /no\s*limit/i.test(s)) return '無時限';
+                  return s.replace(/小時/g, 'hr').replace(/\bHours?\b/gi, 'hr').replace(/\bHrs\b/gi, 'hr');
+                };
+
+                const formatMeterHead = (val?: any) => {
+                  if (!val) return null;
+                  const s = String(val).trim();
+                  if (/zone\s*only/i.test(s)) return '區域';
+                  if (/single/i.test(s)) return '單一';
+                  if (/pay\s*station/i.test(s)) return '繳費機';
+                  if (/dual/i.test(s)) return '雙向';
+                  return s;
+                };
+
+                const formatRate = (val?: any) => {
+                  if (!val) return null;
+                  const s = String(val).trim();
+                  if (s.toLowerCase().includes('/hr') || s.toLowerCase().includes('/小時')) return s;
+                  return `${s} /hr`;
+                };
+
+                const formatCreditCard = (val?: any) => {
+                  if (val === null || val === undefined || val === '') return null;
+                  const s = String(val).trim().toLowerCase();
+                  if (s === 'yes' || s === 'true' || s === '1') return '是';
+                  if (s === 'no' || s === 'false' || s === '0') return '否';
+                  return String(val);
+                };
+
+                const props = selectedFacility.properties || {};
+                const hasSec1 = Boolean(props.rate_9am_6pm || props.rate_6pm_10pm);
+                const hasSec2 = Boolean(props.time_limit_9am_6pm || props.time_limit_6pm_10pm || props.time_limit_weekend_9am_6pm || props.time_limit_weekend_6pm_10pm || props.am_rush_hours || props.pm_rush_hours);
+                const hasSec3 = Boolean(props.meter_head || props.mobile_payment_number || props.credit_card);
+
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    {/* 2.2 在現有的橙色區塊下半部份新增目前時段 (與停車收費錶一樣) */}
+                    <div className="bg-orange-500/10 p-2.5 rounded-lg border border-orange-500/25 flex flex-col gap-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-orange-950 text-xs">道路設施</span>
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-orange-600 text-white shrink-0 shadow-xs">
+                          摩托車停車位
+                        </span>
                       </div>
-                    );
-                  })()}
-                </div>
-              )}
+                      <div className="pt-1 border-t border-orange-500/20 flex items-center gap-1.5 text-orange-900 text-[11px] font-medium leading-snug">
+                        <Clock className="w-3.5 h-3.5 text-orange-600 shrink-0" />
+                        <span>
+                          目前時段: {activePeriod === 'day' ? `🌞 日間 (${dayRangeStr})` : activePeriod === 'night' ? `🌙 夜間 (${nightRangeStr})` : `💤 深夜 (${freeRangeStr})`}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* 2.3 灰底區塊資料拉排序由上至下 (以下資料不是null才顯示) */}
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                      {props.rate_9am_6pm && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>日間費率</span>
+                          <span className="font-bold text-gray-800">{formatRate(props.rate_9am_6pm)}</span>
+                        </div>
+                      )}
+                      {props.rate_6pm_10pm && (
+                        <div className={`flex justify-between items-center text-gray-600 ${props.rate_9am_6pm ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span>夜間費率</span>
+                          <span className="font-bold text-gray-800">{formatRate(props.rate_6pm_10pm)}</span>
+                        </div>
+                      )}
+
+                      {/* 分隔線 1 */}
+                      {hasSec1 && hasSec2 && (
+                        <div className="border-t border-gray-200/80 my-0.5" />
+                      )}
+
+                      {props.time_limit_9am_6pm && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>平日日間停放上限</span>
+                          <span className="font-medium text-gray-800">{formatTimeLimit(props.time_limit_9am_6pm)}</span>
+                        </div>
+                      )}
+                      {props.time_limit_6pm_10pm && (
+                        <div className={`flex justify-between items-center text-gray-600 ${props.time_limit_9am_6pm ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span>平日夜間停放上限</span>
+                          <span className="font-medium text-gray-800">{formatTimeLimit(props.time_limit_6pm_10pm)}</span>
+                        </div>
+                      )}
+                      {props.time_limit_weekend_9am_6pm && (
+                        <div className={`flex justify-between items-center text-gray-600 ${(props.time_limit_9am_6pm || props.time_limit_6pm_10pm) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span>週末日間停放上限</span>
+                          <span className="font-medium text-gray-800">{formatTimeLimit(props.time_limit_weekend_9am_6pm)}</span>
+                        </div>
+                      )}
+                      {props.time_limit_weekend_6pm_10pm && (
+                        <div className={`flex justify-between items-center text-gray-600 ${(props.time_limit_9am_6pm || props.time_limit_6pm_10pm || props.time_limit_weekend_9am_6pm) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span>週末夜間停放上限</span>
+                          <span className="font-medium text-gray-800">{formatTimeLimit(props.time_limit_weekend_6pm_10pm)}</span>
+                        </div>
+                      )}
+                      {props.am_rush_hours && (
+                        <div className={`flex justify-between items-center text-gray-600 ${(props.time_limit_9am_6pm || props.time_limit_6pm_10pm || props.time_limit_weekend_9am_6pm || props.time_limit_weekend_6pm_10pm) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span>日間禁停限制</span>
+                          <span className="font-medium text-amber-800 font-mono text-[10.5px]">{props.am_rush_hours}</span>
+                        </div>
+                      )}
+                      {props.pm_rush_hours && (
+                        <div className={`flex justify-between items-center text-gray-600 ${(props.time_limit_9am_6pm || props.time_limit_6pm_10pm || props.time_limit_weekend_9am_6pm || props.time_limit_weekend_6pm_10pm || props.am_rush_hours) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span>夜間禁停限制</span>
+                          <span className="font-medium text-amber-800 font-mono text-[10.5px]">{props.pm_rush_hours}</span>
+                        </div>
+                      )}
+
+                      {/* 分隔線 2 */}
+                      {(hasSec1 || hasSec2) && hasSec3 && (
+                        <div className="border-t border-gray-200/80 my-0.5" />
+                      )}
+
+                      {props.meter_head && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>收費錶類型</span>
+                          <span className="font-medium text-gray-800">{formatMeterHead(props.meter_head)}</span>
+                        </div>
+                      )}
+                      {props.mobile_payment_number && (
+                        <div className={`flex justify-between items-center text-gray-600 ${props.meter_head ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span>手機支付區域代碼</span>
+                          <span className="font-mono font-bold text-gray-900">{props.mobile_payment_number}</span>
+                        </div>
+                      )}
+                      {props.credit_card && (
+                        <div className={`flex justify-between items-center text-gray-600 ${(props.meter_head || props.mobile_payment_number) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span>支援信用卡</span>
+                          <span className="font-medium text-gray-800">{formatCreditCard(props.credit_card)}</span>
+                        </div>
+                      )}
+
+                      {/* 若無計費錶之專用機車位 (86筆未設錶位)，顯示基本時間限制 */}
+                      {!hasSec1 && !hasSec2 && !hasSec3 && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>停放限制</span>
+                          <span className="font-medium text-emerald-700">免費專用機車位 ({props.time_limit === 'no' ? '無時限' : (props.time_limit || '依現場標誌')})</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* EV Charging Details */}
               {selectedFacility.facility_type === 'ev_charging' && (
@@ -12878,7 +13119,7 @@ export default function AppMap() {
 
       {/* 停車收費錶動態篩選器 (Parking Meter Filter Popup) */}
       {layers.parkingMeters && (
-        <div className="fixed top-[72px] left-4 md:left-[256px] z-30 w-[300px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-amber-500/40 select-none animate-in fade-in duration-200">
+        <div className={`fixed z-30 w-[300px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-amber-500/40 select-none animate-in fade-in duration-200 ${getFloatingPanelPos(0)}`}>
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
             <div className="flex items-center gap-2">
               <span className="p-1 rounded bg-amber-500/20 text-amber-400">
@@ -12980,7 +13221,7 @@ export default function AppMap() {
                   onChange={(e) => setParkingMeterFilter({ creditCardOnly: e.target.checked })}
                   className="rounded border-gray-600 accent-amber-500"
                 />
-                <span>只顯示支援信用卡感應付款</span>
+                <span>只顯示支援信用卡付款</span>
               </label>
 
               <div className="text-[10px] text-gray-400 flex items-center justify-between">
@@ -12992,6 +13233,7 @@ export default function AppMap() {
             <div className="flex items-center justify-between text-[11px] text-gray-300">
               <span>
                 目前篩選: <span className="text-amber-400 font-bold">{parkingMeterFilter.maxRate >= 20 ? '不限' : `≤ $${parkingMeterFilter.maxRate}/hr`}</span>
+                {parkingMeterFilter.creditCardOnly && <span className="text-amber-300 ml-1">· 信用卡</span>}
                 <span className="text-gray-400 ml-1 font-mono text-[10px]">
                   ({(parkingMeterFilter.timePeriod || 'auto') === 'day' ? '日間' : (parkingMeterFilter.timePeriod || 'auto') === 'night' ? '夜間' : '自動'})
                 </span>
@@ -13007,10 +13249,144 @@ export default function AppMap() {
         </div>
       )}
 
+      {/* 摩托車停車位動態篩選器 (Motorcycle Parking Filter Popup) */}
+      {layers.motorcycleParking && (
+        <div className={`fixed z-30 w-[300px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-orange-500/40 select-none animate-in fade-in duration-200 ${
+          getFloatingPanelPos(layers.parkingMeters ? 1 : 0)
+        }`}>
+          <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
+            <div className="flex items-center gap-2">
+              <span className="p-1 rounded bg-orange-500/20 text-orange-400">
+                <SlidersHorizontal className="w-3.5 h-3.5" />
+              </span>
+              <span className="font-bold text-xs text-white">摩托車停車位篩選</span>
+            </div>
+            <button
+              onClick={() => setMotorcycleFilterOpen(!motorcycleFilterOpen)}
+              className="text-gray-400 hover:text-white p-0.5 rounded hover:bg-[#252a38] transition-colors"
+            >
+              {motorcycleFilterOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            </button>
+          </div>
+
+          {motorcycleFilterOpen ? (
+            <div className="flex flex-col gap-2.5 text-xs">
+              {/* 計費時段切換 */}
+              <div className="flex flex-col gap-1 pb-2 border-b border-[#262b38]">
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-300">時段費率計算:</span>
+                  <span className="text-[10.5px] text-orange-400 font-medium">
+                    {(motorcycleParkingFilter.timePeriod || 'auto') === 'day' ? '🌞 日間標準' :
+                     motorcycleParkingFilter.timePeriod === 'night' ? '🌙 夜間標準' : '⏰ 依當前時間自動'}
+                  </span>
+                </div>
+                <div className="grid grid-cols-3 gap-1 mt-0.5">
+                  {[
+                    { id: 'auto', label: '⏰ 自動' },
+                    { id: 'day', label: '🌞 日間' },
+                    { id: 'night', label: '🌙 夜間' }
+                  ].map((p) => {
+                    const isSelected = (motorcycleParkingFilter.timePeriod || 'auto') === p.id;
+                    return (
+                      <button
+                        key={p.id}
+                        onClick={() => setMotorcycleParkingFilter({ timePeriod: p.id as 'auto' | 'day' | 'night' })}
+                        className={`py-1 text-[11px] rounded font-medium transition-all ${
+                          isSelected
+                            ? 'bg-orange-500 text-gray-950 font-bold shadow-sm'
+                            : 'bg-[#1e2330] text-gray-300 hover:bg-[#282f40]'
+                        }`}
+                      >
+                        {p.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <span className="text-gray-300">每小時最高費率:</span>
+                <span className="font-bold text-orange-400 font-mono">
+                  {motorcycleParkingFilter.maxRate >= 20 ? '不限費率' : `≤ $${motorcycleParkingFilter.maxRate}/hr`}
+                </span>
+              </div>
+
+              {/* 費率滑桿 */}
+              <input
+                type="range"
+                min="1"
+                max="4"
+                step="0.5"
+                value={motorcycleParkingFilter.maxRate >= 20 ? 4 : motorcycleParkingFilter.maxRate}
+                onChange={(e) => {
+                  const val = Number(e.target.value);
+                  setMotorcycleParkingFilter({ maxRate: val >= 4 ? 20 : val });
+                }}
+                className="w-full accent-orange-500 cursor-pointer h-1.5 bg-[#252a38] rounded-lg"
+              />
+
+              {/* 快捷標籤 */}
+              <div className="grid grid-cols-4 gap-1">
+                {[
+                  { label: '全部', val: 20 },
+                  { label: '≤$1', val: 1 },
+                  { label: '≤$2', val: 2 },
+                  { label: '≤$3', val: 3 }
+                ].map((chip) => (
+                  <button
+                    key={chip.label}
+                    onClick={() => setMotorcycleParkingFilter({ maxRate: chip.val })}
+                    className={`py-1 text-[11px] rounded font-medium transition-all ${
+                      (chip.val === 20 && motorcycleParkingFilter.maxRate >= 20) || (chip.val === motorcycleParkingFilter.maxRate)
+                        ? 'bg-orange-500 text-gray-950 font-bold shadow-sm'
+                        : 'bg-[#1e2330] text-gray-300 hover:bg-[#282f40]'
+                    }`}
+                  >
+                    {chip.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* 信用卡篩選 */}
+              <label className="flex items-center gap-2 pt-1 border-t border-[#262b38] text-[11px] text-gray-300 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={motorcycleParkingFilter.creditCardOnly}
+                  onChange={(e) => setMotorcycleParkingFilter({ creditCardOnly: e.target.checked })}
+                  className="rounded border-gray-600 accent-orange-500"
+                />
+                <span>只顯示支援信用卡付款</span>
+              </label>
+
+              <div className="text-[10px] text-gray-400 flex items-center justify-between">
+                <span>溫哥華時區動態計算</span>
+                <span className="text-orange-400 font-mono">10pm-9am 免費</span>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center justify-between text-[11px] text-gray-300">
+              <span>
+                目前篩選: <span className="text-orange-400 font-bold">{motorcycleParkingFilter.maxRate >= 20 ? '不限' : `≤ $${motorcycleParkingFilter.maxRate}/hr`}</span>
+                {motorcycleParkingFilter.creditCardOnly && <span className="text-orange-300 ml-1">· 信用卡</span>}
+                <span className="text-gray-400 ml-1 font-mono text-[10px]">
+                  ({(motorcycleParkingFilter.timePeriod || 'auto') === 'day' ? '日間' : (motorcycleParkingFilter.timePeriod || 'auto') === 'night' ? '夜間' : '自動'})
+                </span>
+              </span>
+              <button 
+                onClick={() => setMotorcycleFilterOpen(true)}
+                className="text-[10px] text-orange-400 hover:underline"
+              >
+                展開
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* 加油站品牌動態篩選器 (Gas Station Filter Popup) */}
       {layers.fuel && (
-        <div className={`fixed top-[72px] z-30 w-[300px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-amber-500/40 select-none animate-in fade-in duration-200 ${
-          layers.parkingMeters ? 'left-4 md:left-[568px]' : 'left-4 md:left-[256px]'
+        <div className={`fixed z-30 w-[300px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-amber-500/40 select-none animate-in fade-in duration-200 ${
+          getFloatingPanelPos((layers.parkingMeters ? 1 : 0) + (layers.motorcycleParking ? 1 : 0))
         }`}>
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
             <div className="flex items-center gap-2">
@@ -13110,12 +13486,8 @@ export default function AppMap() {
 
       {/* 電動車充電站規格篩選器 (EV & Tesla Filter Popup) */}
       {(layers.evCharging || layers.tesla) && (
-        <div className={`fixed top-[72px] z-30 w-[310px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-emerald-500/40 select-none animate-in fade-in duration-200 ${
-          layers.parkingMeters && layers.fuel 
-            ? 'left-4 md:left-[880px]' 
-            : (layers.parkingMeters || layers.fuel) 
-            ? 'left-4 md:left-[568px]' 
-            : 'left-4 md:left-[256px]'
+        <div className={`fixed z-30 w-[310px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-emerald-500/40 select-none animate-in fade-in duration-200 ${
+          getFloatingPanelPos((layers.parkingMeters ? 1 : 0) + (layers.motorcycleParking ? 1 : 0) + (layers.fuel ? 1 : 0))
         }`}>
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
             <div className="flex items-center gap-2">
@@ -13226,7 +13598,7 @@ export default function AppMap() {
       {/* 共享汽車營運品牌圖例與篩選 (Car Sharing Legend & Filter Popup) */}
       {layers.carSharing && (
         <div className={`fixed z-30 w-[250px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-cyan-500/40 select-none animate-in fade-in duration-200 ${
-          getFloatingPanelPos((layers.parkingMeters ? 1 : 0) + (layers.fuel ? 1 : 0) + ((layers.evCharging || layers.tesla) ? 1 : 0))
+          getFloatingPanelPos((layers.parkingMeters ? 1 : 0) + (layers.motorcycleParking ? 1 : 0) + (layers.fuel ? 1 : 0) + ((layers.evCharging || layers.tesla) ? 1 : 0))
         }`}>
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
             <div className="flex items-center gap-2">
@@ -13350,7 +13722,7 @@ export default function AppMap() {
       {/* 單車徑分級圖例與篩選 (Bikeways Legend & Filter Popup) */}
       {layers.bikeways && (
         <div className={`fixed z-30 w-[270px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-emerald-500/40 select-none animate-in fade-in duration-200 ${
-          getFloatingPanelPos((layers.parkingMeters ? 1 : 0) + (layers.fuel ? 1 : 0) + ((layers.evCharging || layers.tesla) ? 1 : 0) + (layers.carSharing ? 1 : 0))
+          getFloatingPanelPos((layers.parkingMeters ? 1 : 0) + (layers.motorcycleParking ? 1 : 0) + (layers.fuel ? 1 : 0) + ((layers.evCharging || layers.tesla) ? 1 : 0) + (layers.carSharing ? 1 : 0))
         }`}>
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
             <div className="flex items-center gap-2">
@@ -13472,7 +13844,7 @@ export default function AppMap() {
       {/* 路口安全相機圖例與篩選 (Intersection Safety Cameras Legend & Filter Popup) */}
       {layers.safetyCameras && (
         <div className={`fixed z-30 w-[260px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-rose-500/40 select-none animate-in fade-in duration-200 ${
-          getFloatingPanelPos((layers.parkingMeters ? 1 : 0) + (layers.fuel ? 1 : 0) + ((layers.evCharging || layers.tesla) ? 1 : 0) + (layers.carSharing ? 1 : 0) + (layers.bikeways ? 1 : 0))
+          getFloatingPanelPos((layers.parkingMeters ? 1 : 0) + (layers.motorcycleParking ? 1 : 0) + (layers.fuel ? 1 : 0) + ((layers.evCharging || layers.tesla) ? 1 : 0) + (layers.carSharing ? 1 : 0) + (layers.bikeways ? 1 : 0))
         }`}>
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
             <div className="flex items-center gap-2">
