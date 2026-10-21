@@ -598,6 +598,7 @@ export default function AppMap() {
   const [fuelFilterOpen, setFuelFilterOpen] = useState(true);
   const [evFilterOpen, setEvFilterOpen] = useState(true);
   const [showTimePeriodInfo, setShowTimePeriodInfo] = useState(false);
+  const [timeInfoHovered, setTimeInfoHovered] = useState(false);
   const [carSharingLegendOpen, setCarSharingLegendOpen] = useState(true);
   const [bikewaysLegendOpen, setBikewaysLegendOpen] = useState(true);
   const [carSharingFilter, setCarSharingFilter] = useState<{ evo: boolean; modo: boolean }>({ evo: true, modo: true });
@@ -975,6 +976,12 @@ export default function AppMap() {
       if (!hasSpeed && !safetyCamerasFilter.redLightOnly) setSelectedFacility(null);
     }
   }, [selectedFacility, carSharingFilter, bikewaysFilter, safetyCamerasFilter]);
+
+  // 當設施彈窗切換或關閉時，重設時段說明面板狀態
+  useEffect(() => {
+    setShowTimePeriodInfo(false);
+    setTimeInfoHovered(false);
+  }, [selectedFacility?.id]);
   const [selectedBus, setSelectedBus] = useState<Vehicle | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [busDetails, setBusDetails] = useState<any | null>(null);
@@ -7280,25 +7287,30 @@ export default function AppMap() {
               </div>
 
               {/* Vessel specs */}
-              <div className="flex flex-col gap-1.5 mb-2.5 bg-gray-50/80 p-2 rounded-lg border border-gray-100">
+              <div className="flex flex-col gap-1.5 mb-2.5 bg-gray-50/80 p-2.5 rounded-lg border border-gray-100 text-[11px]">
                 <div className="flex justify-between items-center text-xs">
                   <span className="text-gray-500 text-[11px]">船舶類型</span>
                   <span className="font-semibold text-gray-800 text-[11px]">{selectedMaritimeVessel.ship_type}</span>
                 </div>
-                <div className="flex justify-between items-center text-xs">
+                <div className="flex justify-between items-center text-xs pt-1.5 border-t border-gray-100">
                   <span className="text-gray-500 text-[11px]">即時航速 (SOG)</span>
                   <span className="font-bold text-emerald-700 font-mono text-[11px]">
                     {selectedMaritimeVessel.sog} 節 ({Math.round(selectedMaritimeVessel.sog * 1.852)} km/h)
                   </span>
                 </div>
-                <div className="flex justify-between items-center text-xs">
+                <div className="flex justify-between items-center text-xs pt-1.5 border-t border-gray-100">
                   <span className="text-gray-500 text-[11px]">對地航向 / 艏向</span>
                   <span className="font-medium text-gray-800 font-mono text-[11px]">
                     {Math.round(selectedMaritimeVessel.cog)}° / {Math.round(selectedMaritimeVessel.heading)}°
                   </span>
                 </div>
+
+                {(selectedMaritimeVessel.destination || selectedMaritimeVessel.eta) && (
+                  <div className="border-t border-gray-200/80 my-0.5" />
+                )}
+
                 {selectedMaritimeVessel.destination && (
-                  <div className="flex justify-between items-center text-xs pt-1 border-t border-gray-200/60">
+                  <div className="flex justify-between items-center text-xs">
                     <span className="text-gray-500 text-[11px]">申報目的地</span>
                     <span className="font-semibold text-sky-800 text-[11px] truncate max-w-[190px]">
                       {selectedMaritimeVessel.destination}
@@ -7306,18 +7318,21 @@ export default function AppMap() {
                   </div>
                 )}
                 {selectedMaritimeVessel.eta && (
-                  <div className="flex justify-between items-center text-xs">
+                  <div className={`flex justify-between items-center text-xs ${selectedMaritimeVessel.destination ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                     <span className="text-gray-500 text-[11px]">預計抵達 (ETA)</span>
                     <span className="font-medium text-gray-700 text-[11px]">{formatShipEta(selectedMaritimeVessel.eta, timeFormat)}</span>
                   </div>
                 )}
-                <div className="flex justify-between items-center text-xs pt-1 border-t border-gray-200/60">
+
+                <div className="border-t border-gray-200/80 my-0.5" />
+
+                <div className="flex justify-between items-center text-xs">
                   <span className="text-gray-500 text-[10px]">船體尺寸 / 吃水</span>
                   <span className="font-mono text-gray-600 text-[10px]">
                     {selectedMaritimeVessel.length || '--'}m × {selectedMaritimeVessel.width || '--'}m · 吃水 {selectedMaritimeVessel.draft || '--'}m
                   </span>
                 </div>
-                <div className="flex justify-between items-center text-xs">
+                <div className="flex justify-between items-center text-xs pt-1.5 border-t border-gray-100">
                   <span className="text-gray-500 text-[10px]">MMSI / 呼號</span>
                   <span className="font-mono text-gray-600 text-[10px]">
                     {selectedMaritimeVessel.mmsi} {selectedMaritimeVessel.callsign ? `· ${selectedMaritimeVessel.callsign}` : ''}
@@ -7481,7 +7496,7 @@ export default function AppMap() {
                     </div>
                   )}
                   {selectedAirport.properties?.transit_access && (
-                    <div className={`flex justify-between items-start gap-2 text-gray-600 ${selectedAirport.properties?.iata ? 'pt-1 border-t border-gray-100' : ''}`}>
+                    <div className={`flex justify-between items-start gap-2 text-gray-600 ${selectedAirport.properties?.iata ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                       <span className="shrink-0">大眾交通</span>
                       <span className="font-medium text-emerald-700 text-right leading-snug">
                         {selectedAirport.properties.transit_access}
@@ -7489,7 +7504,7 @@ export default function AppMap() {
                     </div>
                   )}
                   {selectedAirport.properties?.runways && (
-                    <div className="flex justify-between items-start gap-2 text-gray-600 pt-1 border-t border-gray-100">
+                    <div className={`flex justify-between items-start gap-2 text-gray-600 ${(selectedAirport.properties?.iata || selectedAirport.properties?.transit_access) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                       <span className="shrink-0">跑道長度</span>
                       <span className="text-right text-gray-700 font-mono text-[10.5px] leading-snug">
                         {selectedAirport.properties.runways}
@@ -7497,7 +7512,7 @@ export default function AppMap() {
                     </div>
                   )}
                   {selectedAirport.properties?.operators && (
-                    <div className="flex justify-between items-start gap-2 text-gray-600 pt-1 border-t border-gray-100">
+                    <div className={`flex justify-between items-start gap-2 text-gray-600 ${(selectedAirport.properties?.iata || selectedAirport.properties?.transit_access || selectedAirport.properties?.runways) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                       <span className="shrink-0">主要航司</span>
                       <span className="text-right font-medium text-gray-800 leading-snug">
                         {selectedAirport.properties.operators}
@@ -7505,7 +7520,7 @@ export default function AppMap() {
                     </div>
                   )}
                   {selectedAirport.properties?.destinations && (
-                    <div className="flex justify-between items-start gap-2 text-gray-600 pt-1 border-t border-gray-100">
+                    <div className={`flex justify-between items-start gap-2 text-gray-600 ${(selectedAirport.properties?.iata || selectedAirport.properties?.transit_access || selectedAirport.properties?.runways || selectedAirport.properties?.operators) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                       <span className="shrink-0">直航航點</span>
                       <span className="text-right font-medium text-gray-800 leading-snug">
                         {selectedAirport.properties.destinations}
@@ -8468,7 +8483,7 @@ export default function AppMap() {
                   if (!val) return null;
                   const s = String(val).trim();
                   if (/pay\s*station/i.test(s)) return '繳費機';
-                  if (/dual/i.test(s)) return '雙向';
+                  if (/dual/i.test(s) || /twin/i.test(s)) return '雙向';
                   if (/zone\s*only/i.test(s)) return '區域';
                   if (/single/i.test(s)) return '單一';
                   return s;
@@ -8514,12 +8529,21 @@ export default function AppMap() {
                         </div>
 
                         {/* 時段資訊觸碰鍵 */}
-                        <div className="relative group/timeInfo shrink-0">
+                        <div 
+                          className="relative shrink-0"
+                          onMouseEnter={() => setTimeInfoHovered(true)}
+                          onMouseLeave={() => setTimeInfoHovered(false)}
+                        >
                           <button
                             type="button"
                             onClick={(e) => {
                               e.stopPropagation();
-                              setShowTimePeriodInfo(prev => !prev);
+                              if (showTimePeriodInfo || timeInfoHovered) {
+                                setShowTimePeriodInfo(false);
+                                setTimeInfoHovered(false);
+                              } else {
+                                setShowTimePeriodInfo(true);
+                              }
                             }}
                             className="p-1 rounded-full text-amber-700 hover:text-amber-950 hover:bg-amber-500/20 active:scale-95 transition-all cursor-pointer flex items-center justify-center"
                             title="查看時段說明"
@@ -8532,9 +8556,9 @@ export default function AppMap() {
                           <div
                             onClick={(e) => e.stopPropagation()}
                             className={`absolute right-0 top-full mt-1.5 w-[220px] z-50 bg-[#161922]/95 backdrop-blur-md text-gray-100 p-2.5 rounded-lg shadow-2xl border border-gray-700/80 transition-all duration-150 flex flex-col gap-1.5 text-xs select-none ${
-                              showTimePeriodInfo
+                              (showTimePeriodInfo || timeInfoHovered)
                                 ? 'opacity-100 scale-100 pointer-events-auto'
-                                : 'opacity-0 scale-95 pointer-events-none group-hover/timeInfo:opacity-100 group-hover/timeInfo:scale-100 group-hover/timeInfo:pointer-events-auto'
+                                : 'opacity-0 scale-95 pointer-events-none'
                             }`}
                           >
                             <div className="flex items-center justify-between pb-1.5 border-b border-gray-700/60">
@@ -8542,7 +8566,22 @@ export default function AppMap() {
                                 <Clock className="w-3 h-3 text-amber-400" />
                                 停車時段說明
                               </span>
-                              <span className="text-[9.5px] text-amber-400/90 font-mono">溫哥華標準時間</span>
+                              <div className="flex items-center gap-1.5">
+                                <span className="text-[9.5px] text-amber-400/90 font-mono">溫哥華標準時間</span>
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setShowTimePeriodInfo(false);
+                                    setTimeInfoHovered(false);
+                                  }}
+                                  className="text-gray-400 hover:text-white p-0.5 rounded hover:bg-gray-700/50 transition-colors cursor-pointer"
+                                  title="關閉"
+                                  aria-label="關閉"
+                                >
+                                  <X className="w-3 h-3" />
+                                </button>
+                              </div>
                             </div>
 
                             <div className="flex flex-col gap-1 text-[11px]">
@@ -8762,7 +8801,7 @@ export default function AppMap() {
                   if (/zone\s*only/i.test(s)) return '區域';
                   if (/single/i.test(s)) return '單一';
                   if (/pay\s*station/i.test(s)) return '繳費機';
-                  if (/dual/i.test(s)) return '雙向';
+                  if (/dual/i.test(s) || /twin/i.test(s)) return '雙向';
                   return s;
                 };
 
@@ -8806,12 +8845,21 @@ export default function AppMap() {
                         </div>
 
                         {/* 時段資訊觸碰鍵 */}
-                        <div className="relative group/timeInfo shrink-0">
+                        <div 
+                          className="relative shrink-0"
+                          onMouseEnter={() => setTimeInfoHovered(true)}
+                          onMouseLeave={() => setTimeInfoHovered(false)}
+                        >
                           <button
                             type="button"
                             onClick={(e) => {
                               e.stopPropagation();
-                              setShowTimePeriodInfo(prev => !prev);
+                              if (showTimePeriodInfo || timeInfoHovered) {
+                                setShowTimePeriodInfo(false);
+                                setTimeInfoHovered(false);
+                              } else {
+                                setShowTimePeriodInfo(true);
+                              }
                             }}
                             className="p-1 rounded-full text-orange-700 hover:text-orange-950 hover:bg-orange-500/20 active:scale-95 transition-all cursor-pointer flex items-center justify-center"
                             title="查看時段說明"
@@ -8824,9 +8872,9 @@ export default function AppMap() {
                           <div
                             onClick={(e) => e.stopPropagation()}
                             className={`absolute right-0 top-full mt-1.5 w-[220px] z-50 bg-[#161922]/95 backdrop-blur-md text-gray-100 p-2.5 rounded-lg shadow-2xl border border-gray-700/80 transition-all duration-150 flex flex-col gap-1.5 text-xs select-none ${
-                              showTimePeriodInfo
+                              (showTimePeriodInfo || timeInfoHovered)
                                 ? 'opacity-100 scale-100 pointer-events-auto'
-                                : 'opacity-0 scale-95 pointer-events-none group-hover/timeInfo:opacity-100 group-hover/timeInfo:scale-100 group-hover/timeInfo:pointer-events-auto'
+                                : 'opacity-0 scale-95 pointer-events-none'
                             }`}
                           >
                             <div className="flex items-center justify-between pb-1.5 border-b border-gray-700/60">
@@ -8834,7 +8882,22 @@ export default function AppMap() {
                                 <Clock className="w-3 h-3 text-orange-400" />
                                 停車時段說明
                               </span>
-                              <span className="text-[9.5px] text-orange-400/90 font-mono">溫哥華標準時間</span>
+                              <div className="flex items-center gap-1.5">
+                                <span className="text-[9.5px] text-orange-400/90 font-mono">溫哥華標準時間</span>
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setShowTimePeriodInfo(false);
+                                    setTimeInfoHovered(false);
+                                  }}
+                                  className="text-gray-400 hover:text-white p-0.5 rounded hover:bg-gray-700/50 transition-colors cursor-pointer"
+                                  title="關閉"
+                                  aria-label="關閉"
+                                >
+                                  <X className="w-3 h-3" />
+                                </button>
+                              </div>
                             </div>
 
                             <div className="flex flex-col gap-1 text-[11px]">
@@ -8995,7 +9058,7 @@ export default function AppMap() {
                       </div>
                     )}
                     {selectedFacility.properties.operator && (
-                      <div className="border-t border-gray-200/60 my-0.5" />
+                      <div className="border-t border-gray-200/80 my-0.5" />
                     )}
                     {selectedFacility.properties.connectors && (
                       <div className="flex justify-between items-center text-gray-600">
@@ -9003,18 +9066,18 @@ export default function AppMap() {
                         <span className="font-medium text-gray-800">{selectedFacility.properties.connectors}</span>
                       </div>
                     )}
-                    <div className="flex justify-between items-center text-gray-600">
+                    <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties.connectors ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                       <span>充電接口</span>
                       <span className="font-bold text-emerald-700">{selectedFacility.properties.ports || 2} 個</span>
                     </div>
                     {selectedFacility.properties.voltage && (
-                      <div className="flex justify-between items-center text-gray-600">
+                      <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                         <span>電壓</span>
                         <span className="font-medium text-gray-800">{selectedFacility.properties.voltage}</span>
                       </div>
                     )}
                     {selectedFacility.properties.cost && (
-                      <div className="flex justify-between items-center text-gray-600">
+                      <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                         <span>充電費用</span>
                         <span className="font-bold text-emerald-700">{selectedFacility.properties.cost}</span>
                       </div>
@@ -9050,13 +9113,13 @@ export default function AppMap() {
                       </div>
                     )}
                     {selectedFacility.properties.station_size && (
-                      <div className="flex justify-between items-center text-gray-600">
+                      <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties.station_number ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                         <span>車位用量</span>
                         <span className="font-bold text-lime-900">{selectedFacility.properties.station_size} 車位</span>
                       </div>
                     )}
                     {selectedFacility.properties.placement && (
-                      <div className="flex justify-between text-gray-600">
+                      <div className={`flex justify-between items-center text-gray-600 ${(selectedFacility.properties.station_number || selectedFacility.properties.station_size) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                         <span>設施位置</span>
                         <span className="font-medium text-gray-800">
                           {(() => {
@@ -9069,7 +9132,7 @@ export default function AppMap() {
                       </div>
                     )}
                     {selectedFacility.properties.jurisdiction && (
-                      <div className="flex justify-between text-gray-600">
+                      <div className={`flex justify-between items-center text-gray-600 ${(selectedFacility.properties.station_number || selectedFacility.properties.station_size || selectedFacility.properties.placement) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                         <span>管轄屬性</span>
                         <span className="font-medium text-gray-800">
                           {(() => {
@@ -9082,9 +9145,9 @@ export default function AppMap() {
                       </div>
                     )}
                     {selectedFacility.properties.installation_date && (
-                      <div className="flex justify-between text-gray-500 text-[10.5px] pt-1 border-t border-gray-100">
+                      <div className={`flex justify-between items-center text-gray-600 ${(selectedFacility.properties.station_number || selectedFacility.properties.station_size || selectedFacility.properties.placement || selectedFacility.properties.jurisdiction) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                         <span>啟用日期</span>
-                        <span>{String(selectedFacility.properties.installation_date).slice(0, 10)}</span>
+                        <span className="font-mono text-gray-800">{String(selectedFacility.properties.installation_date).slice(0, 10)}</span>
                       </div>
                     )}
                   </div>
@@ -9141,7 +9204,7 @@ export default function AppMap() {
                         </span>
                       </div>
                       {selectedFacility.properties.pricing && (
-                        <div className="flex justify-between items-start gap-2 text-gray-600">
+                        <div className="flex justify-between items-start gap-2 text-gray-600 pt-1.5 border-t border-gray-100">
                           <span className="shrink-0 text-gray-500">計費方案</span>
                           <span className="font-bold text-emerald-700 text-right leading-relaxed">
                             {selectedFacility.properties.pricing}
@@ -9184,35 +9247,43 @@ export default function AppMap() {
                     </div>
                   </div>
 
-                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                    {selectedFacility.properties.station_id && (
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>站點編號</span>
-                        <span className="font-medium font-mono text-gray-800">#{selectedFacility.properties.station_id}</span>
+                  {(() => {
+                    const bikeOwner = selectedFacility.properties.owner || selectedFacility.properties.operator;
+                    return (
+                      <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                        {bikeOwner && (
+                          <>
+                            <div className="flex justify-between items-center text-gray-600">
+                              <span>營運單位</span>
+                              <span className="font-semibold text-gray-800">{bikeOwner}</span>
+                            </div>
+                            <div className="border-t border-gray-200/80 my-0.5" />
+                          </>
+                        )}
+                        {selectedFacility.properties.station_id && (
+                          <div className="flex justify-between items-center text-gray-600">
+                            <span>站點編號</span>
+                            <span className="font-medium font-mono text-gray-800">#{selectedFacility.properties.station_id}</span>
+                          </div>
+                        )}
+                        {/* 11.3 左方“車柱用量”, 右方 “x 車位” 移至站點編號下方 */}
+                        {selectedFacility.properties.capacity && (
+                          <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties.station_id ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                            <span>車柱用量</span>
+                            <span className="font-bold text-emerald-700">
+                              {selectedFacility.properties.capacity} 車位
+                            </span>
+                          </div>
+                        )}
+                        {selectedFacility.properties.covered && selectedFacility.properties.covered !== '未標明' && (
+                          <div className={`flex justify-between items-center text-gray-600 ${(selectedFacility.properties.station_id || selectedFacility.properties.capacity) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                            <span>遮雨頂棚</span>
+                            <span className="font-medium text-gray-800">{selectedFacility.properties.covered}</span>
+                          </div>
+                        )}
                       </div>
-                    )}
-                    {/* 11.3 左方“車柱用量”, 右方 “x 車位” 移至站點編號下方 */}
-                    {selectedFacility.properties.capacity && (
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>車柱用量</span>
-                        <span className="font-bold text-emerald-700">
-                          {selectedFacility.properties.capacity} 車位
-                        </span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.operator && (
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>營運單位</span>
-                        <span className="font-medium text-gray-800">{selectedFacility.properties.operator}</span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.covered && selectedFacility.properties.covered !== '未標明' && (
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>遮雨頂棚</span>
-                        <span className="font-medium text-gray-800">{selectedFacility.properties.covered}</span>
-                      </div>
-                    )}
-                  </div>
+                    );
+                  })()}
 
                   <div className="pt-1 border-t border-gray-100">
                     <a
@@ -9272,7 +9343,7 @@ export default function AppMap() {
                       </div>
                     </div>
 
-                    <div className="bg-gray-50 p-2 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
                       {dirZh && (
                         <div className="flex justify-between items-center text-gray-600">
                           <span>通行方向</span>
@@ -9280,19 +9351,19 @@ export default function AppMap() {
                         </div>
                       )}
                       {surfaceZh && (
-                        <div className="flex justify-between items-center text-gray-600">
+                        <div className={`flex justify-between items-center text-gray-600 ${dirZh ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                           <span>路面材質</span>
                           <span className="font-medium text-gray-800">{surfaceZh}</span>
                         </div>
                       )}
                       {selectedFacility.properties.speed_limit && (
-                        <div className="flex justify-between items-center text-gray-600">
+                        <div className={`flex justify-between items-center text-gray-600 ${(dirZh || surfaceZh) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                           <span>路段速限</span>
                           <span className="font-bold text-emerald-800">{selectedFacility.properties.speed_limit} km/h</span>
                         </div>
                       )}
                       {selectedFacility.properties.snow_removal && (
-                        <div className="flex justify-between items-center text-gray-600">
+                        <div className={`flex justify-between items-center text-gray-600 ${(dirZh || surfaceZh || selectedFacility.properties.speed_limit) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                           <span>冬季養護</span>
                           <span className="font-medium text-sky-700">{selectedFacility.properties.snow_removal}</span>
                         </div>
@@ -9326,7 +9397,7 @@ export default function AppMap() {
                       </span>
                     </div>
                     {(selectedFacility.local_area || selectedFacility.properties?.geo_local_area) && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                         <span>服務轄區</span>
                         <span className="font-medium text-gray-800">
                           {selectedFacility.properties?.geo_local_area || selectedFacility.local_area}
@@ -9364,7 +9435,7 @@ export default function AppMap() {
                       </span>
                     </div>
                     {selectedFacility.properties.opening_hours && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                         <span>開放時間</span>
                         <span className="font-normal text-emerald-800 text-right">
                           {selectedFacility.properties.opening_hours}
@@ -9763,19 +9834,19 @@ export default function AppMap() {
                         </div>
                       )}
                       {selectedFacility.properties?.operator && (
-                        <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties?.services ? 'pt-1 border-t border-gray-100' : ''}`}>
+                        <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties?.services ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                           <span>營運機構</span>
                           <span className="font-medium text-gray-800">{selectedFacility.properties.operator}</span>
                         </div>
                       )}
                       {selectedFacility.properties?.hours && (
-                        <div className={`flex justify-between items-center text-gray-600 ${(selectedFacility.properties?.services || selectedFacility.properties?.operator) ? 'pt-1 border-t border-gray-100' : ''}`}>
+                        <div className={`flex justify-between items-center text-gray-600 ${(selectedFacility.properties?.services || selectedFacility.properties?.operator) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                           <span>{isRehab ? '服務時間' : isUPCC ? '門診服務時間' : '急診門診時間'}</span>
                           <span className="font-medium text-emerald-700 text-right">{selectedFacility.properties.hours}</span>
                         </div>
                       )}
                       {selectedFacility.properties?.phone && (
-                        <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <div className={`flex justify-between items-center text-gray-600 ${(selectedFacility.properties?.services || selectedFacility.properties?.operator || selectedFacility.properties?.hours) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                           <span>聯絡電話</span>
                           <a href={`tel:${selectedFacility.properties.phone}`} className="font-bold text-blue-600 hover:underline">
                             {selectedFacility.properties.phone}
@@ -9822,13 +9893,13 @@ export default function AppMap() {
                         {selectedFacility.properties.hectare != null ? `${selectedFacility.properties.hectare} 公頃 (ha)` : '—'}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                    <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                       <span>休閒設施</span>
                       <span className={`font-semibold ${selectedFacility.properties.facilities === '有' ? 'text-emerald-700' : 'text-gray-500'}`}>
                         {selectedFacility.properties.facilities === '有' ? '有' : '無'}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                    <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                       <span>園區廁所</span>
                       <span className={`font-semibold ${selectedFacility.properties.washrooms === '有' ? 'text-cyan-700' : 'text-gray-500'}`}>
                         {selectedFacility.properties.washrooms === '有' ? '有' : '無'}
@@ -9883,7 +9954,7 @@ export default function AppMap() {
                       </span>
                     </div>
                     {selectedFacility.properties.facility_count != null && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                         <span>設施數量</span>
                         <span className="font-bold text-gray-800">{selectedFacility.properties.facility_count} 座</span>
                       </div>
@@ -9926,13 +9997,13 @@ export default function AppMap() {
                         {selectedFacility.properties.managing_org || '志工/社區共同維護'}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                    <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                       <span>成立年份</span>
                       <span className="font-medium text-gray-800">
                         {selectedFacility.properties.year_created ? `${selectedFacility.properties.year_created} 年` : '未載明'}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                    <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                       <span>耕作畦位</span>
                       <span className="font-bold text-lime-800">
                         {selectedFacility.properties.plots != null ? `${selectedFacility.properties.plots} 格` : '未載明'}
@@ -9941,7 +10012,7 @@ export default function AppMap() {
 
                     {((selectedFacility.properties.food_trees != null && selectedFacility.properties.food_trees > 0) || selectedFacility.properties.food_tree_varieties) && (
                       <>
-                        <div className="border-t border-gray-200/60 my-0.5" />
+                        <div className="border-t border-gray-200/80 my-0.5" />
                         {selectedFacility.properties.food_trees != null && (
                           <div className="flex justify-between items-center text-gray-600">
                             <span>社區果樹</span>
@@ -9951,7 +10022,7 @@ export default function AppMap() {
                           </div>
                         )}
                         {selectedFacility.properties.food_tree_varieties && (
-                          <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties.food_trees != null ? 'pt-1 border-t border-gray-100' : ''}`}>
+                          <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties.food_trees != null ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                             <span className="shrink-0">果樹品種</span>
                             <span className="font-medium text-gray-800 text-right">
                               {selectedFacility.properties.food_tree_varieties}
@@ -10036,19 +10107,19 @@ export default function AppMap() {
                         </div>
                       )}
                       {loc && (
-                        <div className={`flex justify-between items-center text-gray-600 ${inOpZh ? 'pt-1 border-t border-gray-100' : ''}`}>
+                        <div className={`flex justify-between items-center text-gray-600 ${inOpZh ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                           <span className="shrink-0">詳細位置</span>
                           <span className="font-medium text-gray-800 text-right">{loc}</span>
                         </div>
                       )}
                       {pfZh && (
-                        <div className={`flex justify-between items-center text-gray-600 ${(inOpZh || loc) ? 'pt-1 border-t border-gray-100' : ''}`}>
+                        <div className={`flex justify-between items-center text-gray-600 ${(inOpZh || loc) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                           <span>寵物友善</span>
                           <span className="font-medium text-gray-800">{pfZh}</span>
                         </div>
                       )}
                       {maintainerZh && (
-                        <div className={`flex justify-between items-center text-gray-600 ${(inOpZh || loc || pfZh) ? 'pt-1 border-t border-gray-100' : ''}`}>
+                        <div className={`flex justify-between items-center text-gray-600 ${(inOpZh || loc || pfZh) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                           <span>管理維護單位</span>
                           <span className="font-medium text-gray-800">{maintainerZh}</span>
                         </div>
@@ -10110,7 +10181,7 @@ export default function AppMap() {
                         </div>
                       )}
                       {washType && (
-                        <div className={`flex justify-between items-center text-gray-600 ${loc ? 'pt-1 border-t border-gray-100' : ''}`}>
+                        <div className={`flex justify-between items-center text-gray-600 ${loc ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                           <span>公廁類型</span>
                           <span className="font-normal text-gray-800">
                             {washType}
@@ -10118,7 +10189,7 @@ export default function AppMap() {
                         </div>
                       )}
                       {wheelchairZh && (
-                        <div className={`flex justify-between items-center text-gray-600 ${(loc || washType) ? 'pt-1 border-t border-gray-100' : ''}`}>
+                        <div className={`flex justify-between items-center text-gray-600 ${(loc || washType) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                           <span>無障礙規格</span>
                           <span className="font-medium text-gray-800">
                             {wheelchairZh}
@@ -10126,13 +10197,13 @@ export default function AppMap() {
                         </div>
                       )}
                       {summerH && (
-                        <div className={`flex justify-between items-center text-gray-600 ${(loc || washType || wheelchairZh) ? 'pt-1 border-t border-gray-100' : ''}`}>
+                        <div className={`flex justify-between items-center text-gray-600 ${(loc || washType || wheelchairZh) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                           <span>夏季開放時間</span>
                           <span className="font-medium text-gray-800">{summerH}</span>
                         </div>
                       )}
                       {winterH && (
-                        <div className={`flex justify-between items-center text-gray-600 ${(loc || washType || wheelchairZh || summerH) ? 'pt-1 border-t border-gray-100' : ''}`}>
+                        <div className={`flex justify-between items-center text-gray-600 ${(loc || washType || wheelchairZh || summerH) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                           <span>冬季開放時間</span>
                           <span className="font-medium text-gray-700">{winterH}</span>
                         </div>
@@ -10215,13 +10286,13 @@ export default function AppMap() {
                       </span>
                     </div>
                     {selectedFacility.properties.vendor_code && (
-                      <div className="flex justify-between items-center text-gray-600">
+                      <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                         <span>攤販編號</span>
                         <span className="font-mono font-bold text-gray-800">{selectedFacility.properties.vendor_code}</span>
                       </div>
                     )}
                     {selectedFacility.properties.description && (
-                      <div className="flex justify-between items-center text-gray-600">
+                      <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties.vendor_code ? 'pt-1.5 border-t border-gray-100' : 'pt-1.5 border-t border-gray-100'}`}>
                         <span>餐飲特色</span>
                         <span className="font-bold text-orange-900">
                           {selectedFacility.properties.description}
@@ -10402,7 +10473,7 @@ export default function AppMap() {
                       )}
 
                       {pop && (
-                        <div className="flex justify-between items-center text-gray-600">
+                        <div className={`flex justify-between items-center text-gray-600 ${org ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                           <span className="shrink-0">服務對象</span>
                           <span className="font-medium text-gray-800 text-right">
                             {pop}
@@ -10411,7 +10482,7 @@ export default function AppMap() {
                       )}
 
                       {referral !== null && referral !== undefined && referral !== '' && (
-                        <div className="flex justify-between items-center text-gray-600">
+                        <div className={`flex justify-between items-center text-gray-600 ${(org || pop) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                           <span>轉介</span>
                           <span className="font-medium text-gray-800">
                             {formatTriState(referral)}
@@ -10421,7 +10492,7 @@ export default function AppMap() {
 
                       {/* 分隔線 */}
                       {(org || pop || (referral !== null && referral !== undefined && referral !== '')) && (
-                        <div className="border-t border-gray-200/60 my-0.5" />
+                        <div className="border-t border-gray-200/80 my-0.5" />
                       )}
 
                       {/* 營運時間改成用 days_open，不用顯示時間 */}
@@ -10435,7 +10506,7 @@ export default function AppMap() {
                       )}
 
                       {/* 分隔線 */}
-                      <div className="border-t border-gray-200/60 my-0.5" />
+                      <div className="border-t border-gray-200/80 my-0.5" />
 
                       {/* 一列四欄橫向顯示 (是/否/不詳) */}
                       <div className="grid grid-cols-4 gap-1 text-center py-1">
@@ -10466,7 +10537,7 @@ export default function AppMap() {
                       </div>
 
                       {costMeals !== null && costMeals !== undefined && costMeals !== '' && (
-                        <div className="flex justify-between items-center text-gray-600">
+                        <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                           <span>膳食費用</span>
                           <span className="font-semibold text-emerald-800">
                             {formatCost(costMeals)}
@@ -10475,7 +10546,7 @@ export default function AppMap() {
                       )}
 
                       {costHampers !== null && costHampers !== undefined && costHampers !== '' && (
-                        <div className="flex justify-between items-center text-gray-600">
+                        <div className={`flex justify-between items-center text-gray-600 ${(costMeals !== null && costMeals !== undefined && costMeals !== '') ? 'pt-1.5 border-t border-gray-100' : 'pt-1.5 border-t border-gray-100'}`}>
                           <span>物資包費用</span>
                           <span className="font-semibold text-emerald-800">
                             {formatCost(costHampers)}
@@ -10484,7 +10555,7 @@ export default function AppMap() {
                       )}
 
                       {wheelchair !== null && wheelchair !== undefined && wheelchair !== '' && (
-                        <div className="flex justify-between items-center text-gray-600">
+                        <div className={`flex justify-between items-center text-gray-600 ${((costMeals !== null && costMeals !== undefined && costMeals !== '') || (costHampers !== null && costHampers !== undefined && costHampers !== '')) ? 'pt-1.5 border-t border-gray-100' : 'pt-1.5 border-t border-gray-100'}`}>
                           <span>無障礙設施</span>
                           <span className="font-medium text-gray-800">
                             {formatTriState(wheelchair)}
@@ -10494,7 +10565,7 @@ export default function AppMap() {
 
                       {/* 分隔線 */}
                       {((signupReq !== null && signupReq !== undefined && signupReq !== '') || phone || email) && (
-                        <div className="border-t border-gray-200/60 my-0.5" />
+                        <div className="border-t border-gray-200/80 my-0.5" />
                       )}
 
                       {signupReq !== null && signupReq !== undefined && signupReq !== '' && (
@@ -10507,7 +10578,7 @@ export default function AppMap() {
                       )}
 
                       {email && (
-                        <div className="flex justify-between items-center text-gray-600">
+                        <div className={`flex justify-between items-center text-gray-600 ${(signupReq !== null && signupReq !== undefined && signupReq !== '') ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                           <span>登記電郵</span>
                           <a href={`mailto:${email}`} className="font-mono text-emerald-600 hover:underline">
                             {email}
@@ -10516,7 +10587,7 @@ export default function AppMap() {
                       )}
 
                       {phone && (
-                        <div className="flex justify-between items-center text-gray-600">
+                        <div className={`flex justify-between items-center text-gray-600 ${((signupReq !== null && signupReq !== undefined && signupReq !== '') || email) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                           <span>登記電話</span>
                           <a href={`tel:${phone}`} className="font-bold text-emerald-600 hover:underline">
                             {phone}
@@ -10802,12 +10873,12 @@ export default function AppMap() {
                     </div>
                   </div>
 
-                  <div className="bg-gray-50 p-2 rounded border border-gray-100 flex flex-col gap-1 text-[11px] text-gray-600">
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px] text-gray-600">
                     <div className="flex justify-between items-center">
                       <span>資料來源</span>
                       <span className="font-medium text-gray-800">City of Vancouver Open Data</span>
                     </div>
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-between items-center pt-1.5 border-t border-gray-100">
                       <span>等高線間隔</span>
                       <span className="font-medium text-gray-800">10 公尺 (10-metre intervals)</span>
                     </div>
@@ -10861,14 +10932,14 @@ export default function AppMap() {
                       </div>
 
                       {/* 3.3 SERVICE PROVIDER 改成服務供應商 */}
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                         <span>服務供應商</span>
                         <span className="font-bold text-gray-800 text-right">{serviceProvider}</span>
                       </div>
 
                       {/* 3.4 場地類型刪除英文"(Site Type)" */}
                       {siteType && (
-                        <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                           <span>場地類型</span>
                           <span className="font-medium text-gray-700">{siteType}</span>
                         </div>
@@ -10876,7 +10947,7 @@ export default function AppMap() {
 
                       {/* 3.5 發射器數量改成 整數 及刪去"個"字 */}
                       {apCount != null && (
-                        <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                           <span>發射器數量</span>
                           <span className="font-mono font-bold text-gray-800">
                             {isNaN(Number(apCount)) ? apCount : Math.round(Number(apCount))}
@@ -11247,7 +11318,7 @@ export default function AppMap() {
                       </div>
                     )}
                     {selectedFacility.properties.cargo && (
-                      <div className="flex justify-between items-start text-gray-600 pt-1 border-t border-gray-100">
+                      <div className={`flex justify-between items-start text-gray-600 ${selectedFacility.properties.operator ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                         <span className="shrink-0">主要貨類</span>
                         <span className="font-semibold text-gray-800 text-right max-w-[190px]">
                           {selectedFacility.properties.cargo}
@@ -11255,7 +11326,7 @@ export default function AppMap() {
                       </div>
                     )}
                     {(selectedFacility.properties.berths || selectedFacility.properties.draught) && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <div className={`flex justify-between items-center text-gray-600 ${(selectedFacility.properties.operator || selectedFacility.properties.cargo) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                         <span>泊位與水深</span>
                         <span className="font-mono text-cyan-800 font-semibold text-right">
                           {selectedFacility.properties.berths || ''} {selectedFacility.properties.draught ? `(吃水 ${selectedFacility.properties.draught})` : ''}
@@ -11263,7 +11334,7 @@ export default function AppMap() {
                       </div>
                     )}
                     {selectedFacility.properties.capacity && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <div className={`flex justify-between items-center text-gray-600 ${(selectedFacility.properties.operator || selectedFacility.properties.cargo || selectedFacility.properties.berths || selectedFacility.properties.draught) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                         <span>年處理能力</span>
                         <span className="font-medium text-emerald-700 text-right">
                           {selectedFacility.properties.capacity}
@@ -11271,7 +11342,7 @@ export default function AppMap() {
                       </div>
                     )}
                     {selectedFacility.properties.address && (
-                      <div className="flex justify-between items-center text-gray-500 text-[10.5px] pt-1 border-t border-gray-100">
+                      <div className={`flex justify-between items-center text-gray-500 text-[10.5px] ${(selectedFacility.properties.operator || selectedFacility.properties.cargo || selectedFacility.properties.berths || selectedFacility.properties.draught || selectedFacility.properties.capacity) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                         <span>碼頭地址</span>
                         <span className="text-gray-700 text-right truncate max-w-[190px]">
                           {selectedFacility.properties.address}
@@ -11360,7 +11431,7 @@ export default function AppMap() {
                       </div>
                     )}
                     {(selectedFacility.properties.length_display || selectedFacility.properties.shape_length) && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties.route_type_zh ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                         <span>路段長度</span>
                         <span className="font-mono text-gray-800 text-right">
                           {selectedFacility.properties.length_display || `${Math.round(selectedFacility.properties.shape_length)} 公尺`}
@@ -11396,7 +11467,7 @@ export default function AppMap() {
                       </div>
                     )}
                     {selectedFacility.properties.material && (
-                      <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties.diameter_mm ? 'pt-1 border-t border-gray-100' : ''}`}>
+                      <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties.diameter_mm ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                         <span>管材材質</span>
                         <span className="font-semibold text-gray-800">
                           {selectedFacility.properties.material}
@@ -11404,7 +11475,7 @@ export default function AppMap() {
                       </div>
                     )}
                     {selectedFacility.properties.lining_material && selectedFacility.properties.lining_material !== 'blank' && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <div className={`flex justify-between items-center text-gray-600 ${(selectedFacility.properties.diameter_mm || selectedFacility.properties.material) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                         <span>內襯材料</span>
                         <span className="font-medium text-gray-800">
                           {selectedFacility.properties.lining_material}
@@ -11412,7 +11483,7 @@ export default function AppMap() {
                       </div>
                     )}
                     {selectedFacility.properties.installation_date && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <div className={`flex justify-between items-center text-gray-600 ${(selectedFacility.properties.diameter_mm || selectedFacility.properties.material || selectedFacility.properties.lining_material) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                         <span>鋪設安裝年份</span>
                         <span className="font-mono text-gray-700">
                           {selectedFacility.properties.installation_date}
@@ -11453,14 +11524,14 @@ export default function AppMap() {
                           </span>
                         </div>
                       )}
-                      <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties.street_name ? 'pt-1 border-t border-gray-100' : ''}`}>
+                      <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties.street_name ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                         <span>下水道排水類型</span>
                         <span className="font-bold text-sky-900">
                           {effluentZh}
                         </span>
                       </div>
                       {selectedFacility.properties.diameter_mm && (
-                        <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                           <span>管徑規格</span>
                           <span className="font-mono font-bold text-sky-800">
                             {selectedFacility.properties.diameter_mm} mm
@@ -11468,7 +11539,7 @@ export default function AppMap() {
                         </div>
                       )}
                       {selectedFacility.properties.material && (
-                        <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                           <span>管道結構材質</span>
                           <span className="font-semibold text-gray-800">
                             {selectedFacility.properties.material}
@@ -11476,7 +11547,7 @@ export default function AppMap() {
                         </div>
                       )}
                       {selectedFacility.properties.pipe_use && (
-                        <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                           <span>管線功能用途</span>
                           <span className="font-medium text-gray-800">
                             {selectedFacility.properties.pipe_use}
@@ -11484,7 +11555,7 @@ export default function AppMap() {
                         </div>
                       )}
                       {selectedFacility.properties.service_status && (
-                        <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                           <span>管線營運狀態</span>
                           <span className={`font-semibold ${selectedFacility.properties.service_status.includes('Abandoned') ? 'text-rose-600' : 'text-emerald-700'}`}>
                             {selectedFacility.properties.service_status}
@@ -11492,7 +11563,7 @@ export default function AppMap() {
                         </div>
                       )}
                       {selectedFacility.properties.install_date && (
-                        <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                        <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                           <span>建造鋪設年份</span>
                           <span className="font-mono text-gray-700">
                             {selectedFacility.properties.install_date}
@@ -11558,64 +11629,101 @@ export default function AppMap() {
               })()}
 
               {/* Bike Racks (單車架) Details */}
-              {selectedFacility.facility_type === 'bike_racks' && (
-                <div className="flex flex-col gap-2 text-xs">
-                  {/* 10.2 綠色區塊：左上「道路設施」，右上綠底白字「單車架」 */}
-                  <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/25 flex flex-col gap-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-emerald-950 text-xs">道路設施</span>
-                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-600 text-white shrink-0 shadow-xs whitespace-nowrap">
-                        單車架
-                      </span>
+              {selectedFacility.facility_type === 'bike_racks' && (() => {
+                const props = selectedFacility.properties || {};
+                const formatBikeRackOwner = (owner?: any) => {
+                  if (!owner || !String(owner).trim()) return null;
+                  const s = String(owner).trim();
+                  if (/^cov$/i.test(s) || /city of vancouver/i.test(s)) return '溫哥華市政府 (COV)';
+                  if (/^bia$/i.test(s)) return '商業促進會 (BIA)';
+                  if (/contractor/i.test(s)) return '承包商 (Contractor)';
+                  if (/engineering/i.test(s)) return '工務工程部 (Engineering)';
+                  if (/private/i.test(s)) return '私人設施 (Private)';
+                  return s;
+                };
+
+                const formatRackType = (raw?: any) => {
+                  if (!raw) return null;
+                  const r = String(raw).trim().toLowerCase();
+                  if (r === 'hanger') return '掛架';
+                  if (r === 'u-rack' || r === 'urack') return '倒U型架';
+                  if (r.includes('post') && r.includes('ring')) return '柱環型架';
+                  if (r === 'heart') return '心形架';
+                  if (r === 'mountains') return '群山造型架';
+                  if (r === 'leaf') return '葉片造型架';
+                  if (r === 'petal') return '花瓣造型架';
+                  if (r === 'corral') return '單車專用圍欄';
+                  if (r === 'other' || /guard\s*bird/i.test(r) || /guardbird/i.test(r)) return '其他';
+                  return String(raw);
+                };
+
+                const ownerDisplay = formatBikeRackOwner(props.owner);
+
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    {/* 10.2 綠色區塊：左上「道路設施」，右上綠底白字「單車架」 */}
+                    <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/25 flex flex-col gap-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-emerald-950 text-xs">道路設施</span>
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-600 text-white shrink-0 shadow-xs whitespace-nowrap">
+                          單車架
+                        </span>
+                      </div>
+
+                      {/* 10.3 說明文字：「溫哥華市政公共單車停放設施」 */}
+                      <div className="pt-1 border-t border-emerald-500/20 text-[11px] text-emerald-950 font-medium flex items-center gap-1.5 leading-snug">
+                        <span className="text-base text-emerald-600 font-bold shrink-0">🚲</span>
+                        <span>溫哥華市政公共單車停放設施</span>
+                      </div>
                     </div>
 
-                    {/* 10.3 說明文字：「溫哥華市政公共單車停放設施」 */}
-                    <div className="pt-1 border-t border-emerald-500/20 text-[11px] text-emerald-950 font-medium flex items-center gap-1.5 leading-snug">
-                      <span className="text-base text-emerald-600 font-bold shrink-0">🚲</span>
-                      <span>溫哥華市政公共單車停放設施</span>
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                      {ownerDisplay && (
+                        <>
+                          <div className="flex justify-between items-center text-gray-600">
+                            <span>營運單位</span>
+                            <span className="font-semibold text-gray-800">{ownerDisplay}</span>
+                          </div>
+                          <div className="border-t border-gray-200/80 my-0.5" />
+                        </>
+                      )}
+                      {props.skytrain_station_name && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>天車車站</span>
+                          <span className="font-medium text-gray-800 flex items-center gap-1">
+                            <span>🚇</span>
+                            <span>{props.skytrain_station_name}</span>
+                          </span>
+                        </div>
+                      )}
+                      {props.num_racks && (
+                        <div className={`flex justify-between items-center text-gray-600 ${props.skytrain_station_name ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span>單車架數量</span>
+                          <span className="font-bold text-teal-700">
+                            {props.num_racks} 組
+                          </span>
+                        </div>
+                      )}
+                      {props.rack_type && (
+                        <div className={`flex justify-between items-center text-gray-600 ${(props.skytrain_station_name || props.num_racks) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span>車架款式</span>
+                          <span className="font-medium text-gray-800">
+                            {formatRackType(props.rack_type)}
+                          </span>
+                        </div>
+                      )}
+                      {props.year_installed && (
+                        <div className={`flex justify-between items-center text-gray-600 ${(props.skytrain_station_name || props.num_racks || props.rack_type) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span>安裝年份</span>
+                          <span className="font-mono text-gray-700">
+                            {props.year_installed} 年
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </div>
-
-                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                    {selectedFacility.properties.num_racks && (
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>單車架數量</span>
-                        <span className="font-bold text-teal-700">
-                          {selectedFacility.properties.num_racks} 組
-                        </span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.rack_type && (
-                      <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties.num_racks ? 'pt-1 border-t border-gray-100' : ''}`}>
-                        <span>車架規格款式</span>
-                        <span className="font-medium text-gray-800">
-                          {(() => {
-                            const r = String(selectedFacility.properties.rack_type).trim().toLowerCase();
-                            if (r === 'hanger') return '掛架';
-                            if (r === 'u-rack' || r === 'urack') return '倒U型架';
-                            if (r.includes('post') && r.includes('ring')) return '柱環型架';
-                            if (r === 'heart') return '心形架';
-                            if (r === 'mountains') return '群山造型架';
-                            if (r === 'leaf') return '葉片造型架';
-                            if (r === 'petal') return '花瓣造型架';
-                            if (r === 'corral') return '單車專用圍欄';
-                            if (r === 'other') return '其他';
-                            return selectedFacility.properties.rack_type;
-                          })()}
-                        </span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.year_installed && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
-                        <span>安裝年份</span>
-                        <span className="font-mono text-gray-700">
-                          {selectedFacility.properties.year_installed} 年
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
+                );
+              })()}
 
               {/* Postal Code FSA (郵遞編號分區) Details */}
               {selectedFacility.facility_type === 'postal_code_fsa' && (
@@ -11643,14 +11751,14 @@ export default function AppMap() {
                       </span>
                     </div>
                     {selectedFacility.properties.province && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                         <span>所屬省份</span>
                         <span className="font-medium text-gray-800">
                           {selectedFacility.properties.province}
                         </span>
                       </div>
                     )}
-                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                    <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                       <span>資料更新頻率</span>
                       <span className="font-medium text-gray-700">年度更新</span>
                     </div>
@@ -11681,7 +11789,7 @@ export default function AppMap() {
                       </div>
                     )}
                     {selectedFacility.properties.status && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties.pole_number ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                         <span>安裝附掛狀態</span>
                         <span className="font-semibold text-emerald-700">
                           {selectedFacility.properties.status}
@@ -11689,7 +11797,7 @@ export default function AppMap() {
                       </div>
                     )}
                     {selectedFacility.properties.attachment_location && (
-                      <div className="flex flex-col gap-0.5 pt-1 border-t border-gray-100 text-gray-600">
+                      <div className={`flex flex-col gap-0.5 ${(selectedFacility.properties.pole_number || selectedFacility.properties.status) ? 'pt-1.5 border-t border-gray-100' : ''} text-gray-600`}>
                         <span>附掛安裝細節:</span>
                         <span className="text-gray-800 text-[10px] leading-tight bg-white p-1 rounded border border-gray-100">
                           {selectedFacility.properties.attachment_location}
@@ -11697,7 +11805,7 @@ export default function AppMap() {
                       </div>
                     )}
                     {selectedFacility.properties.contact_info && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <div className={`flex justify-between items-center text-gray-600 ${(selectedFacility.properties.pole_number || selectedFacility.properties.status || selectedFacility.properties.attachment_location) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                         <span>聯絡服務電話</span>
                         <a href={`tel:${selectedFacility.properties.contact_info}`} className="text-purple-600 hover:underline font-mono">
                           {selectedFacility.properties.contact_info}
@@ -11881,7 +11989,7 @@ export default function AppMap() {
                         </div>
                       )}
                       {cap && (
-                        <div className={`flex justify-between items-center text-gray-600 ${model ? 'pt-1 border-t border-gray-100' : ''}`}>
+                        <div className={`flex justify-between items-center text-gray-600 ${model ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                           <span>容量規格</span>
                           <span className="font-bold text-amber-700">
                             {cap} 公升
@@ -11889,7 +11997,7 @@ export default function AppMap() {
                         </div>
                       )}
                       {status && (
-                        <div className={`flex justify-between items-center text-gray-600 ${(model || cap) ? 'pt-1 border-t border-gray-100' : ''}`}>
+                        <div className={`flex justify-between items-center text-gray-600 ${(model || cap) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                           <span>服務運作狀態</span>
                           <span className="font-semibold text-emerald-700">
                             {formatServiceStatus(status)}
@@ -11926,13 +12034,13 @@ export default function AppMap() {
                         {selectedFacility.name}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                    <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                       <span>中心座標</span>
                       <span className="font-mono text-gray-700">
                         {selectedFacility.lat.toFixed(4)}, {selectedFacility.lon.toFixed(4)}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                    <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                       <span>資料更新頻率</span>
                       <span className="font-medium text-gray-700">年度更新</span>
                     </div>
@@ -12254,7 +12362,7 @@ export default function AppMap() {
                       </div>
                     )}
                     {selectedFacility.properties.node_number !== undefined && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties.block_number ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                         <span>燈柱節點 (Node #)</span>
                         <span className="font-mono font-bold text-gray-900">
                           #{selectedFacility.properties.node_number}
@@ -12262,26 +12370,26 @@ export default function AppMap() {
                       </div>
                     )}
                     {selectedFacility.properties.local_area && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <div className={`flex justify-between items-center text-gray-600 ${(selectedFacility.properties.block_number || selectedFacility.properties.node_number !== undefined) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                         <span>所屬社區分區</span>
                         <span className="font-medium text-gray-800">
                           {selectedFacility.properties.local_area}
                         </span>
                       </div>
                     )}
-                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                    <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                       <span>主管機關</span>
                       <span className="font-medium text-gray-800">
                         City of Vancouver Engineering Services
                       </span>
                     </div>
-                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                    <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                       <span>資料更新頻率</span>
                       <span className="font-medium text-emerald-700">
                         每 3 個月更新 1 次 (Quarterly)
                       </span>
                     </div>
-                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                    <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                       <span>坐標位置</span>
                       <span className="font-mono text-gray-700">
                         {selectedFacility.lat.toFixed(5)}, {selectedFacility.lon.toFixed(5)}
@@ -12313,7 +12421,7 @@ export default function AppMap() {
                         {selectedFacility.properties.wireset_type || '標準規格'}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                    <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                       <span>管線類型</span>
                       <span className="font-medium text-gray-800">
                         地下供電導管
@@ -12357,7 +12465,7 @@ export default function AppMap() {
                       </span>
                     </div>
 
-                    <div className="flex justify-between items-center text-[10px] text-gray-500 pt-1 border-t border-gray-100">
+                    <div className="flex justify-between items-center text-[10px] text-gray-500 pt-1.5 border-t border-gray-100">
                       <span>安全標準參考</span>
                       <span className="font-sans font-medium text-gray-600">
                         ≤200 優良 · 200-400 留意 · &gt;400 警告
@@ -12365,7 +12473,7 @@ export default function AppMap() {
                     </div>
 
                     {selectedFacility.properties.health_authority && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                         <span>管轄衛生局</span>
                         <span className="font-medium text-gray-800">
                           {selectedFacility.properties.health_authority}
@@ -12374,7 +12482,7 @@ export default function AppMap() {
                     )}
 
                     {(selectedFacility.properties.municipality || selectedFacility.properties.area) && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                         <span>所屬市鎮 / 水域</span>
                         <span className="font-medium text-gray-800">
                           {selectedFacility.properties.municipality} {selectedFacility.properties.area ? `· ${selectedFacility.properties.area}` : ''}
@@ -12383,7 +12491,7 @@ export default function AppMap() {
                     )}
 
                     {selectedFacility.properties.last_date && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                         <span>最近檢測日期</span>
                         <span className="font-mono text-gray-700">
                           {selectedFacility.properties.last_date}
@@ -12391,14 +12499,14 @@ export default function AppMap() {
                       </div>
                     )}
 
-                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                    <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                       <span>資料更新頻率</span>
                       <span className="font-medium text-teal-700">
                         每個月更新 1 次 (Monthly)
                       </span>
                     </div>
 
-                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                    <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                       <span>中心座標</span>
                       <span className="font-mono text-gray-700">
                         {selectedFacility.lat.toFixed(5)}, {selectedFacility.lon.toFixed(5)}
@@ -12467,20 +12575,20 @@ export default function AppMap() {
                         </div>
                       )}
                       {instDate != null && (
-                        <div className={`flex justify-between items-center text-gray-600 ${id != null ? 'pt-1 border-t border-gray-100' : ''}`}>
+                        <div className={`flex justify-between items-center text-gray-600 ${id != null ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                           <span>安裝日期</span>
                           <span className="font-mono text-gray-800">{instDate}</span>
                         </div>
                       )}
                       {fireUseOnly != null && (
-                        <div className={`flex justify-between items-center text-gray-600 ${(id != null || instDate != null) ? 'pt-1 border-t border-gray-100' : ''}`}>
+                        <div className={`flex justify-between items-center text-gray-600 ${(id != null || instDate != null) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                           <span>僅限消防使用</span>
                           <span className="font-medium text-gray-800">{fireUseOnly}</span>
                         </div>
                       )}
 
                       {hasFirstSection && hasSecondSection && (
-                        <div className="border-t border-gray-200 my-0.5" />
+                        <div className="border-t border-gray-200/80 my-0.5" />
                       )}
 
                       {manufacturer != null && (
@@ -12490,13 +12598,13 @@ export default function AppMap() {
                         </div>
                       )}
                       {model != null && (
-                        <div className={`flex justify-between items-center text-gray-600 ${manufacturer != null ? 'pt-1 border-t border-gray-100' : ''}`}>
+                        <div className={`flex justify-between items-center text-gray-600 ${manufacturer != null ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                           <span>型號</span>
                           <span className="font-mono font-bold text-gray-900">{model}</span>
                         </div>
                       )}
                       {displayColor != null && (
-                        <div className={`flex justify-between items-center text-gray-600 ${(manufacturer != null || model != null) ? 'pt-1 border-t border-gray-100' : ''}`}>
+                        <div className={`flex justify-between items-center text-gray-600 ${(manufacturer != null || model != null) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                           <span>外觀顏色</span>
                           <span className="font-medium text-gray-800">{displayColor}</span>
                         </div>
@@ -12532,14 +12640,14 @@ export default function AppMap() {
                       </div>
                     )}
                     {selectedFacility.properties.cd_1_number && (
-                      <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties.zoning_classification ? 'pt-1 border-t border-gray-100' : ''}`}>
+                      <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties.zoning_classification ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                         <span>CD-1 專屬編號</span>
                         <span className="font-mono text-gray-700">
                           #{selectedFacility.properties.cd_1_number}
                         </span>
                       </div>
                     )}
-                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                    <div className={`flex justify-between items-center text-gray-600 ${(selectedFacility.properties.zoning_classification || selectedFacility.properties.cd_1_number) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                       <span>主管機關</span>
                       <span className="font-medium text-gray-800">
                         City of Vancouver Planning Department
@@ -12576,7 +12684,7 @@ export default function AppMap() {
                       </div>
                     )}
                     {(selectedFacility.properties.genus_name || selectedFacility.properties.species_name) && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <div className={`flex justify-between items-center text-gray-600 ${selectedFacility.properties.tree_id ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                         <span>學名</span>
                         <span className="font-mono font-semibold text-gray-900 text-right max-w-[190px] truncate">
                           {[selectedFacility.properties.genus_name, selectedFacility.properties.species_name, selectedFacility.properties.cultivar_name].filter(Boolean).join(' ')}
@@ -12584,7 +12692,7 @@ export default function AppMap() {
                       </div>
                     )}
                     {selectedFacility.properties.diameter_inches !== undefined && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <div className={`flex justify-between items-center text-gray-600 ${(selectedFacility.properties.tree_id || selectedFacility.properties.genus_name || selectedFacility.properties.species_name) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                         <span>胸徑</span>
                         <span className="font-mono font-bold text-emerald-700">
                           {selectedFacility.properties.diameter_inches}&quot; ({selectedFacility.properties.diameter_cm || Math.round(Number(selectedFacility.properties.diameter_inches) * 2.54)} cm)
@@ -12592,7 +12700,7 @@ export default function AppMap() {
                       </div>
                     )}
                     {selectedFacility.properties.neighbourhood_name && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <div className={`flex justify-between items-center text-gray-600 ${(selectedFacility.properties.tree_id || selectedFacility.properties.genus_name || selectedFacility.properties.species_name || selectedFacility.properties.diameter_inches !== undefined) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                         <span>所屬街區</span>
                         <span className="font-medium text-gray-800">
                           {selectedFacility.properties.neighbourhood_name}
@@ -12600,7 +12708,7 @@ export default function AppMap() {
                       </div>
                     )}
                     {(selectedFacility.properties.date_planted || selectedFacility.properties.planted_year) && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <div className={`flex justify-between items-center text-gray-600 ${(selectedFacility.properties.tree_id || selectedFacility.properties.genus_name || selectedFacility.properties.species_name || selectedFacility.properties.diameter_inches !== undefined || selectedFacility.properties.neighbourhood_name) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                         <span>栽種日期</span>
                         <span className="font-mono text-gray-700">
                           {selectedFacility.properties.date_planted ? String(selectedFacility.properties.date_planted).slice(0, 10) : `${selectedFacility.properties.planted_year} 年`}
@@ -12639,39 +12747,39 @@ export default function AppMap() {
                         {selectedFacility.properties.slopes_label || '--'}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                    <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                       <span>纜車開放數量</span>
                       <span className="font-mono font-bold text-gray-900">
                         {selectedFacility.properties.lifts_label || '--'}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                    <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                       <span>積雪深度 (山底 / 山頂)</span>
                       <span className="font-mono font-semibold text-cyan-700">
                         {selectedFacility.properties.snow_base || '-'} / {selectedFacility.properties.snow_top || '-'}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                    <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                       <span>雪場海拔 (垂直落差)</span>
                       <span className="font-mono text-gray-800">
                         {selectedFacility.properties.altitude_base} - {selectedFacility.properties.altitude_top} ({selectedFacility.properties.vertical_drop})
                       </span>
                     </div>
-                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                    <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                       <span>夜間滑雪 (Night Skiing)</span>
                       <span className="font-medium text-gray-800">
                         {selectedFacility.properties.night_skiing ? '🌙 有提供' : '無'}
                       </span>
                     </div>
                     {selectedFacility.properties.season_range && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                      <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                         <span>預估營運雪季</span>
                         <span className="font-medium text-gray-800 font-mono">
                           {selectedFacility.properties.season_range}
                         </span>
                       </div>
                     )}
-                    <div className="flex justify-between items-center text-gray-600 pt-1 border-t border-gray-100">
+                    <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                       <span>即時數據更新頻率</span>
                       <span className="font-medium text-emerald-700">
                         每 1 日更新 (每日)
