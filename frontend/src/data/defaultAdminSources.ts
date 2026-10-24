@@ -11,7 +11,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "status": "ok",
     "data_pipeline_notes": "TomTom Traffic Flow API (即時探針) -> 向量路網座標比對 -> 計算通過延誤、平均時速與各向壅塞等級 -> 寫入 traffic_conditions 快取 -> 推送前端地圖與探索路況",
     "runner": "oci",
-    "category": "交通路況",
+    "category": "道路",
     "workflow_file": null
   },
   {
@@ -26,7 +26,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "status": "ok",
     "data_pipeline_notes": "DriveBC Open511 API & 溫哥華市政交通監控系統 -> 抓取即時快照與視訊流 -> 地理坐標精確微調校正 -> 生成即時影像 URL 清單 -> 地圖點擊彈出高清預覽",
     "runner": "oci",
-    "category": "交通路況",
+    "category": "道路",
     "workflow_file": null
   },
   {
@@ -41,7 +41,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "status": "ok",
     "data_pipeline_notes": "TransLink RTTI GTFS-RT API -> 解析巴士 GPS、班次準點率、天車位置與海上巴士 -> 整合緊急廣播警報 (Alerts) -> 平滑插值座標更新地圖車輛標記",
     "runner": "oci",
-    "category": "大眾運輸",
+    "category": "道路",
     "workflow_file": null
   },
   {
@@ -56,7 +56,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "status": "ok",
     "data_pipeline_notes": "ECCC MSC GeoMet WMS/GeoJSON API & RainViewer -> 抓取溫哥華各氣象站 SWOB 實測 (溫濕度/風向風速/氣壓) -> 疊加多普勒降水雷達回波瓦片與衛星雲圖",
     "runner": "oci",
-    "category": "氣象雷達",
+    "category": "天氣",
     "workflow_file": null
   },
   {
@@ -71,7 +71,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "status": "ok",
     "data_pipeline_notes": "加拿大漁業及海洋部 (DFO CHS REST API) & 國家水文網 (NHN) -> 讀取 Point Atkinson、Vancouver Harbour 等潮位水深 -> 計算高低潮時間與菲沙河即時流量",
     "runner": "oci",
-    "category": "水文潮汐",
+    "category": "天氣",
     "workflow_file": null
   },
   {
@@ -87,7 +87,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "data_pipeline_notes": "Metro Vancouver 衛生當局公開數據 -> 提取大腸桿菌 (E. coli) 幾何平均採樣數值 -> 評估水質安全等級 (合規/警示/封閉) -> 寫入 vancouver_beach_water.geojson",
     "runner": "github_actions",
     "workflow_file": "weekly-datasets.yml",
-    "category": "水質安全"
+    "category": "天氣"
   },
   {
     "id": "ski_resorts",
@@ -101,7 +101,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "status": "ok",
     "data_pipeline_notes": "Cypress Mountain、Grouse Mountain、Mount Seymour 官方雪報 API/網頁爬蟲 -> 解析即時新雪量、積雪厚度、開放纜車數與夜滑狀態 -> 更新地圖與探索滑雪卡片",
     "runner": "oci",
-    "category": "休閒體育",
+    "category": "天氣",
     "workflow_file": null
   },
   {
@@ -116,7 +116,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "status": "ok",
     "data_pipeline_notes": "GasBuddy & 加拿大能源情報聚合接口 -> 取得溫哥華市區各品牌 (Chevron, Shell, Petro-Canada 等) 87/91/柴油即時公升單價 -> 計算比價排名與市區油價均線",
     "runner": "oci",
-    "category": "燃油能源",
+    "category": "道路",
     "workflow_file": null
   },
   {
@@ -131,7 +131,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "status": "ok",
     "data_pipeline_notes": "YVR Airport Open Flight Data API -> 篩選客貨運起飛與降落時刻表 -> 比對航班準點/延誤/取消狀態、登機門與行李轉盤 -> 提供即時看板與地圖航空走廊展示",
     "runner": "oci",
-    "category": "機場航班",
+    "category": "道路",
     "workflow_file": null
   },
   {
@@ -146,7 +146,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "status": "ok",
     "data_pipeline_notes": "AISStream WebSocket & 溫哥華港務局航標數據 -> 監控布勒內灣、英吉利灣、菲沙河各類貨櫃輪、油輪、拖船與渡輪 -> 實時繪製船舶航速、航向角與吃水資訊",
     "runner": "oci",
-    "category": "海洋船舶",
+    "category": "道路",
     "workflow_file": null
   },
   {
@@ -162,7 +162,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "data_pipeline_notes": "ImPark (Reef Parking) 官方開放據點清單 -> 解析各場次停車位數量、每小時與全日收費費率、無障礙設施與充電樁 -> 寫入 vancouver_impark.geojson",
     "runner": "github_actions",
     "workflow_file": "update-datasets.yml",
-    "category": "市政空間圖資"
+    "category": "道路"
   },
   {
     "id": "border_wait_times",
@@ -176,7 +176,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "status": "ok",
     "data_pipeline_notes": "加拿大邊境服務局 (CBSA BWT) & 美國 CBP 即時關口等候 API -> 追蹤和平拱門 (Peace Arch)、太平洋公路、亞博斯福等口岸之標準車道與 NEXUS 車道預估排隊分鐘數",
     "runner": "oci",
-    "category": "邊境海關",
+    "category": "道路",
     "workflow_file": null
   },
   {
@@ -191,7 +191,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "status": "ok",
     "data_pipeline_notes": "美國 NOAA SWPC 空間天氣預報中心 API -> 讀取行星 K 指數 (Planetary Kp-index) 與地磁風暴等級 (G-Scale) -> 計算溫哥華觀測機率 -> 抓取最新北美 Viewline 雲圖",
     "runner": "oci",
-    "category": "天文氣象",
+    "category": "天氣",
     "workflow_file": null
   },
   {
@@ -206,7 +206,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "status": "ok",
     "data_pipeline_notes": "溫哥華旅遊局 (Destination Vancouver) 與市府活動日曆 RSS/API -> 擷取活動標題、地點坐標、時間段與簡介 -> 地圖關聯活動主場館並標記交通提示",
     "runner": "oci",
-    "category": "市政活動",
+    "category": "生活",
     "workflow_file": null
   },
   {
@@ -222,7 +222,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "data_pipeline_notes": "溫哥華學校局 (VSB) & Open Data Portal (WFS) -> 座標轉換驗證 (EPSG:4326) -> 標記公立/私立、校區範圍 -> 寫入 /public/vancouver_schools.geojson",
     "runner": "github_actions",
     "workflow_file": "update-schools.yml",
-    "category": "教育設施"
+    "category": "生活"
   },
   {
     "id": "libraries",
@@ -237,7 +237,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "data_pipeline_notes": "溫哥華公共圖書館 (VPL) 開放資料集 -> 匯整分館地址、開放時間、自修室與 WiFi 服務 -> 寫入 /public/vancouver_libraries.geojson",
     "runner": "github_actions",
     "workflow_file": "update-libraries.yml",
-    "category": "文化市政"
+    "category": "生活"
   },
   {
     "id": "parks",
@@ -252,7 +252,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "data_pipeline_notes": "溫哥華公園局 (Park Board) 地理空間圖資 -> 提取多邊形邊界與面積高程數據 -> 寫入 /public/vancouver_parks.geojson",
     "runner": "github_actions",
     "workflow_file": "update-datasets.yml",
-    "category": "市政空間圖資"
+    "category": "生活"
   },
   {
     "id": "community_centres",
@@ -267,7 +267,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "data_pipeline_notes": "溫哥華市府社會發展局開放資料 -> 解析各社區中心健身房、室內泳池與溜冰場設施 -> 寫入 /public/vancouver_community_centres.geojson",
     "runner": "github_actions",
     "workflow_file": "update-datasets.yml",
-    "category": "市政空間圖資"
+    "category": "生活"
   },
   {
     "id": "public_art",
@@ -282,7 +282,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "data_pipeline_notes": "市府文化事務處公共藝術登記庫 (Public Art Registry) -> 記錄藝術家、創作年份與作品理念 -> 寫入 /public/vancouver_public_art.geojson",
     "runner": "github_actions",
     "workflow_file": "update-datasets.yml",
-    "category": "市政空間圖資"
+    "category": "生活"
   },
   {
     "id": "museums",
@@ -297,7 +297,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "data_pipeline_notes": "卑詩博物館協會與溫哥華開放數據庫 -> 標示館藏特色、門票資訊與營業狀態 -> 寫入 /public/vancouver_museums.geojson",
     "runner": "github_actions",
     "workflow_file": "update-datasets.yml",
-    "category": "市政空間圖資"
+    "category": "生活"
   },
   {
     "id": "garbage_collection",
@@ -312,7 +312,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "data_pipeline_notes": "市府工程部廢物管理圖資 -> 依街道多邊形切分綠桶廚餘、藍盒回收與黑桶清運排程 -> 幾何拓撲優化貼合真實街廓 -> 寫入 /public/vancouver_garbage_collection.geojson",
     "runner": "github_actions",
     "workflow_file": "weekly-datasets.yml",
-    "category": "環境市政"
+    "category": "生活"
   },
   {
     "id": "recycling",
@@ -327,7 +327,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "data_pipeline_notes": "Return-It BC & 市府廢棄物處理指引 -> 標示電子產品、寶特瓶、危險有害物質回收點 -> 寫入 /public/vancouver_recycling.geojson",
     "runner": "github_actions",
     "workflow_file": "weekly-datasets.yml",
-    "category": "環境市政"
+    "category": "生活"
   },
   {
     "id": "homeless_shelters",
@@ -342,7 +342,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "data_pipeline_notes": "BC Housing 卑詩省房屋局即時收容名錄 -> 整理緊急避寒中心、床位營運機構與聯絡熱線 -> 寫入 /public/vancouver_homeless_shelters.geojson",
     "runner": "github_actions",
     "workflow_file": "update-datasets.yml",
-    "category": "市政空間圖資"
+    "category": "生活"
   },
   {
     "id": "food_banks",
@@ -357,7 +357,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "data_pipeline_notes": "大溫食物銀行 (Greater Vancouver Food Bank) 派發網絡 -> 登記每週派發時段與受助資格 -> 寫入 /public/vancouver_food_banks.geojson",
     "runner": "github_actions",
     "workflow_file": "update-datasets.yml",
-    "category": "市政空間圖資"
+    "category": "生活"
   },
   {
     "id": "food_vendors",
@@ -372,7 +372,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "data_pipeline_notes": "溫哥華市府執照局 (Street Food City Permits) -> 整理合法停泊營業路段與料理風味種類 -> 寫入 /public/vancouver_food_vendors.geojson",
     "runner": "github_actions",
     "workflow_file": "update-food-vendors.yml",
-    "category": "民生餐飲"
+    "category": "生活"
   },
   {
     "id": "aed",
@@ -387,7 +387,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "data_pipeline_notes": "卑詩心臟與中風基金會公共場所 AED 登錄庫 -> 標記市政廳、運動館、天車站詳細擺放樓層位置 -> 寫入 /public/vancouver_aed.geojson",
     "runner": "github_actions",
     "workflow_file": "update-datasets.yml",
-    "category": "市政空間圖資"
+    "category": "公共事業"
   },
   {
     "id": "zoning_districts",
@@ -402,7 +402,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "data_pipeline_notes": "市府城市規劃署 (City Planning Department) 分區法規 GeoJSON -> 區分住宅區 (RS/RT/RM)、商業區 (C) 與工業綜合區 -> 寫入 /public/vancouver_zoning_districts.geojson",
     "runner": "github_actions",
     "workflow_file": "update-datasets.yml",
-    "category": "市政空間圖資"
+    "category": "公共事業"
   },
   {
     "id": "parking_meters",
@@ -417,7 +417,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "data_pipeline_notes": "溫哥華工程部泊車管理庫 -> 解析每座收費錶之費率 (每小時 $1~$9)、最長停泊時限與支援信用卡感應 -> 寫入 /public/vancouver_parking_meters.geojson",
     "runner": "github_actions",
     "workflow_file": "update-datasets.yml",
-    "category": "市政空間圖資"
+    "category": "道路"
   },
   {
     "id": "motorcycle_parking",
@@ -432,7 +432,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "data_pipeline_notes": "市府泊車規劃開放資料 -> 篩選摩托車半價優惠專用車位 -> 寫入 /public/vancouver_motorcycle_parking.geojson",
     "runner": "github_actions",
     "workflow_file": "update-datasets.yml",
-    "category": "市政空間圖資"
+    "category": "道路"
   },
   {
     "id": "bikeways",
@@ -447,7 +447,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "data_pipeline_notes": "市府主動交通規劃庫 (Active Transportation Network) -> 分類保護單車道 (Separated Bike Lane)、鄰里休閒綠道與共用路段 -> 寫入 /public/vancouver_bikeways.geojson",
     "runner": "github_actions",
     "workflow_file": "update-datasets.yml",
-    "category": "市政空間圖資"
+    "category": "道路"
   },
   {
     "id": "public_trees",
@@ -462,7 +462,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "data_pipeline_notes": "公園局都會森林資源普查 (Urban Forest Inventory) -> 記錄樹種中文名、學名、樹幹直徑 (DBH) 與種植年份 -> 寫入 /public/vancouver_public_trees.geojson",
     "runner": "github_actions",
     "workflow_file": "update-datasets.yml",
-    "category": "市政空間圖資"
+    "category": "生活"
   },
   {
     "id": "fire_hydrants",
@@ -477,7 +477,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "data_pipeline_notes": "溫哥華消防局 (VFRS) 與供水維護處 -> 提取全市消防栓編號、水壓出水量與供水幹管管徑 -> 寫入 /public/vancouver_fire_hydrants.geojson",
     "runner": "github_actions",
     "workflow_file": "update-datasets.yml",
-    "category": "市政空間圖資"
+    "category": "公共事業"
   },
   {
     "id": "drinking_fountains",
@@ -492,7 +492,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "data_pipeline_notes": "供水工程處健康公共資產登記 -> 記錄常開、寵物友好碗槽與水質保養狀態 -> 寫入 /public/vancouver_drinking_fountains.geojson",
     "runner": "github_actions",
     "workflow_file": "update-datasets.yml",
-    "category": "市政空間圖資"
+    "category": "生活"
   },
   {
     "id": "public_washrooms",
@@ -507,7 +507,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "data_pipeline_notes": "市府設施管理部 (Facility Management) -> 標示全天候開放、無障礙洗手間與自動自潔廁位 -> 寫入 /public/vancouver_public_washrooms.geojson",
     "runner": "github_actions",
     "workflow_file": "update-datasets.yml",
-    "category": "市政空間圖資"
+    "category": "生活"
   },
   {
     "id": "street_lighting",
@@ -522,7 +522,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "data_pipeline_notes": "電機工程處智慧路燈系統 -> 記錄燈桿柱號 (Pole ID)、LED 功率、光源類型與維護盤號 -> 寫入 /public/vancouver_street_lighting.geojson",
     "runner": "github_actions",
     "workflow_file": "update-datasets.yml",
-    "category": "市政空間圖資"
+    "category": "公共事業"
   },
   {
     "id": "street_lighting_conduits",
@@ -537,7 +537,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "data_pipeline_notes": "地下基礎管線檔案庫 -> 記錄電網導線管、檢查人孔與供電回路佈局 -> 寫入 /public/vancouver_street_lighting_conduits.geojson",
     "runner": "github_actions",
     "workflow_file": "update-datasets.yml",
-    "category": "市政空間圖資"
+    "category": "公共事業"
   },
   {
     "id": "water_distribution_mains",
@@ -582,7 +582,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "data_pipeline_notes": "交通規劃處道路分類法規 -> 標記 30 km/h 校區學區、40 km/h 住宅小區與 50 km/h 主幹道 -> 寫入 /public/vancouver_traffic_speed_limits.geojson",
     "runner": "github_actions",
     "workflow_file": "update-datasets.yml",
-    "category": "市政空間圖資"
+    "category": "道路"
   },
   {
     "id": "traffic_crosswalks",
@@ -597,7 +597,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "data_pipeline_notes": "行人安全工程處資料集 -> 記錄有號誌斑馬線、閃黃燈行人穿越道與無障礙導盲坡道 -> 寫入 /public/vancouver_traffic_crosswalks.geojson",
     "runner": "github_actions",
     "workflow_file": "update-datasets.yml",
-    "category": "市政空間圖資"
+    "category": "道路"
   },
   {
     "id": "litter_containers",
@@ -612,7 +612,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "data_pipeline_notes": "固體廢物運營庫 -> 整理街頭防熊垃圾箱、煙灰盒與分類投遞口 -> 寫入 /public/vancouver_litter_containers.geojson",
     "runner": "github_actions",
     "workflow_file": "update-datasets.yml",
-    "category": "市政空間圖資"
+    "category": "生活"
   },
   {
     "id": "one_way_streets",
@@ -627,7 +627,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "data_pipeline_notes": "交通號誌與動線管制檔案 -> 解析道路通行指向角與箭頭渲染幾何 -> 寫入 /public/vancouver_one_way_streets.geojson",
     "runner": "github_actions",
     "workflow_file": "update-datasets.yml",
-    "category": "市政空間圖資"
+    "category": "道路"
   },
   {
     "id": "snow_removal_routes",
@@ -642,7 +642,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "data_pipeline_notes": "市府冬季道路維護應急預案 -> 依優先順序劃分 Major Arterial (一級鏟雪道)、公車走廊與陡坡路段 -> 寫入 /public/vancouver_snow_removal_routes.geojson",
     "runner": "github_actions",
     "workflow_file": "update-snow-routes.yml",
-    "category": "冬季交通"
+    "category": "道路"
   },
   {
     "id": "contours",
@@ -657,7 +657,7 @@ export const DEFAULT_ADMIN_SOURCES = [
     "data_pipeline_notes": "LiDAR 空載光學雷達高程模型 (DEM) -> 向量化提取 1米、2米與10米地形等高線 -> 寫入 /public/vancouver_contours.geojson",
     "runner": "github_actions",
     "workflow_file": "update-datasets.yml",
-    "category": "市政空間圖資"
+    "category": "公共事業"
   },
   {
     "id": "ev_charging",
@@ -672,6 +672,6 @@ export const DEFAULT_ADMIN_SOURCES = [
     "data_pipeline_notes": "加拿大自然資源部 (NRCan) & 溫哥華市政綠能充電網絡 -> 整理充電樁功率 (kW)、接頭規格 (CCS/J1772/Tesla) 與停車收費方案 -> 寫入 /public/vancouver_ev_charging.geojson",
     "runner": "github_actions",
     "workflow_file": "update-datasets.yml",
-    "category": "市政空間圖資"
+    "category": "道路"
   }
 ];

@@ -3638,7 +3638,7 @@ def update_admin_schedule(payload: dict = Body(...)):
                                 sha = file_info.get("sha")
                                 raw_yml = base64.b64decode(file_info.get("content", "")).decode("utf-8")
                                 import re
-                                new_yml = re.sub(r"-s*cron:s*['"][^'"]+['"]", f"- cron: '{cron_expr}'", raw_yml)
+                                new_yml = re.sub(r"-\s*cron:\s*['\"].+?['\"]", f"- cron: '{cron_expr}'", raw_yml)
                                 put_body = {
                                     "message": f"chore(schedule): update {updated_src.get('name')} cron to '{cron_expr}' via Admin Portal",
                                     "content": base64.b64encode(new_yml.encode("utf-8")).decode("utf-8"),
@@ -3659,7 +3659,7 @@ def update_admin_schedule(payload: dict = Body(...)):
                             with open(wf_path, 'r', encoding='utf-8') as yf:
                                 ycontent = yf.read()
                             import re
-                            new_ycontent = re.sub(r"-s*cron:s*['"][^'"]+['"]", f"- cron: '{cron_expr}'", ycontent)
+                            new_ycontent = re.sub(r"-\s*cron:\s*['\"].+?['\"]", f"- cron: '{cron_expr}'", ycontent)
                             if new_ycontent != ycontent:
                                 with open(wf_path, 'w', encoding='utf-8') as yf:
                                     yf.write(new_ycontent)

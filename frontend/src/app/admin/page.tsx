@@ -28,6 +28,31 @@ import {
 import { getApiUrl } from '@/utils/api';
 import { DEFAULT_ADMIN_SOURCES } from '@/data/defaultAdminSources';
 
+// 系統 4 大標準分頁與按鈕類別 (對應主導航與探索面板)
+export const SYSTEM_CATEGORIES = ['道路', '天氣', '生活', '公共事業'] as const;
+
+export function getSystemCategory(source: { id: string; category?: string; name?: string }): '道路' | '天氣' | '生活' | '公共事業' {
+  const roadIds = new Set([
+    'traffic_conditions', 'traffic_cameras', 'translink_realtime', 'snow_removal_routes',
+    'fuel_prices', 'border_wait_times', 'flight_schedules', 'maritime_shipping',
+    'parking_meters', 'impark_parking', 'motorcycle_parking', 'bikeways',
+    'ev_charging', 'traffic_speed_limits', 'traffic_crosswalks', 'one_way_streets'
+  ]);
+  const weatherIds = new Set([
+    'weather_monitoring', 'tides_hydrometric', 'beach_water', 'aurora_forecast', 'ski_resorts'
+  ]);
+  const utilitiesIds = new Set([
+    'water_distribution_mains', 'sewer_mains', 'street_lighting_conduits', 'street_lighting',
+    'fire_hydrants', 'aed', 'zoning_districts', 'contours'
+  ]);
+
+  if (roadIds.has(source.id)) return '道路';
+  if (weatherIds.has(source.id)) return '天氣';
+  if (utilitiesIds.has(source.id)) return '公共事業';
+  return '生活';
+}
+
+
 interface DataSource {
   id: string;
   name: string;
@@ -88,6 +113,25 @@ export default function AdminPage() {
   const [editInterval, setEditInterval] = useState('');
   const [isSavingSchedule, setIsSavingSchedule] = useState(false);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
+
+  // 徹底解決主地圖 html/body overflow:hidden 導致 admin 頁面無法拉上拉下捲動問題
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      const prevHtmlOverflow = document.documentElement.style.overflow;
+      const prevBodyOverflow = document.body.style.overflow;
+      const prevBodyHeight = document.body.style.height;
+
+      document.documentElement.style.overflow = 'auto';
+      document.body.style.overflow = 'auto';
+      document.body.style.height = 'auto';
+
+      return () => {
+        document.documentElement.style.overflow = prevHtmlOverflow;
+        document.body.style.overflow = prevBodyOverflow;
+        document.body.style.height = prevBodyHeight;
+      };
+    }
+  }, []);
 
   // Check sessionStorage for unlocked status
   useEffect(() => {
@@ -333,7 +377,7 @@ export default function AdminPage() {
     return sources.filter(s => {
       if (activeTab === 'github_actions' && s.runner !== 'github_actions') return false;
       if (activeTab === 'oci' && s.runner !== 'oci') return false;
-      if (selectedCategory !== 'all' && s.category !== selectedCategory) return false;
+      if (selectedCategory !== 'all' && getSystemCategory(s) !== selectedCategory) return false;
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
         return (
@@ -624,29 +668,33 @@ export default function AdminPage() {
                 />
               </div>
 
-              <div className="flex items-center gap-2 overflow-x-auto">
-                <Filter className="w-3.5 h-3.5 text-gray-400 shrink-0" />
-                <button
-                  onClick={() => setSelectedCategory('all')}
-                  className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-all cursor-pointer ${
-                    selectedCategory === 'all'
-                      ? 'bg-indigo-600/30 text-indigo-300 border border-indigo-500/40'
-                      : 'text-gray-400 hover:text-gray-200'
-                  }`}
-                >
-                  全部分類
-                </button>
-                {categories.map(cat => (
+              <div className="flex items-center gap-1.5 flex-wrap sm:flex-nowrap">
+                <span className="text-[11px] text-gray-400 font-semibold flex items-center gap-1 shrink-0 mr-0.5">
+                  <Filter className="w-3.5 h-3.5 text-indigo-400" />
+                  <span className="hidden sm:inline">分類：</span>
+                </span>
+                {[
+                  { id: 'all', label: '全部', count: sources.length },
+                  { id: '道路', label: '道路', count: sources.filter(s => getSystemCategory(s) === '道路').length },
+                  { id: '天氣', label: '天氣', count: sources.filter(s => getSystemCategory(s) === '天氣').length },
+                  { id: '生活', label: '生活', count: sources.filter(s => getSystemCategory(s) === '生活').length },
+                  { id: '公共事業', label: '公共事業', count: sources.filter(s => getSystemCategory(s) === '公共事業').length },
+                ].map(item => (
                   <button
-                    key={cat}
-                    onClick={() => setSelectedCategory(cat)}
-                    className={`px-2.5 py-1 rounded-md text-[11px] font-medium whitespace-nowrap transition-all cursor-pointer ${
-                      selectedCategory === cat
-                        ? 'bg-indigo-600/30 text-indigo-300 border border-indigo-500/40'
-                        : 'text-gray-400 hover:text-gray-200'
+                    key={item.id}
+                    onClick={() => setSelectedCategory(item.id)}
+                    className={`px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 ${
+                      selectedCategory === item.id
+                        ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30 ring-1 ring-indigo-400'
+                        : 'bg-[#1a2130] text-gray-300 hover:bg-[#252f44] hover:text-white border border-[#2b3548]'
                     }`}
                   >
-                    {cat}
+                    <span>{item.label}</span>
+                    <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+                      selectedCategory === item.id ? 'bg-white/20 text-white' : 'bg-black/40 text-gray-400'
+                    }`}>
+                      {item.count}
+                    </span>
                   </button>
                 ))}
               </div>
@@ -654,10 +702,10 @@ export default function AdminPage() {
 
             {/* 2.6 逐行式清單 (Line-by-Line Table List View - 不要用網格) */}
             <div className="bg-[#141822] border border-[#232a3b] rounded-xl overflow-hidden shadow-xl">
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto max-h-[72vh] overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-[#2c374d] [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-[#3e4e6d]">
                 <table className="w-full text-left border-collapse text-xs">
                   <thead>
-                    <tr className="bg-[#191f2c] border-b border-[#283144] text-gray-400 font-semibold uppercase text-[10.5px] tracking-wider">
+                    <tr className="sticky top-0 z-10 bg-[#161c28] border-b border-[#283144] text-gray-300 font-semibold uppercase text-[10.5px] tracking-wider shadow-sm">
                       <th className="py-3 px-4 w-12 text-center">狀態</th>
                       <th className="py-3 px-4 min-w-[200px]">資料源與項目名稱</th>
                       <th className="py-3 px-4 w-28">分類</th>
@@ -707,9 +755,20 @@ export default function AdminPage() {
 
                           {/* 分類 */}
                           <td className="py-3.5 px-4">
-                            <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-[#1d2433] text-gray-300 border border-[#2f3950] whitespace-nowrap">
-                              {source.category}
-                            </span>
+                            {(() => {
+                              const cat = getSystemCategory(source);
+                              const catColors: Record<string, string> = {
+                                '道路': 'bg-amber-500/15 text-amber-300 border-amber-500/30',
+                                '天氣': 'bg-sky-500/15 text-sky-300 border-sky-500/30',
+                                '生活': 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
+                                '公共事業': 'bg-violet-500/15 text-violet-300 border-violet-500/30'
+                              };
+                              return (
+                                <span className={`px-2 py-0.5 rounded text-[10px] font-bold border whitespace-nowrap ${catColors[cat] || 'bg-[#1d2433] text-gray-300 border-[#2f3950]'}`}>
+                                  {cat}
+                                </span>
+                              );
+                            })()}
                           </td>
 
                           {/* 執行載體標籤 */}
