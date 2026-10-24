@@ -6,7 +6,6 @@ import { useUIStore, SearchTarget, UIState } from '@/store/useUIStore';
 import ReportIssueModal from '@/components/ReportIssueModal';
 import DonateModal from '@/components/DonateModal';
 import SettingsModal from '@/components/SettingsModal';
-import AdminModal from '@/components/AdminModal';
 import ExplorePanel from '@/components/ExplorePanel';
 import ExportModal from '@/components/ExportModal';
 import { getApiUrl } from '@/utils/api';
@@ -25,7 +24,6 @@ export default function TopBar() {
     timeFormat,
     timeZone,
     setSettingsModalOpen,
-    setAdminModalOpen,
     isExportModalOpen,
     setExportModalOpen
   } = useUIStore();
@@ -139,26 +137,6 @@ export default function TopBar() {
       setAutoEnabledSearchLayer(null);
     }
   };
-
-  // 隱藏後台安全快捷鍵 (Ctrl+Shift+A / Cmd+Shift+A) 及安全網址參數 (?admin=1)
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
-        e.preventDefault();
-        setAdminModalOpen(true);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get('admin') === '1' || params.get('admin') === 'true' || params.get('manage') === '1') {
-        setAdminModalOpen(true);
-      }
-    }
-
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [setAdminModalOpen]);
 
   const formatTime = (date: Date) => {
     return formatClock(date, timeFormat, timeZone);
@@ -414,9 +392,6 @@ export default function TopBar() {
 
       {/* 偏好設定彈出視窗 */}
       <SettingsModal />
-
-      {/* 系統管理員後台彈出視窗 */}
-      <AdminModal />
 
       {/* 探索資訊面板 (燃油比價等) */}
       <ExplorePanel />

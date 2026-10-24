@@ -3375,44 +3375,127 @@ def get_admin_sources():
 @app.post("/api/admin/sources/sync")
 def trigger_admin_sync(payload: dict = Body(...)):
     """
-    手動即時觸發特定數據源 (或全部數據源) 同步更新
+    手動即時觸發特定數據源 (或 OCI 全部 / GitHub Actions 全部) 同步更新
+    支援透過 GitHub Workflow Dispatch API 喚醒雲端 Actions 執行
     """
     source_id = payload.get("source_id")
+    target_runner = payload.get("runner")  # 'oci' or 'github_actions'
     config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'admin_sources_config.json')
     now_iso = datetime.utcnow().isoformat() + "Z"
+    github_token = os.environ.get("GITHUB_TOKEN", "").strip()
+    github_repo = os.environ.get("GITHUB_REPO", "Ycf206/Vancouver-God-Eyes").strip()
     
     if os.path.exists(config_path):
         try:
             with open(config_path, 'r', encoding='utf-8') as f:
                 cfg = json.load(f)
             
+            updated_count = 0
+            dispatched_workflows = []
             target_name = "所有數據源"
-            for src in cfg.get("sources", []):
-                if not source_id or src.get("id") == source_id:
-                    src["last_updated"] = now_iso
-                    src["status"] = "healthy"
-                    if source_id:
-                        target_name = src.get("name", source_id)
+            detail_msg = ""
+            action_name = "MANUAL_SYNC"
             
+            # 判斷是否為批次觸發
+            if source_id == 'all_oci' or (source_id == 'all' and target_runner == 'oci'):
+                target_name = "全部 OCI 伺服器即時服務"
+                for src in cfg.get("sources", []):
+                    if src.get("runner") == "oci":
+                        src["last_updated"] = now_iso
+                        src["status"] = "healthy"
+                        updated_count += 1
+                detail_msg = f"管理員立即更新全部 OCI 伺服器即時服務（共 {updated_count} 項即時交通、天氣、航班等資料）。"
+                action_name = "OCI_BATCH_SYNC"
+            elif source_id == 'all_github' or (source_id == 'all' and target_runner == 'github_actions'):
+                target_name = "全部 GitHub Actions 雲端資料管線"
+                seen_workflows = set()
+                for src in cfg.get("sources", []):
+                    if src.get("runner") == "github_actions":
+                        src["last_updated"] = now_iso
+                        src["status"] = "healthy"
+                        updated_count += 1
+                        wf = src.get("workflow_file")
+                        if wf and wf not in seen_workflows:
+                            seen_workflows.add(wf)
+                            dispatched_workflows.append(wf)
+                
+                # 若有 GITHUB_TOKEN，嘗試觸發各工作流
+                if github_token and dispatched_workflows:
+                    for wf in dispatched_workflows:
+                        try:
+                            dispatch_url = f"https://api.github.com/repos/{github_repo}/actions/workflows/{wf}/dispatches"
+                            headers = {
+                                "Authorization": f"Bearer {github_token}",
+                                "Accept": "application/vnd.github.v3+json",
+                                "User-Agent": "VancouverGodsEye-Admin"
+                            }
+                            requests.post(dispatch_url, json={"ref": "main"}, headers=headers, timeout=5)
+                        except Exception as e:
+                            print(f"Failed to dispatch workflow {wf}: {e}")
+                    detail_msg = f"已透過 GitHub Workflow Dispatch 觸發 {len(dispatched_workflows)} 個 Actions 雲端工作流立即執行！"
+                else:
+                    detail_msg = f"已排程觸發 {updated_count} 項 GitHub Actions 圖層更新（如需直接遠端呼叫 GitHub，請設定 GITHUB_TOKEN）。"
+                action_name = "GITHUB_BATCH_SYNC"
+            else:
+                # 單一項目觸發
+                target_src = None
+                for src in cfg.get("sources", []):
+                    if src.get("id") == source_id:
+                        src["last_updated"] = now_iso
+                        src["status"] = "healthy"
+                        target_src = src
+                        target_name = src.get("name", source_id)
+                        break
+                
+                if target_src:
+                    runner = target_src.get("runner", "oci")
+                    wf = target_src.get("workflow_file")
+                    if runner == "github_actions":
+                        action_name = "GITHUB_DISPATCH"
+                        if github_token and wf:
+                            try:
+                                dispatch_url = f"https://api.github.com/repos/{github_repo}/actions/workflows/{wf}/dispatches"
+                                headers = {
+                                    "Authorization": f"Bearer {github_token}",
+                                    "Accept": "application/vnd.github.v3+json",
+                                    "User-Agent": "VancouverGodsEye-Admin"
+                                }
+                                resp = requests.post(dispatch_url, json={"ref": "main"}, headers=headers, timeout=8)
+                                if resp.status_code in [200, 204]:
+                                    detail_msg = f"已成功調度 GitHub Actions 工作流 [{wf}] 立即在雲端執行！"
+                                else:
+                                    detail_msg = f"呼叫 GitHub Actions API (HTTP {resp.status_code})，已標記本機請求。"
+                            except Exception as ex:
+                                detail_msg = f"GitHub API 連線異常: {ex}"
+                        else:
+                            detail_msg = f"已標記 [{target_name}] 同步請求。綁定工作流: [{wf or '預設'}]（若設定 GITHUB_TOKEN 可一鍵喚醒 Actions 雲端執行）。"
+                    else:
+                        action_name = "OCI_SYNC"
+                        detail_msg = f"OCI 伺服器已即時更新 [{target_name}] 資料快取與連線狀態。"
+                else:
+                    return {"status": "error", "message": f"找不到數據源 {source_id}"}
+
             new_log = {
-                "id": f"log-{int(time.time())}",
+                "id": f"log-{int(time.time() * 1000)}",
                 "timestamp": now_iso,
-                "action": "MANUAL_SYNC",
+                "action": action_name,
                 "source_name": target_name,
+                "runner": target_runner or (target_src.get("runner") if 'target_src' in locals() and target_src else "all"),
                 "status": "success",
-                "detail": f"管理員手動觸發 [{target_name}] 同步作業完成，狀態維持正常。"
+                "detail": detail_msg
             }
             logs = cfg.get("logs", [])
             logs.insert(0, new_log)
-            cfg["logs"] = logs[:100]
+            cfg["logs"] = logs[:150]
             
             with open(config_path, 'w', encoding='utf-8') as f:
                 json.dump(cfg, f, ensure_ascii=False, indent=2)
             
             return {
                 "status": "success",
-                "message": f"[{target_name}] 同步完成",
+                "message": detail_msg,
                 "source_id": source_id,
+                "target_name": target_name,
                 "timestamp": now_iso
             }
         except Exception as e:
@@ -3425,6 +3508,7 @@ def trigger_admin_sync(payload: dict = Body(...)):
 def update_admin_schedule(payload: dict = Body(...)):
     """
     更新特定數據源之排程週期 (Cron 或間隔) 與自動同步開關
+    若為 GitHub Actions 資料源，同步更新 .github/workflows/*.yml 中的 cron 表達式
     """
     source_id = payload.get("source_id")
     schedule_interval = payload.get("schedule_interval")
@@ -3451,25 +3535,67 @@ def update_admin_schedule(payload: dict = Body(...)):
                     break
                     
             if updated_src:
+                runner = updated_src.get("runner", "oci")
+                wf = updated_src.get("workflow_file")
+                detail_extra = ""
+                
+                # 若為 GitHub Actions 項目且有指定工作流檔案，嘗試同步修改本機倉庫的 yml cron
+                if runner == "github_actions" and wf and cron_expr:
+                    try:
+                        repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+                        wf_path = os.path.join(repo_root, '.github', 'workflows', wf)
+                        if os.path.exists(wf_path):
+                            with open(wf_path, 'r', encoding='utf-8') as yf:
+                                ycontent = yf.read()
+                            import re
+                            new_ycontent = re.sub(r"-s*cron:s*['"][^'"]+['"]", f"- cron: '{cron_expr}'", ycontent)
+                            if new_ycontent != ycontent:
+                                with open(wf_path, 'w', encoding='utf-8') as yf:
+                                    yf.write(new_ycontent)
+                                detail_extra = f"已同步更新工作流檔案 [{wf}] 中的 Cron 設定為 '{cron_expr}'。"
+                    except Exception as yerr:
+                        detail_extra = f"(工作流檔案更新提示: {yerr})"
+                
+                runner_label = "GitHub Actions 雲端管線" if runner == "github_actions" else "OCI 伺服器服務"
                 new_log = {
-                    "id": f"log-{int(time.time())}",
+                    "id": f"log-{int(time.time() * 1000)}",
                     "timestamp": now_iso,
                     "action": "SCHEDULE_UPDATE",
                     "source_name": updated_src.get("name"),
+                    "runner": runner,
                     "status": "success",
-                    "detail": f"更新排程設定：週期變更為 [{schedule_interval or updated_src.get('schedule_interval')}]，自動同步：{'啟用' if enabled else '暫停'}。"
+                    "detail": f"[{runner_label}] 排程週期變更為 [{schedule_interval or updated_src.get('schedule_interval')}] (Cron: {cron_expr or updated_src.get('cron_expr')})，狀態: {'啟用' if enabled else '暫停'}。{detail_extra}"
                 }
                 logs = cfg.get("logs", [])
                 logs.insert(0, new_log)
-                cfg["logs"] = logs[:100]
+                cfg["logs"] = logs[:150]
                 
                 with open(config_path, 'w', encoding='utf-8') as f:
                     json.dump(cfg, f, ensure_ascii=False, indent=2)
-                return {"status": "success", "source": updated_src}
+                return {"status": "success", "source": updated_src, "detail": detail_extra}
             return {"status": "error", "message": "找不到指定的數據源 ID"}
         except Exception as e:
             return {"status": "error", "error": str(e)}
             
+    return {"status": "error", "message": "配置檔案不存在"}
+
+
+@app.post("/api/admin/sources/logs/clear")
+def clear_admin_logs():
+    """
+    清除管理員操作與排程更新記錄
+    """
+    config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'admin_sources_config.json')
+    if os.path.exists(config_path):
+        try:
+            with open(config_path, 'r', encoding='utf-8') as f:
+                cfg = json.load(f)
+            cfg["logs"] = []
+            with open(config_path, 'w', encoding='utf-8') as f:
+                json.dump(cfg, f, ensure_ascii=False, indent=2)
+            return {"status": "success", "message": "日誌已清空"}
+        except Exception as e:
+            return {"status": "error", "error": str(e)}
     return {"status": "error", "message": "配置檔案不存在"}
 
 
