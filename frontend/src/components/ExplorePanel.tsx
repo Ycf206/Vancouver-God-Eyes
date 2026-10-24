@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
-  Compass, X, Fuel, Zap, Ship, MapPin, 
+  Compass, X, Fuel, Zap, Ship, MapPin, ArrowUpDown, 
   ChevronDown, RefreshCw, Package, CloudSun, Wind, AlertTriangle, Droplets, Gauge, Eye, Anchor, Navigation,
   Newspaper, ExternalLink, Search, CalendarDays, Calendar, Tag, Waves, CloudRain, Play, Pause, SkipBack, SkipForward,
   MountainSnow, Sparkles, Clock, ShieldAlert, BellRing, Train, Bus, ShieldCheck, LayoutGrid, TrainTrack,
@@ -12,6 +12,7 @@ import { useUIStore, ExploreTabType } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
 import { formatShipEta, formatTimePreference, formatTimeRange } from '@/utils/time';
 import skytrainStationsData from '@/data/skytrainStations.json';
+import snappedCorridorsData from '@/data/snapped_corridors.json';
 
 export interface TranslinkAlertItem {
   id: string;
@@ -578,7 +579,8 @@ function ExploreContent() {
     radarHost,
     setRadarHost,
     radarTilePath,
-    setRadarTilePath
+    setRadarTilePath,
+    timeZone
   } = useUIStore();
 
   // --- TransLink Alerts states ---
@@ -594,6 +596,7 @@ function ExploreContent() {
   const [loadingTraffic, setLoadingTraffic] = useState<boolean>(false);
   const [trafficFilter, setTrafficFilter] = useState<'all' | 'major_roads' | 'severe' | 'incidents'>('all');
   const [trafficSearchQuery, setTrafficSearchQuery] = useState<string>('');
+  const [trafficSortBy, setTrafficSortBy] = useState<'default' | 'delay_desc' | 'speed_asc' | 'speed_desc' | 'name_asc'>('default');
   const [weatherSubTab, setWeatherSubTab] = useState<'city' | 'monitoring' | 'models' | 'marine'>('city');
   const [showCloseConfirm, setShowCloseConfirm] = useState<boolean>(false);
   const [draggedTab, setDraggedTab] = useState<ExploreTabType | null>(null);
@@ -929,6 +932,10 @@ function ExploreContent() {
   const handleLocateTideStation = (st: TideStation) => {
     enableLayer('tideStations');
     setSelectedTideCode(st.code);
+    setSearchTarget(null);
+    if ((window as any).__godsEyeDismissPopup) {
+      (window as any).__godsEyeDismissPopup();
+    }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap();
     if (mapInstance) {
@@ -2174,10 +2181,19 @@ function ExploreContent() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap();
     const effectiveZoom = Math.min(corridor.zoom || 12.5, 12.6);
+    let coords = corridor.coordinates;
+    if (!coords || coords.length <= 2) {
+      const cid = corridor.id;
+      const baseId = cid.replace('mrn_', '').replace('oth_', '');
+      coords = (snappedCorridorsData as any)[cid] || 
+               (snappedCorridorsData as any)[baseId] || 
+               (cid === 'hwy1' ? (snappedCorridorsData as any)['hwy1_east'] : null) || 
+               coords;
+    }
     if (mapInstance) {
-      if (corridor.coordinates && corridor.coordinates.length >= 2) {
+      if (coords && coords.length >= 2) {
         let minLon = 180, maxLon = -180, minLat = 90, maxLat = -90;
-        corridor.coordinates.forEach(pt => {
+        coords.forEach(pt => {
           minLon = Math.min(minLon, pt[0]);
           maxLon = Math.max(maxLon, pt[0]);
           minLat = Math.min(minLat, pt[1]);
@@ -2222,7 +2238,7 @@ function ExploreContent() {
       lon: corridor.center[0],
       zoom: effectiveZoom,
       meta: {
-        coordinates: corridor.coordinates,
+        coordinates: coords || corridor.coordinates,
         properties: {
           facility_type: 'traffic_conditions',
           name: corridor.name,
@@ -2303,6 +2319,28 @@ function ExploreContent() {
     );
   };
 
+  // Sorting helper for traffic corridors & major roads
+  const sortTrafficList = <T extends { delay_min?: number; current_speed_kmh?: number; name?: string; english_name?: string }>(list: T[]): T[] => {
+    if (trafficSortBy === 'default') return list;
+    const copy = [...list];
+    switch (trafficSortBy) {
+      case 'delay_desc':
+        return copy.sort((a, b) => (b.delay_min || 0) - (a.delay_min || 0));
+      case 'speed_asc':
+        return copy.sort((a, b) => (a.current_speed_kmh || 0) - (b.current_speed_kmh || 0));
+      case 'speed_desc':
+        return copy.sort((a, b) => (b.current_speed_kmh || 0) - (a.current_speed_kmh || 0));
+      case 'name_asc':
+        return copy.sort((a, b) => {
+          const nameA = a.name || a.english_name || '';
+          const nameB = b.name || b.english_name || '';
+          return nameA.localeCompare(nameB, 'zh-TW');
+        });
+      default:
+        return copy;
+    }
+  };
+
   // Filtered corridors (主要動脈) based on query
   const filteredCorridors = useMemo(() => {
     if (!trafficSummary || !Array.isArray(trafficSummary.corridors)) return [];
@@ -2317,8 +2355,8 @@ function ExploreContent() {
         (c.key_bottleneck && c.key_bottleneck.toLowerCase().includes(q))
       );
     }
-    return list;
-  }, [trafficSummary, trafficSearchQuery]);
+    return sortTrafficList(list);
+  }, [trafficSummary, trafficSearchQuery, trafficSortBy]);
 
   // Filtered major roads (主要道路 - Major Road Network + Other major thoroughfares from MajorRoad.txt)
   const filteredMajorRoads = useMemo(() => {
@@ -2334,8 +2372,8 @@ function ExploreContent() {
         (c.key_bottleneck && c.key_bottleneck.toLowerCase().includes(q))
       );
     }
-    return list;
-  }, [trafficSummary, trafficSearchQuery]);
+    return sortTrafficList(list);
+  }, [trafficSummary, trafficSearchQuery, trafficSortBy]);
 
   // Filtered severe roads (嚴重壅塞 - 篩選出目前全線有延誤或壅塞之幹道與主要道路)
   const filteredSevereRoads = useMemo(() => {
@@ -3114,14 +3152,14 @@ function ExploreContent() {
 
                     <div className="flex flex-col gap-1.5">
                       {[
-                        { id: 'CWVR', name: 'YVR 溫哥華國際機場', temp: '12.4°C', wind: 'WNW 15 km/h', hum: '79%', press: '101.6 kPa' },
-                        { id: 'CWVG', name: '溫哥華港氣象站 (Vancouver Harbour)', temp: '13.1°C', wind: 'W 11 km/h (陣風 18)', hum: '76%', press: '101.5 kPa' },
-                        { id: 'CWPI', name: '西溫 Point Atkinson 燈塔', temp: '11.8°C', wind: 'W 22 km/h (陣風 31)', hum: '82%', press: '101.5 kPa' },
-                        { id: 'CWVN', name: '西溫海港站 (West Vancouver Marine)', temp: '12.0°C', wind: 'NW 9 km/h', hum: '81%', press: '101.5 kPa' },
-                        { id: 'CWRM', name: '列治文自然保護區 (Richmond Dike)', temp: '12.8°C', wind: 'W 13 km/h', hum: '78%', press: '101.6 kPa' },
-                        { id: 'CWBY', name: '本拿比伯蒙特站 (Burnaby Burmount)', temp: '12.2°C', wind: 'W 8 km/h', hum: '80%', press: '101.5 kPa' },
+                        { id: 'CWVR', name: "Vancouver Int'l Airport (YVR 溫哥華國際機場)", lat: 49.195, lon: -123.181, temp: '12.4°C', wind: 'WNW 15 km/h', hum: '79%', press: '101.6 kPa' },
+                        { id: 'CWVG', name: 'Vancouver Harbour (溫哥華港氣象站)', lat: 49.296, lon: -123.111, temp: '13.1°C', wind: 'W 11 km/h (陣風 18)', hum: '76%', press: '101.5 kPa' },
+                        { id: 'CWPI', name: 'Point Atkinson Lighthouse (阿特金森岬燈塔)', lat: 49.330, lon: -123.264, temp: '11.8°C', wind: 'W 22 km/h (陣風 31)', hum: '82%', press: '101.5 kPa' },
+                        { id: 'CWVN', name: 'West Vancouver Marine (西溫海港站)', lat: 49.337, lon: -123.167, temp: '12.0°C', wind: 'NW 9 km/h', hum: '81%', press: '101.5 kPa' },
+                        { id: 'CWRM', name: 'Richmond Dike (列治文自然保護區)', lat: 49.183, lon: -123.197, temp: '12.8°C', wind: 'W 13 km/h', hum: '78%', press: '101.6 kPa' },
+                        { id: 'CWBY', name: 'Burnaby Burmount (本拿比伯蒙特站)', lat: 49.245, lon: -122.934, temp: '12.2°C', wind: 'W 8 km/h', hum: '80%', press: '101.5 kPa' },
                       ].map((st) => (
-                        <div key={st.id} className="bg-[#141824] border border-[#242b3c] p-2 rounded-lg flex items-center justify-between text-xs">
+                        <div key={st.id} onClick={() => { const m = (window as any).__godsEyeMapRef?.current?.getMap(); if (m && (st as any).lat) m.flyTo({ center: [(st as any).lon, (st as any).lat], zoom: 14.5, essential: true }); }} className="bg-[#141824] hover:bg-[#181d2c] border border-[#242b3c] hover:border-emerald-500/50 p-2 rounded-lg flex items-center justify-between text-xs cursor-pointer transition-all">
                           <div className="flex flex-col min-w-0">
                             <div className="flex items-center gap-1.5">
                               <span className="font-bold text-gray-200 truncate">{st.name}</span>
@@ -3399,26 +3437,25 @@ function ExploreContent() {
                                   <div className="flex items-center gap-2 text-gray-400 font-mono">
                                     {st.next_high && (
                                       <span className="text-emerald-400/90">
-                                        滿潮: {st.next_high.value}m ({st.next_high.time.slice(11, 16)}Z)
+                                        滿潮: {st.next_high.value}m ({formatTimePreference(st.next_high.time, timeFormat, timeZone)})
                                       </span>
                                     )}
                                     {st.next_low && (
                                       <span className="text-sky-400/90">
-                                        乾潮: {st.next_low.value}m ({st.next_low.time.slice(11, 16)}Z)
+                                        乾潮: {st.next_low.value}m ({formatTimePreference(st.next_low.time, timeFormat, timeZone)})
                                       </span>
                                     )}
                                   </div>
-                                  <button
-                                    type="button"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleLocateTideStation(st);
-                                    }}
-                                    className="p-1 rounded bg-blue-900/30 hover:bg-blue-800/60 border border-blue-700/40 text-blue-300 hover:text-white transition-colors"
-                                    title="在地圖上定位此測站"
+                                  <a
+                                    href={`https://www.google.com/maps/dir/?api=1&destination=${st.lat},${st.lon}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={(e) => e.stopPropagation()}
+                                    className="p-1 rounded bg-blue-900/30 hover:bg-blue-800/60 border border-blue-700/40 text-blue-300 hover:text-white transition-colors flex items-center justify-center"
+                                    title="在 Google Maps 導航至此測站"
                                   >
-                                    <MapPin className="w-3.5 h-3.5" />
-                                  </button>
+                                    <Navigation className="w-3.5 h-3.5" />
+                                  </a>
                                 </div>
                               )}
                             </div>
@@ -3483,7 +3520,7 @@ function ExploreContent() {
                         { id: '08GA010', name: '卡皮拉諾河水文站 (Capilano near North Van)', level: '1.08 m', flow: '14.5 m³/s', status: '水壩出水正常' },
                         { id: '08GA079', name: '西摩河水文站 (Seymour near Falls)', level: '0.95 m', flow: '8.2 m³/s', status: '綠色安全' },
                       ].map((hydro) => (
-                        <div key={hydro.id} className="bg-[#141824] border border-[#242b3c] p-2 rounded-lg flex items-center justify-between text-xs">
+                        <div key={hydro.id} onClick={() => { const m = (window as any).__godsEyeMapRef?.current?.getMap(); if (m && (hydro as any).lat) m.flyTo({ center: [(hydro as any).lon, (hydro as any).lat], zoom: 14.5, essential: true }); }} className="bg-[#141824] hover:bg-[#181d2c] border border-[#242b3c] hover:border-teal-500/50 p-2 rounded-lg flex items-center justify-between text-xs cursor-pointer transition-all">
                           <div className="flex flex-col min-w-0">
                             <div className="flex items-center gap-1.5">
                               <span className="font-bold text-gray-200 truncate">{hydro.name}</span>
@@ -3584,7 +3621,7 @@ function ExploreContent() {
 
                     <div className="text-[11px] text-gray-400 flex items-center gap-1">
                       <MapPin className="w-3 h-3 text-cyan-400 shrink-0" />
-                      <span className="truncate">{resort.area}</span>
+                      <span className="truncate">{resort.area?.match(/\(([^)]+)\)/)?.[1] || resort.area}</span>
                     </div>
 
                     {/* Stats Grid */}
@@ -3619,20 +3656,7 @@ function ExploreContent() {
                       </div>
                     </div>
 
-                    {/* Additional Details */}
-                    <div className="flex items-center justify-between text-[11px] text-gray-400 px-0.5">
-                      <span className="flex items-center gap-1">
-                        <span>夜滑：</span>
-                        <span className={resort.night_skiing ? 'text-amber-300 font-medium' : 'text-gray-500'}>
-                          {resort.night_skiing ? '🌙 有夜間滑雪' : '無夜滑'}
-                        </span>
-                      </span>
-                      {resort.season_range && (
-                        <span className="text-[10px] text-gray-400 font-mono truncate max-w-[190px]">
-                          雪季: {resort.season_range}
-                        </span>
-                      )}
-                    </div>
+
                   </div>
                 );
               })
@@ -5434,24 +5458,41 @@ function ExploreContent() {
               ))}
             </div>
 
-            {/* Search Input */}
-            <div className="relative">
-              <Search className="w-3 h-3 text-gray-400 absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none" />
-              <input
-                type="text"
-                value={trafficSearchQuery}
-                onChange={(e) => setTrafficSearchQuery(e.target.value)}
-                placeholder="搜尋幹道與通報 (如: 1號公路, 99號, 獅門大橋)..."
-                className="w-full bg-[#121622] border border-[#222838] focus:border-orange-500/70 rounded-lg pl-7 pr-6 py-0.5 text-[11px] text-gray-200 placeholder-gray-500 outline-none transition-colors"
-              />
-              {trafficSearchQuery && (
-                <button
-                  onClick={() => setTrafficSearchQuery('')}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white text-xs"
+            {/* Search & Sort Input Row */}
+            <div className="flex items-center gap-1.5">
+              <div className="relative flex-1">
+                <Search className="w-3 h-3 text-gray-400 absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <input
+                  type="text"
+                  value={trafficSearchQuery}
+                  onChange={(e) => setTrafficSearchQuery(e.target.value)}
+                  placeholder="搜尋幹道與通報 (如: 1號公路, 99號, 獅門大橋)..."
+                  className="w-full bg-[#121622] border border-[#222838] focus:border-orange-500/70 rounded-lg pl-7 pr-6 py-1 text-[11px] text-gray-200 placeholder-gray-500 outline-none transition-colors"
+                />
+                {trafficSearchQuery && (
+                  <button
+                    onClick={() => setTrafficSearchQuery('')}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white text-xs"
+                  >
+                    &times;
+                  </button>
+                )}
+              </div>
+              <div className="relative shrink-0">
+                <select
+                  value={trafficSortBy}
+                  onChange={(e) => setTrafficSortBy(e.target.value as any)}
+                  className="bg-[#121622] border border-[#222838] hover:border-orange-500/50 focus:border-orange-500/70 rounded-lg pl-2 pr-6 py-1 text-[11px] text-gray-300 outline-none transition-colors cursor-pointer appearance-none font-medium"
+                  title="排序依據"
                 >
-                  &times;
-                </button>
-              )}
+                  <option value="default">預設排序</option>
+                  <option value="delay_desc">最擁塞 (延誤最高)</option>
+                  <option value="speed_asc">車速最低</option>
+                  <option value="speed_desc">車速最高</option>
+                  <option value="name_asc">道路名稱 (A-Z)</option>
+                </select>
+                <ArrowUpDown className="w-3 h-3 text-gray-400 absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              </div>
             </div>
           </div>
 

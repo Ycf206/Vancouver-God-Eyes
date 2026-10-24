@@ -2779,7 +2779,8 @@ export default function AppMap() {
     }
 
     // Coastal Tide Stations (大溫海岸潮汐與即時水位站)
-    if (layers.tideStations) {
+    const showTideStations = (isExploreOpen && exploreTab === 'weather');
+    if (showTideStations) {
       style.sources['tide-stations'] = {
         type: 'geojson',
         data: `${apiUrl}/api/geojson/road/tide_stations`
@@ -4298,7 +4299,7 @@ export default function AppMap() {
     }
 
     // Nature: Coastal Tide Stations (大溫海岸潮汐與即時水位站)
-    if (layers.tideStations) {
+    if (isExploreOpen && exploreTab === 'weather') {
       style.layers.push({
         id: 'tide-stations-layer',
         type: 'circle',
@@ -6274,7 +6275,10 @@ export default function AppMap() {
             else if (isTraffic) facilityType = 'traffic_conditions';
             else if (isStreetLighting) facilityType = 'street_lighting';
             else if (isVanWifi) facilityType = 'van_wifi';
-            else if (isTideStation) facilityType = 'tide_stations';
+            else if (isTideStation) {
+              // 不開啟地圖 popup，僅保留藍點定位
+              return;
+            }
             else if (isFuel) facilityType = 'fuel';
             else if (isTesla) facilityType = 'tesla';
             else if (isMarineTerminal) facilityType = 'marine_terminals';
@@ -8409,6 +8413,9 @@ export default function AppMap() {
                       if (selectedFacility.properties?.operator === 'Modo') return 'Modo Co-op';
                       return (selectedFacility.name || 'Evo Car Share').replace(/\s*\(\d+\s*車位專用站點\)/g, '').trim();
                     }
+                    if (selectedFacility.facility_type === 'ski_resort') {
+                      return selectedFacility.properties?.english_name || (selectedFacility as any).english_name || selectedFacility.name;
+                    }
                     if (selectedFacility.facility_type === 'escooter') {
                       return selectedFacility.properties?.station_name || selectedFacility.properties?.station_location || selectedFacility.name || 'Lime 共享滑板車站點';
                     }
@@ -8497,6 +8504,9 @@ export default function AppMap() {
                     if (selectedFacility.facility_type === 'museums') {
                       return selectedFacility.properties?.name || selectedFacility.name || '博物館';
                     }
+                    if (selectedFacility.facility_type === 'ski_resort') {
+                      return selectedFacility.properties?.english_name || (selectedFacility as any).english_name || selectedFacility.name;
+                    }
                     return selectedFacility.name || '';
                   })();
 
@@ -8575,10 +8585,15 @@ export default function AppMap() {
                         <h3 className="font-bold text-gray-900 text-sm leading-snug break-words">
                           {popupTitle}
                         </h3>
-                        {(selectedFacility.local_area || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'motorcycle_parking' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'impark' ||
+                        {(selectedFacility.local_area || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'motorcycle_parking' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'impark' || selectedFacility.facility_type === 'ski_resort' ||
                   selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || selectedFacility.facility_type === 'car_sharing') && (
                           <span className="text-[11px] text-gray-400 block leading-snug break-words">
                             {(() => {
+                              if (selectedFacility.facility_type === 'ski_resort') {
+                                const rawArea = selectedFacility.properties?.area || selectedFacility.local_area || '';
+                                const match = rawArea.match(/\(([^)]+)\)/);
+                                return match ? match[1].trim() : (rawArea || 'West Vancouver');
+                              }
                               if (selectedFacility.facility_type === 'escooter') {
                                 const stNum = selectedFacility.properties?.station_number;
                                 if (stNum) return `#${String(stNum).replace(/^#+/, '')}`;
@@ -13517,7 +13532,7 @@ export default function AppMap() {
                     </div>
                     <div className="text-[11px] text-cyan-900 font-medium flex items-center justify-between">
                       <span>{selectedFacility.properties.english_name}</span>
-                      <span className="text-[10px] text-gray-500">{selectedFacility.properties.area}</span>
+                      <span className="text-[10px] text-gray-500">{selectedFacility.properties.area?.match(/\(([^)]+)\)/)?.[1] || selectedFacility.properties.area || 'West Vancouver'}</span>
                     </div>
                   </div>
 

@@ -420,7 +420,6 @@ export default function LayerPanel() {
             <div></div>
 
             {/* Row 3: 潮汐水位 | 海灘水質 (沙灘水質跟隨潮汐水位下移一行) */}
-            <LayerButton layerKey="tideStations" label="潮汐水位" icon={Waves} colorClass="text-cyan-400" activeBg="bg-[#102730]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.15)]" />
             <LayerButton layerKey="beachWaterQuality" label="海灘水質" icon={Droplets} title="海灘水質" colorClass="text-teal-300" activeBg="bg-[#0e2a2a]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
           </div>
 

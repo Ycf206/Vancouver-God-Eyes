@@ -1190,9 +1190,36 @@ class TomTomTrafficService:
             },
         ]
 
+        # 為主要幹道注入精確街道軌跡 (LineString 座標)
+        snapped_file = os.path.join(os.path.dirname(__file__), "data", "snapped_corridors.json")
+        if os.path.exists(snapped_file):
+            try:
+                with open(snapped_file, "r", encoding="utf-8") as sf:
+                    snapped_data = json.load(sf)
+                    for c in corridors:
+                        cid = c["id"]
+                        if cid == "hwy1":
+                            c["coordinates"] = snapped_data.get("hwy1_east") or snapped_data.get("hwy1")
+                        elif cid in snapped_data:
+                            c["coordinates"] = snapped_data[cid]
+            except Exception as e:
+                print(f"[TomTomTraffic] Error attaching snapped coordinates to corridors: {e}")
+
         # 5. 計算主要道路 (Major Road Network + Other major thoroughfares from MajorRoad.txt)
         major_roads_defs = self._get_major_roads_definition()
         major_roads: List[Dict[str, Any]] = []
+
+        existing_road_coords = {}
+        cache_path = os.path.join(pub_dir, "vancouver_traffic_summary_cache.json")
+        if os.path.exists(cache_path):
+            try:
+                with open(cache_path, "r", encoding="utf-8") as cf:
+                    old_c = json.load(cf)
+                    for r in old_c.get("major_roads", []):
+                        if r.get("id") and r.get("coordinates"):
+                            existing_road_coords[r["id"]] = r["coordinates"]
+            except Exception:
+                pass
 
         for rd in major_roads_defs:
             ff_spd = rd["freeflow"]
@@ -1241,7 +1268,11 @@ class TomTomTrafficService:
                 "length_km": rd["length_km"],
                 "trend": rd_cls["trend"],
                 "center": coords,
-                "zoom": 14.5,
+                "zoom": 12.5,
+                "coordinates": existing_road_coords.get(rd["id"]) or snapped_data.get(rd["id"]) or snapped_data.get(rd["id"].replace("mrn_", "").replace("oth_", "")) or rd.get("coordinates") or [
+                    [coords[0] - 0.005, coords[1]],
+                    [coords[0] + 0.005, coords[1]]
+                ],
                 "key_bottleneck": f"Near {near_alert.get('street', 'arterial')}: {near_alert.get('description', '')}" if near_alert else "Normal flow along arterial"
             })
 

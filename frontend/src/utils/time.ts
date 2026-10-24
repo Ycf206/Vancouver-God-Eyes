@@ -93,19 +93,27 @@ export function formatOpeningHours(
 
 export function formatTimePreference(
   timeStr: string | null | undefined,
-  format: '12h' | '24h' = '24h'
+  format: '12h' | '24h' = '24h',
+  timeZone?: string
 ): string {
   if (!timeStr) return '';
   const s = String(timeStr).trim();
   if (!s || s === '--') return s;
 
   // Handle ISO string or full datetime
-  if (s.includes('T') || (s.includes('-') && s.length > 10 && /\d{4}-\d{2}-\d{2}/.test(s))) {
+  if (s.includes('T') || (s.includes('-') && s.length > 10 && /\d{4}-\d{2}-\d{2}/.test(s)) || s.endsWith('Z')) {
     const d = new Date(s);
     if (!isNaN(d.getTime())) {
-      return format === '12h'
-        ? d.toLocaleTimeString('zh-TW', { hour12: true, hour: '2-digit', minute: '2-digit' })
-        : d.toLocaleTimeString('zh-TW', { hour12: false, hour: '2-digit', minute: '2-digit' });
+      const effectiveTimeZone = timeZone === 'America/Vancouver' ? 'Etc/GMT+7' : timeZone;
+      const options: Intl.DateTimeFormatOptions = {
+        hour12: format === '12h',
+        hour: '2-digit',
+        minute: '2-digit'
+      };
+      if (effectiveTimeZone && effectiveTimeZone !== 'auto') {
+        options.timeZone = effectiveTimeZone;
+      }
+      return d.toLocaleTimeString('zh-TW', options);
     }
   }
 
