@@ -5573,6 +5573,7 @@ export default function AppMap() {
     parkingMeterFilter.creditCardOnly,
     parkingMeterFilter.timePeriod,
     radiusCircleGeoJSON,
+    layers.impark,
     layers.accessibleParking, 
     layers.motorcycleParking, 
     motorcycleParkingFilter.maxRate,
@@ -8771,42 +8772,62 @@ export default function AppMap() {
                 const streetView = p.streetViewUrl;
 
                 return (
-                  <div className="flex flex-col gap-2.5 text-xs text-gray-200">
-                    {/* Rates & Promotions */}
+                  <div className="flex flex-col gap-2.5 text-xs text-gray-700">
+                    {/* 5.1 標題下方加入色塊 */}
+                    <div className="bg-red-500/10 p-2.5 rounded-lg border border-red-500/25 flex items-start gap-2 text-[11px] text-red-700 font-medium leading-relaxed">
+                      <div className="w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center shrink-0 mt-0.5 text-[#d9261c] font-bold text-[10px]">
+                        P
+                      </div>
+                      <span>北美規模最大的私營停車場管理公司之一，在北美擁有超過 3,000 個停車場，服務範圍涵蓋商業大樓、購物中心、醫院、機場、飯店及體育場館。</span>
+                    </div>
+
+                    {/* 5.2 灰色區塊 (參考圖3風格：淺灰底色、灰底黑字、數值貼右邊、無冒號) */}
                     {(hasTransient || hasMonthly || hasPromo) && (
-                      <div className="bg-[#12151e] p-2.5 rounded-lg border border-[#232838] flex flex-col gap-2">
-                        {hasTransient && transientRate && (
-                          <div className="flex flex-col gap-0.5">
-                            <div className="flex items-center justify-between">
-                              <span className="text-gray-400 font-medium">臨時方案</span>
-                              <span className="text-emerald-400 font-semibold">{transientRate.label || '時租 / 臨時費率'}</span>
+                      <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-2 text-[11px]">
+                        {hasTransient && (
+                          <div className="flex flex-col gap-1.5">
+                            <div className="flex justify-between items-center text-gray-600">
+                              <span className="font-medium">臨時方案</span>
+                              <span className="text-emerald-700 font-semibold text-right">
+                                {transientRate?.label || '時租 / 臨時費率'}
+                              </span>
                             </div>
-                            {transientRate.value && (
-                              <div className="text-white font-mono text-[11.5px] bg-[#1a1f2c] px-2 py-1 rounded">
-                                最低階梯費率：{transientRate.value}
+                            {transientRate?.value && (
+                              <div className="flex justify-between items-center text-gray-600">
+                                <span>最低階梯費率</span>
+                                <span className="text-gray-900 font-semibold text-right font-mono">
+                                  {transientRate.value}
+                                </span>
                               </div>
                             )}
                           </div>
                         )}
 
-                        {hasMonthly && monthlyRate && (
-                          <div className="flex flex-col gap-0.5 pt-1.5 border-t border-[#232838]">
-                            <div className="flex items-center justify-between">
-                              <span className="text-gray-400 font-medium">月租車位</span>
-                              <span className="text-sky-400 font-semibold">{monthlyRate.label || '月租'}</span>
+                        {hasMonthly && (
+                          <div className={`flex flex-col gap-1.5 ${hasTransient ? 'pt-2 border-t border-gray-200/60' : ''}`}>
+                            <div className="flex justify-between items-center text-gray-600">
+                              <span className="font-medium">月租車位</span>
+                              <span className="text-sky-700 font-semibold text-right">
+                                {monthlyRate?.label || '月租方案'}
+                              </span>
                             </div>
-                            {monthlyRate.value && (
-                              <div className="text-white font-mono text-[11.5px] bg-[#1a1f2c] px-2 py-1 rounded">
-                                最低月租費率：{monthlyRate.value}
+                            {monthlyRate?.value && (
+                              <div className="flex justify-between items-center text-gray-600">
+                                <span>最低月租費率</span>
+                                <span className="text-gray-900 font-semibold text-right font-mono">
+                                  {monthlyRate.value}
+                                </span>
                               </div>
                             )}
                           </div>
                         )}
 
                         {hasPromo && (
-                          <div className="flex items-center justify-between pt-1.5 border-t border-[#232838]">
-                            <span className="text-gray-400 font-medium">優惠活動</span>
-                            <span className="text-amber-400 font-semibold">{typeof p.promotions === 'string' ? p.promotions : '目前有提供優惠活動'}</span>
+                          <div className={`flex justify-between items-center text-gray-600 ${hasTransient || hasMonthly ? 'pt-2 border-t border-gray-200/60' : ''}`}>
+                            <span className="font-medium">優惠活動</span>
+                            <span className="text-amber-700 font-semibold text-right">
+                              {typeof p.promotions === 'string' ? p.promotions : '目前有提供優惠活動'}
+                            </span>
                           </div>
                         )}
                       </div>
@@ -8815,7 +8836,7 @@ export default function AppMap() {
                     {/* Features & Services */}
                     {features.length > 0 && (
                       <div className="flex flex-col gap-1.5">
-                        <span className="text-[11px] text-gray-400 font-medium">場地設施與服務：</span>
+                        <span className="text-[11px] text-gray-600 font-medium">場地設施與服務：</span>
                         <div className="flex flex-wrap gap-1.5">
                           {features.map((feat: string, idx: number) => {
                             let zhLabel = feat;
@@ -8826,7 +8847,7 @@ export default function AppMap() {
                             else if (feat.includes('Wash') || feat.includes('Car Wash')) zhLabel = '洗車 Car Wash';
                             else if (feat.includes('Valet')) zhLabel = '代客泊車 Valet Parking';
                             return (
-                              <span key={idx} className="px-2 py-0.5 rounded bg-[#1e2330] border border-[#2c3345] text-gray-200 text-[10.5px]">
+                              <span key={idx} className="px-2 py-0.5 rounded-full bg-gray-100 border border-gray-200 text-gray-700 text-[10.5px] font-medium shadow-xs">
                                 {zhLabel}
                               </span>
                             );
@@ -8835,15 +8856,15 @@ export default function AppMap() {
                       </div>
                     )}
 
-                    {/* Street View Link */}
+                    {/* 4. Street View Link (紅底白字按鈕) */}
                     {streetView && (
                       <a
                         href={streetView}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-full mt-1 py-1.5 px-3 bg-[#d9261c]/20 hover:bg-[#d9261c]/30 border border-[#d9261c]/50 text-red-300 hover:text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                        className="w-full mt-1 py-2 px-3 bg-[#d9261c] hover:bg-[#b81d14] text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors shadow-sm select-none"
                       >
-                        <ExternalLink className="w-3.5 h-3.5" />
+                        <ExternalLink className="w-3.5 h-3.5 text-white" />
                         <span>查看 Google 街景照片</span>
                       </a>
                     )}

@@ -358,6 +358,7 @@ export const useUIStore = create<UIState>()(
             const st = state.searchTarget;
             const isTargetMatch =
               st.layer_key === layer ||
+              (layer === 'impark' && (st.category === 'impark' || st.id?.startsWith('impark_'))) ||
               (layer === 'recycling' && (st.category === 'recycling' || st.id?.startsWith('recycling_'))) ||
               (layer === 'fuel' && (st.category === 'fuel' || st.id?.startsWith('fuel_'))) ||
               (layer === 'tesla' && (st.category === 'tesla' || st.id?.startsWith('tesla_'))) ||
