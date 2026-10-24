@@ -27,18 +27,18 @@
       "trend": "stable",
       "segments": [
         {
-          "name": "東向 (往本拿比東段)",
+          "name": "東向 (往本拿比/高貴林/Port Mann)",
           "delay_min": 0,
-          "speed_kmh": 83,
+          "speed_kmh": 84,
           "level": 0,
           "color": "#10b981"
         },
         {
           "name": "西向 (往溫哥華市區/卡西爾隧道)",
-          "delay_min": 0,
-          "speed_kmh": 83,
-          "level": 0,
-          "color": "#10b981"
+          "delay_min": 3,
+          "speed_kmh": 67,
+          "level": 1,
+          "color": "#eab308"
         }
       ],
       "incidents_count": 2,
@@ -2373,18 +2373,18 @@
       "trend": "stable",
       "segments": [
         {
-          "name": "南向 (列治文往南隧道引道)",
+          "name": "南向 (往 Delta / Surrey / 美加邊境)",
           "delay_min": 0,
-          "speed_kmh": 74,
+          "speed_kmh": 78,
           "level": 0,
           "color": "#10b981"
         },
         {
           "name": "北向 (往 Richmond / Vancouver 市區)",
-          "delay_min": 0,
-          "speed_kmh": 74,
-          "level": 0,
-          "color": "#10b981"
+          "delay_min": 5,
+          "speed_kmh": 52,
+          "level": 2,
+          "color": "#f97316"
         }
       ],
       "incidents_count": 1,
@@ -3720,15 +3720,15 @@
       "segments": [
         {
           "name": "北向 (往溫哥華東南區)",
-          "delay_min": 0,
-          "speed_kmh": 64,
-          "level": 0,
-          "color": "#10b981"
+          "delay_min": 2,
+          "speed_kmh": 58,
+          "level": 1,
+          "color": "#eab308"
         },
         {
           "name": "南向 (往列治文/91號公路)",
           "delay_min": 0,
-          "speed_kmh": 64,
+          "speed_kmh": 65,
           "level": 0,
           "color": "#10b981"
         }
@@ -4695,16 +4695,16 @@
         {
           "name": "北向 (往北溫/西溫/海天公路)",
           "delay_min": 0,
-          "speed_kmh": 55,
+          "speed_kmh": 56,
           "level": 0,
           "color": "#10b981"
         },
         {
           "name": "南向 (往溫哥華市中心/史丹利公園)",
-          "delay_min": 0,
-          "speed_kmh": 55,
-          "level": 0,
-          "color": "#10b981"
+          "delay_min": 4,
+          "speed_kmh": 41,
+          "level": 1,
+          "color": "#eab308"
         }
       ],
       "incidents_count": 1,
@@ -5860,15 +5860,15 @@
       "segments": [
         {
           "name": "南向 (往溫哥華/喜士定街)",
-          "delay_min": 0,
-          "speed_kmh": 74,
-          "level": 0,
-          "color": "#10b981"
+          "delay_min": 3,
+          "speed_kmh": 62,
+          "level": 1,
+          "color": "#eab308"
         },
         {
           "name": "北向 (往北溫哥華/Main St)",
           "delay_min": 0,
-          "speed_kmh": 74,
+          "speed_kmh": 76,
           "level": 0,
           "color": "#10b981"
         }
@@ -7177,10 +7177,10 @@
         },
         {
           "name": "北向 (往溫哥華市區)",
-          "delay_min": 0,
-          "speed_kmh": 64,
-          "level": 0,
-          "color": "#10b981"
+          "delay_min": 4,
+          "speed_kmh": 48,
+          "level": 1,
+          "color": "#eab308"
         }
       ],
       "incidents_count": 0,
@@ -8121,6 +8121,22 @@
           -123.0995,
           49.2765
         ]
+      ],
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -8161,6 +8177,22 @@
           -123.1305,
           49.2745
         ]
+      ],
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -8197,6 +8229,22 @@
           -123.117,
           49.2745
         ]
+      ],
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -8237,6 +8285,22 @@
           -123.1275,
           49.274
         ]
+      ],
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -8273,6 +8337,22 @@
           -123.1155,
           49.2735
         ]
+      ],
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -8317,6 +8397,22 @@
           -123.0235,
           49.2812
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -8349,6 +8445,22 @@
           -123.0325,
           49.2865
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -8381,6 +8493,22 @@
           -123.056,
           49.2835
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -8413,6 +8541,22 @@
           -123.078,
           49.283
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -8465,6 +8609,22 @@
           -123.0235,
           49.2718
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -8497,6 +8657,22 @@
           -123.078,
           49.273
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -10029,6 +10205,22 @@
           -123.069285,
           49.262005
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -10077,6 +10269,22 @@
           -123.0695,
           49.2625
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -10098,21 +10306,73 @@
       "zoom": 12.5,
       "coordinates": [
         [
-          -123.078,
-          49.2575
+          -123.0774,
+          49.2663
+        ],
+        [
+          -123.074,
+          49.2653
+        ],
+        [
+          -123.0705,
+          49.2641
+        ],
+        [
+          -123.067,
+          49.2629
+        ],
+        [
+          -123.064,
+          49.2618
+        ],
+        [
+          -123.06,
+          49.2602
         ],
         [
           -123.056,
+          49.2585
+        ],
+        [
+          -123.0515,
+          49.2578
+        ],
+        [
+          -123.045,
           49.2575
         ],
         [
-          -123.044,
-          49.2575
+          -123.0392,
+          49.2571
+        ],
+        [
+          -123.0335,
+          49.2568
+        ],
+        [
+          -123.028,
+          49.2565
         ],
         [
           -123.0235,
-          49.2575
+          49.2564
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 60,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 60,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -10177,6 +10437,22 @@
           -123.0235,
           49.2335
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -10213,6 +10489,22 @@
           -123.125,
           49.2085
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -10269,6 +10561,22 @@
           -123.0235,
           49.2
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -10313,6 +10621,22 @@
           -123.078,
           49.2585
         ]
+      ],
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -10365,6 +10689,22 @@
           -123.0854,
           49.182
         ]
+      ],
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -10429,6 +10769,22 @@
           -123.1005,
           49.208
         ]
+      ],
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -10493,6 +10849,22 @@
           -123.135,
           49.18
         ]
+      ],
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -10781,6 +11153,22 @@
           -123.116013,
           49.266015
         ]
+      ],
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -11189,6 +11577,22 @@
           -123.13886,
           49.255998
         ]
+      ],
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -13681,6 +14085,22 @@
           -122.954593,
           49.213223
         ]
+      ],
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 55,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 55,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -15425,6 +15845,22 @@
           -123.023395,
           49.201978
         ]
+      ],
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 60,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 60,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -15677,6 +16113,22 @@
           -123.14379,
           49.27193
         ]
+      ],
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -15709,6 +16161,22 @@
           -123.098,
           49.283
         ]
+      ],
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -15749,6 +16217,22 @@
           -123.119,
           49.273
         ]
+      ],
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 40,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 40,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -15785,6 +16269,22 @@
           -123.133,
           49.296
         ]
+      ],
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 40,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 40,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -15817,6 +16317,22 @@
           -123.111,
           49.2795
         ]
+      ],
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -15857,6 +16373,22 @@
           -123.1125,
           49.2785
         ]
+      ],
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -16261,6 +16793,22 @@
           -123.10213,
           49.27681
         ]
+      ],
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -16301,6 +16849,22 @@
           -123.113,
           49.277
         ]
+      ],
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 40,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 40,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -16337,6 +16901,22 @@
           -123.1365,
           49.2765
         ]
+      ],
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 40,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 40,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -16377,6 +16957,22 @@
           -123.14,
           49.268
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -16413,6 +17009,22 @@
           -123.1005,
           49.2605
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -16457,6 +17069,22 @@
           -123.1005,
           49.2565
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -16501,6 +17129,22 @@
           -123.1005,
           49.2485
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -16541,6 +17185,22 @@
           -123.1005,
           49.241
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -16605,6 +17265,22 @@
           -123.0235,
           49.2335
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -16657,6 +17333,22 @@
           -123.0235,
           49.226
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -16697,6 +17389,22 @@
           -123.1005,
           49.2185
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -16733,6 +17441,22 @@
           -123.186,
           49.2565
         ]
+      ],
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -16785,6 +17509,22 @@
           -123.153,
           49.2085
         ]
+      ],
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -16829,6 +17569,22 @@
           -123.1678,
           49.241
         ]
+      ],
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -16861,6 +17617,22 @@
           -123.078,
           49.2765
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -16897,6 +17669,22 @@
           -123.078,
           49.2665
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -16933,6 +17721,22 @@
           -123.0235,
           49.2605
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -16969,6 +17773,22 @@
           -123.0235,
           49.2565
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -17005,6 +17825,22 @@
           -123.0235,
           49.251
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -17041,6 +17877,22 @@
           -123.028,
           49.2445
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -17077,6 +17929,22 @@
           -123.0235,
           49.241
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -17113,6 +17981,22 @@
           -123.065,
           49.2485
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -17177,6 +18061,22 @@
           -123.0235,
           49.2335
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -17229,6 +18129,22 @@
           -123.0235,
           49.226
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -17261,6 +18177,22 @@
           -123.0235,
           49.2215
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -17293,6 +18225,22 @@
           -123.065,
           49.2185
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -17357,6 +18305,22 @@
           -123.1005,
           49.208
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -17405,6 +18369,22 @@
           -123.0895,
           49.208
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -17445,6 +18425,22 @@
           -123.085,
           49.2335
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -17501,6 +18497,22 @@
           -123.0655,
           49.207
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -17557,6 +18569,22 @@
           -123.056,
           49.226
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -17605,6 +18633,22 @@
           -123.044,
           49.2335
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -17661,6 +18705,22 @@
           -123.0325,
           49.205
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     },
     {
@@ -17701,6 +18761,22 @@
           -123.028,
           49.2295
         ]
+      ],
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
       ]
     }
   ],

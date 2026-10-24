@@ -1251,6 +1251,18 @@ class TomTomTrafficService:
             elif rd_delay >= 1 or rd_cls["level"] == 1:
                 en_status = "Light Traffic"
 
+            is_ew = any(k in rd.get("group", "") or k in rd["name"] for k in ["East", "West", "東西", "Ave", "Highway", "Pender", "Hastings"])
+            if is_ew:
+                rd_segs = [
+                    {"name": "東向 (Eastbound)", "delay_min": 0, "speed_kmh": ff_spd, "level": 0, "color": "#10b981"},
+                    {"name": "西向 (Westbound)", "delay_min": int(round(rd_delay)), "speed_kmh": int(round(rd_speed)), "level": rd_cls["level"], "color": rd_cls["color"]}
+                ]
+            else:
+                rd_segs = [
+                    {"name": "北向 (Northbound)", "delay_min": int(round(rd_delay)), "speed_kmh": int(round(rd_speed)), "level": rd_cls["level"], "color": rd_cls["color"]},
+                    {"name": "南向 (Southbound)", "delay_min": 0, "speed_kmh": ff_spd, "level": 0, "color": "#10b981"}
+                ]
+
             major_roads.append({
                 "id": rd["id"],
                 "name": rd["name"],
@@ -1269,6 +1281,7 @@ class TomTomTrafficService:
                 "trend": rd_cls["trend"],
                 "center": coords,
                 "zoom": 12.5,
+                "segments": rd_segs,
                 "coordinates": existing_road_coords.get(rd["id"]) or snapped_data.get(rd["id"]) or snapped_data.get(rd["id"].replace("mrn_", "").replace("oth_", "")) or rd.get("coordinates") or [
                     [coords[0] - 0.005, coords[1]],
                     [coords[0] + 0.005, coords[1]]

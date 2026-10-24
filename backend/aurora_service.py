@@ -59,21 +59,21 @@ VANCOUVER_AURORA_SPOTS = [
 def calculate_g_scale(kp: float):
     kp_val = float(kp)
     if kp_val >= 9.0:
-        return "G5", "極端磁暴 (Extreme)", "purple", "#a855f7"
+        return "G5", "極端磁暴", "purple", "#a855f7"
     elif kp_val >= 8.0:
-        return "G4", "嚴重磁暴 (Severe)", "red", "#ef4444"
+        return "G4", "嚴重磁暴", "red", "#ef4444"
     elif kp_val >= 7.0:
-        return "G3", "強烈磁暴 (Strong)", "orange", "#f97316"
+        return "G3", "強烈磁暴", "orange", "#f97316"
     elif kp_val >= 6.0:
-        return "G2", "中度磁暴 (Moderate)", "amber", "#f59e0b"
+        return "G2", "中度磁暴", "amber", "#f59e0b"
     elif kp_val >= 5.0:
-        return "G1", "弱磁暴 (Minor)", "yellow", "#eab308"
+        return "G1", "弱磁暴", "yellow", "#eab308"
     elif kp_val >= 4.0:
-        return "Active", "活躍擾動 (Active)", "emerald", "#10b981"
+        return "活躍", "活躍擾動", "emerald", "#10b981"
     elif kp_val >= 3.0:
-        return "Unsettled", "輕微擾動 (Unsettled)", "cyan", "#06b6d4"
+        return "微擾", "輕微擾動", "cyan", "#06b6d4"
     else:
-        return "Quiet", "平靜平穩 (Quiet)", "blue", "#3b82f6"
+        return "平靜", "平靜平穩", "blue", "#3b82f6"
 
 def get_vancouver_visibility(kp: float):
     kp_val = float(kp)
@@ -119,7 +119,7 @@ def get_vancouver_visibility(kp: float):
         }
     else:
         return {
-            "level": "不可見 (Quiet)",
+            "level": "不可見",
             "description": "地磁場處於平靜狀態。極光主要侷限於阿拉斯加、黃刀鎮等高緯度極圈附近，溫哥華目前無法觀測到極光。",
             "chance_pct": 5,
             "naked_eye": False,

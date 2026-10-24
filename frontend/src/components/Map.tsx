@@ -16,7 +16,7 @@ import {
   Navigation, ExternalLink, Clock, Bike, Car, Info, 
   ChevronDown, ChevronUp, SlidersHorizontal, Fuel, Zap, Wifi, Waves, Play, Pause, CloudRain,
   RotateCcw, RotateCw, MapPin, Crosshair, Activity, Ban, Cone, Lightbulb, Ship,
-  Camera, Gauge, Footprints, ArrowRight, Mail, AlertCircle
+  Camera, Gauge, Footprints, ArrowRight, Mail, AlertCircle, Radio, Anchor
 } from 'lucide-react';
 
 // Fix Next.js App Router Web Worker crash
@@ -474,7 +474,7 @@ export default function AppMap() {
   const { 
     layers, mapStyleType, searchTarget, setSearchTarget, isLayerPanelOpen, 
     contourInterval, timeFormat, distanceUnit, userLocation, setUserLocation, setExploreOpen,
-    isExploreOpen, exploreTab, setExploreTab, openExploreTab, openExploreTabs, setSettingsModalOpen,
+    isExploreOpen, exploreTab, weatherSubTab, setExploreTab, openExploreTab, openExploreTabs, setSettingsModalOpen,
     parkingMeterFilter, setParkingMeterFilter,
     motorcycleParkingFilter, setMotorcycleParkingFilter,
     radiusExploration, setRadiusExploration,
@@ -2778,8 +2778,8 @@ export default function AppMap() {
       };
     }
 
-    // Coastal Tide Stations (大溫海岸潮汐與即時水位站)
-    const showTideStations = (isExploreOpen && exploreTab === 'weather');
+    // Coastal Tide Stations (大溫海岸潮汐與即時水位站 - 僅在海洋水文開啟)
+    const showTideStations = (isExploreOpen && exploreTab === 'weather' && weatherSubTab === 'marine');
     if (showTideStations) {
       style.sources['tide-stations'] = {
         type: 'geojson',
@@ -4298,8 +4298,8 @@ export default function AppMap() {
       });
     }
 
-    // Nature: Coastal Tide Stations (大溫海岸潮汐與即時水位站)
-    if (isExploreOpen && exploreTab === 'weather') {
+    // Nature: Coastal Tide Stations (大溫海岸潮汐與即時水位站 - 僅在海洋水文開啟)
+    if (isExploreOpen && exploreTab === 'weather' && weatherSubTab === 'marine') {
       style.layers.push({
         id: 'tide-stations-layer',
         type: 'circle',
@@ -5653,7 +5653,8 @@ export default function AppMap() {
     contourInterval,
     mapStyleType,
     isExploreOpen,
-    exploreTab
+    exploreTab,
+    weatherSubTab
   ]);
 
   const getFloatingPanelPos = (offsetIdx: number) => {
@@ -6275,10 +6276,7 @@ export default function AppMap() {
             else if (isTraffic) facilityType = 'traffic_conditions';
             else if (isStreetLighting) facilityType = 'street_lighting';
             else if (isVanWifi) facilityType = 'van_wifi';
-            else if (isTideStation) {
-              // 不開啟地圖 popup，僅保留藍點定位
-              return;
-            }
+            else if (isTideStation) facilityType = 'tide_stations';
             else if (isFuel) facilityType = 'fuel';
             else if (isTesla) facilityType = 'tesla';
             else if (isMarineTerminal) facilityType = 'marine_terminals';
@@ -8311,7 +8309,7 @@ export default function AppMap() {
             maxWidth="none"
           >
             <div className={`p-3.5 ${
-              (selectedFacility.facility_type === 'traffic_conditions' || selectedFacility.facility_type === 'traffic_corridor') ? 'w-[450px] sm:w-[480px]' :
+              (selectedFacility.facility_type === 'traffic_conditions' || selectedFacility.facility_type === 'traffic_corridor') ? 'w-[320px] sm:w-[350px]' :
               (selectedFacility.facility_type === 'traffic_cameras') ? 'w-[420px] sm:w-[450px]' : 
               'w-[390px] sm:w-[430px]'
             } max-w-[calc(100vw-32px)] text-gray-800`}>
@@ -8373,7 +8371,10 @@ export default function AppMap() {
                   if (t === 'recycling') return { label: '環保回收', bg: 'bg-emerald-600 text-white' };
                   if (t === 'litter_containers') return { label: '垃圾箱', bg: 'bg-amber-600 text-white' };
                   if (t === 'zoning_districts') return { label: '土地規劃', bg: 'bg-purple-600 text-white' };
-                  if (t === 'tide_stations') return { label: '潮汐站', bg: 'bg-blue-600 text-white' };
+                  if (t === 'tide_stations') return { label: '潮汐', bg: 'bg-[#38bdf8] text-white' };
+                  if (t === 'swob_station' || t === 'weather_station') return { label: '氣象', bg: 'bg-[#16a34a] text-white' };
+                  if (t === 'hydrometric_station') return { label: '水文', bg: 'bg-[#0284c7] text-white' };
+                  if (t === 'traffic_conditions' || t === 'traffic_corridor') return { label: '路況', bg: 'bg-[#ea580c] text-white' };
                   if (t === 'ski_resort') return { label: '滑雪', bg: 'bg-cyan-500 text-white' };
                   if (t === 'traffic_alerts' || t === 'traffic_incident') return { label: '即時通報', bg: 'bg-amber-600 text-white' };
                   return null;
@@ -8413,7 +8414,7 @@ export default function AppMap() {
                       if (selectedFacility.properties?.operator === 'Modo') return 'Modo Co-op';
                       return (selectedFacility.name || 'Evo Car Share').replace(/\s*\(\d+\s*車位專用站點\)/g, '').trim();
                     }
-                    if (selectedFacility.facility_type === 'ski_resort') {
+                    if (selectedFacility.facility_type === 'ski_resort' || selectedFacility.facility_type === 'swob_station' || selectedFacility.facility_type === 'weather_station' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hydrometric_station') {
                       return selectedFacility.properties?.english_name || (selectedFacility as any).english_name || selectedFacility.name;
                     }
                     if (selectedFacility.facility_type === 'escooter') {
@@ -8504,7 +8505,7 @@ export default function AppMap() {
                     if (selectedFacility.facility_type === 'museums') {
                       return selectedFacility.properties?.name || selectedFacility.name || '博物館';
                     }
-                    if (selectedFacility.facility_type === 'ski_resort') {
+                    if (selectedFacility.facility_type === 'ski_resort' || selectedFacility.facility_type === 'swob_station' || selectedFacility.facility_type === 'weather_station' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hydrometric_station') {
                       return selectedFacility.properties?.english_name || (selectedFacility as any).english_name || selectedFacility.name;
                     }
                     return selectedFacility.name || '';
@@ -8529,7 +8530,7 @@ export default function AppMap() {
                         <span className={`w-3 h-3 rounded-full flex-shrink-0 ${
                           selectedFacility.facility_type === 'public_trees' ? 'bg-emerald-600' :
                           selectedFacility.facility_type === 'border_crossing' ? 'bg-emerald-600 shadow-[0_0_6px_rgba(16,185,129,0.5)]' :
-                          (selectedFacility.facility_type === 'traffic_conditions' || selectedFacility.facility_type === 'traffic_corridor') ? 'bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]' :
+                          (selectedFacility.facility_type === 'traffic_conditions' || selectedFacility.facility_type === 'traffic_corridor') ? 'bg-orange-500 shadow-[0_0_6px_rgba(234,88,12,0.5)]' :
                           (selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident') ? 'bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.5)]' :
                           selectedFacility.facility_type === 'road_closures' ? 'bg-red-600' :
                           selectedFacility.facility_type === 'road_construction' ? 'bg-orange-600' :
@@ -12923,6 +12924,35 @@ export default function AppMap() {
                       </div>
                     </div>
 
+                    {/* 雙向分段車流細節 */}
+                    {(() => {
+                      const segs = Array.isArray(props.segments) 
+                        ? props.segments 
+                        : (typeof props.segments === 'string' ? (() => { try { return JSON.parse(props.segments); } catch { return null; } })() : null);
+                      if (!segs || segs.length === 0) return null;
+                      return (
+                        <div className="flex flex-col gap-1.5 pt-1.5 border-t border-gray-100">
+                          <span className="text-[10px] font-bold text-gray-500">雙向分段車流狀況</span>
+                          <div className="grid grid-cols-2 gap-1.5">
+                            {segs.map((seg: any, sIdx: number) => (
+                              <div key={sIdx} className="p-1.5 rounded bg-gray-50 border border-gray-200 flex flex-col justify-between">
+                                <div className="flex items-center justify-between text-[10px] font-bold text-gray-700">
+                                  <span className="truncate">{seg.name}</span>
+                                  <span className="text-[9px] px-1 py-0.2 rounded text-white shrink-0" style={{ backgroundColor: seg.color || '#10b981' }}>
+                                    {seg.delay_min > 0 ? `+${seg.delay_min}m` : '順暢'}
+                                  </span>
+                                </div>
+                                <div className="flex items-baseline justify-between mt-1 text-[10px] text-gray-600">
+                                  <span className="font-mono font-semibold">{seg.speed_kmh} km/h</span>
+                                  <span className="text-[9px] text-gray-400">{seg.level === 0 ? '無延誤' : seg.level === 1 ? '輕微' : '壅塞'}</span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })()}
+
                     {/* Detailed Description */}
                     {props.description && (
                       <div className={`p-2 rounded-lg border text-gray-700 text-[11px] leading-relaxed ${isFreeFlow ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-amber-500/10 border-amber-500/20'}`}>
@@ -13612,6 +13642,170 @@ export default function AppMap() {
                   })()}
                 </div>
               )}
+
+              {/* 地表氣象觀測站 (SWOB Weather Station) */}
+              {(selectedFacility.facility_type === 'swob_station' || selectedFacility.facility_type === 'weather_station') && (() => {
+                const p = selectedFacility.properties || {};
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/30 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Radio className="w-4 h-4 text-emerald-600" />
+                        <span className="font-bold text-emerald-950 text-xs">加拿大環境部地表氣象站</span>
+                      </div>
+                      <span className="text-[10px] font-mono font-bold bg-emerald-600 text-white px-2 py-0.5 rounded">
+                        {p.station_id || p.id || 'SWOB'}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-200 flex flex-col">
+                        <span className="text-[10px] text-gray-500 font-medium">🌡️ 即時氣溫</span>
+                        <span className="font-bold text-base text-gray-900 font-mono mt-0.5">{p.temp || p.temperature || '--'}</span>
+                      </div>
+                      <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-200 flex flex-col">
+                        <span className="text-[10px] text-gray-500 font-medium">💨 當前風速</span>
+                        <span className="font-bold text-xs text-gray-900 font-mono mt-0.5">{p.wind || '--'}</span>
+                      </div>
+                      <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-200 flex flex-col">
+                        <span className="text-[10px] text-gray-500 font-medium">💧 相對濕度</span>
+                        <span className="font-bold text-xs text-gray-900 font-mono mt-0.5">{p.hum || p.humidity || '--'}</span>
+                      </div>
+                      <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-200 flex flex-col">
+                        <span className="text-[10px] text-gray-500 font-medium">🧭 大氣氣壓</span>
+                        <span className="font-bold text-xs text-gray-900 font-mono mt-0.5">{p.press || p.pressure || '--'}</span>
+                      </div>
+                    </div>
+
+                    <div className="pt-0.5">
+                      <a
+                        href={`https://www.google.com/maps/dir/?api=1&destination=${selectedFacility.lat},${selectedFacility.lon}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full py-2 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                      >
+                        <Navigation className="w-3.5 h-3.5" />
+                        <span>Google Maps 導航至此氣象站</span>
+                      </a>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* 潮汐水位站 (Coastal Tide Station) */}
+              {selectedFacility.facility_type === 'tide_stations' && (() => {
+                const p = selectedFacility.properties || {};
+                const isRising = p.state_trend === 'rising';
+                const isFalling = p.state_trend === 'falling';
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/30 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Waves className="w-4 h-4 text-sky-600" />
+                        <span className="font-bold text-sky-950 text-xs">DFO/CHS 國家海岸潮汐觀測站</span>
+                      </div>
+                      <span className="text-[10px] font-mono font-bold bg-sky-600 text-white px-2 py-0.5 rounded">
+                        {p.code || 'CHS'}
+                      </span>
+                    </div>
+
+                    <div className="p-3 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-between">
+                      <div className="flex flex-col">
+                        <span className="text-[10px] text-gray-500 font-medium">當前潮位高程</span>
+                        <div className="flex items-baseline gap-1 mt-0.5">
+                          <span className="text-2xl font-extrabold text-sky-600 font-mono">{p.current_water_level_m ?? p.water_level ?? '--'}</span>
+                          <span className="text-xs text-gray-500 font-medium">米 (m)</span>
+                        </div>
+                      </div>
+                      <span className={`text-xs font-bold px-2 py-1 rounded font-mono flex items-center gap-1 ${
+                        isRising ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
+                        isFalling ? 'bg-rose-100 text-rose-800 border border-rose-300' :
+                        'bg-gray-100 text-gray-800'
+                      }`}>
+                        <span>{p.state || '正常'}</span>
+                        <span>{isRising ? '↗' : isFalling ? '↘' : '→'}</span>
+                      </span>
+                    </div>
+
+                    {(p.next_high || p.next_low) && (
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        {p.next_high && (
+                          <div className="p-2.5 rounded-lg bg-emerald-50 border border-emerald-200 flex flex-col">
+                            <span className="text-[10px] text-emerald-800 font-bold">▲ 下次滿潮 (High Tide)</span>
+                            <span className="font-extrabold text-sm text-emerald-700 font-mono mt-0.5">{p.next_high.value} m</span>
+                            <span className="text-[10px] text-gray-500 mt-0.5">{p.next_high.time}</span>
+                          </div>
+                        )}
+                        {p.next_low && (
+                          <div className="p-2.5 rounded-lg bg-sky-50 border border-sky-200 flex flex-col">
+                            <span className="text-[10px] text-sky-800 font-bold">▼ 下次乾潮 (Low Tide)</span>
+                            <span className="font-extrabold text-sm text-sky-700 font-mono mt-0.5">{p.next_low.value} m</span>
+                            <span className="text-[10px] text-gray-500 mt-0.5">{p.next_low.time}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    <div className="pt-0.5">
+                      <a
+                        href={`https://www.google.com/maps/dir/?api=1&destination=${selectedFacility.lat},${selectedFacility.lon}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full py-2 px-3 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                      >
+                        <Navigation className="w-3.5 h-3.5" />
+                        <span>Google Maps 導航至此測站</span>
+                      </a>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* 水文觀測站 (Hydrometric Station) */}
+              {selectedFacility.facility_type === 'hydrometric_station' && (() => {
+                const p = selectedFacility.properties || {};
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    <div className="bg-cyan-500/10 p-2.5 rounded-lg border border-cyan-500/30 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Anchor className="w-4 h-4 text-cyan-600" />
+                        <span className="font-bold text-cyan-950 text-xs">加拿大國家水文測候站 (NHN)</span>
+                      </div>
+                      <span className="text-[10px] font-mono font-bold bg-cyan-600 text-white px-2 py-0.5 rounded">
+                        {p.id || 'ECCC'}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-200 flex flex-col">
+                        <span className="text-[10px] text-gray-500 font-medium">即時水位高度</span>
+                        <span className="font-extrabold text-base text-cyan-700 font-mono mt-0.5">{p.level || '--'}</span>
+                      </div>
+                      <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-200 flex flex-col">
+                        <span className="text-[10px] text-gray-500 font-medium">河川秒流量</span>
+                        <span className="font-extrabold text-base text-cyan-700 font-mono mt-0.5">{p.flow || '--'}</span>
+                      </div>
+                    </div>
+
+                    <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-between">
+                      <span className="text-gray-500 text-[11px]">水文運作狀況</span>
+                      <span className="font-bold text-emerald-600 text-xs">{p.status || '正常流量'}</span>
+                    </div>
+
+                    <div className="pt-0.5">
+                      <a
+                        href={`https://www.google.com/maps/dir/?api=1&destination=${selectedFacility.lat},${selectedFacility.lon}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full py-2 px-3 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                      >
+                        <Navigation className="w-3.5 h-3.5" />
+                        <span>Google Maps 導航至此水文站</span>
+                      </a>
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* 設施通用坐標與複製按鈕 */}
               <div className="flex items-center justify-between text-[11px] text-gray-500 pt-2.5 mt-2.5 border-t border-gray-100 font-mono">

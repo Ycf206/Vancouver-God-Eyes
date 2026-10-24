@@ -3,16 +3,16 @@
   "source_url": "https://www.swpc.noaa.gov/",
   "api_endpoint": "https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json",
   "update_frequency": "每天 2 次 (12 小時快取)",
-  "last_updated": "2026-10-17T03:30:00Z",
+  "last_updated": "2026-10-24T18:00:00Z",
   "latest": {
-    "time_tag": "2026-10-17T00:00:00",
-    "kp": 2.0,
+    "time_tag": "2026-10-24T18:00:00",
+    "kp": 2,
     "kp_int": 2,
-    "g_scale": "Quiet",
-    "g_desc": "平靜平穩 (Quiet)",
+    "g_scale": "平靜",
+    "g_desc": "平靜平穩",
     "g_color": "#3b82f6",
     "visibility": {
-      "level": "不可見 (Quiet)",
+      "level": "不可見",
       "description": "地磁場處於平靜狀態。極光主要侷限於阿拉斯加、黃刀鎮等高緯度極圈附近，溫哥華目前無法觀測到極光。",
       "chance_pct": 5,
       "naked_eye": false,
@@ -20,22 +20,134 @@
     }
   },
   "history": [
-    { "time_tag": "2026-10-15T03:00:00", "kp": 1.67, "a_running": 6, "g_scale": "Quiet", "g_desc": "平靜平穩 (Quiet)", "g_color": "#3b82f6" },
-    { "time_tag": "2026-10-15T06:00:00", "kp": 1.33, "a_running": 5, "g_scale": "Quiet", "g_desc": "平靜平穩 (Quiet)", "g_color": "#3b82f6" },
-    { "time_tag": "2026-10-15T09:00:00", "kp": 2.0, "a_running": 7, "g_scale": "Quiet", "g_desc": "平靜平穩 (Quiet)", "g_color": "#3b82f6" },
-    { "time_tag": "2026-10-15T12:00:00", "kp": 2.67, "a_running": 12, "g_scale": "Quiet", "g_desc": "平靜平穩 (Quiet)", "g_color": "#3b82f6" },
-    { "time_tag": "2026-10-15T15:00:00", "kp": 3.0, "a_running": 15, "g_scale": "Unsettled", "g_desc": "輕微擾動 (Unsettled)", "g_color": "#06b6d4" },
-    { "time_tag": "2026-10-15T18:00:00", "kp": 2.33, "a_running": 9, "g_scale": "Quiet", "g_desc": "平靜平穩 (Quiet)", "g_color": "#3b82f6" },
-    { "time_tag": "2026-10-15T21:00:00", "kp": 1.67, "a_running": 6, "g_scale": "Quiet", "g_desc": "平靜平穩 (Quiet)", "g_color": "#3b82f6" },
-    { "time_tag": "2026-10-16T00:00:00", "kp": 2.0, "a_running": 7, "g_scale": "Quiet", "g_desc": "平靜平穩 (Quiet)", "g_color": "#3b82f6" },
-    { "time_tag": "2026-10-16T03:00:00", "kp": 2.33, "a_running": 9, "g_scale": "Quiet", "g_desc": "平靜平穩 (Quiet)", "g_color": "#3b82f6" },
-    { "time_tag": "2026-10-16T06:00:00", "kp": 2.67, "a_running": 12, "g_scale": "Quiet", "g_desc": "平靜平穩 (Quiet)", "g_color": "#3b82f6" },
-    { "time_tag": "2026-10-16T09:00:00", "kp": 2.0, "a_running": 7, "g_scale": "Quiet", "g_desc": "平靜平穩 (Quiet)", "g_color": "#3b82f6" },
-    { "time_tag": "2026-10-16T12:00:00", "kp": 1.67, "a_running": 6, "g_scale": "Quiet", "g_desc": "平靜平穩 (Quiet)", "g_color": "#3b82f6" },
-    { "time_tag": "2026-10-16T15:00:00", "kp": 3.33, "a_running": 18, "g_scale": "Unsettled", "g_desc": "輕微擾動 (Unsettled)", "g_color": "#06b6d4" },
-    { "time_tag": "2026-10-16T18:00:00", "kp": 3.67, "a_running": 22, "g_scale": "Unsettled", "g_desc": "輕微擾動 (Unsettled)", "g_color": "#06b6d4" },
-    { "time_tag": "2026-10-16T21:00:00", "kp": 2.33, "a_running": 9, "g_scale": "Quiet", "g_desc": "平靜平穩 (Quiet)", "g_color": "#3b82f6" },
-    { "time_tag": "2026-10-17T00:00:00", "kp": 2.0, "a_running": 7, "g_scale": "Quiet", "g_desc": "平靜平穩 (Quiet)", "g_color": "#3b82f6" }
+    {
+      "time_tag": "2026-10-22T21:00:00",
+      "kp": 1.67,
+      "a_running": 6,
+      "g_scale": "平靜",
+      "g_desc": "平靜平穩",
+      "g_color": "#3b82f6"
+    },
+    {
+      "time_tag": "2026-10-23T00:00:00",
+      "kp": 2,
+      "a_running": 7,
+      "g_scale": "平靜",
+      "g_desc": "平靜平穩",
+      "g_color": "#3b82f6"
+    },
+    {
+      "time_tag": "2026-10-23T03:00:00",
+      "kp": 1.33,
+      "a_running": 5,
+      "g_scale": "平靜",
+      "g_desc": "平靜平穩",
+      "g_color": "#3b82f6"
+    },
+    {
+      "time_tag": "2026-10-23T06:00:00",
+      "kp": 2.33,
+      "a_running": 8,
+      "g_scale": "平靜",
+      "g_desc": "平靜平穩",
+      "g_color": "#3b82f6"
+    },
+    {
+      "time_tag": "2026-10-23T09:00:00",
+      "kp": 2.67,
+      "a_running": 9,
+      "g_scale": "平靜",
+      "g_desc": "平靜平穩",
+      "g_color": "#3b82f6"
+    },
+    {
+      "time_tag": "2026-10-23T12:00:00",
+      "kp": 3,
+      "a_running": 11,
+      "g_scale": "微擾",
+      "g_desc": "輕微擾動",
+      "g_color": "#06b6d4"
+    },
+    {
+      "time_tag": "2026-10-23T15:00:00",
+      "kp": 2.33,
+      "a_running": 8,
+      "g_scale": "平靜",
+      "g_desc": "平靜平穩",
+      "g_color": "#3b82f6"
+    },
+    {
+      "time_tag": "2026-10-23T18:00:00",
+      "kp": 1.67,
+      "a_running": 6,
+      "g_scale": "平靜",
+      "g_desc": "平靜平穩",
+      "g_color": "#3b82f6"
+    },
+    {
+      "time_tag": "2026-10-23T21:00:00",
+      "kp": 2,
+      "a_running": 7,
+      "g_scale": "平靜",
+      "g_desc": "平靜平穩",
+      "g_color": "#3b82f6"
+    },
+    {
+      "time_tag": "2026-10-24T00:00:00",
+      "kp": 2.33,
+      "a_running": 8,
+      "g_scale": "平靜",
+      "g_desc": "平靜平穩",
+      "g_color": "#3b82f6"
+    },
+    {
+      "time_tag": "2026-10-24T03:00:00",
+      "kp": 2.67,
+      "a_running": 9,
+      "g_scale": "平靜",
+      "g_desc": "平靜平穩",
+      "g_color": "#3b82f6"
+    },
+    {
+      "time_tag": "2026-10-24T06:00:00",
+      "kp": 2,
+      "a_running": 7,
+      "g_scale": "平靜",
+      "g_desc": "平靜平穩",
+      "g_color": "#3b82f6"
+    },
+    {
+      "time_tag": "2026-10-24T09:00:00",
+      "kp": 1.67,
+      "a_running": 6,
+      "g_scale": "平靜",
+      "g_desc": "平靜平穩",
+      "g_color": "#3b82f6"
+    },
+    {
+      "time_tag": "2026-10-24T12:00:00",
+      "kp": 3,
+      "a_running": 11,
+      "g_scale": "微擾",
+      "g_desc": "輕微擾動",
+      "g_color": "#06b6d4"
+    },
+    {
+      "time_tag": "2026-10-24T15:00:00",
+      "kp": 2.33,
+      "a_running": 8,
+      "g_scale": "平靜",
+      "g_desc": "平靜平穩",
+      "g_color": "#3b82f6"
+    },
+    {
+      "time_tag": "2026-10-24T18:00:00",
+      "kp": 2,
+      "a_running": 7,
+      "g_scale": "平靜",
+      "g_desc": "平靜平穩",
+      "g_color": "#3b82f6"
+    }
   ],
   "spots": [
     {

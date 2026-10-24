@@ -10,7 +10,7 @@ export interface SearchTarget {
   title: string;
   subtitle?: string;
   category: string;
-  badge: string;
+  badge?: string;
   icon: string;
   lon: number;
   lat: number;
@@ -132,6 +132,12 @@ export interface UIState {
     lon: number;
     confirmed: boolean;
   } | null) => void;
+  weatherSubTab: 'city' | 'monitoring' | 'models' | 'marine';
+  setWeatherSubTab: (subTab: 'city' | 'monitoring' | 'models' | 'marine') => void;
+  isAdminAuthenticated: boolean;
+  setAdminAuthenticated: (auth: boolean) => void;
+  fuelLayerAutoEnabled: boolean;
+  setFuelLayerAutoEnabled: (val: boolean) => void;
   isSettingsModalOpen: boolean;
   setSettingsModalOpen: (open: boolean) => void;
   toggleSettingsModal: () => void;
@@ -311,6 +317,12 @@ export const useUIStore = create<UIState>()(
       setTransitAlertsList: (alerts) => set({ transitAlertsList: alerts }),
       userLocation: null,
       setUserLocation: (loc) => set({ userLocation: loc }),
+      weatherSubTab: 'city',
+      setWeatherSubTab: (subTab) => set({ weatherSubTab: subTab }),
+      isAdminAuthenticated: false,
+      setAdminAuthenticated: (auth) => set({ isAdminAuthenticated: auth }),
+      fuelLayerAutoEnabled: false,
+      setFuelLayerAutoEnabled: (val) => set({ fuelLayerAutoEnabled: val }),
       isSettingsModalOpen: false,
       setSettingsModalOpen: (open) => set({ isSettingsModalOpen: open }),
       toggleSettingsModal: () => set((state) => ({ isSettingsModalOpen: !state.isSettingsModalOpen })),
@@ -341,20 +353,41 @@ export const useUIStore = create<UIState>()(
         };
       }),
       setOpenExploreTabs: (tabs) => set({ openExploreTabs: tabs }),
-      closeAllExploreTabs: () => set({ openExploreTabs: [], isExploreOpen: false }),
+      closeAllExploreTabs: () => set((state) => {
+        const nextLayers = { ...state.layers };
+        if (state.fuelLayerAutoEnabled) {
+          nextLayers.fuel = false;
+        }
+        return { 
+          openExploreTabs: [], 
+          isExploreOpen: false,
+          fuelLayerAutoEnabled: false,
+          layers: nextLayers
+        };
+      }),
       closeExploreTab: (tab) => set((state) => {
         const tabs = state.openExploreTabs || [];
         const newTabs = tabs.filter(t => t !== tab);
+        const nextLayers = { ...state.layers };
+        let nextFuelAuto = state.fuelLayerAutoEnabled;
+        if (tab === 'fuel' && state.fuelLayerAutoEnabled) {
+          nextLayers.fuel = false;
+          nextFuelAuto = false;
+        }
         if (newTabs.length === 0) {
           return {
             openExploreTabs: ['weather'],
-            isExploreOpen: false
+            isExploreOpen: false,
+            layers: nextLayers,
+            fuelLayerAutoEnabled: nextFuelAuto
           };
         }
         const nextTab = state.exploreTab === tab ? newTabs[newTabs.length - 1] : state.exploreTab;
         return {
           openExploreTabs: newTabs,
-          exploreTab: nextTab
+          exploreTab: nextTab,
+          layers: nextLayers,
+          fuelLayerAutoEnabled: nextFuelAuto
         };
       }),
       isExportModalOpen: false,

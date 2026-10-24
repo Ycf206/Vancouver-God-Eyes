@@ -580,7 +580,11 @@ function ExploreContent() {
     setRadarHost,
     radarTilePath,
     setRadarTilePath,
-    timeZone
+    timeZone,
+    weatherSubTab,
+    setWeatherSubTab,
+    fuelLayerAutoEnabled,
+    setFuelLayerAutoEnabled
   } = useUIStore();
 
   // --- TransLink Alerts states ---
@@ -597,11 +601,13 @@ function ExploreContent() {
   const [trafficFilter, setTrafficFilter] = useState<'all' | 'major_roads' | 'severe' | 'incidents'>('all');
   const [trafficSearchQuery, setTrafficSearchQuery] = useState<string>('');
   const [trafficSortBy, setTrafficSortBy] = useState<'default' | 'delay_desc' | 'speed_asc' | 'speed_desc' | 'name_asc'>('default');
-  const [weatherSubTab, setWeatherSubTab] = useState<'city' | 'monitoring' | 'models' | 'marine'>('city');
   const [showCloseConfirm, setShowCloseConfirm] = useState<boolean>(false);
   const [draggedTab, setDraggedTab] = useState<ExploreTabType | null>(null);
   const [dragOverTab, setDragOverTab] = useState<ExploreTabType | null>(null);
   const [satelliteModalOpen, setSatelliteModalOpen] = useState<boolean>(false);
+  const [satelliteChannel, setSatelliteChannel] = useState<'geocolor' | 'ir' | 'water_vapor'>('geocolor');
+  const [satelliteRefreshKey, setSatelliteRefreshKey] = useState<number>(0);
+  const [enlargedAuroraImage, setEnlargedAuroraImage] = useState<{ src: string; title: string; subtitle?: string } | null>(null);
 
   // 氣溫單位轉換輔助函式
   const formatTemp = (celsius?: number | string | null) => {
@@ -932,19 +938,27 @@ function ExploreContent() {
   const handleLocateTideStation = (st: TideStation) => {
     enableLayer('tideStations');
     setSelectedTideCode(st.code);
-    setSearchTarget(null);
-    if ((window as any).__godsEyeDismissPopup) {
-      (window as any).__godsEyeDismissPopup();
-    }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap();
-    if (mapInstance) {
-      mapInstance.flyTo({
-        center: [st.lon, st.lat],
-        zoom: 14.5,
-        essential: true
-      });
-    }
+    setSearchTarget({
+      id: `tide_${st.code}`,
+      title: st.name,
+      lon: st.lon,
+      lat: st.lat,
+      category: 'tide_stations',
+      badge: '潮汐',
+      icon: '🌊',
+      meta: {
+        facility_type: 'tide_stations',
+        english_name: st.name,
+        code: st.code,
+        current_water_level_m: st.current_water_level_m,
+        water_level: st.current_water_level_m,
+        state: st.state,
+        state_trend: st.state_trend,
+        next_high: st.next_high,
+        next_low: st.next_low,
+        area: st.area
+      }
+    });
   };
 
   const formatRadarTime = (ts: number) => {
@@ -1065,7 +1079,7 @@ function ExploreContent() {
 
   // 2. Fetch EV Charging Stations
   useEffect(() => {
-    if (!isExploreOpen || activeTab !== 'ev') return;
+    if (!isExploreOpen || (activeTab !== 'ev' && activeTab !== 'charging')) return;
 
     setLoadingEV(true);
     const apiUrl = getApiUrl();
@@ -1080,14 +1094,57 @@ function ExploreContent() {
     }
 
     fetch(`${apiUrl}/api/ev/stations?${qs.toString()}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setEvStations(data.stations || []);
-        setLoadingEV(false);
+      .then((res) => {
+        if (!res.ok) throw new Error('API request failed');
+        return res.json();
       })
-      .catch((err) => {
-        console.error('Error fetching EV stations:', err);
-        setLoadingEV(false);
+      .then((data) => {
+        if (data.stations && data.stations.length > 0) {
+          setEvStations(data.stations);
+          setLoadingEV(false);
+        } else {
+          throw new Error('No stations in API');
+        }
+      })
+      .catch(async () => {
+        // Fallback to static GeoJSON
+        try {
+          const res = await fetch('/vancouver_ev_charging.geojson');
+          const geo = await res.json();
+          const list: EVStation[] = (geo.features || []).map((f: any, idx: number) => {
+            const p = f.properties || {};
+            const coords = f.geometry?.coordinates || [-123.12, 49.28];
+            const lat = coords[1];
+            const lon = coords[0];
+            let dist = 0;
+            if (userLocation?.confirmed && userLocation.lat && userLocation.lon) {
+              const dLat = (lat - userLocation.lat) * 111;
+              const dLon = (lon - userLocation.lon) * 78;
+              dist = Math.round(Math.sqrt(dLat * dLat + dLon * dLon) * 10) / 10;
+            }
+            return {
+              id: String(p.id || idx + 1),
+              name: p.name || p.address || '電動車充電站',
+              address: p.address || 'Vancouver, BC',
+              local_area: p.local_area || 'Vancouver',
+              operator: p.operator || 'BC Hydro EV / Flo',
+              connectors: p.connectors || 'CCS / J1772',
+              ports: p.ports || 2,
+              voltage: p.voltage || 'Level 2 / DC Fast',
+              power_kw: p.power_kw || 50,
+              cost: p.cost || '收費制 (依度數計費)',
+              is_free: Boolean(p.is_free),
+              distance_km: dist,
+              lat,
+              lon
+            };
+          });
+          setEvStations(list);
+        } catch (e) {
+          console.error('Failed to load static EV charging stations:', e);
+        } finally {
+          setLoadingEV(false);
+        }
       });
   }, [isExploreOpen, activeTab, evSortBy, hideFreeCharging, userLocation]);
 
@@ -1244,6 +1301,9 @@ function ExploreContent() {
 
   // Handle Fuel click
   const handleSelectFuelStation = (st: FuelStation) => {
+    if (!layers.fuel) {
+      setFuelLayerAutoEnabled(true);
+    }
     enableLayer('fuel');
     setSearchTarget({
       id: `fuel_${st.id}`,
@@ -2475,7 +2535,7 @@ function ExploreContent() {
 
   return (
     <div 
-      className="fixed top-[70px] right-4 z-40 w-[470px] max-w-[calc(100vw-32px)] max-h-[calc(100vh-148px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col animate-in fade-in slide-in-from-right-4 duration-200 select-none overflow-hidden"
+      className="fixed top-[70px] right-4 z-40 w-[470px] max-w-[calc(100vw-32px)] max-h-[calc(100vh-230px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col animate-in fade-in slide-in-from-right-4 duration-200 select-none overflow-hidden"
       onClick={(e) => e.stopPropagation()}
     >
       {/* 1. 當多於1個分頁時的關閉確認對話框 (Close Confirmation Dialog) */}
@@ -2617,9 +2677,9 @@ function ExploreContent() {
 
       {/* ==================== 0. 天氣分頁 (Weather - ECCC MSC GeoMet) ==================== */}
       {activeTab === 'weather' && (
-        <div className="flex flex-col flex-1 min-h-0 overflow-y-auto pr-1 gap-3 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
-          {/* 1.1 天氣 4 大子分頁導航：市區預報, 即時監察, 模式預報, 海洋水文 */}
-          <div className="grid grid-cols-4 gap-1 p-1 bg-[#10131d] rounded-lg border border-[#252a38] shrink-0">
+        <div className="flex flex-col flex-1 min-h-0 gap-2.5 overflow-hidden">
+          {/* 1.1 天氣 4 大子分頁導航：市區預報, 即時監察, 模式預報, 海洋水文 (固定置頂) */}
+          <div className="grid grid-cols-4 gap-1 p-1 bg-[#10131d] rounded-lg border border-[#252a38] shrink-0 z-10 shadow-sm">
             {[
               { key: 'city', label: '市區預報', icon: CloudSun },
               { key: 'monitoring', label: '即時監察', icon: Radar },
@@ -2632,7 +2692,7 @@ function ExploreContent() {
                 <button
                   key={pill.key}
                   onClick={() => setWeatherSubTab(pill.key as any)}
-                  className={`py-1.5 text-[10.5px] rounded font-medium transition-all flex items-center justify-center gap-1 ${
+                  className={`py-1.5 text-[10.5px] rounded font-medium transition-all flex items-center justify-center gap-1 cursor-pointer ${
                     isSubActive
                       ? 'bg-sky-600 text-white shadow-sm font-bold ring-1 ring-sky-400/40'
                       : 'text-gray-400 hover:text-gray-200 hover:bg-[#1a2030]'
@@ -2644,6 +2704,8 @@ function ExploreContent() {
               );
             })}
           </div>
+
+          <div className="flex flex-col flex-1 min-h-0 overflow-y-auto pr-1 gap-3 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
 
           {loadingWeather && !weather ? (
             <div className="py-16 flex flex-col items-center justify-center gap-2.5 text-gray-400 text-xs">
@@ -3152,22 +3214,54 @@ function ExploreContent() {
 
                     <div className="flex flex-col gap-1.5">
                       {[
-                        { id: 'CWVR', name: "Vancouver Int'l Airport (YVR 溫哥華國際機場)", lat: 49.195, lon: -123.181, temp: '12.4°C', wind: 'WNW 15 km/h', hum: '79%', press: '101.6 kPa' },
-                        { id: 'CWVG', name: 'Vancouver Harbour (溫哥華港氣象站)', lat: 49.296, lon: -123.111, temp: '13.1°C', wind: 'W 11 km/h (陣風 18)', hum: '76%', press: '101.5 kPa' },
-                        { id: 'CWPI', name: 'Point Atkinson Lighthouse (阿特金森岬燈塔)', lat: 49.330, lon: -123.264, temp: '11.8°C', wind: 'W 22 km/h (陣風 31)', hum: '82%', press: '101.5 kPa' },
-                        { id: 'CWVN', name: 'West Vancouver Marine (西溫海港站)', lat: 49.337, lon: -123.167, temp: '12.0°C', wind: 'NW 9 km/h', hum: '81%', press: '101.5 kPa' },
-                        { id: 'CWRM', name: 'Richmond Dike (列治文自然保護區)', lat: 49.183, lon: -123.197, temp: '12.8°C', wind: 'W 13 km/h', hum: '78%', press: '101.6 kPa' },
-                        { id: 'CWBY', name: 'Burnaby Burmount (本拿比伯蒙特站)', lat: 49.245, lon: -122.934, temp: '12.2°C', wind: 'W 8 km/h', hum: '80%', press: '101.5 kPa' },
+                        { id: 'CWVR', englishName: "Vancouver Int'l Airport", name: "Vancouver Int'l Airport (溫哥華國際機場)", lat: 49.195, lon: -123.181, temp: '12.4°C', wind: 'WNW 15 km/h', hum: '79%', press: '101.6 kPa' },
+                        { id: 'CWVG', englishName: 'Vancouver Harbour', name: 'Vancouver Harbour (溫哥華港氣象站)', lat: 49.296, lon: -123.111, temp: '13.1°C', wind: 'W 11 km/h (陣風 18)', hum: '76%', press: '101.5 kPa' },
+                        { id: 'CWPI', englishName: 'Point Atkinson Lighthouse', name: 'Point Atkinson Lighthouse (阿特金森岬燈塔)', lat: 49.330, lon: -123.264, temp: '11.8°C', wind: 'W 22 km/h (陣風 31)', hum: '82%', press: '101.5 kPa' },
+                        { id: 'CWVN', englishName: 'West Vancouver Marine', name: 'West Vancouver Marine (西溫海港氣象站)', lat: 49.337, lon: -123.167, temp: '12.0°C', wind: 'NW 9 km/h', hum: '81%', press: '101.5 kPa' },
+                        { id: 'CWRM', englishName: 'Richmond Dike', name: 'Richmond Dike (列治文自然保護區)', lat: 49.183, lon: -123.197, temp: '12.8°C', wind: 'W 13 km/h', hum: '78%', press: '101.6 kPa' },
+                        { id: 'CWBY', englishName: 'Burnaby Burmount', name: 'Burnaby Burmount (本拿比伯蒙特氣象站)', lat: 49.245, lon: -122.934, temp: '12.2°C', wind: 'W 8 km/h', hum: '80%', press: '101.5 kPa' },
                       ].map((st) => (
-                        <div key={st.id} onClick={() => { const m = (window as any).__godsEyeMapRef?.current?.getMap(); if (m && (st as any).lat) m.flyTo({ center: [(st as any).lon, (st as any).lat], zoom: 14.5, essential: true }); }} className="bg-[#141824] hover:bg-[#181d2c] border border-[#242b3c] hover:border-emerald-500/50 p-2 rounded-lg flex items-center justify-between text-xs cursor-pointer transition-all">
-                          <div className="flex flex-col min-w-0">
-                            <div className="flex items-center gap-1.5">
-                              <span className="font-bold text-gray-200 truncate">{st.name}</span>
-                              <span className="text-[9.5px] font-mono text-emerald-400 bg-emerald-950/70 border border-emerald-800/40 px-1 rounded">{st.id}</span>
-                            </div>
-                            <span className="text-[10px] text-gray-400 mt-0.5">風速: {st.wind} · 濕度: {st.hum} · 氣壓: {st.press}</span>
+                        <div
+                          key={st.id}
+                          onClick={() => {
+                            setSearchTarget({
+                              id: `swob_${st.id}`,
+                              title: st.name,
+                              lon: st.lon,
+                              lat: st.lat,
+                              category: 'swob_station',
+                              badge: '氣象',
+                              icon: '📡',
+                              meta: {
+                                facility_type: 'swob_station',
+                                english_name: st.englishName,
+                                station_id: st.id,
+                                temp: st.temp,
+                                wind: st.wind,
+                                hum: st.hum,
+                                press: st.press
+                              }
+                            });
+                          }}
+                          className="bg-[#141824] hover:bg-[#181d2c] border border-[#242b3c] hover:border-emerald-500/50 p-2 rounded-lg flex items-center justify-between text-xs cursor-pointer transition-all"
+                        >
+                          <div className="flex items-center gap-1.5 min-w-0 flex-1 pr-2">
+                            <span className="font-bold text-gray-200 truncate">{st.name}</span>
+                            <span className="text-[9.5px] font-mono text-emerald-400 bg-emerald-950/70 border border-emerald-800/40 px-1 rounded shrink-0">{st.id}</span>
                           </div>
-                          <span className="text-sm font-extrabold text-white font-mono ml-2 shrink-0">{st.temp}</span>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span className="text-sm font-extrabold text-white font-mono">{st.temp}</span>
+                            <a
+                              href={`https://www.google.com/maps/dir/?api=1&destination=${st.lat},${st.lon}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              className="p-1 rounded bg-emerald-950/60 hover:bg-emerald-900 border border-emerald-800/50 text-emerald-300 hover:text-white transition-colors flex items-center justify-center"
+                              title="在 Google Maps 導航至此氣象站"
+                            >
+                              <Navigation className="w-3.5 h-3.5" />
+                            </a>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -3393,74 +3487,40 @@ function ExploreContent() {
                       </div>
                     ) : (
                       <div className="flex flex-col gap-2">
-                        {tideStations.map((st) => {
-                          const isRising = st.state_trend === 'rising';
-                          const isFalling = st.state_trend === 'falling';
-                          return (
-                            <div
-                              key={st.code}
-                              onClick={() => handleLocateTideStation(st)}
-                              className={`p-2.5 rounded-lg border transition-all flex flex-col gap-1.5 cursor-pointer ${
-                                selectedTideCode === st.code
-                                  ? 'bg-blue-950/40 border-blue-500 text-white ring-1 ring-blue-500/50'
-                                  : 'bg-[#0f121a] border-[#222736] hover:border-blue-500/50 hover:bg-[#131926] text-gray-300'
-                              }`}
-                            >
-                              <div className="flex items-center justify-between">
-                                <div>
-                                  <span className="font-bold text-xs text-white block">{st.name}</span>
-                                  <span className="text-[10px] text-gray-400">{st.area}</span>
-                                </div>
-                                <div className="text-right">
-                                  <div className="flex items-center gap-1.5 justify-end">
-                                    <span className="text-base font-extrabold text-blue-400 font-mono">
-                                      {st.current_water_level_m} <span className="text-xs font-normal text-gray-400">m</span>
-                                    </span>
-                                    <span
-                                      className={`text-[10px] font-bold px-1.5 py-0.5 rounded font-mono flex items-center gap-0.5 ${
-                                        isRising
-                                          ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-800/50'
-                                          : isFalling
-                                          ? 'bg-rose-950/80 text-rose-300 border border-rose-800/50'
-                                          : 'bg-gray-800 text-gray-300'
-                                      }`}
-                                    >
-                                      <span>{st.state}</span>
-                                      <span>{isRising ? '↗' : isFalling ? '↘' : '→'}</span>
-                                    </span>
-                                  </div>
-                                </div>
-                              </div>
-
-                              {(st.next_high || st.next_low) && (
-                                <div className="pt-1.5 border-t border-[#1c2230] flex items-center justify-between text-[10.5px]">
-                                  <div className="flex items-center gap-2 text-gray-400 font-mono">
-                                    {st.next_high && (
-                                      <span className="text-emerald-400/90">
-                                        滿潮: {st.next_high.value}m ({formatTimePreference(st.next_high.time, timeFormat, timeZone)})
-                                      </span>
-                                    )}
-                                    {st.next_low && (
-                                      <span className="text-sky-400/90">
-                                        乾潮: {st.next_low.value}m ({formatTimePreference(st.next_low.time, timeFormat, timeZone)})
-                                      </span>
-                                    )}
-                                  </div>
-                                  <a
-                                    href={`https://www.google.com/maps/dir/?api=1&destination=${st.lat},${st.lon}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    onClick={(e) => e.stopPropagation()}
-                                    className="p-1 rounded bg-blue-900/30 hover:bg-blue-800/60 border border-blue-700/40 text-blue-300 hover:text-white transition-colors flex items-center justify-center"
-                                    title="在 Google Maps 導航至此測站"
-                                  >
-                                    <Navigation className="w-3.5 h-3.5" />
-                                  </a>
-                                </div>
-                              )}
+                        {tideStations.map((st) => (
+                          <div
+                            key={st.code}
+                            onClick={() => handleLocateTideStation(st)}
+                            className={`p-2.5 rounded-lg border transition-all flex items-center justify-between cursor-pointer ${
+                              selectedTideCode === st.code
+                                ? 'bg-blue-950/40 border-blue-500 text-white ring-1 ring-blue-500/50'
+                                : 'bg-[#0f121a] border-[#222736] hover:border-blue-500/50 hover:bg-[#131926] text-gray-300'
+                            }`}
+                          >
+                            <div className="flex flex-col min-w-0 pr-2">
+                              <span className="font-bold text-xs text-white truncate">{st.name}</span>
+                              <span className="text-[10px] text-gray-400">{st.area}</span>
                             </div>
-                          );
-                        })}
+                            <div className="flex items-center gap-2 shrink-0">
+                              <div className="flex items-baseline gap-1">
+                                <span className="text-base font-extrabold text-blue-400 font-mono">
+                                  {st.current_water_level_m}
+                                </span>
+                                <span className="text-xs font-normal text-gray-400">m</span>
+                              </div>
+                              <a
+                                href={`https://www.google.com/maps/dir/?api=1&destination=${st.lat},${st.lon}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={(e) => e.stopPropagation()}
+                                className="p-1 rounded bg-blue-900/30 hover:bg-blue-800/60 border border-blue-700/40 text-blue-300 hover:text-white transition-colors flex items-center justify-center"
+                                title="在 Google Maps 導航至此測站"
+                              >
+                                <Navigation className="w-3.5 h-3.5" />
+                              </a>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     )}
                   </div>
@@ -3515,20 +3575,53 @@ function ExploreContent() {
 
                     <div className="flex flex-col gap-1.5">
                       {[
-                        { id: '08MH024', name: '菲沙河密遜水文站 (Fraser at Mission)', level: '2.15 m', flow: '1,840 m³/s', status: '正常流量' },
-                        { id: '08MF005', name: '菲沙河希望鎮水文站 (Fraser at Hope)', level: '3.42 m', flow: '1,910 m³/s', status: '水勢穩定' },
-                        { id: '08GA010', name: '卡皮拉諾河水文站 (Capilano near North Van)', level: '1.08 m', flow: '14.5 m³/s', status: '水壩出水正常' },
-                        { id: '08GA079', name: '西摩河水文站 (Seymour near Falls)', level: '0.95 m', flow: '8.2 m³/s', status: '綠色安全' },
+                        { id: '08MH024', englishName: 'Fraser River at Mission', name: 'Fraser River at Mission (菲沙河密遜水文站)', lat: 49.133, lon: -122.300, level: '2.15 m', flow: '1,840 m³/s', status: '正常流量' },
+                        { id: '08MF005', englishName: 'Fraser River at Hope', name: 'Fraser River at Hope (菲沙河希望鎮水文站)', lat: 49.380, lon: -121.450, level: '3.42 m', flow: '1,910 m³/s', status: '水勢穩定' },
+                        { id: '08GA010', englishName: 'Capilano River near North Vancouver', name: 'Capilano River near North Vancouver (卡皮拉諾河水文站)', lat: 49.345, lon: -123.115, level: '1.08 m', flow: '14.5 m³/s', status: '水壩出水正常' },
+                        { id: '08GA079', englishName: 'Seymour River near Seymour Falls', name: 'Seymour River near Seymour Falls (西摩河水文站)', lat: 49.430, lon: -122.960, level: '0.95 m', flow: '8.2 m³/s', status: '綠色安全' },
                       ].map((hydro) => (
-                        <div key={hydro.id} onClick={() => { const m = (window as any).__godsEyeMapRef?.current?.getMap(); if (m && (hydro as any).lat) m.flyTo({ center: [(hydro as any).lon, (hydro as any).lat], zoom: 14.5, essential: true }); }} className="bg-[#141824] hover:bg-[#181d2c] border border-[#242b3c] hover:border-teal-500/50 p-2 rounded-lg flex items-center justify-between text-xs cursor-pointer transition-all">
-                          <div className="flex flex-col min-w-0">
-                            <div className="flex items-center gap-1.5">
-                              <span className="font-bold text-gray-200 truncate">{hydro.name}</span>
-                              <span className="text-[9.5px] font-mono text-teal-400 bg-teal-950/70 border border-teal-800/40 px-1 rounded">{hydro.id}</span>
-                            </div>
-                            <span className="text-[10px] text-gray-400 mt-0.5">即時水位: {hydro.level} · 流量: {hydro.flow}</span>
+                        <div
+                          key={hydro.id}
+                          onClick={() => {
+                            setSearchTarget({
+                              id: `hydro_${hydro.id}`,
+                              title: hydro.name,
+                              lon: hydro.lon,
+                              lat: hydro.lat,
+                              category: 'hydrometric_station',
+                              badge: '水文',
+                              icon: '⚓',
+                              meta: {
+                                facility_type: 'hydrometric_station',
+                                english_name: hydro.englishName,
+                                id: hydro.id,
+                                level: hydro.level,
+                                flow: hydro.flow,
+                                status: hydro.status
+                              }
+                            });
+                          }}
+                          className="bg-[#141824] hover:bg-[#181d2c] border border-[#242b3c] hover:border-teal-500/50 p-2 rounded-lg flex items-center justify-between text-xs cursor-pointer transition-all"
+                        >
+                          <div className="flex items-center gap-1.5 min-w-0 flex-1 pr-2">
+                            <span className="font-bold text-gray-200 truncate">{hydro.name}</span>
+                            <span className="text-[9.5px] font-mono text-teal-400 bg-teal-950/70 border border-teal-800/40 px-1 rounded shrink-0">{hydro.id}</span>
                           </div>
-                          <span className="text-[10px] font-bold text-teal-300 bg-teal-950/60 border border-teal-800/40 px-1.5 py-0.5 rounded font-mono ml-2 shrink-0">{hydro.status}</span>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span className="text-[10px] font-bold text-teal-300 bg-teal-950/60 border border-teal-800/40 px-1.5 py-0.5 rounded font-mono">
+                              {hydro.status}
+                            </span>
+                            <a
+                              href={`https://www.google.com/maps/dir/?api=1&destination=${hydro.lat},${hydro.lon}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              className="p-1 rounded bg-teal-950/60 hover:bg-teal-900 border border-teal-800/50 text-teal-300 hover:text-white transition-colors flex items-center justify-center"
+                              title="在 Google Maps 導航至此水文站"
+                            >
+                              <Navigation className="w-3.5 h-3.5" />
+                            </a>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -3539,6 +3632,7 @@ function ExploreContent() {
           ) : (
             <div className="py-12 text-center text-xs text-gray-400">目前無法取得即時天氣資料</div>
           )}
+          </div>
         </div>
       )}
 
@@ -3800,21 +3894,35 @@ function ExploreContent() {
                     </div>
                   </div>
                   <div className="flex flex-col items-end">
-                    <span 
-                      className="px-2.5 py-1 rounded-full text-xs font-bold shadow-sm flex items-center gap-1"
-                      style={{ 
-                        backgroundColor: `${auroraData.latest?.g_color || '#10b981'}25`, 
-                        color: auroraData.latest?.g_color || '#10b981',
-                        borderColor: `${auroraData.latest?.g_color || '#10b981'}60`,
-                        borderWidth: '1px'
-                      }}
-                    >
-                      <Sparkles className="w-3 h-3" />
-                      {auroraData.latest?.g_scale || 'G0'}
-                    </span>
-                    <span className="text-[10px] text-gray-400 mt-1">
-                      {auroraData.latest?.g_desc || ''}
-                    </span>
+                    {(() => {
+                      const rawScale = auroraData.latest?.g_scale || '平靜';
+                      const displayScale = (rawScale === 'Quiet' || rawScale === 'G0') ? '平靜'
+                        : rawScale === 'Unsettled' ? '微擾'
+                        : rawScale === 'Active' ? '活躍'
+                        : rawScale;
+                      const displayDesc = (auroraData.latest?.g_desc || '')
+                        .replace(/\s*\([A-Za-z\s]+\)/g, '')
+                        .trim();
+                      return (
+                        <>
+                          <span 
+                            className="px-2.5 py-1 rounded-full text-xs font-bold shadow-sm flex items-center gap-1"
+                            style={{ 
+                              backgroundColor: `${auroraData.latest?.g_color || '#10b981'}25`, 
+                              color: auroraData.latest?.g_color || '#10b981',
+                              borderColor: `${auroraData.latest?.g_color || '#10b981'}60`,
+                              borderWidth: '1px'
+                            }}
+                          >
+                            <Sparkles className="w-3 h-3" />
+                            {displayScale}
+                          </span>
+                          <span className="text-[10px] text-gray-400 mt-1">
+                            {displayDesc || '平靜平穩'}
+                          </span>
+                        </>
+                      );
+                    })()}
                   </div>
                 </div>
 
@@ -3843,7 +3951,9 @@ function ExploreContent() {
                   <div className="flex items-center justify-between">
                     <span className="text-[11px] font-bold text-gray-200 flex items-center gap-1">
                       <span>🍁 溫哥華觀測等級：</span>
-                      <span className="text-emerald-400 font-semibold">{auroraData.latest?.visibility?.level || '低'}</span>
+                      <span className="text-emerald-400 font-semibold">
+                        {(auroraData.latest?.visibility?.level || '不可見').replace(/\s*\([A-Za-z\s]+\)/g, '').trim()}
+                      </span>
                     </span>
                     <span className={`text-[9.5px] px-1.5 py-0.5 rounded font-bold ${auroraData.latest?.visibility?.badge_color || 'bg-gray-800 text-gray-300'}`}>
                       {auroraData.latest?.visibility?.naked_eye ? '肉眼可見' : '相機/暗空'}
@@ -3900,7 +4010,24 @@ function ExploreContent() {
                   })}
                 </div>
                 <div className="flex items-center justify-between text-[9.5px] text-gray-500 pt-1 border-t border-[#1a2233]">
-                  <span>最新觀測：{auroraData.latest?.time_tag ? auroraData.latest.time_tag.replace('T', ' ') : '--'} UTC</span>
+                  <span>
+                    最新觀測：{auroraData.latest?.time_tag ? (() => {
+                      try {
+                        const d = new Date(auroraData.latest.time_tag.endsWith('Z') ? auroraData.latest.time_tag : auroraData.latest.time_tag + 'Z');
+                        if (!isNaN(d.getTime())) {
+                          return d.toLocaleString('zh-TW', {
+                            timeZone,
+                            month: '2-digit',
+                            day: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: timeFormat === '12h'
+                          });
+                        }
+                      } catch {}
+                      return auroraData.latest.time_tag.replace('T', ' ');
+                    })() : '--'}
+                  </span>
                   <span>指數等級：Kp &ge; 5 觸發磁暴警報</span>
                 </div>
               </div>
@@ -3910,7 +4037,7 @@ function ExploreContent() {
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-gray-200 flex items-center gap-1.5">
                     <Eye className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>極光觀測預測圖 (北美 Viewline)</span>
+                    <span>極光觀測預測圖 (北美)</span>
                   </span>
                   <div className="flex items-center gap-1 bg-[#141924] p-0.5 rounded-lg border border-[#232c3d]">
                     <button
@@ -3938,39 +4065,40 @@ function ExploreContent() {
                   </div>
                 </div>
 
-                {/* Forecast Image with external view link */}
-                <div className="relative rounded-lg overflow-hidden border border-[#202738] bg-[#0c0f17] group">
-                  <a
-                    href={
+                {/* Forecast Image with click to enlarge */}
+                <div 
+                  onClick={() => {
+                    const src = auroraForecastTab === 'tonight'
+                      ? 'https://services.swpc.noaa.gov/experimental/images/aurora_dashboard/tonights_static_viewline_forecast.png'
+                      : 'https://services.swpc.noaa.gov/experimental/images/aurora_dashboard/tomorrow_nights_static_viewline_forecast.png';
+                    setEnlargedAuroraImage({
+                      src,
+                      title: auroraForecastTab === 'tonight' ? '今晚北美極光觀測預測圖' : '明晚北美極光觀測預測圖',
+                      subtitle: 'NOAA SWPC 北美極光南界觀測線'
+                    });
+                  }}
+                  className="relative rounded-lg overflow-hidden border border-[#202738] bg-[#0c0f17] group cursor-zoom-in"
+                  title="點擊放大檢視預測圖"
+                >
+                  <img
+                    src={
                       auroraForecastTab === 'tonight'
                         ? 'https://services.swpc.noaa.gov/experimental/images/aurora_dashboard/tonights_static_viewline_forecast.png'
                         : 'https://services.swpc.noaa.gov/experimental/images/aurora_dashboard/tomorrow_nights_static_viewline_forecast.png'
                     }
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block relative cursor-pointer"
-                    title="點擊在官方分頁查看高解析度預測原圖"
-                  >
-                    <img
-                      src={
-                        auroraForecastTab === 'tonight'
-                          ? 'https://services.swpc.noaa.gov/experimental/images/aurora_dashboard/tonights_static_viewline_forecast.png'
-                          : 'https://services.swpc.noaa.gov/experimental/images/aurora_dashboard/tomorrow_nights_static_viewline_forecast.png'
-                      }
-                      alt={auroraForecastTab === 'tonight' ? '今晚北美極光可見線預測圖' : '明晚北美極光可見線預測圖'}
-                      className="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-300"
-                      loading="lazy"
-                    />
-                    <div className="absolute bottom-2 right-2 bg-black/80 backdrop-blur-md px-2 py-1 rounded text-[9.5px] text-gray-300 flex items-center gap-1 border border-white/10 group-hover:text-emerald-300 transition-colors shadow-md">
-                      <span>檢視原圖</span>
-                      <ExternalLink className="w-2.5 h-2.5" />
-                    </div>
-                  </a>
+                    alt={auroraForecastTab === 'tonight' ? '今晚北美極光可見線預測圖' : '明晚北美極光可見線預測圖'}
+                    className="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                    loading="lazy"
+                  />
+                  <div className="absolute bottom-2 right-2 bg-black/80 backdrop-blur-md px-2 py-1 rounded text-[9.5px] text-gray-300 flex items-center gap-1 border border-white/10 group-hover:text-emerald-300 transition-colors shadow-md">
+                    <Eye className="w-3 h-3 text-emerald-400" />
+                    <span>放大檢視</span>
+                  </div>
                 </div>
 
                 <div className="text-[10px] text-gray-400 leading-relaxed bg-[#0c1017] p-2 rounded-lg border border-[#1b2230]">
                   <span className="text-gray-300 font-semibold">💡 觀測線說明：</span>
-                  紅色實線為極光預估南界觀測線（Viewline）。當紅線向南推移並涵蓋溫哥華（約北緯 49°）以南時，代表該晚極光可見機率大幅增加。
+                  紅色實線為極光預估南界觀測線。當紅線向南推移並涵蓋溫哥華（約北緯 49°）以南時，代表該晚極光可見機率大幅增加。
                 </div>
               </div>
 
@@ -4639,7 +4767,7 @@ function ExploreContent() {
                           </h4>
                         </div>
                         <div className="text-[10px] text-gray-400 mt-0.5 truncate pl-3.5">
-                          {beach.area || beach.municipality} · {beach.health_authority}
+                          {beach.area || beach.municipality}
                         </div>
                       </div>
 
@@ -4992,7 +5120,7 @@ function ExploreContent() {
         <div className="flex-1 flex flex-col min-h-0 space-y-2.5 overflow-hidden">
           {/* Header Controls: Source Filter & Refresh */}
           <div className="flex items-center justify-between gap-1.5 shrink-0 pt-0.5">
-            <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5">
+            <div className="flex items-center gap-1.5 overflow-x-auto custom-scrollbar pb-1.5 pt-0.5 scrollbar-thin">
               {[
                 { id: 'all', label: '全部' },
                 { id: '604now', label: '604 Now' },
@@ -5157,7 +5285,7 @@ function ExploreContent() {
         <div className="flex-1 flex flex-col min-h-0 space-y-2.5 overflow-hidden">
           {/* Header Controls: Source Filter & Refresh */}
           <div className="flex items-center justify-between gap-1.5 shrink-0 pt-0.5">
-            <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5">
+            <div className="flex items-center gap-1.5 overflow-x-auto custom-scrollbar pb-1.5 pt-0.5 scrollbar-thin">
               {[
                 { id: 'all', label: '全部' },
                 { id: 'daily_hive', label: 'Daily Hive' },
@@ -5724,23 +5852,6 @@ function ExploreContent() {
                           ))}
                         </div>
                       )}
-
-                      {/* Bottleneck description note */}
-                      {corridor.key_bottleneck && (
-                        <div className={`text-[10px] rounded p-1.5 border flex items-start gap-1 leading-snug ${
-                          corridor.delay_min <= 2
-                            ? 'text-emerald-300/90 bg-emerald-950/30 border-emerald-900/30'
-                            : 'text-amber-300/90 bg-amber-950/30 border-amber-900/30'
-                        }`}>
-                          <span className="shrink-0">{corridor.delay_min <= 2 ? '✅' : '⚠️'}</span>
-                          <span>{corridor.key_bottleneck}</span>
-                        </div>
-                      )}
-
-                      {/* Bottom row: Trend indicator */}
-                      <div className="flex items-center text-[10px] pt-0.5 text-gray-400 border-t border-[#1e2333]/70">
-                        <span>{corridor.trend === 'worsening' ? (isMajorRoadTab ? '↗️ Congestion building' : '↗️ 車流加劇中') : corridor.trend === 'improving' ? (isMajorRoadTab ? '↘️ Conditions easing' : '↘️ 車流改善中') : corridor.delay_min <= 1 ? (isMajorRoadTab ? '✅ Free flow' : '✅ 全線車流順暢') : (isMajorRoadTab ? '➡️ Flow steady' : '➡️ 車流穩定')}</span>
-                      </div>
                     </div>
                   );
                 });
@@ -6051,6 +6162,192 @@ function ExploreContent() {
           關閉
         </button>
       </div>
+
+      {/* 太平洋西北衛星雲圖 Lightbox Modal */}
+      {satelliteModalOpen && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 pt-20 sm:pt-24 pb-6 animate-in fade-in duration-200"
+          onClick={() => setSatelliteModalOpen(false)}
+        >
+          <div
+            className="relative max-w-4xl w-full bg-[#161922] border border-blue-500/40 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[85vh]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-4 py-3 bg-[#1e2330] border-b border-gray-700/60 shrink-0">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <Satellite className="w-5 h-5 text-blue-400 shrink-0" />
+                <div className="flex flex-col min-w-0">
+                  <h4 className="text-sm font-bold text-gray-100 truncate">
+                    太平洋西北高解析度即時氣象衛星雲圖
+                  </h4>
+                  <div className="flex items-center gap-2 text-[11px] text-gray-400">
+                    <span className="text-blue-300 font-semibold">NOAA GOES-18 (GOES-West)</span>
+                    <span>·</span>
+                    <span>每 10 分鐘更新</span>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                {/* Channel Selector */}
+                <div className="flex items-center bg-[#141824] p-0.5 rounded-lg border border-gray-700/60">
+                  <button
+                    type="button"
+                    onClick={() => setSatelliteChannel('geocolor')}
+                    className={`px-2 py-1 text-[10px] rounded transition-all font-medium ${
+                      satelliteChannel === 'geocolor'
+                        ? 'bg-blue-600 text-white font-bold'
+                        : 'text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    真實色彩 (GeoColor)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSatelliteChannel('ir')}
+                    className={`px-2 py-1 text-[10px] rounded transition-all font-medium ${
+                      satelliteChannel === 'ir'
+                        ? 'bg-blue-600 text-white font-bold'
+                        : 'text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    紅外線 (IR-13)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSatelliteChannel('water_vapor')}
+                    className={`px-2 py-1 text-[10px] rounded transition-all font-medium ${
+                      satelliteChannel === 'water_vapor'
+                        ? 'bg-blue-600 text-white font-bold'
+                        : 'text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    水氣 (WV-09)
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSatelliteRefreshKey(k => k + 1)}
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-blue-300 hover:bg-white/10 transition-colors"
+                  title="重新載入衛星圖"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                </button>
+                <a
+                  href="https://www.star.nesdis.noaa.gov/GOES/sector.php?sat=G18&sector=pnw"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-blue-300 hover:bg-white/10 transition-colors"
+                  title="前往 NOAA 衛星雲圖官方頁面"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setSatelliteModalOpen(false)}
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+                  title="關閉 (Esc)"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-3 sm:p-4 flex items-center justify-center bg-black/95 overflow-hidden flex-1 min-h-0 relative">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={
+                  satelliteChannel === 'geocolor'
+                    ? `https://cdn.star.nesdis.noaa.gov/GOES18/ABI/SECTOR/pnw/GEOCOLOR/1200x720.jpg?t=${satelliteRefreshKey}`
+                    : satelliteChannel === 'ir'
+                    ? `https://cdn.star.nesdis.noaa.gov/GOES18/ABI/SECTOR/pnw/13/1200x720.jpg?t=${satelliteRefreshKey}`
+                    : `https://cdn.star.nesdis.noaa.gov/GOES18/ABI/SECTOR/pnw/09/1200x720.jpg?t=${satelliteRefreshKey}`
+                }
+                alt="太平洋西北氣象衛星雲圖"
+                className="max-w-full max-h-[62vh] object-contain rounded-lg shadow-2xl border border-white/10"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (!target.src.includes('weather.gc.ca')) {
+                    target.src = `https://weather.gc.ca/data/satellite/goes_wcan_visible_100.jpg?t=${Date.now()}`;
+                  }
+                }}
+              />
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-4 py-2 bg-[#1a1e29] border-t border-gray-800 flex items-center justify-between text-[11px] text-gray-400 shrink-0">
+              <span>覆蓋大溫哥華、溫哥華島、喬治亞海峽及太平洋西北近岸海域 · 點擊背景或 ✕ 關閉</span>
+              <span className="text-blue-400 font-mono text-[10.5px]">NOAA GOES-18 ABI</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 極光觀測預測圖 Lightbox Modal */}
+      {enlargedAuroraImage && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 pt-20 sm:pt-24 pb-6 animate-in fade-in duration-200"
+          onClick={() => setEnlargedAuroraImage(null)}
+        >
+          <div
+            className="relative max-w-4xl w-full bg-[#161922] border border-emerald-500/40 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[85vh]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-4 py-3 bg-[#1e2330] border-b border-gray-700/60 shrink-0">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <span className="text-lg">🌌</span>
+                <div className="flex flex-col min-w-0">
+                  <h4 className="text-sm font-bold text-gray-100 truncate">
+                    {enlargedAuroraImage.title}
+                  </h4>
+                  <div className="flex items-center gap-2 text-[11px] text-gray-400">
+                    <span className="text-emerald-300 font-semibold">{enlargedAuroraImage.subtitle || 'NOAA SWPC 北美極光觀測預測'}</span>
+                    <span>·</span>
+                    <span>極光預估南界觀測線</span>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <a
+                  href={enlargedAuroraImage.src}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-emerald-300 hover:bg-white/10 transition-colors"
+                  title="在新分頁開啟高解析度原圖"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setEnlargedAuroraImage(null)}
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+                  title="關閉 (Esc)"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-3 sm:p-4 flex items-center justify-center bg-black/95 overflow-hidden flex-1 min-h-0">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={enlargedAuroraImage.src}
+                alt={enlargedAuroraImage.title}
+                className="max-w-full max-h-[62vh] object-contain rounded-lg shadow-2xl border border-white/10"
+              />
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-4 py-2 bg-[#1a1e29] border-t border-gray-800 flex items-center justify-between text-[11px] text-gray-400 shrink-0">
+              <span>紅色實線為極光預估南界觀測線。當紅線向南推移並涵蓋溫哥華以南時，極光可見機率大幅增加</span>
+              <span className="text-emerald-400 font-mono text-[10.5px]">NOAA SWPC</span>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
