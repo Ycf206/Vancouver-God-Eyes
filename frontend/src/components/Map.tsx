@@ -8778,7 +8778,7 @@ export default function AppMap() {
                       <div className="w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center shrink-0 mt-0.5 text-[#d9261c] font-bold text-[10px]">
                         P
                       </div>
-                      <span>北美規模最大的私營停車場管理公司之一，在北美擁有超過 3,000 個停車場，服務範圍涵蓋商業大樓、購物中心、醫院、機場、飯店及體育場館。</span>
+                      <span>北美規模最大的私營停車場管理公司之一，擁有超過 3,000 個停車場，涵蓋商業大樓、購物中心、醫院、機場、飯店及體育場館。</span>
                     </div>
 
                     {/* 5.2 灰色區塊 (參考圖3風格：淺灰底色、灰底黑字、數值貼右邊、無冒號) */}
@@ -8840,12 +8840,12 @@ export default function AppMap() {
                         <div className="flex flex-wrap gap-1.5">
                           {features.map((feat: string, idx: number) => {
                             let zhLabel = feat;
-                            if (feat.includes('Parker Pete')) zhLabel = '道路救援 Parker Pete';
-                            else if (feat.includes('attendant') || feat.includes('Attendant')) zhLabel = '駐場管理員 On-site attendant';
-                            else if (feat.includes('EV') || feat.includes('Charger')) zhLabel = '電動車充電樁 EV Charger';
-                            else if (feat.includes('Heater') || feat.includes('Block Heater')) zhLabel = '引擎加熱器 Block Heater Plugin';
-                            else if (feat.includes('Wash') || feat.includes('Car Wash')) zhLabel = '洗車 Car Wash';
-                            else if (feat.includes('Valet')) zhLabel = '代客泊車 Valet Parking';
+                            if (feat.includes('Parker Pete')) zhLabel = '道路救援';
+                            else if (feat.includes('attendant') || feat.includes('Attendant')) zhLabel = '駐場管理員';
+                            else if (feat.includes('EV') || feat.includes('Charger')) zhLabel = '電動車充電樁';
+                            else if (feat.includes('Heater') || feat.includes('Block Heater')) zhLabel = '引擎加熱器';
+                            else if (feat.includes('Wash') || feat.includes('Car Wash')) zhLabel = '洗車';
+                            else if (feat.includes('Valet')) zhLabel = '代客泊車';
                             return (
                               <span key={idx} className="px-2 py-0.5 rounded-full bg-gray-100 border border-gray-200 text-gray-700 text-[10.5px] font-medium shadow-xs">
                                 {zhLabel}

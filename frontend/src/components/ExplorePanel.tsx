@@ -553,6 +553,7 @@ function ExploreContent() {
     openExploreTabs,
     openExploreTab,
     closeExploreTab,
+    setOpenExploreTabs,
     userLocation, 
     setSettingsModalOpen,
     distanceUnit,
@@ -593,6 +594,9 @@ function ExploreContent() {
   const [trafficFilter, setTrafficFilter] = useState<'all' | 'major_roads' | 'severe' | 'incidents'>('all');
   const [trafficSearchQuery, setTrafficSearchQuery] = useState<string>('');
   const [weatherSubTab, setWeatherSubTab] = useState<'city' | 'monitoring' | 'models' | 'marine'>('city');
+  const [showCloseConfirm, setShowCloseConfirm] = useState<boolean>(false);
+  const [draggedTab, setDraggedTab] = useState<ExploreTabType | null>(null);
+  const [dragOverTab, setDragOverTab] = useState<ExploreTabType | null>(null);
 
   // 氣溫單位轉換輔助函式
   const formatTemp = (celsius?: number | string | null) => {
@@ -2433,10 +2437,47 @@ function ExploreContent() {
 
   return (
     <div 
-      className="fixed top-[84px] right-4 z-40 w-[410px] max-w-[calc(100vw-32px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-100px)] animate-in fade-in slide-in-from-right-4 duration-200 select-none overflow-hidden"
+      className="fixed top-[70px] right-4 z-40 w-[470px] max-w-[calc(100vw-32px)] max-h-[calc(100vh-148px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col animate-in fade-in slide-in-from-right-4 duration-200 select-none overflow-hidden"
       onClick={(e) => e.stopPropagation()}
     >
-      {/* 瀏覽器風格多分頁導航標籤列 (Browser-style Tab Navigation Bar) */}
+      {/* 1. 當多於1個分頁時的關閉確認對話框 (Close Confirmation Dialog) */}
+      {showCloseConfirm && (
+        <div className="absolute inset-0 z-50 bg-[#0d1017]/80 backdrop-blur-sm rounded-xl flex items-center justify-center p-4 animate-in fade-in duration-150">
+          <div className="bg-[#1b202c] border border-[#30384a] rounded-xl p-4 shadow-2xl max-w-[320px] w-full text-center flex flex-col gap-3 animate-in zoom-in-95 duration-150">
+            <div className="w-10 h-10 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center mx-auto">
+              <AlertTriangle className="w-5 h-5" />
+            </div>
+            <div className="flex flex-col gap-1">
+              <h3 className="text-sm font-bold text-white">關閉探索面板？</h3>
+              <p className="text-xs text-gray-300">
+                目前已開啟 <span className="text-amber-400 font-semibold">{tabsToRender.length}</span> 個分頁，確定要關閉整個探索視窗嗎？
+              </p>
+            </div>
+            <div className="flex items-center gap-2 pt-1">
+              <button
+                type="button"
+                onClick={() => setShowCloseConfirm(false)}
+                className="flex-1 py-1.5 px-3 rounded-lg bg-[#272e3d] hover:bg-[#323b4e] text-gray-200 text-xs font-medium transition-colors cursor-pointer"
+              >
+                取消
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowCloseConfirm(false);
+                  setExploreOpen(false);
+                  setSearchTarget(null);
+                }}
+                className="flex-1 py-1.5 px-3 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold transition-colors shadow-sm cursor-pointer"
+              >
+                確認關閉
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 2. 瀏覽器風格多分頁導航標籤列，支援拖曳左右互換次序 (Draggable Tab Bar) */}
       <div className="flex items-center gap-1.5 pb-2 mb-2.5 border-b border-[#262b38] shrink-0 min-w-0">
         <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none flex-1 min-w-0 pr-1">
           {tabsToRender.map((tabId) => {
@@ -2444,17 +2485,62 @@ function ExploreContent() {
             const TabIcon = info.icon;
             const isSelected = activeTab === tabId;
             const shortLabel = tabShortTitleMap[tabId] || info.label;
+            const isDragging = draggedTab === tabId;
+            const isDragOver = dragOverTab === tabId;
 
             return (
               <div
                 key={tabId}
+                draggable
+                onDragStart={(e) => {
+                  setDraggedTab(tabId);
+                  e.dataTransfer.effectAllowed = 'move';
+                  e.dataTransfer.setData('text/plain', tabId);
+                }}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.dataTransfer.dropEffect = 'move';
+                  if (dragOverTab !== tabId) {
+                    setDragOverTab(tabId);
+                  }
+                }}
+                onDragLeave={() => {
+                  if (dragOverTab === tabId) {
+                    setDragOverTab(null);
+                  }
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  if (draggedTab && draggedTab !== tabId) {
+                    const currentTabs = [...tabsToRender];
+                    const fromIdx = currentTabs.indexOf(draggedTab);
+                    const toIdx = currentTabs.indexOf(tabId);
+                    if (fromIdx !== -1 && toIdx !== -1) {
+                      currentTabs.splice(fromIdx, 1);
+                      currentTabs.splice(toIdx, 0, draggedTab);
+                      if (setOpenExploreTabs) {
+                        setOpenExploreTabs(currentTabs);
+                      }
+                    }
+                  }
+                  setDraggedTab(null);
+                  setDragOverTab(null);
+                }}
+                onDragEnd={() => {
+                  setDraggedTab(null);
+                  setDragOverTab(null);
+                }}
                 onClick={() => setExploreTab(tabId)}
-                className={`group flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all border shrink-0 select-none ${
+                className={`group flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-grab active:cursor-grabbing transition-all border shrink-0 select-none ${
+                  isDragging ? 'opacity-40 scale-95' : ''
+                } ${
+                  isDragOver ? 'ring-2 ring-emerald-400 border-emerald-400 scale-105' : ''
+                } ${
                   isSelected
                     ? 'bg-[#22283a] text-white border-emerald-500/60 shadow-md ring-1 ring-emerald-500/30'
                     : 'bg-[#12151e]/80 text-gray-400 hover:text-gray-200 hover:bg-[#1a202e] border-[#222735]'
                 }`}
-                title={info.label}
+                title={`可拖曳排序：${info.label}`}
               >
                 <TabIcon className={`w-3.5 h-3.5 shrink-0 ${isSelected ? info.color : 'text-gray-400 group-hover:text-gray-300'}`} />
                 <span className="whitespace-nowrap">{shortLabel}</span>
@@ -2474,13 +2560,17 @@ function ExploreContent() {
           })}
         </div>
 
-        {/* 右側視窗關閉按鈕 */}
+        {/* 右側視窗關閉按鈕 (當多於1個分頁時彈出確認對話框) */}
         <button
           onClick={() => {
-            setExploreOpen(false);
-            setSearchTarget(null);
+            if (tabsToRender.length > 1) {
+              setShowCloseConfirm(true);
+            } else {
+              setExploreOpen(false);
+              setSearchTarget(null);
+            }
           }}
-          className="text-gray-400 hover:text-white p-1 rounded-md hover:bg-[#252a38] transition-colors shrink-0 ml-1"
+          className="text-gray-400 hover:text-white p-1 rounded-md hover:bg-[#252a38] transition-colors shrink-0 ml-1 cursor-pointer"
           title="關閉探索面板"
         >
           <X className="w-4 h-4" />
