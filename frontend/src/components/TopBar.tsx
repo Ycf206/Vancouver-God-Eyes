@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Search, Settings, ChevronDown, Map as MapIcon, X, Loader2, Layers, AlertCircle, Heart, Download } from 'lucide-react';
+import { Search, Settings, ChevronDown, Map as MapIcon, X, Loader2, Layers, AlertCircle, Heart, Download, Shield } from 'lucide-react';
 import { useUIStore, SearchTarget } from '@/store/useUIStore';
 import ReportIssueModal from '@/components/ReportIssueModal';
 import DonateModal from '@/components/DonateModal';
 import SettingsModal from '@/components/SettingsModal';
+import AdminModal from '@/components/AdminModal';
 import ExplorePanel from '@/components/ExplorePanel';
 import ExportModal from '@/components/ExportModal';
 import { getApiUrl } from '@/utils/api';
@@ -20,6 +21,7 @@ export default function TopBar() {
     timeFormat,
     timeZone,
     setSettingsModalOpen,
+    setAdminModalOpen,
     isExportModalOpen,
     setExportModalOpen
   } = useUIStore();
@@ -339,6 +341,18 @@ export default function TopBar() {
           </span>
         </button>
 
+        {/* 系統管理員後台按鈕 */}
+        <button 
+          onClick={() => setAdminModalOpen(true)}
+          className="flex items-center justify-center group h-9 px-2.5 bg-[#25262b] hover:bg-[#2c2d33] border border-[#373a40] hover:border-indigo-500/50 rounded-md transition-all shadow-sm text-gray-300 hover:text-indigo-400 text-xs font-semibold select-none" 
+          title="系統管理員後台 (排程設定、狀態監控與 GeoJSON 發布)"
+        >
+          <Shield className="w-4 h-4 text-indigo-400/80 group-hover:text-indigo-400 group-hover:scale-110 transition-transform shrink-0" />
+          <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[90px] group-hover:opacity-100 group-hover:ml-1.5 transition-all duration-300 whitespace-nowrap hidden sm:inline">
+            系統後台
+          </span>
+        </button>
+
         {/* 設定按鈕 (點擊開啟設定版面) */}
         <button 
           onClick={() => setSettingsModalOpen(true)}
@@ -365,6 +379,9 @@ export default function TopBar() {
 
       {/* 偏好設定彈出視窗 */}
       <SettingsModal />
+
+      {/* 系統管理員後台彈出視窗 */}
+      <AdminModal />
 
       {/* 探索資訊面板 (燃油比價等) */}
       <ExplorePanel />

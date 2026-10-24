@@ -730,7 +730,6 @@ function ExploreContent() {
   const [loadingBeach, setLoadingBeach] = useState<boolean>(false);
   const [beachSearchQuery, setBeachSearchQuery] = useState('');
   const [beachStatusFilter, setBeachStatusFilter] = useState<'all' | 'safe' | 'advisory' | 'warning'>('all');
-  const [beachAuthorityFilter, setBeachAuthorityFilter] = useState<'all' | 'vch' | 'fraser'>('all');
   const [beachSortBy, setBeachSortBy] = useState<'best' | 'worst' | 'name'>('best');
   const [beachLastUpdated, setBeachLastUpdated] = useState<string>('');
 
@@ -817,8 +816,7 @@ function ExploreContent() {
     return beachList
       .filter((b) => {
         if (beachStatusFilter !== 'all' && b.status !== beachStatusFilter) return false;
-        if (beachAuthorityFilter === 'vch' && !b.health_authority.includes('Vancouver Coastal')) return false;
-        if (beachAuthorityFilter === 'fraser' && !b.health_authority.includes('Fraser')) return false;
+
         if (beachSearchQuery.trim()) {
           const q = beachSearchQuery.trim().toLowerCase();
           const matchName = b.name.toLowerCase().includes(q);
@@ -841,7 +839,7 @@ function ExploreContent() {
         }
         return a.name.localeCompare(b.name, 'zh-Hant');
       });
-  }, [beachList, beachStatusFilter, beachAuthorityFilter, beachSearchQuery, beachSortBy]);
+  }, [beachList, beachStatusFilter, beachSearchQuery, beachSortBy]);
 
   const beachStats = useMemo(() => {
     let safe = 0;
@@ -3540,13 +3538,7 @@ function ExploreContent() {
           </div>
 
           <div className="flex-1 overflow-y-auto min-h-0 pr-1 flex flex-col gap-3 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
-            {/* 提示條 */}
-            <div className="bg-[#121622] border border-cyan-900/40 rounded-lg p-2 text-[11px] text-cyan-200/90 flex items-center gap-2">
-              <span className="text-base shrink-0">⛷️</span>
-              <span className="leading-snug">
-                已在地圖標註 3 大滑雪場。點擊雪場卡片，即可在地圖上自動彈跳至該雪場！
-              </span>
-            </div>
+
 
             {loadingSki && skiResorts.length === 0 ? (
               <div className="py-12 flex flex-col items-center justify-center gap-2 text-gray-400 text-xs">
@@ -4544,17 +4536,7 @@ function ExploreContent() {
               )}
             </div>
 
-            {/* 衛生局篩選 (搜尋格右方) */}
-            <select
-              value={beachAuthorityFilter}
-              onChange={(e) => setBeachAuthorityFilter(e.target.value as any)}
-              className="bg-[#151922] text-gray-300 text-[10.5px] rounded-lg px-1.5 py-1.5 border border-[#232838] focus:outline-none focus:border-teal-500/50 shrink-0 cursor-pointer w-[92px]"
-              title="篩選主管衛生局"
-            >
-              <option value="all">全部衛生局</option>
-              <option value="vch">溫哥華沿岸</option>
-              <option value="fraser">菲沙衛生局</option>
-            </select>
+
 
             {/* 排序 (搜尋格右方) */}
             <select
@@ -4671,21 +4653,7 @@ function ExploreContent() {
                       </p>
                     )}
 
-                    {/* Official Health URL if present */}
-                    {(beach.advisory_url || beach.internet_link) && (
-                      <div className="flex items-center justify-end pt-1 border-t border-[#1e2330] text-[10.5px]">
-                        <a
-                          href={beach.advisory_url || beach.internet_link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          className="text-gray-400 hover:text-teal-300 flex items-center gap-1 transition-colors"
-                        >
-                          <span>官方衛生局通告</span>
-                          <ExternalLink className="w-3 h-3" />
-                        </a>
-                      </div>
-                    )}
+
                   </div>
                 );
               })

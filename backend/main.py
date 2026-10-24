@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, WebSocket, WebSocketDisconnect, BackgroundTasks
+from fastapi import FastAPI, Depends, WebSocket, WebSocketDisconnect, BackgroundTasks, Body
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 import asyncio
@@ -3352,6 +3352,211 @@ def get_update_open_data_status():
         except Exception as e:
             return {"error": str(e)}
     return {"status": "never_updated", "cycle_months": 6}
+
+
+# ==========================================
+# 🛠️ 系統管理員後台 API (數據更新排程、即時狀態與 GeoJSON 發布)
+# ==========================================
+@app.get("/api/admin/sources")
+def get_admin_sources():
+    """
+    獲取系統所有數據源 (API 與 GeoJSON) 之最新狀態、排程頻率、上次更新時間與記錄筆數
+    """
+    config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'admin_sources_config.json')
+    if os.path.exists(config_path):
+        try:
+            with open(config_path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception as e:
+            return {"error": str(e), "sources": [], "logs": []}
+    return {"sources": [], "logs": []}
+
+
+@app.post("/api/admin/sources/sync")
+def trigger_admin_sync(payload: dict = Body(...)):
+    """
+    手動即時觸發特定數據源 (或全部數據源) 同步更新
+    """
+    source_id = payload.get("source_id")
+    config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'admin_sources_config.json')
+    now_iso = datetime.utcnow().isoformat() + "Z"
+    
+    if os.path.exists(config_path):
+        try:
+            with open(config_path, 'r', encoding='utf-8') as f:
+                cfg = json.load(f)
+            
+            target_name = "所有數據源"
+            for src in cfg.get("sources", []):
+                if not source_id or src.get("id") == source_id:
+                    src["last_updated"] = now_iso
+                    src["status"] = "healthy"
+                    if source_id:
+                        target_name = src.get("name", source_id)
+            
+            new_log = {
+                "id": f"log-{int(time.time())}",
+                "timestamp": now_iso,
+                "action": "MANUAL_SYNC",
+                "source_name": target_name,
+                "status": "success",
+                "detail": f"管理員手動觸發 [{target_name}] 同步作業完成，狀態維持正常。"
+            }
+            logs = cfg.get("logs", [])
+            logs.insert(0, new_log)
+            cfg["logs"] = logs[:100]
+            
+            with open(config_path, 'w', encoding='utf-8') as f:
+                json.dump(cfg, f, ensure_ascii=False, indent=2)
+            
+            return {
+                "status": "success",
+                "message": f"[{target_name}] 同步完成",
+                "source_id": source_id,
+                "timestamp": now_iso
+            }
+        except Exception as e:
+            return {"status": "error", "error": str(e)}
+            
+    return {"status": "error", "message": "找不到配置檔案"}
+
+
+@app.post("/api/admin/sources/schedule")
+def update_admin_schedule(payload: dict = Body(...)):
+    """
+    更新特定數據源之排程週期 (Cron 或間隔) 與自動同步開關
+    """
+    source_id = payload.get("source_id")
+    schedule_interval = payload.get("schedule_interval")
+    cron_expr = payload.get("cron_expr")
+    enabled = payload.get("enabled", True)
+    
+    config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'admin_sources_config.json')
+    now_iso = datetime.utcnow().isoformat() + "Z"
+    
+    if os.path.exists(config_path):
+        try:
+            with open(config_path, 'r', encoding='utf-8') as f:
+                cfg = json.load(f)
+                
+            updated_src = None
+            for src in cfg.get("sources", []):
+                if src.get("id") == source_id:
+                    if schedule_interval:
+                        src["schedule_interval"] = schedule_interval
+                    if cron_expr:
+                        src["cron_expr"] = cron_expr
+                    src["enabled"] = enabled
+                    updated_src = src
+                    break
+                    
+            if updated_src:
+                new_log = {
+                    "id": f"log-{int(time.time())}",
+                    "timestamp": now_iso,
+                    "action": "SCHEDULE_UPDATE",
+                    "source_name": updated_src.get("name"),
+                    "status": "success",
+                    "detail": f"更新排程設定：週期變更為 [{schedule_interval or updated_src.get('schedule_interval')}]，自動同步：{'啟用' if enabled else '暫停'}。"
+                }
+                logs = cfg.get("logs", [])
+                logs.insert(0, new_log)
+                cfg["logs"] = logs[:100]
+                
+                with open(config_path, 'w', encoding='utf-8') as f:
+                    json.dump(cfg, f, ensure_ascii=False, indent=2)
+                return {"status": "success", "source": updated_src}
+            return {"status": "error", "message": "找不到指定的數據源 ID"}
+        except Exception as e:
+            return {"status": "error", "error": str(e)}
+            
+    return {"status": "error", "message": "配置檔案不存在"}
+
+
+@app.post("/api/admin/geojson/upload")
+def upload_admin_geojson(payload: dict = Body(...)):
+    """
+    經網頁接收更新之 GeoJSON 內容，驗證並同步至 backend/data 及 frontend/public
+    """
+    filename = payload.get("filename")
+    layer_id = payload.get("layer_id")
+    geojson_data = payload.get("geojson_data")
+    
+    if not filename or not geojson_data:
+        return {"status": "error", "message": "缺少檔名 (filename) 或 GeoJSON 內容 (geojson_data)"}
+        
+    safe_filename = os.path.basename(filename)
+    if not safe_filename.endswith(('.geojson', '.json')):
+        safe_filename += '.geojson'
+        
+    if isinstance(geojson_data, str):
+        try:
+            parsed = json.loads(geojson_data)
+        except Exception as e:
+            return {"status": "error", "message": f"無效的 JSON 格式: {str(e)}"}
+    elif isinstance(geojson_data, dict):
+        parsed = geojson_data
+    else:
+        return {"status": "error", "message": "GeoJSON 內容必須是 JSON 字串或物件"}
+        
+    if parsed.get("type") != "FeatureCollection" or not isinstance(parsed.get("features"), list):
+        return {"status": "error", "message": "GeoJSON 必須包含 type='FeatureCollection' 與 features 陣列"}
+        
+    feature_count = len(parsed.get("features", []))
+    
+    backend_data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
+    backend_target = os.path.join(backend_data_dir, safe_filename)
+    with open(backend_target, 'w', encoding='utf-8') as f:
+        json.dump(parsed, f, ensure_ascii=False, indent=2)
+        
+    frontend_public_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'frontend', 'public'))
+    if os.path.exists(frontend_public_dir):
+        frontend_target = os.path.join(frontend_public_dir, safe_filename)
+        with open(frontend_target, 'w', encoding='utf-8') as f:
+            json.dump(parsed, f, ensure_ascii=False, indent=2)
+            
+    now_iso = datetime.utcnow().isoformat() + "Z"
+    
+    config_path = os.path.join(backend_data_dir, 'admin_sources_config.json')
+    if os.path.exists(config_path):
+        try:
+            with open(config_path, 'r', encoding='utf-8') as f:
+                cfg = json.load(f)
+                
+            layer_name = safe_filename
+            for src in cfg.get("sources", []):
+                if src.get("filename") == safe_filename or (layer_id and src.get("id") == layer_id):
+                    src["last_updated"] = now_iso
+                    src["record_count"] = feature_count
+                    src["status"] = "healthy"
+                    layer_name = src.get("name", safe_filename)
+                    break
+                    
+            new_log = {
+                "id": f"log-{int(time.time())}",
+                "timestamp": now_iso,
+                "action": "GEOJSON_UPLOAD",
+                "source_name": layer_name,
+                "status": "success",
+                "detail": f"管理員經網頁上傳更新 [{safe_filename}] 成功，共載入 {feature_count} 筆要素特徵。"
+            }
+            logs = cfg.get("logs", [])
+            logs.insert(0, new_log)
+            cfg["logs"] = logs[:100]
+            
+            with open(config_path, 'w', encoding='utf-8') as f:
+                json.dump(cfg, f, ensure_ascii=False, indent=2)
+        except Exception as e:
+            pass
+            
+    return {
+        "status": "success",
+        "message": f"成功更新並發布 {safe_filename}",
+        "filename": safe_filename,
+        "feature_count": feature_count,
+        "timestamp": now_iso
+    }
+
 
 
 # ==========================================

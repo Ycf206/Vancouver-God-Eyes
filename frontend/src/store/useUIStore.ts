@@ -135,6 +135,9 @@ export interface UIState {
   isSettingsModalOpen: boolean;
   setSettingsModalOpen: (open: boolean) => void;
   toggleSettingsModal: () => void;
+  isAdminModalOpen: boolean;
+  setAdminModalOpen: (open: boolean) => void;
+  toggleAdminModal: () => void;
   isExploreOpen: boolean;
   setExploreOpen: (open: boolean) => void;
   toggleExplore: () => void;
@@ -311,6 +314,9 @@ export const useUIStore = create<UIState>()(
       isSettingsModalOpen: false,
       setSettingsModalOpen: (open) => set({ isSettingsModalOpen: open }),
       toggleSettingsModal: () => set((state) => ({ isSettingsModalOpen: !state.isSettingsModalOpen })),
+      isAdminModalOpen: false,
+      setAdminModalOpen: (open) => set({ isAdminModalOpen: open }),
+      toggleAdminModal: () => set((state) => ({ isAdminModalOpen: !state.isAdminModalOpen })),
       isExploreOpen: false,
       setExploreOpen: (open) => set({ isExploreOpen: open }),
       toggleExplore: () => set((state) => ({ isExploreOpen: !state.isExploreOpen })),
