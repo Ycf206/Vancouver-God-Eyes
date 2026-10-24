@@ -20,9 +20,13 @@ import {
   ExternalLink,
   ChevronRight,
   Sparkles,
-  Zap
+  Zap,
+  Key,
+  X,
+  Check
 } from 'lucide-react';
 import { getApiUrl } from '@/utils/api';
+import { DEFAULT_ADMIN_SOURCES } from '@/data/defaultAdminSources';
 
 interface DataSource {
   id: string;
@@ -52,15 +56,26 @@ interface AuditLog {
 }
 
 export default function AdminPage() {
-  const [sources, setSources] = useState<DataSource[]>([]);
+  const [sources, setSources] = useState<DataSource[]>(DEFAULT_ADMIN_SOURCES as DataSource[]);
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [backendConnected, setBackendConnected] = useState<boolean | null>(null);
   const [activeTab, setActiveTab] = useState<'all' | 'github_actions' | 'oci' | 'logs'>('all');
   
-  // Security PIN protection
+  // Security PIN protection (Default: 0206)
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [pinInput, setPinInput] = useState('');
   const [pinError, setPinError] = useState(false);
+
+  // GitHub Token State & Modal
+  const [githubStatus, setGithubStatus] = useState<{ configured: boolean; repo: string; token_masked: string }>({
+    configured: false,
+    repo: 'Ycf206/Vancouver-God-Eyes',
+    token_masked: '未設定'
+  });
+  const [isGithubModalOpen, setIsGithubModalOpen] = useState(false);
+  const [inputGithubToken, setInputGithubToken] = useState('');
+  const [isSavingToken, setIsSavingToken] = useState(false);
 
   // Search & Filter
   const [searchQuery, setSearchQuery] = useState('');
@@ -88,14 +103,61 @@ export default function AdminPage() {
     try {
       setIsLoading(true);
       const apiUrl = getApiUrl();
-      const res = await fetch(`${apiUrl}/api/admin/sources`);
-      if (res.ok) {
-        const data = await res.json();
-        setSources(data.sources || []);
-        setLogs(data.logs || []);
+      
+      let sourcesLoaded = false;
+      // 1. 優先透過標準 API 網址請求
+      try {
+        const res = await fetch(`${apiUrl}/api/admin/sources`, { credentials: 'include' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.sources && Array.isArray(data.sources) && data.sources.length > 0) {
+            setSources(data.sources);
+            setLogs(data.logs || []);
+            setBackendConnected(true);
+            sourcesLoaded = true;
+          }
+        }
+      } catch (err) {
+        console.warn('Direct API url fetch failed, trying relative path fallback...', err);
       }
+
+      // 2. 若直連失敗，嘗試相對路徑 /api/admin/sources
+      if (!sourcesLoaded) {
+        try {
+          const res = await fetch('/api/admin/sources', { credentials: 'include' });
+          if (res.ok) {
+            const data = await res.json();
+            if (data.sources && Array.isArray(data.sources) && data.sources.length > 0) {
+              setSources(data.sources);
+              setLogs(data.logs || []);
+              setBackendConnected(true);
+              sourcesLoaded = true;
+            }
+          }
+        } catch (err) {
+          console.warn('Relative path fetch failed, activating built-in catalog fallback...', err);
+        }
+      }
+
+      // 3. 終極保底：若後端暫未回應，立即採用內建 45 項完整圖資字典，保證絕對不會顯示 0 筆！
+      if (!sourcesLoaded) {
+        setSources(DEFAULT_ADMIN_SOURCES as DataSource[]);
+        setBackendConnected(false);
+      }
+
+      // 4. 查詢 GitHub Token 配置狀態
+      try {
+        const ghRes = await fetch(`${apiUrl}/api/admin/github-status`, { credentials: 'include' });
+        if (ghRes.ok) {
+          const ghData = await ghRes.json();
+          setGithubStatus(ghData);
+        }
+      } catch (_) {}
+
     } catch (err) {
       console.error('Failed to load admin data:', err);
+      setSources(DEFAULT_ADMIN_SOURCES as DataSource[]);
+      setBackendConnected(false);
     } finally {
       setIsLoading(false);
     }
@@ -107,9 +169,10 @@ export default function AdminPage() {
     return () => clearInterval(interval);
   }, []);
 
+  // 密碼解鎖 (依使用者指示設為 0206)
   const handleUnlock = (e: React.FormEvent) => {
     e.preventDefault();
-    if (pinInput === '8888' || pinInput === '2026') {
+    if (pinInput === '0206') {
       setIsUnlocked(true);
       setPinError(false);
       if (typeof window !== 'undefined') {
@@ -120,7 +183,40 @@ export default function AdminPage() {
     }
   };
 
-  // Trigger Sync
+  // 儲存 GitHub Token
+  const handleSaveGithubToken = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inputGithubToken.trim()) return;
+    setIsSavingToken(true);
+    try {
+      const apiUrl = getApiUrl();
+      const res = await fetch(`${apiUrl}/api/admin/github-token`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          token: inputGithubToken.trim(),
+          repo: githubStatus.repo || 'Ycf206/Vancouver-God-Eyes'
+        })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setSuccessMsg('GitHub Token 已成功儲存！現在可直接在網頁上一鍵遠端觸發 Actions 工作流與自動 Commit 新排程。');
+        setTimeout(() => setSuccessMsg(null), 5000);
+        setIsGithubModalOpen(false);
+        setInputGithubToken('');
+        await fetchAdminData();
+      } else {
+        alert(data.message || '儲存失敗');
+      }
+    } catch (err) {
+      alert('儲存失敗: ' + err);
+    } finally {
+      setIsSavingToken(false);
+    }
+  };
+
+  // Trigger Sync (場景一)
   const handleSync = async (sourceId: string, runner?: 'github_actions' | 'oci') => {
     setSyncingId(sourceId);
     try {
@@ -128,12 +224,13 @@ export default function AdminPage() {
       const res = await fetch(`${apiUrl}/api/admin/sources/sync`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ source_id: sourceId, runner })
       });
       const data = await res.json();
       if (res.ok) {
         setSuccessMsg(data.message || '同步請求已成功提交！');
-        setTimeout(() => setSuccessMsg(null), 3500);
+        setTimeout(() => setSuccessMsg(null), 4000);
         await fetchAdminData();
       }
     } catch (err) {
@@ -143,7 +240,7 @@ export default function AdminPage() {
     }
   };
 
-  // Save Schedule Change
+  // Save Schedule Change (場景二)
   const handleSaveSchedule = async (source: DataSource) => {
     setIsSavingSchedule(true);
     try {
@@ -151,6 +248,7 @@ export default function AdminPage() {
       const res = await fetch(`${apiUrl}/api/admin/sources/schedule`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           source_id: source.id,
           cron_expr: editCron || source.cron_expr,
@@ -161,7 +259,7 @@ export default function AdminPage() {
       const data = await res.json();
       if (res.ok) {
         setSuccessMsg(`排程已儲存！${data.detail || ''}`);
-        setTimeout(() => setSuccessMsg(null), 4000);
+        setTimeout(() => setSuccessMsg(null), 5000);
         setEditingId(null);
         await fetchAdminData();
       }
@@ -179,6 +277,7 @@ export default function AdminPage() {
       await fetch(`${apiUrl}/api/admin/sources/schedule`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           source_id: source.id,
           enabled: !source.enabled
@@ -195,7 +294,10 @@ export default function AdminPage() {
     if (!confirm('確定要清空所有系統排程與同步日誌嗎？')) return;
     try {
       const apiUrl = getApiUrl();
-      await fetch(`${apiUrl}/api/admin/sources/logs/clear`, { method: 'POST' });
+      await fetch(`${apiUrl}/api/admin/sources/logs/clear`, { 
+        method: 'POST',
+        credentials: 'include'
+      });
       await fetchAdminData();
     } catch (err) {
       console.error('Clear logs failed:', err);
@@ -252,16 +354,30 @@ export default function AdminPage() {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          {/* Status Badge */}
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#1c2230] border border-[#2b3447] text-xs text-gray-300">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>雲端與主機連線正常</span>
+        <div className="flex items-center gap-2.5">
+          {/* GitHub Token Status Pill (Click to open setup modal) */}
+          <button
+            onClick={() => setIsGithubModalOpen(true)}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all border shadow-xs cursor-pointer ${
+              githubStatus.configured
+                ? 'bg-sky-500/15 text-sky-300 border-sky-500/30 hover:bg-sky-500/25'
+                : 'bg-amber-500/15 text-amber-300 border-amber-500/40 hover:bg-amber-500/25 animate-pulse'
+            }`}
+            title="點擊設定 GitHub Token，以便支援一鍵觸發 Actions 雲端工作流與動態 Commit 排程"
+          >
+            <Key className="w-3.5 h-3.5" />
+            <span>{githubStatus.configured ? 'GitHub 串接就緒' : '未設定 GITHUB_TOKEN'}</span>
+          </button>
+
+          {/* Backend Status Badge */}
+          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#1c2230] border border-[#2b3447] text-xs text-gray-300">
+            <span className={`w-2 h-2 rounded-full ${backendConnected === false ? 'bg-amber-400' : 'bg-emerald-400 animate-pulse'}`}></span>
+            <span>{backendConnected === false ? '使用內建字典展示' : '雲端與主機連線正常'}</span>
           </div>
 
           <button
             onClick={() => fetchAdminData()}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#202738] hover:bg-[#2a344a] text-gray-200 border border-[#34405a] rounded-lg text-xs font-medium transition-all shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#202738] hover:bg-[#2a344a] text-gray-200 border border-[#34405a] rounded-lg text-xs font-medium transition-all shadow-sm cursor-pointer"
             title="手動刷新清單"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-sky-400' : ''}`} />
@@ -274,7 +390,7 @@ export default function AdminPage() {
                 setIsUnlocked(false);
                 sessionStorage.removeItem('gods_eye_admin_unlocked');
               }}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/30 rounded-lg text-xs font-semibold transition-all"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/30 rounded-lg text-xs font-semibold transition-all cursor-pointer"
             >
               <Unlock className="w-3.5 h-3.5" />
               <span>鎖定面板</span>
@@ -298,11 +414,11 @@ export default function AdminPage() {
               <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
               <span>{successMsg}</span>
             </div>
-            <button onClick={() => setSuccessMsg(null)} className="text-emerald-400 hover:text-emerald-200 text-xs font-bold px-2 py-0.5">✕</button>
+            <button onClick={() => setSuccessMsg(null)} className="text-emerald-400 hover:text-emerald-200 text-xs font-bold px-2 py-0.5 cursor-pointer">✕</button>
           </div>
         )}
 
-        {/* PIN Unlock Card (if locked) */}
+        {/* PIN Unlock Card (Password: 0206) */}
         {!isUnlocked && (
           <div className="bg-[#161a23] border border-amber-500/30 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
             <div className="flex items-center gap-3">
@@ -311,21 +427,24 @@ export default function AdminPage() {
               </div>
               <div>
                 <h3 className="text-sm font-bold text-white">後台已啟用安全唯讀保護</h3>
-                <p className="text-xs text-gray-400 mt-0.5">目前處於唯讀檢視模式。若需執行【立即同步】或【修改排程週期】，請輸入管理員 PIN 碼解鎖。</p>
+                <p className="text-xs text-gray-400 mt-0.5">目前處於唯讀檢視模式。若需執行【立即同步】或【修改排程週期】，請輸入管理員密碼解鎖。</p>
               </div>
             </div>
             <form onSubmit={handleUnlock} className="flex items-center gap-2 shrink-0 w-full sm:w-auto">
               <input
                 type="password"
-                placeholder="輸入管理員 PIN"
+                placeholder="輸入密碼 (0206)"
                 value={pinInput}
-                onChange={(e) => setPinInput(e.target.value)}
+                onChange={(e) => {
+                  setPinInput(e.target.value);
+                  setPinError(false);
+                }}
                 maxLength={8}
-                className="bg-[#0f1218] border border-[#2d3548] focus:border-amber-400 px-3 py-1.5 rounded-lg text-xs text-white placeholder-gray-500 outline-none w-full sm:w-36 transition-all"
+                className={`bg-[#0f1218] border ${pinError ? 'border-rose-500 ring-1 ring-rose-500' : 'border-[#2d3548] focus:border-amber-400'} px-3 py-1.5 rounded-lg text-xs text-white placeholder-gray-500 outline-none w-full sm:w-36 transition-all`}
               />
               <button
                 type="submit"
-                className="px-4 py-1.5 bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs rounded-lg transition-colors whitespace-nowrap shadow-md"
+                className="px-4 py-1.5 bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs rounded-lg transition-colors whitespace-nowrap shadow-md cursor-pointer"
               >
                 解鎖操作
               </button>
@@ -492,7 +611,7 @@ export default function AdminPage() {
                 <Filter className="w-3.5 h-3.5 text-gray-400 shrink-0" />
                 <button
                   onClick={() => setSelectedCategory('all')}
-                  className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-all ${
+                  className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-all cursor-pointer ${
                     selectedCategory === 'all'
                       ? 'bg-indigo-600/30 text-indigo-300 border border-indigo-500/40'
                       : 'text-gray-400 hover:text-gray-200'
@@ -504,7 +623,7 @@ export default function AdminPage() {
                   <button
                     key={cat}
                     onClick={() => setSelectedCategory(cat)}
-                    className={`px-2.5 py-1 rounded-md text-[11px] font-medium whitespace-nowrap transition-all ${
+                    className={`px-2.5 py-1 rounded-md text-[11px] font-medium whitespace-nowrap transition-all cursor-pointer ${
                       selectedCategory === cat
                         ? 'bg-indigo-600/30 text-indigo-300 border border-indigo-500/40'
                         : 'text-gray-400 hover:text-gray-200'
@@ -624,14 +743,14 @@ export default function AdminPage() {
                                 <div className="flex items-center gap-1 justify-end">
                                   <button
                                     onClick={() => setEditingId(null)}
-                                    className="px-2 py-0.5 rounded text-[10px] text-gray-400 hover:text-white"
+                                    className="px-2 py-0.5 rounded text-[10px] text-gray-400 hover:text-white cursor-pointer"
                                   >
                                     取消
                                   </button>
                                   <button
                                     disabled={isSavingSchedule}
                                     onClick={() => handleSaveSchedule(source)}
-                                    className="px-2.5 py-0.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-[10px] font-bold"
+                                    className="px-2.5 py-0.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-[10px] font-bold cursor-pointer"
                                   >
                                     {isSavingSchedule ? '儲存中...' : '儲存'}
                                   </button>
@@ -693,8 +812,8 @@ export default function AdminPage() {
                                     : isSyncing
                                       ? 'bg-sky-600 text-white animate-pulse'
                                       : isOci
-                                        ? 'bg-emerald-600/20 hover:bg-emerald-600 text-emerald-300 hover:text-white border border-emerald-500/30'
-                                        : 'bg-sky-600/20 hover:bg-sky-600 text-sky-300 hover:text-white border border-sky-500/30'
+                                        ? 'bg-emerald-600/20 hover:bg-emerald-600 text-emerald-300 hover:text-white border border-emerald-500/30 cursor-pointer'
+                                        : 'bg-sky-600/20 hover:bg-sky-600 text-sky-300 hover:text-white border border-sky-500/30 cursor-pointer'
                                 }`}
                                 title={isOci ? '立即更新 OCI 實時記憶體快取' : '透過 GitHub Actions 立即觸發雲端工作流'}
                               >
@@ -724,7 +843,7 @@ export default function AdminPage() {
                               <button
                                 disabled={!isUnlocked}
                                 onClick={() => handleToggleEnabled(source)}
-                                className={`px-1.5 py-0.5 rounded text-[10px] font-bold transition-colors ${
+                                className={`px-1.5 py-0.5 rounded text-[10px] font-bold transition-colors cursor-pointer ${
                                   !isUnlocked
                                     ? 'text-gray-700 cursor-not-allowed'
                                     : source.enabled !== false
@@ -769,7 +888,7 @@ export default function AdminPage() {
                 onClick={handleClearLogs}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors ${
                   isUnlocked && logs.length > 0
-                    ? 'bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/30'
+                    ? 'bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/30 cursor-pointer'
                     : 'bg-gray-800 text-gray-600 cursor-not-allowed'
                 }`}
               >
@@ -841,9 +960,85 @@ export default function AdminPage() {
         )}
       </main>
 
+      {/* GitHub Token Setup Modal */}
+      {isGithubModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-150">
+          <div className="bg-[#161a23] border border-[#2e374c] rounded-2xl p-6 max-w-lg w-full shadow-2xl flex flex-col gap-4 text-xs">
+            <div className="flex items-center justify-between pb-3 border-b border-[#242b3b]">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-sky-500/15 border border-sky-500/30 text-sky-400 flex items-center justify-center">
+                  <Key className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-sm text-white">設定 GitHub Personal Access Token (PAT)</h3>
+                  <p className="text-[11px] text-gray-400">用於一鍵喚醒 GitHub Actions 雲端工作流與動態 Commit 排程</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setIsGithubModalOpen(false)}
+                className="text-gray-400 hover:text-white p-1 rounded-md"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="bg-[#0f1218] p-3.5 rounded-xl border border-[#252d3e] flex flex-col gap-2 text-[11px] text-gray-300">
+              <span className="font-bold text-white flex items-center gap-1.5">
+                <span>📖 如何取得 Token？（只需 1 分鐘）</span>
+              </span>
+              <ol className="list-decimal list-inside space-y-1 text-gray-400 pl-1">
+                <li>打開瀏覽器登入 GitHub，前往：<a href="https://github.com/settings/tokens" target="_blank" rel="noopener noreferrer" className="text-sky-400 underline font-mono">github.com/settings/tokens</a></li>
+                <li>點擊「Generate new token」➔ 選擇「Generate new token (classic)」</li>
+                <li>Note 填寫 <code className="text-sky-300 bg-black/40 px-1 py-0.5 rounded">GodsEye-Admin</code></li>
+                <li>關鍵勾選兩項權限：<strong className="text-white">repo</strong>（完整儲存庫權限）與 <strong className="text-white">workflow</strong>（觸發工作流權限）</li>
+                <li>點擊底部綠色按鈕「Generate token」，將生成的 <code className="text-amber-300 bg-black/40 px-1 py-0.5 rounded">ghp_...</code> 複製貼在下方：</li>
+              </ol>
+            </div>
+
+            <form onSubmit={handleSaveGithubToken} className="flex flex-col gap-3">
+              <div>
+                <label className="text-[11px] font-bold text-gray-300 block mb-1">
+                  貼上 GitHub Token (以 ghp_ 開頭)
+                </label>
+                <input
+                  type="password"
+                  placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                  value={inputGithubToken}
+                  onChange={(e) => setInputGithubToken(e.target.value)}
+                  className="w-full bg-[#0d1017] border border-[#2e374c] focus:border-sky-400 px-3 py-2 rounded-lg text-white font-mono text-xs outline-none"
+                  required
+                />
+              </div>
+
+              <div className="flex items-center justify-between text-[11px] text-gray-400 pt-1">
+                <span>當前串接狀態：<strong className={githubStatus.configured ? 'text-emerald-400' : 'text-amber-400'}>{githubStatus.token_masked}</strong></span>
+                <span>儲存庫：<strong className="text-gray-300 font-mono">{githubStatus.repo}</strong></span>
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#242b3b]">
+                <button
+                  type="button"
+                  onClick={() => setIsGithubModalOpen(false)}
+                  className="px-3 py-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-[#1f2635] text-xs font-semibold cursor-pointer"
+                >
+                  取消
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSavingToken || !inputGithubToken.trim()}
+                  className="px-4 py-1.5 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5 shadow-md"
+                >
+                  {isSavingToken ? '儲存中...' : '儲存 Token'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* Footer */}
       <footer className="py-4 border-t border-[#1c2230] text-center text-xs text-gray-500">
-        Vancouver God&apos;s Eye Security Operations Center · 網址: admin.vangodseye.fyi · 限制僅授權設備存取
+        Vancouver God&apos;s Eye Security Operations Center · 網址: admin.vangodseye.fyi · 密碼防護已啟用
       </footer>
     </div>
   );

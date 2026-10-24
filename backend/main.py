@@ -3357,12 +3357,68 @@ def get_update_open_data_status():
 # ==========================================
 # 🛠️ 系統管理員後台 API (數據更新排程、即時狀態與 GeoJSON 發布)
 # ==========================================
+def get_admin_config_path():
+    candidate_paths = [
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'admin_sources_config.json'),
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), 'backend', 'data', 'admin_sources_config.json'),
+        os.path.join(os.getcwd(), 'backend', 'data', 'admin_sources_config.json'),
+        os.path.join(os.getcwd(), 'data', 'admin_sources_config.json'),
+        '/app/data/admin_sources_config.json',
+        '/app/backend/data/admin_sources_config.json',
+    ]
+    for p in candidate_paths:
+        if os.path.exists(p):
+            return p
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'admin_sources_config.json')
+
+
+@app.get("/api/admin/github-status")
+def get_admin_github_status():
+    """
+    查詢 GitHub Token 配置狀態與目標 Repository
+    """
+    token = os.environ.get("GITHUB_TOKEN", "").strip()
+    repo = os.environ.get("GITHUB_REPO", "Ycf206/Vancouver-God-Eyes").strip()
+    return {
+        "configured": bool(token),
+        "repo": repo,
+        "token_masked": (token[:4] + "..." + token[-4:]) if len(token) > 8 else ("已設定" if token else "未設定")
+    }
+
+
+@app.post("/api/admin/github-token")
+def set_admin_github_token(payload: dict = Body(...)):
+    """
+    從後台介面直接儲存 GITHUB_TOKEN，無須手動 SSH
+    """
+    token = payload.get("token", "").strip()
+    repo = payload.get("repo", "Ycf206/Vancouver-God-Eyes").strip()
+    if token:
+        os.environ["GITHUB_TOKEN"] = token
+        os.environ["GITHUB_REPO"] = repo
+        try:
+            env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env')
+            lines = []
+            if os.path.exists(env_path):
+                with open(env_path, 'r', encoding='utf-8') as f:
+                    lines = f.readlines()
+            new_lines = [l for l in lines if not l.startswith('GITHUB_TOKEN=') and not l.startswith('GITHUB_REPO=')]
+            new_lines.append(f"GITHUB_TOKEN={token}\n")
+            new_lines.append(f"GITHUB_REPO={repo}\n")
+            with open(env_path, 'w', encoding='utf-8') as f:
+                f.writelines(new_lines)
+        except Exception as e:
+            print("Failed to save to .env:", e)
+        return {"status": "success", "message": "GitHub Token 已成功儲存！"}
+    return {"status": "error", "message": "Token 不能為空"}
+
+
 @app.get("/api/admin/sources")
 def get_admin_sources():
     """
     獲取系統所有數據源 (API 與 GeoJSON) 之最新狀態、排程頻率、上次更新時間與記錄筆數
     """
-    config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'admin_sources_config.json')
+    config_path = get_admin_config_path()
     if os.path.exists(config_path):
         try:
             with open(config_path, 'r', encoding='utf-8') as f:
@@ -3380,7 +3436,7 @@ def trigger_admin_sync(payload: dict = Body(...)):
     """
     source_id = payload.get("source_id")
     target_runner = payload.get("runner")  # 'oci' or 'github_actions'
-    config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'admin_sources_config.json')
+    config_path = get_admin_config_path()
     now_iso = datetime.utcnow().isoformat() + "Z"
     github_token = os.environ.get("GITHUB_TOKEN", "").strip()
     github_repo = os.environ.get("GITHUB_REPO", "Ycf206/Vancouver-God-Eyes").strip()
@@ -3434,7 +3490,7 @@ def trigger_admin_sync(payload: dict = Body(...)):
                             print(f"Failed to dispatch workflow {wf}: {e}")
                     detail_msg = f"已透過 GitHub Workflow Dispatch 觸發 {len(dispatched_workflows)} 個 Actions 雲端工作流立即執行！"
                 else:
-                    detail_msg = f"已排程觸發 {updated_count} 項 GitHub Actions 圖層更新（如需直接遠端呼叫 GitHub，請設定 GITHUB_TOKEN）。"
+                    detail_msg = f"已排程觸發 {updated_count} 項 GitHub Actions 圖層更新（如需直接遠端呼叫 GitHub，請在後台設定 GITHUB_TOKEN）。"
                 action_name = "GITHUB_BATCH_SYNC"
             else:
                 # 單一項目觸發
@@ -3468,7 +3524,7 @@ def trigger_admin_sync(payload: dict = Body(...)):
                             except Exception as ex:
                                 detail_msg = f"GitHub API 連線異常: {ex}"
                         else:
-                            detail_msg = f"已標記 [{target_name}] 同步請求。綁定工作流: [{wf or '預設'}]（若設定 GITHUB_TOKEN 可一鍵喚醒 Actions 雲端執行）。"
+                            detail_msg = f"已標記 [{target_name}] 同步請求。綁定工作流: [{wf or '預設'}]（在右上角設定 GITHUB_TOKEN 即可一鍵遠端喚醒 Actions 雲端執行）。"
                     else:
                         action_name = "OCI_SYNC"
                         detail_msg = f"OCI 伺服器已即時更新 [{target_name}] 資料快取與連線狀態。"
@@ -3508,15 +3564,17 @@ def trigger_admin_sync(payload: dict = Body(...)):
 def update_admin_schedule(payload: dict = Body(...)):
     """
     更新特定數據源之排程週期 (Cron 或間隔) 與自動同步開關
-    若為 GitHub Actions 資料源，同步更新 .github/workflows/*.yml 中的 cron 表達式
+    若為 GitHub Actions 資料源，支援直接透過 GitHub Contents API 或本機 yml 同步更新 Cron
     """
     source_id = payload.get("source_id")
     schedule_interval = payload.get("schedule_interval")
     cron_expr = payload.get("cron_expr")
     enabled = payload.get("enabled", True)
     
-    config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'admin_sources_config.json')
+    config_path = get_admin_config_path()
     now_iso = datetime.utcnow().isoformat() + "Z"
+    github_token = os.environ.get("GITHUB_TOKEN", "").strip()
+    github_repo = os.environ.get("GITHUB_REPO", "Ycf206/Vancouver-God-Eyes").strip()
     
     if os.path.exists(config_path):
         try:
@@ -3539,8 +3597,38 @@ def update_admin_schedule(payload: dict = Body(...)):
                 wf = updated_src.get("workflow_file")
                 detail_extra = ""
                 
-                # 若為 GitHub Actions 項目且有指定工作流檔案，嘗試同步修改本機倉庫的 yml cron
+                # 若為 GitHub Actions 項目，更新工作流 cron
                 if runner == "github_actions" and wf and cron_expr:
+                    # 1. 嘗試直接透過 GitHub API Commit 更新 (場景二最佳解)
+                    if github_token:
+                        try:
+                            import base64
+                            content_url = f"https://api.github.com/repos/{github_repo}/contents/.github/workflows/{wf}"
+                            headers = {
+                                "Authorization": f"Bearer {github_token}",
+                                "Accept": "application/vnd.github.v3+json",
+                                "User-Agent": "VancouverGodsEye-Admin"
+                            }
+                            get_resp = requests.get(content_url, headers=headers, timeout=8)
+                            if get_resp.status_code == 200:
+                                file_info = get_resp.json()
+                                sha = file_info.get("sha")
+                                raw_yml = base64.b64decode(file_info.get("content", "")).decode("utf-8")
+                                import re
+                                new_yml = re.sub(r"-s*cron:s*['"][^'"]+['"]", f"- cron: '{cron_expr}'", raw_yml)
+                                put_body = {
+                                    "message": f"chore(schedule): update {updated_src.get('name')} cron to '{cron_expr}' via Admin Portal",
+                                    "content": base64.b64encode(new_yml.encode("utf-8")).decode("utf-8"),
+                                    "sha": sha,
+                                    "branch": "main"
+                                }
+                                put_resp = requests.put(content_url, json=put_body, headers=headers, timeout=10)
+                                if put_resp.status_code in [200, 201]:
+                                    detail_extra = f"已透過 GitHub API 自動 Commit 並 Push 至 main 分支！GitHub Actions 即刻生效新排程週期。"
+                        except Exception as gh_ex:
+                            print(f"GitHub Contents API update failed: {gh_ex}")
+
+                    # 2. 備份：同步修改本機倉庫的 yml
                     try:
                         repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
                         wf_path = os.path.join(repo_root, '.github', 'workflows', wf)
@@ -3552,9 +3640,10 @@ def update_admin_schedule(payload: dict = Body(...)):
                             if new_ycontent != ycontent:
                                 with open(wf_path, 'w', encoding='utf-8') as yf:
                                     yf.write(new_ycontent)
-                                detail_extra = f"已同步更新工作流檔案 [{wf}] 中的 Cron 設定為 '{cron_expr}'。"
+                                if not detail_extra:
+                                    detail_extra = f"已同步更新伺服器本機工作流檔案 [{wf}] 中的 Cron 設定為 '{cron_expr}'。"
                     except Exception as yerr:
-                        detail_extra = f"(工作流檔案更新提示: {yerr})"
+                        print("Local workflow file update:", yerr)
                 
                 runner_label = "GitHub Actions 雲端管線" if runner == "github_actions" else "OCI 伺服器服務"
                 new_log = {
@@ -3585,7 +3674,7 @@ def clear_admin_logs():
     """
     清除管理員操作與排程更新記錄
     """
-    config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'admin_sources_config.json')
+    config_path = get_admin_config_path()
     if os.path.exists(config_path):
         try:
             with open(config_path, 'r', encoding='utf-8') as f:
