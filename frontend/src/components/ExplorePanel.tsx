@@ -2535,7 +2535,7 @@ function ExploreContent() {
 
   return (
     <div 
-      className="fixed top-[70px] right-4 z-40 w-[470px] max-w-[calc(100vw-32px)] max-h-[calc(100vh-230px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col animate-in fade-in slide-in-from-right-4 duration-200 select-none overflow-hidden"
+      className="fixed top-[70px] right-3 sm:right-[72px] z-40 w-[520px] max-w-[calc(100vw-24px)] sm:max-w-[calc(100vw-96px)] max-h-[calc(100vh-148px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col animate-in fade-in slide-in-from-right-4 duration-200 select-none overflow-hidden"
       onClick={(e) => e.stopPropagation()}
     >
       {/* 1. 當多於1個分頁時的關閉確認對話框 (Close Confirmation Dialog) */}
