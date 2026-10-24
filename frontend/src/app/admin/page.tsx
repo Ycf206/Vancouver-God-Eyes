@@ -99,61 +99,91 @@ export default function AdminPage() {
     }
   }, []);
 
+  // 統一防禦型管理 API 請求輔助函數 (完全杜絕 HTML 502/404 造成之 SyntaxError 與跨域 CORS 問題)
+  const adminApiFetch = async <T = any>(
+    path: string, 
+    options: RequestInit = {}
+  ): Promise<{ ok: boolean; data?: T; error?: string; status?: number }> => {
+    const tryFetch = async (url: string) => {
+      return await fetch(url, {
+        ...options,
+        headers: {
+          'Content-Type': 'application/json',
+          ...(options.headers || {})
+        }
+      });
+    };
+
+    let res: Response | null = null;
+    let lastError = '';
+
+    // 1. 優先採用同源相對路徑
+    try {
+      res = await tryFetch(path);
+    } catch (err: any) {
+      lastError = err?.message || String(err);
+    }
+
+    // 2. 若相對路徑網路層失敗，備用嘗試 apiUrl
+    if (!res) {
+      try {
+        const apiUrl = getApiUrl();
+        if (apiUrl && !apiUrl.startsWith(window.location.origin)) {
+          res = await tryFetch(`${apiUrl}${path}`);
+        }
+      } catch (err: any) {
+        lastError = err?.message || String(err);
+      }
+    }
+
+    if (!res) {
+      return { ok: false, error: lastError || '無法連線至伺服器，請檢查網路連線或稍候再試' };
+    }
+
+    const contentType = res.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) {
+      try {
+        const json = await res.json();
+        if (res.ok) {
+          return { ok: true, data: json, status: res.status };
+        } else {
+          return { ok: false, error: json.message || json.detail || `請求失敗 (HTTP ${res.status})`, status: res.status };
+        }
+      } catch (_) {
+        return { ok: false, error: '回傳資料解析失敗', status: res.status };
+      }
+    }
+
+    // 非 JSON 格式 (如 Nginx 502 Bad Gateway HTML, 404, 500, 或 Cloudflare 攔截頁面)
+    if (res.status === 502 || res.status === 504) {
+      return { ok: false, error: `後端服務啟動中或伺服器正在重新編譯容器 (HTTP ${res.status})，請稍候 30 秒再試`, status: res.status };
+    }
+    if (res.status === 404) {
+      return { ok: false, error: `找不到對應的後端 API 端點 (HTTP 404)`, status: res.status };
+    }
+    return { ok: false, error: `伺服器回應異常 (HTTP ${res.status})`, status: res.status };
+  };
+
   const fetchAdminData = async () => {
     try {
       setIsLoading(true);
-      const apiUrl = getApiUrl();
       
-      let sourcesLoaded = false;
-      // 1. 優先透過標準 API 網址請求
-      try {
-        const res = await fetch(`${apiUrl}/api/admin/sources`, { credentials: 'include' });
-        if (res.ok) {
-          const data = await res.json();
-          if (data.sources && Array.isArray(data.sources) && data.sources.length > 0) {
-            setSources(data.sources);
-            setLogs(data.logs || []);
-            setBackendConnected(true);
-            sourcesLoaded = true;
-          }
-        }
-      } catch (err) {
-        console.warn('Direct API url fetch failed, trying relative path fallback...', err);
-      }
-
-      // 2. 若直連失敗，嘗試相對路徑 /api/admin/sources
-      if (!sourcesLoaded) {
-        try {
-          const res = await fetch('/api/admin/sources', { credentials: 'include' });
-          if (res.ok) {
-            const data = await res.json();
-            if (data.sources && Array.isArray(data.sources) && data.sources.length > 0) {
-              setSources(data.sources);
-              setLogs(data.logs || []);
-              setBackendConnected(true);
-              sourcesLoaded = true;
-            }
-          }
-        } catch (err) {
-          console.warn('Relative path fetch failed, activating built-in catalog fallback...', err);
-        }
-      }
-
-      // 3. 終極保底：若後端暫未回應，立即採用內建 45 項完整圖資字典，保證絕對不會顯示 0 筆！
-      if (!sourcesLoaded) {
+      const res = await adminApiFetch<{ sources: DataSource[]; logs: AuditLog[] }>('/api/admin/sources');
+      if (res.ok && res.data && Array.isArray(res.data.sources) && res.data.sources.length > 0) {
+        setSources(res.data.sources);
+        setLogs(res.data.logs || []);
+        setBackendConnected(true);
+      } else {
+        // 終極保底：若後端暫未回應，立即採用內建 45 項完整圖資字典
         setSources(DEFAULT_ADMIN_SOURCES as DataSource[]);
         setBackendConnected(false);
       }
 
-      // 4. 查詢 GitHub Token 配置狀態
-      try {
-        const ghRes = await fetch(`${apiUrl}/api/admin/github-status`, { credentials: 'include' });
-        if (ghRes.ok) {
-          const ghData = await ghRes.json();
-          setGithubStatus(ghData);
-        }
-      } catch (_) {}
-
+      // 查詢 GitHub Token 配置狀態
+      const ghRes = await adminApiFetch<{ configured: boolean; repo: string; token_masked: string }>('/api/admin/github-status');
+      if (ghRes.ok && ghRes.data) {
+        setGithubStatus(ghRes.data);
+      }
     } catch (err) {
       console.error('Failed to load admin data:', err);
       setSources(DEFAULT_ADMIN_SOURCES as DataSource[]);
@@ -189,28 +219,24 @@ export default function AdminPage() {
     if (!inputGithubToken.trim()) return;
     setIsSavingToken(true);
     try {
-      const apiUrl = getApiUrl();
-      const res = await fetch(`${apiUrl}/api/admin/github-token`, {
+      const res = await adminApiFetch<{ status: string; message: string }>('/api/admin/github-token', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({
           token: inputGithubToken.trim(),
           repo: githubStatus.repo || 'Ycf206/Vancouver-God-Eyes'
         })
       });
-      const data = await res.json();
-      if (res.ok) {
-        setSuccessMsg('GitHub Token 已成功儲存！現在可直接在網頁上一鍵遠端觸發 Actions 工作流與自動 Commit 新排程。');
-        setTimeout(() => setSuccessMsg(null), 5000);
+      if (res.ok && res.data) {
+        setSuccessMsg(res.data.message || 'GitHub Token 已成功儲存！');
+        setTimeout(() => setSuccessMsg(null), 6000);
         setIsGithubModalOpen(false);
         setInputGithubToken('');
         await fetchAdminData();
       } else {
-        alert(data.message || '儲存失敗');
+        alert('儲存失敗: ' + (res.error || '未知錯誤'));
       }
-    } catch (err) {
-      alert('儲存失敗: ' + err);
+    } catch (err: any) {
+      alert('儲存失敗: ' + (err?.message || err));
     } finally {
       setIsSavingToken(false);
     }
@@ -220,20 +246,18 @@ export default function AdminPage() {
   const handleSync = async (sourceId: string, runner?: 'github_actions' | 'oci') => {
     setSyncingId(sourceId);
     try {
-      const apiUrl = getApiUrl();
-      const res = await fetch(`${apiUrl}/api/admin/sources/sync`, {
+      const res = await adminApiFetch<{ status: string; message: string }>('/api/admin/sources/sync', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({ source_id: sourceId, runner })
       });
-      const data = await res.json();
-      if (res.ok) {
-        setSuccessMsg(data.message || '同步請求已成功提交！');
-        setTimeout(() => setSuccessMsg(null), 4000);
+      if (res.ok && res.data) {
+        setSuccessMsg(res.data.message || '同步請求已成功提交！');
+        setTimeout(() => setSuccessMsg(null), 5000);
         await fetchAdminData();
+      } else {
+        alert('同步失敗: ' + (res.error || '未知錯誤'));
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Sync failed:', err);
     } finally {
       setSyncingId(null);
@@ -244,11 +268,8 @@ export default function AdminPage() {
   const handleSaveSchedule = async (source: DataSource) => {
     setIsSavingSchedule(true);
     try {
-      const apiUrl = getApiUrl();
-      const res = await fetch(`${apiUrl}/api/admin/sources/schedule`, {
+      const res = await adminApiFetch<{ status: string; message: string; detail?: string }>('/api/admin/sources/schedule', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({
           source_id: source.id,
           cron_expr: editCron || source.cron_expr,
@@ -256,14 +277,15 @@ export default function AdminPage() {
           enabled: source.enabled !== false
         })
       });
-      const data = await res.json();
-      if (res.ok) {
-        setSuccessMsg(`排程已儲存！${data.detail || ''}`);
-        setTimeout(() => setSuccessMsg(null), 5000);
+      if (res.ok && res.data) {
+        setSuccessMsg(`排程已儲存！${res.data.detail || res.data.message || ''}`);
+        setTimeout(() => setSuccessMsg(null), 6000);
         setEditingId(null);
         await fetchAdminData();
+      } else {
+        alert('儲存排程失敗: ' + (res.error || '未知錯誤'));
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Save schedule failed:', err);
     } finally {
       setIsSavingSchedule(false);
@@ -273,11 +295,8 @@ export default function AdminPage() {
   // Toggle Source Enabled/Disabled
   const handleToggleEnabled = async (source: DataSource) => {
     try {
-      const apiUrl = getApiUrl();
-      await fetch(`${apiUrl}/api/admin/sources/schedule`, {
+      await adminApiFetch('/api/admin/sources/schedule', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({
           source_id: source.id,
           enabled: !source.enabled
@@ -293,10 +312,8 @@ export default function AdminPage() {
   const handleClearLogs = async () => {
     if (!confirm('確定要清空所有系統排程與同步日誌嗎？')) return;
     try {
-      const apiUrl = getApiUrl();
-      await fetch(`${apiUrl}/api/admin/sources/logs/clear`, { 
-        method: 'POST',
-        credentials: 'include'
+      await adminApiFetch('/api/admin/sources/logs/clear', { 
+        method: 'POST'
       });
       await fetchAdminData();
     } catch (err) {

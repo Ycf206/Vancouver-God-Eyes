@@ -25,7 +25,7 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origin_regex=r"https?://.*",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -3393,24 +3393,47 @@ def set_admin_github_token(payload: dict = Body(...)):
     """
     token = payload.get("token", "").strip()
     repo = payload.get("repo", "Ycf206/Vancouver-God-Eyes").strip()
-    if token:
-        os.environ["GITHUB_TOKEN"] = token
-        os.environ["GITHUB_REPO"] = repo
-        try:
-            env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env')
-            lines = []
-            if os.path.exists(env_path):
-                with open(env_path, 'r', encoding='utf-8') as f:
-                    lines = f.readlines()
-            new_lines = [l for l in lines if not l.startswith('GITHUB_TOKEN=') and not l.startswith('GITHUB_REPO=')]
-            new_lines.append(f"GITHUB_TOKEN={token}\n")
-            new_lines.append(f"GITHUB_REPO={repo}\n")
-            with open(env_path, 'w', encoding='utf-8') as f:
-                f.writelines(new_lines)
-        except Exception as e:
-            print("Failed to save to .env:", e)
-        return {"status": "success", "message": "GitHub Token 已成功儲存！"}
-    return {"status": "error", "message": "Token 不能為空"}
+    if not token:
+        return {"status": "error", "message": "Token 不能為空"}
+
+    # 驗證 Token 是否具備有效 GitHub 授權
+    user_name = ""
+    try:
+        gh_resp = requests.get(
+            "https://api.github.com/user",
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Accept": "application/vnd.github.v3+json",
+                "User-Agent": "VancouverGodsEye-Admin"
+            },
+            timeout=5
+        )
+        if gh_resp.status_code == 401:
+            return {"status": "error", "message": "GitHub Token 驗證失敗 (401 Unauthorized)：請確認 Token 是否過期或複製不完整。"}
+        elif gh_resp.status_code == 200:
+            user_data = gh_resp.json()
+            user_name = user_data.get("login", "")
+    except Exception as gh_ex:
+        logger.warning(f"GitHub Token 驗證連線跳過: {gh_ex}")
+
+    os.environ["GITHUB_TOKEN"] = token
+    os.environ["GITHUB_REPO"] = repo
+    try:
+        env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env')
+        lines = []
+        if os.path.exists(env_path):
+            with open(env_path, 'r', encoding='utf-8') as f:
+                lines = f.readlines()
+        new_lines = [l for l in lines if not l.startswith('GITHUB_TOKEN=') and not l.startswith('GITHUB_REPO=')]
+        new_lines.append(f"GITHUB_TOKEN={token}\n")
+        new_lines.append(f"GITHUB_REPO={repo}\n")
+        with open(env_path, 'w', encoding='utf-8') as f:
+            f.writelines(new_lines)
+    except Exception as e:
+        print("Failed to save to .env:", e)
+
+    msg = f"GitHub Token 儲存成功！已綁定帳號 @{user_name}，現在可一鍵觸發 Actions 工作流與自動 Commit 排程。" if user_name else "GitHub Token 已成功儲存！"
+    return {"status": "success", "message": msg}
 
 
 @app.get("/api/admin/sources")
