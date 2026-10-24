@@ -1,0 +1,56 @@
+name: Hourly Micromobility Sync (共享單車 & 共享滑板車 每小時即時狀態更新)
+
+on:
+  schedule:
+    # 每小時整點執行 (UTC)
+    - cron: '0 * * * *'
+  workflow_dispatch: # 支援手動觸發
+
+jobs:
+  sync-micromobility:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run Micromobility Sync Script (Mobi Bikes & Lime Scooters)
+        run: |
+          node scripts/fetch_shared_micromobility.mjs all
+
+      - name: Commit and Push Updated GeoJSON
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add backend/data/vancouver_shared_bikes.geojson frontend/public/vancouver_shared_bikes.geojson backend/data/vancouver_escooter.geojson frontend/public/vancouver_escooter.geojson
+          if git diff --staged --quiet; then
+            echo "No micromobility changes detected."
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            git commit -m "chore(data): auto-sync hourly Mobi bikes & Lime scooters availability status [skip ci]"
+            git push origin main
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+        id: git_push
+
+      - name: Sync Updated GeoJSON to OCI VM
+        if: steps.git_push.outputs.has_changes == 'true' && env.HAS_OCI_SECRET == 'true'
+        env:
+          HAS_OCI_SECRET: ${{ secrets.OCI_HOST_IP != '' }}
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.OCI_HOST_IP }}
+          username: ubuntu
+          key: ${{ secrets.OCI_SSH_KEY }}
+          script: |
+            echo "🔄 同步最新共享微出行 GeoJSON 至 OCI 伺服器..."
+            cd ~/Vancouver-God-Eyes || cd ~/vancouver-gods-eye
+            git pull
+            echo "✅ OCI 伺服器同步完成！"

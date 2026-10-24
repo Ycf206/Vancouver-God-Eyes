@@ -43,6 +43,67 @@ export function formatTimePreference(
   }
 }
 
+/**
+ * Format time range strings respecting 12h / 24h user preference.
+ * Supports:
+ *   formatTimeRange("07:00 - 09:30", '12h') -> "07:00 AM - 09:30 AM"
+ *   formatTimeRange("07:00", "09:30", '12h') -> "07:00 AM - 09:30 AM"
+ *   formatTimeRange("9am-6pm", '12h') -> "09:00 AM - 06:00 PM"
+ *   formatTimeRange("8a.m. - 5p.m. Mon-Fri", '12h') -> "08:00 AM - 05:00 PM Mon-Fri"
+ */
+export function formatTimeRange(
+  startOrRange: string | null | undefined,
+  endOrFormat?: string | '12h' | '24h',
+  maybeFormat?: '12h' | '24h'
+): string {
+  if (!startOrRange) return '';
+  
+  let rawRange = String(startOrRange).trim();
+  let format: '12h' | '24h' = '24h';
+
+  if (maybeFormat === '12h' || maybeFormat === '24h') {
+    format = maybeFormat;
+    if (endOrFormat) {
+      rawRange = `${rawRange} - ${String(endOrFormat).trim()}`;
+    }
+  } else if (endOrFormat === '12h' || endOrFormat === '24h') {
+    format = endOrFormat;
+  } else if (endOrFormat) {
+    rawRange = `${rawRange} - ${String(endOrFormat).trim()}`;
+  }
+
+  if (!rawRange || rawRange === '--' || rawRange === '24/7' || rawRange.toLowerCase() === '24 hours') return rawRange;
+
+  // Regex matching time tokens: "07:00", "7:00am", "9am", "18:00", "6pm", "8a.m.", "5p.m."
+  const timeTokenRegex = /(\d{1,2})(?::(\d{2}))?\s*(am|pm|a\.m\.|p\.m\.)?/gi;
+
+  return rawRange.replace(timeTokenRegex, (match, hStr, mStr, ampmStr) => {
+    // If it's just a lonely single/double digit without min or am/pm, don't confuse with dates or plain numbers
+    // But in ranges like "9am-6pm", ampmStr is present. If no mStr and no ampmStr, check if colon was present.
+    if (!mStr && !ampmStr) {
+      return match;
+    }
+
+    let hour = parseInt(hStr, 10);
+    const min = mStr || '00';
+    const ampm = ampmStr ? ampmStr.toLowerCase().replace(/\./g, '') : null;
+
+    if (ampm) {
+      if (ampm === 'pm' && hour < 12) hour += 12;
+      if (ampm === 'am' && hour === 12) hour = 0;
+    }
+
+    if (format === '12h') {
+      const period = hour >= 12 ? 'PM' : 'AM';
+      let h12 = hour % 12;
+      if (h12 === 0) h12 = 12;
+      return `${String(h12).padStart(2, '0')}:${min} ${period}`;
+    } else {
+      return `${String(hour).padStart(2, '0')}:${min}`;
+    }
+  });
+}
+
 export function formatClock(
   date: Date, 
   format: '12h' | '24h' = '24h',
