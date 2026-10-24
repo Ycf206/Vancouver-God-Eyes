@@ -550,6 +550,9 @@ function ExploreContent() {
     setExploreOpen, 
     exploreTab,
     setExploreTab,
+    openExploreTabs,
+    openExploreTab,
+    closeExploreTab,
     userLocation, 
     setSettingsModalOpen,
     distanceUnit,
@@ -2388,68 +2391,97 @@ function ExploreContent() {
     });
   }, [borderCrossings, borderDirectionFilter]);
 
-  const exploreTabsRow1 = [
-    { id: 'weather', label: '天氣', icon: CloudSun, iconColor: 'text-sky-400' },
-    { id: 'news', label: '新聞', icon: Newspaper, iconColor: 'text-amber-400' },
-    { id: 'events', label: '活動', icon: CalendarDays, iconColor: 'text-purple-400' },
-    { id: 'beach', label: '沙灘水質', hoverLabel: '沙灘', icon: Droplets, iconColor: 'text-teal-300' },
-    { id: 'ski', label: '滑雪', icon: MountainSnow, iconColor: 'text-cyan-300' },
-    { id: 'aurora', label: '極光', icon: Sparkles, iconColor: 'text-emerald-300' },
-  ];
-
-  const exploreTabsRow2 = [
-    { id: 'fuel', label: '燃油', icon: Fuel, iconColor: 'text-emerald-400' },
-    { id: 'ev', label: '充電', icon: Zap, iconColor: 'text-yellow-400' },
-    { id: 'alerts', label: '交通警報', hoverLabel: '警報', icon: AlertTriangle, iconColor: 'text-rose-400' },
-    { id: 'traffic', label: '路況', icon: Activity, iconColor: 'text-orange-400' },
-    { id: 'border', label: '關口', icon: ShieldCheck, iconColor: 'text-emerald-400' },
-  ] as const;
-
-  const exploreTabsRow3 = [
-    { id: 'ferry', label: '渡輪', icon: Ship, iconColor: 'text-cyan-400' },
-    { id: 'cargo', label: '船運', icon: Anchor, iconColor: 'text-blue-400' },
-  ] as const;
-
   const tabInfoMap: Record<string, { label: string; icon: any; color: string }> = {
     weather: { label: '天氣資訊', icon: CloudSun, color: 'text-sky-400' },
     news: { label: '新聞快訊', icon: Newspaper, color: 'text-amber-400' },
     events: { label: '活動情報', icon: CalendarDays, color: 'text-purple-400' },
     beach: { label: '泳灘水質', icon: Droplets, color: 'text-teal-300' },
-    ski: { label: '滑雪場現況', icon: Mountain, color: 'text-cyan-400' },
+    ski: { label: '滑雪場現況', icon: MountainSnow, color: 'text-cyan-400' },
     aurora: { label: '極光觀測', icon: Sparkles, color: 'text-fuchsia-400' },
     fuel: { label: '即時油價', icon: Fuel, color: 'text-amber-500' },
     charging: { label: '充電站', icon: Zap, color: 'text-emerald-400' },
+    ev: { label: '充電站', icon: Zap, color: 'text-emerald-400' },
     alerts: { label: '即時通報', icon: AlertTriangle, color: 'text-rose-400' },
-    traffic: { label: '即時路況', icon: Activity, color: 'text-amber-400' },
+    traffic: { label: '即時路況', icon: Activity, color: 'text-orange-400' },
     border: { label: '美加邊境關口', icon: Flag, color: 'text-blue-400' },
     ferry: { label: 'BC 渡輪', icon: Anchor, color: 'text-sky-400' },
     shipping: { label: '即時航運', icon: Ship, color: 'text-teal-400' },
+    cargo: { label: '即時航運', icon: Ship, color: 'text-teal-400' },
     flights: { label: '航班動態', icon: Plane, color: 'text-indigo-400' },
   };
 
-  const currentTabInfo = tabInfoMap[activeTab] || { label: '探索', icon: Compass, color: 'text-emerald-400' };
-  const CurrentTabIcon = currentTabInfo.icon;
+  const tabShortTitleMap: Record<string, string> = {
+    weather: '天氣',
+    news: '新聞',
+    events: '活動',
+    beach: '泳灘',
+    ski: '滑雪',
+    aurora: '極光',
+    fuel: '油價',
+    charging: '充電',
+    ev: '充電',
+    alerts: '通報',
+    traffic: '路況',
+    border: '關口',
+    ferry: '渡輪',
+    shipping: '航運',
+    cargo: '航運',
+    flights: '航班',
+  };
+
+  const tabsToRender = (openExploreTabs && openExploreTabs.length > 0) ? openExploreTabs : [activeTab];
 
   return (
     <div 
-      className="fixed top-[84px] right-4 z-40 w-[390px] max-w-[calc(100vw-32px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-100px)] animate-in fade-in slide-in-from-right-4 duration-200 select-none overflow-hidden"
+      className="fixed top-[84px] right-4 z-40 w-[410px] max-w-[calc(100vw-32px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-100px)] animate-in fade-in slide-in-from-right-4 duration-200 select-none overflow-hidden"
       onClick={(e) => e.stopPropagation()}
     >
-      {/* Header */}
-      <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-[#262b38] shrink-0">
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-[#222838] border border-[#323b50] flex items-center justify-center shrink-0 shadow-sm">
-            <CurrentTabIcon className={`w-4 h-4 ${currentTabInfo.color}`} />
-          </div>
-          <h2 className="text-sm font-bold text-white tracking-wide">{currentTabInfo.label}</h2>
+      {/* 瀏覽器風格多分頁導航標籤列 (Browser-style Tab Navigation Bar) */}
+      <div className="flex items-center gap-1.5 pb-2 mb-2.5 border-b border-[#262b38] shrink-0 min-w-0">
+        <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none flex-1 min-w-0 pr-1">
+          {tabsToRender.map((tabId) => {
+            const info = tabInfoMap[tabId] || { label: tabId, icon: Compass, color: 'text-emerald-400' };
+            const TabIcon = info.icon;
+            const isSelected = activeTab === tabId;
+            const shortLabel = tabShortTitleMap[tabId] || info.label;
+
+            return (
+              <div
+                key={tabId}
+                onClick={() => setExploreTab(tabId)}
+                className={`group flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all border shrink-0 select-none ${
+                  isSelected
+                    ? 'bg-[#22283a] text-white border-emerald-500/60 shadow-md ring-1 ring-emerald-500/30'
+                    : 'bg-[#12151e]/80 text-gray-400 hover:text-gray-200 hover:bg-[#1a202e] border-[#222735]'
+                }`}
+                title={info.label}
+              >
+                <TabIcon className={`w-3.5 h-3.5 shrink-0 ${isSelected ? info.color : 'text-gray-400 group-hover:text-gray-300'}`} />
+                <span className="whitespace-nowrap">{shortLabel}</span>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    closeExploreTab(tabId);
+                  }}
+                  className="ml-0.5 p-0.5 rounded hover:bg-white/10 text-gray-400 hover:text-rose-400 transition-colors"
+                  title={`關閉 ${shortLabel} 分頁`}
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </div>
+            );
+          })}
         </div>
+
+        {/* 右側視窗關閉按鈕 */}
         <button
           onClick={() => {
             setExploreOpen(false);
             setSearchTarget(null);
           }}
-          className="text-gray-400 hover:text-white p-1 rounded-md hover:bg-[#252a38] transition-colors"
-          title="關閉"
+          className="text-gray-400 hover:text-white p-1 rounded-md hover:bg-[#252a38] transition-colors shrink-0 ml-1"
+          title="關閉探索面板"
         >
           <X className="w-4 h-4" />
         </button>

@@ -474,7 +474,7 @@ export default function AppMap() {
   const { 
     layers, mapStyleType, searchTarget, setSearchTarget, isLayerPanelOpen, 
     contourInterval, timeFormat, distanceUnit, userLocation, setUserLocation, setExploreOpen,
-    isExploreOpen, exploreTab, setExploreTab, setSettingsModalOpen,
+    isExploreOpen, exploreTab, setExploreTab, openExploreTab, openExploreTabs, setSettingsModalOpen,
     parkingMeterFilter, setParkingMeterFilter,
     motorcycleParkingFilter, setMotorcycleParkingFilter,
     radiusExploration, setRadiusExploration,
@@ -5657,17 +5657,17 @@ export default function AppMap() {
   const getFloatingPanelPos = (offsetIdx: number) => {
     switch (offsetIdx) {
       case 0:
-        return 'top-[88px] left-4 md:left-[256px]';
+        return 'top-[96px] left-4 md:left-[256px]';
       case 1:
-        return 'top-[148px] md:top-[88px] left-4 md:left-[568px]';
+        return 'top-[156px] md:top-[96px] left-4 md:left-[568px]';
       case 2:
-        return 'top-[208px] md:top-[88px] left-4 md:left-[880px]';
+        return 'top-[216px] md:top-[96px] left-4 md:left-[880px]';
       case 3:
-        return 'top-[268px] md:top-[88px] left-4 md:left-[1190px]';
+        return 'top-[276px] md:top-[96px] left-4 md:left-[1190px]';
       case 4:
-        return 'top-[328px] md:top-[88px] left-4 md:left-[1480px]';
+        return 'top-[336px] md:top-[96px] left-4 md:left-[1480px]';
       default:
-        return 'top-[388px] md:top-[236px] left-4 md:left-[256px]';
+        return 'top-[396px] md:top-[244px] left-4 md:left-[256px]';
     }
   };
 
@@ -13732,7 +13732,7 @@ export default function AppMap() {
       {/* 坐標與地理資訊狀態列 (Fixed Top-Right Coordinate Display HUD) */}
       {cursorCoords && (
         <div
-          className="absolute top-[68px] right-4 z-20 pointer-events-auto select-none flex items-center gap-2 px-3 py-1.5 bg-[#10131a]/95 backdrop-blur-md rounded-full border border-[#2a2f3d] shadow-xl text-[11px] font-mono text-gray-200"
+          className="absolute top-[64px] right-2.5 z-20 pointer-events-auto select-none flex items-center gap-2 px-2.5 py-1.5 bg-[#10131a]/95 backdrop-blur-md rounded-full border border-[#2a2f3d] shadow-xl text-[11px] font-mono text-gray-200"
         >
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
 
@@ -13779,18 +13779,20 @@ export default function AppMap() {
                 if (isExploreOpen && exploreTab === tab.id) {
                   setExploreOpen(false);
                 } else {
-                  setExploreTab(tab.id as any);
-                  setExploreOpen(true);
+                  openExploreTab(tab.id as any);
                 }
               }}
-              className={`px-2.5 py-1 rounded-full text-xs font-medium flex items-center gap-1.5 transition-all whitespace-nowrap shrink-0 ${
+              title={tab.label}
+              className={`group flex items-center justify-center h-8 px-2.5 rounded-full text-xs font-medium transition-all duration-300 shrink-0 ${
                 isActive
                   ? 'bg-emerald-500/25 text-emerald-300 border border-emerald-500/50 shadow-[0_0_10px_rgba(16,185,129,0.3)]'
                   : 'text-gray-300 hover:text-white hover:bg-white/10 border border-transparent'
               }`}
             >
-              <Icon className={`w-3.5 h-3.5 ${tab.color}`} />
-              <span>{tab.label}</span>
+              <Icon className={`w-3.5 h-3.5 shrink-0 ${tab.color}`} />
+              <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[75px] group-hover:opacity-100 group-hover:ml-1.5 transition-all duration-300 whitespace-nowrap text-[11px]">
+                {tab.label}
+              </span>
             </button>
           );
         })}
