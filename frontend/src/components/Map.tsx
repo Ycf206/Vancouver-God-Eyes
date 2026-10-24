@@ -1559,25 +1559,6 @@ export default function AppMap() {
         ]
       };
     }
-    if (searchTarget.lon && searchTarget.lat) {
-      const span = 0.015;
-      return {
-        type: 'FeatureCollection' as const,
-        features: [
-          {
-            type: 'Feature' as const,
-            properties: searchTarget.meta?.properties || {},
-            geometry: {
-              type: 'LineString' as const,
-              coordinates: [
-                [searchTarget.lon - span, searchTarget.lat],
-                [searchTarget.lon + span, searchTarget.lat]
-              ]
-            }
-          }
-        ]
-      };
-    }
     return null;
   }, [searchTarget]);
 

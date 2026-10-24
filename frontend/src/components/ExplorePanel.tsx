@@ -2166,13 +2166,43 @@ function ExploreContent() {
   const handleFlyToCorridor = (corridor: TrafficCorridorItem) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap();
-    if (mapInstance && corridor.center) {
-      mapInstance.flyTo({
-        center: corridor.center,
-        zoom: corridor.zoom || 13,
-        pitch: 35,
-        essential: true
-      });
+    const effectiveZoom = Math.min(corridor.zoom || 12.5, 12.6);
+    if (mapInstance) {
+      if (corridor.coordinates && corridor.coordinates.length >= 2) {
+        let minLon = 180, maxLon = -180, minLat = 90, maxLat = -90;
+        corridor.coordinates.forEach(pt => {
+          minLon = Math.min(minLon, pt[0]);
+          maxLon = Math.max(maxLon, pt[0]);
+          minLat = Math.min(minLat, pt[1]);
+          maxLat = Math.max(maxLat, pt[1]);
+        });
+        const deltaLon = maxLon - minLon;
+        const deltaLat = maxLat - minLat;
+        if (deltaLon > 0.006 || deltaLat > 0.006) {
+          mapInstance.fitBounds(
+            [[minLon, minLat], [maxLon, maxLat]],
+            {
+              padding: { top: 120, bottom: 90, left: 80, right: 380 },
+              maxZoom: 12.6,
+              duration: 1000
+            }
+          );
+        } else if (corridor.center) {
+          mapInstance.flyTo({
+            center: corridor.center,
+            zoom: effectiveZoom,
+            pitch: 25,
+            essential: true
+          });
+        }
+      } else if (corridor.center) {
+        mapInstance.flyTo({
+          center: corridor.center,
+          zoom: effectiveZoom,
+          pitch: 25,
+          essential: true
+        });
+      }
     }
     setSearchTarget({
       id: `corridor_${corridor.id}`,
@@ -2183,7 +2213,7 @@ function ExploreContent() {
       icon: '🚗',
       lat: corridor.center[1],
       lon: corridor.center[0],
-      zoom: corridor.zoom || 13,
+      zoom: effectiveZoom,
       meta: {
         coordinates: corridor.coordinates,
         properties: {
@@ -2569,10 +2599,6 @@ function ExploreContent() {
                       </div>
                     </div>
 
-                    <div className="text-[11px] text-gray-400 mt-3 pt-2.5 border-t border-[#232838] flex items-center justify-between">
-                      <span>天氣數據：<a href="https://api.weather.gc.ca/" target="_blank" rel="noreferrer" className="text-sky-400 hover:underline">加拿大環境部 (api.weather.gc.ca)</a></span>
-                      <span className="font-mono text-[10px] text-gray-500">ECCC MSC</span>
-                    </div>
                   </div>
 
                   {/* 加拿大環境部警告 */}
