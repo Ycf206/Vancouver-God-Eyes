@@ -6850,7 +6850,7 @@ export default function AppMap() {
             offset={[0, -8]}
             maxWidth="none"
           >
-            <div className="p-2.5 w-[340px] sm:w-[360px] max-w-[88vw] text-gray-800">
+            <div className="p-3 w-[370px] sm:w-[410px] max-w-[calc(100vw-32px)] text-gray-800">
               {(() => {
                 const isSeaBusStop = selectedStop.id === '8035' || selectedStop.id === '8036' || selectedStop.name.includes('SeaBus') || selectedStop.name.includes('Lonsdale Quay') || selectedStop.name.includes('Waterfront');
                 const cleanStopName = selectedStop.name.replace(/\s*(?:Northbound|Southbound)\s*$/i, '').trim();
@@ -7218,7 +7218,7 @@ export default function AppMap() {
             offset={[0, -10]}
             maxWidth="none"
           >
-            <div className="p-3.5 w-[330px] sm:w-[360px] max-w-[88vw] overflow-hidden">
+            <div className="p-3.5 w-[370px] sm:w-[410px] max-w-[calc(100vw-32px)] overflow-hidden">
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
                 <div className="flex items-start gap-2 pt-0.5 min-w-0 pr-2">
                   <span className="w-2.5 h-2.5 bg-[#0060a9] rounded-full flex-shrink-0 mt-1.5 shadow-sm"></span>
@@ -7323,7 +7323,7 @@ export default function AppMap() {
             offset={[0, -14]}
             maxWidth="none"
           >
-            <div className="p-3.5 w-[310px] sm:w-[330px] max-w-[88vw] text-gray-800">
+            <div className="p-3.5 w-[360px] sm:w-[400px] max-w-[calc(100vw-32px)] text-gray-800">
               <div className="flex items-start justify-between pb-2 mb-2.5 border-b border-gray-100">
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 bg-[#0060a9] rounded-lg flex items-center justify-center text-white shadow-sm flex-shrink-0">
@@ -7417,7 +7417,7 @@ export default function AppMap() {
             offset={[0, -14]}
             maxWidth="none"
           >
-            <div className="p-3.5 w-[320px] sm:w-[350px] max-w-[90vw] text-gray-800">
+            <div className="p-3.5 w-[360px] sm:w-[400px] max-w-[calc(100vw-32px)] text-gray-800">
               <div className="flex items-start justify-between pb-2 mb-2.5 border-b border-gray-100">
                 <div className="flex items-center gap-2.5">
                   <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-white shadow-sm flex-shrink-0 ${
@@ -7582,7 +7582,7 @@ export default function AppMap() {
             offset={[0, -12]}
             maxWidth="none"
           >
-            <div className="p-3.5 w-[340px] max-w-[90vw] text-gray-800">
+            <div className="p-3.5 w-[370px] sm:w-[410px] max-w-[calc(100vw-32px)] text-gray-800">
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
                 <div className="flex items-start gap-2 min-w-0 pr-2">
                   <span className={`w-3 h-3 rounded-full flex-shrink-0 mt-1 ${
@@ -8056,7 +8056,7 @@ export default function AppMap() {
             offset={[0, -14]}
             maxWidth="none"
           >
-            <div className="p-3.5 w-[320px] sm:w-[350px] max-w-[90vw] text-gray-800">
+            <div className="p-3.5 w-[360px] sm:w-[400px] max-w-[calc(100vw-32px)] text-gray-800">
               {/* Header */}
               <div className="flex items-start justify-between pb-2 mb-2.5 border-b border-gray-100">
                 <div className="flex items-center gap-2.5">
@@ -8284,11 +8284,10 @@ export default function AppMap() {
             maxWidth="none"
           >
             <div className={`p-3.5 ${
-              (selectedFacility.facility_type === 'traffic_conditions' || selectedFacility.facility_type === 'traffic_corridor') ? 'w-[430px]' :
-              (selectedFacility.facility_type === 'traffic_cameras' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'accessible_parking') ? 'w-[370px]' : 
-              (selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'museums' || selectedFacility.facility_type === 'garbage_collection' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'food_vendors' || selectedFacility.facility_type === 'food_banks' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'border_crossing' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'beach_water_quality' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'zoning_districts' || selectedFacility.facility_type === 'motorcycle_parking') ? 'w-[340px]' : 
-              'w-[290px]'
-            } max-w-[90vw] text-gray-800`}>
+              (selectedFacility.facility_type === 'traffic_conditions' || selectedFacility.facility_type === 'traffic_corridor') ? 'w-[450px] sm:w-[480px]' :
+              (selectedFacility.facility_type === 'traffic_cameras') ? 'w-[420px] sm:w-[450px]' : 
+              'w-[390px] sm:w-[430px]'
+            } max-w-[calc(100vw-32px)] text-gray-800`}>
               {(() => {
                 const headerBadge = (() => {
                   const t = selectedFacility.facility_type;
@@ -8484,10 +8483,10 @@ export default function AppMap() {
                 })();
 
                 return (
-                  <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
-                    <div className="flex items-center gap-2 min-w-0 pr-2">
+                  <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100 gap-2">
+                    <div className="flex items-center gap-2 min-w-0 flex-1 pr-1">
                       {headerBadge ? (
-                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded flex-shrink-0 leading-none shadow-xs whitespace-nowrap ${headerBadge.bg}`}>
+                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded shrink-0 leading-none shadow-xs whitespace-nowrap ${headerBadge.bg}`}>
                           {headerBadge.label}
                         </span>
                       ) : (
@@ -8546,8 +8545,8 @@ export default function AppMap() {
                           selectedFacility.facility_type === 'homeless_shelters' ? 'bg-rose-500' : 'bg-violet-500'
                         }`}></span>
                       )}
-                      <div className="min-w-0">
-                        <h3 className="font-bold text-gray-900 text-sm leading-snug break-words text-balance">
+                      <div className="min-w-0 flex-1">
+                        <h3 className="font-bold text-gray-900 text-sm leading-snug break-words">
                           {popupTitle}
                         </h3>
                         {(selectedFacility.local_area || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'motorcycle_parking' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || selectedFacility.facility_type === 'car_sharing') && (
@@ -8674,7 +8673,7 @@ export default function AppMap() {
                       </div>
                       <div className="text-right">
                         <span className="text-[10px] text-gray-500 block">通關服務時間</span>
-                        <span className="font-mono text-emerald-700 font-semibold text-[11px]">{props.hours || '24 小時開放'}</span>
+                        <span className="text-emerald-700 font-semibold text-[11px]">{formatTimePreference(props.hours, timeFormat) || '24 小時開放'}</span>
                       </div>
                     </div>
 
@@ -10126,12 +10125,12 @@ export default function AppMap() {
 
                     <div className="pt-1 border-t border-gray-100">
                       <a
-                        href="https://vancouver.ca/home-property-development/garbage-and-recycling.aspx"
+                        href="https://vancouver.ca/home-property-development/garbage-and-recycling-collection-schedules.aspx"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-orange-600 hover:bg-orange-700 text-white rounded font-medium text-xs transition-colors shadow-sm text-center"
                       >
-                        前往溫哥華市政府廢物與廚餘清運專頁 ↗
+                        前往 廢物回收時間表 官方網頁 ↗
                       </a>
                     </div>
                   </div>
@@ -11748,16 +11747,7 @@ export default function AppMap() {
                   if (!rawHours || rawHours === '24/7' || rawHours.toLowerCase() === '24 hours') {
                     return '營業中 (24/7)';
                   }
-                  let formatted = rawHours;
-                  if (timeFormat === '12h') {
-                    formatted = rawHours.replace(/(\d{1,2}):(\d{2})/g, (_m: string, h: string, m: string) => {
-                      let hour = parseInt(h, 10);
-                      const suffix = hour >= 12 ? 'PM' : 'AM';
-                      if (hour > 12) hour -= 12;
-                      if (hour === 0) hour = 12;
-                      return `${hour}:${m} ${suffix}`;
-                    });
-                  }
+                  const formatted = formatTimePreference(rawHours, timeFormat);
                   let isOpen = true;
                   try {
                     const vHours = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Vancouver" })).getHours();
@@ -11980,7 +11970,7 @@ export default function AppMap() {
                           <div className="flex justify-between items-center text-gray-600">
                             <span className="shrink-0 text-gray-500">開放時間</span>
                             <span className="font-medium text-gray-800 text-right">
-                              {props.hours}
+                              {formatTimePreference(props.hours, timeFormat)}
                             </span>
                           </div>
                         </>

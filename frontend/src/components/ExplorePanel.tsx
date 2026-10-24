@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { useUIStore, ExploreTabType } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
-import { formatShipEta, formatTimePreference } from '@/utils/time';
+import { formatShipEta, formatTimePreference, formatTimeRange } from '@/utils/time';
 import skytrainStationsData from '@/data/skytrainStations.json';
 
 export interface TranslinkAlertItem {
@@ -5758,15 +5758,15 @@ function ExploreContent() {
                         {crossing.hours && (crossing.hours.includes(',') || crossing.hours.length > 20) ? (
                           <div className="flex flex-col items-end gap-0.5">
                             <span className="text-[9.5px] font-mono text-emerald-400 bg-emerald-950/70 border border-emerald-800/50 px-1.5 py-0.5 rounded leading-tight">
-                              08:00 - 24:00 (一般車道)
+                              {formatTimeRange('08:00 - 24:00', timeFormat)} (一般車道)
                             </span>
                             <span className="text-[9px] font-mono text-emerald-500/90 leading-tight">
-                              NEXUS (12:00 - 20:00)
+                              NEXUS ({formatTimeRange('12:00 - 20:00', timeFormat)})
                             </span>
                           </div>
                         ) : (
                           <span className="text-[9.5px] font-mono text-emerald-400/90 bg-emerald-950/60 border border-emerald-800/40 px-2 py-0.5 rounded whitespace-nowrap">
-                            {crossing.hours || '24 小時全天開放'}
+                            {formatTimePreference(crossing.hours, timeFormat) || '24 小時全天開放'}
                           </span>
                         )}
                       </div>

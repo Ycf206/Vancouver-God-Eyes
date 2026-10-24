@@ -2,6 +2,95 @@
  * Time formatting utilities supporting 12-hour and 24-hour preferences.
  */
 
+/**
+ * Format opening hours, business hours, and time ranges across all map layers.
+ * Supports:
+ *   "11 AM – 11 PM" -> "11:00 AM – 11:00 PM" (12h) or "11:00 – 23:00" (24h)
+ *   "9:30 am – 6:00 pm" -> "09:30 AM – 06:00 PM" (12h) or "09:30 – 18:00" (24h)
+ *   "10:00AM - 5:00PM" -> "10:00 AM – 05:00 PM" (12h) or "10:00 – 17:00" (24h)
+ *   "9:00 - 18:00" -> "09:00 AM – 06:00 PM" (12h) or "09:00 – 18:00" (24h)
+ *   "06:00 - 22:00" -> "06:00 AM – 10:00 PM" (12h) or "06:00 – 22:00" (24h)
+ *   "24/7" | "24 Hours" -> "24 小時營業"
+ *   "Closed" -> "休館"
+ *   Objects: { Monday: "9:30 am – 8:00 pm", ... } -> maps each day's value
+ */
+export function formatOpeningHours(
+  val: string | Record<string, string> | null | undefined,
+  format: '12h' | '24h' = '24h'
+): any {
+  if (!val) return '';
+  if (typeof val === 'object' && !Array.isArray(val)) {
+    const formattedObj: Record<string, string> = {};
+    for (const [day, hours] of Object.entries(val)) {
+      formattedObj[day] = formatOpeningHours(hours, format);
+    }
+    return formattedObj;
+  }
+
+  const s = String(val).trim();
+  if (!s || s === '--') return s;
+  if (/^(?:24\/7|24\s*hours?|24\s*小時(?:營業)?)$/i.test(s)) {
+    return '24 小時營業';
+  }
+  if (/^closed$/i.test(s)) {
+    return '休館';
+  }
+
+  // Regex matching time ranges: (Time 1) [separator] (Time 2)
+  const rangeRegex = /(\d{1,2}(?::\d{2})?\s*(?:[ap]\.?m\.?)?)\s*[-–—~至to]+\s*(\d{1,2}(?::\d{2})?\s*(?:[ap]\.?m\.?)?)/gi;
+
+  function parseSingleTimeToken(token: string, inferredAmpm: string | null = null): string | null {
+    const m = token.trim().match(/^(\d{1,2})(?::(\d{2}))?\s*([ap]\.?m\.?)?$/i);
+    if (!m) return null;
+    let hour = parseInt(m[1], 10);
+    const min = m[2] || '00';
+    let ampm = m[3] ? m[3].toLowerCase().replace(/\./g, '') : inferredAmpm;
+
+    if (ampm === 'pm' && hour < 12) hour += 12;
+    if (ampm === 'am' && hour === 12) hour = 0;
+
+    if (format === '12h') {
+      const period = hour >= 12 ? 'PM' : 'AM';
+      let h12 = hour % 12;
+      if (h12 === 0) h12 = 12;
+      return `${String(h12).padStart(2, '0')}:${min} ${period}`;
+    } else {
+      return `${String(hour).padStart(2, '0')}:${min}`;
+    }
+  }
+
+  // Replace ranges
+  let result = s.replace(rangeRegex, (match, t1, t2) => {
+    const ampm1 = (t1.match(/[ap]\.?m\.?/i) || [])[0];
+    const ampm2 = (t2.match(/[ap]\.?m\.?/i) || [])[0];
+    let defAmpm1: string | null = null;
+    if (!ampm1 && ampm2) {
+      const h1 = parseInt(t1, 10);
+      const h2 = parseInt(t2, 10);
+      if (ampm2.toLowerCase().startsWith('p') && h1 < 12 && h1 > h2) {
+        defAmpm1 = 'am';
+      } else if (ampm2.toLowerCase().startsWith('p') && h1 >= 7 && h1 <= 11) {
+        defAmpm1 = 'am';
+      } else {
+        defAmpm1 = ampm2.toLowerCase();
+      }
+    }
+    const p1 = parseSingleTimeToken(t1, defAmpm1);
+    const p2 = parseSingleTimeToken(t2);
+    if (p1 && p2) {
+      return `${p1} – ${p2}`;
+    }
+    return match;
+  });
+
+  if (result === s) {
+    const single = parseSingleTimeToken(s);
+    if (single) return single;
+  }
+
+  return result;
+}
+
 export function formatTimePreference(
   timeStr: string | null | undefined,
   format: '12h' | '24h' = '24h'
@@ -11,45 +100,20 @@ export function formatTimePreference(
   if (!s || s === '--') return s;
 
   // Handle ISO string or full datetime
-  if (s.includes('T') || (s.includes('-') && s.length > 10)) {
+  if (s.includes('T') || (s.includes('-') && s.length > 10 && /\d{4}-\d{2}-\d{2}/.test(s))) {
     const d = new Date(s);
     if (!isNaN(d.getTime())) {
       return format === '12h'
-        ? d.toLocaleTimeString('zh-TW', { hour12: true, hour: 'numeric', minute: '2-digit' })
+        ? d.toLocaleTimeString('zh-TW', { hour12: true, hour: '2-digit', minute: '2-digit' })
         : d.toLocaleTimeString('zh-TW', { hour12: false, hour: '2-digit', minute: '2-digit' });
     }
   }
 
-  // Handle strings like "14:30", "07:00", "7:00 am", "7:00 PM", "14:30:00"
-  const match = s.match(/^(\d{1,2}):(\d{2})(?::\d{2})?\s*(am|pm|a\.m\.|p\.m\.)?$/i);
-  if (!match) return s;
-
-  let hour = parseInt(match[1], 10);
-  const min = match[2];
-  const ampm = match[3] ? match[3].toLowerCase().replace(/\./g, '') : null;
-
-  if (ampm) {
-    if (ampm === 'pm' && hour < 12) hour += 12;
-    if (ampm === 'am' && hour === 12) hour = 0;
-  }
-
-  if (format === '12h') {
-    const period = hour >= 12 ? 'PM' : 'AM';
-    const displayHour = hour % 12 === 0 ? 12 : hour % 12;
-    return `${displayHour}:${min} ${period}`;
-  } else {
-    const displayHour = String(hour).padStart(2, '0');
-    return `${displayHour}:${min}`;
-  }
+  return formatOpeningHours(s, format);
 }
 
 /**
  * Format time range strings respecting 12h / 24h user preference.
- * Supports:
- *   formatTimeRange("07:00 - 09:30", '12h') -> "07:00 AM - 09:30 AM"
- *   formatTimeRange("07:00", "09:30", '12h') -> "07:00 AM - 09:30 AM"
- *   formatTimeRange("9am-6pm", '12h') -> "09:00 AM - 06:00 PM"
- *   formatTimeRange("8a.m. - 5p.m. Mon-Fri", '12h') -> "08:00 AM - 05:00 PM Mon-Fri"
  */
 export function formatTimeRange(
   startOrRange: string | null | undefined,
@@ -72,36 +136,7 @@ export function formatTimeRange(
     rawRange = `${rawRange} - ${String(endOrFormat).trim()}`;
   }
 
-  if (!rawRange || rawRange === '--' || rawRange === '24/7' || rawRange.toLowerCase() === '24 hours') return rawRange;
-
-  // Regex matching time tokens: "07:00", "7:00am", "9am", "18:00", "6pm", "8a.m.", "5p.m."
-  const timeTokenRegex = /(\d{1,2})(?::(\d{2}))?\s*(am|pm|a\.m\.|p\.m\.)?/gi;
-
-  return rawRange.replace(timeTokenRegex, (match, hStr, mStr, ampmStr) => {
-    // If it's just a lonely single/double digit without min or am/pm, don't confuse with dates or plain numbers
-    // But in ranges like "9am-6pm", ampmStr is present. If no mStr and no ampmStr, check if colon was present.
-    if (!mStr && !ampmStr) {
-      return match;
-    }
-
-    let hour = parseInt(hStr, 10);
-    const min = mStr || '00';
-    const ampm = ampmStr ? ampmStr.toLowerCase().replace(/\./g, '') : null;
-
-    if (ampm) {
-      if (ampm === 'pm' && hour < 12) hour += 12;
-      if (ampm === 'am' && hour === 12) hour = 0;
-    }
-
-    if (format === '12h') {
-      const period = hour >= 12 ? 'PM' : 'AM';
-      let h12 = hour % 12;
-      if (h12 === 0) h12 = 12;
-      return `${String(h12).padStart(2, '0')}:${min} ${period}`;
-    } else {
-      return `${String(hour).padStart(2, '0')}:${min}`;
-    }
-  });
+  return formatOpeningHours(rawRange, format);
 }
 
 export function formatClock(
