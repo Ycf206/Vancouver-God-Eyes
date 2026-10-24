@@ -1,0 +1,794 @@
+{
+  "type": "FeatureCollection",
+  "name": "vancouver_community_centres",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.0738, 49.2756]
+      },
+      "properties": {
+        "name": "Britannia Community Services Centre",
+        "address": "1661 Napier St, Vancouver, BC V5L 4X4",
+        "phone": "604-718-5800",
+        "fax": "604-718-5858",
+        "email": "britanniacc@vancouver.ca",
+        "urllink": "https://vancouver.ca/parks-recreation-culture/britannia-community-services-centre.aspx",
+        "geo_local_area": "Grandview-Woodland",
+        "geo_point_2d": {
+          "lon": -123.0738,
+          "lat": 49.2756
+        },
+        "hours": {
+          "Monday": "8:30am - 7:00pm",
+          "Tuesday": "8:30am - 7:00pm",
+          "Wednesday": "8:30am - 7:00pm",
+          "Thursday": "8:30am - 7:00pm",
+          "Friday": "8:30am - 7:00pm",
+          "Saturday": "Closed (Pool/Rink/Fitness have separate weekend hours: 9:00am - 5:00pm)",
+          "Sunday": "Closed (Pool/Rink/Fitness have separate weekend hours: 10:00am - 4:00pm)"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.1001, 49.2811]
+      },
+      "properties": {
+        "name": "Carnegie Community Centre",
+        "address": "401 Main St, Vancouver, BC V6A 2T7",
+        "phone": "604-665-2220",
+        "fax": null,
+        "email": "carnegie@vancouver.ca",
+        "urllink": "https://vancouver.ca/parks-recreation-culture/carnegie-community-centre.aspx",
+        "geo_local_area": "Downtown",
+        "geo_point_2d": {
+          "lon": -123.1001,
+          "lat": 49.2811
+        },
+        "hours": {
+          "Monday": "9:00am - 11:00pm",
+          "Tuesday": "9:00am - 11:00pm",
+          "Wednesday": "9:00am - 11:00pm",
+          "Thursday": "9:00am - 11:00pm",
+          "Friday": "9:00am - 11:00pm",
+          "Saturday": "9:00am - 11:00pm",
+          "Sunday": "9:00am - 11:00pm"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.0309, 49.2156]
+      },
+      "properties": {
+        "name": "Champlain Heights Community Centre",
+        "address": "3350 Maquinna Dr, Vancouver, BC V5S 4C6",
+        "phone": "604-718-6575",
+        "fax": "604-718-6580",
+        "email": "champlaincc@vancouver.ca",
+        "urllink": "https://vancouver.ca/parks-recreation-culture/champlain-heights-community-centre.aspx",
+        "geo_local_area": "Killarney",
+        "geo_point_2d": {
+          "lon": -123.0309,
+          "lat": 49.2156
+        },
+        "hours": {
+          "Monday": "7:00am - 9:00pm",
+          "Tuesday": "7:00am - 9:00pm",
+          "Wednesday": "7:00am - 9:00pm",
+          "Thursday": "7:00am - 9:00pm",
+          "Friday": "7:00am - 8:00pm",
+          "Saturday": "9:00am - 6:00pm",
+          "Sunday": "9:00am - 6:00pm"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.1268, 49.2903]
+      },
+      "properties": {
+        "name": "Coal Harbour Community Centre",
+        "address": "480 Broughton St, Vancouver, BC V6G 3H4",
+        "phone": "604-718-8222",
+        "fax": "604-718-8228",
+        "email": "coalharbourcc@vancouver.ca",
+        "urllink": "https://vancouver.ca/parks-recreation-culture/coal-harbour-community-centre.aspx",
+        "geo_local_area": "Downtown",
+        "geo_point_2d": {
+          "lon": -123.1268,
+          "lat": 49.2903
+        },
+        "hours": {
+          "Monday": "9:00am - 10:00pm",
+          "Tuesday": "9:00am - 10:00pm",
+          "Wednesday": "9:00am - 10:00pm",
+          "Thursday": "9:00am - 10:00pm",
+          "Friday": "9:00am - 9:00pm",
+          "Saturday": "9:00am - 5:00pm",
+          "Sunday": "9:00am - 5:00pm"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.1030, 49.2719]
+      },
+      "properties": {
+        "name": "Creekside Community Recreation Centre",
+        "address": "1 Athletes Way, Vancouver, BC V5Y 0B1",
+        "phone": "604-257-3050",
+        "fax": null,
+        "email": "creekside@vancouver.ca",
+        "urllink": "https://vancouver.ca/parks-recreation-culture/creekside-community-recreation-centre.aspx",
+        "geo_local_area": "Mount Pleasant",
+        "geo_point_2d": {
+          "lon": -123.1030,
+          "lat": 49.2719
+        },
+        "hours": {
+          "Monday": "6:30am - 10:00pm",
+          "Tuesday": "6:30am - 10:00pm",
+          "Wednesday": "6:30am - 10:00pm",
+          "Thursday": "6:30am - 10:00pm",
+          "Friday": "6:30am - 8:30pm",
+          "Saturday": "9:00am - 5:00pm",
+          "Sunday": "9:00am - 5:00pm"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.1221, 49.2520]
+      },
+      "properties": {
+        "name": "Douglas Park Community Centre",
+        "address": "801 West 22nd Ave, Vancouver, BC V5Z 1Z8",
+        "phone": "604-257-8130",
+        "fax": "604-257-8532",
+        "email": "douglasparkcc@vancouver.ca",
+        "urllink": "https://vancouver.ca/parks-recreation-culture/douglas-park-community-centre.aspx",
+        "geo_local_area": "South Cambie",
+        "geo_point_2d": {
+          "lon": -123.1221,
+          "lat": 49.2520
+        },
+        "hours": {
+          "Monday": "7:30am - 9:00pm",
+          "Tuesday": "7:30am - 9:00pm",
+          "Wednesday": "7:30am - 9:00pm",
+          "Thursday": "7:30am - 9:00pm",
+          "Friday": "7:30am - 9:00pm",
+          "Saturday": "9:00am - 4:00pm",
+          "Sunday": "9:00am - 4:00pm (Closed on Sundays in summer)"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.1869, 49.2435]
+      },
+      "properties": {
+        "name": "Dunbar Community Centre",
+        "address": "4747 Dunbar St, Vancouver, BC V6S 2H2",
+        "phone": "604-222-6060",
+        "fax": "604-222-6066",
+        "email": "dunbarcc@vancouver.ca",
+        "urllink": "https://vancouver.ca/parks-recreation-culture/dunbar-community-centre.aspx",
+        "geo_local_area": "Dunbar-Southlands",
+        "geo_point_2d": {
+          "lon": -123.1869,
+          "lat": 49.2435
+        },
+        "hours": {
+          "Monday": "8:30am - 8:30pm",
+          "Tuesday": "8:30am - 8:30pm",
+          "Wednesday": "8:30am - 8:30pm",
+          "Thursday": "8:30am - 8:30pm",
+          "Friday": "8:30am - 8:30pm",
+          "Saturday": "8:45am - 4:00pm",
+          "Sunday": "8:45am - 4:00pm"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.0955, 49.2839]
+      },
+      "properties": {
+        "name": "Evelyne Saller Centre",
+        "address": "404 Alexander St, Vancouver, BC V6A 1C5",
+        "phone": "604-665-3075",
+        "fax": "604-606-2671",
+        "email": "evelynesallercentre@vancouver.ca",
+        "urllink": "https://vancouver.ca/parks-recreation-culture/evelyne-saller-centre.aspx",
+        "geo_local_area": "Strathcona",
+        "geo_point_2d": {
+          "lon": -123.0955,
+          "lat": 49.2839
+        },
+        "hours": {
+          "Monday": "9:00am - 8:00pm",
+          "Tuesday": "9:00am - 8:00pm",
+          "Wednesday": "9:00am - 8:00pm",
+          "Thursday": "9:00am - 8:00pm",
+          "Friday": "9:00am - 8:00pm",
+          "Saturday": "10:00am - 8:00pm",
+          "Sunday": "10:00am - 8:00pm"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.1332, 49.2704]
+      },
+      "properties": {
+        "name": "False Creek Community Centre",
+        "address": "1318 Cartwright St, Vancouver, BC V6H 3R8",
+        "phone": "604-257-8195",
+        "fax": "604-257-8194",
+        "email": "falsecreekcc@vancouver.ca",
+        "urllink": "https://vancouver.ca/parks-recreation-culture/false-creek-community-centre.aspx",
+        "geo_local_area": "Fairview",
+        "geo_point_2d": {
+          "lon": -123.1332,
+          "lat": 49.2704
+        },
+        "hours": {
+          "Monday": "9:00am - 9:30pm",
+          "Tuesday": "9:00am - 9:30pm",
+          "Wednesday": "9:00am - 9:30pm",
+          "Thursday": "9:00am - 9:30pm",
+          "Friday": "6:30am - 9:30pm",
+          "Saturday": "9:00am - 4:00pm",
+          "Sunday": "9:00am - 4:00pm"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.1235, 49.2780]
+      },
+      "properties": {
+        "name": "Gathering Place Community Centre",
+        "address": "609 Helmcken St, Vancouver, BC V6B 5R1",
+        "phone": "604-665-2391",
+        "fax": null,
+        "email": "gatheringplace@vancouver.ca",
+        "urllink": "https://vancouver.ca/parks-recreation-culture/gathering-place-community-centre.aspx",
+        "geo_local_area": "Downtown",
+        "geo_point_2d": {
+          "lon": -123.1235,
+          "lat": 49.2780
+        },
+        "hours": {
+          "Monday": "9:00am - 8:00pm",
+          "Tuesday": "9:00am - 8:00pm",
+          "Wednesday": "9:00am - 8:00pm",
+          "Thursday": "9:00am - 8:00pm",
+          "Friday": "9:00am - 8:00pm",
+          "Saturday": "9:00am - 8:00pm",
+          "Sunday": "9:00am - 8:00pm"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.0393, 49.2809]
+      },
+      "properties": {
+        "name": "Hastings Community Centre",
+        "address": "3096 East Hastings St, Vancouver, BC V5K 2A3",
+        "phone": "604-718-6222",
+        "fax": "604-718-6226",
+        "email": "hastingscc@vancouver.ca",
+        "urllink": "https://vancouver.ca/parks-recreation-culture/hastings-community-centre.aspx",
+        "geo_local_area": "Hastings-Sunrise",
+        "geo_point_2d": {
+          "lon": -123.0393,
+          "lat": 49.2809
+        },
+        "hours": {
+          "Monday": "9:00am - 9:45pm",
+          "Tuesday": "9:00am - 9:45pm",
+          "Wednesday": "9:00am - 9:45pm",
+          "Thursday": "9:00am - 9:45pm",
+          "Friday": "9:00am - 9:45pm",
+          "Saturday": "9:00am - 4:45pm",
+          "Sunday": "10:00am - 2:00pm"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.1079, 49.2439]
+      },
+      "properties": {
+        "name": "Hillcrest Centre",
+        "address": "4575 Clancy Loranger Way, Vancouver, BC V5Y 2M4",
+        "phone": "604-257-8680",
+        "fax": "604-257-8639",
+        "email": "hillcrestcc@vancouver.ca",
+        "urllink": "https://vancouver.ca/parks-recreation-culture/hillcrest-centre.aspx",
+        "geo_local_area": "Riley Park",
+        "geo_point_2d": {
+          "lon": -123.1079,
+          "lat": 49.2439
+        },
+        "hours": {
+          "Monday": "9:00am - 9:00pm",
+          "Tuesday": "9:00am - 9:00pm",
+          "Wednesday": "9:00am - 9:00pm",
+          "Thursday": "9:00am - 9:00pm",
+          "Friday": "9:00am - 9:00pm",
+          "Saturday": "9:00am - 5:00pm",
+          "Sunday": "9:00am - 5:00pm"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.0760, 49.2384]
+      },
+      "properties": {
+        "name": "Kensington Community Centre",
+        "address": "5175 Dumfries St, Vancouver, BC V5P 3A2",
+        "phone": "604-718-6200",
+        "fax": "604-718-6215",
+        "email": "kensingtoncc@vancouver.ca",
+        "urllink": "https://vancouver.ca/parks-recreation-culture/kensington-community-centre.aspx",
+        "geo_local_area": "Kensington-Cedar Cottage",
+        "geo_point_2d": {
+          "lon": -123.0760,
+          "lat": 49.2384
+        },
+        "hours": {
+          "Monday": "9:00am - 9:30pm",
+          "Tuesday": "9:00am - 9:30pm",
+          "Wednesday": "9:00am - 9:30pm",
+          "Thursday": "9:00am - 9:30pm",
+          "Friday": "9:00am - 9:30pm",
+          "Saturday": "9:00am - 4:00pm",
+          "Sunday": "9:00am - 4:00pm"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.1566, 49.2330]
+      },
+      "properties": {
+        "name": "Kerrisdale Community Centre",
+        "address": "5851 West Blvd, Vancouver, BC V6M 3W9",
+        "phone": "604-257-8100",
+        "fax": "604-257-8313",
+        "email": "kerrisdalecc@vancouver.ca",
+        "urllink": "https://vancouver.ca/parks-recreation-culture/kerrisdale-community-centre.aspx",
+        "geo_local_area": "Kerrisdale",
+        "geo_point_2d": {
+          "lon": -123.1566,
+          "lat": 49.2330
+        },
+        "hours": {
+          "Monday": "6:30am - 10:00pm",
+          "Tuesday": "6:30am - 10:00pm",
+          "Wednesday": "6:30am - 10:00pm",
+          "Thursday": "6:30am - 10:00pm",
+          "Friday": "6:30am - 10:00pm",
+          "Saturday": "9:00am - 6:00pm",
+          "Sunday": "9:00am - 6:00pm",
+          "Holidays": "9:00am - 6:00pm"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.0436, 49.2268]
+      },
+      "properties": {
+        "name": "Killarney Community Centre",
+        "address": "6260 Killarney St, Vancouver, BC V5S 2X7",
+        "phone": "604-718-8200",
+        "fax": "604-718-8219",
+        "email": "killarneycc@vancouver.ca",
+        "urllink": "https://vancouver.ca/parks-recreation-culture/killarney-community-centre.aspx",
+        "geo_local_area": "Killarney",
+        "geo_point_2d": {
+          "lon": -123.0436,
+          "lat": 49.2268
+        },
+        "hours": {
+          "Monday": "7:15am - 9:30pm",
+          "Tuesday": "8:45am - 9:30pm",
+          "Wednesday": "7:15am - 9:30pm",
+          "Thursday": "8:45am - 9:30pm",
+          "Friday": "7:15am - 9:30pm",
+          "Saturday": "8:45am - 9:30pm",
+          "Sunday": "8:45am - 7:00pm"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.1619, 49.2618]
+      },
+      "properties": {
+        "name": "Kitsilano War Memorial Community Centre",
+        "address": "2690 Larch St, Vancouver, BC V6K 4K9",
+        "phone": "604-257-6976",
+        "fax": "604-257-6996",
+        "email": "kitscc@vancouver.ca",
+        "urllink": "https://vancouver.ca/parks-recreation-culture/kitsilano-war-memorial-community-centre.aspx",
+        "geo_local_area": "Kitsilano",
+        "geo_point_2d": {
+          "lon": -123.1619,
+          "lat": 49.2618
+        },
+        "hours": {
+          "Monday": "7:00am - 10:00pm",
+          "Tuesday": "7:00am - 10:00pm",
+          "Wednesday": "7:00am - 10:00pm",
+          "Thursday": "7:00am - 10:00pm",
+          "Friday": "7:00am - 10:00pm",
+          "Saturday": "8:30am - 8:00pm",
+          "Sunday": "8:30am - 8:00pm"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.1287, 49.2163]
+      },
+      "properties": {
+        "name": "Marpole-Oakridge Community Centre",
+        "address": "990 West 59th Ave, Vancouver, BC V6P 1X9",
+        "phone": "604-257-8180",
+        "fax": "604-257-8179",
+        "email": "marpolecc@vancouver.ca",
+        "urllink": "https://vancouver.ca/parks-recreation-culture/marpole-oakridge-community-centre.aspx",
+        "geo_local_area": "Marpole",
+        "geo_point_2d": {
+          "lon": -123.1287,
+          "lat": 49.2163
+        },
+        "hours": {
+          "Monday": "9:00am - 9:00pm",
+          "Tuesday": "9:00am - 9:00pm",
+          "Wednesday": "9:00am - 9:00pm",
+          "Thursday": "9:00am - 9:00pm",
+          "Friday": "9:00am - 8:00pm",
+          "Saturday": "9:00am - 4:00pm",
+          "Sunday": "Closed",
+          "Holidays": "Closed"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.1003, 49.2642]
+      },
+      "properties": {
+        "name": "Mount Pleasant Community Centre",
+        "address": "1 Kingsway, Vancouver, BC V5T 3H7",
+        "phone": "604-257-3080",
+        "fax": null,
+        "email": "mtpleasantcc@vancouver.ca",
+        "urllink": "https://vancouver.ca/parks-recreation-culture/mount-pleasant-community-centre.aspx",
+        "geo_local_area": "Mount Pleasant",
+        "geo_point_2d": {
+          "lon": -123.1003,
+          "lat": 49.2642
+        },
+        "hours": {
+          "Monday": "6:00am - 10:00pm",
+          "Tuesday": "6:00am - 10:00pm",
+          "Wednesday": "6:00am - 10:00pm",
+          "Thursday": "6:00am - 10:00pm",
+          "Friday": "6:00am - 10:00pm",
+          "Saturday": "8:00am - 6:00pm",
+          "Sunday": "9:00am - 6:00pm"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.0846, 49.2810]
+      },
+      "properties": {
+        "name": "RayCam Co-operative Centre",
+        "address": "920 East Hastings St, Vancouver, BC V6A 3T1",
+        "phone": "604-257-6949",
+        "fax": "604-257-6944",
+        "email": "raycamcc@vancouver.ca",
+        "urllink": "https://vancouver.ca/parks-recreation-culture/ray-cam-co-operative-centre.aspx",
+        "geo_local_area": "Strathcona",
+        "geo_point_2d": {
+          "lon": -123.0846,
+          "lat": 49.2810
+        },
+        "hours": {
+          "Monday": "9:00am - 9:00pm (School breaks: 9:00am - 6:00pm)",
+          "Tuesday": "9:00am - 9:00pm (School breaks: 9:00am - 6:00pm)",
+          "Wednesday": "9:00am - 9:00pm (School breaks: 9:00am - 6:00pm)",
+          "Thursday": "9:00am - 9:00pm (School breaks: 9:00am - 6:00pm)",
+          "Friday": "9:00am - 9:00pm (School breaks: 9:00am - 6:00pm)",
+          "Saturday": "9:00am - 5:00pm",
+          "Sunday": "Closed",
+          "Holidays": "Closed"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.0435, 49.2523]
+      },
+      "properties": {
+        "name": "Renfrew Park Community Centre",
+        "address": "2929 East 22nd Ave, Vancouver, BC V5M 2Y3",
+        "phone": "604-257-8388",
+        "fax": "604-257-8392",
+        "email": "renfrewcc@vancouver.ca",
+        "urllink": "https://vancouver.ca/parks-recreation-culture/renfrew-park-community-centre.aspx",
+        "geo_local_area": "Renfrew-Collingwood",
+        "geo_point_2d": {
+          "lon": -123.0435,
+          "lat": 49.2523
+        },
+        "hours": {
+          "Monday": "6:30am - 9:30pm",
+          "Tuesday": "6:30am - 9:30pm",
+          "Wednesday": "6:30am - 9:30pm",
+          "Thursday": "6:30am - 9:30pm",
+          "Friday": "6:30am - 9:30pm",
+          "Saturday": "9:00am - 4:30pm",
+          "Sunday": "9:00am - 4:30pm"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.1217, 49.2733]
+      },
+      "properties": {
+        "name": "Roundhouse Community Arts and Recreation Centre",
+        "address": "181 Roundhouse Mews, Vancouver, BC V6Z 2W3",
+        "phone": "604-713-1800",
+        "fax": "604-713-1813",
+        "email": "roundhousecc@vancouver.ca",
+        "urllink": "https://vancouver.ca/parks-recreation-culture/roundhouse-community-arts-recreation-centre.aspx",
+        "geo_local_area": "Downtown",
+        "geo_point_2d": {
+          "lon": -123.1217,
+          "lat": 49.2733
+        },
+        "hours": {
+          "Monday": "9:00am - 9:45pm",
+          "Tuesday": "9:00am - 9:45pm",
+          "Wednesday": "9:00am - 9:45pm",
+          "Thursday": "9:00am - 9:45pm",
+          "Friday": "9:00am - 9:45pm",
+          "Saturday": "9:00am - 4:45pm",
+          "Sunday": "9:00am - 4:45pm",
+          "Holidays": "Closed"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.0914, 49.2793]
+      },
+      "properties": {
+        "name": "Strathcona Community Centre",
+        "address": "601 Keefer St, Vancouver, BC V6A 3V8",
+        "phone": "604-713-1838",
+        "fax": "604-713-1848",
+        "email": "strathcc@vancouver.ca",
+        "urllink": "https://vancouver.ca/parks-recreation-culture/strathcona-community-centre.aspx",
+        "geo_local_area": "Strathcona",
+        "geo_point_2d": {
+          "lon": -123.0914,
+          "lat": 49.2793
+        },
+        "hours": {
+          "Monday": "9:00am - 9:00pm",
+          "Tuesday": "9:00am - 9:00pm",
+          "Wednesday": "9:00am - 9:00pm",
+          "Thursday": "9:00am - 9:00pm",
+          "Friday": "9:00am - 9:00pm",
+          "Saturday": "9:00am - 5:00pm",
+          "Sunday": "10:00am - 2:00pm"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.1008, 49.2224]
+      },
+      "properties": {
+        "name": "Sunset Community Centre",
+        "address": "6810 Main St, Vancouver, BC V5X 0A1",
+        "phone": "604-718-6505",
+        "fax": "604-718-6515",
+        "email": "sunsetcc@vancouver.ca",
+        "urllink": "https://vancouver.ca/parks-recreation-culture/sunset-community-centre.aspx",
+        "geo_local_area": "Sunset",
+        "geo_point_2d": {
+          "lon": -123.1008,
+          "lat": 49.2224
+        },
+        "hours": {
+          "Monday": "9:00am - 9:30pm",
+          "Tuesday": "9:00am - 9:30pm",
+          "Wednesday": "9:00am - 9:30pm",
+          "Thursday": "9:00am - 9:30pm",
+          "Friday": "9:00am - 9:30pm",
+          "Saturday": "9:00am - 5:00pm",
+          "Sunday": "9:00am - 5:00pm"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.0321, 49.2636]
+      },
+      "properties": {
+        "name": "Thunderbird Community Centre",
+        "address": "2311 Cassiar St, Vancouver, BC V5M 3X3",
+        "phone": "604-713-1818",
+        "fax": "604-713-1828",
+        "email": "thunderbirdcc@vancouver.ca",
+        "urllink": "https://vancouver.ca/parks-recreation-culture/thunderbird-community-centre.aspx",
+        "geo_local_area": "Hastings-Sunrise",
+        "geo_point_2d": {
+          "lon": -123.0321,
+          "lat": 49.2636
+        },
+        "hours": {
+          "Monday": "9:00am - 9:00pm",
+          "Tuesday": "9:00am - 9:00pm",
+          "Wednesday": "9:00am - 9:00pm",
+          "Thursday": "9:00am - 9:00pm",
+          "Friday": "9:00am - 9:00pm",
+          "Saturday": "9:00am - 5:00pm",
+          "Sunday": "Closed",
+          "Holidays": "Closed"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.0638, 49.2551]
+      },
+      "properties": {
+        "name": "Trout Lake Community Centre",
+        "address": "3360 Victoria Dr, Vancouver, BC V5N 4M4",
+        "phone": "604-257-6955",
+        "fax": "604-257-6961",
+        "email": "troutlakecc@vancouver.ca",
+        "urllink": "https://vancouver.ca/parks-recreation-culture/trout-lake-community-centre.aspx",
+        "geo_local_area": "Kensington-Cedar Cottage",
+        "geo_point_2d": {
+          "lon": -123.0638,
+          "lat": 49.2551
+        },
+        "hours": {
+          "Monday": "9:00am - 10:00pm",
+          "Tuesday": "9:00am - 10:00pm",
+          "Wednesday": "9:00am - 10:00pm",
+          "Thursday": "9:00am - 10:00pm",
+          "Friday": "9:00am - 10:00pm",
+          "Saturday": "8:00am - 5:00pm",
+          "Sunday": "8:00am - 5:00pm"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.1361, 49.2899]
+      },
+      "properties": {
+        "name": "West End Community Centre",
+        "address": "870 Denman St, Vancouver, BC V6G 2L8",
+        "phone": "604-257-8333",
+        "fax": "604-257-8338",
+        "email": "westendcc@vancouver.ca",
+        "urllink": "https://vancouver.ca/parks-recreation-culture/west-end-community-centre.aspx",
+        "geo_local_area": "West End",
+        "geo_point_2d": {
+          "lon": -123.1361,
+          "lat": 49.2899
+        },
+        "hours": {
+          "Monday": "9:00am - 9:00pm",
+          "Tuesday": "9:00am - 9:00pm",
+          "Wednesday": "9:00am - 9:00pm",
+          "Thursday": "9:00am - 9:00pm",
+          "Friday": "9:00am - 9:00pm",
+          "Saturday": "9:00am - 5:00pm",
+          "Sunday": "9:00am - 5:00pm"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-123.2045, 49.2713]
+      },
+      "properties": {
+        "name": "West Point Grey Community Centre",
+        "address": "4397 West 2nd Ave, Vancouver, BC V6R 1K4",
+        "phone": "604-257-8140",
+        "fax": null,
+        "email": "wpgcc@vancouver.ca",
+        "urllink": "https://vancouver.ca/parks-recreation-culture/west-point-grey-community-centre.aspx",
+        "geo_local_area": "West Point Grey",
+        "geo_point_2d": {
+          "lon": -123.2045,
+          "lat": 49.2713
+        },
+        "hours": {
+          "Monday": "7:30am - 10:00pm",
+          "Tuesday": "7:30am - 10:00pm",
+          "Wednesday": "7:30am - 10:00pm",
+          "Thursday": "7:30am - 10:00pm",
+          "Friday": "7:30am - 8:00pm",
+          "Saturday": "9:00am - 5:00pm",
+          "Sunday": "9:00am - 5:00pm"
+        }
+      }
+    }
+  ]
+}

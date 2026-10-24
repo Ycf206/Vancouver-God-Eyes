@@ -235,47 +235,47 @@ export default function LayerPanel() {
           </div>
           <div className="grid grid-cols-2 gap-1">
             {/* Row 1: 停車收費錶 | 加油站 */}
-            <LayerButton layerKey="parkingMeters" label="停車收費錶" icon={CircleDollarSign} colorClass="text-amber-400" activeBg="bg-[#2a2418]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
+            <LayerButton layerKey="parkingMeters" label="停車收費錶" icon={CircleDollarSign} colorClass="text-[#3b82f6]" activeBg="bg-[#1e293b]" activeBorder="border-blue-600/50" activeShadow="shadow-[0_0_6px_rgba(37,99,235,0.2)]" />
             <LayerButton layerKey="fuel" label="加油站" icon={Fuel} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
 
             {/* Row 2: 摩托車停車位 | 無障礙停車位 */}
-            <LayerButton layerKey="motorcycleParking" label="摩托車停車位" icon={Bike} colorClass="text-orange-400" activeBg="bg-[#2c1d18]" activeBorder="border-orange-500/50" activeShadow="shadow-[0_0_6px_rgba(251,146,60,0.15)]" />
-            <LayerButton layerKey="accessibleParking" label="無障礙停車位" icon={Accessibility} colorClass="text-sky-400" activeBg="bg-[#182633]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(56,189,248,0.15)]" />
+            <LayerButton layerKey="motorcycleParking" label="摩托車停車位" icon={Bike} colorClass="text-[#3b82f6]" activeBg="bg-[#1e293b]" activeBorder="border-blue-600/50" activeShadow="shadow-[0_0_6px_rgba(37,99,235,0.2)]" />
+            <LayerButton layerKey="accessibleParking" label="無障礙停車位" icon={Accessibility} colorClass="text-[#38bdf8]" activeBg="bg-[#0c2e46]" activeBorder="border-[#0284c7]/60" activeShadow="shadow-[0_0_6px_rgba(2,132,199,0.2)]" />
 
             {/* Row 3: 單程路段 | 限速路段 */}
-            <LayerButton layerKey="oneWayStreets" label="單程路段" icon={ArrowRight} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
-            <LayerButton layerKey="trafficSpeedLimits" label="限速路段" icon={Gauge} colorClass="text-emerald-400" activeBg="bg-[#142820]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
+            <LayerButton layerKey="oneWayStreets" label="單程路段" icon={ArrowRight} colorClass="text-slate-300" activeBg="bg-[#0f172a]" activeBorder="border-slate-500/50" activeShadow="shadow-[0_0_6px_rgba(15,23,42,0.4)]" />
+            <LayerButton layerKey="trafficSpeedLimits" label="限速路段" icon={Gauge} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
 
             {/* Row 4: 行人穿越道 | 共享汽車 */}
-            <LayerButton layerKey="trafficCrosswalks" label="行人穿越道" icon={Footprints} colorClass="text-yellow-400" activeBg="bg-[#2a2414]" activeBorder="border-yellow-500/50" activeShadow="shadow-[0_0_6px_rgba(234,179,8,0.15)]" />
+            <LayerButton layerKey="trafficCrosswalks" label="行人穿越道" icon={Footprints} colorClass="text-amber-200" activeBg="bg-[#2a2518]" activeBorder="border-amber-300/50" activeShadow="shadow-[0_0_6px_rgba(254,243,199,0.2)]" />
             <LayerButton layerKey="carSharing" label="共享汽車" icon={Car} colorClass="text-sky-400" activeBg="bg-[#102336]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(56,189,248,0.15)]" />
 
             {/* Row 5: 單車徑 | 單車架 */}
             <LayerButton layerKey="bikeways" label="單車徑" icon={Route} colorClass="text-teal-400" activeBg="bg-[#122826]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
-            <LayerButton layerKey="bikeRacks" label="單車架" icon={Bike} colorClass="text-teal-400" activeBg="bg-[#102724]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
+            <LayerButton layerKey="bikeRacks" label="單車架" icon={Bike} colorClass="text-emerald-400" activeBg="bg-[#062c22]" activeBorder="border-emerald-600/50" activeShadow="shadow-[0_0_6px_rgba(6,95,70,0.2)]" />
 
             {/* Row 6: 共享單車 | 共享滑板車 */}
-            <LayerButton layerKey="sharedBikes" label="共享單車" icon={Bike} colorClass="text-emerald-400" activeBg="bg-[#14291f]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
+            <LayerButton layerKey="sharedBikes" label="共享單車" icon={Bike} colorClass="text-teal-400" activeBg="bg-[#0e2d30]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(0,163,173,0.2)]" />
             <LayerButton layerKey="escooter" label="共享滑板車" icon={Scooter} colorClass="text-lime-400" activeBg="bg-[#1e2a14]" activeBorder="border-lime-500/50" activeShadow="shadow-[0_0_6px_rgba(132,204,22,0.15)]" />
 
             {/* Row 7: 電動車充電站 | TESLA */}
-            <LayerButton layerKey="evCharging" label="電動車充電站" icon={Zap} colorClass="text-emerald-400" activeBg="bg-[#14291f]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(52,211,153,0.15)]" />
-            <LayerButton layerKey="tesla" label="TESLA" icon={TeslaIcon} colorClass="text-red-500" activeBg="bg-[#2d1417]" activeBorder="border-red-500/60" activeShadow="shadow-[0_0_8px_rgba(232,33,39,0.3)]" />
+            <LayerButton layerKey="evCharging" label="電動車充電站" icon={Zap} colorClass="text-emerald-400" activeBg="bg-[#0b291e]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(5,150,105,0.2)]" />
+            <LayerButton layerKey="tesla" label="TESLA" icon={TeslaIcon} colorClass="text-[#E82127]" activeBg="bg-[#2d1417]" activeBorder="border-[#E82127]/60" activeShadow="shadow-[0_0_8px_rgba(232,33,39,0.3)]" />
 
             {/* Row 8: 交通封閉 | 道路施工 */}
-            <LayerButton layerKey="roadClosures" label="交通封閉" icon={Ban} title="交通封閉" colorClass="text-rose-400" activeBg="bg-[#2b171c]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.15)]" />
-            <LayerButton layerKey="roadConstruction" label="道路施工" icon={Cone} title="道路施工" colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
+            <LayerButton layerKey="roadClosures" label="交通封閉" icon={Ban} title="交通封閉" colorClass="text-red-400" activeBg="bg-[#2b171c]" activeBorder="border-red-500/50" activeShadow="shadow-[0_0_6px_rgba(220,38,38,0.2)]" />
+            <LayerButton layerKey="roadConstruction" label="道路施工" icon={Cone} title="道路施工" colorClass="text-orange-400" activeBg="bg-[#2d1b10]" activeBorder="border-orange-500/50" activeShadow="shadow-[0_0_6px_rgba(234,88,12,0.2)]" />
 
             {/* Row 9: 交通攝影機 | 路口安全相機 */}
-            <LayerButton layerKey="trafficCameras" label="交通攝影機" icon={Camera} colorClass="text-cyan-400" activeBg="bg-[#14262b]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.15)]" />
-            <LayerButton layerKey="safetyCameras" label="路口安全相機" icon={Siren} colorClass="text-rose-400" activeBg="bg-[#2b171c]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.15)]" />
+            <LayerButton layerKey="trafficCameras" label="交通攝影機" icon={Camera} colorClass="text-sky-400" activeBg="bg-[#102336]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(2,132,199,0.2)]" />
+            <LayerButton layerKey="safetyCameras" label="路口安全相機" icon={Siren} colorClass="text-red-500" activeBg="bg-[#2d1216]" activeBorder="border-red-500/50" activeShadow="shadow-[0_0_6px_rgba(220,38,38,0.25)]" />
 
             {/* Row 10: 即時通報 | 路況 */}
             <LayerButton layerKey="trafficAlerts" label="即時通報" icon={Megaphone} title="即時通報：TomTom 即時標出事故、封路、施工與危險障礙點" colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
             <LayerButton layerKey="trafficConditions" label="路況" icon={Activity} title="即時路況：TomTom 全大溫街道即時暢通度 (綠/黃/紅)" colorClass="text-emerald-400" activeBg="bg-[#142820]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
 
             {/* Row 11: 鏟雪路線 */}
-            <LayerButton layerKey="snowRemovalRoutes" label="鏟雪路線" icon={Snowflake} title="鏟雪路線" colorClass="text-sky-300" activeBg="bg-[#0f2938]" activeBorder="border-sky-400/50" activeShadow="shadow-[0_0_6px_rgba(56,189,248,0.2)]" />
+            <LayerButton layerKey="snowRemovalRoutes" label="鏟雪路線" icon={Snowflake} title="鏟雪路線" colorClass="text-sky-200" activeBg="bg-[#172836]" activeBorder="border-sky-300/50" activeShadow="shadow-[0_0_6px_rgba(240,249,255,0.2)]" />
           </div>
         </div>
 
@@ -295,7 +295,7 @@ export default function LayerPanel() {
             <LayerButton layerKey="schools" label="學校" icon={GraduationCap} colorClass="text-blue-400" activeBg="bg-[#142334]" activeBorder="border-blue-500/50" activeShadow="shadow-[0_0_6px_rgba(59,130,246,0.15)]" />
             <LayerButton layerKey="libraries" label="圖書館" icon={BookOpen} colorClass="text-amber-400" activeBg="bg-[#292215]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
             <LayerButton layerKey="foodVendors" label="食品攤販" icon={UtensilsCrossed} colorClass="text-orange-400" activeBg="bg-[#2b1e16]" activeBorder="border-orange-500/50" activeShadow="shadow-[0_0_6px_rgba(251,146,60,0.15)]" />
-            <LayerButton layerKey="foodBanks" label="食物銀行" icon={Soup} colorClass="text-emerald-400" activeBg="bg-[#142820]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
+            <LayerButton layerKey="foodBanks" label="食物援助" icon={Soup} colorClass="text-emerald-400" activeBg="bg-[#142820]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
             <LayerButton layerKey="recycling" label="環保回收" icon={Recycle} colorClass="text-teal-400" activeBg="bg-[#122826]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
             <LayerButton layerKey="homelessShelters" label="無家者庇護所" icon={Bed} colorClass="text-rose-400" activeBg="bg-[#2a171d]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.15)]" />
             <LayerButton layerKey="litterContainers" label="垃圾箱" icon={Trash2} colorClass="text-amber-400" activeBg="bg-[#282115]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />

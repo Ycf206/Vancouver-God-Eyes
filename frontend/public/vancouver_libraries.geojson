@@ -1,447 +1,1097 @@
 {
   "type": "FeatureCollection",
-  "generator": "VancouverGodsEye",
-  "total_count": 22,
-  "updated_at": "2026-10-11T17:35:18.722343Z",
+  "name": "vancouver_public_libraries",
   "features": [
     {
       "type": "Feature",
-      "id": "lib_1",
-      "properties": {
-        "id": "lib_1",
-        "facility_type": "libraries",
-        "name": "Fraserview 分館 (VPL)",
-        "branch_name": "Fraserview",
-        "address": "1950 Argyle Drive",
-        "urllink": "http://www.vpl.ca/branches/details/fraserview_branch",
-        "local_area": "Victoria-Fraserview"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.0669,
-          49.2197
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "lib_2",
-      "properties": {
-        "id": "lib_2",
-        "facility_type": "libraries",
-        "name": "Outreach Services 分館 (VPL)",
-        "branch_name": "Outreach Services",
-        "address": "302-345 Robson St",
-        "urllink": "http://www.vpl.ca/branches/details/outreach_branch",
-        "local_area": "Downtown"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.1156,
-          49.2797
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "lib_3",
-      "properties": {
-        "id": "lib_3",
-        "facility_type": "libraries",
-        "name": "Kitsilano 分館 (VPL)",
-        "branch_name": "Kitsilano",
-        "address": "2425 Macdonald St",
-        "urllink": "http://www.vpl.ca/branches/details/kitsilano_branch",
-        "local_area": "Kitsilano"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.1687,
-          49.2647
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "lib_4",
-      "properties": {
-        "id": "lib_4",
-        "facility_type": "libraries",
-        "name": "Renfrew 分館 (VPL)",
-        "branch_name": "Renfrew",
-        "address": "2969 E 22nd Av",
-        "urllink": "http://www.vpl.ca/branches/details/renfrew_branch",
-        "local_area": "Renfrew-Collingwood"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.043,
-          49.2524
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "lib_5",
-      "properties": {
-        "id": "lib_5",
-        "facility_type": "libraries",
-        "name": "Britannia 分館 (VPL)",
-        "branch_name": "Britannia",
-        "address": "1661 Napier St",
-        "urllink": "http://www.vpl.ca/branches/details/britannia_branch",
-        "local_area": "Grandview-Woodland"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
           -123.0738,
           49.2756
         ]
+      },
+      "properties": {
+        "name": "Britannia Branch",
+        "address": "1661 Napier Street, Vancouver BC V5L 4X4, Canada",
+        "street_address": "1661 Napier Street",
+        "postal_code": "V5L 4X4",
+        "phone": "604-665-2222",
+        "email": "info@vpl.ca",
+        "urllink": "https://www.vpl.ca/branches/britannia",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=49.2756,-123.0738",
+        "geo_local_area": "Grandview-Woodland",
+        "geo_point_2d": {
+          "lon": -123.0738,
+          "lat": 49.2756
+        },
+        "hours": {
+          "Monday": "9:30 am – 8:00 pm",
+          "Tuesday": "9:30 am – 8:00 pm",
+          "Wednesday": "9:30 am – 8:00 pm",
+          "Thursday": "9:30 am – 6:00 pm",
+          "Friday": "9:30 am – 6:00 pm",
+          "Saturday": "9:30 am – 5:00 pm",
+          "Sunday": "9:30 am – 5:00 pm"
+        },
+        "upcoming_closures": [
+          "Thursday, January 1, 2026: Closed (New Year's Day)",
+          "Monday, February 16, 2026: Closed (Family Day)",
+          "Friday, April 3, 2026: Closed (Good Friday)",
+          "Monday, April 6, 2026: Closed (Easter Monday)",
+          "Monday, May 18, 2026: Closed (Victoria Day)",
+          "Wednesday, July 1, 2026: Closed (Canada Day)",
+          "Monday, August 3, 2026: Closed (BC Day)",
+          "Monday, September 7, 2026: Closed (Labour Day)",
+          "Wednesday, September 30, 2026: Closed (National Day for Truth and Reconciliation)",
+          "Monday, October 12, 2026: Closed (Thanksgiving)",
+          "Wednesday, November 11, 2026: Closed (Remembrance Day)",
+          "Thursday, December 24, 2026: 9:30 am – 5:00 pm (Closing early for Christmas Eve)",
+          "Friday, December 25, 2026: Closed (Christmas Day)",
+          "Saturday, December 26, 2026: Closed (Boxing Day)"
+        ],
+        "after_hours_book_drop": "Yes",
+        "after_hours_book_drop_note": null
       }
     },
     {
       "type": "Feature",
-      "id": "lib_6",
-      "properties": {
-        "id": "lib_6",
-        "facility_type": "libraries",
-        "name": "Joe Fortes 分館 (VPL)",
-        "branch_name": "Joe Fortes",
-        "address": "870 Denman St",
-        "urllink": "http://www.vpl.ca/branches/details/joe_fortes_branch",
-        "local_area": "West End"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.1361,
-          49.2899
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "lib_7",
-      "properties": {
-        "id": "lib_7",
-        "facility_type": "libraries",
-        "name": "Kerrisdale 分館 (VPL)",
-        "branch_name": "Kerrisdale",
-        "address": "2112 W 42nd Av",
-        "urllink": "http://www.vpl.ca/branches/details/kerrisdale_branch",
-        "local_area": "Kerrisdale"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.1571,
-          49.2332
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "lib_8",
-      "properties": {
-        "id": "lib_8",
-        "facility_type": "libraries",
-        "name": "Marpole 分館 (VPL)",
-        "branch_name": "Marpole",
-        "address": "8386 Granville St",
-        "urllink": "http://www.vpl.ca/branches/details/marpole_branch",
-        "local_area": "Marpole"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.14,
-          49.2104
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "lib_9",
-      "properties": {
-        "id": "lib_9",
-        "facility_type": "libraries",
-        "name": "Carnegie 分館 (VPL)",
-        "branch_name": "Carnegie",
-        "address": "401 Main St",
-        "urllink": "http://www.vpl.ca/branches/details/carnegie_branch",
-        "local_area": "Downtown"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
           -123.1001,
           49.2811
         ]
+      },
+      "properties": {
+        "name": "Carnegie Branch",
+        "address": "401 Main Street, Vancouver BC V6A 2T7, Canada",
+        "street_address": "401 Main Street",
+        "postal_code": "V6A 2T7",
+        "phone": "604-665-3010",
+        "email": "info@vpl.ca",
+        "urllink": "https://www.vpl.ca/branches/carnegie",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=49.2811,-123.1001",
+        "geo_local_area": "Downtown",
+        "geo_point_2d": {
+          "lon": -123.1001,
+          "lat": 49.2811
+        },
+        "hours": {
+          "Monday": "9:30 am – 8:00 pm",
+          "Tuesday": "9:30 am – 8:00 pm",
+          "Wednesday": "9:30 am – 8:00 pm",
+          "Thursday": "9:30 am – 8:00 pm",
+          "Friday": "9:30 am – 6:00 pm",
+          "Saturday": "9:30 am – 5:00 pm",
+          "Sunday": "9:30 am – 5:00 pm"
+        },
+        "upcoming_closures": [
+          "Thursday, January 1, 2026: Closed (New Year's Day)",
+          "Monday, February 16, 2026: Closed (Family Day)",
+          "Friday, April 3, 2026: Closed (Good Friday)",
+          "Monday, April 6, 2026: Closed (Easter Monday)",
+          "Monday, May 18, 2026: Closed (Victoria Day)",
+          "Wednesday, July 1, 2026: Closed (Canada Day)",
+          "Monday, August 3, 2026: Closed (BC Day)",
+          "Monday, September 7, 2026: Closed (Labour Day)",
+          "Wednesday, September 30, 2026: Closed (National Day for Truth and Reconciliation)",
+          "Monday, October 12, 2026: Closed (Thanksgiving)",
+          "Wednesday, November 11, 2026: Closed (Remembrance Day)",
+          "Thursday, December 24, 2026: 9:30 am – 5:00 pm (Closing early for Christmas Eve)",
+          "Friday, December 25, 2026: Closed (Christmas Day)",
+          "Saturday, December 26, 2026: Closed (Boxing Day)"
+        ],
+        "after_hours_book_drop": "Yes",
+        "after_hours_book_drop_note": "Book drop is available from 9:00 a.m. – 11:00 p.m., seven days a week."
       }
     },
     {
       "type": "Feature",
-      "id": "lib_10",
-      "properties": {
-        "id": "lib_10",
-        "facility_type": "libraries",
-        "name": "Central Branch 分館 (VPL)",
-        "branch_name": "Central Branch",
-        "address": "350 W Georgia St",
-        "urllink": "http://www.vpl.ca/branches/details/central_library",
-        "local_area": "Downtown"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
           -123.1156,
           49.2797
         ]
+      },
+      "properties": {
+        "name": "Central Library",
+        "address": "350 West Georgia Street, Vancouver BC V6B 6B1, Canada",
+        "street_address": "350 West Georgia Street",
+        "postal_code": "V6B 6B1",
+        "phone": "604-331-3603",
+        "email": "info@vpl.ca",
+        "urllink": "https://www.vpl.ca/branches/central",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=49.2797,-123.1156",
+        "geo_local_area": "Downtown",
+        "geo_point_2d": {
+          "lon": -123.1156,
+          "lat": 49.2797
+        },
+        "hours": {
+          "Monday": "9:30 am – 8:30 pm",
+          "Tuesday": "9:30 am – 8:30 pm",
+          "Wednesday": "9:30 am – 8:30 pm",
+          "Thursday": "9:30 am – 8:30 pm",
+          "Friday": "9:30 am – 6:00 pm",
+          "Saturday": "10:00 am – 6:00 pm",
+          "Sunday": "11:00 am – 6:00 pm"
+        },
+        "upcoming_closures": [
+          "Thursday, January 1, 2026: Closed (New Year's Day)",
+          "Monday, February 16, 2026: Closed (Family Day)",
+          "Friday, April 3, 2026: Closed (Good Friday)",
+          "Monday, April 6, 2026: Closed (Easter Monday)",
+          "Monday, May 18, 2026: Closed (Victoria Day)",
+          "Wednesday, July 1, 2026: Closed (Canada Day)",
+          "Monday, August 3, 2026: Closed (BC Day)",
+          "Monday, September 7, 2026: Closed (Labour Day)",
+          "Wednesday, September 30, 2026: Closed (National Day for Truth and Reconciliation)",
+          "Monday, October 12, 2026: Closed (Thanksgiving)",
+          "Wednesday, November 11, 2026: Closed (Remembrance Day)",
+          "Thursday, December 24, 2026: 9:30 am – 5:00 pm (Closing early for Christmas Eve)",
+          "Friday, December 25, 2026: Closed (Christmas Day)",
+          "Saturday, December 26, 2026: Closed (Boxing Day)"
+        ],
+        "after_hours_book_drop": "Yes",
+        "after_hours_book_drop_note": null
       }
     },
     {
       "type": "Feature",
-      "id": "lib_11",
-      "properties": {
-        "id": "lib_11",
-        "facility_type": "libraries",
-        "name": "Kensington 分館 (VPL)",
-        "branch_name": "Kensington",
-        "address": "1428 Cedar Cottage Mews",
-        "urllink": "http://www.vpl.ca/branches/details/kensington_branch",
-        "local_area": "Kensington-Cedar Cottage"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.0753,
-          49.2491
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "lib_12",
-      "properties": {
-        "id": "lib_12",
-        "facility_type": "libraries",
-        "name": "Oakridge 分館 (VPL)",
-        "branch_name": "Oakridge",
-        "address": "191-650 W 41st Av",
-        "urllink": "http://www.vpl.ca/branches/details/oakridge_branch",
-        "local_area": "Oakridge"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.1172,
-          49.2327
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "lib_13",
-      "properties": {
-        "id": "lib_13",
-        "facility_type": "libraries",
-        "name": "Terry Salman 分館 (VPL)",
-        "branch_name": "Terry Salman",
-        "address": "4575 Clancy Loranger Way",
-        "urllink": "http://www.vpl.ca/location/terry-salman-branch",
-        "local_area": "Riley Park"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.1079,
-          49.2438
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "lib_14",
-      "properties": {
-        "id": "lib_14",
-        "facility_type": "libraries",
-        "name": "Strathcona 分館 (VPL)",
-        "branch_name": "Strathcona",
-        "address": "592 E Pender St",
-        "urllink": "http://www.vpl.ca/branches/details/strathcona_branch",
-        "local_area": "Strathcona"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.0915,
-          49.2798
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "lib_15",
-      "properties": {
-        "id": "lib_15",
-        "facility_type": "libraries",
-        "name": "Champlain Heights 分館 (VPL)",
-        "branch_name": "Champlain Heights",
-        "address": "7110 Kerr St",
-        "urllink": "http://www.vpl.ca/branches/details/champlain_heights_branch",
-        "local_area": "Killarney"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
           -123.0402,
           49.2191
         ]
+      },
+      "properties": {
+        "name": "Champlain Heights Branch",
+        "address": "7110 Kerr Street, Vancouver BC V5S 4W2, Canada",
+        "street_address": "7110 Kerr Street",
+        "postal_code": "V5S 4W2",
+        "phone": "604-665-3955",
+        "email": "info@vpl.ca",
+        "urllink": "https://www.vpl.ca/branches/champlain-heights",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=49.2191,-123.0402",
+        "geo_local_area": "Killarney",
+        "geo_point_2d": {
+          "lon": -123.0402,
+          "lat": 49.2191
+        },
+        "hours": {
+          "Monday": "9:30 am – 6:00 pm",
+          "Tuesday": "9:30 am – 8:00 pm",
+          "Wednesday": "9:30 am – 6:00 pm",
+          "Thursday": "9:30 am – 8:00 pm",
+          "Friday": "9:30 am – 6:00 pm",
+          "Saturday": "9:30 am – 5:00 pm",
+          "Sunday": "9:30 am – 5:00 pm"
+        },
+        "upcoming_closures": [
+          "Thursday, January 1, 2026: Closed (New Year's Day)",
+          "Monday, February 16, 2026: Closed (Family Day)",
+          "Friday, April 3, 2026: Closed (Good Friday)",
+          "Monday, April 6, 2026: Closed (Easter Monday)",
+          "Monday, May 18, 2026: Closed (Victoria Day)",
+          "Wednesday, July 1, 2026: Closed (Canada Day)",
+          "Monday, August 3, 2026: Closed (BC Day)",
+          "Monday, September 7, 2026: Closed (Labour Day)",
+          "Wednesday, September 30, 2026: Closed (National Day for Truth and Reconciliation)",
+          "Monday, October 12, 2026: Closed (Thanksgiving)",
+          "Wednesday, November 11, 2026: Closed (Remembrance Day)",
+          "Thursday, December 24, 2026: 9:30 am – 5:00 pm (Closing early for Christmas Eve)",
+          "Friday, December 25, 2026: Closed (Christmas Day)",
+          "Saturday, December 26, 2026: Closed (Boxing Day)"
+        ],
+        "after_hours_book_drop": "Yes",
+        "after_hours_book_drop_note": null
       }
     },
     {
       "type": "Feature",
-      "id": "lib_16",
-      "properties": {
-        "id": "lib_16",
-        "facility_type": "libraries",
-        "name": "Firehall 分館 (VPL)",
-        "branch_name": "Firehall",
-        "address": "1455 W 10th Av",
-        "urllink": "http://www.vpl.ca/branches/details/firehall_branch",
-        "local_area": "Fairview"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.1376,
-          49.2629
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "lib_17",
-      "properties": {
-        "id": "lib_17",
-        "facility_type": "libraries",
-        "name": "South Hill 分館 (VPL)",
-        "branch_name": "South Hill",
-        "address": "6076 Fraser St",
-        "urllink": "http://www.vpl.ca/branches/details/south_hill_branch",
-        "local_area": "Sunset"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.0903,
-          49.2295
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "lib_18",
-      "properties": {
-        "id": "lib_18",
-        "facility_type": "libraries",
-        "name": "West Point Grey 分館 (VPL)",
-        "branch_name": "West Point Grey",
-        "address": "4480 W 10th Av",
-        "urllink": "http://www.vpl.ca/branches/details/west_point_grey_branch",
-        "local_area": "West Point Grey"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.2086,
-          49.2635
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "lib_19",
-      "properties": {
-        "id": "lib_19",
-        "facility_type": "libraries",
-        "name": "Collingwood 分館 (VPL)",
-        "branch_name": "Collingwood",
-        "address": "2985 Kingsway",
-        "urllink": "http://www.vpl.ca/branches/details/collingwood_branch",
-        "local_area": "Renfrew-Collingwood"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
           -123.0426,
           49.2362
         ]
+      },
+      "properties": {
+        "name": "Collingwood Branch",
+        "address": "2985 Kingsway, Vancouver BC V5R 5J4, Canada",
+        "street_address": "2985 Kingsway",
+        "postal_code": "V5R 5J4",
+        "phone": "604-665-3953",
+        "email": "info@vpl.ca",
+        "urllink": "https://www.vpl.ca/branches/collingwood",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=49.2362,-123.0426",
+        "geo_local_area": "Renfrew-Collingwood",
+        "geo_point_2d": {
+          "lon": -123.0426,
+          "lat": 49.2362
+        },
+        "hours": {
+          "Monday": "9:30 am – 8:00 pm",
+          "Tuesday": "9:30 am – 8:00 pm",
+          "Wednesday": "9:30 am – 8:00 pm",
+          "Thursday": "9:30 am – 8:00 pm",
+          "Friday": "9:30 am – 6:00 pm",
+          "Saturday": "9:30 am – 5:00 pm",
+          "Sunday": "9:30 am – 5:00 pm"
+        },
+        "upcoming_closures": [
+          "Thursday, January 1, 2026: Closed (New Year's Day)",
+          "Monday, February 16, 2026: Closed (Family Day)",
+          "Friday, April 3, 2026: Closed (Good Friday)",
+          "Monday, April 6, 2026: Closed (Easter Monday)",
+          "Monday, May 18, 2026: Closed (Victoria Day)",
+          "Wednesday, July 1, 2026: Closed (Canada Day)",
+          "Monday, August 3, 2026: Closed (BC Day)",
+          "Monday, September 7, 2026: Closed (Labour Day)",
+          "Wednesday, September 30, 2026: Closed (National Day for Truth and Reconciliation)",
+          "Monday, October 12, 2026: Closed (Thanksgiving)",
+          "Wednesday, November 11, 2026: Closed (Remembrance Day)",
+          "Thursday, December 24, 2026: 9:30 am – 5:00 pm (Closing early for Christmas Eve)",
+          "Friday, December 25, 2026: Closed (Christmas Day)",
+          "Saturday, December 26, 2026: Closed (Boxing Day)"
+        ],
+        "after_hours_book_drop": "No",
+        "after_hours_book_drop_note": "The book drop is closed October 12 - 22 during branch painting."
       }
     },
     {
       "type": "Feature",
-      "id": "lib_20",
-      "properties": {
-        "id": "lib_20",
-        "facility_type": "libraries",
-        "name": "Mount Pleasant 分館 (VPL)",
-        "branch_name": "Mount Pleasant",
-        "address": "1 Kingsway",
-        "urllink": "http://www.vpl.ca/branches/details/mount_pleasant_branch",
-        "local_area": "Mount Pleasant"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.1002,
-          49.2643
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "lib_21",
-      "properties": {
-        "id": "lib_21",
-        "facility_type": "libraries",
-        "name": "Dunbar 分館 (VPL)",
-        "branch_name": "Dunbar",
-        "address": "4515 Dunbar St",
-        "urllink": "http://www.vpl.ca/branches/details/dunbar_branch",
-        "local_area": "Dunbar-Southlands"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
           -123.1856,
-          49.246
+          49.2462
         ]
+      },
+      "properties": {
+        "name": "Dunbar Branch",
+        "address": "4515 Dunbar Street, Vancouver BC V6S 2G7, Canada",
+        "street_address": "4515 Dunbar Street",
+        "postal_code": "V6S 2G7",
+        "phone": "604-665-3968",
+        "email": "info@vpl.ca",
+        "urllink": "https://www.vpl.ca/branches/dunbar",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=49.2462,-123.1856",
+        "geo_local_area": "Dunbar-Southlands",
+        "geo_point_2d": {
+          "lon": -123.1856,
+          "lat": 49.2462
+        },
+        "hours": {
+          "Monday": "Closed",
+          "Tuesday": "9:30 am – 7:00 pm",
+          "Wednesday": "9:30 am – 7:00 pm",
+          "Thursday": "9:30 am – 6:00 pm",
+          "Friday": "9:30 am – 6:00 pm",
+          "Saturday": "9:30 am – 5:00 pm",
+          "Sunday": "9:30 am – 5:00 pm"
+        },
+        "upcoming_closures": [
+          "Thursday, January 1, 2026: Closed (New Year's Day)",
+          "Monday, February 16, 2026: Closed (Family Day)",
+          "Friday, April 3, 2026: Closed (Good Friday)",
+          "Monday, April 6, 2026: Closed (Easter Monday)",
+          "Monday, May 18, 2026: Closed (Victoria Day)",
+          "Wednesday, July 1, 2026: Closed (Canada Day)",
+          "Monday, August 3, 2026: Closed (BC Day)",
+          "Monday, September 7, 2026: Closed (Labour Day)",
+          "Wednesday, September 30, 2026: Closed (National Day for Truth and Reconciliation)",
+          "Monday, October 12, 2026: Closed (Thanksgiving)",
+          "Wednesday, November 11, 2026: Closed (Remembrance Day)",
+          "Thursday, December 24, 2026: 9:30 am – 5:00 pm (Closing early for Christmas Eve)",
+          "Friday, December 25, 2026: Closed (Christmas Day)",
+          "Saturday, December 26, 2026: Closed (Boxing Day)"
+        ],
+        "after_hours_book_drop": "Yes",
+        "after_hours_book_drop_note": null
       }
     },
     {
       "type": "Feature",
-      "id": "lib_22",
-      "properties": {
-        "id": "lib_22",
-        "facility_type": "libraries",
-        "name": "Hastings 分館 (VPL)",
-        "branch_name": "Hastings",
-        "address": "2674 E Hastings St",
-        "urllink": "http://www.vpl.ca/branches/details/hastings_branch",
-        "local_area": "Hastings-Sunrise"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.05,
+          -123.1378,
+          49.2628
+        ]
+      },
+      "properties": {
+        "name": "Firehall Branch",
+        "address": "1455 West 10th Avenue, Vancouver BC V6H 4C5, Canada",
+        "street_address": "1455 West 10th Avenue",
+        "postal_code": "V6H 4C5",
+        "phone": "604-665-3970",
+        "email": "info@vpl.ca",
+        "urllink": "https://www.vpl.ca/branches/firehall",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=49.2628,-123.1378",
+        "geo_local_area": "Fairview",
+        "geo_point_2d": {
+          "lon": -123.1378,
+          "lat": 49.2628
+        },
+        "hours": {
+          "Monday": "Closed",
+          "Tuesday": "9:30 am – 7:00 pm",
+          "Wednesday": "9:30 am – 7:00 pm",
+          "Thursday": "9:30 am – 6:00 pm",
+          "Friday": "9:30 am – 6:00 pm",
+          "Saturday": "9:30 am – 5:00 pm",
+          "Sunday": "9:30 am – 5:00 pm"
+        },
+        "upcoming_closures": [
+          "Thursday, January 1, 2026: Closed (New Year's Day)",
+          "Monday, February 16, 2026: Closed (Family Day)",
+          "Friday, April 3, 2026: Closed (Good Friday)",
+          "Monday, April 6, 2026: Closed (Easter Monday)",
+          "Monday, May 18, 2026: Closed (Victoria Day)",
+          "Wednesday, July 1, 2026: Closed (Canada Day)",
+          "Monday, August 3, 2026: Closed (BC Day)",
+          "Monday, September 7, 2026: Closed (Labour Day)",
+          "Wednesday, September 30, 2026: Closed (National Day for Truth and Reconciliation)",
+          "Monday, October 12, 2026: Closed (Thanksgiving)",
+          "Wednesday, November 11, 2026: Closed (Remembrance Day)",
+          "Thursday, December 24, 2026: 9:30 am – 5:00 pm (Closing early for Christmas Eve)",
+          "Friday, December 25, 2026: Closed (Christmas Day)",
+          "Saturday, December 26, 2026: Closed (Boxing Day)"
+        ],
+        "after_hours_book_drop": "Yes",
+        "after_hours_book_drop_note": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0669,
+          49.2197
+        ]
+      },
+      "properties": {
+        "name": "Fraserview Branch",
+        "address": "1950 Argyle Drive, Vancouver BC V5P 2A8, Canada",
+        "street_address": "1950 Argyle Drive",
+        "postal_code": "V5P 2A8",
+        "phone": "604-665-3957",
+        "email": "info@vpl.ca",
+        "urllink": "https://www.vpl.ca/branches/fraserview",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=49.2197,-123.0669",
+        "geo_local_area": "Victoria-Fraserview",
+        "geo_point_2d": {
+          "lon": -123.0669,
+          "lat": 49.2197
+        },
+        "hours": {
+          "Monday": "Closed",
+          "Tuesday": "9:30 am – 7:00 pm",
+          "Wednesday": "9:30 am – 7:00 pm",
+          "Thursday": "9:30 am – 6:00 pm",
+          "Friday": "9:30 am – 6:00 pm",
+          "Saturday": "9:30 am – 5:00 pm",
+          "Sunday": "9:30 am – 5:00 pm"
+        },
+        "upcoming_closures": [
+          "Thursday, January 1, 2026: Closed (New Year's Day)",
+          "Monday, February 16, 2026: Closed (Family Day)",
+          "Friday, April 3, 2026: Closed (Good Friday)",
+          "Monday, April 6, 2026: Closed (Easter Monday)",
+          "Monday, May 18, 2026: Closed (Victoria Day)",
+          "Wednesday, July 1, 2026: Closed (Canada Day)",
+          "Monday, August 3, 2026: Closed (BC Day)",
+          "Monday, September 7, 2026: Closed (Labour Day)",
+          "Wednesday, September 30, 2026: Closed (National Day for Truth and Reconciliation)",
+          "Monday, October 12, 2026: Closed (Thanksgiving)",
+          "Wednesday, November 11, 2026: Closed (Remembrance Day)",
+          "Thursday, December 24, 2026: 9:30 am – 5:00 pm (Closing early for Christmas Eve)",
+          "Friday, December 25, 2026: Closed (Christmas Day)",
+          "Saturday, December 26, 2026: Closed (Boxing Day)"
+        ],
+        "after_hours_book_drop": "Yes",
+        "after_hours_book_drop_note": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0498,
           49.2809
         ]
+      },
+      "properties": {
+        "name": "Hastings Branch",
+        "address": "2674 East Hastings Street, Vancouver BC V5K 1Z6, Canada",
+        "street_address": "2674 East Hastings Street",
+        "postal_code": "V5K 1Z6",
+        "phone": "604-665-3959",
+        "email": "info@vpl.ca",
+        "urllink": "https://www.vpl.ca/branches/hastings",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=49.2809,-123.0498",
+        "geo_local_area": "Hastings-Sunrise",
+        "geo_point_2d": {
+          "lon": -123.0498,
+          "lat": 49.2809
+        },
+        "hours": {
+          "Monday": "Closed",
+          "Tuesday": "9:30 am – 7:00 pm",
+          "Wednesday": "9:30 am – 7:00 pm",
+          "Thursday": "9:30 am – 6:00 pm",
+          "Friday": "9:30 am – 6:00 pm",
+          "Saturday": "9:30 am – 5:00 pm",
+          "Sunday": "9:30 am – 5:00 pm"
+        },
+        "upcoming_closures": [
+          "Thursday, January 1, 2026: Closed (New Year's Day)",
+          "Monday, February 16, 2026: Closed (Family Day)",
+          "Friday, April 3, 2026: Closed (Good Friday)",
+          "Monday, April 6, 2026: Closed (Easter Monday)",
+          "Monday, May 18, 2026: Closed (Victoria Day)",
+          "Wednesday, July 1, 2026: Closed (Canada Day)",
+          "Monday, August 3, 2026: Closed (BC Day)",
+          "Monday, September 7, 2026: Closed (Labour Day)",
+          "Wednesday, September 30, 2026: Closed (National Day for Truth and Reconciliation)",
+          "Monday, October 12, 2026: Closed (Thanksgiving)",
+          "Wednesday, November 11, 2026: Closed (Remembrance Day)",
+          "Thursday, December 24, 2026: 9:30 am – 5:00 pm (Closing early for Christmas Eve)",
+          "Friday, December 25, 2026: Closed (Christmas Day)",
+          "Saturday, December 26, 2026: Closed (Boxing Day)"
+        ],
+        "after_hours_book_drop": "Yes",
+        "after_hours_book_drop_note": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1361,
+          49.2899
+        ]
+      },
+      "properties": {
+        "name": "Joe Fortes Branch",
+        "address": "870 Denman Street, Vancouver BC V6G 2L8, Canada",
+        "street_address": "870 Denman Street",
+        "postal_code": "V6G 2L8",
+        "phone": "604-665-3972",
+        "email": "info@vpl.ca",
+        "urllink": "https://www.vpl.ca/branches/joe-fortes",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=49.2899,-123.1361",
+        "geo_local_area": "West End",
+        "geo_point_2d": {
+          "lon": -123.1361,
+          "lat": 49.2899
+        },
+        "hours": {
+          "Monday": "9:30 am – 6:00 pm",
+          "Tuesday": "9:30 am – 8:00 pm",
+          "Wednesday": "9:30 am – 8:00 pm",
+          "Thursday": "9:30 am – 8:00 pm",
+          "Friday": "9:30 am – 6:00 pm",
+          "Saturday": "9:30 am – 5:00 pm",
+          "Sunday": "9:30 am – 5:00 pm"
+        },
+        "upcoming_closures": [
+          "Thursday, January 1, 2026: Closed (New Year's Day)",
+          "Monday, February 16, 2026: Closed (Family Day)",
+          "Friday, April 3, 2026: Closed (Good Friday)",
+          "Monday, April 6, 2026: Closed (Easter Monday)",
+          "Monday, May 18, 2026: Closed (Victoria Day)",
+          "Wednesday, July 1, 2026: Closed (Canada Day)",
+          "Monday, August 3, 2026: Closed (BC Day)",
+          "Monday, September 7, 2026: Closed (Labour Day)",
+          "Wednesday, September 30, 2026: Closed (National Day for Truth and Reconciliation)",
+          "Monday, October 12, 2026: Closed (Thanksgiving)",
+          "Wednesday, November 11, 2026: Closed (Remembrance Day)",
+          "Thursday, December 24, 2026: 9:30 am – 5:00 pm (Closing early for Christmas Eve)",
+          "Friday, December 25, 2026: Closed (Christmas Day)",
+          "Saturday, December 26, 2026: Closed (Boxing Day)"
+        ],
+        "after_hours_book_drop": "Yes",
+        "after_hours_book_drop_note": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0753,
+          49.2491
+        ]
+      },
+      "properties": {
+        "name": "Kensington Branch",
+        "address": "1428 Cedar Cottage Mews, Vancouver BC V5N 5Z1, Canada",
+        "street_address": "1428 Cedar Cottage Mews",
+        "postal_code": "V5N 5Z1",
+        "phone": "604-665-3961",
+        "email": "info@vpl.ca",
+        "urllink": "https://www.vpl.ca/branches/kensington",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=49.2491,-123.0753",
+        "geo_local_area": "Kensington-Cedar Cottage",
+        "geo_point_2d": {
+          "lon": -123.0753,
+          "lat": 49.2491
+        },
+        "hours": {
+          "Monday": "Closed",
+          "Tuesday": "9:30 am – 6:00 pm",
+          "Wednesday": "9:30 am – 7:00 pm",
+          "Thursday": "9:30 am – 7:00 pm",
+          "Friday": "9:30 am – 6:00 pm",
+          "Saturday": "9:30 am – 5:00 pm",
+          "Sunday": "9:30 am – 5:00 pm"
+        },
+        "upcoming_closures": [
+          "Thursday, January 1, 2026: Closed (New Year's Day)",
+          "Monday, February 16, 2026: Closed (Family Day)",
+          "Friday, April 3, 2026: Closed (Good Friday)",
+          "Monday, April 6, 2026: Closed (Easter Monday)",
+          "Monday, May 18, 2026: Closed (Victoria Day)",
+          "Wednesday, July 1, 2026: Closed (Canada Day)",
+          "Monday, August 3, 2026: Closed (BC Day)",
+          "Monday, September 7, 2026: Closed (Labour Day)",
+          "Wednesday, September 30, 2026: Closed (National Day for Truth and Reconciliation)",
+          "Monday, October 12, 2026: Closed (Thanksgiving)",
+          "Wednesday, November 11, 2026: Closed (Remembrance Day)",
+          "Thursday, December 24, 2026: 9:30 am – 5:00 pm (Closing early for Christmas Eve)",
+          "Friday, December 25, 2026: Closed (Christmas Day)",
+          "Saturday, December 26, 2026: Closed (Boxing Day)"
+        ],
+        "after_hours_book_drop": "Yes",
+        "after_hours_book_drop_note": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1571,
+          49.2332
+        ]
+      },
+      "properties": {
+        "name": "Kerrisdale Branch",
+        "address": "2112 West 42nd Avenue, Vancouver BC V6M 2B6, Canada",
+        "street_address": "2112 West 42nd Avenue",
+        "postal_code": "V6M 2B6",
+        "phone": "604-665-3974",
+        "email": "info@vpl.ca",
+        "urllink": "https://www.vpl.ca/branches/kerrisdale",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=49.2332,-123.1571",
+        "geo_local_area": "Kerrisdale",
+        "geo_point_2d": {
+          "lon": -123.1571,
+          "lat": 49.2332
+        },
+        "hours": {
+          "Monday": "Closed",
+          "Tuesday": "9:30 am – 7:00 pm",
+          "Wednesday": "9:30 am – 6:00 pm",
+          "Thursday": "9:30 am – 7:00 pm",
+          "Friday": "9:30 am – 6:00 pm",
+          "Saturday": "9:30 am – 5:00 pm",
+          "Sunday": "9:30 am – 5:00 pm"
+        },
+        "upcoming_closures": [
+          "Thursday, January 1, 2026: Closed (New Year's Day)",
+          "Monday, February 16, 2026: Closed (Family Day)",
+          "Friday, April 3, 2026: Closed (Good Friday)",
+          "Monday, April 6, 2026: Closed (Easter Monday)",
+          "Monday, May 18, 2026: Closed (Victoria Day)",
+          "Wednesday, July 1, 2026: Closed (Canada Day)",
+          "Monday, August 3, 2026: Closed (BC Day)",
+          "Monday, September 7, 2026: Closed (Labour Day)",
+          "Wednesday, September 30, 2026: Closed (National Day for Truth and Reconciliation)",
+          "Monday, October 12, 2026: Closed (Thanksgiving)",
+          "Wednesday, November 11, 2026: Closed (Remembrance Day)",
+          "Thursday, December 24, 2026: 9:30 am – 5:00 pm (Closing early for Christmas Eve)",
+          "Friday, December 25, 2026: Closed (Christmas Day)",
+          "Saturday, December 26, 2026: Closed (Boxing Day)"
+        ],
+        "after_hours_book_drop": "Yes",
+        "after_hours_book_drop_note": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1687,
+          49.2647
+        ]
+      },
+      "properties": {
+        "name": "Kitsilano Branch",
+        "address": "2425 Macdonald Street, Vancouver BC V6K 3Y9, Canada",
+        "street_address": "2425 Macdonald Street",
+        "postal_code": "V6K 3Y9",
+        "phone": "604-665-3976",
+        "email": "info@vpl.ca",
+        "urllink": "https://www.vpl.ca/branches/kitsilano",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=49.2647,-123.1687",
+        "geo_local_area": "Kitsilano",
+        "geo_point_2d": {
+          "lon": -123.1687,
+          "lat": 49.2647
+        },
+        "hours": {
+          "Monday": "9:30 am – 8:00 pm",
+          "Tuesday": "9:30 am – 8:00 pm",
+          "Wednesday": "9:30 am – 8:00 pm",
+          "Thursday": "9:30 am – 8:00 pm",
+          "Friday": "9:30 am – 6:00 pm",
+          "Saturday": "9:30 am – 5:00 pm",
+          "Sunday": "9:30 am – 5:00 pm"
+        },
+        "upcoming_closures": [
+          "Thursday, January 1, 2026: Closed (New Year's Day)",
+          "Monday, February 16, 2026: Closed (Family Day)",
+          "Friday, April 3, 2026: Closed (Good Friday)",
+          "Monday, April 6, 2026: Closed (Easter Monday)",
+          "Monday, May 18, 2026: Closed (Victoria Day)",
+          "Wednesday, July 1, 2026: Closed (Canada Day)",
+          "Monday, August 3, 2026: Closed (BC Day)",
+          "Monday, September 7, 2026: Closed (Labour Day)",
+          "Wednesday, September 30, 2026: Closed (National Day for Truth and Reconciliation)",
+          "Monday, October 12, 2026: Closed (Thanksgiving)",
+          "Wednesday, November 11, 2026: Closed (Remembrance Day)",
+          "Thursday, December 24, 2026: 9:30 am – 5:00 pm (Closing early for Christmas Eve)",
+          "Friday, December 25, 2026: Closed (Christmas Day)",
+          "Saturday, December 26, 2026: Closed (Boxing Day)"
+        ],
+        "after_hours_book_drop": "Yes",
+        "after_hours_book_drop_note": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14,
+          49.2104
+        ]
+      },
+      "properties": {
+        "name": "Marpole Branch",
+        "address": "8386 Granville Street, Vancouver BC V6P 4Z7, Canada",
+        "street_address": "8386 Granville Street",
+        "postal_code": "V6P 4Z7",
+        "phone": "604-665-3978",
+        "email": "info@vpl.ca",
+        "urllink": "https://www.vpl.ca/branches/marpole",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=49.2104,-123.14",
+        "geo_local_area": "Marpole",
+        "geo_point_2d": {
+          "lon": -123.14,
+          "lat": 49.2104
+        },
+        "hours": {
+          "Monday": "Closed",
+          "Tuesday": "9:30 am – 7:00 pm",
+          "Wednesday": "9:30 am – 7:00 pm",
+          "Thursday": "9:30 am – 6:00 pm",
+          "Friday": "9:30 am – 6:00 pm",
+          "Saturday": "9:30 am – 5:00 pm",
+          "Sunday": "9:30 am – 5:00 pm"
+        },
+        "upcoming_closures": [
+          "Thursday, January 1, 2026: Closed (New Year's Day)",
+          "Monday, February 16, 2026: Closed (Family Day)",
+          "Friday, April 3, 2026: Closed (Good Friday)",
+          "Monday, April 6, 2026: Closed (Easter Monday)",
+          "Monday, May 18, 2026: Closed (Victoria Day)",
+          "Wednesday, July 1, 2026: Closed (Canada Day)",
+          "Monday, August 3, 2026: Closed (BC Day)",
+          "Monday, September 7, 2026: Closed (Labour Day)",
+          "Wednesday, September 30, 2026: Closed (National Day for Truth and Reconciliation)",
+          "Monday, October 12, 2026: Closed (Thanksgiving)",
+          "Wednesday, November 11, 2026: Closed (Remembrance Day)",
+          "Thursday, December 24, 2026: 9:30 am – 5:00 pm (Closing early for Christmas Eve)",
+          "Friday, December 25, 2026: Closed (Christmas Day)",
+          "Saturday, December 26, 2026: Closed (Boxing Day)"
+        ],
+        "after_hours_book_drop": "Yes",
+        "after_hours_book_drop_note": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1003,
+          49.2642
+        ]
+      },
+      "properties": {
+        "name": "Mount Pleasant Branch",
+        "address": "1 Kingsway, Vancouver BC V5T 3H7, Canada",
+        "street_address": "1 Kingsway",
+        "postal_code": "V5T 3H7",
+        "phone": "604-665-3962",
+        "email": "info@vpl.ca",
+        "urllink": "https://www.vpl.ca/branches/mount-pleasant",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=49.2642,-123.1003",
+        "geo_local_area": "Mount Pleasant",
+        "geo_point_2d": {
+          "lon": -123.1003,
+          "lat": 49.2642
+        },
+        "hours": {
+          "Monday": "9:30 am – 8:00 pm",
+          "Tuesday": "9:30 am – 8:00 pm",
+          "Wednesday": "9:30 am – 8:00 pm",
+          "Thursday": "9:30 am – 8:00 pm",
+          "Friday": "9:30 am – 8:00 pm",
+          "Saturday": "9:30 am – 5:00 pm",
+          "Sunday": "9:30 am – 5:00 pm"
+        },
+        "upcoming_closures": [
+          "Thursday, January 1, 2026: Closed (New Year's Day)",
+          "Monday, February 16, 2026: Closed (Family Day)",
+          "Friday, April 3, 2026: Closed (Good Friday)",
+          "Monday, April 6, 2026: Closed (Easter Monday)",
+          "Monday, May 18, 2026: Closed (Victoria Day)",
+          "Wednesday, July 1, 2026: Closed (Canada Day)",
+          "Monday, August 3, 2026: Closed (BC Day)",
+          "Monday, September 7, 2026: Closed (Labour Day)",
+          "Wednesday, September 30, 2026: Closed (National Day for Truth and Reconciliation)",
+          "Monday, October 12, 2026: Closed (Thanksgiving)",
+          "Wednesday, November 11, 2026: Closed (Remembrance Day)",
+          "Thursday, December 24, 2026: 9:30 am – 5:00 pm (Closing early for Christmas Eve)",
+          "Friday, December 25, 2026: Closed (Christmas Day)",
+          "Saturday, December 26, 2026: Closed (Boxing Day)"
+        ],
+        "after_hours_book_drop": "Yes",
+        "after_hours_book_drop_note": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0886,
+          49.2812
+        ]
+      },
+      "properties": {
+        "name": "nə́c̓aʔmat ct Strathcona Branch",
+        "address": "730 East Hastings Street, Vancouver BC V6A 1R5, Canada",
+        "street_address": "730 East Hastings Street",
+        "postal_code": "V6A 1R5",
+        "phone": "604-665-3967",
+        "email": "info@vpl.ca",
+        "urllink": "https://www.vpl.ca/branches/n%C9%99%CC%81c%CC%93a%CA%94mat-ct-strathcona",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=49.2812,-123.0886",
+        "geo_local_area": "Strathcona",
+        "geo_point_2d": {
+          "lon": -123.0886,
+          "lat": 49.2812
+        },
+        "hours": {
+          "Monday": "9:30 am – 8:00 pm",
+          "Tuesday": "9:30 am – 8:00 pm",
+          "Wednesday": "9:30 am – 8:00 pm",
+          "Thursday": "9:30 am – 8:00 pm",
+          "Friday": "9:30 am – 6:00 pm",
+          "Saturday": "9:30 am – 5:00 pm",
+          "Sunday": "9:30 am – 5:00 pm"
+        },
+        "upcoming_closures": [
+          "Thursday, January 1, 2026: Closed (New Year's Day)",
+          "Monday, February 16, 2026: Closed (Family Day)",
+          "Friday, April 3, 2026: Closed (Good Friday)",
+          "Monday, April 6, 2026: Closed (Easter Monday)",
+          "Monday, May 18, 2026: Closed (Victoria Day)",
+          "Wednesday, July 1, 2026: Closed (Canada Day)",
+          "Monday, August 3, 2026: Closed (BC Day)",
+          "Monday, September 7, 2026: Closed (Labour Day)",
+          "Wednesday, September 30, 2026: Closed (National Day for Truth and Reconciliation)",
+          "Monday, October 12, 2026: Closed (Thanksgiving)",
+          "Wednesday, November 11, 2026: Closed (Remembrance Day)",
+          "Thursday, December 24, 2026: 9:30 am – 5:00 pm (Closing early for Christmas Eve)",
+          "Friday, December 25, 2026: Closed (Christmas Day)",
+          "Saturday, December 26, 2026: Closed (Boxing Day)"
+        ],
+        "after_hours_book_drop": "Yes",
+        "after_hours_book_drop_note": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.119,
+          49.2292
+        ]
+      },
+      "properties": {
+        "name": "Oakridge Branch",
+        "address": "6184 Ash Street, Vancouver BC V5Z 3G9, Canada",
+        "street_address": "6184 Ash Street",
+        "postal_code": "V5Z 3G9",
+        "phone": "604-665-3980",
+        "email": "info@vpl.ca",
+        "urllink": "https://www.vpl.ca/branches/oakridge",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=49.2292,-123.119",
+        "geo_local_area": "Oakridge",
+        "geo_point_2d": {
+          "lon": -123.119,
+          "lat": 49.2292
+        },
+        "hours": {
+          "Monday": "Closed",
+          "Tuesday": "Closed",
+          "Wednesday": "Closed",
+          "Thursday": "Closed",
+          "Friday": "Closed",
+          "Saturday": "Closed",
+          "Sunday": "Closed"
+        },
+        "upcoming_closures": [
+          "Thursday, January 1, 2026: Closed (New Year's Day)",
+          "Monday, February 16, 2026: Closed (Family Day)",
+          "Friday, April 3, 2026: Closed (Good Friday)",
+          "Monday, April 6, 2026: Closed (Easter Monday)",
+          "Monday, May 18, 2026: Closed (Victoria Day)",
+          "Wednesday, July 1, 2026: Closed (Canada Day)",
+          "Monday, August 3, 2026: Closed (BC Day)",
+          "Monday, September 7, 2026: Closed (Labour Day)",
+          "Wednesday, September 30, 2026: Closed (National Day for Truth and Reconciliation)",
+          "Monday, October 12, 2026: Closed (Thanksgiving)",
+          "Wednesday, November 11, 2026: Closed (Remembrance Day)",
+          "Thursday, December 24, 2026: 9:30 am – 5:00 pm (Closing early for Christmas Eve)",
+          "Friday, December 25, 2026: Closed (Christmas Day)",
+          "Saturday, December 26, 2026: Closed (Boxing Day)"
+        ],
+        "after_hours_book_drop": "No",
+        "after_hours_book_drop_note": "Closed in preparation for the new branch opening in 2027."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.043,
+          49.252
+        ]
+      },
+      "properties": {
+        "name": "Renfrew Branch",
+        "address": "2969 East 22nd Avenue, Vancouver BC V5M 2Y3, Canada",
+        "street_address": "2969 East 22nd Avenue",
+        "postal_code": "V5M 2Y3",
+        "phone": "604-257-8705",
+        "email": "info@vpl.ca",
+        "urllink": "https://www.vpl.ca/branches/renfrew",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=49.252,-123.043",
+        "geo_local_area": "Renfrew-Collingwood",
+        "geo_point_2d": {
+          "lon": -123.043,
+          "lat": 49.252
+        },
+        "hours": {
+          "Monday": "9:30 am – 8:00 pm",
+          "Tuesday": "9:30 am – 8:00 pm",
+          "Wednesday": "9:30 am – 8:00 pm",
+          "Thursday": "9:30 am – 8:00 pm",
+          "Friday": "9:30 am – 6:00 pm",
+          "Saturday": "9:30 am – 5:00 pm",
+          "Sunday": "9:30 am – 5:00 pm"
+        },
+        "upcoming_closures": [
+          "Thursday, January 1, 2026: Closed (New Year's Day)",
+          "Monday, February 16, 2026: Closed (Family Day)",
+          "Friday, April 3, 2026: Closed (Good Friday)",
+          "Monday, April 6, 2026: Closed (Easter Monday)",
+          "Monday, May 18, 2026: Closed (Victoria Day)",
+          "Wednesday, July 1, 2026: Closed (Canada Day)",
+          "Monday, August 3, 2026: Closed (BC Day)",
+          "Monday, September 7, 2026: Closed (Labour Day)",
+          "Wednesday, September 30, 2026: Closed (National Day for Truth and Reconciliation)",
+          "Monday, October 12, 2026: Closed (Thanksgiving)",
+          "Wednesday, November 11, 2026: Closed (Remembrance Day)",
+          "Thursday, December 24, 2026: 9:30 am – 5:00 pm (Closing early for Christmas Eve)",
+          "Friday, December 25, 2026: Closed (Christmas Day)",
+          "Saturday, December 26, 2026: Closed (Boxing Day)"
+        ],
+        "after_hours_book_drop": "Yes",
+        "after_hours_book_drop_note": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0903,
+          49.2295
+        ]
+      },
+      "properties": {
+        "name": "South Hill Branch",
+        "address": "6076 Fraser Street, Vancouver BC V5W 2Z7, Canada",
+        "street_address": "6076 Fraser Street",
+        "postal_code": "V5W 2Z7",
+        "phone": "604-665-3965",
+        "email": "info@vpl.ca",
+        "urllink": "https://www.vpl.ca/branches/south-hill",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=49.2295,-123.0903",
+        "geo_local_area": "Sunset",
+        "geo_point_2d": {
+          "lon": -123.0903,
+          "lat": 49.2295
+        },
+        "hours": {
+          "Monday": "Closed",
+          "Tuesday": "9:30 am – 7:00 pm",
+          "Wednesday": "9:30 am – 6:00 pm",
+          "Thursday": "9:30 am – 7:00 pm",
+          "Friday": "9:30 am – 6:00 pm",
+          "Saturday": "9:30 am – 5:00 pm",
+          "Sunday": "9:30 am – 5:00 pm"
+        },
+        "upcoming_closures": [
+          "Thursday, January 1, 2026: Closed (New Year's Day)",
+          "Monday, February 16, 2026: Closed (Family Day)",
+          "Friday, April 3, 2026: Closed (Good Friday)",
+          "Monday, April 6, 2026: Closed (Easter Monday)",
+          "Monday, May 18, 2026: Closed (Victoria Day)",
+          "Wednesday, July 1, 2026: Closed (Canada Day)",
+          "Monday, August 3, 2026: Closed (BC Day)",
+          "Monday, September 7, 2026: Closed (Labour Day)",
+          "Wednesday, September 30, 2026: Closed (National Day for Truth and Reconciliation)",
+          "Monday, October 12, 2026: Closed (Thanksgiving)",
+          "Wednesday, November 11, 2026: Closed (Remembrance Day)",
+          "Thursday, December 24, 2026: 9:30 am – 5:00 pm (Closing early for Christmas Eve)",
+          "Friday, December 25, 2026: Closed (Christmas Day)",
+          "Saturday, December 26, 2026: Closed (Boxing Day)"
+        ],
+        "after_hours_book_drop": "Yes",
+        "after_hours_book_drop_note": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.107,
+          49.2435
+        ]
+      },
+      "properties": {
+        "name": "Terry Salman Branch",
+        "address": "4575 Clancy Loranger Way, Vancouver BC V5Y 2M4, Canada",
+        "street_address": "4575 Clancy Loranger Way",
+        "postal_code": "V5Y 2M4",
+        "phone": "604-665-3964",
+        "email": "info@vpl.ca",
+        "urllink": "https://www.vpl.ca/branches/terry-salman",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=49.2435,-123.107",
+        "geo_local_area": "Riley Park",
+        "geo_point_2d": {
+          "lon": -123.107,
+          "lat": 49.2435
+        },
+        "hours": {
+          "Monday": "9:30 am – 8:00 pm",
+          "Tuesday": "9:30 am – 8:00 pm",
+          "Wednesday": "9:30 am – 8:00 pm",
+          "Thursday": "9:30 am – 8:00 pm",
+          "Friday": "9:30 am – 8:00 pm",
+          "Saturday": "9:30 am – 5:00 pm",
+          "Sunday": "9:30 am – 5:00 pm"
+        },
+        "upcoming_closures": [
+          "Thursday, January 1, 2026: Closed (New Year's Day)",
+          "Monday, February 16, 2026: Closed (Family Day)",
+          "Friday, April 3, 2026: Closed (Good Friday)",
+          "Monday, April 6, 2026: Closed (Easter Monday)",
+          "Monday, May 18, 2026: Closed (Victoria Day)",
+          "Wednesday, July 1, 2026: Closed (Canada Day)",
+          "Monday, August 3, 2026: Closed (BC Day)",
+          "Monday, September 7, 2026: Closed (Labour Day)",
+          "Wednesday, September 30, 2026: Closed (National Day for Truth and Reconciliation)",
+          "Monday, October 12, 2026: Closed (Thanksgiving)",
+          "Wednesday, November 11, 2026: Closed (Remembrance Day)",
+          "Thursday, December 24, 2026: 9:30 am – 5:00 pm (Closing early for Christmas Eve)",
+          "Friday, December 25, 2026: Closed (Christmas Day)",
+          "Saturday, December 26, 2026: Closed (Boxing Day)"
+        ],
+        "after_hours_book_drop": "Yes",
+        "after_hours_book_drop_note": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.2104,
+          49.2636
+        ]
+      },
+      "properties": {
+        "name": "West Point Grey Branch",
+        "address": "4566 West 10th Avenue, Vancouver BC V6R 2J1, Canada",
+        "street_address": "4566 West 10th Avenue",
+        "postal_code": "V6R 2J1",
+        "phone": "604-665-3982",
+        "email": "info@vpl.ca",
+        "urllink": "https://www.vpl.ca/branches/west-point-grey",
+        "directions_url": "https://www.google.com/maps/dir/?api=1&destination=49.2636,-123.2104",
+        "geo_local_area": "West Point Grey",
+        "geo_point_2d": {
+          "lon": -123.2104,
+          "lat": 49.2636
+        },
+        "hours": {
+          "Monday": "Closed",
+          "Tuesday": "9:30 am – 7:00 pm",
+          "Wednesday": "9:30 am – 6:00 pm",
+          "Thursday": "9:30 am – 7:00 pm",
+          "Friday": "9:30 am – 6:00 pm",
+          "Saturday": "9:30 am – 5:00 pm",
+          "Sunday": "9:30 am – 5:00 pm"
+        },
+        "upcoming_closures": [
+          "Thursday, January 1, 2026: Closed (New Year's Day)",
+          "Monday, February 16, 2026: Closed (Family Day)",
+          "Friday, April 3, 2026: Closed (Good Friday)",
+          "Monday, April 6, 2026: Closed (Easter Monday)",
+          "Monday, May 18, 2026: Closed (Victoria Day)",
+          "Wednesday, July 1, 2026: Closed (Canada Day)",
+          "Monday, August 3, 2026: Closed (BC Day)",
+          "Monday, September 7, 2026: Closed (Labour Day)",
+          "Wednesday, September 30, 2026: Closed (National Day for Truth and Reconciliation)",
+          "Monday, October 12, 2026: Closed (Thanksgiving)",
+          "Wednesday, November 11, 2026: Closed (Remembrance Day)",
+          "Thursday, December 24, 2026: 9:30 am – 5:00 pm (Closing early for Christmas Eve)",
+          "Friday, December 25, 2026: Closed (Christmas Day)",
+          "Saturday, December 26, 2026: Closed (Boxing Day)"
+        ],
+        "after_hours_book_drop": "Yes",
+        "after_hours_book_drop_note": null
       }
     }
   ]

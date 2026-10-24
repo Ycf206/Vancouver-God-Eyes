@@ -1,0 +1,55 @@
+name: Annual Libraries Closures Update (圖書館閉館日每年年頭更新1次)
+
+on:
+  schedule:
+    # 每年 1 月 1 日 03:00 UTC (每年 1 次)
+    - cron: '0 3 1 1 *'
+  workflow_dispatch:
+
+jobs:
+  update-libraries-closures:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Run Libraries Closures Update Script
+        run: |
+          node scripts/update_libraries_closures.mjs
+
+      - name: Commit and Push Updated Libraries GeoJSON
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add backend/data/vancouver_libraries.geojson frontend/public/vancouver_libraries.geojson
+          if git diff --staged --quiet; then
+            echo "No library closure updates detected."
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            git commit -m "chore(data): auto-update annual library upcoming closures (yearly cron) [skip ci]"
+            git push origin main
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+        id: git_push
+
+      - name: Sync Updated GeoJSON to OCI VM
+        if: steps.git_push.outputs.has_changes == 'true'
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.OCI_HOST_IP }}
+          username: ubuntu
+          key: ${{ secrets.OCI_SSH_KEY }}
+          script: |
+            echo "🔄 同步最新圖書館閉館資料至 OCI 伺服器..."
+            cd ~/Vancouver-God-Eyes || cd ~/vancouver-gods-eye
+            git pull
+            echo "✅ OCI 伺服器圖書館資料檔案同步完成！"

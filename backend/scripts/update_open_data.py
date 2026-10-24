@@ -340,106 +340,42 @@ def update_public_washrooms():
     save_geojson("vancouver_public_washrooms", features)
     sync_to_db("public_washrooms", features)
 
-def update_schools():
-    records = fetch_all_records("schools")
+def update_fire_hydrants():
+    records = fetch_all_records("water-hydrants")
     features = []
     for idx, r in enumerate(records):
-        gp = r.get("geo_point_2d") or {}
-        lon = gp.get("lon")
-        lat = gp.get("lat")
+        pt = r.get("geo_point_2d") or {}
+        lon = pt.get("lon")
+        lat = pt.get("lat")
+        if lon is None or lat is None:
+            geom_field = r.get("geom", {})
+            if isinstance(geom_field, dict) and geom_field.get("coordinates"):
+                lon, lat = geom_field["coordinates"][0], geom_field["coordinates"][1]
         if lon is None or lat is None:
             continue
-        name = r.get("school_name") or "學校"
-        cat = r.get("school_category") or "學校"
-        cat_zh = "公立學校" if "Public" in cat else ("私立/獨立學校" if "Independent" in cat else cat)
-        features.append({
-            "type": "Feature",
-            "id": f"school_{idx+1}",
-            "properties": {
-                "id": f"school_{idx+1}",
-                "facility_type": "schools",
-                "name": name,
-                "school_category": cat,
-                "school_category_zh": cat_zh,
-                "address": r.get("address") or "",
-                "local_area": r.get("geo_local_area") or "溫哥華市"
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [lon, lat]
-            }
-        })
-    save_geojson("vancouver_schools", features)
-    sync_to_db("schools", features)
 
-def update_libraries():
-    records = fetch_all_records("libraries")
-    features = []
-    for idx, r in enumerate(records):
-        gp = r.get("geo_point_2d") or {}
-        lon = gp.get("lon")
-        lat = gp.get("lat")
-        if lon is None or lat is None:
-            continue
-        name = r.get("name") or "溫哥華市立圖書館"
-        if not name.endswith("Library") and not "圖書館" in name:
-            disp_name = f"{name} 分館 (VPL)"
-        else:
-            disp_name = name
+        hyd_id = r.get("id") or f"WH_{idx+1}"
         features.append({
             "type": "Feature",
-            "id": f"lib_{idx+1}",
-            "properties": {
-                "id": f"lib_{idx+1}",
-                "facility_type": "libraries",
-                "name": disp_name,
-                "branch_name": r.get("name") or "",
-                "address": r.get("address") or "",
-                "urllink": r.get("urllink") or "https://www.vpl.ca",
-                "local_area": r.get("geo_local_area") or "溫哥華市"
-            },
             "geometry": {
                 "type": "Point",
-                "coordinates": [lon, lat]
-            }
-        })
-    save_geojson("vancouver_libraries", features)
-    sync_to_db("libraries", features)
-
-def update_food_vendors():
-    records = fetch_all_records("food-vendors")
-    features = []
-    for idx, r in enumerate(records):
-        gp = r.get("geo_point_2d") or {}
-        lon = gp.get("lon")
-        lat = gp.get("lat")
-        if lon is None or lat is None:
-            continue
-        desc = r.get("description") or "特色餐飲食品"
-        bname = r.get("business_name")
-        name = f"{bname} ({desc})" if bname else desc
-        key = r.get("key") or f"FV{idx+1}"
-        features.append({
-            "type": "Feature",
-            "id": f"food_{key}",
-            "properties": {
-                "id": f"food_{key}",
-                "facility_type": "food_vendors",
-                "name": name,
-                "vendor_code": key,
-                "description": desc,
-                "business_name": bname or "餐車攤商",
-                "status": "營運中" if r.get("status") == "open" else (r.get("status") or "未知"),
-                "location_desc": r.get("location") or "",
-                "local_area": r.get("geo_localarea") or "溫哥華市"
+                "coordinates": [round(float(lon), 6), round(float(lat), 6)]
             },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [lon, lat]
+            "properties": {
+                "id": hyd_id,
+                "facility_type": "fire_hydrants",
+                "name": f"消防栓 ({r.get('street') or hyd_id})",
+                "code": r.get("code") or "",
+                "covwaterhydrantunittype": r.get("covwaterhydrantunittype") or "",
+                "color": r.get("color") or "Blue",
+                "street": r.get("street") or "",
+                "status": r.get("status") or "IN_SERVICE",
+                "geo_local_area": r.get("geo_local_area") or "",
+                "geo_point_2d": {"lon": lon, "lat": lat}
             }
         })
-    save_geojson("vancouver_food_vendors", features)
-    sync_to_db("food_vendors", features)
+    save_geojson("vancouver_fire_hydrants", features, frequency="每 6 個月 (Semi-Annual)")
+    sync_to_db("fire_hydrants", features)
 
 def update_homeless_shelters():
     records = fetch_all_records("homeless-shelter-locations")
@@ -654,22 +590,16 @@ def run_all_updates():
     # 5. Public Washrooms
     update_public_washrooms()
     
-    # 6. Schools
-    update_schools()
+    # 6. Fire Hydrants (每 6 個月更新)
+    update_fire_hydrants()
     
-    # 7. Libraries
-    update_libraries()
-    
-    # 8. Food Vendors
-    update_food_vendors()
-    
-    # 9. Homeless Shelters
+    # 7. Homeless Shelters
     update_homeless_shelters()
 
-    # 10. Bikeways (LineString)
+    # 8. Bikeways (LineString)
     update_bikeways()
 
-    # 11. One-Way Streets (LineString, 每6個月更新)
+    # 9. One-Way Streets (LineString, 每 6 個月更新)
     update_one_way_streets()
     
     # Record metadata
@@ -681,14 +611,14 @@ def run_all_updates():
             "datasets": [
                 "parks", "parks_facilities", "community_gardens", 
                 "drinking_fountains", "public_washrooms",
-                "schools", "libraries", "food_vendors", "homeless_shelters",
+                "fire_hydrants", "homeless_shelters",
                 "bikeways", "one_way_streets"
             ]
         }, f, indent=2)
         
     duration = (datetime.now(timezone.utc) - start_time).total_seconds()
     print("=" * 60)
-    print(f"🎉 All 11 datasets successfully refreshed in {duration:.1f}s!")
+    print(f"🎉 All open datasets successfully refreshed in {duration:.1f}s!")
     print("=" * 60)
 
 if __name__ == "__main__":

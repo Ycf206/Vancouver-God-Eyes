@@ -16,7 +16,7 @@ import {
   Navigation, ExternalLink, Clock, Bike, Car, Info, 
   ChevronDown, ChevronUp, SlidersHorizontal, Fuel, Zap, Wifi, Waves, Play, Pause, CloudRain,
   RotateCcw, RotateCw, MapPin, Crosshair, Activity, Ban, Cone, Lightbulb, Ship,
-  Camera, Gauge, Footprints, ArrowRight
+  Camera, Gauge, Footprints, ArrowRight, Mail
 } from 'lucide-react';
 
 // Fix Next.js App Router Web Worker crash
@@ -4956,14 +4956,7 @@ export default function AppMap() {
           'line-cap': 'round'
         },
         paint: {
-          'line-color': [
-            'match',
-            ['to-string', ['case', ['<=', ['to-number', ['get', 'speed_limit']], 0], 30, ['get', 'speed_limit']]],
-            '30', '#10b981',
-            '40', '#f59e0b',
-            '50', '#3b82f6',
-            '#6366f1'
-          ],
+          'line-color': '#F59E0B',
           'line-width': ['interpolate', ['linear'], ['zoom'], 11, 1.6, 14, 3.2, 17, 5.2],
           'line-opacity': 0.95
         }
@@ -8135,7 +8128,7 @@ export default function AppMap() {
             <div className={`p-3.5 ${
               (selectedFacility.facility_type === 'traffic_conditions' || selectedFacility.facility_type === 'traffic_corridor') ? 'w-[430px]' :
               (selectedFacility.facility_type === 'traffic_cameras' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'accessible_parking') ? 'w-[370px]' : 
-              (selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'border_crossing' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'beach_water_quality' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'zoning_districts' || selectedFacility.facility_type === 'motorcycle_parking') ? 'w-[340px]' : 
+              (selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'food_vendors' || selectedFacility.facility_type === 'food_banks' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'border_crossing' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'fuel' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'postal_code_fsa' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'street_lighting' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'beach_water_quality' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'zoning_districts' || selectedFacility.facility_type === 'motorcycle_parking') ? 'w-[340px]' : 
               'w-[290px]'
             } max-w-[90vw] text-gray-800`}>
               {(() => {
@@ -8157,9 +8150,44 @@ export default function AppMap() {
                   if (t === 'shared_bikes') return { label: '共享單車', bg: 'bg-[#00A3AD] text-white' };
                   if (t === 'escooter') return { label: '共享滑板車', bg: 'bg-lime-600 text-white' };
                   if (t === 'ev_charging') return { label: '電動車充電站', bg: 'bg-[#059669] text-white' };
+                  if (t === 'tesla') return { label: 'TESLA', bg: 'bg-[#E82127] text-white', isTesla: true };
                   if (t === 'road_closures') return { label: '交通封閉', bg: 'bg-[#DC2626] text-white' };
                   if (t === 'road_construction') return { label: '道路施工', bg: 'bg-[#EA580C] text-white' };
                   if (t === 'traffic_cameras') return { label: '交通攝影機', bg: 'bg-[#0284C7] text-white' };
+                  if (t === 'safety_cameras') {
+                    const hasSpeed = Boolean(selectedFacility.properties?.has_speed);
+                    return { label: '路口安全相機', bg: hasSpeed ? 'bg-[#991B1B] text-white' : 'bg-[#DC2626] text-white' };
+                  }
+                  if (t === 'snow_removal_routes') return { label: '鏟雪路線', bg: 'bg-[#F0F9FF] text-sky-900 border border-sky-300' };
+                  if (t === 'schools') return { label: '學校', bg: 'bg-blue-600 text-white' };
+                  if (t === 'libraries') return { label: '圖書館', bg: 'bg-amber-500 text-white' };
+                  if (t === 'food_vendors') return { label: '食品攤販', bg: 'bg-orange-500 text-white' };
+                  if (t === 'food_banks') return { label: '食物援助', bg: 'bg-emerald-600 text-white' };
+                  if (t === 'homeless_shelters') return { label: '無家者庇護所', bg: 'bg-rose-600 text-white' };
+                  if (t === 'aed') return { label: 'AED 去顫器', bg: 'bg-red-600 text-white' };
+                  if (t === 'community_centres') return { label: '社區中心', bg: 'bg-violet-600 text-white' };
+                  if (t === 'public_art') return { label: '公共藝術', bg: 'bg-fuchsia-600 text-white' };
+                  if (t === 'police') return { label: '警察', bg: 'bg-blue-600 text-white' };
+                  if (t === 'fire_halls') return { label: '消防', bg: 'bg-rose-600 text-white' };
+                  if (t === 'fire_hydrants') return { label: '消防栓', bg: 'bg-red-600 text-white' };
+                  if (t === 'hospitals') return { label: '醫療', bg: 'bg-emerald-600 text-white' };
+                  if (t === 'disaster_hubs') return { label: '災害支援中心', bg: 'bg-amber-600 text-white' };
+                  if (t === 'van_wifi') return { label: 'VanWiFi', bg: 'bg-sky-600 text-white' };
+                  if (t === 'parks') return { label: '公園', bg: 'bg-emerald-600 text-white' };
+                  if (t === 'parks_facilities') return { label: '公園設施', bg: 'bg-teal-600 text-white' };
+                  if (t === 'community_gardens') return { label: '社區花園', bg: 'bg-lime-600 text-white' };
+                  if (t === 'public_trees') return { label: '市區行道樹', bg: 'bg-emerald-700 text-white' };
+                  if (t === 'water_distribution_mains') return { label: '自來水管道', bg: 'bg-sky-600 text-white' };
+                  if (t === 'sewer_mains') return { label: '污水管線', bg: 'bg-teal-600 text-white' };
+                  if (t === 'street_lighting_conduits') return { label: '路燈電纜線', bg: 'bg-amber-500 text-white' };
+                  if (t === 'street_lighting') return { label: '路燈燈桿', bg: 'bg-amber-500 text-white' };
+                  if (t === 'drinking_fountains') return { label: '飲水器', bg: 'bg-sky-600 text-white' };
+                  if (t === 'public_washrooms') return { label: '公共洗手間', bg: 'bg-cyan-600 text-white' };
+                  if (t === 'recycling') return { label: '環保回收', bg: 'bg-emerald-600 text-white' };
+                  if (t === 'litter_containers') return { label: '垃圾箱', bg: 'bg-amber-600 text-white' };
+                  if (t === 'wireless_facilities') return { label: '無線設施', bg: 'bg-purple-600 text-white' };
+                  if (t === 'tide_stations') return { label: '潮汐站', bg: 'bg-blue-600 text-white' };
+                  if (t === 'traffic_alerts' || t === 'traffic_incident') return { label: '即時通報', bg: 'bg-amber-600 text-white' };
                   return null;
                 })();
 
@@ -8358,7 +8386,7 @@ export default function AppMap() {
                         }`}></span>
                       )}
                       <div className="min-w-0">
-                        <h3 className="font-bold text-gray-900 text-sm leading-snug break-words">
+                        <h3 className="font-bold text-gray-900 text-sm leading-snug break-words text-balance">
                           {popupTitle}
                         </h3>
                         {(selectedFacility.local_area || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'wireless_facilities' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'motorcycle_parking' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || selectedFacility.facility_type === 'car_sharing') && (
@@ -8422,6 +8450,8 @@ export default function AppMap() {
                               if (selectedFacility.facility_type === 'litter_containers') return 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'recycling') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'libraries') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
+                              if (selectedFacility.facility_type === 'food_vendors') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
+                              if (selectedFacility.facility_type === 'food_banks') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident') {
                                 const rawStreet = selectedFacility.properties?.street || selectedFacility.local_area || '';
                                 const match = rawStreet.match(/\(([^)]+)\)/);
@@ -9254,15 +9284,19 @@ export default function AppMap() {
                               <span className="text-gray-600">每小時</span>
                               <span className="text-gray-800 font-medium">$17.99 /hr</span>
                             </div>
-                            <div className="flex justify-between items-center pr-1 border-r border-gray-100 pt-1 border-t">
+                            <div className="flex justify-between items-center pr-1 border-r border-gray-100 pt-1 border-t border-gray-100">
                               <span className="text-gray-600">每日 (24hr)</span>
                               <span className="text-gray-800 font-medium">$104.99 /day</span>
                             </div>
-                            <div className="flex justify-between items-center pl-1 pt-1 border-t">
+                            <div className="flex justify-between items-center pl-1 pt-1 border-t border-gray-100">
+                              <span className="text-gray-600">每程附加費</span>
+                              <span className="text-gray-800 font-medium">$1.85 /trip</span>
+                            </div>
+                            <div className="flex justify-between items-center pr-1 border-r border-gray-100 pt-1 border-t border-gray-100">
                               <span className="text-gray-600">3天特惠</span>
                               <span className="text-gray-800 font-medium">$264.99 (省$50)</span>
                             </div>
-                            <div className="col-span-2 flex justify-between items-center pt-1 border-t border-gray-100">
+                            <div className="flex justify-between items-center pl-1 pt-1 border-t border-gray-100">
                               <span className="text-gray-600">5天特惠</span>
                               <span className="text-gray-800 font-medium">$424.99 (省$100)</span>
                             </div>
@@ -9435,17 +9469,9 @@ export default function AppMap() {
               {/* Fire Halls Details */}
               {selectedFacility.facility_type === 'fire_halls' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-rose-500/10 p-2.5 rounded-lg border border-rose-500/25 flex flex-col gap-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-rose-950 text-xs">政府設施</span>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-600 text-white shrink-0 shadow-xs whitespace-nowrap">
-                        消防
-                      </span>
-                    </div>
-                    <div className="pt-1 border-t border-rose-500/20 text-[11px] text-rose-950 font-medium flex items-center gap-1.5 leading-snug">
-                      <span className="text-base text-rose-600 font-bold shrink-0">🚒</span>
-                      <span>緊急求助撥打 911</span>
-                    </div>
+                  <div className="bg-rose-500/10 p-2.5 rounded-lg border border-rose-500/25 flex items-center gap-1.5 text-xs text-rose-950 font-medium leading-snug">
+                    <span className="text-base text-rose-600 font-bold shrink-0">🚒</span>
+                    <span>緊急求助撥打 911</span>
                   </div>
 
                   <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
@@ -9470,19 +9496,11 @@ export default function AppMap() {
               {/* Police (警察) Details */}
               {selectedFacility.facility_type === 'police' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-blue-500/10 p-2.5 rounded-lg border border-blue-500/25 flex flex-col gap-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-blue-950 text-xs">政府設施</span>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-600 text-white shrink-0 shadow-xs whitespace-nowrap">
-                        警察
-                      </span>
-                    </div>
-                    <div className="pt-1 border-t border-blue-500/20 text-[11px] text-blue-950 font-medium flex items-center gap-1.5 leading-snug">
-                      <span className="text-base text-blue-600 font-bold shrink-0">🚨</span>
-                      <div className="flex flex-col leading-tight">
-                        <span>重大緊急危難撥打 911</span>
-                        <span className="mt-0.5 text-[10.5px] text-blue-900">非緊急報案 604-717-3321</span>
-                      </div>
+                  <div className="bg-blue-500/10 p-2.5 rounded-lg border border-blue-500/25 flex items-center gap-1.5 text-xs text-blue-950 font-medium leading-snug">
+                    <span className="text-base text-blue-600 font-bold shrink-0">🚨</span>
+                    <div className="flex flex-col leading-tight">
+                      <span>重大緊急危難撥打 911</span>
+                      <span className="mt-0.5 text-[10.5px] text-blue-900">非緊急報案 604-717-3321</span>
                     </div>
                   </div>
 
@@ -9522,14 +9540,9 @@ export default function AppMap() {
               {selectedFacility.facility_type === 'disaster_hubs' && (
                 <div className="flex flex-col gap-2 text-xs">
                   <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/25 flex flex-col gap-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-amber-950 text-xs">政府設施</span>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-600 text-white shrink-0 shadow-xs whitespace-nowrap">
-                        災害支援中心
-                      </span>
-                    </div>
-                    <div className="pt-1 border-t border-amber-500/20 text-[11px] text-amber-950 font-medium leading-relaxed">
-                      重大災害（如大地震、海嘯）發生後，市民集結互助、協調支援、領取緊急救援資訊與物資之官方指定避難集合中心。
+                    <div className="text-[11px] text-amber-950 font-medium leading-relaxed flex items-center gap-1.5">
+                      <span className="text-base text-amber-600 font-bold shrink-0">⚠️</span>
+                      <span>重大災害（如大地震、海嘯）發生後，市民集結互助、協調支援、領取緊急救援資訊與物資之官方指定避難集合中心。</span>
                     </div>
                   </div>
 
@@ -9558,32 +9571,92 @@ export default function AppMap() {
               )}
 
               {/* Community Centres Details */}
-              {selectedFacility.facility_type === 'community_centres' && (
-                <div className="flex flex-col gap-2 text-xs">
-                  {/* 29.2 市政文娛休閒中心改成生活設施 */}
-                  <div className="bg-purple-500/10 p-2.5 rounded-lg border border-purple-500/25 flex items-center justify-between">
-                    <span className="font-bold text-purple-950 text-xs flex items-center gap-1.5">
-                      <span className="text-base text-purple-600 font-bold">🏛️</span>
-                      <span>生活設施</span>
-                    </span>
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-600 text-white shrink-0">
-                      社區中心
-                    </span>
-                  </div>
+              {selectedFacility.facility_type === 'community_centres' && (() => {
+                const props = selectedFacility.properties || {};
+                const hours = props.hours;
+                const phone = props.phone;
+                const fax = props.fax;
+                const email = props.email;
+                const urllink = props.urllink || 'https://vancouver.ca/parks-recreation-culture/community-and-cultural-centres.aspx';
 
-                  {/* 29.3 前往 Vancouver Board of Parks and Recreation 官方網頁 */}
-                  <div className="pt-1 border-t border-gray-100">
-                    <a 
-                      href="https://vancouver.ca/parks-recreation-culture/community-and-cultural-centres.aspx" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-purple-600 hover:bg-purple-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
-                    >
-                      前往 Vancouver Board of Parks and Recreation 官方網頁 ↗
-                    </a>
+                // Format hours
+                let todayHoursStr = '';
+                if (hours && typeof hours === 'object') {
+                  const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                  const todayName = daysOfWeek[new Date().getDay()];
+                  const h = hours[todayName];
+                  if (h) todayHoursStr = formatTimePreference(h, timeFormat);
+                } else if (typeof hours === 'string') {
+                  todayHoursStr = formatTimePreference(hours, timeFormat);
+                }
+
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    {/* 25.3 紫色區塊 */}
+                    <div className="bg-violet-500/10 p-2.5 rounded-lg border border-violet-500/25 flex items-center gap-1.5 text-[11px] text-violet-950 font-medium leading-relaxed">
+                      <span className="text-base text-violet-600 font-bold shrink-0">🏛️</span>
+                      <span>匯聚社區活力與多元學習課程，打造全年齡友善的鄰里休閒交流中心。</span>
+                    </div>
+
+                    {/* 25.4 灰色區塊 */}
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                      {todayHoursStr && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>開放時間</span>
+                          <span className="text-gray-800 text-right font-medium">{todayHoursStr}</span>
+                        </div>
+                      )}
+
+                      {(phone || fax || email) && <div className="border-t border-gray-200/80 my-0.5" />}
+
+                      {phone && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>聯絡電話</span>
+                          <a href={`tel:${phone}`} className="text-gray-800 hover:text-violet-600 font-medium">
+                            {phone}
+                          </a>
+                        </div>
+                      )}
+
+                      {fax && (
+                        <div className={`flex justify-between items-center text-gray-600 ${phone ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span>傳真號碼</span>
+                          <span className="text-gray-800 font-medium">{fax}</span>
+                        </div>
+                      )}
+
+                      {email && (
+                        <div className={`flex justify-between items-center text-gray-600 ${(phone || fax) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span>聯絡電郵</span>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-gray-800 font-medium truncate max-w-[170px]">{email}</span>
+                            <a
+                              href={`mailto:${email}`}
+                              className="p-1 rounded bg-white hover:bg-violet-50 text-violet-600 border border-gray-200 transition-colors shadow-2xs"
+                              title={`發送郵件至 ${email}`}
+                            >
+                              <Mail className="w-3 h-3" />
+                            </a>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {urllink && (
+                      <div className="pt-1 border-t border-gray-100">
+                        <a 
+                          href={urllink} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-violet-600 hover:bg-violet-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
+                        >
+                          前往 {selectedFacility.name || '社區中心'} 官方網頁 ↗
+                        </a>
+                      </div>
+                    )}
                   </div>
-                </div>
-              )}
+                );
+              })()}
 
               {/* Traffic Cameras Details */}
               {selectedFacility.facility_type === 'traffic_cameras' && (
@@ -9713,51 +9786,73 @@ export default function AppMap() {
               )}
 
               {/* Intersection Safety Cameras Details */}
-              {selectedFacility.facility_type === 'safety_cameras' && (
-                <div className="flex flex-col gap-2 text-xs">
-                  {/* 17.1 紅色區塊：左上「道路設施」，右上紅底白字「路口安全相機」，下半部保留取締文字 */}
-                  <div className="bg-rose-500/10 p-2.5 rounded-lg border border-rose-500/25 flex flex-col gap-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-rose-950 text-xs">道路設施</span>
-                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-rose-600 text-white shrink-0 shadow-xs whitespace-nowrap">
-                        路口安全相機
+              {selectedFacility.facility_type === 'safety_cameras' && (() => {
+                const hasSpeed = Boolean(selectedFacility.properties?.has_speed);
+                const themeColor = hasSpeed ? '#991B1B' : '#DC2626';
+
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    {/* 16.1.1 #DC2626 / 16.2.1 #991B1B */}
+                    <div className={`p-2.5 rounded-lg border flex items-center gap-1.5 leading-snug ${
+                      hasSpeed 
+                        ? 'bg-[#991B1B]/10 border-[#991B1B]/25 text-[#991B1B]' 
+                        : 'bg-[#DC2626]/10 border-[#DC2626]/25 text-[#DC2626]'
+                    }`}>
+                      <span className="text-base shrink-0">{hasSpeed ? '🚨' : '🛑'}</span>
+                      <span className="text-xs font-bold">
+                        {hasSpeed ? '闖紅燈及超速照相取締' : '闖紅燈照相取締'}
                       </span>
                     </div>
 
-                    {/* 17.2 下半部：「闖紅燈及超速照相取締」 */}
-                    <div className="pt-1 border-t border-rose-500/20 text-[11px] text-rose-950 font-medium flex items-center gap-1.5 leading-snug">
-                      <span>{selectedFacility.properties.has_speed ? '🚨' : '🛑'}</span>
-                      <span>{selectedFacility.properties.has_speed ? '闖紅燈及超速照相取締' : '闖紅燈照相取締'}</span>
+                    {/* 16.1.3 (圖1) / 16.2.3 (圖2) BC 省法定裁罰標準表格 */}
+                    <div className="flex flex-col gap-1">
+                      <span className="text-gray-700 font-semibold text-[11px]">BC 省法定裁罰標準</span>
+                      <div className="overflow-hidden rounded border border-gray-200 text-[11px] bg-white">
+                        <table className="w-full text-center border-collapse">
+                          <thead>
+                            <tr className="bg-gray-50 border-b border-gray-200 text-gray-700 font-bold">
+                              <th className="py-1 px-2 border-r border-gray-200 text-left font-normal text-gray-500">違規項目</th>
+                              <th className="py-1 px-2 border-r border-gray-200">處罰金額</th>
+                              <th className="py-1 px-2">記扣點數</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-gray-200 text-gray-800">
+                            <tr>
+                              <td className="py-1.5 px-2 border-r border-gray-200 text-left font-medium">闖紅燈違規</td>
+                              <td className="py-1.5 px-2 border-r border-gray-200 font-medium">$167</td>
+                              <td className="py-1.5 px-2 font-medium">記扣 3 點</td>
+                            </tr>
+                            {hasSpeed && (
+                              <tr>
+                                <td className="py-1.5 px-2 border-r border-gray-200 text-left font-medium">路口超速違規</td>
+                                <td className="py-1.5 px-2 border-r border-gray-200 font-medium">$138 - $483</td>
+                                <td className="py-1.5 px-2 font-medium">依超速幅度記點</td>
+                              </tr>
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                      <div className="text-[10px] text-gray-500 text-right pt-0.5">
+                        執法機構：RoadSafetyBC / ICBC / VPD 聯合管轄
+                      </div>
+                    </div>
+
+                    {/* 16. 前往 RoadSafetyBC 官方網頁 */}
+                    <div className="pt-1 border-t border-gray-100">
+                      <a
+                        href="https://www2.gov.bc.ca/gov/content/transportation/driving-and-cycling/roadsafetybc/intersection-safety-cameras/where-the-cameras-are"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`inline-flex items-center justify-center w-full py-1.5 px-3 text-white rounded font-medium text-xs transition-colors shadow-sm ${
+                          hasSpeed ? 'bg-[#991B1B] hover:bg-red-900' : 'bg-[#DC2626] hover:bg-red-700'
+                        }`}
+                      >
+                        前往 RoadSafetyBC 官方網頁 ↗
+                      </a>
                     </div>
                   </div>
-
-                  {/* 17.3 執法機關 */}
-                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1 text-[11px]">
-                    <div className="flex justify-between items-center text-gray-600">
-                      <span>執法機關</span>
-                      <span className="text-gray-800 text-right">RoadSafetyBC / ICBC / VPD</span>
-                    </div>
-                  </div>
-
-                  <div className="bg-slate-50 p-2 rounded text-[11px] text-gray-600 flex flex-col gap-0.5">
-                    <span className="font-semibold text-gray-700">⚖️ BC 省法定裁罰標準：</span>
-                    <span>• 闖紅燈違規：罰款 $167 CAD 並記扣 3 點</span>
-                    <span>• 超速違規：依超速區間罰款 $138 ~ $483 CAD 及記扣點數</span>
-                  </div>
-
-                  {/* 17.4 前往 RoadSafetyBC官方網頁 */}
-                  <div className="pt-1 border-t border-gray-100">
-                    <a
-                      href="https://www2.gov.bc.ca/gov/content/transportation/driving-and-cycling/roadsafetybc/intersection-safety-cameras/where-the-cameras-are"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-rose-600 hover:bg-rose-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
-                    >
-                      前往 RoadSafetyBC官方網頁 ↗
-                    </a>
-                  </div>
-                </div>
-              )}
+                );
+              })()}
 
               {/* Hospitals, UPCC & Rehab Centre Details & Live Wait Times */}
               {selectedFacility.facility_type === 'hospitals' && (() => {
@@ -9807,22 +9902,17 @@ export default function AppMap() {
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
-                    {/* Facility Type Green Block */}
-                    <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/25 flex flex-col gap-1.5">
-                      <div className="flex items-center justify-between">
-                        <span className="font-bold text-emerald-950 text-xs">政府設施</span>
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-600 text-white shrink-0 shadow-xs whitespace-nowrap">
-                          醫療
-                        </span>
-                      </div>
-                      <div className="pt-1 border-t border-emerald-500/20 text-[11px] text-emerald-950 font-medium flex items-center justify-between gap-1.5 leading-snug">
+                    {/* Facility Type Green Block: 30.2 刪除「政府設施」那行 */}
+                    <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/25 flex items-center justify-between text-[11px] text-emerald-950 font-medium leading-snug">
+                      <span className="flex items-center gap-1.5">
+                        <span className="text-base text-emerald-600 font-bold">🏥</span>
                         <span>{selectedFacility.properties?.type_label || (isRehab ? '專科復健中心' : isUPCC ? '急症基層醫療中心 (UPCC)' : '急症綜合醫院')}</span>
-                        {selectedFacility.properties?.short_name && (
-                          <span className="font-bold font-mono text-emerald-900 shrink-0">
-                            {selectedFacility.properties.short_name}
-                          </span>
-                        )}
-                      </div>
+                      </span>
+                      {selectedFacility.properties?.short_name && (
+                        <span className="font-bold font-mono text-emerald-900 shrink-0">
+                          {selectedFacility.properties.short_name}
+                        </span>
+                      )}
                     </div>
 
                     {/* Live ER/UPCC Wait Time Card OR Rehab Facility Notice */}
@@ -9934,15 +10024,10 @@ export default function AppMap() {
               {/* Parks Details */}
               {selectedFacility.facility_type === 'parks' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  {/* 26.1 市政公共綠地改成公園設施 */}
-                  <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/25 flex items-center justify-between">
-                    <span className="font-bold text-emerald-950 text-xs flex items-center gap-1.5">
-                      <span className="text-base text-emerald-600 font-bold">🌲</span>
-                      <span>公園設施</span>
-                    </span>
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-600 text-white shrink-0">
-                      公園
-                    </span>
+                  {/* 33.1 公園：已移至左上角膠囊，保留公園設施標題 */}
+                  <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/25 flex items-center gap-1.5 text-xs font-bold text-emerald-950">
+                    <span className="text-base text-emerald-600 font-bold">🌲</span>
+                    <span>公園設施</span>
                   </div>
 
                   <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
@@ -9993,15 +10078,10 @@ export default function AppMap() {
               {/* Parks Facilities Details */}
               {selectedFacility.facility_type === 'parks_facilities' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  {/* 27.1 綠色區塊左方「公園設施」，右方綠底白字「休憩」 */}
-                  <div className="bg-teal-500/10 p-2.5 rounded-lg border border-teal-500/25 flex items-center justify-between">
-                    <span className="font-bold text-teal-950 text-xs flex items-center gap-1.5">
-                      <span className="text-base text-teal-600 font-bold">🛝</span>
-                      <span>公園設施</span>
-                    </span>
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-teal-600 text-white shrink-0">
-                      休憩
-                    </span>
+                  {/* 33.2 公園設施：已移至左上角膠囊 */}
+                  <div className="bg-teal-500/10 p-2.5 rounded-lg border border-teal-500/25 flex items-center gap-1.5 text-xs font-bold text-teal-950">
+                    <span className="text-base text-teal-600 font-bold">🛝</span>
+                    <span>公園設施</span>
                   </div>
 
                   {/* 27.2 & 27.3 灰底區塊：設施名稱與設施數量 */}
@@ -10037,15 +10117,10 @@ export default function AppMap() {
               {/* Community Gardens Details */}
               {selectedFacility.facility_type === 'community_gardens' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  {/* 28.1 社區共享花園改成公園設施 */}
-                  <div className="bg-lime-500/10 p-2.5 rounded-lg border border-lime-500/25 flex items-center justify-between">
-                    <span className="font-bold text-lime-950 text-xs flex items-center gap-1.5">
-                      <span className="text-base text-lime-600 font-bold">🌻</span>
-                      <span>公園設施</span>
-                    </span>
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-lime-600 text-white shrink-0">
-                      社區花園
-                    </span>
+                  {/* 33.3 社區花園：已移至左上角膠囊 */}
+                  <div className="bg-lime-500/10 p-2.5 rounded-lg border border-lime-500/25 flex items-center gap-1.5 text-xs font-bold text-lime-950">
+                    <span className="text-base text-lime-600 font-bold">🌻</span>
+                    <span>公園設施</span>
                   </div>
 
                   {/* 28.2 灰色區塊內無 emoji，耕作畦位下方若有果樹則加分隔線顯示品種 */}
@@ -10144,15 +10219,10 @@ export default function AppMap() {
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
-                    {/* 30.5 公共戶外直飲水設施改成公園設施 */}
-                    <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex items-center justify-between">
-                      <span className="font-bold text-sky-950 text-xs flex items-center gap-1.5">
-                        <span className="text-base text-sky-600 font-bold">💧</span>
-                        <span>公園設施</span>
-                      </span>
-                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-sky-500 text-white shrink-0">
-                        飲水器
-                      </span>
+                    {/* 30.5 公園設施標題 */}
+                    <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex items-center gap-1.5 text-xs font-bold text-sky-950">
+                      <span className="text-base text-sky-600 font-bold">💧</span>
+                      <span>公園設施</span>
                     </div>
 
                     {/* 30.6 灰底資料掛序：開放營運(不加粗) -> 詳細位置 -> 寵物友善(是/否) -> 管理維護單位 */}
@@ -10220,15 +10290,10 @@ export default function AppMap() {
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
-                    {/* 31.2 市政公共洗手間改成公園設施，右方淺藍底白字公共洗手間 */}
-                    <div className="bg-cyan-500/10 p-2.5 rounded-lg border border-cyan-500/25 flex items-center justify-between">
-                      <span className="font-bold text-cyan-950 text-xs flex items-center gap-1.5">
-                        <span className="text-base text-cyan-600 font-bold">🚻</span>
-                        <span>公園設施</span>
-                      </span>
-                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-cyan-600 text-white shrink-0">
-                        公共洗手間
-                      </span>
+                    {/* 31.2 公園設施標題 */}
+                    <div className="bg-cyan-500/10 p-2.5 rounded-lg border border-cyan-500/25 flex items-center gap-1.5 text-xs font-bold text-cyan-950">
+                      <span className="text-base text-cyan-600 font-bold">🚻</span>
+                      <span>公園設施</span>
                     </div>
 
                     {/* 31.5 灰底資料掛序：詳細位置 -> 公廁類型(不粗體) -> 無障礙規格(是/否) -> 夏季開放時間 -> 冬季開放時間 */}
@@ -10273,101 +10338,223 @@ export default function AppMap() {
               })()}
 
               {/* Schools Details */}
-              {selectedFacility.facility_type === 'schools' && (
-                <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-blue-500/10 p-2.5 rounded-lg border border-blue-500/25 flex items-center justify-between gap-2">
-                    <span className="font-bold text-xs text-blue-950 flex items-center gap-1.5">
-                      <span>🏫</span>
-                      <span>生活設施</span>
-                    </span>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-600 text-white shrink-0 shadow-xs whitespace-nowrap">
-                      學校
-                    </span>
-                  </div>
+              {selectedFacility.facility_type === 'schools' && (() => {
+                const props = selectedFacility.properties || {};
+                const rawCat = props.school_category_zh || props.school_category || props.category || '';
+                const categoryDisplay = rawCat === 'StrongStart BC' || /StrongStart/i.test(rawCat) 
+                  ? '學前課程' 
+                  : (rawCat || '公立學校');
+                const phone = props.phone;
+                const email = props.email;
+                const url = props.url;
+                const schoolName = props.vsb_name || selectedFacility.name;
 
-                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                    <div className="flex justify-between items-center text-gray-600">
-                      <span>資助類別</span>
-                      <span className="text-gray-800 text-right">
-                        {selectedFacility.properties.school_category_zh || selectedFacility.properties.school_category || '學校'}
-                      </span>
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    <div className="bg-blue-500/10 p-2.5 rounded-lg border border-blue-500/25 flex items-center gap-2 text-xs font-medium text-blue-950 leading-snug">
+                      <span className="text-sm shrink-0">🚸</span>
+                      <span>留意校區慢行管制路段，上課日 08:00 - 17:00 法定最高限速 30/40 km/h，請隨時注意學童穿越。</span>
                     </div>
-                  </div>
-                </div>
-              )}
 
-              {/* Libraries Details */}
-              {selectedFacility.facility_type === 'libraries' && (
-                <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-orange-500/10 p-2.5 rounded-lg border border-orange-500/25 flex items-center justify-between gap-2">
-                    <span className="font-bold text-xs text-orange-950 flex items-center gap-1.5">
-                      <span>📚</span>
-                      <span>生活設施</span>
-                    </span>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-orange-600 text-white shrink-0 shadow-xs whitespace-nowrap">
-                      圖書館
-                    </span>
-                  </div>
-
-                  {selectedFacility.properties.urllink && (
-                    <div className="pt-1">
-                      <a
-                        href={selectedFacility.properties.urllink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-orange-600 hover:bg-orange-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
-                      >
-                        前往 Vancouver Public Library 官方網頁 ↗
-                      </a>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Food Vendors Details */}
-              {selectedFacility.facility_type === 'food_vendors' && (
-                <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-orange-500/10 p-2.5 rounded-lg border border-orange-500/25 flex items-center justify-between gap-2">
-                    <span className="font-bold text-xs text-orange-950 flex items-center gap-1.5">
-                      <span>🍱</span>
-                      <span>生活設施</span>
-                    </span>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-orange-600 text-white shrink-0 shadow-xs whitespace-nowrap">
-                      食品攤販
-                    </span>
-                  </div>
-
-                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                    <div className="flex justify-between items-center text-gray-600">
-                      <span>營業狀態</span>
-                      <span className="text-gray-800 text-right">
-                        {selectedFacility.properties.status || '營運中'}
-                      </span>
-                    </div>
-                    {selectedFacility.properties.vendor_code && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
-                        <span>攤販編號</span>
-                        <span className="text-gray-800 text-right">{selectedFacility.properties.vendor_code}</span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.description && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
-                        <span>餐飲特色</span>
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>類別</span>
                         <span className="text-gray-800 text-right">
-                          {selectedFacility.properties.description}
+                          {categoryDisplay}
                         </span>
                       </div>
+
+                      {(phone || email) && (
+                        <div className="border-t border-gray-200/80 my-0.5" />
+                      )}
+
+                      {phone && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>聯絡電話</span>
+                          <a href={`tel:${phone}`} className="font-medium text-blue-600 hover:underline">
+                            {phone}
+                          </a>
+                        </div>
+                      )}
+
+                      {email && (
+                        <div className={`flex justify-between items-center text-gray-600 ${phone ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span>聯絡電郵</span>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-gray-800 font-medium truncate max-w-[170px]">{email}</span>
+                            <a
+                              href={`mailto:${email}`}
+                              className="p-1 rounded bg-white hover:bg-blue-50 text-blue-600 border border-gray-200 transition-colors shadow-2xs"
+                              title={`寄信至 ${email}`}
+                            >
+                              <Mail className="w-3 h-3" />
+                            </a>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {url && (
+                      <div className="pt-1 border-t border-gray-100">
+                        <a
+                          href={url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-blue-600 hover:bg-blue-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
+                        >
+                          前往 {schoolName} 官方網頁 ↗
+                        </a>
+                      </div>
                     )}
                   </div>
+                );
+              })()}
 
-                  {selectedFacility.properties.location_desc && (
-                    <div className="bg-gray-50 p-2 rounded text-[11px] text-gray-600 border border-gray-100">
-                      <span className="font-semibold block mb-0.5 text-gray-700">擺攤營業位置：</span>
-                      <span>{selectedFacility.properties.location_desc}</span>
+              {/* Libraries Details */}
+              {selectedFacility.facility_type === 'libraries' && (() => {
+                const props = selectedFacility.properties || {};
+                const hours = props.hours;
+                const upcomingClosures = props.upcoming_closures;
+                const bookDrop = props.after_hours_book_drop;
+                const phone = props.phone;
+                const email = props.email;
+                const urllink = props.urllink;
+
+                // Format hours
+                let todayHoursStr = '';
+                if (hours && typeof hours === 'object') {
+                  const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                  const todayName = daysOfWeek[new Date().getDay()];
+                  const h = hours[todayName];
+                  if (h) todayHoursStr = formatTimePreference(h, timeFormat);
+                } else if (typeof hours === 'string') {
+                  todayHoursStr = formatTimePreference(hours, timeFormat);
+                }
+
+                const upcomingClosure = Array.isArray(upcomingClosures) && upcomingClosures.length > 0 
+                  ? upcomingClosures[0] 
+                  : (typeof upcomingClosures === 'string' ? upcomingClosures : null);
+
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/25 flex items-center gap-2 text-xs font-medium text-amber-950 leading-snug">
+                      <span className="text-sm shrink-0">📚</span>
+                      <span>共同維護優質閱覽環境，館內請保持安靜與輕聲細語。</span>
                     </div>
-                  )}
-                </div>
-              )}
+
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                      {todayHoursStr && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>開放時間</span>
+                          <span className="text-gray-800 text-right font-medium">{todayHoursStr}</span>
+                        </div>
+                      )}
+
+                      {upcomingClosure && (
+                        <div className={`flex justify-between items-start text-gray-600 ${todayHoursStr ? 'pt-1.5 border-t border-gray-100' : ''} gap-2`}>
+                          <span className="shrink-0">閉館日</span>
+                          <span className="text-gray-800 text-right font-medium leading-snug">{upcomingClosure}</span>
+                        </div>
+                      )}
+
+                      {bookDrop && (
+                        <div className={`flex justify-between items-center text-gray-600 ${(todayHoursStr || upcomingClosure) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span>閉館還書</span>
+                          <span className="text-gray-800 text-right font-medium">
+                            {bookDrop === 'Yes' || bookDrop === 'yes' || bookDrop === true ? '有提供 (24hr 還書箱)' : bookDrop}
+                          </span>
+                        </div>
+                      )}
+
+                      {(phone || email) && <div className="border-t border-gray-200/80 my-0.5" />}
+
+                      {phone && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>聯絡電話</span>
+                          <a href={`tel:${phone}`} className="text-gray-800 hover:text-amber-600 font-medium">
+                            {phone}
+                          </a>
+                        </div>
+                      )}
+
+                      {email && (
+                        <div className={`flex justify-between items-center text-gray-600 ${phone ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span>聯絡電郵</span>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-gray-800 font-medium truncate max-w-[170px]">{email}</span>
+                            <a
+                              href={`mailto:${email}`}
+                              className="p-1 rounded bg-white hover:bg-amber-50 text-amber-600 border border-gray-200 transition-colors shadow-2xs"
+                              title={`發送郵件至 ${email}`}
+                            >
+                              <Mail className="w-3 h-3" />
+                            </a>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {urllink && (
+                      <div className="pt-1 border-t border-gray-100">
+                        <a
+                          href={urllink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-amber-600 hover:bg-amber-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
+                        >
+                          前往 Vancouver Public Library 官方網頁 ↗
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
+
+              {/* Food Vendors Details */}
+              {selectedFacility.facility_type === 'food_vendors' && (() => {
+                const props = selectedFacility.properties || {};
+                const name = props.name || selectedFacility.name;
+                const address = props.address;
+                const rawHours = props.hours || props.operating_hours;
+                const hours = rawHours ? formatTimePreference(rawHours, timeFormat) : null;
+                const creditCard = props.credit_card || props.payment_methods || '支援';
+
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    <div className="bg-orange-500/10 p-2.5 rounded-lg border border-orange-500/25 flex items-center gap-2 text-xs font-medium text-orange-950 leading-snug">
+                      <span className="text-base text-orange-600 font-bold shrink-0">🍱</span>
+                      <span>特色街頭餐車與小吃點，營業時間與出攤位置可能受天候與活動影響。</span>
+                    </div>
+
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                      {name && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>名稱</span>
+                          <span className="text-gray-800 text-right font-medium">{name}</span>
+                        </div>
+                      )}
+                      {address && (
+                        <div className={`flex justify-between items-center text-gray-600 ${name ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span>地址</span>
+                          <span className="text-gray-800 text-right max-w-[190px] truncate">{address}</span>
+                        </div>
+                      )}
+                      {hours && (
+                        <div className={`flex justify-between items-center text-gray-600 ${(name || address) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span>營業時間</span>
+                          <span className="text-gray-800 text-right font-medium">{hours}</span>
+                        </div>
+                      )}
+                      {creditCard && (
+                        <div className={`flex justify-between items-center text-gray-600 ${(name || address || hours) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span>支援信用卡</span>
+                          <span className="text-gray-800 text-right font-medium">{creditCard}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* Homeless Shelters Details */}
               {selectedFacility.facility_type === 'homeless_shelters' && (() => {
@@ -10380,14 +10567,9 @@ export default function AppMap() {
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
-                    <div className="bg-rose-500/10 p-2.5 rounded-lg border border-rose-500/25 flex items-center justify-between gap-2">
-                      <span className="font-bold text-xs text-rose-950 flex items-center gap-1.5">
-                        <span>🏠</span>
-                        <span>生活設施</span>
-                      </span>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-600 text-white shrink-0 shadow-xs whitespace-nowrap">
-                        無家者庇護所
-                      </span>
+                    <div className="bg-rose-500/10 p-2.5 rounded-lg border border-rose-500/25 flex items-center gap-2 text-xs font-medium text-rose-950 leading-snug">
+                      <span className="text-base text-rose-600 font-bold shrink-0">🏠</span>
+                      <span>全天候庇護與包容性收容空間，守護每一位需要協助的市民，提供尊嚴、安全與重返穩定的轉機。</span>
                     </div>
 
                     <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-2 text-[11px]">
@@ -10461,205 +10643,105 @@ export default function AppMap() {
                 );
               })()}
 
-              {/* Food Banks & Low-Cost Food Programs Details */}
+              {/* Food Assistance (食物援助) Details */}
               {selectedFacility.facility_type === 'food_banks' && (() => {
                 const props = selectedFacility.properties || {};
-                const org = props.organization_name || props.organization;
-                const pop = props.program_population_served || props.population_served;
-                const referral = props.requires_referral;
-                const daysOpen = props.days_open;
-                const desc = props.description;
-                const phone = props.signup_phone_number;
-                const email = props.signup_email;
-                const signupReq = props.signup_required;
-                const wheelchair = props.wheelchair_accessible;
-                const costMeals = props.cost_of_meals;
-                const costHampers = props.cost_of_hampers;
-
-                const formatTriState = (val?: string | null) => {
-                  if (val === null || val === undefined || val === '') return null;
-                  const s = String(val).trim();
-                  if (s.toLowerCase() === 'unknown' || s === '不詳') return '不詳';
-                  if (/^(yes|y|true|是)$/i.test(s)) return '是';
-                  if (/^(no|n|false|否)$/i.test(s)) return '否';
-                  return s;
-                };
-
-                const formatDaysOpen = (raw?: string | null) => {
-                  if (!raw || raw.toLowerCase() === 'unknown') return '不詳';
-                  if (raw === 'MON, TUE, WED, THU, FRI, SAT, SUN') return '每日 (週一至週日)';
-                  if (raw === 'MON, TUE, WED, THU, FRI') return '平日 (週一至週五)';
-                  return raw
-                    .replace(/\bMON\b/g, '週一')
-                    .replace(/\bTUE\b/g, '週二')
-                    .replace(/\bWED\b/g, '週三')
-                    .replace(/\bTHU\b/g, '週四')
-                    .replace(/\bFRI\b/g, '週五')
-                    .replace(/\bSAT\b/g, '週六')
-                    .replace(/\bSUN\b/g, '週日')
-                    .replace(/,\s*/g, '、');
-                };
-
-                const formatCost = (cost?: any) => {
-                  if (cost === null || cost === undefined || cost === '') return null;
-                  if (cost === 0 || cost === '0') return '免費';
-                  if (typeof cost === 'number' || /^\d+(\.\d+)?$/.test(String(cost))) return `$${cost}`;
-                  return String(cost);
-                };
+                const type = props.type;
+                const target = props.target;
+                const cost = props.cost;
+                const isFreeMeal = type && /free\s*meal/i.test(type);
+                const showCost = !isFreeMeal && cost && !/^(free|免費)$/i.test(String(cost).trim());
+                const dayAndTime = props.day_and_time;
+                const keyInfo = props.key_information;
+                const phone = props.phone;
+                const email = props.email;
+                const website = props.website;
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
-                    {/* 22.1 綠色區塊：左上「生活設施」，右上綠底白字「食物銀行」 */}
-                    <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/25 flex items-center justify-between gap-2">
-                      <span className="font-bold text-xs text-emerald-950 flex items-center gap-1.5">
-                        <span>🥫</span>
-                        <span>生活設施</span>
-                      </span>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-600 text-white shrink-0 shadow-xs whitespace-nowrap">
-                        食物銀行
-                      </span>
+                    {/* 22.2 綠色區塊 */}
+                    <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/25 flex items-center gap-2 text-xs font-medium text-emerald-950 leading-snug">
+                      <span className="text-base text-emerald-600 font-bold shrink-0">🥫</span>
+                      <span>歡迎捐贈未開封常溫食品與善款，攜手守護鄰里溫飽與社區互助網。</span>
                     </div>
 
-                    {/* 22.5 & 22.6 綠色區塊下方資料以同一灰底區塊顯示，無emoji */}
+                    {/* 22.3.2 灰色區塊 (圖5) */}
                     <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                      {org && (
+                      {type && (
                         <div className="flex justify-between items-center text-gray-600">
-                          <span>主辦機構</span>
-                          <span className="text-gray-800 text-right">
-                            {org}
-                          </span>
+                          <span>援助類別</span>
+                          <span className="text-gray-800 text-right font-medium">{type}</span>
+                        </div>
+                      )}
+                      {target && (
+                        <div className={`flex justify-between items-start text-gray-600 ${type ? 'pt-1.5 border-t border-gray-100' : ''} gap-2`}>
+                          <span className="shrink-0">目標對象</span>
+                          <span className="text-gray-800 text-right font-medium leading-snug">{target}</span>
+                        </div>
+                      )}
+                      {showCost && (
+                        <div className={`flex justify-between items-center text-gray-600 ${(type || target) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span>費用</span>
+                          <span className="text-gray-800 text-right font-medium">{cost}</span>
+                        </div>
+                      )}
+                      {dayAndTime && (
+                        <div className={`flex justify-between items-start text-gray-600 ${(type || target || showCost) ? 'pt-1.5 border-t border-gray-100' : ''} gap-2`}>
+                          <span className="shrink-0">開放時間</span>
+                          <span className="text-gray-800 text-right font-medium leading-snug">{dayAndTime}</span>
                         </div>
                       )}
 
-                      {pop && (
-                        <div className={`flex justify-between items-center text-gray-600 ${org ? 'pt-1.5 border-t border-gray-100' : ''}`}>
-                          <span className="shrink-0">服務對象</span>
-                          <span className="text-gray-800 text-right">
-                            {pop}
-                          </span>
-                        </div>
+                      {keyInfo && (
+                        <>
+                          <div className="border-t border-gray-200/80 my-0.5" />
+                          <div className="flex flex-col gap-1">
+                            <span className="text-gray-600 font-medium">詳細資料</span>
+                            <span className="text-gray-800 text-[10.5px] leading-relaxed break-words">{keyInfo}</span>
+                          </div>
+                        </>
                       )}
 
-                      {referral !== null && referral !== undefined && referral !== '' && (
-                        <div className={`flex justify-between items-center text-gray-600 ${(org || pop) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
-                          <span>轉介</span>
-                          <span className="text-gray-800 text-right">
-                            {formatTriState(referral)}
-                          </span>
-                        </div>
-                      )}
-
-                      {/* 分隔線 */}
-                      {(org || pop || (referral !== null && referral !== undefined && referral !== '')) && (
+                      {(phone || email) && (
                         <div className="border-t border-gray-200/80 my-0.5" />
-                      )}
-
-                      {/* 營運時間改成用 days_open，不用顯示時間 */}
-                      {daysOpen && (
-                        <div className="flex justify-between items-center text-gray-600">
-                          <span>營運時間</span>
-                          <span className="text-gray-800 text-right">
-                            {formatDaysOpen(daysOpen)}
-                          </span>
-                        </div>
-                      )}
-
-                      {/* 分隔線 */}
-                      <div className="border-t border-gray-200/80 my-0.5" />
-
-                      {/* 一列四欄橫向顯示 (是/否/不詳) */}
-                      <div className="grid grid-cols-4 gap-1 text-center py-1">
-                        <div className="bg-white p-1 rounded border border-gray-100 flex flex-col items-center">
-                          <span className="text-[10px] text-gray-500">膳食</span>
-                          <span className="text-[11px] text-gray-800">
-                            {formatTriState(props.provides_meals) || '不詳'}
-                          </span>
-                        </div>
-                        <div className="bg-white p-1 rounded border border-gray-100 flex flex-col items-center">
-                          <span className="text-[10px] text-gray-500">外送</span>
-                          <span className="text-[11px] text-gray-800">
-                            {formatTriState(props.delivery_available) || '不詳'}
-                          </span>
-                        </div>
-                        <div className="bg-white p-1 rounded border border-gray-100 flex flex-col items-center">
-                          <span className="text-[10px] text-gray-500">物資包</span>
-                          <span className="text-[11px] text-gray-800">
-                            {formatTriState(props.provides_hampers) || '不詳'}
-                          </span>
-                        </div>
-                        <div className="bg-white p-1 rounded border border-gray-100 flex flex-col items-center">
-                          <span className="text-[10px] text-gray-500">外帶</span>
-                          <span className="text-[11px] text-gray-800">
-                            {formatTriState(props.takeout_available) || '不詳'}
-                          </span>
-                        </div>
-                      </div>
-
-                      {costMeals !== null && costMeals !== undefined && costMeals !== '' && (
-                        <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
-                          <span>膳食費用</span>
-                          <span className="text-gray-800 text-right">
-                            {formatCost(costMeals)}
-                          </span>
-                        </div>
-                      )}
-
-                      {costHampers !== null && costHampers !== undefined && costHampers !== '' && (
-                        <div className={`flex justify-between items-center text-gray-600 ${(costMeals !== null && costMeals !== undefined && costMeals !== '') ? 'pt-1.5 border-t border-gray-100' : 'pt-1.5 border-t border-gray-100'}`}>
-                          <span>物資包費用</span>
-                          <span className="text-gray-800 text-right">
-                            {formatCost(costHampers)}
-                          </span>
-                        </div>
-                      )}
-
-                      {wheelchair !== null && wheelchair !== undefined && wheelchair !== '' && (
-                        <div className={`flex justify-between items-center text-gray-600 ${((costMeals !== null && costMeals !== undefined && costMeals !== '') || (costHampers !== null && costHampers !== undefined && costHampers !== '')) ? 'pt-1.5 border-t border-gray-100' : 'pt-1.5 border-t border-gray-100'}`}>
-                          <span>無障礙設施</span>
-                          <span className="text-gray-800 text-right">
-                            {formatTriState(wheelchair)}
-                          </span>
-                        </div>
-                      )}
-
-                      {/* 分隔線 */}
-                      {((signupReq !== null && signupReq !== undefined && signupReq !== '') || phone || email) && (
-                        <div className="border-t border-gray-200/80 my-0.5" />
-                      )}
-
-                      {signupReq !== null && signupReq !== undefined && signupReq !== '' && (
-                        <div className="flex justify-between items-center text-gray-600">
-                          <span>預先登記</span>
-                          <span className="text-gray-800 text-right">
-                            {formatTriState(signupReq)}
-                          </span>
-                        </div>
-                      )}
-
-                      {email && (
-                        <div className={`flex justify-between items-center text-gray-600 ${(signupReq !== null && signupReq !== undefined && signupReq !== '') ? 'pt-1.5 border-t border-gray-100' : ''}`}>
-                          <span>登記電郵</span>
-                          <a href={`mailto:${email}`} className="text-gray-800 hover:underline">
-                            {email}
-                          </a>
-                        </div>
                       )}
 
                       {phone && (
-                        <div className={`flex justify-between items-center text-gray-600 ${((signupReq !== null && signupReq !== undefined && signupReq !== '') || email) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
-                          <span>登記電話</span>
-                          <a href={`tel:${phone}`} className="text-gray-800 hover:underline">
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>聯絡電話</span>
+                          <a href={`tel:${phone}`} className="text-gray-800 hover:text-emerald-600 font-medium">
                             {phone}
                           </a>
                         </div>
                       )}
+
+                      {email && (
+                        <div className={`flex justify-between items-center text-gray-600 ${phone ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span>聯絡電郵</span>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-gray-800 font-medium truncate max-w-[170px]">{email}</span>
+                            <a
+                              href={`mailto:${email}`}
+                              className="p-1 rounded bg-white hover:bg-emerald-50 text-emerald-600 border border-gray-200 transition-colors shadow-2xs"
+                              title={`發送郵件至 ${email}`}
+                            >
+                              <Mail className="w-3 h-3" />
+                            </a>
+                          </div>
+                        </div>
+                      )}
                     </div>
 
-                    {/* 22.6 以下新灰色區塊：詳情 (description) */}
-                    {desc && (
-                      <div className="bg-gray-50/90 p-2.5 rounded border border-gray-100 text-[11px] text-gray-700 leading-relaxed">
-                        <span className="font-semibold text-gray-800 block mb-1">詳情</span>
-                        <span>{desc}</span>
+                    {website && (
+                      <div className="pt-1 border-t border-gray-100">
+                        <a
+                          href={website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
+                        >
+                          前往 食物援助機構 官方網頁 ↗
+                        </a>
                       </div>
                     )}
                   </div>
@@ -10857,20 +10939,9 @@ export default function AppMap() {
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
-                    {/* 紅色區塊：左方自動體外心臟電擊去顫器，右方AED，下方急救重要提示 */}
-                    <div className="bg-red-50/90 p-2.5 rounded-lg border border-red-200 flex flex-col gap-1.5 text-[11px]">
-                      <div className="flex items-center justify-between">
-                        <span className="font-bold text-xs text-red-950 flex items-center gap-1.5">
-                          <span>⚡</span>
-                          <span>自動體外心臟電擊去顫器</span>
-                        </span>
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-red-600 text-white shrink-0">
-                          AED
-                        </span>
-                      </div>
-                      <div className="text-[11px] text-red-800 pt-1.5 border-t border-red-200/60 leading-relaxed font-medium">
-                        ⚠️ 若發現疑似心臟驟停患者，請<strong>立即撥打 911</strong>，依照語音指引施救。
-                      </div>
+                    {/* 紅色區塊：急救重要提示 */}
+                    <div className="bg-red-50/90 p-2.5 rounded-lg border border-red-200 text-[11px] text-red-800 leading-relaxed font-medium">
+                      ⚠️ 若發現疑似心臟驟停患者，請<strong>立即撥打 911</strong>，依照語音指引施救。
                     </div>
 
                     {/* 紅區塊下方顯示設備編號 */}
@@ -10883,14 +10954,11 @@ export default function AppMap() {
                       </div>
                     </div>
 
-                    {/* 詳細擺放位置 (已刪除英文 Location Details) */}
+                    {/* 詳細位置 (灰色區塊無 emoji) */}
                     {locDesc && (
-                      <div className="bg-amber-50/90 p-2.5 rounded-lg border border-amber-200 text-[11px] flex flex-col gap-1">
-                        <span className="font-bold text-amber-900 flex items-center gap-1">
-                          <span>📍</span>
-                          <span>詳細擺放位置</span>
-                        </span>
-                        <span className="font-semibold text-gray-900 leading-relaxed break-words">
+                      <div className="bg-gray-50 p-2.5 rounded border border-gray-100 text-[11px] flex flex-col gap-1">
+                        <span className="font-semibold text-gray-700">詳細位置</span>
+                        <span className="text-gray-800 leading-relaxed break-words">
                           {locDesc}
                         </span>
                       </div>
@@ -10969,15 +11037,10 @@ export default function AppMap() {
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
-                    {/* 3.1 淺藍區塊:左方是政府設施, 右方是淺藍底白字"VanWiFi" */}
-                    <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex items-center justify-between gap-2">
-                      <span className="font-bold text-xs text-sky-950 flex items-center gap-1.5">
-                        <span className="text-base text-sky-600 font-bold">📶</span>
-                        <span>政府設施</span>
-                      </span>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-600 text-white shrink-0 shadow-xs whitespace-nowrap">
-                        VanWiFi
-                      </span>
+                    {/* 32.2 刪除「政府設施」列，改為簡潔標語 */}
+                    <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex items-center gap-2 text-xs font-medium text-sky-950">
+                      <span className="text-base text-sky-600 font-bold shrink-0">📶</span>
+                      <span>溫哥華市政公共免費無線網絡（免註冊登入）</span>
                     </div>
 
                     {/* 3.2 刪除Site Name, Address */}
@@ -11257,104 +11320,142 @@ export default function AppMap() {
               })()}
 
               {/* Tesla Supercharger & Service Center Details */}
-              {selectedFacility.facility_type === 'tesla' && (
-                <div className="flex flex-col gap-2.5 text-xs">
-                  {/* Category Banner */}
-                  <div className="bg-red-500/10 p-2.5 rounded-lg border border-red-500/25 flex items-center justify-between">
-                    <span className="font-bold text-red-950 text-xs flex items-center gap-1.5">
-                      <span className="text-base text-red-600 font-bold">⚡</span>
-                      <span>
-                        {selectedFacility.properties.sub_type === 'supercharger' ? 'Tesla 超級充電站' :
-                         selectedFacility.properties.sub_type === 'center' ? 'Tesla 服務與體驗中心' :
-                         selectedFacility.properties.sub_type === 'mobile_service' ? 'Tesla 移動服務站' :
-                         'Tesla 目的地充電站'}
+              {selectedFacility.facility_type === 'tesla' && (() => {
+                const props = selectedFacility.properties || {};
+                const isSupercharger = props.sub_type === 'supercharger';
+                const isCenter = props.sub_type === 'center';
+                const isMobile = props.sub_type === 'mobile_service';
+                const subTypeTitle = isSupercharger ? 'Tesla 超級充電站' :
+                  isCenter ? 'Tesla 服務與體驗中心' :
+                  isMobile ? 'Tesla 移動服務站' :
+                  'Tesla 目的地充電站';
+
+                const stationServices = (() => {
+                  if (!props.services || !Array.isArray(props.services) || props.services.length === 0) return [];
+                  return props.services.map((svc: string) => {
+                    const s = String(svc);
+                    if (s.includes('售後') || s.includes('Service') || s.includes('維修')) return '原廠售後維修';
+                    if (s.includes('展示') || s.includes('銷售') || s.includes('Sales') || s.includes('Gallery')) return '展銷試駕';
+                    if (s.includes('交付') || s.includes('Delivery')) return '新車交付';
+                    if (s.includes('超級充電') || s.includes('Supercharger')) return props.power_kw >= 250 ? 'V3 超充' : '超級充電';
+                    if (s.includes('目的地') || s.includes('Destination')) return '目的地充電';
+                    if (s.includes('移動') || s.includes('Mobile')) return '移動維修';
+                    return s.replace(/\s*\([^)]*\)/g, '').trim();
+                  });
+                })();
+
+                const hasChargingModule = props.power_kw > 0 || props.stalls > 0 || isSupercharger || props.sub_type === 'destination_charger';
+                const chargingTitle = props.power_kw >= 250 
+                  ? 'V3 超級充電站' 
+                  : (props.charging_speed || (isSupercharger ? '超級充電站' : '目的地充電站'));
+
+                const chargingAccessDisplay = (() => {
+                  const access = props.charging_access;
+                  if (!access) return 'NACS 專用';
+                  if (access.includes('NACS') && access.includes('Tesla')) return '支援 NACS / Tesla';
+                  if (access.includes('Tesla 專用') || access.includes('Tesla Only')) return 'Tesla 專用';
+                  return access;
+                })();
+
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    {/* 18.1 & 18.2 主題 #E82127，右側顯示 Tesla 圖示 */}
+                    <div className="bg-[#E82127]/10 p-2.5 rounded-lg border border-[#E82127]/25 flex items-center justify-between">
+                      <span className="font-bold text-[#E82127] text-xs flex items-center gap-1.5">
+                        <span className="text-base font-bold">⚡</span>
+                        <span>{subTypeTitle}</span>
                       </span>
-                    </span>
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-red-600 text-white shrink-0 tracking-wider">
-                      TESLA
-                    </span>
-                  </div>
-
-                  {/* Charging Specifications */}
-                  {(selectedFacility.properties.power_kw > 0 || selectedFacility.properties.stalls > 0) && (
-                    <div className="grid grid-cols-2 gap-1.5">
-                      <div className="bg-gray-50 p-2 rounded border border-gray-100 flex flex-col">
-                        <span className="text-[10px] text-gray-500 font-medium">充電規格</span>
-                        <span className="text-sm font-bold text-red-600 mt-0.5">
-                          {selectedFacility.properties.power_kw ? `${selectedFacility.properties.power_kw} kW` : '原廠技術'}
-                        </span>
-                        <span className="text-[10px] text-gray-400 truncate">
-                          {selectedFacility.properties.charging_speed || (selectedFacility.properties.sub_type === 'destination_charger' ? 'Level 2 AC' : '超級充電')}
-                        </span>
-                      </div>
-                      <div className="bg-gray-50 p-2 rounded border border-gray-100 flex flex-col">
-                        <span className="text-[10px] text-gray-500 font-medium">充電樁 / 車位</span>
-                        <span className="text-sm font-bold text-gray-800 mt-0.5">
-                          {selectedFacility.properties.stalls != null && selectedFacility.properties.stalls > 0 ? `${selectedFacility.properties.stalls} 個車位` : '原廠工位'}
-                        </span>
-                        <span className="text-[10px] text-gray-400 truncate">
-                          {selectedFacility.properties.access_type || '公眾開放'}
-                        </span>
-                      </div>
+                      {/* Tesla Logo SVG */}
+                      <svg className="w-4 h-4 text-[#E82127] shrink-0" viewBox="0 0 342.4 342.4" fill="currentColor">
+                        <path d="M0 32.5c46.7 0 117.8 8.8 171.2 34.6C224.6 41.3 295.7 32.5 342.4 32.5v19.1c-40.4 0-101.4 7.6-148.6 30.2l-.7 230.1h-43.4l-.7-230.1C101.8 59.2 40.8 51.6.4 51.6V32.5H0zm171.2-32.5C124.6 0 54.4 7.5 0 22.8l7.6 19.1c47.9-12.8 110.2-19.1 163.6-19.1 53.4 0 115.7 6.3 163.6 19.1l7.6-19.1C288 7.5 217.8 0 171.2 0z"/>
+                      </svg>
                     </div>
-                  )}
 
-                  {/* Access & Compatibility */}
-                  {selectedFacility.properties.charging_access && (
-                    <div className="flex justify-between items-center text-gray-600 bg-gray-50 px-2 py-1.5 rounded border border-gray-100">
-                      <span className="shrink-0 text-gray-500">適用車型</span>
-                      <span className="text-gray-800 text-right truncate max-w-[190px]">
-                        {selectedFacility.properties.charging_access}
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Hours */}
-                  {selectedFacility.properties.hours && (
-                    <div className="flex justify-between items-center text-gray-600 px-1">
-                      <span className="shrink-0 text-gray-500">開放時間</span>
-                      <span className="font-medium text-gray-800 text-right">
-                        {selectedFacility.properties.hours}
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Phone */}
-                  {selectedFacility.properties.phone && (
-                    <div className="flex justify-between items-center text-gray-600 px-1">
-                      <span className="shrink-0 text-gray-500">服務中心電話</span>
-                      <a href={`tel:${selectedFacility.properties.phone}`} className="font-bold text-blue-600 hover:underline">
-                        {selectedFacility.properties.phone}
-                      </a>
-                    </div>
-                  )}
-
-                  {/* Services List (for Vancouver-Raymur center) */}
-                  {selectedFacility.properties.services && Array.isArray(selectedFacility.properties.services) && selectedFacility.properties.services.length > 0 && (
-                    <div className="flex flex-col gap-1 pt-1.5 border-t border-gray-100">
-                      <span className="text-gray-500 text-[11px] font-medium">站點提供服務：</span>
-                      <div className="flex flex-col gap-1">
-                        {selectedFacility.properties.services.map((svc: string, sIdx: number) => {
-                          const cleanSvc = String(svc).replace(/\s*\([^)]*\)/g, '').trim();
-                          return (
-                            <div key={sIdx} className="flex items-center gap-1.5 text-[11px] text-gray-700 bg-red-50/60 px-2 py-1 rounded border border-red-100/60">
-                              <span className="text-red-500 text-[10px]">●</span>
-                              <span>{cleanSvc}</span>
+                    {/* 18.5 紅色區塊下所有資料收納於單一灰底區塊 */}
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-2 text-[11px]">
+                      {/* 18.4 充電資訊模組 (圖3) */}
+                      {hasChargingModule && (
+                        <div className="bg-white rounded border border-gray-200/80 overflow-hidden text-center shadow-2xs">
+                          <div className="py-1 px-2 bg-gray-50/80 border-b border-gray-200/80 font-bold text-gray-800 text-xs">
+                            {chargingTitle}
+                          </div>
+                          <div className="grid grid-cols-3 divide-x divide-gray-200/80 py-1.5 px-1 items-center">
+                            <div className="font-bold text-gray-800">
+                              {props.power_kw ? `${props.power_kw} kW` : '原廠技術'}
                             </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
+                            <div className="font-bold text-gray-800">
+                              {props.stalls != null && props.stalls > 0 ? `${props.stalls} 樁位` : '原廠工位'}
+                            </div>
+                            <div className="font-bold text-gray-800 truncate px-1 text-[10.5px]">
+                              {chargingAccessDisplay}
+                            </div>
+                          </div>
+                        </div>
+                      )}
 
-                  {/* Notes */}
-                  {selectedFacility.properties.notes && (
-                    <div className="text-[11px] text-gray-600 bg-amber-50 p-2 rounded border border-amber-200/60">
-                      💡 {selectedFacility.properties.notes}
+                      {/* 18.3 站點服務 膠囊標籤群 */}
+                      {stationServices.length > 0 && (
+                        <>
+                          {hasChargingModule && <div className="border-t border-gray-200/80 my-0.5" />}
+                          <div className="flex flex-col gap-1.5">
+                            <span className="text-gray-500 font-medium">站點服務</span>
+                            <div className="flex flex-wrap gap-1.5">
+                              {stationServices.map((svc: string, idx: number) => (
+                                <span
+                                  key={idx}
+                                  className="px-2 py-0.5 rounded-full bg-white text-gray-700 font-medium text-[10.5px] border border-gray-200 shadow-2xs"
+                                >
+                                  {svc}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        </>
+                      )}
+
+                      {/* 開放時間 */}
+                      {props.hours && (
+                        <>
+                          {(hasChargingModule || stationServices.length > 0) && (
+                            <div className="border-t border-gray-200/80 my-0.5" />
+                          )}
+                          <div className="flex justify-between items-center text-gray-600">
+                            <span className="shrink-0 text-gray-500">開放時間</span>
+                            <span className="font-medium text-gray-800 text-right">
+                              {props.hours}
+                            </span>
+                          </div>
+                        </>
+                      )}
+
+                      {/* 聯絡電話 */}
+                      {props.phone && (
+                        <>
+                          {(hasChargingModule || stationServices.length > 0 || props.hours) && (
+                            <div className="border-t border-gray-200/80 my-0.5" />
+                          )}
+                          <div className="flex justify-between items-center text-gray-600">
+                            <span className="shrink-0 text-gray-500">聯絡電話</span>
+                            <a href={`tel:${props.phone}`} className="font-bold text-[#E82127] hover:underline">
+                              {props.phone}
+                            </a>
+                          </div>
+                        </>
+                      )}
+
+                      {/* Notes 備註 */}
+                      {props.notes && (
+                        <>
+                          <div className="border-t border-gray-200/80 my-0.5" />
+                          <div className="text-[10.5px] text-gray-500 leading-snug">
+                            💡 {props.notes}
+                          </div>
+                        </>
+                      )}
                     </div>
-                  )}
-                </div>
-              )}
+                  </div>
+                );
+              })()}
 
               {/* Marine Terminals (港口碼頭) Details */}
               {selectedFacility.facility_type === 'marine_terminals' && (
@@ -11435,23 +11536,14 @@ export default function AppMap() {
               {/* Snow Removal Routes (鏟雪路線) Details */}
               {selectedFacility.facility_type === 'snow_removal_routes' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  {/* 18.1 淺藍色區塊：左上「道路設施」，右上淺藍底白字「第 x 優先」，下半部保留說明文字「清掃...」 */}
-                  <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex flex-col gap-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-sky-950 text-xs">道路設施</span>
-                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-sky-600 text-white shrink-0 shadow-xs whitespace-nowrap">
-                        {selectedFacility.properties.priority === 1 ? '第 1 優先' : '第 2 優先'}
-                      </span>
-                    </div>
-
-                    <div className="pt-1 border-t border-sky-500/20 text-[11px] text-sky-950 font-medium flex items-center gap-1.5 leading-snug">
-                      <span className="text-base text-sky-600 font-bold shrink-0">❄️</span>
-                      <span>
-                        {selectedFacility.properties.priority === 1 
-                          ? '清掃主要幹道與急救動線' 
-                          : '清掃重要陡坡、學校及主要單車道'}
-                      </span>
-                    </div>
+                  {/* 17.1 主題 #F0F9FF；17.2 刪除「道路設施」列 */}
+                  <div className="bg-[#F0F9FF] p-2.5 rounded-lg border border-sky-200/80 text-[11px] text-sky-950 font-medium flex items-center gap-2 leading-snug">
+                    <span className="text-base text-sky-600 font-bold shrink-0">❄️</span>
+                    <span>
+                      {selectedFacility.properties.priority === 1 
+                        ? '第 1 優先 · 清掃主要幹道與急救動線' 
+                        : '第 2 優先 · 清掃重要陡坡、學校及主要單車道'}
+                    </span>
                   </div>
 
                   <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
@@ -11854,29 +11946,18 @@ export default function AppMap() {
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
-                    {/* 45.3.2 顏色底區塊：左方是”設施類別”, 右方顏色底白字是“公共藝術” */}
-                    <div className="bg-fuchsia-500/10 p-2.5 rounded-lg border border-fuchsia-500/25 flex items-center justify-between">
-                      <span className="font-bold text-fuchsia-950 text-xs flex items-center gap-1.5">
-                        <span className="text-base text-fuchsia-600 font-bold">🎨</span>
-                        <span>設施類別</span>
-                      </span>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-fuchsia-600 text-white shrink-0 shadow-xs whitespace-nowrap">
-                        公共藝術
+                    {/* 26.1 紫色區塊使用藝術標題 */}
+                    <div className="bg-fuchsia-500/10 p-2.5 rounded-lg border border-fuchsia-500/25 flex items-center gap-2">
+                      <span className="text-base text-fuchsia-600 font-bold shrink-0">🎨</span>
+                      <span className="font-bold text-fuchsia-950 text-xs leading-snug">
+                        {props.title_of_work || '公共藝術品'}
                       </span>
                     </div>
 
-                    {/* 45.3.3 灰底資料拉排序由上至下: 藝術標題, 中文藝術種類, 主要材料, 產權所屬, 設置位置 (完整文字) */}
+                    {/* 26.2 灰底資料（已刪除藝術標題）: 中文藝術種類, 主要材料, 產權所屬, 設置位置 */}
                     <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                      {props.title_of_work && (
-                        <div className="flex justify-between items-start text-gray-600 gap-2">
-                          <span className="shrink-0">藝術標題</span>
-                          <span className="text-gray-800 text-right break-words leading-relaxed">
-                            {props.title_of_work}
-                          </span>
-                        </div>
-                      )}
                       {translatedType && (
-                        <div className={`flex justify-between items-center text-gray-600 ${props.title_of_work ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                        <div className="flex justify-between items-center text-gray-600">
                           <span className="shrink-0">藝術種類</span>
                           <span className="text-gray-800 text-right">
                             {translatedType}
@@ -11884,7 +11965,7 @@ export default function AppMap() {
                         </div>
                       )}
                       {props.primarymaterial && (
-                        <div className={`flex justify-between items-start text-gray-600 gap-2 ${(props.title_of_work || translatedType) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                        <div className={`flex justify-between items-start text-gray-600 gap-2 ${translatedType ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                           <span className="shrink-0">主要材料</span>
                           <span className="text-gray-800 text-right break-words leading-relaxed">
                             {props.primarymaterial}
@@ -11892,7 +11973,7 @@ export default function AppMap() {
                         </div>
                       )}
                       {props.ownership && (
-                        <div className={`flex justify-between items-start text-gray-600 gap-2 ${(props.title_of_work || translatedType || props.primarymaterial) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                        <div className={`flex justify-between items-start text-gray-600 gap-2 ${(translatedType || props.primarymaterial) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                           <span className="shrink-0">產權所屬</span>
                           <span className="text-gray-800 text-right break-words">
                             {props.ownership}
@@ -11900,7 +11981,7 @@ export default function AppMap() {
                         </div>
                       )}
                       {props.locationonsite && (
-                        <div className={`flex justify-between items-start text-gray-600 gap-2 ${(props.title_of_work || translatedType || props.primarymaterial || props.ownership) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                        <div className={`flex justify-between items-start text-gray-600 gap-2 ${(translatedType || props.primarymaterial || props.ownership) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                           <span className="shrink-0">設置位置</span>
                           <span className="text-gray-800 text-right break-words leading-relaxed">
                             {props.locationonsite}
@@ -12587,17 +12668,10 @@ export default function AppMap() {
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
-                    <div className="bg-rose-500/10 p-2.5 rounded-lg border border-rose-500/25 flex flex-col gap-1.5">
-                      <div className="flex items-center justify-between">
-                        <span className="font-bold text-rose-950 text-xs">政府設施</span>
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-600 text-white shrink-0 shadow-xs whitespace-nowrap">
-                          消防
-                        </span>
-                      </div>
-                      <div className="pt-1 border-t border-rose-500/20 text-[11px] text-rose-950 font-medium flex items-center gap-1.5 leading-snug">
-                        <span className="text-base text-rose-600 font-bold shrink-0">🧯</span>
-                        <span>緊急求助撥打 911</span>
-                      </div>
+                    {/* 29.2 刪除「政府設施」列 */}
+                    <div className="bg-rose-500/10 p-2.5 rounded-lg border border-rose-500/25 flex items-center gap-2 text-[11px] text-rose-950 font-medium leading-snug">
+                      <span className="text-base text-rose-600 font-bold shrink-0">🧯</span>
+                      <span>緊急求助撥打 911</span>
                     </div>
 
                     <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
@@ -12693,15 +12767,10 @@ export default function AppMap() {
               {/* Public Trees (公有街道樹木) Details */}
               {selectedFacility.facility_type === 'public_trees' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  {/* 32.2 市政公有街道樹木改成公園設施 */}
-                  <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/25 flex items-center justify-between">
-                    <span className="font-bold text-emerald-950 text-xs flex items-center gap-1.5">
-                      <span className="text-base text-emerald-600 font-bold">🌳</span>
-                      <span>公園設施</span>
-                    </span>
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-600 text-white shrink-0">
-                      樹木
-                    </span>
+                  {/* 33.4 公園設施標題 */}
+                  <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/25 flex items-center gap-1.5 text-xs font-bold text-emerald-950">
+                    <span className="text-base text-emerald-600 font-bold">🌳</span>
+                    <span>公園設施</span>
                   </div>
 
                   {/* 7.1 把現在所有資料放到綠區塊下方 */}
@@ -13472,10 +13541,10 @@ export default function AppMap() {
 
       {/* 停車收費錶動態篩選器 (Parking Meter Filter Popup) */}
       {layers.parkingMeters && (
-        <div className={`fixed z-30 w-[300px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-amber-500/40 select-none animate-in fade-in duration-200 ${getFloatingPanelPos(0)}`}>
+        <div className={`fixed z-30 w-[300px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-blue-500/50 select-none animate-in fade-in duration-200 ${getFloatingPanelPos(0)}`}>
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
             <div className="flex items-center gap-2">
-              <span className="p-1 rounded bg-amber-500/20 text-amber-400">
+              <span className="p-1 rounded bg-blue-500/20 text-blue-400">
                 <SlidersHorizontal className="w-3.5 h-3.5" />
               </span>
               <span className="font-bold text-xs text-white">停車收費錶篩選</span>
@@ -13494,7 +13563,7 @@ export default function AppMap() {
               <div className="flex flex-col gap-1 pb-2 border-b border-[#262b38]">
                 <div className="flex items-center justify-between">
                   <span className="text-gray-300">時段費率計算:</span>
-                  <span className="text-[10.5px] text-amber-400 font-medium">
+                  <span className="text-[10.5px] text-blue-400 font-medium">
                     {(parkingMeterFilter.timePeriod || 'auto') === 'day' ? '🌞 日間標準' :
                      parkingMeterFilter.timePeriod === 'night' ? '🌙 夜間標準' : '⏰ 依當前時間自動'}
                   </span>
@@ -13512,7 +13581,7 @@ export default function AppMap() {
                         onClick={() => setParkingMeterFilter({ timePeriod: p.id as 'auto' | 'day' | 'night' })}
                         className={`py-1 text-[11px] rounded font-medium transition-all ${
                           isSelected
-                            ? 'bg-amber-500 text-gray-950 font-bold shadow-sm'
+                            ? 'bg-blue-600 text-white font-bold shadow-sm'
                             : 'bg-[#1e2330] text-gray-300 hover:bg-[#282f40]'
                         }`}
                       >
@@ -13525,7 +13594,7 @@ export default function AppMap() {
 
               <div className="flex items-center justify-between">
                 <span className="text-gray-300">每小時最高費率:</span>
-                <span className="font-bold text-amber-400 font-mono">
+                <span className="font-bold text-blue-400 font-mono">
                   {parkingMeterFilter.maxRate >= 20 ? '不限費率' : `≤ $${parkingMeterFilter.maxRate}/hr`}
                 </span>
               </div>
@@ -13541,7 +13610,7 @@ export default function AppMap() {
                   const val = Number(e.target.value);
                   setParkingMeterFilter({ maxRate: val >= 10 ? 20 : val });
                 }}
-                className="w-full accent-amber-500 cursor-pointer h-1.5 bg-[#252a38] rounded-lg"
+                className="w-full accent-blue-500 cursor-pointer h-1.5 bg-[#252a38] rounded-lg"
               />
 
               {/* 快捷標籤 */}
@@ -13557,7 +13626,7 @@ export default function AppMap() {
                     onClick={() => setParkingMeterFilter({ maxRate: chip.val })}
                     className={`py-1 text-[11px] rounded font-medium transition-all ${
                       (chip.val === 20 && parkingMeterFilter.maxRate >= 20) || (chip.val === parkingMeterFilter.maxRate)
-                        ? 'bg-amber-500 text-gray-950 font-bold shadow-sm'
+                        ? 'bg-blue-600 text-white font-bold shadow-sm'
                         : 'bg-[#1e2330] text-gray-300 hover:bg-[#282f40]'
                     }`}
                   >
@@ -13572,28 +13641,28 @@ export default function AppMap() {
                   type="checkbox"
                   checked={parkingMeterFilter.creditCardOnly}
                   onChange={(e) => setParkingMeterFilter({ creditCardOnly: e.target.checked })}
-                  className="rounded border-gray-600 accent-amber-500"
+                  className="rounded border-gray-600 accent-blue-500"
                 />
                 <span>只顯示支援信用卡付款</span>
               </label>
 
               <div className="text-[10px] text-gray-400 flex items-center justify-between">
                 <span>溫哥華時區動態計算</span>
-                <span className="text-amber-400 font-mono">10pm-9am 免費</span>
+                <span className="text-blue-400 font-mono">10pm-9am 免費</span>
               </div>
             </div>
           ) : (
             <div className="flex items-center justify-between text-[11px] text-gray-300">
               <span>
-                目前篩選: <span className="text-amber-400 font-bold">{parkingMeterFilter.maxRate >= 20 ? '不限' : `≤ $${parkingMeterFilter.maxRate}/hr`}</span>
-                {parkingMeterFilter.creditCardOnly && <span className="text-amber-300 ml-1">· 信用卡</span>}
+                目前篩選: <span className="text-blue-400 font-bold">{parkingMeterFilter.maxRate >= 20 ? '不限' : `≤ $${parkingMeterFilter.maxRate}/hr`}</span>
+                {parkingMeterFilter.creditCardOnly && <span className="text-blue-300 ml-1">· 信用卡</span>}
                 <span className="text-gray-400 ml-1 font-mono text-[10px]">
                   ({(parkingMeterFilter.timePeriod || 'auto') === 'day' ? '日間' : (parkingMeterFilter.timePeriod || 'auto') === 'night' ? '夜間' : '自動'})
                 </span>
               </span>
               <button 
                 onClick={() => setParkingMeterFilterOpen(true)}
-                className="text-[10px] text-amber-400 hover:underline"
+                className="text-[10px] text-blue-400 hover:underline"
               >
                 展開
               </button>
@@ -13604,12 +13673,12 @@ export default function AppMap() {
 
       {/* 摩托車停車位動態篩選器 (Motorcycle Parking Filter Popup) */}
       {layers.motorcycleParking && (
-        <div className={`fixed z-30 w-[300px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-orange-500/40 select-none animate-in fade-in duration-200 ${
+        <div className={`fixed z-30 w-[300px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-blue-500/50 select-none animate-in fade-in duration-200 ${
           getFloatingPanelPos(layers.parkingMeters ? 1 : 0)
         }`}>
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
             <div className="flex items-center gap-2">
-              <span className="p-1 rounded bg-orange-500/20 text-orange-400">
+              <span className="p-1 rounded bg-blue-500/20 text-blue-400">
                 <SlidersHorizontal className="w-3.5 h-3.5" />
               </span>
               <span className="font-bold text-xs text-white">摩托車停車位篩選</span>
@@ -13628,7 +13697,7 @@ export default function AppMap() {
               <div className="flex flex-col gap-1 pb-2 border-b border-[#262b38]">
                 <div className="flex items-center justify-between">
                   <span className="text-gray-300">時段費率計算:</span>
-                  <span className="text-[10.5px] text-orange-400 font-medium">
+                  <span className="text-[10.5px] text-blue-400 font-medium">
                     {(motorcycleParkingFilter.timePeriod || 'auto') === 'day' ? '🌞 日間標準' :
                      motorcycleParkingFilter.timePeriod === 'night' ? '🌙 夜間標準' : '⏰ 依當前時間自動'}
                   </span>
@@ -13646,7 +13715,7 @@ export default function AppMap() {
                         onClick={() => setMotorcycleParkingFilter({ timePeriod: p.id as 'auto' | 'day' | 'night' })}
                         className={`py-1 text-[11px] rounded font-medium transition-all ${
                           isSelected
-                            ? 'bg-orange-500 text-gray-950 font-bold shadow-sm'
+                            ? 'bg-blue-600 text-white font-bold shadow-sm'
                             : 'bg-[#1e2330] text-gray-300 hover:bg-[#282f40]'
                         }`}
                       >
@@ -13659,7 +13728,7 @@ export default function AppMap() {
 
               <div className="flex items-center justify-between">
                 <span className="text-gray-300">每小時最高費率:</span>
-                <span className="font-bold text-orange-400 font-mono">
+                <span className="font-bold text-blue-400 font-mono">
                   {motorcycleParkingFilter.maxRate >= 20 ? '不限費率' : `≤ $${motorcycleParkingFilter.maxRate}/hr`}
                 </span>
               </div>
@@ -13675,7 +13744,7 @@ export default function AppMap() {
                   const val = Number(e.target.value);
                   setMotorcycleParkingFilter({ maxRate: val >= 4 ? 20 : val });
                 }}
-                className="w-full accent-orange-500 cursor-pointer h-1.5 bg-[#252a38] rounded-lg"
+                className="w-full accent-blue-500 cursor-pointer h-1.5 bg-[#252a38] rounded-lg"
               />
 
               {/* 快捷標籤 */}
@@ -13691,7 +13760,7 @@ export default function AppMap() {
                     onClick={() => setMotorcycleParkingFilter({ maxRate: chip.val })}
                     className={`py-1 text-[11px] rounded font-medium transition-all ${
                       (chip.val === 20 && motorcycleParkingFilter.maxRate >= 20) || (chip.val === motorcycleParkingFilter.maxRate)
-                        ? 'bg-orange-500 text-gray-950 font-bold shadow-sm'
+                        ? 'bg-blue-600 text-white font-bold shadow-sm'
                         : 'bg-[#1e2330] text-gray-300 hover:bg-[#282f40]'
                     }`}
                   >
@@ -13706,28 +13775,28 @@ export default function AppMap() {
                   type="checkbox"
                   checked={motorcycleParkingFilter.creditCardOnly}
                   onChange={(e) => setMotorcycleParkingFilter({ creditCardOnly: e.target.checked })}
-                  className="rounded border-gray-600 accent-orange-500"
+                  className="rounded border-gray-600 accent-blue-500"
                 />
                 <span>只顯示支援信用卡付款</span>
               </label>
 
               <div className="text-[10px] text-gray-400 flex items-center justify-between">
                 <span>溫哥華時區動態計算</span>
-                <span className="text-orange-400 font-mono">10pm-9am 免費</span>
+                <span className="text-blue-400 font-mono">10pm-9am 免費</span>
               </div>
             </div>
           ) : (
             <div className="flex items-center justify-between text-[11px] text-gray-300">
               <span>
-                目前篩選: <span className="text-orange-400 font-bold">{motorcycleParkingFilter.maxRate >= 20 ? '不限' : `≤ $${motorcycleParkingFilter.maxRate}/hr`}</span>
-                {motorcycleParkingFilter.creditCardOnly && <span className="text-orange-300 ml-1">· 信用卡</span>}
+                目前篩選: <span className="text-blue-400 font-bold">{motorcycleParkingFilter.maxRate >= 20 ? '不限' : `≤ $${motorcycleParkingFilter.maxRate}/hr`}</span>
+                {motorcycleParkingFilter.creditCardOnly && <span className="text-blue-300 ml-1">· 信用卡</span>}
                 <span className="text-gray-400 ml-1 font-mono text-[10px]">
                   ({(motorcycleParkingFilter.timePeriod || 'auto') === 'day' ? '日間' : (motorcycleParkingFilter.timePeriod || 'auto') === 'night' ? '夜間' : '自動'})
                 </span>
               </span>
               <button 
                 onClick={() => setMotorcycleFilterOpen(true)}
-                className="text-[10px] text-orange-400 hover:underline"
+                className="text-[10px] text-blue-400 hover:underline"
               >
                 展開
               </button>

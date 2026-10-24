@@ -14,7 +14,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "7835 Champlain Crescent",
-        "local_area": "Killarney"
+        "local_area": "Killarney",
+        "phone": "604-713-4880",
+        "url": "https://www.vsb.bc.ca/champlain-heights-annex",
+        "email": null,
+        "vsb_name": "Champlain Heights Annex"
       },
       "geometry": {
         "type": "Point",
@@ -34,7 +38,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "3877 Glen Drive",
-        "local_area": "Kensington-Cedar Cottage"
+        "local_area": "Kensington-Cedar Cottage",
+        "phone": "604-713-5392",
+        "url": "https://www.vsb.bc.ca/charles-dickens-annex",
+        "email": null,
+        "vsb_name": "Dickens Annex"
       },
       "geometry": {
         "type": "Point",
@@ -74,7 +82,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "315 E 23rd Av",
-        "local_area": "Riley Park"
+        "local_area": "Riley Park",
+        "phone": "604-713-4985",
+        "url": "https://www.vsb.bc.ca/david-livingstone",
+        "email": "livingstone@vsb.bc.ca",
+        "vsb_name": "Livingstone Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -114,7 +126,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "4860 Main St",
-        "local_area": "Riley Park"
+        "local_area": "Riley Park",
+        "phone": "604-713-5245",
+        "url": "https://www.vsb.bc.ca/general-brock",
+        "email": "Brock@vsb.bc.ca",
+        "vsb_name": "Brock Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -134,7 +150,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "1750 E 22nd Av",
-        "local_area": "Kensington-Cedar Cottage"
+        "local_area": "Kensington-Cedar Cottage",
+        "phone": "604-713-4650",
+        "url": "https://www.vsb.bc.ca/lord-selkirk",
+        "email": "selkirk@vsb.bc.ca",
+        "vsb_name": "Selkirk Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -194,7 +214,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "6901 Elliott St",
-        "local_area": "Victoria-Fraserview"
+        "local_area": "Victoria-Fraserview",
+        "phone": "604-713-4746",
+        "url": "https://www.vsb.bc.ca/sir-charles-kingsford-smith",
+        "email": "kingsford-smith@vsb.bc.ca",
+        "vsb_name": "Kingsford-Smith Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -254,7 +278,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "1100 Bidwell St",
-        "local_area": "West End"
+        "local_area": "West End",
+        "phone": "604-713-5055",
+        "url": "https://www.vsb.bc.ca/lord-roberts",
+        "email": "lordroberts@vsb.bc.ca",
+        "vsb_name": "Roberts Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -274,7 +302,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "1300 E Broadway",
-        "local_area": "Kensington-Cedar Cottage"
+        "local_area": "Kensington-Cedar Cottage",
+        "phone": "604-713-4599",
+        "url": "https://www.vsb.bc.ca/queen-alexandra",
+        "email": "queenalexandra@vsb.bc.ca",
+        "vsb_name": "Queen Alexandra Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -294,7 +326,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "5300 Maple St",
-        "local_area": "Shaughnessy"
+        "local_area": "Shaughnessy",
+        "phone": "604-713-5420",
+        "url": "https://www.vsb.bc.ca/quilchena",
+        "email": "quilchena@vsb.bc.ca",
+        "vsb_name": "Quilchena Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -314,7 +350,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "100 W 15th Av",
-        "local_area": "Mount Pleasant"
+        "local_area": "Mount Pleasant",
+        "phone": "604-713-4946",
+        "url": "https://www.vsb.bc.ca/simon-fraser",
+        "email": null,
+        "vsb_name": "Fraser Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -334,7 +374,11 @@
         "school_category": "StrongStart BC",
         "school_category_zh": "StrongStart BC",
         "address": "960 E 39th Av",
-        "local_area": "Kensington-Cedar Cottage"
+        "local_area": "Kensington-Cedar Cottage",
+        "phone": "604-713-4799",
+        "url": "https://www.vsb.bc.ca/sir-alexander-mackenzie",
+        "email": "mackenzie@vsb.bc.ca",
+        "vsb_name": "Mackenzie Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -354,7 +398,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "7350 Laurel St",
-        "local_area": "Marpole"
+        "local_area": "Marpole",
+        "phone": "604-713-4925",
+        "url": "https://www.vsb.bc.ca/sir-wilfrid-laurier",
+        "email": "laurier@vsb.bc.ca",
+        "vsb_name": "Laurier Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -374,7 +422,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "1850 E 41st Av",
-        "local_area": "Victoria-Fraserview"
+        "local_area": "Victoria-Fraserview",
+        "phone": "604-713-5390",
+        "url": "https://www.vsb.bc.ca/tecumseh",
+        "email": null,
+        "vsb_name": "Tecumseh Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -394,7 +446,11 @@
         "school_category": "StrongStart BC",
         "school_category_zh": "StrongStart BC",
         "address": "2325 Cassiar St",
-        "local_area": "Hastings-Sunrise"
+        "local_area": "Hastings-Sunrise",
+        "phone": "604-713-4611",
+        "url": "https://www.vsb.bc.ca/thunderbird",
+        "email": "thunderbird@vsb.bc.ca",
+        "vsb_name": "šxʷəxʷaʔəs Thunderbird Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -414,7 +470,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "4170 Trafalgar St",
-        "local_area": "Arbutus Ridge"
+        "local_area": "Arbutus Ridge",
+        "phone": "604-713-5475",
+        "url": "https://www.vsb.bc.ca/trafalgar",
+        "email": null,
+        "vsb_name": "Trafalgar Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -454,7 +514,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "1755 E 55th Av",
-        "local_area": "Victoria-Fraserview"
+        "local_area": "Victoria-Fraserview",
+        "phone": "604-713-8278",
+        "url": "https://www.vsb.bc.ca/david-thompson",
+        "email": "thompson@vsb.bc.ca",
+        "vsb_name": "David Thompson Secondary"
       },
       "geometry": {
         "type": "Point",
@@ -474,7 +538,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "6350 Tisdall St",
-        "local_area": "Oakridge"
+        "local_area": "Oakridge",
+        "phone": "604-713-5367",
+        "url": "https://www.vsb.bc.ca/dr-annie-b-jamieson",
+        "email": "jamieson@vsb.bc.ca",
+        "vsb_name": "Jamieson Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -494,7 +562,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "4070 Oak St",
-        "local_area": "South Cambie"
+        "local_area": "South Cambie",
+        "phone": "604-713-4941",
+        "url": "https://www.vsb.bc.ca/emily-carr",
+        "email": null,
+        "vsb_name": "Carr Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -534,7 +606,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "1755 Barclay St",
-        "local_area": "West End"
+        "local_area": "West End",
+        "phone": "604-713-8999",
+        "url": "https://www.vsb.bc.ca/king-george",
+        "email": null,
+        "vsb_name": "King George Secondary"
       },
       "geometry": {
         "type": "Point",
@@ -554,7 +630,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "3455 W King Edward Av",
-        "local_area": "Dunbar-Southlands"
+        "local_area": "Dunbar-Southlands",
+        "phone": "604-713-5454",
+        "url": "https://www.vsb.bc.ca/lord-kitchener",
+        "email": null,
+        "vsb_name": "Kitchener Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -614,7 +694,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "1850 E 3rd Av",
-        "local_area": "Grandview-Woodland"
+        "local_area": "Grandview-Woodland",
+        "phone": "604-713-4694",
+        "url": "https://www.vsb.bc.ca/queen-victoria-annex",
+        "email": "queenvictoria@vsb.bc.ca ​",
+        "vsb_name": "Queen Victoria Annex"
       },
       "geometry": {
         "type": "Point",
@@ -634,7 +718,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "3315 E 22nd Av",
-        "local_area": "Renfrew-Collingwood"
+        "local_area": "Renfrew-Collingwood",
+        "phone": "604-713-4851",
+        "url": "https://www.vsb.bc.ca/renfrew",
+        "email": "renfrew@vsb.bc.ca",
+        "vsb_name": "Renfrew Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -654,7 +742,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "5855 Ontario St",
-        "local_area": "Oakridge"
+        "local_area": "Oakridge",
+        "phone": "604-713-4965",
+        "url": "https://www.vsb.bc.ca/sir-william-van-horne",
+        "email": null,
+        "vsb_name": "Van Horne Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -714,7 +806,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "3525 Dumphries St",
-        "local_area": "Kensington-Cedar Cottage"
+        "local_area": "Kensington-Cedar Cottage",
+        "phone": "604-713-4723",
+        "url": "https://www.vsb.bc.ca/tyee",
+        "email": "tyee@vsb.bc.ca",
+        "vsb_name": "Tyee Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -754,7 +850,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "1000 E 59th Av",
-        "local_area": "Sunset"
+        "local_area": "Sunset",
+        "phone": "604-713-4784",
+        "url": "https://www.vsb.bc.ca/walter-moberly",
+        "email": "moberly@vsb.bc.ca",
+        "vsb_name": "Moberly Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -774,7 +874,11 @@
         "school_category": "StrongStart BC",
         "school_category_zh": "StrongStart BC",
         "address": "1130 Keefer St",
-        "local_area": "Strathcona"
+        "local_area": "Strathcona",
+        "phone": "604-713-4641",
+        "url": "https://www.vsb.bc.ca/admiral-seymour",
+        "email": "seymour@vsb.bc.ca",
+        "vsb_name": "Seymour Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -834,7 +938,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "2684 E 2nd Av",
-        "local_area": "Hastings-Sunrise"
+        "local_area": "Hastings-Sunrise",
+        "phone": "604-713-4705",
+        "url": "https://www.vsb.bc.ca/chief-maquinna",
+        "email": "Maquinna@vsb.bc.ca",
+        "vsb_name": "Maquinna Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -894,7 +1002,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "2550 W 10th Av",
-        "local_area": "Kitsilano"
+        "local_area": "Kitsilano",
+        "phone": "604-713-8961",
+        "url": "https://www.vsb.bc.ca/kitsilano",
+        "email": null,
+        "vsb_name": "Kitsilano Secondary"
       },
       "geometry": {
         "type": "Point",
@@ -914,7 +1026,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "6360 Maple St",
-        "local_area": "Kerrisdale"
+        "local_area": "Kerrisdale",
+        "phone": "604-713-8200",
+        "url": "https://www.vsb.bc.ca/magee",
+        "email": null,
+        "vsb_name": "Magee Secondary"
       },
       "geometry": {
         "type": "Point",
@@ -974,7 +1090,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "449 E 62nd Av",
-        "local_area": "Sunset"
+        "local_area": "Sunset",
+        "phone": "604-713-4865",
+        "url": "https://www.vsb.bc.ca/pierre-elliott-trudeau",
+        "email": null,
+        "vsb_name": "Trudeau Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -1074,7 +1194,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "6111 Elliott St",
-        "local_area": "Victoria-Fraserview"
+        "local_area": "Victoria-Fraserview",
+        "phone": "604-713-4752",
+        "url": "https://www.vsb.bc.ca/waverley",
+        "email": null,
+        "vsb_name": "Waverley Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -1094,7 +1218,11 @@
         "school_category": "StrongStart BC",
         "school_category_zh": "StrongStart BC",
         "address": "6111 Elliott St",
-        "local_area": "Victoria-Fraserview"
+        "local_area": "Victoria-Fraserview",
+        "phone": "604-713-4752",
+        "url": "https://www.vsb.bc.ca/waverley",
+        "email": null,
+        "vsb_name": "Waverley Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -1134,7 +1262,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "2150 Brigadoon Av",
-        "local_area": "Victoria-Fraserview"
+        "local_area": "Victoria-Fraserview",
+        "phone": "604-713-4817",
+        "url": "https://www.vsb.bc.ca/sir-james-douglas",
+        "email": "douglas@vsb.bc.ca",
+        "vsb_name": "Douglas Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -1174,7 +1306,11 @@
         "school_category": "StrongStart BC",
         "school_category_zh": "StrongStart BC",
         "address": "3340 E 54th Av",
-        "local_area": "Killarney"
+        "local_area": "Killarney",
+        "phone": "604-713-4828",
+        "url": "https://www.vsb.bc.ca/captain-james-cook",
+        "email": null,
+        "vsb_name": "Cook Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -1194,7 +1330,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "3400 Balaclava St",
-        "local_area": "Arbutus Ridge"
+        "local_area": "Arbutus Ridge",
+        "phone": "604-713-5396",
+        "url": "https://www.vsb.bc.ca/carnarvon",
+        "email": null,
+        "vsb_name": "Carnarvon Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -1214,7 +1354,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "555 Lillooet St",
-        "local_area": "Hastings-Sunrise"
+        "local_area": "Hastings-Sunrise",
+        "phone": "604-713-4620",
+        "url": "https://www.vsb.bc.ca/dr-ar-lord",
+        "email": "drarlord@vsb.bc.ca",
+        "vsb_name": "Lord Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -1234,7 +1378,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "3050 Crown St",
-        "local_area": "West Point Grey"
+        "local_area": "West Point Grey",
+        "phone": "604-713-4577",
+        "url": "https://www.vsb.bc.ca/jules-quesnel",
+        "email": null,
+        "vsb_name": "Jules Quesnel Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -1274,7 +1422,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "2330 E 37th Av",
-        "local_area": "Renfrew-Collingwood"
+        "local_area": "Renfrew-Collingwood",
+        "phone": "604-713-4675",
+        "url": "https://www.vsb.bc.ca/george-t-cunningham",
+        "email": "Cunningham@vsb.bc.ca",
+        "vsb_name": "Cunningham Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -1294,7 +1446,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "3663 Penticton St",
-        "local_area": "Renfrew-Collingwood"
+        "local_area": "Renfrew-Collingwood",
+        "phone": "604-713-4605",
+        "url": "https://www.vsb.bc.ca/lord-beaconsfield",
+        "email": "Beaconsfield@vsb.bc.ca",
+        "vsb_name": "Beaconsfield Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -1314,7 +1470,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "4444 Dumfries St",
-        "local_area": "Kensington-Cedar Cottage"
+        "local_area": "Kensington-Cedar Cottage",
+        "phone": "604-713-4735",
+        "url": "https://www.vsb.bc.ca/selkirk-annex",
+        "email": null,
+        "vsb_name": "Selkirk Annex"
       },
       "geometry": {
         "type": "Point",
@@ -1334,7 +1494,11 @@
         "school_category": "StrongStart BC",
         "school_category_zh": "StrongStart BC",
         "address": "2300 Guelph St",
-        "local_area": "Mount Pleasant"
+        "local_area": "Mount Pleasant",
+        "phone": "604-713-4617",
+        "url": "https://www.vsb.bc.ca/mount-pleasant",
+        "email": null,
+        "vsb_name": "Mount Pleasant Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -1354,7 +1518,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "4102 W 16th Av",
-        "local_area": "Dunbar-Southlands"
+        "local_area": "Dunbar-Southlands",
+        "phone": "604-713-5408",
+        "url": "https://www.vsb.bc.ca/queen-elizabeth",
+        "email": null,
+        "vsb_name": "Queen Elizabeth Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -1374,7 +1542,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "4250 Marguerite St",
-        "local_area": "Shaughnessy"
+        "local_area": "Shaughnessy",
+        "phone": "604-713-5500",
+        "url": "https://www.vsb.bc.ca/shaughnessy",
+        "email": "shaughnessy@vsb.bc.ca",
+        "vsb_name": "Shaughnessy Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -1394,7 +1566,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "419 E 24th Av",
-        "local_area": "Riley Park"
+        "local_area": "Riley Park",
+        "phone": "604-713-8233",
+        "url": "https://www.vsb.bc.ca/sir-charles-tupper",
+        "email": null,
+        "vsb_name": "Tupper Secondary"
       },
       "geometry": {
         "type": "Point",
@@ -1474,7 +1650,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "2325 Cassiar St",
-        "local_area": "Hastings-Sunrise"
+        "local_area": "Hastings-Sunrise",
+        "phone": "604-713-4611",
+        "url": "https://www.vsb.bc.ca/thunderbird",
+        "email": "thunderbird@vsb.bc.ca",
+        "vsb_name": "šxʷəxʷaʔəs Thunderbird Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -1554,7 +1734,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "500 W 20th Av",
-        "local_area": "South Cambie"
+        "local_area": "South Cambie",
+        "phone": "604-713-4932",
+        "url": "https://www.vsb.bc.ca/edith-cavell",
+        "email": null,
+        "vsb_name": "Cavell Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -1594,7 +1778,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "1936 W 10th Av",
-        "local_area": "Kitsilano"
+        "local_area": "Kitsilano",
+        "phone": "604-713-5426",
+        "url": "https://www.vsb.bc.ca/lord-tennyson",
+        "email": "tennyson@vsb.bc.ca",
+        "vsb_name": "Tennyson Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -1614,7 +1802,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "4102 W 16th Av",
-        "local_area": "Dunbar-Southlands"
+        "local_area": "Dunbar-Southlands",
+        "phone": "604-713-5408",
+        "url": "https://www.vsb.bc.ca/queen-elizabeth",
+        "email": null,
+        "vsb_name": "Queen Elizabeth Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -1674,7 +1866,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "2900 E 44th Av",
-        "local_area": "Killarney"
+        "local_area": "Killarney",
+        "phone": "604-713-4771",
+        "url": "https://www.vsb.bc.ca/dr-george-m-weir",
+        "email": null,
+        "vsb_name": "Weir Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -1694,7 +1890,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "2625 Franklin St",
-        "local_area": "Hastings-Sunrise"
+        "local_area": "Hastings-Sunrise",
+        "phone": "604-713-5507",
+        "url": "https://www.vsb.bc.ca/hastings",
+        "email": null,
+        "vsb_name": "Hastings Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -1714,7 +1914,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "2300 Guelph St",
-        "local_area": "Mount Pleasant"
+        "local_area": "Mount Pleasant",
+        "phone": "604-713-4617",
+        "url": "https://www.vsb.bc.ca/mount-pleasant",
+        "email": null,
+        "vsb_name": "Mount Pleasant Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -1754,7 +1958,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "7668 Borden St",
-        "local_area": "Victoria-Fraserview"
+        "local_area": "Victoria-Fraserview",
+        "phone": "604-713-4885",
+        "url": "https://www.vsb.bc.ca/sir-james-douglas-annex",
+        "email": null,
+        "vsb_name": "Douglas Annex"
       },
       "geometry": {
         "type": "Point",
@@ -1774,7 +1982,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "1401 E 49th Av",
-        "local_area": "Victoria-Fraserview"
+        "local_area": "Victoria-Fraserview",
+        "phone": "604-713-4793",
+        "url": "https://www.vsb.bc.ca/sir-sandford-fleming",
+        "email": null,
+        "vsb_name": "Fleming Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -1794,7 +2006,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "3323 Wellington Av",
-        "local_area": "Renfrew-Collingwood"
+        "local_area": "Renfrew-Collingwood",
+        "phone": "604-713-4844",
+        "url": "https://www.vsb.bc.ca/sir-wilfred-grenfell",
+        "email": null,
+        "vsb_name": "Grenfell Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -1854,7 +2070,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "1010 E 17th Av",
-        "local_area": "Kensington-Cedar Cottage"
+        "local_area": "Kensington-Cedar Cottage",
+        "phone": "604-713-4978",
+        "url": "https://www.vsb.bc.ca/charles-dickens",
+        "email": "dickens@vsb.bc.ca",
+        "vsb_name": "Dickens Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -1874,7 +2094,11 @@
         "school_category": "StrongStart BC",
         "school_category_zh": "StrongStart BC",
         "address": "3417 Euclid Av",
-        "local_area": "Renfrew-Collingwood"
+        "local_area": "Renfrew-Collingwood",
+        "phone": "604-713-5340",
+        "url": "https://www.vsb.bc.ca/collingwood-neighbourhood-bruce-annex",
+        "email": null,
+        "vsb_name": "Collingwood Neighbourhood School"
       },
       "geometry": {
         "type": "Point",
@@ -1914,7 +2138,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "7455 Maple St",
-        "local_area": "Kerrisdale"
+        "local_area": "Kerrisdale",
+        "phone": "604-713-4952",
+        "url": "https://www.vsb.bc.ca/dr-re-mckechnie",
+        "email": null,
+        "vsb_name": "McKechnie Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -1934,7 +2162,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "900 School Green",
-        "local_area": "Fairview"
+        "local_area": "Fairview",
+        "phone": "604-713-4959",
+        "url": "https://www.vsb.bc.ca/false-creek",
+        "email": null,
+        "vsb_name": "False Creek Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -1974,7 +2206,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "2896 W 6th Av",
-        "local_area": "Kitsilano"
+        "local_area": "Kitsilano",
+        "phone": "604-713-5403",
+        "url": "https://www.vsb.bc.ca/general-gordon",
+        "email": "Gordon@vsb.bc.ca",
+        "vsb_name": "Gordon Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -2034,7 +2270,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "530 E 41st Av",
-        "local_area": "Sunset"
+        "local_area": "Sunset",
+        "phone": "604-713-8938",
+        "url": "https://www.vsb.bc.ca/john-oliver",
+        "email": null,
+        "vsb_name": "John Oliver Secondary"
       },
       "geometry": {
         "type": "Point",
@@ -2054,7 +2294,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "3939 W 16th Av",
-        "local_area": "West Point Grey"
+        "local_area": "West Point Grey",
+        "phone": "604-713-8171",
+        "url": "https://www.vsb.bc.ca/lord-byng",
+        "email": null,
+        "vsb_name": "Byng Secondary"
       },
       "geometry": {
         "type": "Point",
@@ -2074,7 +2318,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "2235 Kitchener St",
-        "local_area": "Grandview-Woodland"
+        "local_area": "Grandview-Woodland",
+        "phone": "604-713-4595",
+        "url": "https://www.vsb.bc.ca/lord-nelson",
+        "email": "nelson@vsb.bc.ca",
+        "vsb_name": "Nelson Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -2094,7 +2342,11 @@
         "school_category": "StrongStart BC",
         "school_category_zh": "StrongStart BC",
         "address": "1750 E 22nd Av",
-        "local_area": "Kensington-Cedar Cottage"
+        "local_area": "Kensington-Cedar Cottage",
+        "phone": "604-713-4650",
+        "url": "https://www.vsb.bc.ca/lord-selkirk",
+        "email": "selkirk@vsb.bc.ca",
+        "vsb_name": "Selkirk Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -2134,7 +2386,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "3417 Euclid Av",
-        "local_area": "Renfrew-Collingwood"
+        "local_area": "Renfrew-Collingwood",
+        "phone": "604-713-5340",
+        "url": "https://www.vsb.bc.ca/collingwood-neighbourhood-bruce-annex",
+        "email": null,
+        "vsb_name": "Collingwood Neighbourhood School"
       },
       "geometry": {
         "type": "Point",
@@ -2154,7 +2410,11 @@
         "school_category": "StrongStart BC",
         "school_category_zh": "StrongStart BC",
         "address": "1300 E Broadway",
-        "local_area": "Kensington-Cedar Cottage"
+        "local_area": "Kensington-Cedar Cottage",
+        "phone": "604-713-4599",
+        "url": "https://www.vsb.bc.ca/queen-alexandra",
+        "email": "queenalexandra@vsb.bc.ca",
+        "vsb_name": "Queen Alexandra Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -2174,7 +2434,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "2000 Trimble St",
-        "local_area": "West Point Grey"
+        "local_area": "West Point Grey",
+        "phone": "604-713-5464",
+        "url": "https://www.vsb.bc.ca/queen-mary",
+        "email": null,
+        "vsb_name": "Queen Mary Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -2194,7 +2458,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "250S Skeena St",
-        "local_area": "Hastings-Sunrise"
+        "local_area": "Hastings-Sunrise",
+        "phone": "604-713-4709",
+        "url": "https://www.vsb.bc.ca/sir-john-franklin",
+        "email": "franklin@vsb.bc.ca",
+        "vsb_name": "Franklin Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -2274,7 +2542,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "727 Templeton Drive",
-        "local_area": "Grandview-Woodland"
+        "local_area": "Grandview-Woodland",
+        "phone": "604-713-8984",
+        "url": "https://www.vsb.bc.ca/templeton",
+        "email": null,
+        "vsb_name": "Templeton Secondary"
       },
       "geometry": {
         "type": "Point",
@@ -2294,7 +2566,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "2600 E Broadway",
-        "local_area": "Renfrew-Collingwood"
+        "local_area": "Renfrew-Collingwood",
+        "phone": "604-713-8215",
+        "url": "https://www.vsb.bc.ca/vancouver-technical",
+        "email": "vantech@vsb.bc.ca",
+        "vsb_name": "Vancouver Technical Secondary"
       },
       "geometry": {
         "type": "Point",
@@ -2354,7 +2630,11 @@
         "school_category": "StrongStart BC",
         "school_category_zh": "StrongStart BC",
         "address": "7835 Champlain Crescent",
-        "local_area": "Killarney"
+        "local_area": "Killarney",
+        "phone": "604-713-4880",
+        "url": "https://www.vsb.bc.ca/champlain-heights-annex",
+        "email": null,
+        "vsb_name": "Champlain Heights Annex"
       },
       "geometry": {
         "type": "Point",
@@ -2414,7 +2694,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "2740 Guelph St",
-        "local_area": "Mount Pleasant"
+        "local_area": "Mount Pleasant",
+        "phone": "604-713-5290",
+        "url": "https://www.vsb.bc.ca/florence-nightingale",
+        "email": "nightingale@vsb.bc.ca",
+        "vsb_name": "Nightingale Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -2434,7 +2718,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "4251 Ontario St",
-        "local_area": "Riley Park"
+        "local_area": "Riley Park",
+        "phone": "604-713-4912",
+        "url": "https://www.vsb.bc.ca/general-wolfe",
+        "email": "Wolfe@vsb.bc.ca",
+        "vsb_name": "Wolfe Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -2454,7 +2742,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "592 E Pender St",
-        "local_area": "Strathcona"
+        "local_area": "Strathcona",
+        "phone": "604-713-4630",
+        "url": "https://www.vsb.bc.ca/lord-strathcona",
+        "email": "strathcona@vsb.bc.ca",
+        "vsb_name": "Strathcona Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -2474,7 +2766,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "6199 Cypress St",
-        "local_area": "Kerrisdale"
+        "local_area": "Kerrisdale",
+        "phone": "604-713-5356",
+        "url": "https://www.vsb.bc.ca/maple-grove",
+        "email": "maplegrove@vsb.bc.ca",
+        "vsb_name": "Maple Grove Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -2514,7 +2810,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "4750 St. Catherines St",
-        "local_area": "Kensington-Cedar Cottage"
+        "local_area": "Kensington-Cedar Cottage",
+        "phone": "604-713-5374",
+        "url": "https://www.vsb.bc.ca/mcbride-annex",
+        "email": "mcbrideannex@vsb.bc.ca",
+        "vsb_name": "McBride Annex"
       },
       "geometry": {
         "type": "Point",
@@ -2534,7 +2834,11 @@
         "school_category": "StrongStart BC",
         "school_category_zh": "StrongStart BC",
         "address": "2450 Cambridge St",
-        "local_area": "Hastings-Sunrise"
+        "local_area": "Hastings-Sunrise",
+        "phone": "604-713-4716",
+        "url": "https://www.vsb.bc.ca/tillicum-annex",
+        "email": "tillicum@vsb.bc.ca",
+        "vsb_name": "Tillicum Annex"
       },
       "geometry": {
         "type": "Point",
@@ -2554,7 +2858,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "530 E 41st Av",
-        "local_area": "Sunset"
+        "local_area": "Sunset",
+        "phone": "604-713-8938",
+        "url": "https://www.vsb.bc.ca/john-oliver",
+        "email": null,
+        "vsb_name": "John Oliver Secondary"
       },
       "geometry": {
         "type": "Point",
@@ -2594,7 +2902,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "1001 Cotton Drive",
-        "local_area": "Grandview-Woodland"
+        "local_area": "Grandview-Woodland",
+        "phone": "604-713-8266",
+        "url": "https://www.vsb.bc.ca/britannia-secondary",
+        "email": null,
+        "vsb_name": "Britannia Secondary"
       },
       "geometry": {
         "type": "Point",
@@ -2614,7 +2926,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "3340 E 54th Av",
-        "local_area": "Killarney"
+        "local_area": "Killarney",
+        "phone": "604-713-4828",
+        "url": "https://www.vsb.bc.ca/captain-james-cook",
+        "email": null,
+        "vsb_name": "Cook Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -2634,7 +2950,11 @@
         "school_category": "StrongStart BC",
         "school_category_zh": "StrongStart BC",
         "address": "2684 E 2nd Av",
-        "local_area": "Hastings-Sunrise"
+        "local_area": "Hastings-Sunrise",
+        "phone": "604-713-4705",
+        "url": "https://www.vsb.bc.ca/chief-maquinna",
+        "email": "Maquinna@vsb.bc.ca",
+        "vsb_name": "Maquinna Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -2674,7 +2994,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "3417 Euclid Av",
-        "local_area": "Renfrew-Collingwood"
+        "local_area": "Renfrew-Collingwood",
+        "phone": "604-713-5340",
+        "url": "https://www.vsb.bc.ca/collingwood-neighbourhood-bruce-annex",
+        "email": null,
+        "vsb_name": "Collingwood Neighbourhood School"
       },
       "geometry": {
         "type": "Point",
@@ -2694,7 +3018,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "150 Drake St",
-        "local_area": "Downtown"
+        "local_area": "Downtown",
+        "phone": "604-713-5890",
+        "url": "https://www.vsb.bc.ca/elsie-roy",
+        "email": "elsieroy@vsb.bc.ca",
+        "vsb_name": "Elsie Roy Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -2714,7 +3042,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "3633 Tanner St",
-        "local_area": "Renfrew-Collingwood"
+        "local_area": "Renfrew-Collingwood",
+        "phone": "604-713-4778",
+        "url": "https://www.vsb.bc.ca/graham-d-bruce",
+        "email": "bruce@vsb.bc.ca",
+        "vsb_name": "Bruce Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -2734,7 +3066,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "1551 Cypress St",
-        "local_area": "Kitsilano"
+        "local_area": "Kitsilano",
+        "phone": "604-713-5441",
+        "url": "https://www.vsb.bc.ca/henry-hudson",
+        "email": "Hudson@vsb.bc.ca",
+        "vsb_name": "Hudson Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -2774,7 +3110,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "451 E 53rd Av",
-        "local_area": "Sunset"
+        "local_area": "Sunset",
+        "phone": "604-713-4837",
+        "url": "https://www.vsb.bc.ca/john-henderson",
+        "email": "Henderson@vsb.bc.ca",
+        "vsb_name": "Henderson Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -2794,7 +3134,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "4710 Slocan St",
-        "local_area": "Renfrew-Collingwood"
+        "local_area": "Renfrew-Collingwood",
+        "phone": "604-713-4666",
+        "url": "https://www.vsb.bc.ca/john-norquay",
+        "email": "Norquay@vsb.bc.ca",
+        "vsb_name": "Norquay Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -2914,7 +3258,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "960 E 39th Av",
-        "local_area": "Kensington-Cedar Cottage"
+        "local_area": "Kensington-Cedar Cottage",
+        "phone": "604-713-4799",
+        "url": "https://www.vsb.bc.ca/sir-alexander-mackenzie",
+        "email": "mackenzie@vsb.bc.ca",
+        "vsb_name": "Mackenzie Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -2954,7 +3302,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "1300 E 29th Av",
-        "local_area": "Kensington-Cedar Cottage"
+        "local_area": "Kensington-Cedar Cottage",
+        "phone": "604-713-4971",
+        "url": "https://www.vsb.bc.ca/sir-richard-mcbride",
+        "email": null,
+        "vsb_name": "McBride Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -2974,7 +3326,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "1950 E Hastings St",
-        "local_area": "Grandview-Woodland"
+        "local_area": "Grandview-Woodland",
+        "phone": "604-713-4696",
+        "url": "https://www.vsb.bc.ca/xpey",
+        "email": null,
+        "vsb_name": "χpey̓ Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -2994,7 +3350,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "7055 Heather St",
-        "local_area": "Oakridge"
+        "local_area": "Oakridge",
+        "phone": "604-713-8189",
+        "url": "https://www.vsb.bc.ca/sir-winston-churchill",
+        "email": "Churchill@vsb.bc.ca",
+        "vsb_name": "Churchill Secondary"
       },
       "geometry": {
         "type": "Point",
@@ -3014,7 +3374,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "3155 E 27th Av",
-        "local_area": "Renfrew-Collingwood"
+        "local_area": "Renfrew-Collingwood",
+        "phone": "604-713-8180",
+        "url": "https://www.vsb.bc.ca/windermere",
+        "email": "Windermere@vsb.bc.ca",
+        "vsb_name": "Windermere Secondary"
       },
       "geometry": {
         "type": "Point",
@@ -3074,7 +3438,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "6955 Frontenac St",
-        "local_area": "Killarney"
+        "local_area": "Killarney",
+        "phone": "604-713-4760",
+        "url": "https://www.vsb.bc.ca/champlain-heights",
+        "email": null,
+        "vsb_name": "Champlain Heights Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -3134,7 +3502,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "8370 Cartier St",
-        "local_area": "Marpole"
+        "local_area": "Marpole",
+        "phone": "604-713-4895",
+        "url": "https://www.vsb.bc.ca/david-lloyd-george",
+        "email": null,
+        "vsb_name": "Lloyd George Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -3154,7 +3526,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "2421 Scarboro Av",
-        "local_area": "Victoria-Fraserview"
+        "local_area": "Victoria-Fraserview",
+        "phone": "604-713-4570",
+        "url": "https://www.vsb.bc.ca/david-oppenheimer",
+        "email": "Oppenheimer@vsb.bc.ca",
+        "vsb_name": "Oppenheimer Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -3174,7 +3550,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "5025 Willow St",
-        "local_area": "South Cambie"
+        "local_area": "South Cambie",
+        "phone": "604-713-8927",
+        "url": "https://www.vsb.bc.ca/eric-hamber",
+        "email": null,
+        "vsb_name": "Hamber Secondary"
       },
       "geometry": {
         "type": "Point",
@@ -3194,7 +3574,11 @@
         "school_category": "StrongStart BC",
         "school_category_zh": "StrongStart BC",
         "address": "2740 Guelph St",
-        "local_area": "Mount Pleasant"
+        "local_area": "Mount Pleasant",
+        "phone": "604-713-5290",
+        "url": "https://www.vsb.bc.ca/florence-nightingale",
+        "email": "nightingale@vsb.bc.ca",
+        "vsb_name": "Nightingale Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -3214,7 +3598,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "4105 Gladstone St",
-        "local_area": "Kensington-Cedar Cottage"
+        "local_area": "Kensington-Cedar Cottage",
+        "phone": "604-713-8288",
+        "url": "https://www.vsb.bc.ca/gladstone",
+        "email": null,
+        "vsb_name": "Gladstone Secondary"
       },
       "geometry": {
         "type": "Point",
@@ -3234,7 +3622,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "3250 W 43rd Av",
-        "local_area": "Kerrisdale"
+        "local_area": "Kerrisdale",
+        "phone": "604-713-5488",
+        "url": "https://www.vsb.bc.ca/kerrisdale-annex",
+        "email": null,
+        "vsb_name": "Kerrisdale Annex"
       },
       "geometry": {
         "type": "Point",
@@ -3254,7 +3646,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "1166 W 14th Av",
-        "local_area": "Fairview"
+        "local_area": "Fairview",
+        "phone": "604-713-4585",
+        "url": "https://www.vsb.bc.ca/lecole-bilingue",
+        "email": "LecoleBilingue@vsb.bc.ca",
+        "vsb_name": "L'Ecole Bilingue Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -3294,7 +3690,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "3375 Nootka St",
-        "local_area": "Renfrew-Collingwood"
+        "local_area": "Renfrew-Collingwood",
+        "phone": "604-713-4767",
+        "url": "https://www.vsb.bc.ca/nootka",
+        "email": "nootka@vsb.bc.ca",
+        "vsb_name": "Nootka Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -3414,7 +3814,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "5970 Selkirk St",
-        "local_area": "Oakridge"
+        "local_area": "Oakridge",
+        "phone": "604-713-4920",
+        "url": "https://www.vsb.bc.ca/sir-william-osler",
+        "email": "osler@vsb.bc.ca",
+        "vsb_name": "Osler Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -3434,7 +3838,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "5351 Camosun St",
-        "local_area": "Dunbar-Southlands"
+        "local_area": "Dunbar-Southlands",
+        "phone": "604-713-5414",
+        "url": "https://www.vsb.bc.ca/southlands",
+        "email": "southlands@vsb.bc.ca",
+        "vsb_name": "Southlands Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -3474,7 +3882,11 @@
         "school_category": "StrongStart BC",
         "school_category_zh": "StrongStart BC",
         "address": "1000 E 59th Av",
-        "local_area": "Sunset"
+        "local_area": "Sunset",
+        "phone": "604-713-4784",
+        "url": "https://www.vsb.bc.ca/walter-moberly",
+        "email": "moberly@vsb.bc.ca",
+        "vsb_name": "Moberly Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -3494,7 +3906,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "3155 E 27th Av",
-        "local_area": "Renfrew-Collingwood"
+        "local_area": "Renfrew-Collingwood",
+        "phone": "604-713-8180",
+        "url": "https://www.vsb.bc.ca/windermere",
+        "email": "Windermere@vsb.bc.ca",
+        "vsb_name": "Windermere Secondary"
       },
       "geometry": {
         "type": "Point",
@@ -3514,7 +3930,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "1110 Cotton Drive",
-        "local_area": "Grandview-Woodland"
+        "local_area": "Grandview-Woodland",
+        "phone": "604-713-4497",
+        "url": "https://www.vsb.bc.ca/britannia-elementary",
+        "email": "britanniaelem@vsb.bc.ca",
+        "vsb_name": "Britannia Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -3534,7 +3954,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "6100 Battison St",
-        "local_area": "Killarney"
+        "local_area": "Killarney",
+        "phone": "604-713-4775",
+        "url": "https://www.vsb.bc.ca/dr-hn-maccorkindale",
+        "email": "maccorkindale@vsb.bc.ca",
+        "vsb_name": "MacCorkindale Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -3554,7 +3978,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "2055 Woodland Dr",
-        "local_area": "Grandview-Woodland"
+        "local_area": "Grandview-Woodland",
+        "phone": "604-713-4663",
+        "url": "https://www.vsb.bc.ca/grandview",
+        "email": null,
+        "vsb_name": "¿uuqinak’uuh Grandview Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -3574,7 +4002,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "2500 Lakewood Drive",
-        "local_area": "Kensington-Cedar Cottage"
+        "local_area": "Kensington-Cedar Cottage",
+        "phone": "604-713-4996",
+        "url": "https://www.vsb.bc.ca/laura-secord",
+        "email": "Secord@vsb.bc.ca",
+        "vsb_name": "Secord Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -3594,7 +4026,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "2250 Eddington Drive",
-        "local_area": "Arbutus Ridge"
+        "local_area": "Arbutus Ridge",
+        "phone": "604-713-8974",
+        "url": "https://www.vsb.bc.ca/prince-wales",
+        "email": null,
+        "vsb_name": "Prince of Wales Secondary"
       },
       "geometry": {
         "type": "Point",
@@ -3614,7 +4050,11 @@
         "school_category": "StrongStart BC",
         "school_category_zh": "StrongStart BC",
         "address": "3323 Wellington Av",
-        "local_area": "Renfrew-Collingwood"
+        "local_area": "Renfrew-Collingwood",
+        "phone": "604-713-4844",
+        "url": "https://www.vsb.bc.ca/sir-wilfred-grenfell",
+        "email": null,
+        "vsb_name": "Grenfell Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -3634,7 +4074,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "2450 Cambridge St",
-        "local_area": "Hastings-Sunrise"
+        "local_area": "Hastings-Sunrise",
+        "phone": "604-713-4716",
+        "url": "https://www.vsb.bc.ca/tillicum-annex",
+        "email": "tillicum@vsb.bc.ca",
+        "vsb_name": "Tillicum Annex"
       },
       "geometry": {
         "type": "Point",
@@ -3674,7 +4118,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "1130 Keefer St",
-        "local_area": "Strathcona"
+        "local_area": "Strathcona",
+        "phone": "604-713-4641",
+        "url": "https://www.vsb.bc.ca/admiral-seymour",
+        "email": "seymour@vsb.bc.ca",
+        "vsb_name": "Seymour Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -3754,7 +4202,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "55 Expo Blvd",
-        "local_area": "Downtown"
+        "local_area": "Downtown",
+        "phone": "604-713-5460",
+        "url": "https://www.vsb.bc.ca/crosstown",
+        "email": null,
+        "vsb_name": "šxʷwəq̓ʷəθət Crosstown Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -3774,7 +4226,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "5555 Carnarvon St",
-        "local_area": "Dunbar-Southlands"
+        "local_area": "Dunbar-Southlands",
+        "phone": "604-713-5446",
+        "url": "https://www.vsb.bc.ca/kerrisdale",
+        "email": "kerrisdale@vsb.bc.ca",
+        "vsb_name": "Kerrisdale Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -3794,7 +4250,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "6454 Killarney St",
-        "local_area": "Killarney"
+        "local_area": "Killarney",
+        "phone": "604-713-8950",
+        "url": "https://www.vsb.bc.ca/killarney",
+        "email": null,
+        "vsb_name": "Killarney Secondary"
       },
       "geometry": {
         "type": "Point",
@@ -3814,7 +4274,11 @@
         "school_category": "StrongStart BC",
         "school_category_zh": "StrongStart BC",
         "address": "1950 E Hastings St",
-        "local_area": "Grandview-Woodland"
+        "local_area": "Grandview-Woodland",
+        "phone": "604-713-4696",
+        "url": "https://www.vsb.bc.ca/xpey",
+        "email": null,
+        "vsb_name": "χpey̓ Elementary"
       },
       "geometry": {
         "type": "Point",
@@ -3834,7 +4298,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "5350 East Boulevard",
-        "local_area": "Shaughnessy"
+        "local_area": "Shaughnessy",
+        "phone": "604-713-8220",
+        "url": "https://www.vsb.bc.ca/point-grey",
+        "email": "PointGrey@vsb.bc.ca",
+        "vsb_name": "stəywəte:n̓ Point Grey Secondary"
       },
       "geometry": {
         "type": "Point",
@@ -3874,7 +4342,11 @@
         "school_category": "Public School",
         "school_category_zh": "公立學校",
         "address": "1551 E 37th Av",
-        "local_area": "Kensington-Cedar Cottage"
+        "local_area": "Kensington-Cedar Cottage",
+        "phone": "604-713-4890",
+        "url": "https://www.vsb.bc.ca/tecumseh-annex",
+        "email": "tecumsehannex@vsb.bc.ca",
+        "vsb_name": "Tecumseh Annex"
       },
       "geometry": {
         "type": "Point",

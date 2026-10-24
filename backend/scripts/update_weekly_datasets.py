@@ -237,9 +237,6 @@ def run_weekly_updates():
     # 2. Road Construction (每星期更新)
     update_road_construction()
 
-    # 3. Fire Hydrants (每星期更新)
-    update_fire_hydrants()
-
     meta_path = os.path.join(BACKEND_DATA_DIR, "last_weekly_datasets_update.json")
     with open(meta_path, "w", encoding="utf-8") as f:
         json.dump({
@@ -247,8 +244,7 @@ def run_weekly_updates():
             "cycle": "weekly",
             "datasets": [
                 "vancouver_road_closures",
-                "vancouver_road_construction",
-                "vancouver_fire_hydrants"
+                "vancouver_road_construction"
             ]
         }, f, indent=2)
 
