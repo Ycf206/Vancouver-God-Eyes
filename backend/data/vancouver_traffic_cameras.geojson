@@ -1,0 +1,4724 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "drivebc_cam_71",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.02450703000248,
+          49.2853851852054
+        ]
+      },
+      "properties": {
+        "id": "drivebc_cam_71",
+        "name": "Ironworkers South westbound",
+        "facility_type": "traffic_cameras",
+        "provider": "DriveBC",
+        "camera_id": 71,
+        "description": "Highway 1 at the south end of Ironworkers Memorial Bridge, looking westbound towards the North Shore.",
+        "highway": "Highway 1",
+        "direction": "Westbound",
+        "image_url": "https://www.drivebc.ca/images/71.jpg",
+        "url": "https://www.drivebc.ca/cameras/71?pan=-123.02450703000248%2C49.2853851852054&zoom=5",
+        "refresh_interval_min": 15
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "drivebc_cam_72",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.03130489302623,
+          49.29553693290191
+        ]
+      },
+      "properties": {
+        "id": "drivebc_cam_72",
+        "name": "Ironworkers midspan",
+        "facility_type": "traffic_cameras",
+        "provider": "DriveBC",
+        "camera_id": 72,
+        "description": "Highway 1 at mid-span on the Ironworkers Memorial Bridge, looking south.",
+        "highway": "Highway 1",
+        "direction": "Southbound",
+        "image_url": "https://www.drivebc.ca/images/72.jpg",
+        "url": "https://www.drivebc.ca/cameras/72?pan=-123.03130489302623%2C49.29553693290191&zoom=5",
+        "refresh_interval_min": 15
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "drivebc_cam_112",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.00761156691813,
+          49.245231938458204
+        ]
+      },
+      "properties": {
+        "id": "drivebc_cam_112",
+        "name": "Douglas Road - E",
+        "facility_type": "traffic_cameras",
+        "provider": "DriveBC",
+        "camera_id": 112,
+        "description": "Highway 1 at Douglas Road overpass, looking east.",
+        "highway": "Highway 1",
+        "direction": "Eastbound",
+        "image_url": "https://www.drivebc.ca/images/112.jpg",
+        "url": "https://www.drivebc.ca/cameras/112?pan=-123.00761156691813%2C49.245231938458204&zoom=5",
+        "refresh_interval_min": 15
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "drivebc_cam_114",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.00608821330033,
+          49.24342319926157
+        ]
+      },
+      "properties": {
+        "id": "drivebc_cam_114",
+        "name": "Kensington Avenue - E",
+        "facility_type": "traffic_cameras",
+        "provider": "DriveBC",
+        "camera_id": 114,
+        "description": "Highway 1 at Kensington Avenue, looking east.",
+        "highway": "Highway 1",
+        "direction": "Eastbound",
+        "image_url": "https://www.drivebc.ca/images/114.jpg",
+        "url": "https://www.drivebc.ca/cameras/114?pan=-123.00608821330033%2C49.24342319926157&zoom=5",
+        "refresh_interval_min": 15
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "drivebc_cam_17",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1366403,
+          49.295792000000034
+        ]
+      },
+      "properties": {
+        "id": "drivebc_cam_17",
+        "name": "Causeway",
+        "facility_type": "traffic_cameras",
+        "provider": "DriveBC",
+        "camera_id": 17,
+        "description": "Stanley Park Causeway at Stanley Park entrance, looking north.",
+        "highway": "Stanley Park Causeway",
+        "direction": "Northbound",
+        "image_url": "https://www.drivebc.ca/images/17.jpg",
+        "url": "https://www.drivebc.ca/cameras/17?pan=-123.1366403%2C49.295792000000034&zoom=12",
+        "refresh_interval_min": 15
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM004",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.033764228688,
+          49.2581519344414
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM004",
+        "mapid": "TCM004",
+        "name": "Rupert St and Grandview Hwy",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/grandview4.htm",
+        "local_area": "Renfrew-Collingwood",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM005",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.114909,
+          49.270967
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM005",
+        "mapid": "TCM005",
+        "name": "Cambie Bridge",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/cambiebridge.htm",
+        "local_area": "Fairview",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM006",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.138554334693,
+          49.2635968497724
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM006",
+        "mapid": "TCM006",
+        "name": "Granville St and W Broadway",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/broadwayGranville.htm",
+        "local_area": "Fairview",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM008",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.140525163827,
+          49.2085840137306
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM008",
+        "mapid": "TCM008",
+        "name": "Granville St and W 70th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/granville70th.htm",
+        "local_area": "Marpole",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM012",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.132359942237,
+          49.2769754719523
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM012",
+        "mapid": "TCM012",
+        "name": "Burrard St and Pacific St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/BurrardPacific4.htm",
+        "local_area": "West End",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM013",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.023578,
+          49.2811188
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM013",
+        "mapid": "TCM013",
+        "name": "Boundary Road and E Hastings St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/hastings.htm",
+        "local_area": "Hastings-Sunrise",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM023",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.114883421659,
+          49.2632184560264
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM023",
+        "mapid": "TCM023",
+        "name": "Cambie St and W Broadway",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/cambieBroadway.htm",
+        "local_area": "Fairview",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM029",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.100696908039,
+          49.2691679881689
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM029",
+        "mapid": "TCM029",
+        "name": "Main St and E 2nd Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/Main2.htm",
+        "local_area": "Mount Pleasant",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM030",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.099648798315,
+          49.2813356595642
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM030",
+        "mapid": "TCM030",
+        "name": "Main St and E Hastings St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/MainHastings.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM031",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.069621664266,
+          49.2695996340758
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM031",
+        "mapid": "TCM031",
+        "name": "Commercial Drive and E 1st Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/Commercial01.htm",
+        "local_area": "Grandview-Woodland",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM044",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.121791,
+          49.2826429
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM044",
+        "mapid": "TCM044",
+        "name": "Hornby St and Robson St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/HornbyRobson.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM048",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.16831,
+          49.26837
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM048",
+        "mapid": "TCM048",
+        "name": "Macdonald St and W 4th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/macdonald4.htm",
+        "local_area": "Kitsilano",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM049",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.035859,
+          49.2341556
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM049",
+        "mapid": "TCM049",
+        "name": "Joyce St and Kingsway",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/joyceKingsway.htm",
+        "local_area": "Renfrew-Collingwood",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM056",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.133382,
+          49.281777
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM056",
+        "mapid": "TCM056",
+        "name": "Bute St and Davie St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/buteDavie.htm",
+        "local_area": "West End",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM057",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.076038,
+          49.250101
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM057",
+        "mapid": "TCM057",
+        "name": "Knight St and Kingsway",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/knightKingsway.htm",
+        "local_area": "Kensington-Cedar Cottage",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM059",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.077205,
+          49.211117
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM059",
+        "mapid": "TCM059",
+        "name": "Knight St and SE Marine Drive",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/knightMarineBridge.htm",
+        "local_area": "Sunset",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM060",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.134406,
+          49.278304
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM060",
+        "mapid": "TCM060",
+        "name": "Thurlow St and Pacific St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/thurlowPacific.htm",
+        "local_area": "West End",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM063",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.042261,
+          49.208109
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM063",
+        "mapid": "TCM063",
+        "name": "Kerr St and SE Marine Drive",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/kerrMarine.htm",
+        "local_area": "Killarney",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM067",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05403,
+          49.240012
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM067",
+        "mapid": "TCM067",
+        "name": "Slocan St and Kingsway",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/slocanKingsway.htm",
+        "local_area": "Renfrew-Collingwood",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM071",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.102278,
+          49.271224
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM071",
+        "mapid": "TCM071",
+        "name": "Quebec St and Switchmen St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/quebecSwitchmen.htm",
+        "local_area": "Mount Pleasant",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM075",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.118386,
+          49.241057
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM075",
+        "mapid": "TCM075",
+        "name": "Cambie St and W 33rd Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/cambie33.htm",
+        "local_area": "Riley Park",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM079",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.02371,
+          49.254887
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM079",
+        "mapid": "TCM079",
+        "name": "Boundary Road and Canada Way",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/boundaryCanadaWay.htm",
+        "local_area": "Renfrew-Collingwood",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM083",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.153051,
+          49.260993
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM083",
+        "mapid": "TCM083",
+        "name": "Arbutus St and W 12th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/arbutus12.htm",
+        "local_area": "Kitsilano",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM084",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.153058,
+          49.257275
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM084",
+        "mapid": "TCM084",
+        "name": "Arbutus St and W 16th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/arbutus16.htm",
+        "local_area": "Kitsilano",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM085",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.152958,
+          49.263817
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM085",
+        "mapid": "TCM085",
+        "name": "Arbutus St and W Broadway",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/arbutusBroadway.htm",
+        "local_area": "Kitsilano",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM089",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.126628,
+          49.26244
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM089",
+        "mapid": "TCM089",
+        "name": "Oak St and W 10th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/oakW10.htm",
+        "local_area": "Fairview",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM091",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.130775,
+          49.278025
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM091",
+        "mapid": "TCM091",
+        "name": "Burrard St and Drake St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/burrardDrake.htm",
+        "local_area": "West End",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM093",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.074029,
+          49.283234
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM093",
+        "mapid": "TCM093",
+        "name": "McLean Drive and Powell St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/mcleanPowell.htm",
+        "local_area": "Grandview-Woodland",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM096",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.122022,
+          49.278617
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM096",
+        "mapid": "TCM096",
+        "name": "Seymour St and Nelson St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/seymourNelson.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM097",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.097767,
+          49.261081
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM097",
+        "mapid": "TCM097",
+        "name": "Kingsway and E 11th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/kingsway11.htm",
+        "local_area": "Mount Pleasant",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM098",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.102702,
+          49.269206
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM098",
+        "mapid": "TCM098",
+        "name": "Quebec St and W 2nd Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/quebec2.htm",
+        "local_area": "Mount Pleasant",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM099",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.116051,
+          49.237262
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM099",
+        "mapid": "TCM099",
+        "name": "Cambie St and W 37th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/cambie37.htm",
+        "local_area": "South Cambie",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM104",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13039,
+          49.275674
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM104",
+        "mapid": "TCM104",
+        "name": "Howe St and Pacific St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/howePacific.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM107",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.138808,
+          49.257058
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM107",
+        "mapid": "TCM107",
+        "name": "Granville St and W 16th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/granville16.htm",
+        "local_area": "Fairview",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM108",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.041291,
+          49.220181
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM108",
+        "mapid": "TCM108",
+        "name": "Kerr St and E 54th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/kerr54.htm",
+        "local_area": "Killarney",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM113",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.031839,
+          49.283737
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM113",
+        "mapid": "TCM113",
+        "name": "Collectors and Bridgeway St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/collectorsBridgeway.htm",
+        "local_area": "Hastings-Sunrise",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM117",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.155277,
+          49.234581
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM117",
+        "mapid": "TCM117",
+        "name": "Boulevards and W 41st Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/boulevards41.htm",
+        "local_area": "Arbutus Ridge",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM120",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.126694,
+          49.26058
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM120",
+        "mapid": "TCM120",
+        "name": "Oak St and W 12th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/oak12.htm",
+        "local_area": "Fairview",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM125",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.126589,
+          49.26341
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM125",
+        "mapid": "TCM125",
+        "name": "Oak St and W Broadway",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/oakWBroadway.htm",
+        "local_area": "Fairview",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM129",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.099514,
+          49.262868
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM129",
+        "mapid": "TCM129",
+        "name": "Kingsway and W Broadway",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/kingswayBroadway.htm",
+        "local_area": "Mount Pleasant",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM131",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.112886,
+          49.283391
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM131",
+        "mapid": "TCM131",
+        "name": "Richards St and W Pender St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/richardsPender.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM135",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.044289,
+          49.258175
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM135",
+        "mapid": "TCM135",
+        "name": "Renfrew St and Grandview Hwy",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/renfrewGrandview.htm",
+        "local_area": "Renfrew-Collingwood",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM138",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.124976,
+          49.2805
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM138",
+        "mapid": "TCM138",
+        "name": "Hornby St and Nelson St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/hornbyNelson.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM139",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.100776,
+          49.262703
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM139",
+        "mapid": "TCM139",
+        "name": "Main St and E Broadway",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/mainBroadway.htm",
+        "local_area": "Mount Pleasant",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM143",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.137996,
+          49.267903
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM143",
+        "mapid": "TCM143",
+        "name": "Anderson St and W 4th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/anderson04.htm",
+        "local_area": "Fairview",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM145",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.139589,
+          49.234332
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM145",
+        "mapid": "TCM145",
+        "name": "Granville St.and W 41st Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/granville41.htm",
+        "local_area": "Shaughnessy",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM146",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.121422,
+          49.280312
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM146",
+        "mapid": "TCM146",
+        "name": "Granville St and Smithe St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/granvilleSmithe.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM147",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.02373,
+          49.250633
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM147",
+        "mapid": "TCM147",
+        "name": "Boundary Road and E 22nd Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/boundary22.htm",
+        "local_area": "Renfrew-Collingwood",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM149",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.125831,
+          49.274826
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM149",
+        "mapid": "TCM149",
+        "name": "Richards St and Drake St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/richardsDrake.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM150",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.065947,
+          49.259531
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM150",
+        "mapid": "TCM150",
+        "name": "Victoria Drive and 12th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/victoria12.htm",
+        "local_area": "Kensington-Cedar Cottage",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM151",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.098201,
+          49.267764
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM151",
+        "mapid": "TCM151",
+        "name": "Scotia St and E 2nd Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/scotia2.htm",
+        "local_area": "Strathcona",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM153",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.185261,
+          49.234718
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM153",
+        "mapid": "TCM153",
+        "name": "Dunbar St and W 41st Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/dunbar41.htm",
+        "local_area": "Dunbar-Southlands",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM154",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.077292,
+          49.225295
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM154",
+        "mapid": "TCM154",
+        "name": "Knight St and E 49th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/knight49.htm",
+        "local_area": "Sunset",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM157",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.121066,
+          49.277993
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM157",
+        "mapid": "TCM157",
+        "name": "Richards St and Nelson St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/richardsNelson.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM158",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.124252,
+          49.275885
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM158",
+        "mapid": "TCM158",
+        "name": "Richards St and Davie St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/richardsDavie.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM159",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.122658,
+          49.276939
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM159",
+        "mapid": "TCM159",
+        "name": "Richards St and Helmcken St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/richardsHelmcken.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM167",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.141824,
+          49.287258
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM167",
+        "mapid": "TCM167",
+        "name": "Denman St and Davie St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/denmanDavie.htm",
+        "local_area": "West End",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM168",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.124419,
+          49.282246
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM168",
+        "mapid": "TCM168",
+        "name": "Burrard St and Smithe St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/burrardSmithe.htm",
+        "local_area": "West End",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM170",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.129791,
+          49.277384
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM170",
+        "mapid": "TCM170",
+        "name": "Hornby St and Drake St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/hornbyDrake.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM175",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.126012,
+          49.281193
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM175",
+        "mapid": "TCM175",
+        "name": "Burrard St and Nelson St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/burrardnelson.htm",
+        "local_area": "West End",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM176",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.17306,
+          49.234751
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM176",
+        "mapid": "TCM176",
+        "name": "Carnarvon St and W 41st Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/carnarvon41.htm",
+        "local_area": "Dunbar-Southlands",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM180",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.066111,
+          49.209689
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM180",
+        "mapid": "TCM180",
+        "name": "Victoria Drive and SE Marine Drive",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/victoriaMarine.htm",
+        "local_area": "Victoria-Fraserview",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM181",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.056621,
+          49.262188
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM181",
+        "mapid": "TCM181",
+        "name": "Nanaimo St and Broadway",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/nanaimobroadway.htm",
+        "local_area": "Grandview-Woodland",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM186",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.023679,
+          49.26368
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM186",
+        "mapid": "TCM186",
+        "name": "Boundary Road and Henning Drive",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/boundaryHenning.htm",
+        "local_area": "Renfrew-Collingwood",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM188",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.044216,
+          49.26949
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM188",
+        "mapid": "TCM188",
+        "name": "Renfrew St and 1st Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/renfrew01st.htm",
+        "local_area": "Hastings-Sunrise",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM191",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.084785,
+          49.281059
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM191",
+        "mapid": "TCM191",
+        "name": "Campbell Av and Hastings St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/campbellHastings.htm",
+        "local_area": "Strathcona",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM203",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12903,
+          49.275974
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM203",
+        "mapid": "TCM203",
+        "name": "Continental St and Neon St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/continentalNeon.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM205",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.128496,
+          49.27563
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM205",
+        "mapid": "TCM205",
+        "name": "Granville St and Neon St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/granvilleNeon.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM209",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14089,
+          49.267084
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM209",
+        "mapid": "TCM209",
+        "name": "Fir St and W 5th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/fir5.htm",
+        "local_area": "Fairview",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM210",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.090558,
+          49.23289139
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM210",
+        "mapid": "TCM210",
+        "name": "Fraser St and E 41st Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/fraser41.htm",
+        "local_area": "Riley Park",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM214",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.058128,
+          49.241886
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM214",
+        "mapid": "TCM214",
+        "name": "Nanaimo St and Kingsway",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/nanaimoKingsway.htm",
+        "local_area": "Kensington-Cedar Cottage",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM215",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.130745,
+          49.27414
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM215",
+        "mapid": "TCM215",
+        "name": "Granville Bridge and Howe St On Ramp",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/granvilleHoweOnRamp.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM216",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.06533,
+          49.240029
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM216",
+        "mapid": "TCM216",
+        "name": "Victoria Drive and E 33rd Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/victoria33.htm",
+        "local_area": "Kensington-Cedar Cottage",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM218",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.089854,
+          49.256718
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM218",
+        "mapid": "TCM218",
+        "name": "Fraser St and Kingsway",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/fraserKingsway.htm",
+        "local_area": "Mount Pleasant",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM220",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.113982,
+          49.277581
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM220",
+        "mapid": "TCM220",
+        "name": "Beatty St and Robson St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/beattyRobson.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM221",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.104634,
+          49.2701905
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM221",
+        "mapid": "TCM221",
+        "name": "Ontario St and E 01st Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/ontario01.htm",
+        "local_area": "Mount Pleasant",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM223",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.116306,
+          49.230741
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM223",
+        "mapid": "TCM223",
+        "name": "Cambie St and W 44th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/cambie44.htm",
+        "local_area": "Oakridge",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM007",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.114967985868,
+          49.2603889490707
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM007",
+        "mapid": "TCM007",
+        "name": "Cambie St and W 12th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/cambie12.htm",
+        "local_area": "Fairview",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM010",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.130252725283,
+          49.2084701202487
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM010",
+        "mapid": "TCM010",
+        "name": "Oak St and W 70th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/oak4.htm",
+        "local_area": "Marpole",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM014",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.114727137422,
+          49.2758069601355
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM014",
+        "mapid": "TCM014",
+        "name": "Expo Blvd and Smithe St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/expoSmithe.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM016",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.044076554126,
+          49.2811221877658
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM016",
+        "mapid": "TCM016",
+        "name": "Renfrew St and E Hastings St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/renfrewHastings.htm",
+        "local_area": "Hastings-Sunrise",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM018",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.077030889534,
+          49.2327151572131
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM018",
+        "mapid": "TCM018",
+        "name": "Knight St and E 41st Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/knight.htm",
+        "local_area": "Kensington-Cedar Cottage",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM019",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.07702523194,
+          49.2181272253316
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM019",
+        "mapid": "TCM019",
+        "name": "Knight St and E 57th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/knight57.htm",
+        "local_area": "Sunset",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM020",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.116492357278,
+          49.2261139995231
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM020",
+        "mapid": "TCM020",
+        "name": "Cambie St and W 49th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/cambie49.htm",
+        "local_area": "Oakridge",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM021",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.116192190431,
+          49.2335434721856
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM021",
+        "mapid": "TCM021",
+        "name": "Cambie St and W 41st Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/cambie41.htm",
+        "local_area": "South Cambie",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM027",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.115479083554,
+          49.2881431972814
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM027",
+        "mapid": "TCM027",
+        "name": "Burrard St and Canada Place",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/BurrardCanadaPlace.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM028",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.117110735151,
+          49.2101449448247
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM028",
+        "mapid": "TCM028",
+        "name": "Cambie St and SW Marine Drive",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/CambieMarine.htm",
+        "local_area": "Marpole",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM033",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11812055027,
+          49.2824942805362
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM033",
+        "mapid": "TCM033",
+        "name": "Granville St and W Georgia St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/granvilleGeorgia.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM038",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10089513196,
+          49.2644481387721
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM038",
+        "mapid": "TCM038",
+        "name": "Main St and Kingsway",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/mainKingsway7.htm",
+        "local_area": "Mount Pleasant",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM039",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.120082749606,
+          49.2837645081745
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM039",
+        "mapid": "TCM039",
+        "name": "Hornby St and W Georgia St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/hornbyGeorgia.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM040",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.07711,
+          49.28309
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM040",
+        "mapid": "TCM040",
+        "name": "Clark Drive and Powell St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/ClarkPowell.htm",
+        "local_area": "Grandview-Woodland",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM041",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.07711,
+          49.28131
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM041",
+        "mapid": "TCM041",
+        "name": "Clark Drive and E Hastings St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/ClarkHastings.htm",
+        "local_area": "Grandview-Woodland",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM043",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.04881,
+          49.23758
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM043",
+        "mapid": "TCM043",
+        "name": "Earles St and Kingsway",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/EarlesKingsway.htm",
+        "local_area": "Renfrew-Collingwood",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM045",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.119088,
+          49.2831269
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM045",
+        "mapid": "TCM045",
+        "name": "Howe St and W Georgia St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/howeGeorgia.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM046",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.119829,
+          49.2813697
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM046",
+        "mapid": "TCM046",
+        "name": "Granville St and Robson St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/granvillerobson.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM052",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.056641,
+          49.248805
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM052",
+        "mapid": "TCM052",
+        "name": "Nanaimo St and E 24th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/nanaimo24.htm",
+        "local_area": "Kensington-Cedar Cottage",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM054",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.185885,
+          49.263478
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM054",
+        "mapid": "TCM054",
+        "name": "Alma St and W 10th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/alma10.htm",
+        "local_area": "West Point Grey",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM055",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.153114,
+          49.25154
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM055",
+        "mapid": "TCM055",
+        "name": "Arbutus St and W King Edward Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/arbutusWKingEdward.htm",
+        "local_area": "Arbutus Ridge",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM058",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.07614,
+          49.248518
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM058",
+        "mapid": "TCM058",
+        "name": "Knight St and King Edward Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/knightKingEdward.htm",
+        "local_area": "Kensington-Cedar Cottage",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM061",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.145657,
+          49.268027
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM061",
+        "mapid": "TCM061",
+        "name": "Burrard St and W 4th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/burrard4.htm",
+        "local_area": "Kitsilano",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM065",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.196716,
+          49.234772
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM065",
+        "mapid": "TCM065",
+        "name": "SW Marine Drive and W 41st Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/marine41.htm",
+        "local_area": "Dunbar-Southlands",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM066",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.171398,
+          49.227355
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM066",
+        "mapid": "TCM066",
+        "name": "SW Marine Drive and W 49th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/marine49.htm",
+        "local_area": "Kerrisdale",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM072",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11558,
+          49.276527
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM072",
+        "mapid": "TCM072",
+        "name": "Beatty St and Smithe St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/beattySmithe.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM073",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.023648,
+          49.269455
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM073",
+        "mapid": "TCM073",
+        "name": "Boundary Rd and E 1st Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/boundary1.htm",
+        "local_area": "Hastings-Sunrise",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM076",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.215212,
+          49.263925
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM076",
+        "mapid": "TCM076",
+        "name": "Blanca St and W 10th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/blanca10.htm",
+        "local_area": "",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM077",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.044345,
+          49.250539
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM077",
+        "mapid": "TCM077",
+        "name": "Renfrew St and E 22nd Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/renfrew22.htm",
+        "local_area": "Renfrew-Collingwood",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM078",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.127873,
+          49.241388
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM078",
+        "mapid": "TCM078",
+        "name": "Oak St and W 33rd Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/oak33.htm",
+        "local_area": "Shaughnessy",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM080",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.023649,
+          49.23228
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM080",
+        "mapid": "TCM080",
+        "name": "Boundary Road and Kingsway",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/boundaryKingsway.htm",
+        "local_area": "Renfrew-Collingwood",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM088",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.023703,
+          49.234379
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM088",
+        "mapid": "TCM088",
+        "name": "Boundary Rd and Vanness Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/boundaryVanness.htm",
+        "local_area": "Renfrew-Collingwood",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM092",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.142148,
+          49.208558
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM092",
+        "mapid": "TCM092",
+        "name": "Cornish St and SW Marine drive",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/cornishSWMarine.htm",
+        "local_area": "Marpole",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM094",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.090919,
+          49.266785
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM094",
+        "mapid": "TCM094",
+        "name": "Carolina St and Great Northern Way",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/carolinaGreatNorthern.htm",
+        "local_area": "Strathcona",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM095",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14447,
+          49.208597
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM095",
+        "mapid": "TCM095",
+        "name": "Arbutus Greenway and SW Marine Drive",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/arbutusGreenwaySWMarine.htm",
+        "local_area": "Marpole",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM100",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.060535,
+          49.242983
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM100",
+        "mapid": "TCM100",
+        "name": "Kingsway Midblock East of Gladstone St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/gladstoneKingsway.htm",
+        "local_area": "Kensington-Cedar Cottage",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM102",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.098639,
+          49.261969
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM102",
+        "mapid": "TCM102",
+        "name": "Kingsway and E 10th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/kingsway10.htm",
+        "local_area": "Mount Pleasant",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM103",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.082603,
+          49.276833
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM103",
+        "mapid": "TCM103",
+        "name": "Raymur Av and Venables St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/raymurVenables.htm",
+        "local_area": "Strathcona",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM106",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.033805,
+          49.250601
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM106",
+        "mapid": "TCM106",
+        "name": "Rupert St and E 22nd Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/rupertE22.htm",
+        "local_area": "Renfrew-Collingwood",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM109",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.043122,
+          49.229296
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM109",
+        "mapid": "TCM109",
+        "name": "Rupert St and E 45th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/rupert45.htm",
+        "local_area": "Killarney",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM111",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.168395,
+          49.264945
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM111",
+        "mapid": "TCM111",
+        "name": "Macdonald St and W 8th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/macdonald8.htm",
+        "local_area": "Kitsilano",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM115",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.114449,
+          49.266837
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM115",
+        "mapid": "TCM115",
+        "name": "Cambie St and W 2nd Av - East intersecti",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/cambie2East.htm",
+        "local_area": "Mount Pleasant",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM116",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.023606,
+          49.222001
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM116",
+        "mapid": "TCM116",
+        "name": "Boundry Road and E 49th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/boundary49.htm",
+        "local_area": "Killarney",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM119",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.138664,
+          49.260772
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM119",
+        "mapid": "TCM119",
+        "name": "Granville St and W 12th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/granville12.htm",
+        "local_area": "Fairview",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM123",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.023669,
+          49.265567
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM123",
+        "mapid": "TCM123",
+        "name": "Boundary Road and Lougheed Hwy",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/boundaryLougheed.htm",
+        "local_area": "Hastings-Sunrise",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM124",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.168214,
+          49.262338
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM124",
+        "mapid": "TCM124",
+        "name": "Macdonald St and Kitsilano Diversion",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/macdonaldKitsDiv.htm",
+        "local_area": "Kitsilano",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM126",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.111904,
+          49.28404
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM126",
+        "mapid": "TCM126",
+        "name": "Richards St and W Hastings St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/richardsHastings.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM128",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.065537,
+          49.232752
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM128",
+        "mapid": "TCM128",
+        "name": "Victoria Drive and E 41st Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/victoria41.htm",
+        "local_area": "Kensington-Cedar Cottage",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM134",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.044084,
+          49.277455
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM134",
+        "mapid": "TCM134",
+        "name": "Renfrew St and Adanac St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/renfrewAdanac.htm",
+        "local_area": "Hastings-Sunrise",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM136",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.066299,
+          49.252975
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM136",
+        "mapid": "TCM136",
+        "name": "Victoria Drive and Victoria Diversion",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/victoriaVictoriaCommercial.htm",
+        "local_area": "Kensington-Cedar Cottage",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM140",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.2091,
+          49.26383
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM140",
+        "mapid": "TCM140",
+        "name": "Sasamat St and W 10th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/sasamat10.htm",
+        "local_area": "West Point Grey",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM142",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.065737,
+          49.225182
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM142",
+        "mapid": "TCM142",
+        "name": "Victoria Drive and E 49th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/victoria49.htm",
+        "local_area": "Victoria-Fraserview",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM144",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.137976,
+          49.269356
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM144",
+        "mapid": "TCM144",
+        "name": "Anderson St and Lamey's Mill Road",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/andersonLameysMill.htm",
+        "local_area": "Fairview",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM152",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.142376,
+          49.28688
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM152",
+        "mapid": "TCM152",
+        "name": "Denman St and Beach Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/denmanBeach.htm",
+        "local_area": "West End",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM156",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.128859,
+          49.276755
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM156",
+        "mapid": "TCM156",
+        "name": "Howe St and Drake St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/howeDrake.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM160",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.117882,
+          49.2801
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM160",
+        "mapid": "TCM160",
+        "name": "Richards St and Robson St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/richardsRobson.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM162",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.120444,
+          49.279674
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM162",
+        "mapid": "TCM162",
+        "name": "Seymour St and Smithe St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/seymourSmithe.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM163",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.116174,
+          49.28123
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM163",
+        "mapid": "TCM163",
+        "name": "Richards St and W Georgia St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/richardsGeorgia.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM164",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.119473,
+          49.279046
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM164",
+        "mapid": "TCM164",
+        "name": "Richards St and Smithe St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/richardsSmithe.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM165",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.127496,
+          49.27374
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM165",
+        "mapid": "TCM165",
+        "name": "Richards St and Pacific St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/richardsPacific.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM169",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.123398,
+          49.281586
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM169",
+        "mapid": "TCM169",
+        "name": "Hornby St and Smithe St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/hornbySmithe.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM171",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.117144,
+          49.281859
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM171",
+        "mapid": "TCM171",
+        "name": "Seymour St and W Georgia St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/seymourGeorgia.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM173",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.117553,
+          49.262299
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM173",
+        "mapid": "TCM173",
+        "name": "Ash St and 10th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/ash10.htm",
+        "local_area": "Fairview",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM174",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.128331,
+          49.226558
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM174",
+        "mapid": "TCM174",
+        "name": "Oak St and W 49th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/oak49.htm",
+        "local_area": "Oakridge",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM187",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.044084,
+          49.282971
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM187",
+        "mapid": "TCM187",
+        "name": "Renfrew St and Pandora St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/renfrewPandora.htm",
+        "local_area": "Hastings-Sunrise",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM199",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.115128,
+          49.209638
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM199",
+        "mapid": "TCM199",
+        "name": "Yukon St and Interurban Way",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/yukonInterurban.htm",
+        "local_area": "Marpole",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM200",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.117829,
+          49.286589
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM200",
+        "mapid": "TCM200",
+        "name": "Burrard St and W Pender St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/burrardpender.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM206",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.128911,
+          49.274692
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM206",
+        "mapid": "TCM206",
+        "name": "Rolston St and Pacific St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/rolstonPacific.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM211",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.140217,
+          49.217413
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM211",
+        "mapid": "TCM211",
+        "name": "Granville St and W 59th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/granville59.htm",
+        "local_area": "Marpole",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM212",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.076405,
+          49.240209
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM212",
+        "mapid": "TCM212",
+        "name": "Knight St and E 33rd Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/knight33.htm",
+        "local_area": "Kensington-Cedar Cottage",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM213",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.027471,
+          49.269466
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM213",
+        "mapid": "TCM213",
+        "name": "Trans Canada Hwy and E 1st Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/transcanada01.htm",
+        "local_area": "Hastings-Sunrise",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM219",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.126801,
+          49.275454
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM219",
+        "mapid": "TCM219",
+        "name": "Seymour St and Drake St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/seymourDrake.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM224",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.117316,
+          49.243696
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM224",
+        "mapid": "TCM224",
+        "name": "Cambie St and W 30th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/cambie30.htm",
+        "local_area": "South Cambie",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM001",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.077346577693,
+          49.2696673278744
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM001",
+        "mapid": "TCM001",
+        "name": "Clark Drive and E 1st Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/clark4.htm",
+        "local_area": "Strathcona",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM002",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.133742210751,
+          49.2925940002885
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM002",
+        "mapid": "TCM002",
+        "name": "Denman St and W Georgia St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/denman3.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM003",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.130520302544,
+          49.290510806346
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM003",
+        "mapid": "TCM003",
+        "name": "Cardero St and W Pender St and W Georgia",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/georgia3.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM009",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.115084873166,
+          49.256907684832
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM009",
+        "mapid": "TCM009",
+        "name": "Cambie St and W 16th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/cambie16th.htm",
+        "local_area": "Fairview",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM011",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.146200846216,
+          49.2728254984234
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM011",
+        "mapid": "TCM011",
+        "name": "Burrard St and Cornwall Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/BurrardCornwall4.htm",
+        "local_area": "Kitsilano",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM015",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.118130911495,
+          49.2761048691871
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM015",
+        "mapid": "TCM015",
+        "name": "Cambie St and Nelson St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/cambieNelson.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM017",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.030835801938,
+          49.2811264797669
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM017",
+        "mapid": "TCM017",
+        "name": "Cassiar Connector and E Hastings St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/cassiarHastings.htm",
+        "local_area": "Hastings-Sunrise",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM022",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.115406053889,
+          49.248990875309
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM022",
+        "mapid": "TCM022",
+        "name": "Cambie St and W King Edward Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/cambie25.htm",
+        "local_area": "South Cambie",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM024",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.100028035364,
+          49.2727762979223
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM024",
+        "mapid": "TCM024",
+        "name": "Main St and Terminal Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/mainTerminal.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM025",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.101486354168,
+          49.2405023736559
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM025",
+        "mapid": "TCM025",
+        "name": "Main St and E 33rd Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/main33.htm",
+        "local_area": "Riley Park",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM026",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.116411709855,
+          49.2836239860524
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM026",
+        "mapid": "TCM026",
+        "name": "Granville St and Dunsmuir St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/GranvilleDunsmuir.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM032",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.110542,
+          49.2798513
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM032",
+        "mapid": "TCM032",
+        "name": "Beatty St and Dunsmuir St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/BeattyDunsmuir.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM034",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.112273646781,
+          49.2787098421077
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM034",
+        "mapid": "TCM034",
+        "name": "Beatty St and W Georgia St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/beattyGeorgia.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM035",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.123013825971,
+          49.2792581951786
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM035",
+        "mapid": "TCM035",
+        "name": "Granville St and Nelson St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/granvilleNelson.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM036",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.069762688147,
+          49.2623194551024
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM036",
+        "mapid": "TCM036",
+        "name": "Commercial Drive and E Broadway",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/commercialBroadway.htm",
+        "local_area": "Grandview-Woodland",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM037",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.077555176815,
+          49.259622152424
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM037",
+        "mapid": "TCM037",
+        "name": "Clark Drive and E 12th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/clark12.htm",
+        "local_area": "Mount Pleasant",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM042",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.02361,
+          49.25822
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM042",
+        "mapid": "TCM042",
+        "name": "Boundary Road and Grandview Hwy",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/BoundaryGrandviewHwy.htm",
+        "local_area": "Renfrew-Collingwood",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM047",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.131337,
+          49.2763164
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM047",
+        "mapid": "TCM047",
+        "name": "Hornby St and Pacific St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/hornbyPacific.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM050",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.044285,
+          49.261973
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM050",
+        "mapid": "TCM050",
+        "name": "Renfrew St and E Broadway",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/renfrewBroadway.htm",
+        "local_area": "Hastings-Sunrise",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM051",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.056587,
+          49.281123
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM051",
+        "mapid": "TCM051",
+        "name": "Nanaimo St and E Hastings St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/nanaimoHastings.htm",
+        "local_area": "Grandview-Woodland",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM053",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.081247,
+          49.282787
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM053",
+        "mapid": "TCM053",
+        "name": "Glen Drive and Powell St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/glenPowell.htm",
+        "local_area": "Strathcona",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM062",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.036666,
+          49.20693
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM062",
+        "mapid": "TCM062",
+        "name": "Kinross St and Marine Way",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/kinrossMarine.htm",
+        "local_area": "Killarney",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM064",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.038991,
+          49.207814
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM064",
+        "mapid": "TCM064",
+        "name": "SE Marine Drive and Marine Way",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/marineMarineWay.htm",
+        "local_area": "Killarney",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM068",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.027149,
+          49.2064
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM068",
+        "mapid": "TCM068",
+        "name": "Sawmill East Crescent and Marine Way",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/SawmillEastMarine.htm",
+        "local_area": "Killarney",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM069",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.033566,
+          49.207032
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM069",
+        "mapid": "TCM069",
+        "name": "Sawmill West Crescent and Marine Way",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/SawmillWestMarine.htm",
+        "local_area": "Killarney",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM070",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.03084,
+          49.206881
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM070",
+        "mapid": "TCM070",
+        "name": "River District Crossing and Marine Way",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/RiverDistrictMarine.htm",
+        "local_area": "Killarney",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM074",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.077509,
+          49.262375
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM074",
+        "mapid": "TCM074",
+        "name": "Clark Drive and E Broadway",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/clarkBroadway.htm",
+        "local_area": "Mount Pleasant",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM081",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.118271,
+          49.288853
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM081",
+        "mapid": "TCM081",
+        "name": "Thurlow St and Canada Place",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/ThurlowCanadaPlace.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM082",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.136732,
+          49.275566
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM082",
+        "mapid": "TCM082",
+        "name": "Burrard St Bridge",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/BurrardBridge.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM086",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1546702,
+          49.2610022
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM086",
+        "mapid": "TCM086",
+        "name": "Arbutus Greenway and W 12th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/greenway12.htm",
+        "local_area": "Kitsilano",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM087",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.031797,
+          49.23839
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM087",
+        "mapid": "TCM087",
+        "name": "Joyce St and Vanness Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/joyceVanness.htm",
+        "local_area": "Renfrew-Collingwood",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM090",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.114864,
+          49.211016
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM090",
+        "mapid": "TCM090",
+        "name": "Yukon St and SW Marine Drive",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/yukonSWMarine.htm",
+        "local_area": "Marpole",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM101",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.043093,
+          49.232969
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM101",
+        "mapid": "TCM101",
+        "name": "Rupert St and E 41st Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/rupert41.htm",
+        "local_area": "Renfrew-Collingwood",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM105",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.145864,
+          49.260889
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM105",
+        "mapid": "TCM105",
+        "name": "Burrard St and W 12th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/burrard12.htm",
+        "local_area": "Kitsilano",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM110",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.168408,
+          49.257668
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM110",
+        "mapid": "TCM110",
+        "name": "Macdonald St and W 16th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/macdonald16.htm",
+        "local_area": "Kitsilano",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM112",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.168202,
+          49.26408
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM112",
+        "mapid": "TCM112",
+        "name": "Macdonald St and W Broadway",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/macdonaldBroadway.htm",
+        "local_area": "Kitsilano",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM114",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.115918,
+          49.266135
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM114",
+        "mapid": "TCM114",
+        "name": "Cambie St and W 2nd Av - West intersecti",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/cambie2West.htm",
+        "local_area": "Fairview",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM118",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.153224,
+          49.248462
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM118",
+        "mapid": "TCM118",
+        "name": "Arbutus St and Lahb Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/arbutusLahb.htm",
+        "local_area": "Arbutus Ridge",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM121",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.056591,
+          49.269508
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM121",
+        "mapid": "TCM121",
+        "name": "Nanaimo St and E 1st Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/nanaimo1.htm",
+        "local_area": "Grandview-Woodland",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM122",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.056532,
+          49.284795
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM122",
+        "mapid": "TCM122",
+        "name": "Nanaimo St and Dundas St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/nanaimoDundas.htm",
+        "local_area": "Grandview-Woodland",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM127",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.110954,
+          49.284679
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM127",
+        "mapid": "TCM127",
+        "name": "Richards St and W Cordova St / Water St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/richardsCordovaWater.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM130",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.115565,
+          49.245194
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM130",
+        "mapid": "TCM130",
+        "name": "Cambie St and W 29th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/cambie29.htm",
+        "local_area": "South Cambie",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM132",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11445,
+          49.282358
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM132",
+        "mapid": "TCM132",
+        "name": "Richards St and Dunsmuir St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/richardsDunsmuir.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM133",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.115421,
+          49.282986
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM133",
+        "mapid": "TCM133",
+        "name": "Seymour St and Dunsmuir St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/seymourDunsmuir.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM137",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.033725,
+          49.267549
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM137",
+        "mapid": "TCM137",
+        "name": "Rupert St and E 3rd Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/rupert03rd.htm",
+        "local_area": "Hastings-Sunrise",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM141",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.148748,
+          49.209601
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM141",
+        "mapid": "TCM141",
+        "name": "Angus Drive and SW Marine Drive",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/angusMarine.htm",
+        "local_area": "Kerrisdale",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM148",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.056711,
+          49.257626
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM148",
+        "mapid": "TCM148",
+        "name": "Nanaimo St and Grandview Hwy South",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/nanaimoGrandview.htm",
+        "local_area": "Kensington-Cedar Cottage",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM155",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.082571,
+          49.232788
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM155",
+        "mapid": "TCM155",
+        "name": "Ross St and E 41 Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/ross41.htm",
+        "local_area": "Kensington-Cedar Cottage",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM161",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.118852,
+          49.280728
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM161",
+        "mapid": "TCM161",
+        "name": "Seymour St and Robson St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/seymourRobson.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM166",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.152065,
+          49.234525
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM166",
+        "mapid": "TCM166",
+        "name": "Maple St and 41st Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/maple41.htm",
+        "local_area": "Shaughnessy",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM172",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.106588,
+          49.26928
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM172",
+        "mapid": "TCM172",
+        "name": "Manitoba St and W 2nd Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/manitoba2.htm",
+        "local_area": "Mount Pleasant",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM177",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.091118,
+          49.211018
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM177",
+        "mapid": "TCM177",
+        "name": "Fraser St and SE Marine Dr",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/frasermarine.htm",
+        "local_area": "Sunset",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM178",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.023796,
+          49.244502
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM178",
+        "mapid": "TCM178",
+        "name": "Boundary Road and E 29th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/boundary29.htm",
+        "local_area": "Renfrew-Collingwood",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM179",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.143496,
+          49.260852
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM179",
+        "mapid": "TCM179",
+        "name": "Pine St and W 12th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/pine12.htm",
+        "local_area": "Fairview",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM182",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.072115,
+          49.211037
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM182",
+        "mapid": "TCM182",
+        "name": "Argyle St and SE Marine Drive",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/argylemarine.htm",
+        "local_area": "Victoria-Fraserview",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM183",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.129196,
+          49.279086
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM183",
+        "mapid": "TCM183",
+        "name": "Burrard St and Davie St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/burrardDavie.htm",
+        "local_area": "West End",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM184",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.113882,
+          49.285313
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM184",
+        "mapid": "TCM184",
+        "name": "Granville St and Hasting St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/granvillehastings.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM185",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.102199,
+          49.211097
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM185",
+        "mapid": "TCM185",
+        "name": "Main St and SE Marine Drive",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/mainmarine.htm",
+        "local_area": "Sunset",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM189",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.121502,
+          49.208304
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM189",
+        "mapid": "TCM189",
+        "name": "SW Marine Drive and W 70th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/marine70.htm",
+        "local_area": "Marpole",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM190",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.109971,
+          49.212191
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM190",
+        "mapid": "TCM190",
+        "name": "Manitoba St and SW Marine Drive",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/manitobamarine.htm",
+        "local_area": "Marpole",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM192",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.185567,
+          49.272269
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM192",
+        "mapid": "TCM192",
+        "name": "Alma St and Point Grey Road",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/almaPtGrey.htm",
+        "local_area": "Kitsilano",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM193",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.139322,
+          49.241869
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM193",
+        "mapid": "TCM193",
+        "name": "Granville St and W 33rd Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/granville33.htm",
+        "local_area": "Shaughnessy",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM201",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.101519,
+          49.233079
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM201",
+        "mapid": "TCM201",
+        "name": "Main St and E 41st Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/main41.htm",
+        "local_area": "Riley Park",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM202",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.090157,
+          49.248643
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM202",
+        "mapid": "TCM202",
+        "name": "Fraser St and E King Edward Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/fraserKingEdward.htm",
+        "local_area": "Riley Park",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM204",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.129933,
+          49.275377
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM204",
+        "mapid": "TCM204",
+        "name": "Continental St and Pacific St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/continentalPacific.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM207",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05872,
+          49.239778
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM207",
+        "mapid": "TCM207",
+        "name": "Nanaimo St and E 33rd Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/nanaimo33.htm",
+        "local_area": "Kensington-Cedar Cottage",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM208",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.127792,
+          49.276095
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM208",
+        "mapid": "TCM208",
+        "name": "Granville St and Drake St",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/granvilledrake.htm",
+        "local_area": "Downtown",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM217",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12859,
+          49.219204
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM217",
+        "mapid": "TCM217",
+        "name": "Oak St and W 57th Av",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/oak57.htm",
+        "local_area": "Oakridge",
+        "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cam_TCM222",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.056861,
+          49.207087
+        ]
+      },
+      "properties": {
+        "id": "cam_TCM222",
+        "mapid": "TCM222",
+        "name": "Elliott St and SE Marine Dr",
+        "facility_type": "traffic_cameras",
+        "provider": "City of Vancouver",
+        "url": "https://trafficcams.vancouver.ca/elliottmarine.htm",
+        "local_area": "Victoria-Fraserview",
+        "refresh_interval_sec": 30
+      }
+    }
+  ]
+}

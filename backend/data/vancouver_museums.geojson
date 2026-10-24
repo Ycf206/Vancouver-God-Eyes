@@ -1,0 +1,456 @@
+{
+  "type": "FeatureCollection",
+  "name": "vancouver_museums",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0830511,
+          49.3112929
+        ]
+      },
+      "properties": {
+        "name": "Museum of Anthropology at UBC (MOA)",
+        "address": "6393 NW Marine Drive, Vancouver, BC V6T 1Z2",
+        "phone": "604-822-5087",
+        "email": "info@moa.ubc.ca",
+        "urllink": "https://moa.ubc.ca/",
+        "geo_point_2d": {
+          "lon": -123.0830511,
+          "lat": 49.3112929
+        },
+        "hours": {
+          "Monday": "Closed",
+          "Tuesday": "10:00AM - 5:00PM",
+          "Wednesday": "10:00AM - 5:00PM",
+          "Thursday": "10:00AM - 9:00PM",
+          "Friday": "10:00AM - 5:00PM",
+          "Saturday": "10:00AM - 5:00PM",
+          "Sunday": "10:00AM - 5:00PM",
+          "Holidays_and_Seasonal": "Closed Mondays (Oct 15 – May 15). 2026 Holiday Hours: Dec 24 (10:00AM - 2:00PM), Dec 25 (Closed), Dec 26 (10:00AM - 5:00PM), Dec 31 (10:00AM - 2:00PM), Jan 1 (10:00AM - 2:00PM)"
+        },
+        "admission_rates": {
+          "Adult (19-64)": "CAD $26.00",
+          "Senior (65+)": "CAD $23.00",
+          "Student (19+ with ID)": "CAD $23.00",
+          "Youth (6-18)": "CAD $13.00",
+          "Child (0-5)": "Free",
+          "Indigenous Peoples": "Free",
+          "UBC Student/Staff/Faculty": "Free",
+          "MOA Members": "Free",
+          "UBC Inspired + UNA Members": "Free",
+          "Access Pass (1 Year Unlimited)": "CAD $35.00",
+          "Special Discount": "Half-price on Thursday evenings (after 5:00PM)"
+        },
+        "notes": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1469474,
+          49.276282
+        ]
+      },
+      "properties": {
+        "name": "Museum of Vancouver (MOV)",
+        "address": "1100 Chestnut Street, Vancouver, BC V6J 3J9",
+        "phone": "604-736-4431",
+        "email": "guestservices@museumofvancouver.ca",
+        "urllink": "https://museumofvancouver.ca/",
+        "geo_point_2d": {
+          "lon": -123.1469474,
+          "lat": 49.276282
+        },
+        "hours": {
+          "Monday": "10:00AM - 5:00PM",
+          "Tuesday": "10:00AM - 5:00PM",
+          "Wednesday": "10:00AM - 5:00PM",
+          "Thursday": "10:00AM - 8:00PM",
+          "Friday": "10:00AM - 8:00PM",
+          "Saturday": "10:00AM - 8:00PM",
+          "Sunday": "10:00AM - 5:00PM",
+          "Holidays_and_Seasonal": null
+        },
+        "admission_rates": {
+          "Adult (18+)": "CAD $24.00",
+          "Senior (65+)": "CAD $19.00",
+          "Student (with ID) & Youth (13-18)": "CAD $19.00",
+          "Child (12 and under)": "Free (accompanied by an adult, max 6 children per adult)",
+          "Indigenous Peoples": "Free"
+        },
+        "notes": "Child free offer is for friends and family and not to be used for organizations, classes, or youth groups. Additional children charged at Youth rate."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1230464,
+          49.2829642
+        ]
+      },
+      "properties": {
+        "name": "Vancouver Art Gallery",
+        "address": "750 Hornby Street, Vancouver, BC V6Z 2H7",
+        "phone": "604-662-4700",
+        "email": null,
+        "urllink": "https://www.vanartgallery.bc.ca/",
+        "geo_point_2d": {
+          "lon": -123.1230464,
+          "lat": 49.2829642
+        },
+        "hours": {
+          "Monday": "10:00AM - 5:00PM",
+          "Tuesday": "Closed",
+          "Wednesday": "10:00AM - 5:00PM",
+          "Thursday": "10:00AM - 5:00PM",
+          "Friday": "10:00AM - 8:00PM",
+          "Saturday": "10:00AM - 5:00PM",
+          "Sunday": "10:00AM - 5:00PM",
+          "Holidays_and_Seasonal": null
+        },
+        "admission_rates": {
+          "General Admission (BC Residents)": "CAD $29.00",
+          "General Admission (Non-BC Residents)": "CAD $35.00",
+          "Youth (13-18)": "Free",
+          "Child (12 and under)": "Free",
+          "Indigenous Peoples": "Free",
+          "Gallery Members": "Free",
+          "Caregiver (attendant to persons with disabilities)": "Free",
+          "Annual Access Pass (12 Months Unlimited)": "CAD $58.00",
+          "Special Discount": "Free on the first Friday of every month (4:00PM - 8:00PM)"
+        },
+        "notes": "Admission is Free on the first Friday of every month from 4:00PM to 8:00PM during Free First Friday Nights presented by BMO. Reserve a spot in advance."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1064089,
+          49.2733795
+        ]
+      },
+      "properties": {
+        "name": "Science World",
+        "address": "1455 Quebec Street, Vancouver, BC V6A 3Z7",
+        "phone": "604-443-7440",
+        "email": "info@scienceworld.ca",
+        "urllink": "https://www.scienceworld.ca/",
+        "geo_point_2d": {
+          "lon": -123.1064089,
+          "lat": 49.2733795
+        },
+        "hours": {
+          "Monday": "10:00AM - 5:00PM",
+          "Tuesday": "10:00AM - 5:00PM",
+          "Wednesday": "10:00AM - 5:00PM",
+          "Thursday": "10:00AM - 5:00PM",
+          "Friday": "10:00AM - 5:00PM",
+          "Saturday": "10:00AM - 5:00PM",
+          "Sunday": "10:00AM - 5:00PM",
+          "Holidays_and_Seasonal": null
+        },
+        "admission_rates": {
+          "Adult (19+)": "CAD $37.50",
+          "Senior (65+)": "CAD $30.50",
+          "Youth (13-18)": "CAD $30.50",
+          "Child (3-12)": "CAD $25.50",
+          "Toddler (0-2)": "Free"
+        },
+        "notes": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1497579,
+          49.2775205
+        ]
+      },
+      "properties": {
+        "name": "Vancouver Maritime Museum",
+        "address": "1905 Ogden Avenue, Vancouver, BC V6J 1A3 (Vanier Park)",
+        "phone": "604-257-8300",
+        "email": "info@vanmaritime.com",
+        "urllink": "https://vanmaritime.com/",
+        "geo_point_2d": {
+          "lon": -123.1497579,
+          "lat": 49.2775205
+        },
+        "hours": {
+          "Monday": "Closed",
+          "Tuesday": "10:00AM - 5:00PM",
+          "Wednesday": "10:00AM - 5:00PM",
+          "Thursday": "10:00AM - 5:00PM",
+          "Friday": "10:00AM - 5:00PM",
+          "Saturday": "10:00AM - 5:00PM",
+          "Sunday": "10:00AM - 5:00PM",
+          "Holidays_and_Seasonal": "Christmas Eve: 10:00AM - 2:00PM, Christmas Day: Closed, Boxing Day: 10:00AM - 5:00PM, New Year's Day: Closed, Statutory Holidays (excluding Christmas): 10:00AM - 5:00PM"
+        },
+        "admission_rates": {
+          "Membership - Individual": "CAD $45.00",
+          "Membership - Senior": "CAD $40.00",
+          "Membership - Family": "CAD $65.00",
+          "Membership - Family (with extra adult)": "CAD $80.00",
+          "Special Discount": "Pay What You Can on the first Sunday of each month"
+        },
+        "notes": "Visit on the first Sunday of each month and Pay What You Can for admission."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1007894,
+          49.2820905
+        ]
+      },
+      "properties": {
+        "name": "Vancouver Police Museum & Archives",
+        "address": "240 East Cordova Street, Vancouver, BC V6A 1L3",
+        "phone": "604-665-3346",
+        "email": "info@vancouverpolicemuseum.ca",
+        "urllink": "https://vancouverpolicemuseum.ca/",
+        "geo_point_2d": {
+          "lon": -123.1007894,
+          "lat": 49.2820905
+        },
+        "hours": {
+          "Monday": "Closed",
+          "Tuesday": "Closed",
+          "Wednesday": "Closed",
+          "Thursday": "10:00AM - 5:00PM",
+          "Friday": "10:00AM - 5:00PM",
+          "Saturday": "10:00AM - 5:00PM",
+          "Sunday": "12:00PM - 5:00PM",
+          "Holidays_and_Seasonal": "Closed on Statutory Holidays"
+        },
+        "admission_rates": {
+          "Adult": "CAD $14.00",
+          "Senior (65+)": "CAD $13.00",
+          "Student (with ID)": "CAD $13.00",
+          "Youth (5-18)": "CAD $11.00",
+          "Family (2 adults + 2 youth)": "CAD $40.00"
+        },
+        "notes": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1347232,
+          49.2868753
+        ]
+      },
+      "properties": {
+        "name": "Roedde House Museum",
+        "address": "1415 Barclay Street, Vancouver, BC V6G 1J6",
+        "phone": "604-684-7040",
+        "email": "info@roeddehouse.org",
+        "urllink": "https://www.roeddehouse.org/",
+        "geo_point_2d": {
+          "lon": -123.1347232,
+          "lat": 49.2868753
+        },
+        "hours": {
+          "Monday": "Closed",
+          "Tuesday": "Closed",
+          "Wednesday": "1:00PM - 4:00PM",
+          "Thursday": "1:00PM - 4:00PM",
+          "Friday": "1:00PM - 4:00PM",
+          "Saturday": "Closed",
+          "Sunday": "1:00PM - 4:00PM",
+          "Holidays_and_Seasonal": "Summer Hours (July to August 2026): Wednesday to Sunday 11:00AM - 4:00PM. Fall Hours: Wednesday, Thursday, Friday, and Sunday 1:00PM - 4:00PM. Closed Aug 8, 9 & 22."
+        },
+        "admission_rates": {
+          "General Admission": "CAD $10.00",
+          "Youth (6-18)": "CAD $5.00",
+          "Wheelchair Accessible Admission (ground floor only)": "CAD $5.00",
+          "Child (5 and under)": "Free",
+          "RHM Members": "Free"
+        },
+        "notes": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1219127,
+          49.2844735
+        ]
+      },
+      "properties": {
+        "name": "Bill Reid Gallery of Northwest Coast Art",
+        "address": "639 Hornby Street, Vancouver, BC V6C 2G3",
+        "phone": "604-488-2128",
+        "email": "info@billreidgallery.ca",
+        "urllink": "https://www.billreidgallery.ca/",
+        "geo_point_2d": {
+          "lon": -123.1219127,
+          "lat": 49.2844735
+        },
+        "hours": {
+          "Monday": "Closed",
+          "Tuesday": "10:00AM - 5:00PM",
+          "Wednesday": "10:00AM - 5:00PM",
+          "Thursday": "10:00AM - 5:00PM",
+          "Friday": "10:00AM - 5:00PM",
+          "Saturday": "10:00AM - 5:00PM",
+          "Sunday": "Closed",
+          "Holidays_and_Seasonal": "Winter Hours (October to May): Tuesday to Saturday 10:00AM - 5:00PM"
+        },
+        "admission_rates": {
+          "Adult": "CAD $15.00",
+          "Senior": "CAD $12.00",
+          "Student (with valid ID)": "CAD $10.00",
+          "Youth (13-17)": "CAD $8.00",
+          "Child (12 and under)": "Free",
+          "Family (2 adults + 2 youth)": "CAD $32.00",
+          "Indigenous Peoples": "Free",
+          "Gallery Members": "Free"
+        },
+        "notes": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.2531728,
+          49.263346
+        ]
+      },
+      "properties": {
+        "name": "Beaty Biodiversity Museum",
+        "address": "2212 Main Mall, University of British Columbia, Vancouver, BC V6T 1Z4",
+        "phone": "604-827-4955",
+        "email": "info@beatymuseum.ubc.ca",
+        "urllink": "https://beatymuseum.ubc.ca/",
+        "geo_point_2d": {
+          "lon": -123.2531728,
+          "lat": 49.263346
+        },
+        "hours": {
+          "Monday": "Closed",
+          "Tuesday": "10:00AM - 5:00PM",
+          "Wednesday": "10:00AM - 5:00PM",
+          "Thursday": "10:00AM - 5:00PM",
+          "Friday": "10:00AM - 5:00PM",
+          "Saturday": "10:00AM - 5:00PM",
+          "Sunday": "10:00AM - 5:00PM",
+          "Holidays_and_Seasonal": null
+        },
+        "admission_rates": {
+          "Adult (19+)": "CAD $18.00",
+          "Senior (65+)": "CAD $15.00",
+          "Student (19+ with ID)": "CAD $15.00",
+          "Child & Youth (6-18)": "CAD $10.00",
+          "Child (under 6)": "Free",
+          "Small Family (up to 1 adult & 2 children/youth)": "CAD $35.00",
+          "Large Family (up to 2 adults & 4 children/youth)": "CAD $55.00",
+          "Membership - Adult (19+)": "CAD $45.00",
+          "Membership - Senior / Student / Child & Youth": "CAD $35.00",
+          "Membership - Small Family": "CAD $60.00",
+          "Membership - Large Family": "CAD $90.00"
+        },
+        "notes": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1470179,
+          49.2762275
+        ]
+      },
+      "properties": {
+        "name": "H.R. MacMillan Space Centre",
+        "address": "1100 Chestnut Street, Vancouver, BC V6J 3J9 (Vanier Park)",
+        "phone": "604-738-7827",
+        "email": "info@spacecentre.ca",
+        "urllink": "https://www.spacecentre.ca/",
+        "geo_point_2d": {
+          "lon": -123.1470179,
+          "lat": 49.2762275
+        },
+        "hours": {
+          "Monday": "10:00AM - 3:00PM",
+          "Tuesday": "10:00AM - 3:00PM",
+          "Wednesday": "10:00AM - 3:00PM",
+          "Thursday": "10:00AM - 3:00PM",
+          "Friday": "10:00AM - 3:00PM",
+          "Saturday": "10:00AM - 5:00PM",
+          "Sunday": "10:00AM - 5:00PM",
+          "Holidays_and_Seasonal": null
+        },
+        "admission_rates": {
+          "Adult (19-54)": "CAD $27.50",
+          "Senior (55+)": "CAD $25.50",
+          "Youth (12-18)": "CAD $25.50",
+          "Child (5-11)": "CAD $19.60",
+          "Child (under 5)": "Free (with paying adult)",
+          "Family (up to 5, max 2 adults)": "CAD $85.35"
+        },
+        "notes": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1056557,
+          49.2807311
+        ]
+      },
+      "properties": {
+        "name": "Chinese Canadian Museum",
+        "address": "51 E Pender Street, Vancouver, BC V6A 1S9",
+        "phone": "604-262-0990",
+        "email": "info@chinesecanadianmuseum.ca",
+        "urllink": "https://www.chinesecanadianmuseum.ca/",
+        "geo_point_2d": {
+          "lon": -123.1056557,
+          "lat": 49.2807311
+        },
+        "hours": {
+          "Monday": "Closed",
+          "Tuesday": "Closed",
+          "Wednesday": "10:00AM - 5:00PM",
+          "Thursday": "10:00AM - 5:00PM",
+          "Friday": "10:00AM - 5:00PM",
+          "Saturday": "10:00AM - 5:00PM",
+          "Sunday": "10:00AM - 5:00PM",
+          "Holidays_and_Seasonal": null
+        },
+        "admission_rates": {
+          "General (19+)": "CAD $18.00",
+          "Senior (65+)": "CAD $14.00",
+          "Student (with valid ID)": "CAD $14.00",
+          "Youth (6-18)": "CAD $12.00",
+          "Child (5 and under)": "Free",
+          "Family (up to 2 adults + 3 youth)": "CAD $48.00"
+        },
+        "notes": null
+      }
+    }
+  ]
+}

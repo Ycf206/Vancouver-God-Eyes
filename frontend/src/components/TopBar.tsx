@@ -252,10 +252,11 @@ export default function TopBar() {
                       item.category === 'bikeways' ? 'bg-teal-950/80 text-teal-300 border-teal-800/60' :
                       item.category === 'traffic_crosswalks' ? 'bg-yellow-950/80 text-yellow-300 border-yellow-800/60' :
                       item.category === 'litter_containers' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
-                      item.category === 'wireless_facilities' ? 'bg-purple-950/80 text-purple-300 border-purple-800/60' :
                       item.category === 'public_art' ? 'bg-fuchsia-950/80 text-fuchsia-300 border-fuchsia-800/60 font-semibold' :
                       item.category === 'motorcycle_parking' ? 'bg-orange-950/80 text-orange-300 border-orange-800/60 font-semibold' :
                       item.category === 'community_centres' ? 'bg-violet-950/80 text-violet-300 border-violet-800/60' :
+                      item.category === 'museums' ? 'bg-slate-800 text-slate-200 border-slate-600 font-semibold' :
+                      item.category === 'garbage_collection' ? 'bg-orange-950/80 text-orange-300 border-orange-800/60' :
                       item.category === 'escooter' ? 'bg-lime-950/80 text-lime-300 border-lime-800/60' :
                       item.category === 'ev_charging' ? 'bg-emerald-950/80 text-emerald-300 border-emerald-800/60' :
                       item.category === 'schools' ? 'bg-blue-950/80 text-blue-300 border-blue-800/60' :

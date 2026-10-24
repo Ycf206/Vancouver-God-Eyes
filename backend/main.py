@@ -1506,18 +1506,19 @@ CURATED_STATIC_TYPES = (
     "bikeways", "hospitals", "police", "disaster_hubs", "car_sharing", "aed", 
     "local_area_boundary", "fuel", "ev_charging", "tesla", "marine_terminals", 
     "one_way_streets", "snow_removal_routes", "crime_areas", "water_distribution_mains", 
-    "sewer_mains", "traffic_speed_limits", "bike_racks", "postal_code_fsa", "wireless_facilities",
+    "sewer_mains", "traffic_speed_limits", "bike_racks", "postal_code_fsa",
     "traffic_crosswalks", "litter_containers", "food_banks", "recycling", "van_wifi",
     "road_closures", "road_construction", "street_lighting", "street_lighting_poles", "street_lighting_conduits", "traffic_conditions",
-    "beach_water_quality", "beach_water", "fire_hydrants", "zoning_districts", "traffic_alerts", "public_trees"
+    "beach_water_quality", "beach_water", "fire_hydrants", "zoning_districts", "traffic_alerts", "public_trees",
+    "museums", "garbage_collection"
 )
 POINT_CURATED_TYPES = (
     "hospitals", "police", "disaster_hubs", "car_sharing", "aed", 
-    "fuel", "ev_charging", "tesla", "marine_terminals", "bike_racks", "wireless_facilities",
+    "fuel", "ev_charging", "tesla", "marine_terminals", "bike_racks",
     "traffic_crosswalks", "litter_containers", "food_banks", "recycling", "van_wifi",
     "schools", "libraries", "food_vendors", "homeless_shelters", "parks", "parks_facilities",
     "community_gardens", "community_centres", "drinking_fountains", "public_washrooms", "fire_halls",
-    "traffic_cameras", "safety_cameras", "shared_bikes", "escooter"
+    "traffic_cameras", "safety_cameras", "shared_bikes", "escooter", "museums"
 )
 
 def sync_curated_point_types(db: Session):
@@ -1750,12 +1751,13 @@ FACILITY_SEARCH_CONFIGS = [
     ("marine_terminals", "港口碼頭", "⚓", "marineTerminals", 15),
     ("traffic_crosswalks", "行人穿越道", "🚶", "trafficCrosswalks", 17),
     ("traffic_speed_limits", "速限路段", "🚦", "trafficSpeedLimits", 15),
-    ("wireless_facilities", "無線設施", "📡", "wirelessFacilities", 16),
     ("litter_containers", "垃圾箱", "🗑️", "litterContainers", 17),
     ("beach_water_quality", "海灘水質", "🏖️", "beachWaterQuality", 15),
     ("beach_water", "海灘水質", "🏖️", "beachWaterQuality", 15),
     ("zoning_districts", "土地規劃", "🏛️", "zoningDistricts", 15),
     ("public_art", "公共藝術", "🎨", "publicArt", 16),
+    ("museums", "博物館", "🏛️", "museums", 16),
+    ("garbage_collection", "廢物回收", "🚛", "garbageCollection", 15),
     ("motorcycle_parking", "摩托車位", "🏍️", "motorcycleParking", 17),
 ]
 
@@ -3193,13 +3195,18 @@ def get_debug_gtfs_routes():
 from pydantic import BaseModel
 from typing import Optional
 import smtplib
+import base64
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email import encoders
 
 class IssueReportRequest(BaseModel):
     title: str
     details: str
     contact_email: Optional[str] = None
+    image_base64: Optional[str] = None
+    image_name: Optional[str] = None
 
 @app.post("/api/report-issue")
 def report_issue(payload: IssueReportRequest, db: Session = Depends(database.get_db)):
@@ -3231,7 +3238,9 @@ def report_issue(payload: IssueReportRequest, db: Session = Depends(database.get
                 "timestamp": now_utc.isoformat(),
                 "title": payload.title,
                 "details": payload.details,
-                "contact_email": payload.contact_email or ""
+                "contact_email": payload.contact_email or "",
+                "has_attachment": bool(payload.image_base64),
+                "attachment_name": payload.image_name or ""
             }, ensure_ascii=False) + "\n")
     except Exception as e:
         print(f"[Issue Report Backup File Error]: {e}")
@@ -3248,7 +3257,7 @@ def report_issue(payload: IssueReportRequest, db: Session = Depends(database.get
 
     if smtp_host and smtp_user and smtp_pass:
         try:
-            msg = MIMEMultipart("alternative")
+            msg = MIMEMultipart("mixed")
             msg["Subject"] = f"[上帝之眼問題回報] {payload.title}"
             msg["From"] = smtp_user
             msg["To"] = target_email
@@ -3258,6 +3267,7 @@ def report_issue(payload: IssueReportRequest, db: Session = Depends(database.get
 回報標題: {payload.title}
 送出時間: {now_utc.strftime('%Y-%m-%d %H:%M:%S UTC')}
 聯絡 Email: {payload.contact_email or '未提供'}
+圖片附件: {'有 (詳見附件: ' + (payload.image_name or 'attachment.png') + ')' if payload.image_base64 else '無'}
 
 問題詳情:
 ---------------------------------------------
@@ -3265,6 +3275,21 @@ def report_issue(payload: IssueReportRequest, db: Session = Depends(database.get
 =============================================
 """
             msg.attach(MIMEText(body_text, "plain", "utf-8"))
+
+            if payload.image_base64:
+                try:
+                    img_raw = payload.image_base64
+                    if "," in img_raw:
+                        img_raw = img_raw.split(",", 1)[1]
+                    img_bytes = base64.b64decode(img_raw)
+                    part = MIMEBase("application", "octet-stream")
+                    part.set_payload(img_bytes)
+                    encoders.encode_base64(part)
+                    filename = payload.image_name or "report_screenshot.png"
+                    part.add_header("Content-Disposition", f'attachment; filename="{filename}"')
+                    msg.attach(part)
+                except Exception as img_err:
+                    print(f"[Issue Report Image Attach Error]: {img_err}")
 
             if smtp_port == 465:
                 server = smtplib.SMTP_SSL(smtp_host, smtp_port, timeout=10)

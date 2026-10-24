@@ -1,0 +1,295 @@
+{
+  "type": "FeatureCollection",
+  "name": "Vancouver_Waste_Collection_Zones_With_Schedule",
+  "crs": {
+    "type": "name",
+    "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "zone_code": "NORTH-ORANGE",
+        "region": "North",
+        "zone_name": "West Point Grey / North Dunbar",
+        "color": "Orange",
+        "color_hex": "#F05A28",
+        "frequency_green_bin": "Weekly (Spring-Autumn) / Biweekly (Jan-Feb)",
+        "frequency_garbage": "Biweekly on scheduled weeks",
+        "sample_garbage_dates_2026_2027": [
+          "2026-04-13", "2026-04-27", "2026-05-11", "2026-05-26", "2026-06-09", "2026-06-23",
+          "2026-07-08", "2026-07-22", "2026-08-06", "2026-08-20", "2026-09-03", "2026-09-18",
+          "2026-10-05", "2026-10-20", "2026-11-03", "2026-11-18", "2026-12-02", "2026-12-16", "2026-12-31",
+          "2027-01-15", "2027-01-29", "2027-02-12", "2027-02-26", "2027-03-15", "2027-03-31", "2027-04-14", "2027-04-28", "2027-05-12", "2027-05-27"
+        ],
+        "extra_leaf_dates": ["2026-10-17", "2026-11-14", "2026-12-12", "2027-01-16"],
+        "christmas_tree_pickup": "Set out by 7am Monday, Jan 11, 2027",
+        "tree_chipping_event": "2027-01-09 to 2027-01-10",
+        "set_out_rules": "Set out bins by 7am. Keep 1m apart and 3.5m overhead clearance."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-123.220, 49.275],
+            [-123.185, 49.273],
+            [-123.168, 49.262],
+            [-123.155, 49.242],
+            [-123.185, 49.242],
+            [-123.220, 49.242],
+            [-123.220, 49.275]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "zone_code": "SOUTH-ORANGE",
+        "region": "South",
+        "zone_name": "South Dunbar / Southlands / Kerrisdale West",
+        "color": "Orange",
+        "color_hex": "#F05A28",
+        "frequency_green_bin": "Weekly (Spring-Autumn) / Biweekly (Jan-Feb)",
+        "frequency_garbage": "Biweekly on scheduled weeks (Alternates with North)",
+        "sample_garbage_dates_2026_2027": [
+          "2026-04-02", "2026-04-20", "2026-05-04", "2026-05-19", "2026-06-02", "2026-06-16", "2026-06-30",
+          "2026-07-15", "2026-07-29", "2026-08-13", "2026-08-27", "2026-09-11", "2026-09-25",
+          "2026-10-13", "2026-10-27", "2026-11-10", "2026-11-25", "2026-12-09", "2026-12-23",
+          "2027-01-08", "2027-01-22", "2027-02-05", "2027-02-19", "2027-03-08", "2027-03-22", "2027-04-07", "2027-04-21", "2027-05-05", "2027-05-19"
+        ],
+        "extra_leaf_dates": ["2026-10-31", "2026-11-28", "2026-12-26", "2027-01-30"],
+        "christmas_tree_pickup": "Set out by 7am Monday, Jan 11, 2027",
+        "tree_chipping_event": "2027-01-09 to 2027-01-10",
+        "set_out_rules": "Set out bins by 7am. Keep 1m apart and 3.5m overhead clearance."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-123.220, 49.242],
+            [-123.185, 49.242],
+            [-123.155, 49.242],
+            [-123.153, 49.215],
+            [-123.140, 49.202],
+            [-123.190, 49.218],
+            [-123.218, 49.235],
+            [-123.220, 49.242]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "zone_code": "NORTH-BLUE",
+        "region": "North",
+        "zone_name": "Kitsilano / Fairview / West End Downtown",
+        "color": "Blue",
+        "color_hex": "#3E8EDE",
+        "frequency_green_bin": "Weekly (Spring-Autumn) / Biweekly (Jan-Feb)",
+        "frequency_garbage": "Biweekly on scheduled weeks",
+        "sample_garbage_dates_2026_2027": [
+          "2026-04-07", "2026-04-21", "2026-05-05", "2026-05-20", "2026-06-03", "2026-06-17",
+          "2026-07-02", "2026-07-16", "2026-07-30", "2026-08-14", "2026-08-28", "2026-09-14", "2026-09-28",
+          "2026-10-14", "2026-10-28", "2026-11-12", "2026-11-26", "2026-12-10", "2026-12-24",
+          "2027-01-11", "2027-01-25", "2027-02-08", "2027-02-23", "2027-03-09", "2027-03-23", "2027-04-08", "2027-04-22", "2027-05-06", "2027-05-20"
+        ],
+        "extra_leaf_dates": ["2026-10-17", "2026-11-14", "2026-12-12", "2027-01-16"],
+        "christmas_tree_pickup": "Set out by 7am Monday, Jan 11, 2027",
+        "tree_chipping_event": "2027-01-09 to 2027-01-10",
+        "set_out_rules": "Set out bins by 7am. Keep 1m apart and 3.5m overhead clearance."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-123.168, 49.274],
+            [-123.115, 49.270],
+            [-123.107, 49.255],
+            [-123.107, 49.242],
+            [-123.168, 49.242],
+            [-123.168, 49.274]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "zone_code": "SOUTH-BLUE",
+        "region": "South",
+        "zone_name": "Shaughnessy / South Cambie / Kerrisdale / Marpole",
+        "color": "Blue",
+        "color_hex": "#3E8EDE",
+        "frequency_green_bin": "Weekly (Spring-Autumn) / Biweekly (Jan-Feb)",
+        "frequency_garbage": "Biweekly on scheduled weeks (Alternates with North)",
+        "sample_garbage_dates_2026_2027": [
+          "2026-04-14", "2026-04-28", "2026-05-12", "2026-05-27", "2026-06-10", "2026-06-24",
+          "2026-07-09", "2026-07-23", "2026-08-07", "2026-08-21", "2026-09-04", "2026-09-21",
+          "2026-10-06", "2026-10-21", "2026-11-04", "2026-11-19", "2026-12-03", "2026-12-17",
+          "2027-01-04", "2027-01-18", "2027-02-01", "2027-02-16", "2027-03-02", "2027-03-16", "2027-04-01", "2027-04-15", "2027-04-29", "2027-05-13", "2027-05-28"
+        ],
+        "extra_leaf_dates": ["2026-10-31", "2026-11-28", "2026-12-26", "2027-01-30"],
+        "christmas_tree_pickup": "Set out by 7am Monday, Jan 11, 2027",
+        "tree_chipping_event": "2027-01-09 to 2027-01-10",
+        "set_out_rules": "Set out bins by 7am. Keep 1m apart and 3.5m overhead clearance."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-123.168, 49.242],
+            [-123.107, 49.242],
+            [-123.110, 49.202],
+            [-123.140, 49.202],
+            [-123.153, 49.215],
+            [-123.155, 49.242],
+            [-123.168, 49.242]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "zone_code": "NORTH-GREEN",
+        "region": "North",
+        "zone_name": "Mount Pleasant / South Main / Grandview North",
+        "color": "Green",
+        "color_hex": "#76BC43",
+        "frequency_green_bin": "Weekly (Spring-Autumn) / Biweekly (Jan-Feb)",
+        "frequency_garbage": "Biweekly on scheduled weeks",
+        "sample_garbage_dates_2026_2027": [
+          "2026-04-08", "2026-04-22", "2026-05-06", "2026-05-21", "2026-06-04", "2026-06-18",
+          "2026-07-03", "2026-07-17", "2026-07-31", "2026-08-17", "2026-08-31", "2026-09-15", "2026-09-29",
+          "2026-10-15", "2026-10-29", "2026-11-13", "2026-11-27", "2026-12-11", "2026-12-28",
+          "2027-01-12", "2027-01-26", "2027-02-09", "2027-02-24", "2027-03-10", "2027-03-24", "2027-04-09", "2027-04-23", "2027-05-07", "2027-05-21"
+        ],
+        "extra_leaf_dates": ["2026-10-17", "2026-11-14", "2026-12-12", "2027-01-16"],
+        "christmas_tree_pickup": "Set out by 7am Monday, Jan 11, 2027",
+        "tree_chipping_event": "2027-01-09 to 2027-01-10",
+        "set_out_rules": "Set out bins by 7am. Keep 1m apart and 3.5m overhead clearance."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-123.107, 49.265],
+            [-123.078, 49.265],
+            [-123.071, 49.250],
+            [-123.071, 49.238],
+            [-123.107, 49.238],
+            [-123.107, 49.265]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "zone_code": "SOUTH-GREEN",
+        "region": "South",
+        "zone_name": "Riley Park / Sunset / Oakridge / Fraser South",
+        "color": "Green",
+        "color_hex": "#76BC43",
+        "frequency_green_bin": "Weekly (Spring-Autumn) / Biweekly (Jan-Feb)",
+        "frequency_garbage": "Biweekly on scheduled weeks (Alternates with North)",
+        "sample_garbage_dates_2026_2027": [
+          "2026-04-15", "2026-04-29", "2026-05-13", "2026-05-28", "2026-06-11", "2026-06-25",
+          "2026-07-10", "2026-07-24", "2026-08-10", "2026-08-24", "2026-09-08", "2026-09-22",
+          "2026-10-07", "2026-10-22", "2026-11-05", "2026-11-20", "2026-12-04", "2026-12-18",
+          "2027-01-05", "2027-01-19", "2027-02-02", "2027-02-17", "2027-03-03", "2027-03-17", "2027-04-02", "2027-04-16", "2027-04-30", "2027-05-14", "2027-05-31"
+        ],
+        "extra_leaf_dates": ["2026-10-31", "2026-11-28", "2026-12-26", "2027-01-30"],
+        "christmas_tree_pickup": "Set out by 7am Monday, Jan 11, 2027",
+        "tree_chipping_event": "2027-01-09 to 2027-01-10",
+        "set_out_rules": "Set out bins by 7am. Keep 1m apart and 3.5m overhead clearance."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-123.107, 49.238],
+            [-123.071, 49.238],
+            [-123.072, 49.202],
+            [-123.110, 49.202],
+            [-123.107, 49.238]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "zone_code": "NORTH-PURPLE",
+        "region": "North",
+        "zone_name": "Downtown Eastside / Grandview-Woodland / Hastings-Sunrise",
+        "color": "Purple",
+        "color_hex": "#9E7BB5",
+        "frequency_green_bin": "Weekly (Spring-Autumn) / Biweekly (Jan-Feb)",
+        "frequency_garbage": "Biweekly on scheduled weeks",
+        "sample_garbage_dates_2026_2027": [
+          "2026-04-09", "2026-04-23", "2026-05-07", "2026-05-22", "2026-06-05", "2026-06-19",
+          "2026-07-06", "2026-07-20", "2026-08-04", "2026-08-18", "2026-09-01", "2026-09-16",
+          "2026-10-01", "2026-10-16", "2026-10-30", "2026-11-16", "2026-11-30", "2026-12-14", "2026-12-29",
+          "2027-01-13", "2027-01-27", "2027-02-10", "2027-02-25", "2027-03-11", "2027-03-25", "2027-04-12", "2027-04-26", "2027-05-10", "2027-05-25"
+        ],
+        "extra_leaf_dates": ["2026-10-17", "2026-11-14", "2026-12-12", "2027-01-16"],
+        "christmas_tree_pickup": "Set out by 7am Monday, Jan 11, 2027",
+        "tree_chipping_event": "2027-01-09 to 2027-01-10",
+        "set_out_rules": "Set out bins by 7am. Keep 1m apart and 3.5m overhead clearance."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-123.140, 49.290],
+            [-123.024, 49.290],
+            [-123.024, 49.255],
+            [-123.056, 49.255],
+            [-123.071, 49.265],
+            [-123.107, 49.265],
+            [-123.107, 49.278],
+            [-123.140, 49.290]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "zone_code": "SOUTH-YELLOW",
+        "region": "South",
+        "zone_name": "Victoria-Fraserview / Killarney / Champlain Heights",
+        "color": "Yellow",
+        "color_hex": "#FDC12A",
+        "frequency_green_bin": "Weekly (Spring-Autumn) / Biweekly (Jan-Feb)",
+        "frequency_garbage": "Biweekly on scheduled weeks (Alternates with North)",
+        "sample_garbage_dates_2026_2027": [
+          "2026-04-01", "2026-04-17", "2026-05-01", "2026-05-15", "2026-06-01", "2026-06-15", "2026-06-29",
+          "2026-07-14", "2026-07-28", "2026-08-12", "2026-08-26", "2026-09-10", "2026-09-24",
+          "2026-10-09", "2026-10-26", "2026-11-09", "2026-11-24", "2026-12-08", "2026-12-22",
+          "2027-01-07", "2027-01-21", "2027-02-04", "2027-02-18", "2027-03-05", "2027-03-19", "2027-04-06", "2027-04-20", "2027-05-04", "2027-05-18"
+        ],
+        "extra_leaf_dates": ["2026-10-31", "2026-11-28", "2026-12-26", "2027-01-30"],
+        "christmas_tree_pickup": "Set out by 7am Monday, Jan 11, 2027",
+        "tree_chipping_event": "2027-01-09 to 2027-01-10",
+        "set_out_rules": "Set out bins by 7am. Keep 1m apart and 3.5m overhead clearance."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-123.071, 49.250],
+            [-123.056, 49.255],
+            [-123.024, 49.255],
+            [-123.024, 49.202],
+            [-123.072, 49.202],
+            [-123.071, 49.250]
+          ]
+        ]
+      }
+    }
+  ]
+}

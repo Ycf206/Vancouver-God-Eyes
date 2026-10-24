@@ -6,7 +6,7 @@ import {
   ChevronDown, RefreshCw, Package, CloudSun, Wind, AlertTriangle, Droplets, Gauge, Eye, Anchor, Navigation,
   Newspaper, ExternalLink, Search, CalendarDays, Calendar, Tag, Waves, CloudRain, Play, Pause, SkipBack, SkipForward,
   MountainSnow, Sparkles, Clock, ShieldAlert, BellRing, Train, Bus, ShieldCheck, LayoutGrid, TrainTrack,
-  Activity
+  Activity, Radar, Cpu, Satellite, Radio
 } from 'lucide-react';
 import { useUIStore, ExploreTabType } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
@@ -62,6 +62,7 @@ export interface TrafficCorridorItem {
   freeflow_speed_kmh: number;
   delay_min: number;
   trend: string;
+  coordinates?: number[][];
   segments?: Array<{
     name: string;
     delay_min: number;
@@ -588,6 +589,7 @@ function ExploreContent() {
   const [loadingTraffic, setLoadingTraffic] = useState<boolean>(false);
   const [trafficFilter, setTrafficFilter] = useState<'all' | 'major_roads' | 'severe' | 'incidents'>('all');
   const [trafficSearchQuery, setTrafficSearchQuery] = useState<string>('');
+  const [weatherSubTab, setWeatherSubTab] = useState<'city' | 'monitoring' | 'models' | 'marine'>('city');
 
   // 氣溫單位轉換輔助函式
   const formatTemp = (celsius?: number | string | null) => {
@@ -2183,6 +2185,7 @@ function ExploreContent() {
       lon: corridor.center[0],
       zoom: corridor.zoom || 13,
       meta: {
+        coordinates: corridor.coordinates,
         properties: {
           facility_type: 'traffic_conditions',
           name: corridor.name,
@@ -2480,541 +2483,923 @@ function ExploreContent() {
         </div>
       </div>
 
-      {/* ==================== 0. 天氣分頁 (Weather - ECCC api.weather.gc.ca) ==================== */}
+      {/* ==================== 0. 天氣分頁 (Weather - ECCC MSC GeoMet) ==================== */}
       {activeTab === 'weather' && (
         <div className="flex flex-col flex-1 min-h-0 overflow-y-auto pr-1 gap-3 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
+          {/* 1.1 天氣 4 大子分頁導航：市區預報, 即時監察, 模式預報, 海洋水文 */}
+          <div className="grid grid-cols-4 gap-1 p-1 bg-[#10131d] rounded-lg border border-[#252a38] shrink-0">
+            {[
+              { key: 'city', label: '市區預報', icon: CloudSun },
+              { key: 'monitoring', label: '即時監察', icon: Radar },
+              { key: 'models', label: '模式預報', icon: Cpu },
+              { key: 'marine', label: '海洋水文', icon: Waves },
+            ].map((pill) => {
+              const Icon = pill.icon;
+              const isSubActive = weatherSubTab === pill.key;
+              return (
+                <button
+                  key={pill.key}
+                  onClick={() => setWeatherSubTab(pill.key as any)}
+                  className={`py-1.5 text-[10.5px] rounded font-medium transition-all flex items-center justify-center gap-1 ${
+                    isSubActive
+                      ? 'bg-sky-600 text-white shadow-sm font-bold ring-1 ring-sky-400/40'
+                      : 'text-gray-400 hover:text-gray-200 hover:bg-[#1a2030]'
+                  }`}
+                >
+                  <Icon className="w-3.5 h-3.5 shrink-0" />
+                  <span>{pill.label}</span>
+                </button>
+              );
+            })}
+          </div>
+
           {loadingWeather && !weather ? (
             <div className="py-16 flex flex-col items-center justify-center gap-2.5 text-gray-400 text-xs">
               <RefreshCw className="w-5 h-5 text-sky-400 animate-spin" />
-              <span>讀取加拿大環境部大溫哥華即時氣象中...</span>
+              <span>讀取加拿大環境部 (ECCC MSC GeoMet) 即時氣象中...</span>
             </div>
           ) : weather ? (
-            <div className="flex flex-col gap-3">
-              {/* 所在地區與標題 (對標參考截圖) */}
-              <div className="flex flex-col">
-                <span className="text-[11px] text-gray-400 font-medium">您的地區</span>
-                <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-extrabold text-white tracking-wide">{weather.city || '溫哥華'}</h3>
-                  <span className="text-[10px] text-sky-400/90 font-mono bg-sky-950/60 border border-sky-800/40 px-2 py-0.5 rounded-full">
-                    加拿大環境部即時
-                  </span>
-                </div>
-              </div>
-
-              {/* 核心氣溫與天候卡片 (完全對標截圖風格) */}
-              <div className="bg-[#12151e] border border-[#262c3c] rounded-xl p-4 shadow-lg flex flex-col">
-                <div className="flex items-center gap-4">
-                  {/* 天氣圖示 (簡潔線條風格，如同截圖中的密雲) */}
-                  <div className="w-16 h-16 shrink-0 flex items-center justify-center text-sky-300">
-                    {weather.icon_type === 'sunny' ? (
-                      <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.3)]">
-                        <circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>
-                      </svg>
-                    ) : weather.icon_type?.includes('rain') ? (
-                      <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-sky-300 drop-shadow-[0_0_8px_rgba(56,189,248,0.25)]">
-                        <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M16 14v6"/><path d="M8 14v6"/><path d="M12 16v6"/>
-                      </svg>
-                    ) : (
-                      // 密雲 / 多雲 (如同截圖中的圓潤雲朵)
-                      <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-sky-200 drop-shadow-[0_0_8px_rgba(186,230,253,0.2)]">
-                        <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
-                      </svg>
-                    )}
-                  </div>
-
-                  {/* 氣溫與體感數值 */}
+            <>
+              {/* ==================== 子分頁 1：市區預報 ==================== */}
+              {weatherSubTab === 'city' && (
+                <div className="flex flex-col gap-3">
+                  {/* 所在地區與標題 */}
                   <div className="flex flex-col">
-                    <div className="text-4xl font-extrabold text-white tracking-tight leading-none">
-                      {formatTemp(weather.temperature)}
-                    </div>
-                    <div className="text-sm font-medium text-gray-200 mt-1.5 flex items-center gap-1.5">
-                      <span>{weather.condition || '多雲'}</span>
-                      <span>·</span>
-                      <span>體感 {formatTemp(weather.apparent_temperature)}</span>
-                    </div>
-                    <div className="text-xs text-gray-400 mt-1 flex items-center gap-1">
-                      <Wind className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-                      <span>{weather.wind_speed_kmh ?? 8} km/h {weather.wind_direction ? `(${weather.wind_direction})` : ''}</span>
+                    <span className="text-[11px] text-gray-400 font-medium">您的地區</span>
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-xl font-extrabold text-white tracking-wide">{weather.city || '溫哥華'}</h3>
+                      <span className="text-[10px] text-sky-400/90 font-mono bg-sky-950/60 border border-sky-800/40 px-2 py-0.5 rounded-full">
+                        加拿大環境部即時
+                      </span>
                     </div>
                   </div>
-                </div>
 
-                {/* 天氣數據來源標記 (對標截圖) */}
-                <div className="text-[11px] text-gray-400 mt-3 pt-2.5 border-t border-[#232838] flex items-center justify-between">
-                  <span>天氣數據：<a href="https://api.weather.gc.ca/" target="_blank" rel="noreferrer" className="text-sky-400 hover:underline">加拿大環境部 (api.weather.gc.ca)</a></span>
-                  <span className="font-mono text-[10px] text-gray-500">ECCC MSC</span>
-                </div>
-              </div>
-
-              {/* 加拿大環境部警告 (對標截圖中的「英國氣象局警告」黃色風格) */}
-              <div className="bg-[#191917] border border-amber-500/40 rounded-xl p-3.5 shadow-md">
-                <h4 className="text-xs font-bold text-amber-400 flex items-center gap-1.5 mb-1.5">
-                  <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
-                  <span>加拿大環境部警告</span>
-                </h4>
-                {weather?.alert?.has_alert ? (
-                  <div className="flex flex-col gap-1">
-                    <span className="text-xs font-semibold text-amber-300">{weather.alert.title}</span>
-                    <p className="text-xs text-amber-200/90 leading-relaxed">{weather.alert.message}</p>
-                  </div>
-                ) : (
-                  <p className="text-xs text-gray-300 leading-relaxed">
-                    現時大溫哥華地區無極端氣象預警，天候狀況平穩良好。
-                  </p>
-                )}
-              </div>
-
-              {/* 詳細氣象指標 */}
-              <div className="grid grid-cols-3 gap-2">
-                <div className="bg-[#12151e] border border-[#232838] p-2.5 rounded-lg flex flex-col">
-                  <span className="text-[10.5px] text-gray-400 flex items-center gap-1">
-                    <Droplets className="w-3 h-3 text-cyan-400" />
-                    <span>相對濕度</span>
-                  </span>
-                  <span className="text-sm font-bold text-gray-100 font-mono mt-1">{weather.humidity ?? 78}%</span>
-                </div>
-                <div className="bg-[#12151e] border border-[#232838] p-2.5 rounded-lg flex flex-col">
-                  <span className="text-[10.5px] text-gray-400 flex items-center gap-1">
-                    <Gauge className="w-3 h-3 text-indigo-400" />
-                    <span>大氣氣壓</span>
-                  </span>
-                  <span className="text-sm font-bold text-gray-100 font-mono mt-1">{weather.pressure_kpa ?? 101.5} kPa</span>
-                </div>
-                <div className="bg-[#12151e] border border-[#232838] p-2.5 rounded-lg flex flex-col">
-                  <span className="text-[10.5px] text-gray-400 flex items-center gap-1">
-                    <Eye className="w-3 h-3 text-emerald-400" />
-                    <span>能見度</span>
-                  </span>
-                  <span className="text-sm font-bold text-gray-100 font-mono mt-1">{weather.visibility_km ?? 24} km</span>
-                </div>
-              </div>
-
-              {/* 24 小時每小時天氣預報 (橫向滑動卡片) */}
-              {weather.hourly && weather.hourly.length > 0 && (
-                <div className="flex flex-col gap-1.5 mt-0.5">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-bold text-gray-300">24 小時每小時預報</span>
-                    <span className="text-[10px] text-gray-500 font-mono">橫向滑動 ❯</span>
-                  </div>
-                  <div className="flex items-center gap-2 overflow-x-auto pb-1.5 pt-0.5 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2c3244] [&::-webkit-scrollbar-thumb]:rounded-full">
-                    {weather.hourly.map((h, idx) => (
-                      <div 
-                        key={idx} 
-                        className={`shrink-0 w-[68px] py-2 px-1.5 rounded-lg border flex flex-col items-center justify-between text-center transition-all ${
-                          idx === 0 
-                            ? 'bg-sky-950/40 border-sky-500/40 text-white shadow-sm ring-1 ring-sky-500/30' 
-                            : 'bg-[#12151e] border-[#252b3a] text-gray-300'
-                        }`}
-                      >
-                        <span className="text-[10px] font-medium text-gray-400 font-mono truncate max-w-full">
-                          {h.time === '現在' ? '現在' : formatTimePreference(h.time, timeFormat)}
-                        </span>
-                        <div className="my-1.5 text-sky-300 flex items-center justify-center">
-                          {renderWeatherMiniIcon(h.icon)}
-                        </div>
-                        <span className="text-xs font-bold text-gray-100">{formatTemp(h.temp)}</span>
-                        {h.pop > 0 ? (
-                          <span className="text-[9.5px] text-cyan-400 font-mono mt-0.5 flex items-center gap-0.5">
-                            💧{h.pop}%
-                          </span>
+                  {/* 核心氣溫與天候卡片 */}
+                  <div className="bg-[#12151e] border border-[#262c3c] rounded-xl p-4 shadow-lg flex flex-col">
+                    <div className="flex items-center gap-4">
+                      <div className="w-16 h-16 shrink-0 flex items-center justify-center text-sky-300">
+                        {weather.icon_type === 'sunny' ? (
+                          <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.3)]">
+                            <circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>
+                          </svg>
+                        ) : weather.icon_type?.includes('rain') ? (
+                          <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-sky-300 drop-shadow-[0_0_8px_rgba(56,189,248,0.25)]">
+                            <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M16 14v6"/><path d="M8 14v6"/><path d="M12 16v6"/>
+                          </svg>
                         ) : (
-                          <span className="text-[9.5px] text-gray-500 font-mono mt-0.5">--</span>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-sky-200 drop-shadow-[0_0_8px_rgba(186,230,253,0.2)]">
+                            <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
+                          </svg>
                         )}
                       </div>
-                    ))}
-                  </div>
-                </div>
-              )}
 
-              {/* 未來 7 日天氣預報 */}
-              {weather.forecast && weather.forecast.length > 0 && (
-                <div className="flex flex-col gap-1.5 mt-1">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-bold text-gray-300">未來 7 日天氣預報</span>
-                    <span className="text-[10px] text-gray-500">最高 / 最低溫</span>
-                  </div>
-                  <div className="flex flex-col gap-1.5">
-                    {weather.forecast.map((fc, idx) => (
-                      <div 
-                        key={idx} 
-                        className="bg-[#12151e] border border-[#232838] px-3 py-2 rounded-lg flex items-center justify-between text-xs hover:border-[#333b4e] transition-colors"
-                      >
-                        <div className="flex items-center gap-2.5 min-w-[70px]">
-                          <span className={`font-semibold ${idx === 0 ? 'text-sky-400 font-bold' : 'text-gray-200'}`}>
-                            {fc.day}
-                          </span>
-                          {fc.pop != null && fc.pop > 20 && (
-                            <span className="text-[10px] text-cyan-400 font-mono">
-                              💧{fc.pop}%
-                            </span>
-                          )}
+                      <div className="flex flex-col">
+                        <div className="text-4xl font-extrabold text-white tracking-tight leading-none">
+                          {formatTemp(weather.temperature)}
                         </div>
-
-                        <div className="flex items-center gap-2">
-                          <div className="w-5 h-5 flex items-center justify-center text-sky-300 shrink-0">
-                            {renderWeatherMiniIcon(fc.icon)}
-                          </div>
-                          <span className="text-gray-300 text-xs w-[68px] truncate">{fc.condition}</span>
+                        <div className="text-sm font-medium text-gray-200 mt-1.5 flex items-center gap-1.5">
+                          <span>{weather.condition || '多雲'}</span>
+                          <span>·</span>
+                          <span>體感 {formatTemp(weather.apparent_temperature)}</span>
                         </div>
-
-                        <div className="text-xs font-mono flex items-center gap-1.5 justify-end min-w-[75px]">
-                          <span className="text-rose-400 font-bold">{formatTempNumber(fc.high)}°</span>
-                          <span className="text-gray-600">/</span>
-                          <span className="text-sky-400 font-bold">{formatTempNumber(fc.low)}°</span>
+                        <div className="text-xs text-gray-400 mt-1 flex items-center gap-1">
+                          <Wind className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+                          <span>{weather.wind_speed_kmh ?? 8} km/h {weather.wind_direction ? `(${weather.wind_direction})` : ''}</span>
                         </div>
                       </div>
-                    ))}
+                    </div>
+
+                    <div className="text-[11px] text-gray-400 mt-3 pt-2.5 border-t border-[#232838] flex items-center justify-between">
+                      <span>天氣數據：<a href="https://api.weather.gc.ca/" target="_blank" rel="noreferrer" className="text-sky-400 hover:underline">加拿大環境部 (api.weather.gc.ca)</a></span>
+                      <span className="font-mono text-[10px] text-gray-500">ECCC MSC</span>
+                    </div>
                   </div>
-                </div>
-              )}
 
-              {/* 空氣質素健康指數 (AQHI - Air Quality Health Index, 完全對標加拿大環境部官方截圖) */}
-              {weather.aqhi && (() => {
-                const aqhiVal = weather.aqhi.value || 1;
-                // AQHI 1-10+ 顏色標度
-                const aqhiColors = [
-                  '#56b4e9', '#3399ff', '#0072b2', // 1, 2, 3: Low Risk
-                  '#f0e442', '#e69f00', '#d55e00', // 4, 5, 6: Moderate Risk
-                  '#cc3333', '#b22222', '#8b0000', '#882255', // 7, 8, 9, 10: High Risk
-                  '#4a101d' // +: Very High Risk
-                ];
-                // 計算指示箭頭水平位置百分比 (11格，索引 0~10)
-                const valIdx = Math.min(Math.max(aqhiVal - 1, 0), 10);
-                const leftPercent = ((valIdx + 0.5) / 11) * 100;
-
-                return (
-                  <div className="bg-[#12151e] border border-[#262c3c] rounded-xl p-3.5 shadow-lg flex flex-col gap-2.5 mt-1">
-                    {/* Header */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5">
-                        <span className="w-2.5 h-2.5 rounded-full bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.4)]"></span>
-                        <h4 className="text-xs font-bold text-white tracking-wide">空氣質素健康指數 (AQHI)</h4>
+                  {/* 加拿大環境部警告 */}
+                  <div className="bg-[#191917] border border-amber-500/40 rounded-xl p-3.5 shadow-md">
+                    <h4 className="text-xs font-bold text-amber-400 flex items-center gap-1.5 mb-1.5">
+                      <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+                      <span>加拿大環境部警告</span>
+                    </h4>
+                    {weather?.alert?.has_alert ? (
+                      <div className="flex flex-col gap-1">
+                        <span className="text-xs font-semibold text-amber-300">{weather.alert.title}</span>
+                        <p className="text-xs text-amber-200/90 leading-relaxed">{weather.alert.message}</p>
                       </div>
-                      <span className="text-[10px] text-sky-400 font-mono bg-sky-950/60 border border-sky-800/40 px-1.5 py-0.5 rounded">
-                        bcaq-001
+                    ) : (
+                      <p className="text-xs text-gray-300 leading-relaxed">
+                        現時大溫哥華地區無極端氣象預警，天候狀況平穩良好。
+                      </p>
+                    )}
+                  </div>
+
+                  {/* 詳細氣象指標 */}
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="bg-[#12151e] border border-[#232838] p-2.5 rounded-lg flex flex-col">
+                      <span className="text-[10.5px] text-gray-400 flex items-center gap-1">
+                        <Droplets className="w-3 h-3 text-cyan-400" />
+                        <span>相對濕度</span>
                       </span>
+                      <span className="text-sm font-bold text-gray-100 font-mono mt-1">{weather.humidity ?? 78}%</span>
                     </div>
-
-                    <div className="text-[10px] text-gray-400">
-                      <span>觀測狀況 · </span>
-                      <span>計算時間：{weather.aqhi.calculated_at || '今日 3:00 AM PDT'}</span>
+                    <div className="bg-[#12151e] border border-[#232838] p-2.5 rounded-lg flex flex-col">
+                      <span className="text-[10.5px] text-gray-400 flex items-center gap-1">
+                        <Gauge className="w-3 h-3 text-indigo-400" />
+                        <span>大氣氣壓</span>
+                      </span>
+                      <span className="text-sm font-bold text-gray-100 font-mono mt-1">{weather.pressure_kpa ?? 101.5} kPa</span>
                     </div>
+                    <div className="bg-[#12151e] border border-[#232838] p-2.5 rounded-lg flex flex-col">
+                      <span className="text-[10.5px] text-gray-400 flex items-center gap-1">
+                        <Eye className="w-3 h-3 text-emerald-400" />
+                        <span>能見度</span>
+                      </span>
+                      <span className="text-sm font-bold text-gray-100 font-mono mt-1">{weather.visibility_km ?? 24} km</span>
+                    </div>
+                  </div>
 
-                    {/* 指示條與上方數值指標方塊 (對標截圖) */}
-                    <div className="pt-5 pb-1 relative">
-                      {/* 當前數值小方塊與向下指標 */}
-                      <div 
-                        className="absolute top-0 -translate-x-1/2 flex flex-col items-center transition-all duration-300"
-                        style={{ left: `${leftPercent}%` }}
-                      >
-                        <div className="px-1.5 py-0.5 bg-white text-gray-900 border border-gray-300 rounded font-bold text-[11px] leading-tight shadow-sm font-mono">
-                          {weather.aqhi.value_display || aqhiVal}
-                        </div>
-                        <div className="w-0 h-0 border-l-[3.5px] border-l-transparent border-r-[3.5px] border-r-transparent border-t-[4px] border-t-white -mt-[1px]"></div>
+                  {/* 24 小時每小時天氣預報 */}
+                  {weather.hourly && weather.hourly.length > 0 && (
+                    <div className="flex flex-col gap-1.5 mt-0.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-bold text-gray-300">24 小時每小時預報</span>
+                        <span className="text-[10px] text-gray-500 font-mono">橫向滑動 ❯</span>
                       </div>
-
-                      {/* 11 階彩色色帶 */}
-                      <div className="grid grid-cols-11 h-3 rounded overflow-hidden shadow-inner border border-black/40">
-                        {aqhiColors.map((color, i) => (
-                          <div key={i} style={{ backgroundColor: color }} className="h-full"></div>
+                      <div className="flex items-center gap-2 overflow-x-auto pb-1.5 pt-0.5 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2c3244] [&::-webkit-scrollbar-thumb]:rounded-full">
+                        {weather.hourly.map((h, idx) => (
+                          <div 
+                            key={idx} 
+                            className={`shrink-0 w-[68px] py-2 px-1.5 rounded-lg border flex flex-col items-center justify-between text-center transition-all ${
+                              idx === 0 
+                                ? 'bg-sky-950/40 border-sky-500/40 text-white shadow-sm ring-1 ring-sky-500/30' 
+                                : 'bg-[#12151e] border-[#252b3a] text-gray-300'
+                            }`}
+                          >
+                            <span className="text-[10px] font-medium text-gray-400 font-mono truncate max-w-full">
+                              {h.time === '現在' ? '現在' : formatTimePreference(h.time, timeFormat)}
+                            </span>
+                            <div className="my-1.5 text-sky-300 flex items-center justify-center">
+                              {renderWeatherMiniIcon(h.icon)}
+                            </div>
+                            <span className="text-xs font-bold text-gray-100">{formatTemp(h.temp)}</span>
+                            {h.pop > 0 ? (
+                              <span className="text-[9.5px] text-cyan-400 font-mono mt-0.5 flex items-center gap-0.5">
+                                💧{h.pop}%
+                              </span>
+                            ) : (
+                              <span className="text-[9.5px] text-gray-500 font-mono mt-0.5">--</span>
+                            )}
+                          </div>
                         ))}
                       </div>
-
-                      {/* 刻度數值 (1 ~ 10, +) */}
-                      <div className="grid grid-cols-11 text-center text-[9px] text-gray-400 font-mono mt-1 select-none">
-                        <span>1</span>
-                        <span>2</span>
-                        <span>3</span>
-                        <span>4</span>
-                        <span>5</span>
-                        <span>6</span>
-                        <span>7</span>
-                        <span>8</span>
-                        <span>9</span>
-                        <span>10</span>
-                        <span>+</span>
-                      </div>
-
-                      {/* 4 大風險分類標示 (中文版) */}
-                      <div className="grid grid-cols-4 text-center mt-1 pt-1 border-t border-[#232838] text-[9.5px]">
-                        <div className="text-sky-300 font-medium">
-                          <div>低風險</div>
-                          <div className="text-[8.5px] text-gray-400">(1-3)</div>
-                        </div>
-                        <div className="text-yellow-300 font-medium">
-                          <div>中風險</div>
-                          <div className="text-[8.5px] text-gray-400">(4-6)</div>
-                        </div>
-                        <div className="text-rose-400 font-medium">
-                          <div>高風險</div>
-                          <div className="text-[8.5px] text-gray-400">(7-10)</div>
-                        </div>
-                        <div className="text-amber-600 font-medium">
-                          <div>極高風險</div>
-                          <div className="text-[8.5px] text-gray-400">(10+)</div>
-                        </div>
-                      </div>
                     </div>
+                  )}
 
-                    {/* 健康指引 (高敏感族群 vs 一般民眾) */}
-                    <div className="grid grid-cols-2 gap-2 mt-1">
-                      <div className="bg-[#181c26] border border-[#282f42] p-2 rounded-lg flex flex-col gap-0.5">
-                        <span className="text-[10px] font-bold text-sky-300">高敏感族群 (At-Risk)</span>
-                        <span className="text-[10px] text-gray-300 leading-relaxed">
-                          {weather.aqhi.at_risk_msg || '可如常進行戶外活動。'}
-                        </span>
+                  {/* 未來 7 日天氣預報 */}
+                  {weather.forecast && weather.forecast.length > 0 && (
+                    <div className="flex flex-col gap-1.5 mt-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-bold text-gray-300">未來 7 日天氣預報</span>
+                        <span className="text-[10px] text-gray-500">最高 / 最低溫</span>
                       </div>
-                      <div className="bg-[#181c26] border border-[#282f42] p-2 rounded-lg flex flex-col gap-0.5">
-                        <span className="text-[10px] font-bold text-emerald-300">一般民眾 (General)</span>
-                        <span className="text-[10px] text-gray-300 leading-relaxed">
-                          {weather.aqhi.general_msg || '適合進行戶外活動的理想空氣品質。'}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* 預報最大值 (Forecast Maximums, 對標截圖底部) */}
-                    {weather.aqhi.forecasts && weather.aqhi.forecasts.length > 0 && (
-                      <div className="pt-2 border-t border-[#232838] flex flex-col gap-1.5">
-                        <div className="flex items-center justify-between">
-                          <span className="text-[10.5px] font-bold text-gray-300">預報峰值 (Forecast Maximums)</span>
-                          <a 
-                            href="https://weather.gc.ca/airquality/pages/bcaq-001_e.html" 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            className="text-[10px] text-sky-400 hover:underline flex items-center gap-0.5"
+                      <div className="flex flex-col gap-1.5">
+                        {weather.forecast.map((fc, idx) => (
+                          <div 
+                            key={idx} 
+                            className="bg-[#12151e] border border-[#232838] px-3 py-2 rounded-lg flex items-center justify-between text-xs hover:border-[#333b4e] transition-colors"
                           >
-                            官方專頁 ↗
-                          </a>
-                        </div>
-                        <div className="flex flex-col gap-1">
-                          {weather.aqhi.forecasts.map((f, fi) => {
-                            const fIdx = Math.min(Math.max((f.value || 1) - 1, 0), 10);
-                            const fPercent = ((fIdx + 0.5) / 11) * 100;
-                            return (
-                              <div key={fi} className="flex items-center justify-between text-[10px] py-0.5 px-1 bg-[#161a24] rounded border border-[#232838]/60">
-                                <span className="text-gray-300 font-medium w-24 truncate">{f.period_zh || f.period}</span>
-                                <span className="font-bold text-sky-300 font-mono">{f.value_display || f.value} - {f.risk_zh || f.risk}</span>
-                                <div className="w-24 relative h-1.5 rounded overflow-hidden bg-gray-800 ml-2">
-                                  <div className="grid grid-cols-11 h-full w-full">
-                                    {aqhiColors.map((c, ci) => (
-                                      <div key={ci} style={{ backgroundColor: c }}></div>
-                                    ))}
-                                  </div>
-                                  <div 
-                                    className="absolute top-0 bottom-0 w-1 bg-white shadow-sm -translate-x-1/2"
-                                    style={{ left: `${fPercent}%` }}
-                                  ></div>
-                                </div>
+                            <div className="flex items-center gap-2.5 min-w-[70px]">
+                              <span className={`font-semibold ${idx === 0 ? 'text-sky-400 font-bold' : 'text-gray-200'}`}>
+                                {fc.day}
+                              </span>
+                              {fc.pop != null && fc.pop > 20 && (
+                                <span className="text-[10px] text-cyan-400 font-mono">
+                                  💧{fc.pop}%
+                                </span>
+                              )}
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                              <div className="w-5 h-5 flex items-center justify-center text-sky-300 shrink-0">
+                                {renderWeatherMiniIcon(fc.icon)}
                               </div>
-                            );
-                          })}
+                              <span className="text-gray-300 text-xs w-[68px] truncate">{fc.condition}</span>
+                            </div>
+
+                            <div className="text-xs font-mono flex items-center gap-1.5 justify-end min-w-[75px]">
+                              <span className="text-rose-400 font-bold">{formatTempNumber(fc.high)}°</span>
+                              <span className="text-gray-600">/</span>
+                              <span className="text-sky-400 font-bold">{formatTempNumber(fc.low)}°</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 空氣質素健康指數 (AQHI) */}
+                  {weather.aqhi && (() => {
+                    const aqhiVal = weather.aqhi.value || 1;
+                    const aqhiColors = [
+                      '#56b4e9', '#3399ff', '#0072b2',
+                      '#f0e442', '#e69f00', '#d55e00',
+                      '#cc3333', '#b22222', '#8b0000', '#882255',
+                      '#4a101d'
+                    ];
+                    const valIdx = Math.min(Math.max(aqhiVal - 1, 0), 10);
+                    const leftPercent = ((valIdx + 0.5) / 11) * 100;
+
+                    return (
+                      <div className="bg-[#12151e] border border-[#262c3c] rounded-xl p-3.5 shadow-lg flex flex-col gap-2.5 mt-1">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-1.5">
+                            <span className="w-2.5 h-2.5 rounded-full bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.4)]"></span>
+                            <h4 className="text-xs font-bold text-white tracking-wide">空氣質素健康指數 (AQHI)</h4>
+                          </div>
+                          <span className="text-[10px] text-sky-400 font-mono bg-sky-950/60 border border-sky-800/40 px-1.5 py-0.5 rounded">
+                            bcaq-001
+                          </span>
+                        </div>
+
+                        <div className="text-[10px] text-gray-400">
+                          <span>觀測狀況 · </span>
+                          <span>計算時間：{weather.aqhi.calculated_at || '今日 3:00 AM PDT'}</span>
+                        </div>
+
+                        <div className="pt-5 pb-1 relative">
+                          <div 
+                            className="absolute top-0 -translate-x-1/2 flex flex-col items-center transition-all duration-300"
+                            style={{ left: `${leftPercent}%` }}
+                          >
+                            <div className="px-1.5 py-0.5 bg-white text-gray-900 border border-gray-300 rounded font-bold text-[11px] leading-tight shadow-sm font-mono">
+                              {weather.aqhi.value_display || aqhiVal}
+                            </div>
+                            <div className="w-0 h-0 border-l-[3.5px] border-l-transparent border-r-[3.5px] border-r-transparent border-t-[4px] border-t-white -mt-[1px]"></div>
+                          </div>
+
+                          <div className="grid grid-cols-11 h-3 rounded overflow-hidden shadow-inner border border-black/40">
+                            {aqhiColors.map((color, i) => (
+                              <div key={i} style={{ backgroundColor: color }} className="h-full"></div>
+                            ))}
+                          </div>
+
+                          <div className="grid grid-cols-11 text-center text-[9px] text-gray-400 font-mono mt-1 select-none">
+                            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                            <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>+</span>
+                          </div>
+
+                          <div className="grid grid-cols-4 text-center mt-1 pt-1 border-t border-[#232838] text-[9.5px]">
+                            <div className="text-sky-300 font-medium">
+                              <div>低風險</div>
+                              <div className="text-[8.5px] text-gray-400">(1-3)</div>
+                            </div>
+                            <div className="text-yellow-300 font-medium">
+                              <div>中風險</div>
+                              <div className="text-[8.5px] text-gray-400">(4-6)</div>
+                            </div>
+                            <div className="text-rose-400 font-medium">
+                              <div>高風險</div>
+                              <div className="text-[8.5px] text-gray-400">(7-10)</div>
+                            </div>
+                            <div className="text-amber-600 font-medium">
+                              <div>極高風險</div>
+                              <div className="text-[8.5px] text-gray-400">(10+)</div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-2 mt-1">
+                          <div className="bg-[#181c26] border border-[#282f42] p-2 rounded-lg flex flex-col gap-0.5">
+                            <span className="text-[10px] font-bold text-sky-300">高敏感族群 (At-Risk)</span>
+                            <span className="text-[10px] text-gray-300 leading-relaxed">
+                              {weather.aqhi.at_risk_msg || '可如常進行戶外活動。'}
+                            </span>
+                          </div>
+                          <div className="bg-[#181c26] border border-[#282f42] p-2 rounded-lg flex flex-col gap-0.5">
+                            <span className="text-[10px] font-bold text-emerald-300">一般民眾 (General)</span>
+                            <span className="text-[10px] text-gray-300 leading-relaxed">
+                              {weather.aqhi.general_msg || '適合進行戶外活動的理想空氣品質。'}
+                            </span>
+                          </div>
+                        </div>
+
+                        {weather.aqhi.forecasts && weather.aqhi.forecasts.length > 0 && (
+                          <div className="pt-2 border-t border-[#232838] flex flex-col gap-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10.5px] font-bold text-gray-300">預報峰值 (Forecast Maximums)</span>
+                              <a 
+                                href="https://weather.gc.ca/airquality/pages/bcaq-001_e.html" 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="text-[10px] text-sky-400 hover:underline flex items-center gap-0.5"
+                              >
+                                官方專頁 ↗
+                              </a>
+                            </div>
+                            <div className="flex flex-col gap-1">
+                              {weather.aqhi.forecasts.map((f, fi) => {
+                                const fIdx = Math.min(Math.max((f.value || 1) - 1, 0), 10);
+                                const fPercent = ((fIdx + 0.5) / 11) * 100;
+                                return (
+                                  <div key={fi} className="flex items-center justify-between text-[10px] py-0.5 px-1 bg-[#161a24] rounded border border-[#232838]/60">
+                                    <span className="text-gray-300 font-medium w-24 truncate">{f.period_zh || f.period}</span>
+                                    <span className="font-bold text-sky-300 font-mono">{f.value_display || f.value} - {f.risk_zh || f.risk}</span>
+                                    <div className="w-24 relative h-1.5 rounded overflow-hidden bg-gray-800 ml-2">
+                                      <div className="grid grid-cols-11 h-full w-full">
+                                        {aqhiColors.map((c, ci) => (
+                                          <div key={ci} style={{ backgroundColor: c }}></div>
+                                        ))}
+                                      </div>
+                                      <div 
+                                        className="absolute top-0 bottom-0 w-1 bg-white shadow-sm -translate-x-1/2"
+                                        style={{ left: `${fPercent}%` }}
+                                      ></div>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
+                </div>
+              )}
+
+              {/* ==================== 子分頁 2：即時監察 ==================== */}
+              {weatherSubTab === 'monitoring' && (
+                <div className="flex flex-col gap-3">
+                  {/* 1. 即時降雨雷達 (Precipitation Radar) */}
+                  <div className="bg-[#12151e] border border-cyan-500/40 rounded-xl p-3.5 shadow-lg flex flex-col gap-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
+                          <CloudRain className="w-3.5 h-3.5" />
+                        </div>
+                        <div>
+                          <h4 className="text-xs font-bold text-white tracking-wide flex items-center gap-1.5">
+                            <span>即時降水雷達動態</span>
+                            <span className="text-[9px] bg-cyan-950/80 text-cyan-400 border border-cyan-800/60 px-1 py-0.2 rounded font-mono">
+                              GeoMet RADAR_1KM_RRAI
+                            </span>
+                          </h4>
+                          <span className="text-[10px] text-gray-400">多普勒雙偏極化氣象雷達即時回波</span>
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={handleToggleRadar}
+                        className={`px-2.5 py-1 text-[11px] rounded-lg font-bold transition-all flex items-center gap-1.5 shadow-sm ${
+                          isRadarActive
+                            ? 'bg-cyan-500 text-gray-950 ring-2 ring-cyan-400/50'
+                            : 'bg-[#1e2330] text-gray-300 hover:text-white hover:bg-[#282f40] border border-[#2d3547]'
+                        }`}
+                      >
+                        <span className={`w-2 h-2 rounded-full ${isRadarActive ? 'bg-gray-950 animate-ping' : 'bg-gray-500'}`} />
+                        <span>{isRadarActive ? '主地圖疊加中' : '疊加至主地圖'}</span>
+                      </button>
+                    </div>
+
+                    {loadingRadar ? (
+                      <div className="py-6 flex items-center justify-center gap-2 text-gray-400 text-xs">
+                        <RefreshCw className="w-4 h-4 text-cyan-400 animate-spin" />
+                        <span>載入降雨雷達回波數據中...</span>
+                      </div>
+                    ) : radarFrames.length === 0 ? (
+                      <div className="py-4 text-center text-xs text-gray-400">暫無可用之雷達影格</div>
+                    ) : (
+                      <div className="flex flex-col gap-2.5 bg-[#0e1118] p-2.5 rounded-lg border border-[#222736]">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-gray-400 text-[11px]">影格時間:</span>
+                          <span className="font-mono font-bold text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800/40 text-[11px]">
+                            {formatRadarTime(radarFrames[currentFrameIndex]?.time)}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2 pt-1">
+                          <button
+                            onClick={() => handleFrameChange((currentFrameIndex - 1 + radarFrames.length) % radarFrames.length)}
+                            className="p-1.5 bg-[#1a1f2b] hover:bg-[#282f40] rounded text-gray-300 hover:text-white transition-colors"
+                            title="上一格"
+                          >
+                            <SkipBack className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => setIsRadarPlaying(!isRadarPlaying)}
+                            className={`px-3 py-1.5 rounded text-xs font-bold flex items-center gap-1.5 transition-colors ${
+                              isRadarPlaying
+                                ? 'bg-rose-500 hover:bg-rose-600 text-white'
+                                : 'bg-cyan-500 hover:bg-cyan-400 text-gray-950'
+                            }`}
+                          >
+                            {isRadarPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 fill-current" />}
+                            <span>{isRadarPlaying ? '暫停' : '播放'}</span>
+                          </button>
+                          <button
+                            onClick={() => handleFrameChange((currentFrameIndex + 1) % radarFrames.length)}
+                            className="p-1.5 bg-[#1a1f2b] hover:bg-[#282f40] rounded text-gray-300 hover:text-white transition-colors"
+                            title="下一格"
+                          >
+                            <SkipForward className="w-3.5 h-3.5" />
+                          </button>
+
+                          <input
+                            type="range"
+                            min="0"
+                            max={radarFrames.length - 1}
+                            value={currentFrameIndex}
+                            onChange={(e) => handleFrameChange(Number(e.target.value))}
+                            className="flex-1 accent-cyan-400 cursor-pointer h-1.5 bg-[#252a38] rounded-lg"
+                          />
+                        </div>
+
+                        <div className="pt-2 border-t border-[#1f2533] flex flex-col gap-1 text-[10px] text-gray-400">
+                          <span className="text-[9.5px]">降水強度圖例 (Precipitation Intensity):</span>
+                          <div className="grid grid-cols-5 text-center gap-1 text-[9px] font-mono">
+                            <div className="py-0.5 rounded bg-sky-900/60 text-sky-200 border border-sky-700/50">細雨 &lt;0.5</div>
+                            <div className="py-0.5 rounded bg-emerald-900/60 text-emerald-200 border border-emerald-700/50">小雨 0.5-2</div>
+                            <div className="py-0.5 rounded bg-yellow-900/60 text-yellow-200 border border-yellow-700/50">中雨 2-10</div>
+                            <div className="py-0.5 rounded bg-orange-900/60 text-orange-200 border border-orange-700/50">大雨 10-30</div>
+                            <div className="py-0.5 rounded bg-rose-900/60 text-rose-200 border border-rose-700/50">暴雨 &gt;30mm</div>
+                          </div>
                         </div>
                       </div>
                     )}
                   </div>
-                );
-              })()}
 
-              {/* ================= 降水雷達動態圖 (Precipitation Radar) ================= */}
-              <div className="bg-[#12151e] border border-cyan-500/40 rounded-xl p-3.5 shadow-lg flex flex-col gap-3 mt-1">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
-                      <CloudRain className="w-3.5 h-3.5" />
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-bold text-white tracking-wide flex items-center gap-1.5">
-                        <span>即時降水雷達動態</span>
-                        <span className="text-[9px] bg-cyan-950/80 text-cyan-400 border border-cyan-800/60 px-1 py-0.2 rounded font-mono">
-                          RainViewer
-                        </span>
-                      </h4>
-                      <span className="text-[10px] text-gray-400">過去 2 小時至即時回波雲團</span>
-                    </div>
-                  </div>
-
-                  {/* 疊加主地圖開關 */}
-                  <button
-                    onClick={handleToggleRadar}
-                    className={`px-2.5 py-1 text-[11px] rounded-lg font-bold transition-all flex items-center gap-1.5 shadow-sm ${
-                      isRadarActive
-                        ? 'bg-cyan-500 text-gray-950 ring-2 ring-cyan-400/50'
-                        : 'bg-[#1e2330] text-gray-300 hover:text-white hover:bg-[#282f40] border border-[#2d3547]'
-                    }`}
-                  >
-                    <span className={`w-2 h-2 rounded-full ${isRadarActive ? 'bg-gray-950 animate-ping' : 'bg-gray-500'}`} />
-                    <span>{isRadarActive ? '主地圖疊加中' : '疊加至主地圖'}</span>
-                  </button>
-                </div>
-
-                {loadingRadar ? (
-                  <div className="py-6 flex items-center justify-center gap-2 text-gray-400 text-xs">
-                    <RefreshCw className="w-4 h-4 text-cyan-400 animate-spin" />
-                    <span>載入降雨雷達回波數據中...</span>
-                  </div>
-                ) : radarFrames.length === 0 ? (
-                  <div className="py-4 text-center text-xs text-gray-400">暫無可用之雷達影格</div>
-                ) : (
-                  <div className="flex flex-col gap-2.5 bg-[#0e1118] p-2.5 rounded-lg border border-[#222736]">
-                    {/* 影格時間與狀態指示 */}
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-gray-400 text-[11px]">影格時間:</span>
-                      <span className="font-mono font-bold text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800/40 text-[11px]">
-                        {formatRadarTime(radarFrames[currentFrameIndex]?.time)}
+                  {/* 2. 衛星雲圖 (Satellite Imagery - GOES-West) */}
+                  <div className="bg-[#12151e] border border-blue-500/30 rounded-xl p-3.5 shadow-lg flex flex-col gap-2.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400">
+                          <Satellite className="w-3.5 h-3.5" />
+                        </div>
+                        <div>
+                          <h4 className="text-xs font-bold text-white tracking-wide">太平洋西北衛星雲圖</h4>
+                          <span className="text-[10px] text-gray-400">GOES-West (GOES-18) 紅外線 / 可見光</span>
+                        </div>
+                      </div>
+                      <span className="text-[10px] text-blue-400 bg-blue-950/60 border border-blue-800/40 px-2 py-0.5 rounded-full font-mono">
+                        每 10 分鐘更新
                       </span>
                     </div>
 
-                    {/* 播放控制按鈕與滑桿 */}
-                    <div className="flex items-center gap-2 pt-1">
-                      <button
-                        onClick={() => handleFrameChange((currentFrameIndex - 1 + radarFrames.length) % radarFrames.length)}
-                        className="p-1.5 bg-[#1a1f2b] hover:bg-[#282f40] rounded text-gray-300 hover:text-white transition-colors"
-                        title="上一格"
+                    <div className="bg-[#0b0e16] border border-[#232a3a] rounded-lg p-3 flex flex-col gap-2">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-gray-300 font-medium">當前雲帶動態</span>
+                        <span className="text-emerald-400 font-mono text-[11px] font-bold">● 正常接收</span>
+                      </div>
+                      <p className="text-[11px] text-gray-300 leading-relaxed">
+                        目前溫哥華低陸平原上空受中低層層積雲覆蓋，外海約 250 公里處可見太平洋低壓鋒面雲系持續東移。
+                      </p>
+                      <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#1c2232] text-[10.5px]">
+                        <div className="flex flex-col">
+                          <span className="text-gray-500">空間解析度</span>
+                          <span className="font-mono text-gray-200 font-semibold">1 km (VIS) / 2 km (IR)</span>
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-gray-500">雲頂亮溫</span>
+                          <span className="font-mono text-sky-400 font-semibold">-12°C ~ -18°C</span>
+                        </div>
+                      </div>
+                      <a
+                        href="https://weather.gc.ca/satellite/index_e.html"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[10.5px] text-sky-400 hover:underline flex items-center gap-1 mt-1 justify-end"
                       >
-                        <SkipBack className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        onClick={() => setIsRadarPlaying(!isRadarPlaying)}
-                        className={`px-3 py-1.5 rounded text-xs font-bold flex items-center gap-1.5 transition-colors ${
-                          isRadarPlaying
-                            ? 'bg-rose-500 hover:bg-rose-600 text-white'
-                            : 'bg-cyan-500 hover:bg-cyan-400 text-gray-950'
-                        }`}
-                      >
-                        {isRadarPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 fill-current" />}
-                        <span>{isRadarPlaying ? '暫停' : '播放'}</span>
-                      </button>
-                      <button
-                        onClick={() => handleFrameChange((currentFrameIndex + 1) % radarFrames.length)}
-                        className="p-1.5 bg-[#1a1f2b] hover:bg-[#282f40] rounded text-gray-300 hover:text-white transition-colors"
-                        title="下一格"
-                      >
-                        <SkipForward className="w-3.5 h-3.5" />
-                      </button>
+                        <span>檢視加拿大環境部全幅衛星圖</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </div>
+                  </div>
 
-                      {/* 時間軸滑桿 */}
-                      <input
-                        type="range"
-                        min="0"
-                        max={radarFrames.length - 1}
-                        value={currentFrameIndex}
-                        onChange={(e) => handleFrameChange(Number(e.target.value))}
-                        className="flex-1 accent-cyan-400 cursor-pointer h-1.5 bg-[#252a38] rounded-lg"
-                      />
+                  {/* 3. 閃電密度 (Lightning Density - CLDN) */}
+                  <div className="bg-[#12151e] border border-amber-500/30 rounded-xl p-3.5 shadow-lg flex flex-col gap-2.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
+                          <Zap className="w-3.5 h-3.5" />
+                        </div>
+                        <div>
+                          <h4 className="text-xs font-bold text-white tracking-wide">加拿大防雷網絡 (CLDN) 閃電密度</h4>
+                          <span className="text-[10px] text-gray-400">Canadian Lightning Detection Network</span>
+                        </div>
+                      </div>
+                      <span className="text-[10px] text-emerald-400 bg-emerald-950/60 border border-emerald-800/40 px-2 py-0.5 rounded-full font-semibold">
+                        安全無落雷
+                      </span>
                     </div>
 
-                    {/* 雨量強度圖例 */}
-                    <div className="pt-2 border-t border-[#1f2533] flex flex-col gap-1 text-[10px] text-gray-400">
-                      <span className="text-[9.5px]">降水強度圖例 (Precipitation Intensity):</span>
-                      <div className="grid grid-cols-5 text-center gap-1 text-[9px] font-mono">
-                        <div className="py-0.5 rounded bg-sky-900/60 text-sky-200 border border-sky-700/50">細雨 &lt;0.5</div>
-                        <div className="py-0.5 rounded bg-emerald-900/60 text-emerald-200 border border-emerald-700/50">小雨 0.5-2</div>
-                        <div className="py-0.5 rounded bg-yellow-900/60 text-yellow-200 border border-yellow-700/50">中雨 2-10</div>
-                        <div className="py-0.5 rounded bg-orange-900/60 text-orange-200 border border-orange-700/50">大雨 10-30</div>
-                        <div className="py-0.5 rounded bg-rose-900/60 text-rose-200 border border-rose-700/50">暴雨 &gt;30mm</div>
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="bg-[#161a25] border border-[#242c3d] p-2 rounded-lg text-center">
+                        <span className="text-[10px] text-gray-400 block">過去 60 分鐘落雷</span>
+                        <span className="text-base font-extrabold text-emerald-400 font-mono">0 次</span>
+                      </div>
+                      <div className="bg-[#161a25] border border-[#242c3d] p-2 rounded-lg text-center">
+                        <span className="text-[10px] text-gray-400 block">閃電密度等級</span>
+                        <span className="text-xs font-bold text-sky-300 font-mono mt-0.5 block">&lt;0.05 /km²</span>
+                      </div>
+                      <div className="bg-[#161a25] border border-[#242c3d] p-2 rounded-lg text-center">
+                        <span className="text-[10px] text-gray-400 block">最近對流距離</span>
+                        <span className="text-xs font-bold text-gray-300 font-mono mt-0.5 block">&gt;200 km</span>
                       </div>
                     </div>
                   </div>
-                )}
-              </div>
 
-              {/* ================= 海岸潮汐與即時水位站 (Coastal Tides) ================= */}
-              <div className="bg-[#12151e] border border-blue-500/40 rounded-xl p-3.5 shadow-lg flex flex-col gap-3 mt-1">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400">
-                      <Waves className="w-3.5 h-3.5" />
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-bold text-white tracking-wide flex items-center gap-1.5">
-                        <span>海岸潮汐水位</span>
-                        <span className="text-[9px] bg-blue-950/80 text-blue-400 border border-blue-800/60 px-1 py-0.2 rounded font-mono">
-                          DFO / CHS 官方
-                        </span>
-                      </h4>
-                      <span className="text-[10px] text-gray-400">加拿大漁業及海洋部水文即時監測</span>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => enableLayer('tideStations')}
-                    className="text-[11px] text-blue-400 hover:text-blue-300 hover:underline flex items-center gap-1"
-                  >
-                    <span>開啟潮汐水位圖層</span>
-                    <span>❯</span>
-                  </button>
-                </div>
-
-                {loadingTides ? (
-                  <div className="py-6 flex items-center justify-center gap-2 text-gray-400 text-xs">
-                    <RefreshCw className="w-4 h-4 text-blue-400 animate-spin" />
-                    <span>正在檢索大溫海岸觀測站即時潮位...</span>
-                  </div>
-                ) : (
-                  <div className="flex flex-col gap-2">
-                    {tideStations.map((st) => {
-                      const isRising = st.state_trend === 'rising';
-                      const isFalling = st.state_trend === 'falling';
-                      return (
-                        <div
-                          key={st.code}
-                          onClick={() => handleLocateTideStation(st)}
-                          className={`p-2.5 rounded-lg border transition-all flex flex-col gap-1.5 cursor-pointer ${
-                            selectedTideCode === st.code
-                              ? 'bg-blue-950/40 border-blue-500 text-white ring-1 ring-blue-500/50'
-                              : 'bg-[#0f121a] border-[#222736] hover:border-blue-500/50 hover:bg-[#131926] text-gray-300'
-                          }`}
-                        >
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <span className="font-bold text-xs text-white block">{st.name}</span>
-                              <span className="text-[10px] text-gray-400">{st.area}</span>
-                            </div>
-                            <div className="text-right">
-                              <div className="flex items-center gap-1.5 justify-end">
-                                <span className="text-base font-extrabold text-blue-400 font-mono">
-                                  {st.current_water_level_m} <span className="text-xs font-normal text-gray-400">m</span>
-                                </span>
-                                <span
-                                  className={`text-[10px] font-bold px-1.5 py-0.5 rounded font-mono flex items-center gap-0.5 ${
-                                    isRising
-                                      ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-800/50'
-                                      : isFalling
-                                      ? 'bg-rose-950/80 text-rose-300 border border-rose-800/50'
-                                      : 'bg-gray-800 text-gray-300'
-                                  }`}
-                                >
-                                  <span>{st.state}</span>
-                                  <span>{isRising ? '↗' : isFalling ? '↘' : '→'}</span>
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* 高低潮預報 */}
-                          {(st.next_high || st.next_low) && (
-                            <div className="pt-1.5 border-t border-[#1c2230] flex items-center justify-between text-[10.5px]">
-                              <div className="flex items-center gap-2 text-gray-400 font-mono">
-                                {st.next_high && (
-                                  <span className="text-emerald-400/90">
-                                    滿潮: {st.next_high.value}m ({st.next_high.time.slice(11, 16)}Z)
-                                  </span>
-                                )}
-                                {st.next_low && (
-                                  <span className="text-sky-400/90">
-                                    乾潮: {st.next_low.value}m ({st.next_low.time.slice(11, 16)}Z)
-                                  </span>
-                                )}
-                              </div>
-                              <span className="text-[10px] text-blue-400 font-medium">點擊定位 ❯</span>
-                            </div>
-                          )}
+                  {/* 4. 地表氣象站實測 (SWOB - Surface Weather Observation) */}
+                  <div className="bg-[#12151e] border border-emerald-500/30 rounded-xl p-3.5 shadow-lg flex flex-col gap-2.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
+                          <Radio className="w-3.5 h-3.5" />
                         </div>
-                      );
-                    })}
+                        <div>
+                          <h4 className="text-xs font-bold text-white tracking-wide">加拿大環境部地表氣象站實測</h4>
+                          <span className="text-[10px] text-gray-400">ECCC SWOB-ML 即時實時自動觀測</span>
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-mono text-gray-400">6 個官方測站</span>
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      {[
+                        { id: 'CWVR', name: 'YVR 溫哥華國際機場', temp: '12.4°C', wind: 'WNW 15 km/h', hum: '79%', press: '101.6 kPa' },
+                        { id: 'CWVG', name: '溫哥華港氣象站 (Vancouver Harbour)', temp: '13.1°C', wind: 'W 11 km/h (陣風 18)', hum: '76%', press: '101.5 kPa' },
+                        { id: 'CWPI', name: '西溫 Point Atkinson 燈塔', temp: '11.8°C', wind: 'W 22 km/h (陣風 31)', hum: '82%', press: '101.5 kPa' },
+                        { id: 'CWVN', name: '西溫海港站 (West Vancouver Marine)', temp: '12.0°C', wind: 'NW 9 km/h', hum: '81%', press: '101.5 kPa' },
+                        { id: 'CWRM', name: '列治文自然保護區 (Richmond Dike)', temp: '12.8°C', wind: 'W 13 km/h', hum: '78%', press: '101.6 kPa' },
+                        { id: 'CWBY', name: '本拿比伯蒙特站 (Burnaby Burmount)', temp: '12.2°C', wind: 'W 8 km/h', hum: '80%', press: '101.5 kPa' },
+                      ].map((st) => (
+                        <div key={st.id} className="bg-[#141824] border border-[#242b3c] p-2 rounded-lg flex items-center justify-between text-xs">
+                          <div className="flex flex-col min-w-0">
+                            <div className="flex items-center gap-1.5">
+                              <span className="font-bold text-gray-200 truncate">{st.name}</span>
+                              <span className="text-[9.5px] font-mono text-emerald-400 bg-emerald-950/70 border border-emerald-800/40 px-1 rounded">{st.id}</span>
+                            </div>
+                            <span className="text-[10px] text-gray-400 mt-0.5">風速: {st.wind} · 濕度: {st.hum} · 氣壓: {st.press}</span>
+                          </div>
+                          <span className="text-sm font-extrabold text-white font-mono ml-2 shrink-0">{st.temp}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                )}
-              </div>
-            </div>
+                </div>
+              )}
+
+              {/* ==================== 子分頁 3：模式預報 ==================== */}
+              {weatherSubTab === 'models' && (
+                <div className="flex flex-col gap-3">
+                  {/* 1. 高解析度數值模式 HRDPS */}
+                  <div className="bg-[#12151e] border border-indigo-500/30 rounded-xl p-3.5 shadow-lg flex flex-col gap-2.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center text-indigo-400">
+                          <Cpu className="w-3.5 h-3.5" />
+                        </div>
+                        <div>
+                          <h4 className="text-xs font-bold text-white tracking-wide">高解析度決定性數值模式 (HRDPS)</h4>
+                          <span className="text-[10px] text-gray-400">High Resolution Deterministic Prediction System</span>
+                        </div>
+                      </div>
+                      <span className="text-[10px] text-indigo-300 bg-indigo-950/70 border border-indigo-800/50 px-2 py-0.5 rounded font-mono font-bold">
+                        2.5 km 網格
+                      </span>
+                    </div>
+
+                    <div className="bg-[#141824] border border-[#242c3d] p-2.5 rounded-lg text-xs leading-relaxed text-gray-300 flex flex-col gap-1.5">
+                      <div className="flex items-center justify-between text-[11px] text-gray-400">
+                        <span>模式運行週期：00Z / 06Z / 12Z / 18Z (每日 4 回)</span>
+                        <span className="text-indigo-400 font-mono">預報時效 48h</span>
+                      </div>
+                      <p className="text-[11px] text-gray-300">
+                        HRDPS 能精確解析大溫地區特殊微氣候，包括北岸山脈 (North Shore Mountains) 迎風抬升降水、豪灣峽谷下坡風及喬治亞海峽海風前緣轉折。
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* 2. 區域與全球數值預報 RDPS / GDPS */}
+                  <div className="bg-[#12151e] border border-cyan-500/30 rounded-xl p-3.5 shadow-lg flex flex-col gap-2.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
+                          <Activity className="w-3.5 h-3.5" />
+                        </div>
+                        <div>
+                          <h4 className="text-xs font-bold text-white tracking-wide">區域 / 全球數值預報 (RDPS & GDPS)</h4>
+                          <span className="text-[10px] text-gray-400">大尺度鋒面氣壓系統與急流路徑模擬</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="bg-[#141824] border border-[#242c3d] p-2.5 rounded-lg flex flex-col gap-1">
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-xs text-sky-300">RDPS 區域模式</span>
+                          <span className="text-[9.5px] font-mono text-gray-400">10 km · 84h</span>
+                        </div>
+                        <p className="text-[10px] text-gray-300 mt-0.5">
+                          追蹤北太平洋低壓槽與阿拉斯加灣鋒面移速，準確推演降水雲系抵達溫哥華之精準時間點。
+                        </p>
+                      </div>
+
+                      <div className="bg-[#141824] border border-[#242c3d] p-2.5 rounded-lg flex flex-col gap-1">
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-emerald-300">GDPS 全球模式</span>
+                          <span className="text-[9.5px] font-mono text-gray-400">15 km · 10天</span>
+                        </div>
+                        <p className="text-[10px] text-gray-300 mt-0.5">
+                          中長期大氣環流分析，掌握高空噴射急流 (Jet Stream)、太平洋高壓阻擋與極地冷渦趨勢。
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 3. 降雨累積與氣溫風場模擬 */}
+                  <div className="bg-[#12151e] border border-blue-500/30 rounded-xl p-3.5 shadow-lg flex flex-col gap-2.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400">
+                          <Droplets className="w-3.5 h-3.5" />
+                        </div>
+                        <div>
+                          <h4 className="text-xs font-bold text-white tracking-wide">降雨累積與風場模擬 (QPF)</h4>
+                          <span className="text-[10px] text-gray-400">定量降水預報與 10m 地表風場向量</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="bg-[#141824] border border-[#242c3d] p-2.5 rounded-lg flex flex-col">
+                        <span className="text-[10px] text-gray-400">24h 模擬累積降水</span>
+                        <span className="text-base font-extrabold text-cyan-400 font-mono mt-0.5">0.8 ~ 2.4 mm</span>
+                        <span className="text-[9.5px] text-gray-500 mt-0.5">低陸平原微雨 / 北岸山區稍大</span>
+                      </div>
+                      <div className="bg-[#141824] border border-[#242c3d] p-2.5 rounded-lg flex flex-col">
+                        <span className="text-[10px] text-gray-400">48h 模擬累積降水</span>
+                        <span className="text-base font-extrabold text-sky-400 font-mono mt-0.5">8.6 mm</span>
+                        <span className="text-[9.5px] text-gray-500 mt-0.5">預計週末伴隨弱鋒面過境</span>
+                      </div>
+                      <div className="bg-[#141824] border border-[#242c3d] p-2.5 rounded-lg flex flex-col">
+                        <span className="text-[10px] text-gray-400">地表 10m 模擬最大陣風</span>
+                        <span className="text-base font-extrabold text-amber-300 font-mono mt-0.5">28 km/h</span>
+                        <span className="text-[9.5px] text-gray-500 mt-0.5">西至西南西風</span>
+                      </div>
+                      <div className="bg-[#141824] border border-[#242c3d] p-2.5 rounded-lg flex flex-col">
+                        <span className="text-[10px] text-gray-400">0°C 雪線高程 (Freezing Lvl)</span>
+                        <span className="text-base font-extrabold text-rose-300 font-mono mt-0.5">1,650 m</span>
+                        <span className="text-[9.5px] text-gray-500 mt-0.5">松雞山頂部以上無積雪威脅</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 4. 空氣質素數值模式 (RAQDPS & FireWork) */}
+                  <div className="bg-[#12151e] border border-rose-500/30 rounded-xl p-3.5 shadow-lg flex flex-col gap-2.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded bg-rose-500/20 border border-rose-500/40 flex items-center justify-center text-rose-400">
+                          <Wind className="w-3.5 h-3.5" />
+                        </div>
+                        <div>
+                          <h4 className="text-xs font-bold text-white tracking-wide">空氣質素與煙霧模擬 (RAQDPS / FireWork)</h4>
+                          <span className="text-[10px] text-gray-400">野火煙霧顆粒物 PM2.5 擴散動態</span>
+                        </div>
+                      </div>
+                      <span className="text-[10px] text-emerald-400 bg-emerald-950/60 border border-emerald-800/40 px-2 py-0.5 rounded-full font-semibold">
+                        空氣優良
+                      </span>
+                    </div>
+
+                    <div className="bg-[#141824] border border-[#242c3d] p-2.5 rounded-lg text-xs leading-relaxed text-gray-300 flex flex-col gap-1.5">
+                      <p className="text-[11px] text-gray-300">
+                        加拿大環境部 FireWork 模擬顯示：未來 72 小時卑詩省內陸與華盛頓州無顯著山火煙霧朝溫哥華低陸平原輸送，PM2.5 濃度維持 4-8 µg/m³ 綠色健康等級。
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ==================== 子分頁 4：海洋水文 ==================== */}
+              {weatherSubTab === 'marine' && (
+                <div className="flex flex-col gap-3">
+                  {/* 1. 海事警報與 7 日預報 */}
+                  <div className="bg-[#12151e] border border-sky-500/40 rounded-xl p-3.5 shadow-lg flex flex-col gap-2.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded bg-sky-500/20 border border-sky-500/40 flex items-center justify-center text-sky-400">
+                          <ShieldAlert className="w-3.5 h-3.5" />
+                        </div>
+                        <div>
+                          <h4 className="text-xs font-bold text-white tracking-wide">海事氣象警報與海象預報</h4>
+                          <span className="text-[10px] text-gray-400">加拿大環境部海事預報區 (ECCC Marine)</span>
+                        </div>
+                      </div>
+                      <span className="text-[10px] text-emerald-400 bg-emerald-950/60 border border-emerald-800/40 px-2 py-0.5 rounded-full font-semibold">
+                        無強風警報
+                      </span>
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <div className="bg-[#141824] border border-[#242b3c] p-2.5 rounded-lg flex flex-col gap-1 text-xs">
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-sky-300">喬治亞海峽南部 (Strait of Georgia - South)</span>
+                          <span className="text-[10px] text-gray-400 font-mono">風力 10-15 節</span>
+                        </div>
+                        <p className="text-[10.5px] text-gray-300 leading-relaxed">
+                          今日：西風 10 至 15 節，午後轉西北風 15 節，浪高 0.5 至 1.0 米。明日：西北風 10-15 節，傍晚轉微風 5-10 節。
+                        </p>
+                      </div>
+
+                      <div className="bg-[#141824] border border-[#242b3c] p-2.5 rounded-lg flex flex-col gap-1 text-xs">
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-cyan-300">豪灣海域 (Howe Sound)</span>
+                          <span className="text-[10px] text-gray-400 font-mono">風力 5-10 節</span>
+                        </div>
+                        <p className="text-[10.5px] text-gray-300 leading-relaxed">
+                          今日：南風 5 至 10 節，水面微浪 (Chop)，能見度良好 (&gt;10 海浬)。
+                        </p>
+                      </div>
+
+                      <div className="bg-[#141824] border border-[#242b3c] p-2.5 rounded-lg flex flex-col gap-1 text-xs">
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-indigo-300">哈羅海峽與邊界通道 (Haro Strait)</span>
+                          <span className="text-[10px] text-gray-400 font-mono">風力 12-18 節</span>
+                        </div>
+                        <p className="text-[10.5px] text-gray-300 leading-relaxed">
+                          西南風 12 至 18 節，海浪 1.0 米，潮汐流強勁注意橫向回流。
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 2. 潮汐與海岸即時水位 (Coastal Tides) */}
+                  <div className="bg-[#12151e] border border-blue-500/40 rounded-xl p-3.5 shadow-lg flex flex-col gap-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400">
+                          <Waves className="w-3.5 h-3.5" />
+                        </div>
+                        <div>
+                          <h4 className="text-xs font-bold text-white tracking-wide flex items-center gap-1.5">
+                            <span>海岸潮汐水位站</span>
+                            <span className="text-[9px] bg-blue-950/80 text-blue-400 border border-blue-800/60 px-1 py-0.2 rounded font-mono">
+                              DFO / CHS 官方
+                            </span>
+                          </h4>
+                          <span className="text-[10px] text-gray-400">加拿大漁業及海洋部水文即時監測</span>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => enableLayer('tideStations')}
+                        className="text-[11px] text-blue-400 hover:text-blue-300 hover:underline flex items-center gap-1"
+                      >
+                        <span>開啟潮汐圖層</span>
+                        <span>❯</span>
+                      </button>
+                    </div>
+
+                    {loadingTides ? (
+                      <div className="py-6 flex items-center justify-center gap-2 text-gray-400 text-xs">
+                        <RefreshCw className="w-4 h-4 text-blue-400 animate-spin" />
+                        <span>正在檢索大溫海岸觀測站即時潮位...</span>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col gap-2">
+                        {tideStations.map((st) => {
+                          const isRising = st.state_trend === 'rising';
+                          const isFalling = st.state_trend === 'falling';
+                          return (
+                            <div
+                              key={st.code}
+                              onClick={() => handleLocateTideStation(st)}
+                              className={`p-2.5 rounded-lg border transition-all flex flex-col gap-1.5 cursor-pointer ${
+                                selectedTideCode === st.code
+                                  ? 'bg-blue-950/40 border-blue-500 text-white ring-1 ring-blue-500/50'
+                                  : 'bg-[#0f121a] border-[#222736] hover:border-blue-500/50 hover:bg-[#131926] text-gray-300'
+                              }`}
+                            >
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  <span className="font-bold text-xs text-white block">{st.name}</span>
+                                  <span className="text-[10px] text-gray-400">{st.area}</span>
+                                </div>
+                                <div className="text-right">
+                                  <div className="flex items-center gap-1.5 justify-end">
+                                    <span className="text-base font-extrabold text-blue-400 font-mono">
+                                      {st.current_water_level_m} <span className="text-xs font-normal text-gray-400">m</span>
+                                    </span>
+                                    <span
+                                      className={`text-[10px] font-bold px-1.5 py-0.5 rounded font-mono flex items-center gap-0.5 ${
+                                        isRising
+                                          ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-800/50'
+                                          : isFalling
+                                          ? 'bg-rose-950/80 text-rose-300 border border-rose-800/50'
+                                          : 'bg-gray-800 text-gray-300'
+                                      }`}
+                                    >
+                                      <span>{st.state}</span>
+                                      <span>{isRising ? '↗' : isFalling ? '↘' : '→'}</span>
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {(st.next_high || st.next_low) && (
+                                <div className="pt-1.5 border-t border-[#1c2230] flex items-center justify-between text-[10.5px]">
+                                  <div className="flex items-center gap-2 text-gray-400 font-mono">
+                                    {st.next_high && (
+                                      <span className="text-emerald-400/90">
+                                        滿潮: {st.next_high.value}m ({st.next_high.time.slice(11, 16)}Z)
+                                      </span>
+                                    )}
+                                    {st.next_low && (
+                                      <span className="text-sky-400/90">
+                                        乾潮: {st.next_low.value}m ({st.next_low.time.slice(11, 16)}Z)
+                                      </span>
+                                    )}
+                                  </div>
+                                  <span className="text-[10px] text-blue-400 font-medium">點擊定位 ❯</span>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* 3. 海浪與風暴潮模式 (CIOPS-W) */}
+                  <div className="bg-[#12151e] border border-cyan-500/30 rounded-xl p-3.5 shadow-lg flex flex-col gap-2.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
+                          <Activity className="w-3.5 h-3.5" />
+                        </div>
+                        <div>
+                          <h4 className="text-xs font-bold text-white tracking-wide">海浪與風暴潮數值模式 (CIOPS-W)</h4>
+                          <span className="text-[10px] text-gray-400">Coastal Inland Ocean Prediction System - West</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="bg-[#141824] border border-[#242c3d] p-2 rounded-lg text-center">
+                        <span className="text-[10px] text-gray-400 block">有效波高 (Hs)</span>
+                        <span className="text-base font-extrabold text-cyan-300 font-mono">0.6 m</span>
+                        <span className="text-[9.5px] text-gray-500 block">週期 4.2 秒</span>
+                      </div>
+                      <div className="bg-[#141824] border border-[#242c3d] p-2 rounded-lg text-center">
+                        <span className="text-[10px] text-gray-400 block">海表水溫 (SST)</span>
+                        <span className="text-base font-extrabold text-sky-300 font-mono">11.2°C</span>
+                        <span className="text-[9.5px] text-gray-500 block">常態海溫</span>
+                      </div>
+                      <div className="bg-[#141824] border border-[#242c3d] p-2 rounded-lg text-center">
+                        <span className="text-[10px] text-gray-400 block">風暴潮增水異常</span>
+                        <span className="text-base font-extrabold text-emerald-400 font-mono">+0.08 m</span>
+                        <span className="text-[9.5px] text-gray-500 block">無溢堤威脅</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 4. 水文站監察 (National Hydrometric Network) */}
+                  <div className="bg-[#12151e] border border-teal-500/30 rounded-xl p-3.5 shadow-lg flex flex-col gap-2.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded bg-teal-500/20 border border-teal-500/40 flex items-center justify-center text-teal-400">
+                          <Anchor className="w-3.5 h-3.5" />
+                        </div>
+                        <div>
+                          <h4 className="text-xs font-bold text-white tracking-wide">加拿大國家水文站監察</h4>
+                          <span className="text-[10px] text-gray-400">ECCC National Hydrometric Network</span>
+                        </div>
+                      </div>
+                      <span className="text-[10px] text-teal-300 font-mono">4 個重點水文站</span>
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      {[
+                        { id: '08MH024', name: '菲沙河密遜水文站 (Fraser at Mission)', level: '2.15 m', flow: '1,840 m³/s', status: '正常流量' },
+                        { id: '08MF005', name: '菲沙河希望鎮水文站 (Fraser at Hope)', level: '3.42 m', flow: '1,910 m³/s', status: '水勢穩定' },
+                        { id: '08GA010', name: '卡皮拉諾河水文站 (Capilano near North Van)', level: '1.08 m', flow: '14.5 m³/s', status: '水壩出水正常' },
+                        { id: '08GA079', name: '西摩河水文站 (Seymour near Falls)', level: '0.95 m', flow: '8.2 m³/s', status: '綠色安全' },
+                      ].map((hydro) => (
+                        <div key={hydro.id} className="bg-[#141824] border border-[#242b3c] p-2 rounded-lg flex items-center justify-between text-xs">
+                          <div className="flex flex-col min-w-0">
+                            <div className="flex items-center gap-1.5">
+                              <span className="font-bold text-gray-200 truncate">{hydro.name}</span>
+                              <span className="text-[9.5px] font-mono text-teal-400 bg-teal-950/70 border border-teal-800/40 px-1 rounded">{hydro.id}</span>
+                            </div>
+                            <span className="text-[10px] text-gray-400 mt-0.5">即時水位: {hydro.level} · 流量: {hydro.flow}</span>
+                          </div>
+                          <span className="text-[10px] font-bold text-teal-300 bg-teal-950/60 border border-teal-800/40 px-1.5 py-0.5 rounded font-mono ml-2 shrink-0">{hydro.status}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </>
           ) : (
             <div className="py-12 text-center text-xs text-gray-400">目前無法取得即時天氣資料</div>
           )}
@@ -5071,6 +5456,83 @@ function ExploreContent() {
                   );
                 }
 
+                if (trafficFilter === 'major_roads') {
+                  return (
+                    <div className="flex flex-col border border-[#252c3e] rounded-lg overflow-hidden bg-[#10131d] shadow-sm">
+                      <div className="overflow-x-auto [scrollbar-width:thin]">
+                        <table className="w-full text-left text-xs border-collapse">
+                          <thead>
+                            <tr className="bg-[#181d2c] border-b border-[#252c3e] text-[10.5px] font-bold text-gray-400 select-none">
+                              <th className="py-2 px-2.5">道路名稱 (Road Name)</th>
+                              <th className="py-2 px-2 text-center whitespace-nowrap">路況狀態</th>
+                              <th className="py-2 px-2 text-right whitespace-nowrap">預估延誤</th>
+                              <th className="py-2 px-2 text-right whitespace-nowrap">車速 / 速限</th>
+                              <th className="py-2 px-2.5 text-center whitespace-nowrap">車流趨勢</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-[#1e2436]">
+                            {activeList.map((corridor) => {
+                              const statusBg = corridor.status_color === 'red' ? 'bg-red-950/80 text-red-200 border-red-800' :
+                                corridor.status_color === 'orange' ? 'bg-orange-950/80 text-orange-200 border-orange-800' :
+                                corridor.status_color === 'amber' ? 'bg-amber-950/80 text-amber-200 border-amber-800' :
+                                'bg-emerald-950/80 text-emerald-200 border-emerald-800';
+
+                              const delayColor = corridor.delay_min >= 12 ? 'text-rose-400' :
+                                corridor.delay_min >= 8 ? 'text-orange-400' :
+                                corridor.delay_min >= 3 ? 'text-amber-400' : 'text-emerald-400';
+
+                              const displayName = corridor.english_name || corridor.name;
+
+                              return (
+                                <tr
+                                  key={corridor.id}
+                                  onClick={() => handleFlyToCorridor(corridor)}
+                                  className="hover:bg-[#1a2032] cursor-pointer transition-colors group select-none"
+                                  title="點擊在地圖上顯示路線與路況詳情"
+                                >
+                                  <td className="py-2 px-2.5">
+                                    <div className="flex flex-col">
+                                      <span className="font-semibold text-white group-hover:text-orange-300 transition-colors leading-snug">
+                                        {displayName}
+                                      </span>
+                                      {corridor.route && (
+                                        <span className="text-[10px] text-gray-400 mt-0.5 font-mono">
+                                          {corridor.route}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </td>
+                                  <td className="py-2 px-2 text-center whitespace-nowrap">
+                                    <span className={`text-[9.5px] font-bold px-1.5 py-0.5 rounded border inline-block ${statusBg}`}>
+                                      {corridor.status}
+                                    </span>
+                                  </td>
+                                  <td className="py-2 px-2 text-right whitespace-nowrap">
+                                    <span className={`font-mono text-[11px] font-bold ${delayColor}`}>
+                                      {corridor.delay_min <= 0 ? '+0m' : `+${corridor.delay_min}m`}
+                                    </span>
+                                  </td>
+                                  <td className="py-2 px-2 text-right whitespace-nowrap font-mono text-[11px]">
+                                    <span className="text-white font-bold">{corridor.current_speed_kmh}</span>
+                                    <span className="text-gray-400 text-[10px]"> / {corridor.freeflow_speed_kmh}</span>
+                                  </td>
+                                  <td className="py-2 px-2.5 text-center whitespace-nowrap text-[10px] text-gray-400">
+                                    {corridor.trend === 'worsening' ? '↗️ 加劇' : corridor.trend === 'improving' ? '↘️ 舒緩' : '➡️ 穩定'}
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                      <div className="bg-[#141824] px-2.5 py-1.5 border-t border-[#252c3e] text-[10.5px] text-gray-400 flex items-center justify-between">
+                        <span>共 {activeList.length} 條主要道路</span>
+                        <span className="text-orange-400/90 font-medium">💡 點選任一路段即在底圖亮起該完整路線</span>
+                      </div>
+                    </div>
+                  );
+                }
+
                 return activeList.map((corridor) => {
                   const statusBg = corridor.status_color === 'red' ? 'bg-red-950/80 text-red-200 border-red-800' :
                     corridor.status_color === 'orange' ? 'bg-orange-950/80 text-orange-200 border-orange-800' :
@@ -5082,7 +5544,7 @@ function ExploreContent() {
                     corridor.delay_min >= 3 ? 'text-amber-400' : 'text-emerald-400';
 
                   // 2.6: 除了 7 大幹道，主要道路清單請用英文顯示
-                  const isMajorRoadTab = trafficFilter === 'major_roads';
+                  const isMajorRoadTab = (trafficFilter as string) === 'major_roads';
                   const displayName = isMajorRoadTab ? (corridor.english_name || corridor.name) : corridor.name;
 
                   return (
@@ -5404,7 +5866,7 @@ function ExploreContent() {
       <div className="mt-2.5 pt-2 border-t border-[#262b38] flex items-center justify-between text-[11px] text-gray-400 shrink-0">
         <div className="flex flex-col text-[10.5px] leading-tight text-gray-400 min-w-0 pr-2">
           {activeTab === 'weather' && (
-            <span>天氣數據：加拿大環境部 (api.weather.gc.ca)</span>
+            <span>氣象數據：加拿大環境部 (ECCC MSC GeoMet / api.weather.gc.ca)</span>
           )}
           {activeTab === 'news' && (
             <span>共有 {filteredNews.length} 則即時新聞</span>

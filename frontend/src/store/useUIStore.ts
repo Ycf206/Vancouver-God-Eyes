@@ -79,7 +79,6 @@ export interface UIState {
     trafficSpeedLimits: boolean;
     bikeRacks: boolean;
     postalCodeFSA: boolean;
-    wirelessFacilities: boolean;
     publicArt: boolean;
     trafficCrosswalks: boolean;
     litterContainers: boolean;
@@ -95,6 +94,8 @@ export interface UIState {
     fireHydrants: boolean;
     zoningDistricts: boolean;
     publicTrees: boolean;
+    museums: boolean;
+    garbageCollection: boolean;
   };
   contourInterval: 'off' | '1m' | '2m' | '10m';
   setContourInterval: (interval: 'off' | '1m' | '2m' | '10m') => void;
@@ -264,7 +265,6 @@ export const useUIStore = create<UIState>()(
         trafficSpeedLimits: false,
         bikeRacks: false,
         postalCodeFSA: false,
-        wirelessFacilities: false,
         publicArt: false,
         trafficCrosswalks: false,
         litterContainers: false,
@@ -280,6 +280,8 @@ export const useUIStore = create<UIState>()(
         fireHydrants: false,
         zoningDistricts: false,
         publicTrees: false,
+        museums: false,
+        garbageCollection: false,
       },
       timeFormat: '24h',
       setTimeFormat: (format) => set({ timeFormat: format }),

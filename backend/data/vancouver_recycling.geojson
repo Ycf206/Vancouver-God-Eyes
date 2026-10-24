@@ -1,482 +1,818 @@
 {
   "type": "FeatureCollection",
-  "generator": "VancouverGodsEye",
-  "total_count": 16,
   "features": [
     {
       "type": "Feature",
-      "id": "recycling_1",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.082537,
-          49.2707
-        ]
-      },
+      "id": 1,
       "properties": {
-        "id": "recycling_1",
-        "facility_type": "recycling",
-        "name": "Regional Recycling Vancouver Bottle Depot",
-        "brand": "獨立營運 / 市政",
-        "address": "960 Evans Avenue Vancouver V6A 2L2",
-        "local_area": "溫哥華市",
-        "opening_hours": "09:00-18:00 open, 07:30-18:00 open \"Bottle Depot\"; PH 11:00-16:00; Jan 1 off; Dec 25 off; Dec 26 off",
-        "phone": "",
-        "website": "",
-        "materials": [
-          "乾電池 🔋",
-          "鋁罐 🥫",
-          "紙箱紙板 📦",
-          "廢電子產品 💻",
-          "廢油/燃油 ⛽",
-          "玻璃瓶 🍾",
-          "金屬包裝 🥫",
-          "剩餘油漆 🎨",
-          "農藥農化瓶 🧴",
-          "塑膠瓶 🧴",
-          "廢五金金屬 🔩"
-        ],
-        "materials_text": "乾電池 🔋 · 鋁罐 🥫 · 紙箱紙板 📦 · 廢電子產品 💻 · 廢油/燃油 ⛽ · 玻璃瓶 🍾 · 金屬包裝 🥫 · 剩餘油漆 🎨 · 農藥農化瓶 🧴 · 塑膠瓶 🧴 · 廢五金金屬 🔩",
-        "recycling_type": "centre",
-        "wheelchair": "unknown"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "recycling_2",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.092815,
-          49.262771
-        ]
-      },
-      "properties": {
-        "id": "recycling_2",
-        "facility_type": "recycling",
-        "name": "Return It",
-        "brand": "Return-It",
-        "address": "501 East Broadway Vancouver",
-        "local_area": "溫哥華市",
-        "opening_hours": "Mo-Su,PH 08:00-18:00",
-        "phone": "+1-604-874-9223",
-        "website": "https://www.return-it.ca/locations/eds-bottle-depot/",
-        "materials": [
-          "飲料紙盒 🧃",
-          "鋁罐 🥫",
-          "玻璃瓶 🍾",
-          "塑膠瓶 🧴"
-        ],
-        "materials_text": "飲料紙盒 🧃 · 鋁罐 🥫 · 玻璃瓶 🍾 · 塑膠瓶 🧴",
-        "recycling_type": "centre",
-        "wheelchair": "unknown"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "recycling_3",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.100697,
-          49.245843
-        ]
-      },
-      "properties": {
-        "id": "recycling_3",
-        "facility_type": "recycling",
-        "name": "Joe's Recycling",
-        "brand": "獨立營運 / 市政",
-        "address": "Vancouver",
-        "local_area": "溫哥華市",
-        "opening_hours": "Mo-Fr 09:30-17:30; Sa 10:00-17:00; Su 11:00-17:00",
-        "phone": "",
-        "website": "",
-        "materials": [
-          "鋁罐 🥫",
-          "剩餘油漆 🎨",
-          "塑膠瓶 🧴"
-        ],
-        "materials_text": "鋁罐 🥫 · 剩餘油漆 🎨 · 塑膠瓶 🧴",
-        "recycling_type": "centre",
-        "wheelchair": "unknown"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "recycling_4",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -122.737817,
-          45.654299
-        ]
-      },
-      "properties": {
-        "id": "recycling_4",
-        "facility_type": "recycling",
-        "name": "West Vancouver Materials Recovery Center",
-        "brand": "Columbia Resource Company",
-        "address": "6601 Northwest Old Lower River Road Vancouver 98660",
-        "local_area": "溫哥華市",
-        "opening_hours": "Mo-Fr 06:00-18:00; Sa 08:00-16:00",
-        "phone": "+1-360-737-1727",
-        "website": "https://www.columbiaresourcecompany.com/",
-        "materials": [],
-        "materials_text": "各類生活與包裝資材",
-        "recycling_type": "centre",
-        "wheelchair": "unknown"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "recycling_5",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.133313,
-          49.202418
-        ]
-      },
-      "properties": {
-        "id": "recycling_5",
-        "facility_type": "recycling",
-        "name": "Vancouver West Return-It Depot",
-        "brand": "Encorp",
-        "address": "1253 West 75th Avenue Vancouver V6P 3G4",
-        "local_area": "溫哥華市",
-        "opening_hours": "Mo-Fr 09:00-17:00; Sa 09:00-18:00; Su 10:00-17:00",
-        "phone": "",
-        "website": "",
-        "materials": [],
-        "materials_text": "各類生活與包裝資材",
-        "recycling_type": "centre",
-        "wheelchair": "unknown"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "recycling_6",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.07967,
-          49.282595
-        ]
-      },
-      "properties": {
-        "id": "recycling_6",
-        "facility_type": "recycling",
-        "name": "North Star Metal Recycling",
-        "brand": "獨立營運 / 市政",
-        "address": "1159 Franklin Street Vancouver V6A 1J8",
-        "local_area": "溫哥華市",
-        "opening_hours": "Mo-Fr 07:30-16:30; Sa 08:30-14:00; Su,PH off",
-        "phone": "+1 604 254 2734",
-        "website": "https://northstarmetalrecycling.com",
-        "materials": [
-          "廢五金金屬 🔩"
-        ],
-        "materials_text": "廢五金金屬 🔩",
-        "recycling_type": "centre",
-        "wheelchair": "unknown"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "recycling_7",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.11494,
-          49.208544
-        ]
-      },
-      "properties": {
-        "id": "recycling_7",
-        "facility_type": "recycling",
-        "name": "Vancouver Zero Waste Centre",
-        "brand": "獨立營運 / 市政",
-        "address": "8588 Yukon Street Vancouver",
-        "local_area": "溫哥華市",
-        "opening_hours": "",
-        "phone": "",
-        "website": "",
-        "materials": [
-          "紙箱紙板 📦",
-          "二手衣物 👕",
-          "廢紙 📄"
-        ],
-        "materials_text": "紙箱紙板 📦 · 二手衣物 👕 · 廢紙 📄",
-        "recycling_type": "centre",
-        "wheelchair": "unknown"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "recycling_8",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.113965,
-          49.207288
-        ]
-      },
-      "properties": {
-        "id": "recycling_8",
-        "facility_type": "recycling",
-        "name": "Vancouver South Transfer Station",
-        "brand": "City of Vancouver",
-        "address": "377 West Kent Avenue North Vancouver V5X 2X1",
-        "local_area": "溫哥華市",
-        "opening_hours": "Mo-Fr 05:30-19:00; Sa-Su 08:00-18:00; Dec 25 off; Jun 1 off",
-        "phone": "",
-        "website": "",
-        "materials": [],
-        "materials_text": "各類生活與包裝資材",
-        "recycling_type": "centre",
-        "wheelchair": "unknown"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "recycling_9",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.136235,
-          49.272522
-        ]
-      },
-      "properties": {
-        "id": "recycling_9",
-        "facility_type": "recycling",
-        "name": "溫哥華環保資源回收站",
-        "brand": "獨立營運 / 市政",
-        "address": "Vancouver",
-        "local_area": "溫哥華市",
-        "opening_hours": "",
-        "phone": "",
-        "website": "",
-        "materials": [],
-        "materials_text": "各類生活與包裝資材",
-        "recycling_type": "centre",
-        "wheelchair": "unknown"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "recycling_10",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.05146,
-          49.239162
-        ]
-      },
-      "properties": {
-        "id": "recycling_10",
-        "facility_type": "recycling",
-        "name": "Vancouver Central Return-It Depot",
-        "brand": "獨立營運 / 市政",
-        "address": "2639 Kingsway Vancouver",
-        "local_area": "溫哥華市",
-        "opening_hours": "Mo-Fr,Su 09:00-17:00; Sa 09:00-18:00; PH off",
-        "phone": "",
-        "website": "https://www.return-it.ca/locations/vancouver-central-return-it-depot/",
-        "materials": [],
-        "materials_text": "各類生活與包裝資材",
-        "recycling_type": "centre",
-        "wheelchair": "unknown"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "recycling_11",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.07304,
-          49.276113
-        ]
-      },
-      "properties": {
-        "id": "recycling_11",
-        "facility_type": "recycling",
-        "name": "Beyond the Blue Box",
-        "brand": "獨立營運 / 市政",
-        "address": "Vancouver",
-        "local_area": "溫哥華市",
-        "opening_hours": "Sa 09:00-12:00",
-        "phone": "",
-        "website": "https://www.britanniacentre.org/services/recycle-depot",
-        "materials": [
-          "乾電池 🔋",
-          "plastic",
-          "plastic_packaging",
-          "廢五金金屬 🔩",
-          "保麗龍 📦"
-        ],
-        "materials_text": "乾電池 🔋 · plastic · plastic_packaging · 廢五金金屬 🔩 · 保麗龍 📦",
-        "recycling_type": "centre",
-        "wheelchair": "unknown"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "recycling_12",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.104546,
-          49.265021
-        ]
-      },
-      "properties": {
-        "id": "recycling_12",
-        "facility_type": "recycling",
-        "name": "Return-It",
-        "brand": "Return-It",
-        "address": "Vancouver",
-        "local_area": "溫哥華市",
-        "opening_hours": "Mo-Sa 09:00-18:00; Su 09:00-17:00; PH 10:00-16:00",
-        "phone": "",
-        "website": "",
-        "materials": [
-          "飲料紙盒 🧃",
-          "鋁罐 🥫",
-          "玻璃瓶 🍾",
-          "塑膠瓶 🧴"
-        ],
-        "materials_text": "飲料紙盒 🧃 · 鋁罐 🥫 · 玻璃瓶 🍾 · 塑膠瓶 🧴",
-        "recycling_type": "centre",
-        "wheelchair": "unknown"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "recycling_13",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.127195,
-          49.274141
-        ]
-      },
-      "properties": {
-        "id": "recycling_13",
-        "facility_type": "recycling",
-        "name": "Return-It Express Yaletown",
-        "brand": "Return-It",
-        "address": "1387 Richards Street Vancouver V6B 3G7",
-        "local_area": "溫哥華市",
-        "opening_hours": "Mo-Fr 10:00-18:00; Sa 10:00-17:00; Su 12:00-16:00",
-        "phone": "",
-        "website": "https://www.return-it.ca/locations/yaletown-return-it-express/",
-        "materials": [
-          "飲料紙盒 🧃",
-          "鋁罐 🥫",
-          "二手衣物 👕",
-          "玻璃瓶 🍾",
-          "塑膠瓶 🧴",
-          "鞋類 👟"
-        ],
-        "materials_text": "飲料紙盒 🧃 · 鋁罐 🥫 · 二手衣物 👕 · 玻璃瓶 🍾 · 塑膠瓶 🧴 · 鞋類 👟",
-        "recycling_type": "centre",
-        "wheelchair": "yes"
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "recycling_14",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.10635,
-          49.2089
-        ]
-      },
-      "properties": {
-        "id": "recycling_14",
         "facility_type": "recycling",
         "name": "South Van Bottle Depot",
-        "brand": "Return-It",
-        "address": "34 East 69th Avenue Vancouver V5X 4K6",
-        "local_area": "溫哥華市",
-        "opening_hours": "",
-        "phone": "+1 604 325 3370",
-        "website": "https://www.return-it.ca/locations/south-van-bottle-depot/",
-        "materials": [
-          "飲料紙盒 🧃",
-          "鋁罐 🥫",
-          "家用電器 🔌",
-          "機油 🛢️",
-          "玻璃瓶 🍾",
-          "剩餘油漆 🎨",
-          "廢紙 📄",
-          "塑膠瓶 🧴",
-          "小型家電 🔌"
+        "address": "34 East 69th Avenue, Vancouver, BC V5X 4K6",
+        "phone": "604-325-3370",
+        "email": null,
+        "urllink": "https://www.return-it.ca/locations/south-van-bottle-depot/",
+        "hours": {
+          "Monday": "8:30AM - 5:30PM",
+          "Tuesday": "8:30AM - 5:30PM",
+          "Wednesday": "8:30AM - 5:30PM",
+          "Thursday": "8:30AM - 5:30PM",
+          "Friday": "8:30AM - 5:30PM",
+          "Saturday": "8:30AM - 5:30PM",
+          "Sunday": "8:30AM - 5:30PM",
+          "Holidays": "CLOSED"
+        },
+        "recycling_types_accepted": [
+          "Return-It Express",
+          "Return-It Beverage",
+          "Return-It Electronics"
         ],
-        "materials_text": "飲料紙盒 🧃 · 鋁罐 🥫 · 家用電器 🔌 · 機油 🛢️ · 玻璃瓶 🍾 · 剩餘油漆 🎨 · 廢紙 📄 · 塑膠瓶 🧴 · 小型家電 🔌",
-        "recycling_type": "centre",
-        "wheelchair": "unknown"
+        "other_materials_accepted": [
+          "Small Appliances",
+          "Paint",
+          "Packaging & Paper"
+        ],
+        "beverage_containers_accepted": [
+          "Aluminum Can",
+          "Plastic Bottle",
+          "Plastic Cup",
+          "Drink Box",
+          "Gable Top",
+          "Glass Bottle",
+          "Bi-Metal Can",
+          "Drink Pouch",
+          "Bag-in-a-Box (Water)",
+          "Liquor Plastic",
+          "Liquor Glass",
+          "Alcohol Bag-in-a-Box",
+          "Liquor Glass: Non-Refillable Beer",
+          "Ceramic Bottle"
+        ],
+        "notes": null,
+        "geo_point_2d": {
+          "lon": -123.1038,
+          "lat": 49.2102
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1038,
+          49.2102
+        ]
       }
     },
     {
       "type": "Feature",
-      "id": "recycling_15",
+      "id": 2,
+      "properties": {
+        "facility_type": "recycling",
+        "name": "Mount Pleasant Return-It Depot",
+        "address": "501 East Broadway, Vancouver, BC V5T 1X4",
+        "phone": "604-874-9223",
+        "email": null,
+        "urllink": "https://www.return-it.ca/locations/eds-bottle-depot/",
+        "hours": {
+          "Monday": "8:00AM - 6:00PM",
+          "Tuesday": "8:00AM - 6:00PM",
+          "Wednesday": "8:00AM - 6:00PM",
+          "Thursday": "8:00AM - 6:00PM",
+          "Friday": "8:00AM - 6:00PM",
+          "Saturday": "8:00AM - 6:00PM",
+          "Sunday": "8:00AM - 6:00PM",
+          "Holidays": "8:00AM - 6:00PM"
+        },
+        "recycling_types_accepted": [
+          "Return-It Express",
+          "Return-It Beverage",
+          "Return-It Electronics"
+        ],
+        "other_materials_accepted": [
+          "Batteries",
+          "Small Appliances",
+          "Lamps & Lighting",
+          "Packaging & Paper"
+        ],
+        "beverage_containers_accepted": [
+          "Aluminum Can",
+          "Plastic Bottle",
+          "Plastic Cup",
+          "Drink Box",
+          "Gable Top",
+          "Glass Bottle",
+          "Bi-Metal Can",
+          "Drink Pouch",
+          "Bag-in-a-Box (Water)",
+          "Liquor Plastic",
+          "Liquor Glass",
+          "Alcohol Bag-in-a-Box",
+          "Liquor Glass: Non-Refillable Beer",
+          "Ceramic Bottle"
+        ],
+        "notes": null,
+        "geo_point_2d": {
+          "lon": -123.0928,
+          "lat": 49.2627
+        }
+      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.094292,
-          49.269762
+          -123.0928,
+          49.2627
         ]
-      },
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 3,
       "properties": {
-        "id": "recycling_15",
+        "facility_type": "recycling",
+        "name": "Powell Street Return-It Bottle Depot",
+        "address": "1856 Powell Street, Vancouver, BC V5L 1H9",
+        "phone": "604-253-4987",
+        "email": null,
+        "urllink": "https://www.return-it.ca/locations/powell-street-return-it-bottle-depot/",
+        "hours": {
+          "Monday": "8:00AM - 6:00PM",
+          "Tuesday": "8:00AM - 6:00PM",
+          "Wednesday": "8:00AM - 6:00PM",
+          "Thursday": "8:00AM - 6:00PM",
+          "Friday": "8:00AM - 6:00PM",
+          "Saturday": "8:00AM - 6:00PM",
+          "Sunday": "8:00AM - 6:00PM",
+          "Holidays": "CLOSED"
+        },
+        "recycling_types_accepted": [
+          "Return-It Express",
+          "Return-It Beverage",
+          "Return-It Electronics"
+        ],
+        "other_materials_accepted": [
+          "Small Appliances",
+          "Paint",
+          "Packaging & Paper"
+        ],
+        "beverage_containers_accepted": [
+          "Aluminum Can",
+          "Plastic Bottle",
+          "Plastic Cup",
+          "Drink Box",
+          "Gable Top",
+          "Glass Bottle",
+          "Bi-Metal Can",
+          "Drink Pouch",
+          "Bag-in-a-Box (Water)",
+          "Liquor Plastic",
+          "Liquor Glass",
+          "Alcohol Bag-in-a-Box",
+          "Liquor Glass: Non-Refillable Beer",
+          "Ceramic Bottle"
+        ],
+        "notes": null,
+        "geo_point_2d": {
+          "lon": -123.0663,
+          "lat": 49.2823
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0663,
+          49.2823
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 4,
+      "properties": {
+        "facility_type": "recycling",
+        "name": "Vancouver Return-It Depot",
+        "address": "2286 Ontario St, Vancouver, BC V5T 2X2",
+        "phone": "604-874-0367",
+        "email": null,
+        "urllink": "https://www.return-it.ca/locations/go-green-bottle-depot-recycling/",
+        "hours": {
+          "Monday": "9:00AM - 6:00PM",
+          "Tuesday": "9:00AM - 6:00PM",
+          "Wednesday": "9:00AM - 6:00PM",
+          "Thursday": "9:00AM - 6:00PM",
+          "Friday": "9:00AM - 6:00PM",
+          "Saturday": "9:00AM - 6:00PM",
+          "Sunday": "9:00AM - 5:00PM",
+          "Holidays": "10:00AM - 4:00PM"
+        },
+        "recycling_types_accepted": [
+          "Return-It Express",
+          "Return-It Beverage",
+          "Return-It Electronics"
+        ],
+        "other_materials_accepted": [
+          "Small Appliances",
+          "Paint"
+        ],
+        "beverage_containers_accepted": [
+          "Aluminum Can",
+          "Plastic Bottle",
+          "Plastic Cup",
+          "Drink Box",
+          "Gable Top",
+          "Glass Bottle",
+          "Bi-Metal Can",
+          "Drink Pouch",
+          "Bag-in-a-Box (Water)",
+          "Liquor Plastic",
+          "Liquor Glass",
+          "Alcohol Bag-in-a-Box",
+          "Liquor Glass: Non-Refillable Beer",
+          "Ceramic Bottle"
+        ],
+        "notes": "NEW HOURS - Effective April 1, 2025",
+        "geo_point_2d": {
+          "lon": -123.1045,
+          "lat": 49.265
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1045,
+          49.265
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 5,
+      "properties": {
         "facility_type": "recycling",
         "name": "United We Can Bottle Depot",
-        "brand": "獨立營運 / 市政",
-        "address": "449 Industrial Avenue Vancouver",
-        "local_area": "溫哥華市",
-        "opening_hours": "Mo-Su 07:30-18:00",
-        "phone": "+1-604-681-0001",
-        "website": "https://www.unitedwecan.ca/",
-        "materials": [],
-        "materials_text": "各類生活與包裝資材",
-        "recycling_type": "centre",
-        "wheelchair": "unknown"
+        "address": "449 Industrial Avenue, Vancouver, BC V6A 2P3",
+        "phone": "604-681-0001",
+        "email": null,
+        "urllink": "https://www.return-it.ca/locations/united-we-can-bottle-depot/",
+        "hours": {
+          "Monday": "8:00AM - 6:00PM",
+          "Tuesday": "8:00AM - 6:00PM",
+          "Wednesday": "8:00AM - 6:00PM",
+          "Thursday": "8:00AM - 6:00PM",
+          "Friday": "8:00AM - 6:00PM",
+          "Saturday": "8:00AM - 6:00PM",
+          "Sunday": "8:00AM - 6:00PM",
+          "Holidays": "8:00AM - 6:00PM"
+        },
+        "recycling_types_accepted": [
+          "Return-It Express",
+          "Return-It Beverage",
+          "Return-It Electronics"
+        ],
+        "other_materials_accepted": [
+          "Small Appliances"
+        ],
+        "beverage_containers_accepted": [
+          "Aluminum Can",
+          "Plastic Bottle",
+          "Plastic Cup",
+          "Drink Box",
+          "Gable Top",
+          "Glass Bottle",
+          "Bi-Metal Can",
+          "Drink Pouch",
+          "Bag-in-a-Box (Water)",
+          "Liquor Plastic",
+          "Liquor Glass",
+          "Alcohol Bag-in-a-Box",
+          "Liquor Glass: Non-Refillable Beer",
+          "Ceramic Bottle"
+        ],
+        "notes": null,
+        "geo_point_2d": {
+          "lon": -123.0943,
+          "lat": 49.2697
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0943,
+          49.2697
+        ]
       }
     },
     {
       "type": "Feature",
-      "id": "recycling_16",
+      "id": 6,
+      "properties": {
+        "facility_type": "recycling",
+        "name": "Vancouver Central Return-It Depot",
+        "address": "2639 Kingsway, Vancouver, BC V5R 5H4",
+        "phone": "604-434-0707",
+        "email": null,
+        "urllink": "https://www.return-it.ca/locations/vancouver-central-return-it-depot/",
+        "hours": {
+          "Monday": "9:00AM - 5:30PM",
+          "Tuesday": "9:00AM - 5:30PM",
+          "Wednesday": "9:00AM - 5:30PM",
+          "Thursday": "9:00AM - 5:30PM",
+          "Friday": "9:00AM - 5:30PM",
+          "Saturday": "9:00AM - 6:00PM",
+          "Sunday": "9:00AM - 5:00PM",
+          "Holidays": "CLOSED"
+        },
+        "recycling_types_accepted": [
+          "Return-It Express",
+          "Return-It Beverage",
+          "Return-It Electronics"
+        ],
+        "other_materials_accepted": [
+          "Small Appliances"
+        ],
+        "beverage_containers_accepted": [
+          "Aluminum Can",
+          "Plastic Bottle",
+          "Plastic Cup",
+          "Drink Box",
+          "Gable Top",
+          "Glass Bottle",
+          "Bi-Metal Can",
+          "Drink Pouch",
+          "Bag-in-a-Box (Water)",
+          "Liquor Plastic",
+          "Liquor Glass",
+          "Alcohol Bag-in-a-Box",
+          "Liquor Glass: Non-Refillable Beer",
+          "Ceramic Bottle"
+        ],
+        "notes": null,
+        "geo_point_2d": {
+          "lon": -123.0514,
+          "lat": 49.2392
+        }
+      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.045312,
-          49.257964
+          -123.0514,
+          49.2392
         ]
-      },
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 7,
       "properties": {
-        "id": "recycling_16",
+        "facility_type": "recycling",
+        "name": "Vancouver West Return-It Depot",
+        "address": "1253 West 75th Avenue, Vancouver, BC V6P 3G4",
+        "phone": "604-263-8809",
+        "email": null,
+        "urllink": "https://www.return-it.ca/locations/vancouver-west-return-it-depot/",
+        "hours": {
+          "Monday": "9:00AM - 5:00PM",
+          "Tuesday": "9:00AM - 5:00PM",
+          "Wednesday": "9:00AM - 5:00PM",
+          "Thursday": "9:00AM - 5:00PM",
+          "Friday": "9:00AM - 5:00PM",
+          "Saturday": "9:00AM - 6:00PM",
+          "Sunday": "9:00AM - 5:00PM",
+          "Holidays": "CLOSED"
+        },
+        "recycling_types_accepted": [
+          "Return-It Express",
+          "Return-It Beverage",
+          "Return-It Electronics"
+        ],
+        "other_materials_accepted": [
+          "Small Appliances"
+        ],
+        "beverage_containers_accepted": [
+          "Aluminum Can",
+          "Plastic Bottle",
+          "Plastic Cup",
+          "Drink Box",
+          "Gable Top",
+          "Glass Bottle",
+          "Bi-Metal Can",
+          "Drink Pouch",
+          "Bag-in-a-Box (Water)",
+          "Liquor Plastic",
+          "Liquor Glass",
+          "Alcohol Bag-in-a-Box",
+          "Liquor Glass: Non-Refillable Beer",
+          "Ceramic Bottle"
+        ],
+        "notes": null,
+        "geo_point_2d": {
+          "lon": -123.1338,
+          "lat": 49.203
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1338,
+          49.203
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 8,
+      "properties": {
         "facility_type": "recycling",
         "name": "Return-It - Grandview",
-        "brand": "Return-It",
-        "address": "2890 Grandview Highway Vancouver",
-        "local_area": "溫哥華市",
-        "opening_hours": "Tu-Su 09:00-17:00; PH off",
-        "phone": "+1-236-757-8588",
-        "website": "https://www.return-it.ca/locations/grandview-return-it/",
-        "materials": [
-          "飲料紙盒 🧃",
-          "鋁罐 🥫",
-          "玻璃瓶 🍾",
-          "塑膠瓶 🧴"
+        "address": "2890 Grandview Hwy, Vancouver, BC V5M 2C9",
+        "phone": "1-236-757-8588",
+        "email": null,
+        "urllink": "https://www.return-it.ca/locations/grandview-return-it/",
+        "hours": {
+          "Monday": "9:00AM - 5:00PM",
+          "Tuesday": "9:00AM - 5:00PM",
+          "Wednesday": "9:00AM - 5:00PM",
+          "Thursday": "9:00AM - 5:00PM",
+          "Friday": "9:00AM - 5:00PM",
+          "Saturday": "9:00AM - 5:00PM",
+          "Sunday": "9:00AM - 5:00PM",
+          "Holidays": "CLOSED"
+        },
+        "recycling_types_accepted": [
+          "Return-It Express",
+          "Return-It Beverage"
         ],
-        "materials_text": "飲料紙盒 🧃 · 鋁罐 🥫 · 玻璃瓶 🍾 · 塑膠瓶 🧴",
-        "recycling_type": "centre",
-        "wheelchair": "unknown"
+        "other_materials_accepted": [],
+        "beverage_containers_accepted": [
+          "Aluminum Can",
+          "Plastic Bottle",
+          "Plastic Cup",
+          "Drink Box",
+          "Gable Top",
+          "Glass Bottle",
+          "Bi-Metal Can",
+          "Drink Pouch",
+          "Bag-in-a-Box (Water)",
+          "Liquor Plastic",
+          "Liquor Glass",
+          "Alcohol Bag-in-a-Box",
+          "Liquor Glass: Non-Refillable Beer",
+          "Ceramic Bottle"
+        ],
+        "notes": "This location counts with reverse vending machines. Please call to confirm location hours.",
+        "geo_point_2d": {
+          "lon": -123.0442,
+          "lat": 49.2584
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0442,
+          49.2584
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 9,
+      "properties": {
+        "facility_type": "recycling",
+        "name": "Return-It Express - Yaletown",
+        "address": "1387 Richards Street, Vancouver, BC V6B 3G7",
+        "phone": "1-604-336-7206",
+        "email": null,
+        "urllink": "https://www.return-it.ca/locations/yaletown-return-it-express/",
+        "hours": {
+          "Monday": "10:00AM - 6:00PM",
+          "Tuesday": "10:00AM - 6:00PM",
+          "Wednesday": "10:00AM - 6:00PM",
+          "Thursday": "10:00AM - 6:00PM",
+          "Friday": "10:00AM - 6:00PM",
+          "Saturday": "10:00AM - 5:00PM",
+          "Sunday": "12:00PM - 4:00PM",
+          "Holidays": "CLOSED"
+        },
+        "recycling_types_accepted": [
+          "Return-It Express",
+          "Return-It Beverage"
+        ],
+        "other_materials_accepted": [],
+        "beverage_containers_accepted": [
+          "Aluminum Can",
+          "Plastic Bottle",
+          "Plastic Cup",
+          "Drink Box",
+          "Gable Top",
+          "Glass Bottle",
+          "Bi-Metal Can",
+          "Drink Pouch",
+          "Bag-in-a-Box (Water)",
+          "Liquor Plastic",
+          "Liquor Glass",
+          "Alcohol Bag-in-a-Box",
+          "Liquor Glass: Non-Refillable Beer",
+          "Ceramic Bottle"
+        ],
+        "notes": "* This Express location does not offer over-the-counter returns or cash refunds. Offers Express Drop-Off Scan.",
+        "geo_point_2d": {
+          "lon": -123.1257,
+          "lat": 49.2741
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1257,
+          49.2741
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 10,
+      "properties": {
+        "facility_type": "recycling",
+        "name": "Return-It Express & GO - Arbutus",
+        "address": "3170 Arbutus St, Vancouver, BC V6J 2M6",
+        "phone": null,
+        "email": null,
+        "urllink": "https://www.return-it.ca/locations/express-go-arbutus/",
+        "hours": {
+          "Monday": "7:00AM - 10:00PM",
+          "Tuesday": "7:00AM - 10:00PM",
+          "Wednesday": "7:00AM - 10:00PM",
+          "Thursday": "7:00AM - 10:00PM",
+          "Friday": "7:00AM - 10:00PM",
+          "Saturday": "7:00AM - 10:00PM",
+          "Sunday": "7:00AM - 10:00PM",
+          "Holidays": "7:00AM - 10:00PM"
+        },
+        "recycling_types_accepted": [
+          "Return-It Express",
+          "Return-It Beverage"
+        ],
+        "other_materials_accepted": [],
+        "beverage_containers_accepted": [
+          "Aluminum Can",
+          "Plastic Bottle",
+          "Plastic Cup",
+          "Drink Box",
+          "Gable Top",
+          "Glass Bottle",
+          "Bi-Metal Can",
+          "Drink Pouch",
+          "Bag-in-a-Box (Water)",
+          "Liquor Plastic",
+          "Liquor Glass",
+          "Alcohol Bag-in-a-Box",
+          "Liquor Glass: Non-Refillable Beer",
+          "Ceramic Bottle"
+        ],
+        "notes": "* This Express location does not offer over-the-counter returns or cash refunds.",
+        "geo_point_2d": {
+          "lon": -123.153,
+          "lat": 49.2577
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.153,
+          49.2577
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 11,
+      "properties": {
+        "facility_type": "recycling",
+        "name": "Return-It Express & GO - East Hastings & Clark",
+        "address": "1460 E Hastings St, Vancouver, BC V5L 1S3",
+        "phone": null,
+        "email": null,
+        "urllink": "https://www.return-it.ca/locations/express-go-hastings-clark/",
+        "hours": {
+          "Monday": "7:00AM - 8:00PM",
+          "Tuesday": "7:00AM - 8:00PM",
+          "Wednesday": "7:00AM - 8:00PM",
+          "Thursday": "7:00AM - 8:00PM",
+          "Friday": "7:00AM - 8:00PM",
+          "Saturday": "7:00AM - 8:00PM",
+          "Sunday": "7:00AM - 8:00PM",
+          "Holidays": "7:00AM - 8:00PM"
+        },
+        "recycling_types_accepted": [
+          "Return-It Express",
+          "Return-It Beverage"
+        ],
+        "other_materials_accepted": [],
+        "beverage_containers_accepted": [
+          "Aluminum Can",
+          "Plastic Bottle",
+          "Plastic Cup",
+          "Drink Box",
+          "Gable Top",
+          "Glass Bottle",
+          "Bi-Metal Can",
+          "Drink Pouch",
+          "Bag-in-a-Box (Water)",
+          "Liquor Plastic",
+          "Liquor Glass",
+          "Alcohol Bag-in-a-Box",
+          "Liquor Glass: Non-Refillable Beer",
+          "Ceramic Bottle"
+        ],
+        "notes": "* This Express location does not offer over-the-counter returns or cash refunds.",
+        "geo_point_2d": {
+          "lon": -123.0747,
+          "lat": 49.2811
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0747,
+          49.2811
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 12,
+      "properties": {
+        "facility_type": "recycling",
+        "name": "Return-It Express & GO - UBC",
+        "address": "2465 Health Sciences Mall, Vancouver, BC V6T 1Z3",
+        "phone": null,
+        "email": null,
+        "urllink": "https://www.return-it.ca/locations/express-go-ubc/",
+        "hours": {
+          "Monday": "7:00AM - 10:00PM",
+          "Tuesday": "7:00AM - 10:00PM",
+          "Wednesday": "7:00AM - 10:00PM",
+          "Thursday": "7:00AM - 10:00PM",
+          "Friday": "7:00AM - 10:00PM",
+          "Saturday": "7:00AM - 10:00PM",
+          "Sunday": "7:00AM - 10:00PM",
+          "Holidays": "CLOSED"
+        },
+        "recycling_types_accepted": [
+          "Return-It Express",
+          "Return-It Beverage"
+        ],
+        "other_materials_accepted": [],
+        "beverage_containers_accepted": [
+          "Aluminum Can",
+          "Plastic Bottle",
+          "Plastic Cup",
+          "Drink Box",
+          "Gable Top",
+          "Glass Bottle",
+          "Bi-Metal Can",
+          "Drink Pouch",
+          "Bag-in-a-Box (Water)",
+          "Liquor Plastic",
+          "Liquor Glass",
+          "Alcohol Bag-in-a-Box",
+          "Liquor Glass: Non-Refillable Beer",
+          "Ceramic Bottle"
+        ],
+        "notes": "* This Express location does not offer over-the-counter returns or cash refunds. Has a second printer to the right of the container.",
+        "geo_point_2d": {
+          "lon": -123.2435,
+          "lat": 49.2618
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.2435,
+          49.2618
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 13,
+      "properties": {
+        "facility_type": "recycling",
+        "name": "Regional Recycling - Vancouver",
+        "address": "960 Evans Avenue, Vancouver, BC V6A 2L2",
+        "phone": "1-855-701-7171",
+        "email": null,
+        "urllink": "https://www.return-it.ca/locations/regional-recycling-vancouver/",
+        "hours": {
+          "Monday": "9:00AM - 6:00PM",
+          "Tuesday": "9:00AM - 6:00PM",
+          "Wednesday": "9:00AM - 6:00PM",
+          "Thursday": "9:00AM - 6:00PM",
+          "Friday": "9:00AM - 6:00PM",
+          "Saturday": "9:00AM - 6:00PM",
+          "Sunday": "9:00AM - 6:00PM",
+          "Holidays": "11:00AM - 4:00PM (Closed: Christmas & Boxing Day)"
+        },
+        "recycling_types_accepted": [
+          "Return-It Beverage",
+          "Return-It Electronics",
+          "Return-It Large Appliances"
+        ],
+        "other_materials_accepted": [
+          "Batteries",
+          "Small Appliances",
+          "Paint"
+        ],
+        "beverage_containers_accepted": [
+          "Aluminum Can",
+          "Plastic Bottle",
+          "Plastic Cup",
+          "Drink Box",
+          "Gable Top",
+          "Glass Bottle",
+          "Bi-Metal Can",
+          "Drink Pouch",
+          "Bag-in-a-Box (Water)",
+          "Liquor Plastic",
+          "Liquor Glass",
+          "Alcohol Bag-in-a-Box",
+          "Liquor Glass: Non-Refillable Beer",
+          "Ceramic Bottle"
+        ],
+        "notes": "Closed: Christmas & Boxing Day",
+        "geo_point_2d": {
+          "lon": -123.0858,
+          "lat": 49.2706
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0858,
+          49.2706
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": 14,
+      "properties": {
+        "facility_type": "recycling",
+        "name": "Vancouver Zero Waste Centre",
+        "address": "8588 Yukon St, Vancouver, BC V5Y 2M1",
+        "phone": "604-326-4733",
+        "email": null,
+        "urllink": "https://vancouver.ca/home-property-development/zero-waste-centre.aspx",
+        "hours": {
+          "Monday": "8:00AM - 6:00PM",
+          "Tuesday": "8:00AM - 6:00PM",
+          "Wednesday": "8:00AM - 6:00PM",
+          "Thursday": "8:00AM - 6:00PM",
+          "Friday": "8:00AM - 6:00PM",
+          "Saturday": "8:00AM - 6:00PM",
+          "Sunday": "9:00AM - 6:00PM",
+          "Holidays": "9:00AM - 5:00PM (All other statutory holidays unless otherwise noted)"
+        },
+        "recycling_types_accepted": [
+          "Bicycles and accessories",
+          "Books (outdated textbooks and old encyclopedias are not accepted)",
+          "Cardboard (flatten)",
+          "Cell phones",
+          "Clothing and textiles",
+          "Cooking oil (maximum 10L per day per resident)",
+          "Electronics, small appliances, and power tools (maximum 5 large items)",
+          "Fire extinguishers (maximum 2 per day per resident)",
+          "Fluorescent light bulbs and tubes",
+          "Flexible plastics",
+          "Foam packaging (Styrofoam) - no foam peanuts",
+          "Glass bottles and jars",
+          "Household batteries",
+          "Large appliances (refrigerators, freezers, air conditioners)",
+          "Lawnmowers - electric, battery, or gas-powered",
+          "Lead acid car and truck batteries",
+          "Light ballasts (non-PCB)",
+          "Metal containers (cans, tins, foil, empty aerosol cans excluding spray paint cans)",
+          "Paper containers (tetra-packs, coffee cups)",
+          "Plastic containers (jars, jugs, bottles)",
+          "Power tools",
+          "Printed paper and paper packaging (newspaper, magazines, catalogues, writing paper, paper bags)",
+          "Propane tanks (maximum 4 disposable and 2 refillable)",
+          "Scrap metal",
+          "Small appliances",
+          "Smoke and carbon monoxide alarms",
+          "Thermostats"
+        ],
+        "other_materials_accepted": [],
+        "beverage_containers_accepted": [],
+        "notes": "Recycling drop-off is for residential customers only. Drop off garbage at the Transfer Station before dropping off recycling at the Zero Waste Centre.",
+        "geo_point_2d": {
+          "lon": -123.1175814,
+          "lat": 49.2084784
+        }
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.115,
+          49.2085
+        ]
       }
     }
   ]

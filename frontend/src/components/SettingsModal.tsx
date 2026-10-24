@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Settings, X, Clock, Ruler, Thermometer, Check, MapPin, Navigation, Search, AlertCircle, RefreshCw, Globe, Newspaper, ChevronDown } from 'lucide-react';
 import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
@@ -28,6 +28,59 @@ export default function SettingsModal() {
   const [isGpsLoading, setIsGpsLoading] = useState(false);
   const [geocodeError, setGeocodeError] = useState<string | null>(null);
   const [isEditingAddress, setIsEditingAddress] = useState(false);
+
+  // 地址搜尋建議狀態
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [isSuggesting, setIsSuggesting] = useState(false);
+  const suggestionsContainerRef = useRef<HTMLDivElement>(null);
+  const isSelectingSuggestionRef = useRef(false);
+
+  // 搜尋建議防抖 (Debounce)
+  useEffect(() => {
+    if (isSelectingSuggestionRef.current) {
+      isSelectingSuggestionRef.current = false;
+      return;
+    }
+    const trimmed = addressInput.trim();
+    if (!trimmed || trimmed.length < 2) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      try {
+        setIsSuggesting(true);
+        const apiUrl = getApiUrl();
+        const res = await fetch(`${apiUrl}/api/search?q=${encodeURIComponent(trimmed)}`);
+        const data = await res.json();
+        const list = Array.isArray(data) ? data : (data.results || []);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const validList = list.filter((item: any) => item.lat && item.lon).slice(0, 6);
+        setSuggestions(validList);
+        setShowSuggestions(validList.length > 0);
+      } catch (err) {
+        console.error('Settings suggestion error:', err);
+      } finally {
+        setIsSuggesting(false);
+      }
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, [addressInput]);
+
+  // 點擊外部關閉建議清單
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (suggestionsContainerRef.current && !suggestionsContainerRef.current.contains(e.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     if (userLocation?.address) {
@@ -234,22 +287,78 @@ export default function SettingsModal() {
           ) : (
             /* Input / Edit Location Form */
             <form onSubmit={handleVerifyAddress} className="flex flex-col gap-2">
-              <div className="relative">
-                <input
-                  type="text"
-                  value={addressInput}
-                  onChange={(e) => setAddressInput(e.target.value)}
-                  placeholder="輸入溫哥華住址 (例如: 1200 Burrard St)"
-                  className="w-full bg-[#12151d] text-xs text-white rounded-lg border border-[#343a4a] px-3 py-2 pr-8 focus:outline-none focus:border-emerald-500 transition-colors placeholder:text-gray-500"
-                />
-                {addressInput && (
-                  <button
-                    type="button"
-                    onClick={() => setAddressInput('')}
-                    className="absolute right-2 top-2 text-gray-400 hover:text-gray-200"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
+              <div ref={suggestionsContainerRef} className="relative">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={addressInput}
+                    onChange={(e) => {
+                      setAddressInput(e.target.value);
+                      setShowSuggestions(true);
+                    }}
+                    onFocus={() => {
+                      if (suggestions.length > 0) setShowSuggestions(true);
+                    }}
+                    placeholder="輸入溫哥華住址 (例如: 1200 Burrard St)"
+                    className="w-full bg-[#12151d] text-xs text-white rounded-lg border border-[#343a4a] px-3 py-2 pr-8 focus:outline-none focus:border-emerald-500 transition-colors placeholder:text-gray-500"
+                  />
+                  {addressInput && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setAddressInput('');
+                        setSuggestions([]);
+                        setShowSuggestions(false);
+                      }}
+                      className="absolute right-2 top-2 text-gray-400 hover:text-gray-200"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+
+                {/* 搜尋建議選單 */}
+                {showSuggestions && suggestions.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-[#191c26] border border-[#373e52] rounded-lg shadow-2xl overflow-hidden z-50 max-h-52 overflow-y-auto divide-y divide-[#282f42] [scrollbar-width:thin]">
+                    <div className="px-2.5 py-1 text-[10px] text-gray-400 bg-[#141720] flex items-center justify-between">
+                      <span>搜尋建議（點選立即確認）</span>
+                      {isSuggesting && <RefreshCw className="w-2.5 h-2.5 animate-spin text-emerald-400" />}
+                    </div>
+                    {suggestions.map((item, idx) => (
+                      <button
+                        key={item.id || idx}
+                        type="button"
+                        onClick={() => {
+                          isSelectingSuggestionRef.current = true;
+                          setUserLocation({
+                            address: item.title,
+                            displayName: item.subtitle ? `${item.title} (${item.subtitle})` : item.title,
+                            lat: item.lat,
+                            lon: item.lon,
+                            confirmed: true
+                          });
+                          setAddressInput(item.title);
+                          setShowSuggestions(false);
+                          setIsEditingAddress(false);
+                          setGeocodeError(null);
+                        }}
+                        className="w-full text-left px-2.5 py-2 hover:bg-[#252b3d] transition-colors flex items-center gap-2 group cursor-pointer"
+                      >
+                        <span className="text-sm shrink-0 w-5 h-5 flex items-center justify-center bg-[#252a3a] rounded text-emerald-400">
+                          {item.icon || '📍'}
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs font-semibold text-white group-hover:text-emerald-300 truncate">{item.title}</p>
+                          {item.subtitle && <p className="text-[10px] text-gray-400 truncate">{item.subtitle}</p>}
+                        </div>
+                        {item.badge && (
+                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#202535] text-gray-300 shrink-0 font-medium">
+                            {item.badge}
+                          </span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
                 )}
               </div>
 
