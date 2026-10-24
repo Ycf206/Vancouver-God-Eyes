@@ -42,7 +42,7 @@ const HydrantIcon = ({ className }: { className?: string }) => (
 export default function LayerPanel() {
   const { 
     mapStyleType, setMapStyleType, layers, toggleLayer, resetAllLayers,
-    isLayerPanelOpen, toggleLayerPanel, toggleFlightSchedule,
+    isLayerPanelOpen, toggleLayerPanel, toggleFlightSchedule, isFlightScheduleOpen,
     contourInterval, setContourInterval
   } = useUIStore();
 
@@ -219,11 +219,17 @@ export default function LayerPanel() {
               <LayerButton layerKey="airports" label="機場" title="機場" icon={PlaneTakeoff} iconOnly colorClass="text-sky-400" activeBg="bg-[#102336]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(56,189,248,0.15)]" />
               <button
                 onClick={() => toggleFlightSchedule()}
-                className="flex items-center justify-center gap-1 px-1 h-7 rounded text-[10px] border transition-all truncate text-left select-none bg-[#1c1d21] border-[#2d2e32] text-amber-300 hover:bg-[#2e2618] hover:border-amber-500/50 hover:text-amber-200 font-medium shadow-[0_0_4px_rgba(245,158,11,0.1)] active:scale-[0.98]"
-                title="YVR 航班即時看板"
+                className={`group relative flex items-center justify-center h-7 rounded border text-[10.5px] transition-all duration-150 select-none ${
+                  isFlightScheduleOpen
+                    ? 'bg-[#102336] border-sky-500/50 text-sky-400 shadow-[0_0_6px_rgba(56,189,248,0.15)] font-semibold'
+                    : 'bg-[#1c1d21] border-[#2d2e32] text-gray-400 hover:bg-[#25262b] hover:text-white font-normal'
+                }`}
+                title="航班班次"
               >
-                <Calendar className="w-3 h-3 text-amber-400 shrink-0" />
-                <span className="truncate">航班班次</span>
+                <Calendar className={`w-3.5 h-3.5 shrink-0 ${isFlightScheduleOpen ? 'text-sky-400' : 'text-gray-500 group-hover:text-white'}`} />
+                <span className="pointer-events-none absolute bottom-full mb-1.5 hidden group-hover:flex items-center px-2 py-0.5 rounded bg-gray-900 border border-gray-700 text-white text-[10px] whitespace-nowrap shadow-lg z-50">
+                  航班班次
+                </span>
               </button>
             </div>
           </div>

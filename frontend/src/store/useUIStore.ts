@@ -144,6 +144,7 @@ export interface UIState {
   openExploreTab: (tab: ExploreTabType) => void;
   closeExploreTab: (tab: ExploreTabType) => void;
   setOpenExploreTabs: (tabs: ExploreTabType[]) => void;
+  closeAllExploreTabs: () => void;
   isExportModalOpen: boolean;
   setExportModalOpen: (open: boolean) => void;
   toggleExportModal: () => void;
@@ -334,6 +335,7 @@ export const useUIStore = create<UIState>()(
         };
       }),
       setOpenExploreTabs: (tabs) => set({ openExploreTabs: tabs }),
+      closeAllExploreTabs: () => set({ openExploreTabs: [], isExploreOpen: false }),
       closeExploreTab: (tab) => set((state) => {
         const tabs = state.openExploreTabs || [];
         const newTabs = tabs.filter(t => t !== tab);

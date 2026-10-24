@@ -554,6 +554,7 @@ function ExploreContent() {
     openExploreTab,
     closeExploreTab,
     setOpenExploreTabs,
+    closeAllExploreTabs,
     userLocation, 
     setSettingsModalOpen,
     distanceUnit,
@@ -597,6 +598,7 @@ function ExploreContent() {
   const [showCloseConfirm, setShowCloseConfirm] = useState<boolean>(false);
   const [draggedTab, setDraggedTab] = useState<ExploreTabType | null>(null);
   const [dragOverTab, setDragOverTab] = useState<ExploreTabType | null>(null);
+  const [satelliteModalOpen, setSatelliteModalOpen] = useState<boolean>(false);
 
   // 氣溫單位轉換輔助函式
   const formatTemp = (celsius?: number | string | null) => {
@@ -2465,7 +2467,7 @@ function ExploreContent() {
                 type="button"
                 onClick={() => {
                   setShowCloseConfirm(false);
-                  setExploreOpen(false);
+                  closeAllExploreTabs();
                   setSearchTarget(null);
                 }}
                 className="flex-1 py-1.5 px-3 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold transition-colors shadow-sm cursor-pointer"
@@ -2566,7 +2568,7 @@ function ExploreContent() {
             if (tabsToRender.length > 1) {
               setShowCloseConfirm(true);
             } else {
-              setExploreOpen(false);
+              closeAllExploreTabs();
               setSearchTarget(null);
             }
           }}
@@ -2811,9 +2813,8 @@ function ExploreContent() {
                           </span>
                         </div>
 
-                        <div className="text-[10px] text-gray-400">
-                          <span>觀測狀況 · </span>
-                          <span>計算時間：{weather.aqhi.calculated_at || '今日 3:00 AM PDT'}</span>
+                        <div className="text-[10px] text-gray-400 font-mono">
+                          {weather.aqhi.calculated_at || '今日 3:00 AM PDT'}
                         </div>
 
                         <div className="pt-5 pb-1 relative">
@@ -2860,13 +2861,13 @@ function ExploreContent() {
 
                         <div className="grid grid-cols-2 gap-2 mt-1">
                           <div className="bg-[#181c26] border border-[#282f42] p-2 rounded-lg flex flex-col gap-0.5">
-                            <span className="text-[10px] font-bold text-sky-300">高敏感族群 (At-Risk)</span>
+                            <span className="text-[10px] font-bold text-sky-300">高敏感族群</span>
                             <span className="text-[10px] text-gray-300 leading-relaxed">
                               {weather.aqhi.at_risk_msg || '可如常進行戶外活動。'}
                             </span>
                           </div>
                           <div className="bg-[#181c26] border border-[#282f42] p-2 rounded-lg flex flex-col gap-0.5">
-                            <span className="text-[10px] font-bold text-emerald-300">一般民眾 (General)</span>
+                            <span className="text-[10px] font-bold text-emerald-300">一般民眾</span>
                             <span className="text-[10px] text-gray-300 leading-relaxed">
                               {weather.aqhi.general_msg || '適合進行戶外活動的理想空氣品質。'}
                             </span>
@@ -2876,14 +2877,15 @@ function ExploreContent() {
                         {weather.aqhi.forecasts && weather.aqhi.forecasts.length > 0 && (
                           <div className="pt-2 border-t border-[#232838] flex flex-col gap-1.5">
                             <div className="flex items-center justify-between">
-                              <span className="text-[10.5px] font-bold text-gray-300">預報峰值 (Forecast Maximums)</span>
+                              <span className="text-[10.5px] font-bold text-gray-300">預報峰值</span>
                               <a 
                                 href="https://weather.gc.ca/airquality/pages/bcaq-001_e.html" 
                                 target="_blank" 
                                 rel="noopener noreferrer" 
-                                className="text-[10px] text-sky-400 hover:underline flex items-center gap-0.5"
+                                className="p-1 rounded bg-[#1e2433] hover:bg-[#283044] border border-[#2e374d] text-sky-400 hover:text-white transition-colors flex items-center justify-center"
+                                title="開啟官方專頁"
                               >
-                                官方專頁 ↗
+                                <ExternalLink className="w-3.5 h-3.5" />
                               </a>
                             </div>
                             <div className="flex flex-col gap-1">
@@ -3005,7 +3007,7 @@ function ExploreContent() {
                         </div>
 
                         <div className="pt-2 border-t border-[#1f2533] flex flex-col gap-1 text-[10px] text-gray-400">
-                          <span className="text-[9.5px]">降水強度圖例 (Precipitation Intensity):</span>
+                          <span className="text-[9.5px]">降水強度圖例:</span>
                           <div className="grid grid-cols-5 text-center gap-1 text-[9px] font-mono">
                             <div className="py-0.5 rounded bg-sky-900/60 text-sky-200 border border-sky-700/50">細雨 &lt;0.5</div>
                             <div className="py-0.5 rounded bg-emerald-900/60 text-emerald-200 border border-emerald-700/50">小雨 0.5-2</div>
@@ -3053,15 +3055,14 @@ function ExploreContent() {
                           <span className="font-mono text-sky-400 font-semibold">-12°C ~ -18°C</span>
                         </div>
                       </div>
-                      <a
-                        href="https://weather.gc.ca/satellite/index_e.html"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[10.5px] text-sky-400 hover:underline flex items-center gap-1 mt-1 justify-end"
+                      <button
+                        type="button"
+                        onClick={() => setSatelliteModalOpen(true)}
+                        className="text-[10.5px] text-sky-400 hover:text-sky-300 hover:underline flex items-center gap-1 mt-1 justify-end cursor-pointer"
                       >
-                        <span>檢視加拿大環境部全幅衛星圖</span>
-                        <ExternalLink className="w-3 h-3" />
-                      </a>
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>檢視衛星圖</span>
+                      </button>
                     </div>
                   </div>
 
@@ -3293,7 +3294,7 @@ function ExploreContent() {
                     <div className="flex flex-col gap-1.5">
                       <div className="bg-[#141824] border border-[#242b3c] p-2.5 rounded-lg flex flex-col gap-1 text-xs">
                         <div className="flex items-center justify-between">
-                          <span className="font-bold text-sky-300">喬治亞海峽南部 (Strait of Georgia - South)</span>
+                          <span className="font-bold text-sky-300">Strait of Georgia - South (喬治亞海峽南部)</span>
                           <span className="text-[10px] text-gray-400 font-mono">風力 10-15 節</span>
                         </div>
                         <p className="text-[10.5px] text-gray-300 leading-relaxed">
@@ -3303,7 +3304,7 @@ function ExploreContent() {
 
                       <div className="bg-[#141824] border border-[#242b3c] p-2.5 rounded-lg flex flex-col gap-1 text-xs">
                         <div className="flex items-center justify-between">
-                          <span className="font-bold text-cyan-300">豪灣海域 (Howe Sound)</span>
+                          <span className="font-bold text-cyan-300">Howe Sound (豪灣海域)</span>
                           <span className="text-[10px] text-gray-400 font-mono">風力 5-10 節</span>
                         </div>
                         <p className="text-[10.5px] text-gray-300 leading-relaxed">
@@ -3313,7 +3314,7 @@ function ExploreContent() {
 
                       <div className="bg-[#141824] border border-[#242b3c] p-2.5 rounded-lg flex flex-col gap-1 text-xs">
                         <div className="flex items-center justify-between">
-                          <span className="font-bold text-indigo-300">哈羅海峽與邊界通道 (Haro Strait)</span>
+                          <span className="font-bold text-indigo-300">Haro Strait (哈羅海峽與邊界通道)</span>
                           <span className="text-[10px] text-gray-400 font-mono">風力 12-18 節</span>
                         </div>
                         <p className="text-[10.5px] text-gray-300 leading-relaxed">
@@ -3409,7 +3410,17 @@ function ExploreContent() {
                                       </span>
                                     )}
                                   </div>
-                                  <span className="text-[10px] text-blue-400 font-medium">點擊定位 ❯</span>
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleLocateTideStation(st);
+                                    }}
+                                    className="p-1 rounded bg-blue-900/30 hover:bg-blue-800/60 border border-blue-700/40 text-blue-300 hover:text-white transition-colors"
+                                    title="在地圖上定位此測站"
+                                  >
+                                    <MapPin className="w-3.5 h-3.5" />
+                                  </button>
                                 </div>
                               )}
                             </div>
@@ -4150,7 +4161,7 @@ function ExploreContent() {
       )}
 
       {/* ==================== 3. 充電分頁 (EV Charging) ==================== */}
-      {activeTab === 'ev' && (
+      {(activeTab === 'ev' || activeTab === 'charging') && (
         <div className="flex flex-col flex-1 min-h-0">
           {/* Subheader: Range & Location info */}
           <div className="flex items-center justify-between mb-2 shrink-0">
@@ -4296,7 +4307,7 @@ function ExploreContent() {
       )}
 
       {/* ==================== 4. 船運分頁 (Maritime Shipping - Port of Vancouver AIS Shipping) ==================== */}
-      {activeTab === 'cargo' && (
+      {(activeTab === 'cargo' || activeTab === 'shipping') && (
         <div className="flex flex-col flex-1 min-h-0">
           <div className="flex items-center justify-between mb-2 shrink-0">
             <span className="text-xs text-gray-300 font-medium flex items-center gap-1.5">
@@ -5984,13 +5995,13 @@ function ExploreContent() {
           {activeTab === 'fuel' && (
             <span>共有 {filteredFuelStations.length} 間加油站</span>
           )}
-          {activeTab === 'ev' && (
+          {(activeTab === 'ev' || activeTab === 'charging') && (
             <span>共有 {filteredEvStations.length} 座充電站</span>
           )}
           {activeTab === 'ferry' && (
             <span>共 {ferryRoutes.reduce((acc, r) => acc + (r?.vessels?.length || 0), 0)} 艘渡輪即時航行中</span>
           )}
-          {activeTab === 'cargo' && (
+          {(activeTab === 'cargo' || activeTab === 'shipping') && (
             <>
               <span>共追蹤 {sortedShippingVessels.length} 艘溫哥華港口商船 (依抵達時間近至遠排序)</span>
               <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：AISStream</span>

@@ -8368,6 +8368,7 @@ export default function AppMap() {
                   if (t === 'garbage_collection') return { label: '廢物回收', bg: 'bg-orange-600 text-white' };
                   if (t === 'recycling') return { label: '環保回收', bg: 'bg-emerald-600 text-white' };
                   if (t === 'litter_containers') return { label: '垃圾箱', bg: 'bg-amber-600 text-white' };
+                  if (t === 'zoning_districts') return { label: '土地規劃', bg: 'bg-purple-600 text-white' };
                   if (t === 'tide_stations') return { label: '潮汐站', bg: 'bg-blue-600 text-white' };
                   if (t === 'traffic_alerts' || t === 'traffic_incident') return { label: '即時通報', bg: 'bg-amber-600 text-white' };
                   return null;
@@ -11821,17 +11822,9 @@ export default function AppMap() {
                 return (
                   <div className="flex flex-col gap-2 text-xs">
                     {/* 1.2 藍區塊:左上方為“地理資料”, 右方是淺藍底白字"潮汐水位", 下半部保留說明文字 */}
-                    <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex flex-col gap-1.5">
-                      <div className="flex items-center justify-between">
-                        <span className="font-bold text-xs text-sky-950">地理資料</span>
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-600 text-white shrink-0 shadow-xs whitespace-nowrap">
-                          潮汐水位
-                        </span>
-                      </div>
-                      <div className="pt-1 border-t border-sky-500/20 text-[11px] text-sky-950 font-medium flex items-center gap-1.5 leading-snug">
-                        <span className="text-base text-sky-600 font-bold shrink-0">🌊</span>
-                        <span>海岸潮汐水位</span>
-                      </div>
+                    <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex items-center gap-1.5 text-[11px] text-sky-950 font-medium leading-snug">
+                      <span className="text-base text-sky-600 font-bold shrink-0">🌊</span>
+                      <span>海岸潮汐水位</span>
                     </div>
 
                     <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-2 text-[11px]">
@@ -13422,17 +13415,9 @@ export default function AppMap() {
               {/* Zoning Districts (土地規劃分區) Details */}
               {selectedFacility.facility_type === 'zoning_districts' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-purple-500/10 p-2.5 rounded-lg border border-purple-500/25 flex flex-col gap-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-purple-950 text-xs">地理資料</span>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-purple-600 text-white shrink-0 shadow-xs whitespace-nowrap">
-                        土地規劃
-                      </span>
-                    </div>
-                    <div className="pt-1 border-t border-purple-500/20 text-[11px] text-purple-950 font-medium flex items-center gap-1.5 leading-snug">
-                      <span className="text-base text-purple-600 font-bold shrink-0">📐</span>
-                      <span>都市土地規劃與使用分區</span>
-                    </div>
+                  <div className="bg-purple-500/10 p-2.5 rounded-lg border border-purple-500/25 flex items-center gap-1.5 text-[11px] text-purple-950 font-medium leading-snug">
+                    <span className="text-base text-purple-600 font-bold shrink-0">📐</span>
+                    <span>都市土地規劃與使用分區</span>
                   </div>
 
                   <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
@@ -13753,7 +13738,7 @@ export default function AppMap() {
       {/* 坐標與地理資訊狀態列 (Fixed Top-Right Coordinate Display HUD) */}
       {cursorCoords && (
         <div
-          className="absolute top-[64px] right-2.5 z-20 pointer-events-auto select-none flex items-center gap-2 px-2.5 py-1.5 bg-[#10131a]/95 backdrop-blur-md rounded-full border border-[#2a2f3d] shadow-xl text-[11px] font-mono text-gray-200"
+          className="absolute top-2 right-2 z-20 pointer-events-auto select-none flex items-center gap-2 px-2.5 py-1.5 bg-[#10131a]/95 backdrop-blur-md rounded-full border border-[#2a2f3d] shadow-xl text-[11px] font-mono text-gray-200"
         >
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
 
@@ -13783,13 +13768,12 @@ export default function AppMap() {
           { id: 'ski', label: '滑雪', icon: Navigation, color: 'text-cyan-400' },
           { id: 'aurora', label: '極光', icon: Zap, color: 'text-fuchsia-400' },
           { id: 'fuel', label: '加油站', icon: Fuel, color: 'text-amber-500' },
-          { id: 'charging', label: '充電', icon: Zap, color: 'text-emerald-400' },
+          { id: 'ev', label: '充電', icon: Zap, color: 'text-yellow-400' },
           { id: 'alerts', label: '即時通報', icon: AlertCircle, color: 'text-rose-400' },
           { id: 'traffic', label: '路況', icon: Activity, color: 'text-amber-400' },
           { id: 'border', label: '關口', icon: Compass, color: 'text-blue-400' },
           { id: 'ferry', label: '渡輪', icon: Ship, color: 'text-sky-400' },
-          { id: 'shipping', label: '航運', icon: Ship, color: 'text-teal-400' },
-          { id: 'flights', label: '航班', icon: Navigation, color: 'text-indigo-400' },
+          { id: 'cargo', label: '航運', icon: Ship, color: 'text-teal-400' },
         ].map((tab) => {
           const isActive = isExploreOpen && exploreTab === tab.id;
           const Icon = tab.icon;
