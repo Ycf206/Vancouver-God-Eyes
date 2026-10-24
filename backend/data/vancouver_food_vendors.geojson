@@ -30,11 +30,80 @@
       "properties": {
         "id": "food_vendor_3",
         "facility_type": "food_vendors",
+        "name": "Babb D Thai Food",
+        "address": "River District Town Centre, 8558 River District Cross, Vancouver, BC",
+        "business_name": "Babb D Thai Food",
+        "hours": "11 AM – 7 PM",
+        "operating_hours": "11 AM – 7 PM",
+        "credit_card": "支援",
+        "payment_methods": "支援信用卡",
+        "city": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.03097403921,
+          49.206493007566
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_vendor_3",
+      "properties": {
+        "id": "food_vendor_4",
+        "facility_type": "food_vendors",
+        "name": "Crack On",
+        "address": "Riley Park Farmers Market, 50 E 30th Ave, Vancouver, BC",
+        "business_name": "Crack On",
+        "hours": "10 AM – 2 PM",
+        "operating_hours": "10 AM – 2 PM",
+        "credit_card": "支援",
+        "payment_methods": "支援信用卡",
+        "city": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10452414,
+          49.24306443
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_vendor_4",
+      "properties": {
+        "id": "food_vendor_5",
+        "facility_type": "food_vendors",
+        "name": "Chili Tank",
+        "address": "Trout lake farmers market",
+        "business_name": "Chili Tank",
+        "hours": "9 AM – 2 PM",
+        "operating_hours": "9 AM – 2 PM",
+        "credit_card": "不支援",
+        "payment_methods": "現金 / 其他",
+        "city": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.05874211,
+          49.25751615
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_vendor_5",
+      "properties": {
+        "id": "food_vendor_6",
+        "facility_type": "food_vendors",
         "name": "El Jefe Van",
         "address": "Shipyards Brewery District",
         "business_name": "El Jefe Van",
-        "hours": "4 PM – 8 PM",
-        "operating_hours": "4 PM – 8 PM",
+        "hours": "2 PM – 8 PM",
+        "operating_hours": "2 PM – 8 PM",
         "credit_card": "不支援",
         "payment_methods": "現金 / 其他",
         "city": "Vancouver"
@@ -49,9 +118,9 @@
     },
     {
       "type": "Feature",
-      "id": "food_vendor_3",
+      "id": "food_vendor_6",
       "properties": {
-        "id": "food_vendor_4",
+        "id": "food_vendor_7",
         "facility_type": "food_vendors",
         "name": "JAPADOG",
         "address": "Burrard St & Smithe St",
@@ -67,6 +136,29 @@
         "coordinates": [
           -123.12439424,
           49.28243991
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_vendor_7",
+      "properties": {
+        "id": "food_vendor_8",
+        "facility_type": "food_vendors",
+        "name": "Meet2Eat",
+        "address": "9015 Shaughnessy St, Vancouver",
+        "business_name": "Meet2Eat",
+        "hours": "9 AM – 3 PM",
+        "operating_hours": "9 AM – 3 PM",
+        "credit_card": "支援",
+        "payment_methods": "支援信用卡",
+        "city": "Vancouver"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.12802340738,
+          49.203242902192
         ]
       }
     }
