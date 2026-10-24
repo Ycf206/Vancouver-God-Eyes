@@ -16,7 +16,7 @@ import {
   Navigation, ExternalLink, Clock, Bike, Car, Info, 
   ChevronDown, ChevronUp, SlidersHorizontal, Fuel, Zap, Wifi, Waves, Play, Pause, CloudRain,
   RotateCcw, RotateCw, MapPin, Crosshair, Activity, Ban, Cone, Lightbulb, Ship,
-  Camera, Gauge, Footprints, ArrowRight, Mail
+  Camera, Gauge, Footprints, ArrowRight, Mail, AlertCircle
 } from 'lucide-react';
 
 // Fix Next.js App Router Web Worker crash
@@ -473,7 +473,7 @@ const BORDER_CROSSING_POINTS = [
 export default function AppMap() {
   const { 
     layers, mapStyleType, searchTarget, setSearchTarget, isLayerPanelOpen, 
-    contourInterval, timeFormat, distanceUnit, userLocation, setExploreOpen,
+    contourInterval, timeFormat, distanceUnit, userLocation, setUserLocation, setExploreOpen,
     isExploreOpen, exploreTab, setExploreTab, setSettingsModalOpen,
     parkingMeterFilter, setParkingMeterFilter,
     motorcycleParkingFilter, setMotorcycleParkingFilter,
@@ -1056,6 +1056,7 @@ export default function AppMap() {
         else if (type === 'traffic_cameras' && !layers.trafficCameras) facilityClosed = true;
         else if (type === 'safety_cameras' && !layers.safetyCameras) facilityClosed = true;
         else if (type === 'parking_meters' && !layers.parkingMeters) facilityClosed = true;
+        else if (type === 'impark' && !layers.impark) facilityClosed = true;
         else if (type === 'accessible_parking' && !layers.accessibleParking) facilityClosed = true;
         else if (type === 'motorcycle_parking' && !layers.motorcycleParking) facilityClosed = true;
         else if (type === 'car_sharing' && !layers.carSharing) facilityClosed = true;
@@ -2661,6 +2662,9 @@ export default function AppMap() {
         clusterRadius: 50
       };
     }
+    if (layers.impark) {
+      style.sources['impark'] = { type: 'geojson', data: '/vancouver_impark.geojson' };
+    }
     if (layers.accessibleParking) {
       style.sources['accessible-parking'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/accessible_parking` };
     }
@@ -2697,7 +2701,7 @@ export default function AppMap() {
       style.sources['community-centres'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/community_centres` };
     }
     if (layers.trafficCameras) {
-      style.sources['traffic-cameras'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/traffic_cameras` };
+      style.sources['traffic-cameras'] = { type: 'geojson', data: '/vancouver_traffic_cameras.geojson' };
     }
     if (layers.safetyCameras) {
       style.sources['safety-cameras'] = { type: 'geojson', data: '/vancouver_safety_cameras.geojson' };
@@ -3478,6 +3482,37 @@ export default function AppMap() {
           'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
           'text-allow-overlap': true,
           'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+    }
+
+    
+    // Road Facilities: ImPark Lots
+    if (layers.impark) {
+      style.layers.push({
+        id: 'impark-layer',
+        type: 'circle',
+        source: 'impark',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3.5, 14, 6, 15, 9, 17, 12],
+          'circle-color': '#d9261c',
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'impark-symbol-layer',
+        type: 'symbol',
+        source: 'impark',
+        minzoom: 13,
+        layout: {
+          'text-field': 'P',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 8.5, 15, 10.5, 17, 12],
+          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+          'text-allow-overlap': false
         },
         paint: {
           'text-color': '#ffffff'
@@ -5622,17 +5657,17 @@ export default function AppMap() {
   const getFloatingPanelPos = (offsetIdx: number) => {
     switch (offsetIdx) {
       case 0:
-        return 'top-[72px] left-4 md:left-[256px]';
+        return 'top-[88px] left-4 md:left-[256px]';
       case 1:
-        return 'top-[132px] md:top-[72px] left-4 md:left-[568px]';
+        return 'top-[148px] md:top-[88px] left-4 md:left-[568px]';
       case 2:
-        return 'top-[192px] md:top-[72px] left-4 md:left-[880px]';
+        return 'top-[208px] md:top-[88px] left-4 md:left-[880px]';
       case 3:
-        return 'top-[252px] md:top-[72px] left-4 md:left-[1190px]';
+        return 'top-[268px] md:top-[88px] left-4 md:left-[1190px]';
       case 4:
-        return 'top-[312px] md:top-[72px] left-4 md:left-[1480px]';
+        return 'top-[328px] md:top-[88px] left-4 md:left-[1480px]';
       default:
-        return 'top-[372px] md:top-[220px] left-4 md:left-[256px]';
+        return 'top-[388px] md:top-[236px] left-4 md:left-[256px]';
     }
   };
 
@@ -5679,6 +5714,8 @@ export default function AppMap() {
           'parking-meters-cluster-layer',
           'parking-meters-layer',
           'parking-meters-symbol-layer',
+          'impark-layer',
+          'impark-symbol-layer',
           'accessible-parking-layer',
           'accessible-parking-symbol-layer',
           'motorcycle-parking-layer',
@@ -6165,6 +6202,7 @@ export default function AppMap() {
               properties: props
             });
           } else if (
+            layerId.startsWith('impark') ||
             layerId.startsWith('parking-meters') || 
             layerId.startsWith('accessible-parking') || 
             layerId.startsWith('motorcycle-parking') || 
@@ -6210,6 +6248,7 @@ export default function AppMap() {
             const isMarineTerminal = layerId.startsWith('marine-terminals');
             const isBikeRack = layerId.startsWith('bike-racks');
             const isPublicArt = layerId.startsWith('public-art');
+            const isImpark = layerId.startsWith('impark');
             const isMuseums = layerId.startsWith('museums');
             const isGarbage = layerId.startsWith('garbage-collection');
             const isTraffic = layerId.startsWith('traffic-conditions');
@@ -6227,7 +6266,8 @@ export default function AppMap() {
             const clickLat = e.lngLat?.lat ?? (Array.isArray(coords[0]) ? (Array.isArray(coords[0][1]) ? coords[0][0][1] : coords[0][1]) : coords[1]);
 
             let facilityType = props.facility_type || derivedFacilityType || 'fac';
-            if (isMuseums) facilityType = 'museums';
+            if (isImpark) facilityType = 'impark';
+            else if (isMuseums) facilityType = 'museums';
             else if (isGarbage) facilityType = 'garbage_collection';
             else if (isPublicArt) facilityType = 'public_art';
             else if (isTraffic) facilityType = 'traffic_conditions';
@@ -6244,7 +6284,8 @@ export default function AppMap() {
 
             let facilityName = props.name;
             if (!facilityName) {
-              if (isGarbage) facilityName = props.zone_name || '廢物回收分區';
+              if (isImpark) facilityName = props.lot_name || ('ImPark Lot ' + props.lot_number);
+              else if (isGarbage) facilityName = props.zone_name || '廢物回收分區';
               else if (isMuseums) facilityName = props.name || '博物館';
               else if (isPublicArt) facilityName = props.sitename || props.title_of_work || '公共藝術';
               else if (isTraffic) facilityName = '獅門大橋即時路況';
@@ -8292,6 +8333,7 @@ export default function AppMap() {
                   if (t === 'road_closures') return { label: '交通封閉', bg: 'bg-[#DC2626] text-white' };
                   if (t === 'road_construction') return { label: '道路施工', bg: 'bg-[#EA580C] text-white' };
                   if (t === 'traffic_cameras') return { label: '交通攝影機', bg: 'bg-[#0284C7] text-white' };
+                  if (t === 'impark') return { label: 'ImPark', bg: 'bg-[#d9261c] text-white' };
                   if (t === 'safety_cameras') {
                     const hasSpeed = Boolean(selectedFacility.properties?.has_speed);
                     return { label: '路口安全相機', bg: hasSpeed ? 'bg-[#991B1B] text-white' : 'bg-[#DC2626] text-white' };
@@ -8530,7 +8572,8 @@ export default function AppMap() {
                         <h3 className="font-bold text-gray-900 text-sm leading-snug break-words">
                           {popupTitle}
                         </h3>
-                        {(selectedFacility.local_area || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'motorcycle_parking' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || selectedFacility.facility_type === 'car_sharing') && (
+                        {(selectedFacility.local_area || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'motorcycle_parking' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'impark' ||
+                  selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || selectedFacility.facility_type === 'car_sharing') && (
                           <span className="text-[11px] text-gray-400 block leading-snug break-words">
                             {(() => {
                               if (selectedFacility.facility_type === 'escooter') {
@@ -8710,6 +8753,99 @@ export default function AppMap() {
                       <p className="text-[11px] text-gray-600 bg-amber-50/60 p-2 rounded-lg border border-amber-200 leading-relaxed">
                         💡 {props.tips}
                       </p>
+                    )}
+                  </div>
+                );
+              })()}
+
+              
+              {/* ImPark Parking Lot Details */}
+              {selectedFacility.facility_type === 'impark' && (() => {
+                const p = selectedFacility.properties || {};
+                const hasTransient = p.hasTransientRates;
+                const transientRate = p.lowestTransientRate;
+                const hasMonthly = p.hasMonthlyRates;
+                const monthlyRate = p.lowestMonthlyRate;
+                const hasPromo = p.hasPromotions;
+                const features: string[] = Array.isArray(p.features) ? p.features : [];
+                const streetView = p.streetViewUrl;
+
+                return (
+                  <div className="flex flex-col gap-2.5 text-xs text-gray-200">
+                    {/* Rates & Promotions */}
+                    {(hasTransient || hasMonthly || hasPromo) && (
+                      <div className="bg-[#12151e] p-2.5 rounded-lg border border-[#232838] flex flex-col gap-2">
+                        {hasTransient && transientRate && (
+                          <div className="flex flex-col gap-0.5">
+                            <div className="flex items-center justify-between">
+                              <span className="text-gray-400 font-medium">臨時方案</span>
+                              <span className="text-emerald-400 font-semibold">{transientRate.label || '時租 / 臨時費率'}</span>
+                            </div>
+                            {transientRate.value && (
+                              <div className="text-white font-mono text-[11.5px] bg-[#1a1f2c] px-2 py-1 rounded">
+                                最低階梯費率：{transientRate.value}
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        {hasMonthly && monthlyRate && (
+                          <div className="flex flex-col gap-0.5 pt-1.5 border-t border-[#232838]">
+                            <div className="flex items-center justify-between">
+                              <span className="text-gray-400 font-medium">月租車位</span>
+                              <span className="text-sky-400 font-semibold">{monthlyRate.label || '月租'}</span>
+                            </div>
+                            {monthlyRate.value && (
+                              <div className="text-white font-mono text-[11.5px] bg-[#1a1f2c] px-2 py-1 rounded">
+                                最低月租費率：{monthlyRate.value}
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        {hasPromo && (
+                          <div className="flex items-center justify-between pt-1.5 border-t border-[#232838]">
+                            <span className="text-gray-400 font-medium">優惠活動</span>
+                            <span className="text-amber-400 font-semibold">{typeof p.promotions === 'string' ? p.promotions : '目前有提供優惠活動'}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Features & Services */}
+                    {features.length > 0 && (
+                      <div className="flex flex-col gap-1.5">
+                        <span className="text-[11px] text-gray-400 font-medium">場地設施與服務：</span>
+                        <div className="flex flex-wrap gap-1.5">
+                          {features.map((feat: string, idx: number) => {
+                            let zhLabel = feat;
+                            if (feat.includes('Parker Pete')) zhLabel = '道路救援 Parker Pete';
+                            else if (feat.includes('attendant') || feat.includes('Attendant')) zhLabel = '駐場管理員 On-site attendant';
+                            else if (feat.includes('EV') || feat.includes('Charger')) zhLabel = '電動車充電樁 EV Charger';
+                            else if (feat.includes('Heater') || feat.includes('Block Heater')) zhLabel = '引擎加熱器 Block Heater Plugin';
+                            else if (feat.includes('Wash') || feat.includes('Car Wash')) zhLabel = '洗車 Car Wash';
+                            else if (feat.includes('Valet')) zhLabel = '代客泊車 Valet Parking';
+                            return (
+                              <span key={idx} className="px-2 py-0.5 rounded bg-[#1e2330] border border-[#2c3345] text-gray-200 text-[10.5px]">
+                                {zhLabel}
+                              </span>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Street View Link */}
+                    {streetView && (
+                      <a
+                        href={streetView}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full mt-1 py-1.5 px-3 bg-[#d9261c]/20 hover:bg-[#d9261c]/30 border border-[#d9261c]/50 text-red-300 hover:text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" />
+                        <span>查看 Google 街景照片</span>
+                      </a>
                     )}
                   </div>
                 );
@@ -13593,11 +13729,10 @@ export default function AppMap() {
       </div>
 
       {/* 底部座標與地理資訊列升級 (Bottom Coordinate, Neighbourhood & Zoom Level HUD) */}
+      {/* 坐標與地理資訊狀態列 (Fixed Top-Right Coordinate Display HUD) */}
       {cursorCoords && (
-        <button
-          onClick={handleCopyCoordinates}
-          className="group absolute bottom-3 left-1/2 -translate-x-1/2 z-20 pointer-events-auto select-none flex items-center gap-2.5 px-3.5 py-1.5 bg-[#10131a]/95 backdrop-blur-md rounded-full border border-[#2a2f3d] hover:border-cyan-500/70 hover:bg-[#141924] shadow-xl text-[11px] font-mono text-gray-200 transition-all duration-150 cursor-pointer"
-          title="點擊一鍵複製經緯度座標"
+        <div
+          className="absolute top-[68px] right-4 z-20 pointer-events-auto select-none flex items-center gap-2 px-3 py-1.5 bg-[#10131a]/95 backdrop-blur-md rounded-full border border-[#2a2f3d] shadow-xl text-[11px] font-mono text-gray-200"
         >
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
 
@@ -13614,19 +13749,52 @@ export default function AppMap() {
           <span className="text-[10px] text-gray-400 px-1.5 py-0.5 rounded bg-black/40 border border-white/5 font-sans">
             Zoom {currentZoom.toFixed(1)}
           </span>
-
-          <div className="flex items-center gap-1 text-[10px] ml-0.5 text-gray-400 group-hover:text-cyan-300 transition-colors">
-            {copiedCoords ? (
-              <span className="flex items-center gap-1 text-emerald-400 font-sans font-semibold animate-in fade-in">
-                <Check className="w-3.5 h-3.5" />
-                <span>已複製</span>
-              </span>
-            ) : (
-              <Copy className="w-3.5 h-3.5 transition-transform group-hover:scale-110" />
-            )}
-          </div>
-        </button>
+        </div>
       )}
+
+      {/* 探索功能橫向平排底欄 (Explore Horizontal Bottom Bar Dock) */}
+      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 pointer-events-auto select-none flex items-center gap-1 px-2.5 py-1.5 bg-[#10131a]/95 backdrop-blur-md rounded-full border border-[#2a2f3d] shadow-2xl max-w-[calc(100vw-24px)] overflow-x-auto scrollbar-none ring-1 ring-white/5">
+        {[
+          { id: 'weather', label: '天氣', icon: CloudRain, color: 'text-sky-400' },
+          { id: 'news', label: '新聞', icon: Activity, color: 'text-amber-400' },
+          { id: 'events', label: '活動', icon: Compass, color: 'text-purple-400' },
+          { id: 'beach', label: '泳灘', icon: Waves, color: 'text-teal-300' },
+          { id: 'ski', label: '滑雪', icon: Navigation, color: 'text-cyan-400' },
+          { id: 'aurora', label: '極光', icon: Zap, color: 'text-fuchsia-400' },
+          { id: 'fuel', label: '加油站', icon: Fuel, color: 'text-amber-500' },
+          { id: 'charging', label: '充電', icon: Zap, color: 'text-emerald-400' },
+          { id: 'alerts', label: '即時通報', icon: AlertCircle, color: 'text-rose-400' },
+          { id: 'traffic', label: '路況', icon: Activity, color: 'text-amber-400' },
+          { id: 'border', label: '關口', icon: Compass, color: 'text-blue-400' },
+          { id: 'ferry', label: '渡輪', icon: Ship, color: 'text-sky-400' },
+          { id: 'shipping', label: '航運', icon: Ship, color: 'text-teal-400' },
+          { id: 'flights', label: '航班', icon: Navigation, color: 'text-indigo-400' },
+        ].map((tab) => {
+          const isActive = isExploreOpen && exploreTab === tab.id;
+          const Icon = tab.icon;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => {
+                if (isExploreOpen && exploreTab === tab.id) {
+                  setExploreOpen(false);
+                } else {
+                  setExploreTab(tab.id as any);
+                  setExploreOpen(true);
+                }
+              }}
+              className={`px-2.5 py-1 rounded-full text-xs font-medium flex items-center gap-1.5 transition-all whitespace-nowrap shrink-0 ${
+                isActive
+                  ? 'bg-emerald-500/25 text-emerald-300 border border-emerald-500/50 shadow-[0_0_10px_rgba(16,185,129,0.3)]'
+                  : 'text-gray-300 hover:text-white hover:bg-white/10 border border-transparent'
+              }`}
+            >
+              <Icon className={`w-3.5 h-3.5 ${tab.color}`} />
+              <span>{tab.label}</span>
+            </button>
+          );
+        })}
+      </div>
 
       {/* 罪案地區圖例卡片 (Crime Rate Legend) */}
       {layers.crimeAreas && (
@@ -15617,6 +15785,26 @@ export default function AppMap() {
           >
             <Copy className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
             <span className="font-medium">複製經緯度</span>
+          </button>
+
+          {/* Action: 設成個人位置 */}
+          <button
+            onClick={() => {
+              const lat = Math.round(contextMenu.lat * 1000000) / 1000000;
+              const lon = Math.round(contextMenu.lon * 1000000) / 1000000;
+              setUserLocation({
+                address: `自訂位置 (${lat.toFixed(4)}, ${lon.toFixed(4)})`,
+                displayName: `個人位置 (${lat.toFixed(4)}, ${lon.toFixed(4)})`,
+                lat,
+                lon,
+                confirmed: true
+              });
+              setContextMenu(null);
+            }}
+            className="w-full px-2.5 py-1.5 rounded-lg text-gray-200 hover:text-white hover:bg-emerald-500/15 flex items-center gap-2 transition-colors text-left"
+          >
+            <MapPin className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+            <span className="font-medium">設成個人位置</span>
           </button>
 
           {/* Action 3: 平移置中此處 */}

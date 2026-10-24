@@ -6,7 +6,7 @@ import {
   ChevronDown, RefreshCw, Package, CloudSun, Wind, AlertTriangle, Droplets, Gauge, Eye, Anchor, Navigation,
   Newspaper, ExternalLink, Search, CalendarDays, Calendar, Tag, Waves, CloudRain, Play, Pause, SkipBack, SkipForward,
   MountainSnow, Sparkles, Clock, ShieldAlert, BellRing, Train, Bus, ShieldCheck, LayoutGrid, TrainTrack,
-  Activity, Radar, Cpu, Satellite, Radio
+  Activity, Radar, Cpu, Satellite, Radio, Flag, Plane, Mountain
 } from 'lucide-react';
 import { useUIStore, ExploreTabType } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
@@ -2410,18 +2410,38 @@ function ExploreContent() {
     { id: 'cargo', label: '船運', icon: Anchor, iconColor: 'text-blue-400' },
   ] as const;
 
+  const tabInfoMap: Record<string, { label: string; icon: any; color: string }> = {
+    weather: { label: '天氣資訊', icon: CloudSun, color: 'text-sky-400' },
+    news: { label: '新聞快訊', icon: Newspaper, color: 'text-amber-400' },
+    events: { label: '活動情報', icon: CalendarDays, color: 'text-purple-400' },
+    beach: { label: '泳灘水質', icon: Droplets, color: 'text-teal-300' },
+    ski: { label: '滑雪場現況', icon: Mountain, color: 'text-cyan-400' },
+    aurora: { label: '極光觀測', icon: Sparkles, color: 'text-fuchsia-400' },
+    fuel: { label: '即時油價', icon: Fuel, color: 'text-amber-500' },
+    charging: { label: '充電站', icon: Zap, color: 'text-emerald-400' },
+    alerts: { label: '即時通報', icon: AlertTriangle, color: 'text-rose-400' },
+    traffic: { label: '即時路況', icon: Activity, color: 'text-amber-400' },
+    border: { label: '美加邊境關口', icon: Flag, color: 'text-blue-400' },
+    ferry: { label: 'BC 渡輪', icon: Anchor, color: 'text-sky-400' },
+    shipping: { label: '即時航運', icon: Ship, color: 'text-teal-400' },
+    flights: { label: '航班動態', icon: Plane, color: 'text-indigo-400' },
+  };
+
+  const currentTabInfo = tabInfoMap[activeTab] || { label: '探索', icon: Compass, color: 'text-emerald-400' };
+  const CurrentTabIcon = currentTabInfo.icon;
+
   return (
     <div 
-      className="fixed top-[72px] right-4 z-40 w-[380px] max-w-[calc(100vw-32px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-200 select-none overflow-hidden"
+      className="fixed top-[84px] right-4 z-40 w-[390px] max-w-[calc(100vw-32px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-100px)] animate-in fade-in slide-in-from-right-4 duration-200 select-none overflow-hidden"
       onClick={(e) => e.stopPropagation()}
     >
       {/* Header */}
       <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-[#262b38] shrink-0">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0 shadow-sm">
-            <Compass className="w-4 h-4" />
+          <div className="w-7 h-7 rounded-lg bg-[#222838] border border-[#323b50] flex items-center justify-center shrink-0 shadow-sm">
+            <CurrentTabIcon className={`w-4 h-4 ${currentTabInfo.color}`} />
           </div>
-          <h2 className="text-sm font-bold text-white tracking-wide">探索</h2>
+          <h2 className="text-sm font-bold text-white tracking-wide">{currentTabInfo.label}</h2>
         </div>
         <button
           onClick={() => {
@@ -2433,84 +2453,6 @@ function ExploreContent() {
         >
           <X className="w-4 h-4" />
         </button>
-      </div>
-
-      {/* 探索分類分頁 - 3 行圖示按鈕組，Cursor 碰到後平滑展開文字 */}
-      <div className="flex flex-col gap-1 p-1 bg-[#10131a]/90 rounded-lg border border-[#232838] shrink-0 mb-2.5">
-        {/* 第 1 行：天氣, 新聞, 活動, 沙灘水質, 滑雪, 極光 */}
-        <div className="grid grid-cols-6 gap-1">
-          {exploreTabsRow1.map((tab) => {
-            const isActive = activeTab === tab.id;
-            const Icon = tab.icon;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as ExploreTabType)}
-                className={`flex items-center justify-center group py-1 px-1 rounded-md transition-all duration-200 text-xs font-semibold select-none min-h-[30px] ${
-                  isActive
-                    ? 'bg-[#252e3e] border border-cyan-500/70 text-white shadow-sm ring-1 ring-cyan-500/30'
-                    : 'text-gray-400 hover:text-gray-100 hover:bg-[#1a202c] border border-transparent hover:border-[#2b3548]'
-                }`}
-                title={tab.label}
-              >
-                <Icon className={`w-3.5 h-3.5 ${tab.iconColor} shrink-0 transition-transform duration-200 group-hover:scale-110`} />
-                <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[65px] group-hover:opacity-100 group-hover:ml-1 transition-all duration-300 whitespace-nowrap text-[10.5px]">
-                  {('hoverLabel' in tab && tab.hoverLabel) ? tab.hoverLabel : tab.label}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* 第 2 行：燃油, 充電, 交通警報, 路況, 關口 */}
-        <div className="grid grid-cols-5 gap-1">
-          {exploreTabsRow2.map((tab) => {
-            const isActive = activeTab === tab.id;
-            const Icon = tab.icon;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as ExploreTabType)}
-                className={`flex items-center justify-center group py-1 px-1 rounded-md transition-all duration-200 text-xs font-semibold select-none min-h-[30px] ${
-                  isActive
-                    ? 'bg-[#252e3e] border border-cyan-500/70 text-white shadow-sm ring-1 ring-cyan-500/30'
-                    : 'text-gray-400 hover:text-gray-100 hover:bg-[#1a202c] border border-transparent hover:border-[#2b3548]'
-                }`}
-                title={tab.label}
-              >
-                <Icon className={`w-3.5 h-3.5 ${tab.iconColor} shrink-0 transition-transform duration-200 group-hover:scale-110`} />
-                <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[75px] group-hover:opacity-100 group-hover:ml-1 transition-all duration-300 whitespace-nowrap text-[10.5px]">
-                  {tab.label}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* 第 3 行：渡輪, 船運 */}
-        <div className="grid grid-cols-6 gap-1">
-          {exploreTabsRow3.map((tab) => {
-            const isActive = activeTab === tab.id;
-            const Icon = tab.icon;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as ExploreTabType)}
-                className={`flex items-center justify-center group py-1 px-1 rounded-md transition-all duration-200 text-xs font-semibold select-none min-h-[30px] ${
-                  isActive
-                    ? 'bg-[#252e3e] border border-cyan-500/70 text-white shadow-sm ring-1 ring-cyan-500/30'
-                    : 'text-gray-400 hover:text-gray-100 hover:bg-[#1a202c] border border-transparent hover:border-[#2b3548]'
-                }`}
-                title={tab.label}
-              >
-                <Icon className={`w-3.5 h-3.5 ${tab.iconColor} shrink-0 transition-transform duration-200 group-hover:scale-110`} />
-                <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[75px] group-hover:opacity-100 group-hover:ml-1 transition-all duration-300 whitespace-nowrap text-[10.5px]">
-                  {tab.label}
-                </span>
-              </button>
-            );
-          })}
-        </div>
       </div>
 
       {/* ==================== 0. 天氣分頁 (Weather - ECCC MSC GeoMet) ==================== */}
@@ -5489,7 +5431,7 @@ function ExploreContent() {
                         <table className="w-full text-left text-xs border-collapse">
                           <thead>
                             <tr className="bg-[#181d2c] border-b border-[#252c3e] text-[10.5px] font-bold text-gray-400 select-none">
-                              <th className="py-2 px-2.5">道路名稱 (Road Name)</th>
+                              <th className="py-2 px-2.5">道路名稱</th>
                               <th className="py-2 px-2 text-center whitespace-nowrap">路況狀態</th>
                               <th className="py-2 px-2 text-right whitespace-nowrap">預估延誤</th>
                               <th className="py-2 px-2 text-right whitespace-nowrap">車速 / 速限</th>
@@ -5507,7 +5449,7 @@ function ExploreContent() {
                                 corridor.delay_min >= 8 ? 'text-orange-400' :
                                 corridor.delay_min >= 3 ? 'text-amber-400' : 'text-emerald-400';
 
-                              const displayName = corridor.english_name || corridor.name;
+                              const displayName = corridor.name;
 
                               return (
                                 <tr
@@ -5559,6 +5501,7 @@ function ExploreContent() {
                   );
                 }
 
+                const isMajorRoadTab = (trafficFilter as string) === 'major_roads';
                 return activeList.map((corridor) => {
                   const statusBg = corridor.status_color === 'red' ? 'bg-red-950/80 text-red-200 border-red-800' :
                     corridor.status_color === 'orange' ? 'bg-orange-950/80 text-orange-200 border-orange-800' :
@@ -5569,9 +5512,7 @@ function ExploreContent() {
                     corridor.delay_min >= 8 ? 'text-orange-400' :
                     corridor.delay_min >= 3 ? 'text-amber-400' : 'text-emerald-400';
 
-                  // 2.6: 除了 7 大幹道，主要道路清單請用英文顯示
-                  const isMajorRoadTab = (trafficFilter as string) === 'major_roads';
-                  const displayName = isMajorRoadTab ? (corridor.english_name || corridor.name) : corridor.name;
+                  const displayName = corridor.name;
 
                   return (
                     <div
@@ -5588,12 +5529,12 @@ function ExploreContent() {
                             </span>
                           </div>
                           <div className="flex items-center gap-1.5 mt-0.5 text-[10px] text-gray-400">
-                            {(corridor.route || corridor.english_name) && (
+                            {corridor.route && (
                               <span className="px-1 py-0.2 rounded bg-[#1e2436] text-gray-300 font-mono">
-                                {corridor.route || corridor.english_name}
+                                {corridor.route}
                               </span>
                             )}
-                            {(corridor.route || corridor.english_name) && corridor.badge && <span>·</span>}
+                            {corridor.route && corridor.badge && <span>·</span>}
                             {corridor.badge && <span>{corridor.badge}</span>}
                           </div>
                         </div>

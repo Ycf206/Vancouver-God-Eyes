@@ -1759,6 +1759,7 @@ FACILITY_SEARCH_CONFIGS = [
     ("museums", "博物館", "🏛️", "museums", 16),
     ("garbage_collection", "廢物回收", "🚛", "garbageCollection", 15),
     ("motorcycle_parking", "摩托車位", "🏍️", "motorcycleParking", 17),
+    ("impark", "ImPark 停車場", "🅿️", "impark", 16),
 ]
 
 def get_search_facilities_items():
@@ -1824,10 +1825,12 @@ def get_search_facilities_items():
                 elif ftype == "motorcycle_parking":
                     mid = props.get("meter_id")
                     title = f"#{mid}" if mid else (raw_name or "摩托車停車位")
+                elif ftype == "impark":
+                    title = props.get("lot_name") or f"ImPark Lot {props.get('lot_number')}"
                 elif not title:
                     title = badge
 
-                addr = str(props.get("siteaddress") or props.get("address") or props.get("street_address") or props.get("location") or props.get("street") or props.get("station_location") or "").strip()
+                addr = str(props.get("siteaddress") or props.get("address1") or props.get("address") or props.get("street_address") or props.get("location") or props.get("street") or props.get("station_location") or "").strip()
                 local_area = str(props.get("local_area") or props.get("neighbourhood") or "").strip()
                 category_extra = str(props.get("school_category_zh") or props.get("facility_type_name") or props.get("brand") or props.get("category") or ("公共藝術" if ftype == "public_art" else ("摩托車位" if ftype == "motorcycle_parking" else ""))).strip()
 
@@ -1850,6 +1853,8 @@ def get_search_facilities_items():
                     ftype,
                     category_extra,
                     str(props.get("meter_id") or ""),
+                    str(props.get("lot_number") or ""),
+                    str(props.get("address1") or ""),
                     str(props.get("street") or ""),
                     str(props.get("meter_head") or ""),
                     str(props.get("mobile_payment_number") or ""),
@@ -2113,7 +2118,7 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                 fac_candidates.append((score, fac))
 
         fac_candidates.sort(key=lambda x: -x[0])
-        for score, fac in fac_candidates:
+        for score, fac in fac_candidates[:120]:
             results.append({
                 "id": fac["id"],
                 "title": fac["title"],
@@ -2182,7 +2187,7 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
     except Exception as e:
         print(f"Error searching bikeways: {e}")
 
-    final_results = results
+    final_results = results[:150]
     if len(_search_query_cache) > 200:
         _search_query_cache.clear()
     _search_query_cache[q_clean] = final_results

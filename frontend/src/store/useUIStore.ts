@@ -38,6 +38,7 @@ export interface UIState {
     bcferriesRoutes: boolean;
     bcferriesTerminals: boolean;
     parkingMeters: boolean;
+    impark: boolean;
     accessibleParking: boolean;
     motorcycleParking: boolean;
     evCharging: boolean;
@@ -224,6 +225,7 @@ export const useUIStore = create<UIState>()(
         bcferriesRoutes: true,
         bcferriesTerminals: true,
         parkingMeters: false,
+        impark: false,
         accessibleParking: false,
         motorcycleParking: false,
         evCharging: false,

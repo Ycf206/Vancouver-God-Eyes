@@ -32,6 +32,7 @@ export default function TopBar() {
   // 搜尋狀態
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchTarget[]>([]);
+  const [displayLimit, setDisplayLimit] = useState(40);
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const searchContainerRef = useRef<HTMLDivElement>(null);
@@ -72,6 +73,7 @@ export default function TopBar() {
     // 0ms 快取命中：已搜尋過的字詞立即呈現建議清單
     if (searchCacheRef.current.has(trimmed)) {
       setResults(searchCacheRef.current.get(trimmed)!);
+      setDisplayLimit(40);
       setIsLoading(false);
       setIsOpen(true);
       return;
@@ -87,6 +89,7 @@ export default function TopBar() {
           const list = Array.isArray(data) ? data : (data.results || []);
           searchCacheRef.current.set(trimmed, list);
           setResults(list);
+          setDisplayLimit(40);
           setIsLoading(false);
           setIsOpen(true);
         })
@@ -213,62 +216,78 @@ export default function TopBar() {
               <span>{results.length} 筆項目</span>
             </div>
 
-            <div className="overflow-y-auto flex-1 min-h-0 divide-y divide-[#2a2c33]/60 py-1 [scrollbar-width:thin] [scrollbar-color:#4a4d57_transparent]">
+            <div 
+              onScroll={(e) => {
+                const target = e.currentTarget;
+                if (target.scrollTop + target.clientHeight >= target.scrollHeight - 40) {
+                  setDisplayLimit(prev => Math.min(prev + 40, results.length));
+                }
+              }}
+              className="overflow-y-auto flex-1 min-h-0 divide-y divide-[#2a2c33]/60 py-1 [scrollbar-width:thin] [scrollbar-color:#4a4d57_transparent]"
+            >
               {results.length > 0 ? (
-                results.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => handleSelect(item)}
-                    className="w-full text-left px-3.5 py-2.5 hover:bg-[#2c2f38] transition-colors flex items-center gap-3 group"
-                  >
-                    <span className="text-base flex-shrink-0 w-7 h-7 flex items-center justify-center bg-[#282a30] rounded border border-gray-700/50 group-hover:scale-110 transition-transform">
-                      {item.icon}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-semibold text-gray-100 group-hover:text-white truncate">
-                        {item.title}
-                      </div>
-                      {item.subtitle && (
-                        <div className="text-[11px] text-gray-400 truncate">
-                          {item.subtitle}
+                <>
+                  {results.slice(0, displayLimit).map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => handleSelect(item)}
+                      className="w-full text-left px-3.5 py-2.5 hover:bg-[#2c2f38] transition-colors flex items-center gap-3 group"
+                    >
+                      <span className="text-base flex-shrink-0 w-7 h-7 flex items-center justify-center bg-[#282a30] rounded border border-gray-700/50 group-hover:scale-110 transition-transform">
+                        {item.icon}
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-semibold text-gray-100 group-hover:text-white truncate">
+                          {item.title}
                         </div>
-                      )}
+                        {item.subtitle && (
+                          <div className="text-[11px] text-gray-400 truncate">
+                            {item.subtitle}
+                          </div>
+                        )}
+                      </div>
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium border flex-shrink-0 ${
+                        item.category === 'bus_route' ? 'bg-emerald-950/80 text-emerald-300 border-emerald-800/60 font-bold' :
+                        item.category === 'skytrain' ? 'bg-sky-950/80 text-sky-400 border-sky-800/60' :
+                        item.category === 'ferry_terminal' ? 'bg-blue-950/80 text-blue-300 border-blue-800/60' :
+                        item.category === 'seabus' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
+                        item.category === 'fire_halls' ? 'bg-rose-950/80 text-rose-300 border-rose-800/60' :
+                        item.category === 'police' ? 'bg-blue-950/80 text-blue-300 border-blue-800/60 font-bold' :
+                        item.category === 'hospitals' ? 'bg-emerald-950/80 text-emerald-300 border-emerald-800/60' :
+                        item.category === 'disaster_hubs' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
+                        item.category === 'fuel' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
+                        item.category === 'tesla' ? 'bg-red-950/80 text-red-300 border-red-800/60 font-bold' :
+                        item.category === 'impark' ? 'bg-red-950/80 text-red-300 border-red-800/60 font-semibold' :
+                        item.category === 'aed' ? 'bg-rose-950/80 text-rose-300 border-rose-800/60' :
+                        item.category === 'car_sharing' ? 'bg-sky-950/80 text-sky-300 border-sky-800/60' :
+                        item.category === 'postal_code_fsa' ? 'bg-indigo-950/80 text-indigo-300 border-indigo-800/60 font-bold' :
+                        item.category === 'local_area_boundary' ? 'bg-teal-950/80 text-teal-300 border-teal-800/60' :
+                        item.category === 'bikeways' ? 'bg-teal-950/80 text-teal-300 border-teal-800/60' :
+                        item.category === 'traffic_crosswalks' ? 'bg-yellow-950/80 text-yellow-300 border-yellow-800/60' :
+                        item.category === 'litter_containers' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
+                        item.category === 'public_art' ? 'bg-fuchsia-950/80 text-fuchsia-300 border-fuchsia-800/60 font-semibold' :
+                        item.category === 'motorcycle_parking' ? 'bg-orange-950/80 text-orange-300 border-orange-800/60 font-semibold' :
+                        item.category === 'community_centres' ? 'bg-violet-950/80 text-violet-300 border-violet-800/60' :
+                        item.category === 'museums' ? 'bg-slate-800 text-slate-200 border-slate-600 font-semibold' :
+                        item.category === 'garbage_collection' ? 'bg-orange-950/80 text-orange-300 border-orange-800/60' :
+                        item.category === 'escooter' ? 'bg-lime-950/80 text-lime-300 border-lime-800/60' :
+                        item.category === 'ev_charging' ? 'bg-emerald-950/80 text-emerald-300 border-emerald-800/60' :
+                        item.category === 'schools' ? 'bg-blue-950/80 text-blue-300 border-blue-800/60' :
+                        item.category === 'libraries' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
+                        item.category === 'food_vendors' ? 'bg-orange-950/80 text-orange-300 border-orange-800/60' :
+                        item.category === 'homeless_shelters' ? 'bg-rose-950/80 text-rose-300 border-rose-800/60' :
+                        'bg-gray-800 text-gray-300 border-gray-700'
+                      }`}>
+                        {item.badge}
+                      </span>
+                    </button>
+                  ))}
+                  {results.length > displayLimit && (
+                    <div className="text-center py-2 text-[10.5px] text-gray-400 bg-[#16171a]/50">
+                      向下滾動載入更多項目 ({displayLimit} / {results.length})
                     </div>
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium border flex-shrink-0 ${
-                      item.category === 'bus_route' ? 'bg-emerald-950/80 text-emerald-300 border-emerald-800/60 font-bold' :
-                      item.category === 'skytrain' ? 'bg-sky-950/80 text-sky-400 border-sky-800/60' :
-                      item.category === 'ferry_terminal' ? 'bg-blue-950/80 text-blue-300 border-blue-800/60' :
-                      item.category === 'seabus' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
-                      item.category === 'fire_halls' ? 'bg-rose-950/80 text-rose-300 border-rose-800/60' :
-                      item.category === 'police' ? 'bg-blue-950/80 text-blue-300 border-blue-800/60 font-bold' :
-                      item.category === 'hospitals' ? 'bg-emerald-950/80 text-emerald-300 border-emerald-800/60' :
-                      item.category === 'disaster_hubs' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
-                      item.category === 'fuel' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
-                      item.category === 'tesla' ? 'bg-red-950/80 text-red-300 border-red-800/60 font-bold' :
-                      item.category === 'aed' ? 'bg-rose-950/80 text-rose-300 border-rose-800/60' :
-                      item.category === 'car_sharing' ? 'bg-sky-950/80 text-sky-300 border-sky-800/60' :
-                      item.category === 'postal_code_fsa' ? 'bg-indigo-950/80 text-indigo-300 border-indigo-800/60 font-bold' :
-                      item.category === 'local_area_boundary' ? 'bg-teal-950/80 text-teal-300 border-teal-800/60' :
-                      item.category === 'bikeways' ? 'bg-teal-950/80 text-teal-300 border-teal-800/60' :
-                      item.category === 'traffic_crosswalks' ? 'bg-yellow-950/80 text-yellow-300 border-yellow-800/60' :
-                      item.category === 'litter_containers' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
-                      item.category === 'public_art' ? 'bg-fuchsia-950/80 text-fuchsia-300 border-fuchsia-800/60 font-semibold' :
-                      item.category === 'motorcycle_parking' ? 'bg-orange-950/80 text-orange-300 border-orange-800/60 font-semibold' :
-                      item.category === 'community_centres' ? 'bg-violet-950/80 text-violet-300 border-violet-800/60' :
-                      item.category === 'museums' ? 'bg-slate-800 text-slate-200 border-slate-600 font-semibold' :
-                      item.category === 'garbage_collection' ? 'bg-orange-950/80 text-orange-300 border-orange-800/60' :
-                      item.category === 'escooter' ? 'bg-lime-950/80 text-lime-300 border-lime-800/60' :
-                      item.category === 'ev_charging' ? 'bg-emerald-950/80 text-emerald-300 border-emerald-800/60' :
-                      item.category === 'schools' ? 'bg-blue-950/80 text-blue-300 border-blue-800/60' :
-                      item.category === 'libraries' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
-                      item.category === 'food_vendors' ? 'bg-orange-950/80 text-orange-300 border-orange-800/60' :
-                      item.category === 'homeless_shelters' ? 'bg-rose-950/80 text-rose-300 border-rose-800/60' :
-                      'bg-gray-800 text-gray-300 border-gray-700'
-                    }`}>
-                      {item.badge}
-                    </span>
-                  </button>
-                ))
+                  )}
+                </>
               ) : (
                 !isLoading && (
                   <div className="py-6 px-4 text-center text-xs text-gray-400">

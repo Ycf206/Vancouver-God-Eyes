@@ -53,12 +53,83 @@ export default function SettingsModal() {
     const timer = setTimeout(async () => {
       try {
         setIsSuggesting(true);
-        const apiUrl = getApiUrl();
-        const res = await fetch(`${apiUrl}/api/search?q=${encodeURIComponent(trimmed)}`);
-        const data = await res.json();
-        const list = Array.isArray(data) ? data : (data.results || []);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const validList = list.filter((item: any) => item.lat && item.lon).slice(0, 6);
+        const resultsList: any[] = [];
+        
+        // 1. 溫哥華市政官方物業門牌地址資料庫 (Vancouver Property Addresses Open Data)
+        try {
+          const vanRes = await fetch(
+            `https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/property-addresses/records?where=search(*%2C%22${encodeURIComponent(trimmed)}%22)&limit=8`
+          );
+          if (vanRes.ok) {
+            const vanData = await vanRes.json();
+            const recs = vanData.results || [];
+            for (const r of recs) {
+              const civic = (r.civic_number || '').toString().trim();
+              const street = (r.std_street || '').toString().trim();
+              const fullAddr = `${civic} ${street}`.trim();
+              if (fullAddr && r.geo_point_2d?.lat && r.geo_point_2d?.lon) {
+                resultsList.push({
+                  id: `van_prop_${r.property_use_id || fullAddr}`,
+                  title: fullAddr,
+                  subtitle: `Vancouver, BC${r.postal_code ? ' ' + r.postal_code : ''}`,
+                  lat: r.geo_point_2d.lat,
+                  lon: r.geo_point_2d.lon
+                });
+              }
+            }
+          }
+        } catch (_) {
+          // Fallback if network blocked
+        }
+
+        // 2. 若筆數較少，補充 BC 官方門牌地理編碼服務 (BC Geocoder)
+        if (resultsList.length < 5) {
+          try {
+            const bcRes = await fetch(
+              `https://geocoder.api.gov.bc.ca/addresses.json?addressString=${encodeURIComponent(trimmed)}&maxResults=8`
+            );
+            if (bcRes.ok) {
+              const bcData = await bcRes.json();
+              for (const feat of (bcData.features || [])) {
+                const full = feat.properties?.fullAddress;
+                const coords = feat.geometry?.coordinates;
+                if (full && coords && coords.length >= 2) {
+                  // 避免重複
+                  if (!resultsList.some(item => item.title.toLowerCase() === full.toLowerCase())) {
+                    resultsList.push({
+                      id: `bc_geo_${feat.properties?.siteID || full}`,
+                      title: full,
+                      subtitle: feat.properties?.localityName ? `${feat.properties.localityName}, BC` : 'BC, Canada',
+                      lat: coords[1],
+                      lon: coords[0]
+                    });
+                  }
+                }
+              }
+            }
+          } catch (_) {}
+        }
+
+        // 3. 後端 Geocode 備援
+        if (resultsList.length === 0) {
+          const apiUrl = getApiUrl();
+          const res = await fetch(`${apiUrl}/api/geocode?q=${encodeURIComponent(trimmed)}`);
+          const data = await res.json();
+          const list = data.results || [];
+          for (const item of list) {
+            if (item.lat && item.lon) {
+              resultsList.push({
+                id: `geo_${item.lat}_${item.lon}`,
+                title: item.display_name || item.name,
+                subtitle: '地理位置',
+                lat: item.lat,
+                lon: item.lon
+              });
+            }
+          }
+        }
+
+        const validList = resultsList.slice(0, 8);
         setSuggestions(validList);
         setShowSuggestions(validList.length > 0);
       } catch (err) {
