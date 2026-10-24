@@ -159,6 +159,7 @@ export interface UIState {
   toggleExportModal: () => void;
   toggleLayer: (layer: keyof UIState['layers']) => void;
   enableLayer: (layer: keyof UIState['layers']) => void;
+  disableLayer: (layer: keyof UIState['layers']) => void;
   resetAllLayers: () => void;
   parkingMeterFilter: {
     maxRate: number; // 0 = all
@@ -198,6 +199,8 @@ export interface UIState {
   } | null;
   setRadiusExploration: (exp: { active: boolean; lat: number; lon: number; radiusM: number } | null) => void;
   searchTarget: SearchTarget | null;
+  autoEnabledSearchLayer: keyof UIState['layers'] | null;
+  setAutoEnabledSearchLayer: (layer: keyof UIState['layers'] | null) => void;
   setSearchTarget: (target: SearchTarget | null) => void;
   isLayerPanelOpen: boolean;
   toggleLayerPanel: () => void;
@@ -469,6 +472,13 @@ export const useUIStore = create<UIState>()(
             layers: updatedLayers,
           };
         }),
+      disableLayer: (layer: keyof UIState['layers']) =>
+        set((state) => ({
+          layers: {
+            ...state.layers,
+            [layer]: false,
+          },
+        })),
       resetAllLayers: () =>
         set((state) => {
           const allFalseLayers = Object.keys(state.layers).reduce((acc, k) => {
@@ -547,8 +557,17 @@ export const useUIStore = create<UIState>()(
       setRadarTilePath: (path) => set({ radarTilePath: path }),
       radiusExploration: null,
       setRadiusExploration: (exp) => set({ radiusExploration: exp }),
+      autoEnabledSearchLayer: null,
+      setAutoEnabledSearchLayer: (layer) => set({ autoEnabledSearchLayer: layer }),
       searchTarget: null,
-      setSearchTarget: (target) => set({ searchTarget: target }),
+      setSearchTarget: (target) => set((state) => {
+        const updates: any = { searchTarget: target };
+        if (target === null && state.autoEnabledSearchLayer) {
+          updates.layers = { ...state.layers, [state.autoEnabledSearchLayer]: false };
+          updates.autoEnabledSearchLayer = null;
+        }
+        return updates;
+      }),
       isLayerPanelOpen: true,
       toggleLayerPanel: () => set((state) => ({ isLayerPanelOpen: !state.isLayerPanelOpen })),
       setLayerPanelOpen: (open) => set({ isLayerPanelOpen: open }),

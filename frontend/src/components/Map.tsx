@@ -5782,7 +5782,6 @@ export default function AppMap() {
           'bike-racks-cluster-layer',
           'bike-racks-layer',
           'bike-racks-symbol-layer',
-          'postal-code-fsa-fill',
           'public-art-layer',
           'public-art-symbol-layer',
           'museums-layer',
@@ -5974,7 +5973,7 @@ export default function AppMap() {
             setSelectedFacility({
               id: `water_${clickLon}_${clickLat}`,
               facility_type: 'water_distribution_mains',
-              name: '自來水主管道',
+              name: 'Water Distribution Mains',
               local_area: '溫哥華市區供水主幹管網',
               lon: clickLon,
               lat: clickLat,
@@ -5988,7 +5987,7 @@ export default function AppMap() {
             setSelectedFacility({
               id: `sewer_${clickLon}_${clickLat}`,
               facility_type: 'sewer_mains',
-              name: '污水下水道',
+              name: 'Sewer Mains',
               local_area: '溫哥華市政排水與污水管網',
               lon: clickLon,
               lat: clickLat,
@@ -6029,20 +6028,6 @@ export default function AppMap() {
               facility_type: 'traffic_speed_limits',
               name: cleanSpeedRoadName,
               local_area: '限速路段',
-              lon: clickLon,
-              lat: clickLat,
-              properties: props
-            });
-          } else if (layerId === 'postal-code-fsa-fill' || layerId === 'postal-code-fsa-line') {
-            setSelectedStop(null);
-            const props = feature.properties || {};
-            const clickLon = e.lngLat?.lng ?? -123.1207;
-            const clickLat = e.lngLat?.lat ?? 49.2827;
-            setSelectedFacility({
-              id: props.fsa ? `fsa_${props.fsa}` : `fsa_${clickLon}_${clickLat}`,
-              facility_type: 'postal_code_fsa',
-              name: `郵遞編號分區 ${props.fsa || ''}`,
-              local_area: props.province || '溫哥華前瞻轉運區 (FSA)',
               lon: clickLon,
               lat: clickLat,
               properties: props
@@ -6148,7 +6133,7 @@ export default function AppMap() {
             setSelectedFacility({
               id: props.id || `conduit_${clickLon}_${clickLat}`,
               facility_type: 'street_lighting_conduits',
-              name: `路燈電網 (${wireset})`,
+              name: 'Street Lighting Conduits',
               local_area: props.local_area || '溫哥華市政路燈配電管網',
               lon: clickLon,
               lat: clickLat,
@@ -8311,6 +8296,7 @@ export default function AppMap() {
             <div className={`p-3.5 ${
               (selectedFacility.facility_type === 'traffic_conditions' || selectedFacility.facility_type === 'traffic_corridor') ? 'w-[320px] sm:w-[350px]' :
               (selectedFacility.facility_type === 'traffic_cameras') ? 'w-[420px] sm:w-[450px]' : 
+              (selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'street_lighting') ? 'w-[300px] sm:w-[330px]' :
               'w-[390px] sm:w-[430px]'
             } max-w-[calc(100vw-32px)] text-gray-800`}>
               {(() => {
@@ -8318,7 +8304,7 @@ export default function AppMap() {
                   const t = selectedFacility.facility_type;
                   if (t === 'parking_meters') return { label: '停車收費錶', bg: 'bg-[#1D4ED8] text-white' };
                   if (t === 'motorcycle_parking') return { label: '摩托車停車位', bg: 'bg-[#1D4ED8] text-white' };
-                  if (t === 'fuel') return { label: '加油站', bg: 'bg-amber-600 text-white' };
+                  if (t === 'fuel') return { label: '燃油', bg: 'bg-amber-600 text-white' };
                   if (t === 'accessible_parking') return { label: '無障礙停車位', bg: 'bg-[#0284C7] text-white' };
                   if (t === 'one_way_streets') return { label: '單程路段', bg: 'bg-[#0F172A] text-white' };
                   if (t === 'traffic_speed_limits') return { label: '限速路段', bg: 'bg-[#F59E0B] text-white' };
@@ -8484,8 +8470,14 @@ export default function AppMap() {
                     if (selectedFacility.facility_type === 'fire_hydrants') {
                       return selectedFacility.properties?.street || selectedFacility.name;
                     }
+                    if (selectedFacility.facility_type === 'water_distribution_mains') {
+                      return 'Water Distribution Mains';
+                    }
+                    if (selectedFacility.facility_type === 'sewer_mains') {
+                      return 'Sewer Mains';
+                    }
                     if (selectedFacility.facility_type === 'street_lighting_conduits') {
-                      return '路燈電網管線';
+                      return 'Street Lighting Conduits';
                     }
                     if (selectedFacility.facility_type === 'tide_stations') {
                       return selectedFacility.properties?.english_name || selectedFacility.name?.replace(/[\u4e00-\u9fa5（）\(\)]+/g, '').trim() || selectedFacility.name;
@@ -12266,14 +12258,11 @@ export default function AppMap() {
               {/* Water Distribution Mains (自來水管道) Details */}
               {selectedFacility.facility_type === 'water_distribution_mains' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  {/* 4.1 淺藍區塊:左方是公共事業, 右方是淺藍底白字"自來水管道" */}
+                  {/* 4.1 淺藍區塊:左方是公共事業 */}
                   <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex items-center justify-between gap-2">
                     <span className="font-bold text-xs text-sky-950 flex items-center gap-1.5">
                       <span className="text-base text-sky-600 font-bold">💧</span>
                       <span>公共事業</span>
-                    </span>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-600 text-white shrink-0 shadow-xs whitespace-nowrap">
-                      自來水管道
                     </span>
                   </div>
 
@@ -12325,14 +12314,11 @@ export default function AppMap() {
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
-                    {/* 5.1 淺藍區塊:左方是公共事業, 右方是淺藍底白字"污水管道" */}
-                    <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex items-center justify-between gap-2">
-                      <span className="font-bold text-xs text-sky-950 flex items-center gap-1.5">
-                        <span className="text-base text-sky-600 font-bold">🌊</span>
+                    {/* 5.1 青綠區塊 (與膠囊標籤相同): 左方是公共事業 */}
+                    <div className="bg-teal-500/10 p-2.5 rounded-lg border border-teal-500/25 flex items-center justify-between gap-2">
+                      <span className="font-bold text-xs text-teal-950 flex items-center gap-1.5">
+                        <span className="text-base text-teal-600 font-bold">🌊</span>
                         <span>公共事業</span>
-                      </span>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-600 text-white shrink-0 shadow-xs whitespace-nowrap">
-                        污水管道
                       </span>
                     </div>
 
@@ -13257,14 +13243,11 @@ export default function AppMap() {
               {/* Street Lighting Conduits (路燈地下配電管線) Details */}
               {selectedFacility.facility_type === 'street_lighting_conduits' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  {/* 6.2 黃區塊:左方是公共事業, 右方是黃底白字"路燈電網" */}
+                  {/* 6.2 黃區塊:左方是公共事業 */}
                   <div className="bg-amber-400/10 p-2.5 rounded-lg border border-amber-400/30 flex items-center justify-between gap-2">
                     <span className="font-bold text-xs text-amber-950 flex items-center gap-1.5">
                       <span className="text-base text-amber-500 font-bold">⚡</span>
                       <span>公共事業</span>
-                    </span>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-500 text-white shrink-0 shadow-xs whitespace-nowrap">
-                      路燈電網
                     </span>
                   </div>
 
@@ -13966,7 +13949,7 @@ export default function AppMap() {
           { id: 'beach', label: '泳灘', icon: Waves, color: 'text-teal-300' },
           { id: 'ski', label: '滑雪', icon: Navigation, color: 'text-cyan-400' },
           { id: 'aurora', label: '極光', icon: Zap, color: 'text-fuchsia-400' },
-          { id: 'fuel', label: '加油站', icon: Fuel, color: 'text-amber-500' },
+          { id: 'fuel', label: '燃油', icon: Fuel, color: 'text-amber-500' },
           { id: 'ev', label: '充電', icon: Zap, color: 'text-yellow-400' },
           { id: 'alerts', label: '即時通報', icon: AlertCircle, color: 'text-rose-400' },
           { id: 'traffic', label: '路況', icon: Activity, color: 'text-amber-400' },

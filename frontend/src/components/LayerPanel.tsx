@@ -284,8 +284,8 @@ export default function LayerPanel() {
             <LayerButton layerKey="trafficCameras" label="交通攝影機" icon={Camera} colorClass="text-sky-400" activeBg="bg-[#102336]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(2,132,199,0.2)]" />
             <LayerButton layerKey="safetyCameras" label="路口安全相機" icon={Siren} colorClass="text-red-500" activeBg="bg-[#2d1216]" activeBorder="border-red-500/50" activeShadow="shadow-[0_0_6px_rgba(220,38,38,0.25)]" />
 
-            {/* Row 10: 加油站 (路況左方) | 路況 */}
-            <LayerButton layerKey="fuel" label="加油站" icon={Fuel} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
+            {/* Row 10: 燃油 (路況左方) | 路況 */}
+            <LayerButton layerKey="fuel" label="燃油" icon={Fuel} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
             <LayerButton layerKey="trafficConditions" label="路況" icon={Activity} title="即時路況：TomTom 全大溫街道即時暢通度 (綠/黃/紅)" colorClass="text-emerald-400" activeBg="bg-[#142820]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
 
             {/* Row 11: 鏟雪路線 | 即時通報 (路況下方) */}
@@ -415,11 +415,8 @@ export default function LayerPanel() {
             <LayerButton layerKey="localAreaBoundary" label="區域邊界" icon={MapPin} colorClass="text-teal-400" activeBg="bg-[#122826]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
             <LayerButton layerKey="postalCodeFSA" label="郵遞編號" icon={Mail} colorClass="text-indigo-400" activeBg="bg-[#181a33]" activeBorder="border-indigo-500/50" activeShadow="shadow-[0_0_6px_rgba(99,102,241,0.15)]" />
 
-            {/* Row 2: 土地規劃 (區域邊界下方) */}
+            {/* Row 2: 土地規劃 | 海灘水質 (海灘水質放置於土地規劃右方) */}
             <LayerButton layerKey="zoningDistricts" label="土地規劃" icon={LandPlot} title="土地規劃分區" colorClass="text-indigo-400" activeBg="bg-[#181a33]" activeBorder="border-indigo-500/50" activeShadow="shadow-[0_0_6px_rgba(99,102,241,0.15)]" />
-            <div></div>
-
-            {/* Row 3: 潮汐水位 | 海灘水質 (沙灘水質跟隨潮汐水位下移一行) */}
             <LayerButton layerKey="beachWaterQuality" label="海灘水質" icon={Droplets} title="海灘水質" colorClass="text-teal-300" activeBg="bg-[#0e2a2a]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
           </div>
 
