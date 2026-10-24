@@ -7,8 +7,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.02450703000248,
-          49.2853851852054
+          -123.0259497,
+          49.2914388
         ]
       },
       "properties": {
@@ -21,7 +21,7 @@
         "highway": "Highway 1",
         "direction": "Westbound",
         "image_url": "https://www.drivebc.ca/images/71.jpg",
-        "url": "https://www.drivebc.ca/cameras/71?pan=-123.02450703000248%2C49.2853851852054&zoom=5",
+        "url": "https://www.drivebc.ca/cameras/71?pan=-123.0259497%2C49.2914388&zoom=13.5",
         "refresh_interval_min": 15
       }
     },
@@ -31,8 +31,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.03130489302623,
-          49.29553693290191
+          -123.0263548,
+          49.2966333
         ]
       },
       "properties": {
@@ -45,7 +45,7 @@
         "highway": "Highway 1",
         "direction": "Southbound",
         "image_url": "https://www.drivebc.ca/images/72.jpg",
-        "url": "https://www.drivebc.ca/cameras/72?pan=-123.03130489302623%2C49.29553693290191&zoom=5",
+        "url": "https://www.drivebc.ca/cameras/72?pan=-123.0263548%2C49.2966333&zoom=13.5",
         "refresh_interval_min": 15
       }
     },
@@ -55,8 +55,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.00761156691813,
-          49.245231938458204
+          -122.983006,
+          49.25775
         ]
       },
       "properties": {
@@ -69,7 +69,7 @@
         "highway": "Highway 1",
         "direction": "Eastbound",
         "image_url": "https://www.drivebc.ca/images/112.jpg",
-        "url": "https://www.drivebc.ca/cameras/112?pan=-123.00761156691813%2C49.245231938458204&zoom=5",
+        "url": "https://www.drivebc.ca/cameras/112?pan=-122.983006%2C49.25775&zoom=13.5",
         "refresh_interval_min": 15
       }
     },
@@ -79,8 +79,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.00608821330033,
-          49.24342319926157
+          -122.968228,
+          49.243673
         ]
       },
       "properties": {
@@ -93,7 +93,7 @@
         "highway": "Highway 1",
         "direction": "Eastbound",
         "image_url": "https://www.drivebc.ca/images/114.jpg",
-        "url": "https://www.drivebc.ca/cameras/114?pan=-123.00608821330033%2C49.24342319926157&zoom=5",
+        "url": "https://www.drivebc.ca/cameras/114?pan=-122.968228%2C49.243673&zoom=13.5",
         "refresh_interval_min": 15
       }
     },
@@ -104,7 +104,7 @@
         "type": "Point",
         "coordinates": [
           -123.1366403,
-          49.295792000000034
+          49.295792
         ]
       },
       "properties": {
@@ -117,7 +117,7 @@
         "highway": "Stanley Park Causeway",
         "direction": "Northbound",
         "image_url": "https://www.drivebc.ca/images/17.jpg",
-        "url": "https://www.drivebc.ca/cameras/17?pan=-123.1366403%2C49.295792000000034&zoom=12",
+        "url": "https://www.drivebc.ca/cameras/17?pan=-123.1366403%2C49.295792&zoom=13.5",
         "refresh_interval_min": 15
       }
     },
@@ -4718,6 +4718,54 @@
         "url": "https://trafficcams.vancouver.ca/elliottmarine.htm",
         "local_area": "Victoria-Fraserview",
         "refresh_interval_sec": 30
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "drivebc_cam_36",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0311786,
+          49.2772965
+        ]
+      },
+      "properties": {
+        "id": "drivebc_cam_36",
+        "name": "Cassiar Tunnel",
+        "facility_type": "traffic_cameras",
+        "provider": "DriveBC",
+        "camera_id": 36,
+        "description": "Highway 1 at Cassiar Tunnel.",
+        "highway": "Highway 1",
+        "direction": "Both",
+        "image_url": "https://www.drivebc.ca/images/36.jpg",
+        "url": "https://www.drivebc.ca/cameras/36?pan=-123.0311786%2C49.277296500000006&zoom=13.5",
+        "refresh_interval_min": 15
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "drivebc_cam_1183",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.031152,
+          49.276012
+        ]
+      },
+      "properties": {
+        "id": "drivebc_cam_1183",
+        "name": "Cassiar Tunnel northbound",
+        "facility_type": "traffic_cameras",
+        "provider": "DriveBC",
+        "camera_id": 1183,
+        "description": "Highway 1 at Cassiar Tunnel, looking northbound.",
+        "highway": "Highway 1",
+        "direction": "Northbound",
+        "image_url": "https://www.drivebc.ca/images/1183.jpg",
+        "url": "https://www.drivebc.ca/cameras/1183?pan=-123.03115199999999%2C49.27601199999998&zoom=13.5",
+        "refresh_interval_min": 15
       }
     }
   ]
