@@ -91,6 +91,7 @@ export default function AdminPage() {
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [pinInput, setPinInput] = useState('');
   const [pinError, setPinError] = useState(false);
+  const [isUnlockModalOpen, setIsUnlockModalOpen] = useState(false);
 
   // GitHub Token State & Modal
   const [githubStatus, setGithubStatus] = useState<{ configured: boolean; repo: string; token_masked: string }>({
@@ -249,6 +250,7 @@ export default function AdminPage() {
     if (pinInput === '0206') {
       setIsUnlocked(true);
       setPinError(false);
+      setIsUnlockModalOpen(false);
       if (typeof window !== 'undefined') {
         sessionStorage.setItem('gods_eye_admin_unlocked', 'true');
       }
@@ -288,6 +290,12 @@ export default function AdminPage() {
 
   // Trigger Sync (場景一)
   const handleSync = async (sourceId: string, runner?: 'github_actions' | 'oci') => {
+    if (!isUnlocked) {
+      setPinInput('');
+      setPinError(false);
+      setIsUnlockModalOpen(true);
+      return;
+    }
     setSyncingId(sourceId);
     try {
       const res = await adminApiFetch<{ status: string; message: string }>('/api/admin/sources/sync', {
@@ -310,6 +318,12 @@ export default function AdminPage() {
 
   // Save Schedule Change (場景二)
   const handleSaveSchedule = async (source: DataSource) => {
+    if (!isUnlocked) {
+      setPinInput('');
+      setPinError(false);
+      setIsUnlockModalOpen(true);
+      return;
+    }
     setIsSavingSchedule(true);
     try {
       const res = await adminApiFetch<{ status: string; message: string; detail?: string }>('/api/admin/sources/schedule', {
@@ -338,6 +352,12 @@ export default function AdminPage() {
 
   // Toggle Source Enabled/Disabled
   const handleToggleEnabled = async (source: DataSource) => {
+    if (!isUnlocked) {
+      setPinInput('');
+      setPinError(false);
+      setIsUnlockModalOpen(true);
+      return;
+    }
     try {
       await adminApiFetch('/api/admin/sources/schedule', {
         method: 'POST',
@@ -452,21 +472,30 @@ export default function AdminPage() {
                 sessionStorage.removeItem('gods_eye_admin_unlocked');
               }}
               className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/30 rounded-lg text-xs font-semibold transition-all cursor-pointer"
+              title="點擊鎖定面板恢復唯讀保護"
             >
               <Unlock className="w-3.5 h-3.5" />
               <span>鎖定面板</span>
             </button>
           ) : (
-            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-lg text-xs font-semibold">
+            <button
+              onClick={() => {
+                setPinInput('');
+                setPinError(false);
+                setIsUnlockModalOpen(true);
+              }}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-lg text-xs font-semibold transition-all cursor-pointer shadow-xs hover:scale-105"
+              title="點擊輸入密碼 (0206) 以解鎖寫入操作"
+            >
               <Lock className="w-3.5 h-3.5" />
-              <span>唯讀模式</span>
-            </div>
+              <span>唯讀模式 (點擊解鎖)</span>
+            </button>
           )}
         </div>
       </header>
 
       {/* Main Container */}
-      <main className="flex-1 p-4 sm:p-6 max-w-7xl w-full mx-auto flex flex-col gap-5">
+      <main className="flex-1 p-3 sm:p-4 w-full max-w-[98%] 2xl:max-w-[1600px] mx-auto flex flex-col gap-3">
         
         {/* Success Alert Banner */}
         {successMsg && (
@@ -479,84 +508,46 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* PIN Unlock Card (Password: 0206) */}
-        {!isUnlocked && (
-          <div className="bg-[#161a23] border border-amber-500/30 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center shrink-0">
-                <Lock className="w-5 h-5" />
+        {/* Flat Compact Stat Bar (4 平整小卡片，無下方灰字) */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
+          <div className="bg-[#141822] border border-[#232a3b] px-3.5 py-2 rounded-lg flex items-center justify-between shadow-xs">
+            <div className="flex items-center gap-2.5">
+              <div className="w-6 h-6 rounded-md bg-indigo-500/15 text-indigo-400 flex items-center justify-center border border-indigo-500/25 shrink-0">
+                <Sliders className="w-3.5 h-3.5" />
               </div>
-              <div>
-                <h3 className="text-sm font-bold text-white">後台已啟用安全唯讀保護</h3>
-                <p className="text-xs text-gray-400 mt-0.5">目前處於唯讀檢視模式。若需執行【立即同步】或【修改排程週期】，請輸入管理員密碼解鎖。</p>
+              <span className="text-xs text-gray-300 font-medium">資料源總數</span>
+            </div>
+            <span className="text-base font-bold text-white font-mono">{sources.length}</span>
+          </div>
+
+          <div className="bg-[#141822] border border-[#232a3b] px-3.5 py-2 rounded-lg flex items-center justify-between shadow-xs">
+            <div className="flex items-center gap-2.5">
+              <div className="w-6 h-6 rounded-md bg-sky-500/15 text-sky-400 flex items-center justify-center border border-sky-500/25 shrink-0">
+                <Cloud className="w-3.5 h-3.5" />
               </div>
+              <span className="text-xs text-gray-300 font-medium">GitHub Actions</span>
             </div>
-            <form onSubmit={handleUnlock} className="flex items-center gap-2 shrink-0 w-full sm:w-auto">
-              <input
-                type="password"
-                placeholder="輸入密碼 (0206)"
-                value={pinInput}
-                onChange={(e) => {
-                  setPinInput(e.target.value);
-                  setPinError(false);
-                }}
-                maxLength={8}
-                className={`bg-[#0f1218] border ${pinError ? 'border-rose-500 ring-1 ring-rose-500' : 'border-[#2d3548] focus:border-amber-400'} px-3 py-1.5 rounded-lg text-xs text-white placeholder-gray-500 outline-none w-full sm:w-36 transition-all`}
-              />
-              <button
-                type="submit"
-                className="px-4 py-1.5 bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs rounded-lg transition-colors whitespace-nowrap shadow-md cursor-pointer"
-              >
-                解鎖操作
-              </button>
-            </form>
-          </div>
-        )}
-
-        {/* Overview Stat Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
-          <div className="bg-[#141822] border border-[#232a3b] p-4 rounded-xl flex items-center justify-between shadow-sm">
-            <div>
-              <p className="text-[11px] text-gray-400 font-medium">資料源總數</p>
-              <p className="text-2xl font-bold text-white mt-1">{sources.length}</p>
-              <p className="text-[10px] text-gray-500 mt-0.5">全大溫空間與即時數據</p>
-            </div>
-            <div className="w-10 h-10 rounded-xl bg-indigo-500/15 text-indigo-400 flex items-center justify-center border border-indigo-500/25">
-              <Sliders className="w-5 h-5" />
-            </div>
+            <span className="text-base font-bold text-sky-400 font-mono">{ghCount}</span>
           </div>
 
-          <div className="bg-[#141822] border border-[#232a3b] p-4 rounded-xl flex items-center justify-between shadow-sm">
-            <div>
-              <p className="text-[11px] text-gray-400 font-medium">GitHub Actions 管線</p>
-              <p className="text-2xl font-bold text-sky-400 mt-1">{ghCount}</p>
-              <p className="text-[10px] text-gray-500 mt-0.5">自來水/污水/微出行/學校等</p>
+          <div className="bg-[#141822] border border-[#232a3b] px-3.5 py-2 rounded-lg flex items-center justify-between shadow-xs">
+            <div className="flex items-center gap-2.5">
+              <div className="w-6 h-6 rounded-md bg-emerald-500/15 text-emerald-400 flex items-center justify-center border border-emerald-500/25 shrink-0">
+                <Server className="w-3.5 h-3.5" />
+              </div>
+              <span className="text-xs text-gray-300 font-medium">OCI 即時服務</span>
             </div>
-            <div className="w-10 h-10 rounded-xl bg-sky-500/15 text-sky-400 flex items-center justify-center border border-sky-500/25">
-              <Cloud className="w-5 h-5" />
-            </div>
+            <span className="text-base font-bold text-emerald-400 font-mono">{ociCount}</span>
           </div>
 
-          <div className="bg-[#141822] border border-[#232a3b] p-4 rounded-xl flex items-center justify-between shadow-sm">
-            <div>
-              <p className="text-[11px] text-gray-400 font-medium">OCI 伺服器即時服務</p>
-              <p className="text-2xl font-bold text-emerald-400 mt-1">{ociCount}</p>
-              <p className="text-[10px] text-gray-500 mt-0.5">TomTom路況/公車/航班/氣象</p>
+          <div className="bg-[#141822] border border-[#232a3b] px-3.5 py-2 rounded-lg flex items-center justify-between shadow-xs">
+            <div className="flex items-center gap-2.5">
+              <div className="w-6 h-6 rounded-md bg-amber-500/15 text-amber-400 flex items-center justify-center border border-amber-500/25 shrink-0">
+                <FileText className="w-3.5 h-3.5" />
+              </div>
+              <span className="text-xs text-gray-300 font-medium">調度歷史記錄</span>
             </div>
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center border border-emerald-500/25">
-              <Server className="w-5 h-5" />
-            </div>
-          </div>
-
-          <div className="bg-[#141822] border border-[#232a3b] p-4 rounded-xl flex items-center justify-between shadow-sm">
-            <div>
-              <p className="text-[11px] text-gray-400 font-medium">最近同步與調度記錄</p>
-              <p className="text-2xl font-bold text-amber-400 mt-1">{logs.length}</p>
-              <p className="text-[10px] text-gray-500 mt-0.5">可查閱歷史執行日誌</p>
-            </div>
-            <div className="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center border border-amber-500/25">
-              <FileText className="w-5 h-5" />
-            </div>
+            <span className="text-base font-bold text-amber-400 font-mono">{logs.length}</span>
           </div>
         </div>
 
@@ -1105,6 +1096,71 @@ export default function AdminPage() {
                   className="px-4 py-1.5 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5 shadow-md"
                 >
                   {isSavingToken ? '儲存中...' : '儲存 Token'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+            {/* PIN Unlock Modal */}
+      {isUnlockModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-150">
+          <div className="bg-[#161a23] border border-amber-500/40 rounded-2xl p-5 max-w-sm w-full shadow-2xl flex flex-col gap-4 text-xs">
+            <div className="flex items-center justify-between pb-2 border-b border-[#242b3b]">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center">
+                  <Lock className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-sm text-white">解鎖管理員操作</h3>
+                  <p className="text-[11px] text-gray-400">輸入密碼以啟用排程編輯與即時同步</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => { setIsUnlockModalOpen(false); setPinError(false); }}
+                className="text-gray-400 hover:text-white p-1 rounded-md"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleUnlock} className="flex flex-col gap-3">
+              <div>
+                <label className="text-[11px] font-bold text-gray-300 block mb-1">
+                  請輸入管理員密碼 (預設: 0206)
+                </label>
+                <input
+                  type="password"
+                  placeholder="輸入 4 位密碼"
+                  value={pinInput}
+                  autoFocus
+                  onChange={(e) => {
+                    setPinInput(e.target.value);
+                    setPinError(false);
+                  }}
+                  maxLength={8}
+                  className={`w-full bg-[#0d1017] border ${pinError ? 'border-rose-500 ring-1 ring-rose-500' : 'border-[#2e374c] focus:border-amber-400'} px-3 py-2 rounded-lg text-white font-mono text-center tracking-widest text-sm outline-none`}
+                />
+                {pinError && (
+                  <p className="text-rose-400 text-[10px] mt-1 font-semibold text-center">密碼錯誤，請重新輸入 (預設 0206)</p>
+                )}
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#242b3b]">
+                <button
+                  type="button"
+                  onClick={() => { setIsUnlockModalOpen(false); setPinError(false); }}
+                  className="px-3 py-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-[#1f2635] text-xs font-semibold cursor-pointer"
+                >
+                  取消
+                </button>
+                <button
+                  type="submit"
+                  disabled={!pinInput.trim()}
+                  className="px-4 py-1.5 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-lg text-xs transition-colors cursor-pointer shadow-md"
+                >
+                  確認解鎖
                 </button>
               </div>
             </form>
