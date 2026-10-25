@@ -1,13 +1,14 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Search, Settings, ChevronDown, Map as MapIcon, X, Loader2, Layers, AlertCircle, Heart, Download } from 'lucide-react';
+import { Search, Settings, ChevronDown, Map as MapIcon, X, Loader2, Layers, AlertCircle, Heart, Download, History } from 'lucide-react';
 import { useUIStore, SearchTarget, UIState } from '@/store/useUIStore';
 import ReportIssueModal from '@/components/ReportIssueModal';
 import DonateModal from '@/components/DonateModal';
 import SettingsModal from '@/components/SettingsModal';
 import ExplorePanel from '@/components/ExplorePanel';
 import ExportModal from '@/components/ExportModal';
+import ChangelogModal from '@/components/ChangelogModal';
 import { getApiUrl } from '@/utils/api';
 import { formatClock, formatDateWithTimezone } from '@/utils/time';
 
@@ -30,6 +31,7 @@ export default function TopBar() {
   const [time, setTime] = useState<Date | null>(null);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isDonateModalOpen, setIsDonateModalOpen] = useState(false);
+  const [isChangelogModalOpen, setIsChangelogModalOpen] = useState(false);
 
   // 搜尋狀態
   const [query, setQuery] = useState('');
@@ -353,6 +355,18 @@ export default function TopBar() {
           </span>
         </button>
 
+        {/* 更新日誌按鈕 (位於回報問題左方) */}
+        <button 
+          onClick={() => setIsChangelogModalOpen(true)}
+          className="flex items-center justify-center group h-9 px-2.5 bg-[#25262b] hover:bg-[#2c2d33] border border-[#373a40] hover:border-sky-500/50 rounded-md transition-all shadow-sm text-gray-300 hover:text-sky-400 text-xs font-semibold select-none" 
+          title="系統更新日誌"
+        >
+          <History className="w-4 h-4 text-sky-400/80 group-hover:text-sky-400 group-hover:scale-110 transition-transform shrink-0" />
+          <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[80px] group-hover:opacity-100 group-hover:ml-1.5 transition-all duration-300 whitespace-nowrap hidden sm:inline">
+            更新日誌
+          </span>
+        </button>
+
         {/* 回報問題按鈕 */}
         <button 
           onClick={() => setIsReportModalOpen(true)}
@@ -383,6 +397,9 @@ export default function TopBar() {
         isOpen={isDonateModalOpen} 
         onClose={() => setIsDonateModalOpen(false)} 
       />
+
+      {/* 系統更新日誌彈出視窗 */}
+      <ChangelogModal isOpen={isChangelogModalOpen} onClose={() => setIsChangelogModalOpen(false)} />
 
       {/* 回報問題彈出視窗 */}
       <ReportIssueModal 

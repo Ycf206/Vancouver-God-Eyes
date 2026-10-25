@@ -3372,13 +3372,68 @@ def get_admin_config_path():
     return os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'admin_sources_config.json')
 
 
+def get_persisted_github_token():
+    """
+    從記憶體、所有可能的 .env 檔案與 admin_sources_config.json 深度恢復 GITHUB_TOKEN
+    確保重新載入或重啟容器絕不遺失 Token
+    """
+    token = os.environ.get("GITHUB_TOKEN", "").strip()
+    repo = os.environ.get("GITHUB_REPO", "Ycf206/Vancouver-God-Eyes").strip()
+    if token:
+        return token, repo
+    
+    # 1. 掃描磁碟上多個可能的 .env 路徑
+    candidate_envs = [
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env'),
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), 'backend', '.env'),
+        os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '.env'),
+        os.path.join(os.getcwd(), 'backend', '.env'),
+        os.path.join(os.getcwd(), '.env'),
+        '/app/backend/.env',
+        '/app/.env'
+    ]
+    for p in candidate_envs:
+        if os.path.exists(p):
+            try:
+                with open(p, 'r', encoding='utf-8') as f:
+                    for line in f:
+                        line = line.strip()
+                        if line.startswith('GITHUB_TOKEN='):
+                            token = line.split('=', 1)[1].strip().strip('"').strip("'")
+                        elif line.startswith('GITHUB_REPO='):
+                            repo = line.split('=', 1)[1].strip().strip('"').strip("'")
+            except Exception:
+                pass
+            if token:
+                os.environ["GITHUB_TOKEN"] = token
+                os.environ["GITHUB_REPO"] = repo
+                return token, repo
+
+    # 2. 掃描 admin_sources_config.json 持久化設定
+    cfg_path = get_admin_config_path()
+    if os.path.exists(cfg_path):
+        try:
+            with open(cfg_path, 'r', encoding='utf-8') as f:
+                cfg = json.load(f)
+                if cfg.get("github_token"):
+                    token = cfg.get("github_token", "").strip()
+                    repo = cfg.get("github_repo", repo).strip()
+                    if token:
+                        os.environ["GITHUB_TOKEN"] = token
+                        os.environ["GITHUB_REPO"] = repo
+                        return token, repo
+        except Exception:
+            pass
+
+    return token, repo
+
+
 @app.get("/api/admin/github-status")
 def get_admin_github_status():
     """
     查詢 GitHub Token 配置狀態與目標 Repository
     """
-    token = os.environ.get("GITHUB_TOKEN", "").strip()
-    repo = os.environ.get("GITHUB_REPO", "Ycf206/Vancouver-God-Eyes").strip()
+    token, repo = get_persisted_github_token()
     return {
         "configured": bool(token),
         "repo": repo,
@@ -3390,6 +3445,7 @@ def get_admin_github_status():
 def set_admin_github_token(payload: dict = Body(...)):
     """
     從後台介面直接儲存 GITHUB_TOKEN，無須手動 SSH
+    全面寫入記憶體、多個 .env 以及 admin_sources_config.json
     """
     token = payload.get("token", "").strip()
     repo = payload.get("repo", "Ycf206/Vancouver-God-Eyes").strip()
@@ -3416,21 +3472,45 @@ def set_admin_github_token(payload: dict = Body(...)):
     except Exception as gh_ex:
         logger.warning(f"GitHub Token 驗證連線跳過: {gh_ex}")
 
+    # 1. 寫入記憶體環境變數
     os.environ["GITHUB_TOKEN"] = token
     os.environ["GITHUB_REPO"] = repo
-    try:
-        env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env')
-        lines = []
-        if os.path.exists(env_path):
-            with open(env_path, 'r', encoding='utf-8') as f:
-                lines = f.readlines()
-        new_lines = [l for l in lines if not l.startswith('GITHUB_TOKEN=') and not l.startswith('GITHUB_REPO=')]
-        new_lines.append(f"GITHUB_TOKEN={token}\n")
-        new_lines.append(f"GITHUB_REPO={repo}\n")
-        with open(env_path, 'w', encoding='utf-8') as f:
-            f.writelines(new_lines)
-    except Exception as e:
-        print("Failed to save to .env:", e)
+
+    # 2. 寫入所有可能存在的 .env 檔案
+    candidate_envs = [
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env'),
+        os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '.env'),
+        os.path.join(os.getcwd(), 'backend', '.env'),
+        os.path.join(os.getcwd(), '.env'),
+        '/app/backend/.env',
+        '/app/.env'
+    ]
+    for env_path in candidate_envs:
+        try:
+            lines = []
+            if os.path.exists(env_path):
+                with open(env_path, 'r', encoding='utf-8') as f:
+                    lines = f.readlines()
+            new_lines = [l for l in lines if not l.startswith('GITHUB_TOKEN=') and not l.startswith('GITHUB_REPO=')]
+            new_lines.append(f"GITHUB_TOKEN={token}\n")
+            new_lines.append(f"GITHUB_REPO={repo}\n")
+            with open(env_path, 'w', encoding='utf-8') as f:
+                f.writelines(new_lines)
+        except Exception as e:
+            print(f"Failed to save to {env_path}:", e)
+
+    # 3. 寫入 admin_sources_config.json 保證容器重啟持久性
+    cfg_path = get_admin_config_path()
+    if os.path.exists(cfg_path):
+        try:
+            with open(cfg_path, 'r', encoding='utf-8') as f:
+                cfg = json.load(f)
+            cfg["github_token"] = token
+            cfg["github_repo"] = repo
+            with open(cfg_path, 'w', encoding='utf-8') as f:
+                json.dump(cfg, f, ensure_ascii=False, indent=2)
+        except Exception as ce:
+            print("Failed to save token to json config:", ce)
 
     msg = f"GitHub Token 儲存成功！已綁定帳號 @{user_name}，現在可一鍵觸發 Actions 工作流與自動 Commit 排程。" if user_name else "GitHub Token 已成功儲存！"
     return {"status": "success", "message": msg}

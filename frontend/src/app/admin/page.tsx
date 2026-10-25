@@ -85,7 +85,8 @@ export default function AdminPage() {
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [backendConnected, setBackendConnected] = useState<boolean | null>(null);
-  const [activeTab, setActiveTab] = useState<'all' | 'github_actions' | 'oci' | 'logs'>('all');
+  const [mainTab, setMainTab] = useState<'sources' | 'logs' | 'settings'>('sources');
+  const [activeTab, setActiveTab] = useState<'all' | 'github_actions' | 'oci'>('all');
   
   // Security PIN protection (Default: 0206)
   const [isUnlocked, setIsUnlocked] = useState(false);
@@ -227,6 +228,29 @@ export default function AdminPage() {
       // 查詢 GitHub Token 配置狀態
       const ghRes = await adminApiFetch<{ configured: boolean; repo: string; token_masked: string }>('/api/admin/github-status');
       if (ghRes.ok && ghRes.data) {
+        if (!ghRes.data.configured && typeof window !== 'undefined') {
+          // 自動從本機 localStorage 檢查是否有先前儲存之 Token，若有則自動重連，杜絕重新載入後遺失問題
+          const cachedToken = localStorage.getItem('gods_eye_github_token');
+          if (cachedToken && cachedToken.startsWith('ghp_')) {
+            try {
+              const rehydrateRes = await adminApiFetch<{ status: string; message: string }>('/api/admin/github-token', {
+                method: 'POST',
+                body: JSON.stringify({
+                  token: cachedToken,
+                  repo: ghRes.data.repo || 'Ycf206/Vancouver-God-Eyes'
+                })
+              });
+              if (rehydrateRes.ok) {
+                setGithubStatus({
+                  configured: true,
+                  repo: ghRes.data.repo || 'Ycf206/Vancouver-God-Eyes',
+                  token_masked: cachedToken.slice(0, 7) + '...' + cachedToken.slice(-4)
+                });
+                return;
+              }
+            } catch (_) {}
+          }
+        }
         setGithubStatus(ghRes.data);
       }
     } catch (err) {
@@ -259,20 +283,24 @@ export default function AdminPage() {
     }
   };
 
-  // 儲存 GitHub Token
+  // 儲存 GitHub Token (雙重持久化：伺服器檔案 + 瀏覽器 localStorage)
   const handleSaveGithubToken = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputGithubToken.trim()) return;
+    const token = inputGithubToken.trim();
+    if (!token) return;
     setIsSavingToken(true);
     try {
       const res = await adminApiFetch<{ status: string; message: string }>('/api/admin/github-token', {
         method: 'POST',
         body: JSON.stringify({
-          token: inputGithubToken.trim(),
+          token,
           repo: githubStatus.repo || 'Ycf206/Vancouver-God-Eyes'
         })
       });
       if (res.ok && res.data) {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('gods_eye_github_token', token);
+        }
         setSuccessMsg(res.data.message || 'GitHub Token 已成功儲存！');
         setTimeout(() => setSuccessMsg(null), 6000);
         setIsGithubModalOpen(false);
@@ -494,6 +522,83 @@ export default function AdminPage() {
         </div>
       </header>
 
+      {/* 瀏覽器分頁風格導航列 (Chrome / Arc Tab Bar Style) */}
+      <div className="bg-[#0b0e14] border-b border-[#232a3b] px-3 sm:px-6 pt-2 flex items-center justify-between overflow-x-auto select-none">
+        <div className="flex items-center gap-1.5 min-w-max">
+          {/* 分頁 1: 數據圖資與更新管線 */}
+          <button
+            onClick={() => setMainTab('sources')}
+            className={`group relative flex items-center gap-2 px-4 py-2 rounded-t-xl text-xs font-semibold transition-all cursor-pointer ${
+              mainTab === 'sources'
+                ? 'bg-[#141822] text-white border-t-2 border-t-indigo-500 border-x border-[#232a3b] shadow-sm z-10'
+                : 'bg-[#0f131a] text-gray-400 hover:text-gray-200 hover:bg-[#161c27] border-t-2 border-transparent'
+            }`}
+          >
+            <Sliders className={`w-3.5 h-3.5 ${mainTab === 'sources' ? 'text-indigo-400' : 'text-gray-500 group-hover:text-gray-400'}`} />
+            <span>數據圖資與更新管線</span>
+            <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
+              mainTab === 'sources' ? 'bg-indigo-500/20 text-indigo-300' : 'bg-black/30 text-gray-500'
+            }`}>
+              {sources.length}
+            </span>
+            {mainTab === 'sources' && (
+              <span className="absolute bottom-[-1px] left-0 right-0 h-[1px] bg-[#141822]" />
+            )}
+          </button>
+
+          {/* 分頁 2: 系統調度歷史日誌 */}
+          <button
+            onClick={() => setMainTab('logs')}
+            className={`group relative flex items-center gap-2 px-4 py-2 rounded-t-xl text-xs font-semibold transition-all cursor-pointer ${
+              mainTab === 'logs'
+                ? 'bg-[#141822] text-white border-t-2 border-t-amber-500 border-x border-[#232a3b] shadow-sm z-10'
+                : 'bg-[#0f131a] text-gray-400 hover:text-gray-200 hover:bg-[#161c27] border-t-2 border-transparent'
+            }`}
+          >
+            <FileText className={`w-3.5 h-3.5 ${mainTab === 'logs' ? 'text-amber-400' : 'text-gray-500 group-hover:text-gray-400'}`} />
+            <span>系統調度歷史日誌</span>
+            <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
+              mainTab === 'logs' ? 'bg-amber-500/20 text-amber-300' : 'bg-black/30 text-gray-500'
+            }`}>
+              {logs.length}
+            </span>
+            {mainTab === 'logs' && (
+              <span className="absolute bottom-[-1px] left-0 right-0 h-[1px] bg-[#141822]" />
+            )}
+          </button>
+
+          {/* 分頁 3: 安全與參數設定 */}
+          <button
+            onClick={() => setMainTab('settings')}
+            className={`group relative flex items-center gap-2 px-4 py-2 rounded-t-xl text-xs font-semibold transition-all cursor-pointer ${
+              mainTab === 'settings'
+                ? 'bg-[#141822] text-white border-t-2 border-t-sky-500 border-x border-[#232a3b] shadow-sm z-10'
+                : 'bg-[#0f131a] text-gray-400 hover:text-gray-200 hover:bg-[#161c27] border-t-2 border-transparent'
+            }`}
+          >
+            <Shield className={`w-3.5 h-3.5 ${mainTab === 'settings' ? 'text-sky-400' : 'text-gray-500 group-hover:text-gray-400'}`} />
+            <span>安全與參數設定</span>
+            {mainTab === 'settings' && (
+              <span className="absolute bottom-[-1px] left-0 right-0 h-[1px] bg-[#141822]" />
+            )}
+          </button>
+
+          {/* 瀏覽器分頁新增預留按鈕 */}
+          <button
+            onClick={() => alert('分頁擴充預留位：未來可輕鬆新增更多業務模組 (例如：用戶評論審核、自訂圖資匯入、API 存取分析等)')}
+            className="p-1.5 text-gray-500 hover:text-gray-300 hover:bg-[#1a2130] rounded-lg transition-colors cursor-pointer ml-1"
+            title="預留新功能分頁插槽"
+          >
+            <span className="text-sm font-bold leading-none px-1">+</span>
+          </button>
+        </div>
+
+        <div className="hidden lg:flex items-center gap-2 pb-1 text-[11px] text-gray-500">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>Chrome 瀏覽器分頁模式</span>
+        </div>
+      </div>
+
       {/* Main Container */}
       <main className="flex-1 p-3 sm:p-4 w-full max-w-[98%] 2xl:max-w-[1600px] mx-auto flex flex-col gap-3">
         
@@ -508,144 +613,88 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* Flat Compact Stat Bar (4 平整小卡片，無下方灰字) */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
-          <div className="bg-[#141822] border border-[#232a3b] px-3.5 py-2 rounded-lg flex items-center justify-between shadow-xs">
-            <div className="flex items-center gap-2.5">
-              <div className="w-6 h-6 rounded-md bg-indigo-500/15 text-indigo-400 flex items-center justify-center border border-indigo-500/25 shrink-0">
-                <Sliders className="w-3.5 h-3.5" />
+        {/* 分頁 1 內容：數據圖資與更新管線 (已刪除重複之第一行統計方格，完整釋放垂直清單空間) */}
+        {mainTab === 'sources' && (
+          <div className="flex flex-col gap-3">
+            {/* View Switcher Tabs & Batch Action Bar (唯一保留之標準切換與批次操作列) */}
+            <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 bg-[#141822] p-2 rounded-xl border border-[#232a3b]">
+              {/* Tabs */}
+              <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none">
+                <button
+                  onClick={() => setActiveTab('all')}
+                  className={`px-3.5 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all whitespace-nowrap cursor-pointer ${
+                    activeTab === 'all'
+                      ? 'bg-indigo-600 text-white shadow-md'
+                      : 'text-gray-400 hover:text-gray-200 hover:bg-[#1d2331]'
+                  }`}
+                >
+                  <span>全部清單</span>
+                  <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-black/30 font-mono">{sources.length}</span>
+                </button>
+
+                <button
+                  onClick={() => setActiveTab('github_actions')}
+                  className={`px-3.5 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all whitespace-nowrap cursor-pointer ${
+                    activeTab === 'github_actions'
+                      ? 'bg-sky-600 text-white shadow-md'
+                      : 'text-gray-400 hover:text-gray-200 hover:bg-[#1d2331]'
+                  }`}
+                >
+                  <Cloud className="w-3.5 h-3.5" />
+                  <span>GitHub Actions 雲端管線</span>
+                  <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-black/30 font-mono">{ghCount}</span>
+                </button>
+
+                <button
+                  onClick={() => setActiveTab('oci')}
+                  className={`px-3.5 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all whitespace-nowrap cursor-pointer ${
+                    activeTab === 'oci'
+                      ? 'bg-emerald-600 text-white shadow-md'
+                      : 'text-gray-400 hover:text-gray-200 hover:bg-[#1d2331]'
+                  }`}
+                >
+                  <Server className="w-3.5 h-3.5" />
+                  <span>OCI 伺服器即時服務</span>
+                  <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-black/30 font-mono">{ociCount}</span>
+                </button>
               </div>
-              <span className="text-xs text-gray-300 font-medium">資料源總數</span>
-            </div>
-            <span className="text-base font-bold text-white font-mono">{sources.length}</span>
-          </div>
 
-          <div className="bg-[#141822] border border-[#232a3b] px-3.5 py-2 rounded-lg flex items-center justify-between shadow-xs">
-            <div className="flex items-center gap-2.5">
-              <div className="w-6 h-6 rounded-md bg-sky-500/15 text-sky-400 flex items-center justify-center border border-sky-500/25 shrink-0">
-                <Cloud className="w-3.5 h-3.5" />
+              {/* Batch Action Buttons */}
+              <div className="flex items-center gap-2 shrink-0">
+                {(activeTab === 'oci' || activeTab === 'all') && (
+                  <button
+                    disabled={!isUnlocked || syncingId === 'all_oci'}
+                    onClick={() => handleSync('all_oci', 'oci')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm ${
+                      isUnlocked
+                        ? 'bg-emerald-600 hover:bg-emerald-500 text-white cursor-pointer'
+                        : 'bg-gray-800 text-gray-500 cursor-not-allowed'
+                    }`}
+                    title="立即同步全部 12 項 OCI 即時交通、天氣、航班快取"
+                  >
+                    <Zap className={`w-3.5 h-3.5 ${syncingId === 'all_oci' ? 'animate-spin' : ''}`} />
+                    <span>立即更新全部 OCI 資料</span>
+                  </button>
+                )}
+
+                {(activeTab === 'github_actions' || activeTab === 'all') && (
+                  <button
+                    disabled={!isUnlocked || syncingId === 'all_github'}
+                    onClick={() => handleSync('all_github', 'github_actions')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm ${
+                      isUnlocked
+                        ? 'bg-sky-600 hover:bg-sky-500 text-white cursor-pointer'
+                        : 'bg-gray-800 text-gray-500 cursor-not-allowed'
+                    }`}
+                    title="透過 GitHub Actions 觸發全部 GeoJSON 圖層資料管線更新"
+                  >
+                    <Cloud className={`w-3.5 h-3.5 ${syncingId === 'all_github' ? 'animate-spin' : ''}`} />
+                    <span>立即觸發所有 Actions 管線</span>
+                  </button>
+                )}
               </div>
-              <span className="text-xs text-gray-300 font-medium">GitHub Actions</span>
             </div>
-            <span className="text-base font-bold text-sky-400 font-mono">{ghCount}</span>
-          </div>
 
-          <div className="bg-[#141822] border border-[#232a3b] px-3.5 py-2 rounded-lg flex items-center justify-between shadow-xs">
-            <div className="flex items-center gap-2.5">
-              <div className="w-6 h-6 rounded-md bg-emerald-500/15 text-emerald-400 flex items-center justify-center border border-emerald-500/25 shrink-0">
-                <Server className="w-3.5 h-3.5" />
-              </div>
-              <span className="text-xs text-gray-300 font-medium">OCI 即時服務</span>
-            </div>
-            <span className="text-base font-bold text-emerald-400 font-mono">{ociCount}</span>
-          </div>
-
-          <div className="bg-[#141822] border border-[#232a3b] px-3.5 py-2 rounded-lg flex items-center justify-between shadow-xs">
-            <div className="flex items-center gap-2.5">
-              <div className="w-6 h-6 rounded-md bg-amber-500/15 text-amber-400 flex items-center justify-center border border-amber-500/25 shrink-0">
-                <FileText className="w-3.5 h-3.5" />
-              </div>
-              <span className="text-xs text-gray-300 font-medium">調度歷史記錄</span>
-            </div>
-            <span className="text-base font-bold text-amber-400 font-mono">{logs.length}</span>
-          </div>
-        </div>
-
-        {/* View Switcher Tabs & Batch Action Bar */}
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 bg-[#141822] p-2 rounded-xl border border-[#232a3b]">
-          {/* Tabs */}
-          <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none">
-            <button
-              onClick={() => setActiveTab('all')}
-              className={`px-3.5 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all whitespace-nowrap cursor-pointer ${
-                activeTab === 'all'
-                  ? 'bg-indigo-600 text-white shadow-md'
-                  : 'text-gray-400 hover:text-gray-200 hover:bg-[#1d2331]'
-              }`}
-            >
-              <span>全部清單</span>
-              <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-black/30">{sources.length}</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('github_actions')}
-              className={`px-3.5 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all whitespace-nowrap cursor-pointer ${
-                activeTab === 'github_actions'
-                  ? 'bg-sky-600 text-white shadow-md'
-                  : 'text-gray-400 hover:text-gray-200 hover:bg-[#1d2331]'
-              }`}
-            >
-              <Cloud className="w-3.5 h-3.5" />
-              <span>GitHub Actions 雲端管線</span>
-              <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-black/30">{ghCount}</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('oci')}
-              className={`px-3.5 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all whitespace-nowrap cursor-pointer ${
-                activeTab === 'oci'
-                  ? 'bg-emerald-600 text-white shadow-md'
-                  : 'text-gray-400 hover:text-gray-200 hover:bg-[#1d2331]'
-              }`}
-            >
-              <Server className="w-3.5 h-3.5" />
-              <span>OCI 伺服器即時服務</span>
-              <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-black/30">{ociCount}</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('logs')}
-              className={`px-3.5 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all whitespace-nowrap cursor-pointer ${
-                activeTab === 'logs'
-                  ? 'bg-amber-600 text-white shadow-md'
-                  : 'text-gray-400 hover:text-gray-200 hover:bg-[#1d2331]'
-              }`}
-            >
-              <FileText className="w-3.5 h-3.5" />
-              <span>更新記錄 (Audit Logs)</span>
-              <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-black/30">{logs.length}</span>
-            </button>
-          </div>
-
-          {/* Batch Action Buttons */}
-          <div className="flex items-center gap-2 shrink-0">
-            {(activeTab === 'oci' || activeTab === 'all') && (
-              <button
-                disabled={!isUnlocked || syncingId === 'all_oci'}
-                onClick={() => handleSync('all_oci', 'oci')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm ${
-                  isUnlocked
-                    ? 'bg-emerald-600 hover:bg-emerald-500 text-white cursor-pointer'
-                    : 'bg-gray-800 text-gray-500 cursor-not-allowed'
-                }`}
-                title="立即同步全部 12 項 OCI 即時交通、天氣、航班快取"
-              >
-                <Zap className={`w-3.5 h-3.5 ${syncingId === 'all_oci' ? 'animate-spin' : ''}`} />
-                <span>立即更新全部 OCI 資料</span>
-              </button>
-            )}
-
-            {(activeTab === 'github_actions' || activeTab === 'all') && (
-              <button
-                disabled={!isUnlocked || syncingId === 'all_github'}
-                onClick={() => handleSync('all_github', 'github_actions')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm ${
-                  isUnlocked
-                    ? 'bg-sky-600 hover:bg-sky-500 text-white cursor-pointer'
-                    : 'bg-gray-800 text-gray-500 cursor-not-allowed'
-                }`}
-                title="透過 GitHub Actions 觸發全部 GeoJSON 圖層資料管線更新"
-              >
-                <Cloud className={`w-3.5 h-3.5 ${syncingId === 'all_github' ? 'animate-spin' : ''}`} />
-                <span>立即觸發所有 Actions 管線</span>
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Content Section: Lists vs Logs */}
-        {activeTab !== 'logs' ? (
-          <div className="flex flex-col gap-3.5">
             {/* Filter / Search Bar */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-[#141822] px-4 py-3 rounded-xl border border-[#232a3b]">
               <div className="relative flex-1 max-w-md">
@@ -712,31 +761,44 @@ export default function AdminPage() {
                       const isEditing = editingId === source.id;
                       const isSyncing = syncingId === source.id;
                       const isOci = source.runner === 'oci';
+                      const isGitHubUnbound = !isOci && !githubStatus.configured;
 
                       return (
                         <tr 
                           key={source.id} 
-                          className="hover:bg-[#1a202d] transition-colors group"
+                          className={`hover:bg-[#1a202d] transition-colors group ${isGitHubUnbound ? 'opacity-85' : ''}`}
                         >
                           {/* 狀態燈號 */}
                           <td className="py-3.5 px-4 text-center">
-                            <span 
-                              className={`inline-block w-2.5 h-2.5 rounded-full ${
-                                isSyncing
-                                  ? 'bg-sky-400 animate-ping'
-                                  : source.enabled !== false
-                                    ? isOci ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]' : 'bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.5)]'
-                                    : 'bg-gray-500'
-                              }`} 
-                              title={source.enabled !== false ? '排程啟用中' : '排程已暫停'}
-                            />
+                            {isGitHubUnbound ? (
+                              <span 
+                                className="inline-block w-2.5 h-2.5 rounded-full bg-gray-600 border border-gray-500/40" 
+                                title="未綁定 GitHub Token，處於預留空白待啟用狀態"
+                              />
+                            ) : (
+                              <span 
+                                className={`inline-block w-2.5 h-2.5 rounded-full ${
+                                  isSyncing
+                                    ? 'bg-sky-400 animate-ping'
+                                    : source.enabled !== false
+                                      ? isOci ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]' : 'bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.5)]'
+                                      : 'bg-gray-500'
+                                }`} 
+                                title={source.enabled !== false ? '排程啟用中' : '排程已暫停'}
+                              />
+                            )}
                           </td>
 
                           {/* 資料源名稱與 ID */}
                           <td className="py-3.5 px-4">
                             <div className="flex flex-col">
-                              <span className="font-bold text-white text-xs group-hover:text-sky-300 transition-colors">
-                                {source.name}
+                              <span className="font-bold text-white text-xs group-hover:text-sky-300 transition-colors flex items-center gap-1.5">
+                                <span>{source.name}</span>
+                                {isGitHubUnbound && (
+                                  <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-normal">
+                                    待連接 Token
+                                  </span>
+                                )}
                               </span>
                               <span className="text-[10px] text-gray-500 font-mono mt-0.5">
                                 {source.id}
@@ -781,7 +843,7 @@ export default function AdminPage() {
                                   <span>GitHub Actions</span>
                                 </span>
                                 <span className="text-[10px] text-sky-400/80 font-mono truncate max-w-[170px]" title={source.workflow_file || 'update-datasets.yml'}>
-                                  {source.workflow_file || 'update-datasets.yml'}
+                                  {isGitHubUnbound ? '未綁定 Token (待激活)' : (source.workflow_file || 'update-datasets.yml')}
                                 </span>
                               </div>
                             )}
@@ -789,7 +851,9 @@ export default function AdminPage() {
 
                           {/* 排程週期 (Cron 或間隔) 逐行行內編輯 */}
                           <td className="py-3.5 px-4">
-                            {isEditing ? (
+                            {isGitHubUnbound ? (
+                              <span className="text-gray-500 font-mono text-[11px]">—</span>
+                            ) : isEditing ? (
                               <div className="flex flex-col gap-1.5 p-2 bg-[#0f1218] rounded-lg border border-indigo-500/40 animate-in fade-in">
                                 <div className="flex items-center gap-1.5">
                                   <input
@@ -845,7 +909,9 @@ export default function AdminPage() {
 
                           {/* 上次更新時間 */}
                           <td className="py-3.5 px-4 text-gray-300 font-mono text-[11px]">
-                            {source.last_updated ? (
+                            {isGitHubUnbound ? (
+                              <span className="text-gray-500 font-mono text-[11px]">—</span>
+                            ) : source.last_updated ? (
                               <span>
                                 {new Date(source.last_updated).toLocaleString('zh-HK', {
                                   month: '2-digit',
@@ -862,66 +928,85 @@ export default function AdminPage() {
 
                           {/* 規模 / 筆數 */}
                           <td className="py-3.5 px-4 text-gray-400 text-[11px]">
-                            <span className="text-white font-medium">{source.record_count.toLocaleString()}</span>{' '}
-                            <span>{source.unit}</span>
+                            {isGitHubUnbound ? (
+                              <span className="text-gray-500 font-mono text-[11px]">—</span>
+                            ) : (
+                              <>
+                                <span className="text-white font-medium">{source.record_count.toLocaleString()}</span>{' '}
+                                <span>{source.unit}</span>
+                              </>
+                            )}
                           </td>
 
                           {/* 管理操作按鈕 */}
                           <td className="py-3.5 px-4 text-right">
-                            <div className="flex items-center justify-end gap-1.5">
-                              {/* 立即同步按鈕 */}
-                              <button
-                                disabled={!isUnlocked || isSyncing}
-                                onClick={() => handleSync(source.id, source.runner)}
-                                className={`px-2.5 py-1 rounded-md font-semibold text-[11px] flex items-center gap-1 transition-all shadow-xs ${
-                                  !isUnlocked
-                                    ? 'bg-[#1e2433] text-gray-600 cursor-not-allowed'
-                                    : isSyncing
-                                      ? 'bg-sky-600 text-white animate-pulse'
-                                      : isOci
-                                        ? 'bg-emerald-600/20 hover:bg-emerald-600 text-emerald-300 hover:text-white border border-emerald-500/30 cursor-pointer'
-                                        : 'bg-sky-600/20 hover:bg-sky-600 text-sky-300 hover:text-white border border-sky-500/30 cursor-pointer'
-                                }`}
-                                title={isOci ? '立即更新 OCI 實時記憶體快取' : '透過 GitHub Actions 立即觸發雲端工作流'}
-                              >
-                                <Play className={`w-3 h-3 ${isSyncing ? 'animate-spin' : ''}`} />
-                                <span>{isSyncing ? '同步中' : '立即同步'}</span>
-                              </button>
+                            {isGitHubUnbound ? (
+                              <div className="flex items-center justify-end">
+                                <button
+                                  onClick={() => setIsGithubModalOpen(true)}
+                                  className="px-2.5 py-1 rounded-md font-semibold text-[11px] bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 transition-all cursor-pointer flex items-center gap-1.5 shadow-xs hover:scale-105"
+                                  title="點擊設定 GitHub Token 以啟用此管線的實際狀態與調度操作"
+                                >
+                                  <Key className="w-3 h-3 text-amber-400" />
+                                  <span>連接 Token 啟用</span>
+                                </button>
+                              </div>
+                            ) : (
+                              <div className="flex items-center justify-end gap-1.5">
+                                {/* 立即同步按鈕 */}
+                                <button
+                                  disabled={!isUnlocked || isSyncing}
+                                  onClick={() => handleSync(source.id, source.runner)}
+                                  className={`px-2.5 py-1 rounded-md font-semibold text-[11px] flex items-center gap-1 transition-all shadow-xs ${
+                                    !isUnlocked
+                                      ? 'bg-[#1e2433] text-gray-600 cursor-not-allowed'
+                                      : isSyncing
+                                        ? 'bg-sky-600 text-white animate-pulse'
+                                        : isOci
+                                          ? 'bg-emerald-600/20 hover:bg-emerald-600 text-emerald-300 hover:text-white border border-emerald-500/30 cursor-pointer'
+                                          : 'bg-sky-600/20 hover:bg-sky-600 text-sky-300 hover:text-white border border-sky-500/30 cursor-pointer'
+                                  }`}
+                                  title={isOci ? '立即更新 OCI 實時記憶體快取' : '透過 GitHub Actions 立即觸發雲端工作流'}
+                                >
+                                  <Play className={`w-3 h-3 ${isSyncing ? 'animate-spin' : ''}`} />
+                                  <span>{isSyncing ? '同步中' : '立即同步'}</span>
+                                </button>
 
-                              {/* 修改排程按鈕 */}
-                              <button
-                                disabled={!isUnlocked}
-                                onClick={() => {
-                                  setEditingId(source.id);
-                                  setEditCron(source.cron_expr);
-                                  setEditInterval(source.schedule_interval);
-                                }}
-                                className={`p-1 rounded-md transition-colors ${
-                                  isUnlocked
-                                    ? 'hover:bg-[#252d3d] text-gray-400 hover:text-gray-100 cursor-pointer'
-                                    : 'text-gray-700 cursor-not-allowed'
-                                }`}
-                                title="修改排程週期與 Cron"
-                              >
-                                <Sliders className="w-3.5 h-3.5" />
-                              </button>
+                                {/* 修改排程按鈕 */}
+                                <button
+                                  disabled={!isUnlocked}
+                                  onClick={() => {
+                                    setEditingId(source.id);
+                                    setEditCron(source.cron_expr);
+                                    setEditInterval(source.schedule_interval);
+                                  }}
+                                  className={`p-1 rounded-md transition-colors ${
+                                    isUnlocked
+                                      ? 'hover:bg-[#252d3d] text-gray-400 hover:text-gray-100 cursor-pointer'
+                                      : 'text-gray-700 cursor-not-allowed'
+                                  }`}
+                                  title="修改排程週期與 Cron"
+                                >
+                                  <Sliders className="w-3.5 h-3.5" />
+                                </button>
 
-                              {/* 啟用/暫停切換 */}
-                              <button
-                                disabled={!isUnlocked}
-                                onClick={() => handleToggleEnabled(source)}
-                                className={`px-1.5 py-0.5 rounded text-[10px] font-bold transition-colors cursor-pointer ${
-                                  !isUnlocked
-                                    ? 'text-gray-700 cursor-not-allowed'
-                                    : source.enabled !== false
-                                      ? 'text-emerald-400 hover:bg-emerald-500/10'
-                                      : 'text-rose-400 hover:bg-rose-500/10'
-                                }`}
-                                title={source.enabled !== false ? '點擊暫停排程' : '點擊啟用排程'}
-                              >
-                                {source.enabled !== false ? '啟用' : '暫停'}
-                              </button>
-                            </div>
+                                {/* 啟用/暫停切換 */}
+                                <button
+                                  disabled={!isUnlocked}
+                                  onClick={() => handleToggleEnabled(source)}
+                                  className={`px-1.5 py-0.5 rounded text-[10px] font-bold transition-colors cursor-pointer ${
+                                    !isUnlocked
+                                      ? 'text-gray-700 cursor-not-allowed'
+                                      : source.enabled !== false
+                                        ? 'text-emerald-400 hover:bg-emerald-500/10'
+                                        : 'text-rose-400 hover:bg-rose-500/10'
+                                  }`}
+                                  title={source.enabled !== false ? '點擊暫停排程' : '點擊啟用排程'}
+                                >
+                                  {source.enabled !== false ? '啟用' : '暫停'}
+                                </button>
+                              </div>
+                            )}
                           </td>
                         </tr>
                       );
@@ -938,8 +1023,10 @@ export default function AdminPage() {
               )}
             </div>
           </div>
-        ) : (
-          /* 2.5 系統同步記錄 (Audit Logs) 視圖 */
+        )}
+
+        {/* 分頁 2: 系統調度歷史日誌 (Audit Trail) */}
+        {mainTab === 'logs' && (
           <div className="bg-[#141822] border border-[#232a3b] rounded-xl overflow-hidden shadow-xl flex flex-col">
             <div className="p-4 bg-[#191f2c] border-b border-[#283144] flex items-center justify-between">
               <div>
@@ -1022,6 +1109,137 @@ export default function AdminPage() {
                   )}
                 </tbody>
               </table>
+            </div>
+          </div>
+        )}
+
+        {/* 分頁 3: 安全與參數設定 (Settings & Security) */}
+        {mainTab === 'settings' && (
+          <div className="flex flex-col gap-4">
+            <div className="bg-[#141822] border border-[#232a3b] rounded-xl p-5 shadow-xl">
+              <h3 className="font-bold text-sm text-white flex items-center gap-2 mb-1">
+                <Shield className="w-4 h-4 text-sky-400" />
+                <span>系統安全與存取控制架構</span>
+              </h3>
+              <p className="text-xs text-gray-400 mb-4">
+                後台管理系統已實施雙層硬核防護：外層 Cloudflare Zero Trust 邊緣攔截，內層管理員 PIN 碼唯讀保護。
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                {/* 卡片 1: 獨立子網域與邊緣防護 */}
+                <div className="bg-[#0f131a] border border-[#242c3d] rounded-xl p-4 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                        <Lock className="w-3.5 h-3.5 text-emerald-400" />
+                        <span>獨立安全子網域</span>
+                      </span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-bold">
+                        防護中
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-gray-400 font-mono">admin.vangodseye.fyi</p>
+                    <p className="text-[11px] text-gray-400 mt-2 leading-relaxed">
+                      公網主站前端介面不含任何管理後台入口，全域隱藏入口以阻絕未經授權之掃描與嗅探。
+                    </p>
+                  </div>
+                </div>
+
+                {/* 卡片 2: GitHub PAT 串接狀態 */}
+                <div className="bg-[#0f131a] border border-[#242c3d] rounded-xl p-4 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                        <Key className="w-3.5 h-3.5 text-sky-400" />
+                        <span>GitHub Token (PAT)</span>
+                      </span>
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold border ${
+                        githubStatus.configured
+                          ? 'bg-sky-500/15 text-sky-300 border-sky-500/30'
+                          : 'bg-amber-500/15 text-amber-300 border-amber-500/30'
+                      }`}>
+                        {githubStatus.configured ? '已串接啟用' : '未設定'}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-gray-400 font-mono">Token: {githubStatus.token_masked}</p>
+                    <p className="text-[11px] text-gray-400 font-mono mt-0.5">Repo: {githubStatus.repo}</p>
+                    <p className="text-[11px] text-gray-400 mt-2 leading-relaxed">
+                      具備伺服器硬碟 + 瀏覽器本機雙層持久化，頁面重新整理不再丟失。
+                    </p>
+                  </div>
+                  <div className="pt-3 border-t border-[#1c2230] mt-3 flex items-center gap-2">
+                    <button
+                      onClick={() => setIsGithubModalOpen(true)}
+                      className="px-3 py-1 bg-sky-600 hover:bg-sky-500 text-white rounded text-[11px] font-semibold cursor-pointer"
+                    >
+                      {githubStatus.configured ? '更換 Token' : '立即設定 Token'}
+                    </button>
+                    {githubStatus.configured && (
+                      <button
+                        onClick={async () => {
+                          if (confirm('確定要清除已儲存的 GitHub Token 嗎？')) {
+                            if (typeof window !== 'undefined') localStorage.removeItem('gods_eye_github_token');
+                            await adminApiFetch('/api/admin/github-token', {
+                              method: 'POST',
+                              body: JSON.stringify({ token: '', repo: githubStatus.repo })
+                            });
+                            await fetchAdminData();
+                          }
+                        }}
+                        className="px-2.5 py-1 text-gray-400 hover:text-rose-400 text-[11px] cursor-pointer"
+                      >
+                        清除
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* 卡片 3: 管理員操作 PIN 碼 */}
+                <div className="bg-[#0f131a] border border-[#242c3d] rounded-xl p-4 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                        <Lock className="w-3.5 h-3.5 text-amber-400" />
+                        <span>控制台操作鎖 (PIN: 0206)</span>
+                      </span>
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold border ${
+                        isUnlocked
+                          ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+                          : 'bg-amber-500/15 text-amber-300 border-amber-500/30'
+                      }`}>
+                        {isUnlocked ? '已解鎖 (可寫入)' : '唯讀防護中'}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-gray-400 leading-relaxed">
+                      防止誤觸同步按鈕或意外異動圖資 Cron 表達式。未解鎖狀態下禁止執行所有寫入與調度請求。
+                    </p>
+                  </div>
+                  <div className="pt-3 border-t border-[#1c2230] mt-3">
+                    {isUnlocked ? (
+                      <button
+                        onClick={() => {
+                          setIsUnlocked(false);
+                          sessionStorage.removeItem('gods_eye_admin_unlocked');
+                        }}
+                        className="px-3 py-1 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/30 rounded text-[11px] font-semibold cursor-pointer"
+                      >
+                        鎖定控制台 (恢復唯讀)
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          setPinInput('');
+                          setPinError(false);
+                          setIsUnlockModalOpen(true);
+                        }}
+                        className="px-3 py-1 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded text-[11px] cursor-pointer"
+                      >
+                        輸入 PIN 碼解鎖 (0206)
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         )}

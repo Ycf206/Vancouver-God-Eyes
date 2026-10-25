@@ -47,9 +47,6 @@ export default function DonateModal({ isOpen, onClose }: DonateModalProps) {
             <div>
               <h2 className="text-base font-bold text-white tracking-wide flex items-center gap-1.5">
                 <span>贊助支持溫哥華上帝之眼</span>
-                <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800/60 font-mono">
-                  SUPPORT
-                </span>
               </h2>
               <p className="text-[11px] text-gray-400">感謝您對「溫哥華上帝之眼」與開發者的喜愛與支持！</p>
             </div>
