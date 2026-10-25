@@ -6860,7 +6860,7 @@ export default function AppMap() {
             offset={[0, -8]}
             maxWidth="none"
           >
-            <div className="p-3 w-[370px] sm:w-[410px] max-w-[calc(100vw-32px)] text-gray-800">
+            <div className="p-3 w-[300px] sm:w-[335px] max-w-[calc(100vw-32px)] text-gray-800">
               {(() => {
                 const isSeaBusStop = selectedStop.id === '8035' || selectedStop.id === '8036' || selectedStop.name.includes('SeaBus') || selectedStop.name.includes('Lonsdale Quay') || selectedStop.name.includes('Waterfront');
                 const cleanStopName = selectedStop.name.replace(/\s*(?:Northbound|Southbound)\s*$/i, '').trim();
@@ -6869,7 +6869,7 @@ export default function AppMap() {
                     <div className="flex items-center gap-1.5 min-w-0 pr-2">
                       <span className="text-base shrink-0">{isSeaBusStop ? '⛴️' : '🚏'}</span>
                       <div className="min-w-0">
-                        <h3 className="font-bold text-sm leading-tight text-gray-900 truncate max-w-[215px]" title={cleanStopName}>
+                        <h3 className="font-bold text-sm leading-tight text-gray-900 truncate max-w-[160px] sm:max-w-[190px]" title={cleanStopName}>
                           {cleanStopName}
                         </h3>
                         <span className="text-[10px] text-gray-400 font-mono">
@@ -6930,7 +6930,7 @@ export default function AppMap() {
                             {isRailOrFerry ? busNumber : `巴士 ${busNumber}`}
                           </span>
                           {arr.destination && (
-                            <span className="text-[11.5px] text-gray-600 truncate max-w-[170px]" title={arr.destination}>
+                            <span className="text-[11.5px] text-gray-600 truncate max-w-[135px] sm:max-w-[160px]" title={arr.destination}>
                               往 {arr.destination}
                             </span>
                           )}
@@ -7020,7 +7020,7 @@ export default function AppMap() {
               className="z-50 station-alert-popup"
               maxWidth="none"
             >
-              <div className="flex flex-col gap-2 text-xs text-gray-900 min-w-[280px] max-w-[340px] p-0.5">
+              <div className="flex flex-col gap-2 text-xs text-gray-900 w-[290px] sm:w-[325px] max-w-[calc(100vw-32px)] p-0.5">
                 {/* Header */}
                 <div className="flex items-start justify-between gap-2 pb-2 border-b border-gray-200">
                   <div className="flex items-center gap-2 min-w-0">
@@ -7228,7 +7228,7 @@ export default function AppMap() {
             offset={[0, -10]}
             maxWidth="none"
           >
-            <div className="p-3.5 w-[370px] sm:w-[410px] max-w-[calc(100vw-32px)] overflow-hidden">
+            <div className="p-3.5 w-[300px] sm:w-[335px] max-w-[calc(100vw-32px)] overflow-hidden">
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
                 <div className="flex items-start gap-2 pt-0.5 min-w-0 pr-2">
                   <span className="w-2.5 h-2.5 bg-[#0060a9] rounded-full flex-shrink-0 mt-1.5 shadow-sm"></span>
@@ -7291,7 +7291,7 @@ export default function AppMap() {
                           </span>
                         </div>
                         <div className="flex justify-between items-center text-gray-600 mt-0.5">
-                          <span className="font-medium text-gray-800 truncate max-w-[170px]">{sailing.vessel_name || '渡輪 (航線營運中)'}</span>
+                          <span className="font-medium text-gray-800 truncate max-w-[130px] sm:max-w-[160px]">{sailing.vessel_name || '渡輪 (航線營運中)'}</span>
                           <span className="bg-white border border-gray-200 text-gray-600 px-1.5 py-0.5 rounded text-[10px] font-medium">開往 {sailing.destination}</span>
                         </div>
                         {sailing.fill > 0 && (
@@ -7333,7 +7333,7 @@ export default function AppMap() {
             offset={[0, -14]}
             maxWidth="none"
           >
-            <div className="p-3.5 w-[360px] sm:w-[400px] max-w-[calc(100vw-32px)] text-gray-800">
+            <div className="p-3.5 w-[300px] sm:w-[335px] max-w-[calc(100vw-32px)] text-gray-800">
               <div className="flex items-start justify-between pb-2 mb-2.5 border-b border-gray-100">
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 bg-[#0060a9] rounded-lg flex items-center justify-center text-white shadow-sm flex-shrink-0">
@@ -7366,9 +7366,9 @@ export default function AppMap() {
                   <span className="font-bold text-[#0060a9]">{selectedFerry.route_id}</span>
                 </div>
                 <div className="text-xs text-gray-700 flex justify-between items-center bg-white p-1.5 rounded border border-gray-100">
-                  <span className="font-medium truncate max-w-[125px]">{selectedFerry.dep_name || selectedFerry.dep_code}</span>
+                  <span className="font-medium truncate max-w-[100px] sm:max-w-[115px]">{selectedFerry.dep_name || selectedFerry.dep_code}</span>
                   <span className="text-gray-400 font-bold">➝</span>
-                  <span className="font-medium truncate max-w-[125px] text-right">{selectedFerry.arr_name || selectedFerry.arr_code}</span>
+                  <span className="font-medium truncate max-w-[100px] sm:max-w-[115px] text-right">{selectedFerry.arr_name || selectedFerry.arr_code}</span>
                 </div>
                 <div className="flex justify-between items-center text-xs pt-1 border-t border-gray-200/50">
                   <span className="text-gray-500">預計時間</span>
@@ -7427,7 +7427,7 @@ export default function AppMap() {
             offset={[0, -14]}
             maxWidth="none"
           >
-            <div className="p-3.5 w-[360px] sm:w-[400px] max-w-[calc(100vw-32px)] text-gray-800">
+            <div className="p-3.5 w-[300px] sm:w-[335px] max-w-[calc(100vw-32px)] text-gray-800">
               <div className="flex items-start justify-between pb-2 mb-2.5 border-b border-gray-100">
                 <div className="flex items-center gap-2.5">
                   <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-white shadow-sm flex-shrink-0 ${
@@ -7494,7 +7494,7 @@ export default function AppMap() {
                 {selectedMaritimeVessel.destination && (
                   <div className="flex justify-between items-center text-gray-600">
                     <span>申報目的地</span>
-                    <span className="text-gray-800 text-right truncate max-w-[190px]">
+                    <span className="text-gray-800 text-right truncate max-w-[140px] sm:max-w-[165px]">
                       {selectedMaritimeVessel.destination}
                     </span>
                   </div>
@@ -7592,7 +7592,7 @@ export default function AppMap() {
             offset={[0, -12]}
             maxWidth="none"
           >
-            <div className="p-3.5 w-[370px] sm:w-[410px] max-w-[calc(100vw-32px)] text-gray-800">
+            <div className="p-3.5 w-[300px] sm:w-[335px] max-w-[calc(100vw-32px)] text-gray-800">
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
                 <div className="flex items-start gap-2 min-w-0 pr-2">
                   <span className={`w-3 h-3 rounded-full flex-shrink-0 mt-1 ${
@@ -8066,7 +8066,7 @@ export default function AppMap() {
             offset={[0, -14]}
             maxWidth="none"
           >
-            <div className="p-3.5 w-[360px] sm:w-[400px] max-w-[calc(100vw-32px)] text-gray-800">
+            <div className="p-3.5 w-[300px] sm:w-[335px] max-w-[calc(100vw-32px)] text-gray-800">
               {/* Header */}
               <div className="flex items-start justify-between pb-2 mb-2.5 border-b border-gray-100">
                 <div className="flex items-center gap-2.5">
@@ -8088,7 +8088,7 @@ export default function AppMap() {
                         {selectedFlight.is_domestic ? '🇨🇦 國內航班' : '🌐 國際航班'}
                       </span>
                     </div>
-                    <p className="text-xs text-gray-600 font-medium truncate max-w-[190px]">
+                    <p className="text-xs text-gray-600 font-medium truncate max-w-[140px] sm:max-w-[165px]">
                       {selectedFlight.airline}
                     </p>
                   </div>
@@ -8294,17 +8294,17 @@ export default function AppMap() {
             maxWidth="none"
           >
             <div className={`p-3.5 ${
-              (selectedFacility.facility_type === 'traffic_conditions' || selectedFacility.facility_type === 'traffic_corridor') ? 'w-[320px] sm:w-[350px]' :
-              (selectedFacility.facility_type === 'traffic_cameras') ? 'w-[420px] sm:w-[450px]' : 
-              (selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'street_lighting') ? 'w-[300px] sm:w-[330px]' :
-              'w-[390px] sm:w-[430px]'
+              (selectedFacility.facility_type === 'traffic_conditions' || selectedFacility.facility_type === 'traffic_corridor') ? 'w-[300px] sm:w-[335px]' :
+              (selectedFacility.facility_type === 'traffic_cameras') ? 'w-[320px] sm:w-[350px]' : 
+              (selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'street_lighting') ? 'w-[280px] sm:w-[310px]' :
+              'w-[300px] sm:w-[335px]'
             } max-w-[calc(100vw-32px)] text-gray-800`}>
               {(() => {
                 const headerBadge = (() => {
                   const t = selectedFacility.facility_type;
                   if (t === 'parking_meters') return { label: '停車收費錶', bg: 'bg-[#1D4ED8] text-white' };
                   if (t === 'motorcycle_parking') return { label: '摩托車停車位', bg: 'bg-[#1D4ED8] text-white' };
-                  if (t === 'fuel') return { label: '燃油', bg: 'bg-amber-600 text-white' };
+                  if (t === 'fuel') return { label: '加油站', bg: 'bg-amber-600 text-white' };
                   if (t === 'accessible_parking') return { label: '無障礙停車位', bg: 'bg-[#0284C7] text-white' };
                   if (t === 'one_way_streets') return { label: '單程路段', bg: 'bg-[#0F172A] text-white' };
                   if (t === 'traffic_speed_limits') return { label: '限速路段', bg: 'bg-[#F59E0B] text-white' };
@@ -12169,7 +12169,7 @@ export default function AppMap() {
                     {selectedFacility.properties.operator && (
                       <div className="flex justify-between items-center text-gray-600">
                         <span>營運單位</span>
-                        <span className="text-gray-800 text-right truncate max-w-[190px]">
+                        <span className="text-gray-800 text-right truncate max-w-[140px] sm:max-w-[165px]">
                           {selectedFacility.properties.operator}
                         </span>
                       </div>
@@ -12201,7 +12201,7 @@ export default function AppMap() {
                     {selectedFacility.properties.address && (
                       <div className={`flex justify-between items-center text-gray-600 ${(selectedFacility.properties.operator || selectedFacility.properties.cargo || selectedFacility.properties.berths || selectedFacility.properties.draught || selectedFacility.properties.capacity) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                         <span>碼頭地址</span>
-                        <span className="text-gray-800 text-right truncate max-w-[190px]">
+                        <span className="text-gray-800 text-right truncate max-w-[140px] sm:max-w-[165px]">
                           {selectedFacility.properties.address}
                         </span>
                       </div>
@@ -12238,7 +12238,7 @@ export default function AppMap() {
                     {selectedFacility.properties.route_type_zh && (
                       <div className="flex justify-between items-center text-gray-600">
                         <span>路線屬性</span>
-                        <span className="text-gray-800 text-right truncate max-w-[190px]">
+                        <span className="text-gray-800 text-right truncate max-w-[140px] sm:max-w-[165px]">
                           {(selectedFacility.properties.route_type_zh || '').replace(/\s*\([^)]*\)/g, '').trim()}
                         </span>
                       </div>
@@ -12326,7 +12326,7 @@ export default function AppMap() {
                       {selectedFacility.properties.street_name && (
                         <div className="flex justify-between items-center text-gray-600">
                           <span>所在街道</span>
-                          <span className="text-gray-800 text-right truncate max-w-[190px]">
+                          <span className="text-gray-800 text-right truncate max-w-[140px] sm:max-w-[165px]">
                             {selectedFacility.properties.street_name}
                           </span>
                         </div>
@@ -13954,7 +13954,7 @@ export default function AppMap() {
           { id: 'beach', label: '泳灘', icon: Waves, color: 'text-teal-300' },
           { id: 'ski', label: '滑雪', icon: Navigation, color: 'text-cyan-400' },
           { id: 'aurora', label: '極光', icon: Zap, color: 'text-fuchsia-400' },
-          { id: 'fuel', label: '燃油', icon: Fuel, color: 'text-amber-500' },
+          { id: 'fuel', label: '加油站', icon: Fuel, color: 'text-amber-500' },
           { id: 'ev', label: '充電', icon: Zap, color: 'text-yellow-400' },
           { id: 'alerts', label: '即時通報', icon: AlertCircle, color: 'text-rose-400' },
           { id: 'traffic', label: '路況', icon: Activity, color: 'text-amber-400' },

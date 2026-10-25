@@ -284,8 +284,8 @@ export default function LayerPanel() {
             <LayerButton layerKey="trafficCameras" label="交通攝影機" icon={Camera} colorClass="text-sky-400" activeBg="bg-[#102336]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(2,132,199,0.2)]" />
             <LayerButton layerKey="safetyCameras" label="路口安全相機" icon={Siren} colorClass="text-red-500" activeBg="bg-[#2d1216]" activeBorder="border-red-500/50" activeShadow="shadow-[0_0_6px_rgba(220,38,38,0.25)]" />
 
-            {/* Row 10: 燃油 (路況左方) | 路況 */}
-            <LayerButton layerKey="fuel" label="燃油" icon={Fuel} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
+            {/* Row 10: 加油站 (路況左方) | 路況 */}
+            <LayerButton layerKey="fuel" label="加油站" icon={Fuel} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
             <LayerButton layerKey="trafficConditions" label="路況" icon={Activity} title="即時路況：TomTom 全大溫街道即時暢通度 (綠/黃/紅)" colorClass="text-emerald-400" activeBg="bg-[#142820]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
 
             {/* Row 11: 鏟雪路線 | 即時通報 (路況下方) */}

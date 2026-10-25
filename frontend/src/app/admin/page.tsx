@@ -156,7 +156,7 @@ export default function AdminPage() {
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [backendConnected, setBackendConnected] = useState<boolean | null>(null);
-  const [mainTab, setMainTab] = useState<'sources' | 'logs' | 'settings'>('sources');
+  const [mainTab, setMainTab] = useState<'sources' | 'logs'>('sources');
   const [activeTab, setActiveTab] = useState<'all' | 'github_actions' | 'oci'>('all');
   
   // Security PIN protection (Default: 0206)
@@ -718,21 +718,7 @@ export default function AdminPage() {
             )}
           </button>
 
-          {/* 分頁 3: 安全與參數設定 */}
-          <button
-            onClick={() => setMainTab('settings')}
-            className={`group relative flex items-center gap-2 px-4 py-2 rounded-t-xl text-xs font-semibold transition-all cursor-pointer ${
-              mainTab === 'settings'
-                ? 'bg-[#141822] text-white border-t-2 border-t-sky-500 border-x border-[#232a3b] shadow-sm z-10'
-                : 'bg-[#0f131a] text-gray-400 hover:text-gray-200 hover:bg-[#161c27] border-t-2 border-transparent'
-            }`}
-          >
-            <Shield className={`w-3.5 h-3.5 ${mainTab === 'settings' ? 'text-sky-400' : 'text-gray-500 group-hover:text-gray-400'}`} />
-            <span>安全與參數設定</span>
-            {mainTab === 'settings' && (
-              <span className="absolute bottom-[-1px] left-0 right-0 h-[1px] bg-[#141822]" />
-            )}
-          </button>
+          
 
           {/* 瀏覽器分頁新增預留按鈕 */}
           <button
@@ -1333,9 +1319,8 @@ export default function AdminPage() {
               <div>
                 <h3 className="font-bold text-sm text-white flex items-center gap-2">
                   <FileText className="w-4 h-4 text-amber-400" />
-                  <span>系統更新與調度歷程日誌 (Audit Trail)</span>
+                  <span>系統更新與調度歷程日誌</span>
                 </h3>
-                <p className="text-[11px] text-gray-400 mt-0.5">完整記錄每次手動觸發、GitHub Actions 調度與排程週期異動</p>
               </div>
 
               <button
@@ -1414,136 +1399,7 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* 分頁 3: 安全與參數設定 (Settings & Security) */}
-        {mainTab === 'settings' && (
-          <div className="flex flex-col gap-4">
-            <div className="bg-[#141822] border border-[#232a3b] rounded-xl p-5 shadow-xl">
-              <h3 className="font-bold text-sm text-white flex items-center gap-2 mb-1">
-                <Shield className="w-4 h-4 text-sky-400" />
-                <span>系統安全與存取控制架構</span>
-              </h3>
-              <p className="text-xs text-gray-400 mb-4">
-                後台管理系統已實施雙層硬核防護：外層 Cloudflare Zero Trust 邊緣攔截，內層管理員 PIN 碼唯讀保護。
-              </p>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-                {/* 卡片 1: 獨立子網域與邊緣防護 */}
-                <div className="bg-[#0f131a] border border-[#242c3d] rounded-xl p-4 flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-bold text-white flex items-center gap-1.5">
-                        <Lock className="w-3.5 h-3.5 text-emerald-400" />
-                        <span>獨立安全子網域</span>
-                      </span>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-bold">
-                        防護中
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-gray-400 font-mono">admin.vangodseye.fyi</p>
-                    <p className="text-[11px] text-gray-400 mt-2 leading-relaxed">
-                      公網主站前端介面不含任何管理後台入口，全域隱藏入口以阻絕未經授權之掃描與嗅探。
-                    </p>
-                  </div>
-                </div>
-
-                {/* 卡片 2: GitHub PAT 串接狀態 */}
-                <div className="bg-[#0f131a] border border-[#242c3d] rounded-xl p-4 flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-bold text-white flex items-center gap-1.5">
-                        <Key className="w-3.5 h-3.5 text-sky-400" />
-                        <span>GitHub Token (PAT)</span>
-                      </span>
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold border ${
-                        githubStatus.configured
-                          ? 'bg-sky-500/15 text-sky-300 border-sky-500/30'
-                          : 'bg-amber-500/15 text-amber-300 border-amber-500/30'
-                      }`}>
-                        {githubStatus.configured ? '已串接啟用' : '未設定'}
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-gray-400 font-mono">Token: {githubStatus.token_masked}</p>
-                    <p className="text-[11px] text-gray-400 font-mono mt-0.5">Repo: {githubStatus.repo}</p>
-                    <p className="text-[11px] text-gray-400 mt-2 leading-relaxed">
-                      具備伺服器硬碟 + 瀏覽器本機雙層持久化，頁面重新整理不再丟失。
-                    </p>
-                  </div>
-                  <div className="pt-3 border-t border-[#1c2230] mt-3 flex items-center gap-2">
-                    <button
-                      onClick={() => setIsGithubModalOpen(true)}
-                      className="px-3 py-1 bg-sky-600 hover:bg-sky-500 text-white rounded text-[11px] font-semibold cursor-pointer"
-                    >
-                      {githubStatus.configured ? '更換 Token' : '立即設定 Token'}
-                    </button>
-                    {githubStatus.configured && (
-                      <button
-                        onClick={async () => {
-                          if (confirm('確定要清除已儲存的 GitHub Token 嗎？')) {
-                            if (typeof window !== 'undefined') localStorage.removeItem('gods_eye_github_token');
-                            await adminApiFetch('/api/admin/github-token', {
-                              method: 'POST',
-                              body: JSON.stringify({ token: '', repo: githubStatus.repo })
-                            });
-                            await fetchAdminData();
-                          }
-                        }}
-                        className="px-2.5 py-1 text-gray-400 hover:text-rose-400 text-[11px] cursor-pointer"
-                      >
-                        清除
-                      </button>
-                    )}
-                  </div>
-                </div>
-
-                {/* 卡片 3: 管理員操作 PIN 碼 */}
-                <div className="bg-[#0f131a] border border-[#242c3d] rounded-xl p-4 flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-bold text-white flex items-center gap-1.5">
-                        <Lock className="w-3.5 h-3.5 text-amber-400" />
-                        <span>控制台操作鎖 (PIN 碼保護)</span>
-                      </span>
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold border ${
-                        isUnlocked
-                          ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
-                          : 'bg-amber-500/15 text-amber-300 border-amber-500/30'
-                      }`}>
-                        {isUnlocked ? '已解鎖 (可寫入)' : '唯讀防護中'}
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-gray-400 leading-relaxed">
-                      防止誤觸同步按鈕或意外異動圖資 Cron 表達式。未解鎖狀態下禁止執行所有寫入與調度請求。
-                    </p>
-                  </div>
-                  <div className="pt-3 border-t border-[#1c2230] mt-3">
-                    {isUnlocked ? (
-                      <button
-                        onClick={() => {
-                          setIsUnlocked(false);
-                          sessionStorage.removeItem('gods_eye_admin_unlocked');
-                        }}
-                        className="px-3 py-1 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/30 rounded text-[11px] font-semibold cursor-pointer"
-                      >
-                        鎖定控制台 (恢復唯讀)
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => {
-                          setPinInput('');
-                          setPinError(false);
-                          setIsUnlockModalOpen(true);
-                        }}
-                        className="px-3 py-1 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded text-[11px] cursor-pointer"
-                      >
-                        輸入 PIN 碼解鎖
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        
       </main>
 
       {/* GitHub Token Setup Modal */}
