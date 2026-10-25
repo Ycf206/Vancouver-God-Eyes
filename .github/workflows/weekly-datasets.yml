@@ -3,7 +3,7 @@ name: Weekly Open Data Cron Update (每星期更新)
 on:
   schedule:
     # 每星期一 03:00 UTC 自動執行每週圖資更新排程 (道路施工、交通封閉、市政消防栓)
-    - cron: '0 3 * * 1'
+    - cron: '0 0 1 * *'
   workflow_dispatch: # 支援在 GitHub Actions 介面手動一鍵觸發更新
 
 jobs:
