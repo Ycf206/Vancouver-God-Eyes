@@ -4086,45 +4086,45 @@ async def get_active_ferries_api():
     ROUTE_GROUPS = [
         {
             "route_id": "HSB_NAN",
-            "name": "馬蹄灣 ⇄ 納奈莫 (出發灣)",
+            "name": "Horseshoe Bay ⇄ Nanaimo (Departure Bay)",
             "name_en": "HORSESHOE BAY ⇄ DEPARTURE BAY",
             "terminals": ("HSB", "NAN")
         },
         {
             "route_id": "TSA_SWB",
-            "name": "杜瓦森 ⇄ 斯沃茨灣 (維多利亞)",
+            "name": "Tsawwassen ⇄ Swartz Bay (Victoria)",
             "name_en": "TSAWWASSEN ⇄ SWARTZ BAY",
             "terminals": ("TSA", "SWB")
         },
         {
             "route_id": "HSB_LNG",
-            "name": "馬蹄灣 ⇄ 朗代爾 (陽光海岸)",
+            "name": "Horseshoe Bay ⇄ Langdale (Sunshine Coast)",
             "name_en": "HORSESHOE BAY ⇄ LANGDALE",
             "terminals": ("HSB", "LNG")
         },
         {
             "route_id": "TSA_DUK",
-            "name": "杜瓦森 ⇄ 杜克角 (納奈莫)",
+            "name": "Tsawwassen ⇄ Duke Point (Nanaimo)",
             "name_en": "TSAWWASSEN ⇄ DUKE POINT",
             "terminals": ("TSA", "DUK")
         },
         {
             "route_id": "HSB_BOW",
-            "name": "馬蹄灣 ⇄ 寶雲島",
+            "name": "Horseshoe Bay ⇄ Bowen Island",
             "name_en": "HORSESHOE BAY ⇄ BOWEN ISLAND",
             "terminals": ("HSB", "BOW")
         },
     ]
 
     terminal_names_zh = {
-        'TSA': '杜瓦森',
-        'SWB': '斯沃茨灣',
-        'HSB': '馬蹄灣',
-        'DUK': '杜克角',
-        'LNG': '朗代爾',
-        'NAN': '出發灣',
-        'FUL': '福爾福德',
-        'BOW': '寶雲島'
+        'TSA': 'Tsawwassen',
+        'SWB': 'Swartz Bay (Victoria)',
+        'HSB': 'Horseshoe Bay',
+        'DUK': 'Duke Point (Nanaimo)',
+        'LNG': 'Langdale (Sunshine Coast)',
+        'NAN': 'Departure Bay (Nanaimo)',
+        'FUL': 'Fulford Harbour',
+        'BOW': 'Bowen Island'
     }
 
     routes_out = []

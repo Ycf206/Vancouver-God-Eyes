@@ -14,6 +14,47 @@ import { formatShipEta, formatTimePreference, formatTimeRange } from '@/utils/ti
 import skytrainStationsData from '@/data/skytrainStations.json';
 import snappedCorridorsData from '@/data/snapped_corridors.json';
 
+export function getFerryRouteEnglishName(route: { route_id?: string; name?: string; name_en?: string }): string {
+  const enMap: Record<string, string> = {
+    "HSB_NAN": "Horseshoe Bay ⇄ Nanaimo (Departure Bay)",
+    "TSA_SWB": "Tsawwassen ⇄ Swartz Bay (Victoria)",
+    "HSB_LNG": "Horseshoe Bay ⇄ Langdale (Sunshine Coast)",
+    "TSA_DUK": "Tsawwassen ⇄ Duke Point (Nanaimo)",
+    "HSB_BOW": "Horseshoe Bay ⇄ Bowen Island",
+  };
+  if (route.route_id && enMap[route.route_id]) return enMap[route.route_id];
+  const n = route.name || "";
+  if (n.includes("馬蹄灣") && n.includes("納奈莫")) return "Horseshoe Bay ⇄ Nanaimo (Departure Bay)";
+  if (n.includes("杜瓦森") && n.includes("斯沃茨灣")) return "Tsawwassen ⇄ Swartz Bay (Victoria)";
+  if (n.includes("馬蹄灣") && n.includes("朗代爾")) return "Horseshoe Bay ⇄ Langdale (Sunshine Coast)";
+  if (n.includes("杜瓦森") && n.includes("杜克角")) return "Tsawwassen ⇄ Duke Point (Nanaimo)";
+  if (n.includes("馬蹄灣") && n.includes("寶雲島")) return "Horseshoe Bay ⇄ Bowen Island";
+  return route.name_en || n;
+}
+
+export function formatFerryEtaText(eta?: string): string {
+  if (!eta) return "";
+  return eta
+    .replace(/斯沃茨灣/g, "Swartz Bay (Victoria)")
+    .replace(/杜瓦森/g, "Tsawwassen")
+    .replace(/馬蹄灣/g, "Horseshoe Bay")
+    .replace(/朗代爾/g, "Langdale (Sunshine Coast)")
+    .replace(/出發灣/g, "Departure Bay (Nanaimo)")
+    .replace(/納奈莫/g, "Nanaimo")
+    .replace(/杜克角/g, "Duke Point (Nanaimo)")
+    .replace(/寶雲島/g, "Bowen Island");
+}
+
+export function formatAuroraSpotName(name?: string): string {
+  if (!name) return "";
+  const m = name.match(/^(.*?)\s*\((.*?)\)$/);
+  if (m) {
+    return `${m[2]} (${m[1]})`;
+  }
+  return name;
+}
+
+
 export interface TranslinkAlertItem {
   id: string;
   alertId: string;
@@ -3642,7 +3683,7 @@ function ExploreContent() {
           <div className="flex items-center justify-between mb-2 shrink-0">
             <span className="text-xs text-gray-300 font-semibold flex items-center gap-1.5">
               <MountainSnow className="w-4 h-4 text-cyan-400" />
-              <span>3 大滑雪場即時雪況</span>
+              <span>滑雪場即時雪況</span>
             </span>
             <div className="flex items-center gap-1.5">
               <span className="text-[10px] text-cyan-400 bg-cyan-950/70 border border-cyan-800/60 px-1.5 py-0.5 rounded font-mono">
@@ -3765,7 +3806,7 @@ function ExploreContent() {
           <div className="flex items-center justify-between mb-2 shrink-0">
             <span className="text-xs text-gray-300 font-medium flex items-center gap-1.5">
               <Ship className="w-3.5 h-3.5 text-sky-400" />
-              <span>卑詩渡輪 (BC Ferries) 即時航行班次</span>
+              <span>卑詩渡輪 即時航行班次</span>
             </span>
             <span className="text-[10px] text-sky-400 bg-sky-950/70 border border-sky-800/60 px-1.5 py-0.5 rounded font-mono">
               即時追蹤
@@ -3787,8 +3828,8 @@ function ExploreContent() {
                 <div key={route.route_id} className="flex flex-col gap-1.5">
                   {/* Route Header (Matches screenshot) */}
                   <div className="text-[11.5px] font-bold text-gray-300 tracking-wider flex items-center justify-between pt-1 pb-0.5 border-b border-[#232836]">
-                    <span className="uppercase">{route.name}</span>
-                    <span className="text-[10px] text-gray-500 font-mono font-normal">{route.name_en}</span>
+                    <span className="uppercase">{getFerryRouteEnglishName(route)}</span>
+                    
                   </div>
 
                   {/* Vessels under this route */}
@@ -4109,7 +4150,7 @@ function ExploreContent() {
                     <Navigation className="w-3.5 h-3.5 text-emerald-400" />
                     <span>極光觀察地點</span>
                   </span>
-                  <span className="text-[10px] text-gray-400 font-mono">4 大無光害點</span>
+                  
                 </div>
 
                 <div className="flex flex-col gap-2">
@@ -4123,7 +4164,7 @@ function ExploreContent() {
                         <div className="flex-1 min-w-0">
                           <h4 className="font-bold text-xs text-white group-hover:text-emerald-300 transition-colors flex items-start gap-1.5 leading-snug">
                             <span className="shrink-0 text-xs">✨</span>
-                            <span className="break-words whitespace-normal">{spot.name}</span>
+                            <span className="break-words whitespace-normal">{formatAuroraSpotName(spot.name)}</span>
                           </h4>
                         </div>
                         <span className="text-[9.5px] bg-[#222a3a] text-cyan-300 px-1.5 py-0.5 rounded font-mono shrink-0 whitespace-nowrap">
@@ -4456,7 +4497,7 @@ function ExploreContent() {
           <div className="flex items-center justify-between mb-2 shrink-0">
             <span className="text-xs text-gray-300 font-medium flex items-center gap-1.5">
               <Ship className="w-3.5 h-3.5 text-cyan-400" />
-              <span>溫哥華港口即時船運</span>
+              <span>港口即時船運</span>
             </span>
             <div className="flex items-center gap-1.5">
               <span className="text-[10px] text-cyan-400 bg-cyan-950/70 border border-cyan-800/60 px-1.5 py-0.5 rounded font-mono">
@@ -6074,11 +6115,7 @@ function ExploreContent() {
             )}
           </div>
 
-          {/* 1.4: 底部文字: 共 x 大陸路關口 (x代表該分頁的清單數量), 然後下一行: 資料來源：CBSA & CBP */}
-          <div className="flex flex-col text-[10.5px] text-gray-400 px-1 pt-1 border-t border-[#1e2333]/70 shrink-0">
-            <span className="font-medium text-gray-300">共 {filteredBorderCrossings.length} 大陸路關口</span>
-            <span className="text-[9.5px] text-gray-500">資料來源：CBSA & CBP</span>
-          </div>
+          
         </div>
       )}
 
@@ -6102,13 +6139,11 @@ function ExploreContent() {
           )}
           {activeTab === 'ski' && (
             <>
-              <span>共有 {skiResorts.length || 3} 座滑雪場</span>
               <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：Skiresort</span>
             </>
           )}
           {activeTab === 'aurora' && (
             <>
-              <span>共有 {(auroraData?.spots || []).length || 4} 個觀察點</span>
               <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：NOAA SWPC</span>
             </>
           )}
@@ -6123,7 +6158,7 @@ function ExploreContent() {
           )}
           {(activeTab === 'cargo' || activeTab === 'shipping') && (
             <>
-              <span>共追蹤 {sortedShippingVessels.length} 艘溫哥華港口商船 (依抵達時間近至遠排序)</span>
+              <span>共追蹤 {sortedShippingVessels.length} 艘港口商船 (依抵達時間近至遠排序)</span>
               <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：AISStream</span>
             </>
           )}
@@ -6147,7 +6182,6 @@ function ExploreContent() {
           })()}
           {activeTab === 'border' && (
             <>
-              <span>共 {filteredBorderCrossings.length} 大陸路關口</span>
               <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：CBSA & CBP</span>
             </>
           )}

@@ -10,56 +10,7 @@ interface ChangelogEntry {
   highlights: string[];
 }
 
-const CHANGELOG_DATA: ChangelogEntry[] = [
-  {
-    date: '2026-10-24',
-    version: 'v2026.10.4',
-    tag: '最新發布',
-    highlights: [
-      '管理系統重大架構升級：實施獨立安全子網域 (admin.vangodseye.fyi) 與 PIN 碼唯讀保護 (0206)。',
-      '全新調度雙軌分流：GitHub Actions 雲端資料管線與 OCI 伺服器即時服務分離管理。',
-      'GitHub Token 智慧雙重持久化保存，解決重新載入遺失問題。',
-      '後台全面採用現代化瀏覽器分頁風格 (Browser Tabs)，大幅擴充清單垂直可視空間。',
-      '重整為 4 大標準系統分類：道路 (16)、天氣 (5)、生活 (16)、公共事業 (8)。',
-      '新增「更新日誌」版本歷程視窗。'
-    ]
-  },
-  {
-    date: '2026-10-24',
-    version: 'v2026.10.3',
-    highlights: [
-      '自來水管道 (Water Distribution Mains) 與污水管道 (Sewer Mains) 圖層全面升級。',
-      '路燈電網 (Street Lighting Conduits) 與路燈燈桿 (Street Lighting Poles) API 快取與 Popup 樣式優化。',
-      '探索面板燃油 (Fuel) 名稱與寬度高度調整，完美避開右下方操作按鈕。'
-    ]
-  },
-  {
-    date: '2026-10-23',
-    version: 'v2026.10.2',
-    highlights: [
-      '微出行即時監控：Mobi 共享單車與 Lime 共享滑板車排程管線自動同步。',
-      '新增滑雪場即時雪報、海灘水質檢測、極光指數預測整合。',
-      '優化即時數據管線自動排程執行穩定性。'
-    ]
-  },
-  {
-    date: '2026-10-17',
-    version: 'v2026.10.1',
-    highlights: [
-      '整合 TomTom 即時路況暢通度探針與市府交通攝影機即時高清串流。',
-      'TransLink 巴士、天車與海上巴士即時 GTFS-RT 座標追蹤與平滑插值演算法。',
-      '大溫地區美加邊境通關時間、YVR 航班與海洋船舶動態發布。'
-    ]
-  },
-  {
-    date: '2026-10-09',
-    version: 'v2026.10.0',
-    highlights: [
-      '「溫哥華上帝之眼」(Vancouver God\'s Eye) 專案正式發布。',
-      '完成大溫哥華全域多維度開放資料 (Open Data) 與空間地理圖資整合。'
-    ]
-  }
-];
+const CHANGELOG_DATA: ChangelogEntry[] = [];
 
 interface ChangelogModalProps {
   isOpen: boolean;
@@ -127,7 +78,18 @@ export default function ChangelogModal({ isOpen, onClose }: ChangelogModalProps)
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#1e2638]">
-                {CHANGELOG_DATA.map((entry, idx) => (
+                {CHANGELOG_DATA.length === 0 ? (
+                  <tr>
+                    <td colSpan={3} className="py-16 text-center text-gray-500 text-xs">
+                      <div className="flex flex-col items-center justify-center gap-2.5">
+                        <History className="w-8 h-8 text-gray-600/60" />
+                        <span className="text-gray-300 font-medium text-xs">正式版本即將推出</span>
+                        <span className="text-gray-500 text-[11px]">系統更新歷程將於首個正式版本發佈時記錄於此</span>
+                      </div>
+                    </td>
+                  </tr>
+                ) : (
+                  CHANGELOG_DATA.map((entry, idx) => (
                   <tr 
                     key={entry.version}
                     className={`hover:bg-[#161c28] transition-colors ${idx === 0 ? 'bg-sky-500/[0.03]' : ''}`}
@@ -163,7 +125,7 @@ export default function ChangelogModal({ isOpen, onClose }: ChangelogModalProps)
                       </ul>
                     </td>
                   </tr>
-                ))}
+                )))}
               </tbody>
             </table>
           </div>

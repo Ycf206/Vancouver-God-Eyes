@@ -16,7 +16,7 @@ _aurora_cache = {
 VANCOUVER_AURORA_SPOTS = [
     {
         "id": "porteau_cove",
-        "name": "波特灣省立公園 (Porteau Cove)",
+        "name": "Porteau Cove (波特灣省立公園)",
         "area": "海天公路 · 斯闊米什方向 (Sea-to-Sky)",
         "lat": 49.5583,
         "lon": -123.2367,
@@ -26,7 +26,7 @@ VANCOUVER_AURORA_SPOTS = [
     },
     {
         "id": "cypress_lookout",
-        "name": "賽普里斯山高空觀景台 (Cypress Lookout)",
+        "name": "Cypress Lookout (賽普里斯山高空觀景台)",
         "area": "西溫哥華 · 賽普里斯山 (West Vancouver)",
         "lat": 49.3562,
         "lon": -123.1978,
@@ -36,7 +36,7 @@ VANCOUVER_AURORA_SPOTS = [
     },
     {
         "id": "iona_beach",
-        "name": "艾歐娜海灘防波堤 (Iona Beach Jetty)",
+        "name": "Iona Beach Jetty (艾歐娜海灘防波堤)",
         "area": "列治文 · 菲沙河北支流口 (Richmond)",
         "lat": 49.2186,
         "lon": -123.2125,
@@ -46,7 +46,7 @@ VANCOUVER_AURORA_SPOTS = [
     },
     {
         "id": "spanish_banks",
-        "name": "西班牙海灘最西端 (Spanish Banks West)",
+        "name": "Spanish Banks West (西班牙海灘最西端)",
         "area": "溫哥華西區 · UBC 鄰近海灣 (Point Grey)",
         "lat": 49.2764,
         "lon": -123.2268,
