@@ -1,8 +1,8 @@
-name: Update Canada Post 郵政據點 (每週)
+name: Update Canada Post 郵政據點 (每季 (3 個月))
 
 on:
   schedule:
-    - cron: '0 4 * * 1'
+    - cron: '0 0 1 */3 *'
   workflow_dispatch:
 
 concurrency:
