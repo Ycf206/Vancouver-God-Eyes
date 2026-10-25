@@ -1,8 +1,8 @@
-name: Update 公共洗手間 (每月 1 號 02:00)
+name: Update 公共洗手間 (每季 (3 個月))
 
 on:
   schedule:
-    - cron: '0 2 1 * *'
+    - cron: '0 0 1 */3 *'
   workflow_dispatch:
 
 concurrency:
