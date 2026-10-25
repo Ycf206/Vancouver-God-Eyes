@@ -1,13 +1,16 @@
-name: Quarterly Utilities Cron Update (每3個月更新)
+name: Update 公共垃圾桶與回收箱 (每月 1 號 02:00)
 
 on:
   schedule:
-    # 每年 1、4、7、10 月 1 日 03:00 UTC 自動執行 (每 3 個月一次)
-    - cron: '0 3 1 1,4,7,10 *'
-  workflow_dispatch: # 支援在 GitHub 網頁介面一鍵手動觸發立即更新
+    - cron: '0 2 1 * *'
+  workflow_dispatch:
+
+concurrency:
+  group: update-litter-containers
+  cancel-in-progress: true
 
 jobs:
-  update-utilities:
+  update-litter-containers:
     runs-on: ubuntu-latest
 
     permissions:
@@ -26,24 +29,24 @@ jobs:
         run: |
           pip install requests
 
-      - name: Run Utilities Update Script (自來水管道與污水管道 每3個月更新)
+      - name: Run Layer Sync Script (公共垃圾桶與回收箱)
         run: |
-          python backend/scripts/update_utilities.py
+          python backend/scripts/layers/update_litter_containers.py
 
-      - name: Commit and Push Updated Utilities GeoJSON
+      - name: Commit and Push Updated GeoJSON
+        id: git_push
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add backend/data/vancouver_water_distribution_mains.geojson frontend/public/vancouver_water_distribution_mains.geojson backend/data/vancouver_sewer_mains.geojson frontend/public/vancouver_sewer_mains.geojson backend/data/last_utilities_update.json
+          git add backend/data/vancouver_litter_containers.geojson frontend/public/vancouver_litter_containers.geojson
           if git diff --staged --quiet; then
-            echo "No utilities updates detected from Vancouver Open Data API."
+            echo "No updates detected for 公共垃圾桶與回收箱."
             echo "has_changes=false" >> $GITHUB_OUTPUT
           else
-            git commit -m "chore(data): auto-update quarterly utilities (3-month cron) [skip ci]"
+            git commit -m "chore(data): auto-update 公共垃圾桶與回收箱 dataset [skip ci]"
             git push origin main
             echo "has_changes=true" >> $GITHUB_OUTPUT
           fi
-        id: git_push
 
       - name: Sync Updated GeoJSON to OCI VM
         if: steps.git_push.outputs.has_changes == 'true'
@@ -53,7 +56,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.OCI_SSH_KEY }}
           script: |
-            echo "🔄 同步最新公共事業管道 GeoJSON 資料至 OCI 伺服器..."
+            echo "🔄 同步最新 公共垃圾桶與回收箱 圖資至 OCI 伺服器..."
             cd ~/Vancouver-God-Eyes || cd ~/vancouver-gods-eye
             git pull
-            echo "✅ OCI 伺服器資料檔案同步完成！"
+            echo "✅ OCI 伺服器 公共垃圾桶與回收箱 圖資同步完成！"

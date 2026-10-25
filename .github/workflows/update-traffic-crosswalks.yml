@@ -1,13 +1,16 @@
-name: Weekly Open Data Cron Update (每星期更新)
+name: Update 行人斑馬線過路處 (每月 1 號 02:00)
 
 on:
   schedule:
-    # 每星期一 03:00 UTC 自動執行每週圖資更新排程 (道路施工、交通封閉、市政消防栓)
-    - cron: '0 0 1 * *'
-  workflow_dispatch: # 支援在 GitHub Actions 介面手動一鍵觸發更新
+    - cron: '0 2 1 * *'
+  workflow_dispatch:
+
+concurrency:
+  group: update-traffic-crosswalks
+  cancel-in-progress: true
 
 jobs:
-  update-weekly-datasets:
+  update-traffic-crosswalks:
     runs-on: ubuntu-latest
 
     permissions:
@@ -26,24 +29,24 @@ jobs:
         run: |
           pip install requests
 
-      - name: Run Weekly Datasets Update Script
+      - name: Run Layer Sync Script (行人斑馬線過路處)
         run: |
-          python backend/scripts/update_weekly_datasets.py
+          python backend/scripts/layers/update_traffic_crosswalks.py
 
       - name: Commit and Push Updated GeoJSON
+        id: git_push
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add backend/data/vancouver_road_closures.geojson frontend/public/vancouver_road_closures.geojson backend/data/vancouver_road_construction.geojson frontend/public/vancouver_road_construction.geojson backend/data/last_weekly_datasets_update.json
+          git add backend/data/vancouver_traffic_crosswalks.geojson frontend/public/vancouver_traffic_crosswalks.geojson
           if git diff --staged --quiet; then
-            echo "No weekly dataset updates detected from Vancouver Open Data API."
+            echo "No updates detected for 行人斑馬線過路處."
             echo "has_changes=false" >> $GITHUB_OUTPUT
           else
-            git commit -m "chore(data): auto-update weekly datasets (closures, construction) [skip ci]"
+            git commit -m "chore(data): auto-update 行人斑馬線過路處 dataset [skip ci]"
             git push origin main
             echo "has_changes=true" >> $GITHUB_OUTPUT
           fi
-        id: git_push
 
       - name: Sync Updated GeoJSON to OCI VM
         if: steps.git_push.outputs.has_changes == 'true'
@@ -53,7 +56,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.OCI_SSH_KEY }}
           script: |
-            echo "🔄 同步最新每週 GeoJSON 圖資至 OCI 伺服器..."
+            echo "🔄 同步最新 行人斑馬線過路處 圖資至 OCI 伺服器..."
             cd ~/Vancouver-God-Eyes || cd ~/vancouver-gods-eye
             git pull
-            echo "✅ OCI 伺服器每週圖資檔案同步完成！"
+            echo "✅ OCI 伺服器 行人斑馬線過路處 圖資同步完成！"

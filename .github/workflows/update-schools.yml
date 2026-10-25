@@ -1,10 +1,13 @@
-name: Semi-Annual Schools Update (學校資料每6個月更新)
+name: Update 學校及教育設施 (每週日 04:00)
 
 on:
   schedule:
-    # 每年 1 月 1 日與 7 月 1 日 03:00 UTC (每 6 個月一次)
-    - cron: '0 0 1 */6 *'
+    - cron: '0 4 * * 0'
   workflow_dispatch:
+
+concurrency:
+  group: update-schools
+  cancel-in-progress: true
 
 jobs:
   update-schools:
@@ -17,29 +20,33 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          node-version: 20
+          python-version: '3.11'
 
-      - name: Run Schools Update Script (VSB API 合併)
+      - name: Install dependencies
         run: |
-          node scripts/update_schools.mjs
+          pip install requests
 
-      - name: Commit and Push Updated Schools GeoJSON
+      - name: Run Layer Sync Script (學校及教育設施)
+        run: |
+          python backend/scripts/layers/update_schools.py
+
+      - name: Commit and Push Updated GeoJSON
+        id: git_push
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add backend/data/vancouver_schools.geojson frontend/public/vancouver_schools.geojson
           if git diff --staged --quiet; then
-            echo "No school updates detected from VSB API."
+            echo "No updates detected for 學校及教育設施."
             echo "has_changes=false" >> $GITHUB_OUTPUT
           else
-            git commit -m "chore(data): auto-update schools dataset via VSB API (6-month cron) [skip ci]"
+            git commit -m "chore(data): auto-update 學校及教育設施 dataset [skip ci]"
             git push origin main
             echo "has_changes=true" >> $GITHUB_OUTPUT
           fi
-        id: git_push
 
       - name: Sync Updated GeoJSON to OCI VM
         if: steps.git_push.outputs.has_changes == 'true'
@@ -49,7 +56,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.OCI_SSH_KEY }}
           script: |
-            echo "🔄 同步最新學校資料至 OCI 伺服器..."
+            echo "🔄 同步最新 學校及教育設施 圖資至 OCI 伺服器..."
             cd ~/Vancouver-God-Eyes || cd ~/vancouver-gods-eye
             git pull
-            echo "✅ OCI 伺服器學校資料檔案同步完成！"
+            echo "✅ OCI 伺服器 學校及教育設施 圖資同步完成！"

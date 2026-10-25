@@ -1,10 +1,13 @@
-name: Daily Food Vendors Update (食品攤販每天更新1次)
+name: Update 市區街頭熟食攤販 (每月 1 號 04:00)
 
 on:
   schedule:
-    # 每天 14:00 UTC (溫哥華上午 06:00 / 07:00) 自動爬取更新
-    - cron: '0 14 * * *'
+    - cron: '0 4 1 * *'
   workflow_dispatch:
+
+concurrency:
+  group: update-food-vendors
+  cancel-in-progress: true
 
 jobs:
   update-food-vendors:
@@ -17,29 +20,33 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          node-version: 20
+          python-version: '3.11'
 
-      - name: Run Food Vendors Update Script (StreetFoodApp 爬蟲)
+      - name: Install dependencies
         run: |
-          node scripts/update_food_vendors.mjs
+          pip install requests
 
-      - name: Commit and Push Updated Food Vendors GeoJSON
+      - name: Run Layer Sync Script (市區街頭熟食攤販)
+        run: |
+          python backend/scripts/layers/update_food_vendors.py
+
+      - name: Commit and Push Updated GeoJSON
+        id: git_push
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add backend/data/vancouver_food_vendors.geojson frontend/public/vancouver_food_vendors.geojson
           if git diff --staged --quiet; then
-            echo "No food vendor updates detected."
+            echo "No updates detected for 市區街頭熟食攤販."
             echo "has_changes=false" >> $GITHUB_OUTPUT
           else
-            git commit -m "chore(data): auto-update food vendors dataset via StreetFoodApp (daily cron) [skip ci]"
+            git commit -m "chore(data): auto-update 市區街頭熟食攤販 dataset [skip ci]"
             git push origin main
             echo "has_changes=true" >> $GITHUB_OUTPUT
           fi
-        id: git_push
 
       - name: Sync Updated GeoJSON to OCI VM
         if: steps.git_push.outputs.has_changes == 'true'
@@ -49,7 +56,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.OCI_SSH_KEY }}
           script: |
-            echo "🔄 同步最新食品攤販資料至 OCI 伺服器..."
+            echo "🔄 同步最新 市區街頭熟食攤販 圖資至 OCI 伺服器..."
             cd ~/Vancouver-God-Eyes || cd ~/vancouver-gods-eye
             git pull
-            echo "✅ OCI 伺服器食品攤販資料檔案同步完成！"
+            echo "✅ OCI 伺服器 市區街頭熟食攤販 圖資同步完成！"
