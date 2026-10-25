@@ -1,8 +1,8 @@
-name: Update 市區街頭熟食攤販 (每月 1 號 04:00)
+name: Update 市區街頭熟食攤販 (每日)
 
 on:
   schedule:
-    - cron: '0 4 1 * *'
+    - cron: '0 0 * * *'
   workflow_dispatch:
 
 concurrency:
