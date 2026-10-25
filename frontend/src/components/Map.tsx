@@ -5888,7 +5888,15 @@ export default function AppMap() {
           'zoning-districts-fill',
           'public-trees-cluster-layer',
           'public-trees-layer',
-          'public-trees-symbol-layer'
+          'public-trees-symbol-layer',
+          'canada-post-layer',
+          'canada-post-symbol-layer',
+          'atm-layer',
+          'atm-symbol-layer',
+          'beach-water-fill-layer',
+          'beach-water-outline-layer',
+          'beach-water-symbol-layer',
+          'street-lighting-poles-layer'
         ]}
         onClick={(e) => {
           if (contextMenu) {
@@ -9969,9 +9977,23 @@ export default function AppMap() {
               {selectedFacility.facility_type === 'atm' && (() => {
                 const props = selectedFacility.properties || {};
                 const bankFullName = props.bank_full_name || '加拿大銀行';
-                const officialUrl = props.official_url || 'https://www.google.com';
-                const services = Array.isArray(props.services) ? props.services : (props.services_str ? props.services_str.split(',') : []);
-                const openHours = props.opening_hours || {};
+                const officialUrl = props.official_url || props.bank_website || props.url || 'https://www.google.com';
+                let services: string[] = [];
+                try {
+                  services = Array.isArray(props.services) 
+                    ? props.services 
+                    : (typeof props.services === 'string' && props.services.startsWith('[') 
+                        ? JSON.parse(props.services) 
+                        : (props.services_str ? props.services_str.split(',') : []));
+                } catch {
+                  services = props.services_str ? props.services_str.split(',') : [];
+                }
+                let openHours: Record<string, string> = {};
+                try {
+                  openHours = typeof props.opening_hours === 'string' ? JSON.parse(props.opening_hours) : (props.opening_hours || {});
+                } catch {
+                  openHours = {};
+                }
                 const daysList = [
                   { key: 'monday', label: '週一 (Mon)', hours: openHours.monday },
                   { key: 'tuesday', label: '週二 (Tue)', hours: openHours.tuesday },

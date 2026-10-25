@@ -4424,7 +4424,7 @@ function ExploreContent() {
             <span className="text-xs text-gray-300 font-medium">
               {userLocation?.confirmed
                 ? '距離個人位置最近的 ATM 櫃員機'
-                : '溫哥華全區 293 處 ATM 櫃員機'}
+                : '溫哥華 293 處 ATM 櫃員機'}
             </span>
             <div className="flex items-center gap-2">
               <span className="text-[10px] text-amber-400 bg-amber-950/70 border border-amber-800/60 px-1.5 py-0.5 rounded font-mono">
@@ -4551,13 +4551,7 @@ function ExploreContent() {
       )}
 
       {/* ==================== 2. 燃油分頁 (Fuel) ==================== */}
-      {activeTab === 'atm' && (
-            <>
-              <span>共有 {filteredAtms.length} 間 ATM 櫃員機</span>
-              <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：Bankee</span>
-            </>
-          )}
-          {activeTab === 'fuel' && (
+      {activeTab === 'fuel' && (
         <div className="flex flex-col flex-1 min-h-0">
           {/* Subheader: Range & Location info */}
           <div className="flex items-center justify-between mb-2 shrink-0">
@@ -6533,6 +6527,9 @@ function ExploreContent() {
             <>
               <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：NOAA SWPC</span>
             </>
+          )}
+          {activeTab === 'atm' && (
+            <span>共有 {filteredAtms.length} 間 ATM 櫃員機</span>
           )}
           {activeTab === 'fuel' && (
             <span>共有 {filteredFuelStations.length} 間油站</span>
