@@ -1,8 +1,8 @@
-name: Update 摩托車專屬車位 (每週二 02:00)
+name: Update 摩托車專屬車位 (每月)
 
 on:
   schedule:
-    - cron: '0 2 * * 2'
+    - cron: '0 0 1 * *'
   workflow_dispatch:
 
 concurrency:
