@@ -1,8 +1,8 @@
-name: Update Metro Vancouver 泳灘水質監測 (每 6 小時)
+name: Update Metro Vancouver 泳灘水質監測 (每月)
 
 on:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 0 1 * *'
   workflow_dispatch:
 
 concurrency:
