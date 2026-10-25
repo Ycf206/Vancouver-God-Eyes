@@ -3,7 +3,7 @@ name: Semi-Annual Schools Update (學校資料每6個月更新)
 on:
   schedule:
     # 每年 1 月 1 日與 7 月 1 日 03:00 UTC (每 6 個月一次)
-    - cron: '0 3 1 1,7 *'
+    - cron: '0 0 1 */6 *'
   workflow_dispatch:
 
 jobs:
