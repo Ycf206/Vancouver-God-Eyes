@@ -3258,7 +3258,7 @@ class IssueReportRequest(BaseModel):
 @app.post("/api/report-issue")
 def report_issue(payload: IssueReportRequest, db: Session = Depends(database.get_db)):
     """
-    接收使用者回報的問題與建議，儲存至資料庫與備份檔案，並嘗試發送通知郵件至 vancouvergodeyes@gmail.com
+    接收使用者回報的問題與建議，儲存至資料庫與備份檔案，並嘗試發送通知郵件至 vancouvergodseye@gmail.com
     """
     now_utc = datetime.utcnow()
     # 1. 儲存至資料庫
@@ -3292,8 +3292,8 @@ def report_issue(payload: IssueReportRequest, db: Session = Depends(database.get
     except Exception as e:
         print(f"[Issue Report Backup File Error]: {e}")
 
-    # 3. 發送郵件至 vancouvergodeyes@gmail.com
-    target_email = "vancouvergodeyes@gmail.com"
+    # 3. 發送郵件至 vancouvergodseye@gmail.com
+    target_email = "vancouvergodseye@gmail.com"
     smtp_host = os.getenv("SMTP_HOST") # 例如 smtp.gmail.com
     smtp_port = int(os.getenv("SMTP_PORT", "587"))
     smtp_user = os.getenv("SMTP_USER")
