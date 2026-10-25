@@ -53,6 +53,56 @@ export function getSystemCategory(source: { id: string; category?: string; name?
 }
 
 
+// 排程標準週期預設 (Presets)
+export const SCHEDULE_PRESETS: { label: string; cron: string; interval: string }[] = [
+  { label: '30 s', cron: '*/30 * * * * *', interval: '30 s' },
+  { label: '1 min', cron: '* * * * *', interval: '1 min' },
+  { label: '5 mins', cron: '*/5 * * * *', interval: '5 mins' },
+  { label: '10 mins', cron: '*/10 * * * *', interval: '10 mins' },
+  { label: '30 mins', cron: '*/30 * * * *', interval: '30 mins' },
+  { label: '1 hr', cron: '0 * * * *', interval: '1 hr' },
+  { label: '2 hrs', cron: '0 */2 * * *', interval: '2 hrs' },
+  { label: '6 hrs', cron: '0 */6 * * *', interval: '6 hrs' },
+  { label: '12 hrs', cron: '0 */12 * * *', interval: '12 hrs' },
+  { label: '1 day', cron: '0 0 * * *', interval: '1 day' },
+  { label: '1 week', cron: '0 0 * * 0', interval: '1 week' },
+  { label: '1 month', cron: '0 0 1 * *', interval: '1 month' },
+  { label: '3 months', cron: '0 0 1 */3 *', interval: '3 months' },
+  { label: '6 months', cron: '0 0 1 */6 *', interval: '6 months' },
+  { label: '1 year', cron: '0 0 1 1 *', interval: '1 year' },
+];
+
+export function parseSourcePreset(cron: string, interval: string): string {
+  const norm = (interval || '').toLowerCase().trim();
+  const direct = SCHEDULE_PRESETS.find(p => p.cron === cron || p.label.toLowerCase() === norm || p.interval.toLowerCase() === norm);
+  if (direct) return direct.label;
+
+  if (norm.includes('30 秒') || norm.includes('30s')) return '30 s';
+  if (norm.includes('1 分鐘') || norm.includes('1m') || norm.includes('1 min')) return '1 min';
+  if (norm.includes('5 分鐘') || norm.includes('5m') || norm.includes('5 min')) return '5 mins';
+  if (norm.includes('10 分鐘') || norm.includes('10m') || norm.includes('10 min')) return '10 mins';
+  if (norm.includes('30 分鐘') || norm.includes('30m') || norm.includes('30 min')) return '30 mins';
+  if (norm.includes('1 小時') || norm === '每小時' || norm.includes('1h') || norm.includes('1 hr')) return '1 hr';
+  if (norm.includes('2 小時') || norm.includes('2h') || norm.includes('2 hr')) return '2 hrs';
+  if (norm.includes('6 小時') || norm.includes('6h') || norm.includes('6 hr')) return '6 hrs';
+  if (norm.includes('12 小時') || norm.includes('12h') || norm.includes('12 hr')) return '12 hrs';
+  if (norm.includes('1 天') || norm.includes('每日') || norm.includes('每天') || norm.includes('1d') || norm.includes('1 day')) return '1 day';
+  if (norm.includes('1 週') || norm.includes('每週') || norm.includes('1w') || norm.includes('1 week')) return '1 week';
+  if (norm.includes('1 個月') || norm.includes('每月') || norm.includes('1 month')) return '1 month';
+  if (norm.includes('3 個月') || norm.includes('每季') || norm.includes('3 month')) return '3 months';
+  if (norm.includes('6 個月') || norm.includes('每半年') || norm.includes('6 month')) return '6 months';
+  if (norm.includes('1 年') || norm.includes('每年') || norm.includes('1 year')) return '1 year';
+
+  const parts = (cron || '').trim().split(/\s+/);
+  if (parts.length === 5) {
+    const [, , dom, mon, dow] = parts;
+    if (dow !== '*' && dom === '*' && mon === '*') return 'custom_weekly';
+    if (dom !== '*' && mon === '*' && dow === '*') return 'custom_monthly';
+    if (dom !== '*' && mon !== '*' && dow === '*') return 'custom_yearly';
+  }
+  return 'custom';
+}
+
 interface DataSource {
   id: string;
   name: string;
@@ -113,6 +163,51 @@ export default function AdminPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editCron, setEditCron] = useState('');
   const [editInterval, setEditInterval] = useState('');
+  const [selectedSchedulePreset, setSelectedSchedulePreset] = useState<string>('custom');
+  const [customDow, setCustomDow] = useState<number>(1); // 1 = 週一
+  const [customDom, setCustomDom] = useState<number>(1); // 1 = 1號
+  const [customMonth, setCustomMonth] = useState<number>(1); // 1 = 1月
+  const [customTime, setCustomTime] = useState<string>('04:00'); // HH:mm
+
+  const updateCustomWeekly = (dow: number, timeStr: string) => {
+    const [hh, mm] = (timeStr || '04:00').split(':');
+    const h = parseInt(hh, 10) || 0;
+    const m = parseInt(mm, 10) || 0;
+    const dowNames = ['週日', '週一', '週二', '週三', '週四', '週五', '週六'];
+    setEditCron(`${m} ${h} * * ${dow}`);
+    setEditInterval(`每${dowNames[dow] || '週一'} ${timeStr}`);
+  };
+
+  const updateCustomMonthly = (dom: number, timeStr: string) => {
+    const [hh, mm] = (timeStr || '04:00').split(':');
+    const h = parseInt(hh, 10) || 0;
+    const m = parseInt(mm, 10) || 0;
+    setEditCron(`${m} ${h} ${dom} * *`);
+    setEditInterval(`每月${dom}號 ${timeStr}`);
+  };
+
+  const updateCustomYearly = (mon: number, dom: number, timeStr: string) => {
+    const [hh, mm] = (timeStr || '04:00').split(':');
+    const h = parseInt(hh, 10) || 0;
+    const m = parseInt(mm, 10) || 0;
+    setEditCron(`${m} ${h} ${dom} ${mon} *`);
+    setEditInterval(`每年${mon}月${dom}日 ${timeStr}`);
+  };
+
+  const handleSchedulePresetSelect = (presetKey: string) => {
+    setSelectedSchedulePreset(presetKey);
+    const matched = SCHEDULE_PRESETS.find(p => p.label === presetKey);
+    if (matched) {
+      setEditCron(matched.cron);
+      setEditInterval(matched.interval);
+    } else if (presetKey === 'custom_weekly') {
+      updateCustomWeekly(customDow, customTime);
+    } else if (presetKey === 'custom_monthly') {
+      updateCustomMonthly(customDom, customTime);
+    } else if (presetKey === 'custom_yearly') {
+      updateCustomYearly(customMonth, customDom, customTime);
+    }
+  };
   const [isSavingSchedule, setIsSavingSchedule] = useState(false);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
@@ -513,7 +608,7 @@ export default function AdminPage() {
                 setIsUnlockModalOpen(true);
               }}
               className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-lg text-xs font-semibold transition-all cursor-pointer shadow-xs hover:scale-105"
-              title="點擊輸入密碼 (0206) 以解鎖寫入操作"
+              title="點擊輸入管理員密碼以解鎖寫入操作"
             >
               <Lock className="w-3.5 h-3.5" />
               <span>唯讀模式 (點擊解鎖)</span>
@@ -593,10 +688,7 @@ export default function AdminPage() {
           </button>
         </div>
 
-        <div className="hidden lg:flex items-center gap-2 pb-1 text-[11px] text-gray-500">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span>Chrome 瀏覽器分頁模式</span>
-        </div>
+        
       </div>
 
       {/* Main Container */}
@@ -854,24 +946,163 @@ export default function AdminPage() {
                             {isGitHubUnbound ? (
                               <span className="text-gray-500 font-mono text-[11px]">—</span>
                             ) : isEditing ? (
-                              <div className="flex flex-col gap-1.5 p-2 bg-[#0f1218] rounded-lg border border-indigo-500/40 animate-in fade-in">
-                                <div className="flex items-center gap-1.5">
-                                  <input
-                                    type="text"
-                                    value={editCron}
-                                    onChange={(e) => setEditCron(e.target.value)}
-                                    placeholder="Cron 表達式 (如 0 * * * *)"
-                                    className="bg-[#181d28] border border-[#343e54] text-white text-[11px] font-mono px-2 py-1 rounded w-36 outline-none focus:border-indigo-400"
-                                  />
-                                  <input
-                                    type="text"
-                                    value={editInterval}
-                                    onChange={(e) => setEditInterval(e.target.value)}
-                                    placeholder="頻率文字 (如 每小時)"
-                                    className="bg-[#181d28] border border-[#343e54] text-white text-[11px] px-2 py-1 rounded w-24 outline-none focus:border-indigo-400"
-                                  />
+                              <div className="flex flex-col gap-2 p-2.5 bg-[#0f1218] rounded-xl border border-indigo-500/50 shadow-xl min-w-[280px] max-w-[340px] animate-in fade-in">
+                                <div className="flex flex-col gap-1.5">
+                                  <div className="flex items-center gap-1.5">
+                                    <div className="flex-1">
+                                      <label className="text-[9px] text-gray-400 block mb-0.5">Cron 表達式</label>
+                                      <input
+                                        type="text"
+                                        value={editCron}
+                                        onChange={(e) => {
+                                          setEditCron(e.target.value);
+                                          const matched = SCHEDULE_PRESETS.find(p => p.cron === e.target.value);
+                                          if (matched) {
+                                            setSelectedSchedulePreset(matched.label);
+                                            setEditInterval(matched.interval);
+                                          } else {
+                                            setSelectedSchedulePreset('custom');
+                                          }
+                                        }}
+                                        placeholder="Cron 表達式"
+                                        className="w-full bg-[#181d28] border border-[#343e54] text-indigo-300 text-[11px] font-mono px-2 py-1 rounded outline-none focus:border-indigo-400"
+                                      />
+                                    </div>
+                                    <div className="w-36">
+                                      <label className="text-[9px] text-gray-400 block mb-0.5">週期選單</label>
+                                      <select
+                                        value={selectedSchedulePreset}
+                                        onChange={(e) => handleSchedulePresetSelect(e.target.value)}
+                                        className="w-full bg-[#181d28] border border-[#343e54] text-white text-[11px] px-1.5 py-1 rounded outline-none focus:border-indigo-400 cursor-pointer"
+                                      >
+                                        <optgroup label="標準頻率 (Presets)">
+                                          {SCHEDULE_PRESETS.map((p) => (
+                                            <option key={p.label} value={p.label}>{p.label}</option>
+                                          ))}
+                                        </optgroup>
+                                        <optgroup label="自訂排程 (Custom)">
+                                          <option value="custom_weekly">每週x hh:mm</option>
+                                          <option value="custom_monthly">每月x號 hh:mm</option>
+                                          <option value="custom_yearly">每年x月x日 hh:mm</option>
+                                          <option value="custom">自訂表達式</option>
+                                        </optgroup>
+                                      </select>
+                                    </div>
+                                  </div>
+
+                                  {/* 自訂每週細節選單 */}
+                                  {selectedSchedulePreset === 'custom_weekly' && (
+                                    <div className="flex items-center gap-1.5 bg-[#141822] p-1.5 rounded-lg border border-[#232a3b] text-[11px]">
+                                      <span className="text-gray-400 shrink-0">每</span>
+                                      <select
+                                        value={customDow}
+                                        onChange={(e) => {
+                                          const dow = Number(e.target.value);
+                                          setCustomDow(dow);
+                                          updateCustomWeekly(dow, customTime);
+                                        }}
+                                        className="bg-[#181d28] border border-[#343e54] text-white px-1.5 py-0.5 rounded text-[11px] outline-none"
+                                      >
+                                        <option value={1}>週一</option>
+                                        <option value={2}>週二</option>
+                                        <option value={3}>週三</option>
+                                        <option value={4}>週四</option>
+                                        <option value={5}>週五</option>
+                                        <option value={6}>週六</option>
+                                        <option value={0}>週日</option>
+                                      </select>
+                                      <input
+                                        type="time"
+                                        value={customTime}
+                                        onChange={(e) => {
+                                          const t = e.target.value;
+                                          setCustomTime(t);
+                                          updateCustomWeekly(customDow, t);
+                                        }}
+                                        className="bg-[#181d28] border border-[#343e54] text-white px-1.5 py-0.5 rounded text-[11px] outline-none"
+                                      />
+                                    </div>
+                                  )}
+
+                                  {/* 自訂每月細節選單 */}
+                                  {selectedSchedulePreset === 'custom_monthly' && (
+                                    <div className="flex items-center gap-1.5 bg-[#141822] p-1.5 rounded-lg border border-[#232a3b] text-[11px]">
+                                      <span className="text-gray-400 shrink-0">每月</span>
+                                      <select
+                                        value={customDom}
+                                        onChange={(e) => {
+                                          const d = Number(e.target.value);
+                                          setCustomDom(d);
+                                          updateCustomMonthly(d, customTime);
+                                        }}
+                                        className="bg-[#181d28] border border-[#343e54] text-white px-1.5 py-0.5 rounded text-[11px] outline-none"
+                                      >
+                                        {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
+                                          <option key={d} value={d}>{d} 號</option>
+                                        ))}
+                                      </select>
+                                      <input
+                                        type="time"
+                                        value={customTime}
+                                        onChange={(e) => {
+                                          const t = e.target.value;
+                                          setCustomTime(t);
+                                          updateCustomMonthly(customDom, t);
+                                        }}
+                                        className="bg-[#181d28] border border-[#343e54] text-white px-1.5 py-0.5 rounded text-[11px] outline-none"
+                                      />
+                                    </div>
+                                  )}
+
+                                  {/* 自訂每年細節選單 */}
+                                  {selectedSchedulePreset === 'custom_yearly' && (
+                                    <div className="flex items-center gap-1.5 bg-[#141822] p-1.5 rounded-lg border border-[#232a3b] text-[11px]">
+                                      <span className="text-gray-400 shrink-0">每年</span>
+                                      <select
+                                        value={customMonth}
+                                        onChange={(e) => {
+                                          const m = Number(e.target.value);
+                                          setCustomMonth(m);
+                                          updateCustomYearly(m, customDom, customTime);
+                                        }}
+                                        className="bg-[#181d28] border border-[#343e54] text-white px-1 py-0.5 rounded text-[11px] outline-none"
+                                      >
+                                        {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
+                                          <option key={m} value={m}>{m} 月</option>
+                                        ))}
+                                      </select>
+                                      <select
+                                        value={customDom}
+                                        onChange={(e) => {
+                                          const d = Number(e.target.value);
+                                          setCustomDom(d);
+                                          updateCustomYearly(customMonth, d, customTime);
+                                        }}
+                                        className="bg-[#181d28] border border-[#343e54] text-white px-1 py-0.5 rounded text-[11px] outline-none"
+                                      >
+                                        {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
+                                          <option key={d} value={d}>{d} 日</option>
+                                        ))}
+                                      </select>
+                                      <input
+                                        type="time"
+                                        value={customTime}
+                                        onChange={(e) => {
+                                          const t = e.target.value;
+                                          setCustomTime(t);
+                                          updateCustomYearly(customMonth, customDom, t);
+                                        }}
+                                        className="bg-[#181d28] border border-[#343e54] text-white px-1.5 py-0.5 rounded text-[11px] outline-none"
+                                      />
+                                    </div>
+                                  )}
+
+                                  {/* 頻率顯示摘要 */}
+                                  <div className="text-[10px] text-gray-400 flex items-center justify-between">
+                                    <span>週期頻率：<strong className="text-emerald-400 font-mono">{editInterval || '未設定'}</strong></span>
+                                  </div>
                                 </div>
-                                <div className="flex items-center gap-1 justify-end">
+                                <div className="flex items-center gap-1.5 justify-end pt-1 border-t border-[#232a3b]">
                                   <button
                                     onClick={() => setEditingId(null)}
                                     className="px-2 py-0.5 rounded text-[10px] text-gray-400 hover:text-white cursor-pointer"
@@ -881,7 +1112,7 @@ export default function AdminPage() {
                                   <button
                                     disabled={isSavingSchedule}
                                     onClick={() => handleSaveSchedule(source)}
-                                    className="px-2.5 py-0.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-[10px] font-bold cursor-pointer"
+                                    className="px-2.5 py-0.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-[10px] font-bold cursor-pointer transition-colors shadow-sm"
                                   >
                                     {isSavingSchedule ? '儲存中...' : '儲存'}
                                   </button>
@@ -979,6 +1210,20 @@ export default function AdminPage() {
                                     setEditingId(source.id);
                                     setEditCron(source.cron_expr);
                                     setEditInterval(source.schedule_interval);
+                                    const detected = parseSourcePreset(source.cron_expr, source.schedule_interval);
+                                    setSelectedSchedulePreset(detected);
+                                    const parts = (source.cron_expr || '').trim().split(/\s+/);
+                                    if (parts.length === 5) {
+                                      const [min, hour, dom, mon, dow] = parts;
+                                      const hNum = parseInt(hour, 10);
+                                      const mNum = parseInt(min, 10);
+                                      if (!isNaN(hNum) && !isNaN(mNum)) {
+                                        setCustomTime(`${String(hNum).padStart(2, '0')}:${String(mNum).padStart(2, '0')}`);
+                                      }
+                                      if (dow !== '*' && !isNaN(parseInt(dow, 10))) setCustomDow(parseInt(dow, 10));
+                                      if (dom !== '*' && !isNaN(parseInt(dom, 10))) setCustomDom(parseInt(dom, 10));
+                                      if (mon !== '*' && !isNaN(parseInt(mon, 10))) setCustomMonth(parseInt(mon, 10));
+                                    }
                                   }}
                                   className={`p-1 rounded-md transition-colors ${
                                     isUnlocked
@@ -1200,7 +1445,7 @@ export default function AdminPage() {
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-xs font-bold text-white flex items-center gap-1.5">
                         <Lock className="w-3.5 h-3.5 text-amber-400" />
-                        <span>控制台操作鎖 (PIN: 0206)</span>
+                        <span>控制台操作鎖 (PIN 碼保護)</span>
                       </span>
                       <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold border ${
                         isUnlocked
@@ -1234,7 +1479,7 @@ export default function AdminPage() {
                         }}
                         className="px-3 py-1 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded text-[11px] cursor-pointer"
                       >
-                        輸入 PIN 碼解鎖 (0206)
+                        輸入 PIN 碼解鎖
                       </button>
                     )}
                   </div>
@@ -1346,7 +1591,7 @@ export default function AdminPage() {
             <form onSubmit={handleUnlock} className="flex flex-col gap-3">
               <div>
                 <label className="text-[11px] font-bold text-gray-300 block mb-1">
-                  請輸入管理員密碼 (預設: 0206)
+                  請輸入管理員密碼
                 </label>
                 <input
                   type="password"
@@ -1361,7 +1606,7 @@ export default function AdminPage() {
                   className={`w-full bg-[#0d1017] border ${pinError ? 'border-rose-500 ring-1 ring-rose-500' : 'border-[#2e374c] focus:border-amber-400'} px-3 py-2 rounded-lg text-white font-mono text-center tracking-widest text-sm outline-none`}
                 />
                 {pinError && (
-                  <p className="text-rose-400 text-[10px] mt-1 font-semibold text-center">密碼錯誤，請重新輸入 (預設 0206)</p>
+                  <p className="text-rose-400 text-[10px] mt-1 font-semibold text-center">密碼錯誤，請重新輸入</p>
                 )}
               </div>
 

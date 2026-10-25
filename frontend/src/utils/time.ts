@@ -182,7 +182,7 @@ export function formatDateWithTimezone(date: Date, timeZone?: string): string {
   const month = parts.find((p) => p.type === 'month')?.value || '';
   const day = parts.find((p) => p.type === 'day')?.value || '';
   const tzName = parts.find((p) => p.type === 'timeZoneName')?.value || '';
-  return `${year}年${month}月${day}日 ${tzName}`;
+  return `${year}年${month}月${day}日`;
 }
 
 /**

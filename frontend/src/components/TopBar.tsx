@@ -182,7 +182,7 @@ export default function TopBar() {
             </span>
             <span className="text-[10px] text-emerald-500 font-medium leading-none flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_5px_rgba(52,211,153,0.8)]"></span>
-              即時 · {formatDate(time)}
+              {formatDate(time)}
             </span>
           </>
         ) : (

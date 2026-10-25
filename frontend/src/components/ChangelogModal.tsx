@@ -35,9 +35,7 @@ export default function ChangelogModal({ isOpen, onClose }: ChangelogModalProps)
             <div>
               <h2 className="text-base font-bold text-white tracking-wide flex items-center gap-2">
                 <span>系統更新日誌</span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-300 border border-sky-500/30">
-                  CHANGELOG
-                </span>
+
               </h2>
               <p className="text-[11px] text-gray-400">溫哥華上帝之眼版本迭代歷程與功能更新記錄</p>
             </div>
