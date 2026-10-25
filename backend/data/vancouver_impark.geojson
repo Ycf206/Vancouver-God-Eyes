@@ -1,5 +1,8 @@
 {
   "type": "FeatureCollection",
+  "generator": "VancouverGodsEye",
+  "total_count": 178,
+  "updated_at": "2026-10-25T08:58:50.405860+00:00",
   "features": [
     {
       "type": "Feature",
@@ -30,13 +33,13 @@
           "label": "Random UGround - Non-Tenant",
           "value": "$100.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.25438915276811,-123.23753582738368&heading=74.56676345687269&fov=90&pitch=0.7673407702087266&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1992"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.25438915276811,-123.23753582738368&heading=74.56676345687269&fov=90&pitch=0.7673407702087266&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -65,13 +68,13 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "EV Charger"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.25381167741246,-123.23887504625928&heading=185.76432352221434&fov=90&pitch=-12.851819988631362&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=2337"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.25381167741246,-123.23887504625928&heading=185.76432352221434&fov=90&pitch=-12.851819988631362&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -100,11 +103,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "",
-        "url": "https://lots.impark.com/imp/en?lot=2338"
+        "rates": [],
+        "street_view_url": "",
+        "directions_url": ""
       }
     },
     {
@@ -133,11 +136,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "",
-        "url": "https://lots.impark.com/imp/en?lot=2341"
+        "rates": [],
+        "street_view_url": "",
+        "directions_url": ""
       }
     },
     {
@@ -166,11 +169,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "",
-        "url": "https://lots.impark.com/imp/en?lot=2342"
+        "rates": [],
+        "street_view_url": "",
+        "directions_url": ""
       }
     },
     {
@@ -199,13 +202,13 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2611155,-123.24522830000001&heading=-113.5855717159648&fov=90&pitch=0.45940752880419955&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1634"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2611155,-123.24522830000001&heading=-113.5855717159648&fov=90&pitch=0.45940752880419955&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -237,13 +240,13 @@
           "label": "Random Parking (Lot Hours)",
           "value": "$125.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26658979256046,-123.24220168928679&heading=-144.95986515360804&fov=90&pitch=0.05098333684120071&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1771"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26658979256046,-123.24220168928679&heading=-144.95986515360804&fov=90&pitch=0.05098333684120071&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -272,11 +275,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "",
-        "url": "https://lots.impark.com/imp/en?lot=2339"
+        "rates": [],
+        "street_view_url": "",
+        "directions_url": ""
       }
     },
     {
@@ -308,11 +311,11 @@
           "label": "Reserved Public (Lot Hours)",
           "value": "$90.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2348,-123.183&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=768"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2348,-123.183&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -344,11 +347,11 @@
           "label": "RESIDENTIAL RANDOM",
           "value": "$150.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.24901438094664,-123.1547255157135&heading=115.92782577358649&fov=90&pitch=-2.4876129083616405&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=351"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.24901438094664,-123.1547255157135&heading=115.92782577358649&fov=90&pitch=-2.4876129083616405&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -377,11 +380,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26337722520058,-123.15571794448742&heading=319.8043811703918&fov=90&pitch=13.366024490244271&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1895"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26337722520058,-123.15571794448742&heading=319.8043811703918&fov=90&pitch=13.366024490244271&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -410,11 +413,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26348645643238,-123.15535319964494&heading=94.17506358513702&fov=90&pitch=3.21196266427593&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=786"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26348645643238,-123.15535319964494&heading=94.17506358513702&fov=90&pitch=3.21196266427593&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -446,11 +449,11 @@
           "label": "Random Parking",
           "value": "$90.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26857643772703,-123.15748875948157&heading=92.35674285060557&fov=90&pitch=1.268923445663745&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=155"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26857643772703,-123.15748875948157&heading=92.35674285060557&fov=90&pitch=1.268923445663745&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -479,11 +482,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26339601828677,-123.15055496921903&heading=215.13544573120544&fov=90&pitch=-13.235443598083336&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1778"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26339601828677,-123.15055496921903&heading=215.13544573120544&fov=90&pitch=-13.235443598083336&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -515,11 +518,11 @@
           "label": "Random",
           "value": "$70.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.23227436949367,-123.15639578576068&heading=252.36185638166776&fov=90&pitch=-10.72142065149248&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=388"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.23227436949367,-123.15639578576068&heading=252.36185638166776&fov=90&pitch=-10.72142065149248&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -548,13 +551,13 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Valet Parking"
         ],
-        "streetViewUrl": "",
-        "url": "https://lots.impark.com/imp/en?lot=2344"
+        "rates": [],
+        "street_view_url": "",
+        "directions_url": ""
       }
     },
     {
@@ -583,11 +586,11 @@
           "label": "LD Tenant Random",
           "value": "$60.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.234083972474416,-123.15472047120122&heading=158.50836723462194&fov=90&pitch=-17.726512987202568&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1358"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.234083972474416,-123.15472047120122&heading=158.50836723462194&fov=90&pitch=-17.726512987202568&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -616,11 +619,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27215845329534,-123.15588797965897&heading=320.98166974923384&fov=90&pitch=-13.288652977115404&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1792"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27215845329534,-123.15588797965897&heading=320.98166974923384&fov=90&pitch=-13.288652977115404&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -652,11 +655,11 @@
           "label": "RND P2 Stall 47-53/64-65/70-73",
           "value": "$120.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.263210397294245,-123.14514093582615&heading=0.9702422668128747&fov=90&pitch=-15.91387412510403&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1386"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.263210397294245,-123.14514093582615&heading=0.9702422668128747&fov=90&pitch=-15.91387412510403&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -685,13 +688,13 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "EV Charger"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.271179020177144,-123.14999759891337&heading=95.12321744392511&fov=90&pitch=-16.365868427576814&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=2361"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.271179020177144,-123.14999759891337&heading=95.12321744392511&fov=90&pitch=-16.365868427576814&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -723,11 +726,11 @@
           "label": "Rdn Non-tenant",
           "value": "$185.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26760425516726,-123.14557264616563&heading=93.06295346205098&fov=90&pitch=-9.173345514749641&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=2334"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26760425516726,-123.14557264616563&heading=93.06295346205098&fov=90&pitch=-9.173345514749641&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -756,11 +759,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26368655436748,-123.14111206569508&heading=316.7880826140322&fov=90&pitch=0.940378439748514&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=2300"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26368655436748,-123.14111206569508&heading=316.7880826140322&fov=90&pitch=0.940378439748514&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -792,11 +795,11 @@
           "label": "Random 7am-7pm",
           "value": "$135.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.25728495167783,-123.1395167879765&heading=13.533324554130596&fov=90&pitch=-15.638238348624611&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=254"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.25728495167783,-123.1395167879765&heading=13.533324554130596&fov=90&pitch=-15.638238348624611&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -828,11 +831,11 @@
           "label": "Random Monthly",
           "value": "$122.89"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "",
-        "url": "https://lots.impark.com/imp/en?lot=2336"
+        "rates": [],
+        "street_view_url": "",
+        "directions_url": ""
       }
     },
     {
@@ -864,11 +867,11 @@
           "label": "Random 8:30am - 5:30pm M-F",
           "value": "$135.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2638,-123.141&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=734"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2638,-123.141&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -897,13 +900,11 @@
           "label": "Gated Reserved Parking",
           "value": "$120.00"
         },
-        "hasPromotions": true,
-        "promotions": [
-          "50% Off Monthly Parking"
-        ],
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26220876260532,-123.13979505708859&heading=5.756047127780386&fov=90&pitch=-18.361957645230618&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=2371"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26220876260532,-123.13979505708859&heading=5.756047127780386&fov=90&pitch=-18.361957645230618&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -935,11 +936,11 @@
           "label": "Non-tenant Random 24 Hours",
           "value": "$120.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26454965711202,-123.14052754262269&heading=327.2390606631818&fov=90&pitch=-0.9183592016301105&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=112"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26454965711202,-123.14052754262269&heading=327.2390606631818&fov=90&pitch=-0.9183592016301105&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -968,11 +969,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.262644,-123.13938000000001&heading=227.9792936802975&fov=90&pitch=-6.4769516728624685&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=2214"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.262644,-123.13938000000001&heading=227.9792936802975&fov=90&pitch=-6.4769516728624685&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -1004,11 +1005,11 @@
           "label": "Random Non reserved",
           "value": "$130.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.25917142938458,-123.13803452148541&heading=207.18122758299538&fov=90&pitch=-17.40594145069251&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1616"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.25917142938458,-123.13803452148541&heading=207.18122758299538&fov=90&pitch=-17.40594145069251&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -1040,13 +1041,13 @@
           "label": "Random Parking",
           "value": "$125.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.258322,-123.13804299999998&heading=-35.29913691363058&fov=90&pitch=3.937352793467389&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1879"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.258322,-123.13804299999998&heading=-35.29913691363058&fov=90&pitch=3.937352793467389&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -1078,13 +1079,13 @@
           "label": "Random 24/7",
           "value": "$110.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26219959804232,-123.14015025690757&heading=322.626518292028&fov=90&pitch=-9.752596491187816&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=3195"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26219959804232,-123.14015025690757&heading=322.626518292028&fov=90&pitch=-9.752596491187816&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -1116,11 +1117,11 @@
           "label": "Reserved 24 Hours Alley",
           "value": "$140.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2653,-123.139&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1392"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2653,-123.139&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -1152,11 +1153,11 @@
           "label": "City Market RSVD",
           "value": "$350.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "",
-        "url": "https://lots.impark.com/imp/en?lot=2326"
+        "rates": [],
+        "street_view_url": "",
+        "directions_url": ""
       }
     },
     {
@@ -1185,11 +1186,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "",
-        "url": "https://lots.impark.com/imp/en?lot=2356"
+        "rates": [],
+        "street_view_url": "",
+        "directions_url": ""
       }
     },
     {
@@ -1221,11 +1222,11 @@
           "label": "Random Non Tenant 7AM - 10PM",
           "value": "$255.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26967800869868,-123.13947688252551&heading=172.70410103111203&fov=90&pitch=-1.8477046045169203&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1380"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26967800869868,-123.13947688252551&heading=172.70410103111203&fov=90&pitch=-1.8477046045169203&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -1254,11 +1255,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26403942980814,-123.13653964378972&heading=-197.03026463291584&fov=90&pitch=-15.325104951332591&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=857"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26403942980814,-123.13653964378972&heading=-197.03026463291584&fov=90&pitch=-15.325104951332591&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -1290,13 +1291,13 @@
           "label": "Tenant Random Parking 24/7",
           "value": "$152.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.264473305914436,-123.13534301294965&heading=13.554827850160734&fov=90&pitch=-12.867894774204132&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1941"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.264473305914436,-123.13534301294965&heading=13.554827850160734&fov=90&pitch=-12.867894774204132&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -1325,11 +1326,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "",
-        "url": "https://lots.impark.com/imp/en?lot=2340"
+        "rates": [],
+        "street_view_url": "",
+        "directions_url": ""
       }
     },
     {
@@ -1358,11 +1359,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26997690536539,-123.13706920883432&heading=46.92974305919233&fov=90&pitch=3.154974436627711&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=670"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26997690536539,-123.13706920883432&heading=46.92974305919233&fov=90&pitch=3.154974436627711&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -1391,11 +1392,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.24810896238883,-123.12502827734448&heading=211.2357459369962&fov=90&pitch=4.936360392660717&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=213"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.24810896238883,-123.12502827734448&heading=211.2357459369962&fov=90&pitch=4.936360392660717&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -1427,13 +1428,13 @@
           "label": "Reserved - 6am to 7pm",
           "value": "$215.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2635,-123.127&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=623"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2635,-123.127&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -1462,46 +1463,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26389020644788,-123.12657205530988&heading=260.9564425710873&fov=90&pitch=0.4910479330903428&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=82"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.125002,
-          49.244309
-        ]
-      },
-      "properties": {
-        "id": "impark_4230",
-        "facility_type": "impark",
-        "lot_id": 4230,
-        "lot_number": 209,
-        "lot_name": "Children and Women's Hospital",
-        "address1": "4500 Oak Street",
-        "address2": "",
-        "city": "Vancouver",
-        "postal_code": "V6H 3V4",
-        "hasTransientRates": true,
-        "lowestTransientRate": {
-          "label": "hourly",
-          "value": "$1.75 per 30 min"
-        },
-        "hasMonthlyRates": false,
-        "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
-        "features": [
-          "EV Charger"
-        ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.24365525786797,-123.12611828932198&heading=85.77030820141186&fov=90&pitch=-18.002624878703443&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=209"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26389020644788,-123.12657205530988&heading=260.9564425710873&fov=90&pitch=0.4910479330903428&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -1530,11 +1496,46 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26190720072092,-123.12539479277712&heading=221.3335770630397&fov=90&pitch=-0.6393481730020909&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=184"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26190720072092,-123.12539479277712&heading=221.3335770630397&fov=90&pitch=-0.6393481730020909&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.125002,
+          49.244309
+        ]
+      },
+      "properties": {
+        "id": "impark_4230",
+        "facility_type": "impark",
+        "lot_id": 4230,
+        "lot_number": 209,
+        "lot_name": "Children and Women's Hospital",
+        "address1": "4500 Oak Street",
+        "address2": "",
+        "city": "Vancouver",
+        "postal_code": "V6H 3V4",
+        "hasTransientRates": true,
+        "lowestTransientRate": {
+          "label": "hourly",
+          "value": "$1.75 per 30 min"
+        },
+        "hasMonthlyRates": false,
+        "lowestMonthlyRate": null,
+        "capacity": null,
+        "features": [
+          "EV Charger"
+        ],
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.24365525786797,-123.12611828932198&heading=85.77030820141186&fov=90&pitch=-18.002624878703443&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -1563,11 +1564,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.264171557022266,-123.12656509987772&heading=105.33603317494865&fov=90&pitch=-0.624650739233104&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=787"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.264171557022266,-123.12656509987772&heading=105.33603317494865&fov=90&pitch=-0.624650739233104&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -1599,13 +1600,13 @@
           "label": "Random Parking",
           "value": "$200.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.263792841429094,-123.12657776642448&heading=55.372269147975615&fov=90&pitch=-17.224897256443057&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=663"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.263792841429094,-123.12657776642448&heading=55.372269147975615&fov=90&pitch=-17.224897256443057&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -1634,11 +1635,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26187162639156,-123.12540293762218&heading=214.839516509523&fov=90&pitch=-11.04559764661893&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=191"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26187162639156,-123.12540293762218&heading=214.839516509523&fov=90&pitch=-11.04559764661893&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -1667,14 +1668,14 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "On-site attendant",
           "EV Charger"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.25982746774162,-123.12436625168658&heading=56.5590167033509&fov=90&pitch=4.130502377224545&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=186"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.25982746774162,-123.12436625168658&heading=56.5590167033509&fov=90&pitch=4.130502377224545&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -1703,13 +1704,13 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "EV Charger"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.24045151824329,-123.12368861154454&heading=274.2468275575977&fov=90&pitch=-1.8128533255713961&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=2362"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.24045151824329,-123.12368861154454&heading=274.2468275575977&fov=90&pitch=-1.8128533255713961&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -1738,11 +1739,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26060393610633,-123.12260808124392&heading=330.4413771395864&fov=90&pitch=-1.0260869391834433&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=188"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26060393610633,-123.12260808124392&heading=330.4413771395864&fov=90&pitch=-1.0260869391834433&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -1771,11 +1772,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26064615458108,-123.1227050553282&heading=335.84069550048883&fov=90&pitch=-3.9140987172047517&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=189"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26064615458108,-123.1227050553282&heading=335.84069550048883&fov=90&pitch=-3.9140987172047517&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -1804,11 +1805,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26238615244916,-123.12299778187216&heading=18.287964953314205&fov=90&pitch=-6.788808931191028&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=193"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26238615244916,-123.12299778187216&heading=18.287964953314205&fov=90&pitch=-6.788808931191028&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -1837,11 +1838,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26383129057807,-123.1228028879308&heading=150.70915258080745&fov=90&pitch=2.335407483463726&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1784"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26383129057807,-123.1228028879308&heading=150.70915258080745&fov=90&pitch=2.335407483463726&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -1870,11 +1871,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "",
-        "url": "https://lots.impark.com/imp/en?lot=2346"
+        "rates": [],
+        "street_view_url": "",
+        "directions_url": ""
       }
     },
     {
@@ -1903,11 +1904,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26052276216171,-123.12207101442152&heading=336.7114218746414&fov=90&pitch=-1.5590658832789757&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=187"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26052276216171,-123.12207101442152&heading=336.7114218746414&fov=90&pitch=-1.5590658832789757&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -1939,13 +1940,13 @@
           "label": "Random Gated",
           "value": "$135.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.280718,-123.13280199999997&heading=717.9607063197027&fov=90&pitch=6.905947955390328&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1790"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.280718,-123.13280199999997&heading=717.9607063197027&fov=90&pitch=6.905947955390328&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -1974,11 +1975,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26425712520694,-123.12263533243255&heading=195.0443517261721&fov=90&pitch=-0.6039341155760383&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=136"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26425712520694,-123.12263533243255&heading=195.0443517261721&fov=90&pitch=-0.6039341155760383&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -2007,13 +2008,13 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2809,-123.132&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=192"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2809,-123.132&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -2045,13 +2046,13 @@
           "label": "Public Random Parking",
           "value": "$260.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2629,-123.122&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=798"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2629,-123.122&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -2080,15 +2081,15 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete",
           "On-site attendant",
           "Block Heater Plugin"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.263,-123.122&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1344"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.263,-123.122&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -2117,11 +2118,11 @@
           "label": "Reserved Gated Special",
           "value": "$150.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28922447444432,-123.1395000828189&heading=39.91143720433546&fov=90&pitch=-7.3581341699197935&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=2233"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28922447444432,-123.1395000828189&heading=39.91143720433546&fov=90&pitch=-7.3581341699197935&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -2150,11 +2151,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.23502085601222,-123.15775912054899&heading=272.257349775431&fov=90&pitch=-3.8492799722957045&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=2309"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.23502085601222,-123.15775912054899&heading=272.257349775431&fov=90&pitch=-3.8492799722957045&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -2183,11 +2184,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.24226312071949,-123.1207082236321&heading=263.7794772275996&fov=90&pitch=1.5488101674120713&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=211"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.24226312071949,-123.1207082236321&heading=263.7794772275996&fov=90&pitch=1.5488101674120713&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -2216,11 +2217,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26281896807166,-123.12152121803558&heading=133.79411416018215&fov=90&pitch=-4.760867249937448&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=194"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26281896807166,-123.12152121803558&heading=133.79411416018215&fov=90&pitch=-4.760867249937448&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -2252,13 +2253,13 @@
           "label": "Random - Mon-Fri 7am-6pm",
           "value": "$185.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27985760547984,-123.12932079243195&heading=266.3065909837811&fov=90&pitch=-17.96758362946825&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1626"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27985760547984,-123.12932079243195&heading=266.3065909837811&fov=90&pitch=-17.96758362946825&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -2290,14 +2291,14 @@
           "label": "Random Parking Gated",
           "value": "$360.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete",
           "EV Charger"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27756817484208,-123.1285321428709&heading=340.2542095983812&fov=90&pitch=-24.58805572738288&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1733"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27756817484208,-123.1285321428709&heading=340.2542095983812&fov=90&pitch=-24.58805572738288&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -2326,44 +2327,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.278739,-123.12865&heading=807.6261338289963&fov=90&pitch=3.225650557620808&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1779"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.127721,
-          49.279151
-        ]
-      },
-      "properties": {
-        "id": "impark_4370",
-        "facility_type": "impark",
-        "lot_id": 4370,
-        "lot_number": 256,
-        "lot_name": "Addition",
-        "address1": "1133 Hornby Street",
-        "address2": "",
-        "city": "Vancouver",
-        "postal_code": "V6Z 1W1",
-        "hasTransientRates": false,
-        "lowestTransientRate": null,
-        "hasMonthlyRates": true,
-        "lowestMonthlyRate": {
-          "label": "Random 24hrs",
-          "value": "$185.00"
-        },
-        "hasPromotions": false,
-        "promotions": null,
-        "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27923830183336,-123.12789646945481&heading=181.86307270120795&fov=90&pitch=-8.242359497578306&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=256"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.278739,-123.12865&heading=807.6261338289963&fov=90&pitch=3.225650557620808&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -2392,13 +2360,46 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "EV Charger"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27979371694508,-123.12808254600498&heading=327.518591958655&fov=90&pitch=6.729469485038749&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=199"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27979371694508,-123.12808254600498&heading=327.518591958655&fov=90&pitch=6.729469485038749&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.127721,
+          49.279151
+        ]
+      },
+      "properties": {
+        "id": "impark_4370",
+        "facility_type": "impark",
+        "lot_id": 4370,
+        "lot_number": 256,
+        "lot_name": "Addition",
+        "address1": "1133 Hornby Street",
+        "address2": "",
+        "city": "Vancouver",
+        "postal_code": "V6Z 1W1",
+        "hasTransientRates": false,
+        "lowestTransientRate": null,
+        "hasMonthlyRates": true,
+        "lowestMonthlyRate": {
+          "label": "Random 24hrs",
+          "value": "$185.00"
+        },
+        "capacity": null,
+        "features": [],
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27923830183336,-123.12789646945481&heading=181.86307270120795&fov=90&pitch=-8.242359497578306&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -2427,11 +2428,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.281653741793455,-123.12891444459692&heading=217.32357890394348&fov=90&pitch=-0.7486642726525474&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=201"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.281653741793455,-123.12891444459692&heading=217.32357890394348&fov=90&pitch=-0.7486642726525474&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -2460,11 +2461,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "",
-        "url": "https://lots.impark.com/imp/en?lot=2345"
+        "rates": [],
+        "street_view_url": "",
+        "directions_url": ""
       }
     },
     {
@@ -2493,13 +2494,13 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26381377929932,-123.11983776235603&heading=82.6973082943775&fov=90&pitch=-19.693802676278338&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=95"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26381377929932,-123.11983776235603&heading=82.6973082943775&fov=90&pitch=-19.693802676278338&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -2528,11 +2529,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "",
-        "url": "https://lots.impark.com/imp/en?lot=2347"
+        "rates": [],
+        "street_view_url": "",
+        "directions_url": ""
       }
     },
     {
@@ -2561,11 +2562,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26420108619871,-123.11875920600333&heading=180.0957944144036&fov=90&pitch=-10.94111414028248&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=2355"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26420108619871,-123.11875920600333&heading=180.0957944144036&fov=90&pitch=-10.94111414028248&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -2597,13 +2598,13 @@
           "label": "Random Parking",
           "value": "$180.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Block Heater Plugin"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27855364642168,-123.12703601530117&heading=275.296012746964&fov=90&pitch=-11.675518766942886&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=808"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27855364642168,-123.12703601530117&heading=275.296012746964&fov=90&pitch=-11.675518766942886&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -2632,13 +2633,13 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "On-site attendant"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26205896353991,-123.11756408797874&heading=241.440142628858&fov=90&pitch=-0.4426510697246613&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=185"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26205896353991,-123.11756408797874&heading=241.440142628858&fov=90&pitch=-0.4426510697246613&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -2670,16 +2671,16 @@
           "label": "Non Tenant Random-Parkade Hrs",
           "value": "$185.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete",
           "On-site attendant",
           "EV Charger",
           "Block Heater Plugin"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26375006628705,-123.11987471443705&heading=68.26123561616231&fov=90&pitch=-6.240660900737424&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=74"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26375006628705,-123.11987471443705&heading=68.26123561616231&fov=90&pitch=-6.240660900737424&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -2711,14 +2712,14 @@
           "label": "Non reserved",
           "value": "$200.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "EV Charger",
           "Car Wash"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27784276190324,-123.12416593069737&heading=247.0094335972346&fov=90&pitch=2.1676409833816592&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=641"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27784276190324,-123.12416593069737&heading=247.0094335972346&fov=90&pitch=2.1676409833816592&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -2750,13 +2751,13 @@
           "label": "Reserved 24hrs",
           "value": "$404.25"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Valet Parking"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.278555151311444,-123.12518913209819&heading=68.22196383456539&fov=90&pitch=-10.369374584357232&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=622"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.278555151311444,-123.12518913209819&heading=68.22196383456539&fov=90&pitch=-10.369374584357232&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -2785,11 +2786,11 @@
           "label": "Gated Reserved Monthly",
           "value": "$210.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.279493591070995,-123.12460818344059&heading=287.7307970133029&fov=90&pitch=1.415561079068027&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=2299"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.279493591070995,-123.12460818344059&heading=287.7307970133029&fov=90&pitch=1.415561079068027&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -2818,13 +2819,13 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Block Heater Plugin"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26366071433752,-123.11753837763094&heading=287.36664553098205&fov=90&pitch=-6.453607066037748&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1368"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26366071433752,-123.11753837763094&heading=287.36664553098205&fov=90&pitch=-6.453607066037748&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -2856,11 +2857,11 @@
           "label": "Random Parking - Stalls 67-106",
           "value": "$210.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.262766,-123.11662999999999&heading=17.522549192915164&fov=90&pitch=-13.662398989522515&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1768"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.262766,-123.11662999999999&heading=17.522549192915164&fov=90&pitch=-13.662398989522515&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -2889,11 +2890,11 @@
           "label": "Motorcycle-Non Vehicle Stall",
           "value": "$70.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2898,-123.134&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1891"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2898,-123.134&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -2922,13 +2923,13 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26538882804023,-123.11675419073325&heading=132.12931796720574&fov=90&pitch=-12.554301124609722&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1079"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26538882804023,-123.11675419073325&heading=132.12931796720574&fov=90&pitch=-12.554301124609722&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -2960,14 +2961,14 @@
           "label": "Non-tenant Rand.7am-12mid",
           "value": "$150.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete",
           "Block Heater Plugin"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27356619953677,-123.12073233112174&heading=209.238056399888&fov=90&pitch=-2.9258672487655133&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1301"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27356619953677,-123.12073233112174&heading=209.238056399888&fov=90&pitch=-2.9258672487655133&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -2999,13 +3000,13 @@
           "label": "Random Parking 7am-11pm",
           "value": "$145.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2731,-123.12&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1260"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2731,-123.12&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -3034,11 +3035,11 @@
           "label": "Reserved 24/7 ",
           "value": "$220.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27675860096062,-123.12198774650058&heading=93.10769287933367&fov=90&pitch=-13.483184218104967&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1764"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27675860096062,-123.12198774650058&heading=93.10769287933367&fov=90&pitch=-13.483184218104967&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -3070,13 +3071,13 @@
           "label": "Random Parking 6am-11pm P2ONLY",
           "value": "$190.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.264168738765285,-123.11627507865799&heading=179.90390726966714&fov=90&pitch=-11.715321791338852&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1928"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.264168738765285,-123.11627507865799&heading=179.90390726966714&fov=90&pitch=-11.715321791338852&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -3108,11 +3109,11 @@
           "label": "Random 6am to 12 midnight",
           "value": "$225.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26282366612971,-123.1149372158679&heading=281.82186546787943&fov=90&pitch=2.134617448003965&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=339"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26282366612971,-123.1149372158679&heading=281.82186546787943&fov=90&pitch=2.134617448003965&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -3144,14 +3145,14 @@
           "label": "Random 6:30am-11:59pm 7 Days",
           "value": "$170.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete",
           "On-site attendant"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28286291363815,-123.1253572050761&heading=186.32248649662358&fov=90&pitch=-12.273908419949592&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=696"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28286291363815,-123.1253572050761&heading=186.32248649662358&fov=90&pitch=-12.273908419949592&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -3183,11 +3184,11 @@
           "label": "Random (Lot Hours) - P2 Level",
           "value": "$155.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.29239132300774,-123.13472092335707&heading=51.998141014851505&fov=90&pitch=3.6415725123112708&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=352"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.29239132300774,-123.13472092335707&heading=51.998141014851505&fov=90&pitch=3.6415725123112708&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -3219,11 +3220,11 @@
           "label": "Random Parking",
           "value": "$150.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2858,-123.128&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1357"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2858,-123.128&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -3252,13 +3253,11 @@
           "label": "Reserved Parking",
           "value": "$255.00"
         },
-        "hasPromotions": true,
-        "promotions": [
-          "Save $75 Every Month for 6 Months"
-        ],
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.278952502861834,-123.12250783550132&heading=47.08620937387885&fov=90&pitch=-6.303703895604556&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=2333"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.278952502861834,-123.12250783550132&heading=47.08620937387885&fov=90&pitch=-6.303703895604556&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -3290,11 +3289,11 @@
           "label": "Reserved 24/7",
           "value": "$180.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2831,-123.125&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1826"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2831,-123.125&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -3326,11 +3325,11 @@
           "label": "Random Parking 7AM-11PM",
           "value": "$185.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2859,-123.127&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=374"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2859,-123.127&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -3362,11 +3361,11 @@
           "label": "Random Underground 7am-9pm",
           "value": "$135.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2651,-123.114&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1693"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2651,-123.114&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -3398,11 +3397,11 @@
           "label": "Random Parking (7am-11pm)",
           "value": "$185.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2852,-123.126&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=493"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2852,-123.126&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -3434,52 +3433,14 @@
           "label": "Non Ten Random Lot Hours",
           "value": "$185.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete",
           "On-site attendant"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2808,-123.122&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=952"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.121024,
-          49.279672
-        ]
-      },
-      "properties": {
-        "id": "impark_2210",
-        "facility_type": "impark",
-        "lot_id": 2210,
-        "lot_number": 1747,
-        "lot_name": "901 Seymour Street",
-        "address1": "901 Seymour Street",
-        "address2": "",
-        "city": "Vancouver",
-        "postal_code": "V6B 3M1",
-        "hasTransientRates": true,
-        "lowestTransientRate": {
-          "label": "hourly",
-          "value": "$4.50 per hr"
-        },
-        "hasMonthlyRates": true,
-        "lowestMonthlyRate": {
-          "label": "Reserved Parking",
-          "value": "$225.00"
-        },
-        "hasPromotions": false,
-        "promotions": null,
-        "features": [
-          "Parker Pete"
-        ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27915584148022,-123.12121060829783&heading=327.10431584282554&fov=90&pitch=-1.0422084252182344&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1747"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2808,-123.122&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -3511,13 +3472,51 @@
           "label": "Non-tenant Random 24hr.",
           "value": "$235.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28723054588076,-123.12670798511321&heading=218.80041362815092&fov=90&pitch=-3.9178742719795707&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1428"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28723054588076,-123.12670798511321&heading=218.80041362815092&fov=90&pitch=-3.9178742719795707&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.121024,
+          49.279672
+        ]
+      },
+      "properties": {
+        "id": "impark_2210",
+        "facility_type": "impark",
+        "lot_id": 2210,
+        "lot_number": 1747,
+        "lot_name": "901 Seymour Street",
+        "address1": "901 Seymour Street",
+        "address2": "",
+        "city": "Vancouver",
+        "postal_code": "V6B 3M1",
+        "hasTransientRates": true,
+        "lowestTransientRate": {
+          "label": "hourly",
+          "value": "$4.50 per hr"
+        },
+        "hasMonthlyRates": true,
+        "lowestMonthlyRate": {
+          "label": "Reserved Parking",
+          "value": "$225.00"
+        },
+        "capacity": null,
+        "features": [
+          "Parker Pete"
+        ],
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27915584148022,-123.12121060829783&heading=327.10431584282554&fov=90&pitch=-1.0422084252182344&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -3546,11 +3545,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.231639144244085,-123.11541055145658&heading=343.2373143840571&fov=90&pitch=-7.390663502161502&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=2306"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.231639144244085,-123.11541055145658&heading=343.2373143840571&fov=90&pitch=-7.390663502161502&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -3582,11 +3581,11 @@
           "label": "Random - P1 Gated",
           "value": "$240.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28380346662805,-123.12466469276994&heading=134.61994165550385&fov=90&pitch=-15.86143956633903&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=150"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28380346662805,-123.12466469276994&heading=134.61994165550385&fov=90&pitch=-15.86143956633903&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -3618,13 +3617,13 @@
           "label": "Random Parking - Parkade Hours",
           "value": "$120.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "EV Charger"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.266197988140995,-123.11365386854243&heading=206.07711972404275&fov=90&pitch=-6.250964487422834&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=380"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.266197988140995,-123.11365386854243&heading=206.07711972404275&fov=90&pitch=-6.250964487422834&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -3656,11 +3655,11 @@
           "label": "Random 6am - 6pm Mon-fri",
           "value": "$170.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.283745089238224,-123.12457339588208&heading=357.5079779533474&fov=90&pitch=-5.131504822787207&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=515"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.283745089238224,-123.12457339588208&heading=357.5079779533474&fov=90&pitch=-5.131504822787207&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -3692,11 +3691,11 @@
           "label": "New Random Parking",
           "value": "$175.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2878,-123.127&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1429"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2878,-123.127&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -3728,14 +3727,14 @@
           "label": "Random Parking",
           "value": "$250.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete",
           "EV Charger"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2861,-123.125&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1927"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2861,-123.125&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -3767,13 +3766,13 @@
           "label": "Reserved Parking",
           "value": "$450.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28122636589793,-123.1190700962392&heading=34.602807434607264&fov=90&pitch=-0.9724005702219074&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1646"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28122636589793,-123.1190700962392&heading=34.602807434607264&fov=90&pitch=-0.9724005702219074&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -3805,11 +3804,11 @@
           "label": "RND 6:30am-11pm Only",
           "value": "$200.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2792338287504,-123.11830083421233&heading=82.01587249753064&fov=90&pitch=-3.2262597378183955&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=2212"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2792338287504,-123.11830083421233&heading=82.01587249753064&fov=90&pitch=-3.2262597378183955&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -3838,11 +3837,11 @@
           "label": "Reserved 24 hrs M - F",
           "value": "$170.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.279921767552246,-123.11820357032693&heading=252.03771489333883&fov=90&pitch=-7.390801138329877&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1868"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.279921767552246,-123.11820357032693&heading=252.03771489333883&fov=90&pitch=-7.390801138329877&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -3874,13 +3873,13 @@
           "label": "Random Parking - Gated",
           "value": "$240.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Block Heater Plugin"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2811,-123.118&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=116"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2811,-123.118&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -3912,13 +3911,13 @@
           "label": "Ungated New Random 6am-6pm",
           "value": "$250.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27673555927139,-123.11523260253011&heading=157.60027171003668&fov=90&pitch=-1.2785221082448714&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1610"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27673555927139,-123.11523260253011&heading=157.60027171003668&fov=90&pitch=-1.2785221082448714&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -3950,11 +3949,11 @@
           "label": "Motorcycle (Non Vehicle Stall)",
           "value": "$85.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27818809310149,-123.116962822897&heading=132.12598245583823&fov=90&pitch=-11.076279532941655&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=971"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27818809310149,-123.116962822897&heading=132.12598245583823&fov=90&pitch=-11.076279532941655&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -3986,11 +3985,11 @@
           "label": "Random Surface 24 Hours",
           "value": "$190.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26805437407075,-123.11084424569823&heading=208.32283857748317&fov=90&pitch=-2.0975846112740157&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=2235"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26805437407075,-123.11084424569823&heading=208.32283857748317&fov=90&pitch=-2.0975846112740157&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -4019,11 +4018,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28561819963264,-123.12075050158857&heading=210.66608046178885&fov=90&pitch=1.2800232117334644&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=280"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28561819963264,-123.12075050158857&heading=210.66608046178885&fov=90&pitch=1.2800232117334644&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -4055,15 +4054,15 @@
           "label": "Non Tenant RND 24HR w/ AC",
           "value": "$315.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete",
           "On-site attendant",
           "EV Charger"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28415918585426,-123.11853828674326&heading=40.344854126946736&fov=90&pitch=-11.335200240123612&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1880"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28415918585426,-123.11853828674326&heading=40.344854126946736&fov=90&pitch=-11.335200240123612&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -4092,11 +4091,11 @@
           "label": "Regular Reserved 24/7",
           "value": "$180.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.278526,-123.11544200000003&heading=203.72278810408915&fov=90&pitch=-0.12007434944237616&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1920"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.278526,-123.11544200000003&heading=203.72278810408915&fov=90&pitch=-0.12007434944237616&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -4128,15 +4127,13 @@
           "label": "Random 6AM-6PM",
           "value": "$185.00"
         },
-        "hasPromotions": true,
-        "promotions": [
-          "One Month FREE!!"
-        ],
+        "capacity": null,
         "features": [
           "Parker Pete"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.280857320666776,-123.11578796148828&heading=235.31783870884192&fov=90&pitch=-4.867987948266773&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=2263"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.280857320666776,-123.11578796148828&heading=235.31783870884192&fov=90&pitch=-4.867987948266773&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -4168,13 +4165,13 @@
           "label": "P1 Ungated Reserved",
           "value": "$375.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.20394060849568,-123.13480304692263&heading=70.52509786099566&fov=90&pitch=-2.792569608790714&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=521"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.20394060849568,-123.13480304692263&heading=70.52509786099566&fov=90&pitch=-2.792569608790714&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -4206,15 +4203,15 @@
           "label": "Motorcycle Parking",
           "value": "$94.45"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "On-site attendant",
           "Car Wash",
           "Valet Parking"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28564983578484,-123.12078431026782&heading=195.33425378394972&fov=90&pitch=1.4887064707682214&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1777"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28564983578484,-123.12078431026782&heading=195.33425378394972&fov=90&pitch=1.4887064707682214&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -4246,11 +4243,11 @@
           "label": "Random Parking 7am-6pm",
           "value": "$170.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.278,-123.115&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1945"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.278,-123.115&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -4279,13 +4276,13 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "EV Charger"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28109502002439,-123.11828137157023&heading=293.43261414176374&fov=90&pitch=1.453009732124471&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=372"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28109502002439,-123.11828137157023&heading=293.43261414176374&fov=90&pitch=1.453009732124471&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -4314,15 +4311,13 @@
           "label": "Monthly Valet Mon-Fri 7am-11pm",
           "value": "$250.00"
         },
-        "hasPromotions": true,
-        "promotions": [
-          "Pay for 2 months, get the 3rd month at half price!"
-        ],
+        "capacity": null,
         "features": [
           "Valet Parking"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28853474020569,-123.12193126845304&heading=200.43869388279418&fov=90&pitch=-1.9295538812987587&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1977"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28853474020569,-123.12193126845304&heading=200.43869388279418&fov=90&pitch=-1.9295538812987587&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -4354,11 +4349,11 @@
           "label": "Random Mon-Fri 6am-6pm",
           "value": "$150.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2752,-123.112&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1188"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2752,-123.112&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -4387,11 +4382,11 @@
           "label": "Reserved Parking",
           "value": "$230.41"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28308568170427,-123.11624351470154&heading=242.04696680298554&fov=90&pitch=0.06800969452842764&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=2301"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28308568170427,-123.11624351470154&heading=242.04696680298554&fov=90&pitch=0.06800969452842764&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -4420,11 +4415,11 @@
           "label": "RSVD 24/7",
           "value": "$220.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.268361969129764,-123.10767548656366&heading=160.45687249539807&fov=90&pitch=-8.743091758613446&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=2321"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.268361969129764,-123.10767548656366&heading=160.45687249539807&fov=90&pitch=-8.743091758613446&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -4453,11 +4448,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "",
-        "url": "https://lots.impark.com/imp/en?lot=2323"
+        "rates": [],
+        "street_view_url": "",
+        "directions_url": ""
       }
     },
     {
@@ -4486,11 +4481,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27555245782112,-123.11140458596451&heading=100.45866959706605&fov=90&pitch=-2.112120856087458&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=563"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27555245782112,-123.11140458596451&heading=100.45866959706605&fov=90&pitch=-2.112120856087458&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -4522,11 +4517,11 @@
           "label": "Random Mon-Fri (6am-8pm)",
           "value": "$280.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.286945280852294,-123.11805735033573&heading=338.7232356043552&fov=90&pitch=-0.1651858503395971&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=118"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.286945280852294,-123.11805735033573&heading=338.7232356043552&fov=90&pitch=-0.1651858503395971&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -4558,15 +4553,15 @@
           "label": "NonTenant Random 24/7",
           "value": "$300.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete",
           "EV Charger",
           "Block Heater Plugin"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.284945499376455,-123.1164342088886&heading=149.15800105650828&fov=90&pitch=-11.854757049026617&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.284945499376455,-123.1164342088886&heading=149.15800105650828&fov=90&pitch=-11.854757049026617&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -4598,13 +4593,13 @@
           "label": "Marina Reserved 24/7",
           "value": "$300.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Block Heater Plugin"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.276284670127254,-123.11007052686473&heading=357.79284329766364&fov=90&pitch=-11.902347762340526&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=499"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.276284670127254,-123.11007052686473&heading=357.79284329766364&fov=90&pitch=-11.902347762340526&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -4633,14 +4628,14 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete",
           "On-site attendant"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27786562626338,-123.1105465157841&heading=347.69950577200075&fov=90&pitch=-6.780588606313202&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1888"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27786562626338,-123.1105465157841&heading=347.69950577200075&fov=90&pitch=-6.780588606313202&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -4669,53 +4664,15 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete",
           "On-site attendant",
           "EV Charger"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.287546423216725,-123.11638772025105&heading=125.82488819767919&fov=90&pitch=-2.9669000428025925&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=723"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.116089,
-          49.28841
-        ]
-      },
-      "properties": {
-        "id": "impark_484",
-        "facility_type": "impark",
-        "lot_id": 484,
-        "lot_number": 1940,
-        "lot_name": "Vancouver Convention Centre W",
-        "address1": "1055 Canada Place",
-        "address2": "",
-        "city": "Vancouver",
-        "postal_code": "V6C 3C1",
-        "hasTransientRates": true,
-        "lowestTransientRate": {
-          "label": "hourly",
-          "value": "$15.00 per hr"
-        },
-        "hasMonthlyRates": true,
-        "lowestMonthlyRate": {
-          "label": "Public RSVD 6am-6pm M-F Only",
-          "value": "$500.00"
-        },
-        "hasPromotions": false,
-        "promotions": null,
-        "features": [
-          "Parker Pete"
-        ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28831319617566,-123.1161005438754&heading=350.56941241547605&fov=90&pitch=1.045848040453933&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1940"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.287546423216725,-123.11638772025105&heading=125.82488819767919&fov=90&pitch=-2.9669000428025925&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -4747,11 +4704,49 @@
           "label": "Random Non-Event Parking",
           "value": "$105.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27871210982708,-123.10855287858101&heading=294.1733731682971&fov=90&pitch=-2.976292403569829&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1763"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27871210982708,-123.10855287858101&heading=294.1733731682971&fov=90&pitch=-2.976292403569829&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.116089,
+          49.28841
+        ]
+      },
+      "properties": {
+        "id": "impark_484",
+        "facility_type": "impark",
+        "lot_id": 484,
+        "lot_number": 1940,
+        "lot_name": "Vancouver Convention Centre W",
+        "address1": "1055 Canada Place",
+        "address2": "",
+        "city": "Vancouver",
+        "postal_code": "V6C 3C1",
+        "hasTransientRates": true,
+        "lowestTransientRate": {
+          "label": "hourly",
+          "value": "$15.00 per hr"
+        },
+        "hasMonthlyRates": true,
+        "lowestMonthlyRate": {
+          "label": "Public RSVD 6am-6pm M-F Only",
+          "value": "$500.00"
+        },
+        "capacity": null,
+        "features": [
+          "Parker Pete"
+        ],
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28831319617566,-123.1161005438754&heading=350.56941241547605&fov=90&pitch=1.045848040453933&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -4783,87 +4778,16 @@
           "label": "Non Tenants Random - 24 hrs",
           "value": "$296.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete",
           "On-site attendant",
           "Car Wash",
           "Valet Parking"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28793277094977,-123.11581546445609&heading=123.3776758124295&fov=90&pitch=1.5190488017262282&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=695"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.108449,
-          49.224904
-        ]
-      },
-      "properties": {
-        "id": "impark_312",
-        "facility_type": "impark",
-        "lot_id": 312,
-        "lot_number": 1426,
-        "lot_name": "Langara College",
-        "address1": "100 West 49th Avenue",
-        "address2": "",
-        "city": "Vancouver",
-        "postal_code": "V5Y 2Z6",
-        "hasTransientRates": true,
-        "lowestTransientRate": {
-          "label": "hourly",
-          "value": "$4.50 for 4 hours, $2.25 for 30 minutes"
-        },
-        "hasMonthlyRates": false,
-        "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
-        "features": [
-          "Parker Pete",
-          "EV Charger"
-        ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2249,-123.108&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1426"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.110689,
-          49.281708
-        ]
-      },
-      "properties": {
-        "id": "impark_209",
-        "facility_type": "impark",
-        "lot_id": 209,
-        "lot_number": 1150,
-        "lot_name": "VCC - Downtown Campus",
-        "address1": "250 West Pender Street",
-        "address2": "",
-        "city": "Vancouver",
-        "postal_code": "V6B 1S9",
-        "hasTransientRates": true,
-        "lowestTransientRate": {
-          "label": "evening/weekend",
-          "value": "5.00 per hr for public parking"
-        },
-        "hasMonthlyRates": false,
-        "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
-        "features": [
-          "Parker Pete"
-        ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.281108665321874,-123.11064673331722&heading=306.65415196977915&fov=90&pitch=-2.2997181904732997&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1150"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28793277094977,-123.11581546445609&heading=123.3776758124295&fov=90&pitch=1.5190488017262282&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -4895,11 +4819,82 @@
           "label": "Reserved Parking",
           "value": "$190.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2624907042673,-123.10211030897283&heading=114.72992619301847&fov=90&pitch=-7.2372712061660565&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1004"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2624907042673,-123.10211030897283&heading=114.72992619301847&fov=90&pitch=-7.2372712061660565&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.110689,
+          49.281708
+        ]
+      },
+      "properties": {
+        "id": "impark_209",
+        "facility_type": "impark",
+        "lot_id": 209,
+        "lot_number": 1150,
+        "lot_name": "VCC - Downtown Campus",
+        "address1": "250 West Pender Street",
+        "address2": "",
+        "city": "Vancouver",
+        "postal_code": "V6B 1S9",
+        "hasTransientRates": true,
+        "lowestTransientRate": {
+          "label": "evening/weekend",
+          "value": "5.00 per hr for public parking"
+        },
+        "hasMonthlyRates": false,
+        "lowestMonthlyRate": null,
+        "capacity": null,
+        "features": [
+          "Parker Pete"
+        ],
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.281108665321874,-123.11064673331722&heading=306.65415196977915&fov=90&pitch=-2.2997181904732997&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.108449,
+          49.224904
+        ]
+      },
+      "properties": {
+        "id": "impark_312",
+        "facility_type": "impark",
+        "lot_id": 312,
+        "lot_number": 1426,
+        "lot_name": "Langara College",
+        "address1": "100 West 49th Avenue",
+        "address2": "",
+        "city": "Vancouver",
+        "postal_code": "V5Y 2Z6",
+        "hasTransientRates": true,
+        "lowestTransientRate": {
+          "label": "hourly",
+          "value": "$4.50 for 4 hours, $2.25 for 30 minutes"
+        },
+        "hasMonthlyRates": false,
+        "lowestMonthlyRate": null,
+        "capacity": null,
+        "features": [
+          "Parker Pete",
+          "EV Charger"
+        ],
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2249,-123.108&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -4931,15 +4926,15 @@
           "label": "Non-Member Random 24 hrs",
           "value": "$309.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete",
           "On-site attendant",
           "Block Heater Plugin"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2868177135496,-123.11415949420172&heading=232.52306520296088&fov=90&pitch=-1.9677196654254914&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1210"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2868177135496,-123.11415949420172&heading=232.52306520296088&fov=90&pitch=-1.9677196654254914&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -4971,13 +4966,13 @@
           "label": "Random Tenant-new Parkers",
           "value": "$275.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "EV Charger"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2851,-123.112&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1686"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2851,-123.112&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -5006,13 +5001,13 @@
           "label": "Motorcycle Reserved 24hrs",
           "value": "$93.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28604281610647,-123.11284825962332&heading=272.8135565056513&fov=90&pitch=-2.3493567365237737&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=527"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28604281610647,-123.11284825962332&heading=272.8135565056513&fov=90&pitch=-2.3493567365237737&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -5041,13 +5036,13 @@
           "label": "Motorcycle Parking 24/7",
           "value": "$120.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28601163749308,-123.1127899922351&heading=289.5511611157266&fov=90&pitch=1.1765561125909159&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1282"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28601163749308,-123.1127899922351&heading=289.5511611157266&fov=90&pitch=1.1765561125909159&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -5079,11 +5074,11 @@
           "label": "Random 7am-6pm Mon-Fri",
           "value": "$150.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27978733567755,-123.10804637716103&heading=166.60392355966258&fov=90&pitch=-0.19128993274270556&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1960"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27978733567755,-123.10804637716103&heading=166.60392355966258&fov=90&pitch=-0.19128993274270556&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -5112,11 +5107,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "",
-        "url": "https://lots.impark.com/imp/en?lot=2348"
+        "rates": [],
+        "street_view_url": "",
+        "directions_url": ""
       }
     },
     {
@@ -5148,13 +5143,11 @@
           "label": "Random- Non Tenant",
           "value": "$175.00"
         },
-        "hasPromotions": true,
-        "promotions": [
-          "50% off for the first 6 months for new signups"
-        ],
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26652182831467,-123.10286319735216&heading=137.67393392017942&fov=90&pitch=17.42858093927356&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=2351"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26652182831467,-123.10286319735216&heading=137.67393392017942&fov=90&pitch=17.42858093927356&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -5186,14 +5179,14 @@
           "label": "BCCNP Random",
           "value": "$284.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete",
           "EV Charger"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28591146346257,-123.11264212784943&heading=38.41646900852612&fov=90&pitch=-3.0123358746587314&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=525"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28591146346257,-123.11264212784943&heading=38.41646900852612&fov=90&pitch=-3.0123358746587314&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -5222,11 +5215,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.285185837397144,-123.11174583799352&heading=218.00079889401866&fov=90&pitch=-10.436646910205098&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=123"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.285185837397144,-123.11174583799352&heading=218.00079889401866&fov=90&pitch=-10.436646910205098&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -5255,13 +5248,13 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28499470469318,-123.11147485401739&heading=64.36170410671369&fov=90&pitch=1.2533031989323433&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=531"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28499470469318,-123.11147485401739&heading=64.36170410671369&fov=90&pitch=1.2533031989323433&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -5290,11 +5283,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2789949536646,-123.10910382457554&heading=331.22479104400105&fov=90&pitch=-1.9055648720720058&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1875"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2789949536646,-123.10910382457554&heading=331.22479104400105&fov=90&pitch=-1.9055648720720058&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -5326,15 +5319,15 @@
           "label": "Free Random Parking",
           "value": "$0.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "On-site attendant",
           "EV Charger",
           "Block Heater Plugin"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28425164723459,-123.11030319637656&heading=226.78523387444682&fov=90&pitch=-12.874700705639214&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=143"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28425164723459,-123.11030319637656&heading=226.78523387444682&fov=90&pitch=-12.874700705639214&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -5366,11 +5359,11 @@
           "label": "Special Random 8am – 5pm",
           "value": "$115.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.266182478271745,-123.1000432482119&heading=227.33870926871958&fov=90&pitch=5.309952030141744&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=316"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.266182478271745,-123.1000432482119&heading=227.33870926871958&fov=90&pitch=5.309952030141744&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -5402,11 +5395,11 @@
           "label": "RSVD Motorcycle 7am-6pm",
           "value": "$80.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28127572148495,-123.10749863767921&heading=88.11967643342234&fov=90&pitch=-5.150934918044044&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=946"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28127572148495,-123.10749863767921&heading=88.11967643342234&fov=90&pitch=-5.150934918044044&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -5438,11 +5431,11 @@
           "label": "Random 24 hrs Covered Area",
           "value": "$243.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2869,-123.112&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1292"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2869,-123.112&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -5474,11 +5467,11 @@
           "label": "Random Motorcycle 10am-9pm",
           "value": "$70.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28089738258206,-123.10635880393683&heading=336.92127924593404&fov=90&pitch=-14.089899346297912&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1338"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28089738258206,-123.10635880393683&heading=336.92127924593404&fov=90&pitch=-14.089899346297912&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -5510,11 +5503,11 @@
           "label": "Rnd 6am-6pm M-F Stall 1-122",
           "value": "$120.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27202320556118,-123.10199563492839&heading=339.93065121398934&fov=90&pitch=-2.311932313263654&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=610"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27202320556118,-123.10199563492839&heading=339.93065121398934&fov=90&pitch=-2.311932313263654&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -5543,11 +5536,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.21032520396971,-123.1150552007977&heading=266.59075825890056&fov=90&pitch=-1.6985756599226107&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=2223"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.21032520396971,-123.1150552007977&heading=266.59075825890056&fov=90&pitch=-1.6985756599226107&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -5579,11 +5572,11 @@
           "label": "New Random P3/P4",
           "value": "$180.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.209975,-123.11512299999998&heading=268.29527881040894&fov=90&pitch=-4.134944237918211&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=2221"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.209975,-123.11512299999998&heading=268.29527881040894&fov=90&pitch=-4.134944237918211&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -5612,11 +5605,11 @@
           "label": "Random 24/7",
           "value": "$160.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.265067744739255,-123.09888679068106&heading=107.64829621136161&fov=90&pitch=-13.404967044751103&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=2367"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.265067744739255,-123.09888679068106&heading=107.64829621136161&fov=90&pitch=-13.404967044751103&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -5645,11 +5638,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2731,-123.102&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1086"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2731,-123.102&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -5681,11 +5674,11 @@
           "label": "Random 24/7",
           "value": "$175.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28577112148835,-123.10782014881089&heading=24.771863868023054&fov=90&pitch=-11.978990543523352&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1720"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28577112148835,-123.10782014881089&heading=24.771863868023054&fov=90&pitch=-11.978990543523352&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -5714,11 +5707,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.25845386726187,-123.09633384586652&heading=123.11900515227177&fov=90&pitch=-4.320847797589906&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=197"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.25845386726187,-123.09633384586652&heading=123.11900515227177&fov=90&pitch=-4.320847797589906&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -5750,11 +5743,11 @@
           "label": "Public Random",
           "value": "$100.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2743,-123.1&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1101"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2743,-123.1&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -5783,11 +5776,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27744526290148,-123.09994948374786&heading=220.08484966976246&fov=90&pitch=-6.365202715512083&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=2354"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27744526290148,-123.09994948374786&heading=220.08484966976246&fov=90&pitch=-6.365202715512083&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -5819,11 +5812,11 @@
           "label": "Rnd/mezzanine/7am-6pm",
           "value": "$150.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27222825456006,-123.09616657677317&heading=346.7589456167151&fov=90&pitch=-1.0341818754295957&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1039"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27222825456006,-123.09616657677317&heading=346.7589456167151&fov=90&pitch=-1.0341818754295957&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -5852,11 +5845,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27202302968305,-123.09494275096421&heading=323.7484008251207&fov=90&pitch=-4.460213464328973&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1111"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.27202302968305,-123.09494275096421&heading=323.7484008251207&fov=90&pitch=-4.460213464328973&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -5885,11 +5878,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2831,-123.1&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=42"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2831,-123.1&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -5918,11 +5911,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "",
-        "url": "https://lots.impark.com/imp/en?lot=2350"
+        "rates": [],
+        "street_view_url": "",
+        "directions_url": ""
       }
     },
     {
@@ -5951,11 +5944,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "",
-        "url": "https://lots.impark.com/imp/en?lot=2349"
+        "rates": [],
+        "street_view_url": "",
+        "directions_url": ""
       }
     },
     {
@@ -5984,11 +5977,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28391847476859,-123.09126168885646&heading=322.2316551964446&fov=90&pitch=-4.0640317019806815&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=645"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28391847476859,-123.09126168885646&heading=322.2316551964446&fov=90&pitch=-4.0640317019806815&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -6017,13 +6010,13 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26430516543369,-123.07971696828086&heading=181.58445065292187&fov=90&pitch=-10.620590539564901&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=865"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.26430516543369,-123.07971696828086&heading=181.58445065292187&fov=90&pitch=-10.620590539564901&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -6055,11 +6048,11 @@
           "label": "Random 8am-6pm",
           "value": "$120.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2623,-123.071&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1989"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2623,-123.071&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -6091,11 +6084,11 @@
           "label": "Reserved - Outside",
           "value": "$100.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2603,-123.07&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1680"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.2603,-123.07&heading=0&pitch=0&fov=90&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -6124,13 +6117,13 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "EV Charger"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28301442895367,-123.0649130199297&heading=143.58532552947685&fov=90&pitch=-2.58086147055387&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=366"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28301442895367,-123.0649130199297&heading=143.58532552947685&fov=90&pitch=-2.58086147055387&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -6162,13 +6155,13 @@
           "label": "Random Parking - Lot Hours",
           "value": "$70.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.24158489658489,-123.05764009968557&heading=164.74097625036035&fov=90&pitch=-13.967228658990507&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=1755"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.24158489658489,-123.05764009968557&heading=164.74097625036035&fov=90&pitch=-13.967228658990507&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -6200,15 +6193,15 @@
           "label": "Gated Random Parking",
           "value": "$100.00"
         },
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [
           "Parker Pete",
           "EV Charger",
           "Block Heater Plugin"
         ],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.25908153451251,-123.04573178041488&heading=41.45496576759884&fov=90&pitch=6.2725679949624435&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=38"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.25908153451251,-123.04573178041488&heading=41.45496576759884&fov=90&pitch=6.2725679949624435&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -6240,13 +6233,11 @@
           "label": "NON Tenant RSVD Gated Hours",
           "value": "$135.00"
         },
-        "hasPromotions": true,
-        "promotions": [
-          "Pre-paid 3 months and get the 4th month for free  "
-        ],
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28162394368204,-123.04614145002911&heading=149.44304434149166&fov=90&pitch=-6.657205686473432&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=244"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.28162394368204,-123.04614145002911&heading=149.44304434149166&fov=90&pitch=-6.657205686473432&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -6275,11 +6266,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.22642074807704,-123.0454468910164&heading=13.344147515448928&fov=90&pitch=-1.7595850181591004&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=2363"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.22642074807704,-123.0454468910164&heading=13.344147515448928&fov=90&pitch=-1.7595850181591004&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     },
     {
@@ -6308,11 +6299,11 @@
         },
         "hasMonthlyRates": false,
         "lowestMonthlyRate": null,
-        "hasPromotions": false,
-        "promotions": null,
+        "capacity": null,
         "features": [],
-        "streetViewUrl": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.233330825424545,-123.03530082970546&heading=272.1099490034024&fov=90&pitch=2.694952570904533&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
-        "url": "https://lots.impark.com/imp/en?lot=359"
+        "rates": [],
+        "street_view_url": "https://maps.googleapis.com/maps/api/streetview?size=269x130&location=49.233330825424545,-123.03530082970546&heading=272.1099490034024&fov=90&pitch=2.694952570904533&key=AIzaSyBU_5r0FwGPVyXsZDMuk5N6oeFaOS8tdiQ",
+        "directions_url": ""
       }
     }
   ]
