@@ -1740,7 +1740,7 @@ FACILITY_SEARCH_CONFIGS = [
     ("recycling", "環保回收", "♻️", "recycling", 16),
     ("van_wifi", "VanWiFi", "📶", "vanWifi", 17),
     ("aed", "AED 去顫器", "💓", "aed", 17),
-    ("fuel", "加油站", "⛽", "fuel", 16),
+    ("fuel", "油站", "⛽", "fuel", 16),
     ("tesla", "TESLA", "⚡", "tesla", 16),
     ("ev_charging", "充電站", "⚡", "evCharging", 16),
     ("car_sharing", "共享汽車", "🚗", "carSharing", 16),
@@ -2928,9 +2928,9 @@ def explore_nearby_facilities(
                     walk_min = calc_walk_minutes(dist)
                     nearby_items.append({
                         'id': f"fuel_{gs.get('id', '')}",
-                        'name': gs.get('name') or gs.get('brand', '加油站'),
+                        'name': gs.get('name') or gs.get('brand', '油站'),
                         'facility_type': 'fuel',
-                        'type_label': '加油站',
+                        'type_label': '油站',
                         'icon': '⛽',
                         'layer_key': 'fuel',
                         'local_area': gs.get('city', ''),
@@ -3798,9 +3798,7 @@ def update_admin_schedule(payload: dict = Body(...)):
                                 raw_yml = base64.b64decode(file_info.get("content", "")).decode("utf-8")
                                 import re
                                 new_yml = re.sub(r"-\s*cron:\s*['\"].+?['\"]", f"- cron: '{cron_expr}'", raw_yml)
-                                if payload.get("name"):
-                        src["name"] = payload.get("name").strip()
-                    if schedule_interval:
+                                if schedule_interval:
                                     new_yml = re.sub(r"^name:\s*Update\s+([^(]+)\([^)]+\)", f"name: Update \\1({schedule_interval})", new_yml, flags=re.MULTILINE)
 
                                 put_body = {
@@ -3839,9 +3837,7 @@ def update_admin_schedule(payload: dict = Body(...)):
                                 ycontent = yf.read()
                             import re
                             new_ycontent = re.sub(r"-\s*cron:\s*['\"].+?['\"]", f"- cron: '{cron_expr}'", ycontent)
-                            if payload.get("name"):
-                        src["name"] = payload.get("name").strip()
-                    if schedule_interval:
+                            if schedule_interval:
                                 new_ycontent = re.sub(r"^name:\s*Update\s+([^(]+)\([^)]+\)", f"name: Update \\1({schedule_interval})", new_ycontent, flags=re.MULTILINE)
                             if new_ycontent != ycontent:
                                 with open(wf_path, 'w', encoding='utf-8') as yf:
@@ -4059,7 +4055,7 @@ async def get_fuel_stations_api(
     sort_by: str = "best"
 ):
     """
-    取得溫哥華加油站資訊、即時油價與距離排序。
+    取得溫哥華油站資訊、即時油價與距離排序。
     sort_by:
       - 'best': 價格及距離最優
       - 'price': 價格最優 (最平)
@@ -4388,3 +4384,119 @@ def get_border_wait_times(refresh: bool = False):
 
 
 
+
+
+# ==========================================
+# 📊 System Analytics & Issue Reports
+# ==========================================
+_STATS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "stats_pv.json")
+_stats_lock = threading.Lock()
+
+def _get_pv_stats():
+    if os.path.exists(_STATS_FILE):
+        try:
+            with open(_STATS_FILE, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {"daily_pv": {}, "total_pv": 0}
+
+def _save_pv_stats(data):
+    try:
+        os.makedirs(os.path.dirname(_STATS_FILE), exist_ok=True)
+        with open(_STATS_FILE, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print(f"Error saving pv stats: {e}")
+
+@app.post("/api/stats/visit")
+@app.get("/api/stats/visit")
+def record_page_visit():
+    """記錄網頁瀏覽次數 (Page View)"""
+    today_str = datetime.utcnow().strftime("%Y-%m-%d")
+    with _stats_lock:
+        data = _get_pv_stats()
+        daily = data.get("daily_pv", {})
+        daily[today_str] = daily.get(today_str, 0) + 1
+        data["total_pv"] = data.get("total_pv", 0) + 1
+        data["daily_pv"] = daily
+        _save_pv_stats(data)
+        return {
+            "status": "ok",
+            "today": today_str,
+            "today_pv": daily[today_str],
+            "total_pv": data["total_pv"]
+        }
+
+@app.get("/api/admin/stats")
+def get_admin_analytics(db: Session = Depends(database.get_db)):
+    """
+    提供後台統計數據分頁：
+    8.1 本日瀏覽次數
+    8.2 目前在線人數
+    8.3 問題回報數量
+    """
+    today_str = datetime.utcnow().strftime("%Y-%m-%d")
+    with _stats_lock:
+        pv_data = _get_pv_stats()
+        today_pv = pv_data.get("daily_pv", {}).get(today_str, 0)
+        total_pv = pv_data.get("total_pv", 0)
+
+    # 在線人數 (WebSocket 即時連線數，最低為 1 避免顯示 0)
+    online_count = len(active_connections) if len(active_connections) > 0 else 1
+
+    # 問題回報數量
+    issue_count = 0
+    issue_list = []
+    try:
+        data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+        report_file = os.path.join(data_dir, "issue_reports.jsonl")
+        if os.path.exists(report_file):
+            with open(report_file, "r", encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if line:
+                        try:
+                            item = json.loads(line)
+                            issue_list.append(item)
+                        except Exception:
+                            pass
+        issue_count = len(issue_list)
+    except Exception as e:
+        print(f"Error reading issue reports: {e}")
+
+    # 如果有 DB，合併 DB 筆數
+    try:
+        db_count = db.query(models.IssueReport).count()
+        if db_count > issue_count:
+            issue_count = db_count
+    except Exception:
+        pass
+
+    return {
+        "status": "ok",
+        "today_str": today_str,
+        "today_page_views": today_pv,
+        "total_page_views": total_pv,
+        "active_online_users": online_count,
+        "total_issue_reports": issue_count,
+        "recent_issues": issue_list[-20:][::-1],
+        "is_ready_for_launch": True
+    }
+
+@app.get("/api/admin/issue-reports")
+def get_admin_issue_reports(db: Session = Depends(database.get_db)):
+    """獲取全部問題回報列表"""
+    issue_list = []
+    data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+    report_file = os.path.join(data_dir, "issue_reports.jsonl")
+    if os.path.exists(report_file):
+        with open(report_file, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    try:
+                        issue_list.append(json.loads(line))
+                    except Exception:
+                        pass
+    return {"status": "ok", "total": len(issue_list), "reports": issue_list[::-1]}

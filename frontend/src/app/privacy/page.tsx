@@ -84,7 +84,7 @@ export default function PrivacyPolicyPage() {
               <p>我們僅收集維持本平台運作與提供個人化地理體驗所必需之最少資料：</p>
               <ul className="list-disc list-inside space-y-1.5 pl-2 text-gray-300">
                 <li><strong className="text-white">Google 帳號公開資訊（選擇性登入）</strong>：當您選擇以 Google 登入時，系統僅讀取您的 Google 唯一識別碼 (UID)、公開顯示名稱、電子郵件 (Email) 及個人大頭照 URL。我們不會索取密碼或 Google 雲端硬碟等其他隱私授權。</li>
-                <li><strong className="text-white">即時地理位置（GPS）</strong>：當您授權瀏覽器定位時，經緯度坐標僅於您的個人裝置（瀏覽器本地端）用於即時在地圖標示當前位置及計算離您最近的加油站、交通攝影機或水文站距離。<strong>伺服器絕不主動記錄、儲存或追蹤您的個人行動歷史軌跡</strong>。</li>
+                <li><strong className="text-white">即時地理位置（GPS）</strong>：當您授權瀏覽器定位時，經緯度坐標僅於您的個人裝置（瀏覽器本地端）用於即時在地圖標示當前位置及計算離您最近的油站、交通攝影機或水文站距離。<strong>伺服器絕不主動記錄、儲存或追蹤您的個人行動歷史軌跡</strong>。</li>
                 <li><strong className="text-white">用戶自定義內容</strong>：包含您主動發布的地點評分與文字留言、自訂收藏地點清單，以及個人圖層偏好設定。</li>
               </ul>
             </section>

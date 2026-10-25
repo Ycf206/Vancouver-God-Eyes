@@ -153,14 +153,27 @@ export default function ReportIssueModal({ isOpen, onClose }: ReportIssueModalPr
             <div className="w-14 h-14 rounded-full bg-emerald-500/20 border-2 border-emerald-500/50 flex items-center justify-center text-emerald-400 my-1 animate-in zoom-in-75 duration-300">
               <CheckCircle2 className="w-8 h-8" />
             </div>
-            <h3 className="text-lg font-bold text-white">問題回報已送出！</h3>
+            <h3 className="text-lg font-bold text-white">問題回報已成功記錄！</h3>
             <p className="text-xs text-gray-300 max-w-[380px] leading-relaxed">
-              感謝您的寶貴反饋，問題已成功記錄並遞交給管理團隊。我們將盡速審閱與處理！
+              感謝您的寶貴反饋，問題已成功寫入系統後台資料庫與安全備份清冊，管理員可即時於後台「統計數據」分頁審閱。
             </p>
+
+            <div className="w-full bg-[#16171a] border border-[#2d2e34] rounded-lg p-3 text-[11px] text-gray-400 flex flex-col gap-1.5 text-left my-1">
+              <span className="font-semibold text-gray-200">備用電郵發送：</span>
+              <span>若欲直接從您的本機電子郵件軟體發送副本至官方信箱，可點擊：</span>
+              <a
+                href={getMailtoUrl()}
+                className="text-amber-400 hover:underline flex items-center gap-1 font-mono mt-0.5"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span>以本機郵件客戶端直寄至 {targetEmail} &rarr;</span>
+              </a>
+            </div>
 
             <button
               onClick={handleResetAndClose}
-              className="mt-3 w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-medium text-sm transition-colors shadow-lg"
+              className="mt-2 w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-medium text-sm transition-colors shadow-lg cursor-pointer"
             >
               完成並關閉
             </button>

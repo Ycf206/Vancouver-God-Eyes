@@ -6,7 +6,7 @@ import {
   ChevronDown, RefreshCw, Package, CloudSun, Wind, AlertTriangle, Droplets, Gauge, Eye, Anchor, Navigation,
   Newspaper, ExternalLink, Search, CalendarDays, Calendar, Tag, Waves, CloudRain, Play, Pause, SkipBack, SkipForward,
   MountainSnow, Sparkles, Clock, ShieldAlert, BellRing, Train, Bus, ShieldCheck, LayoutGrid, TrainTrack,
-  Activity, Radar, Cpu, Satellite, Radio, Flag, Plane, Mountain
+  Activity, Radar, Cpu, Satellite, Radio, Flag, Plane, Mountain, CreditCard
 } from 'lucide-react';
 import { useUIStore, ExploreTabType } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
@@ -64,6 +64,47 @@ export function formatAuroraSpotName(name?: string): string {
   return name;
 }
 
+
+export function getDistanceKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+export interface AtmItem {
+  id: string;
+  name: string;
+  bank_code: string;
+  bank_full_name: string;
+  branch_name: string;
+  address: string;
+  postal_code: string;
+  local_area: string;
+  telephone: string;
+  services: string[];
+  services_str: string;
+  opening_hours: Record<string, string>;
+  is_24_7: boolean;
+  transit_number: string;
+  institution_number: string;
+  routing_number: string;
+  cheque_micr: string;
+  swift_code: string;
+  url: string;
+  bank_website: string;
+  lat: number;
+  lon: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  properties?: any;
+}
 
 export interface TranslinkAlertItem {
   id: string;
@@ -750,6 +791,12 @@ function ExploreContent() {
   const [shippingVessels, setShippingVessels] = useState<MaritimeVessel[]>([]);
   const [loadingShipping, setLoadingShipping] = useState(false);
 
+  // --- ATM tab states ---
+  const [atmStations, setAtmStations] = useState<AtmItem[]>([]);
+  const [loadingAtm, setLoadingAtm] = useState(false);
+  const [atmSearchQuery, setAtmSearchQuery] = useState('');
+  const [atmOnlyOpenToday, setAtmOnlyOpenToday] = useState(false);
+
   // --- Fuel tab states ---
   const [fuelType, setFuelType] = useState<'regular' | 'midgrade' | 'premium' | 'diesel'>('regular');
   const [fuelSortBy, setFuelSortBy] = useState<'best' | 'price' | 'distance'>('best');
@@ -1100,6 +1147,55 @@ function ExploreContent() {
       });
   }, [isExploreOpen, activeTab]);
 
+  // 1.5 Fetch ATM Stations
+  useEffect(() => {
+    if (!isExploreOpen || activeTab !== 'atm') return;
+    if (atmStations.length > 0) return;
+
+    setLoadingAtm(true);
+    fetch('/vancouver_atm.geojson')
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to load ATM data');
+        return res.json();
+      })
+      .then((data) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const features = data.features || [];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const list: AtmItem[] = features.map((f: any) => ({
+          id: f.id || f.properties?.id || `atm_${Math.random()}`,
+          name: f.properties?.name || 'ATM',
+          bank_code: f.properties?.bank_code || '',
+          bank_full_name: f.properties?.bank_full_name || '',
+          branch_name: f.properties?.branch_name || '',
+          address: f.properties?.address || '',
+          postal_code: f.properties?.postal_code || '',
+          local_area: f.properties?.local_area || 'Vancouver',
+          telephone: f.properties?.telephone || '',
+          services: f.properties?.services || [],
+          services_str: f.properties?.services_str || '',
+          opening_hours: f.properties?.opening_hours || {},
+          is_24_7: Boolean(f.properties?.is_24_7),
+          transit_number: f.properties?.transit_number || '',
+          institution_number: f.properties?.institution_number || '',
+          routing_number: f.properties?.routing_number || '',
+          cheque_micr: f.properties?.cheque_micr || '',
+          swift_code: f.properties?.swift_code || '',
+          url: f.properties?.url || '',
+          bank_website: f.properties?.bank_website || '',
+          lat: f.geometry?.coordinates?.[1] || 49.2827,
+          lon: f.geometry?.coordinates?.[0] || -123.1207,
+          properties: f.properties,
+        }));
+        setAtmStations(list);
+        setLoadingAtm(false);
+      })
+      .catch((err) => {
+        console.error('Error loading ATM data:', err);
+        setLoadingAtm(false);
+      });
+  }, [isExploreOpen, activeTab, atmStations.length]);
+
   // 1. Fetch Fuel Stations
   useEffect(() => {
     if (!isExploreOpen || activeTab !== 'fuel') return;
@@ -1217,6 +1313,65 @@ function ExploreContent() {
         setLoadingFerries(false);
       });
   }, [isExploreOpen, activeTab]);
+
+  // Filter and sort ATM stations
+  const filteredAtms = useMemo(() => {
+    const dayIndex = new Date().getDay();
+    const dayKeys = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    const todayKey = dayKeys[dayIndex];
+
+    let list = atmStations.map((atm) => {
+      let distKm = 0;
+      if (userLocation?.confirmed && userLocation.lat && userLocation.lon) {
+        distKm = getDistanceKm(userLocation.lat, userLocation.lon, atm.lat, atm.lon);
+      }
+
+      let isOpenToday = atm.is_24_7;
+      let openHoursToday = '';
+      if (atm.is_24_7) {
+        openHoursToday = '24 小時開放';
+      } else {
+        const h = atm.opening_hours?.[todayKey];
+        if (h && h.toLowerCase() !== 'closed') {
+          isOpenToday = true;
+          openHoursToday = `今日營業：${h}`;
+        } else {
+          isOpenToday = false;
+          openHoursToday = '今日休息';
+        }
+      }
+
+      return {
+        ...atm,
+        distKm,
+        isOpenToday,
+        openHoursToday,
+      };
+    });
+
+    if (atmOnlyOpenToday) {
+      list = list.filter((a) => a.isOpenToday);
+    }
+
+    if (atmSearchQuery.trim()) {
+      const q = atmSearchQuery.toLowerCase();
+      list = list.filter((a) =>
+        a.name.toLowerCase().includes(q) ||
+        a.bank_full_name.toLowerCase().includes(q) ||
+        a.address.toLowerCase().includes(q) ||
+        a.branch_name.toLowerCase().includes(q) ||
+        a.services_str.toLowerCase().includes(q)
+      );
+    }
+
+    if (userLocation?.confirmed && userLocation.lat && userLocation.lon) {
+      list.sort((a, b) => a.distKm - b.distKm);
+    } else {
+      list.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    return list;
+  }, [atmStations, atmOnlyOpenToday, atmSearchQuery, userLocation]);
 
   // Filter major fuel chains if toggled & search query
   const filteredFuelStations = useMemo(() => {
@@ -1350,6 +1505,51 @@ function ExploreContent() {
 
   if (!isExploreOpen) return null;
 
+  // Handle ATM click
+  const handleSelectAtm = (atm: AtmItem & { distKm?: number; isOpenToday?: boolean; openHoursToday?: string }) => {
+    enableLayer('atm');
+    setSearchTarget({
+      id: atm.id,
+      title: atm.name,
+      subtitle: atm.address,
+      category: 'atm',
+      layer_key: 'atm',
+      badge: 'ATM',
+      icon: '🏧',
+      lat: atm.lat,
+      lon: atm.lon,
+      meta: {
+        local_area: atm.address || atm.local_area || 'Vancouver',
+        properties: {
+          id: atm.id,
+          name: atm.name,
+          bank_code: atm.bank_code,
+          bank_full_name: atm.bank_full_name,
+          branch_name: atm.branch_name,
+          address: atm.address,
+          postal_code: atm.postal_code,
+          local_area: atm.local_area,
+          telephone: atm.telephone,
+          services: atm.services,
+          services_str: atm.services_str,
+          opening_hours: atm.opening_hours,
+          is_24_7: atm.is_24_7,
+          status_text: atm.is_24_7 ? '營業中 (24/7)' : (atm.isOpenToday ? '營業中' : '休息中'),
+          transit_number: atm.transit_number,
+          institution_number: atm.institution_number,
+          routing_number: atm.routing_number,
+          cheque_micr: atm.cheque_micr,
+          swift_code: atm.swift_code,
+          url: atm.url,
+          bank_website: atm.bank_website,
+          official_url: atm.bank_website || atm.url,
+          facility_type: 'atm',
+        }
+      },
+      zoom: 16.5
+    });
+  };
+
   // Handle Fuel click
   const handleSelectFuelStation = (st: FuelStation) => {
     if (!layers.fuel) {
@@ -1362,7 +1562,7 @@ function ExploreContent() {
       subtitle: `${st.address} · 油價: ${st.price_current.toFixed(1)}¢`,
       category: 'fuel',
       layer_key: 'fuel',
-      badge: '加油站',
+      badge: '油站',
       icon: '⛽',
       lat: st.lat,
       lon: st.lon,
@@ -2551,7 +2751,8 @@ function ExploreContent() {
     beach: { label: '泳灘水質', icon: Droplets, color: 'text-teal-300' },
     ski: { label: '滑雪場現況', icon: MountainSnow, color: 'text-cyan-400' },
     aurora: { label: '極光觀測', icon: Sparkles, color: 'text-fuchsia-400' },
-    fuel: { label: '加油站', icon: Fuel, color: 'text-amber-500' },
+    atm: { label: 'ATM', icon: CreditCard, color: 'text-amber-400' },
+    fuel: { label: '油站', icon: Fuel, color: 'text-amber-500' },
     charging: { label: '充電站', icon: Zap, color: 'text-emerald-400' },
     ev: { label: '充電站', icon: Zap, color: 'text-emerald-400' },
     alerts: { label: '即時通報', icon: AlertTriangle, color: 'text-rose-400' },
@@ -2570,7 +2771,8 @@ function ExploreContent() {
     beach: '泳灘',
     ski: '滑雪',
     aurora: '極光',
-    fuel: '加油站',
+    atm: 'ATM',
+    fuel: '油站',
     charging: '充電',
     ev: '充電',
     alerts: '通報',
@@ -4177,11 +4379,7 @@ function ExploreContent() {
 
                 <div className="flex flex-col gap-2">
                   {(auroraData.spots || []).map((spot) => (
-                    <div 
-                      key={spot.id}
-                      className="bg-[#141924] hover:bg-[#1a2233] p-2.5 rounded-lg border border-[#222b3b] hover:border-emerald-500/40 transition-all flex flex-col gap-1.5 cursor-pointer group"
-                      onClick={() => handleSelectAuroraSpot(spot)}
-                    >
+                    <div key={spot.id} className="bg-[#141924] p-2.5 rounded-lg border border-[#222b3b] flex flex-col gap-1.5 select-text">
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1 min-w-0">
                           <h4 className="font-bold text-xs text-white group-hover:text-emerald-300 transition-colors flex items-start gap-1.5 leading-snug">
@@ -4189,9 +4387,22 @@ function ExploreContent() {
                             <span className="break-words whitespace-normal">{formatAuroraSpotName(spot.name)}</span>
                           </h4>
                         </div>
-                        <span className="text-[9.5px] bg-[#222a3a] text-cyan-300 px-1.5 py-0.5 rounded font-mono shrink-0 whitespace-nowrap">
-                          {spot.drive_min}
-                        </span>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className="text-[9.5px] bg-[#222a3a] text-cyan-300 px-1.5 py-0.5 rounded font-mono shrink-0 whitespace-nowrap">
+                            {spot.drive_min}
+                          </span>
+                          <a
+                            href={`https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lon}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="flex items-center gap-1 px-2 py-1 rounded-md bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-500/40 text-emerald-300 hover:text-white text-[11px] font-medium transition-all shadow-xs shrink-0 cursor-pointer"
+                            title="Google 導航至此"
+                          >
+                            <Navigation className="w-3 h-3 text-emerald-400" />
+                            <span>導航</span>
+                          </a>
+                        </div>
                       </div>
                       <p className="text-[10.5px] text-gray-300 leading-snug">
                         {spot.features}
@@ -4205,15 +4416,155 @@ function ExploreContent() {
         </div>
       )}
 
-      {/* ==================== 2. 燃油分頁 (Fuel) ==================== */}
-      {activeTab === 'fuel' && (
+      {/* ==================== 1.5 ATM 櫃員機分頁 (ATM) ==================== */}
+      {activeTab === 'atm' && (
         <div className="flex flex-col flex-1 min-h-0">
           {/* Subheader: Range & Location info */}
           <div className="flex items-center justify-between mb-2 shrink-0">
             <span className="text-xs text-gray-300 font-medium">
               {userLocation?.confirmed
-                ? '距離個人位置 10 公里範圍內的加油站'
-                : '溫哥華 10 公里範圍內的加油站'}
+                ? '距離個人位置最近的 ATM 櫃員機'
+                : '溫哥華全區 293 處 ATM 櫃員機'}
+            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] text-amber-400 bg-amber-950/70 border border-amber-800/60 px-1.5 py-0.5 rounded font-mono">
+                每日更新
+              </span>
+              {!userLocation?.confirmed && (
+                <button
+                  onClick={() => {
+                    setExploreOpen(false);
+                    setSettingsModalOpen(true);
+                  }}
+                  className="text-[10.5px] text-emerald-400 hover:text-emerald-300 font-medium hover:underline flex items-center gap-0.5"
+                >
+                  <MapPin className="w-2.5 h-2.5" />
+                  <span>設定個人位置</span>
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Search Bar */}
+          <div className="relative mb-2.5 shrink-0">
+            <Search className="w-3.5 h-3.5 text-gray-500 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              type="text"
+              value={atmSearchQuery}
+              onChange={(e) => setAtmSearchQuery(e.target.value)}
+              placeholder="搜尋銀行名稱 (如 RBC, BMO, TD)、地址或分行..."
+              className="w-full bg-[#10131a] text-xs text-white placeholder-gray-500 pl-8 pr-7 py-1.5 rounded-lg border border-[#232838] focus:outline-none focus:border-amber-500/50 transition-colors"
+            />
+            {atmSearchQuery && (
+              <button
+                onClick={() => setAtmSearchQuery('')}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white p-0.5"
+                title="清除搜尋"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            )}
+          </div>
+
+          {/* Filter Bar: 僅顯示今日營業中 */}
+          <div className="flex items-center justify-between gap-2 mb-2.5 shrink-0">
+            <span className="text-[11px] text-gray-400">
+              共找到 <span className="text-amber-400 font-mono font-bold">{filteredAtms.length}</span> 間櫃員機
+            </span>
+            <label className="flex items-center gap-1.5 text-xs text-gray-300 cursor-pointer select-none shrink-0">
+              <input
+                type="checkbox"
+                checked={atmOnlyOpenToday}
+                onChange={(e) => setAtmOnlyOpenToday(e.target.checked)}
+                className="w-3.5 h-3.5 rounded bg-[#12151d] border-[#343a4a] text-amber-500 focus:ring-0 focus:ring-offset-0 cursor-pointer accent-amber-500"
+              />
+              <span>僅顯示今日營業中</span>
+            </label>
+          </div>
+
+          {/* ATM List */}
+          <div className="flex-1 overflow-y-auto space-y-2 pr-1 min-h-0">
+            {loadingAtm ? (
+              <div className="py-12 flex flex-col items-center justify-center gap-2 text-xs text-gray-400">
+                <RefreshCw className="w-5 h-5 text-amber-400 animate-spin" />
+                <span>讀取溫哥華各分行與 ATM 數據...</span>
+              </div>
+            ) : filteredAtms.length === 0 ? (
+              <div className="py-12 text-center text-xs text-gray-400 bg-[#10131a] rounded-lg border border-[#232836]">
+                暫無符合條件的 ATM 櫃員機
+              </div>
+            ) : (
+              filteredAtms.map((atm) => {
+                const distDisplay = userLocation?.confirmed && atm.distKm > 0
+                  ? distanceUnit === 'imperial'
+                    ? `約 ${(atm.distKm * 0.621371).toFixed(1)} 英里`
+                    : `約 ${atm.distKm.toFixed(1)} 公里`
+                  : null;
+
+                return (
+                  <div
+                    key={atm.id}
+                    onClick={() => handleSelectAtm(atm)}
+                    className="p-2.5 rounded-lg bg-[#141720] hover:bg-[#1c212e] border border-[#262c3c] hover:border-amber-500/40 transition-all cursor-pointer flex items-center justify-between gap-3 group"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-white text-[13px] truncate group-hover:text-amber-300 transition-colors">
+                          {atm.name}
+                        </span>
+                        {atm.isOpenToday ? (
+                          <span className="text-[10px] px-1.5 py-0.2 rounded-full font-medium bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shrink-0">
+                            {atm.is_24_7 ? '24/7' : '營業中'}
+                          </span>
+                        ) : (
+                          <span className="text-[10px] px-1.5 py-0.2 rounded-full font-medium bg-gray-700/40 text-gray-400 border border-gray-600/30 shrink-0">
+                            今日休息
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-[11px] text-gray-400 truncate mt-0.5">
+                        {atm.address} · {atm.local_area || 'Vancouver'}
+                      </div>
+                      {atm.services_str && (
+                        <div className="text-[10px] text-amber-400/80 truncate mt-0.5">
+                          {atm.services_str}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="text-right shrink-0">
+                      <span className="text-[11px] font-mono text-gray-300 block">
+                        {atm.openHoursToday}
+                      </span>
+                      {distDisplay && (
+                        <div className="text-[10.5px] font-mono text-gray-400 mt-0.5">
+                          {distDisplay}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ==================== 2. 燃油分頁 (Fuel) ==================== */}
+      {activeTab === 'atm' && (
+            <>
+              <span>共有 {filteredAtms.length} 間 ATM 櫃員機</span>
+              <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：Bankee</span>
+            </>
+          )}
+          {activeTab === 'fuel' && (
+        <div className="flex flex-col flex-1 min-h-0">
+          {/* Subheader: Range & Location info */}
+          <div className="flex items-center justify-between mb-2 shrink-0">
+            <span className="text-xs text-gray-300 font-medium">
+              {userLocation?.confirmed
+                ? '距離個人位置 10 公里範圍內的油站'
+                : '溫哥華 10 公里範圍內的油站'}
             </span>
             <div className="flex items-center gap-2">
               <span className="text-[10px] text-amber-400 bg-amber-950/70 border border-amber-800/60 px-1.5 py-0.5 rounded font-mono">
@@ -4241,7 +4592,7 @@ function ExploreContent() {
               type="text"
               value={fuelSearchQuery}
               onChange={(e) => setFuelSearchQuery(e.target.value)}
-              placeholder="搜尋加油站品牌、地址或城市..."
+              placeholder="搜尋油站品牌、地址或城市..."
               className="w-full bg-[#10131a] text-xs text-white placeholder-gray-500 pl-8 pr-7 py-1.5 rounded-lg border border-[#232838] focus:outline-none focus:border-amber-500/50 transition-colors"
             />
             {fuelSearchQuery && (
@@ -4321,11 +4672,11 @@ function ExploreContent() {
             {loadingFuel ? (
               <div className="py-12 flex flex-col items-center justify-center gap-2 text-gray-400 text-xs">
                 <RefreshCw className="w-5 h-5 text-amber-400 animate-spin" />
-                <span>讀取溫哥華各大加油站最新油價中...</span>
+                <span>讀取溫哥華各大油站最新油價中...</span>
               </div>
             ) : filteredFuelStations.length === 0 ? (
               <div className="py-12 text-center text-xs text-gray-400 bg-[#10131a] rounded-lg border border-[#232836]">
-                暫無符合條件的加油站
+                暫無符合條件的油站
               </div>
             ) : (
               filteredFuelStations.map((st) => {
@@ -6184,7 +6535,7 @@ function ExploreContent() {
             </>
           )}
           {activeTab === 'fuel' && (
-            <span>共有 {filteredFuelStations.length} 間加油站</span>
+            <span>共有 {filteredFuelStations.length} 間油站</span>
           )}
           {(activeTab === 'ev' || activeTab === 'charging') && (
             <span>共有 {filteredEvStations.length} 座充電站</span>

@@ -1,4 +1,5 @@
 export interface SourceLink {
+  type: 'api' | 'web' | 'download' | 'geojson';
   label: string;
   url: string;
 }
@@ -7,17 +8,16 @@ export interface AdminSourceItem {
   id: string;
   name: string;
   type: string;
-  cron_expr: string;
+  cron_expr?: string;
   schedule_interval: string;
   record_count: number;
   unit: string;
-  last_updated: string | null;
-  status: string;
+  last_updated: string;
+  status: 'ok' | 'warning' | 'error';
   data_pipeline_notes: string;
-  runner: string;
-  category: string;
-  workflow_file: string | null;
-  enabled?: boolean;
+  runner: 'github_actions' | 'oci';
+  workflow_file?: string;
+  category: '道路' | '天氣' | '生活' | '公共事業';
   source_links?: SourceLink[];
   source_url?: string;
 }
@@ -192,7 +192,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
     "cron_expr": "0 */1 * * *",
     "schedule_interval": "每 1 小時",
     "record_count": 88,
-    "unit": "間加油站點價格",
+    "unit": "間油站點價格",
     "last_updated": "2026-10-24T18:00:00Z",
     "status": "ok",
     "data_pipeline_notes": "GasBuddy & 加拿大能源情報聚合接口 -> 取得溫哥華市區各品牌 (Chevron, Shell, Petro-Canada 等) 87/91/柴油即時公升單價 -> 計算比價排名與市區油價均線",
@@ -1085,5 +1085,74 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
       }
     ],
     "source_url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/property-addresses/records/"
+  },
+  {
+    "id": "atm",
+    "name": "銀行櫃員機 (ATM)",
+    "type": "geojson",
+    "cron_expr": "0 4 * * *",
+    "schedule_interval": "每日 04:00",
+    "record_count": 293,
+    "unit": "部 ATM 櫃員機",
+    "last_updated": "2026-10-25T17:57:21.402Z",
+    "status": "ok",
+    "data_pipeline_notes": "Bankee ATM 網絡與分行清冊 -> 解析服務、開放時間、Transit/Institution/SWIFT 編號 -> 寫入 /backend/data/vancouver_atm.geojson",
+    "runner": "github_actions",
+    "workflow_file": "update-atm.yml",
+    "category": "生活",
+    "source_links": [
+      {
+        "type": "web",
+        "label": "Bankee ATM 清冊",
+        "url": "https://bankee.ca/bc/vancouver/atm/"
+      }
+    ],
+    "source_url": "https://bankee.ca/bc/vancouver/atm/"
+  },
+  {
+    "id": "shared_bikes",
+    "name": "Mobi 共享單車",
+    "type": "geojson",
+    "cron_expr": "0 * * * *",
+    "schedule_interval": "每小時整點",
+    "record_count": 250,
+    "unit": "處站點與可用車位",
+    "last_updated": "2026-10-25T17:57:21.406Z",
+    "status": "ok",
+    "data_pipeline_notes": "Mobi GBFS 實時公開資料流 -> 每小時更新各站可租借單車與空位數 -> 寫入 /backend/data/vancouver_shared_bikes.geojson",
+    "runner": "github_actions",
+    "workflow_file": "update-micromobility-hourly.yml",
+    "category": "生活",
+    "source_links": [
+      {
+        "type": "api",
+        "label": "Mobi GBFS API",
+        "url": "https://vancouver-gbfs.bcycle.com/bcycle_vancouver/gbfs.json"
+      }
+    ],
+    "source_url": "https://vancouver-gbfs.bcycle.com/bcycle_vancouver/gbfs.json"
+  },
+  {
+    "id": "escooter",
+    "name": "Lime 共享滑板車",
+    "type": "geojson",
+    "cron_expr": "0 * * * *",
+    "schedule_interval": "每小時整點",
+    "record_count": 120,
+    "unit": "處滑板車站點",
+    "last_updated": "2026-10-25T17:57:21.406Z",
+    "status": "ok",
+    "data_pipeline_notes": "Lime GBFS 實時公開資料流 -> 每小時更新各站滑板車位置與可用狀態 -> 寫入 /backend/data/vancouver_escooter.geojson",
+    "runner": "github_actions",
+    "workflow_file": "update-micromobility-hourly.yml",
+    "category": "生活",
+    "source_links": [
+      {
+        "type": "api",
+        "label": "Lime GBFS API",
+        "url": "https://data.lime.biz/"
+      }
+    ],
+    "source_url": "https://data.lime.biz/"
   }
 ];

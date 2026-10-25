@@ -84,7 +84,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
               <Bookmark className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
               <div>
                 <strong className="text-white block text-[11.5px]">自訂私人收藏地點清單</strong>
-                <span className="text-[10.5px] text-gray-400">一鍵釘選常用充電樁、最愛加油站與海景觀測點</span>
+                <span className="text-[10.5px] text-gray-400">一鍵釘選常用充電樁、最愛油站與海景觀測點</span>
               </div>
             </div>
           </div>

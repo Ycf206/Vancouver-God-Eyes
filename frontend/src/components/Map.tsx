@@ -1042,6 +1042,7 @@ export default function AppMap() {
         else if (type === 'disaster_hubs' && !layers.disasterHubs) facilityClosed = true;
         else if (type === 'community_centres' && !layers.communityCentres) facilityClosed = true;
         else if (type === 'canada_post' && !layers.canadaPost) facilityClosed = true;
+        else if (type === 'atm' && !layers.atm) facilityClosed = true;
         else if (type === 'hospitals' && !layers.hospitals) facilityClosed = true;
         else if (type === 'parks' && !layers.parks) facilityClosed = true;
         else if (type === 'parks_facilities' && !layers.parksFacilities) facilityClosed = true;
@@ -1853,7 +1854,7 @@ export default function AppMap() {
 
   // Compute distance from user's personal location to currently selected gas station
   const userDistanceToFuel = useMemo(() => {
-    if (!selectedFacility || selectedFacility.facility_type !== 'fuel' || !userLocation?.confirmed || !userLocation.lat || !userLocation.lon) {
+    if (!selectedFacility || (selectedFacility.facility_type !== 'fuel' && selectedFacility.facility_type !== 'ev_charging' && selectedFacility.facility_type !== 'atm') || !userLocation?.confirmed || !userLocation.lat || !userLocation.lon) {
       return null;
     }
     const R = 6371; // km
@@ -2700,17 +2701,9 @@ export default function AppMap() {
     }
     if (layers.canadaPost) {
       style.sources['canada-post'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/canada_post` };
-      style.layers.push({
-        id: 'canada-post-layer',
-        type: 'circle',
-        source: 'canada-post',
-        paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 3, 14, 6, 17, 9],
-          'circle-color': '#E31837',
-          'circle-stroke-width': 1.5,
-          'circle-stroke-color': '#ffffff'
-        }
-      });
+    }
+    if (layers.atm) {
+      style.sources['atm'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/atm` };
     }
 
     if (layers.communityCentres) {
@@ -4041,6 +4034,60 @@ export default function AppMap() {
       });
     }
 
+    // Canada Post
+    if (layers.canadaPost) {
+      style.layers.push({
+        id: 'canada-post-layer',
+        type: 'circle',
+        source: 'canada-post',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 3, 14, 6, 17, 9],
+          'circle-color': '#E31837',
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'canada-post-symbol-layer',
+        type: 'symbol',
+        source: 'canada-post',
+        minzoom: 14,
+        layout: {
+          'text-field': '📮',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 14, 10, 17, 14],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        }
+      });
+    }
+
+    // Bank ATMs
+    if (layers.atm) {
+      style.layers.push({
+        id: 'atm-layer',
+        type: 'circle',
+        source: 'atm',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 3, 14, 6, 17, 9],
+          'circle-color': '#f59e0b',
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'atm-symbol-layer',
+        type: 'symbol',
+        source: 'atm',
+        minzoom: 14,
+        layout: {
+          'text-field': '🏧',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 14, 10, 17, 14],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        }
+      });
+    }
+
     // Government Facilities: Community Centres
     if (layers.communityCentres) {
       style.layers.push({
@@ -4153,7 +4200,7 @@ export default function AppMap() {
       });
     }
 
-    // Road Infrastructure: Gas Stations (加油站)
+    // Road Infrastructure: Gas Stations (油站)
     if (layers.fuel) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let fuelFilterExpr: any = undefined;
@@ -5616,6 +5663,7 @@ export default function AppMap() {
     layers.disasterHubs,
     layers.communityCentres,
     layers.canadaPost,
+    layers.atm,
     layers.hospitals,
     layers.parks,
     layers.parksFacilities,
@@ -6230,6 +6278,7 @@ export default function AppMap() {
             layerId.startsWith('disaster-hubs') ||
             layerId.startsWith('community-centres') ||
             layerId.startsWith('canada-post') ||
+            layerId.startsWith('atm') ||
             layerId.startsWith('hospitals') ||
             layerId.startsWith('parks') ||
             layerId.startsWith('community-gardens') ||
@@ -6302,7 +6351,7 @@ export default function AppMap() {
               else if (isLitter) facilityName = props.address ? `垃圾箱 - ${props.address}` : '公用垃圾箱';
               else if (isBikeRack) facilityName = props.location ? `單車架 - ${props.location}` : '公用單車架';
               else if (isRecycling) facilityName = props.brand || '環保回收站';
-              else if (isFuel) facilityName = props.brand || '加油站';
+              else if (isFuel) facilityName = props.brand || '油站';
               else if (isTesla) facilityName = 'Tesla 站點';
               else if (isMarineTerminal) facilityName = '港口碼頭';
             }
@@ -8322,7 +8371,7 @@ export default function AppMap() {
                   const t = selectedFacility.facility_type;
                   if (t === 'parking_meters') return { label: '停車收費錶', bg: 'bg-[#1D4ED8] text-white' };
                   if (t === 'motorcycle_parking') return { label: '摩托車停車位', bg: 'bg-[#1D4ED8] text-white' };
-                  if (t === 'fuel') return { label: '加油站', bg: 'bg-amber-600 text-white' };
+                  if (t === 'fuel') return { label: '油站', bg: 'bg-amber-600 text-white' };
                   if (t === 'accessible_parking') return { label: '無障礙停車位', bg: 'bg-[#0284C7] text-white' };
                   if (t === 'one_way_streets') return { label: '單程路段', bg: 'bg-[#0F172A] text-white' };
                   if (t === 'traffic_speed_limits') return { label: '限速路段', bg: 'bg-[#F59E0B] text-white' };
@@ -8354,6 +8403,7 @@ export default function AppMap() {
                   if (t === 'aed') return { label: 'AED 去顫器', bg: 'bg-red-600 text-white' };
                   if (t === 'community_centres') return { label: '社區中心', bg: 'bg-violet-600 text-white' };
                   if (t === 'canada_post') return { label: 'Canada Post', bg: 'bg-[#E31837] text-white' };
+                  if (t === 'atm') return { label: 'ATM', bg: 'bg-amber-500 text-white' };
                   if (t === 'public_art') return { label: '公共藝術', bg: 'bg-fuchsia-600 text-white' };
                   if (t === 'police') return { label: '警察', bg: 'bg-blue-600 text-white' };
                   if (t === 'fire_halls') return { label: '消防', bg: 'bg-rose-600 text-white' };
@@ -8650,6 +8700,7 @@ export default function AppMap() {
                               if (selectedFacility.facility_type === 'community_gardens') return 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'community_centres') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'canada_post') return formatTitleCase(selectedFacility.properties?.postaladdress || selectedFacility.local_area || 'Vancouver, BC');
+                              if (selectedFacility.facility_type === 'atm') return selectedFacility.properties?.address ? `${selectedFacility.properties.address}, Vancouver, BC` : 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'museums') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'garbage_collection') return selectedFacility.properties?.zone_code || selectedFacility.local_area || '';
                               if (selectedFacility.facility_type === 'public_trees') return selectedFacility.properties?.address || `${selectedFacility.properties?.civic_number || ''} ${selectedFacility.properties?.std_street || ''}`.trim() || selectedFacility.local_area || 'Vancouver, BC';
@@ -9430,12 +9481,27 @@ export default function AppMap() {
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
-                    {/* 12.1 主題 #059669，12.2 已刪除「道路設施」列 */}
-                    <div className="bg-[#059669]/10 p-2.5 rounded-lg border border-[#059669]/25 flex items-center justify-between text-[#059669] font-medium leading-snug">
-                      <div className="flex items-center gap-1.5 min-w-0">
-                        <Zap className="w-3.5 h-3.5 text-[#059669] shrink-0" />
-                        <span>溫哥華公用電動車充電站設施</span>
+                    {/* 2. 電動車充電站「離個人位置: 設定個人位置」，右方標記 24 小時開放 */}
+                    <div className="bg-[#059669]/10 p-2.5 rounded-lg border border-[#059669]/25 flex items-center justify-between text-[11px]">
+                      <div className="flex items-center gap-1.5 text-gray-700 min-w-0">
+                        <MapPin className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+                        <span className="text-gray-600 shrink-0">離個人位置:</span>
+                        {userDistanceToFuel ? (
+                          <span className="text-gray-800 font-medium shrink-0">約 {userDistanceToFuel}</span>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => setSettingsModalOpen(true)}
+                            className="text-emerald-700 hover:text-emerald-900 underline font-normal truncate cursor-pointer transition-colors"
+                            title="點擊打開設定個人位置"
+                          >
+                            設定個人位置
+                          </button>
+                        )}
                       </div>
+                      <span className="text-[10px] text-emerald-800 bg-emerald-100/80 px-1.5 py-0.5 rounded font-medium border border-emerald-300/60 shrink-0">
+                        24 小時開放
+                      </span>
                     </div>
 
                     {/* 12.4 灰色區塊：統一文字字體、大小 text-[11px]、顏色黑色 text-gray-800、不粗體 */}
@@ -9898,6 +9964,167 @@ export default function AppMap() {
                   </div>
                 </div>
               )}
+
+              {/* Bank ATMs (銀行櫃員機) Details */}
+              {selectedFacility.facility_type === 'atm' && (() => {
+                const props = selectedFacility.properties || {};
+                const bankFullName = props.bank_full_name || '加拿大銀行';
+                const officialUrl = props.official_url || 'https://www.google.com';
+                const services = Array.isArray(props.services) ? props.services : (props.services_str ? props.services_str.split(',') : []);
+                const openHours = props.opening_hours || {};
+                const daysList = [
+                  { key: 'monday', label: '週一 (Mon)', hours: openHours.monday },
+                  { key: 'tuesday', label: '週二 (Tue)', hours: openHours.tuesday },
+                  { key: 'wednesday', label: '週三 (Wed)', hours: openHours.wednesday },
+                  { key: 'thursday', label: '週四 (Thu)', hours: openHours.thursday },
+                  { key: 'friday', label: '週五 (Fri)', hours: openHours.friday },
+                  { key: 'saturday', label: '週六 (Sat)', hours: openHours.saturday },
+                  { key: 'sunday', label: '週日 (Sun)', hours: openHours.sunday }
+                ];
+                const curDowKey = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'][new Date().getDay()];
+                const todayHours = openHours[curDowKey] || (props.is_24_7 ? '24 小時營業' : '營業中');
+
+                return (
+                  <div className="flex flex-col gap-2.5 text-xs">
+                    {/* 3.4 標題下方金黃色區塊 */}
+                    <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/30 flex items-center justify-between text-[11px]">
+                      <div className="flex items-center gap-1.5 text-gray-700 min-w-0">
+                        <MapPin className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                        <span className="text-gray-600 shrink-0">離個人位置:</span>
+                        {userDistanceToFuel ? (
+                          <span className="text-gray-800 font-medium shrink-0">約 {userDistanceToFuel}</span>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => setSettingsModalOpen(true)}
+                            className="text-amber-700 hover:text-amber-900 underline font-normal truncate cursor-pointer transition-colors"
+                            title="點擊打開設定個人位置"
+                          >
+                            設定個人位置
+                          </button>
+                        )}
+                      </div>
+                      <span className="text-[10px] text-amber-800 bg-amber-100/90 px-1.5 py-0.5 rounded font-medium border border-amber-300/60 shrink-0">
+                        {props.status_text || (props.is_24_7 ? '營業中 (24/7)' : '營業中')}
+                      </span>
+                    </div>
+
+                    {/* 3.6 金黃色區塊下方的灰色區塊資料 (null 欄位不顯示) */}
+                    <div className="bg-gray-50/90 p-2.5 rounded-lg border border-gray-200/70 flex flex-col gap-2 text-[11px]">
+                      {/* 服務 (Services) */}
+                      {services.length > 0 && (
+                        <div className="flex flex-col gap-1">
+                          <span className="text-gray-500 font-medium text-[10px]">服務項目 (Services)</span>
+                          <div className="flex flex-wrap gap-1">
+                            {services.map((srv, sIdx) => (
+                              <span key={sIdx} className="text-[10px] bg-white border border-gray-200 px-1.5 py-0.5 rounded text-gray-700">
+                                {srv.trim()}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* 開放時間 (Opening Hours) */}
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center justify-between text-gray-700">
+                          <span className="text-gray-500 font-medium text-[10px]">開放時間 (Hours)</span>
+                          <span className="font-mono font-bold text-gray-900 text-[10.5px]">
+                            {todayHours}
+                          </span>
+                        </div>
+                        {Object.keys(openHours).length > 0 && (
+                          <details className="group/sched text-[10.5px]">
+                            <summary className="text-gray-500 hover:text-gray-700 cursor-pointer flex items-center justify-between py-0.5 select-none">
+                              <span className="text-[10px]">查看每週各日時間表</span>
+                              <span className="text-[10px] text-gray-400 font-mono group-open/sched:rotate-180 transition-transform">▼</span>
+                            </summary>
+                            <div className="mt-1 pt-1 border-t border-gray-100 flex flex-col gap-1">
+                              {daysList.map(d => (
+                                <div key={d.key} className={`flex justify-between items-center py-0.5 px-1 rounded ${d.key === curDowKey ? 'bg-amber-50 text-amber-900 font-bold' : 'text-gray-600'}`}>
+                                  <span>{d.label}</span>
+                                  <span className="font-mono">{d.hours || (props.is_24_7 ? '24 Hours' : '休息')}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </details>
+                        )}
+                      </div>
+
+                      {/* (分隔線) */}
+                      {(props.transit_number || props.institution_number || props.routing_number || props.cheque_micr || props.swift_code) && (
+                        <div className="w-full h-px bg-gray-200/80 my-0.5"></div>
+                      )}
+
+                      {/* 分行編號 (Transit Number) */}
+                      {props.transit_number && (
+                        <div className="flex items-center justify-between text-gray-700">
+                          <span className="text-gray-500 font-medium">分行編號 (Transit Number)</span>
+                          <span className="font-mono font-bold text-gray-900">{props.transit_number}</span>
+                        </div>
+                      )}
+
+                      {/* 銀行代碼 (Institution Number) */}
+                      {props.institution_number && (
+                        <div className="flex items-center justify-between text-gray-700">
+                          <span className="text-gray-500 font-medium">銀行代碼 (Institution Number)</span>
+                          <span className="font-mono font-bold text-gray-900">{props.institution_number}</span>
+                        </div>
+                      )}
+
+                      {/* 路由號碼 (Routing Number) */}
+                      {props.routing_number && (
+                        <div className="flex items-center justify-between text-gray-700">
+                          <span className="text-gray-500 font-medium">路由號碼 (Routing Number)</span>
+                          <span className="font-mono font-bold text-gray-900">{props.routing_number}</span>
+                        </div>
+                      )}
+
+                      {/* 支票底部代碼格式 (Cheque MICR) */}
+                      {props.cheque_micr && (
+                        <div className="flex items-center justify-between text-gray-700">
+                          <span className="text-gray-500 font-medium">支票底部代碼格式 (Cheque format)</span>
+                          <span className="font-mono font-bold text-gray-900">{props.cheque_micr}</span>
+                        </div>
+                      )}
+
+                      {/* 國際電匯代碼 (SWIFT) */}
+                      {props.swift_code && (
+                        <div className="flex items-center justify-between text-gray-700">
+                          <span className="text-gray-500 font-medium">國際電匯代碼 (SWIFT)</span>
+                          <span className="font-mono font-bold text-amber-700">{props.swift_code}</span>
+                        </div>
+                      )}
+
+                      {/* (分隔線) */}
+                      {props.telephone && (
+                        <>
+                          <div className="w-full h-px bg-gray-200/80 my-0.5"></div>
+                          <div className="flex items-center justify-between text-gray-700">
+                            <span className="text-gray-500 font-medium">聯絡電話</span>
+                            <a href={`tel:${props.telephone}`} className="font-mono font-semibold text-blue-600 hover:underline">
+                              {props.telephone}
+                            </a>
+                          </div>
+                        </>
+                      )}
+                    </div>
+
+                    {/* 3.7 底部加入銀行官方網頁按鈕 */}
+                    <div className="pt-0.5">
+                      <a
+                        href={officialUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full py-2 px-3 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" />
+                        <span>前往 {bankFullName} 官方網頁</span>
+                      </a>
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* Canada Post (加拿大郵政分店據點) Details */}
               {selectedFacility.facility_type === 'canada_post' && (() => {
@@ -11909,7 +12136,7 @@ export default function AppMap() {
                 );
               })()}
 
-              /* 8.4 已移除重複之上半部海岸潮汐水位區塊，統一使用下方CHS國家潮汐測站標準卡片 */
+              
 
               {/* Gas Station (Fuel) Details */}
               {selectedFacility.facility_type === 'fuel' && (() => {
@@ -13955,7 +14182,8 @@ export default function AppMap() {
           { id: 'beach', label: '泳灘', icon: Waves, color: 'text-teal-300' },
           { id: 'ski', label: '滑雪', icon: Navigation, color: 'text-cyan-400' },
           { id: 'aurora', label: '極光', icon: Zap, color: 'text-fuchsia-400' },
-          { id: 'fuel', label: '加油站', icon: Fuel, color: 'text-amber-500' },
+          { id: 'atm', label: 'ATM', icon: CreditCard, color: 'text-amber-400' },
+          { id: 'fuel', label: '油站', icon: Fuel, color: 'text-amber-500' },
           { id: 'ev', label: '充電', icon: Zap, color: 'text-yellow-400' },
           { id: 'alerts', label: '即時通報', icon: AlertCircle, color: 'text-rose-400' },
           { id: 'traffic', label: '路況', icon: Activity, color: 'text-amber-400' },
@@ -14719,7 +14947,7 @@ export default function AppMap() {
               <span className="p-1 rounded bg-amber-500/20 text-amber-400">
                 <Fuel className="w-3.5 h-3.5" />
               </span>
-              <span className="font-bold text-xs text-white">加油站品牌篩選</span>
+              <span className="font-bold text-xs text-white">油站品牌篩選</span>
             </div>
             <button
               onClick={() => setFuelFilterOpen(!fuelFilterOpen)}

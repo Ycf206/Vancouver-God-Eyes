@@ -49,8 +49,8 @@ def load_vancouver_stations() -> List[Dict[str, Any]]:
             lon, lat = coords[0], coords[1]
             stations.append({
                 "id": str(props.get("id", "")),
-                "name": props.get("name", "加油站"),
-                "brand": props.get("brand", "加油站"),
+                "name": props.get("name", "油站"),
+                "brand": props.get("brand", "油站"),
                 "address": props.get("address", "Vancouver"),
                 "city": props.get("city", "Vancouver"),
                 "province": props.get("province", "BC"),
@@ -156,7 +156,7 @@ async def get_fuel_stations_data(user_lat: Optional[float] = None, user_lon: Opt
         
         enriched = []
         for st in raw_stations:
-            brand = st.get("brand", "加油站")
+            brand = st.get("brand", "油站")
             addr = st.get("address", "")
             key = f"{brand}_{addr}".lower()
             

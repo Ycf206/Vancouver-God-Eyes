@@ -15,8 +15,12 @@ import {
   Filter, 
   Lock, 
   Unlock, 
-  FileText, 
-  Trash2, 
+  FileText,
+  Trash2,
+  BarChart3,
+  Users,
+  MessageSquareWarning,
+  Eye, 
   ExternalLink,
   ChevronRight,
   Sparkles,
@@ -158,9 +162,59 @@ export default function AdminPage() {
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [backendConnected, setBackendConnected] = useState<boolean | null>(null);
-  const [mainTab, setMainTab] = useState<'sources' | 'logs'>('sources');
+  const [mainTab, setMainTab] = useState<'sources' | 'logs' | 'analytics'>('sources');
   const [activeTab, setActiveTab] = useState<'all' | 'github_actions' | 'oci'>('all');
   
+  // --- Analytics & Stats states (8. 正式推出才開始執行) ---
+  const [stats, setStats] = useState<{
+    today_page_views: number;
+    total_page_views: number;
+    online_users: number;
+    issue_reports_count: number;
+    status_note?: string;
+  }>({
+    today_page_views: 0,
+    total_page_views: 0,
+    online_users: 1,
+    issue_reports_count: 0,
+    status_note: '正式推出才開始執行'
+  });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [issueReports, setIssueReports] = useState<any[]>([]);
+  const [loadingStats, setLoadingStats] = useState(false);
+
+  const fetchAnalyticsData = async () => {
+    setLoadingStats(true);
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const resStats = await adminApiFetch<any>('/api/admin/stats');
+      if (resStats.ok && resStats.data) {
+        setStats({
+          today_page_views: resStats.data.today_page_views ?? 0,
+          total_page_views: resStats.data.total_page_views ?? 0,
+          online_users: resStats.data.online_users ?? 1,
+          issue_reports_count: resStats.data.issue_reports_count ?? 0,
+          status_note: resStats.data.status_note ?? '正式推出才開始執行'
+        });
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const resReports = await adminApiFetch<any>('/api/admin/issue-reports');
+      if (resReports.ok && resReports.data) {
+        setIssueReports(resReports.data.reports || []);
+      }
+    } catch (err) {
+      console.error('Fetch analytics error:', err);
+    } finally {
+      setLoadingStats(false);
+    }
+  };
+
+  useEffect(() => {
+    if (mainTab === 'analytics') {
+      fetchAnalyticsData();
+    }
+  }, [mainTab]);
+
   // Security PIN protection (Default: 0206)
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [pinInput, setPinInput] = useState('');
@@ -723,6 +777,25 @@ export default function AdminPage() {
           </button>
 
           
+
+          {/* 分頁 3: 系統統計與分析 (正式推出才開始執行) */}
+          <button
+            onClick={() => setMainTab('analytics')}
+            className={`group relative flex items-center gap-2 px-4 py-2 rounded-t-xl text-xs font-semibold transition-all cursor-pointer ${
+              mainTab === 'analytics'
+                ? 'bg-[#141822] text-white border-t-2 border-t-emerald-500 border-x border-[#232a3b] shadow-sm z-10'
+                : 'bg-[#0f131a] text-gray-400 hover:text-gray-200 hover:bg-[#161c27] border-t-2 border-transparent'
+            }`}
+          >
+            <BarChart3 className={`w-3.5 h-3.5 ${mainTab === 'analytics' ? 'text-emerald-400' : 'text-gray-500 group-hover:text-gray-400'}`} />
+            <span>統計數據</span>
+            <span className="text-[9px] px-1.5 py-0.2 rounded-full font-sans bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+              正式推出啟用
+            </span>
+            {mainTab === 'analytics' && (
+              <span className="absolute bottom-[-1px] left-0 right-0 h-[1px] bg-[#141822]" />
+            )}
+          </button>
 
           {/* 瀏覽器分頁新增預留按鈕 */}
           <button

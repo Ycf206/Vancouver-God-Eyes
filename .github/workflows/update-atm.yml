@@ -1,0 +1,43 @@
+name: Update ATMs (每日 04:00)
+
+on:
+  schedule:
+    # 每日凌晨 04:00 UTC 執行一次
+    - cron: '0 4 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: update-atm
+  cancel-in-progress: true
+
+jobs:
+  update-atm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install requests
+
+      - name: Run ATM update script
+        run: |
+          python backend/scripts/layers/update_atm.py
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add backend/data/vancouver_atm.geojson frontend/public/vancouver_atm.geojson
+          if git diff --staged --quiet; then
+            echo "No changes detected"
+          else
+            git commit -m "chore(data): auto-update 溫哥華銀行櫃員機 ATM dataset [skip ci]"
+            git push
+          fi
