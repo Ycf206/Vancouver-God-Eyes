@@ -1,9 +1,9 @@
-name: Update ATMs (每日 04:00)
+name: Update ATMs (每月)
 
 on:
   schedule:
     # 每日凌晨 04:00 UTC 執行一次
-    - cron: '0 4 * * *'
+    - cron: '0 0 1 * *'
   workflow_dispatch:
 
 concurrency:
