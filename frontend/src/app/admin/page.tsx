@@ -990,8 +990,8 @@ export default function AdminPage() {
                                   <Cloud className="w-3 h-3" />
                                   <span>GitHub Actions</span>
                                 </span>
-                                <span className="text-[10px] text-sky-400/80 font-mono truncate max-w-[170px]" title={source.workflow_file || 'update-datasets.yml'}>
-                                  {isGitHubUnbound ? '未綁定 Token (待激活)' : (source.workflow_file || 'update-datasets.yml')}
+                                <span className="text-[10px] text-sky-400/80 font-mono truncate max-w-[170px]" title={source.workflow_file || `update-${source.id.replace(/_/g, "-")}.yml`}>
+                                  {isGitHubUnbound ? '未綁定 Token (待激活)' : (source.workflow_file || `update-${source.id.replace(/_/g, "-")}.yml`)}
                                 </span>
                               </div>
                             )}

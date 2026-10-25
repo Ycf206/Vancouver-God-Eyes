@@ -3516,6 +3516,12 @@ def set_admin_github_token(payload: dict = Body(...)):
     return {"status": "success", "message": msg}
 
 
+def get_canonical_workflow_file(source_id: str) -> str:
+    """傳回特定資料源所對應之獨立 GitHub Actions 工作流檔案名稱"""
+    clean_id = source_id.replace("_", "-")
+    return f"update-{clean_id}.yml"
+
+
 @app.get("/api/admin/sources")
 def get_admin_sources():
     """
@@ -3525,7 +3531,25 @@ def get_admin_sources():
     if os.path.exists(config_path):
         try:
             with open(config_path, 'r', encoding='utf-8') as f:
-                return json.load(f)
+                cfg = json.load(f)
+
+            # 自動校正所有舊版或遺失之 workflow_file (例如 update-datasets.yml)
+            has_changes = False
+            for s in cfg.get("sources", []):
+                if s.get("runner") == "github_actions":
+                    canonical_wf = get_canonical_workflow_file(s["id"])
+                    if s.get("workflow_file") != canonical_wf:
+                        s["workflow_file"] = canonical_wf
+                        has_changes = True
+
+            if has_changes:
+                try:
+                    with open(config_path, 'w', encoding='utf-8') as f:
+                        json.dump(cfg, f, ensure_ascii=False, indent=2)
+                except Exception:
+                    pass
+
+            return cfg
         except Exception as e:
             return {"error": str(e), "sources": [], "logs": []}
     return {"sources": [], "logs": []}
@@ -3573,10 +3597,11 @@ def trigger_admin_sync(payload: dict = Body(...)):
                         src["last_updated"] = now_iso
                         src["status"] = "healthy"
                         updated_count += 1
-                        wf = src.get("workflow_file")
-                        if wf and wf not in seen_workflows:
-                            seen_workflows.add(wf)
-                            dispatched_workflows.append(wf)
+                        canonical_wf = get_canonical_workflow_file(src["id"])
+                        src["workflow_file"] = canonical_wf
+                        if canonical_wf not in seen_workflows:
+                            seen_workflows.add(canonical_wf)
+                            dispatched_workflows.append(canonical_wf)
                 
                 # 若有 GITHUB_TOKEN，嘗試觸發各工作流
                 if github_token and dispatched_workflows:
@@ -3608,9 +3633,11 @@ def trigger_admin_sync(payload: dict = Body(...)):
                 
                 if target_src:
                     runner = target_src.get("runner", "oci")
-                    wf = target_src.get("workflow_file")
                     if runner == "github_actions":
                         action_name = "GITHUB_DISPATCH"
+                        canonical_wf = get_canonical_workflow_file(target_src["id"])
+                        target_src["workflow_file"] = canonical_wf
+                        wf = canonical_wf
                         if github_token and wf:
                             try:
                                 dispatch_url = f"https://api.github.com/repos/{github_repo}/actions/workflows/{wf}/dispatches"
@@ -3623,11 +3650,16 @@ def trigger_admin_sync(payload: dict = Body(...)):
                                 if resp.status_code in [200, 204]:
                                     detail_msg = f"已成功調度 GitHub Actions 工作流 [{wf}] 立即在雲端執行！"
                                 else:
-                                    detail_msg = f"呼叫 GitHub Actions API (HTTP {resp.status_code})，已標記本機請求。"
+                                    err_json = {}
+                                    try:
+                                        err_json = resp.json()
+                                    except Exception:
+                                        pass
+                                    detail_msg = f"呼叫 GitHub Actions API 失敗 (HTTP {resp.status_code}): {err_json.get('message', '未知錯誤')}"
                             except Exception as ex:
                                 detail_msg = f"GitHub API 連線異常: {ex}"
                         else:
-                            detail_msg = f"已標記 [{target_name}] 同步請求。綁定工作流: [{wf or '預設'}]（在右上角設定 GITHUB_TOKEN 即可一鍵遠端喚醒 Actions 雲端執行）。"
+                            detail_msg = f"已標記 [{target_name}] 同步請求。綁定工作流: [{wf}]（在右上角設定 GITHUB_TOKEN 即可一鍵遠端喚醒 Actions 雲端執行）。"
                     else:
                         action_name = "OCI_SYNC"
                         detail_msg = f"OCI 伺服器已即時更新 [{target_name}] 資料快取與連線狀態。"
@@ -3700,9 +3732,13 @@ def update_admin_schedule(payload: dict = Body(...)):
                 wf = updated_src.get("workflow_file")
                 detail_extra = ""
                 
-                # 若為 GitHub Actions 項目，更新工作流 cron
-                if runner == "github_actions" and wf and cron_expr:
-                    # 1. 嘗試直接透過 GitHub API Commit 更新 (場景二最佳解)
+                                # 若為 GitHub Actions 項目，更新工作流 cron
+                if runner == "github_actions" and cron_expr:
+                    canonical_wf = get_canonical_workflow_file(updated_src["id"])
+                    updated_src["workflow_file"] = canonical_wf
+                    wf = canonical_wf
+
+                    # 1. 嘗試直接透過 GitHub API Commit 更新
                     if github_token:
                         try:
                             import base64
@@ -3712,27 +3748,44 @@ def update_admin_schedule(payload: dict = Body(...)):
                                 "Accept": "application/vnd.github.v3+json",
                                 "User-Agent": "VancouverGodsEye-Admin"
                             }
-                            get_resp = requests.get(content_url, headers=headers, timeout=8)
+                            get_resp = requests.get(content_url, headers=headers, timeout=10)
                             if get_resp.status_code == 200:
                                 file_info = get_resp.json()
                                 sha = file_info.get("sha")
                                 raw_yml = base64.b64decode(file_info.get("content", "")).decode("utf-8")
                                 import re
                                 new_yml = re.sub(r"-\s*cron:\s*['\"].+?['\"]", f"- cron: '{cron_expr}'", raw_yml)
+                                if schedule_interval:
+                                    new_yml = re.sub(r"^name:\s*Update\s+([^(]+)\([^)]+\)", f"name: Update \\1({schedule_interval})", new_yml, flags=re.MULTILINE)
+
                                 put_body = {
                                     "message": f"chore(schedule): update {updated_src.get('name')} cron to '{cron_expr}' via Admin Portal",
                                     "content": base64.b64encode(new_yml.encode("utf-8")).decode("utf-8"),
                                     "sha": sha,
                                     "branch": "main"
                                 }
-                                put_resp = requests.put(content_url, json=put_body, headers=headers, timeout=10)
+                                put_resp = requests.put(content_url, json=put_body, headers=headers, timeout=12)
                                 if put_resp.status_code in [200, 201]:
-                                    detail_extra = f"已透過 GitHub API 自動 Commit 並 Push 至 main 分支！GitHub Actions 即刻生效新排程週期。"
-
+                                    detail_extra = f"已透過 GitHub API 自動 Commit 並 Push 至 main 分支（工作流: {wf}）！GitHub Actions 即刻生效新排程週期。"
+                                else:
+                                    err_msg = f"HTTP {put_resp.status_code}"
+                                    try:
+                                        err_msg = put_resp.json().get("message", err_msg)
+                                    except Exception:
+                                        pass
+                                    detail_extra = f"⚠️ 本地已儲存，但 GitHub API Commit 失敗: {err_msg}。若提示權限不足，請確認 GitHub Token 具備 'workflow' 權限。"
+                            elif get_resp.status_code == 404:
+                                detail_extra = f"⚠️ 本地已儲存，但在遠端倉庫中找不到 .github/workflows/{wf} (HTTP 404)。"
+                            elif get_resp.status_code in (401, 403):
+                                detail_extra = f"⚠️ 本地已儲存，但 GitHub Token 驗證失敗 (HTTP {get_resp.status_code})。請確認 Token 未過期且勾選了 'workflow' 權限。"
+                            else:
+                                detail_extra = f"⚠️ 本地已儲存，但讀取 GitHub 檔案失敗 (HTTP {get_resp.status_code})。"
                         except Exception as gh_ex:
-                            print(f"GitHub Contents API update failed: {gh_ex}")
+                            detail_extra = f"⚠️ 本地已儲存，但呼叫 GitHub API 異常: {gh_ex}"
+                    else:
+                        detail_extra = f"（提示：目前尚未綁定 GITHUB_TOKEN，排程已在伺服器儲存；若需自動同步至 GitHub 倉庫，請於右上角設定 GitHub Token）。"
 
-                    # 2. 備份：同步修改本機倉庫的 yml
+                    # 2. 備份：同步修改本機倉庫的 yml (若本機存在此檔案)
                     try:
                         repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
                         wf_path = os.path.join(repo_root, '.github', 'workflows', wf)
@@ -3741,11 +3794,11 @@ def update_admin_schedule(payload: dict = Body(...)):
                                 ycontent = yf.read()
                             import re
                             new_ycontent = re.sub(r"-\s*cron:\s*['\"].+?['\"]", f"- cron: '{cron_expr}'", ycontent)
+                            if schedule_interval:
+                                new_ycontent = re.sub(r"^name:\s*Update\s+([^(]+)\([^)]+\)", f"name: Update \\1({schedule_interval})", new_ycontent, flags=re.MULTILINE)
                             if new_ycontent != ycontent:
                                 with open(wf_path, 'w', encoding='utf-8') as yf:
                                     yf.write(new_ycontent)
-                                if not detail_extra:
-                                    detail_extra = f"已同步更新伺服器本機工作流檔案 [{wf}] 中的 Cron 設定為 '{cron_expr}'。"
                     except Exception as yerr:
                         print("Local workflow file update:", yerr)
                 
