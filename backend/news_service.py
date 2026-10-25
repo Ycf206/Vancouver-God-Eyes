@@ -9,6 +9,22 @@ from typing import List, Dict, Any, Optional
 
 FEEDS = [
     {
+        "id": "ctvnews",
+        "name": "CTV News Vancouver",
+        "category_default": "溫哥華新聞",
+        "badge_color": "bg-blue-500/20 text-blue-300 border-blue-500/30",
+        "url": "https://news.google.com/rss/search?q=site:ctvnews.ca/vancouver&hl=en-CA&gl=CA&ceid=CA:en",
+        "site_url": "https://www.ctvnews.ca/vancouver/"
+    },
+    {
+        "id": "cbc",
+        "name": "CBC News Canada",
+        "category_default": "加拿大焦點",
+        "badge_color": "bg-red-500/20 text-red-300 border-red-500/30",
+        "url": "https://www.cbc.ca/webfeed/rss/rss-canada",
+        "site_url": "https://www.cbc.ca/news/canada"
+    },
+    {
         "id": "604now",
         "name": "604 Now",
         "category_default": "溫哥華生活",
@@ -102,6 +118,9 @@ class NewsService:
                     if not title or not link:
                         continue
 
+                    # Clean trailing source tags from title (e.g. " - CTV News")
+                    title = re.sub(r'\s*-\s*(CTV News|CBC News|CBC)$', '', title)
+
                     # Filter Daily Hive items to Vancouver local news
                     if feed_info["id"] == "dailyhive":
                         if "/vancouver/" not in link and "vancouver" not in title.lower():
@@ -140,12 +159,12 @@ class NewsService:
                         "category": category or feed_info["category_default"],
                         "summary": summary,
                         "image_url": image_url,
+                        "timestamp": parsed_ts,
                         "published_at": iso_time,
-                        "pub_date_raw": pub_raw,
-                        "timestamp": parsed_ts
+                        "pub_date_raw": pub_raw
                     })
         except Exception as e:
-            print(f"[NewsService] Error fetching {feed_info['name']}: {e}")
+            print(f"[NewsService] Error fetching feed {feed_info['name']}: {e}")
 
         return articles
 
@@ -155,8 +174,8 @@ class NewsService:
             return {
                 "news": self.cached_news,
                 "total": len(self.cached_news),
-                "updated_at": datetime.fromtimestamp(self.last_fetch_time, timezone.utc).isoformat(),
-                "from_cache": True
+                "cached": True,
+                "updated_at": datetime.fromtimestamp(self.last_fetch_time, tz=timezone.utc).isoformat()
             }
 
         all_articles: List[Dict[str, Any]] = []
@@ -164,17 +183,18 @@ class NewsService:
             feed_articles = self.fetch_feed(feed)
             all_articles.extend(feed_articles)
 
-        if all_articles:
-            # 排序以最上面由最新開始 (Sort by timestamp descending)
-            all_articles.sort(key=lambda x: x.get("timestamp", 0), reverse=True)
-            self.cached_news = all_articles
-            self.last_fetch_time = now
+        # Sort by timestamp descending (newest first)
+        all_articles.sort(key=lambda x: x.get("timestamp", 0), reverse=True)
+
+        # Keep top 80 most recent articles
+        self.cached_news = all_articles[:80]
+        self.last_fetch_time = now
 
         return {
             "news": self.cached_news,
             "total": len(self.cached_news),
-            "updated_at": datetime.fromtimestamp(self.last_fetch_time, timezone.utc).isoformat(),
-            "from_cache": False
+            "cached": False,
+            "updated_at": datetime.fromtimestamp(self.last_fetch_time, tz=timezone.utc).isoformat()
         }
 
 news_service = NewsService()

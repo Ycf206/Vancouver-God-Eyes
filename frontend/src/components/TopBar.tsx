@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Search, Settings, ChevronDown, Map as MapIcon, X, Loader2, Layers, AlertCircle, Heart, Download, History } from 'lucide-react';
+import { Search, Settings, ChevronDown, Map as MapIcon, X, Loader2, Layers, AlertCircle, Heart, Download, History, User } from 'lucide-react';
 import { useUIStore, SearchTarget, UIState } from '@/store/useUIStore';
 import ReportIssueModal from '@/components/ReportIssueModal';
 import DonateModal from '@/components/DonateModal';
@@ -9,6 +9,7 @@ import SettingsModal from '@/components/SettingsModal';
 import ExplorePanel from '@/components/ExplorePanel';
 import ExportModal from '@/components/ExportModal';
 import ChangelogModal from '@/components/ChangelogModal';
+import AuthModal from '@/components/AuthModal';
 import { getApiUrl } from '@/utils/api';
 import { formatClock, formatDateWithTimezone } from '@/utils/time';
 
@@ -32,6 +33,7 @@ export default function TopBar() {
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isDonateModalOpen, setIsDonateModalOpen] = useState(false);
   const [isChangelogModalOpen, setIsChangelogModalOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   // 搜尋狀態
   const [query, setQuery] = useState('');
@@ -390,6 +392,17 @@ export default function TopBar() {
             設定
           </span>
         </button>
+        {/* 帳號登入按鈕 (位於設定按鈕右方) */}
+        <button 
+          onClick={() => setIsAuthModalOpen(true)}
+          className="flex items-center justify-center group h-9 px-2.5 bg-[#25262b] hover:bg-[#2c2d33] border border-[#373a40] hover:border-blue-500/50 rounded-md transition-all shadow-sm text-gray-300 hover:text-blue-400 text-xs font-semibold select-none" 
+          title="會員帳號 / Google 登入"
+        >
+          <User className="w-4 h-4 text-gray-400 group-hover:text-blue-400 transition-colors shrink-0" />
+          <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[80px] group-hover:opacity-100 group-hover:ml-1.5 transition-all duration-300 whitespace-nowrap hidden sm:inline">
+            帳號
+          </span>
+        </button>
       </div>
 
       {/* 贊助支持彈出視窗 */}
@@ -400,6 +413,8 @@ export default function TopBar() {
 
       {/* 系統更新日誌彈出視窗 */}
       <ChangelogModal isOpen={isChangelogModalOpen} onClose={() => setIsChangelogModalOpen(false)} />
+      {/* 會員登入彈窗 (Google 帳號) */}
+      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
 
       {/* 回報問題彈出視窗 */}
       <ReportIssueModal 

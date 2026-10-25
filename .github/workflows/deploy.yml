@@ -27,19 +27,21 @@ jobs:
           
           echo "Working directory: $(pwd)"
           
-          # 備份保護本機 .env 設定檔
+          # 備份保護本機 .env 與管理員排程設定檔
           [ -f .env ] && cp .env /tmp/godseye_root_env.bak || true
           [ -f backend/.env ] && cp backend/.env /tmp/godseye_backend_env.bak || true
+          [ -f backend/data/admin_sources_config.json ] && cp backend/data/admin_sources_config.json /tmp/godseye_admin_cfg.bak || true
 
           # 強制同步至遠端最新 commit，徹底避免本機快取與衝突阻止更新
           git fetch origin main
           git checkout main
           git reset --hard origin/main
-          git clean -fd -e backend/.env -e .env
+          git clean -fd -e backend/.env -e .env -e backend/data/admin_sources_config.json
 
-          # 還原 .env 設定
+          # 還原 .env 與管理員排程設定檔
           [ -f /tmp/godseye_root_env.bak ] && cp /tmp/godseye_root_env.bak .env || true
           [ -f /tmp/godseye_backend_env.bak ] && cp /tmp/godseye_backend_env.bak backend/.env || true
+          [ -f /tmp/godseye_admin_cfg.bak ] && cp /tmp/godseye_admin_cfg.bak backend/data/admin_sources_config.json || true
 
           # 如果 GitHub Secrets 有設定 FLIGHTAWARE_API_KEY，自動同步至 backend/.env 與根目錄 .env
           if [ -n "$FLIGHTAWARE_API_KEY" ]; then

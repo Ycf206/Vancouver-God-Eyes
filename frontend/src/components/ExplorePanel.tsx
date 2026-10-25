@@ -47,9 +47,19 @@ export function formatFerryEtaText(eta?: string): string {
 
 export function formatAuroraSpotName(name?: string): string {
   if (!name) return "";
-  const m = name.match(/^(.*?)\s*\((.*?)\)$/);
+  const m = name.match(/^(.*?)\s*[\(（](.*?)[\)）]$/);
   if (m) {
-    return `${m[2]} (${m[1]})`;
+    const part1 = m[1].trim();
+    const part2 = m[2].trim();
+    const hasChinese1 = /[\u4e00-\u9fa5]/.test(part1);
+    const hasChinese2 = /[\u4e00-\u9fa5]/.test(part2);
+    if (hasChinese1 && !hasChinese2) {
+      // part1 is Chinese, part2 is English -> English (Chinese)
+      return `${part2} (${part1})`;
+    } else {
+      // part1 is English, part2 is Chinese -> English (Chinese)
+      return `${part1} (${part2})`;
+    }
   }
   return name;
 }
@@ -722,7 +732,7 @@ function ExploreContent() {
   // --- News tab states ---
   const [newsArticles, setNewsArticles] = useState<NewsArticle[]>([]);
   const [loadingNews, setLoadingNews] = useState(false);
-  const [newsFilter, setNewsFilter] = useState<'all' | '604now' | 'citynews' | 'globalnews' | 'dailyhive'>('all');
+  const [newsFilter, setNewsFilter] = useState<'all' | 'ctvnews' | 'cbc' | '604now' | 'citynews' | 'globalnews' | 'dailyhive'>('all');
   const [newsSearchQuery, setNewsSearchQuery] = useState('');
   const [newsLastUpdated, setNewsLastUpdated] = useState<Date | null>(null);
 
@@ -3616,17 +3626,17 @@ function ExploreContent() {
 
                     <div className="flex flex-col gap-1.5">
                       {[
-                        { id: '08MH024', englishName: 'Fraser River at Mission', name: 'Fraser River at Mission (菲沙河密遜水文站)', lat: 49.133, lon: -122.300, level: '2.15 m', flow: '1,840 m³/s', status: '正常流量' },
-                        { id: '08MF005', englishName: 'Fraser River at Hope', name: 'Fraser River at Hope (菲沙河希望鎮水文站)', lat: 49.380, lon: -121.450, level: '3.42 m', flow: '1,910 m³/s', status: '水勢穩定' },
-                        { id: '08GA010', englishName: 'Capilano River near North Vancouver', name: 'Capilano River near North Vancouver (卡皮拉諾河水文站)', lat: 49.345, lon: -123.115, level: '1.08 m', flow: '14.5 m³/s', status: '水壩出水正常' },
-                        { id: '08GA079', englishName: 'Seymour River near Seymour Falls', name: 'Seymour River near Seymour Falls (西摩河水文站)', lat: 49.430, lon: -122.960, level: '0.95 m', flow: '8.2 m³/s', status: '綠色安全' },
+                        { id: '08MH024', englishName: 'Fraser River at Mission', chineseName: '菲沙河密遜水文站', lat: 49.133, lon: -122.300, level: '2.15 m', flow: '1,840 m³/s', status: '正常流量' },
+                        { id: '08MF005', englishName: 'Fraser River at Hope', chineseName: '菲沙河希望鎮水文站', lat: 49.380, lon: -121.450, level: '3.42 m', flow: '1,910 m³/s', status: '水勢穩定' },
+                        { id: '08GA010', englishName: 'Capilano River near North Vancouver', chineseName: '卡皮拉諾河水文站', lat: 49.345, lon: -123.115, level: '1.08 m', flow: '14.5 m³/s', status: '水壩出水正常' },
+                        { id: '08GA079', englishName: 'Seymour River near Seymour Falls', chineseName: '西摩河水文站', lat: 49.430, lon: -122.960, level: '0.95 m', flow: '8.2 m³/s', status: '綠色安全' },
                       ].map((hydro) => (
                         <div
                           key={hydro.id}
                           onClick={() => {
                             setSearchTarget({
                               id: `hydro_${hydro.id}`,
-                              title: hydro.name,
+                              title: `${hydro.englishName} (${hydro.chineseName})`,
                               lon: hydro.lon,
                               lat: hydro.lat,
                               category: 'hydrometric_station',
@@ -3635,6 +3645,7 @@ function ExploreContent() {
                               meta: {
                                 facility_type: 'hydrometric_station',
                                 english_name: hydro.englishName,
+                                chinese_name: hydro.chineseName,
                                 id: hydro.id,
                                 level: hydro.level,
                                 flow: hydro.flow,
@@ -3642,11 +3653,14 @@ function ExploreContent() {
                               }
                             });
                           }}
-                          className="bg-[#141824] hover:bg-[#181d2c] border border-[#242b3c] hover:border-teal-500/50 p-2 rounded-lg flex items-center justify-between text-xs cursor-pointer transition-all"
+                          className="bg-[#141824] hover:bg-[#181d2c] border border-[#242b3c] hover:border-teal-500/50 p-2.5 rounded-lg flex items-center justify-between text-xs cursor-pointer transition-all"
                         >
-                          <div className="flex items-center gap-1.5 min-w-0 flex-1 pr-2">
-                            <span className="font-bold text-gray-200 truncate">{hydro.name}</span>
-                            <span className="text-[9.5px] font-mono text-teal-400 bg-teal-950/70 border border-teal-800/40 px-1 rounded shrink-0">{hydro.id}</span>
+                          <div className="flex flex-col min-w-0 flex-1 pr-2">
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              <span className="font-bold text-gray-100 truncate text-[11.5px]">{hydro.englishName}</span>
+                              <span className="text-[9px] font-mono text-teal-400 bg-teal-950/70 border border-teal-800/40 px-1 rounded shrink-0">{hydro.id}</span>
+                            </div>
+                            <span className="text-[10.5px] text-gray-400 font-medium mt-0.5">{hydro.chineseName}</span>
                           </div>
                           <div className="flex items-center gap-2 shrink-0">
                             <span className="text-[10px] font-bold text-teal-300 bg-teal-950/60 border border-teal-800/40 px-1.5 py-0.5 rounded font-mono">
@@ -5164,10 +5178,12 @@ function ExploreContent() {
             <div className="flex items-center gap-1.5 overflow-x-auto custom-scrollbar pb-1.5 pt-0.5 scrollbar-thin">
               {[
                 { id: 'all', label: '全部' },
-                { id: '604now', label: '604 Now' },
+                { id: 'ctvnews', label: 'CTV News' },
+                { id: 'cbc', label: 'CBC News' },
                 { id: 'citynews', label: 'CityNews' },
                 { id: 'globalnews', label: 'Global News' },
                 { id: 'dailyhive', label: 'Daily Hive' },
+                { id: '604now', label: '604 Now' },
               ].map((src) => {
                 const isSelected = newsFilter === src.id;
                 return (
@@ -5239,6 +5255,18 @@ function ExploreContent() {
             ) : (
               filteredNews.map((article) => {
                 const getSourceBadge = () => {
+                  if (article.source_id === 'ctvnews') {
+                    return {
+                      bg: 'bg-blue-950/40 text-blue-300 border-blue-700/50',
+                      name: 'CTV News',
+                    };
+                  }
+                  if (article.source_id === 'cbc') {
+                    return {
+                      bg: 'bg-red-950/40 text-red-300 border-red-700/50',
+                      name: 'CBC News',
+                    };
+                  }
                   if (article.source_id === '604now') {
                     return {
                       bg: 'bg-pink-950/40 text-pink-300 border-pink-700/50',
@@ -6200,15 +6228,15 @@ function ExploreContent() {
       {/* 太平洋西北衛星雲圖 Lightbox Modal */}
       {satelliteModalOpen && (
         <div
-          className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 pt-20 sm:pt-24 pb-6 animate-in fade-in duration-200"
+          className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 md:p-6 pt-16 sm:pt-20 pb-4 animate-in fade-in duration-200"
           onClick={() => setSatelliteModalOpen(false)}
         >
           <div
-            className="relative max-w-4xl w-full bg-[#161922] border border-blue-500/40 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[85vh]"
+            className="relative w-full max-w-5xl 2xl:max-w-6xl bg-[#141822] border border-blue-500/40 rounded-2xl overflow-hidden shadow-2xl flex flex-col h-[90vh] max-h-[92vh]"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="flex items-center justify-between px-4 py-3 bg-[#1e2330] border-b border-gray-700/60 shrink-0">
+            <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 px-4 py-3 bg-[#1a202c] border-b border-gray-700/60 shrink-0">
               <div className="flex items-center gap-2.5 min-w-0">
                 <Satellite className="w-5 h-5 text-blue-400 shrink-0" />
                 <div className="flex flex-col min-w-0">
@@ -6288,7 +6316,7 @@ function ExploreContent() {
             </div>
 
             {/* Modal Body */}
-            <div className="p-3 sm:p-4 flex items-center justify-center bg-black/95 overflow-hidden flex-1 min-h-0 relative">
+            <div className="flex-1 min-h-0 w-full h-full p-2 sm:p-4 flex items-center justify-center bg-black/95 relative overflow-auto">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={
@@ -6299,7 +6327,7 @@ function ExploreContent() {
                     : `https://cdn.star.nesdis.noaa.gov/GOES18/ABI/SECTOR/pnw/09/1200x720.jpg?t=${satelliteRefreshKey}`
                 }
                 alt="太平洋西北氣象衛星雲圖"
-                className="max-w-full max-h-[62vh] object-contain rounded-lg shadow-2xl border border-white/10"
+                className="w-auto h-auto max-w-full max-h-full object-contain rounded-lg shadow-2xl border border-white/10"
                 onError={(e) => {
                   const target = e.currentTarget;
                   if (!target.src.includes('weather.gc.ca')) {

@@ -55,22 +55,43 @@ export function getSystemCategory(source: { id: string; category?: string; name?
 
 // 排程標準週期預設 (Presets)
 export const SCHEDULE_PRESETS: { label: string; cron: string; interval: string }[] = [
-  { label: '30 s', cron: '*/30 * * * * *', interval: '30 s' },
-  { label: '1 min', cron: '* * * * *', interval: '1 min' },
-  { label: '5 mins', cron: '*/5 * * * *', interval: '5 mins' },
-  { label: '10 mins', cron: '*/10 * * * *', interval: '10 mins' },
-  { label: '30 mins', cron: '*/30 * * * *', interval: '30 mins' },
-  { label: '1 hr', cron: '0 * * * *', interval: '1 hr' },
-  { label: '2 hrs', cron: '0 */2 * * *', interval: '2 hrs' },
-  { label: '6 hrs', cron: '0 */6 * * *', interval: '6 hrs' },
-  { label: '12 hrs', cron: '0 */12 * * *', interval: '12 hrs' },
-  { label: '1 day', cron: '0 0 * * *', interval: '1 day' },
-  { label: '1 week', cron: '0 0 * * 0', interval: '1 week' },
-  { label: '1 month', cron: '0 0 1 * *', interval: '1 month' },
-  { label: '3 months', cron: '0 0 1 */3 *', interval: '3 months' },
-  { label: '6 months', cron: '0 0 1 */6 *', interval: '6 months' },
-  { label: '1 year', cron: '0 0 1 1 *', interval: '1 year' },
+  { label: '30 s', cron: '*/30 * * * * *', interval: '每 30 秒' },
+  { label: '1 min', cron: '* * * * *', interval: '每 1 分鐘' },
+  { label: '5 mins', cron: '*/5 * * * *', interval: '每 5 分鐘' },
+  { label: '10 mins', cron: '*/10 * * * *', interval: '每 10 分鐘' },
+  { label: '30 mins', cron: '*/30 * * * *', interval: '每 30 分鐘' },
+  { label: '1 hr', cron: '0 * * * *', interval: '每 1 小時' },
+  { label: '2 hrs', cron: '0 */2 * * *', interval: '每 2 小時' },
+  { label: '6 hrs', cron: '0 */6 * * *', interval: '每 6 小時' },
+  { label: '12 hrs', cron: '0 */12 * * *', interval: '每 12 小時' },
+  { label: '1 day', cron: '0 0 * * *', interval: '每日' },
+  { label: '1 week', cron: '0 0 * * 0', interval: '每週' },
+  { label: '1 month', cron: '0 0 1 * *', interval: '每月' },
+  { label: '3 months', cron: '0 0 1 */3 *', interval: '每季 (3 個月)' },
+  { label: '6 months', cron: '0 0 1 */6 *', interval: '每半年' },
+  { label: '1 year', cron: '0 0 1 1 *', interval: '每年' },
 ];
+
+export function formatScheduleInterval(interval?: string, cron?: string): string {
+  if (!interval) return '未設定';
+  const norm = interval.toLowerCase().trim();
+  if (norm === '6 months' || norm === '6months' || norm.includes('6 month')) return '每半年';
+  if (norm === '3 months' || norm === '3months' || norm.includes('3 month')) return '每季 (3 個月)';
+  if (norm === '1 year' || norm === '1year' || norm.includes('1 year')) return '每年';
+  if (norm === '1 month' || norm === '1month' || norm.includes('1 month')) return '每月';
+  if (norm === '1 week' || norm === '1week' || norm.includes('1 week')) return '每週';
+  if (norm === '1 day' || norm === '1day' || norm.includes('1 day')) return '每日';
+  if (norm === '12 hrs' || norm === '12hrs' || norm.includes('12 hr')) return '每 12 小時';
+  if (norm === '6 hrs' || norm === '6hrs' || norm.includes('6 hr')) return '每 6 小時';
+  if (norm === '2 hrs' || norm === '2hrs' || norm.includes('2 hr')) return '每 2 小時';
+  if (norm === '1 hr' || norm === '1hr' || norm.includes('1 hr')) return '每 1 小時';
+  if (norm === '30 mins' || norm === '30mins' || norm.includes('30 min')) return '每 30 分鐘';
+  if (norm === '10 mins' || norm === '10mins' || norm.includes('10 min')) return '每 10 分鐘';
+  if (norm === '5 mins' || norm === '5mins' || norm.includes('5 min')) return '每 5 分鐘';
+  if (norm === '1 min' || norm === '1min' || norm.includes('1 min')) return '每 1 分鐘';
+  if (norm === '30 s' || norm === '30s' || norm.includes('30 s')) return '每 30 秒';
+  return interval;
+}
 
 export function parseSourcePreset(cron: string, interval: string): string {
   const norm = (interval || '').toLowerCase().trim();
@@ -310,15 +331,37 @@ export default function AdminPage() {
       setIsLoading(true);
       
       const res = await adminApiFetch<{ sources: DataSource[]; logs: AuditLog[] }>('/api/admin/sources');
+      let loadedSources: DataSource[] = [];
       if (res.ok && res.data && Array.isArray(res.data.sources) && res.data.sources.length > 0) {
-        setSources(res.data.sources);
+        loadedSources = res.data.sources;
         setLogs(res.data.logs || []);
         setBackendConnected(true);
       } else {
-        // 終極保底：若後端暫未回應，立即採用內建 45 項完整圖資字典
-        setSources(DEFAULT_ADMIN_SOURCES as DataSource[]);
+        loadedSources = DEFAULT_ADMIN_SOURCES as DataSource[];
         setBackendConnected(false);
       }
+
+      // 合併本機持久化排程修改快取，杜絕重整或容器部署時被舊版覆蓋
+      if (typeof window !== 'undefined') {
+        try {
+          const raw = localStorage.getItem('gods_eye_schedule_overrides');
+          if (raw) {
+            const overrides = JSON.parse(raw);
+            loadedSources = loadedSources.map(s => {
+              if (overrides[s.id]) {
+                return {
+                  ...s,
+                  cron_expr: overrides[s.id].cron_expr || s.cron_expr,
+                  schedule_interval: overrides[s.id].schedule_interval || s.schedule_interval,
+                  enabled: overrides[s.id].enabled !== undefined ? overrides[s.id].enabled : s.enabled
+                };
+              }
+              return s;
+            });
+          }
+        } catch (_) {}
+      }
+      setSources(loadedSources);
 
       // 查詢 GitHub Token 配置狀態
       const ghRes = await adminApiFetch<{ configured: boolean; repo: string; token_masked: string }>('/api/admin/github-status');
@@ -459,6 +502,19 @@ export default function AdminPage() {
         })
       });
       if (res.ok && res.data) {
+        // 即刻本機持久化排程修改
+        if (typeof window !== 'undefined') {
+          try {
+            const raw = localStorage.getItem('gods_eye_schedule_overrides');
+            const map = raw ? JSON.parse(raw) : {};
+            map[source.id] = {
+              cron_expr: editCron || source.cron_expr,
+              schedule_interval: editInterval || source.schedule_interval,
+              enabled: source.enabled !== false
+            };
+            localStorage.setItem('gods_eye_schedule_overrides', JSON.stringify(map));
+          } catch (_) {}
+        }
         setSuccessMsg(`排程已儲存！${res.data.detail || res.data.message || ''}`);
         setTimeout(() => setSuccessMsg(null), 6000);
         setEditingId(null);
@@ -975,9 +1031,9 @@ export default function AdminPage() {
                                         onChange={(e) => handleSchedulePresetSelect(e.target.value)}
                                         className="w-full bg-[#181d28] border border-[#343e54] text-white text-[11px] px-1.5 py-1 rounded outline-none focus:border-indigo-400 cursor-pointer"
                                       >
-                                        <optgroup label="標準頻率 (Presets)">
+                                        <optgroup label="常用週期預設">
                                           {SCHEDULE_PRESETS.map((p) => (
-                                            <option key={p.label} value={p.label}>{p.label}</option>
+                                            <option key={p.label} value={p.label}>{p.interval} ({p.label})</option>
                                           ))}
                                         </optgroup>
                                         <optgroup label="自訂排程 (Custom)">
@@ -1122,7 +1178,7 @@ export default function AdminPage() {
                               <div className="flex flex-col">
                                 <div className="flex items-center gap-1.5">
                                   <span className="font-semibold text-gray-200">
-                                    {source.schedule_interval}
+                                    {formatScheduleInterval(source.schedule_interval, source.cron_expr)}
                                   </span>
                                   {source.enabled === false && (
                                     <span className="text-[10px] px-1 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">

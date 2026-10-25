@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { Settings, X, Clock, Ruler, Thermometer, Check, MapPin, Navigation, Search, AlertCircle, RefreshCw, Globe, Newspaper, ChevronDown } from 'lucide-react';
 import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
@@ -696,12 +697,29 @@ export default function SettingsModal() {
       </div>
 
 
-      {/* Footer Status Indicator */}
-      <div className="mt-4 pt-2.5 border-t border-[#262b38] flex items-center justify-between text-[10.5px] text-gray-400">
+      {/* Footer Status Indicator & Legal Links */}
+      <div className="mt-4 pt-2.5 border-t border-[#262b38] flex flex-col sm:flex-row items-center justify-between gap-2 text-[10.5px] text-gray-400">
         <span className="flex items-center gap-1 text-emerald-400/90 font-medium">
           <Check className="w-3 h-3" />
           <span>設定即時自動生效</span>
         </span>
+        <div className="flex items-center gap-2.5 text-gray-400">
+          <Link
+            href="/privacy"
+            target="_blank"
+            className="hover:text-blue-400 transition-colors hover:underline"
+          >
+            隱私權政策 (Privacy)
+          </Link>
+          <span>·</span>
+          <Link
+            href="/terms"
+            target="_blank"
+            className="hover:text-amber-400 transition-colors hover:underline"
+          >
+            服務條款 (Terms)
+          </Link>
+        </div>
         <button
           onClick={() => setSettingsModalOpen(false)}
           className="text-gray-400 hover:text-white font-medium hover:underline"
