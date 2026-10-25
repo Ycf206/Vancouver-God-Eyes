@@ -2,7 +2,7 @@ name: Update 學校及教育設施 (每週日 04:00)
 
 on:
   schedule:
-    - cron: '0 4 * * 0'
+    - cron: '0 0 1 */6 *'
   workflow_dispatch:
 
 concurrency:
