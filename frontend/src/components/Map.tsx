@@ -16,7 +16,7 @@ import {
   Navigation, ExternalLink, Clock, Bike, Car, Info, 
   ChevronDown, ChevronUp, SlidersHorizontal, Fuel, Zap, Wifi, Waves, Play, Pause, CloudRain,
   RotateCcw, RotateCw, MapPin, Crosshair, Activity, Ban, Cone, Lightbulb, Ship,
-  Camera, Gauge, Footprints, ArrowRight, Mail, AlertCircle, Radio, Anchor
+  Camera, Gauge, Footprints, ArrowRight, Mail, AlertCircle, Radio, Anchor, CreditCard
 } from 'lucide-react';
 
 // Fix Next.js App Router Web Worker crash
@@ -10016,7 +10016,7 @@ export default function AppMap() {
                         <div className="flex flex-col gap-1">
                           <span className="text-gray-500 font-medium text-[10px]">服務項目 (Services)</span>
                           <div className="flex flex-wrap gap-1">
-                            {services.map((srv, sIdx) => (
+                            {services.map((srv: any, sIdx: number) => (
                               <span key={sIdx} className="text-[10px] bg-white border border-gray-200 px-1.5 py-0.5 rounded text-gray-700">
                                 {srv.trim()}
                               </span>

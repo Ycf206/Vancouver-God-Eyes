@@ -33,9 +33,9 @@ import { getApiUrl } from '@/utils/api';
 import { DEFAULT_ADMIN_SOURCES } from '@/data/defaultAdminSources';
 
 // 系統 4 大標準分頁與按鈕類別 (對應主導航與探索面板)
-export const SYSTEM_CATEGORIES = ['道路', '天氣', '生活', '公共事業'] as const;
+const SYSTEM_CATEGORIES = ['道路', '天氣', '生活', '公共事業'] as const;
 
-export function getSystemCategory(source: { id: string; category?: string; name?: string }): '道路' | '天氣' | '生活' | '公共事業' {
+function getSystemCategory(source: { id: string; category?: string; name?: string }): '道路' | '天氣' | '生活' | '公共事業' {
   const roadIds = new Set([
     'traffic_conditions', 'traffic_cameras', 'translink_realtime', 'snow_removal_routes',
     'fuel_prices', 'border_wait_times', 'flight_schedules', 'maritime_shipping',
@@ -58,7 +58,7 @@ export function getSystemCategory(source: { id: string; category?: string; name?
 
 
 // 排程標準週期預設 (Presets)
-export const SCHEDULE_PRESETS: { label: string; cron: string; interval: string }[] = [
+const SCHEDULE_PRESETS: { label: string; cron: string; interval: string }[] = [
   { label: '30 s', cron: '*/30 * * * * *', interval: '每 30 秒' },
   { label: '1 min', cron: '* * * * *', interval: '每 1 分鐘' },
   { label: '5 mins', cron: '*/5 * * * *', interval: '每 5 分鐘' },
@@ -76,7 +76,7 @@ export const SCHEDULE_PRESETS: { label: string; cron: string; interval: string }
   { label: '1 year', cron: '0 0 1 1 *', interval: '每年' },
 ];
 
-export function formatScheduleInterval(interval?: string, cron?: string): string {
+function formatScheduleInterval(interval?: string, cron?: string): string {
   if (!interval) return '未設定';
   const norm = interval.toLowerCase().trim();
   if (norm === '6 months' || norm === '6months' || norm.includes('6 month')) return '每半年';
@@ -97,7 +97,7 @@ export function formatScheduleInterval(interval?: string, cron?: string): string
   return interval;
 }
 
-export function parseSourcePreset(cron: string, interval: string): string {
+function parseSourcePreset(cron: string, interval: string): string {
   const norm = (interval || '').toLowerCase().trim();
   const direct = SCHEDULE_PRESETS.find(p => p.cron === cron || p.label.toLowerCase() === norm || p.interval.toLowerCase() === norm);
   if (direct) return direct.label;

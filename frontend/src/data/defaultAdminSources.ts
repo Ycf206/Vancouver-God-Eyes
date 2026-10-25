@@ -1,5 +1,5 @@
 export interface SourceLink {
-  type: 'api' | 'web' | 'download' | 'geojson';
+  type?: 'api' | 'web' | 'download' | 'geojson';
   label: string;
   url: string;
 }
@@ -16,7 +16,8 @@ export interface AdminSourceItem {
   status: 'ok' | 'warning' | 'error';
   data_pipeline_notes: string;
   runner: 'github_actions' | 'oci';
-  workflow_file?: string;
+  enabled?: boolean;
+  workflow_file?: string | null;
   category: '道路' | '天氣' | '生活' | '公共事業';
   source_links?: SourceLink[];
   source_url?: string;
