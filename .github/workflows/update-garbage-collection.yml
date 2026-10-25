@@ -1,8 +1,8 @@
-name: Update 廢物回收分區 (每週一 03:00)
+name: Update 廢物回收分區 (每年)
 
 on:
   schedule:
-    - cron: '0 3 * * 1'
+    - cron: '0 0 1 1 *'
   workflow_dispatch:
 
 concurrency:
