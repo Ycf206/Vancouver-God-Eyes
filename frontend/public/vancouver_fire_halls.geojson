@@ -1,0 +1,685 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "fire_No 5",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0421,
+          49.2154
+        ]
+      },
+      "properties": {
+        "id": "fire_No 5",
+        "facility_type": "fire_halls",
+        "name": "No 5",
+        "address": "3090 Rosemont Drive",
+        "local_area": "Killarney",
+        "geo_local_area": "Killarney",
+        "geom": {
+          "type": "Feature",
+          "geometry": {
+            "coordinates": [
+              -123.0421,
+              49.2154
+            ],
+            "type": "Point"
+          },
+          "properties": {}
+        },
+        "geo_point_2d": {
+          "lon": -123.0421,
+          "lat": 49.2154
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fire_No 14",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0464,
+          49.2764
+        ]
+      },
+      "properties": {
+        "id": "fire_No 14",
+        "facility_type": "fire_halls",
+        "name": "No 14",
+        "address": "2804 Venables St",
+        "local_area": "Hastings-Sunrise",
+        "geo_local_area": "Hastings-Sunrise",
+        "geom": {
+          "type": "Feature",
+          "geometry": {
+            "coordinates": [
+              -123.0464,
+              49.2764
+            ],
+            "type": "Point"
+          },
+          "properties": {}
+        },
+        "geo_point_2d": {
+          "lon": -123.0464,
+          "lat": 49.2764
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fire_No 15",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0412,
+          49.2509
+        ]
+      },
+      "properties": {
+        "id": "fire_No 15",
+        "facility_type": "fire_halls",
+        "name": "No 15",
+        "address": "3003 E 22nd Av",
+        "local_area": "Renfrew-Collingwood",
+        "geo_local_area": "Renfrew-Collingwood",
+        "geom": {
+          "type": "Feature",
+          "geometry": {
+            "coordinates": [
+              -123.0412,
+              49.2509
+            ],
+            "type": "Point"
+          },
+          "properties": {}
+        },
+        "geo_point_2d": {
+          "lon": -123.0412,
+          "lat": 49.2509
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fire_No 17",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0767,
+          49.2198
+        ]
+      },
+      "properties": {
+        "id": "fire_No 17",
+        "facility_type": "fire_halls",
+        "name": "No 17",
+        "address": "7070 Knight St",
+        "local_area": "Victoria-Fraserview",
+        "geo_local_area": "Victoria-Fraserview",
+        "geom": {
+          "type": "Feature",
+          "geometry": {
+            "coordinates": [
+              -123.0767,
+              49.2198
+            ],
+            "type": "Point"
+          },
+          "properties": {}
+        },
+        "geo_point_2d": {
+          "lon": -123.0767,
+          "lat": 49.2198
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fire_No 20",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0651,
+          49.2358
+        ]
+      },
+      "properties": {
+        "id": "fire_No 20",
+        "facility_type": "fire_halls",
+        "name": "No 20",
+        "address": "5402 Victoria Drive",
+        "local_area": "Kensington-Cedar Cottage",
+        "geo_local_area": "Kensington-Cedar Cottage",
+        "geom": {
+          "type": "Feature",
+          "geometry": {
+            "coordinates": [
+              -123.0651,
+              49.2358
+            ],
+            "type": "Point"
+          },
+          "properties": {}
+        },
+        "geo_point_2d": {
+          "lon": -123.0651,
+          "lat": 49.2358
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fire_No 21",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1733,
+          49.2373
+        ]
+      },
+      "properties": {
+        "id": "fire_No 21",
+        "facility_type": "fire_halls",
+        "name": "No 21",
+        "address": "5425 Carnarvon St",
+        "local_area": "Dunbar-Southlands",
+        "geo_local_area": "Dunbar-Southlands",
+        "geom": {
+          "type": "Feature",
+          "geometry": {
+            "coordinates": [
+              -123.1733,
+              49.2373
+            ],
+            "type": "Point"
+          },
+          "properties": {}
+        },
+        "geo_point_2d": {
+          "lon": -123.1733,
+          "lat": 49.2373
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fire_No 22",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1298,
+          49.2174
+        ]
+      },
+      "properties": {
+        "id": "fire_No 22",
+        "facility_type": "fire_halls",
+        "name": "No 22",
+        "address": "1005 W 59th Av",
+        "local_area": "Marpole",
+        "geo_local_area": "Marpole",
+        "geom": {
+          "type": "Feature",
+          "geometry": {
+            "coordinates": [
+              -123.1298,
+              49.2174
+            ],
+            "type": "Point"
+          },
+          "properties": {}
+        },
+        "geo_point_2d": {
+          "lon": -123.1298,
+          "lat": 49.2174
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fire_No 2",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1,
+          49.2834
+        ]
+      },
+      "properties": {
+        "id": "fire_No 2",
+        "facility_type": "fire_halls",
+        "name": "No 2",
+        "address": "199 Main St",
+        "local_area": "Downtown",
+        "geo_local_area": "Downtown",
+        "geom": {
+          "type": "Feature",
+          "geometry": {
+            "coordinates": [
+              -123.1,
+              49.2834
+            ],
+            "type": "Point"
+          },
+          "properties": {}
+        },
+        "geo_point_2d": {
+          "lon": -123.1,
+          "lat": 49.2834
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fire_No 3",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1034,
+          49.26
+        ]
+      },
+      "properties": {
+        "id": "fire_No 3",
+        "facility_type": "fire_halls",
+        "name": "No 3",
+        "address": "2801 Quebec St",
+        "local_area": "Mount Pleasant",
+        "geo_local_area": "Mount Pleasant",
+        "geom": {
+          "type": "Feature",
+          "geometry": {
+            "coordinates": [
+              -123.1034,
+              49.26
+            ],
+            "type": "Point"
+          },
+          "properties": {}
+        },
+        "geo_point_2d": {
+          "lon": -123.1034,
+          "lat": 49.26
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fire_No 6",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1348,
+          49.2865
+        ]
+      },
+      "properties": {
+        "id": "fire_No 6",
+        "facility_type": "fire_halls",
+        "name": "No 6",
+        "address": "1001 Nicola St",
+        "local_area": "West End",
+        "geo_local_area": "West End",
+        "geom": {
+          "type": "Feature",
+          "geometry": {
+            "coordinates": [
+              -123.1348,
+              49.2865
+            ],
+            "type": "Point"
+          },
+          "properties": {}
+        },
+        "geo_point_2d": {
+          "lon": -123.1348,
+          "lat": 49.2865
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fire_No 7",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1259,
+          49.2835
+        ]
+      },
+      "properties": {
+        "id": "fire_No 7",
+        "facility_type": "fire_halls",
+        "name": "No 7",
+        "address": "1090 Haro St",
+        "local_area": "West End",
+        "geo_local_area": "West End",
+        "geom": {
+          "type": "Feature",
+          "geometry": {
+            "coordinates": [
+              -123.1259,
+              49.2835
+            ],
+            "type": "Point"
+          },
+          "properties": {}
+        },
+        "geo_point_2d": {
+          "lon": -123.1259,
+          "lat": 49.2835
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fire_No 9",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0662,
+          49.2681
+        ]
+      },
+      "properties": {
+        "id": "fire_No 9",
+        "facility_type": "fire_halls",
+        "name": "No 9",
+        "address": "1805 Victoria Drive",
+        "local_area": "Grandview-Woodland",
+        "geo_local_area": "Grandview-Woodland",
+        "geom": {
+          "type": "Feature",
+          "geometry": {
+            "coordinates": [
+              -123.0662,
+              49.2681
+            ],
+            "type": "Point"
+          },
+          "properties": {}
+        },
+        "geo_point_2d": {
+          "lon": -123.0662,
+          "lat": 49.2681
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fire_No 13",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0881,
+          49.2489
+        ]
+      },
+      "properties": {
+        "id": "fire_No 13",
+        "facility_type": "fire_halls",
+        "name": "No 13",
+        "address": "4013 Prince Albert ST",
+        "local_area": "Kensington-Cedar Cottage",
+        "geo_local_area": "Kensington-Cedar Cottage",
+        "geom": {
+          "type": "Feature",
+          "geometry": {
+            "coordinates": [
+              -123.0881,
+              49.2489
+            ],
+            "type": "Point"
+          },
+          "properties": {}
+        },
+        "geo_point_2d": {
+          "lon": -123.0881,
+          "lat": 49.2489
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fire_No 18",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1366,
+          49.2373
+        ]
+      },
+      "properties": {
+        "id": "fire_No 18",
+        "facility_type": "fire_halls",
+        "name": "No 18",
+        "address": "1375 W 38th Av",
+        "local_area": "Shaughnessy",
+        "geo_local_area": "Shaughnessy",
+        "geom": {
+          "type": "Feature",
+          "geometry": {
+            "coordinates": [
+              -123.1366,
+              49.2373
+            ],
+            "type": "Point"
+          },
+          "properties": {}
+        },
+        "geo_point_2d": {
+          "lon": -123.1366,
+          "lat": 49.2373
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fire_No 10",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.2382,
+          49.258
+        ]
+      },
+      "properties": {
+        "id": "fire_No 10",
+        "facility_type": "fire_halls",
+        "name": "No 10",
+        "address": "2992 Wesbrook Mall",
+        "local_area": "Vancouver",
+        "geo_local_area": null,
+        "geom": {
+          "type": "Feature",
+          "geometry": {
+            "coordinates": [
+              -123.2382,
+              49.258
+            ],
+            "type": "Point"
+          },
+          "properties": {}
+        },
+        "geo_point_2d": {
+          "lon": -123.2382,
+          "lat": 49.258
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fire_No 4",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1376,
+          49.2629
+        ]
+      },
+      "properties": {
+        "id": "fire_No 4",
+        "facility_type": "fire_halls",
+        "name": "No 4",
+        "address": "1475 W 10th Av",
+        "local_area": "Fairview",
+        "geo_local_area": "Fairview",
+        "geom": {
+          "type": "Feature",
+          "geometry": {
+            "coordinates": [
+              -123.1376,
+              49.2629
+            ],
+            "type": "Point"
+          },
+          "properties": {}
+        },
+        "geo_point_2d": {
+          "lon": -123.1376,
+          "lat": 49.2629
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fire_No 8",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1176,
+          49.2781
+        ]
+      },
+      "properties": {
+        "id": "fire_No 8",
+        "facility_type": "fire_halls",
+        "name": "No 8",
+        "address": "895 Hamilton St",
+        "local_area": "Downtown",
+        "geo_local_area": "Downtown",
+        "geom": {
+          "type": "Feature",
+          "geometry": {
+            "coordinates": [
+              -123.1176,
+              49.2781
+            ],
+            "type": "Point"
+          },
+          "properties": {}
+        },
+        "geo_point_2d": {
+          "lon": -123.1176,
+          "lat": 49.2781
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fire_No 12",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1736,
+          49.2648
+        ]
+      },
+      "properties": {
+        "id": "fire_No 12",
+        "facility_type": "fire_halls",
+        "name": "No 12",
+        "address": "2460 Balaclava St",
+        "local_area": "Kitsilano",
+        "geo_local_area": "Kitsilano",
+        "geom": {
+          "type": "Feature",
+          "geometry": {
+            "coordinates": [
+              -123.1736,
+              49.2648
+            ],
+            "type": "Point"
+          },
+          "properties": {}
+        },
+        "geo_point_2d": {
+          "lon": -123.1736,
+          "lat": 49.2648
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fire_No 19",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.2059,
+          49.2617
+        ]
+      },
+      "properties": {
+        "id": "fire_No 19",
+        "facility_type": "fire_halls",
+        "name": "No 19",
+        "address": "4396 W 12th Av",
+        "local_area": "West Point Grey",
+        "geo_local_area": "West Point Grey",
+        "geom": {
+          "type": "Feature",
+          "geometry": {
+            "coordinates": [
+              -123.2059,
+              49.2617
+            ],
+            "type": "Point"
+          },
+          "properties": {}
+        },
+        "geo_point_2d": {
+          "lon": -123.2059,
+          "lat": 49.2617
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fire_No 1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.0896,
+          49.2758
+        ]
+      },
+      "properties": {
+        "id": "fire_No 1",
+        "facility_type": "fire_halls",
+        "name": "No 1",
+        "address": "900 Heatley Av",
+        "local_area": "Strathcona",
+        "geo_local_area": "Strathcona",
+        "geom": {
+          "type": "Feature",
+          "geometry": {
+            "coordinates": [
+              -123.0896,
+              49.2758
+            ],
+            "type": "Point"
+          },
+          "properties": {}
+        },
+        "geo_point_2d": {
+          "lon": -123.0896,
+          "lat": 49.2758
+        }
+      }
+    }
+  ]
+}

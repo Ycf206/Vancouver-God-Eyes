@@ -2668,7 +2668,7 @@ export default function AppMap() {
       style.sources['impark'] = { type: 'geojson', data: '/vancouver_impark.geojson' };
     }
     if (layers.accessibleParking) {
-      style.sources['accessible-parking'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/accessible_parking` };
+      style.sources['accessible-parking'] = { type: 'geojson', data: '/vancouver_accessible_parking.geojson' };
     }
     if (layers.motorcycleParking) {
       const mpParams = new URLSearchParams();
@@ -2697,17 +2697,17 @@ export default function AppMap() {
       style.sources['bikeways'] = { type: 'geojson', data: '/vancouver_bikeways.geojson' };
     }
     if (layers.fireHalls) {
-      style.sources['fire-halls'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/fire_halls` };
+      style.sources['fire-halls'] = { type: 'geojson', data: '/vancouver_fire_halls.geojson' };
     }
     if (layers.canadaPost) {
-      style.sources['canada-post'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/canada_post` };
+      style.sources['canada-post'] = { type: 'geojson', data: '/vancouver_canada_post.geojson' };
     }
     if (layers.atm) {
-      style.sources['atm'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/atm` };
+      style.sources['atm'] = { type: 'geojson', data: '/vancouver_atm.geojson' };
     }
 
     if (layers.communityCentres) {
-      style.sources['community-centres'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/community_centres` };
+      style.sources['community-centres'] = { type: 'geojson', data: '/vancouver_community_centres.geojson' };
     }
     if (layers.trafficCameras) {
       style.sources['traffic-cameras'] = { type: 'geojson', data: '/vancouver_traffic_cameras.geojson' };
