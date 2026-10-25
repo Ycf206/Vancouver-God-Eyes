@@ -1,8 +1,8 @@
-name: Update 全路網限速路段 (每年)
+name: Update 全路網限速路段 (每半年)
 
 on:
   schedule:
-    - cron: '0 0 1 1 *'
+    - cron: '0 0 1 */6 *'
   workflow_dispatch:
 
 concurrency:
