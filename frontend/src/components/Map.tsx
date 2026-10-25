@@ -1041,6 +1041,7 @@ export default function AppMap() {
         else if (type === 'police' && !layers.police) facilityClosed = true;
         else if (type === 'disaster_hubs' && !layers.disasterHubs) facilityClosed = true;
         else if (type === 'community_centres' && !layers.communityCentres) facilityClosed = true;
+        else if (type === 'canada_post' && !layers.canadaPost) facilityClosed = true;
         else if (type === 'hospitals' && !layers.hospitals) facilityClosed = true;
         else if (type === 'parks' && !layers.parks) facilityClosed = true;
         else if (type === 'parks_facilities' && !layers.parksFacilities) facilityClosed = true;
@@ -2697,6 +2698,21 @@ export default function AppMap() {
     if (layers.fireHalls) {
       style.sources['fire-halls'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/fire_halls` };
     }
+    if (layers.canadaPost) {
+      style.sources['canada-post'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/canada_post` };
+      style.layers.push({
+        id: 'canada-post-layer',
+        type: 'circle',
+        source: 'canada-post',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 3, 14, 6, 17, 9],
+          'circle-color': '#E31837',
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+    }
+
     if (layers.communityCentres) {
       style.sources['community-centres'] = { type: 'geojson', data: `${apiUrl}/api/geojson/road/community_centres` };
     }
@@ -5599,6 +5615,7 @@ export default function AppMap() {
     layers.police,
     layers.disasterHubs,
     layers.communityCentres,
+    layers.canadaPost,
     layers.hospitals,
     layers.parks,
     layers.parksFacilities,
@@ -6212,6 +6229,7 @@ export default function AppMap() {
             layerId.startsWith('police') ||
             layerId.startsWith('disaster-hubs') ||
             layerId.startsWith('community-centres') ||
+            layerId.startsWith('canada-post') ||
             layerId.startsWith('hospitals') ||
             layerId.startsWith('parks') ||
             layerId.startsWith('community-gardens') ||
@@ -8335,6 +8353,7 @@ export default function AppMap() {
                   if (t === 'homeless_shelters') return { label: '無家者庇護所', bg: 'bg-rose-600 text-white' };
                   if (t === 'aed') return { label: 'AED 去顫器', bg: 'bg-red-600 text-white' };
                   if (t === 'community_centres') return { label: '社區中心', bg: 'bg-violet-600 text-white' };
+                  if (t === 'canada_post') return { label: 'Canada Post', bg: 'bg-[#E31837] text-white' };
                   if (t === 'public_art') return { label: '公共藝術', bg: 'bg-fuchsia-600 text-white' };
                   if (t === 'police') return { label: '警察', bg: 'bg-blue-600 text-white' };
                   if (t === 'fire_halls') return { label: '消防', bg: 'bg-rose-600 text-white' };
@@ -8578,7 +8597,7 @@ export default function AppMap() {
                         <h3 className="font-bold text-gray-900 text-sm leading-snug break-words">
                           {popupTitle}
                         </h3>
-                        {(selectedFacility.local_area || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'motorcycle_parking' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'impark' || selectedFacility.facility_type === 'ski_resort' ||
+                        {(selectedFacility.local_area || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'motorcycle_parking' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'canada_post' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'impark' || selectedFacility.facility_type === 'ski_resort' ||
                   selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || selectedFacility.facility_type === 'car_sharing') && (
                           <span className="text-[11px] text-gray-400 block leading-snug break-words">
                             {(() => {
@@ -8630,6 +8649,7 @@ export default function AppMap() {
                               if (selectedFacility.facility_type === 'zoning_districts') return 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'community_gardens') return 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'community_centres') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
+                              if (selectedFacility.facility_type === 'canada_post') return formatTitleCase(selectedFacility.properties?.postaladdress || selectedFacility.local_area || 'Vancouver, BC');
                               if (selectedFacility.facility_type === 'museums') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'garbage_collection') return selectedFacility.properties?.zone_code || selectedFacility.local_area || '';
                               if (selectedFacility.facility_type === 'public_trees') return selectedFacility.properties?.address || `${selectedFacility.properties?.civic_number || ''} ${selectedFacility.properties?.std_street || ''}`.trim() || selectedFacility.local_area || 'Vancouver, BC';
@@ -9878,6 +9898,97 @@ export default function AppMap() {
                   </div>
                 </div>
               )}
+
+              {/* Canada Post (加拿大郵政分店據點) Details */}
+              {selectedFacility.facility_type === 'canada_post' && (() => {
+                const props = selectedFacility.properties || {};
+                const facilityTypeEn = props.facilitytypeen || 'Retail Postal Outlet';
+                const openingDate = props.openingdate;
+                const formattedDate = openingDate ? new Date(Number(openingDate)).toLocaleDateString('zh-TW', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '-') : null;
+
+                const sched = props.schedule || {};
+                const days = [
+                  { key: 'mon', label: '週一 (Mon)', hours: sched.mon },
+                  { key: 'tue', label: '週二 (Tue)', hours: sched.tue },
+                  { key: 'wed', label: '週三 (Wed)', hours: sched.wed },
+                  { key: 'thu', label: '週四 (Thu)', hours: sched.thu },
+                  { key: 'fri', label: '週五 (Fri)', hours: sched.fri },
+                  { key: 'sat', label: '週六 (Sat)', hours: sched.sat },
+                  { key: 'sun', label: '週日 (Sun)', hours: sched.sun }
+                ];
+                const curDow = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][new Date().getDay()];
+                const curDayObj = days.find(d => d.key === curDow) || days[0];
+
+                return (
+                  <div className="flex flex-col gap-2.5 text-xs">
+                    {/* 4.5 標題下方紅色區塊 */}
+                    <div className="bg-[#E31837]/10 p-2.5 rounded-lg border border-[#E31837]/30 text-[#E31837] font-medium text-[11px] leading-relaxed">
+                      自取包裹請攜帶政府簽發之有效相片證件及提領通知單，以便現場快速核對核發。
+                    </div>
+
+                    {/* 4.6 灰色資料區塊 */}
+                    <div className="bg-gray-50/90 p-2.5 rounded-lg border border-gray-200/70 flex flex-col gap-2 text-[11px]">
+                      {facilityTypeEn && (
+                        <div className="flex items-center justify-between text-gray-700">
+                          <span className="text-gray-500 font-medium">設施種類</span>
+                          <span className="font-semibold text-gray-900">{facilityTypeEn}</span>
+                        </div>
+                      )}
+
+                      <div className="w-full h-px bg-gray-200/80"></div>
+
+                      {/* 營業時間 */}
+                      <div className="flex flex-col gap-1.5">
+                        <div className="flex items-center justify-between text-gray-700">
+                          <span className="text-gray-500 font-medium">營業時間</span>
+                          <span className="font-mono font-bold text-gray-900">
+                            {curDayObj.hours || '休息中 / 未營業'}
+                          </span>
+                        </div>
+
+                        {/* 週一至週日下拉展開 */}
+                        <details className="group/sched text-[10.5px]">
+                          <summary className="text-gray-500 hover:text-gray-700 cursor-pointer flex items-center justify-between py-0.5 select-none">
+                            <span className="text-[10px]">查看每週各日時間表</span>
+                            <span className="text-[10px] text-gray-400 font-mono group-open/sched:rotate-180 transition-transform">▼</span>
+                          </summary>
+                          <div className="mt-1 pt-1 border-t border-gray-100 flex flex-col gap-1">
+                            {days.map(d => (
+                              <div key={d.key} className={`flex justify-between items-center py-0.5 px-1 rounded ${d.key === curDow ? 'bg-red-50 text-red-900 font-bold' : 'text-gray-600'}`}>
+                                <span>{d.label}</span>
+                                <span className="font-mono">{d.hours || '未開放 / 休息'}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </details>
+                      </div>
+
+                      {formattedDate && (
+                        <>
+                          <div className="w-full h-px bg-gray-200/80"></div>
+                          <div className="flex items-center justify-between text-gray-700">
+                            <span className="text-gray-500 font-medium">營運日期</span>
+                            <span className="font-mono text-gray-900 font-semibold">{formattedDate}</span>
+                          </div>
+                        </>
+                      )}
+                    </div>
+
+                    {/* 4.7 查看 Canada Post 其他分店 */}
+                    <div className="pt-0.5">
+                      <a
+                        href="https://www.canadapost-postescanada.ca/cpc/en/tools/find-a-post-office.page?location=vancouver"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full py-2 px-3 rounded-lg bg-[#E31837] hover:bg-[#c4142e] text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" />
+                        <span>查看 Canada Post 其他分店</span>
+                      </a>
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* Community Centres Details */}
               {selectedFacility.facility_type === 'community_centres' && (() => {
@@ -11798,87 +11909,7 @@ export default function AppMap() {
                 );
               })()}
 
-              {/* Coastal Tide Stations (大溫海岸潮汐與即時水位站) Details */}
-              {selectedFacility.facility_type === 'tide_stations' && (() => {
-                const props = selectedFacility.properties || {};
-                const currentLevel = props.current_water_level_m ?? selectedFacility.name;
-                const state = props.state || '潮位觀測中';
-                const stateTrend = props.state_trend;
-                const isRising = stateTrend === 'rising';
-                const isFalling = stateTrend === 'falling';
-                const nextHighTime = props.next_high_time;
-                const nextHighVal = props.next_high_val;
-                const nextLowTime = props.next_low_time;
-                const nextLowVal = props.next_low_val;
-
-                const formatTideTime = (isoString?: string) => {
-                  if (!isoString) return '--';
-                  try {
-                    const d = new Date(isoString);
-                    if (isNaN(d.getTime())) return isoString;
-                    const effectiveTz = timeZone === 'auto' ? undefined : (timeZone === 'America/Vancouver' ? 'America/Vancouver' : timeZone);
-                    return d.toLocaleTimeString('zh-TW', {
-                      hour12: false,
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      ...(effectiveTz ? { timeZone: effectiveTz } : {})
-                    });
-                  } catch {
-                    return isoString.slice(11, 16);
-                  }
-                };
-
-                return (
-                  <div className="flex flex-col gap-2 text-xs">
-                    {/* 1.2 藍區塊:左上方為“地理資料”, 右方是淺藍底白字"潮汐水位", 下半部保留說明文字 */}
-                    <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex items-center gap-1.5 text-[11px] text-sky-950 font-medium leading-snug">
-                      <span className="text-base text-sky-600 font-bold shrink-0">🌊</span>
-                      <span>海岸潮汐水位</span>
-                    </div>
-
-                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-2 text-[11px]">
-                      <div className="flex items-center justify-between">
-                        <span className="text-gray-500">即時海面潮位</span>
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-xl font-black text-blue-600 font-mono">
-                            {currentLevel} <span className="text-xs font-normal text-gray-500">m</span>
-                          </span>
-                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded font-mono ${
-                            isRising ? 'bg-emerald-100 text-emerald-800' : isFalling ? 'bg-rose-100 text-rose-800' : 'bg-gray-200 text-gray-700'
-                          }`}>
-                            {state} {isRising ? '↗' : isFalling ? '↘' : '→'}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-1.5 pt-1.5 border-t border-gray-200/60">
-                        <div className="bg-white p-2 rounded border border-gray-200 flex flex-col">
-                          <span className="text-[10px] text-gray-500">下次滿潮</span>
-                          <span className="text-sm font-bold text-emerald-700 font-mono mt-0.5">
-                            {nextHighVal ? `${nextHighVal}m` : '--'}
-                          </span>
-                          {nextHighTime && (
-                            <span className="text-[9.5px] text-gray-500 font-mono mt-0.5">{formatTideTime(nextHighTime)}</span>
-                          )}
-                        </div>
-                        <div className="bg-white p-2 rounded border border-gray-200 flex flex-col">
-                          <span className="text-[10px] text-gray-500">下次乾潮</span>
-                          <span className="text-sm font-bold text-sky-700 font-mono mt-0.5">
-                            {nextLowVal ? `${nextLowVal}m` : '--'}
-                          </span>
-                          {nextLowTime && (
-                            <span className="text-[9.5px] text-gray-500 font-mono mt-0.5">{formatTideTime(nextLowTime)}</span>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="text-[10px] text-gray-500 leading-relaxed pt-1 border-t border-gray-200/60">
-                        數據來源：加拿大漁業及海洋部水文觀測網 (Fisheries and Oceans Canada)
-                      </div>
-                    </div>
-                  </div>
-                );
-              })()}
+              /* 8.4 已移除重複之上半部海岸潮汐水位區塊，統一使用下方CHS國家潮汐測站標準卡片 */
 
               {/* Gas Station (Fuel) Details */}
               {selectedFacility.facility_type === 'fuel' && (() => {
@@ -13660,17 +13691,7 @@ export default function AppMap() {
                       </div>
                     </div>
 
-                    <div className="pt-0.5">
-                      <a
-                        href={`https://www.google.com/maps/dir/?api=1&destination=${selectedFacility.lat},${selectedFacility.lon}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-full py-2 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
-                      >
-                        <Navigation className="w-3.5 h-3.5" />
-                        <span>Google Maps 導航至此氣象站</span>
-                      </a>
-                    </div>
+
                   </div>
                 );
               })()}
@@ -13729,17 +13750,7 @@ export default function AppMap() {
                       </div>
                     )}
 
-                    <div className="pt-0.5">
-                      <a
-                        href={`https://www.google.com/maps/dir/?api=1&destination=${selectedFacility.lat},${selectedFacility.lon}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-full py-2 px-3 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
-                      >
-                        <Navigation className="w-3.5 h-3.5" />
-                        <span>Google Maps 導航至此測站</span>
-                      </a>
-                    </div>
+
                   </div>
                 );
               })()}
@@ -13775,17 +13786,7 @@ export default function AppMap() {
                       <span className="font-bold text-emerald-600 text-xs">{p.status || '正常流量'}</span>
                     </div>
 
-                    <div className="pt-0.5">
-                      <a
-                        href={`https://www.google.com/maps/dir/?api=1&destination=${selectedFacility.lat},${selectedFacility.lon}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-full py-2 px-3 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
-                      >
-                        <Navigation className="w-3.5 h-3.5" />
-                        <span>Google Maps 導航至此水文站</span>
-                      </a>
-                    </div>
+
                   </div>
                 );
               })()}

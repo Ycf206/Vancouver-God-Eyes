@@ -1,0 +1,1791 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "cp_125",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.068776,
+          49.262525
+        ]
+      },
+      "properties": {
+        "id": "cp_125",
+        "object_id": 125,
+        "facility_type": "canada_post",
+        "name": "Shoppers Drug Mart #0280",
+        "sitebusinessname": "SHOPPERS DRUG MART #0280",
+        "postaladdress": "1 1755 BROADWAY E",
+        "address": "1 1755 Broadway E",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 709257600000,
+        "schedule": {
+          "mon": "08:00:00 - 20:00:00",
+          "tue": "08:00:00 - 20:00:00",
+          "wed": "08:00:00 - 20:00:00",
+          "thu": "08:00:00 - 20:00:00",
+          "fri": "08:00:00 - 20:00:00",
+          "sat": "10:00:00 - 19:00:00",
+          "sun": "12:00:00 - 17:00:00"
+        },
+        "opensunam": "12:00:00",
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": "17:00:00",
+        "postalcode": "V5N 1W0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_203",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.04824,
+          49.28093
+        ]
+      },
+      "properties": {
+        "id": "cp_203",
+        "object_id": 203,
+        "facility_type": "canada_post",
+        "name": "Shoppers Drug Mart #2294",
+        "sitebusinessname": "SHOPPERS DRUG MART #2294",
+        "postaladdress": "2480 HASTINGS ST E",
+        "address": "2480 Hastings St E",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1248825600000,
+        "schedule": {
+          "mon": "09:00:00 - 20:00:00",
+          "tue": "09:00:00 - 20:00:00",
+          "wed": "09:00:00 - 20:00:00",
+          "thu": "09:00:00 - 20:00:00",
+          "fri": "09:00:00 - 20:00:00",
+          "sat": "10:00:00 - 18:00:00",
+          "sun": "12:00:00 - 17:00:00"
+        },
+        "opensunam": "12:00:00",
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": "17:00:00",
+        "postalcode": "V5K 1Z0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_341",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.1238,
+          49.28843
+        ]
+      },
+      "properties": {
+        "id": "cp_341",
+        "object_id": 341,
+        "facility_type": "canada_post",
+        "name": "Shoppers Drug Mart #2275",
+        "sitebusinessname": "SHOPPERS DRUG MART #2275",
+        "postaladdress": "1202 W PENDER ST",
+        "address": "1202 W Pender St",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1225324800000,
+        "schedule": {
+          "mon": "09:00:00 - 21:00:00",
+          "tue": "09:00:00 - 21:00:00",
+          "wed": "09:00:00 - 21:00:00",
+          "thu": "09:00:00 - 21:00:00",
+          "fri": "09:00:00 - 21:00:00",
+          "sat": "12:00:00 - 16:00:00",
+          "sun": "12:00:00 - 16:00:00"
+        },
+        "opensunam": "12:00:00",
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": "16:00:00",
+        "postalcode": "V6E 2S0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_427",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.125957,
+          49.248448
+        ]
+      },
+      "properties": {
+        "id": "cp_427",
+        "object_id": 427,
+        "facility_type": "canada_post",
+        "name": "Arline's Gift N Things",
+        "sitebusinessname": "ARLINE'S GIFT N THINGS",
+        "postaladdress": "968 W KING EDWARD AVE",
+        "address": "968 W King Edward Ave",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1713830400000,
+        "schedule": {
+          "mon": "09:00:00 - 18:00:00",
+          "tue": "09:00:00 - 18:00:00",
+          "wed": "09:00:00 - 18:00:00",
+          "thu": "09:00:00 - 18:00:00",
+          "fri": "09:00:00 - 18:00:00",
+          "sat": "10:00:00 - 17:00:00",
+          "sun": ""
+        },
+        "opensunam": null,
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": null,
+        "postalcode": "V5Z 2E0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_616",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.167575,
+          49.26393
+        ]
+      },
+      "properties": {
+        "id": "cp_616",
+        "object_id": 616,
+        "facility_type": "canada_post",
+        "name": "Kitsilano Stamps Plus",
+        "sitebusinessname": "KITSILANO STAMPS PLUS",
+        "postaladdress": "2768",
+        "address": "2768",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1624233600000,
+        "schedule": {
+          "mon": "09:00:00 - 18:00:00",
+          "tue": "09:00:00 - 18:00:00",
+          "wed": "09:00:00 - 18:00:00",
+          "thu": "09:00:00 - 18:00:00",
+          "fri": "09:00:00 - 18:00:00",
+          "sat": "10:00:00 - 17:00:00",
+          "sun": ""
+        },
+        "opensunam": null,
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": null,
+        "postalcode": "V6K 2G0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_688",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.159795,
+          49.23485
+        ]
+      },
+      "properties": {
+        "id": "cp_688",
+        "object_id": 688,
+        "facility_type": "canada_post",
+        "name": "Shoppers Drug Mart #0232",
+        "sitebusinessname": "SHOPPERS DRUG MART #0232",
+        "postaladdress": "2225 41ST AVE W",
+        "address": "2225 41st Ave W",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 691891200000,
+        "schedule": {
+          "mon": "09:00:00 - 21:00:00",
+          "tue": "09:00:00 - 21:00:00",
+          "wed": "09:00:00 - 21:00:00",
+          "thu": "09:00:00 - 21:00:00",
+          "fri": "09:00:00 - 21:00:00",
+          "sat": "10:00:00 - 18:00:00",
+          "sun": "12:00:00 - 16:00:00"
+        },
+        "opensunam": "12:00:00",
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": "16:00:00",
+        "postalcode": "V6M 2A0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_960",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.105813,
+          49.271257
+        ]
+      },
+      "properties": {
+        "id": "cp_960",
+        "object_id": 960,
+        "facility_type": "canada_post",
+        "name": "London Drugs #082",
+        "sitebusinessname": "LONDON DRUGS #082",
+        "postaladdress": "1622 SALT ST",
+        "address": "1622 Salt St",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1431561600000,
+        "schedule": {
+          "mon": "09:00:00 - 19:30:00",
+          "tue": "09:00:00 - 19:30:00",
+          "wed": "09:00:00 - 19:30:00",
+          "thu": "09:00:00 - 19:30:00",
+          "fri": "09:00:00 - 19:30:00",
+          "sat": "12:00:00 - 17:00:00",
+          "sun": "12:00:00 - 17:00:00"
+        },
+        "opensunam": "12:00:00",
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": "17:00:00",
+        "postalcode": "V5Y 0E0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_1013",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13263,
+          49.28946
+        ]
+      },
+      "properties": {
+        "id": "cp_1013",
+        "object_id": 1013,
+        "facility_type": "canada_post",
+        "name": "Vancouver Luggage Warehouse",
+        "sitebusinessname": "VANCOUVER LUGGAGE WAREHOUSE",
+        "postaladdress": "1610 ROBSON ST",
+        "address": "1610 Robson St",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1320105600000,
+        "schedule": {
+          "mon": "09:30:00 - 19:00:00",
+          "tue": "09:30:00 - 19:00:00",
+          "wed": "09:30:00 - 19:00:00",
+          "thu": "09:30:00 - 19:00:00",
+          "fri": "09:30:00 - 19:00:00",
+          "sat": "10:00:00 - 18:00:00",
+          "sun": "11:00:00 - 17:00:00"
+        },
+        "opensunam": "11:00:00",
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": "17:00:00",
+        "postalcode": "V6G 1C0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_1083",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13572,
+          49.27025
+        ]
+      },
+      "properties": {
+        "id": "cp_1083",
+        "object_id": 1083,
+        "facility_type": "canada_post",
+        "name": "Granville Island Stamps Plus Inc",
+        "sitebusinessname": "GRANVILLE ISLAND STAMPS PLUS INC",
+        "postaladdress": "103 1496 CARTWRIGHT ST",
+        "address": "103 1496 Cartwright St",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1412899200000,
+        "schedule": {
+          "mon": "10:00:00 - 18:00:00",
+          "tue": "10:00:00 - 18:00:00",
+          "wed": "10:00:00 - 18:00:00",
+          "thu": "10:00:00 - 18:00:00",
+          "fri": "10:00:00 - 18:00:00",
+          "sat": "10:00:00 - 17:00:00",
+          "sun": ""
+        },
+        "opensunam": null,
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": null,
+        "postalcode": "V6H 3Y0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_1389",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.121187,
+          49.284866
+        ]
+      },
+      "properties": {
+        "id": "cp_1389",
+        "object_id": 1389,
+        "facility_type": "canada_post",
+        "name": "Rexall #7149",
+        "sitebusinessname": "REXALL #7149",
+        "postaladdress": "122-1055",
+        "address": "122-1055",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1743379200000,
+        "schedule": {
+          "mon": "09:00:00 - 18:00:00",
+          "tue": "09:00:00 - 18:00:00",
+          "wed": "09:00:00 - 18:00:00",
+          "thu": "09:00:00 - 18:00:00",
+          "fri": "09:00:00 - 18:00:00",
+          "sat": "10:00:00 - 16:00:00",
+          "sun": ""
+        },
+        "opensunam": null,
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": null,
+        "postalcode": "V6E 0B0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_1424",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.116,
+          49.26343
+        ]
+      },
+      "properties": {
+        "id": "cp_1424",
+        "object_id": 1424,
+        "facility_type": "canada_post",
+        "name": "London Drugs #004",
+        "sitebusinessname": "LONDON DRUGS #004",
+        "postaladdress": "525 W BROADWAY",
+        "address": "525 W Broadway",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1318809600000,
+        "schedule": {
+          "mon": "09:00:00 - 21:00:00",
+          "tue": "09:00:00 - 21:00:00",
+          "wed": "09:00:00 - 21:00:00",
+          "thu": "09:00:00 - 21:00:00",
+          "fri": "09:00:00 - 21:00:00",
+          "sat": "10:00:00 - 18:30:00",
+          "sun": "10:00:00 - 18:30:00"
+        },
+        "opensunam": "10:00:00",
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": "18:30:00",
+        "postalcode": "V5Z 1E0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_1669",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.127307,
+          49.286043
+        ]
+      },
+      "properties": {
+        "id": "cp_1669",
+        "object_id": 1669,
+        "facility_type": "canada_post",
+        "name": "Canadian Greetings",
+        "sitebusinessname": "CANADIAN GREETINGS",
+        "postaladdress": "1014 ROBSON ST",
+        "address": "1014 Robson St",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 679017600000,
+        "schedule": {
+          "mon": "09:30:00 - 19:30:00",
+          "tue": "09:30:00 - 19:30:00",
+          "wed": "09:30:00 - 19:30:00",
+          "thu": "09:30:00 - 19:30:00",
+          "fri": "09:30:00 - 19:30:00",
+          "sat": "10:00:00 - 18:00:00",
+          "sun": "12:00:00 - 18:00:00"
+        },
+        "opensunam": "12:00:00",
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": "18:00:00",
+        "postalcode": "V6E 1B0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_1795",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.143575,
+          49.264374
+        ]
+      },
+      "properties": {
+        "id": "cp_1795",
+        "object_id": 1795,
+        "facility_type": "canada_post",
+        "name": "Vancouver Stn D",
+        "sitebusinessname": "VANCOUVER STN D",
+        "postaladdress": "2405 PINE ST",
+        "address": "2405 Pine St",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Post Office",
+        "openingdate": 734659200000,
+        "schedule": {
+          "mon": "09:00:00 - 17:00:00",
+          "tue": "09:00:00 - 17:00:00",
+          "wed": "09:00:00 - 17:00:00",
+          "thu": "09:00:00 - 17:00:00",
+          "fri": "09:00:00 - 17:00:00",
+          "sat": "",
+          "sun": ""
+        },
+        "opensunam": null,
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": null,
+        "postalcode": "V6J 0A0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_1933",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.127089,
+          49.277331
+        ]
+      },
+      "properties": {
+        "id": "cp_1933",
+        "object_id": 1933,
+        "facility_type": "canada_post",
+        "name": "Urban Choice Market",
+        "sitebusinessname": "URBAN CHOICE MARKET",
+        "postaladdress": "732 DAVIE ST",
+        "address": "732 Davie St",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1278633600000,
+        "schedule": {
+          "mon": "09:00:00 - 19:00:00",
+          "tue": "09:00:00 - 19:00:00",
+          "wed": "09:00:00 - 19:00:00",
+          "thu": "09:00:00 - 19:00:00",
+          "fri": "09:00:00 - 19:00:00",
+          "sat": "10:00:00 - 17:00:00",
+          "sun": ""
+        },
+        "opensunam": null,
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": null,
+        "postalcode": "V6Z 1B0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_2016",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.243211,
+          49.266483
+        ]
+      },
+      "properties": {
+        "id": "cp_2016",
+        "object_id": 2016,
+        "facility_type": "canada_post",
+        "name": "University Pharmacy Ida",
+        "sitebusinessname": "UNIVERSITY PHARMACY IDA",
+        "postaladdress": "1 6138 SUB BLVD",
+        "address": "1 6138 Sub Blvd",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1416268800000,
+        "schedule": {
+          "mon": "09:00:00 - 17:00:00",
+          "tue": "09:00:00 - 17:00:00",
+          "wed": "09:00:00 - 17:00:00",
+          "thu": "09:00:00 - 17:00:00",
+          "fri": "09:00:00 - 17:00:00",
+          "sat": "10:00:00 - 17:00:00",
+          "sun": "12:00:00 - 16:00:00"
+        },
+        "opensunam": "12:00:00",
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": "16:00:00",
+        "postalcode": "V6T 1K0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_2133",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.117266,
+          49.260877
+        ]
+      },
+      "properties": {
+        "id": "cp_2133",
+        "object_id": 2133,
+        "facility_type": "canada_post",
+        "name": "Hye Park Express",
+        "sitebusinessname": "HYE PARK EXPRESS",
+        "postaladdress": "15 555 12TH AVE W",
+        "address": "15 555 12th Ave W",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1571616000000,
+        "schedule": {
+          "mon": "09:30:00 - 18:00:00",
+          "tue": "09:30:00 - 18:00:00",
+          "wed": "09:30:00 - 18:00:00",
+          "thu": "09:30:00 - 18:00:00",
+          "fri": "09:30:00 - 18:00:00",
+          "sat": "10:00:00 - 18:00:00",
+          "sun": ""
+        },
+        "opensunam": null,
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": null,
+        "postalcode": "V5Z 3X0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_2344",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.156305,
+          49.263738
+        ]
+      },
+      "properties": {
+        "id": "cp_2344",
+        "object_id": 2344,
+        "facility_type": "canada_post",
+        "name": "London Drugs #074",
+        "sitebusinessname": "LONDON DRUGS #074",
+        "postaladdress": "2230 W BROADWAY",
+        "address": "2230 W Broadway",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1448409600000,
+        "schedule": {
+          "mon": "09:00:00 - 21:00:00",
+          "tue": "09:00:00 - 21:00:00",
+          "wed": "09:00:00 - 21:00:00",
+          "thu": "09:00:00 - 21:00:00",
+          "fri": "09:00:00 - 21:00:00",
+          "sat": "09:00:00 - 19:00:00",
+          "sun": "12:00:00 - 18:00:00"
+        },
+        "opensunam": "12:00:00",
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": "18:00:00",
+        "postalcode": "V6K 2E0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_2387",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.126813,
+          49.275632
+        ]
+      },
+      "properties": {
+        "id": "cp_2387",
+        "object_id": 2387,
+        "facility_type": "canada_post",
+        "name": "Shoppers Drug Mart #2292",
+        "sitebusinessname": "SHOPPERS DRUG MART #2292",
+        "postaladdress": "1295 SEYMOUR ST",
+        "address": "1295 Seymour St",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1208995200000,
+        "schedule": {
+          "mon": "08:00:00 - 20:00:00",
+          "tue": "08:00:00 - 20:00:00",
+          "wed": "08:00:00 - 20:00:00",
+          "thu": "08:00:00 - 20:00:00",
+          "fri": "08:00:00 - 20:00:00",
+          "sat": "12:00:00 - 17:00:00",
+          "sun": "12:00:00 - 16:00:00"
+        },
+        "opensunam": "12:00:00",
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": "16:00:00",
+        "postalcode": "V6B 3N0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_2680",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.107043,
+          49.280612
+        ]
+      },
+      "properties": {
+        "id": "cp_2680",
+        "object_id": 2680,
+        "facility_type": "canada_post",
+        "name": "Rexall 7182",
+        "sitebusinessname": "REXALL 7182",
+        "postaladdress": "1173-88 W PENDER ST",
+        "address": "1173-88 W Pender St",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1778457600000,
+        "schedule": {
+          "mon": "08:00:00 - 22:00:00",
+          "tue": "08:00:00 - 22:00:00",
+          "wed": "08:00:00 - 22:00:00",
+          "thu": "08:00:00 - 22:00:00",
+          "fri": "08:00:00 - 22:00:00",
+          "sat": "08:00:00 - 22:00:00",
+          "sun": "08:00:00 - 22:00:00"
+        },
+        "opensunam": "08:00:00",
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": "22:00:00",
+        "postalcode": "V6B 6N0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_2806",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.090853,
+          49.230413
+        ]
+      },
+      "properties": {
+        "id": "cp_2806",
+        "object_id": 2806,
+        "facility_type": "canada_post",
+        "name": "Fraser Speedway Shipping 2011 Ltd",
+        "sitebusinessname": "FRASER SPEEDWAY SHIPPING 2011 LTD",
+        "postaladdress": "6417 FRASER ST",
+        "address": "6417 Fraser St",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1316390400000,
+        "schedule": {
+          "mon": "09:30:00 - 18:00:00",
+          "tue": "09:30:00 - 18:00:00",
+          "wed": "09:30:00 - 18:00:00",
+          "thu": "09:30:00 - 18:00:00",
+          "fri": "09:30:00 - 18:00:00",
+          "sat": "09:30:00 - 17:30:00",
+          "sun": ""
+        },
+        "opensunam": null,
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": null,
+        "postalcode": "V5W 3A0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_2869",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.04015,
+          49.219088
+        ]
+      },
+      "properties": {
+        "id": "cp_2869",
+        "object_id": 2869,
+        "facility_type": "canada_post",
+        "name": "Shoppers Drug Mart #2228",
+        "sitebusinessname": "SHOPPERS DRUG MART #2228",
+        "postaladdress": "7160 KERR ST",
+        "address": "7160 Kerr St",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1490745600000,
+        "schedule": {
+          "mon": "09:00:00 - 19:00:00",
+          "tue": "09:00:00 - 19:00:00",
+          "wed": "09:00:00 - 19:00:00",
+          "thu": "09:00:00 - 19:00:00",
+          "fri": "09:00:00 - 19:00:00",
+          "sat": "09:00:00 - 17:00:00",
+          "sun": "10:00:00 - 16:00:00"
+        },
+        "opensunam": "10:00:00",
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": "16:00:00",
+        "postalcode": "V5S 3T0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_3179",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.15777,
+          49.26809
+        ]
+      },
+      "properties": {
+        "id": "cp_3179",
+        "object_id": 3179,
+        "facility_type": "canada_post",
+        "name": "Shoppers Drug Mart #0234",
+        "sitebusinessname": "SHOPPERS DRUG MART #0234",
+        "postaladdress": "2302 4TH AVE W",
+        "address": "2302 4th Ave W",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 738547200000,
+        "schedule": {
+          "mon": "08:00:00 - 20:00:00",
+          "tue": "08:00:00 - 20:00:00",
+          "wed": "08:00:00 - 20:00:00",
+          "thu": "08:00:00 - 20:00:00",
+          "fri": "08:00:00 - 20:00:00",
+          "sat": "10:00:00 - 18:00:00",
+          "sun": "11:00:00 - 17:00:00"
+        },
+        "opensunam": "11:00:00",
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": "17:00:00",
+        "postalcode": "V6K 1P0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_3207",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.031231,
+          49.206321
+        ]
+      },
+      "properties": {
+        "id": "cp_3207",
+        "object_id": 3207,
+        "facility_type": "canada_post",
+        "name": "Shoppers Drug Mart #2130",
+        "sitebusinessname": "SHOPPERS DRUG MART #2130",
+        "postaladdress": "8525",
+        "address": "8525",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1601510400000,
+        "schedule": {
+          "mon": "09:00:00 - 19:00:00",
+          "tue": "09:00:00 - 19:00:00",
+          "wed": "09:00:00 - 19:00:00",
+          "thu": "09:00:00 - 19:00:00",
+          "fri": "09:00:00 - 19:00:00",
+          "sat": "12:00:00 - 17:00:00",
+          "sun": "12:00:00 - 17:00:00"
+        },
+        "opensunam": "12:00:00",
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": "17:00:00",
+        "postalcode": "V5S 0C0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_3355",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.115522,
+          49.278275
+        ]
+      },
+      "properties": {
+        "id": "cp_3355",
+        "object_id": 3355,
+        "facility_type": "canada_post",
+        "name": "Pure Integrative Pharmacy #9",
+        "sitebusinessname": "PURE INTEGRATIVE PHARMACY #9",
+        "postaladdress": "238 ROBSON ST",
+        "address": "238 Robson St",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1642982400000,
+        "schedule": {
+          "mon": "09:00:00 - 19:00:00",
+          "tue": "09:00:00 - 19:00:00",
+          "wed": "09:00:00 - 19:00:00",
+          "thu": "09:00:00 - 19:00:00",
+          "fri": "09:00:00 - 19:00:00",
+          "sat": "10:00:00 - 17:00:00",
+          "sun": "10:00:00 - 16:00:00"
+        },
+        "opensunam": "10:00:00",
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": "16:00:00",
+        "postalcode": "V6B 6A0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_3463",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14013,
+          49.219332
+        ]
+      },
+      "properties": {
+        "id": "cp_3463",
+        "object_id": 3463,
+        "facility_type": "canada_post",
+        "name": "Cedar Valley Pharmacy",
+        "sitebusinessname": "CEDAR VALLEY PHARMACY",
+        "postaladdress": "8602 GRANVILLE ST",
+        "address": "8602 Granville St",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1736726400000,
+        "schedule": {
+          "mon": "09:00:00 - 19:00:00",
+          "tue": "09:00:00 - 19:00:00",
+          "wed": "09:00:00 - 19:00:00",
+          "thu": "09:00:00 - 19:00:00",
+          "fri": "09:00:00 - 19:00:00",
+          "sat": "11:00:00 - 17:00:00",
+          "sun": ""
+        },
+        "opensunam": null,
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": null,
+        "postalcode": "V6P 5A0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_3619",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.09834,
+          49.26227
+        ]
+      },
+      "properties": {
+        "id": "cp_3619",
+        "object_id": 3619,
+        "facility_type": "canada_post",
+        "name": "Shoppers Drug Mart #0204",
+        "sitebusinessname": "SHOPPERS DRUG MART #0204",
+        "postaladdress": "100 370 BROADWAY E",
+        "address": "100 370 Broadway E",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 936230400000,
+        "schedule": {
+          "mon": "09:00:00 - 21:00:00",
+          "tue": "09:00:00 - 21:00:00",
+          "wed": "09:00:00 - 21:00:00",
+          "thu": "09:00:00 - 21:00:00",
+          "fri": "09:00:00 - 21:00:00",
+          "sat": "10:00:00 - 18:00:00",
+          "sun": "12:00:00 - 18:00:00"
+        },
+        "opensunam": "12:00:00",
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": "18:00:00",
+        "postalcode": "V5T 1W0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_3668",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.06944,
+          49.2717
+        ]
+      },
+      "properties": {
+        "id": "cp_3668",
+        "object_id": 3668,
+        "facility_type": "canada_post",
+        "name": "Commercial Cards Plus",
+        "sitebusinessname": "COMMERCIAL CARDS PLUS",
+        "postaladdress": "1424 COMMERCIAL DR",
+        "address": "1424 Commercial Dr",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1153094400000,
+        "schedule": {
+          "mon": "10:00:00 - 18:00:00",
+          "tue": "10:00:00 - 18:00:00",
+          "wed": "10:00:00 - 18:00:00",
+          "thu": "10:00:00 - 18:00:00",
+          "fri": "10:00:00 - 18:00:00",
+          "sat": "11:00:00 - 17:00:00",
+          "sun": ""
+        },
+        "opensunam": null,
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": null,
+        "postalcode": "V5L 3X0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_3676",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13885,
+          49.28904
+        ]
+      },
+      "properties": {
+        "id": "cp_3676",
+        "object_id": 3676,
+        "facility_type": "canada_post",
+        "name": "Shoppers Drug Mart #0201",
+        "sitebusinessname": "SHOPPERS DRUG MART #0201",
+        "postaladdress": "1020 DENMAN ST",
+        "address": "1020 Denman St",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 715305600000,
+        "schedule": {
+          "mon": "08:30:00 - 20:30:00",
+          "tue": "08:30:00 - 20:30:00",
+          "wed": "08:30:00 - 20:30:00",
+          "thu": "08:30:00 - 20:30:00",
+          "fri": "08:30:00 - 20:30:00",
+          "sat": "09:00:00 - 18:00:00",
+          "sun": "11:00:00 - 16:00:00"
+        },
+        "opensunam": "11:00:00",
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": "16:00:00",
+        "postalcode": "V6G 2M0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_3689",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13837,
+          49.26001
+        ]
+      },
+      "properties": {
+        "id": "cp_3689",
+        "object_id": 3689,
+        "facility_type": "canada_post",
+        "name": "Shoppers Drug Mart #0202",
+        "sitebusinessname": "SHOPPERS DRUG MART #0202",
+        "postaladdress": "2947 GRANVILLE ST",
+        "address": "2947 Granville St",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 677462400000,
+        "schedule": {
+          "mon": "09:00:00 - 21:00:00",
+          "tue": "09:00:00 - 21:00:00",
+          "wed": "09:00:00 - 21:00:00",
+          "thu": "09:00:00 - 21:00:00",
+          "fri": "09:00:00 - 21:00:00",
+          "sat": "10:00:00 - 18:00:00",
+          "sun": "10:00:00 - 18:00:00"
+        },
+        "opensunam": "10:00:00",
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": "18:00:00",
+        "postalcode": "V6H 3J0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_3702",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.090111,
+          49.24368
+        ]
+      },
+      "properties": {
+        "id": "cp_3702",
+        "object_id": 3702,
+        "facility_type": "canada_post",
+        "name": "Shoppers Drug Mart #2276",
+        "sitebusinessname": "SHOPPERS DRUG MART #2276",
+        "postaladdress": "4590 FRASER ST",
+        "address": "4590 Fraser St",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1668384000000,
+        "schedule": {
+          "mon": "09:00:00 - 21:00:00",
+          "tue": "09:00:00 - 21:00:00",
+          "wed": "09:00:00 - 21:00:00",
+          "thu": "09:00:00 - 21:00:00",
+          "fri": "09:00:00 - 21:00:00",
+          "sat": "10:00:00 - 16:00:00",
+          "sun": "10:00:00 - 16:00:00"
+        },
+        "opensunam": "10:00:00",
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": "16:00:00",
+        "postalcode": "V5V 4G0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_3711",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.14485,
+          49.26352
+        ]
+      },
+      "properties": {
+        "id": "cp_3711",
+        "object_id": 3711,
+        "facility_type": "canada_post",
+        "name": "Shoppers Drug Mart #2221",
+        "sitebusinessname": "SHOPPERS DRUG MART #2221",
+        "postaladdress": "1780 W BROADWAY",
+        "address": "1780 W Broadway",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1242777600000,
+        "schedule": {
+          "mon": "09:00:00 - 21:00:00",
+          "tue": "09:00:00 - 21:00:00",
+          "wed": "09:00:00 - 21:00:00",
+          "thu": "09:00:00 - 21:00:00",
+          "fri": "09:00:00 - 21:00:00",
+          "sat": "11:00:00 - 17:00:00",
+          "sun": "12:00:00 - 17:00:00"
+        },
+        "opensunam": "12:00:00",
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": "17:00:00",
+        "postalcode": "V6J 1Y0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_3717",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.119355,
+          49.285974
+        ]
+      },
+      "properties": {
+        "id": "cp_3717",
+        "object_id": 3717,
+        "facility_type": "canada_post",
+        "name": "Van Stn Bentall Centre",
+        "sitebusinessname": "VAN STN BENTALL CENTRE",
+        "postaladdress": "595 BURRARD ST",
+        "address": "595 Burrard St",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Station",
+        "openingdate": -11145600000,
+        "schedule": {
+          "mon": "08:30:00 - 17:00:00",
+          "tue": "08:30:00 - 17:00:00",
+          "wed": "08:30:00 - 17:00:00",
+          "thu": "08:30:00 - 17:00:00",
+          "fri": "08:30:00 - 17:00:00",
+          "sat": "",
+          "sun": ""
+        },
+        "opensunam": null,
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": null,
+        "postalcode": "V7X 1A0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_3869",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.057322,
+          49.241285
+        ]
+      },
+      "properties": {
+        "id": "cp_3869",
+        "object_id": 3869,
+        "facility_type": "canada_post",
+        "name": "Shoppers Drug Mart #2289",
+        "sitebusinessname": "SHOPPERS DRUG MART #2289",
+        "postaladdress": "2330 KINGSWAY",
+        "address": "2330 Kingsway",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1574985600000,
+        "schedule": {
+          "mon": "10:00:00 - 20:00:00",
+          "tue": "10:00:00 - 20:00:00",
+          "wed": "10:00:00 - 20:00:00",
+          "thu": "10:00:00 - 20:00:00",
+          "fri": "10:00:00 - 20:00:00",
+          "sat": "12:00:00 - 17:00:00",
+          "sun": "12:00:00 - 17:00:00"
+        },
+        "opensunam": "12:00:00",
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": "17:00:00",
+        "postalcode": "V5R 5G0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_3957",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.18489,
+          49.24759
+        ]
+      },
+      "properties": {
+        "id": "cp_3957",
+        "object_id": 3957,
+        "facility_type": "canada_post",
+        "name": "Shoppers Drug Mart #0288",
+        "sitebusinessname": "SHOPPERS DRUG MART #0288",
+        "postaladdress": "4326 DUNBAR ST",
+        "address": "4326 Dunbar St",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 705628800000,
+        "schedule": {
+          "mon": "09:00:00 - 21:00:00",
+          "tue": "09:00:00 - 21:00:00",
+          "wed": "09:00:00 - 21:00:00",
+          "thu": "09:00:00 - 21:00:00",
+          "fri": "09:00:00 - 21:00:00",
+          "sat": "10:00:00 - 18:00:00",
+          "sun": "12:00:00 - 17:00:00"
+        },
+        "opensunam": "12:00:00",
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": "17:00:00",
+        "postalcode": "V6S 2G0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_4199",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11581,
+          49.281298
+        ]
+      },
+      "properties": {
+        "id": "cp_4199",
+        "object_id": 4199,
+        "facility_type": "canada_post",
+        "name": "Vancouver Main Retail Store Po",
+        "sitebusinessname": "VANCOUVER MAIN RETAIL STORE PO",
+        "postaladdress": "495 W GEORGIA ST",
+        "address": "495 W Georgia St",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Station",
+        "openingdate": 372038400000,
+        "schedule": {
+          "mon": "09:00:00 - 18:00:00",
+          "tue": "09:00:00 - 18:00:00",
+          "wed": "09:00:00 - 18:00:00",
+          "thu": "09:00:00 - 18:00:00",
+          "fri": "09:00:00 - 18:00:00",
+          "sat": "",
+          "sun": ""
+        },
+        "opensunam": null,
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": null,
+        "postalcode": "V6B 1Y0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_4270",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.102507,
+          49.211871
+        ]
+      },
+      "properties": {
+        "id": "cp_4270",
+        "object_id": 4270,
+        "facility_type": "canada_post",
+        "name": "Main Express",
+        "sitebusinessname": "MAIN EXPRESS",
+        "postaladdress": "8165 MAIN ST",
+        "address": "8165 Main St",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1406505600000,
+        "schedule": {
+          "mon": "09:30:00 - 18:00:00",
+          "tue": "09:30:00 - 18:00:00",
+          "wed": "09:30:00 - 18:00:00",
+          "thu": "09:30:00 - 18:00:00",
+          "fri": "09:30:00 - 18:00:00",
+          "sat": "10:00:00 - 17:00:00",
+          "sun": ""
+        },
+        "opensunam": null,
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": null,
+        "postalcode": "V5X 3L0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_4395",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.139542,
+          49.285434
+        ]
+      },
+      "properties": {
+        "id": "cp_4395",
+        "object_id": 4395,
+        "facility_type": "canada_post",
+        "name": "London Drugs #050",
+        "sitebusinessname": "LONDON DRUGS #050",
+        "postaladdress": "1650 DAVIE ST",
+        "address": "1650 Davie St",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1385942400000,
+        "schedule": {
+          "mon": "09:00:00 - 21:00:00",
+          "tue": "09:00:00 - 21:00:00",
+          "wed": "09:00:00 - 21:00:00",
+          "thu": "09:00:00 - 21:00:00",
+          "fri": "09:00:00 - 21:00:00",
+          "sat": "09:00:00 - 19:00:00",
+          "sun": "12:00:00 - 18:00:00"
+        },
+        "opensunam": "12:00:00",
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": "18:00:00",
+        "postalcode": "V6G 1V0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_4613",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.203833,
+          49.263878
+        ]
+      },
+      "properties": {
+        "id": "cp_4613",
+        "object_id": 4613,
+        "facility_type": "canada_post",
+        "name": "Mollies Stationery",
+        "sitebusinessname": "MOLLIES STATIONERY",
+        "postaladdress": "4327 W 10TH AVE",
+        "address": "4327 W 10th Ave",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1691971200000,
+        "schedule": {
+          "mon": "09:30:00 - 18:00:00",
+          "tue": "09:30:00 - 18:00:00",
+          "wed": "09:30:00 - 18:00:00",
+          "thu": "09:30:00 - 18:00:00",
+          "fri": "09:30:00 - 18:00:00",
+          "sat": "10:00:00 - 17:00:00",
+          "sun": ""
+        },
+        "opensunam": null,
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": null,
+        "postalcode": "V6R 2H0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_4747",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.183381,
+          49.234624
+        ]
+      },
+      "properties": {
+        "id": "cp_4747",
+        "object_id": 4747,
+        "facility_type": "canada_post",
+        "name": "Stationery 2000",
+        "sitebusinessname": "STATIONERY 2000",
+        "postaladdress": "1 3552 41ST AVE W",
+        "address": "1 3552 41st Ave W",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1627948800000,
+        "schedule": {
+          "mon": "09:00:00 - 19:00:00",
+          "tue": "09:00:00 - 19:00:00",
+          "wed": "09:00:00 - 19:00:00",
+          "thu": "09:00:00 - 19:00:00",
+          "fri": "09:00:00 - 19:00:00",
+          "sat": "",
+          "sun": ""
+        },
+        "opensunam": null,
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": null,
+        "postalcode": "V6N 3E0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_4764",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.065827,
+          49.233564
+        ]
+      },
+      "properties": {
+        "id": "cp_4764",
+        "object_id": 4764,
+        "facility_type": "canada_post",
+        "name": "London Drugs #53",
+        "sitebusinessname": "LONDON DRUGS #53",
+        "postaladdress": "5639 VICTORIA DR",
+        "address": "5639 Victoria Dr",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Station",
+        "openingdate": 1542585600000,
+        "schedule": {
+          "mon": "09:00:00 - 21:00:00",
+          "tue": "09:00:00 - 21:00:00",
+          "wed": "09:00:00 - 21:00:00",
+          "thu": "09:00:00 - 21:00:00",
+          "fri": "09:00:00 - 21:00:00",
+          "sat": "09:00:00 - 19:00:00",
+          "sun": "12:00:00 - 16:00:00"
+        },
+        "opensunam": "12:00:00",
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": "16:00:00",
+        "postalcode": "V5P 3W0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_4785",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.10143,
+          49.25868
+        ]
+      },
+      "properties": {
+        "id": "cp_4785",
+        "object_id": 4785,
+        "facility_type": "canada_post",
+        "name": "Print Express",
+        "sitebusinessname": "PRINT EXPRESS",
+        "postaladdress": "9 2949 MAIN ST",
+        "address": "9 2949 Main St",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Station",
+        "openingdate": 1679011200000,
+        "schedule": {
+          "mon": "09:30:00 - 18:00:00",
+          "tue": "09:30:00 - 18:00:00",
+          "wed": "09:30:00 - 18:00:00",
+          "thu": "09:30:00 - 18:00:00",
+          "fri": "09:30:00 - 18:00:00",
+          "sat": "10:00:00 - 17:00:00",
+          "sun": ""
+        },
+        "opensunam": null,
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": null,
+        "postalcode": "V5T 3G0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_4920",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11831,
+          49.28222
+        ]
+      },
+      "properties": {
+        "id": "cp_4920",
+        "object_id": 4920,
+        "facility_type": "canada_post",
+        "name": "London Drugs #002",
+        "sitebusinessname": "LONDON DRUGS #002",
+        "postaladdress": "710 GRANVILLE ST",
+        "address": "710 Granville St",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1226966400000,
+        "schedule": {
+          "mon": "08:00:00 - 21:00:00",
+          "tue": "08:00:00 - 21:00:00",
+          "wed": "08:00:00 - 21:00:00",
+          "thu": "08:00:00 - 21:00:00",
+          "fri": "08:00:00 - 21:00:00",
+          "sat": "10:00:00 - 18:30:00",
+          "sun": "10:00:00 - 18:30:00"
+        },
+        "opensunam": "10:00:00",
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": "18:30:00",
+        "postalcode": "V6Z 1E0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_5038",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.11817,
+          49.21946
+        ]
+      },
+      "properties": {
+        "id": "cp_5038",
+        "object_id": 5038,
+        "facility_type": "canada_post",
+        "name": "Pharmachoice Pharmacy",
+        "sitebusinessname": "PHARMACHOICE PHARMACY",
+        "postaladdress": "571 57TH AVE W",
+        "address": "571 57th Ave W",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1329696000000,
+        "schedule": {
+          "mon": "09:30:00 - 18:00:00",
+          "tue": "09:30:00 - 18:00:00",
+          "wed": "09:30:00 - 18:00:00",
+          "thu": "09:30:00 - 18:00:00",
+          "fri": "09:30:00 - 18:00:00",
+          "sat": "09:30:00 - 17:00:00",
+          "sun": ""
+        },
+        "opensunam": null,
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": null,
+        "postalcode": "V6P 1R0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_5333",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.13146,
+          49.28093
+        ]
+      },
+      "properties": {
+        "id": "cp_5333",
+        "object_id": 5333,
+        "facility_type": "canada_post",
+        "name": "Shoppers Drug Mart #0272",
+        "sitebusinessname": "SHOPPERS DRUG MART #0272",
+        "postaladdress": "1125 DAVIE ST",
+        "address": "1125 Davie St",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 690163200000,
+        "schedule": {
+          "mon": "09:00:00 - 21:00:00",
+          "tue": "09:00:00 - 21:00:00",
+          "wed": "09:00:00 - 21:00:00",
+          "thu": "09:00:00 - 21:00:00",
+          "fri": "09:00:00 - 21:00:00",
+          "sat": "10:00:00 - 17:30:00",
+          "sun": "10:00:00 - 17:30:00"
+        },
+        "opensunam": "10:00:00",
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": "17:30:00",
+        "postalcode": "V6E 1N0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_5448",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.114903,
+          49.284862
+        ]
+      },
+      "properties": {
+        "id": "cp_5448",
+        "object_id": 5448,
+        "facility_type": "canada_post",
+        "name": "Rexall Drugstore #7174",
+        "sitebusinessname": "REXALL DRUGSTORE #7174",
+        "postaladdress": "1 499 GRANVILLE ST",
+        "address": "1 499 Granville St",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1391299200000,
+        "schedule": {
+          "mon": "09:00:00 - 21:00:00",
+          "tue": "09:00:00 - 21:00:00",
+          "wed": "09:00:00 - 21:00:00",
+          "thu": "09:00:00 - 21:00:00",
+          "fri": "09:00:00 - 21:00:00",
+          "sat": "09:00:00 - 19:00:00",
+          "sun": "09:00:00 - 19:00:00"
+        },
+        "opensunam": "09:00:00",
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": "19:00:00",
+        "postalcode": "V6C 1T0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_5596",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.07912,
+          49.25129
+        ]
+      },
+      "properties": {
+        "id": "cp_5596",
+        "object_id": 5596,
+        "facility_type": "canada_post",
+        "name": "Royal Road Trading Inc.",
+        "sitebusinessname": "ROYAL ROAD TRADING INC.",
+        "postaladdress": "1238 KINGSWAY",
+        "address": "1238 Kingsway",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1509408000000,
+        "schedule": {
+          "mon": "09:00:00 - 18:00:00",
+          "tue": "09:00:00 - 18:00:00",
+          "wed": "09:00:00 - 18:00:00",
+          "thu": "09:00:00 - 18:00:00",
+          "fri": "09:00:00 - 18:00:00",
+          "sat": "10:00:00 - 16:30:00",
+          "sun": ""
+        },
+        "opensunam": null,
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": null,
+        "postalcode": "V5V 3E0",
+        "source": "Canada Post Retail Points API"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "cp_5639",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.130989,
+          49.274674
+        ]
+      },
+      "properties": {
+        "id": "cp_5639",
+        "object_id": 5639,
+        "facility_type": "canada_post",
+        "name": "London Drugs #90",
+        "sitebusinessname": "LONDON DRUGS #90",
+        "postaladdress": "201-1431",
+        "address": "201-1431",
+        "local_area": "VANCOUVER",
+        "facilitytypeen": "Retail Postal Outlet",
+        "openingdate": 1581033600000,
+        "schedule": {
+          "mon": "09:00:00 - 21:00:00",
+          "tue": "09:00:00 - 21:00:00",
+          "wed": "09:00:00 - 21:00:00",
+          "thu": "09:00:00 - 21:00:00",
+          "fri": "09:00:00 - 21:00:00",
+          "sat": "09:00:00 - 21:00:00",
+          "sun": "10:00:00 - 20:00:00"
+        },
+        "opensunam": "10:00:00",
+        "opensunpm": null,
+        "closesunam": null,
+        "closesunpm": "20:00:00",
+        "postalcode": "V6Z 0G0",
+        "source": "Canada Post Retail Points API"
+      }
+    }
+  ]
+}

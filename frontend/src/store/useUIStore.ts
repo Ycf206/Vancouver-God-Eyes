@@ -51,6 +51,7 @@ export interface UIState {
     police: boolean;
     disasterHubs: boolean;
     communityCentres: boolean;
+    canadaPost: boolean;
     hospitals: boolean;
     parks: boolean;
     parksFacilities: boolean;
@@ -256,6 +257,7 @@ export const useUIStore = create<UIState>()(
         police: false,
         disasterHubs: false,
         communityCentres: false,
+        canadaPost: false,
         hospitals: false,
         parks: false,
         parksFacilities: false,

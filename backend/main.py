@@ -2187,6 +2187,47 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
     except Exception as e:
         print(f"Error searching bikeways: {e}")
 
+    # 8. 搜尋溫哥華官方門牌地址 (Property Addresses API)
+    if len(q_clean) >= 2:
+        try:
+            addr_url = "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/property-addresses/records"
+            params = {
+                "where": f'search(*, "{q_clean}")',
+                "limit": 10
+            }
+            addr_resp = requests.get(addr_url, params=params, timeout=2.5)
+            if addr_resp.status_code == 200:
+                addr_data = addr_resp.json()
+                for rec in addr_data.get("results", []):
+                    c_num = rec.get("civic_number") or ""
+                    street = rec.get("std_street") or ""
+                    area = rec.get("geo_local_area") or "Vancouver"
+                    coords = rec.get("geo_point_2d") or {}
+                    p_lon = coords.get("lon")
+                    p_lat = coords.get("lat")
+                    if p_lon is not None and p_lat is not None:
+                        full_addr = f"{c_num} {street}".strip()
+                        results.append({
+                            "id": f"addr_{rec.get('site_id') or rec.get('pcoord') or full_addr}",
+                            "title": full_addr,
+                            "subtitle": f"{area}, Vancouver (門牌地址)",
+                            "category": "address",
+                            "badge": "地址",
+                            "icon": "📍",
+                            "lon": float(p_lon),
+                            "lat": float(p_lat),
+                            "zoom": 17,
+                            "layer_key": None,
+                            "meta": {
+                                "civic_number": c_num,
+                                "street": street,
+                                "local_area": area,
+                                "full_address": full_addr
+                            }
+                        })
+        except Exception:
+            pass
+
     final_results = results[:150]
     if len(_search_query_cache) > 200:
         _search_query_cache.clear()
@@ -3719,6 +3760,8 @@ def update_admin_schedule(payload: dict = Body(...)):
             updated_src = None
             for src in cfg.get("sources", []):
                 if src.get("id") == source_id:
+                    if payload.get("name"):
+                        src["name"] = payload.get("name").strip()
                     if schedule_interval:
                         src["schedule_interval"] = schedule_interval
                     if cron_expr:
@@ -3755,7 +3798,9 @@ def update_admin_schedule(payload: dict = Body(...)):
                                 raw_yml = base64.b64decode(file_info.get("content", "")).decode("utf-8")
                                 import re
                                 new_yml = re.sub(r"-\s*cron:\s*['\"].+?['\"]", f"- cron: '{cron_expr}'", raw_yml)
-                                if schedule_interval:
+                                if payload.get("name"):
+                        src["name"] = payload.get("name").strip()
+                    if schedule_interval:
                                     new_yml = re.sub(r"^name:\s*Update\s+([^(]+)\([^)]+\)", f"name: Update \\1({schedule_interval})", new_yml, flags=re.MULTILINE)
 
                                 put_body = {
@@ -3794,7 +3839,9 @@ def update_admin_schedule(payload: dict = Body(...)):
                                 ycontent = yf.read()
                             import re
                             new_ycontent = re.sub(r"-\s*cron:\s*['\"].+?['\"]", f"- cron: '{cron_expr}'", ycontent)
-                            if schedule_interval:
+                            if payload.get("name"):
+                        src["name"] = payload.get("name").strip()
+                    if schedule_interval:
                                 new_ycontent = re.sub(r"^name:\s*Update\s+([^(]+)\([^)]+\)", f"name: Update \\1({schedule_interval})", new_ycontent, flags=re.MULTILINE)
                             if new_ycontent != ycontent:
                                 with open(wf_path, 'w', encoding='utf-8') as yf:

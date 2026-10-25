@@ -3269,12 +3269,12 @@ function ExploreContent() {
 
                     <div className="flex flex-col gap-1.5">
                       {[
-                        { id: 'CWVR', englishName: "Vancouver Int'l Airport", name: "Vancouver Int'l Airport (溫哥華國際機場)", lat: 49.195, lon: -123.181, temp: '12.4°C', wind: 'WNW 15 km/h', hum: '79%', press: '101.6 kPa' },
-                        { id: 'CWVG', englishName: 'Vancouver Harbour', name: 'Vancouver Harbour (溫哥華港氣象站)', lat: 49.296, lon: -123.111, temp: '13.1°C', wind: 'W 11 km/h (陣風 18)', hum: '76%', press: '101.5 kPa' },
-                        { id: 'CWPI', englishName: 'Point Atkinson Lighthouse', name: 'Point Atkinson Lighthouse (阿特金森岬燈塔)', lat: 49.330, lon: -123.264, temp: '11.8°C', wind: 'W 22 km/h (陣風 31)', hum: '82%', press: '101.5 kPa' },
-                        { id: 'CWVN', englishName: 'West Vancouver Marine', name: 'West Vancouver Marine (西溫海港氣象站)', lat: 49.337, lon: -123.167, temp: '12.0°C', wind: 'NW 9 km/h', hum: '81%', press: '101.5 kPa' },
-                        { id: 'CWRM', englishName: 'Richmond Dike', name: 'Richmond Dike (列治文自然保護區)', lat: 49.183, lon: -123.197, temp: '12.8°C', wind: 'W 13 km/h', hum: '78%', press: '101.6 kPa' },
-                        { id: 'CWBY', englishName: 'Burnaby Burmount', name: 'Burnaby Burmount (本拿比伯蒙特氣象站)', lat: 49.245, lon: -122.934, temp: '12.2°C', wind: 'W 8 km/h', hum: '80%', press: '101.5 kPa' },
+                        { id: 'CWVR', englishName: "Vancouver Int'l Airport", zhName: '溫哥華國際機場', name: "Vancouver Int'l Airport", lat: 49.195, lon: -123.181, temp: '12.4°C', wind: 'WNW 15 km/h', hum: '79%', press: '101.6 kPa' },
+                        { id: 'CWVG', englishName: 'Vancouver Harbour', zhName: '溫哥華港氣象站', name: 'Vancouver Harbour', lat: 49.296, lon: -123.111, temp: '13.1°C', wind: 'W 11 km/h (陣風 18)', hum: '76%', press: '101.5 kPa' },
+                        { id: 'CWPI', englishName: 'Point Atkinson Lighthouse', zhName: '阿特金森岬燈塔', name: 'Point Atkinson Lighthouse', lat: 49.330, lon: -123.264, temp: '11.8°C', wind: 'W 22 km/h (陣風 31)', hum: '82%', press: '101.5 kPa' },
+                        { id: 'CWVN', englishName: 'West Vancouver Marine', zhName: '西溫海港氣象站', name: 'West Vancouver Marine', lat: 49.337, lon: -123.167, temp: '12.0°C', wind: 'NW 9 km/h', hum: '81%', press: '101.5 kPa' },
+                        { id: 'CWRM', englishName: 'Richmond Dike', zhName: '列治文自然保護區', name: 'Richmond Dike', lat: 49.183, lon: -123.197, temp: '12.8°C', wind: 'W 13 km/h', hum: '78%', press: '101.6 kPa' },
+                        { id: 'CWBY', englishName: 'Burnaby Burmount', zhName: '本拿比伯蒙特氣象站', name: 'Burnaby Burmount', lat: 49.245, lon: -122.934, temp: '12.2°C', wind: 'W 8 km/h', hum: '80%', press: '101.5 kPa' },
                       ].map((st) => (
                         <div
                           key={st.id}
@@ -3290,6 +3290,7 @@ function ExploreContent() {
                               meta: {
                                 facility_type: 'swob_station',
                                 english_name: st.englishName,
+                                zh_name: st.zhName,
                                 station_id: st.id,
                                 temp: st.temp,
                                 wind: st.wind,
@@ -3300,9 +3301,12 @@ function ExploreContent() {
                           }}
                           className="bg-[#141824] hover:bg-[#181d2c] border border-[#242b3c] hover:border-emerald-500/50 p-2 rounded-lg flex items-center justify-between text-xs cursor-pointer transition-all"
                         >
-                          <div className="flex items-center gap-1.5 min-w-0 flex-1 pr-2">
-                            <span className="font-bold text-gray-200 truncate">{st.name}</span>
-                            <span className="text-[9.5px] font-mono text-emerald-400 bg-emerald-950/70 border border-emerald-800/40 px-1 rounded shrink-0">{st.id}</span>
+                          <div className="flex flex-col min-w-0 flex-1 pr-2">
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              <span className="font-bold text-gray-200 truncate">{st.englishName}</span>
+                              <span className="text-[9.5px] font-mono text-emerald-400 bg-emerald-950/70 border border-emerald-800/40 px-1 rounded shrink-0">{st.id}</span>
+                            </div>
+                            <span className="text-[11px] text-gray-400 mt-0.5 truncate">{st.zhName}</span>
                           </div>
                           <div className="flex items-center gap-2 shrink-0">
                             <span className="text-sm font-extrabold text-white font-mono">{st.temp}</span>

@@ -139,6 +139,8 @@ interface DataSource {
   status: string;
   enabled?: boolean;
   data_pipeline_notes?: string;
+  source_links?: { label: string; url: string }[];
+  source_url?: string;
 }
 
 interface AuditLog {
@@ -182,6 +184,7 @@ export default function AdminPage() {
   // Operation States
   const [syncingId, setSyncingId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [editName, setEditName] = useState<string>('');
   const [editCron, setEditCron] = useState('');
   const [editInterval, setEditInterval] = useState('');
   const [selectedSchedulePreset, setSelectedSchedulePreset] = useState<string>('custom');
@@ -496,6 +499,7 @@ export default function AdminPage() {
         method: 'POST',
         body: JSON.stringify({
           source_id: source.id,
+          name: editName || source.name,
           cron_expr: editCron || source.cron_expr,
           schedule_interval: editInterval || source.schedule_interval,
           enabled: source.enabled !== false
@@ -881,10 +885,11 @@ export default function AdminPage() {
                   <thead>
                     <tr className="sticky top-0 z-10 bg-[#161c28] border-b border-[#283144] text-gray-300 font-semibold uppercase text-[10.5px] tracking-wider shadow-sm">
                       <th className="py-3 px-4 w-12 text-center">狀態</th>
-                      <th className="py-3 px-4 min-w-[200px]">資料源與項目名稱</th>
                       <th className="py-3 px-4 w-28">分類</th>
+                      <th className="py-3 px-4 min-w-[200px]">資料源與項目名稱</th>
                       <th className="py-3 px-4 min-w-[170px]">執行載體 / 管線</th>
                       <th className="py-3 px-4 min-w-[200px]">排程週期 (Cron)</th>
+                      <th className="py-3 px-4 min-w-[180px]">來源連結 / 端點</th>
                       <th className="py-3 px-4 w-32">上次更新</th>
                       <th className="py-3 px-4 w-28">規模筆數</th>
                       <th className="py-3 px-4 w-48 text-right">管理操作</th>
@@ -923,24 +928,7 @@ export default function AdminPage() {
                             )}
                           </td>
 
-                          {/* 資料源名稱與 ID */}
-                          <td className="py-3.5 px-4">
-                            <div className="flex flex-col">
-                              <span className="font-bold text-white text-xs group-hover:text-sky-300 transition-colors flex items-center gap-1.5">
-                                <span>{source.name}</span>
-                                {isGitHubUnbound && (
-                                  <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-normal">
-                                    待連接 Token
-                                  </span>
-                                )}
-                              </span>
-                              <span className="text-[10px] text-gray-500 font-mono mt-0.5">
-                                {source.id}
-                              </span>
-                            </div>
-                          </td>
-
-                          {/* 分類 */}
+                          {/* 1. 分類 (已移至資料源名稱左方) */}
                           <td className="py-3.5 px-4">
                             {(() => {
                               const cat = getSystemCategory(source);
@@ -956,6 +944,38 @@ export default function AdminPage() {
                                 </span>
                               );
                             })()}
+                          </td>
+
+                          {/* 2. 資料源名稱與 ID (支援名稱修改) */}
+                          <td className="py-3.5 px-4">
+                            {isEditing ? (
+                              <div className="flex flex-col gap-1">
+                                <input
+                                  type="text"
+                                  value={editName}
+                                  onChange={(e) => setEditName(e.target.value)}
+                                  placeholder="資料源名稱"
+                                  className="w-full bg-[#181d28] border border-indigo-500/80 text-white font-bold text-xs px-2 py-1 rounded outline-none focus:border-indigo-400"
+                                />
+                                <span className="text-[10px] text-gray-500 font-mono">
+                                  {source.id}
+                                </span>
+                              </div>
+                            ) : (
+                              <div className="flex flex-col">
+                                <span className="font-bold text-white text-xs group-hover:text-sky-300 transition-colors flex items-center gap-1.5">
+                                  <span>{source.name}</span>
+                                  {isGitHubUnbound && (
+                                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-normal">
+                                      待連接 Token
+                                    </span>
+                                  )}
+                                </span>
+                                <span className="text-[10px] text-gray-500 font-mono mt-0.5">
+                                  {source.id}
+                                </span>
+                              </div>
+                            )}
                           </td>
 
                           {/* 執行載體標籤 */}
@@ -1180,6 +1200,40 @@ export default function AdminPage() {
                             )}
                           </td>
 
+                          {/* 來源連結 / 端點 */}
+                          <td className="py-3.5 px-4">
+                            <div className="flex flex-wrap items-center gap-1.5 max-w-[220px]">
+                              {source.source_links && source.source_links.length > 0 ? (
+                                source.source_links.map((link, idx) => (
+                                  <a
+                                    key={idx}
+                                    href={link.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-[#1d2433] hover:bg-sky-950/80 text-sky-300 hover:text-sky-200 border border-[#2f3950] hover:border-sky-500/40 transition-all shadow-xs max-w-[190px] truncate"
+                                    title={link.url}
+                                  >
+                                    <ExternalLink className="w-2.5 h-2.5 shrink-0 text-sky-400" />
+                                    <span className="truncate">{link.label}</span>
+                                  </a>
+                                ))
+                              ) : source.source_url ? (
+                                <a
+                                  href={source.source_url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-[#1d2433] hover:bg-sky-950/80 text-sky-300 hover:text-sky-200 border border-[#2f3950] hover:border-sky-500/40 transition-all shadow-xs"
+                                  title={source.source_url}
+                                >
+                                  <ExternalLink className="w-2.5 h-2.5 shrink-0 text-sky-400" />
+                                  <span>資料端點</span>
+                                </a>
+                              ) : (
+                                <span className="text-gray-500 font-mono text-[10px]">—</span>
+                              )}
+                            </div>
+                          </td>
+
                           {/* 上次更新時間 */}
                           <td className="py-3.5 px-4 text-gray-300 font-mono text-[11px]">
                             {isGitHubUnbound ? (
@@ -1250,6 +1304,7 @@ export default function AdminPage() {
                                   disabled={!isUnlocked}
                                   onClick={() => {
                                     setEditingId(source.id);
+                                    setEditName(source.name);
                                     setEditCron(source.cron_expr);
                                     setEditInterval(source.schedule_interval);
                                     const detected = parseSourcePreset(source.cron_expr, source.schedule_interval);

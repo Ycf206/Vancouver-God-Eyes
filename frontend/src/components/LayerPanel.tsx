@@ -318,6 +318,7 @@ export default function LayerPanel() {
             <LayerButton layerKey="publicArt" label="公共藝術" icon={Palette} colorClass="text-fuchsia-400" activeBg="bg-[#2a1428]" activeBorder="border-fuchsia-500/50" activeShadow="shadow-[0_0_6px_rgba(217,70,239,0.15)]" />
             <LayerButton layerKey="museums" label="博物館" icon={Landmark} colorClass="text-slate-300" activeBg="bg-[#1e232d]" activeBorder="border-slate-500/50" activeShadow="shadow-[0_0_6px_rgba(100,116,139,0.25)]" />
             <LayerButton layerKey="communityCentres" label="社區中心" icon={Building2} colorClass="text-violet-400" activeBg="bg-[#211a2f]" activeBorder="border-violet-500/50" activeShadow="shadow-[0_0_6px_rgba(139,92,246,0.15)]" />
+            <LayerButton layerKey="canadaPost" label="Canada Post" icon={Mail} colorClass="text-red-400" activeBg="bg-[#2a171c]" activeBorder="border-red-500/50" activeShadow="shadow-[0_0_6px_rgba(239,68,68,0.15)]" />
             <LayerButton layerKey="garbageCollection" label="廢物回收" icon={Truck} colorClass="text-orange-400" activeBg="bg-[#291e17]" activeBorder="border-orange-500/50" activeShadow="shadow-[0_0_6px_rgba(249,115,22,0.2)]" />
           </div>
         </div>
