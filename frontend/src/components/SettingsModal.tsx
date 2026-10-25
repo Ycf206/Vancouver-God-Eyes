@@ -273,31 +273,31 @@ export default function SettingsModal() {
 
   return (
     <div 
-      className="fixed top-[72px] right-4 z-50 w-[360px] max-w-[calc(100vw-32px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-4 shadow-2xl border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-200 select-none overflow-y-auto [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full"
+      className="fixed top-[72px] right-4 z-50 w-[360px] max-w-[calc(100vw-32px)] bg-[#161922]/98 backdrop-blur-md text-gray-100 rounded-xl shadow-2xl border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-200 select-none overflow-hidden"
       onClick={(e) => e.stopPropagation()}
     >
-      {/* Header */}
-      <div className="flex items-start justify-between pb-3 mb-3 border-b border-[#262b38] shrink-0">
+      {/* 固定頂部標題列 (Fixed Header - 捲動內容時永不消失，X 按鈕隨時可點選) */}
+      <div className="flex items-center justify-between px-4 py-3 bg-[#161922] border-b border-[#262b38] shrink-0 z-10 shadow-sm">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0 shadow-sm">
             <Settings className="w-4 h-4" />
           </div>
           <div>
-            <h2 className="text-sm font-bold text-white tracking-wide">系統設定</h2>
-            <p className="text-[10.5px] text-gray-400">所有變更均會自動即時儲存</p>
+            <h2 className="text-sm font-bold text-white tracking-wide">系統偏好設定</h2>
+            <p className="text-[10px] text-gray-400">所有變更均會自動即時儲存</p>
           </div>
         </div>
         <button
           onClick={() => setSettingsModalOpen(false)}
-          className="text-gray-400 hover:text-white p-1 rounded-md hover:bg-[#252a38] transition-colors"
-          title="關閉"
+          className="text-gray-400 hover:text-white p-1.5 rounded-lg hover:bg-[#252a38] transition-colors cursor-pointer"
+          title="關閉 (Esc)"
         >
           <X className="w-4 h-4" />
         </button>
       </div>
 
-      {/* Body */}
-      <div className="flex flex-col gap-4 text-gray-200">
+      {/* 獨立捲動內容區 (Scrollable Content Area) */}
+      <div className="flex-1 overflow-y-auto p-4 pt-3 flex flex-col gap-4 text-gray-200 custom-scrollbar [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
         
         {/* Setting 1: 個人位置 (My Location) */}
         <div className="flex flex-col gap-2">
@@ -694,16 +694,10 @@ export default function SettingsModal() {
             </button>
           </div>
         </div>
-      </div>
 
 
-      {/* Footer Status Indicator & Legal Links */}
-      <div className="mt-4 pt-2.5 border-t border-[#262b38] flex flex-col sm:flex-row items-center justify-between gap-2 text-[10.5px] text-gray-400">
-        <span className="flex items-center gap-1 text-emerald-400/90 font-medium">
-          <Check className="w-3 h-3" />
-          <span>設定即時自動生效</span>
-        </span>
-        <div className="flex items-center gap-2.5 text-gray-400">
+        {/* 底部政策條款連結 (已刪除「設定即時自動生效」與「關閉面板」) */}
+        <div className="mt-2 pt-2.5 border-t border-[#262b38] flex items-center justify-center gap-2.5 text-[10.5px] text-gray-400 shrink-0 pb-1">
           <Link
             href="/privacy"
             target="_blank"
@@ -720,12 +714,6 @@ export default function SettingsModal() {
             服務條款 (Terms)
           </Link>
         </div>
-        <button
-          onClick={() => setSettingsModalOpen(false)}
-          className="text-gray-400 hover:text-white font-medium hover:underline"
-        >
-          關閉面板
-        </button>
       </div>
     </div>
   );
