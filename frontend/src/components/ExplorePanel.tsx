@@ -3204,14 +3204,18 @@ function ExploreContent() {
                           <span className="font-mono text-sky-400 font-semibold">-12°C ~ -18°C</span>
                         </div>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => setSatelliteModalOpen(true)}
-                        className="text-[10.5px] text-sky-400 hover:text-sky-300 hover:underline flex items-center gap-1 mt-1 justify-end cursor-pointer"
-                      >
-                        <Eye className="w-3.5 h-3.5" />
-                        <span>檢視衛星圖</span>
-                      </button>
+                      <div className="flex items-center justify-between pt-2 border-t border-[#1c2232] mt-1">
+                        <span className="text-[10px] text-gray-500">官方高解析度觀測來源</span>
+                        <a
+                          href="https://www.star.nesdis.noaa.gov/GOES/sector.php?sat=G18&sector=pnw"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[10.5px] font-semibold text-sky-400 hover:text-sky-300 hover:underline flex items-center gap-1.5 cursor-pointer bg-sky-950/50 hover:bg-sky-900/60 px-2.5 py-1 rounded-lg border border-sky-800/50 transition-colors shadow-sm"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5" />
+                          <span>開啟 NOAA 官方即時衛星雲圖</span>
+                        </a>
+                      </div>
                     </div>
                   </div>
 
@@ -6224,127 +6228,6 @@ function ExploreContent() {
           關閉
         </button>
       </div>
-
-      {/* 太平洋西北衛星雲圖 Lightbox Modal */}
-      {satelliteModalOpen && (
-        <div
-          className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 md:p-6 pt-16 sm:pt-20 pb-4 animate-in fade-in duration-200"
-          onClick={() => setSatelliteModalOpen(false)}
-        >
-          <div
-            className="relative w-full max-w-5xl 2xl:max-w-6xl bg-[#141822] border border-blue-500/40 rounded-2xl overflow-hidden shadow-2xl flex flex-col h-[90vh] max-h-[92vh]"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Modal Header */}
-            <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 px-4 py-3 bg-[#1a202c] border-b border-gray-700/60 shrink-0">
-              <div className="flex items-center gap-2.5 min-w-0">
-                <Satellite className="w-5 h-5 text-blue-400 shrink-0" />
-                <div className="flex flex-col min-w-0">
-                  <h4 className="text-sm font-bold text-gray-100 truncate">
-                    太平洋西北高解析度即時氣象衛星雲圖
-                  </h4>
-                  <div className="flex items-center gap-2 text-[11px] text-gray-400">
-                    <span className="text-blue-300 font-semibold">NOAA GOES-18 (GOES-West)</span>
-                    <span>·</span>
-                    <span>每 10 分鐘更新</span>
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 shrink-0">
-                {/* Channel Selector */}
-                <div className="flex items-center bg-[#141824] p-0.5 rounded-lg border border-gray-700/60">
-                  <button
-                    type="button"
-                    onClick={() => setSatelliteChannel('geocolor')}
-                    className={`px-2 py-1 text-[10px] rounded transition-all font-medium ${
-                      satelliteChannel === 'geocolor'
-                        ? 'bg-blue-600 text-white font-bold'
-                        : 'text-gray-400 hover:text-white'
-                    }`}
-                  >
-                    真實色彩 (GeoColor)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setSatelliteChannel('ir')}
-                    className={`px-2 py-1 text-[10px] rounded transition-all font-medium ${
-                      satelliteChannel === 'ir'
-                        ? 'bg-blue-600 text-white font-bold'
-                        : 'text-gray-400 hover:text-white'
-                    }`}
-                  >
-                    紅外線 (IR-13)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setSatelliteChannel('water_vapor')}
-                    className={`px-2 py-1 text-[10px] rounded transition-all font-medium ${
-                      satelliteChannel === 'water_vapor'
-                        ? 'bg-blue-600 text-white font-bold'
-                        : 'text-gray-400 hover:text-white'
-                    }`}
-                  >
-                    水氣 (WV-09)
-                  </button>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setSatelliteRefreshKey(k => k + 1)}
-                  className="p-1.5 rounded-lg text-gray-400 hover:text-blue-300 hover:bg-white/10 transition-colors"
-                  title="重新載入衛星圖"
-                >
-                  <RefreshCw className="w-4 h-4" />
-                </button>
-                <a
-                  href="https://www.star.nesdis.noaa.gov/GOES/sector.php?sat=G18&sector=pnw"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-1.5 rounded-lg text-gray-400 hover:text-blue-300 hover:bg-white/10 transition-colors"
-                  title="前往 NOAA 衛星雲圖官方頁面"
-                >
-                  <ExternalLink className="w-4 h-4" />
-                </a>
-                <button
-                  type="button"
-                  onClick={() => setSatelliteModalOpen(false)}
-                  className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
-                  title="關閉 (Esc)"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-
-            {/* Modal Body */}
-            <div className="flex-1 min-h-0 w-full h-full p-2 sm:p-4 flex items-center justify-center bg-black/95 relative overflow-auto">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={
-                  satelliteChannel === 'geocolor'
-                    ? `https://cdn.star.nesdis.noaa.gov/GOES18/ABI/SECTOR/pnw/GEOCOLOR/1200x720.jpg?t=${satelliteRefreshKey}`
-                    : satelliteChannel === 'ir'
-                    ? `https://cdn.star.nesdis.noaa.gov/GOES18/ABI/SECTOR/pnw/13/1200x720.jpg?t=${satelliteRefreshKey}`
-                    : `https://cdn.star.nesdis.noaa.gov/GOES18/ABI/SECTOR/pnw/09/1200x720.jpg?t=${satelliteRefreshKey}`
-                }
-                alt="太平洋西北氣象衛星雲圖"
-                className="w-auto h-auto max-w-full max-h-full object-contain rounded-lg shadow-2xl border border-white/10"
-                onError={(e) => {
-                  const target = e.currentTarget;
-                  if (!target.src.includes('weather.gc.ca')) {
-                    target.src = `https://weather.gc.ca/data/satellite/goes_wcan_visible_100.jpg?t=${Date.now()}`;
-                  }
-                }}
-              />
-            </div>
-
-            {/* Modal Footer */}
-            <div className="px-4 py-2 bg-[#1a1e29] border-t border-gray-800 flex items-center justify-between text-[11px] text-gray-400 shrink-0">
-              <span>覆蓋大溫哥華、溫哥華島、喬治亞海峽及太平洋西北近岸海域 · 點擊背景或 ✕ 關閉</span>
-              <span className="text-blue-400 font-mono text-[10.5px]">NOAA GOES-18 ABI</span>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* 極光觀測預測圖 Lightbox Modal */}
       {enlargedAuroraImage && (

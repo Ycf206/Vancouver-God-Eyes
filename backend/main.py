@@ -3728,21 +3728,7 @@ def update_admin_schedule(payload: dict = Body(...)):
                                 put_resp = requests.put(content_url, json=put_body, headers=headers, timeout=10)
                                 if put_resp.status_code in [200, 201]:
                                     detail_extra = f"已透過 GitHub API 自動 Commit 並 Push 至 main 分支！GitHub Actions 即刻生效新排程週期。"
-                                    # 同步將更新後的 admin_sources_config.json 推送至 GitHub main 分支
-                                    try:
-                                        cfg_url = f"https://api.github.com/repos/{github_repo}/contents/backend/data/admin_sources_config.json"
-                                        cfg_get = requests.get(cfg_url, headers=headers, timeout=8)
-                                        if cfg_get.status_code == 200:
-                                            cfg_sha = cfg_get.json().get("sha")
-                                            cfg_put_body = {
-                                                "message": f"chore(config): sync {updated_src.get('name')} schedule in admin_sources_config.json",
-                                                "content": base64.b64encode(json.dumps(cfg, ensure_ascii=False, indent=2).encode("utf-8")).decode("utf-8"),
-                                                "sha": cfg_sha,
-                                                "branch": "main"
-                                            }
-                                            requests.put(cfg_url, json=cfg_put_body, headers=headers, timeout=10)
-                                    except Exception as cfg_err:
-                                        print("Sync config to GitHub error:", cfg_err)
+
                         except Exception as gh_ex:
                             print(f"GitHub Contents API update failed: {gh_ex}")
 

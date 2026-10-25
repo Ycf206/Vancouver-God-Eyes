@@ -698,15 +698,15 @@ export default function AppMap() {
         }
       }
     }
-    // 大溫各區域經緯度範圍判定
-    if (lat >= 49.11 && lat <= 49.20 && lon >= -123.21 && lon <= -123.05) return '列治文 (Richmond)';
-    if (lat >= 49.20 && lat <= 49.29 && lon >= -123.03 && lon <= -122.88) return '本拿比 (Burnaby)';
-    if (lat >= 49.30 && lat <= 49.38 && lon >= -123.15 && lon <= -122.95) return '北溫哥華 (North Van)';
-    if (lat >= 49.32 && lon <= -123.15) return '西溫哥華 (West Van)';
-    if (lat >= 49.05 && lat <= 49.22 && lon >= -122.89 && lon <= -122.68) return '素里 (Surrey)';
-    if (lat >= 49.23 && lat <= 49.30 && lon >= -122.88 && lon <= -122.75) return '高貴林 (Coquitlam)';
-    if (lat >= 49.20 && lat <= 49.24 && lon >= -122.95 && lon <= -122.88) return '新西敏 (New West)';
-    if (lat >= 49.20 && lat <= 49.30 && lon >= -123.26 && lon <= -123.02) return '溫哥華市區';
+    // 大溫各區域經緯度範圍判定 (純英文顯示，不帶中文)
+    if (lat >= 49.11 && lat <= 49.20 && lon >= -123.21 && lon <= -123.05) return 'Richmond';
+    if (lat >= 49.20 && lat <= 49.29 && lon >= -123.03 && lon <= -122.88) return 'Burnaby';
+    if (lat >= 49.30 && lat <= 49.38 && lon >= -123.15 && lon <= -122.95) return 'North Vancouver';
+    if (lat >= 49.32 && lon <= -123.15) return 'West Vancouver';
+    if (lat >= 49.05 && lat <= 49.22 && lon >= -122.89 && lon <= -122.68) return 'Surrey';
+    if (lat >= 49.23 && lat <= 49.30 && lon >= -122.88 && lon <= -122.75) return 'Coquitlam';
+    if (lat >= 49.20 && lat <= 49.24 && lon >= -122.95 && lon <= -122.88) return 'New Westminster';
+    if (lat >= 49.20 && lat <= 49.30 && lon >= -123.26 && lon <= -123.02) return 'Vancouver';
     return '';
   }, []);
 
@@ -13926,7 +13926,12 @@ export default function AppMap() {
 
           {cursorNeighbourhood && (
             <span className="px-2 py-0.5 rounded-full text-[10px] font-sans font-semibold bg-cyan-950/70 text-cyan-300 border border-cyan-800/60 shrink-0">
-              {cursorNeighbourhood}
+              {(() => {
+                const paren = cursorNeighbourhood.match(/\((.*?)\)/);
+                if (paren) return paren[1].trim();
+                const enOnly = cursorNeighbourhood.replace(/[\u4e00-\u9fa5]/g, '').trim();
+                return enOnly || 'Vancouver';
+              })()}
             </span>
           )}
 

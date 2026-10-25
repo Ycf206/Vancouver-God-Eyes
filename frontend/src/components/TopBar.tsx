@@ -176,10 +176,10 @@ export default function TopBar() {
       <div className="h-8 w-px bg-gray-700/60 mx-2"></div>
 
       {/* 時間與狀態 */}
-      <div className="flex flex-col justify-center mx-2 min-w-[150px]">
+      <div className="flex flex-col justify-center mx-1.5 shrink-0">
         {time ? (
           <>
-            <span className="text-[22px] font-mono font-medium leading-none mb-1 tracking-wider text-gray-100">
+            <span className="text-[21px] font-mono font-medium leading-none mb-1 tracking-wider text-gray-100">
               {formatTime(time)}
             </span>
             <span className="text-[10px] text-emerald-500 font-medium leading-none flex items-center gap-1.5">
@@ -192,15 +192,15 @@ export default function TopBar() {
         )}
       </div>
 
-      {/* 區域選擇 */}
-      <button className="flex items-center gap-2 bg-[#25262b] hover:bg-[#2c2d33] border border-[#373a40] px-4 h-9 rounded-md ml-6 text-sm transition-colors text-gray-200 font-medium shadow-sm shrink-0">
-        <MapIcon className="w-4 h-4 text-gray-400" />
+      {/* 區域選擇 (緊貼左方日期時間) */}
+      <button className="flex items-center gap-1.5 bg-[#25262b] hover:bg-[#2c2d33] border border-[#373a40] px-3 h-9 rounded-md ml-2.5 text-xs sm:text-sm transition-colors text-gray-200 font-medium shadow-sm shrink-0">
+        <MapIcon className="w-3.5 h-3.5 text-gray-400" />
         <span>大溫哥華</span>
-        <ChevronDown className="w-3 h-3 text-gray-400 ml-2" />
+        <ChevronDown className="w-3 h-3 text-gray-400 ml-1" />
       </button>
 
-      {/* 搜尋列 - placeholder 改為 "搜尋" */}
-      <div ref={searchContainerRef} className="relative flex-1 max-w-[650px] mx-6">
+      {/* 搜尋列 (緊隨大溫地區) */}
+      <div ref={searchContainerRef} className="relative flex-1 max-w-[650px] ml-2.5 mr-3 sm:mr-4">
         <div className="flex items-center bg-[#25262b] border border-[#373a40] rounded-md px-3 h-9 focus-within:border-emerald-500/70 focus-within:ring-1 focus-within:ring-emerald-500/30 transition-all shadow-inner">
           <Search className="w-4 h-4 text-gray-400 mr-2 shrink-0" />
           <input 

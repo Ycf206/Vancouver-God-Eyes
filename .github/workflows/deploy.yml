@@ -5,6 +5,17 @@ on:
     branches: 
       - main
       - master
+    paths-ignore:
+      - '.github/workflows/update-*.yml'
+      - '.github/workflows/oci-monthly-sync.yml'
+      - '.github/workflows/weekly-datasets.yml'
+      - 'backend/data/admin_sources_config.json'
+      - 'README.md'
+      - 'docs/**'
+
+concurrency:
+  group: deploy-oci-vm
+  cancel-in-progress: true
 
 jobs:
   deploy:
@@ -81,6 +92,7 @@ jobs:
           
           echo "Current Git Commit on VM: $(git rev-parse HEAD)"
 
-          # 重新建置並強制重啟前端與後端容器，確保編譯並載入最新程式碼
+          # 重新建置並平滑升級前端與後端容器，杜絕多實例名稱衝突
           docker compose build frontend backend
-          docker compose up -d --force-recreate frontend backend nginx
+          docker compose down --remove-orphans || true
+          docker compose up -d frontend backend nginx
