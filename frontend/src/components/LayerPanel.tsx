@@ -5,7 +5,7 @@ import { useUIStore, MapStyleType } from '@/store/useUIStore';
 import { 
   CreditCard, Map, Satellite, Sun, Moon, Bus, Layers, Route, Ship, 
   CircleDollarSign, Accessibility, Bike, Zap, Scooter, Camera, Siren, 
-  Flame, Building2, Hospital, ChevronLeft, Trees, Footprints, Flower2, 
+  Flame, Building2, Hospital, ChevronLeft, ChevronDown, Trees, Footprints, Flower2, 
   Droplets, Bath, Leaf, Landmark, GraduationCap, BookOpen, UtensilsCrossed, Bed, Heart,
   PlaneTakeoff, Calendar, Car, ShieldAlert, LifeBuoy, HeartPulse, Mountain,
   Compass, MapPin, Fuel, Train, Anchor, ArrowRight, Snowflake, Fingerprint, Waves,
@@ -66,10 +66,67 @@ export default function LayerPanel() {
     contourInterval, setContourInterval
   } = useUIStore();
 
+  const [collapsedCategories, setCollapsedCategories] = React.useState<Record<string, boolean>>({});
+
+  const toggleCategory = (catId: string) => {
+    setCollapsedCategories(prev => ({
+      ...prev,
+      [catId]: !prev[catId]
+    }));
+  };
+
   const activeLayerCount = React.useMemo(() => {
     return Object.values(layers).filter(Boolean).length;
   }, [layers]);
 
+  const categoryActiveCounts = React.useMemo(() => {
+    const transportKeys = [
+      'bus', 'busRoutes', 'skytrainTrains', 'skytrainRoutes',
+      'seabusVehicles', 'seabusRoutes', 'bcferriesVehicles', 'bcferriesRoutes',
+      'maritimeShipping', 'marineTerminals', 'airports'
+    ] as const;
+    const roadKeys = [
+      'parkingMeters', 'impark', 'motorcycleParking', 'accessibleParking',
+      'oneWayStreets', 'trafficSpeedLimits', 'trafficCrosswalks', 'carSharing',
+      'bikeways', 'bikeRacks', 'sharedBikes', 'escooter', 'trafficSignals',
+      'turnRestrictions', 'evCharging', 'tesla', 'truckRoutes', 'roadClosures',
+      'roadConstruction', 'trafficCameras', 'safetyCameras', 'fuel',
+      'trafficConditions', 'snowRemovalRoutes', 'trafficAlerts'
+    ] as const;
+    const lifestyleKeys = [
+      'schools', 'libraries', 'communityCentres', 'atm', 'aed', 'canadaPost',
+      'publicArt', 'museums', 'foodVendors', 'foodBanks', 'recycling',
+      'garbageCollection', 'litterContainers', 'homelessShelters'
+    ] as const;
+    const natureKeys = [
+      'parks', 'parksFacilities', 'communityGardens', 'publicTrees',
+      'drinkingFountains', 'publicWashrooms'
+    ] as const;
+    const governmentKeys = [
+      'police', 'crimeAreas', 'fireHalls', 'fireHydrants', 'hospitals',
+      'disasterHubs', 'vanWifi'
+    ] as const;
+    const utilitiesKeys = [
+      'waterDistributionMains', 'sewerMains', 'streetLightingConduits',
+      'streetLighting'
+    ] as const;
+    const geographyKeys = [
+      'localAreaBoundary', 'postalCodeFSA', 'zoningDistricts', 'beachWaterQuality'
+    ] as const;
+
+    const count = (keys: readonly (keyof typeof layers)[]) => keys.filter((k) => layers[k]).length;
+
+    return {
+      styles: 1,
+      transport: count(transportKeys) + (isFlightScheduleOpen ? 1 : 0),
+      road: count(roadKeys),
+      lifestyle: count(lifestyleKeys),
+      nature: count(natureKeys),
+      government: count(governmentKeys),
+      utilities: count(utilitiesKeys),
+      geography: count(geographyKeys) + (contourInterval !== 'off' ? 1 : 0),
+    };
+  }, [layers, isFlightScheduleOpen, contourInterval]);
 
   // Helper component for Style buttons (Icon only)
   const StyleButton = ({ type, icon: Icon, title }: { type: MapStyleType, icon: React.ElementType, title: string }) => {
@@ -130,6 +187,53 @@ export default function LayerPanel() {
     );
   };
 
+  // Helper component for Category Header with Collapse Toggle
+  const CategoryHeader = ({
+    id,
+    title,
+    english,
+    icon: Icon,
+    colorClass = 'text-gray-400',
+    subColorClass = 'text-gray-500',
+  }: {
+    id: string;
+    title: string;
+    english: string;
+    icon?: React.ElementType;
+    colorClass?: string;
+    subColorClass?: string;
+  }) => {
+    const isCollapsed = !!collapsedCategories[id];
+    const activeCount = categoryActiveCounts[id as keyof typeof categoryActiveCounts] || 0;
+
+    return (
+      <button
+        type="button"
+        onClick={() => toggleCategory(id)}
+        className="w-full text-[10px] font-bold tracking-wider flex items-center justify-between py-1 cursor-pointer hover:opacity-90 select-none group transition-opacity"
+        title={isCollapsed ? `展開 ${title}` : `收起 ${title}`}
+      >
+        <div className={`flex items-center gap-1 ${colorClass}`}>
+          {Icon && <Icon className="w-3 h-3" />}
+          <span>{title}</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          {isCollapsed && activeCount > 0 && id !== 'styles' && (
+            <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+              {activeCount}
+            </span>
+          )}
+          <span className={`text-[9px] font-mono ${subColorClass}`}>{english}</span>
+          <ChevronDown
+            className={`w-3.5 h-3.5 text-gray-400 group-hover:text-gray-200 transition-transform duration-200 ${
+              isCollapsed ? '-rotate-90 text-gray-500' : 'rotate-0'
+            }`}
+          />
+        </div>
+      </button>
+    );
+  };
+
   // On mobile initial load, default to closed
   React.useEffect(() => {
     if (typeof window !== 'undefined' && window.innerWidth < 768) {
@@ -148,6 +252,7 @@ export default function LayerPanel() {
         onClick={toggleLayerPanel}
         className="fixed inset-0 top-[60px] z-40 bg-black/60 backdrop-blur-xs md:hidden animate-in fade-in duration-200"
       />
+
       <div className="fixed top-[60px] left-0 bottom-0 z-50 md:z-30 w-[280px] sm:w-[240px] bg-[#161719] border-r border-[#2d2e32] flex flex-col shadow-2xl select-none animate-in slide-in-from-left duration-200">
       
       {/* Header */}
@@ -183,357 +288,327 @@ export default function LayerPanel() {
       {/* Scrollable Body with custom scrollbar */}
       <div className="flex-1 overflow-y-auto px-2.5 py-2.5 flex flex-col gap-3 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[#2e3036] [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-[#42454d]">
         
-        {/* Map Styles */}
+        {/* 1. Map Styles (底圖風格) */}
         <div className="flex flex-col gap-1.5">
-          <div className="text-[10px] font-bold text-gray-400 tracking-wider flex items-center justify-between">
-            <span>底圖風格</span>
-            <span className="text-[9px] text-gray-500 font-normal">STREET / SATELLITE</span>
-          </div>
-          <div className="grid grid-cols-4 gap-1">
-            <StyleButton type="street" title="街道地圖" icon={Map} />
-            <StyleButton type="satellite" title="衛星影像" icon={Satellite} />
-            <StyleButton type="light" title="淺色風格" icon={Sun} />
-            <StyleButton type="dark" title="深色科技" icon={Moon} />
-          </div>
-
-        {/* Divider */}
-        <div className="w-full h-px bg-[#26282d]"></div>
-
-        {/* Transport Row (交通) */}
-        <div className="flex flex-col gap-1.5">
-          <div className="text-[10px] font-bold text-gray-400 tracking-wider flex items-center justify-between">
-            <div className="flex items-center gap-1">
-              <Bus className="w-3 h-3 text-emerald-400" />
-              <span>交通</span>
+          <CategoryHeader id="styles" title="底圖風格" english="STREET / SATELLITE" />
+          {!collapsedCategories['styles'] && (
+            <div className="grid grid-cols-4 gap-1 animate-in fade-in duration-150">
+              <StyleButton type="street" title="街道地圖" icon={Map} />
+              <StyleButton type="satellite" title="衛星影像" icon={Satellite} />
+              <StyleButton type="light" title="淺色風格" icon={Sun} />
+              <StyleButton type="dark" title="深色科技" icon={Moon} />
             </div>
-            <span className="text-[9px] text-gray-500 font-mono">TRANSPORT</span>
-          </div>
-
-          <div className="flex flex-col gap-1">
-            {/* 巴士 */}
-            <div className="grid grid-cols-[52px_1fr_1fr] gap-1 items-center">
-              <span className="text-[11px] font-medium text-emerald-400 pl-0.5">巴士</span>
-              <LayerButton layerKey="bus" label="車輛" title="巴士車輛" icon={Bus} iconOnly colorClass="text-emerald-400" activeBg="bg-[#1a2e23]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
-              <LayerButton layerKey="busRoutes" label="路線" title="巴士路線" icon={Route} iconOnly colorClass="text-emerald-400" activeBg="bg-[#1a2e23]" activeBorder="border-emerald-500/50" />
-            </div>
-
-            {/* 天車 */}
-            <div className="grid grid-cols-[52px_1fr_1fr] gap-1 items-center">
-              <span className="text-[11px] font-medium text-blue-400 pl-0.5">天車</span>
-              <LayerButton layerKey="skytrainTrains" label="列車 (推算)" title="天車列車 (推算)" icon={Train} iconOnly colorClass="text-blue-400" activeBg="bg-[#1a2436]" activeBorder="border-blue-500/50" activeShadow="shadow-[0_0_6px_rgba(59,130,246,0.15)]" />
-              <LayerButton layerKey="skytrainRoutes" label="路線" title="天車路線" icon={Route} iconOnly colorClass="text-blue-400" activeBg="bg-[#1a2436]" activeBorder="border-blue-500/50" />
-            </div>
-
-            {/* 海上巴士 */}
-            <div className="grid grid-cols-[52px_1fr_1fr] gap-1 items-center">
-              <span className="text-[11px] font-medium text-[#d8baaa] pl-0.5">海上巴士</span>
-              <LayerButton layerKey="seabusVehicles" label="船隻" title="海上巴士船隻" icon={Ship} iconOnly colorClass="text-[#d8baaa]" activeBg="bg-[#2a221f]" activeBorder="border-[#8b786d]/50" activeShadow="shadow-[0_0_6px_rgba(139,120,109,0.2)]" />
-              <LayerButton layerKey="seabusRoutes" label="路線" title="海上巴士路線" icon={Route} iconOnly colorClass="text-[#d8baaa]" activeBg="bg-[#2a221f]" activeBorder="border-[#8b786d]/50" />
-            </div>
-
-            {/* 卑詩渡輪 */}
-            <div className="grid grid-cols-[52px_1fr_1fr] gap-1 items-center">
-              <span className="text-[11px] font-medium text-[#3399ff] pl-0.5">卑詩渡輪</span>
-              <LayerButton layerKey="bcferriesVehicles" label="船隻" title="卑詩渡輪船隻" icon={Ship} iconOnly colorClass="text-[#3399ff]" activeBg="bg-[#0f1b2e]" activeBorder="border-[#0060a9]/50" activeShadow="shadow-[0_0_6px_rgba(0,96,169,0.2)]" />
-              <LayerButton layerKey="bcferriesRoutes" label="路線" title="卑詩渡輪航線" icon={Route} iconOnly colorClass="text-[#3399ff]" activeBg="bg-[#0f1b2e]" activeBorder="border-[#0060a9]/50" />
-            </div>
-
-            {/* 船運 */}
-            <div className="grid grid-cols-[52px_1fr_1fr] gap-1 items-center">
-              <span className="text-[11px] font-medium text-cyan-400 pl-0.5">船運</span>
-              <LayerButton layerKey="maritimeShipping" label="船隻" title="船運船隻" icon={Ship} iconOnly colorClass="text-cyan-400" activeBg="bg-[#0e2730]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.2)]" />
-              <LayerButton layerKey="marineTerminals" label="碼頭" title="船運碼頭" icon={Anchor} iconOnly colorClass="text-cyan-400" activeBg="bg-[#0e2730]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.2)]" />
-            </div>
-
-            {/* 航空 */}
-            <div className="grid grid-cols-[52px_1fr_1fr] gap-1 items-center">
-              <span className="text-[11px] font-medium text-sky-400 pl-0.5">航空</span>
-              <LayerButton layerKey="airports" label="機場" title="機場" icon={PlaneTakeoff} iconOnly colorClass="text-sky-400" activeBg="bg-[#102336]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(56,189,248,0.15)]" />
-              <button
-                onClick={() => toggleFlightSchedule()}
-                className={`group relative flex items-center justify-center h-7 rounded border text-[10.5px] transition-all duration-150 select-none ${
-                  isFlightScheduleOpen
-                    ? 'bg-[#102336] border-sky-500/50 text-sky-400 shadow-[0_0_6px_rgba(56,189,248,0.15)] font-semibold'
-                    : 'bg-[#1c1d21] border-[#2d2e32] text-gray-400 hover:bg-[#25262b] hover:text-white font-normal'
-                }`}
-                title="航班班次"
-              >
-                <Calendar className={`w-3.5 h-3.5 shrink-0 ${isFlightScheduleOpen ? 'text-sky-400' : 'text-gray-500 group-hover:text-white'}`} />
-                <span className="pointer-events-none absolute bottom-full mb-1.5 hidden group-hover:flex items-center px-2 py-0.5 rounded bg-gray-900 border border-gray-700 text-white text-[10px] whitespace-nowrap shadow-lg z-50">
-                  航班班次
-                </span>
-              </button>
-            </div>
-          </div>
+          )}
         </div>
 
         {/* Divider */}
         <div className="w-full h-px bg-[#26282d]"></div>
 
-        {/* Road Infrastructure Row (道路) */}
+        {/* 2. Transport Row (交通) */}
         <div className="flex flex-col gap-1.5">
-          <div className="text-[10px] font-bold text-amber-400 tracking-wider flex items-center justify-between">
-            <div className="flex items-center gap-1">
-              <Route className="w-3 h-3 text-amber-400" />
-              <span>道路</span>
+          <CategoryHeader id="transport" title="交通" english="TRANSPORT" icon={Bus} colorClass="text-emerald-400" subColorClass="text-gray-500" />
+          {!collapsedCategories['transport'] && (
+            <div className="flex flex-col gap-1 animate-in fade-in duration-150">
+              {/* 巴士 */}
+              <div className="grid grid-cols-[52px_1fr_1fr] gap-1 items-center">
+                <span className="text-[11px] font-medium text-emerald-400 pl-0.5">巴士</span>
+                <LayerButton layerKey="bus" label="車輛" title="巴士車輛" icon={Bus} iconOnly colorClass="text-emerald-400" activeBg="bg-[#1a2e23]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
+                <LayerButton layerKey="busRoutes" label="路線" title="巴士路線" icon={Route} iconOnly colorClass="text-emerald-400" activeBg="bg-[#1a2e23]" activeBorder="border-emerald-500/50" />
+              </div>
+
+              {/* 天車 */}
+              <div className="grid grid-cols-[52px_1fr_1fr] gap-1 items-center">
+                <span className="text-[11px] font-medium text-blue-400 pl-0.5">天車</span>
+                <LayerButton layerKey="skytrainTrains" label="列車 (推算)" title="天車列車 (推算)" icon={Train} iconOnly colorClass="text-blue-400" activeBg="bg-[#1a2436]" activeBorder="border-blue-500/50" activeShadow="shadow-[0_0_6px_rgba(59,130,246,0.15)]" />
+                <LayerButton layerKey="skytrainRoutes" label="路線" title="天車路線" icon={Route} iconOnly colorClass="text-blue-400" activeBg="bg-[#1a2436]" activeBorder="border-blue-500/50" />
+              </div>
+
+              {/* 海上巴士 */}
+              <div className="grid grid-cols-[52px_1fr_1fr] gap-1 items-center">
+                <span className="text-[11px] font-medium text-[#d8baaa] pl-0.5">海上巴士</span>
+                <LayerButton layerKey="seabusVehicles" label="船隻" title="海上巴士船隻" icon={Ship} iconOnly colorClass="text-[#d8baaa]" activeBg="bg-[#2a221f]" activeBorder="border-[#8b786d]/50" activeShadow="shadow-[0_0_6px_rgba(139,120,109,0.2)]" />
+                <LayerButton layerKey="seabusRoutes" label="路線" title="海上巴士路線" icon={Route} iconOnly colorClass="text-[#d8baaa]" activeBg="bg-[#2a221f]" activeBorder="border-[#8b786d]/50" />
+              </div>
+
+              {/* 卑詩渡輪 */}
+              <div className="grid grid-cols-[52px_1fr_1fr] gap-1 items-center">
+                <span className="text-[11px] font-medium text-[#3399ff] pl-0.5">卑詩渡輪</span>
+                <LayerButton layerKey="bcferriesVehicles" label="船隻" title="卑詩渡輪船隻" icon={Ship} iconOnly colorClass="text-[#3399ff]" activeBg="bg-[#0f1b2e]" activeBorder="border-[#0060a9]/50" activeShadow="shadow-[0_0_6px_rgba(0,96,169,0.2)]" />
+                <LayerButton layerKey="bcferriesRoutes" label="路線" title="卑詩渡輪航線" icon={Route} iconOnly colorClass="text-[#3399ff]" activeBg="bg-[#0f1b2e]" activeBorder="border-[#0060a9]/50" />
+              </div>
+
+              {/* 船運 */}
+              <div className="grid grid-cols-[52px_1fr_1fr] gap-1 items-center">
+                <span className="text-[11px] font-medium text-cyan-400 pl-0.5">船運</span>
+                <LayerButton layerKey="maritimeShipping" label="船隻" title="船運船隻" icon={Ship} iconOnly colorClass="text-cyan-400" activeBg="bg-[#0e2730]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.2)]" />
+                <LayerButton layerKey="marineTerminals" label="碼頭" title="船運碼頭" icon={Anchor} iconOnly colorClass="text-cyan-400" activeBg="bg-[#0e2730]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.2)]" />
+              </div>
+
+              {/* 航空 */}
+              <div className="grid grid-cols-[52px_1fr_1fr] gap-1 items-center">
+                <span className="text-[11px] font-medium text-sky-400 pl-0.5">航空</span>
+                <LayerButton layerKey="airports" label="機場" title="機場" icon={PlaneTakeoff} iconOnly colorClass="text-sky-400" activeBg="bg-[#102336]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(56,189,248,0.15)]" />
+                <button
+                  onClick={() => toggleFlightSchedule()}
+                  className={`group relative flex items-center justify-center h-7 rounded border text-[10.5px] transition-all duration-150 select-none ${
+                    isFlightScheduleOpen
+                      ? 'bg-[#102336] border-sky-500/50 text-sky-400 shadow-[0_0_6px_rgba(56,189,248,0.15)] font-semibold'
+                      : 'bg-[#1c1d21] border-[#2d2e32] text-gray-400 hover:bg-[#25262b] hover:text-white font-normal'
+                  }`}
+                  title="航班班次"
+                >
+                  <Calendar className={`w-3.5 h-3.5 shrink-0 ${isFlightScheduleOpen ? 'text-sky-400' : 'text-gray-500 group-hover:text-white'}`} />
+                  <span className="pointer-events-none absolute bottom-full mb-1.5 hidden group-hover:flex items-center px-2 py-0.5 rounded bg-gray-900 border border-gray-700 text-white text-[10px] whitespace-nowrap shadow-lg z-50">
+                    航班班次
+                  </span>
+                </button>
+              </div>
             </div>
-            <span className="text-[9px] text-amber-500/70 font-mono">ROAD</span>
-          </div>
-          <div className="grid grid-cols-2 gap-1">
-            {/* Row 1: 停車收費錶 | ImPark */}
-            <LayerButton layerKey="parkingMeters" label="停車收費錶" icon={CircleDollarSign} colorClass="text-[#3b82f6]" activeBg="bg-[#1e293b]" activeBorder="border-blue-600/50" activeShadow="shadow-[0_0_6px_rgba(37,99,235,0.2)]" />
-            <LayerButton layerKey="impark" label="ImPark" icon={ImParkIcon} colorClass="text-[#d9261c]" activeBg="bg-[#2d1417]" activeBorder="border-[#d9261c]/60" activeShadow="shadow-[0_0_8px_rgba(217,38,28,0.3)]" />
-
-            {/* Row 2: 摩托車停車位 | 無障礙停車位 */}
-            <LayerButton layerKey="motorcycleParking" label="摩托車停車位" icon={Bike} colorClass="text-[#3b82f6]" activeBg="bg-[#1e293b]" activeBorder="border-blue-600/50" activeShadow="shadow-[0_0_6px_rgba(37,99,235,0.2)]" />
-            <LayerButton layerKey="accessibleParking" label="無障礙停車位" icon={Accessibility} colorClass="text-[#38bdf8]" activeBg="bg-[#0c2e46]" activeBorder="border-[#0284c7]/60" activeShadow="shadow-[0_0_6px_rgba(2,132,199,0.2)]" />
-
-            {/* Row 3: 單程路段 | 限速路段 */}
-            <LayerButton layerKey="oneWayStreets" label="單程路段" icon={ArrowRight} colorClass="text-slate-300" activeBg="bg-[#0f172a]" activeBorder="border-slate-500/50" activeShadow="shadow-[0_0_6px_rgba(15,23,42,0.4)]" />
-            <LayerButton layerKey="trafficSpeedLimits" label="限速路段" icon={Gauge} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
-
-            {/* Row 4: 行人穿越道 | 共享汽車 */}
-            <LayerButton layerKey="trafficCrosswalks" label="行人穿越道" icon={Footprints} colorClass="text-amber-200" activeBg="bg-[#2a2518]" activeBorder="border-amber-300/50" activeShadow="shadow-[0_0_6px_rgba(254,243,199,0.2)]" />
-            <LayerButton layerKey="carSharing" label="共享汽車" icon={Car} colorClass="text-sky-400" activeBg="bg-[#102336]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(56,189,248,0.15)]" />
-
-            {/* Row 5: 單車徑 | 單車架 */}
-            <LayerButton layerKey="bikeways" label="單車徑" icon={Route} colorClass="text-teal-400" activeBg="bg-[#122826]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
-            <LayerButton layerKey="bikeRacks" label="單車架" icon={Bike} colorClass="text-emerald-400" activeBg="bg-[#062c22]" activeBorder="border-emerald-600/50" activeShadow="shadow-[0_0_6px_rgba(6,95,70,0.2)]" />
-
-            {/* Row 6: 共享單車 | 共享滑板車 */}
-            <LayerButton layerKey="sharedBikes" label="共享單車" icon={Bike} colorClass="text-teal-400" activeBg="bg-[#0e2d30]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(0,163,173,0.2)]" />
-            <LayerButton layerKey="escooter" label="共享滑板車" icon={Scooter} colorClass="text-lime-400" activeBg="bg-[#1e2a14]" activeBorder="border-lime-500/50" activeShadow="shadow-[0_0_6px_rgba(132,204,22,0.15)]" />
-
-            {/* Row 7: 交通燈 | 轉向限制 (位於共享單車與電動車充電站之間) */}
-            <LayerButton layerKey="trafficSignals" label="交通燈" icon={TrafficLightIcon} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
-            <LayerButton layerKey="turnRestrictions" label="轉向限制" icon={TurnRestrictionIcon} colorClass="text-rose-400" activeBg="bg-[#2a171a]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.15)]" />
-
-            {/* Row 8: 電動車充電站 | TESLA */}
-            <LayerButton layerKey="evCharging" label="電動車充電站" icon={Zap} colorClass="text-emerald-400" activeBg="bg-[#0b291e]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(5,150,105,0.2)]" />
-            <LayerButton layerKey="tesla" label="TESLA" icon={TeslaIcon} colorClass="text-[#E82127]" activeBg="bg-[#2d1417]" activeBorder="border-[#E82127]/60" activeShadow="shadow-[0_0_8px_rgba(232,33,39,0.3)]" />
-
-            {/* Row 9: 貨車路線 */}
-            <LayerButton layerKey="truckRoutes" label="貨車路線" icon={Truck} colorClass="text-sky-400" activeBg="bg-[#0f2438]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(14,165,233,0.2)]" />
-
-            {/* Row 8: 交通封閉 | 道路施工 */}
-            <LayerButton layerKey="roadClosures" label="交通封閉" icon={Ban} title="交通封閉" colorClass="text-red-400" activeBg="bg-[#2b171c]" activeBorder="border-red-500/50" activeShadow="shadow-[0_0_6px_rgba(220,38,38,0.2)]" />
-            <LayerButton layerKey="roadConstruction" label="道路施工" icon={Cone} title="道路施工" colorClass="text-orange-400" activeBg="bg-[#2d1b10]" activeBorder="border-orange-500/50" activeShadow="shadow-[0_0_6px_rgba(234,88,12,0.2)]" />
-
-            {/* Row 9: 交通攝影機 | 路口安全相機 */}
-            <LayerButton layerKey="trafficCameras" label="交通攝影機" icon={Camera} colorClass="text-sky-400" activeBg="bg-[#102336]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(2,132,199,0.2)]" />
-            <LayerButton layerKey="safetyCameras" label="路口安全相機" icon={Siren} colorClass="text-red-500" activeBg="bg-[#2d1216]" activeBorder="border-red-500/50" activeShadow="shadow-[0_0_6px_rgba(220,38,38,0.25)]" />
-
-            {/* Row 10: 油站 (路況左方) | 路況 */}
-            <LayerButton layerKey="fuel" label="油站" icon={Fuel} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
-            <LayerButton layerKey="trafficConditions" label="路況" icon={Activity} title="即時路況：TomTom 全大溫街道即時暢通度 (綠/黃/紅)" colorClass="text-emerald-400" activeBg="bg-[#142820]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
-
-            {/* Row 11: 鏟雪路線 | 即時通報 (路況下方) */}
-            <LayerButton layerKey="snowRemovalRoutes" label="鏟雪路線" icon={Snowflake} title="鏟雪路線" colorClass="text-sky-200" activeBg="bg-[#172836]" activeBorder="border-sky-300/50" activeShadow="shadow-[0_0_6px_rgba(240,249,255,0.2)]" />
-            <LayerButton layerKey="trafficAlerts" label="即時通報" icon={Megaphone} title="即時通報：TomTom 即時標出事故、封路、施工與危險障礙點" colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
-          </div>
+          )}
         </div>
 
         {/* Divider */}
         <div className="w-full h-px bg-[#26282d]"></div>
 
-        {/* Lifestyle Row (生活) */}
+        {/* 3. Road Infrastructure Row (道路) */}
         <div className="flex flex-col gap-1.5">
-          <div className="text-[10px] font-bold text-amber-400 tracking-wider flex items-center justify-between">
-            <div className="flex items-center gap-1">
-              <Heart className="w-3 h-3 text-amber-400" />
-              <span>生活</span>
+          <CategoryHeader id="road" title="道路" english="ROAD" icon={Route} colorClass="text-amber-400" subColorClass="text-amber-500/70" />
+          {!collapsedCategories['road'] && (
+            <div className="grid grid-cols-2 gap-1 animate-in fade-in duration-150">
+              {/* Row 1: 停車收費錶 | ImPark */}
+              <LayerButton layerKey="parkingMeters" label="停車收費錶" icon={CircleDollarSign} colorClass="text-[#3b82f6]" activeBg="bg-[#1e293b]" activeBorder="border-blue-600/50" activeShadow="shadow-[0_0_6px_rgba(37,99,235,0.2)]" />
+              <LayerButton layerKey="impark" label="ImPark" icon={ImParkIcon} colorClass="text-[#d9261c]" activeBg="bg-[#2d1417]" activeBorder="border-[#d9261c]/60" activeShadow="shadow-[0_0_8px_rgba(217,38,28,0.3)]" />
+
+              {/* Row 2: 摩托車停車位 | 無障礙停車位 */}
+              <LayerButton layerKey="motorcycleParking" label="摩托車停車位" icon={Bike} colorClass="text-[#3b82f6]" activeBg="bg-[#1e293b]" activeBorder="border-blue-600/50" activeShadow="shadow-[0_0_6px_rgba(37,99,235,0.2)]" />
+              <LayerButton layerKey="accessibleParking" label="無障礙停車位" icon={Accessibility} colorClass="text-[#38bdf8]" activeBg="bg-[#0c2e46]" activeBorder="border-[#0284c7]/60" activeShadow="shadow-[0_0_6px_rgba(2,132,199,0.2)]" />
+
+              {/* Row 3: 單程路段 | 限速路段 */}
+              <LayerButton layerKey="oneWayStreets" label="單程路段" icon={ArrowRight} colorClass="text-slate-300" activeBg="bg-[#0f172a]" activeBorder="border-slate-500/50" activeShadow="shadow-[0_0_6px_rgba(15,23,42,0.4)]" />
+              <LayerButton layerKey="trafficSpeedLimits" label="限速路段" icon={Gauge} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
+
+              {/* Row 4: 行人穿越道 | 共享汽車 */}
+              <LayerButton layerKey="trafficCrosswalks" label="行人穿越道" icon={Footprints} colorClass="text-amber-200" activeBg="bg-[#2a2518]" activeBorder="border-amber-300/50" activeShadow="shadow-[0_0_6px_rgba(254,243,199,0.2)]" />
+              <LayerButton layerKey="carSharing" label="共享汽車" icon={Car} colorClass="text-sky-400" activeBg="bg-[#102336]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(56,189,248,0.15)]" />
+
+              {/* Row 5: 單車徑 | 單車架 */}
+              <LayerButton layerKey="bikeways" label="單車徑" icon={Route} colorClass="text-teal-400" activeBg="bg-[#122826]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
+              <LayerButton layerKey="bikeRacks" label="單車架" icon={Bike} colorClass="text-emerald-400" activeBg="bg-[#062c22]" activeBorder="border-emerald-600/50" activeShadow="shadow-[0_0_6px_rgba(6,95,70,0.2)]" />
+
+              {/* Row 6: 共享單車 | 共享滑板車 */}
+              <LayerButton layerKey="sharedBikes" label="共享單車" icon={Bike} colorClass="text-teal-400" activeBg="bg-[#0e2d30]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(0,163,173,0.2)]" />
+              <LayerButton layerKey="escooter" label="共享滑板車" icon={Scooter} colorClass="text-lime-400" activeBg="bg-[#1e2a14]" activeBorder="border-lime-500/50" activeShadow="shadow-[0_0_6px_rgba(132,204,22,0.15)]" />
+
+              {/* Row 7: 交通燈 | 轉向限制 (位於共享單車與電動車充電站之間) */}
+              <LayerButton layerKey="trafficSignals" label="交通燈" icon={TrafficLightIcon} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
+              <LayerButton layerKey="turnRestrictions" label="轉向限制" icon={TurnRestrictionIcon} colorClass="text-rose-400" activeBg="bg-[#2a171a]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.15)]" />
+
+              {/* Row 8: 電動車充電站 | TESLA */}
+              <LayerButton layerKey="evCharging" label="電動車充電站" icon={Zap} colorClass="text-emerald-400" activeBg="bg-[#0b291e]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(5,150,105,0.2)]" />
+              <LayerButton layerKey="tesla" label="TESLA" icon={TeslaIcon} colorClass="text-[#E82127]" activeBg="bg-[#2d1417]" activeBorder="border-[#E82127]/60" activeShadow="shadow-[0_0_8px_rgba(232,33,39,0.3)]" />
+
+              {/* Row 9: 貨車路線 (右方預留未來按鈕，交通封閉下移一行) */}
+              <LayerButton layerKey="truckRoutes" label="貨車路線" icon={Truck} colorClass="text-sky-400" activeBg="bg-[#0f2438]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(14,165,233,0.2)]" />
+              <div className="w-full h-7 pointer-events-none" aria-hidden="true" />
+
+              {/* Row 10: 交通封閉 | 道路施工 */}
+              <LayerButton layerKey="roadClosures" label="交通封閉" icon={Ban} title="交通封閉" colorClass="text-red-400" activeBg="bg-[#2b171c]" activeBorder="border-red-500/50" activeShadow="shadow-[0_0_6px_rgba(220,38,38,0.2)]" />
+              <LayerButton layerKey="roadConstruction" label="道路施工" icon={Cone} title="道路施工" colorClass="text-orange-400" activeBg="bg-[#2d1b10]" activeBorder="border-orange-500/50" activeShadow="shadow-[0_0_6px_rgba(234,88,12,0.2)]" />
+
+              {/* Row 11: 交通攝影機 | 路口安全相機 */}
+              <LayerButton layerKey="trafficCameras" label="交通攝影機" icon={Camera} colorClass="text-sky-400" activeBg="bg-[#102336]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(2,132,199,0.2)]" />
+              <LayerButton layerKey="safetyCameras" label="路口安全相機" icon={Siren} colorClass="text-red-500" activeBg="bg-[#2d1216]" activeBorder="border-red-500/50" activeShadow="shadow-[0_0_6px_rgba(220,38,38,0.25)]" />
+
+              {/* Row 12: 油站 (路況左方) | 路況 */}
+              <LayerButton layerKey="fuel" label="油站" icon={Fuel} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
+              <LayerButton layerKey="trafficConditions" label="路況" icon={Activity} title="即時路況：TomTom 全大溫街道即時暢通度 (綠/黃/紅)" colorClass="text-emerald-400" activeBg="bg-[#142820]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
+
+              {/* Row 13: 鏟雪路線 | 即時通報 (路況下方) */}
+              <LayerButton layerKey="snowRemovalRoutes" label="鏟雪路線" icon={Snowflake} title="鏟雪路線" colorClass="text-sky-200" activeBg="bg-[#172836]" activeBorder="border-sky-300/50" activeShadow="shadow-[0_0_6px_rgba(240,249,255,0.2)]" />
+              <LayerButton layerKey="trafficAlerts" label="即時通報" icon={Megaphone} title="即時通報：TomTom 即時標出事故、封路、施工與危險障礙點" colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
             </div>
-            <span className="text-[9px] text-amber-500/70 font-mono">LIFESTYLE</span>
-          </div>
-          <div className="grid grid-cols-2 gap-1">
-            {/* Row 1: 學校 | 圖書館 */}
-            <LayerButton layerKey="schools" label="學校" icon={GraduationCap} colorClass="text-blue-400" activeBg="bg-[#142334]" activeBorder="border-blue-500/50" activeShadow="shadow-[0_0_6px_rgba(59,130,246,0.15)]" />
-            <LayerButton layerKey="libraries" label="圖書館" icon={BookOpen} colorClass="text-amber-400" activeBg="bg-[#292215]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
-
-            {/* Row 2: 社區中心 | ATM */}
-            <LayerButton layerKey="communityCentres" label="社區中心" icon={Building2} colorClass="text-violet-400" activeBg="bg-[#211a2f]" activeBorder="border-violet-500/50" activeShadow="shadow-[0_0_6px_rgba(139,92,246,0.15)]" />
-            <LayerButton layerKey="atm" label="銀行" icon={Landmark} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
-
-            {/* Row 3: AED | Canada Post */}
-            <LayerButton layerKey="aed" label="AED" icon={HeartPulse} colorClass="text-red-400" activeBg="bg-[#2c1518]" activeBorder="border-red-500/50" activeShadow="shadow-[0_0_6px_rgba(239,68,68,0.15)]" />
-            <LayerButton layerKey="canadaPost" label="Canada Post" icon={Mail} colorClass="text-red-400" activeBg="bg-[#2a171c]" activeBorder="border-red-500/50" activeShadow="shadow-[0_0_6px_rgba(239,68,68,0.15)]" />
-
-            {/* Row 4: 公共藝術 | 博物館 */}
-            <LayerButton layerKey="publicArt" label="公共藝術" icon={Palette} colorClass="text-fuchsia-400" activeBg="bg-[#2a1428]" activeBorder="border-fuchsia-500/50" activeShadow="shadow-[0_0_6px_rgba(217,70,239,0.15)]" />
-            <LayerButton layerKey="museums" label="博物館" icon={Landmark} colorClass="text-slate-300" activeBg="bg-[#1e232d]" activeBorder="border-slate-500/50" activeShadow="shadow-[0_0_6px_rgba(100,116,139,0.25)]" />
-
-            {/* Row 5: 食品攤販 | 食物援助 */}
-            <LayerButton layerKey="foodVendors" label="食品攤販" icon={UtensilsCrossed} colorClass="text-orange-400" activeBg="bg-[#2b1e16]" activeBorder="border-orange-500/50" activeShadow="shadow-[0_0_6px_rgba(251,146,60,0.15)]" />
-            <LayerButton layerKey="foodBanks" label="食物援助" icon={Soup} colorClass="text-emerald-400" activeBg="bg-[#142820]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
-
-            {/* Row 6: 環保回收 | 廢物回收 */}
-            <LayerButton layerKey="recycling" label="環保回收" icon={Recycle} colorClass="text-teal-400" activeBg="bg-[#122826]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
-            <LayerButton layerKey="garbageCollection" label="廢物回收" icon={Truck} colorClass="text-orange-400" activeBg="bg-[#291e17]" activeBorder="border-orange-500/50" activeShadow="shadow-[0_0_6px_rgba(249,115,22,0.2)]" />
-
-            {/* Row 7: 垃圾箱 | 無家者庇護所 */}
-            <LayerButton layerKey="litterContainers" label="垃圾箱" icon={Trash2} colorClass="text-amber-400" activeBg="bg-[#282115]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
-            <LayerButton layerKey="homelessShelters" label="無家者庇護所" icon={Bed} colorClass="text-rose-400" activeBg="bg-[#2a171d]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.15)]" />
-          </div>
-        </div>
+          )}
         </div>
 
         {/* Divider */}
         <div className="w-full h-px bg-[#26282d]"></div>
 
-        {/* Nature Row (自然) */}
+        {/* 4. Lifestyle Row (生活) */}
         <div className="flex flex-col gap-1.5">
-          <div className="text-[10px] font-bold text-emerald-400 tracking-wider flex items-center justify-between">
-            <div className="flex items-center gap-1">
-              <Leaf className="w-3 h-3 text-emerald-400" />
-              <span>自然</span>
+          <CategoryHeader id="lifestyle" title="生活" english="LIFESTYLE" icon={Heart} colorClass="text-amber-400" subColorClass="text-amber-500/70" />
+          {!collapsedCategories['lifestyle'] && (
+            <div className="grid grid-cols-2 gap-1 animate-in fade-in duration-150">
+              {/* Row 1: 學校 | 圖書館 */}
+              <LayerButton layerKey="schools" label="學校" icon={GraduationCap} colorClass="text-blue-400" activeBg="bg-[#142334]" activeBorder="border-blue-500/50" activeShadow="shadow-[0_0_6px_rgba(59,130,246,0.15)]" />
+              <LayerButton layerKey="libraries" label="圖書館" icon={BookOpen} colorClass="text-amber-400" activeBg="bg-[#292215]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
+
+              {/* Row 2: 社區中心 | ATM */}
+              <LayerButton layerKey="communityCentres" label="社區中心" icon={Building2} colorClass="text-violet-400" activeBg="bg-[#211a2f]" activeBorder="border-violet-500/50" activeShadow="shadow-[0_0_6px_rgba(139,92,246,0.15)]" />
+              <LayerButton layerKey="atm" label="銀行" icon={Landmark} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
+
+              {/* Row 3: AED | Canada Post */}
+              <LayerButton layerKey="aed" label="AED" icon={HeartPulse} colorClass="text-red-400" activeBg="bg-[#2c1518]" activeBorder="border-red-500/50" activeShadow="shadow-[0_0_6px_rgba(239,68,68,0.15)]" />
+              <LayerButton layerKey="canadaPost" label="Canada Post" icon={Mail} colorClass="text-red-400" activeBg="bg-[#2a171c]" activeBorder="border-red-500/50" activeShadow="shadow-[0_0_6px_rgba(239,68,68,0.15)]" />
+
+              {/* Row 4: 公共藝術 | 博物館 */}
+              <LayerButton layerKey="publicArt" label="公共藝術" icon={Palette} colorClass="text-fuchsia-400" activeBg="bg-[#2a1428]" activeBorder="border-fuchsia-500/50" activeShadow="shadow-[0_0_6px_rgba(217,70,239,0.15)]" />
+              <LayerButton layerKey="museums" label="博物館" icon={Landmark} colorClass="text-slate-300" activeBg="bg-[#1e232d]" activeBorder="border-slate-500/50" activeShadow="shadow-[0_0_6px_rgba(100,116,139,0.25)]" />
+
+              {/* Row 5: 食品攤販 | 食物援助 */}
+              <LayerButton layerKey="foodVendors" label="食品攤販" icon={UtensilsCrossed} colorClass="text-orange-400" activeBg="bg-[#2b1e16]" activeBorder="border-orange-500/50" activeShadow="shadow-[0_0_6px_rgba(251,146,60,0.15)]" />
+              <LayerButton layerKey="foodBanks" label="食物援助" icon={Soup} colorClass="text-emerald-400" activeBg="bg-[#142820]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
+
+              {/* Row 6: 環保回收 | 廢物回收 */}
+              <LayerButton layerKey="recycling" label="環保回收" icon={Recycle} colorClass="text-teal-400" activeBg="bg-[#122826]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
+              <LayerButton layerKey="garbageCollection" label="廢物回收" icon={Truck} colorClass="text-orange-400" activeBg="bg-[#291e17]" activeBorder="border-orange-500/50" activeShadow="shadow-[0_0_6px_rgba(249,115,22,0.2)]" />
+
+              {/* Row 7: 垃圾箱 | 無家者庇護所 */}
+              <LayerButton layerKey="litterContainers" label="垃圾箱" icon={Trash2} colorClass="text-amber-400" activeBg="bg-[#282115]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
+              <LayerButton layerKey="homelessShelters" label="無家者庇護所" icon={Bed} colorClass="text-rose-400" activeBg="bg-[#2a171d]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.15)]" />
             </div>
-            <span className="text-[9px] text-emerald-500/70 font-mono">NATURE</span>
-          </div>
-          <div className="grid grid-cols-2 gap-1">
-            <LayerButton layerKey="parks" label="公園" icon={Trees} colorClass="text-emerald-400" activeBg="bg-[#14291f]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(168,85,247,0.15)]" />
-            <LayerButton layerKey="parksFacilities" label="休憩設施" icon={Footprints} colorClass="text-teal-400" activeBg="bg-[#122826]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
-            <LayerButton layerKey="communityGardens" label="社區花園" icon={Flower2} colorClass="text-lime-400" activeBg="bg-[#1e2a14]" activeBorder="border-lime-500/50" activeShadow="shadow-[0_0_6px_rgba(132,204,22,0.15)]" />
-            {/* 32.1 樹木按鈕放在社區中心的位置 (社區中心已搬到生活圖層) */}
-            <LayerButton layerKey="publicTrees" label="樹木" icon={Trees} title="街道樹木" colorClass="text-emerald-400" activeBg="bg-[#14291f]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
-            <LayerButton layerKey="drinkingFountains" label="飲水器" icon={Droplets} colorClass="text-sky-400" activeBg="bg-[#142533]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(56,189,248,0.15)]" />
-            {/* 31.1 公共廁所改成公共洗手間 */}
-            <LayerButton layerKey="publicWashrooms" label="公共洗手間" icon={Bath} colorClass="text-cyan-400" activeBg="bg-[#13272e]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.15)]" />
-          </div>
+          )}
         </div>
 
         {/* Divider */}
         <div className="w-full h-px bg-[#26282d]"></div>
 
-        {/* Government Row (政府) */}
+        {/* 5. Nature Row (自然) */}
         <div className="flex flex-col gap-1.5">
-          <div className="text-[10px] font-bold text-rose-400 tracking-wider flex items-center justify-between">
-            <div className="flex items-center gap-1">
-              <Landmark className="w-3 h-3 text-rose-400" />
-              <span>政府</span>
+          <CategoryHeader id="nature" title="自然" english="NATURE" icon={Leaf} colorClass="text-emerald-400" subColorClass="text-emerald-500/70" />
+          {!collapsedCategories['nature'] && (
+            <div className="grid grid-cols-2 gap-1 animate-in fade-in duration-150">
+              <LayerButton layerKey="parks" label="公園" icon={Trees} colorClass="text-emerald-400" activeBg="bg-[#14291f]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(168,85,247,0.15)]" />
+              <LayerButton layerKey="parksFacilities" label="休憩設施" icon={Footprints} colorClass="text-teal-400" activeBg="bg-[#122826]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
+              <LayerButton layerKey="communityGardens" label="社區花園" icon={Flower2} colorClass="text-lime-400" activeBg="bg-[#1e2a14]" activeBorder="border-lime-500/50" activeShadow="shadow-[0_0_6px_rgba(132,204,22,0.15)]" />
+              <LayerButton layerKey="publicTrees" label="樹木" icon={Trees} title="街道樹木" colorClass="text-emerald-400" activeBg="bg-[#14291f]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
+              <LayerButton layerKey="drinkingFountains" label="飲水器" icon={Droplets} colorClass="text-sky-400" activeBg="bg-[#142533]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(56,189,248,0.15)]" />
+              <LayerButton layerKey="publicWashrooms" label="公共洗手間" icon={Bath} colorClass="text-cyan-400" activeBg="bg-[#13272e]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.15)]" />
             </div>
-            <span className="text-[9px] text-rose-400/70 font-mono">GOVERNMENT</span>
-          </div>
-          <div className="grid grid-cols-2 gap-1">
-            {/* Row 1: 警察 | 罪案地區 */}
-            <LayerButton layerKey="police" label="警察" icon={ShieldAlert} colorClass="text-blue-400" activeBg="bg-[#142338]" activeBorder="border-blue-500/50" activeShadow="shadow-[0_0_6px_rgba(59,130,246,0.15)]" />
-            <LayerButton layerKey="crimeAreas" label="罪案地區" icon={Fingerprint} colorClass="text-rose-400" activeBg="bg-[#2c1619]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.2)]" />
-
-            {/* Row 2: 消防 | 消防栓 */}
-            <LayerButton layerKey="fireHalls" label="消防" icon={Flame} colorClass="text-rose-400" activeBg="bg-[#2a171a]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.15)]" />
-            <LayerButton layerKey="fireHydrants" label="消防栓" icon={HydrantIcon} title="市政消防栓" colorClass="text-red-400" activeBg="bg-[#2a171a]" activeBorder="border-red-500/50" activeShadow="shadow-[0_0_6px_rgba(239,68,68,0.15)]" />
-
-            {/* Row 3: 醫療 | 災害支援中心 */}
-            <LayerButton layerKey="hospitals" label="醫療" icon={Hospital} colorClass="text-emerald-400" activeBg="bg-[#13271d]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
-            <LayerButton layerKey="disasterHubs" label="災害支援中心" icon={LifeBuoy} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
-
-            {/* Row 4: VanWiFi */}
-            <LayerButton layerKey="vanWifi" label="VanWiFi" icon={Wifi} colorClass="text-cyan-400" activeBg="bg-[#102632]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.15)]" />
-          </div>
+          )}
         </div>
 
         {/* Divider */}
         <div className="w-full h-px bg-[#26282d]"></div>
 
-        {/* Utilities Row (公共事業) - 位於政府類別下方 */}
+        {/* 6. Government Row (政府) */}
         <div className="flex flex-col gap-1.5">
-          <div className="text-[10px] font-bold text-cyan-400 tracking-wider flex items-center justify-between">
-            <div className="flex items-center gap-1">
-              <Droplets className="w-3 h-3 text-cyan-400" />
-              <span>公共事業</span>
+          <CategoryHeader id="government" title="政府" english="GOVERNMENT" icon={Landmark} colorClass="text-rose-400" subColorClass="text-rose-400/70" />
+          {!collapsedCategories['government'] && (
+            <div className="grid grid-cols-2 gap-1 animate-in fade-in duration-150">
+              {/* Row 1: 警察 | 罪案地區 */}
+              <LayerButton layerKey="police" label="警察" icon={ShieldAlert} colorClass="text-blue-400" activeBg="bg-[#142338]" activeBorder="border-blue-500/50" activeShadow="shadow-[0_0_6px_rgba(59,130,246,0.15)]" />
+              <LayerButton layerKey="crimeAreas" label="罪案地區" icon={Fingerprint} colorClass="text-rose-400" activeBg="bg-[#2c1619]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.2)]" />
+
+              {/* Row 2: 消防 | 消防栓 */}
+              <LayerButton layerKey="fireHalls" label="消防" icon={Flame} colorClass="text-rose-400" activeBg="bg-[#2a171a]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.15)]" />
+              <LayerButton layerKey="fireHydrants" label="消防栓" icon={HydrantIcon} title="市政消防栓" colorClass="text-red-400" activeBg="bg-[#2a171a]" activeBorder="border-red-500/50" activeShadow="shadow-[0_0_6px_rgba(239,68,68,0.15)]" />
+
+              {/* Row 3: 醫療 | 災害支援中心 */}
+              <LayerButton layerKey="hospitals" label="醫療" icon={Hospital} colorClass="text-emerald-400" activeBg="bg-[#13271d]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
+              <LayerButton layerKey="disasterHubs" label="災害支援中心" icon={LifeBuoy} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
+
+              {/* Row 4: VanWiFi */}
+              <LayerButton layerKey="vanWifi" label="VanWiFi" icon={Wifi} colorClass="text-cyan-400" activeBg="bg-[#102632]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.15)]" />
             </div>
-            <span className="text-[9px] text-cyan-400/70 font-mono">UTILITIES</span>
-          </div>
-          <div className="grid grid-cols-2 gap-1">
-            <LayerButton layerKey="waterDistributionMains" label="自來水管道" icon={Droplets} colorClass="text-sky-400" activeBg="bg-[#102436]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(14,165,233,0.15)]" />
-            <LayerButton layerKey="sewerMains" label="污水管道" icon={Waves} colorClass="text-teal-400" activeBg="bg-[#102826]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
-            <LayerButton layerKey="streetLightingConduits" label="路燈電網" icon={Zap} title="路燈電網" colorClass="text-amber-300" activeBg="bg-[#2a2414]" activeBorder="border-amber-400/50" activeShadow="shadow-[0_0_6px_rgba(251,191,36,0.15)]" />
-            <LayerButton layerKey="streetLighting" label="路燈" icon={Lightbulb} title="路燈燈柱" colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-400/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
-          </div>
+          )}
         </div>
 
         {/* Divider */}
         <div className="w-full h-px bg-[#26282d]"></div>
 
-        {/* Geography Row (地理) */}
+        {/* 7. Utilities Row (公共事業) */}
+        <div className="flex flex-col gap-1.5">
+          <CategoryHeader id="utilities" title="公共事業" english="UTILITIES" icon={Droplets} colorClass="text-cyan-400" subColorClass="text-cyan-400/70" />
+          {!collapsedCategories['utilities'] && (
+            <div className="grid grid-cols-2 gap-1 animate-in fade-in duration-150">
+              <LayerButton layerKey="waterDistributionMains" label="自來水管道" icon={Droplets} colorClass="text-sky-400" activeBg="bg-[#102436]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(14,165,233,0.15)]" />
+              <LayerButton layerKey="sewerMains" label="污水管道" icon={Waves} colorClass="text-teal-400" activeBg="bg-[#102826]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
+              <LayerButton layerKey="streetLightingConduits" label="路燈電網" icon={Zap} title="路燈電網" colorClass="text-amber-300" activeBg="bg-[#2a2414]" activeBorder="border-amber-400/50" activeShadow="shadow-[0_0_6px_rgba(251,191,36,0.15)]" />
+              <LayerButton layerKey="streetLighting" label="路燈" icon={Lightbulb} title="路燈燈柱" colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-400/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
+            </div>
+          )}
+        </div>
+
+        {/* Divider */}
+        <div className="w-full h-px bg-[#26282d]"></div>
+
+        {/* 8. Geography Row (地理) */}
         <div className="flex flex-col gap-2 pb-2">
-          <div className="text-[10px] font-bold text-teal-400 tracking-wider flex items-center justify-between">
-            <div className="flex items-center gap-1">
-              <Compass className="w-3 h-3 text-teal-400" />
-              <span>地理</span>
+          <CategoryHeader id="geography" title="地理" english="GEOGRAPHY" icon={Compass} colorClass="text-teal-400" subColorClass="text-teal-500/70" />
+          {!collapsedCategories['geography'] && (
+            <div className="flex flex-col gap-2 animate-in fade-in duration-150">
+              {/* 區域邊界、郵遞編號、土地規劃、海灘水質 */}
+              <div className="grid grid-cols-2 gap-1">
+                {/* Row 1: 區域邊界 | 郵遞編號 */}
+                <LayerButton layerKey="localAreaBoundary" label="區域邊界" icon={MapPin} colorClass="text-teal-400" activeBg="bg-[#122826]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
+                <LayerButton layerKey="postalCodeFSA" label="郵遞編號" icon={Mail} colorClass="text-indigo-400" activeBg="bg-[#181a33]" activeBorder="border-indigo-500/50" activeShadow="shadow-[0_0_6px_rgba(99,102,241,0.15)]" />
+
+                {/* Row 2: 土地規劃 | 海灘水質 */}
+                <LayerButton layerKey="zoningDistricts" label="土地規劃" icon={LandPlot} title="土地規劃分區" colorClass="text-indigo-400" activeBg="bg-[#181a33]" activeBorder="border-indigo-500/50" activeShadow="shadow-[0_0_6px_rgba(99,102,241,0.15)]" />
+                <LayerButton layerKey="beachWaterQuality" label="海灘水質" icon={Droplets} title="海灘水質" colorClass="text-teal-300" activeBg="bg-[#0e2a2a]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
+              </div>
+
+              {/* 等高線文字與狀態標籤 */}
+              <div className="text-[10px] font-bold text-teal-400 tracking-wider flex items-center justify-between pt-1">
+                <div className="flex items-center gap-1">
+                  <Mountain className="w-3 h-3 text-teal-400" />
+                  <span>等高線</span>
+                </div>
+                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border transition-colors ${
+                  contourInterval === 'off'
+                    ? 'bg-[#1c1d21] text-gray-400 border-[#2d2e32]'
+                    : 'bg-teal-950/80 text-teal-300 border-teal-500/50 shadow-[0_0_6px_rgba(20,184,166,0.2)]'
+                }`}>
+                  {contourInterval === 'off' ? 'OFF 關閉' : `${contourInterval === '1m' ? '1米' : contourInterval === '2m' ? '2米' : '10米'}間距`}
+                </span>
+              </div>
+
+              {/* Stepped Slider Controls */}
+              <div className="bg-[#1c1d21] p-2 rounded-lg border border-[#2d2e32] flex flex-col gap-2 shadow-inner">
+                <div className="relative flex items-center px-1">
+                  <input
+                    type="range"
+                    min="0"
+                    max="3"
+                    step="1"
+                    aria-label="等高線間隔選擇"
+                    value={
+                      contourInterval === 'off' ? 0 :
+                      contourInterval === '1m' ? 1 :
+                      contourInterval === '2m' ? 2 : 3
+                    }
+                    onChange={(e) => {
+                      const val = Number(e.target.value);
+                      const opts: ('off' | '1m' | '2m' | '10m')[] = ['off', '1m', '2m', '10m'];
+                      setContourInterval(opts[val]);
+                    }}
+                    className="w-full h-1.5 bg-[#2a2b30] rounded-lg appearance-none cursor-pointer accent-teal-400 focus:outline-none"
+                  />
+                </div>
+
+                {/* Stepped Snap Button Labels */}
+                <div className="grid grid-cols-4 gap-1">
+                  {(['off', '1m', '2m', '10m'] as const).map((opt) => {
+                    const labelMap = { off: 'OFF', '1m': '1米', '2m': '2米', '10m': '10米' };
+                    const isActive = contourInterval === opt;
+                    return (
+                      <button
+                        key={opt}
+                        onClick={() => setContourInterval(opt)}
+                        className={`py-1 text-[10px] rounded transition-all duration-150 text-center ${
+                          isActive
+                            ? 'bg-teal-500 text-black font-bold shadow-[0_0_8px_rgba(20,184,166,0.4)]'
+                            : 'bg-[#25262b] text-gray-400 hover:text-gray-200 hover:bg-[#2d2e34] font-normal'
+                        }`}
+                      >
+                        {labelMap[opt]}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
-            <span className="text-[9px] text-teal-500/70 font-mono">GEOGRAPHY</span>
-          </div>
-
-          {/* 區域邊界、郵遞編號、土地規劃、潮汐水位與海灘水質按鈕 (等高線上方) */}
-          <div className="grid grid-cols-2 gap-1">
-            {/* Row 1: 區域邊界 | 郵遞編號 */}
-            <LayerButton layerKey="localAreaBoundary" label="區域邊界" icon={MapPin} colorClass="text-teal-400" activeBg="bg-[#122826]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
-            <LayerButton layerKey="postalCodeFSA" label="郵遞編號" icon={Mail} colorClass="text-indigo-400" activeBg="bg-[#181a33]" activeBorder="border-indigo-500/50" activeShadow="shadow-[0_0_6px_rgba(99,102,241,0.15)]" />
-
-            {/* Row 2: 土地規劃 | 海灘水質 (海灘水質放置於土地規劃右方) */}
-            <LayerButton layerKey="zoningDistricts" label="土地規劃" icon={LandPlot} title="土地規劃分區" colorClass="text-indigo-400" activeBg="bg-[#181a33]" activeBorder="border-indigo-500/50" activeShadow="shadow-[0_0_6px_rgba(99,102,241,0.15)]" />
-            <LayerButton layerKey="beachWaterQuality" label="海灘水質" icon={Droplets} title="海灘水質" colorClass="text-teal-300" activeBg="bg-[#0e2a2a]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(20,184,166,0.15)]" />
-          </div>
-
-          {/* 等高線文字與狀態標籤 (地理文字下方、拉動條上方) */}
-          <div className="text-[10px] font-bold text-teal-400 tracking-wider flex items-center justify-between pt-1">
-            <div className="flex items-center gap-1">
-              <Mountain className="w-3 h-3 text-teal-400" />
-              <span>等高線</span>
-            </div>
-            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border transition-colors ${
-              contourInterval === 'off'
-                ? 'bg-[#1c1d21] text-gray-400 border-[#2d2e32]'
-                : 'bg-teal-950/80 text-teal-300 border-teal-500/50 shadow-[0_0_6px_rgba(20,184,166,0.2)]'
-            }`}>
-              {contourInterval === 'off' ? 'OFF 關閉' : `${contourInterval === '1m' ? '1米' : contourInterval === '2m' ? '2米' : '10米'}間距`}
-            </span>
-          </div>
-
-          {/* Stepped Slider Controls */}
-          <div className="bg-[#1c1d21] p-2 rounded-lg border border-[#2d2e32] flex flex-col gap-2 shadow-inner">
-            <div className="relative flex items-center px-1">
-              <input
-                type="range"
-                min="0"
-                max="3"
-                step="1"
-                aria-label="等高線間隔選擇"
-                value={
-                  contourInterval === 'off' ? 0 :
-                  contourInterval === '1m' ? 1 :
-                  contourInterval === '2m' ? 2 : 3
-                }
-                onChange={(e) => {
-                  const val = Number(e.target.value);
-                  const opts: ('off' | '1m' | '2m' | '10m')[] = ['off', '1m', '2m', '10m'];
-                  setContourInterval(opts[val]);
-                }}
-                className="w-full h-1.5 bg-[#2a2b30] rounded-lg appearance-none cursor-pointer accent-teal-400 focus:outline-none"
-              />
-            </div>
-
-            {/* Stepped Snap Button Labels */}
-            <div className="grid grid-cols-4 gap-1">
-              {(['off', '1m', '2m', '10m'] as const).map((opt) => {
-                const labelMap = { off: 'OFF', '1m': '1米', '2m': '2米', '10m': '10米' };
-                const isActive = contourInterval === opt;
-                return (
-                  <button
-                    key={opt}
-                    onClick={() => setContourInterval(opt)}
-                    className={`py-1 text-[10px] rounded transition-all duration-150 text-center ${
-                      isActive
-                        ? 'bg-teal-500 text-black font-bold shadow-[0_0_8px_rgba(20,184,166,0.4)]'
-                        : 'bg-[#25262b] text-gray-400 hover:text-gray-200 hover:bg-[#2d2e34] font-normal'
-                    }`}
-                  >
-                    {labelMap[opt]}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+          )}
         </div>
 
       </div>

@@ -5450,11 +5450,11 @@ export default function AppMap() {
         id: 'turn-restrictions-arrow-casing-layer',
         type: 'line',
         source: 'turn_restrictions',
-        filter: ['==', ['get', 'is_restriction_arrow'], true],
+        filter: ['any', ['==', ['get', 'is_restriction_arrow'], true], ['==', ['get', 'is_arrow_wings'], true]],
         minzoom: 14,
         paint: {
           'line-color': '#ffffff',
-          'line-width': ['interpolate', ['linear'], ['zoom'], 14, 3.5, 17, 5.5, 19, 7.0],
+          'line-width': ['interpolate', ['linear'], ['zoom'], 14, 4.0, 17, 6.0, 19, 7.5],
           'line-opacity': 0.95
         },
         layout: {
@@ -5468,11 +5468,11 @@ export default function AppMap() {
         id: 'turn-restrictions-arrow-line-layer',
         type: 'line',
         source: 'turn_restrictions',
-        filter: ['==', ['get', 'is_restriction_arrow'], true],
+        filter: ['any', ['==', ['get', 'is_restriction_arrow'], true], ['==', ['get', 'is_arrow_wings'], true]],
         minzoom: 14,
         paint: {
           'line-color': '#dc2626',
-          'line-width': ['interpolate', ['linear'], ['zoom'], 14, 2.0, 17, 3.5, 19, 4.5],
+          'line-width': ['interpolate', ['linear'], ['zoom'], 14, 2.2, 17, 3.8, 19, 4.8],
           'line-opacity': 1.0
         },
         layout: {
@@ -5481,32 +5481,38 @@ export default function AppMap() {
         }
       });
 
-      // 3. 轉向限制末端箭頭符號 (▲/▼/◀/▶，鮮紅符號帶白光暈)
+      // 3. 轉向限制末端實體向量箭頭填充 (鮮紅色箭頭多邊形，完全擺脫字型依賴，100% 渲染)
       style.layers.push({
-        id: 'turn-restrictions-arrow-symbol-layer',
-        type: 'symbol',
+        id: 'turn-restrictions-arrowhead-fill-layer',
+        type: 'fill',
         source: 'turn_restrictions',
-        filter: ['==', ['get', 'is_arrow_symbol'], true],
-        minzoom: 14.5,
-        layout: {
-          'text-field': ['get', 'symbol'],
-          'text-size': ['interpolate', ['linear'], ['zoom'], 14.5, 13, 17, 16, 19, 19],
-          'text-allow-overlap': true,
-          'text-ignore-placement': true
-        },
+        filter: ['==', ['get', 'is_arrow_head'], true],
+        minzoom: 14,
         paint: {
-          'text-color': '#dc2626',
-          'text-halo-color': '#ffffff',
-          'text-halo-width': 2.0
+          'fill-color': '#dc2626',
+          'fill-opacity': 1.0
         }
       });
 
-      // 4. 管制路口圓點圖層 (鮮紅底色、白外框)
+      // 4. 轉向限制末端實體向量箭頭外框 (純白輪廓線，極致醒目)
+      style.layers.push({
+        id: 'turn-restrictions-arrowhead-casing-layer',
+        type: 'line',
+        source: 'turn_restrictions',
+        filter: ['==', ['get', 'is_arrow_head'], true],
+        minzoom: 14,
+        paint: {
+          'line-color': '#ffffff',
+          'line-width': 2.0
+        }
+      });
+
+      // 5. 管制路口圓點圖層 (鮮紅底色、白外框)
       style.layers.push({
         id: 'turn-restrictions-layer',
         type: 'circle',
         source: 'turn_restrictions',
-        filter: ['all', ['==', ['get', 'has_restrictions'], true], ['!', ['has', 'is_arrow_symbol']], ['!', ['has', 'is_restriction_arrow']]],
+        filter: ['all', ['==', ['get', 'has_restrictions'], true], ['!', ['has', 'is_arrow_symbol']], ['!', ['has', 'is_restriction_arrow']], ['!', ['has', 'is_arrow_head']], ['!', ['has', 'is_arrow_wings']]],
         minzoom: 11,
         paint: {
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 4.5, 14, 6.5, 16, 9.0, 18, 11],
@@ -5516,16 +5522,17 @@ export default function AppMap() {
         }
       });
 
-      // 5. 管制路口中心清晰禁止標記 (純白 ✕ 符號，杜絕 emoji 黑色圓塊)
+      // 6. 管制路口中心清晰禁止標記 (純白加粗 X 標記，保證任何裝置與字型均 100% 正常顯示)
       style.layers.push({
         id: 'turn-restrictions-symbol-layer',
         type: 'symbol',
         source: 'turn_restrictions',
-        filter: ['all', ['==', ['get', 'has_restrictions'], true], ['!', ['has', 'is_arrow_symbol']], ['!', ['has', 'is_restriction_arrow']]],
+        filter: ['all', ['==', ['get', 'has_restrictions'], true], ['!', ['has', 'is_arrow_symbol']], ['!', ['has', 'is_restriction_arrow']], ['!', ['has', 'is_arrow_head']], ['!', ['has', 'is_arrow_wings']]],
         minzoom: 13,
         layout: {
-          'text-field': '✕',
-          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 9, 16, 11, 18, 13],
+          'text-field': 'X',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 8.5, 16, 11, 18, 13],
+          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
           'text-allow-overlap': true
         },
         paint: {
@@ -6117,7 +6124,7 @@ export default function AppMap() {
           'turn-restrictions-layer',
           'turn-restrictions-symbol-layer',
           'turn-restrictions-arrow-line-layer',
-          'turn-restrictions-arrow-symbol-layer',
+          'turn-restrictions-arrowhead-fill-layer',
           // beach-water layers removed from interactive to disable popup
           'street-lighting-poles-layer'
         ]}

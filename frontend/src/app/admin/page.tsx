@@ -27,7 +27,9 @@ import {
   Zap,
   Key,
   X,
-  Check
+  Check,
+  Mail,
+  Ban
 } from 'lucide-react';
 import { getApiUrl } from '@/utils/api';
 import { DEFAULT_ADMIN_SOURCES } from '@/data/defaultAdminSources';
@@ -164,6 +166,7 @@ export default function AdminPage() {
   const [backendConnected, setBackendConnected] = useState<boolean | null>(null);
   const [mainTab, setMainTab] = useState<'sources' | 'logs' | 'analytics' | 'issues'>('sources');
   const [issueSearch, setIssueSearch] = useState('');
+  const [issueStatusFilter, setIssueStatusFilter] = useState<'all' | 'pending' | 'resolved' | 'closed'>('all');
   const [activeTab, setActiveTab] = useState<'all' | 'github_actions' | 'oci'>('all');
   
   // --- Analytics & Stats states (8. 正式推出才開始執行) ---
@@ -235,6 +238,73 @@ export default function AdminPage() {
       fetchAnalyticsData();
     }
   }, [mainTab]);
+
+  // 更新問題回報狀態 (resolved: 完成 / closed: 關閉 / pending: 待處理)
+  const handleUpdateIssueStatus = async (reportId: string, newStatus: 'resolved' | 'closed' | 'pending') => {
+    try {
+      // 1. 即時樂觀更新畫面
+      setIssueReports((prev) =>
+        prev.map((item) => {
+          if (item.id === reportId || item.timestamp === reportId) {
+            return { ...item, status: newStatus };
+          }
+          return item;
+        })
+      );
+
+      // 2. 同步 localStorage
+      if (typeof window !== 'undefined') {
+        try {
+          const raw = localStorage.getItem('godseye_local_issue_reports');
+          if (raw) {
+            const list = JSON.parse(raw);
+            const updated = list.map((x: any) =>
+              x.id === reportId || x.timestamp === reportId ? { ...x, status: newStatus } : x
+            );
+            localStorage.setItem('godseye_local_issue_reports', JSON.stringify(updated));
+          }
+        } catch (_) {}
+      }
+
+      // 3. 呼叫後端 API
+      await adminApiFetch(`/api/admin/issue-reports/${encodeURIComponent(reportId)}/status`, {
+        method: 'POST',
+        body: JSON.stringify({ status: newStatus }),
+      });
+    } catch (err) {
+      console.error('Update issue status error:', err);
+    }
+  };
+
+  // 徹底刪除問題回報記錄
+  const handleDeleteIssueReport = async (reportId: string) => {
+    if (!window.confirm('確定要徹底刪除此則問題回報記錄嗎？此操作無法還原。')) {
+      return;
+    }
+    try {
+      // 1. 即時更新畫面狀態
+      setIssueReports((prev) => prev.filter((item) => item.id !== reportId && item.timestamp !== reportId));
+
+      // 2. 同步 localStorage
+      if (typeof window !== 'undefined') {
+        try {
+          const raw = localStorage.getItem('godseye_local_issue_reports');
+          if (raw) {
+            const list = JSON.parse(raw);
+            const filtered = list.filter((x: any) => x.id !== reportId && x.timestamp !== reportId);
+            localStorage.setItem('godseye_local_issue_reports', JSON.stringify(filtered));
+          }
+        } catch (_) {}
+      }
+
+      // 3. 呼叫後端 API
+      await adminApiFetch(`/api/admin/issue-reports/${encodeURIComponent(reportId)}`, {
+        method: 'DELETE',
+      });
+    } catch (err) {
+      console.error('Delete issue report error:', err);
+    }
+  };
 
   // Security PIN protection (Default: 0206)
   const [isUnlocked, setIsUnlocked] = useState(false);
@@ -1645,11 +1715,35 @@ export default function AdminPage() {
                       共 {issueReports.length} 則
                     </span>
                   </h3>
-                  <p className="text-[11px] text-gray-400">使用者透過前端「回報問題」彈出視窗遞交之即時異常報告與建言</p>
+                  <p className="text-[11px] text-gray-400">管理使用者透過前端「回報問題」遞交之建言，支援完成、關閉、回覆與刪除處理</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                {/* 狀態過濾按鈕 */}
+                <div className="flex items-center bg-[#0d1017] p-1 rounded-lg border border-[#2e374c] gap-1 text-[11px]">
+                  {(['all', 'pending', 'resolved', 'closed'] as const).map((st) => {
+                    const labelMap = { all: '全部', pending: '待處理', resolved: '已完成', closed: '已關閉' };
+                    const count = st === 'all' 
+                      ? issueReports.length 
+                      : issueReports.filter(r => (r.status || 'pending') === st).length;
+                    const isActive = issueStatusFilter === st;
+                    return (
+                      <button
+                        key={st}
+                        onClick={() => setIssueStatusFilter(st)}
+                        className={`px-2 py-0.5 rounded transition-all font-medium ${
+                          isActive 
+                            ? 'bg-[#222a3b] text-white shadow-sm font-semibold' 
+                            : 'text-gray-400 hover:text-gray-200'
+                        }`}
+                      >
+                        {labelMap[st]} ({count})
+                      </button>
+                    );
+                  })}
+                </div>
+
                 <div className="relative">
                   <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
                   <input
@@ -1657,7 +1751,7 @@ export default function AdminPage() {
                     value={issueSearch}
                     onChange={(e) => setIssueSearch(e.target.value)}
                     placeholder="搜尋標題、內容或 Email..."
-                    className="pl-8 pr-3 py-1.5 rounded-lg bg-[#0d1017] border border-[#2e374c] text-white text-xs placeholder:text-gray-500 focus:border-rose-400 outline-none w-52 sm:w-64"
+                    className="pl-8 pr-3 py-1.5 rounded-lg bg-[#0d1017] border border-[#2e374c] text-white text-xs placeholder:text-gray-500 focus:border-rose-400 outline-none w-44 sm:w-56"
                   />
                 </div>
                 <button
@@ -1675,16 +1769,22 @@ export default function AdminPage() {
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
                   <tr className="bg-[#161b26] border-b border-[#242b3b] text-gray-400 font-semibold uppercase text-[10px] tracking-wider">
-                    <th className="py-2.5 px-4 w-36">時間戳記</th>
-                    <th className="py-2.5 px-4 w-52">問題標題</th>
+                    <th className="py-2.5 px-4 w-32">時間戳記</th>
+                    <th className="py-2.5 px-3 w-24">處理狀態</th>
+                    <th className="py-2.5 px-4 w-44">問題標題</th>
                     <th className="py-2.5 px-4">詳細內容與說明</th>
-                    <th className="py-2.5 px-4 w-44">聯絡電郵</th>
-                    <th className="py-2.5 px-4 w-24 text-center">附件</th>
+                    <th className="py-2.5 px-4 w-40">聯絡電郵</th>
+                    <th className="py-2.5 px-2 w-16 text-center">附件</th>
+                    <th className="py-2.5 px-4 w-56 text-center">處理操作</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#1e2535]">
                   {issueReports
                     .filter((r) => {
+                      const itemStatus = r.status || 'pending';
+                      if (issueStatusFilter !== 'all' && itemStatus !== issueStatusFilter) {
+                        return false;
+                      }
                       if (!issueSearch.trim()) return true;
                       const q = issueSearch.toLowerCase();
                       return (
@@ -1693,48 +1793,133 @@ export default function AdminPage() {
                         (r.contact_email && r.contact_email.toLowerCase().includes(q))
                       );
                     })
-                    .map((item, idx) => (
-                      <tr key={item.id || idx} className="hover:bg-[#181d2a] transition-colors">
-                        <td className="py-3 px-4 font-mono text-[11px] text-gray-400 whitespace-nowrap">
-                          {item.timestamp ? new Date(item.timestamp).toLocaleString('zh-TW', { hour12: false }) : '即時回報'}
-                        </td>
-                        <td className="py-3 px-4 font-bold text-gray-200">
-                          <div className="flex items-center gap-1.5">
-                            <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0"></span>
-                            <span>{item.title || '無標題'}</span>
-                          </div>
-                        </td>
-                        <td className="py-3 px-4 text-gray-300 leading-relaxed max-w-md break-words whitespace-pre-wrap">
-                          {item.details || '無描述內容'}
-                        </td>
-                        <td className="py-3 px-4 font-mono text-[11px]">
-                          {item.contact_email ? (
-                            <a
-                              href={`mailto:${item.contact_email}?subject=回覆：${encodeURIComponent(item.title || '')}`}
-                              className="text-sky-400 hover:underline flex items-center gap-1"
-                              title="點擊寄信回覆"
-                            >
-                              <span>{item.contact_email}</span>
-                              <ExternalLink className="w-3 h-3 shrink-0" />
-                            </a>
-                          ) : (
-                            <span className="text-gray-500">未提供</span>
-                          )}
-                        </td>
-                        <td className="py-3 px-4 text-center">
-                          {item.has_attachment ? (
-                            <span className="px-1.5 py-0.5 rounded text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                              有截圖
-                            </span>
-                          ) : (
-                            <span className="text-gray-600">-</span>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
+                    .map((item, idx) => {
+                      const itemStatus = item.status || 'pending';
+                      const reportId = item.id || item.timestamp || `report_${idx}`;
+                      return (
+                        <tr key={reportId} className="hover:bg-[#181d2a] transition-colors">
+                          <td className="py-3 px-4 font-mono text-[11px] text-gray-400 whitespace-nowrap">
+                            {item.timestamp ? new Date(item.timestamp).toLocaleString('zh-TW', { hour12: false }) : '即時回報'}
+                          </td>
+                          <td className="py-3 px-3 whitespace-nowrap">
+                            {itemStatus === 'resolved' ? (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                                <Check className="w-2.5 h-2.5" /> 已完成
+                              </span>
+                            ) : itemStatus === 'closed' ? (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-gray-500/20 text-gray-400 border border-gray-500/30">
+                                <Ban className="w-2.5 h-2.5" /> 已關閉
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/30">
+                                <Clock className="w-2.5 h-2.5" /> 待處理
+                              </span>
+                            )}
+                          </td>
+                          <td className="py-3 px-4 font-bold text-gray-200">
+                            <div className="flex items-center gap-1.5">
+                              <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                                itemStatus === 'resolved' ? 'bg-emerald-500' :
+                                itemStatus === 'closed' ? 'bg-gray-500' : 'bg-rose-500'
+                              }`}></span>
+                              <span>{item.title || '無標題'}</span>
+                            </div>
+                          </td>
+                          <td className="py-3 px-4 text-gray-300 leading-relaxed max-w-md break-words whitespace-pre-wrap">
+                            {item.details || '無描述內容'}
+                          </td>
+                          <td className="py-3 px-4 font-mono text-[11px]">
+                            {item.contact_email ? (
+                              <a
+                                href={`mailto:${item.contact_email}?subject=${encodeURIComponent(`回覆：溫哥華上帝之眼 - ${item.title || '問題回報'}`)}`}
+                                className="text-sky-400 hover:underline flex items-center gap-1"
+                                title="點擊寄信回覆"
+                              >
+                                <span>{item.contact_email}</span>
+                                <ExternalLink className="w-3 h-3 shrink-0" />
+                              </a>
+                            ) : (
+                              <span className="text-gray-500">未提供</span>
+                            )}
+                          </td>
+                          <td className="py-3 px-2 text-center">
+                            {item.has_attachment ? (
+                              <span className="px-1.5 py-0.5 rounded text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                                有截圖
+                              </span>
+                            ) : (
+                              <span className="text-gray-600">-</span>
+                            )}
+                          </td>
+                          <td className="py-3 px-4">
+                            <div className="flex items-center justify-center gap-1">
+                              {/* 完成按鈕 (解決問題或接受建議) */}
+                              <button
+                                onClick={() => handleUpdateIssueStatus(reportId, 'resolved')}
+                                disabled={itemStatus === 'resolved'}
+                                className={`flex items-center gap-1 px-2 py-1 rounded text-[10.5px] font-semibold transition-all cursor-pointer ${
+                                  itemStatus === 'resolved'
+                                    ? 'bg-emerald-500/10 text-emerald-500/40 border border-emerald-500/20 cursor-not-allowed'
+                                    : 'bg-emerald-500/15 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 hover:shadow-sm'
+                                }`}
+                                title="解決問題或接受建議 (標記為已完成)"
+                              >
+                                <Check className="w-3 h-3 shrink-0" />
+                                <span>完成</span>
+                              </button>
+
+                              {/* 關閉按鈕 (拒絕回報內容) */}
+                              <button
+                                onClick={() => handleUpdateIssueStatus(reportId, 'closed')}
+                                disabled={itemStatus === 'closed'}
+                                className={`flex items-center gap-1 px-2 py-1 rounded text-[10.5px] font-semibold transition-all cursor-pointer ${
+                                  itemStatus === 'closed'
+                                    ? 'bg-gray-700/20 text-gray-500 border border-gray-700/30 cursor-not-allowed'
+                                    : 'bg-gray-600/20 hover:bg-gray-600/35 text-gray-300 border border-gray-500/40 hover:shadow-sm'
+                                }`}
+                                title="拒絕回報內容 (標記為已關閉)"
+                              >
+                                <Ban className="w-3 h-3 shrink-0" />
+                                <span>關閉</span>
+                              </button>
+
+                              {/* 回覆按鈕 (若有提供電郵) */}
+                              {item.contact_email ? (
+                                <a
+                                  href={`mailto:${item.contact_email}?subject=${encodeURIComponent(`回覆：溫哥華上帝之眼 - ${item.title || '問題回報'}`)}`}
+                                  className="flex items-center gap-1 px-2 py-1 rounded bg-sky-500/15 hover:bg-sky-500/30 text-sky-300 border border-sky-500/40 text-[10.5px] font-semibold transition-all hover:shadow-sm"
+                                  title="寄信回覆用家"
+                                >
+                                  <Mail className="w-3 h-3 shrink-0" />
+                                  <span>回覆</span>
+                                </a>
+                              ) : (
+                                <span
+                                  className="flex items-center gap-1 px-2 py-1 rounded bg-gray-800/40 text-gray-600 border border-gray-700/30 text-[10.5px] font-medium cursor-not-allowed select-none"
+                                  title="用家未提供聯絡電郵，無法寄信回覆"
+                                >
+                                  <Mail className="w-3 h-3 shrink-0" />
+                                  <span>回覆</span>
+                                </span>
+                              )}
+
+                              {/* 刪除按鈕 */}
+                              <button
+                                onClick={() => handleDeleteIssueReport(reportId)}
+                                className="flex items-center gap-1 px-2 py-1 rounded bg-rose-500/15 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 text-[10.5px] font-semibold transition-all cursor-pointer hover:shadow-sm ml-0.5"
+                                title="徹底刪除此則回報記錄"
+                              >
+                                <Trash2 className="w-3 h-3 shrink-0" />
+                                <span>刪除</span>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   {issueReports.length === 0 && (
                     <tr>
-                      <td colSpan={5} className="py-12 text-center text-gray-500">
+                      <td colSpan={7} className="py-12 text-center text-gray-500">
                         <AlertCircle className="w-8 h-8 mx-auto mb-2 text-gray-600" />
                         <p className="font-semibold text-gray-400">目前尚無任何問題回報記錄</p>
                         <p className="text-[11px] text-gray-600 mt-1">使用者在前端透過「回報問題」遞交後，將第一時間同步顯示於此。</p>

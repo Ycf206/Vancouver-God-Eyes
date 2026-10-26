@@ -98,5 +98,6 @@ class IssueReport(Base):
     title = Column(String, nullable=False)
     details = Column(String, nullable=False)
     contact_email = Column(String, nullable=True)
+    status = Column(String, default="pending", nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 

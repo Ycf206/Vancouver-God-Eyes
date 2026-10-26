@@ -79,10 +79,17 @@ def update_traffic_turn_restrictions():
     dx = 0.00030
     dy = 0.00020
 
-    raw_features = [feat for feat in data.get("features", []) if feat.get("geometry", {}).get("type") == "Point" and not feat.get("properties", {}).get("is_arrow_symbol")]
+    raw_features = [feat for feat in data.get("features", []) if feat.get("geometry", {}).get("type") == "Point" and not feat.get("properties", {}).get("is_arrow_symbol") and not feat.get("properties", {}).get("is_arrow_head") and not feat.get("properties", {}).get("is_arrow_wings")]
     processed_features = []
     arrow_features = []
-    symbol_features = []
+    head_poly_features = []
+    head_wing_features = []
+
+    m_per_deg_lat = 111139.0
+    import math
+    m_per_deg_lon = 111139.0 * math.cos(49.26 * math.pi / 180.0)
+    L_m = 9.5
+    W_m = 5.8
 
     for idx, f in enumerate(raw_features):
         props = f.get("properties") or {}
@@ -216,33 +223,80 @@ def update_traffic_turn_restrictions():
                             "is_restriction_arrow": True,
                             "dir": dir_code,
                             "decoded": r.get("decoded"),
-                            "restrictions": restrictions
+                            "restrictions": active_restrictions
                         }
                     })
 
-                    # 2. 箭頭方向符號
-                    symbol_features.append({
-                        "type": "Feature",
-                        "id": f"{intersection_id}_head_{dir_code}",
-                        "geometry": {
-                            "type": "Point",
-                            "coordinates": [round(p1[0], 7), round(p1[1], 7)]
-                        },
-                        "properties": {
+                    # 2. 向量幾何箭頭計算 (完全擺脫字型 PBF 限制，保證 WebGL 實體線段與填充 100% 渲染)
+                    p_end = curve_pts[-1]
+                    p_prev = curve_pts[-2]
+                    dx_deg = p_end[0] - p_prev[0]
+                    dy_deg = p_end[1] - p_prev[1]
+                    dx_m = dx_deg * m_per_deg_lon
+                    dy_m = dy_deg * m_per_deg_lat
+                    len_m = math.hypot(dx_m, dy_m)
+
+                    if len_m > 0.0001:
+                        ux = dx_m / len_m
+                        uy = dy_m / len_m
+                        nx = -uy
+                        ny = ux
+
+                        tip_lon = round(p_end[0] + (1.2 * ux) / m_per_deg_lon, 7)
+                        tip_lat = round(p_end[1] + (1.2 * uy) / m_per_deg_lat, 7)
+                        base_lon = tip_lon - (L_m * ux) / m_per_deg_lon
+                        base_lat = tip_lat - (L_m * uy) / m_per_deg_lat
+
+                        w1_lon = round(base_lon + (W_m * nx) / m_per_deg_lon, 7)
+                        w1_lat = round(base_lat + (W_m * ny) / m_per_deg_lat, 7)
+                        w2_lon = round(base_lon - (W_m * nx) / m_per_deg_lon, 7)
+                        w2_lat = round(base_lat - (W_m * ny) / m_per_deg_lat, 7)
+
+                        tip = [tip_lon, tip_lat]
+                        w1 = [w1_lon, w1_lat]
+                        w2 = [w2_lon, w2_lat]
+
+                        # 向量實體箭頭多邊形填充
+                        head_poly_features.append({
+                            "type": "Feature",
                             "id": f"{intersection_id}_head_{dir_code}",
-                            "parent_id": intersection_id,
-                            "name": sig_loc,
-                            "signal_location": sig_loc,
-                            "facility_type": "turn_restrictions",
-                            "is_arrow_symbol": True,
-                            "symbol": arrow_char,
-                            "restrictions": restrictions
-                        }
-                    })
+                            "geometry": {
+                                "type": "Polygon",
+                                "coordinates": [[tip, w1, w2, tip]]
+                            },
+                            "properties": {
+                                "id": f"{intersection_id}_head_{dir_code}",
+                                "parent_id": intersection_id,
+                                "name": sig_loc,
+                                "signal_location": sig_loc,
+                                "facility_type": "turn_restrictions",
+                                "is_arrow_head": True,
+                                "restrictions": active_restrictions
+                            }
+                        })
 
-    all_features = processed_features + arrow_features + symbol_features
+                        # 向量實體箭頭兩翼外框線
+                        head_wing_features.append({
+                            "type": "Feature",
+                            "id": f"{intersection_id}_wings_{dir_code}",
+                            "geometry": {
+                                "type": "LineString",
+                                "coordinates": [w1, tip, w2]
+                            },
+                            "properties": {
+                                "id": f"{intersection_id}_wings_{dir_code}",
+                                "parent_id": intersection_id,
+                                "name": sig_loc,
+                                "signal_location": sig_loc,
+                                "facility_type": "turn_restrictions",
+                                "is_arrow_wings": True,
+                                "restrictions": active_restrictions
+                            }
+                        })
+
+    all_features = processed_features + arrow_features + head_wing_features + head_poly_features
     save_layer_geojson("vancouver_traffic_turn_restrictions.geojson", all_features)
-    print(f"✅ 轉向限制更新完成，共處理 {len(processed_features)} 處路口，生成 {len(arrow_features)} 條箭頭軌跡線與 {len(symbol_features)} 個禁止標記。")
+    print(f"✅ 轉向限制更新完成，共處理 {len(processed_features)} 處路口，生成 {len(arrow_features)} 條轉向軌跡線與 {len(head_poly_features)} 個向量箭頭。")
     return all_features
 
 if __name__ == "__main__":

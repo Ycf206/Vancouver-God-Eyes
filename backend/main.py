@@ -10,6 +10,8 @@ from google.transit import gtfs_realtime_pb2
 import database
 import models
 import os
+import uuid
+import hashlib
 import logging
 from datetime import datetime
 
@@ -3400,12 +3402,14 @@ def report_issue(payload: IssueReportRequest, db: Session = Depends(database.get
     接收使用者回報的問題與建議，儲存至資料庫與備份檔案，並嘗試發送通知郵件至 vancouvergodseye@gmail.com
     """
     now_utc = datetime.utcnow()
+    report_id = f"rep_{int(now_utc.timestamp() * 1000)}_{uuid.uuid4().hex[:6]}"
     # 1. 儲存至資料庫
     try:
         report = models.IssueReport(
             title=payload.title,
             details=payload.details,
             contact_email=payload.contact_email or None,
+            status="pending",
             created_at=now_utc
         )
         db.add(report)
@@ -3421,10 +3425,12 @@ def report_issue(payload: IssueReportRequest, db: Session = Depends(database.get
         report_file = os.path.join(data_dir, 'issue_reports.jsonl')
         with open(report_file, 'a', encoding='utf-8') as f:
             f.write(json.dumps({
+                "id": report_id,
                 "timestamp": now_utc.isoformat(),
                 "title": payload.title,
                 "details": payload.details,
                 "contact_email": payload.contact_email or "",
+                "status": "pending",
                 "has_attachment": bool(payload.image_base64),
                 "attachment_name": payload.image_name or ""
             }, ensure_ascii=False) + "\n")
@@ -4632,11 +4638,16 @@ def get_admin_issue_reports(db: Session = Depends(database.get_db)):
     report_file = os.path.join(data_dir, "issue_reports.jsonl")
     if os.path.exists(report_file):
         with open(report_file, "r", encoding="utf-8") as f:
-            for line in f:
+            for idx, line in enumerate(f):
                 line = line.strip()
                 if line:
                     try:
-                        issue_list.append(json.loads(line))
+                        item = json.loads(line)
+                        if "id" not in item or not item["id"]:
+                            item["id"] = f"rep_{idx}_{hashlib.md5((str(item.get('timestamp','')) + str(item.get('title',''))).encode()).hexdigest()[:8]}"
+                        if "status" not in item:
+                            item["status"] = "pending"
+                        issue_list.append(item)
                     except Exception:
                         pass
     # 1. 查詢資料庫
@@ -4650,6 +4661,7 @@ def get_admin_issue_reports(db: Session = Depends(database.get_db)):
                     "title": r.title,
                     "details": r.details,
                     "contact_email": r.contact_email or "",
+                    "status": getattr(r, "status", None) or "pending",
                     "has_attachment": False,
                     "attachment_name": ""
                 })
@@ -4657,3 +4669,107 @@ def get_admin_issue_reports(db: Session = Depends(database.get_db)):
         pass
     issue_list.sort(key=lambda x: str(x.get("timestamp", "")), reverse=True)
     return {"status": "ok", "total": len(issue_list), "reports": issue_list}
+
+class IssueStatusUpdate(BaseModel):
+    status: str
+
+@app.patch("/api/admin/issue-reports/{report_id}")
+@app.post("/api/admin/issue-reports/{report_id}/status")
+def update_admin_issue_report_status(
+    report_id: str,
+    payload: IssueStatusUpdate,
+    db: Session = Depends(database.get_db)
+):
+    """更新使用者問題回報狀態 (resolved: 完成 / closed: 關閉 / pending: 待處理)"""
+    new_status = payload.status
+    if new_status not in ["pending", "resolved", "closed"]:
+        return JSONResponse(status_code=400, content={"status": "error", "message": "無效狀態，僅接受: pending, resolved, closed"})
+
+    data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+    report_file = os.path.join(data_dir, "issue_reports.jsonl")
+
+    # 1. 更新 JSONL 備份
+    if os.path.exists(report_file):
+        lines = []
+        with open(report_file, "r", encoding="utf-8") as f:
+            for idx, line in enumerate(f):
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    item = json.loads(line)
+                    item_id = item.get("id") or f"rep_{idx}"
+                    if item_id == report_id or str(item.get("timestamp")) == report_id:
+                        item["status"] = new_status
+                        item["updated_at"] = datetime.utcnow().isoformat()
+                    lines.append(json.dumps(item, ensure_ascii=False) + "\n")
+                except Exception:
+                    lines.append(line + "\n")
+        with open(report_file, "w", encoding="utf-8") as f:
+            f.writelines(lines)
+
+    # 2. 更新資料庫
+    try:
+        db_id = None
+        if report_id.startswith("db_"):
+            try:
+                db_id = int(report_id.replace("db_", ""))
+            except ValueError:
+                pass
+        if db_id is not None:
+            db_report = db.query(models.IssueReport).filter(models.IssueReport.id == db_id).first()
+            if db_report:
+                db_report.status = new_status
+                db.commit()
+    except Exception as e:
+        print(f"[Update Issue DB Error]: {e}")
+        db.rollback()
+
+    return {"status": "ok", "message": f"回報狀態已更新為 {new_status}", "report_id": report_id, "new_status": new_status}
+
+@app.delete("/api/admin/issue-reports/{report_id}")
+def delete_admin_issue_report(
+    report_id: str,
+    db: Session = Depends(database.get_db)
+):
+    """刪除使用者問題回報"""
+    data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+    report_file = os.path.join(data_dir, "issue_reports.jsonl")
+
+    # 1. 從 JSONL 備份移除
+    if os.path.exists(report_file):
+        remaining_lines = []
+        with open(report_file, "r", encoding="utf-8") as f:
+            for idx, line in enumerate(f):
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    item = json.loads(line)
+                    item_id = item.get("id") or f"rep_{idx}"
+                    if item_id == report_id or str(item.get("timestamp")) == report_id:
+                        continue
+                    remaining_lines.append(json.dumps(item, ensure_ascii=False) + "\n")
+                except Exception:
+                    remaining_lines.append(line + "\n")
+        with open(report_file, "w", encoding="utf-8") as f:
+            f.writelines(remaining_lines)
+
+    # 2. 從資料庫移除
+    try:
+        db_id = None
+        if report_id.startswith("db_"):
+            try:
+                db_id = int(report_id.replace("db_", ""))
+            except ValueError:
+                pass
+        if db_id is not None:
+            db_report = db.query(models.IssueReport).filter(models.IssueReport.id == db_id).first()
+            if db_report:
+                db.delete(db_report)
+                db.commit()
+    except Exception as e:
+        print(f"[Delete Issue DB Error]: {e}")
+        db.rollback()
+
+    return {"status": "ok", "message": "回報已徹底刪除", "report_id": report_id}
