@@ -42,10 +42,14 @@ services:
       - FLIGHTAWARE_MAX_MONTHLY_CALLS=${FLIGHTAWARE_MAX_MONTHLY_CALLS:-480}
       - AISSTREAM_API_KEY=${AISSTREAM_API_KEY:-}
       - TOMTOM_API_KEY=${TOMTOM_API_KEY:-}
+      - ADMIN_API_SECRET=${ADMIN_API_SECRET:-}
     restart: unless-stopped
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        - NEXT_PUBLIC_ADMIN_API_SECRET=${NEXT_PUBLIC_ADMIN_API_SECRET:-${ADMIN_API_SECRET:-}}
     expose:
       - "3000"
     depends_on:
@@ -53,6 +57,7 @@ services:
     environment:
       - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-}
       - NEXT_PUBLIC_TOMTOM_API_KEY=${TOMTOM_API_KEY:-}
+      - NEXT_PUBLIC_ADMIN_API_SECRET=${NEXT_PUBLIC_ADMIN_API_SECRET:-${ADMIN_API_SECRET:-}}
       - NEXT_PUBLIC_STRIPE_PAYMENT_LINK=${NEXT_PUBLIC_STRIPE_PAYMENT_LINK:-https://donate.stripe.com/6oU14g6Y7fgig6N1UfcMM00}
       - NEXT_PUBLIC_BUYMEACOFFEE_URL=${NEXT_PUBLIC_BUYMEACOFFEE_URL:-}
       - NEXT_PUBLIC_PAYPAL_URL=${NEXT_PUBLIC_PAYPAL_URL:-}

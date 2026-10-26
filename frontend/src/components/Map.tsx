@@ -16,7 +16,7 @@ import {
   Navigation, ExternalLink, Clock, Bike, Car, Info, 
   ChevronDown, ChevronUp, SlidersHorizontal, Fuel, Zap, Wifi, Waves, Play, Pause, CloudRain,
   RotateCcw, RotateCw, MapPin, Crosshair, Activity, Ban, Cone, Lightbulb, Ship,
-  Camera, Gauge, Footprints, ArrowRight, Mail, AlertCircle, Radio, Anchor, CreditCard, Landmark, Truck
+  Camera, Gauge, Footprints, ArrowRight, Mail, AlertCircle, Radio, Anchor, CreditCard, Landmark, Truck, Map as MapIcon
 } from 'lucide-react';
 
 // Fix Next.js App Router Web Worker crash
@@ -603,6 +603,8 @@ export default function AppMap() {
   const [timeInfoHovered, setTimeInfoHovered] = useState(false);
   const [carSharingLegendOpen, setCarSharingLegendOpen] = useState(true);
   const [bikewaysLegendOpen, setBikewaysLegendOpen] = useState(true);
+  const [truckRoutesPanelOpen, setTruckRoutesPanelOpen] = useState(true);
+  const [isTruckRouteMapModalOpen, setIsTruckRouteMapModalOpen] = useState(false);
   const [carSharingFilter, setCarSharingFilter] = useState<{ evo: boolean; modo: boolean }>({ evo: true, modo: true });
   const [bikewaysFilter, setBikewaysFilter] = useState<Record<string, boolean>>({
     'Protected Bike Lanes': true,
@@ -5443,7 +5445,7 @@ export default function AppMap() {
     if (layers.turnRestrictions) {
       style.sources['turn_restrictions'] = { type: 'geojson', data: '/vancouver_traffic_turn_restrictions.geojson' };
 
-      // 1. 幼線箭頭軌跡外框線 (提升在道路上的對比度)
+      // 1. 幼線箭頭軌跡外框線 (純白外框，強烈對比)
       style.layers.push({
         id: 'turn-restrictions-arrow-casing-layer',
         type: 'line',
@@ -5451,26 +5453,8 @@ export default function AppMap() {
         filter: ['==', ['get', 'is_restriction_arrow'], true],
         minzoom: 14,
         paint: {
-          'line-color': '#7f1d1d',
-          'line-width': ['interpolate', ['linear'], ['zoom'], 14, 2.5, 17, 4.5, 19, 6.0],
-          'line-opacity': 0.85
-        },
-        layout: {
-          'line-cap': 'round',
-          'line-join': 'round'
-        }
-      });
-
-      // 2. 幼線箭頭軌跡主線 (鮮紅色幼線)
-      style.layers.push({
-        id: 'turn-restrictions-arrow-line-layer',
-        type: 'line',
-        source: 'turn_restrictions',
-        filter: ['==', ['get', 'is_restriction_arrow'], true],
-        minzoom: 14,
-        paint: {
-          'line-color': '#ef4444',
-          'line-width': ['interpolate', ['linear'], ['zoom'], 14, 1.2, 17, 2.4, 19, 3.2],
+          'line-color': '#ffffff',
+          'line-width': ['interpolate', ['linear'], ['zoom'], 14, 3.5, 17, 5.5, 19, 7.0],
           'line-opacity': 0.95
         },
         layout: {
@@ -5479,7 +5463,25 @@ export default function AppMap() {
         }
       });
 
-      // 3. 轉向限制禁止符號與方向標記 (🚫 及 ▲/▼/◀/▶)
+      // 2. 幼線箭頭軌跡主線 (鮮紅色實線)
+      style.layers.push({
+        id: 'turn-restrictions-arrow-line-layer',
+        type: 'line',
+        source: 'turn_restrictions',
+        filter: ['==', ['get', 'is_restriction_arrow'], true],
+        minzoom: 14,
+        paint: {
+          'line-color': '#dc2626',
+          'line-width': ['interpolate', ['linear'], ['zoom'], 14, 2.0, 17, 3.5, 19, 4.5],
+          'line-opacity': 1.0
+        },
+        layout: {
+          'line-cap': 'round',
+          'line-join': 'round'
+        }
+      });
+
+      // 3. 轉向限制末端箭頭符號 (▲/▼/◀/▶，鮮紅符號帶白光暈)
       style.layers.push({
         id: 'turn-restrictions-arrow-symbol-layer',
         type: 'symbol',
@@ -5488,16 +5490,18 @@ export default function AppMap() {
         minzoom: 14.5,
         layout: {
           'text-field': ['get', 'symbol'],
-          'text-size': ['interpolate', ['linear'], ['zoom'], 14.5, 11, 17, 14, 19, 17],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 14.5, 13, 17, 16, 19, 19],
           'text-allow-overlap': true,
           'text-ignore-placement': true
         },
         paint: {
-          'text-color': '#dc2626'
+          'text-color': '#dc2626',
+          'text-halo-color': '#ffffff',
+          'text-halo-width': 2.0
         }
       });
 
-      // 4. 管制路口圓點圖層 (排除箭頭軌跡與符號)
+      // 4. 管制路口圓點圖層 (鮮紅底色、白外框)
       style.layers.push({
         id: 'turn-restrictions-layer',
         type: 'circle',
@@ -5505,14 +5509,14 @@ export default function AppMap() {
         filter: ['all', ['==', ['get', 'has_restrictions'], true], ['!', ['has', 'is_arrow_symbol']], ['!', ['has', 'is_restriction_arrow']]],
         minzoom: 11,
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 4.0, 14, 6.0, 16, 8.5, 18, 11],
-          'circle-color': '#ef4444',
-          'circle-stroke-width': 1.8,
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 4.5, 14, 6.5, 16, 9.0, 18, 11],
+          'circle-color': '#dc2626',
+          'circle-stroke-width': 2.5,
           'circle-stroke-color': '#ffffff'
         }
       });
 
-      // 5. 管制路口中心 🚫 符號
+      // 5. 管制路口中心清晰禁止標記 (純白 ✕ 符號，杜絕 emoji 黑色圓塊)
       style.layers.push({
         id: 'turn-restrictions-symbol-layer',
         type: 'symbol',
@@ -5520,9 +5524,12 @@ export default function AppMap() {
         filter: ['all', ['==', ['get', 'has_restrictions'], true], ['!', ['has', 'is_arrow_symbol']], ['!', ['has', 'is_restriction_arrow']]],
         minzoom: 13,
         layout: {
-          'text-field': '🚫',
-          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 11, 18, 15],
-          'text-allow-overlap': false
+          'text-field': '✕',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 9, 16, 11, 18, 13],
+          'text-allow-overlap': true
+        },
+        paint: {
+          'text-color': '#ffffff'
         }
       });
     }
@@ -10986,7 +10993,7 @@ export default function AppMap() {
               {selectedFacility.facility_type === 'truck_routes_restriction' && (() => {
                 const props = selectedFacility.properties || {};
                 const isWeight = props.restriction_type === 'weight';
-                const restrictionText = props.restriction_text || (isWeight ? 'Weight Restriction' : `Vertical Clearances - ${props.clearance || '5.1m'}`);
+                const restrictionText = isWeight ? '重量限制' : (props.restriction_text || `Vertical Clearances - ${props.clearance || '5.1m'}`);
                 const themeColor = isWeight ? '#ea580c' : '#f59e0b';
                 
                 return (
@@ -11004,26 +11011,12 @@ export default function AppMap() {
                       <span>{restrictionText}</span>
                     </div>
 
-                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>限制類型</span>
-                        <span className="text-gray-900 font-medium text-right">
-                          {isWeight ? '橋樑載重限制 (Weight Restriction)' : '立體淨高限制 (Vertical Clearance)'}
-                        </span>
+                    {/* 1.2: 重量限制顯示專屬文字；1.4: 高度限制不顯示灰色區塊 */}
+                    {isWeight && (
+                      <div className="bg-gray-50 p-2.5 rounded border border-gray-100 text-gray-700 leading-relaxed text-[11px]">
+                        Granville Bridge weight restriction maximum LGVW 27,000 kg. Limited access to transit buses, trucks and tour buse.
                       </div>
-                      <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
-                        <span>管制數值</span>
-                        <span className="text-gray-900 font-bold font-mono text-right text-xs">
-                          {isWeight ? '依溫哥華市政載重規定管制' : (props.clearance ? `${props.clearance}` : '淨高受限')}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
-                        <span>所屬路段</span>
-                        <span className="text-gray-900 font-medium text-right">
-                          {props.subtitle || 'Vancouver, BC'}
-                        </span>
-                      </div>
-                    </div>
+                    )}
                   </div>
                 );
               })()}
@@ -11077,25 +11070,35 @@ export default function AppMap() {
                       </span>
                     </div>
 
+                    {/* 3.2: 採用灰色區塊表示 */}
                     <div className="flex flex-col gap-1.5">
                       {restrictions.length > 0 ? (
-                        restrictions.map((r, i) => (
-                          <div key={i} className="p-2 bg-rose-50/60 rounded border border-rose-200/70 flex flex-col gap-0.5 text-[11px]">
-                            <div className="flex items-center justify-between text-rose-900 font-semibold">
-                              <span>{r.label || '轉向管制'}</span>
-                              {r.raw && (
-                                <span className="text-[10px] font-mono text-rose-600 bg-rose-100/70 px-1 rounded">
-                                  {r.raw}
-                                </span>
-                              )}
+                        restrictions.map((r, i) => {
+                          // 3.3 移除 (EB), (SB), (WB), (NB) 等英文代碼
+                          const cleanLabel = (r.label || '轉向管制')
+                            .replace(/\s*\([A-Za-z0-9\s/,-]+\)/g, '')
+                            .trim();
+
+                          // 3.3 移除說明中的所有英文註解與純英文代號
+                          const cleanDecoded = (r.decoded || r.raw || '')
+                            .replace(/\s*\([A-Za-z0-9\s/:,-]+\)/g, '')
+                            .replace(/\b(?:ExBike|ExBus|ExT|ExTx|NLT|NRT|EB|WB|NB|SB)\b/gi, '')
+                            .replace(/\s+/g, ' ')
+                            .trim();
+
+                          return (
+                            <div key={i} className="p-2.5 bg-gray-50 rounded-lg border border-gray-100 flex flex-col gap-1 text-[11px]">
+                              <div className="text-gray-900 font-semibold text-xs">
+                                <span>{cleanLabel || '轉向管制'}</span>
+                              </div>
+                              <div className="text-gray-700 text-xs font-medium leading-relaxed">
+                                {cleanDecoded || '管制轉向通行'}
+                              </div>
                             </div>
-                            <div className="text-gray-800 text-xs font-medium leading-relaxed">
-                              {r.decoded || r.raw}
-                            </div>
-                          </div>
-                        ))
+                          );
+                        })
                       ) : (
-                        <div className="p-2 bg-gray-50 rounded border border-gray-100 text-gray-500 text-center text-xs">
+                        <div className="p-2.5 bg-gray-50 rounded-lg border border-gray-100 text-gray-500 text-center text-xs">
                           此路口目前無特殊轉向管制
                         </div>
                       )}
@@ -15887,6 +15890,67 @@ export default function AppMap() {
         </div>
       )}
 
+      {/* 貨車路線資訊與地圖按鈕小界面 (Truck Routes Info & Map Modal Trigger) */}
+      {layers.truckRoutes && (
+        <div className={`fixed z-30 w-[280px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-sky-500/50 select-none animate-in fade-in duration-200 ${
+          getFloatingPanelPos((layers.parkingMeters ? 1 : 0) + (layers.motorcycleParking ? 1 : 0) + (layers.fuel ? 1 : 0) + ((layers.evCharging || layers.tesla) ? 1 : 0) + (layers.carSharing ? 1 : 0) + (layers.bikeways ? 1 : 0))
+        }`}>
+          <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
+            <div className="flex items-center gap-2">
+              <span className="p-1 rounded bg-sky-500/20 text-sky-400">
+                <Truck className="w-3.5 h-3.5" />
+              </span>
+              <div className="flex flex-col">
+                <span className="font-bold text-xs text-white">貨車路線與法規</span>
+                <span className="text-[9.5px] text-gray-400">Vancouver Truck Routes</span>
+              </div>
+            </div>
+            <button
+              onClick={() => setTruckRoutesPanelOpen(!truckRoutesPanelOpen)}
+              className="text-gray-400 hover:text-white p-0.5 rounded hover:bg-[#252a38] transition-colors"
+              title={truckRoutesPanelOpen ? "收合" : "展開"}
+            >
+              {truckRoutesPanelOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            </button>
+          </div>
+
+          {truckRoutesPanelOpen ? (
+            <div className="flex flex-col gap-2 text-xs">
+              {/* 1.3.1 開啟貨車路線詳細地圖按鈕 */}
+              <button
+                type="button"
+                onClick={() => setIsTruckRouteMapModalOpen(true)}
+                className="w-full flex items-center justify-center gap-2 p-2 bg-sky-600/90 hover:bg-sky-500 text-white rounded-lg font-medium shadow-sm transition-all hover:shadow-md cursor-pointer"
+              >
+                <MapIcon className="w-4 h-4" />
+                <span>開啟貨車路線詳細地圖</span>
+              </button>
+
+              {/* 1.3.2 前往官方網頁按鈕 */}
+              <a
+                href="https://vancouver.ca/streets-transportation/truck-routes-maps-and-regulations.aspx"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full flex items-center justify-between p-2 bg-[#202533] hover:bg-[#272d3e] text-sky-300 hover:text-sky-200 rounded-lg border border-sky-500/30 font-medium transition-all text-[11px]"
+              >
+                <span>前往 Truck Route Maps and Regulations 官方網頁</span>
+                <span className="text-xs">→</span>
+              </a>
+            </div>
+          ) : (
+            <div className="flex items-center justify-between text-[11px]">
+              <span className="text-gray-300">路線法規及地圖</span>
+              <button 
+                onClick={() => setTruckRoutesPanelOpen(true)}
+                className="text-[10px] text-sky-400 hover:underline cursor-pointer"
+              >
+                展開
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* 路口安全相機圖例與篩選 (Intersection Safety Cameras Legend & Filter Popup) */}
       {layers.safetyCameras && (
         <div className={`fixed z-30 w-[260px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-rose-500/40 select-none animate-in fade-in duration-200 ${
@@ -16789,6 +16853,82 @@ export default function AppMap() {
         <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-[#10141f]/95 border border-cyan-500/60 shadow-[0_8px_24px_rgba(6,182,212,0.3)] text-white px-4 py-2 rounded-full flex items-center gap-2 text-xs font-medium animate-in fade-in duration-200">
           <Check className="w-4 h-4 text-emerald-400" />
           <span>已複製名稱至剪貼簿！</span>
+        </div>
+      )}
+
+      {/* 1.3.1 貨車路線詳細地圖 Modal (Truck Route Map Lightbox) */}
+      {isTruckRouteMapModalOpen && (
+        <div 
+          className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 pt-16 sm:pt-20 pb-4 animate-in fade-in duration-200"
+          onClick={() => setIsTruckRouteMapModalOpen(false)}
+        >
+          <div 
+            className="relative max-w-5xl w-full bg-[#161922] border border-sky-500/50 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[88vh]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-4 py-3 bg-[#1e2330] border-b border-gray-700/60 shrink-0">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <span className="p-1 rounded bg-sky-500/20 text-sky-400 shrink-0">
+                  <Truck className="w-4 h-4" />
+                </span>
+                <div className="flex flex-col min-w-0">
+                  <h4 className="text-sm font-bold text-gray-100 truncate">
+                    溫哥華官方貨車路線詳細地圖 (Vancouver Truck Route Map)
+                  </h4>
+                  <div className="flex items-center gap-2 text-[11px] text-gray-400">
+                    <span className="text-sky-300 font-medium">City of Vancouver</span>
+                    <span>·</span>
+                    <span>貨車路線、限重與淨高規範圖則</span>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <a
+                  href="/vancouver-truck-route-map-1.jpg"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-sky-300 hover:bg-white/10 transition-colors flex items-center gap-1 text-xs"
+                  title="於新分頁開啟原始高清圖片"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+                <button
+                  onClick={() => setIsTruckRouteMapModalOpen(false)}
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                  title="關閉 (Esc)"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Body / Image */}
+            <div className="p-2 sm:p-4 flex items-center justify-center bg-black/95 overflow-auto flex-1 min-h-0">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/vancouver-truck-route-map-1.jpg"
+                alt="Vancouver Truck Route Map"
+                className="max-w-full max-h-[68vh] object-contain rounded-lg shadow-2xl border border-white/10"
+              />
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-4 py-2.5 bg-[#1a1e29] border-t border-gray-800 flex items-center justify-between text-xs shrink-0">
+              <span className="text-gray-400 text-[11px]">
+                資料來源：City of Vancouver Engineering Services
+              </span>
+              <a
+                href="https://vancouver.ca/streets-transportation/truck-routes-maps-and-regulations.aspx"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-sky-400 hover:text-sky-300 hover:underline font-medium text-[11px]"
+              >
+                <span>前往 Truck Route Maps and Regulations 官方網頁</span>
+                <span>→</span>
+              </a>
+            </div>
+          </div>
         </div>
       )}
 

@@ -1752,6 +1752,57 @@ def get_search_bikeway_items():
     _search_bikeways_cache = items
     return _search_bikeways_cache
 
+def normalize_search_str(s: str) -> str:
+    """
+    將搜尋字串轉小寫、去除符號 (&, -, /, , 等)，並正規化英文序數 (16th -> 16, 1st -> 1, 2nd -> 2, 3rd -> 3)
+    """
+    if not s:
+        return ""
+    s = str(s).lower()
+    s = re.sub(r'(\d+)(st|nd|rd|th)\b', r'\1', s)
+    s = re.sub(r'[&/,\-+@#·\(\)\.\'":;\\|_]+', ' ', s)
+    return re.sub(r'\s+', ' ', s).strip()
+
+def match_query_tokens(query_tokens: list[str], target_str: str) -> tuple[bool, int]:
+    """
+    比對 query_tokens 是否全部命中 target_str。
+    回傳 (is_match, score)。
+    """
+    if not query_tokens:
+        return (False, 0)
+    norm_target = normalize_search_str(target_str)
+    if not norm_target:
+        return (False, 0)
+    target_words = norm_target.split()
+
+    score = 0
+    for q_tok in query_tokens:
+        tok_matched = False
+        for tw in target_words:
+            if tw == q_tok:
+                score += 12
+                tok_matched = True
+                break
+            elif tw.startswith(q_tok):
+                score += 8
+                tok_matched = True
+                break
+            elif q_tok in tw:
+                score += 5
+                tok_matched = True
+                break
+        if not tok_matched:
+            if q_tok in norm_target:
+                score += 3
+                tok_matched = True
+        if not tok_matched:
+            return (False, 0)
+
+    if target_words and target_words[0].startswith(query_tokens[0]):
+        score += 6
+    score += max(0, 15 - len(target_words))
+    return (True, score)
+
 _search_facilities_cache = None
 
 FACILITY_SEARCH_CONFIGS = [
@@ -1948,6 +1999,9 @@ def get_search_facilities_items():
                     "search_text": search_text,
                     "address_lower": addr.lower(),
                     "title_lower": title.lower(),
+                    "norm_search_text": normalize_search_str(search_text),
+                    "norm_title": normalize_search_str(title),
+                    "norm_address": normalize_search_str(addr),
                     "meta": {
                         "id": fac_id,
                         "facility_type": meta_facility_type,
@@ -1968,7 +2022,7 @@ _search_query_cache = {}
 def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
     """
     全圖層項目搜尋 (Search Layer Items):
-    搜尋圖層中的項目：站名 (SkyTrain/SeaBus/Bus)、碼頭名 (BC Ferries)、機場與水上飛機、道路設施、政府機構 (消防局/社區中心)
+    關鍵字/分詞模糊比對：支援例如 "cypress 16" 命中 "Cypress & 16th"
     """
     q_clean = q.strip().lower()
     if not q_clean:
@@ -1977,6 +2031,7 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
     if q_clean in _search_query_cache:
         return {"results": _search_query_cache[q_clean]}
 
+    q_tokens = [t for t in normalize_search_str(q_clean).split() if t]
     results = []
 
     # 確保點狀圖層資料庫同步，供搜尋即時定位
@@ -2001,11 +2056,16 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
 
             score = 0
             if rnum_lower == q_clean or f"r{q_clean}" == rnum_lower or (q_clean.startswith("r") and q_clean[1:] == rnum_lower):
-                score = 3
+                score = 15
             elif rnum_lower.startswith(q_clean):
-                score = 2
+                score = 10
             elif q_clean in rnum_lower or q_clean in rlong_lower:
-                score = 1
+                score = 7
+            elif q_tokens:
+                combined_route = f"{rnum} {rlong}"
+                r_match, r_score = match_query_tokens(q_tokens, combined_route)
+                if r_match:
+                    score = r_score
 
             if score > 0:
                 matching_routes.append((score, rid, rnum, rlong, rmeta))
@@ -2063,8 +2123,8 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
     for ap in SEARCH_AIRPORTS:
         a_title = ap["title"].lower()
         a_sub = ap["subtitle"].lower()
-        if (q_clean in a_title or q_clean in a_sub or
-            any(q_clean in kw for kw in ap["keywords"])):
+        comb = f"{a_title} {a_sub} " + " ".join(ap.get("keywords", []))
+        if (q_clean in a_title or q_clean in a_sub or (q_tokens and match_query_tokens(q_tokens, comb)[0])):
             results.append({
                 "id": ap["id"],
                 "title": ap["title"],
@@ -2080,13 +2140,12 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
             })
 
     # 1. 搜尋 BC Ferries 渡輪碼頭
-
     for term in SEARCH_BC_FERRY_TERMINALS:
         t_title = term["title"].lower()
         t_sub = term["subtitle"].lower()
         t_code = term["meta"]["code"].lower()
-        if (q_clean in t_title or q_clean in t_sub or q_clean == t_code or
-            any(q_clean in kw for kw in term["keywords"])):
+        comb = f"{t_title} {t_sub} {t_code} " + " ".join(term.get("keywords", []))
+        if (q_clean in t_title or q_clean in t_sub or q_clean == t_code or (q_tokens and match_query_tokens(q_tokens, comb)[0])):
             results.append({
                 "id": term["id"],
                 "title": term["title"],
@@ -2101,12 +2160,17 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                 "meta": term["meta"]
             })
 
-    # 2. 搜尋大眾運輸車站與站牌 (Transit Stops)
+    # 2. 搜尋大眾運輸車站與站牌 (Transit Stops) - 支援關鍵字分詞 AND 查詢
     try:
-        stops = db.query(models.TransitStop).filter(
-            models.TransitStop.name.ilike(f"%{q_clean}%") |
-            models.TransitStop.stop_id.ilike(f"{q_clean}%")
-        ).limit(300).all()
+        from sqlalchemy import and_
+        stop_conditions = [models.TransitStop.name.ilike(f"%{tok}%") for tok in q_tokens] if q_tokens else []
+        if stop_conditions:
+            stops = db.query(models.TransitStop).filter(and_(*stop_conditions)).limit(150).all()
+        else:
+            stops = db.query(models.TransitStop).filter(
+                models.TransitStop.name.ilike(f"%{q_clean}%") |
+                models.TransitStop.stop_id.ilike(f"{q_clean}%")
+            ).limit(150).all()
 
         skytrain_stops = [s for s in stops if s.stop_group == 'skytrain']
         seabus_stops = [s for s in stops if s.stop_group == 'seabus']
@@ -2159,23 +2223,37 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
     except Exception as e:
         print(f"Error searching stops: {e}")
 
-    # 3. 搜尋設施、學校、公園、政府機構等全圖層資料 (All Point/Polygon Facilities)
+    # 3. 搜尋設施、學校、公園、轉向限制、政府機構等全圖層資料 (All Point/Polygon Facilities)
     try:
         fac_candidates = []
         for fac in get_search_facilities_items():
+            # 優先完整字串比對
             if q_clean in fac["search_text"]:
-                score = 1
+                score = 20
                 if fac["title_lower"] == q_clean:
-                    score = 10
+                    score = 60
                 elif fac["title_lower"].startswith(q_clean):
-                    score = 8
+                    score = 45
                 elif q_clean in fac["title_lower"]:
-                    score = 6
+                    score = 35
                 elif fac["address_lower"] and q_clean in fac["address_lower"]:
-                    score = 5
+                    score = 25
                 elif q_clean in fac["badge"].lower():
-                    score = 4
+                    score = 15
                 fac_candidates.append((score, fac))
+                continue
+
+            # 關鍵字分詞模糊比對 (例如: "cypress 16" 命中 "Cypress & 16th")
+            if q_tokens:
+                is_match, tok_score = match_query_tokens(q_tokens, fac.get("norm_search_text") or fac["search_text"])
+                if is_match:
+                    is_title_match, title_tok_score = match_query_tokens(q_tokens, fac.get("norm_title") or fac["title"])
+                    if is_title_match:
+                        tok_score += 25 + title_tok_score
+                    is_addr_match, addr_tok_score = match_query_tokens(q_tokens, fac.get("norm_address") or fac["address_lower"])
+                    if is_addr_match:
+                        tok_score += 15 + addr_tok_score
+                    fac_candidates.append((tok_score, fac))
 
         fac_candidates.sort(key=lambda x: -x[0])
         for score, fac in fac_candidates[:120]:
@@ -2202,7 +2280,8 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
             v_name = (v.get("name") or "").lower()
             v_mmsi = str(v.get("mmsi") or "")
             v_callsign = (v.get("callsign") or "").lower()
-            if (q_clean in v_name or q_clean == v_mmsi or (q_clean and q_clean in v_callsign) or (q_clean in ("船隻", "船運", "vessel", "ship"))):
+            comb = f"{v_name} {v_mmsi} {v_callsign}"
+            if (q_clean in v_name or q_clean == v_mmsi or (q_clean and q_clean in v_callsign) or (q_tokens and match_query_tokens(q_tokens, comb)[0]) or (q_clean in ("船隻", "船運", "vessel", "ship"))):
                 results.append({
                     "id": f"vessel_{v_mmsi}",
                     "title": v.get("name") or f"船隻 MMSI:{v_mmsi}",
@@ -2224,7 +2303,8 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
         for item in get_search_fsa_items():
             fsa_code = item["meta"].get("fsa", "").lower()
             fsa_name = item["title"].lower()
-            if q_clean in fsa_code or q_clean in fsa_name or (q_clean in ("郵遞", "郵區", "fsa", "postal")):
+            comb = f"{fsa_code} {fsa_name}"
+            if (q_clean in fsa_code or q_clean in fsa_name or (q_tokens and match_query_tokens(q_tokens, comb)[0]) or (q_clean in ("郵遞", "郵區", "fsa", "postal"))):
                 results.append(item)
     except Exception as e:
         print(f"Error searching FSA: {e}")
@@ -2233,7 +2313,7 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
     try:
         for item in get_search_local_area_items():
             area_name = item["meta"].get("name", "").lower()
-            if q_clean in area_name or (q_clean in ("邊界", "分區", "boundary", "neighborhood", "neighbourhood")):
+            if (q_clean in area_name or (q_tokens and match_query_tokens(q_tokens, area_name)[0]) or (q_clean in ("邊界", "分區", "boundary", "neighborhood", "neighbourhood"))):
                 results.append(item)
     except Exception as e:
         print(f"Error searching local area boundaries: {e}")
@@ -2242,7 +2322,7 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
     try:
         for item in get_search_bikeway_items():
             bw_name = item["title"].lower()
-            if q_clean in bw_name or (q_clean in ("單車徑", "bike", "bikeway")):
+            if (q_clean in bw_name or (q_tokens and match_query_tokens(q_tokens, bw_name)[0]) or (q_clean in ("單車徑", "bike", "bikeway"))):
                 results.append(item)
     except Exception as e:
         print(f"Error searching bikeways: {e}")

@@ -220,27 +220,7 @@ def update_traffic_turn_restrictions():
                         }
                     })
 
-                    # 2. 禁止符號 🚫
-                    symbol_features.append({
-                        "type": "Feature",
-                        "id": f"{intersection_id}_sym_{dir_code}",
-                        "geometry": {
-                            "type": "Point",
-                            "coordinates": [round(sym_pos[0], 7), round(sym_pos[1], 7)]
-                        },
-                        "properties": {
-                            "id": f"{intersection_id}_sym_{dir_code}",
-                            "parent_id": intersection_id,
-                            "name": sig_loc,
-                            "signal_location": sig_loc,
-                            "facility_type": "turn_restrictions",
-                            "is_arrow_symbol": True,
-                            "symbol": "🚫",
-                            "restrictions": restrictions
-                        }
-                    })
-
-                    # 3. 箭頭方向符號
+                    # 2. 箭頭方向符號
                     symbol_features.append({
                         "type": "Feature",
                         "id": f"{intersection_id}_head_{dir_code}",

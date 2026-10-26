@@ -626,6 +626,23 @@ class ExploreErrorBoundary extends React.Component<
   }
 }
 
+// 關鍵字/分詞模糊比對輔助函數 (支援例如 "cypress 16" 命中 "Cypress & 16th")
+function matchSearchTokens(target: string, query: string): boolean {
+  if (!query || !query.trim()) return true;
+  const qTokens = query
+    .toLowerCase()
+    .replace(/(\d+)(st|nd|rd|th)\b/gi, '$1')
+    .replace(/[&/,\-+@#·().'":;]+/g, ' ')
+    .split(/\s+/)
+    .filter(Boolean);
+  if (qTokens.length === 0) return true;
+  const targetNorm = (target || '')
+    .toLowerCase()
+    .replace(/(\d+)(st|nd|rd|th)\b/gi, '$1')
+    .replace(/[&/,\-+@#·().'":;]+/g, ' ');
+  return qTokens.every(tok => targetNorm.includes(tok));
+}
+
 export default function ExplorePanel() {
   const { isExploreOpen, setExploreOpen, setSearchTarget } = useUIStore();
   if (!isExploreOpen) return null;

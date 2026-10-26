@@ -104,22 +104,41 @@ CLEARANCE_POINTS = [
 # Granville Bridge Weight Restriction Point (User 1.2.2)
 WEIGHT_RESTRICTION_POINTS = [
     {
-        "lat": 49.27135, "lon": -123.13368,
+        "lat": 49.27169, "lon": -123.13445,
         "title": "Granville Bridge",
         "subtitle": "Vancouver, BC",
-        "restriction_text": "Weight Restriction",
+        "restriction_text": "重量限制",
         "clearance": "4.15m"
     }
 ]
 
-# Granville Bridge Line Coordinates (Connecting Drake/Pacific Blvd Howe/Seymour St across False Creek down to 4th/5th Ave)
-GRANVILLE_BRIDGE_COORDS = [
-    [-123.1287, 49.2762], # Howe & Drake
-    [-123.1303, 49.2749], # Howe & Pacific
-    [-123.1337, 49.2713], # Bridge Center over False Creek
-    [-123.1365, 49.2682], # Bridge South approach
-    [-123.1388, 49.2657], # Granville & 4th Ave
-    [-123.1392, 49.2648]  # Granville & 5th Ave
+# Granville Bridge MultiLine Coordinates (Connecting Howe & Seymour ramps over False Creek down to W 4th/5th Ave)
+GRANVILLE_BRIDGE_HOWE_SPAN = [
+    [-123.12903, 49.27658],
+    [-123.12947, 49.27626],
+    [-123.13036, 49.27509],
+    [-123.13121, 49.27383],
+    [-123.13768, 49.26954],
+    [-123.1377, 49.26952],
+    [-123.13775, 49.26949],
+    [-123.1378, 49.26946],
+    [-123.13787, 49.26941],
+    [-123.13795, 49.26934],
+    [-123.13805, 49.26925],
+    [-123.13814, 49.26913],
+    [-123.13822, 49.26901],
+    [-123.13828, 49.26888],
+    [-123.13832, 49.26875],
+    [-123.13833, 49.26868],
+    [-123.13842, 49.26717],
+    [-123.13911, 49.26689]
+]
+
+GRANVILLE_BRIDGE_SEYMOUR_RAMP = [
+    [-123.12705, 49.2753],
+    [-123.1285, 49.27563],
+    [-123.1289, 49.27536],
+    [-123.13121, 49.27383]
 ]
 
 def update_truck_routes():
@@ -153,14 +172,15 @@ def update_truck_routes():
         "type": "Feature",
         "id": "truck_route_granville_bridge",
         "geometry": {
-            "type": "LineString",
-            "coordinates": GRANVILLE_BRIDGE_COORDS
+            "type": "MultiLineString",
+            "coordinates": [GRANVILLE_BRIDGE_HOWE_SPAN, GRANVILLE_BRIDGE_SEYMOUR_RAMP]
         },
         "properties": {
             "id": "truck_route_granville_bridge",
             "facility_type": "truck_routes",
             "route_type": "granville_bridge",
-            "name": "Granville Bridge (重量限制路線 Weight Restriction)",
+            "name": "Granville Bridge (重量限制路線)",
+            "restriction_text": "重量限制",
             "color": "#f97316",
             "is_weight_restricted": True
         }
