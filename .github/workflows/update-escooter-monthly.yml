@@ -1,18 +1,21 @@
-name: Update 共享滑板車 (Lime E-Scooters) (每小時)
+name: Update 共享滑板車 (Lime E-Scooters) (每月站點資訊)
 
 on:
   schedule:
-    # 每小時整點執行 (UTC)
-    - cron: '0 * * * *'
+    # 每月 1 日 04:30 (UTC) 執行
+    - cron: '30 4 1 * *'
   workflow_dispatch:
 
 concurrency:
-  group: update-escooter
+  group: update-escooter-monthly
   cancel-in-progress: true
 
 jobs:
-  update-escooter:
+  update-escooter-monthly:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -26,18 +29,18 @@ jobs:
         run: |
           pip install requests
 
-      - name: Run Lime 共享滑板車 update script
+      - name: Run Lime 共享滑板車 monthly stations update
         run: |
-          python backend/scripts/layers/update_escooter.py
+          python backend/scripts/layers/update_escooter.py --mode stations
 
       - name: Commit and push changes
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
           git add backend/data/vancouver_escooter.geojson frontend/public/vancouver_escooter.geojson
           if git diff --staged --quiet; then
             echo "No changes detected"
           else
-            git commit -m "chore(data): auto-update Lime 共享滑板車 (E-Scooters) [skip ci]"
+            git commit -m "chore(data): monthly-sync Lime 共享滑板車站點資訊 (E-Scooters) [skip ci]"
             git push
           fi

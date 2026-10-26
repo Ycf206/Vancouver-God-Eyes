@@ -58,7 +58,8 @@
 
 | 圖層 ID | 圖層名稱 | 預設週期 | GitHub Actions 工作流 | 執行腳本路徑 | 產出檔案路徑 | 數據管線更新程序備註 |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `shared_bikes` / `escooter` | **Mobi 共享單車 & Lime 滑板車** | 每小時整點 (`0 * * * *`) | `update-micromobility-hourly.yml` | `scripts/fetch_shared_micromobility.mjs` | `frontend/public/vancouver_shared_bikes.geojson`<br>`frontend/public/vancouver_escooter.geojson` | 呼叫 Mobi GBFS API 與 Lime Open Data，獲取車輛即時可用數、電量與車位數量，自動 commit push 並 SSH 通知主機 git pull。 |
+| `shared_bikes` | **Mobi 共享單車** | 每小時整點 (`0 * * * *`) / 每月 1 號 (`0 4 1 * *`) | `update-shared-bikes-hourly.yml`<br>`update-shared-bikes-monthly.yml` | `backend/scripts/layers/update_shared_bikes.py` | `frontend/public/vancouver_shared_bikes.geojson` | 呼叫 Mobi Entities API 取得站點位置，並配合 `/entities/stations/{id}` 即時同步車輛與還車槽數量。 |
+| `escooter` | **Lime 共享滑板車** | 每小時整點 (`0 * * * *`) / 每月 1 號 (`30 4 1 * *`) | `update-escooter-hourly.yml`<br>`update-escooter-monthly.yml` | `backend/scripts/layers/update_escooter.py` | `frontend/public/vancouver_escooter.geojson` | 呼叫 Lime GBFS station_information 與 station_status，每小時更新可借滑板車與還車位，自動 commit push。 |
 | `schools` | **學校與教育機構** | 每週日 04:00 (`0 4 * * 0`) | `update-schools.yml` | `scripts/update_schools.mjs` | `frontend/public/vancouver_schools.geojson` | 呼叫溫哥華學校局 (VSB) 開放資料集，比對校名、教育層級與經緯度座標。 |
 | `libraries` | **公共圖書館與分館** | 每週日 04:00 (`0 4 * * 0`) | `update-libraries.yml` | `scripts/update_libraries_closures.mjs` | `frontend/public/vancouver_libraries.geojson` | 讀取 VPL (Vancouver Public Library) 開放圖資，更新館舍地址、設施與營運資訊。 |
 | `food_vendors` | **街頭流動美食餐車** | 每週日 04:00 (`0 4 * * 0`) | `update-food-vendors.yml` | `scripts/update_food_vendors.mjs` | `frontend/public/vancouver_street_food_vendors.geojson` | 抓取溫哥華市府 Street Food Vendors 圖資，更新餐車經營許可與營運點位。 |

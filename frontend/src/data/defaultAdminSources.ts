@@ -1115,46 +1115,56 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
     "name": "Mobi 共享單車",
     "type": "geojson",
     "cron_expr": "0 * * * *",
-    "schedule_interval": "每小時整點",
-    "record_count": 250,
+    "schedule_interval": "每小時即時車況 / 每月站點",
+    "record_count": 262,
     "unit": "處站點與可用車位",
-    "last_updated": "2026-10-25T17:57:21.406Z",
+    "last_updated": "2026-10-26T13:06:40.000Z",
     "status": "ok",
-    "data_pipeline_notes": "Mobi GBFS 實時公開資料流 -> 每小時更新各站可租借單車與空位數 -> 寫入 /backend/data/vancouver_shared_bikes.geojson",
+    "data_pipeline_notes": "Mobi 官方站點與即時車況 API -> 每月更新站點結構，每小時透過 /entities/stations/{id} 更新精確可借車輛與還車槽 -> 寫入 /backend/data/vancouver_shared_bikes.geojson",
     "runner": "github_actions",
-    "workflow_file": "update-micromobility-hourly.yml",
+    "workflow_file": "update-shared-bikes-hourly.yml",
     "category": "道路",
     "source_links": [
       {
         "type": "api",
-        "label": "Mobi GBFS API",
-        "url": "https://vancouver-gbfs.bcycle.com/bcycle_vancouver/gbfs.json"
+        "label": "Mobi 官方站點資訊 API",
+        "url": "https://www.mobibikes.ca/api/client/entities"
+      },
+      {
+        "type": "api",
+        "label": "Mobi 官方即時車位 API",
+        "url": "https://www.mobibikes.ca/api/client/entities/stations/{id}"
       }
     ],
-    "source_url": "https://vancouver-gbfs.bcycle.com/bcycle_vancouver/gbfs.json"
+    "source_url": "https://www.mobibikes.ca/api/client/entities"
   },
   {
     "id": "escooter",
     "name": "Lime 共享滑板車",
     "type": "geojson",
     "cron_expr": "0 * * * *",
-    "schedule_interval": "每小時整點",
-    "record_count": 120,
+    "schedule_interval": "每小時即時車況 / 每月站點",
+    "record_count": 246,
     "unit": "處滑板車站點",
-    "last_updated": "2026-10-25T17:57:21.406Z",
+    "last_updated": "2026-10-26T13:06:40.000Z",
     "status": "ok",
-    "data_pipeline_notes": "Lime GBFS 實時公開資料流 -> 每小時更新各站滑板車位置與可用狀態 -> 寫入 /backend/data/vancouver_escooter.geojson",
+    "data_pipeline_notes": "Lime 官方 GBFS 資料流 -> 每月更新站點幾何與編號，每小時更新可借滑板車與還車位 -> 寫入 /backend/data/vancouver_escooter.geojson",
     "runner": "github_actions",
-    "workflow_file": "update-micromobility-hourly.yml",
+    "workflow_file": "update-escooter-hourly.yml",
     "category": "道路",
     "source_links": [
       {
         "type": "api",
-        "label": "Lime GBFS API",
-        "url": "https://data.lime.biz/"
+        "label": "Lime 官方站點資訊 API",
+        "url": "https://www.li.me/externalBikesQuery.php?bikeDataUrl=https%3A%2F%2Fdata.lime.bike%2Fapi%2Fpartners%2Fv1%2Fgbfs%2Fvancouver_bc%2Fstation_information.json"
+      },
+      {
+        "type": "api",
+        "label": "Lime 官方即時狀態 API",
+        "url": "https://www.li.me/externalBikesQuery.php?bikeDataUrl=https%3A%2F%2Fdata.lime.bike%2Fapi%2Fpartners%2Fv2%2Fgbfs%2Fvancouver_bc%2Fstation_status.json"
       }
     ],
-    "source_url": "https://data.lime.biz/"
+    "source_url": "https://data.lime.bike/api/partners/v1/gbfs/vancouver_bc/station_information.json"
   }
 ,
   {

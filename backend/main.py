@@ -3705,6 +3705,10 @@ def set_admin_github_token(payload: dict = Body(...)):
 
 def get_canonical_workflow_file(source_id: str) -> str:
     """傳回特定資料源所對應之獨立 GitHub Actions 工作流檔案名稱"""
+    if source_id == "shared_bikes":
+        return "update-shared-bikes-hourly.yml"
+    if source_id == "escooter":
+        return "update-escooter-hourly.yml"
     clean_id = source_id.replace("_", "-")
     return f"update-{clean_id}.yml"
 

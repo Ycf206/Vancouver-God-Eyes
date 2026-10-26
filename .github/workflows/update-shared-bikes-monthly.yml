@@ -1,0 +1,46 @@
+name: Update 共享單車 (Mobi Shared Bikes) (每月站點資訊)
+
+on:
+  schedule:
+    # 每月 1 日 04:00 (UTC) 執行
+    - cron: '0 4 1 * *'
+  workflow_dispatch:
+
+concurrency:
+  group: update-shared-bikes-monthly
+  cancel-in-progress: true
+
+jobs:
+  update-shared-bikes-monthly:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install requests
+
+      - name: Run Mobi 共享單車 monthly stations update
+        run: |
+          python backend/scripts/layers/update_shared_bikes.py --mode stations
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add backend/data/vancouver_shared_bikes.geojson frontend/public/vancouver_shared_bikes.geojson
+          if git diff --staged --quiet; then
+            echo "No changes detected"
+          else
+            git commit -m "chore(data): monthly-sync Mobi 共享單車站點資訊 (Shared Bikes) [skip ci]"
+            git push
+          fi
