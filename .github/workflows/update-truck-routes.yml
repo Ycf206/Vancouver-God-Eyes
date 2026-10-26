@@ -1,0 +1,43 @@
+name: Update 貨車路線 (Truck Routes) (每年)
+
+on:
+  schedule:
+    # 每年 1 月 1 日 00:00 UTC 執行一次
+    - cron: '0 0 1 1 *'
+  workflow_dispatch:
+
+concurrency:
+  group: update-truck-routes
+  cancel-in-progress: true
+
+jobs:
+  update-truck-routes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install requests
+
+      - name: Run 貨車路線 update script
+        run: |
+          python backend/scripts/layers/update_truck_routes.py
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add backend/data/vancouver_truck_routes.geojson frontend/public/vancouver_truck_routes.geojson
+          if git diff --staged --quiet; then
+            echo "No changes detected"
+          else
+            git commit -m "chore(data): auto-update 溫哥華法定貨車路線 (Truck Routes) [skip ci]"
+            git push
+          fi

@@ -1761,6 +1761,11 @@ FACILITY_SEARCH_CONFIGS = [
     ("garbage_collection", "廢物回收", "🚛", "garbageCollection", 15),
     ("motorcycle_parking", "摩托車位", "🏍️", "motorcycleParking", 17),
     ("impark", "ImPark 停車場", "🅿️", "impark", 16),
+    ("canada_post", "Canada Post", "📮", "canadaPost", 16),
+    ("atm", "銀行", "🏦", "atm", 16),
+    ("traffic_turn_restrictions", "轉向限制", "🚫", "turnRestrictions", 17),
+    ("traffic_signals", "交通燈", "🚦", "trafficSignals", 17),
+    ("truck_routes", "貨車限制", "🚛", "truckRoutes", 16),
 ]
 
 def get_search_facilities_items():
@@ -1828,6 +1833,16 @@ def get_search_facilities_items():
                     title = f"#{mid}" if mid else (raw_name or "摩托車停車位")
                 elif ftype == "impark":
                     title = props.get("lot_name") or f"ImPark Lot {props.get('lot_number')}"
+                elif ftype == "canada_post":
+                    title = props.get("name") or props.get("postaladdress") or "Canada Post"
+                elif ftype == "atm":
+                    title = props.get("bank_full_name") or raw_name or "銀行"
+                elif ftype == "traffic_turn_restrictions":
+                    title = props.get("signal_location") or raw_name or "轉向限制路口"
+                elif ftype == "traffic_signals":
+                    title = props.get("geo_local_area") or raw_name or "交通信號燈"
+                elif ftype == "truck_routes":
+                    title = props.get("name") or "貨車特別限制"
                 elif not title:
                     title = badge
 
@@ -1870,16 +1885,28 @@ def get_search_facilities_items():
                     str(props.get("organization") or ""),
                     str(props.get("description") or ""),
                     str(props.get("zoning_classification") or ""),
-                    str(props.get("zoning_district") or "")
+                    str(props.get("zoning_district") or ""),
+                    str(props.get("bank_full_name") or ""),
+                    str(props.get("bank_name") or ""),
+                    str(props.get("postaladdress") or ""),
+                    str(props.get("signal_location") or ""),
+                    str(props.get("geo_local_area") or ""),
+                    str(props.get("summary_text") or ""),
+                    str(props.get("signal_type") or ""),
+                    str(props.get("signal_type_zh") or ""),
+                    str(props.get("restriction_text") or ""),
+                    str(props.get("clearance") or "")
                 ]
                 search_text = " ".join(s for s in search_words if s).lower()
 
                 fac_id = str(feat.get("id") or props.get("id") or f"{ftype}_{rep_lon}_{rep_lat}")
+                meta_facility_type = "turn_restrictions" if ftype == "traffic_turn_restrictions" else ("truck_routes_restriction" if ftype == "truck_routes" and geom.get("type") == "Point" else ftype)
+                search_category = "turn_restrictions" if ftype == "traffic_turn_restrictions" else ftype
                 items.append({
                     "id": fac_id,
                     "title": title,
                     "subtitle": subtitle,
-                    "category": ftype,
+                    "category": search_category,
                     "badge": badge,
                     "icon": icon,
                     "lon": rep_lon,
@@ -1891,7 +1918,7 @@ def get_search_facilities_items():
                     "title_lower": title.lower(),
                     "meta": {
                         "id": fac_id,
-                        "facility_type": ftype,
+                        "facility_type": meta_facility_type,
                         "name": title,
                         "local_area": local_area,
                         "properties": props

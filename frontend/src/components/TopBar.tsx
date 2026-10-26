@@ -297,6 +297,11 @@ export default function TopBar() {
                         item.category === 'motorcycle_parking' ? 'bg-orange-950/80 text-orange-300 border-orange-800/60 font-semibold' :
                         item.category === 'community_centres' ? 'bg-violet-950/80 text-violet-300 border-violet-800/60' :
                         item.category === 'museums' ? 'bg-slate-800 text-slate-200 border-slate-600 font-semibold' :
+                        item.category === 'canada_post' ? 'bg-red-950/80 text-red-300 border-red-800/60' :
+                        item.category === 'atm' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
+                        (item.category === 'turn_restrictions' || item.category === 'traffic_turn_restrictions') ? 'bg-rose-950/80 text-rose-300 border-rose-800/60 font-semibold' :
+                        item.category === 'traffic_signals' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
+                        item.category === 'truck_routes' ? 'bg-sky-950/80 text-sky-300 border-sky-800/60' :
                         item.category === 'garbage_collection' ? 'bg-orange-950/80 text-orange-300 border-orange-800/60' :
                         item.category === 'escooter' ? 'bg-lime-950/80 text-lime-300 border-lime-800/60' :
                         item.category === 'ev_charging' ? 'bg-emerald-950/80 text-emerald-300 border-emerald-800/60' :

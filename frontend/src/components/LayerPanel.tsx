@@ -27,6 +27,26 @@ const ImParkIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+// Helper component for Traffic Light Icon
+const TrafficLightIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="6" y="2" width="12" height="20" rx="3" />
+    <circle cx="12" cy="6" r="1.5" fill="currentColor" />
+    <circle cx="12" cy="12" r="1.5" fill="currentColor" />
+    <circle cx="12" cy="18" r="1.5" fill="currentColor" />
+  </svg>
+);
+
+// Helper component for Turn Restriction Icon
+const TurnRestrictionIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="9" />
+    <path d="M10 8h4a2 2 0 0 1 2 2v6" />
+    <polyline points="13 13 16 16 19 13" />
+    <line x1="5" y1="5" x2="19" y2="19" stroke="#ef4444" strokeWidth="2.2" />
+  </svg>
+);
+
 // Helper component for Fire Hydrant Icon
 const HydrantIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -284,9 +304,16 @@ export default function LayerPanel() {
             <LayerButton layerKey="sharedBikes" label="共享單車" icon={Bike} colorClass="text-teal-400" activeBg="bg-[#0e2d30]" activeBorder="border-teal-500/50" activeShadow="shadow-[0_0_6px_rgba(0,163,173,0.2)]" />
             <LayerButton layerKey="escooter" label="共享滑板車" icon={Scooter} colorClass="text-lime-400" activeBg="bg-[#1e2a14]" activeBorder="border-lime-500/50" activeShadow="shadow-[0_0_6px_rgba(132,204,22,0.15)]" />
 
-            {/* Row 7: 電動車充電站 | TESLA */}
+            {/* Row 7: 交通燈 | 轉向限制 (位於共享單車與電動車充電站之間) */}
+            <LayerButton layerKey="trafficSignals" label="交通燈" icon={TrafficLightIcon} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
+            <LayerButton layerKey="turnRestrictions" label="轉向限制" icon={TurnRestrictionIcon} colorClass="text-rose-400" activeBg="bg-[#2a171a]" activeBorder="border-rose-500/50" activeShadow="shadow-[0_0_6px_rgba(244,63,94,0.15)]" />
+
+            {/* Row 8: 電動車充電站 | TESLA */}
             <LayerButton layerKey="evCharging" label="電動車充電站" icon={Zap} colorClass="text-emerald-400" activeBg="bg-[#0b291e]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(5,150,105,0.2)]" />
             <LayerButton layerKey="tesla" label="TESLA" icon={TeslaIcon} colorClass="text-[#E82127]" activeBg="bg-[#2d1417]" activeBorder="border-[#E82127]/60" activeShadow="shadow-[0_0_8px_rgba(232,33,39,0.3)]" />
+
+            {/* Row 9: 貨車路線 */}
+            <LayerButton layerKey="truckRoutes" label="貨車路線" icon={Truck} colorClass="text-sky-400" activeBg="bg-[#0f2438]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(14,165,233,0.2)]" className="col-span-2" />
 
             {/* Row 8: 交通封閉 | 道路施工 */}
             <LayerButton layerKey="roadClosures" label="交通封閉" icon={Ban} title="交通封閉" colorClass="text-red-400" activeBg="bg-[#2b171c]" activeBorder="border-red-500/50" activeShadow="shadow-[0_0_6px_rgba(220,38,38,0.2)]" />

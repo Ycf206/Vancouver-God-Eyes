@@ -16,7 +16,7 @@ import {
   Navigation, ExternalLink, Clock, Bike, Car, Info, 
   ChevronDown, ChevronUp, SlidersHorizontal, Fuel, Zap, Wifi, Waves, Play, Pause, CloudRain,
   RotateCcw, RotateCw, MapPin, Crosshair, Activity, Ban, Cone, Lightbulb, Ship,
-  Camera, Gauge, Footprints, ArrowRight, Mail, AlertCircle, Radio, Anchor, CreditCard, Landmark
+  Camera, Gauge, Footprints, ArrowRight, Mail, AlertCircle, Radio, Anchor, CreditCard, Landmark, Truck
 } from 'lucide-react';
 
 // Fix Next.js App Router Web Worker crash
@@ -1093,6 +1093,9 @@ export default function AppMap() {
         else if (type === 'public_trees' && !layers.publicTrees) facilityClosed = true;
         else if (type === 'museums' && !layers.museums) facilityClosed = true;
         else if (type === 'garbage_collection' && !layers.garbageCollection) facilityClosed = true;
+        else if (type === 'truck_routes_restriction' && !layers.truckRoutes) facilityClosed = true;
+        else if (type === 'traffic_signals' && !layers.trafficSignals) facilityClosed = true;
+        else if (type === 'turn_restrictions' && !layers.turnRestrictions) facilityClosed = true;
 
         if (facilityClosed) {
           setSelectedFacility(null);
@@ -5324,6 +5327,144 @@ export default function AppMap() {
       });
     }
 
+    // Road Facilities: Truck Routes (貨車路線 - Standard 藍色 / Granville Bridge 橙色，以及高度/重量限制圓點)
+    if (layers.truckRoutes) {
+      style.sources['truck_routes'] = { type: 'geojson', data: '/vancouver_truck_routes.geojson' };
+      // 1.1 貨車路線外框 (Casing)
+      style.layers.push({
+        id: 'truck-routes-casing-layer',
+        type: 'line',
+        source: 'truck_routes',
+        filter: ['any', ['==', ['geometry-type'], 'LineString'], ['==', ['geometry-type'], 'MultiLineString']],
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        paint: {
+          'line-color': '#082f49',
+          'line-width': ['interpolate', ['linear'], ['zoom'], 10, 3.5, 13, 5.5, 16, 8.0],
+          'line-opacity': 0.8
+        }
+      });
+      // 1.1 貨車路線主線條 (標準路線 #0284c7，Granville Bridge 橙色 #f97316)
+      style.layers.push({
+        id: 'truck-routes-line-layer',
+        type: 'line',
+        source: 'truck_routes',
+        filter: ['any', ['==', ['geometry-type'], 'LineString'], ['==', ['geometry-type'], 'MultiLineString']],
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        paint: {
+          'line-color': [
+            'case',
+            ['==', ['get', 'route_type'], 'granville_bridge'], '#f97316',
+            '#0284c7'
+          ],
+          'line-width': [
+            'interpolate', ['linear'], ['zoom'],
+            10, ['case', ['==', ['get', 'route_type'], 'granville_bridge'], 3.2, 2.4],
+            13, ['case', ['==', ['get', 'route_type'], 'granville_bridge'], 4.8, 3.8],
+            16, ['case', ['==', ['get', 'route_type'], 'granville_bridge'], 7.0, 5.8]
+          ],
+          'line-opacity': 0.95
+        }
+      });
+      // 1.2 限制圓點 (高度限制 clearance / 重量限制 weight restriction)
+      style.layers.push({
+        id: 'truck-routes-restriction-layer',
+        type: 'circle',
+        source: 'truck_routes',
+        filter: ['==', ['geometry-type'], 'Point'],
+        minzoom: 10,
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 5.0, 14, 7.5, 16, 10.0],
+          'circle-color': [
+            'case',
+            ['==', ['get', 'restriction_type'], 'weight'], '#ea580c',
+            '#f59e0b'
+          ],
+          'circle-stroke-width': 2.0,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'truck-routes-restriction-symbol-layer',
+        type: 'symbol',
+        source: 'truck_routes',
+        filter: ['==', ['geometry-type'], 'Point'],
+        minzoom: 11,
+        layout: {
+          'text-field': [
+            'case',
+            ['==', ['get', 'restriction_type'], 'weight'], '⚖️',
+            '↕'
+          ],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 11, 10, 16, 14],
+          'text-allow-overlap': false
+        }
+      });
+    }
+
+    // Road Facilities: Traffic Signals (交通燈圖層 - 966 處信號燈)
+    if (layers.trafficSignals) {
+      style.sources['traffic_signals'] = { type: 'geojson', data: '/vancouver_traffic_signals.geojson' };
+      style.layers.push({
+        id: 'traffic-signals-layer',
+        type: 'circle',
+        source: 'traffic_signals',
+        minzoom: 11,
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3.5, 14, 5.5, 16, 7.5, 18, 10],
+          'circle-color': '#eab308',
+          'circle-stroke-width': 1.6,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'traffic-signals-symbol-layer',
+        type: 'symbol',
+        source: 'traffic_signals',
+        minzoom: 14,
+        layout: {
+          'text-field': '🚦',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 14, 10, 18, 14],
+          'text-allow-overlap': false
+        }
+      });
+    }
+
+    // Road Facilities: Traffic Turn Restrictions (轉向限制圖層 - 303 處具有轉向管制之路口)
+    if (layers.turnRestrictions) {
+      style.sources['turn_restrictions'] = { type: 'geojson', data: '/vancouver_traffic_turn_restrictions.geojson' };
+      style.layers.push({
+        id: 'turn-restrictions-layer',
+        type: 'circle',
+        source: 'turn_restrictions',
+        filter: ['==', ['get', 'has_restrictions'], true],
+        minzoom: 11,
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 4.0, 14, 6.0, 16, 8.5, 18, 11],
+          'circle-color': '#ef4444',
+          'circle-stroke-width': 1.8,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'turn-restrictions-symbol-layer',
+        type: 'symbol',
+        source: 'turn_restrictions',
+        filter: ['==', ['get', 'has_restrictions'], true],
+        minzoom: 13,
+        layout: {
+          'text-field': '🚫',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 11, 18, 15],
+          'text-allow-overlap': false
+        }
+      });
+    }
+
     // Utilities: Street Lighting Conduits (路燈地下配電管線)
     if (layers.streetLightingConduits) {
       style.sources['street_lighting_conduits'] = { 
@@ -5719,6 +5860,9 @@ export default function AppMap() {
     layers.publicTrees,
     layers.museums,
     layers.garbageCollection,
+    layers.truckRoutes,
+    layers.trafficSignals,
+    layers.turnRestrictions,
     contourInterval,
     mapStyleType,
     isExploreOpen,
@@ -5897,6 +6041,12 @@ export default function AppMap() {
           'canada-post-symbol-layer',
           'atm-layer',
           'atm-symbol-layer',
+          'truck-routes-restriction-layer',
+          'truck-routes-restriction-symbol-layer',
+          'traffic-signals-layer',
+          'traffic-signals-symbol-layer',
+          'turn-restrictions-layer',
+          'turn-restrictions-symbol-layer',
           // beach-water layers removed from interactive to disable popup
           'street-lighting-poles-layer'
         ]}
@@ -6293,7 +6443,10 @@ export default function AppMap() {
             layerId.startsWith('van-wifi') ||
             layerId.startsWith('tide-stations') ||
             layerId.startsWith('museums') ||
-            layerId.startsWith('garbage-collection')
+            layerId.startsWith('garbage-collection') ||
+            layerId.startsWith('truck-routes-restriction') ||
+            layerId.startsWith('traffic-signals') ||
+            layerId.startsWith('turn-restrictions')
           ) {
             setSelectedStop(null);
             const props = feature.properties || {};
@@ -6305,6 +6458,9 @@ export default function AppMap() {
             const isImpark = layerId.startsWith('impark');
             const isMuseums = layerId.startsWith('museums');
             const isGarbage = layerId.startsWith('garbage-collection');
+            const isTruckRestriction = layerId.startsWith('truck-routes-restriction');
+            const isTrafficSignal = layerId.startsWith('traffic-signals');
+            const isTurnRestriction = layerId.startsWith('turn-restrictions');
             const isTraffic = layerId.startsWith('traffic-conditions');
             const isStreetLighting = layerId.startsWith('street-lighting') || layerId.startsWith('street_lighting');
             const isCrosswalk = layerId.startsWith('traffic-crosswalks');
@@ -6323,6 +6479,9 @@ export default function AppMap() {
             if (isImpark) facilityType = 'impark';
             else if (isMuseums) facilityType = 'museums';
             else if (isGarbage) facilityType = 'garbage_collection';
+            else if (isTruckRestriction) facilityType = 'truck_routes_restriction';
+            else if (isTrafficSignal) facilityType = 'traffic_signals';
+            else if (isTurnRestriction) facilityType = 'turn_restrictions';
             else if (isPublicArt) facilityType = 'public_art';
             else if (isTraffic) facilityType = 'traffic_conditions';
             else if (isStreetLighting) facilityType = 'street_lighting';
@@ -6341,6 +6500,9 @@ export default function AppMap() {
               if (isImpark) facilityName = props.lot_name || ('ImPark Lot ' + props.lot_number);
               else if (isGarbage) facilityName = props.zone_name || '廢物回收分區';
               else if (isMuseums) facilityName = props.name || '博物館';
+              else if (isTrafficSignal) facilityName = props.geo_local_area || '交通燈';
+              else if (isTurnRestriction) facilityName = props.signal_location || '轉向限制路口';
+              else if (isTruckRestriction) facilityName = props.name || '貨車路線限制';
               else if (isPublicArt) facilityName = props.sitename || props.title_of_work || '公共藝術';
               else if (isTraffic) facilityName = '獅門大橋即時路況';
               else if (isStreetLighting) facilityName = props.pole_number ? `路燈柱 #${props.pole_number}` : (props.service_panel_number ? `路燈控制盤 #${props.service_panel_number}` : '路燈');
@@ -6358,6 +6520,9 @@ export default function AppMap() {
             let facilityLocalArea = '';
             if (isGarbage) facilityLocalArea = props.zone_code || '';
             else if (isMuseums) facilityLocalArea = props.address || '';
+            else if (isTrafficSignal) facilityLocalArea = props.geo_local_area ? `${props.geo_local_area}, Vancouver, BC` : 'Vancouver, BC';
+            else if (isTurnRestriction) facilityLocalArea = props.signal_location ? `${props.signal_location}` : 'Vancouver, BC';
+            else if (isTruckRestriction) facilityLocalArea = props.subtitle || 'Vancouver, BC';
             else if (isPublicArt) facilityLocalArea = props.siteaddress || props.local_area || '';
             else if (isCrosswalk) facilityLocalArea = '行人穿越道';
             else facilityLocalArea = props.waterway || props.area || props.local_area || props.location || props.company || props.address || props.city || '';
@@ -8428,7 +8593,22 @@ export default function AppMap() {
                   if (t === 'drinking_fountains') return { label: '飲水器', bg: 'bg-sky-600 text-white' };
                   if (t === 'public_washrooms') return { label: '公共洗手間', bg: 'bg-cyan-600 text-white' };
                   if (t === 'museums') return { label: '博物館', bg: 'bg-slate-700 text-white' };
-                  if (t === 'garbage_collection') return { label: '廢物回收', bg: 'bg-orange-600 text-white' };
+                  if (t === 'garbage_collection') {
+                    const colorHex = selectedFacility.properties?.color_hex || {
+                      orange: '#f05a28',
+                      yellow: '#eab308',
+                      green: '#22c55e',
+                      blue: '#3b82f6',
+                      purple: '#a855f7'
+                    }[String(selectedFacility.properties?.color || '').toLowerCase()] || '#f05a28';
+                    return { label: '廢物回收', bg: 'text-white shadow-xs', style: { backgroundColor: colorHex } };
+                  }
+                  if (t === 'traffic_signals') return { label: '交通燈', bg: 'bg-amber-500 text-white' };
+                  if (t === 'turn_restrictions') return { label: '轉向限制', bg: 'bg-rose-600 text-white' };
+                  if (t === 'truck_routes_restriction') {
+                    const isWeight = selectedFacility.properties?.restriction_type === 'weight';
+                    return { label: isWeight ? '重量限制' : '高度限制', bg: isWeight ? 'bg-orange-600 text-white' : 'bg-amber-600 text-white' };
+                  }
                   if (t === 'recycling') return { label: '環保回收', bg: 'bg-emerald-600 text-white' };
                   if (t === 'litter_containers') return { label: '垃圾箱', bg: 'bg-amber-600 text-white' };
                   if (t === 'zoning_districts') return { label: '土地規劃', bg: 'bg-purple-600 text-white' };
@@ -8572,6 +8752,15 @@ export default function AppMap() {
                     if (selectedFacility.facility_type === 'garbage_collection') {
                       return selectedFacility.properties?.zone_name || selectedFacility.name || '廢物回收分區';
                     }
+                    if (selectedFacility.facility_type === 'traffic_signals') {
+                      return selectedFacility.properties?.geo_local_area || selectedFacility.local_area || selectedFacility.name || '交通燈';
+                    }
+                    if (selectedFacility.facility_type === 'turn_restrictions') {
+                      return selectedFacility.properties?.signal_location || selectedFacility.name || '轉向限制路口';
+                    }
+                    if (selectedFacility.facility_type === 'truck_routes_restriction') {
+                      return selectedFacility.properties?.name || selectedFacility.name || '貨車路線限制';
+                    }
                     if (selectedFacility.facility_type === 'museums') {
                       return selectedFacility.properties?.name || selectedFacility.name || '博物館';
                     }
@@ -8593,7 +8782,10 @@ export default function AppMap() {
                   <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100 gap-2">
                     <div className="flex items-center gap-2 min-w-0 flex-1 pr-1">
                       {headerBadge ? (
-                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded shrink-0 leading-none shadow-xs whitespace-nowrap ${headerBadge.bg}`}>
+                        <span 
+                          style={(headerBadge as any).style}
+                          className={`text-[10px] font-bold px-1.5 py-0.5 rounded shrink-0 leading-none shadow-xs whitespace-nowrap ${headerBadge.bg || ''}`}
+                        >
                           {headerBadge.label}
                         </span>
                       ) : (
@@ -8657,7 +8849,7 @@ export default function AppMap() {
                           {popupTitle}
                         </h3>
                         {(selectedFacility.local_area || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'motorcycle_parking' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'canada_post' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'impark' || selectedFacility.facility_type === 'ski_resort' ||
-                  selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || selectedFacility.facility_type === 'car_sharing') && (
+                  selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'truck_routes_restriction' || selectedFacility.facility_type === 'traffic_signals' || selectedFacility.facility_type === 'turn_restrictions') && (
                           <span className="text-[11px] text-gray-400 block leading-snug break-words">
                             {(() => {
                               if (selectedFacility.facility_type === 'ski_resort') {
@@ -8712,6 +8904,9 @@ export default function AppMap() {
                               if (selectedFacility.facility_type === 'atm') return selectedFacility.properties?.address ? `${selectedFacility.properties.address}, Vancouver, BC` : 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'museums') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'garbage_collection') return selectedFacility.properties?.zone_code || selectedFacility.local_area || '';
+                              if (selectedFacility.facility_type === 'traffic_signals') return selectedFacility.properties?.geo_local_area ? `${selectedFacility.properties.geo_local_area}, Vancouver, BC` : 'Vancouver, BC';
+                              if (selectedFacility.facility_type === 'turn_restrictions') return selectedFacility.properties?.signal_location ? `${selectedFacility.properties.signal_location}` : 'Vancouver, BC';
+                              if (selectedFacility.facility_type === 'truck_routes_restriction') return selectedFacility.properties?.subtitle || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'public_trees') return selectedFacility.properties?.address || `${selectedFacility.properties?.civic_number || ''} ${selectedFacility.properties?.std_street || ''}`.trim() || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'aed') return selectedFacility.properties?.ADDRESS || selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'public_art') return selectedFacility.properties?.siteaddress || selectedFacility.local_area || 'Vancouver, BC';
@@ -10697,15 +10892,170 @@ export default function AppMap() {
                     </div>
 
                     <div className="pt-1 border-t border-gray-100">
-                      <a
-                        href="https://vancouver.ca/home-property-development/garbage-and-recycling-collection-schedules.aspx"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-orange-600 hover:bg-orange-700 text-white rounded font-medium text-xs transition-colors shadow-sm text-center"
-                      >
-                        <span>前往 廢物回收時間表 官方網頁</span>
-                          <ExternalLink className="w-3.5 h-3.5 ml-1" />
-                      </a>
+                      {(() => {
+                        const zoneColorHex = props.color_hex || {
+                          orange: '#f05a28',
+                          yellow: '#eab308',
+                          green: '#22c55e',
+                          blue: '#3b82f6',
+                          purple: '#a855f7'
+                        }[String(props.color || '').toLowerCase()] || '#f05a28';
+                        return (
+                          <a
+                            href="https://vancouver.ca/home-property-development/garbage-and-recycling-collection-schedules.aspx"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ backgroundColor: zoneColorHex }}
+                            className="inline-flex items-center justify-center w-full py-1.5 px-3 hover:opacity-90 text-white rounded font-medium text-xs transition-colors shadow-sm text-center"
+                          >
+                            <span>前往 廢物回收時間表 官方網頁</span>
+                            <ExternalLink className="w-3.5 h-3.5 ml-1" />
+                          </a>
+                        );
+                      })()}
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Truck Routes Restriction (貨車路線特別限制 - 高度限制 Vertical Clearances / 重量限制 Weight Restriction) */}
+              {selectedFacility.facility_type === 'truck_routes_restriction' && (() => {
+                const props = selectedFacility.properties || {};
+                const isWeight = props.restriction_type === 'weight';
+                const restrictionText = props.restriction_text || (isWeight ? 'Weight Restriction' : `Vertical Clearances - ${props.clearance || '5.1m'}`);
+                const themeColor = isWeight ? '#ea580c' : '#f59e0b';
+                
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    {/* 標題下顏色區塊 */}
+                    <div 
+                      style={{ 
+                        backgroundColor: `${themeColor}15`, 
+                        borderColor: `${themeColor}40`,
+                        color: isWeight ? '#c2410c' : '#b45309'
+                      }} 
+                      className="p-2.5 rounded-lg border flex items-center gap-2 text-xs font-bold leading-snug"
+                    >
+                      <Truck className="w-4 h-4 shrink-0" />
+                      <span>{restrictionText}</span>
+                    </div>
+
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>限制類型</span>
+                        <span className="text-gray-900 font-medium text-right">
+                          {isWeight ? '橋樑載重限制 (Weight Restriction)' : '立體淨高限制 (Vertical Clearance)'}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
+                        <span>管制數值</span>
+                        <span className="text-gray-900 font-bold font-mono text-right text-xs">
+                          {isWeight ? '依溫哥華市政載重規定管制' : (props.clearance ? `${props.clearance}` : '淨高受限')}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
+                        <span>所屬路段</span>
+                        <span className="text-gray-900 font-medium text-right">
+                          {props.subtitle || 'Vancouver, BC'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Traffic Signals (交通燈) Details */}
+              {selectedFacility.facility_type === 'traffic_signals' && (() => {
+                const props = selectedFacility.properties || {};
+                const sigType = props.signal_type || 'Fixed Time';
+                const sigTypeZh = props.signal_type_zh || (() => {
+                  const s = String(sigType).toLowerCase();
+                  if (s.includes('pedestrian')) return '行人感應信號燈';
+                  if (s.includes('rrfb')) return '行人穿越道信號燈';
+                  if (s.includes('fh') || s.includes('fire')) return '消防局出入口信號燈';
+                  if (s.includes('fully actuated')) return '全感應式交通燈';
+                  if (s.includes('semi actuated') || s.includes('semi-actuated')) return '半感應式交通燈';
+                  if (s.includes('fixed')) return '固定式交通燈';
+                  if (s.includes('cs') || s.includes('lane control')) return '車道管制信號燈';
+                  return '市政交通信號燈';
+                })();
+
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    {/* 標題下顏色區塊 */}
+                    <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/25 flex items-center justify-between text-xs font-bold text-amber-800 leading-snug">
+                      <div className="flex items-center gap-2">
+                        <span className="text-base">🚦</span>
+                        <span>{sigTypeZh}</span>
+                      </div>
+                      <span className="text-[10.5px] font-mono font-medium text-amber-700 bg-amber-100/80 px-1.5 py-0.5 rounded">
+                        {sigType}
+                      </span>
+                    </div>
+
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>所屬社區</span>
+                        <span className="text-gray-900 font-medium text-right">
+                          {props.geo_local_area || selectedFacility.local_area || '溫哥華市區'}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
+                        <span>信號燈運作類別</span>
+                        <span className="text-gray-900 font-medium text-right">
+                          {sigTypeZh} ({sigType})
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Traffic Turn Restrictions (轉向限制) Details */}
+              {selectedFacility.facility_type === 'turn_restrictions' && (() => {
+                const props = selectedFacility.properties || {};
+                const restrictions: Array<{ field?: string; label?: string; raw?: string; decoded?: string }> = Array.isArray(props.restrictions) ? props.restrictions : [];
+                
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    {/* 標題下顏色區塊 */}
+                    <div className="bg-rose-500/10 p-2.5 rounded-lg border border-rose-500/25 flex items-center justify-between text-xs font-bold text-rose-800 leading-snug">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-base">🚫</span>
+                        <span>路口轉向管制規範</span>
+                      </div>
+                      <span className="text-[10px] font-mono text-rose-700 bg-rose-100 px-1.5 py-0.5 rounded">
+                        {restrictions.length} 項限制
+                      </span>
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      {restrictions.length > 0 ? (
+                        restrictions.map((r, i) => (
+                          <div key={i} className="p-2 bg-rose-50/60 rounded border border-rose-200/70 flex flex-col gap-0.5 text-[11px]">
+                            <div className="flex items-center justify-between text-rose-900 font-semibold">
+                              <span>{r.label || '轉向管制'}</span>
+                              {r.raw && (
+                                <span className="text-[10px] font-mono text-rose-600 bg-rose-100/70 px-1 rounded">
+                                  {r.raw}
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-gray-800 text-xs font-medium leading-relaxed">
+                              {r.decoded || r.raw}
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="p-2 bg-gray-50 rounded border border-gray-100 text-gray-500 text-center text-xs">
+                          此路口目前無特殊轉向管制
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="bg-gray-50 p-2 rounded border border-gray-100 flex justify-between items-center text-[10.5px] text-gray-500">
+                      <span>管制路口</span>
+                      <span className="text-gray-800 font-medium text-right">{props.signal_location || selectedFacility.name}</span>
                     </div>
                   </div>
                 );

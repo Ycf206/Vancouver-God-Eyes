@@ -1156,4 +1156,76 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
     ],
     "source_url": "https://data.lime.biz/"
   }
+,
+  {
+    "id": "truck_routes",
+    "name": "法定貨車路線 (Truck Routes)",
+    "type": "geojson",
+    "cron_expr": "0 0 1 1 *",
+    "schedule_interval": "每年",
+    "record_count": 16,
+    "unit": "條貨車幹道與限制點",
+    "last_updated": "2026-10-26T02:45:10.039Z",
+    "status": "ok",
+    "data_pipeline_notes": "Vancouver OpenData 法定貨車路線 API -> 解析路線幾何與標注 Granville Bridge 重量限制及 12 處立體淨空高度限制 -> 寫入 /backend/data/vancouver_truck_routes.geojson",
+    "runner": "github_actions",
+    "workflow_file": "update-truck-routes.yml",
+    "category": "道路",
+    "source_links": [
+      {
+        "type": "api",
+        "label": "OpenData 貨車路線 API",
+        "url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/truck-routes/records/?lang=en&limit=10"
+      }
+    ],
+    "source_url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/truck-routes/records/?lang=en&limit=10"
+  }
+,
+  {
+    "id": "traffic_signals",
+    "name": "交通燈 (Traffic Signals)",
+    "type": "geojson",
+    "cron_expr": "0 0 1 */3 *",
+    "schedule_interval": "每 3 個月",
+    "record_count": 966,
+    "unit": "處交通信號燈",
+    "last_updated": "2026-10-26T02:45:10.040Z",
+    "status": "ok",
+    "data_pipeline_notes": "Vancouver OpenData 交通信號燈 API -> 解析感應式、固定式、行人專用及車道管制燈號 -> 寫入 /backend/data/vancouver_traffic_signals.geojson",
+    "runner": "github_actions",
+    "workflow_file": "update-traffic-signals.yml",
+    "category": "道路",
+    "source_links": [
+      {
+        "type": "api",
+        "label": "OpenData 交通信號燈 API",
+        "url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/traffic-signals/records/?lang=en"
+      }
+    ],
+    "source_url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/traffic-signals/records/?lang=en"
+  }
+,
+  {
+    "id": "turn_restrictions",
+    "name": "轉向限制 (Turn Restrictions)",
+    "type": "geojson",
+    "cron_expr": "0 0 1 1 *",
+    "schedule_interval": "每年",
+    "record_count": 927,
+    "unit": "處路口轉向管制",
+    "last_updated": "2026-10-26T02:45:10.040Z",
+    "status": "ok",
+    "data_pipeline_notes": "Vancouver GeoPortal 路口轉向管制圖資 -> 解析解碼禁止左轉/右轉時段與單車/公車例外規則 -> 寫入 /backend/data/vancouver_traffic_turn_restrictions.geojson",
+    "runner": "github_actions",
+    "workflow_file": "update-traffic-turn-restrictions.yml",
+    "category": "道路",
+    "source_links": [
+      {
+        "type": "web",
+        "label": "Vancouver GeoPortal 轉向管制圖資",
+        "url": "https://geoportal.vancouver.ca/datasets/f73da0f047c24fbc9533f234c447d57a_1/explore?location=49.260017%2C-123.113080%2C17&showTable=true"
+      }
+    ],
+    "source_url": "https://geoportal.vancouver.ca/datasets/f73da0f047c24fbc9533f234c447d57a_1/explore?location=49.260017%2C-123.113080%2C17&showTable=true"
+  }
 ];

@@ -1,0 +1,39 @@
+name: Update 轉向限制 (Traffic Turn Restrictions) (每年)
+
+on:
+  schedule:
+    # 每年 1 月 1 日 00:00 UTC 執行一次
+    - cron: '0 0 1 1 *'
+  workflow_dispatch:
+
+concurrency:
+  group: update-traffic-turn-restrictions
+  cancel-in-progress: true
+
+jobs:
+  update-traffic-turn-restrictions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run 轉向限制 update script
+        run: |
+          python backend/scripts/layers/update_traffic_turn_restrictions.py
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add backend/data/vancouver_traffic_turn_restrictions.geojson frontend/public/vancouver_traffic_turn_restrictions.geojson
+          if git diff --staged --quiet; then
+            echo "No changes detected"
+          else
+            git commit -m "chore(data): auto-update 溫哥華路口轉向限制 (Turn Restrictions) [skip ci]"
+            git push
+          fi

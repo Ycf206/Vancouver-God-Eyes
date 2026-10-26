@@ -99,6 +99,9 @@ export interface UIState {
     publicTrees: boolean;
     museums: boolean;
     garbageCollection: boolean;
+    truckRoutes: boolean;
+    trafficSignals: boolean;
+    turnRestrictions: boolean;
   };
   contourInterval: 'off' | '1m' | '2m' | '10m';
   setContourInterval: (interval: 'off' | '1m' | '2m' | '10m') => void;
@@ -305,6 +308,9 @@ export const useUIStore = create<UIState>()(
         publicTrees: false,
         museums: false,
         garbageCollection: false,
+        truckRoutes: false,
+        trafficSignals: false,
+        turnRestrictions: false,
       },
       timeFormat: '24h',
       setTimeFormat: (format) => set({ timeFormat: format }),
