@@ -5439,14 +5439,70 @@ export default function AppMap() {
       });
     }
 
-    // Road Facilities: Traffic Turn Restrictions (轉向限制圖層 - 303 處具有轉向管制之路口)
+    // Road Facilities: Traffic Turn Restrictions (轉向限制圖層 - 303 處具有轉向管制之路口與轉向軌跡)
     if (layers.turnRestrictions) {
       style.sources['turn_restrictions'] = { type: 'geojson', data: '/vancouver_traffic_turn_restrictions.geojson' };
+
+      // 1. 幼線箭頭軌跡外框線 (提升在道路上的對比度)
+      style.layers.push({
+        id: 'turn-restrictions-arrow-casing-layer',
+        type: 'line',
+        source: 'turn_restrictions',
+        filter: ['==', ['get', 'is_restriction_arrow'], true],
+        minzoom: 14,
+        paint: {
+          'line-color': '#7f1d1d',
+          'line-width': ['interpolate', ['linear'], ['zoom'], 14, 2.5, 17, 4.5, 19, 6.0],
+          'line-opacity': 0.85
+        },
+        layout: {
+          'line-cap': 'round',
+          'line-join': 'round'
+        }
+      });
+
+      // 2. 幼線箭頭軌跡主線 (鮮紅色幼線)
+      style.layers.push({
+        id: 'turn-restrictions-arrow-line-layer',
+        type: 'line',
+        source: 'turn_restrictions',
+        filter: ['==', ['get', 'is_restriction_arrow'], true],
+        minzoom: 14,
+        paint: {
+          'line-color': '#ef4444',
+          'line-width': ['interpolate', ['linear'], ['zoom'], 14, 1.2, 17, 2.4, 19, 3.2],
+          'line-opacity': 0.95
+        },
+        layout: {
+          'line-cap': 'round',
+          'line-join': 'round'
+        }
+      });
+
+      // 3. 轉向限制禁止符號與方向標記 (🚫 及 ▲/▼/◀/▶)
+      style.layers.push({
+        id: 'turn-restrictions-arrow-symbol-layer',
+        type: 'symbol',
+        source: 'turn_restrictions',
+        filter: ['==', ['get', 'is_arrow_symbol'], true],
+        minzoom: 14.5,
+        layout: {
+          'text-field': ['get', 'symbol'],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 14.5, 11, 17, 14, 19, 17],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#dc2626'
+        }
+      });
+
+      // 4. 管制路口圓點圖層 (排除箭頭軌跡與符號)
       style.layers.push({
         id: 'turn-restrictions-layer',
         type: 'circle',
         source: 'turn_restrictions',
-        filter: ['==', ['get', 'has_restrictions'], true],
+        filter: ['all', ['==', ['get', 'has_restrictions'], true], ['!', ['has', 'is_arrow_symbol']], ['!', ['has', 'is_restriction_arrow']]],
         minzoom: 11,
         paint: {
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 4.0, 14, 6.0, 16, 8.5, 18, 11],
@@ -5455,11 +5511,13 @@ export default function AppMap() {
           'circle-stroke-color': '#ffffff'
         }
       });
+
+      // 5. 管制路口中心 🚫 符號
       style.layers.push({
         id: 'turn-restrictions-symbol-layer',
         type: 'symbol',
         source: 'turn_restrictions',
-        filter: ['==', ['get', 'has_restrictions'], true],
+        filter: ['all', ['==', ['get', 'has_restrictions'], true], ['!', ['has', 'is_arrow_symbol']], ['!', ['has', 'is_restriction_arrow']]],
         minzoom: 13,
         layout: {
           'text-field': '🚫',
@@ -6051,6 +6109,8 @@ export default function AppMap() {
           'traffic-signals-symbol-layer',
           'turn-restrictions-layer',
           'turn-restrictions-symbol-layer',
+          'turn-restrictions-arrow-line-layer',
+          'turn-restrictions-arrow-symbol-layer',
           // beach-water layers removed from interactive to disable popup
           'street-lighting-poles-layer'
         ]}
@@ -8908,8 +8968,8 @@ export default function AppMap() {
                               if (selectedFacility.facility_type === 'atm') return selectedFacility.properties?.address ? `${selectedFacility.properties.address}, Vancouver, BC` : 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'museums') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'garbage_collection') return selectedFacility.properties?.zone_code || selectedFacility.local_area || '';
-                              if (selectedFacility.facility_type === 'traffic_signals') return selectedFacility.properties?.geo_local_area ? `${selectedFacility.properties.geo_local_area}, Vancouver, BC` : 'Vancouver, BC';
-                              if (selectedFacility.facility_type === 'turn_restrictions') return selectedFacility.properties?.signal_location ? `${selectedFacility.properties.signal_location}` : 'Vancouver, BC';
+                              if (selectedFacility.facility_type === 'traffic_signals') return 'Vancouver, BC';
+                              if (selectedFacility.facility_type === 'turn_restrictions') return 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'truck_routes_restriction') return selectedFacility.properties?.subtitle || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'public_trees') return selectedFacility.properties?.address || `${selectedFacility.properties?.civic_number || ''} ${selectedFacility.properties?.std_street || ''}`.trim() || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'aed') return selectedFacility.properties?.ADDRESS || selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
@@ -10987,29 +11047,9 @@ export default function AppMap() {
                 return (
                   <div className="flex flex-col gap-2 text-xs">
                     {/* 標題下顏色區塊 */}
-                    <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/25 flex items-center justify-between text-xs font-bold text-amber-800 leading-snug">
-                      <div className="flex items-center gap-2">
-                        <span className="text-base">🚦</span>
-                        <span>{sigTypeZh}</span>
-                      </div>
-                      <span className="text-[10.5px] font-mono font-medium text-amber-700 bg-amber-100/80 px-1.5 py-0.5 rounded">
-                        {sigType}
-                      </span>
-                    </div>
-
-                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                      <div className="flex justify-between items-center text-gray-600">
-                        <span>所屬社區</span>
-                        <span className="text-gray-900 font-medium text-right">
-                          {props.geo_local_area || selectedFacility.local_area || '溫哥華市區'}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
-                        <span>信號燈運作類別</span>
-                        <span className="text-gray-900 font-medium text-right">
-                          {sigTypeZh} ({sigType})
-                        </span>
-                      </div>
+                    <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/25 flex items-center gap-2 text-xs font-bold text-amber-800 leading-snug">
+                      <span className="text-base">🚦</span>
+                      <span>{sigTypeZh}</span>
                     </div>
                   </div>
                 );
@@ -11018,7 +11058,11 @@ export default function AppMap() {
               {/* Traffic Turn Restrictions (轉向限制) Details */}
               {selectedFacility.facility_type === 'turn_restrictions' && (() => {
                 const props = selectedFacility.properties || {};
-                const restrictions: Array<{ field?: string; label?: string; raw?: string; decoded?: string }> = Array.isArray(props.restrictions) ? props.restrictions : [];
+                const rawRestrictions = props.restrictions;
+                const restrictions: Array<{ field?: string; label?: string; raw?: string; decoded?: string }> = 
+                  Array.isArray(rawRestrictions) 
+                    ? rawRestrictions 
+                    : (typeof rawRestrictions === 'string' ? (() => { try { return JSON.parse(rawRestrictions); } catch { return []; } })() : []);
                 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
@@ -11055,11 +11099,6 @@ export default function AppMap() {
                           此路口目前無特殊轉向管制
                         </div>
                       )}
-                    </div>
-
-                    <div className="bg-gray-50 p-2 rounded border border-gray-100 flex justify-between items-center text-[10.5px] text-gray-500">
-                      <span>管制路口</span>
-                      <span className="text-gray-800 font-medium text-right">{props.signal_location || selectedFacility.name}</span>
                     </div>
                   </div>
                 );
