@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Search, Settings, ChevronDown, Map as MapIcon, X, Loader2, Layers, AlertCircle, Heart, Download, History, User } from 'lucide-react';
+import { Search, Settings, ChevronDown, Map as MapIcon, X, Loader2, Layers, AlertCircle, Heart, Download, History, User, MoreHorizontal } from 'lucide-react';
 import { useUIStore, SearchTarget, UIState } from '@/store/useUIStore';
 import ReportIssueModal from '@/components/ReportIssueModal';
 import DonateModal from '@/components/DonateModal';
@@ -32,6 +32,7 @@ export default function TopBar() {
   const [time, setTime] = useState<Date | null>(null);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isDonateModalOpen, setIsDonateModalOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isChangelogModalOpen, setIsChangelogModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
@@ -176,7 +177,7 @@ export default function TopBar() {
       <div className="h-8 w-px bg-gray-700/60 mx-2"></div>
 
       {/* 時間與狀態 */}
-      <div className="flex flex-col justify-center mx-1.5 shrink-0">
+      <div className="hidden md:flex flex-col justify-center mx-1.5 shrink-0">
         {time ? (
           <>
             <span className="text-[21px] font-mono font-medium leading-none mb-1 tracking-wider text-gray-100">
@@ -193,7 +194,7 @@ export default function TopBar() {
       </div>
 
       {/* 區域選擇 (緊貼左方日期時間) */}
-      <button className="flex items-center gap-1.5 bg-[#25262b] hover:bg-[#2c2d33] border border-[#373a40] px-3 h-9 rounded-md ml-2.5 text-xs sm:text-sm transition-colors text-gray-200 font-medium shadow-sm shrink-0">
+      <button className="hidden sm:flex items-center gap-1.5 bg-[#25262b] hover:bg-[#2c2d33] border border-[#373a40] px-3 h-9 rounded-md ml-2.5 text-xs sm:text-sm transition-colors text-gray-200 font-medium shadow-sm shrink-0">
         <MapIcon className="w-3.5 h-3.5 text-gray-400" />
         <span>大溫哥華</span>
         <ChevronDown className="w-3 h-3 text-gray-400 ml-1" />
@@ -327,8 +328,79 @@ export default function TopBar() {
         )}
       </div>
 
-      {/* 右側按鈕組：探索按鈕 + 贊助支持按鈕 (愛心) + 回報問題按鈕 (感嘆號) + 設定按鈕 */}
-      <div className="flex items-center gap-2 shrink-0">
+      {/* 右側按鈕組：桌面版直接展開按鈕；手機版收合為 ⋯ 快捷功能表 */}
+      <div className="relative flex items-center gap-1 sm:gap-2 shrink-0">
+        {/* 手機版 ⋯ 更多選單按鈕 (參考圖片 5) */}
+        <div className="sm:hidden relative">
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="flex items-center justify-center w-9 h-9 bg-[#25262b] hover:bg-[#2c2d33] border border-[#373a40] rounded-md text-gray-300 hover:text-white transition-colors"
+            title="更多功能選單"
+          >
+            <MoreHorizontal className="w-5 h-5 text-gray-300" />
+          </button>
+
+          {isMobileMenuOpen && (
+            <div 
+              className="absolute right-0 top-11 z-[60] w-48 bg-[#1a1c22]/98 backdrop-blur-md border border-[#373a40] rounded-xl shadow-2xl py-1 text-xs flex flex-col divide-y divide-[#2a2d36] animate-in fade-in zoom-in-95 duration-150"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="py-1">
+                <button
+                  onClick={() => { setExportModalOpen(true); setIsMobileMenuOpen(false); }}
+                  className="w-full px-3.5 py-2 flex items-center gap-2.5 text-gray-200 hover:bg-[#262832] transition-colors text-left"
+                >
+                  <Download className="w-4 h-4 text-cyan-400 shrink-0" />
+                  <span>匯出純淨地圖/圖資</span>
+                </button>
+                <button
+                  onClick={() => { setIsDonateModalOpen(true); setIsMobileMenuOpen(false); }}
+                  className="w-full px-3.5 py-2 flex items-center gap-2.5 text-gray-200 hover:bg-[#262832] transition-colors text-left"
+                >
+                  <Heart className="w-4 h-4 text-rose-400 shrink-0" />
+                  <span>贊助支持我們</span>
+                </button>
+              </div>
+
+              <div className="py-1">
+                <button
+                  onClick={() => { setIsChangelogModalOpen(true); setIsMobileMenuOpen(false); }}
+                  className="w-full px-3.5 py-2 flex items-center gap-2.5 text-gray-200 hover:bg-[#262832] transition-colors text-left"
+                >
+                  <History className="w-4 h-4 text-sky-400 shrink-0" />
+                  <span>系統更新日誌</span>
+                </button>
+                <button
+                  onClick={() => { setIsReportModalOpen(true); setIsMobileMenuOpen(false); }}
+                  className="w-full px-3.5 py-2 flex items-center gap-2.5 text-gray-200 hover:bg-[#262832] transition-colors text-left"
+                >
+                  <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
+                  <span>回報問題與建議</span>
+                </button>
+              </div>
+
+              <div className="py-1">
+                <button
+                  onClick={() => { setSettingsModalOpen(true); setIsMobileMenuOpen(false); }}
+                  className="w-full px-3.5 py-2 flex items-center gap-2.5 text-gray-200 hover:bg-[#262832] transition-colors text-left"
+                >
+                  <Settings className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>系統偏好設定</span>
+                </button>
+                <button
+                  onClick={() => { setIsAuthModalOpen(true); setIsMobileMenuOpen(false); }}
+                  className="w-full px-3.5 py-2 flex items-center gap-2.5 text-gray-200 hover:bg-[#262832] transition-colors text-left"
+                >
+                  <User className="w-4 h-4 text-blue-400 shrink-0" />
+                  <span>會員登入帳號</span>
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* 桌面版直接平排顯示 6 大功能按鈕 */}
+        <div className="hidden sm:flex items-center gap-2">
 
         {/* 匯出按鈕 (位於探索按鈕右方) */}
         <button 
@@ -403,6 +475,7 @@ export default function TopBar() {
             帳號
           </span>
         </button>
+        </div>
       </div>
 
       {/* 贊助支持彈出視窗 */}

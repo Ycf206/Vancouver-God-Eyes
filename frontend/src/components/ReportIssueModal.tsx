@@ -137,6 +137,22 @@ export default function ReportIssueModal({ isOpen, onClose }: ReportIssueModalPr
         throw new Error(`伺服器回應錯誤 (${res.status})`);
       }
 
+      // 儲存至本地快取供後台回報問題分頁即時查閱
+      try {
+        const newReport = {
+          id: 'report_' + Date.now(),
+          timestamp: new Date().toISOString(),
+          title: title.trim(),
+          details: details.trim(),
+          contact_email: contactEmail.trim() || '',
+          has_attachment: Boolean(imageBase64),
+          attachment_name: imageName || ''
+        };
+        const existing = JSON.parse(localStorage.getItem('godseye_local_issue_reports') || '[]');
+        existing.unshift(newReport);
+        localStorage.setItem('godseye_local_issue_reports', JSON.stringify(existing.slice(0, 100)));
+      } catch (_) {}
+
       setIsSuccess(true);
     } catch (err: unknown) {
       console.warn('API submission failed, offering mailto fallback:', err);

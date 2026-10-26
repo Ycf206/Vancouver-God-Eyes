@@ -37,8 +37,7 @@ export default function ChangelogModal({ isOpen, onClose }: ChangelogModalProps)
                 <span>系統更新日誌</span>
 
               </h2>
-              <p className="text-[11px] text-gray-400">溫哥華上帝之眼版本迭代歷程與功能更新記錄</p>
-            </div>
+                          </div>
           </div>
           <button 
             onClick={onClose}
@@ -130,9 +129,8 @@ export default function ChangelogModal({ isOpen, onClose }: ChangelogModalProps)
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-3 border-t border-[#252d3e] bg-[#141822] flex items-center justify-between text-[11px] text-gray-500 shrink-0">
-          <span>版本命名規則: v年.月.序號 (例如 v2026.10.0 開始，當月每次更新序號遞增)</span>
-          <button
+        <div className="px-5 py-3 border-t border-[#252d3e] bg-[#141822] flex items-center justify-end text-[11px] text-gray-500 shrink-0">
+                    <button
             onClick={onClose}
             className="px-4 py-1.5 bg-[#202738] hover:bg-[#2b354c] text-gray-300 hover:text-white rounded-lg text-xs font-semibold transition-colors cursor-pointer"
           >

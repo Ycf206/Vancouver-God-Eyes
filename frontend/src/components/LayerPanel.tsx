@@ -110,12 +110,25 @@ export default function LayerPanel() {
     );
   };
 
+  // On mobile initial load, default to closed
+  React.useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      if (isLayerPanelOpen) toggleLayerPanel();
+    }
+  }, []);
+
   if (!isLayerPanelOpen) {
     return null;
   }
 
   return (
-    <div className="fixed top-[60px] left-0 bottom-0 z-30 w-[240px] bg-[#161719] border-r border-[#2d2e32] flex flex-col shadow-2xl select-none">
+    <>
+      {/* Mobile Backdrop */}
+      <div 
+        onClick={toggleLayerPanel}
+        className="fixed inset-0 top-[60px] z-40 bg-black/60 backdrop-blur-xs md:hidden animate-in fade-in duration-200"
+      />
+      <div className="fixed top-[60px] left-0 bottom-0 z-50 md:z-30 w-[280px] sm:w-[240px] bg-[#161719] border-r border-[#2d2e32] flex flex-col shadow-2xl select-none animate-in slide-in-from-left duration-200">
       
       {/* Header */}
       <div className="flex items-center justify-between px-3 h-10 border-b border-[#2d2e32] bg-[#1a1b1e] shrink-0">
@@ -498,5 +511,6 @@ export default function LayerPanel() {
 
       </div>
     </div>
+    </>
   );
 }

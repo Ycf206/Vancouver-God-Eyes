@@ -4500,4 +4500,21 @@ def get_admin_issue_reports(db: Session = Depends(database.get_db)):
                         issue_list.append(json.loads(line))
                     except Exception:
                         pass
-    return {"status": "ok", "total": len(issue_list), "reports": issue_list[::-1]}
+    # 1. 查詢資料庫
+    try:
+        db_reports = db.query(models.IssueReport).order_by(models.IssueReport.created_at.desc()).all()
+        for r in db_reports:
+            if not any(x.get("title") == r.title and str(x.get("timestamp"))[:19] == str(r.created_at.isoformat())[:19] for x in issue_list):
+                issue_list.append({
+                    "id": f"db_{r.id}",
+                    "timestamp": r.created_at.isoformat() if r.created_at else "",
+                    "title": r.title,
+                    "details": r.details,
+                    "contact_email": r.contact_email or "",
+                    "has_attachment": False,
+                    "attachment_name": ""
+                })
+    except Exception:
+        pass
+    issue_list.sort(key=lambda x: str(x.get("timestamp", "")), reverse=True)
+    return {"status": "ok", "total": len(issue_list), "reports": issue_list}

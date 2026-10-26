@@ -3547,10 +3547,11 @@ export default function AppMap() {
         id: 'accessible-parking-symbol-layer',
         type: 'symbol',
         source: 'accessible-parking',
-        minzoom: 15,
+        minzoom: 13,
         layout: {
           'text-field': '♿',
-          'text-size': ['interpolate', ['linear'], ['zoom'], 15, 10, 17, 12],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 8, 15, 11, 17, 14],
+          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
           'text-allow-overlap': true,
           'text-ignore-placement': true
         },
@@ -3624,10 +3625,11 @@ export default function AppMap() {
         type: 'symbol',
         source: 'ev-charging',
         ...(evFilterExpr ? { filter: evFilterExpr } : {}),
-        minzoom: 14,
+        minzoom: 13,
         layout: {
           'text-field': '⚡',
-          'text-size': ['interpolate', ['linear'], ['zoom'], 14, 9, 17, 13],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 8, 15, 11, 17, 14],
+          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
           'text-allow-overlap': true,
           'text-ignore-placement': true
         },
@@ -4023,8 +4025,8 @@ export default function AppMap() {
         source: 'disaster-hubs',
         minzoom: 13,
         layout: {
-          'text-field': '🆘',
-          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 11, 17, 15],
+          'text-field': '🤝',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 10, 17, 14],
           'text-allow-overlap': true,
           'text-ignore-placement': true
         },
@@ -4051,12 +4053,16 @@ export default function AppMap() {
         id: 'canada-post-symbol-layer',
         type: 'symbol',
         source: 'canada-post',
-        minzoom: 14,
+        minzoom: 13,
         layout: {
-          'text-field': '📮',
-          'text-size': ['interpolate', ['linear'], ['zoom'], 14, 10, 17, 14],
+          'text-field': '✉',
+          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 9, 15, 12, 17, 15],
           'text-allow-overlap': true,
           'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
         }
       });
     }
@@ -4186,15 +4192,10 @@ export default function AppMap() {
         type: 'symbol',
         source: 'safety-cameras',
         ...(safetyCamFilterExpr ? { filter: safetyCamFilterExpr } : {}),
-        minzoom: 15,
+        minzoom: 13,
         layout: {
-          'text-field': [
-            'case',
-            ['boolean', ['get', 'has_speed'], false],
-            '🚨',
-            '🛑'
-          ],
-          'text-size': ['interpolate', ['linear'], ['zoom'], 15, 11, 17, 14],
+          'text-field': '🚨',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 9, 15, 12, 17, 15],
           'text-allow-overlap': true,
           'text-ignore-placement': true
         },
@@ -4238,10 +4239,11 @@ export default function AppMap() {
         type: 'symbol',
         source: 'fuel',
         ...(fuelFilterExpr ? { filter: fuelFilterExpr } : {}),
-        minzoom: 14,
+        minzoom: 13,
         layout: {
           'text-field': '⛽',
-          'text-size': ['interpolate', ['linear'], ['zoom'], 14, 10, 17, 13],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 8, 15, 11, 17, 14],
+          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
           'text-allow-overlap': true,
           'text-ignore-placement': true
         },
@@ -4287,8 +4289,9 @@ export default function AppMap() {
         ...(teslaFilterExpr ? { filter: teslaFilterExpr } : {}),
         minzoom: 12,
         layout: {
-          'text-field': '⚡',
-          'text-size': ['interpolate', ['linear'], ['zoom'], 12, 9, 15, 11, 17, 13],
+          'text-field': 'T',
+          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 12, 9, 15, 12, 17, 15],
           'text-allow-overlap': true,
           'text-ignore-placement': true
         },
@@ -4355,10 +4358,10 @@ export default function AppMap() {
         type: 'symbol',
         source: 'van-wifi',
         filter: ['!', ['has', 'point_count']],
-        minzoom: 14,
+        minzoom: 13,
         layout: {
           'text-field': '📶',
-          'text-size': ['interpolate', ['linear'], ['zoom'], 14, 10, 17, 14],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 9, 15, 12, 17, 15],
           'text-allow-overlap': true,
           'text-ignore-placement': true
         }
@@ -4464,11 +4467,7 @@ export default function AppMap() {
         source: 'hospitals',
         minzoom: 11,
         layout: {
-          'text-field': [
-            'case',
-            ['==', ['get', 'medical_type'], 'upcc'], '🩺',
-            '🏥'
-          ],
+          'text-field': '🩺',
           'text-size': ['interpolate', ['linear'], ['zoom'], 11, 10, 15, 14, 17, 17],
           'text-allow-overlap': true,
           'text-ignore-placement': true
@@ -4640,10 +4639,10 @@ export default function AppMap() {
         id: 'public-washrooms-symbol-layer',
         type: 'symbol',
         source: 'public-washrooms',
-        minzoom: 15,
+        minzoom: 13,
         layout: {
-          'text-field': '🚻',
-          'text-size': ['interpolate', ['linear'], ['zoom'], 15, 11, 17, 14],
+          'text-field': '🚽',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 9, 15, 12, 17, 15],
           'text-allow-overlap': true,
           'text-ignore-placement': true
         },
@@ -4730,10 +4729,10 @@ export default function AppMap() {
         id: 'food-vendors-symbol-layer',
         type: 'symbol',
         source: 'food-vendors',
-        minzoom: 15,
+        minzoom: 13,
         layout: {
-          'text-field': '🍱',
-          'text-size': ['interpolate', ['linear'], ['zoom'], 15, 11, 17, 14],
+          'text-field': '🤝',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 8, 15, 11, 17, 14],
           'text-allow-overlap': true,
           'text-ignore-placement': true
         },
@@ -4760,10 +4759,10 @@ export default function AppMap() {
         id: 'food-banks-symbol-layer',
         type: 'symbol',
         source: 'food-banks',
-        minzoom: 15,
+        minzoom: 13,
         layout: {
-          'text-field': '🥫',
-          'text-size': ['interpolate', ['linear'], ['zoom'], 15, 11, 17, 14],
+          'text-field': '🤝',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 8, 15, 11, 17, 14],
           'text-allow-overlap': true,
           'text-ignore-placement': true
         },
@@ -4850,10 +4849,11 @@ export default function AppMap() {
         id: 'aed-symbol-layer',
         type: 'symbol',
         source: 'aed',
-        minzoom: 14,
+        minzoom: 13,
         layout: {
           'text-field': '⚡',
-          'text-size': ['interpolate', ['linear'], ['zoom'], 14, 9, 17, 12],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 8, 15, 11, 17, 14],
+          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
           'text-allow-overlap': true,
           'text-ignore-placement': true
         },
@@ -5746,7 +5746,7 @@ export default function AppMap() {
   return (
     <div 
       className={`absolute top-[60px] bottom-0 right-0 h-[calc(100vh-60px)] z-0 transition-[left,width] duration-200 overflow-hidden ${
-        isLayerPanelOpen ? 'left-[240px] w-[calc(100%-240px)]' : 'left-0 w-full'
+        isLayerPanelOpen ? 'md:left-[240px] md:w-[calc(100%-240px)] left-0 w-full' : 'left-0 w-full'
       }`}
     >
       <Map
@@ -5897,9 +5897,7 @@ export default function AppMap() {
           'canada-post-symbol-layer',
           'atm-layer',
           'atm-symbol-layer',
-          'beach-water-fill-layer',
-          'beach-water-outline-layer',
-          'beach-water-symbol-layer',
+          // beach-water layers removed from interactive to disable popup
           'street-lighting-poles-layer'
         ]}
         onClick={(e) => {
@@ -6171,19 +6169,8 @@ export default function AppMap() {
               properties: props
             });
           } else if (layerId.startsWith('beach-water')) {
-            setSelectedStop(null);
-            const props = feature.properties || {};
-            const clickLon = e.lngLat?.lng ?? (props.center_lon || -123.1441);
-            const clickLat = e.lngLat?.lat ?? (props.center_lat || 49.2845);
-            setSelectedFacility({
-              id: props.id || `beach_${clickLon}_${clickLat}`,
-              facility_type: 'beach_water_quality',
-              name: props.name || '海灘水質監測',
-              local_area: props.municipality ? `${props.municipality} ${props.area ? `· ${props.area}` : ''}` : (props.area || '大溫公眾海灘'),
-              lon: clickLon,
-              lat: clickLat,
-              properties: props
-            });
+            // 海灘水質不顯示 popup，所有資料已在探索-海灘中能看到，僅在地圖顯示顏色區塊
+            return;
           } else if (layerId.startsWith('street-lighting-poles')) {
             setSelectedStop(null);
             const props = feature.properties || {};
@@ -8392,7 +8379,14 @@ export default function AppMap() {
                     const isModo = selectedFacility.properties?.operator === 'Modo';
                     return { label: '共享汽車', bg: isModo ? 'bg-[#B91C1C] text-white' : 'bg-[#0284C7] text-white' };
                   }
-                  if (t === 'bikeways') return { label: '單車徑', bg: 'bg-teal-600 text-white' };
+                  if (t === 'bikeways') {
+                    const bType = selectedFacility.properties?.bikeway_type;
+                    let bg = 'bg-[#10b981] text-white';
+                    if (bType === 'Painted Lanes') bg = 'bg-[#0ea5e9] text-white';
+                    else if (bType === 'Local Street') bg = 'bg-[#f59e0b] text-white';
+                    else if (bType === 'Shared Lanes') bg = 'bg-[#a855f7] text-white';
+                    return { label: '單車徑', bg };
+                  }
                   if (t === 'bike_racks') return { label: '單車架', bg: 'bg-[#065F46] text-white' };
                   if (t === 'shared_bikes') return { label: '共享單車', bg: 'bg-[#00A3AD] text-white' };
                   if (t === 'escooter') return { label: '共享滑板車', bg: 'bg-lime-600 text-white' };
@@ -14279,7 +14273,7 @@ export default function AppMap() {
       )}
 
       {/* 探索功能橫向平排底欄 (Explore Horizontal Bottom Bar Dock) */}
-      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 pointer-events-auto select-none flex items-center gap-1 px-2.5 py-1.5 bg-[#10131a]/95 backdrop-blur-md rounded-full border border-[#2a2f3d] shadow-2xl max-w-[calc(100vw-24px)] overflow-x-auto scrollbar-none ring-1 ring-white/5">
+      <div className="absolute bottom-2 sm:bottom-3 left-1/2 -translate-x-1/2 z-30 pointer-events-auto select-none flex items-center gap-1 px-2.5 py-1.5 bg-[#10131a]/95 backdrop-blur-md rounded-full border border-[#2a2f3d] shadow-2xl max-w-[calc(100vw-16px)] sm:max-w-[calc(100vw-24px)] overflow-x-auto scrollbar-none ring-1 ring-white/5" style={{ WebkitOverflowScrolling: 'touch' }}>
         {[
           { id: 'weather', label: '天氣', icon: CloudRain, color: 'text-sky-400' },
           { id: 'news', label: '新聞', icon: Activity, color: 'text-amber-400' },

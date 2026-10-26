@@ -1123,7 +1123,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
     "data_pipeline_notes": "Mobi GBFS 實時公開資料流 -> 每小時更新各站可租借單車與空位數 -> 寫入 /backend/data/vancouver_shared_bikes.geojson",
     "runner": "github_actions",
     "workflow_file": "update-micromobility-hourly.yml",
-    "category": "生活",
+    "category": "道路",
     "source_links": [
       {
         "type": "api",
@@ -1146,7 +1146,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
     "data_pipeline_notes": "Lime GBFS 實時公開資料流 -> 每小時更新各站滑板車位置與可用狀態 -> 寫入 /backend/data/vancouver_escooter.geojson",
     "runner": "github_actions",
     "workflow_file": "update-micromobility-hourly.yml",
-    "category": "生活",
+    "category": "道路",
     "source_links": [
       {
         "type": "api",

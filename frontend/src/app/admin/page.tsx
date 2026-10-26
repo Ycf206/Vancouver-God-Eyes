@@ -162,7 +162,8 @@ export default function AdminPage() {
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [backendConnected, setBackendConnected] = useState<boolean | null>(null);
-  const [mainTab, setMainTab] = useState<'sources' | 'logs' | 'analytics'>('sources');
+  const [mainTab, setMainTab] = useState<'sources' | 'logs' | 'analytics' | 'issues'>('sources');
+  const [issueSearch, setIssueSearch] = useState('');
   const [activeTab, setActiveTab] = useState<'all' | 'github_actions' | 'oci'>('all');
   
   // --- Analytics & Stats states (8. 正式推出才開始執行) ---
@@ -197,11 +198,31 @@ export default function AdminPage() {
           status_note: resStats.data.status_note ?? '正式推出才開始執行'
         });
       }
+      let combinedReports: any[] = [];
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const resReports = await adminApiFetch<any>('/api/admin/issue-reports');
-      if (resReports.ok && resReports.data) {
-        setIssueReports(resReports.data.reports || []);
+      if (resReports.ok && resReports.data && Array.isArray(resReports.data.reports)) {
+        combinedReports = resReports.data.reports;
       }
+      if (typeof window !== 'undefined') {
+        try {
+          const raw = localStorage.getItem('godseye_local_issue_reports');
+          if (raw) {
+            const localList = JSON.parse(raw);
+            if (Array.isArray(localList)) {
+              const seen = new Set(combinedReports.map(r => String(r.timestamp) + String(r.title)));
+              for (const item of localList) {
+                if (!seen.has(String(item.timestamp) + String(item.title))) {
+                  combinedReports.push(item);
+                  seen.add(String(item.timestamp) + String(item.title));
+                }
+              }
+            }
+          }
+        } catch (_) {}
+      }
+      combinedReports.sort((a, b) => new Date(b.timestamp || 0).getTime() - new Date(a.timestamp || 0).getTime());
+      setIssueReports(combinedReports);
     } catch (err) {
       console.error('Fetch analytics error:', err);
     } finally {
@@ -210,7 +231,7 @@ export default function AdminPage() {
   };
 
   useEffect(() => {
-    if (mainTab === 'analytics') {
+    if (mainTab === 'analytics' || mainTab === 'issues') {
       fetchAnalyticsData();
     }
   }, [mainTab]);
@@ -793,6 +814,27 @@ export default function AdminPage() {
               正式推出啟用
             </span>
             {mainTab === 'analytics' && (
+              <span className="absolute bottom-[-1px] left-0 right-0 h-[1px] bg-[#141822]" />
+            )}
+          </button>
+
+          {/* 分頁 4: 回報問題 */}
+          <button
+            onClick={() => setMainTab('issues')}
+            className={`group relative flex items-center gap-2 px-4 py-2 rounded-t-xl text-xs font-semibold transition-all cursor-pointer ${
+              mainTab === 'issues'
+                ? 'bg-[#141822] text-white border-t-2 border-t-rose-500 border-x border-[#232a3b] shadow-sm z-10'
+                : 'bg-[#0f131a] text-gray-400 hover:text-gray-200 hover:bg-[#161c27] border-t-2 border-transparent'
+            }`}
+          >
+            <AlertCircle className={`w-3.5 h-3.5 ${mainTab === 'issues' ? 'text-rose-400' : 'text-gray-500 group-hover:text-gray-400'}`} />
+            <span>回報問題</span>
+            <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
+              mainTab === 'issues' ? 'bg-rose-500/20 text-rose-300' : 'bg-black/30 text-gray-500'
+            }`}>
+              {issueReports.length}
+            </span>
+            {mainTab === 'issues' && (
               <span className="absolute bottom-[-1px] left-0 right-0 h-[1px] bg-[#141822]" />
             )}
           </button>
@@ -1526,6 +1568,179 @@ export default function AdminPage() {
             </div>
           </div>
         )}
+
+        {/* 分頁 3: 系統統計資料 (正式推出啟用) */}
+        {mainTab === 'analytics' && (
+          <div className="flex flex-col gap-5 animate-in fade-in duration-200">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-[#141822] border border-[#232a3b] rounded-xl p-5 shadow-xl flex flex-col justify-between">
+                <div className="flex items-center justify-between text-gray-400">
+                  <span className="text-xs font-medium">本日瀏覽次數</span>
+                  <div className="w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center justify-center">
+                    <Eye className="w-4 h-4" />
+                  </div>
+                </div>
+                <div className="mt-3 flex items-baseline gap-2">
+                  <span className="text-2xl font-bold font-mono text-white">{stats.today_page_views}</span>
+                  <span className="text-xs text-gray-500 font-mono">(總計: {stats.total_page_views})</span>
+                </div>
+                <span className="text-[10px] text-emerald-400/80 mt-2">正式推出才開始執行</span>
+              </div>
+
+              <div className="bg-[#141822] border border-[#232a3b] rounded-xl p-5 shadow-xl flex flex-col justify-between">
+                <div className="flex items-center justify-between text-gray-400">
+                  <span className="text-xs font-medium">目前在線人數</span>
+                  <div className="w-8 h-8 rounded-lg bg-sky-500/15 border border-sky-500/30 text-sky-400 flex items-center justify-center">
+                    <Users className="w-4 h-4" />
+                  </div>
+                </div>
+                <div className="mt-3 flex items-baseline gap-2">
+                  <span className="text-2xl font-bold font-mono text-white">{stats.online_users}</span>
+                  <span className="text-xs text-sky-400">位使用者在線</span>
+                </div>
+                <span className="text-[10px] text-sky-400/80 mt-2">正式推出才開始執行</span>
+              </div>
+
+              <div className="bg-[#141822] border border-[#232a3b] rounded-xl p-5 shadow-xl flex flex-col justify-between">
+                <div className="flex items-center justify-between text-gray-400">
+                  <span className="text-xs font-medium">問題回報數量</span>
+                  <div className="w-8 h-8 rounded-lg bg-rose-500/15 border border-rose-500/30 text-rose-400 flex items-center justify-center">
+                    <AlertCircle className="w-4 h-4" />
+                  </div>
+                </div>
+                <div className="mt-3 flex items-baseline gap-2">
+                  <span className="text-2xl font-bold font-mono text-white">{issueReports.length}</span>
+                  <span className="text-xs text-rose-400">件用戶反饋與建議</span>
+                </div>
+                <span className="text-[10px] text-rose-400/80 mt-2">正式推出才開始執行</span>
+              </div>
+            </div>
+
+            <div className="bg-[#141822] border border-[#232a3b] rounded-xl p-5 text-center text-gray-400 text-xs">
+              <Sparkles className="w-5 h-5 mx-auto mb-2 text-emerald-400 animate-pulse" />
+              <p className="font-medium text-gray-200">全域訪客統計與熱點行為追蹤系統已就緒</p>
+              <p className="text-[11px] text-gray-500 mt-1">系統將於正式推出時自動啟動實時流量統計分析與熱門圖層儀表板。</p>
+            </div>
+          </div>
+        )}
+
+        {/* 分頁 4: 回報問題清單 (Issue Reports) */}
+        {mainTab === 'issues' && (
+          <div className="bg-[#141822] border border-[#232a3b] rounded-xl overflow-hidden shadow-xl flex flex-col animate-in fade-in duration-200">
+            <div className="p-4 bg-[#191f2c] border-b border-[#283144] flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-rose-500/15 border border-rose-500/30 text-rose-400 flex items-center justify-center">
+                  <AlertCircle className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-sm text-white flex items-center gap-2">
+                    <span>用戶回報問題與建議清單</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full font-mono bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                      共 {issueReports.length} 則
+                    </span>
+                  </h3>
+                  <p className="text-[11px] text-gray-400">使用者透過前端「回報問題」彈出視窗遞交之即時異常報告與建言</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <div className="relative">
+                  <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={issueSearch}
+                    onChange={(e) => setIssueSearch(e.target.value)}
+                    placeholder="搜尋標題、內容或 Email..."
+                    className="pl-8 pr-3 py-1.5 rounded-lg bg-[#0d1017] border border-[#2e374c] text-white text-xs placeholder:text-gray-500 focus:border-rose-400 outline-none w-52 sm:w-64"
+                  />
+                </div>
+                <button
+                  onClick={fetchAnalyticsData}
+                  className="px-3 py-1.5 rounded-lg bg-[#222a3b] hover:bg-[#2b354c] text-gray-200 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer border border-[#343f58]"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${loadingStats ? 'animate-spin text-rose-400' : ''}`} />
+                  <span>刷新</span>
+                </button>
+              </div>
+            </div>
+
+            {/* 問題清單 */}
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr className="bg-[#161b26] border-b border-[#242b3b] text-gray-400 font-semibold uppercase text-[10px] tracking-wider">
+                    <th className="py-2.5 px-4 w-36">時間戳記</th>
+                    <th className="py-2.5 px-4 w-52">問題標題</th>
+                    <th className="py-2.5 px-4">詳細內容與說明</th>
+                    <th className="py-2.5 px-4 w-44">聯絡電郵</th>
+                    <th className="py-2.5 px-4 w-24 text-center">附件</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#1e2535]">
+                  {issueReports
+                    .filter((r) => {
+                      if (!issueSearch.trim()) return true;
+                      const q = issueSearch.toLowerCase();
+                      return (
+                        (r.title && r.title.toLowerCase().includes(q)) ||
+                        (r.details && r.details.toLowerCase().includes(q)) ||
+                        (r.contact_email && r.contact_email.toLowerCase().includes(q))
+                      );
+                    })
+                    .map((item, idx) => (
+                      <tr key={item.id || idx} className="hover:bg-[#181d2a] transition-colors">
+                        <td className="py-3 px-4 font-mono text-[11px] text-gray-400 whitespace-nowrap">
+                          {item.timestamp ? new Date(item.timestamp).toLocaleString('zh-TW', { hour12: false }) : '即時回報'}
+                        </td>
+                        <td className="py-3 px-4 font-bold text-gray-200">
+                          <div className="flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0"></span>
+                            <span>{item.title || '無標題'}</span>
+                          </div>
+                        </td>
+                        <td className="py-3 px-4 text-gray-300 leading-relaxed max-w-md break-words whitespace-pre-wrap">
+                          {item.details || '無描述內容'}
+                        </td>
+                        <td className="py-3 px-4 font-mono text-[11px]">
+                          {item.contact_email ? (
+                            <a
+                              href={`mailto:${item.contact_email}?subject=回覆：${encodeURIComponent(item.title || '')}`}
+                              className="text-sky-400 hover:underline flex items-center gap-1"
+                              title="點擊寄信回覆"
+                            >
+                              <span>{item.contact_email}</span>
+                              <ExternalLink className="w-3 h-3 shrink-0" />
+                            </a>
+                          ) : (
+                            <span className="text-gray-500">未提供</span>
+                          )}
+                        </td>
+                        <td className="py-3 px-4 text-center">
+                          {item.has_attachment ? (
+                            <span className="px-1.5 py-0.5 rounded text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                              有截圖
+                            </span>
+                          ) : (
+                            <span className="text-gray-600">-</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  {issueReports.length === 0 && (
+                    <tr>
+                      <td colSpan={5} className="py-12 text-center text-gray-500">
+                        <AlertCircle className="w-8 h-8 mx-auto mb-2 text-gray-600" />
+                        <p className="font-semibold text-gray-400">目前尚無任何問題回報記錄</p>
+                        <p className="text-[11px] text-gray-600 mt-1">使用者在前端透過「回報問題」遞交後，將第一時間同步顯示於此。</p>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
 
         
       </main>
