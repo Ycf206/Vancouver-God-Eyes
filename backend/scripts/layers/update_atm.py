@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Automated updater for Vancouver Bank ATMs dataset.
-Scrapes ATM listings and branch detail metadata from bankee.ca/bc/vancouver/atm/
+Automated updater for Vancouver Banks (銀行) dataset.
+Scrapes bank listings and branch detail metadata from bankee.ca/bc/vancouver/atm/
 and saves directly to backend/data/vancouver_atm.geojson and frontend/public/vancouver_atm.geojson.
 """
 
@@ -66,6 +66,39 @@ def fetch_page(url, retries=5):
             time.sleep(1.5)
     return None
 
+def is_branch_open(opening_hours):
+    """
+    Check if branch is currently open based on opening_hours.
+    """
+    if not opening_hours or not isinstance(opening_hours, dict):
+        return False
+    # Days of week in lowercase
+    days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+    now_utc = datetime.utcnow()
+    # Approx Vancouver offset UTC-7 (PDT) / UTC-8 (PST)
+    # Using simple hour adjustment for Vancouver: UTC - 7
+    van_hour = (now_utc.hour - 7) % 24
+    van_dow_idx = now_utc.weekday() # Monday=0, Sunday=6
+    # Python weekday(): Monday is 0 and Sunday is 6
+    python_to_name = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+    # If UTC-7 crossed midnight backwards
+    day_name = python_to_name[van_dow_idx]
+    if now_utc.hour < 7:
+        day_name = python_to_name[(van_dow_idx - 1) % 7]
+
+    today_str = opening_hours.get(day_name, '')
+    if not today_str or 'closed' in today_str.lower() or '休息' in today_str:
+        return False
+
+    m = re.search(r'(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})', today_str)
+    if m:
+        start_min = int(m.group(1)) * 60 + int(m.group(2))
+        end_min = int(m.group(3)) * 60 + int(m.group(4))
+        cur_min = van_hour * 60 + now_utc.minute
+        return start_min <= cur_min < end_min
+
+    return False
+
 def update_atm_dataset():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     backend_data_dir = os.path.join(os.path.dirname(script_dir), "data")
@@ -83,13 +116,16 @@ def update_atm_dataset():
                 data = json.load(f)
                 existing_features = data.get('features', [])
                 for feat in existing_features:
+                    # Clean any legacy is_24_7
+                    if 'is_24_7' in feat.get('properties', {}):
+                        del feat['properties']['is_24_7']
                     u = feat.get('properties', {}).get('bankee_url')
                     if u:
                         existing_urls.add(u)
         except Exception as e:
             print("Notice: could not load existing file:", e)
 
-    print(f"Loaded {len(existing_features)} existing ATMs.")
+    print(f"Loaded {len(existing_features)} existing bank branches.")
 
     # 1. Discover list items across 13 pages
     all_urls = []
@@ -106,9 +142,9 @@ def update_atm_dataset():
                 all_urls.append(link)
         time.sleep(0.15)
 
-    print(f"Discovered {len(all_urls)} total ATM URLs.")
+    print(f"Discovered {len(all_urls)} total Bank URLs.")
     missing_urls = [u for u in all_urls if u not in existing_urls]
-    print(f"Fetching details for {len(missing_urls)} new ATMs...")
+    print(f"Fetching details for {len(missing_urls)} new branches...")
 
     features = list(existing_features)
     for idx, u in enumerate(missing_urls):
@@ -157,8 +193,6 @@ def update_atm_dataset():
                     t = si.strip()
                     if t and t not in services:
                         services.append(t)
-            if not services:
-                services.append("ATM on site")
 
             def extract_row(label):
                 m = re.search(rf'<span>{label}[^<]*</span>\s*<span><b>([^<]+)</b></span>', html, re.I)
@@ -170,11 +204,19 @@ def update_atm_dataset():
             cheque_micr = extract_row('Cheque')
             swift_code = extract_row('SWIFT')
 
-            is_24_7 = bool(re.search(r'24/7|Open 24 hours', html, re.I))
-            status_text = "營業中 (24/7)" if is_24_7 else ("休息中" if "rd-closed" in html else "營業中")
+            # Extract hours table
+            opening_hours = {}
+            for day_en in ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']:
+                m_day = re.search(rf'{day_en}[^<]*</td>\s*<td[^>]*>([^<]+)</td>', html, re.I)
+                if m_day:
+                    h_val = m_day.group(1).strip()
+                    if 'closed' not in h_val.lower() and h_val != '-':
+                        opening_hours[day_en] = h_val
+
+            is_open = is_branch_open(opening_hours)
+            status_text = "營業中" if is_open else "休息中"
 
             clean_title = f"{bank_full_name} — {branch_name}".strip() if branch_name and branch_name != bank_full_name else raw_name
-            clean_subtitle = f"{street_address}, Vancouver, BC {postal_code}".strip()
 
             feat = {
                 "type": "Feature",
@@ -196,12 +238,12 @@ def update_atm_dataset():
                     "telephone": telephone,
                     "services": services,
                     "services_str": ", ".join(services),
-                    "is_24_7": is_24_7,
+                    "opening_hours": opening_hours,
                     "status_text": status_text,
                     "transit_number": transit_number,
                     "institution_number": institution_number,
                     "routing_number": routing_number,
-                    "cheque_micr": chequeMicr,
+                    "cheque_micr": cheque_micr,
                     "swift_code": swift_code,
                     "official_url": official_url,
                     "bankee_url": u
@@ -224,7 +266,7 @@ def update_atm_dataset():
 
     with open(out_file, 'w', encoding='utf-8') as f:
         json.dump(geojson_data, f, ensure_ascii=False, indent=2)
-    print(f"Saved {len(features)} ATMs to {out_file}")
+    print(f"Saved {len(features)} bank branches to {out_file}")
 
     if os.path.exists(public_data_dir):
         with open(public_file, 'w', encoding='utf-8') as f:

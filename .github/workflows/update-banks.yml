@@ -1,17 +1,17 @@
-name: Update ATMs (每月)
+name: Update 銀行 (Banks) (每月)
 
 on:
   schedule:
-    # 每日凌晨 04:00 UTC 執行一次
+    # 每月 1 號 00:00 UTC 執行一次
     - cron: '0 0 1 * *'
   workflow_dispatch:
 
 concurrency:
-  group: update-atm
+  group: update-banks
   cancel-in-progress: true
 
 jobs:
-  update-atm:
+  update-banks:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -26,9 +26,9 @@ jobs:
         run: |
           pip install requests
 
-      - name: Run ATM update script
+      - name: Run 銀行 (Banks) update script
         run: |
-          python backend/scripts/layers/update_atm.py
+          python backend/scripts/layers/update_banks.py
 
       - name: Commit and push changes
         run: |
@@ -38,6 +38,6 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes detected"
           else
-            git commit -m "chore(data): auto-update 溫哥華銀行櫃員機 ATM dataset [skip ci]"
+            git commit -m "chore(data): auto-update 溫哥華銀行 (Banks) dataset [skip ci]"
             git push
           fi

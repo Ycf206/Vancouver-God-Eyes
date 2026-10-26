@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { 
+import { Landmark, 
   Compass, X, Fuel, Zap, Ship, MapPin, ArrowUpDown, 
   ChevronDown, RefreshCw, Package, CloudSun, Wind, AlertTriangle, Droplets, Gauge, Eye, Anchor, Navigation,
   Newspaper, ExternalLink, Search, CalendarDays, Calendar, Tag, Waves, CloudRain, Play, Pause, SkipBack, SkipForward,
@@ -1326,19 +1326,15 @@ function ExploreContent() {
         distKm = getDistanceKm(userLocation.lat, userLocation.lon, atm.lat, atm.lon);
       }
 
-      let isOpenToday = atm.is_24_7;
+      let isOpenToday = false;
       let openHoursToday = '';
-      if (atm.is_24_7) {
-        openHoursToday = '24 小時開放';
+      const h = atm.opening_hours?.[todayKey];
+      if (h && typeof h === 'string' && h.trim().length > 0 && !h.toLowerCase().includes('closed') && !h.includes('休息')) {
+        isOpenToday = true;
+        openHoursToday = `今日營業：${h}`;
       } else {
-        const h = atm.opening_hours?.[todayKey];
-        if (h && h.toLowerCase() !== 'closed') {
-          isOpenToday = true;
-          openHoursToday = `今日營業：${h}`;
-        } else {
-          isOpenToday = false;
-          openHoursToday = '今日休息';
-        }
+        isOpenToday = false;
+        openHoursToday = '今日休息';
       }
 
       return {
@@ -1514,7 +1510,7 @@ function ExploreContent() {
       subtitle: atm.address,
       category: 'atm',
       layer_key: 'atm',
-      badge: 'ATM',
+      badge: '銀行',
       icon: '🏧',
       lat: atm.lat,
       lon: atm.lon,
@@ -2751,7 +2747,7 @@ function ExploreContent() {
     beach: { label: '泳灘水質', icon: Droplets, color: 'text-teal-300' },
     ski: { label: '滑雪場現況', icon: MountainSnow, color: 'text-cyan-400' },
     aurora: { label: '極光觀測', icon: Sparkles, color: 'text-fuchsia-400' },
-    atm: { label: 'ATM', icon: CreditCard, color: 'text-amber-400' },
+    atm: { label: '銀行', icon: Landmark, color: 'text-amber-400' },
     fuel: { label: '油站', icon: Fuel, color: 'text-amber-500' },
     charging: { label: '充電站', icon: Zap, color: 'text-emerald-400' },
     ev: { label: '充電站', icon: Zap, color: 'text-emerald-400' },
@@ -2771,7 +2767,7 @@ function ExploreContent() {
     beach: '泳灘',
     ski: '滑雪',
     aurora: '極光',
-    atm: 'ATM',
+    atm: '銀行',
     fuel: '油站',
     charging: '充電',
     ev: '充電',
@@ -4469,7 +4465,7 @@ function ExploreContent() {
           {/* Filter Bar: 僅顯示今日營業中 */}
           <div className="flex items-center justify-between gap-2 mb-2.5 shrink-0">
             <span className="text-[11px] text-gray-400">
-              共找到 <span className="text-amber-400 font-mono font-bold">{filteredAtms.length}</span> 間櫃員機
+              共找到 <span className="text-amber-400 font-mono font-bold">{filteredAtms.length}</span> 間銀行
             </span>
             <label className="flex items-center gap-1.5 text-xs text-gray-300 cursor-pointer select-none shrink-0">
               <input
@@ -4487,11 +4483,11 @@ function ExploreContent() {
             {loadingAtm ? (
               <div className="py-12 flex flex-col items-center justify-center gap-2 text-xs text-gray-400">
                 <RefreshCw className="w-5 h-5 text-amber-400 animate-spin" />
-                <span>讀取溫哥華各分行與 ATM 數據...</span>
+                <span>讀取溫哥華各銀行分行數據...</span>
               </div>
             ) : filteredAtms.length === 0 ? (
               <div className="py-12 text-center text-xs text-gray-400 bg-[#10131a] rounded-lg border border-[#232836]">
-                暫無符合條件的 ATM 櫃員機
+                暫無符合條件的銀行
               </div>
             ) : (
               filteredAtms.map((atm) => {
@@ -6529,7 +6525,7 @@ function ExploreContent() {
             </>
           )}
           {activeTab === 'atm' && (
-            <span>共有 {filteredAtms.length} 間 ATM 櫃員機</span>
+            <span>共有 {filteredAtms.length} 間銀行</span>
           )}
           {activeTab === 'fuel' && (
             <span>共有 {filteredFuelStations.length} 間油站</span>

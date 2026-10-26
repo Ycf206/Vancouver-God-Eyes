@@ -41,7 +41,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "27150",
         "institution_number": "001",
@@ -84,7 +83,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "16180",
         "institution_number": "809",
@@ -129,7 +127,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "20370",
         "institution_number": "002",
@@ -166,7 +163,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -214,7 +210,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "02800",
         "institution_number": "010",
@@ -253,7 +248,6 @@
         ],
         "services_str": "Allpoint network, Wheelchair accessible, Wheelchair-accessible entrance",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -303,7 +297,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "05600",
         "institution_number": "003",
@@ -341,7 +334,6 @@
         ],
         "services_str": "Wheelchair accessible, Wheelchair-accessible entrance",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -385,7 +377,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "19680",
         "institution_number": "809",
@@ -428,7 +419,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "30170",
         "institution_number": "809",
@@ -478,7 +468,6 @@
           "friday": "09:00 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "94500",
         "institution_number": "004",
@@ -528,7 +517,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "03345",
         "institution_number": "003",
@@ -577,7 +565,6 @@
           "friday": "09:00 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "05680",
         "institution_number": "004",
@@ -623,7 +610,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "33300",
         "institution_number": "001",
@@ -662,7 +648,6 @@
         ],
         "services_str": "ATM on site, US dollars at the ATM, Financial advisors",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "83220",
         "institution_number": "002",
@@ -710,7 +695,6 @@
           "thursday": "09:00 - 18:00",
           "friday": "09:00 - 18:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "94560",
         "institution_number": "004",
@@ -757,7 +741,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "02400",
         "institution_number": "010",
@@ -794,7 +777,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
@@ -844,7 +826,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "05680",
         "institution_number": "003",
@@ -892,7 +873,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "10470",
         "institution_number": "002",
@@ -939,7 +919,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "63230",
         "institution_number": "002",
@@ -976,7 +955,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -1024,7 +1002,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "03000",
         "institution_number": "010",
@@ -1070,7 +1047,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "07600",
         "institution_number": "001",
@@ -1115,7 +1091,6 @@
           "friday": "00:00 - 00:00",
           "saturday": "00:00 - 00:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -1158,7 +1133,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "10940",
         "institution_number": "809",
@@ -1208,7 +1182,6 @@
           "friday": "09:00 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "95200",
         "institution_number": "004",
@@ -1246,7 +1219,6 @@
         ],
         "services_str": "Allpoint network, 24-hour ATM",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
@@ -1283,7 +1255,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -1333,7 +1304,6 @@
           "friday": "09:00 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "96510",
         "institution_number": "004",
@@ -1379,7 +1349,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "08360",
         "institution_number": "001",
@@ -1418,7 +1387,6 @@
         ],
         "services_str": "Allpoint network, Wheelchair accessible, Wheelchair-accessible entrance",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -1467,7 +1435,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 18:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "06820",
         "institution_number": "003",
@@ -1517,7 +1484,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "00782",
         "institution_number": "003",
@@ -1554,7 +1520,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -1599,7 +1564,6 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -1638,7 +1602,6 @@
         ],
         "services_str": "Allpoint network, Wheelchair accessible, Wheelchair-accessible entrance",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -1688,7 +1651,6 @@
           "friday": "09:00 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "94740",
         "institution_number": "004",
@@ -1733,7 +1695,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "03350",
         "institution_number": "002",
@@ -1770,7 +1731,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -1815,7 +1775,6 @@
           "friday": "00:00 - 00:00",
           "saturday": "00:00 - 00:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -1852,7 +1811,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -1902,7 +1860,6 @@
           "friday": "09:00 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "94480",
         "institution_number": "004",
@@ -1949,7 +1906,6 @@
           "thursday": "09:30 - 17:30",
           "friday": "09:30 - 17:30"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "96080",
         "institution_number": "004",
@@ -1986,7 +1942,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -2031,7 +1986,6 @@
           "friday": "00:00 - 00:00",
           "saturday": "00:00 - 00:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -2070,7 +2024,6 @@
         ],
         "services_str": "Allpoint network, Wheelchair accessible, Wheelchair-accessible entrance",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -2115,7 +2068,6 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -2158,7 +2110,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "27260",
         "institution_number": "001",
@@ -2205,7 +2156,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "04100",
         "institution_number": "010",
@@ -2242,7 +2192,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -2292,7 +2241,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "06720",
         "institution_number": "003",
@@ -2337,7 +2285,6 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -2376,7 +2323,6 @@
         ],
         "services_str": "Allpoint network, Wheelchair accessible, Wheelchair-accessible entrance",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -2423,7 +2369,6 @@
           "thursday": "10:00 - 18:00",
           "friday": "10:00 - 18:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "03239",
         "institution_number": "003",
@@ -2460,7 +2405,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -2507,7 +2451,6 @@
           "thursday": "10:00 - 18:00",
           "friday": "10:00 - 18:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "04625",
         "institution_number": "003",
@@ -2544,7 +2487,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -2581,7 +2523,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -2625,7 +2566,6 @@
           "thursday": "09:30 - 18:00",
           "friday": "09:30 - 18:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "01420",
         "institution_number": "002",
@@ -2662,7 +2602,6 @@
         ],
         "services_str": "THE EXCHANGE® network",
         "opening_hours": {},
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -2711,7 +2650,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "07200",
         "institution_number": "003",
@@ -2761,7 +2699,6 @@
           "friday": "09:00 - 20:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "94000",
         "institution_number": "004",
@@ -2798,7 +2735,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -2841,7 +2777,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "16190",
         "institution_number": "809",
@@ -2891,7 +2826,6 @@
           "friday": "09:00 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "94530",
         "institution_number": "004",
@@ -2936,7 +2870,6 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -2975,7 +2908,6 @@
         ],
         "services_str": "Allpoint network, Wheelchair accessible, Wheelchair-accessible entrance",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -3018,7 +2950,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "16480",
         "institution_number": "809",
@@ -3063,7 +2994,6 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -3100,7 +3030,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
@@ -3146,7 +3075,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "27120",
         "institution_number": "001",
@@ -3183,7 +3111,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
@@ -3232,7 +3159,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "00710",
         "institution_number": "010",
@@ -3276,7 +3202,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "00500",
         "institution_number": "010",
@@ -3321,7 +3246,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "20040",
         "institution_number": "002",
@@ -3369,7 +3293,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "03215",
         "institution_number": "003",
@@ -3417,7 +3340,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "00010",
         "institution_number": "003",
@@ -3461,7 +3383,6 @@
           "thursday": "10:00 - 17:00",
           "friday": "10:00 - 17:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "14021",
         "institution_number": "006",
@@ -3511,7 +3432,6 @@
           "friday": "09:00 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "00440",
         "institution_number": "004",
@@ -3556,7 +3476,6 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -3603,7 +3522,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "04300",
         "institution_number": "010",
@@ -3653,7 +3571,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "05598",
         "institution_number": "003",
@@ -3699,7 +3616,6 @@
           "friday": "09:30 - 19:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "13440",
         "institution_number": "001",
@@ -3742,7 +3658,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "16300",
         "institution_number": "809",
@@ -3779,7 +3694,6 @@
         ],
         "services_str": "THE EXCHANGE® network",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -3825,7 +3739,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "06550",
         "institution_number": "003",
@@ -3870,7 +3783,6 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -3913,7 +3825,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "19180",
         "institution_number": "809",
@@ -3950,7 +3861,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -3999,7 +3909,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "06810",
         "institution_number": "010",
@@ -4045,7 +3954,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "01800",
         "institution_number": "002",
@@ -4090,7 +3998,6 @@
           "friday": "05:30 - 21:30",
           "saturday": "07:00 - 19:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -4133,7 +4040,6 @@
           "thursday": "09:00 - 16:00",
           "friday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "04071",
         "institution_number": "006",
@@ -4170,7 +4076,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
@@ -4207,7 +4112,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -4252,7 +4156,6 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -4297,7 +4200,6 @@
           "thursday": "09:00 - 17:00",
           "friday": "09:00 - 17:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "02160",
         "institution_number": "004",
@@ -4342,7 +4244,6 @@
           "friday": "05:00 - 23:50",
           "saturday": "05:00 - 23:50"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -4379,7 +4280,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
@@ -4422,7 +4322,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "00270",
         "institution_number": "809",
@@ -4468,7 +4367,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "00010",
         "institution_number": "010",
@@ -4505,7 +4403,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -4554,7 +4451,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "40550",
         "institution_number": "002",
@@ -4599,7 +4495,6 @@
           "friday": "00:00 - 00:00",
           "saturday": "00:00 - 00:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -4636,7 +4531,6 @@
         ],
         "services_str": "THE EXCHANGE® network",
         "opening_hours": {},
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -4673,7 +4567,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -4712,7 +4605,6 @@
         ],
         "services_str": "Allpoint network, Wheelchair accessible, Wheelchair-accessible entrance",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -4749,7 +4641,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -4786,7 +4677,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -4823,7 +4713,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -4861,7 +4750,6 @@
         ],
         "services_str": "Wheelchair accessible, Wheelchair-accessible entrance",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -4906,7 +4794,6 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -4951,7 +4838,6 @@
           "friday": "08:00 - 22:00",
           "saturday": "08:00 - 22:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -4990,7 +4876,6 @@
         ],
         "services_str": "Allpoint network, Wheelchair accessible, Wheelchair-accessible entrance",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -5037,7 +4922,6 @@
           "thursday": "09:00 - 17:00",
           "friday": "09:00 - 17:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "94400",
         "institution_number": "004",
@@ -5080,7 +4964,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 15:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "16310",
         "institution_number": "809",
@@ -5117,7 +5000,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -5164,7 +5046,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "23390",
         "institution_number": "002",
@@ -5209,7 +5090,6 @@
           "friday": "08:00 - 20:00",
           "saturday": "08:00 - 20:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -5252,7 +5132,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "09860",
         "institution_number": "001",
@@ -5297,7 +5176,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "27130",
         "institution_number": "001",
@@ -5347,7 +5225,6 @@
           "friday": "09:00 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "00600",
         "institution_number": "004",
@@ -5397,7 +5274,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "05560",
         "institution_number": "003",
@@ -5434,7 +5310,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
@@ -5471,7 +5346,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
@@ -5516,7 +5390,6 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -5553,7 +5426,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -5598,7 +5470,6 @@
           "friday": "00:00 - 00:00",
           "saturday": "00:00 - 00:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -5641,7 +5512,6 @@
           "thursday": "09:00 - 16:00",
           "friday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "04311",
         "institution_number": "006",
@@ -5686,7 +5556,6 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -5725,7 +5594,6 @@
         ],
         "services_str": "Allpoint network, Wheelchair accessible, Wheelchair-accessible entrance",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -5770,7 +5638,6 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -5817,7 +5684,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "02210",
         "institution_number": "010",
@@ -5863,7 +5729,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "07570",
         "institution_number": "001",
@@ -5913,7 +5778,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "06000",
         "institution_number": "003",
@@ -5962,7 +5826,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "01910",
         "institution_number": "010",
@@ -6007,7 +5870,6 @@
           "friday": "08:00 - 20:00",
           "saturday": "08:00 - 20:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -6053,7 +5915,6 @@
           "friday": "09:30 - 19:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "08930",
         "institution_number": "001",
@@ -6092,7 +5953,6 @@
         ],
         "services_str": "Allpoint network, Wheelchair accessible, Wheelchair-accessible entrance",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -6137,7 +5997,6 @@
           "friday": "08:00 - 20:00",
           "saturday": "08:00 - 20:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -6187,7 +6046,6 @@
           "friday": "09:00 - 20:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "00340",
         "institution_number": "004",
@@ -6237,7 +6095,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "03549",
         "institution_number": "003",
@@ -6282,7 +6139,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "60350",
         "institution_number": "002",
@@ -6327,7 +6183,6 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -6377,7 +6232,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "07680",
         "institution_number": "003",
@@ -6423,7 +6277,6 @@
           "friday": "09:30 - 19:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "08650",
         "institution_number": "001",
@@ -6466,7 +6319,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "80390",
         "institution_number": "002",
@@ -6515,7 +6367,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 18:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "05578",
         "institution_number": "003",
@@ -6552,7 +6403,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -6591,7 +6441,6 @@
         ],
         "services_str": "Allpoint network, Wheelchair accessible, Wheelchair-accessible entrance",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -6640,7 +6489,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "00600",
         "institution_number": "010",
@@ -6690,7 +6538,6 @@
           "friday": "09:00 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "94660",
         "institution_number": "004",
@@ -6733,7 +6580,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "27100",
         "institution_number": "001",
@@ -6776,7 +6622,6 @@
           "thursday": "09:30 - 16:00",
           "friday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "90480",
         "institution_number": "002",
@@ -6821,7 +6666,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "40360",
         "institution_number": "002",
@@ -6866,7 +6710,6 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -6915,7 +6758,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 18:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "05920",
         "institution_number": "003",
@@ -6960,7 +6802,6 @@
           "friday": "08:00 - 23:00",
           "saturday": "08:00 - 23:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -7010,7 +6851,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "04010",
         "institution_number": "010",
@@ -7054,7 +6894,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 15:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "16320",
         "institution_number": "809",
@@ -7097,7 +6936,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "03650",
         "institution_number": "809",
@@ -7142,7 +6980,6 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -7187,7 +7024,6 @@
           "friday": "08:00 - 23:00",
           "saturday": "08:00 - 23:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -7224,7 +7060,6 @@
         ],
         "services_str": "THE EXCHANGE® network",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -7261,7 +7096,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -7307,7 +7141,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "07240",
         "institution_number": "001",
@@ -7345,7 +7178,6 @@
         ],
         "services_str": "Wheelchair accessible, Wheelchair-accessible entrance",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -7382,7 +7214,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -7419,7 +7250,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -7458,7 +7288,6 @@
         ],
         "services_str": "Allpoint network, Wheelchair accessible, Wheelchair-accessible entrance",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -7505,7 +7334,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "30510",
         "institution_number": "002",
@@ -7548,7 +7376,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 15:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "16140",
         "institution_number": "809",
@@ -7598,7 +7425,6 @@
           "friday": "09:00 - 20:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "00470",
         "institution_number": "004",
@@ -7648,7 +7474,6 @@
           "friday": "09:00 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "02690",
         "institution_number": "004",
@@ -7698,7 +7523,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "06800",
         "institution_number": "003",
@@ -7741,7 +7565,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "16350",
         "institution_number": "809",
@@ -7786,7 +7609,6 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -7836,7 +7658,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "06000",
         "institution_number": "010",
@@ -7886,7 +7707,6 @@
           "friday": "09:00 - 20:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "05560",
         "institution_number": "004",
@@ -7924,7 +7744,6 @@
         ],
         "services_str": "Allpoint network, 24-hour ATM",
         "opening_hours": {},
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -7969,7 +7788,6 @@
           "friday": "00:00 - 00:00",
           "saturday": "00:00 - 00:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -8018,7 +7836,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 18:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "03729",
         "institution_number": "003",
@@ -8068,7 +7885,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "00810",
         "institution_number": "010",
@@ -8113,7 +7929,6 @@
           "friday": "00:00 - 00:00",
           "saturday": "00:00 - 00:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -8150,7 +7965,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -8195,7 +8009,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "10520",
         "institution_number": "002",
@@ -8245,7 +8058,6 @@
           "friday": "09:00 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "96920",
         "institution_number": "004",
@@ -8283,7 +8095,6 @@
         ],
         "services_str": "Allpoint network, 24-hour ATM",
         "opening_hours": {},
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -8328,7 +8139,6 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -8374,7 +8184,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "07690",
         "institution_number": "001",
@@ -8412,7 +8221,6 @@
         ],
         "services_str": "Wheelchair accessible, Wheelchair-accessible entrance",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -8457,7 +8265,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "50070",
         "institution_number": "002",
@@ -8501,7 +8308,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "11910",
         "institution_number": "809",
@@ -8551,7 +8357,6 @@
           "friday": "09:00 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "05660",
         "institution_number": "004",
@@ -8601,7 +8406,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "06160",
         "institution_number": "003",
@@ -8646,7 +8450,6 @@
           "friday": "00:00 - 00:00",
           "saturday": "00:00 - 00:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -8691,7 +8494,6 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -8735,7 +8537,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -8774,7 +8575,6 @@
         ],
         "services_str": "Allpoint network, Wheelchair accessible, Wheelchair-accessible entrance",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -8822,7 +8622,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "33480",
         "institution_number": "002",
@@ -8871,7 +8670,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "06640",
         "institution_number": "003",
@@ -8908,7 +8706,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -8955,7 +8752,6 @@
           "thursday": "09:00 - 17:00",
           "friday": "09:00 - 17:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "98350",
         "institution_number": "004",
@@ -8998,7 +8794,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 15:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "16130",
         "institution_number": "809",
@@ -9042,7 +8837,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "03820",
         "institution_number": "809",
@@ -9092,7 +8886,6 @@
           "friday": "09:00 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "95440",
         "institution_number": "004",
@@ -9137,7 +8930,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "27210",
         "institution_number": "001",
@@ -9181,7 +8973,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 15:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "16120",
         "institution_number": "809",
@@ -9230,7 +9021,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 18:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "02165",
         "institution_number": "003",
@@ -9267,7 +9057,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -9304,7 +9093,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -9350,7 +9138,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "05535",
         "institution_number": "003",
@@ -9396,7 +9183,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "03010",
         "institution_number": "010",
@@ -9445,7 +9231,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "08010",
         "institution_number": "010",
@@ -9491,7 +9276,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "07680",
         "institution_number": "001",
@@ -9536,7 +9320,6 @@
           "friday": "06:00 - 22:00",
           "saturday": "06:00 - 22:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -9583,7 +9366,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "03800",
         "institution_number": "010",
@@ -9633,7 +9415,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "07440",
         "institution_number": "003",
@@ -9680,7 +9461,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "52050",
         "institution_number": "002",
@@ -9717,7 +9497,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -9754,7 +9533,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
@@ -9791,7 +9569,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -9836,7 +9613,6 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -9886,7 +9662,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "05790",
         "institution_number": "003",
@@ -9936,7 +9711,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "07760",
         "institution_number": "003",
@@ -9986,7 +9760,6 @@
           "friday": "09:00 - 20:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "96970",
         "institution_number": "004",
@@ -10033,7 +9806,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "33340",
         "institution_number": "002",
@@ -10080,7 +9852,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "02610",
         "institution_number": "010",
@@ -10125,7 +9896,6 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -10170,7 +9940,6 @@
           "friday": "10:00 - 19:00",
           "saturday": "10:00 - 19:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -10209,7 +9978,6 @@
         ],
         "services_str": "Allpoint network, Wheelchair accessible, Wheelchair-accessible entrance",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -10255,7 +10023,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "30970",
         "institution_number": "001",
@@ -10300,7 +10067,6 @@
           "friday": "10:00 - 20:00",
           "saturday": "10:00 - 18:00"
         },
-        "is_24_7": false,
         "status_text": "營業中",
         "transit_number": "3185",
         "institution_number": null,
@@ -10350,7 +10116,6 @@
           "friday": "09:00 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "93210",
         "institution_number": "004",
@@ -10395,7 +10160,6 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -10442,7 +10206,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "01010",
         "institution_number": "010",
@@ -10479,7 +10242,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
@@ -10524,7 +10286,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "70490",
         "institution_number": "002",
@@ -10563,7 +10324,6 @@
         ],
         "services_str": "Allpoint network, Wheelchair accessible, Wheelchair-accessible entrance",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -10602,7 +10362,6 @@
         ],
         "services_str": "Allpoint network, Wheelchair accessible, Wheelchair-accessible entrance",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -10646,7 +10405,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 18:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "27200",
         "institution_number": "001",
@@ -10683,7 +10441,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -10720,7 +10477,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -10765,7 +10521,6 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -10810,7 +10565,6 @@
           "friday": "10:00 - 20:00",
           "saturday": "10:00 - 18:00"
         },
-        "is_24_7": false,
         "status_text": "營業中",
         "transit_number": "350",
         "institution_number": null,
@@ -10860,7 +10614,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "06520",
         "institution_number": "003",
@@ -10899,7 +10652,6 @@
         ],
         "services_str": "Allpoint network, Wheelchair accessible, Wheelchair-accessible entrance",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -10947,7 +10699,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "04810",
         "institution_number": "010",
@@ -10995,7 +10746,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "07600",
         "institution_number": "003",
@@ -11041,7 +10791,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "07580",
         "institution_number": "001",
@@ -11086,7 +10835,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "60640",
         "institution_number": "002",
@@ -11123,7 +10871,6 @@
         ],
         "services_str": "THE EXCHANGE® network",
         "opening_hours": {},
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -11160,7 +10907,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -11209,7 +10955,6 @@
           "friday": "09:00 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "07510",
         "institution_number": "004",
@@ -11258,7 +11003,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "06300",
         "institution_number": "010",
@@ -11301,7 +11045,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "16330",
         "institution_number": "809",
@@ -11346,7 +11089,6 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -11384,7 +11126,6 @@
         ],
         "services_str": "Wheelchair accessible, Wheelchair-accessible entrance",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -11423,7 +11164,6 @@
         ],
         "services_str": "Allpoint network, Wheelchair accessible, Wheelchair-accessible entrance",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -11460,7 +11200,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
@@ -11510,7 +11249,6 @@
           "friday": "09:00 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "96240",
         "institution_number": "004",
@@ -11558,7 +11296,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "05588",
         "institution_number": "003",
@@ -11608,7 +11345,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "06840",
         "institution_number": "003",
@@ -11645,7 +11381,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
@@ -11682,7 +11417,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
@@ -11728,7 +11462,6 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "08380",
         "institution_number": "001",
@@ -11773,7 +11506,6 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -11818,7 +11550,6 @@
           "friday": "00:00 - 00:00",
           "saturday": "00:00 - 00:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -11867,7 +11598,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 18:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "00894",
         "institution_number": "003",
@@ -11910,7 +11640,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "08110",
         "institution_number": "001",
@@ -11958,7 +11687,6 @@
           "friday": "10:00 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "91980",
         "institution_number": "004",
@@ -12001,7 +11729,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 15:00"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": "13220",
         "institution_number": "809",
@@ -12047,7 +11774,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "05800",
         "institution_number": "010",
@@ -12095,7 +11821,6 @@
           "friday": "09:00 - 17:00",
           "saturday": "09:00 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "92480",
         "institution_number": "004",
@@ -12140,7 +11865,6 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "63370",
         "institution_number": "002",
@@ -12185,7 +11909,6 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -12230,7 +11953,6 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -12277,7 +11999,6 @@
           "friday": "09:30 - 16:00",
           "saturday": "09:30 - 16:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "23200",
         "institution_number": "002",
@@ -12315,7 +12036,6 @@
         ],
         "services_str": "Wheelchair accessible, Wheelchair-accessible entrance",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -12352,7 +12072,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
@@ -12390,7 +12109,6 @@
         ],
         "services_str": "Wheelchair accessible, Wheelchair-accessible entrance",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -12434,7 +12152,6 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": "03335",
         "institution_number": "003",
@@ -12479,7 +12196,6 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -12516,7 +12232,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
@@ -12554,7 +12269,6 @@
         ],
         "services_str": "Wheelchair accessible, Wheelchair-accessible entrance",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -12599,7 +12313,6 @@
           "friday": "09:00 - 21:00",
           "saturday": "09:00 - 21:00"
         },
-        "is_24_7": false,
         "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
@@ -12644,7 +12357,6 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "is_24_7": true,
         "status_text": "營業中 (24/7)",
         "transit_number": null,
         "institution_number": null,
@@ -12681,7 +12393,6 @@
         ],
         "services_str": "ATM on site",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
@@ -12720,7 +12431,6 @@
         ],
         "services_str": "Wheelchair accessible, US dollars at the ATM, Wheelchair-accessible entrance",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -12758,7 +12468,6 @@
         ],
         "services_str": "Wheelchair accessible, Wheelchair-accessible entrance",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -12796,7 +12505,6 @@
         ],
         "services_str": "Wheelchair accessible, Wheelchair-accessible entrance",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
@@ -12835,7 +12543,6 @@
         ],
         "services_str": "Wheelchair accessible, US dollars at the ATM, Wheelchair-accessible entrance",
         "opening_hours": {},
-        "is_24_7": false,
         "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,

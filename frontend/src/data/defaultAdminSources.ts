@@ -1089,22 +1089,22 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "atm",
-    "name": "銀行櫃員機 (ATM)",
+    "name": "銀行 (Banks)",
     "type": "geojson",
     "cron_expr": "0 4 * * *",
     "schedule_interval": "每日 04:00",
     "record_count": 293,
-    "unit": "部 ATM 櫃員機",
+    "unit": "間銀行分行",
     "last_updated": "2026-10-25T17:57:21.402Z",
     "status": "ok",
-    "data_pipeline_notes": "Bankee ATM 網絡與分行清冊 -> 解析服務、開放時間、Transit/Institution/SWIFT 編號 -> 寫入 /backend/data/vancouver_atm.geojson",
+    "data_pipeline_notes": "Bankee 溫哥華銀行與分行清冊 -> 解析服務、開放時間、Transit/Institution/SWIFT 編號 -> 寫入 /backend/data/vancouver_atm.geojson",
     "runner": "github_actions",
-    "workflow_file": "update-atm.yml",
+    "workflow_file": "update-banks.yml",
     "category": "生活",
     "source_links": [
       {
         "type": "web",
-        "label": "Bankee ATM 清冊",
+        "label": "Bankee 銀行清冊",
         "url": "https://bankee.ca/bc/vancouver/atm/"
       }
     ],

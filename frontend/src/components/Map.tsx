@@ -16,7 +16,7 @@ import {
   Navigation, ExternalLink, Clock, Bike, Car, Info, 
   ChevronDown, ChevronUp, SlidersHorizontal, Fuel, Zap, Wifi, Waves, Play, Pause, CloudRain,
   RotateCcw, RotateCw, MapPin, Crosshair, Activity, Ban, Cone, Lightbulb, Ship,
-  Camera, Gauge, Footprints, ArrowRight, Mail, AlertCircle, Radio, Anchor, CreditCard
+  Camera, Gauge, Footprints, ArrowRight, Mail, AlertCircle, Radio, Anchor, CreditCard, Landmark
 } from 'lucide-react';
 
 // Fix Next.js App Router Web Worker crash
@@ -4080,10 +4080,14 @@ export default function AppMap() {
         source: 'atm',
         minzoom: 14,
         layout: {
-          'text-field': '🏧',
+          'text-field': '$',
           'text-size': ['interpolate', ['linear'], ['zoom'], 14, 10, 17, 14],
+          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
           'text-allow-overlap': true,
           'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
         }
       });
     }
@@ -8411,7 +8415,7 @@ export default function AppMap() {
                   if (t === 'aed') return { label: 'AED 去顫器', bg: 'bg-red-600 text-white' };
                   if (t === 'community_centres') return { label: '社區中心', bg: 'bg-violet-600 text-white' };
                   if (t === 'canada_post') return { label: 'Canada Post', bg: 'bg-[#E31837] text-white' };
-                  if (t === 'atm') return { label: 'ATM', bg: 'bg-amber-500 text-white' };
+                  if (t === 'atm') return { label: '銀行', bg: 'bg-amber-500 text-white' };
                   if (t === 'public_art') return { label: '公共藝術', bg: 'bg-fuchsia-600 text-white' };
                   if (t === 'police') return { label: '警察', bg: 'bg-blue-600 text-white' };
                   if (t === 'fire_halls') return { label: '消防', bg: 'bg-rose-600 text-white' };
@@ -8529,6 +8533,9 @@ export default function AppMap() {
                       const block = selectedFacility.properties?.block;
                       if (street) return `${block ? block + ' ' : ''}${street}`.trim();
                       return '摩托車停車位';
+                    }
+                    if (selectedFacility.facility_type === 'atm') {
+                      return selectedFacility.properties?.bank_full_name || (selectedFacility.name || '').split(/—|–|-/)[0].trim() || '銀行';
                     }
                     if (selectedFacility.facility_type === 'drinking_fountains') {
                       const rawName = selectedFacility.properties?.name || selectedFacility.name || '';
@@ -9613,7 +9620,8 @@ export default function AppMap() {
                         rel="noopener noreferrer"
                         className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-lime-600 hover:bg-lime-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
                       >
-                        前往 Lime 官方網站 ↗
+                        <span>前往 Lime 官方網站</span>
+                        <ExternalLink className="w-3.5 h-3.5 ml-1" />
                       </a>
                     </div>
                   </div>
@@ -9717,7 +9725,8 @@ export default function AppMap() {
                           isModo ? 'bg-[#B91C1C] hover:bg-red-800' : 'bg-[#0284C7] hover:bg-sky-700'
                         }`}
                       >
-                        {isModo ? '前往 Modo 官方網頁 ↗' : '前往 Evo 官方網頁 ↗'}
+                        <span>{isModo ? '前往 Modo 官方網頁' : '前往 Evo 官方網頁'}</span>
+                        <ExternalLink className="w-3.5 h-3.5 ml-1" />
                       </a>
                     </div>
                   </div>
@@ -9794,7 +9803,8 @@ export default function AppMap() {
                         rel="noopener noreferrer"
                         className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-[#00A3AD] hover:bg-teal-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
                       >
-                        前往 Mobi 官方網站 ↗
+                        <span>前往 Mobi 官方網站</span>
+                        <ExternalLink className="w-3.5 h-3.5 ml-1" />
                       </a>
                     </div>
                   </div>
@@ -9932,7 +9942,8 @@ export default function AppMap() {
                         rel="noopener noreferrer"
                         className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-blue-600 hover:bg-blue-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
                       >
-                        前往 Vancouver Police Department 官方網頁 ↗
+                        <span>前往 Vancouver Police Department 官方網頁</span>
+                        <ExternalLink className="w-3.5 h-3.5 ml-1" />
                       </a>
                     </div>
                   )}
@@ -9967,13 +9978,14 @@ export default function AppMap() {
                       rel="noopener noreferrer"
                       className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-amber-600 hover:bg-amber-700 text-white rounded font-medium text-xs transition-colors shadow-sm text-center"
                     >
-                      查看溫哥華市政府災害中心專頁 ↗
+                      <span>查看溫哥華市政府災害中心專頁</span>
+                      <ExternalLink className="w-3.5 h-3.5 ml-1" />
                     </a>
                   </div>
                 </div>
               )}
 
-              {/* Bank ATMs (銀行櫃員機) Details */}
+              {/* Bank (銀行) Details */}
               {selectedFacility.facility_type === 'atm' && (() => {
                 const props = selectedFacility.properties || {};
                 const bankFullName = props.bank_full_name || '加拿大銀行';
@@ -9995,16 +10007,59 @@ export default function AppMap() {
                   openHours = {};
                 }
                 const daysList = [
-                  { key: 'monday', label: '週一 (Mon)', hours: openHours.monday },
-                  { key: 'tuesday', label: '週二 (Tue)', hours: openHours.tuesday },
-                  { key: 'wednesday', label: '週三 (Wed)', hours: openHours.wednesday },
-                  { key: 'thursday', label: '週四 (Thu)', hours: openHours.thursday },
-                  { key: 'friday', label: '週五 (Fri)', hours: openHours.friday },
-                  { key: 'saturday', label: '週六 (Sat)', hours: openHours.saturday },
-                  { key: 'sunday', label: '週日 (Sun)', hours: openHours.sunday }
+                  { key: 'monday', label: '週一', hours: openHours.monday },
+                  { key: 'tuesday', label: '週二', hours: openHours.tuesday },
+                  { key: 'wednesday', label: '週三', hours: openHours.wednesday },
+                  { key: 'thursday', label: '週四', hours: openHours.thursday },
+                  { key: 'friday', label: '週五', hours: openHours.friday },
+                  { key: 'saturday', label: '週六', hours: openHours.saturday },
+                  { key: 'sunday', label: '週日', hours: openHours.sunday }
                 ];
-                const curDowKey = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'][new Date().getDay()];
-                const todayHours = openHours[curDowKey] || (props.is_24_7 ? '24 小時營業' : '營業中');
+
+                // 溫哥華當地時間 (America/Vancouver)
+                const vancouverDays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+                const dayZhMap: Record<string, string> = {
+                  sunday: '週日',
+                  monday: '週一',
+                  tuesday: '週二',
+                  wednesday: '週三',
+                  thursday: '週四',
+                  friday: '週五',
+                  saturday: '週六'
+                };
+                let curDowKey = 'sunday';
+                let curMinutes = 0;
+                try {
+                  const parts = new Intl.DateTimeFormat('en-US', {
+                    timeZone: 'America/Vancouver',
+                    weekday: 'long',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    hour12: false
+                  }).formatToParts(new Date());
+                  const wd = parts.find(p => p.type === 'weekday')?.value?.toLowerCase() || '';
+                  if (vancouverDays.includes(wd)) curDowKey = wd;
+                  const h = parseInt(parts.find(p => p.type === 'hour')?.value || '0', 10);
+                  const m = parseInt(parts.find(p => p.type === 'minute')?.value || '0', 10);
+                  curMinutes = h * 60 + m;
+                } catch {
+                  curDowKey = vancouverDays[new Date().getDay()];
+                }
+
+                const todayHoursRaw = openHours[curDowKey];
+                let isOpenNow = false;
+                let todayDisplayStr = '休息';
+                if (todayHoursRaw && typeof todayHoursRaw === 'string' && todayHoursRaw.trim().length > 0 && !todayHoursRaw.toLowerCase().includes('closed') && !todayHoursRaw.includes('休息')) {
+                  todayDisplayStr = todayHoursRaw;
+                  const mTime = todayHoursRaw.match(/(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/);
+                  if (mTime) {
+                    const startMin = parseInt(mTime[1], 10) * 60 + parseInt(mTime[2], 10);
+                    const endMin = parseInt(mTime[3], 10) * 60 + parseInt(mTime[4], 10);
+                    if (curMinutes >= startMin && curMinutes < endMin) {
+                      isOpenNow = true;
+                    }
+                  }
+                }
 
                 return (
                   <div className="flex flex-col gap-2.5 text-xs">
@@ -10026,52 +10081,54 @@ export default function AppMap() {
                           </button>
                         )}
                       </div>
-                      <span className="text-[10px] text-amber-800 bg-amber-100/90 px-1.5 py-0.5 rounded font-medium border border-amber-300/60 shrink-0">
-                        {props.status_text || (props.is_24_7 ? '營業中 (24/7)' : '營業中')}
+                      <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium border shrink-0 ${
+                        isOpenNow ? 'text-emerald-800 bg-emerald-100/90 border-emerald-300/60' : 'text-amber-800 bg-amber-100/90 border-amber-300/60'
+                      }`}>
+                        {isOpenNow ? '營業中' : '休息中'}
                       </span>
                     </div>
 
-                    {/* 3.6 金黃色區塊下方的灰色區塊資料 (null 欄位不顯示) */}
+                    {/* 3.6 金黃色區塊下方的灰色區塊資料 */}
                     <div className="bg-gray-50/90 p-2.5 rounded-lg border border-gray-200/70 flex flex-col gap-2 text-[11px]">
-                      {/* 服務 (Services) */}
+                      {/* 服務項目 (已刪除英文 Services) */}
                       {services.length > 0 && (
                         <div className="flex flex-col gap-1">
-                          <span className="text-gray-500 font-medium text-[10px]">服務項目 (Services)</span>
+                          <span className="text-gray-500 font-medium text-[10px]">服務項目</span>
                           <div className="flex flex-wrap gap-1">
                             {services.map((srv: any, sIdx: number) => (
                               <span key={sIdx} className="text-[10px] bg-white border border-gray-200 px-1.5 py-0.5 rounded text-gray-700">
-                                {srv.trim()}
+                                {srv}
                               </span>
                             ))}
                           </div>
                         </div>
                       )}
 
-                      {/* 開放時間 (Opening Hours) */}
-                      <div className="flex flex-col gap-1">
-                        <div className="flex items-center justify-between text-gray-700">
-                          <span className="text-gray-500 font-medium text-[10px]">開放時間 (Hours)</span>
-                          <span className="font-mono font-bold text-gray-900 text-[10.5px]">
-                            {todayHours}
-                          </span>
-                        </div>
-                        {Object.keys(openHours).length > 0 && (
-                          <details className="group/sched text-[10.5px]">
-                            <summary className="text-gray-500 hover:text-gray-700 cursor-pointer flex items-center justify-between py-0.5 select-none">
-                              <span className="text-[10px]">查看每週各日時間表</span>
-                              <span className="text-[10px] text-gray-400 font-mono group-open/sched:rotate-180 transition-transform">▼</span>
-                            </summary>
-                            <div className="mt-1 pt-1 border-t border-gray-100 flex flex-col gap-1">
-                              {daysList.map(d => (
-                                <div key={d.key} className={`flex justify-between items-center py-0.5 px-1 rounded ${d.key === curDowKey ? 'bg-amber-50 text-amber-900 font-bold' : 'text-gray-600'}`}>
-                                  <span>{d.label}</span>
-                                  <span className="font-mono">{d.hours || (props.is_24_7 ? '24 Hours' : '休息')}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </details>
-                        )}
-                      </div>
+                      {/* 開放時間 (博物館相同風格，已刪除英文 Hours，且當日開放時間顯示在箭頭旁) */}
+                      {Object.keys(openHours).length > 0 && (
+                        <details className="group/sched">
+                          <summary className="flex justify-between items-center text-gray-700 cursor-pointer list-none hover:text-gray-900 py-0.5 select-none">
+                            <span className="text-gray-500 font-medium">開放時間</span>
+                            <span className="font-mono text-gray-900 font-semibold flex items-center gap-1">
+                              <span>{dayZhMap[curDowKey]}: {todayDisplayStr}</span>
+                              <span className="text-[9px] text-gray-400 group-open/sched:rotate-180 transition-transform">▼</span>
+                            </span>
+                          </summary>
+                          <div className="mt-1.5 pt-1.5 border-t border-gray-100 flex flex-col gap-1 text-[10.5px]">
+                            {daysList.map(d => (
+                              <div 
+                                key={d.key} 
+                                className={`flex justify-between items-center py-0.5 px-1 rounded ${
+                                  d.key === curDowKey ? 'bg-amber-50 text-amber-900 font-bold' : 'text-gray-600'
+                                }`}
+                              >
+                                <span>{d.label}</span>
+                                <span className="font-mono">{d.hours || '休息'}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </details>
+                      )}
 
                       {/* (分隔線) */}
                       {(props.transit_number || props.institution_number || props.routing_number || props.cheque_micr || props.swift_code) && (
@@ -10132,16 +10189,16 @@ export default function AppMap() {
                       )}
                     </div>
 
-                    {/* 3.7 底部加入銀行官方網頁按鈕 */}
+                    {/* 3.7 底部加入銀行官方網頁按鈕 (箭頭在尾端) */}
                     <div className="pt-0.5">
                       <a
                         href={officialUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-full py-2 px-3 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                        className="w-full py-2 px-3 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm cursor-pointer"
                       >
-                        <ExternalLink className="w-3.5 h-3.5" />
                         <span>前往 {bankFullName} 官方網頁</span>
+                        <ExternalLink className="w-3.5 h-3.5" />
                       </a>
                     </div>
                   </div>
@@ -10157,15 +10214,29 @@ export default function AppMap() {
 
                 const sched = props.schedule || {};
                 const days = [
-                  { key: 'mon', label: '週一 (Mon)', hours: sched.mon },
-                  { key: 'tue', label: '週二 (Tue)', hours: sched.tue },
-                  { key: 'wed', label: '週三 (Wed)', hours: sched.wed },
-                  { key: 'thu', label: '週四 (Thu)', hours: sched.thu },
-                  { key: 'fri', label: '週五 (Fri)', hours: sched.fri },
-                  { key: 'sat', label: '週六 (Sat)', hours: sched.sat },
-                  { key: 'sun', label: '週日 (Sun)', hours: sched.sun }
+                  { key: 'mon', label: '週一', hours: sched.mon },
+                  { key: 'tue', label: '週二', hours: sched.tue },
+                  { key: 'wed', label: '週三', hours: sched.wed },
+                  { key: 'thu', label: '週四', hours: sched.thu },
+                  { key: 'fri', label: '週五', hours: sched.fri },
+                  { key: 'sat', label: '週六', hours: sched.sat },
+                  { key: 'sun', label: '週日', hours: sched.sun }
                 ];
-                const curDow = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][new Date().getDay()];
+
+                // 溫哥華當地時間 (America/Vancouver)
+                const vancouverDaysCp = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+                let curDow = 'sun';
+                try {
+                  const parts = new Intl.DateTimeFormat('en-US', {
+                    timeZone: 'America/Vancouver',
+                    weekday: 'short'
+                  }).formatToParts(new Date());
+                  const wd = parts.find(p => p.type === 'weekday')?.value?.toLowerCase() || '';
+                  if (vancouverDaysCp.includes(wd)) curDow = wd;
+                } catch {
+                  curDow = vancouverDaysCp[new Date().getDay()];
+                }
+
                 const curDayObj = days.find(d => d.key === curDow) || days[0];
 
                 return (
@@ -10186,31 +10257,29 @@ export default function AppMap() {
 
                       <div className="w-full h-px bg-gray-200/80"></div>
 
-                      {/* 營業時間 */}
-                      <div className="flex flex-col gap-1.5">
-                        <div className="flex items-center justify-between text-gray-700">
+                      {/* 營業時間 (博物館相同風格，已刪除原本獨立行，當日營業時間顯示在箭頭旁) */}
+                      <details className="group/sched">
+                        <summary className="flex justify-between items-center text-gray-700 cursor-pointer list-none hover:text-gray-900 py-0.5 select-none">
                           <span className="text-gray-500 font-medium">營業時間</span>
-                          <span className="font-mono font-bold text-gray-900">
-                            {curDayObj.hours || '休息中 / 未營業'}
+                          <span className="font-mono text-gray-900 font-semibold flex items-center gap-1">
+                            <span>{curDayObj.label}: {curDayObj.hours || '休息'}</span>
+                            <span className="text-[9px] text-gray-400 group-open/sched:rotate-180 transition-transform">▼</span>
                           </span>
+                        </summary>
+                        <div className="mt-1.5 pt-1.5 border-t border-gray-100 flex flex-col gap-1 text-[10.5px]">
+                          {days.map(d => (
+                            <div 
+                              key={d.key} 
+                              className={`flex justify-between items-center py-0.5 px-1 rounded ${
+                                d.key === curDow ? 'bg-red-50 text-red-900 font-bold' : 'text-gray-600'
+                              }`}
+                            >
+                              <span>{d.label}</span>
+                              <span className="font-mono">{d.hours || '休息'}</span>
+                            </div>
+                          ))}
                         </div>
-
-                        {/* 週一至週日下拉展開 */}
-                        <details className="group/sched text-[10.5px]">
-                          <summary className="text-gray-500 hover:text-gray-700 cursor-pointer flex items-center justify-between py-0.5 select-none">
-                            <span className="text-[10px]">查看每週各日時間表</span>
-                            <span className="text-[10px] text-gray-400 font-mono group-open/sched:rotate-180 transition-transform">▼</span>
-                          </summary>
-                          <div className="mt-1 pt-1 border-t border-gray-100 flex flex-col gap-1">
-                            {days.map(d => (
-                              <div key={d.key} className={`flex justify-between items-center py-0.5 px-1 rounded ${d.key === curDow ? 'bg-red-50 text-red-900 font-bold' : 'text-gray-600'}`}>
-                                <span>{d.label}</span>
-                                <span className="font-mono">{d.hours || '未開放 / 休息'}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </details>
-                      </div>
+                      </details>
 
                       {formattedDate && (
                         <>
@@ -10223,16 +10292,16 @@ export default function AppMap() {
                       )}
                     </div>
 
-                    {/* 4.7 查看 Canada Post 其他分店 */}
+                    {/* 4.7 查看 Canada Post 其他分店 (箭頭在尾端) */}
                     <div className="pt-0.5">
                       <a
                         href="https://www.canadapost-postescanada.ca/cpc/en/tools/find-a-post-office.page?location=vancouver"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-full py-2 px-3 rounded-lg bg-[#E31837] hover:bg-[#c4142e] text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                        className="w-full py-2 px-3 rounded-lg bg-[#E31837] hover:bg-[#c4142e] text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm cursor-pointer"
                       >
-                        <ExternalLink className="w-3.5 h-3.5" />
                         <span>查看 Canada Post 其他分店</span>
+                        <ExternalLink className="w-3.5 h-3.5" />
                       </a>
                     </div>
                   </div>
@@ -10347,7 +10416,8 @@ export default function AppMap() {
                           rel="noopener noreferrer"
                           className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-violet-600 hover:bg-violet-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
                         >
-                          前往 {selectedFacility.name || props.name || '社區中心'} 官方網頁 ↗
+                          <span>前往 {selectedFacility.name || props.name || '社區中心'} 官方網頁</span>
+                          <ExternalLink className="w-3.5 h-3.5 ml-1" />
                         </a>
                       </div>
                     )}
@@ -10496,7 +10566,8 @@ export default function AppMap() {
                           rel="noopener noreferrer"
                           className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-slate-700 hover:bg-slate-800 text-white rounded font-medium text-xs transition-colors shadow-sm text-center"
                         >
-                          前往 {museumName} 官方網頁 ↗
+                          <span>前往 {museumName} 官方網頁</span>
+                          <ExternalLink className="w-3.5 h-3.5 ml-1" />
                         </a>
                       </div>
                     )}
@@ -10638,7 +10709,8 @@ export default function AppMap() {
                         rel="noopener noreferrer"
                         className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-orange-600 hover:bg-orange-700 text-white rounded font-medium text-xs transition-colors shadow-sm text-center"
                       >
-                        前往 廢物回收時間表 官方網頁 ↗
+                        <span>前往 廢物回收時間表 官方網頁</span>
+                          <ExternalLink className="w-3.5 h-3.5 ml-1" />
                       </a>
                     </div>
                   </div>
@@ -10725,7 +10797,8 @@ export default function AppMap() {
                               rel="noopener noreferrer"
                               className="w-full py-1.5 px-3 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
                             >
-                              <span>前往 DriveBC 官方攝影機網頁 ↗</span>
+                              <span>前往 DriveBC 官方攝影機網頁</span>
+                          <ExternalLink className="w-3.5 h-3.5 ml-1" />
                             </a>
                           </div>
                         )}
@@ -10892,7 +10965,8 @@ export default function AppMap() {
                           hasSpeed ? 'bg-[#991B1B] hover:bg-red-900' : 'bg-[#DC2626] hover:bg-red-700'
                         }`}
                       >
-                        前往 RoadSafetyBC 官方網頁 ↗
+                        <span>前往 RoadSafetyBC 官方網頁</span>
+                          <ExternalLink className="w-3.5 h-3.5 ml-1" />
                       </a>
                     </div>
                   </div>
@@ -11056,7 +11130,8 @@ export default function AppMap() {
                           rel="noopener noreferrer"
                           className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
                         >
-                          前往 {selectedFacility.properties?.short_name || selectedFacility.name} 官方網頁 ↗
+                          <span>前往 {selectedFacility.properties?.short_name || selectedFacility.name} 官方網頁</span>
+                          <ExternalLink className="w-3.5 h-3.5 ml-1" />
                         </a>
                       </div>
                     )}
@@ -11112,7 +11187,8 @@ export default function AppMap() {
                       rel="noopener noreferrer"
                       className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
                     >
-                      前往 Vancouver Board of Parks and Recreation 官方網頁 ↗
+                      <span>前往 Vancouver Board of Parks and Recreation 官方網頁</span>
+                          <ExternalLink className="w-3.5 h-3.5 ml-1" />
                     </a>
                   </div>
                 </div>
@@ -11218,7 +11294,8 @@ export default function AppMap() {
                         rel="noopener noreferrer"
                         className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-lime-600 hover:bg-lime-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
                       >
-                        前往社區花園官方網頁 ↗
+                        <span>前往社區花園官方網頁</span>
+                          <ExternalLink className="w-3.5 h-3.5 ml-1" />
                       </a>
                     </div>
                   )}
@@ -11450,7 +11527,8 @@ export default function AppMap() {
                           rel="noopener noreferrer"
                           className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-blue-600 hover:bg-blue-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
                         >
-                          前往 {schoolName} 官方網頁 ↗
+                          <span>前往 {schoolName} 官方網頁</span>
+                          <ExternalLink className="w-3.5 h-3.5 ml-1" />
                         </a>
                       </div>
                     )}
@@ -11555,7 +11633,8 @@ export default function AppMap() {
                           rel="noopener noreferrer"
                           className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-amber-600 hover:bg-amber-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
                         >
-                          前往 Vancouver Public Library 官方網頁 ↗
+                          <span>前往 Vancouver Public Library 官方網頁</span>
+                          <ExternalLink className="w-3.5 h-3.5 ml-1" />
                         </a>
                       </div>
                     )}
@@ -11686,7 +11765,7 @@ export default function AppMap() {
                               rel="noopener noreferrer" 
                               className="font-semibold text-rose-600 hover:underline"
                             >
-                              前往官方網站 ↗
+                              <span>前往官方網站</span><ExternalLink className="w-3 h-3 ml-1 inline" />
                             </a>
                           </div>
                         )}
@@ -11798,7 +11877,8 @@ export default function AppMap() {
                           rel="noopener noreferrer"
                           className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
                         >
-                          前往 食物援助機構 官方網頁 ↗
+                          <span>前往 食物援助機構 官方網頁</span>
+                          <ExternalLink className="w-3.5 h-3.5 ml-1" />
                         </a>
                       </div>
                     )}
@@ -11989,7 +12069,8 @@ export default function AppMap() {
                           rel="noopener noreferrer"
                           className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
                         >
-                          前往 {isZeroWaste ? 'Vancouver Zero Waste Centre' : 'Return-It'} 官方網頁 ↗
+                          <span>前往 {isZeroWaste ? 'Vancouver Zero Waste Centre' : 'Return-It'} 官方網頁</span>
+                          <ExternalLink className="w-3.5 h-3.5 ml-1" />
                         </a>
                       </div>
                     )}
@@ -12037,7 +12118,8 @@ export default function AppMap() {
                         rel="noopener noreferrer"
                         className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-red-600 hover:bg-red-700 text-white rounded font-medium text-xs transition-colors shadow-xs"
                       >
-                        前往 BC PAD 心臟去顫器登記計畫 ↗
+                        <span>前往 BC PAD 心臟去顫器登記計畫</span>
+                        <ExternalLink className="w-3.5 h-3.5 ml-1" />
                       </a>
                     </div>
                   </div>
@@ -12083,7 +12165,8 @@ export default function AppMap() {
                       rel="noopener noreferrer"
                       className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-teal-700 hover:bg-teal-800 text-white rounded font-medium text-xs transition-colors shadow-sm"
                     >
-                      查看溫哥華開放資料等高線圖資 ↗
+                      <span>查看溫哥華開放資料等高線圖資</span>
+                      <ExternalLink className="w-3.5 h-3.5 ml-1" />
                     </a>
                   </div>
                 </div>
@@ -14204,7 +14287,7 @@ export default function AppMap() {
           { id: 'beach', label: '泳灘', icon: Waves, color: 'text-teal-300' },
           { id: 'ski', label: '滑雪', icon: Navigation, color: 'text-cyan-400' },
           { id: 'aurora', label: '極光', icon: Zap, color: 'text-fuchsia-400' },
-          { id: 'atm', label: 'ATM', icon: CreditCard, color: 'text-amber-400' },
+          { id: 'atm', label: '銀行', icon: Landmark, color: 'text-amber-400' },
           { id: 'fuel', label: '油站', icon: Fuel, color: 'text-amber-500' },
           { id: 'ev', label: '充電', icon: Zap, color: 'text-yellow-400' },
           { id: 'alerts', label: '即時通報', icon: AlertCircle, color: 'text-rose-400' },
