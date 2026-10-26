@@ -1,9 +1,9 @@
-name: Update 交通燈 (Traffic Signals) (每3個月)
+name: Update 交通燈 (每半年) (每3個月)
 
 on:
   schedule:
     # 每 3 個月執行一次 (1, 4, 7, 10 月 1 號 00:00 UTC)
-    - cron: '0 0 1 */3 *'
+    - cron: '0 0 1 */6 *'
   workflow_dispatch:
 
 concurrency:
