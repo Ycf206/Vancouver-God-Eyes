@@ -1,0 +1,43 @@
+name: Update 共享單車 (Mobi Shared Bikes) (每小時)
+
+on:
+  schedule:
+    # 每小時整點執行 (UTC)
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: update-shared-bikes
+  cancel-in-progress: true
+
+jobs:
+  update-shared-bikes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install requests
+
+      - name: Run Mobi 共享單車 update script
+        run: |
+          python backend/scripts/layers/update_shared_bikes.py
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add backend/data/vancouver_shared_bikes.geojson frontend/public/vancouver_shared_bikes.geojson
+          if git diff --staged --quiet; then
+            echo "No changes detected"
+          else
+            git commit -m "chore(data): auto-update Mobi 共享單車 (Shared Bikes) [skip ci]"
+            git push
+          fi

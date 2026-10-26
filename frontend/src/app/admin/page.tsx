@@ -344,13 +344,19 @@ export default function AdminPage() {
     path: string, 
     options: RequestInit = {}
   ): Promise<{ ok: boolean; data?: T; error?: string; status?: number }> => {
+    const adminSecret = process.env.NEXT_PUBLIC_ADMIN_API_SECRET || (typeof window !== 'undefined' ? (localStorage.getItem('vancouver_godseye_admin_token') || sessionStorage.getItem('vancouver_godseye_admin_token')) : '') || '';
     const tryFetch = async (url: string) => {
+      const customHeaders: Record<string, string> = {
+        'Content-Type': 'application/json',
+        ...(options.headers as Record<string, string> || {})
+      };
+      if (adminSecret) {
+        customHeaders['X-Admin-Token'] = adminSecret;
+        customHeaders['Authorization'] = `Bearer ${adminSecret}`;
+      }
       return await fetch(url, {
         ...options,
-        headers: {
-          'Content-Type': 'application/json',
-          ...(options.headers || {})
-        }
+        headers: customHeaders
       });
     };
 

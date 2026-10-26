@@ -3552,8 +3552,8 @@ export default function AppMap() {
         source: 'accessible-parking',
         minzoom: 13,
         layout: {
-          'text-field': '♿',
-          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 8, 15, 11, 17, 14],
+          'text-field': 'HC',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 7.5, 15, 9.5, 17, 12],
           'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
           'text-allow-overlap': true,
           'text-ignore-placement': true
@@ -4363,10 +4363,14 @@ export default function AppMap() {
         filter: ['!', ['has', 'point_count']],
         minzoom: 13,
         layout: {
-          'text-field': '📶',
-          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 9, 15, 12, 17, 15],
+          'text-field': 'WiFi',
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 7.0, 15, 8.5, 17, 11],
+          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
           'text-allow-overlap': true,
           'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
         }
       });
     }
@@ -4734,7 +4738,7 @@ export default function AppMap() {
         source: 'food-vendors',
         minzoom: 13,
         layout: {
-          'text-field': '🤝',
+          'text-field': '🍴',
           'text-size': ['interpolate', ['linear'], ['zoom'], 13, 8, 15, 11, 17, 14],
           'text-allow-overlap': true,
           'text-ignore-placement': true

@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Depends, WebSocket, WebSocketDisconnect, BackgroundTasks, Body
+from fastapi import FastAPI, Depends, WebSocket, WebSocketDisconnect, BackgroundTasks, Body, Request
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 import asyncio
@@ -31,6 +32,37 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.middleware("http")
+async def verify_admin_api_token(request: Request, call_next):
+    """
+    後端 API 嚴格校驗 (防禦外部直接呼叫 API):
+    針對 /api/admin/* 路由，若後端 .env 設定了 ADMIN_API_SECRET，
+    要求請求必須攜帶正確之 X-Admin-Token 或 Authorization: Bearer <token> 密鑰，
+    否則一律嚴格攔截並回傳 403 Forbidden。
+    """
+    if request.url.path.startswith("/api/admin"):
+        # 允許 CORS 預檢請求 OPTIONS 正常通過
+        if request.method == "OPTIONS":
+            return await call_next(request)
+
+        admin_secret = os.environ.get("ADMIN_API_SECRET", "").strip()
+        if admin_secret:
+            x_token = request.headers.get("X-Admin-Token", "").strip()
+            auth_header = request.headers.get("Authorization", "").strip()
+            bearer_token = ""
+            if auth_header.startswith("Bearer "):
+                bearer_token = auth_header[7:].strip()
+
+            if x_token != admin_secret and bearer_token != admin_secret:
+                return JSONResponse(
+                    status_code=403,
+                    content={
+                        "status": "error",
+                        "detail": "403 Forbidden: 未攜帶有效之管理員密鑰 (X-Admin-Token 或 Bearer Token 驗證失敗)。"
+                    }
+                )
+    return await call_next(request)
 
 # WebSocket connection manager
 active_connections: list[WebSocket] = []

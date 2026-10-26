@@ -1098,18 +1098,23 @@
       "unit": "處站點與可用車位",
       "last_updated": "2026-10-25T17:57:21.406Z",
       "status": "ok",
-      "data_pipeline_notes": "Mobi GBFS 實時公開資料流 -> 每小時更新各站可租借單車與空位數 -> 寫入 /backend/data/vancouver_shared_bikes.geojson",
+      "data_pipeline_notes": "Mobi Entities API 取得站點位置 -> 配合各站 Station Detail API 即時更新單車與還車槽數 -> 寫入 /backend/data/vancouver_shared_bikes.geojson",
       "runner": "github_actions",
       "workflow_file": "update-micromobility-hourly.yml",
       "category": "道路",
       "source_links": [
         {
           "type": "api",
-          "label": "Mobi GBFS API",
-          "url": "https://vancouver-gbfs.bcycle.com/bcycle_vancouver/gbfs.json"
+          "label": "Mobi 車站位置 API (Entities)",
+          "url": "https://www.mobibikes.ca/api/client/entities"
+        },
+        {
+          "type": "api",
+          "label": "Mobi 即時車位詳情 API (Stations Detail)",
+          "url": "https://www.mobibikes.ca/api/client/entities/stations/{id}"
         }
       ],
-      "source_url": "https://vancouver-gbfs.bcycle.com/bcycle_vancouver/gbfs.json"
+      "source_url": "https://www.mobibikes.ca/api/client/entities"
     },
     {
       "id": "escooter",
@@ -1121,18 +1126,23 @@
       "unit": "處滑板車站點",
       "last_updated": "2026-10-25T17:57:21.406Z",
       "status": "ok",
-      "data_pipeline_notes": "Lime GBFS 實時公開資料流 -> 每小時更新各站滑板車位置與可用狀態 -> 寫入 /backend/data/vancouver_escooter.geojson",
+      "data_pipeline_notes": "Lime 外部查詢代理 API -> 取得站點資訊與即時可用滑板車/還車槽數 -> 寫入 /backend/data/vancouver_escooter.geojson",
       "runner": "github_actions",
       "workflow_file": "update-micromobility-hourly.yml",
       "category": "道路",
       "source_links": [
         {
           "type": "api",
-          "label": "Lime GBFS API",
-          "url": "https://data.lime.biz/"
+          "label": "Lime 站點位置 API (Information)",
+          "url": "https://www.li.me/externalBikesQuery.php?bikeDataUrl=https%3A%2F%2Fdata.lime.bike%2Fapi%2Fpartners%2Fv1%2Fgbfs%2Fvancouver_bc%2Fstation_information.json"
+        },
+        {
+          "type": "api",
+          "label": "Lime 即時車輛與還車空間 API (Status)",
+          "url": "https://www.li.me/externalBikesQuery.php?bikeDataUrl=https%3A%2F%2Fdata.lime.bike%2Fapi%2Fpartners%2Fv2%2Fgbfs%2Fvancouver_bc%2Fstation_status.json"
         }
       ],
-      "source_url": "https://data.lime.biz/"
+      "source_url": "https://www.li.me/externalBikesQuery.php?bikeDataUrl=https%3A%2F%2Fdata.lime.bike%2Fapi%2Fpartners%2Fv1%2Fgbfs%2Fvancouver_bc%2Fstation_information.json"
     },
     {
       "id": "truck_routes",

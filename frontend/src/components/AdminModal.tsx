@@ -151,12 +151,22 @@ export default function AdminModal() {
     }
   };
 
+  const getAdminHeaders = () => {
+    const adminSecret = process.env.NEXT_PUBLIC_ADMIN_API_SECRET || (typeof window !== 'undefined' ? (localStorage.getItem('vancouver_godseye_admin_token') || sessionStorage.getItem('vancouver_godseye_admin_token')) : '') || '';
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (adminSecret) {
+      headers['X-Admin-Token'] = adminSecret;
+      headers['Authorization'] = `Bearer ${adminSecret}`;
+    }
+    return headers;
+  };
+
   // Fetch sources and logs from backend
   const fetchAdminData = React.useCallback(async () => {
     setLoading(true);
     try {
       const apiUrl = getApiUrl();
-      const res = await fetch(`${apiUrl}/api/admin/sources`);
+      const res = await fetch(`${apiUrl}/api/admin/sources`, { headers: getAdminHeaders() });
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data.sources)) {
@@ -216,7 +226,7 @@ export default function AdminModal() {
       const apiUrl = getApiUrl();
       const res = await fetch(`${apiUrl}/api/admin/sources/sync`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAdminHeaders(),
         body: JSON.stringify({ source_id: sourceId })
       });
       if (res.ok) {
@@ -235,7 +245,8 @@ export default function AdminModal() {
     try {
       const apiUrl = getApiUrl();
       const res = await fetch(`${apiUrl}/api/admin/sources/sync_all`, {
-        method: 'POST'
+        method: 'POST',
+        headers: getAdminHeaders()
       });
       if (res.ok) {
         await fetchAdminData();
@@ -256,7 +267,7 @@ export default function AdminModal() {
       const apiUrl = getApiUrl();
       const res = await fetch(`${apiUrl}/api/admin/sources/schedule`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAdminHeaders(),
         body: JSON.stringify({
           source_id: sourceId,
           interval: item.interval,

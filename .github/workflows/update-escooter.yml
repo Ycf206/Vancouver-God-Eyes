@@ -1,0 +1,43 @@
+name: Update 共享滑板車 (Lime E-Scooters) (每小時)
+
+on:
+  schedule:
+    # 每小時整點執行 (UTC)
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: update-escooter
+  cancel-in-progress: true
+
+jobs:
+  update-escooter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install requests
+
+      - name: Run Lime 共享滑板車 update script
+        run: |
+          python backend/scripts/layers/update_escooter.py
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add backend/data/vancouver_escooter.geojson frontend/public/vancouver_escooter.geojson
+          if git diff --staged --quiet; then
+            echo "No changes detected"
+          else
+            git commit -m "chore(data): auto-update Lime 共享滑板車 (E-Scooters) [skip ci]"
+            git push
+          fi
