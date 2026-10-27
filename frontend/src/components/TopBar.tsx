@@ -174,7 +174,7 @@ export default function TopBar() {
         <span className="hidden sm:inline">圖層</span>
       </button>
 
-      <div className="h-8 w-px bg-gray-700/60 mx-2"></div>
+      <div className="hidden sm:block h-8 w-px bg-gray-700/60 mx-2"></div>
 
       {/* 時間與狀態 */}
       <div className="hidden md:flex flex-col justify-center mx-1.5 shrink-0">
@@ -201,7 +201,7 @@ export default function TopBar() {
       </button>
 
       {/* 搜尋列 (緊隨大溫地區) */}
-      <div ref={searchContainerRef} className="relative flex-1 max-w-[650px] ml-2.5 mr-3 sm:mr-4">
+      <div ref={searchContainerRef} className="relative flex-1 min-w-0 max-w-[650px] ml-1.5 sm:ml-2.5 mr-2 sm:mr-4">
         <div className="flex items-center bg-[#25262b] border border-[#373a40] rounded-md px-3 h-9 focus-within:border-emerald-500/70 focus-within:ring-1 focus-within:ring-emerald-500/30 transition-all shadow-inner">
           <Search className="w-4 h-4 text-gray-400 mr-2 shrink-0" />
           <input 
@@ -356,14 +356,14 @@ export default function TopBar() {
                   className="w-full px-3.5 py-2 flex items-center gap-2.5 text-gray-200 hover:bg-[#262832] transition-colors text-left"
                 >
                   <Download className="w-4 h-4 text-cyan-400 shrink-0" />
-                  <span>匯出純淨地圖/圖資</span>
+                  <span>匯出</span>
                 </button>
                 <button
                   onClick={() => { setIsDonateModalOpen(true); setIsMobileMenuOpen(false); }}
                   className="w-full px-3.5 py-2 flex items-center gap-2.5 text-gray-200 hover:bg-[#262832] transition-colors text-left"
                 >
                   <Heart className="w-4 h-4 text-rose-400 shrink-0" />
-                  <span>贊助支持我們</span>
+                  <span>贊助</span>
                 </button>
               </div>
 
@@ -373,14 +373,14 @@ export default function TopBar() {
                   className="w-full px-3.5 py-2 flex items-center gap-2.5 text-gray-200 hover:bg-[#262832] transition-colors text-left"
                 >
                   <History className="w-4 h-4 text-sky-400 shrink-0" />
-                  <span>系統更新日誌</span>
+                  <span>更新日誌</span>
                 </button>
                 <button
                   onClick={() => { setIsReportModalOpen(true); setIsMobileMenuOpen(false); }}
                   className="w-full px-3.5 py-2 flex items-center gap-2.5 text-gray-200 hover:bg-[#262832] transition-colors text-left"
                 >
                   <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
-                  <span>回報問題與建議</span>
+                  <span>回報問題</span>
                 </button>
               </div>
 
@@ -390,14 +390,7 @@ export default function TopBar() {
                   className="w-full px-3.5 py-2 flex items-center gap-2.5 text-gray-200 hover:bg-[#262832] transition-colors text-left"
                 >
                   <Settings className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>系統偏好設定</span>
-                </button>
-                <button
-                  onClick={() => { setIsAuthModalOpen(true); setIsMobileMenuOpen(false); }}
-                  className="w-full px-3.5 py-2 flex items-center gap-2.5 text-gray-200 hover:bg-[#262832] transition-colors text-left"
-                >
-                  <User className="w-4 h-4 text-blue-400 shrink-0" />
-                  <span>會員登入帳號</span>
+                  <span>設定</span>
                 </button>
               </div>
             </div>
@@ -467,17 +460,6 @@ export default function TopBar() {
           <Settings className="w-4 h-4 text-gray-400 group-hover:text-emerald-400 group-hover:rotate-45 transition-transform shrink-0" />
           <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[80px] group-hover:opacity-100 group-hover:ml-1.5 transition-all duration-300 whitespace-nowrap hidden sm:inline">
             設定
-          </span>
-        </button>
-        {/* 帳號登入按鈕 (位於設定按鈕右方) */}
-        <button 
-          onClick={() => setIsAuthModalOpen(true)}
-          className="flex items-center justify-center group h-9 px-2.5 bg-[#25262b] hover:bg-[#2c2d33] border border-[#373a40] hover:border-blue-500/50 rounded-md transition-all shadow-sm text-gray-300 hover:text-blue-400 text-xs font-semibold select-none" 
-          title="會員帳號 / Google 登入"
-        >
-          <User className="w-4 h-4 text-gray-400 group-hover:text-blue-400 transition-colors shrink-0" />
-          <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[80px] group-hover:opacity-100 group-hover:ml-1.5 transition-all duration-300 whitespace-nowrap hidden sm:inline">
-            帳號
           </span>
         </button>
         </div>

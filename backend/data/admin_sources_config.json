@@ -298,23 +298,65 @@
       "source_url": "https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json"
     },
     {
-      "id": "public_events",
-      "name": "溫哥華市區大型活動與節慶",
+      "id": "vancouver_news",
+      "name": "大溫即時新聞快訊 (News Feeds)",
       "type": "api",
-      "cron_expr": "0 */12 * * *",
-      "schedule_interval": "每 12 小時",
-      "record_count": 42,
-      "unit": "場文娛體育市政活動",
-      "last_updated": "2026-10-24T12:00:00Z",
+      "cron_expr": "*/30 * * * *",
+      "schedule_interval": "每 30 分鐘",
+      "record_count": 96,
+      "unit": "則即時新聞快訊",
+      "last_updated": "2026-10-26T18:30:00Z",
       "status": "ok",
-      "data_pipeline_notes": "溫哥華旅遊局 (Destination Vancouver) 與市府活動日曆 RSS/API -> 擷取活動標題、地點坐標、時間段與簡介 -> 地圖關聯活動主場館並標記交通提示",
+      "data_pipeline_notes": "整合 CTV News Vancouver、CBC News Canada、604 Now、CityNews Vancouver、Global News BC、Daily Hive 與 The Georgia Straight 之多來源 RSS 即時新聞流 -> 自動過濾非本地新聞與重複項目 -> 依時效性排序與繁體中文在地化標籤分類 -> 寫入快取供探索面板即時瀏覽與官方連結閱讀",
       "runner": "oci",
       "category": "生活",
       "workflow_file": null,
       "source_links": [
         {
-          "label": "OpenData 節慶活動",
-          "url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/special-events/records/"
+          "label": "CTV News Vancouver",
+          "url": "https://www.ctvnews.ca/vancouver/"
+        },
+        {
+          "label": "CBC News Canada",
+          "url": "https://www.cbc.ca/news/canada"
+        },
+        {
+          "label": "CityNews Vancouver",
+          "url": "https://vancouver.citynews.ca/"
+        },
+        {
+          "label": "Daily Hive Vancouver",
+          "url": "https://dailyhive.com/vancouver"
+        }
+      ],
+      "source_url": "https://www.ctvnews.ca/vancouver/"
+    },
+    {
+      "id": "public_events",
+      "name": "溫哥華活動情報與節慶 (Events)",
+      "type": "api",
+      "cron_expr": "0 */4 * * *",
+      "schedule_interval": "每 4 小時",
+      "record_count": 42,
+      "unit": "場文娛體育市政活動",
+      "last_updated": "2026-10-24T12:00:00Z",
+      "status": "ok",
+      "data_pipeline_notes": "整合 Daily Hive Vancouver (listed/events)、Eventbrite 溫哥華精選活動與 Destination Vancouver (溫哥華旅遊局) 官方活動資訊庫 -> 智能解析活動時段、地點坐標、票價類型、主辦單位與官方購票連結 -> 提供今日/本週末/日期範圍多維度篩選與一鍵地圖定位",
+      "runner": "oci",
+      "category": "生活",
+      "workflow_file": null,
+      "source_links": [
+        {
+          "label": "Daily Hive Listed Events",
+          "url": "https://dailyhive.com/vancouver/listed/events"
+        },
+        {
+          "label": "Eventbrite Vancouver",
+          "url": "https://www.eventbrite.ca/d/canada--vancouver/all-events/"
+        },
+        {
+          "label": "Destination Vancouver Events",
+          "url": "https://www.destinationvancouver.com/events/"
         }
       ],
       "source_url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/special-events/records/"

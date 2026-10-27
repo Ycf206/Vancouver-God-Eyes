@@ -66,13 +66,31 @@ export default function LayerPanel() {
     contourInterval, setContourInterval
   } = useUIStore();
 
-  const [collapsedCategories, setCollapsedCategories] = React.useState<Record<string, boolean>>({});
+  const [collapsedCategories, setCollapsedCategories] = React.useState<Record<string, boolean>>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('vancouver_layer_collapsed_categories');
+        if (saved) return JSON.parse(saved);
+      } catch (e) {
+        console.error('Failed to parse collapsedCategories from localStorage', e);
+      }
+    }
+    return {};
+  });
 
   const toggleCategory = (catId: string) => {
-    setCollapsedCategories(prev => ({
-      ...prev,
-      [catId]: !prev[catId]
-    }));
+    setCollapsedCategories(prev => {
+      const next = {
+        ...prev,
+        [catId]: !prev[catId]
+      };
+      try {
+        localStorage.setItem('vancouver_layer_collapsed_categories', JSON.stringify(next));
+      } catch (e) {
+        console.error('Failed to save collapsedCategories to localStorage', e);
+      }
+      return next;
+    });
   };
 
   const activeLayerCount = React.useMemo(() => {

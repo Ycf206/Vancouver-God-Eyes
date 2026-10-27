@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, WebSocket, WebSocketDisconnect, BackgroundTasks, Body, Request
+from fastapi import FastAPI, Depends, WebSocket, WebSocketDisconnect, BackgroundTasks, Body, Request, Response
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
@@ -950,6 +950,47 @@ def get_translink_alerts(force: bool = False):
     """
     import translink_service
     return translink_service.get_translink_alerts(force=force)
+
+
+
+@app.post("/api/jobs/search")
+async def jobs_search_proxy(payload: dict = Body(...)):
+    """
+    Proxy for WorkBC JobSearch API.
+    """
+    try:
+        resp = requests.post(
+            "https://dev-api-jobboard.workbc.ca/api/Search/JobSearch",
+            json=payload,
+            headers={
+                "Content-Type": "application/json",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+            },
+            timeout=15,
+        )
+        return Response(content=resp.content, status_code=resp.status_code, media_type="application/json")
+    except Exception as e:
+        logger.error(f"Error proxying WorkBC job search: {e}")
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
+
+@app.get("/api/jobs/detail")
+async def jobs_detail_proxy(jobId: str):
+    """
+    Proxy for WorkBC GetJobDetail API.
+    """
+    try:
+        resp = requests.get(
+            f"https://workbc-jb.a55eb5-prod.stratus.cloud.gov.bc.ca/api/Search/GetJobDetail?jobId={jobId}",
+            headers={
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+            },
+            timeout=15,
+        )
+        return Response(content=resp.content, status_code=resp.status_code, media_type="application/json")
+    except Exception as e:
+        logger.error(f"Error proxying WorkBC job detail: {e}")
+        return JSONResponse(status_code=500, content={"error": str(e)})
 
 
 @app.get("/api/traffic/summary")

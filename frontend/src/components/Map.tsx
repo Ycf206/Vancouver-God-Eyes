@@ -16,8 +16,21 @@ import {
   Navigation, ExternalLink, Clock, Bike, Car, Info, 
   ChevronDown, ChevronUp, SlidersHorizontal, Fuel, Zap, Wifi, Waves, Play, Pause, CloudRain,
   RotateCcw, RotateCw, MapPin, Crosshair, Activity, Ban, Cone, Lightbulb, Ship,
-  Camera, Gauge, Footprints, ArrowRight, Mail, AlertCircle, Radio, Anchor, CreditCard, Landmark, Truck, Map as MapIcon
+  Camera, Gauge, Footprints, ArrowRight, Mail, AlertCircle, Radio, Anchor, CreditCard, Landmark, Truck, Map as MapIcon, Briefcase
 } from 'lucide-react';
+
+function formatJobDateTime(isoStr?: string, timeFormat: '12h' | '24h' = '24h', timeZone: string = 'America/Vancouver'): string {
+  if (!isoStr) return '';
+  try {
+    const d = new Date(isoStr);
+    if (isNaN(d.getTime())) return isoStr;
+    const datePart = d.toLocaleDateString('en-CA', { timeZone, year: 'numeric', month: '2-digit', day: '2-digit' });
+    const hours = d.toLocaleTimeString('en-US', { timeZone, hour12: timeFormat === '12h', hour: '2-digit', minute: '2-digit' });
+    return `${datePart} ${hours}`;
+  } catch {
+    return isoStr;
+  }
+}
 
 // Fix Next.js App Router Web Worker crash
 if (typeof window !== 'undefined') {
@@ -483,9 +496,20 @@ export default function AppMap() {
     isRadarActive, setIsRadarActive,
     radarFrameTime, radarHost, radarTilePath,
     stationAlertsMap, transitAlertsList, setTransitAlertsList,
-    timeZone
+    timeZone,
+    navigationAddress,
+    activeJobSkillModal,
+    setActiveJobSkillModal
   } = useUIStore();
   const mapRef = useRef<MapRef>(null);
+
+  const getGoogleNavUrl = (destLat: number, destLon: number) => {
+    const base = `https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLon}`;
+    if (navigationAddress && navigationAddress.trim()) {
+      return `${base}&origin=${encodeURIComponent(navigationAddress.trim())}`;
+    }
+    return base;
+  };
 
   const [selectedStationAlertMarker, setSelectedStationAlertMarker] = useState<{
     name: string;
@@ -605,6 +629,7 @@ export default function AppMap() {
   const [bikewaysLegendOpen, setBikewaysLegendOpen] = useState(true);
   const [truckRoutesPanelOpen, setTruckRoutesPanelOpen] = useState(true);
   const [isTruckRouteMapModalOpen, setIsTruckRouteMapModalOpen] = useState(false);
+  const [isTruckMapImgLoaded, setIsTruckMapImgLoaded] = useState(false);
   const [carSharingFilter, setCarSharingFilter] = useState<{ evo: boolean; modo: boolean }>({ evo: true, modo: true });
   const [bikewaysFilter, setBikewaysFilter] = useState<Record<string, boolean>>({
     'Protected Bike Lanes': true,
@@ -11081,35 +11106,349 @@ export default function AppMap() {
                     <div className="flex flex-col gap-1.5">
                       {restrictions.length > 0 ? (
                         restrictions.map((r, i) => {
-                          // 3.3 移除 (EB), (SB), (WB), (NB) 等英文代碼
+                          // 3.3 移除 (EB), (SB), (WB), (NB) 等英文代碼，並將公車改為巴士
                           const cleanLabel = (r.label || '轉向管制')
                             .replace(/\s*\([A-Za-z0-9\s/,-]+\)/g, '')
+                            .replace(/公車/g, '巴士')
                             .trim();
 
-                          // 3.3 移除說明中的所有英文註解與純英文代號
-                          const cleanDecoded = (r.decoded || r.raw || '')
+                          // 3.3 移除說明中的所有英文註解與純英文代號，並將公車改為巴士
+                          let cleanDecoded = (r.decoded || r.raw || '')
                             .replace(/\s*\([A-Za-z0-9\s/:,-]+\)/g, '')
                             .replace(/\b(?:ExBike|ExBus|ExT|ExTx|NLT|NRT|EB|WB|NB|SB)\b/gi, '')
+                            .replace(/公車/g, '巴士')
                             .replace(/\s+/g, ' ')
                             .trim();
 
+                          // 時間統一為 xx:xx 格式並依設定 12/24 小時制顯示
+                          cleanDecoded = cleanDecoded.replace(/\b(\d{1,2}):(\d{2})\b/g, (_match, hStr, mStr) => {
+                            const h = parseInt(hStr, 10);
+                            if (timeFormat === '12h') {
+                              const ampm = h >= 12 ? 'PM' : 'AM';
+                              const h12 = h % 12 === 0 ? 12 : h % 12;
+                              return `${String(h12).padStart(2, '0')}:${mStr} ${ampm}`;
+                            } else {
+                              return `${String(h).padStart(2, '0')}:${mStr}`;
+                            }
+                          });
+
                           return (
-                            <div key={i} className="p-2.5 bg-gray-50 rounded-lg border border-gray-100 flex flex-col gap-1 text-[11px]">
-                              <div className="text-gray-900 font-semibold text-xs">
+                            <div key={i} className="p-2.5 bg-gray-50 rounded-lg border border-gray-100 flex flex-col gap-1 text-[11px] overflow-x-auto scrollbar-none">
+                              <div className="text-gray-900 font-semibold text-xs whitespace-nowrap">
                                 <span>{cleanLabel || '轉向管制'}</span>
                               </div>
-                              <div className="text-gray-700 text-xs font-medium leading-relaxed">
+                              <div className="text-gray-900 text-xs font-medium leading-relaxed whitespace-nowrap">
                                 {cleanDecoded || '管制轉向通行'}
                               </div>
                             </div>
                           );
                         })
                       ) : (
-                        <div className="p-2.5 bg-gray-50 rounded-lg border border-gray-100 text-gray-500 text-center text-xs">
+                        <div className="p-2.5 bg-gray-50 rounded-lg border border-gray-100 text-gray-900 text-center text-xs">
                           此路口目前無特殊轉向管制
                         </div>
                       )}
                     </div>
+                  </div>
+                );
+              })()}
+
+              {/* Job Posting (WorkBC 職位空缺) Details */}
+              {selectedFacility.facility_type === 'job' && (() => {
+                const props = selectedFacility.properties || {};
+
+                // 1.5.5 標題下方顏色區塊顯示工時類型與合約形式
+                const hoursZh = (props.HoursOfWork?.Description || []).map((h: string) => {
+                  const s = h.toLowerCase();
+                  if (s.includes('full-time') || s.includes('full time')) return '全職 (Full-time)';
+                  if (s.includes('part-time') || s.includes('part time')) return '兼職 (Part-time)';
+                  return h;
+                }).join(' · ');
+
+                const periodZh = (props.PeriodOfEmployment?.Description || []).map((p: string) => {
+                  const s = p.toLowerCase();
+                  if (s.includes('permanent')) return '永久職位 (Permanent)';
+                  if (s.includes('temporary')) return '臨時合約 (Temporary)';
+                  if (s.includes('casual')) return '散工 (Casual)';
+                  if (s.includes('seasonal')) return '季節性 (Seasonal)';
+                  return p;
+                }).join(' · ');
+
+                // 薪金 (WageClass / SalaryType 對應 + Salary + SalarySummary)
+                const getSalaryTypeLabel = (wc?: string) => {
+                  const map: Record<string, string> = { 'A': '時薪', 'B': '週薪', 'C': '雙週薪', 'D': '月薪', 'E': '年薪' };
+                  return (wc && map[wc.toUpperCase()]) || '';
+                };
+                const salaryLabel = getSalaryTypeLabel(props.WageClass);
+                const salaryAmount = props.Salary ? `$${Number(props.Salary).toLocaleString()}` : '';
+                const salarySummary = props.SalarySummary ? `(${props.SalarySummary})` : '';
+                const fullSalaryDisplay = [salaryLabel, salaryAmount, salarySummary].filter(Boolean).join(' ');
+
+                // 工作模式
+                const workplaceType = props.WorkplaceType?.Description || '';
+                const workplaceZh = (() => {
+                  if (!workplaceType) return '';
+                  const s = workplaceType.toLowerCase();
+                  if (s.includes('on-site') || s.includes('onsite')) return '現場 (On-site)';
+                  if (s.includes('hybrid')) return '混合 (Hybrid)';
+                  if (s.includes('virtual') || s.includes('remote')) return '遙距 (Virtual)';
+                  if (s.includes('travel')) return '出差 (Travelling)';
+                  return workplaceType;
+                })();
+
+                // 工作排班 (EmploymentTerms)
+                const termsMap: Record<string, string> = {
+                  'day': '日間班', 'early': '清晨間', 'evening': '傍晚班',
+                  'flexible hours': '彈性工時', 'flexible': '彈性工時',
+                  'morning': '早班', 'night': '夜班/通宵', 'on call': '待命', 'oncall': '待命',
+                  'overtime': '需配合加班', 'shift': '輪班', 'tbd': '待定', 'weekend': '週末班', 'weekend hours': '週末班'
+                };
+                const employmentTermsZh = (props.EmploymentTerms?.Description || []).map((t: string) => {
+                  return termsMap[t.toLowerCase()] || t;
+                }).join(', ');
+
+                // 工作地點
+                const locationAddress = [props.City, props.Province, props.PostalCode].filter(Boolean).join(', ');
+
+                // 工作語言
+                const workLangZh = (props.WorkLangCd?.Description || []).map((l: string) => {
+                  const s = l.toLowerCase();
+                  if (s.includes('english and french')) return '英文及法文';
+                  if (s.includes('english')) return '英文';
+                  if (s.includes('french')) return '法文';
+                  return l;
+                }).join(', ');
+
+                // 特定對象
+                const specificTargets: string[] = [];
+                if (props.IsApprentice) specificTargets.push('學徒');
+                if (props.IsStudent) specificTargets.push('學生');
+                if (props.IsYouth) specificTargets.push('青年');
+                if (props.IsDisability) specificTargets.push('身心障礙人士');
+                if (props.IsAboriginal || props.IsIndigenous) specificTargets.push('原住民');
+                if (props.IsNewcomer) specificTargets.push('新移民');
+                if (props.IsVeteran) specificTargets.push('退伍軍人');
+                if (props.IsVismin) specificTargets.push('少數族裔');
+                if (props.IsMatureWorker) specificTargets.push('中高齡就業者');
+                if (props.IsFederalJob) specificTargets.push('聯邦政府職位');
+
+                // 申請方法地址拼接
+                const applyPersonAddr = [
+                  props.ApplyPersonRoom,
+                  props.ApplyPersonStreet,
+                  props.ApplyPersonCity,
+                  props.ApplyPersonProvince,
+                  props.ApplyPersonPostalCode
+                ].filter(Boolean).join(', ');
+
+                const applyMailAddr = [
+                  props.ApplyMailRoom,
+                  props.ApplyMailStreet,
+                  props.ApplyMailCity,
+                  props.ApplyMailProvince,
+                  props.ApplyMailPostalCode
+                ].filter(Boolean).join(', ');
+
+                const hasApplyInfo = props.ApplyEmailAddress || props.ApplyPhoneNumber || props.ApplyFaxNumber || props.ApplyWebsite || applyPersonAddr || applyMailAddr;
+
+                // 技能類別
+                const hasSkillCategories = Array.isArray(props.SkillCategories) && props.SkillCategories.length > 0;
+
+                return (
+                  <div className="flex flex-col gap-2.5 text-xs">
+                    {/* 1.5.5 標題下方顏色區塊 */}
+                    {(hoursZh || periodZh) && (
+                      <div className="p-2.5 rounded-lg border bg-indigo-500/10 border-indigo-500/30 text-indigo-900 flex flex-wrap items-center gap-2 text-xs font-bold leading-snug">
+                        <Briefcase className="w-4 h-4 text-indigo-600 shrink-0" />
+                        <span>{[hoursZh, periodZh].filter(Boolean).join(' · ')}</span>
+                      </div>
+                    )}
+
+                    {/* 1.5.6 灰色區塊詳細資料 */}
+                    <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 flex flex-col gap-2 text-[11px] text-gray-900">
+                      <div className="text-xs font-bold text-gray-900 border-b border-gray-200/80 pb-1 flex items-center justify-between">
+                        <span>職位基本資料</span>
+                        {props.JobId && <span className="text-[10px] text-gray-500 font-mono">#{props.JobId}</span>}
+                      </div>
+
+                      {/* 工作時數 */}
+                      {props.WorkHours != null && props.WorkHours > 0 && (
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-600">工作時數</span>
+                          <span className="font-semibold text-gray-900">{props.WorkHours} 小時 / 週</span>
+                        </div>
+                      )}
+
+                      {/* 薪金 */}
+                      {(fullSalaryDisplay || props.SalarySummary) && (
+                        <div className="flex justify-between items-start gap-2">
+                          <span className="text-gray-600 shrink-0">薪金</span>
+                          <span className="font-semibold text-gray-900 text-right leading-tight">
+                            {fullSalaryDisplay || props.SalarySummary}
+                          </span>
+                        </div>
+                      )}
+
+                      {/* 工作模式 */}
+                      {workplaceZh && (
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-600">工作模式</span>
+                          <span className="font-medium text-gray-900">{workplaceZh}</span>
+                        </div>
+                      )}
+
+                      {/* 工作排班 */}
+                      {employmentTermsZh && (
+                        <div className="flex justify-between items-start gap-2">
+                          <span className="text-gray-600 shrink-0">工作排班</span>
+                          <span className="font-medium text-gray-900 text-right">{employmentTermsZh}</span>
+                        </div>
+                      )}
+
+                      {/* 工作地點 */}
+                      {locationAddress && (
+                        <div className="flex justify-between items-start gap-2">
+                          <span className="text-gray-600 shrink-0">工作地點</span>
+                          <span className="font-medium text-gray-900 text-right">{locationAddress}</span>
+                        </div>
+                      )}
+
+                      {/* 工作語言 */}
+                      {workLangZh && (
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-600">工作語言</span>
+                          <span className="font-medium text-gray-900">{workLangZh}</span>
+                        </div>
+                      )}
+
+                      {/* 特定對象 */}
+                      {specificTargets.length > 0 && (
+                        <div className="flex flex-col gap-1 pt-1 border-t border-gray-200/60">
+                          <span className="text-gray-600 font-medium">特定優先對象</span>
+                          <div className="flex flex-wrap gap-1">
+                            {specificTargets.map((target, idx) => (
+                              <span key={idx} className="px-2 py-0.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-[10px] font-medium">
+                                {target}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* NOC 種類 */}
+                      {props.NocGroup && (
+                        <div className="flex justify-between items-start gap-2 pt-1 border-t border-gray-200/60">
+                          <span className="text-gray-600 shrink-0">NOC 分類</span>
+                          <span className="font-medium text-gray-900 text-right text-[10.5px]">{props.NocGroup}</span>
+                        </div>
+                      )}
+
+                      {/* 申請方法 */}
+                      {hasApplyInfo && (
+                        <>
+                          <div className="border-t border-gray-200/80 my-1" />
+                          <div className="text-xs font-bold text-gray-900 mb-0.5">申請方法</div>
+
+                          {props.ApplyEmailAddress && (
+                            <div className="flex justify-between items-center">
+                              <span className="text-gray-600">電郵申請</span>
+                              <a href={`mailto:${props.ApplyEmailAddress}`} className="text-indigo-600 hover:underline font-mono text-[10.5px]">
+                                {props.ApplyEmailAddress}
+                              </a>
+                            </div>
+                          )}
+
+                          {props.ApplyPhoneNumber && (
+                            <div className="flex justify-between items-center">
+                              <span className="text-gray-600">電話申請</span>
+                              <a href={`tel:${props.ApplyPhoneNumber}`} className="text-indigo-600 hover:underline font-mono text-[10.5px]">
+                                {props.ApplyPhoneNumber}{props.ApplyPhoneNumberExt ? ` ext. ${props.ApplyPhoneNumberExt}` : ''}
+                              </a>
+                            </div>
+                          )}
+
+                          {props.ApplyFaxNumber && (
+                            <div className="flex justify-between items-center">
+                              <span className="text-gray-600">傳真申請</span>
+                              <span className="font-mono text-gray-900 text-[10.5px]">{props.ApplyFaxNumber}</span>
+                            </div>
+                          )}
+
+                          {props.ApplyWebsite && (
+                            <div className="flex justify-between items-center">
+                              <span className="text-gray-600">網頁申請</span>
+                              <a href={props.ApplyWebsite} target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline inline-flex items-center gap-1 text-[10.5px]">
+                                <span>官方職缺頁面</span>
+                                <ExternalLink className="w-3 h-3" />
+                              </a>
+                            </div>
+                          )}
+
+                          {applyPersonAddr && (
+                            <div className="flex justify-between items-start gap-2">
+                              <span className="text-gray-600 shrink-0">親身申請</span>
+                              <span className="text-gray-900 text-right text-[10.5px]">{applyPersonAddr}</span>
+                            </div>
+                          )}
+
+                          {applyMailAddr && (
+                            <div className="flex justify-between items-start gap-2">
+                              <span className="text-gray-600 shrink-0">郵寄申請</span>
+                              <span className="text-gray-900 text-right text-[10.5px]">{applyMailAddr}</span>
+                            </div>
+                          )}
+                        </>
+                      )}
+
+                      {/* 空缺與檢視人數 */}
+                      {(props.PositionsAvailable != null || props.Views != null) && (
+                        <div className="flex justify-between items-center pt-1 border-t border-gray-200/60 text-gray-600">
+                          {props.PositionsAvailable != null ? (
+                            <span>空缺：<strong className="text-gray-900">{props.PositionsAvailable}</strong> 人</span>
+                          ) : <span />}
+                          {props.Views != null && (
+                            <span>檢視：<strong className="text-gray-900">{props.Views}</strong> 次</span>
+                          )}
+                        </div>
+                      )}
+
+                      {/* 日期時間 (統一 yyyy-MM-dd hh:mm) */}
+                      {(props.DatePosted || props.LastUpdated || props.ExpireDate || props.ExpiryDate) && (
+                        <>
+                          <div className="border-t border-gray-200/80 my-1" />
+                          {props.DatePosted && (
+                            <div className="flex justify-between items-center text-[10.5px]">
+                              <span className="text-gray-600">刊登日期</span>
+                              <span className="font-mono text-gray-900">{formatJobDateTime(props.DatePosted, timeFormat, timeZone)}</span>
+                            </div>
+                          )}
+                          {props.LastUpdated && (
+                            <div className="flex justify-between items-center text-[10.5px]">
+                              <span className="text-gray-600">最後更新</span>
+                              <span className="font-mono text-gray-900">{formatJobDateTime(props.LastUpdated, timeFormat, timeZone)}</span>
+                            </div>
+                          )}
+                          {(props.ExpireDate || props.ExpiryDate) && (
+                            <div className="flex justify-between items-center text-[10.5px]">
+                              <span className="text-gray-600">截止日期</span>
+                              <span className="font-mono text-gray-900">{formatJobDateTime(props.ExpireDate || props.ExpiryDate, timeFormat, timeZone)}</span>
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+
+                    {/* 1.5.7 popup 底部「顯示職位詳情」按鈕 */}
+                    {hasSkillCategories && (
+                      <button
+                        type="button"
+                        onClick={() => setActiveJobSkillModal(props)}
+                        className="w-full py-2 px-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-1.5 cursor-pointer"
+                      >
+                        <span>顯示職位詳情與技能需求</span>
+                        <span>→</span>
+                      </button>
+                    )}
                   </div>
                 );
               })()}
@@ -14676,7 +15015,7 @@ export default function AppMap() {
       )}
 
       {/* 探索功能橫向平排底欄 (Explore Horizontal Bottom Bar Dock) */}
-      <div className="absolute bottom-2 sm:bottom-3 left-1/2 -translate-x-1/2 z-30 pointer-events-auto select-none flex items-center gap-1 px-2.5 py-1.5 bg-[#10131a]/95 backdrop-blur-md rounded-full border border-[#2a2f3d] shadow-2xl max-w-[calc(100vw-16px)] sm:max-w-[calc(100vw-24px)] overflow-x-auto scrollbar-none ring-1 ring-white/5" style={{ WebkitOverflowScrolling: 'touch' }}>
+      <div className="absolute bottom-[calc(10px+env(safe-area-inset-bottom))] sm:bottom-3 left-1/2 -translate-x-1/2 z-30 pointer-events-auto select-none flex items-center gap-1 px-2.5 py-1.5 bg-[#10131a]/95 backdrop-blur-md rounded-full border border-[#2a2f3d] shadow-2xl max-w-[calc(100vw-16px)] sm:max-w-[calc(100vw-24px)] overflow-x-auto scrollbar-none ring-1 ring-white/5" style={{ WebkitOverflowScrolling: 'touch' }}>
         {[
           { id: 'weather', label: '天氣', icon: CloudRain, color: 'text-sky-400' },
           { id: 'news', label: '新聞', icon: Activity, color: 'text-amber-400' },
@@ -14684,6 +15023,7 @@ export default function AppMap() {
           { id: 'beach', label: '泳灘', icon: Waves, color: 'text-teal-300' },
           { id: 'ski', label: '滑雪', icon: Navigation, color: 'text-cyan-400' },
           { id: 'aurora', label: '極光', icon: Zap, color: 'text-fuchsia-400' },
+          { id: 'jobs', label: '工作', icon: Briefcase, color: 'text-indigo-400' },
           { id: 'atm', label: '銀行', icon: Landmark, color: 'text-amber-400' },
           { id: 'fuel', label: '油站', icon: Fuel, color: 'text-amber-500' },
           { id: 'ev', label: '充電', icon: Zap, color: 'text-yellow-400' },
@@ -17005,6 +17345,113 @@ export default function AppMap() {
             <div className="px-4 py-2 bg-[#1a1e29] border-t border-gray-800 flex items-center justify-between text-[11px] text-gray-400 shrink-0">
               <span>點擊背景或右上角 ✕ 關閉</span>
               <span className="text-cyan-400 font-mono text-[10.5px]">HD 即時路況畫面</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 1.5.7 職位詳情與技能需求 Modal (WorkBC Job Skill Categories Modal) */}
+      {activeJobSkillModal && (
+        <div 
+          className="fixed inset-0 z-[100] bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 pt-16 sm:pt-20 pb-4 animate-in fade-in duration-200"
+          onClick={() => setActiveJobSkillModal(null)}
+        >
+          <div 
+            className="relative max-w-3xl w-full bg-[#161922] border border-indigo-500/50 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[88vh]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-5 py-3.5 bg-[#1e2330] border-b border-gray-700/60 shrink-0">
+              <div className="flex items-center gap-3 min-w-0">
+                <span className="p-1.5 rounded-lg bg-indigo-500/20 text-indigo-400 shrink-0">
+                  <Briefcase className="w-5 h-5" />
+                </span>
+                <div className="flex flex-col min-w-0">
+                  <h4 className="text-base font-bold text-gray-100 truncate">
+                    {activeJobSkillModal.Title || '職位詳情與技能需求'}
+                  </h4>
+                  <div className="flex items-center gap-2 text-xs text-gray-400 truncate">
+                    {activeJobSkillModal.EmployerName && (
+                      <span className="text-indigo-300 font-medium truncate">{activeJobSkillModal.EmployerName}</span>
+                    )}
+                    {activeJobSkillModal.EmployerName && activeJobSkillModal.City && <span>·</span>}
+                    {activeJobSkillModal.City && <span>{activeJobSkillModal.City}</span>}
+                    {activeJobSkillModal.WorkHours && (
+                      <>
+                        <span>·</span>
+                        <span>{activeJobSkillModal.WorkHours}</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={() => setActiveJobSkillModal(null)}
+                className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer shrink-0 ml-2"
+                title="關閉"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Body: SkillCategories */}
+            <div className="p-4 sm:p-6 overflow-y-auto flex-1 min-h-0 space-y-4">
+              <div className="text-xs text-gray-400 pb-2 border-b border-gray-800 flex items-center justify-between">
+                <span>技能與資格要求清單 (Skill Categories & Requirements)</span>
+                {Array.isArray(activeJobSkillModal.SkillCategories) && (
+                  <span className="text-indigo-400 font-mono">共 {activeJobSkillModal.SkillCategories.length} 個類別</span>
+                )}
+              </div>
+
+              {Array.isArray(activeJobSkillModal.SkillCategories) && activeJobSkillModal.SkillCategories.length > 0 ? (
+                <div className="divide-y divide-gray-800/80">
+                  {activeJobSkillModal.SkillCategories.map((item: any, idx: number) => {
+                    const categoryName = item.Category?.Name || item.Name || `類別 ${idx + 1}`;
+                    const skills: string[] = Array.isArray(item.Skills) ? item.Skills : [];
+                    return (
+                      <div key={idx} className="py-3.5 first:pt-1 last:pb-1 grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4 items-start">
+                        {/* Left column: Category.Name */}
+                        <div className="md:col-span-4">
+                          <span className="inline-block px-2.5 py-1 rounded-md bg-indigo-950/60 border border-indigo-500/30 text-indigo-300 text-xs font-semibold">
+                            {categoryName}
+                          </span>
+                        </div>
+                        {/* Right column: Skills[] */}
+                        <div className="md:col-span-8 space-y-1.5">
+                          {skills.length > 0 ? (
+                            skills.map((skill, sIdx) => (
+                              <div key={sIdx} className="flex items-start gap-2 text-xs text-gray-200">
+                                <span className="text-indigo-400 mt-1 shrink-0">•</span>
+                                <span className="leading-relaxed">{skill}</span>
+                              </div>
+                            ))
+                          ) : (
+                            <span className="text-xs text-gray-500 italic">無具體細項說明</span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="py-12 text-center text-gray-500 text-sm">
+                  此職位目前未刊登詳細技能分類資訊
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-5 py-3 bg-[#1a1e29] border-t border-gray-800 flex items-center justify-between text-xs shrink-0">
+              <span className="text-gray-400 text-[11px]">
+                資料來源：WorkBC (Government of British Columbia)
+              </span>
+              <button
+                type="button"
+                onClick={() => setActiveJobSkillModal(null)}
+                className="px-4 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-medium transition-colors"
+              >
+                關閉
+              </button>
             </div>
           </div>
         </div>

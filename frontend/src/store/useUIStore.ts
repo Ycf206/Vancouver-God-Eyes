@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 
 export type MapStyleType = 'street' | 'satellite' | 'light' | 'dark';
 
-export type ExploreTabType = 'weather' | 'news' | 'events' | 'ski' | 'aurora' | 'atm' | 'fuel' | 'charging' | 'ev' | 'ferry' | 'cargo' | 'shipping' | 'flights' | 'beach' | 'border' | 'alerts' | 'traffic';
+export type ExploreTabType = 'weather' | 'news' | 'events' | 'beach' | 'ski' | 'aurora' | 'jobs' | 'atm' | 'fuel' | 'charging' | 'ev' | 'ferry' | 'cargo' | 'shipping' | 'flights' | 'border' | 'alerts' | 'traffic';
 
 export interface SearchTarget {
   id: string;
@@ -137,6 +137,12 @@ export interface UIState {
     lon: number;
     confirmed: boolean;
   } | null) => void;
+  navigationAddress: string;
+  setNavigationAddress: (addr: string) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  activeJobSkillModal: any | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setActiveJobSkillModal: (job: any | null) => void;
   weatherSubTab: 'city' | 'monitoring' | 'models' | 'marine';
   setWeatherSubTab: (subTab: 'city' | 'monitoring' | 'models' | 'marine') => void;
   isAdminAuthenticated: boolean;
@@ -330,6 +336,10 @@ export const useUIStore = create<UIState>()(
       setTransitAlertsList: (alerts) => set({ transitAlertsList: alerts }),
       userLocation: null,
       setUserLocation: (loc) => set({ userLocation: loc }),
+      navigationAddress: '',
+      setNavigationAddress: (addr) => set({ navigationAddress: addr }),
+      activeJobSkillModal: null,
+      setActiveJobSkillModal: (job) => set({ activeJobSkillModal: job }),
       weatherSubTab: 'city',
       setWeatherSubTab: (subTab) => set({ weatherSubTab: subTab }),
       isAdminAuthenticated: false,
@@ -602,6 +612,7 @@ export const useUIStore = create<UIState>()(
         newsRefreshInterval: state.newsRefreshInterval,
         transitAlertsRefreshInterval: state.transitAlertsRefreshInterval,
         userLocation: state.userLocation,
+        navigationAddress: state.navigationAddress,
       }),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       merge: (persistedState: any, currentState: UIState) => {
@@ -617,6 +628,7 @@ export const useUIStore = create<UIState>()(
           newsRefreshInterval: persistedState?.newsRefreshInterval ?? 15,
           transitAlertsRefreshInterval: persistedState?.transitAlertsRefreshInterval ?? 10,
           userLocation: persistedState?.userLocation || null,
+          navigationAddress: persistedState?.navigationAddress || '',
           layers: {
             ...currentState.layers,
             ...(persistedState?.layers || {}),

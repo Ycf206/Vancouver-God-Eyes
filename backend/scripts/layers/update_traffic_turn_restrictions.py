@@ -26,7 +26,7 @@ def decode_restriction_segment(text):
     formatted = re.sub(r'\bNLT\b', '禁止左轉 (No Left Turn)', formatted)
     formatted = re.sub(r'\bNRT\b', '禁止右轉 (No Right Turn)', formatted)
     formatted = re.sub(r'\bExBike\b', '單車除外 (Except bike)', formatted)
-    formatted = re.sub(r'\bExBus\b', '公車除外 (Except bus)', formatted)
+    formatted = re.sub(r'\bExBus\b', '巴士除外 (Except bus)', formatted)
     formatted = re.sub(r'\bM/F\b', '週一至週五 (Mon-Fri)', formatted)
     formatted = re.sub(r'\bF/Su\b', '週五至週日 (Fri-Sun)', formatted)
     formatted = re.sub(r'\b7/930\b', '07:00 - 09:30', formatted)

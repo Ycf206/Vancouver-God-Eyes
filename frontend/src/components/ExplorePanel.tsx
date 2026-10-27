@@ -6,7 +6,8 @@ import { Landmark,
   ChevronDown, RefreshCw, Package, CloudSun, Wind, AlertTriangle, Droplets, Gauge, Eye, Anchor, Navigation,
   Newspaper, ExternalLink, Search, CalendarDays, Calendar, Tag, Waves, CloudRain, Play, Pause, SkipBack, SkipForward,
   MountainSnow, Sparkles, Clock, ShieldAlert, BellRing, Train, Bus, ShieldCheck, LayoutGrid, TrainTrack,
-  Activity, Radar, Cpu, Satellite, Radio, Flag, Plane, Mountain, CreditCard
+  Activity, Radar, Cpu, Satellite, Radio, Flag, Plane, Mountain, CreditCard,
+  Briefcase, SlidersHorizontal, ChevronLeft, ChevronRight, Building2, DollarSign
 } from 'lucide-react';
 import { useUIStore, ExploreTabType } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
@@ -807,6 +808,346 @@ function ExploreContent() {
   // --- Cargo tab states (Port of Vancouver AIS Shipping) ---
   const [shippingVessels, setShippingVessels] = useState<MaritimeVessel[]>([]);
   const [loadingShipping, setLoadingShipping] = useState(false);
+
+  // --- WorkBC Jobs tab states ---
+  const [jobKeyword, setJobKeyword] = useState<string>('');
+  const [jobSearchInField, setJobSearchInField] = useState<'all' | 'title' | 'employer' | 'jobId'>('all');
+  const [jobPageSize, setJobPageSize] = useState<number>(20);
+  const [jobSortOrder, setJobSortOrder] = useState<number>(11);
+  const [jobPage, setJobPage] = useState<number>(1);
+  const [jobTotalCount, setJobTotalCount] = useState<number>(0);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [jobsList, setJobsList] = useState<any[]>([]);
+  const [loadingJobs, setLoadingJobs] = useState<boolean>(false);
+  const [fetchingJobDetailId, setFetchingJobDetailId] = useState<string | null>(null);
+  const [isJobFilterOpen, setIsJobFilterOpen] = useState<boolean>(false);
+
+  // 1. 工時類型
+  const [filterJobTypeFullTime, setFilterJobTypeFullTime] = useState<boolean>(false);
+  const [filterJobTypePartTime, setFilterJobTypePartTime] = useState<boolean>(false);
+  const [filterJobTypeLeadingToFullTime, setFilterJobTypeLeadingToFullTime] = useState<boolean>(false);
+
+  // 2. 工作模式
+  const [filterJobTypeOnSite, setFilterJobTypeOnSite] = useState<boolean>(false);
+  const [filterJobTypeHybrid, setFilterJobTypeHybrid] = useState<boolean>(false);
+  const [filterJobTypeTravelling, setFilterJobTypeTravelling] = useState<boolean>(false);
+  const [filterJobTypeVirtual, setFilterJobTypeVirtual] = useState<boolean>(false);
+
+  // 3. 合約形式
+  const [filterJobTypePermanent, setFilterJobTypePermanent] = useState<boolean>(false);
+  const [filterJobTypeTemporary, setFilterJobTypeTemporary] = useState<boolean>(false);
+  const [filterJobTypeCasual, setFilterJobTypeCasual] = useState<boolean>(false);
+  const [filterJobTypeSeasonal, setFilterJobTypeSeasonal] = useState<boolean>(false);
+
+  // 4. 工作排班
+  const [filterJobTypeDay, setFilterJobTypeDay] = useState<boolean>(false);
+  const [filterJobTypeEarly, setFilterJobTypeEarly] = useState<boolean>(false);
+  const [filterJobTypeEvening, setFilterJobTypeEvening] = useState<boolean>(false);
+  const [filterJobTypeFlexible, setFilterJobTypeFlexible] = useState<boolean>(false);
+  const [filterJobTypeMorning, setFilterJobTypeMorning] = useState<boolean>(false);
+  const [filterJobTypeNight, setFilterJobTypeNight] = useState<boolean>(false);
+  const [filterJobTypeOnCall, setFilterJobTypeOnCall] = useState<boolean>(false);
+  const [filterJobTypeOvertime, setFilterJobTypeOvertime] = useState<boolean>(false);
+  const [filterJobTypeShift, setFilterJobTypeShift] = useState<boolean>(false);
+  const [filterJobTypeTbd, setFilterJobTypeTbd] = useState<boolean>(false);
+  const [filterJobTypeWeekend, setFilterJobTypeWeekend] = useState<boolean>(false);
+
+  // 5. 薪資福利
+  const [filterSalaryMin, setFilterSalaryMin] = useState<string>('');
+  const [filterSalaryMax, setFilterSalaryMax] = useState<string>('');
+  const [filterSalaryType, setFilterSalaryType] = useState<string>('');
+  const [filterSalaryConditions, setFilterSalaryConditions] = useState<string[]>([]);
+
+  // 6. 教育程度
+  const [filterJobEducationLevel, setFilterJobEducationLevel] = useState<string[]>([]);
+
+  // 7. 日期範圍
+  const [filterDateSelection, setFilterDateSelection] = useState<string>('0');
+  const [filterStartDate, setFilterStartDate] = useState<string>('');
+  const [filterEndDate, setFilterEndDate] = useState<string>('');
+
+  // 8. 特定對象
+  const [filterIsApprentice, setFilterIsApprentice] = useState<boolean>(false);
+  const [filterIsVeterans, setFilterIsVeterans] = useState<boolean>(false);
+  const [filterIsIndigenous, setFilterIsIndigenous] = useState<boolean>(false);
+  const [filterIsMatureWorkers, setFilterIsMatureWorkers] = useState<boolean>(false);
+  const [filterIsNewcomers, setFilterIsNewcomers] = useState<boolean>(false);
+  const [filterIsPeopleWithDisabilities, setFilterIsPeopleWithDisabilities] = useState<boolean>(false);
+  const [filterIsStudents, setFilterIsStudents] = useState<boolean>(false);
+  const [filterIsVisibleMinority, setFilterIsVisibleMinority] = useState<boolean>(false);
+  const [filterIsYouth, setFilterIsYouth] = useState<boolean>(false);
+
+  // 9. 刊登語言
+  const [filterIsPostingsInEnglish, setFilterIsPostingsInEnglish] = useState<boolean>(true);
+  const [filterIsPostingsInEnglishAndFrench, setFilterIsPostingsInEnglishAndFrench] = useState<boolean>(false);
+
+  // 10. 排除中介代徵
+  const [filterExcludePlacementAgencyJobs, setFilterExcludePlacementAgencyJobs] = useState<boolean>(false);
+
+  const activeJobFilterCount = useMemo(() => {
+    let count = 0;
+    if (filterJobTypeFullTime || filterJobTypePartTime || filterJobTypeLeadingToFullTime) count++;
+    if (filterJobTypeOnSite || filterJobTypeHybrid || filterJobTypeTravelling || filterJobTypeVirtual) count++;
+    if (filterJobTypePermanent || filterJobTypeTemporary || filterJobTypeCasual || filterJobTypeSeasonal) count++;
+    if (filterJobTypeDay || filterJobTypeEarly || filterJobTypeEvening || filterJobTypeFlexible || filterJobTypeMorning || filterJobTypeNight || filterJobTypeOnCall || filterJobTypeOvertime || filterJobTypeShift || filterJobTypeTbd || filterJobTypeWeekend) count++;
+    if (filterSalaryMin || filterSalaryMax || filterSalaryType || filterSalaryConditions.length > 0) count++;
+    if (filterJobEducationLevel.length > 0) count++;
+    if (filterDateSelection !== '0' || filterStartDate || filterEndDate) count++;
+    if (filterIsApprentice || filterIsVeterans || filterIsIndigenous || filterIsMatureWorkers || filterIsNewcomers || filterIsPeopleWithDisabilities || filterIsStudents || filterIsVisibleMinority || filterIsYouth) count++;
+    if (!filterIsPostingsInEnglish || filterIsPostingsInEnglishAndFrench) count++;
+    if (filterExcludePlacementAgencyJobs) count++;
+    return count;
+  }, [
+    filterJobTypeFullTime, filterJobTypePartTime, filterJobTypeLeadingToFullTime,
+    filterJobTypeOnSite, filterJobTypeHybrid, filterJobTypeTravelling, filterJobTypeVirtual,
+    filterJobTypePermanent, filterJobTypeTemporary, filterJobTypeCasual, filterJobTypeSeasonal,
+    filterJobTypeDay, filterJobTypeEarly, filterJobTypeEvening, filterJobTypeFlexible, filterJobTypeMorning, filterJobTypeNight, filterJobTypeOnCall, filterJobTypeOvertime, filterJobTypeShift, filterJobTypeTbd, filterJobTypeWeekend,
+    filterSalaryMin, filterSalaryMax, filterSalaryType, filterSalaryConditions,
+    filterJobEducationLevel,
+    filterDateSelection, filterStartDate, filterEndDate,
+    filterIsApprentice, filterIsVeterans, filterIsIndigenous, filterIsMatureWorkers, filterIsNewcomers, filterIsPeopleWithDisabilities, filterIsStudents, filterIsVisibleMinority, filterIsYouth,
+    filterIsPostingsInEnglish, filterIsPostingsInEnglishAndFrench,
+    filterExcludePlacementAgencyJobs
+  ]);
+
+  const resetJobFilters = () => {
+    setFilterJobTypeFullTime(false);
+    setFilterJobTypePartTime(false);
+    setFilterJobTypeLeadingToFullTime(false);
+    setFilterJobTypeOnSite(false);
+    setFilterJobTypeHybrid(false);
+    setFilterJobTypeTravelling(false);
+    setFilterJobTypeVirtual(false);
+    setFilterJobTypePermanent(false);
+    setFilterJobTypeTemporary(false);
+    setFilterJobTypeCasual(false);
+    setFilterJobTypeSeasonal(false);
+    setFilterJobTypeDay(false);
+    setFilterJobTypeEarly(false);
+    setFilterJobTypeEvening(false);
+    setFilterJobTypeFlexible(false);
+    setFilterJobTypeMorning(false);
+    setFilterJobTypeNight(false);
+    setFilterJobTypeOnCall(false);
+    setFilterJobTypeOvertime(false);
+    setFilterJobTypeShift(false);
+    setFilterJobTypeTbd(false);
+    setFilterJobTypeWeekend(false);
+    setFilterSalaryMin('');
+    setFilterSalaryMax('');
+    setFilterSalaryType('');
+    setFilterSalaryConditions([]);
+    setFilterJobEducationLevel([]);
+    setFilterDateSelection('0');
+    setFilterStartDate('');
+    setFilterEndDate('');
+    setFilterIsApprentice(false);
+    setFilterIsVeterans(false);
+    setFilterIsIndigenous(false);
+    setFilterIsMatureWorkers(false);
+    setFilterIsNewcomers(false);
+    setFilterIsPeopleWithDisabilities(false);
+    setFilterIsStudents(false);
+    setFilterIsVisibleMinority(false);
+    setFilterIsYouth(false);
+    setFilterIsPostingsInEnglish(true);
+    setFilterIsPostingsInEnglishAndFrench(false);
+    setFilterExcludePlacementAgencyJobs(false);
+  };
+
+  const fetchJobs = async (targetPage = 1, customPageSize = jobPageSize, customSortOrder = jobSortOrder) => {
+    setLoadingJobs(true);
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const payload: any = {
+        Page: targetPage,
+        PageSize: customPageSize,
+        SortOrder: customSortOrder,
+        Keyword: jobKeyword.trim(),
+        SearchInField: jobSearchInField,
+        SearchJobTypeFullTime: filterJobTypeFullTime,
+        SearchJobTypePartTime: filterJobTypePartTime,
+        SearchJobTypeLeadingToFullTime: filterJobTypeLeadingToFullTime,
+        SearchJobTypeOnSite: filterJobTypeOnSite,
+        SearchJobTypeHybrid: filterJobTypeHybrid,
+        SearchJobTypeTravelling: filterJobTypeTravelling,
+        SearchJobTypeVirtual: filterJobTypeVirtual,
+        SearchJobTypePermanent: filterJobTypePermanent,
+        SearchJobTypeTemporary: filterJobTypeTemporary,
+        SearchJobTypeCasual: filterJobTypeCasual,
+        SearchJobTypeSeasonal: filterJobTypeSeasonal,
+        SearchJobTypeDay: filterJobTypeDay,
+        SearchJobTypeEarly: filterJobTypeEarly,
+        SearchJobTypeEvening: filterJobTypeEvening,
+        SearchJobTypeFlexible: filterJobTypeFlexible,
+        SearchJobTypeMorning: filterJobTypeMorning,
+        SearchJobTypeNight: filterJobTypeNight,
+        SearchJobTypeOnCall: filterJobTypeOnCall,
+        SearchJobTypeOvertime: filterJobTypeOvertime,
+        SearchJobTypeShift: filterJobTypeShift,
+        SearchJobTypeTbd: filterJobTypeTbd,
+        SearchJobTypeWeekend: filterJobTypeWeekend,
+        SalaryBracket6: true,
+        SalaryMin: filterSalaryMin ? filterSalaryMin : undefined,
+        SalaryMax: filterSalaryMax ? filterSalaryMax : undefined,
+        SalaryType: filterSalaryType ? filterSalaryType : undefined,
+        SearchSalaryConditions: filterSalaryConditions,
+        SearchJobEducationLevel: filterJobEducationLevel,
+        SearchDateSelection: filterDateSelection,
+        StartDate: filterDateSelection === '3' && filterStartDate ? filterStartDate : null,
+        EndDate: filterDateSelection === '3' && filterEndDate ? filterEndDate : null,
+        SearchIsApprentice: filterIsApprentice,
+        SearchIsVeterans: filterIsVeterans,
+        SearchIsIndigenous: filterIsIndigenous,
+        SearchIsMatureWorkers: filterIsMatureWorkers,
+        SearchIsNewcomers: filterIsNewcomers,
+        SearchIsPeopleWithDisabilities: filterIsPeopleWithDisabilities,
+        SearchIsStudents: filterIsStudents,
+        SearchIsVisibleMinority: filterIsVisibleMinority,
+        SearchIsYouth: filterIsYouth,
+        SearchIsPostingsInEnglish: filterIsPostingsInEnglish,
+        SearchIsPostingsInEnglishAndFrench: filterIsPostingsInEnglishAndFrench,
+        SearchExcludePlacementAgencyJobs: filterExcludePlacementAgencyJobs,
+      };
+
+      const res = await fetch('/api/jobs/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      setJobTotalCount(typeof data.count === 'number' ? data.count : 0);
+      setJobPage(typeof data.pageNumber === 'number' ? data.pageNumber : targetPage);
+      setJobsList(Array.isArray(data.result) ? data.result : []);
+    } catch (err) {
+      console.error('Failed to fetch jobs:', err);
+      setJobsList([]);
+      setJobTotalCount(0);
+    } finally {
+      setLoadingJobs(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'jobs' && jobsList.length === 0 && !loadingJobs) {
+      fetchJobs(1);
+    }
+  }, [activeTab]);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleJobClick = async (job: any) => {
+    // 1.5.6 如果有ExternalSource, 按下時直接開啟ExternalSource.source[0].url, 不用顯示popup和以下的灰色區塊資料
+    const externalUrl = job.ExternalSource?.Source?.[0]?.Url || job.ExternalSource?.Url || (job.ExternalSource && typeof job.ExternalSource === 'string' ? job.ExternalSource : null);
+    if (externalUrl) {
+      window.open(externalUrl, '_blank', 'noopener,noreferrer');
+      return;
+    }
+
+    setFetchingJobDetailId(job.JobId);
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let detailData: any = null;
+      try {
+        const res = await fetch(`/api/jobs/detail?jobId=${job.JobId}`);
+        if (res.ok) {
+          const json = await res.json();
+          detailData = Array.isArray(json.result) ? json.result[0] : (json.result || json);
+        }
+      } catch (fetchErr) {
+        console.warn('Job detail fetch error, using card data:', fetchErr);
+      }
+
+      const fullJob = { ...job, ...(detailData || {}) };
+      // 1.5.3 在剛剛GetJobDetail取得的Location (lat, long) 彈到地圖上按下清單的項目, 然後彈到地圖上的位置lcoation (lat, long) 並顯示 popup
+      const locList = fullJob.Location || job.Location;
+      let lat = 49.2827;
+      let lon = -123.1207;
+      if (Array.isArray(locList) && locList.length > 0 && locList[0]?.Lat && locList[0]?.Lon) {
+        lat = parseFloat(locList[0].Lat);
+        lon = parseFloat(locList[0].Lon);
+      } else if (fullJob.Latitude && fullJob.Longitude) {
+        lat = parseFloat(fullJob.Latitude);
+        lon = parseFloat(fullJob.Longitude);
+      }
+
+      setSearchTarget({
+        id: `job_${job.JobId}`,
+        title: fullJob.Title || job.Title,
+        subtitle: fullJob.EmployerName || job.EmployerName,
+        category: 'job',
+        badge: '工作',
+        icon: '💼',
+        lat,
+        lon,
+        zoom: 14.5,
+        meta: {
+          local_area: fullJob.City || job.City || 'British Columbia',
+          facility_type: 'job',
+          properties: {
+            ...fullJob,
+            facility_type: 'job'
+          }
+        }
+      });
+
+      if (typeof window !== 'undefined' && window.innerWidth < 768) {
+        setExploreOpen(false);
+      }
+    } catch (err) {
+      console.error('Failed to handle job selection:', err);
+    } finally {
+      setFetchingJobDetailId(null);
+    }
+  };
+
+  const formatJobPostingDate = (dateStr?: string) => {
+    if (!dateStr) return '';
+    try {
+      const d = new Date(dateStr);
+      if (!isNaN(d.getTime())) {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+      }
+    } catch {}
+    return dateStr.slice(0, 10);
+  };
+
+  const translateJobTerm = (val?: string): string => {
+    if (!val) return '';
+    const map: Record<string, string> = {
+      'Full-time': '全職',
+      'Part-time': '兼職',
+      'Leading to full-time': '兼職轉全職',
+      'Permanent': '永久聘用',
+      'Temporary': '臨時約聘',
+      'Casual': '散工 / 零工',
+      'Seasonal': '季節性',
+      'On-site only': '現場上班',
+      'On-site': '現場上班',
+      'Hybrid work': '混合辦公',
+      'Hybrid': '混合辦公',
+      'Virtual work': '遠距辦公',
+      'Virtual': '遠距辦公',
+      'Travelling': '需出差',
+      'Day': '日間班',
+      'Early': '清晨班',
+      'Evening': '傍晚班',
+      'Flexible': '彈性工時',
+      'Morning': '早班',
+      'Night': '夜班/通宵',
+      'On-call': '待命班',
+      'Overtime': '需配合加班',
+      'Shift': '輪班制',
+      'Weekend': '週末班',
+      'TBD': '待定',
+    };
+    return map[val] || val;
+  };
+
+  const jobTotalPages = Math.max(1, Math.ceil(jobTotalCount / jobPageSize));
 
   // --- ATM tab states ---
   const [atmStations, setAtmStations] = useState<AtmItem[]>([]);
@@ -2764,6 +3105,7 @@ function ExploreContent() {
     beach: { label: '泳灘水質', icon: Droplets, color: 'text-teal-300' },
     ski: { label: '滑雪場現況', icon: MountainSnow, color: 'text-cyan-400' },
     aurora: { label: '極光觀測', icon: Sparkles, color: 'text-fuchsia-400' },
+    jobs: { label: '工作職位', icon: Briefcase, color: 'text-indigo-400' },
     atm: { label: '銀行', icon: Landmark, color: 'text-amber-400' },
     fuel: { label: '油站', icon: Fuel, color: 'text-amber-500' },
     charging: { label: '充電站', icon: Zap, color: 'text-emerald-400' },
@@ -2784,6 +3126,7 @@ function ExploreContent() {
     beach: '泳灘',
     ski: '滑雪',
     aurora: '極光',
+    jobs: '工作',
     atm: '銀行',
     fuel: '油站',
     charging: '充電',
@@ -4426,6 +4769,737 @@ function ExploreContent() {
               </div>
             </>
           ) : null}
+        </div>
+      )}
+
+      {/* ==================== 1.1 - 1.5 工作職位分頁 (WorkBC Jobs) ==================== */}
+      {activeTab === 'jobs' && (
+        <div className="flex flex-col flex-1 min-h-0 relative">
+          {/* 1.2 搜尋列與控制列 */}
+          <div className="flex flex-col gap-2 mb-2 shrink-0">
+            {/* Search Input Row */}
+            <div className="flex items-center gap-1.5">
+              <div className="relative flex-1 min-w-0">
+                <Search className="w-3.5 h-3.5 text-gray-500 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <input
+                  type="text"
+                  value={jobKeyword}
+                  onChange={(e) => setJobKeyword(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      fetchJobs(1);
+                    }
+                  }}
+                  placeholder="搜尋職位關鍵字 (如: Developer, Cook, Nurse)..."
+                  className="w-full bg-[#10131a] text-xs text-white placeholder-gray-500 pl-8 pr-7 py-2 rounded-lg border border-[#232838] focus:outline-none focus:border-indigo-500/60 transition-colors"
+                />
+                {jobKeyword && (
+                  <button
+                    type="button"
+                    onClick={() => setJobKeyword('')}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white p-0.5"
+                    title="清除關鍵字"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
+
+              {/* 關鍵字範圍選擇 SearchInField */}
+              <select
+                value={jobSearchInField}
+                onChange={(e) => setJobSearchInField(e.target.value as any)}
+                className="bg-[#10131a] text-xs text-gray-300 border border-[#232838] rounded-lg px-2 py-2 focus:outline-none focus:border-indigo-500/60 shrink-0 cursor-pointer"
+                title="關鍵字匹配範圍"
+              >
+                <option value="all">全部範圍</option>
+                <option value="title">僅職位名稱</option>
+                <option value="employer">僅僱主名稱</option>
+                <option value="jobId">職位編號</option>
+              </select>
+
+              {/* 搜尋按鈕 */}
+              <button
+                type="button"
+                onClick={() => fetchJobs(1)}
+                disabled={loadingJobs}
+                className="px-3 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-xs font-semibold rounded-lg flex items-center gap-1 shrink-0 transition-colors cursor-pointer"
+                title="執行搜尋"
+              >
+                {loadingJobs ? (
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Search className="w-3.5 h-3.5" />
+                )}
+                <span className="hidden sm:inline">搜尋</span>
+              </button>
+
+              {/* 1.3 篩選工具圖示按鈕 */}
+              <button
+                type="button"
+                onClick={() => setIsJobFilterOpen(!isJobFilterOpen)}
+                className={`p-2 rounded-lg border transition-all relative shrink-0 cursor-pointer ${
+                  activeJobFilterCount > 0 || isJobFilterOpen
+                    ? 'bg-indigo-600/25 border-indigo-500 text-indigo-300'
+                    : 'bg-[#10131a] border-[#232838] text-gray-400 hover:text-gray-200 hover:border-gray-600'
+                }`}
+                title="進階篩選條件"
+              >
+                <SlidersHorizontal className="w-4 h-4" />
+                {activeJobFilterCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-indigo-500 text-white text-[10px] font-bold flex items-center justify-center">
+                    {activeJobFilterCount}
+                  </span>
+                )}
+              </button>
+            </div>
+
+            {/* 1.5.1 固定在清單頂部的搜尋結果資訊與 PageSize / SortOrder 控制列 */}
+            <div className="flex items-center justify-between text-xs px-2.5 py-1.5 bg-[#12151e] border border-[#232838] rounded-lg text-gray-300 shrink-0">
+              <div className="flex items-center gap-1.5 min-w-0">
+                <span className="w-2 h-2 rounded-full bg-indigo-400 shrink-0"></span>
+                <span className="font-medium truncate">
+                  共 <span className="text-indigo-400 font-bold">{jobTotalCount.toLocaleString()}</span> 筆職位
+                </span>
+                <span className="text-gray-600 hidden sm:inline">·</span>
+                <span className="text-gray-400 text-[11px] hidden sm:inline">
+                  第 {jobPage} / {jobTotalPages} 頁
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0">
+                {/* PageSize 下拉清單 */}
+                <div className="flex items-center gap-1 text-[11px] text-gray-400">
+                  <span className="hidden sm:inline">每頁:</span>
+                  <select
+                    value={jobPageSize}
+                    onChange={(e) => {
+                      const newSize = Number(e.target.value);
+                      setJobPageSize(newSize);
+                      fetchJobs(1, newSize, jobSortOrder);
+                    }}
+                    className="bg-[#10131a] text-xs text-gray-200 border border-[#232838] rounded px-1.5 py-0.5 focus:outline-none focus:border-indigo-500/60 cursor-pointer"
+                  >
+                    <option value={10}>10</option>
+                    <option value={20}>20</option>
+                    <option value={50}>50</option>
+                    <option value={100}>100</option>
+                  </select>
+                </div>
+
+                {/* SortOrder 下拉清單 */}
+                <div className="flex items-center gap-1 text-[11px] text-gray-400">
+                  <select
+                    value={jobSortOrder}
+                    onChange={(e) => {
+                      const newOrder = Number(e.target.value);
+                      setJobSortOrder(newOrder);
+                      fetchJobs(1, jobPageSize, newOrder);
+                    }}
+                    className="bg-[#10131a] text-xs text-gray-200 border border-[#232838] rounded px-1.5 py-0.5 focus:outline-none focus:border-indigo-500/60 cursor-pointer max-w-[125px] truncate"
+                    title="排序方式"
+                  >
+                    <option value={11}>相關度</option>
+                    <option value={1}>刊登日期 (最新)</option>
+                    <option value={2}>刊登日期 (最舊)</option>
+                    <option value={3}>職位名稱 (A-Z)</option>
+                    <option value={4}>職位名稱 (Z-A)</option>
+                    <option value={5}>地點 (A-Z)</option>
+                    <option value={6}>地點 (Z-A)</option>
+                    <option value={7}>僱主 (A-Z)</option>
+                    <option value={8}>僱主 (Z-A)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 職位卡片清單 (Scrollable List) */}
+          <div className="flex-1 min-h-0 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
+            {loadingJobs ? (
+              <div className="flex flex-col items-center justify-center py-16 gap-3 text-gray-400">
+                <RefreshCw className="w-6 h-6 animate-spin text-indigo-400" />
+                <span className="text-xs">正在從 WorkBC 載入職位空缺資料...</span>
+              </div>
+            ) : jobsList.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-16 px-4 text-center gap-2.5 text-gray-400">
+                <Briefcase className="w-10 h-10 text-gray-600 stroke-[1.5]" />
+                <div className="text-sm font-medium text-gray-300">查無符合條件的職位空缺</div>
+                <p className="text-xs text-gray-500 max-w-xs leading-relaxed">
+                  請嘗試更換搜尋關鍵字、縮小或放寬進階篩選條件，或切換排序規則。
+                </p>
+                {activeJobFilterCount > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      resetJobFilters();
+                      fetchJobs(1);
+                    }}
+                    className="mt-2 text-xs text-indigo-400 hover:text-indigo-300 underline font-medium cursor-pointer"
+                  >
+                    重設所有篩選條件
+                  </button>
+                )}
+              </div>
+            ) : (
+              jobsList.map((job: any) => {
+                const hoursDesc = Array.isArray(job.HoursOfWork?.Description)
+                  ? job.HoursOfWork.Description.map((t: string) => translateJobTerm(t)).join(' / ')
+                  : (job.HoursOfWork?.Description ? translateJobTerm(String(job.HoursOfWork.Description)) : '');
+
+                const periodDesc = Array.isArray(job.PeriodOfEmployment?.Description)
+                  ? job.PeriodOfEmployment.Description.map((t: string) => translateJobTerm(t)).join(' / ')
+                  : (job.PeriodOfEmployment?.Description ? translateJobTerm(String(job.PeriodOfEmployment.Description)) : '');
+
+                const workplaceDesc = job.WorkplaceType?.Description
+                  ? translateJobTerm(job.WorkplaceType.Description)
+                  : '';
+
+                const isDirectExternal = !!job.ExternalSource && !!(job.ExternalSource?.Source?.[0]?.Url || job.ExternalSource?.Url);
+                const isItemLoading = fetchingJobDetailId === job.JobId;
+
+                return (
+                  <div
+                    key={job.JobId}
+                    onClick={() => handleJobClick(job)}
+                    className="bg-[#131722]/85 hover:bg-[#1a2030] border border-[#232838] hover:border-indigo-500/50 rounded-xl p-3 transition-all cursor-pointer group shadow-sm flex flex-col gap-2"
+                  >
+                    {/* Top Row: Title + Tags */}
+                    <div className="flex items-start justify-between gap-2">
+                      <h4 className="text-xs sm:text-sm font-bold text-gray-100 group-hover:text-indigo-300 transition-colors line-clamp-1 leading-snug">
+                        {job.Title}
+                      </h4>
+                      <div className="flex items-center gap-1 shrink-0">
+                        {job.IsNew && (
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40">
+                            NEW
+                          </span>
+                        )}
+                        {isDirectExternal ? (
+                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                            <span>外部</span>
+                            <ExternalLink className="w-2.5 h-2.5" />
+                          </span>
+                        ) : isItemLoading ? (
+                          <span className="inline-flex items-center gap-1 text-[10.5px] text-indigo-400">
+                            <RefreshCw className="w-3 h-3 animate-spin" />
+                            <span>定位中...</span>
+                          </span>
+                        ) : null}
+                      </div>
+                    </div>
+
+                    {/* Employer Name */}
+                    {job.EmployerName && (
+                      <div className="text-[11.5px] text-gray-400 flex items-center gap-1.5 truncate">
+                        <Building2 className="w-3 h-3 text-gray-500 shrink-0" />
+                        <span className="truncate">{job.EmployerName}</span>
+                      </div>
+                    )}
+
+                    {/* Pills Row: City + Hours + Period + Workplace */}
+                    <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                      {job.City && (
+                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-gray-800/80 border border-gray-700/60 text-[10.5px] text-gray-300">
+                          <MapPin className="w-2.5 h-2.5 text-gray-400" />
+                          <span>{job.City}</span>
+                        </span>
+                      )}
+                      {hoursDesc && (
+                        <span className="px-1.5 py-0.5 rounded bg-indigo-950/70 border border-indigo-600/30 text-[10.5px] text-indigo-300 font-medium">
+                          {hoursDesc}
+                        </span>
+                      )}
+                      {periodDesc && (
+                        <span className="px-1.5 py-0.5 rounded bg-teal-950/70 border border-teal-600/30 text-[10.5px] text-teal-300 font-medium">
+                          {periodDesc}
+                        </span>
+                      )}
+                      {workplaceDesc && (
+                        <span className="px-1.5 py-0.5 rounded bg-blue-950/70 border border-blue-600/30 text-[10.5px] text-blue-300">
+                          {workplaceDesc}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Bottom Row: Salary + Date */}
+                    <div className="flex items-center justify-between text-[11px] pt-1 border-t border-gray-800/80 mt-0.5">
+                      <div className="flex items-center gap-1 text-emerald-400 font-medium">
+                        <DollarSign className="w-3 h-3 shrink-0" />
+                        <span>{job.SalarySummary || '薪資依面議或職位說明'}</span>
+                      </div>
+                      {job.DatePosted && (
+                        <div className="flex items-center gap-1 text-gray-500 text-[10.5px]">
+                          <Clock className="w-3 h-3" />
+                          <span>{formatJobPostingDate(job.DatePosted)}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+
+          {/* 1.2 頁數選擇與分頁控制 (底部分頁列) */}
+          {jobTotalCount > 0 && (
+            <div className="flex items-center justify-between pt-2.5 mt-2 border-t border-[#232838] shrink-0 text-xs">
+              <button
+                type="button"
+                onClick={() => fetchJobs(jobPage - 1)}
+                disabled={jobPage <= 1 || loadingJobs}
+                className="px-2.5 py-1.5 rounded-lg bg-[#10131a] border border-[#232838] hover:bg-[#181d28] disabled:opacity-40 disabled:pointer-events-none text-gray-300 flex items-center gap-1 transition-colors cursor-pointer"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+                <span>上一頁</span>
+              </button>
+
+              <div className="flex items-center gap-1.5">
+                <span className="text-gray-400 text-[11px]">前往</span>
+                <select
+                  value={jobPage}
+                  onChange={(e) => fetchJobs(Number(e.target.value))}
+                  disabled={loadingJobs}
+                  className="bg-[#10131a] text-xs font-semibold text-indigo-300 border border-indigo-500/40 rounded px-2 py-1 focus:outline-none cursor-pointer"
+                >
+                  {Array.from({ length: Math.min(jobTotalPages, 100) }, (_, i) => i + 1).map((p) => (
+                    <option key={p} value={p}>
+                      第 {p} 頁
+                    </option>
+                  ))}
+                </select>
+                <span className="text-gray-500 text-[11px]">/ {jobTotalPages} 頁</span>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => fetchJobs(jobPage + 1)}
+                disabled={jobPage >= jobTotalPages || loadingJobs}
+                className="px-2.5 py-1.5 rounded-lg bg-[#10131a] border border-[#232838] hover:bg-[#181d28] disabled:opacity-40 disabled:pointer-events-none text-gray-300 flex items-center gap-1 transition-colors cursor-pointer"
+              >
+                <span>下一頁</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
+
+          {/* 1.3 篩選界面 Drawer / Overlay */}
+          {isJobFilterOpen && (
+            <div className="absolute inset-0 z-40 bg-[#161922] flex flex-col rounded-xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+              {/* Filter Header */}
+              <div className="flex items-center justify-between px-4 py-3 bg-[#1e2330] border-b border-gray-700/60 shrink-0">
+                <div className="flex items-center gap-2">
+                  <SlidersHorizontal className="w-4 h-4 text-indigo-400" />
+                  <h4 className="text-sm font-bold text-gray-100">職位進階篩選條件</h4>
+                  {activeJobFilterCount > 0 && (
+                    <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500 text-white">
+                      已啟用 {activeJobFilterCount} 項
+                    </span>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsJobFilterOpen(false)}
+                  className="p-1 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                  title="關閉篩選"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Filter Body: 10 Categories */}
+              <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4 text-xs divide-y divide-gray-800/80">
+                {/* 1. 工時類型 */}
+                <div className="space-y-2 pt-1 first:pt-0">
+                  <div className="font-bold text-gray-200 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+                    <span>1. 工時類型</span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      { id: 'full', label: '全職', state: filterJobTypeFullTime, set: setFilterJobTypeFullTime },
+                      { id: 'part', label: '兼職', state: filterJobTypePartTime, set: setFilterJobTypePartTime },
+                      { id: 'lead', label: '兼職轉全職', state: filterJobTypeLeadingToFullTime, set: setFilterJobTypeLeadingToFullTime },
+                    ].map((item) => (
+                      <label key={item.id} className="flex items-center gap-2 bg-[#10131a] p-2 rounded-lg border border-gray-800 hover:border-gray-700 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={item.state}
+                          onChange={(e) => item.set(e.target.checked)}
+                          className="accent-indigo-600 rounded"
+                        />
+                        <span className="text-gray-300 text-[11px] truncate">{item.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 2. 工作模式 */}
+                <div className="space-y-2 pt-3">
+                  <div className="font-bold text-gray-200 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+                    <span>2. 工作模式</span>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    {[
+                      { id: 'onsite', label: '現場上班', state: filterJobTypeOnSite, set: setFilterJobTypeOnSite },
+                      { id: 'hybrid', label: '混合辦公', state: filterJobTypeHybrid, set: setFilterJobTypeHybrid },
+                      { id: 'travelling', label: '需出差', state: filterJobTypeTravelling, set: setFilterJobTypeTravelling },
+                      { id: 'virtual', label: '遠距辦公', state: filterJobTypeVirtual, set: setFilterJobTypeVirtual },
+                    ].map((item) => (
+                      <label key={item.id} className="flex items-center gap-2 bg-[#10131a] p-2 rounded-lg border border-gray-800 hover:border-gray-700 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={item.state}
+                          onChange={(e) => item.set(e.target.checked)}
+                          className="accent-indigo-600 rounded"
+                        />
+                        <span className="text-gray-300 text-[11px] truncate">{item.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 3. 合約形式 */}
+                <div className="space-y-2 pt-3">
+                  <div className="font-bold text-gray-200 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+                    <span>3. 合約形式</span>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    {[
+                      { id: 'perm', label: '永久聘用', state: filterJobTypePermanent, set: setFilterJobTypePermanent },
+                      { id: 'temp', label: '臨時約聘', state: filterJobTypeTemporary, set: setFilterJobTypeTemporary },
+                      { id: 'casual', label: '散工 / 零工', state: filterJobTypeCasual, set: setFilterJobTypeCasual },
+                      { id: 'season', label: '季節性', state: filterJobTypeSeasonal, set: setFilterJobTypeSeasonal },
+                    ].map((item) => (
+                      <label key={item.id} className="flex items-center gap-2 bg-[#10131a] p-2 rounded-lg border border-gray-800 hover:border-gray-700 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={item.state}
+                          onChange={(e) => item.set(e.target.checked)}
+                          className="accent-indigo-600 rounded"
+                        />
+                        <span className="text-gray-300 text-[11px] truncate">{item.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 4. 工作排班 */}
+                <div className="space-y-2 pt-3">
+                  <div className="font-bold text-gray-200 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+                    <span>4. 工作排班</span>
+                  </div>
+                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-1.5">
+                    {[
+                      { id: 'day', label: '日間班', state: filterJobTypeDay, set: setFilterJobTypeDay },
+                      { id: 'early', label: '清晨班', state: filterJobTypeEarly, set: setFilterJobTypeEarly },
+                      { id: 'evening', label: '傍晚班', state: filterJobTypeEvening, set: setFilterJobTypeEvening },
+                      { id: 'morning', label: '早班', state: filterJobTypeMorning, set: setFilterJobTypeMorning },
+                      { id: 'night', label: '夜班/通宵', state: filterJobTypeNight, set: setFilterJobTypeNight },
+                      { id: 'flexible', label: '彈性工時', state: filterJobTypeFlexible, set: setFilterJobTypeFlexible },
+                      { id: 'shift', label: '輪班制', state: filterJobTypeShift, set: setFilterJobTypeShift },
+                      { id: 'weekend', label: '週末班', state: filterJobTypeWeekend, set: setFilterJobTypeWeekend },
+                      { id: 'oncall', label: '待命班', state: filterJobTypeOnCall, set: setFilterJobTypeOnCall },
+                      { id: 'overtime', label: '配合加班', state: filterJobTypeOvertime, set: setFilterJobTypeOvertime },
+                      { id: 'tbd', label: '待定', state: filterJobTypeTbd, set: setFilterJobTypeTbd },
+                    ].map((item) => (
+                      <label key={item.id} className="flex items-center gap-1.5 bg-[#10131a] p-1.5 rounded border border-gray-800 hover:border-gray-700 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={item.state}
+                          onChange={(e) => item.set(e.target.checked)}
+                          className="accent-indigo-600 rounded"
+                        />
+                        <span className="text-gray-300 text-[10.5px] truncate">{item.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 5. 薪資福利 */}
+                <div className="space-y-2 pt-3">
+                  <div className="font-bold text-gray-200 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+                    <span>5. 薪資福利</span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    <div>
+                      <span className="text-[10.5px] text-gray-400 mb-1 block">計薪週期</span>
+                      <select
+                        value={filterSalaryType}
+                        onChange={(e) => setFilterSalaryType(e.target.value)}
+                        className="w-full bg-[#10131a] border border-gray-800 text-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none"
+                      >
+                        <option value="">不限類型</option>
+                        <option value="0">時薪 (Hourly)</option>
+                        <option value="1">週薪 (Weekly)</option>
+                        <option value="2">雙周薪 (Bi-weekly)</option>
+                        <option value="3">月薪 (Monthly)</option>
+                        <option value="4">年薪 (Annual)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <span className="text-[10.5px] text-gray-400 mb-1 block">最低薪資</span>
+                      <input
+                        type="number"
+                        placeholder="例: 25"
+                        value={filterSalaryMin}
+                        onChange={(e) => setFilterSalaryMin(e.target.value)}
+                        className="w-full bg-[#10131a] border border-gray-800 text-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <span className="text-[10.5px] text-gray-400 mb-1 block">最高薪資</span>
+                      <input
+                        type="number"
+                        placeholder="例: 50"
+                        value={filterSalaryMax}
+                        onChange={(e) => setFilterSalaryMax(e.target.value)}
+                        className="w-full bg-[#10131a] border border-gray-800 text-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  {/* 福利勾選清單 */}
+                  <div className="pt-1">
+                    <span className="text-[10.5px] text-gray-400 mb-1 block">福利項目</span>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                      {[
+                        { key: 'Dental benefits', label: '牙科保險' },
+                        { key: 'Medical benefits', label: '醫療保險' },
+                        { key: 'Vision care benefits', label: '視力照護' },
+                        { key: 'Group insurance benefits', label: '團體人壽保險' },
+                        { key: 'Life insurance benefits', label: '人壽保險' },
+                        { key: 'Disability benefits', label: '傷殘保險' },
+                        { key: 'Pension plan benefits', label: '退休金計劃' },
+                        { key: 'RRSP benefits', label: 'RRSP 退休儲蓄' },
+                        { key: 'RESP benefits', label: 'RESP 教育儲蓄' },
+                        { key: 'Bonus', label: '績效獎金' },
+                        { key: 'Commission', label: '業務佣金 / 提成' },
+                        { key: 'Mileage paid', label: '里程交通補貼' },
+                        { key: 'Gratuities', label: '小費福利' },
+                        { key: 'As per collective agreement', label: '依集體協議' },
+                        { key: 'Other benefits', label: '其他福利津貼' },
+                      ].map((item) => {
+                        const checked = filterSalaryConditions.includes(item.key);
+                        return (
+                          <label key={item.key} className="flex items-center gap-1.5 bg-[#10131a] p-1.5 rounded border border-gray-800 hover:border-gray-700 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={checked}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setFilterSalaryConditions([...filterSalaryConditions, item.key]);
+                                } else {
+                                  setFilterSalaryConditions(filterSalaryConditions.filter((k) => k !== item.key));
+                                }
+                              }}
+                              className="accent-indigo-600 rounded"
+                            />
+                            <span className="text-gray-300 text-[10.5px] truncate">{item.label}</span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 6. 教育程度 */}
+                <div className="space-y-2 pt-3">
+                  <div className="font-bold text-gray-200 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+                    <span>6. 教育程度</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    {[
+                      { key: 'University', label: '大學學歷 (University)' },
+                      { key: 'College or apprenticeship', label: '專上學院或學徒培訓' },
+                      { key: 'Secondary school or job-specific training', label: '高中學歷或職業培訓' },
+                      { key: 'No education', label: '無需學歷要求' },
+                    ].map((item) => {
+                      const checked = filterJobEducationLevel.includes(item.key);
+                      return (
+                        <label key={item.key} className="flex items-center gap-2 bg-[#10131a] p-2 rounded-lg border border-gray-800 hover:border-gray-700 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={checked}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setFilterJobEducationLevel([...filterJobEducationLevel, item.key]);
+                              } else {
+                                setFilterJobEducationLevel(filterJobEducationLevel.filter((k) => k !== item.key));
+                              }
+                            }}
+                            className="accent-indigo-600 rounded"
+                          />
+                          <span className="text-gray-300 text-[11px] truncate">{item.label}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 7. 日期範圍 */}
+                <div className="space-y-2 pt-3">
+                  <div className="font-bold text-gray-200 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+                    <span>7. 刊登日期範圍</span>
+                  </div>
+                  <div className="grid grid-cols-4 gap-2">
+                    {[
+                      { val: '0', label: '不限日期' },
+                      { val: '1', label: '今日刊登' },
+                      { val: '2', label: '過去 3 日' },
+                      { val: '3', label: '自訂範圍' },
+                    ].map((item) => (
+                      <label key={item.val} className="flex items-center gap-1.5 bg-[#10131a] p-2 rounded-lg border border-gray-800 hover:border-gray-700 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="dateSelectionRadio"
+                          checked={filterDateSelection === item.val}
+                          onChange={() => setFilterDateSelection(item.val)}
+                          className="accent-indigo-600"
+                        />
+                        <span className="text-gray-300 text-[11px] truncate">{item.label}</span>
+                      </label>
+                    ))}
+                  </div>
+
+                  {filterDateSelection === '3' && (
+                    <div className="grid grid-cols-2 gap-2 pt-1 animate-in fade-in duration-150">
+                      <div>
+                        <span className="text-[10.5px] text-gray-400 mb-1 block">開始日期</span>
+                        <input
+                          type="date"
+                          value={filterStartDate}
+                          onChange={(e) => setFilterStartDate(e.target.value)}
+                          className="w-full bg-[#10131a] border border-gray-800 text-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none"
+                        />
+                      </div>
+                      <div>
+                        <span className="text-[10.5px] text-gray-400 mb-1 block">完結日期</span>
+                        <input
+                          type="date"
+                          value={filterEndDate}
+                          onChange={(e) => setFilterEndDate(e.target.value)}
+                          className="w-full bg-[#10131a] border border-gray-800 text-gray-300 rounded px-2 py-1.5 text-xs focus:outline-none"
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* 8. 特定對象 */}
+                <div className="space-y-2 pt-3">
+                  <div className="font-bold text-gray-200 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+                    <span>8. 特定徵才對象</span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      { id: 'appr', label: '學徒', state: filterIsApprentice, set: setFilterIsApprentice },
+                      { id: 'vet', label: '退伍軍人', state: filterIsVeterans, set: setFilterIsVeterans },
+                      { id: 'indig', label: '原住民', state: filterIsIndigenous, set: setFilterIsIndigenous },
+                      { id: 'mature', label: '年長工作者', state: filterIsMatureWorkers, set: setFilterIsMatureWorkers },
+                      { id: 'newcomer', label: '新移民', state: filterIsNewcomers, set: setFilterIsNewcomers },
+                      { id: 'disab', label: '身心障礙人士', state: filterIsPeopleWithDisabilities, set: setFilterIsPeopleWithDisabilities },
+                      { id: 'student', label: '學生', state: filterIsStudents, set: setFilterIsStudents },
+                      { id: 'vismin', label: '少數族裔', state: filterIsVisibleMinority, set: setFilterIsVisibleMinority },
+                      { id: 'youth', label: '青年', state: filterIsYouth, set: setFilterIsYouth },
+                    ].map((item) => (
+                      <label key={item.id} className="flex items-center gap-2 bg-[#10131a] p-2 rounded-lg border border-gray-800 hover:border-gray-700 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={item.state}
+                          onChange={(e) => item.set(e.target.checked)}
+                          className="accent-indigo-600 rounded"
+                        />
+                        <span className="text-gray-300 text-[11px] truncate">{item.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 9. 刊登語言 */}
+                <div className="space-y-2 pt-3">
+                  <div className="font-bold text-gray-200 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+                    <span>9. 刊登語言</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <label className="flex items-center gap-2 bg-[#10131a] p-2 rounded-lg border border-gray-800 hover:border-gray-700 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={filterIsPostingsInEnglish}
+                        onChange={(e) => setFilterIsPostingsInEnglish(e.target.checked)}
+                        className="accent-indigo-600 rounded"
+                      />
+                      <span className="text-gray-300 text-[11px] truncate">英文 (English)</span>
+                    </label>
+                    <label className="flex items-center gap-2 bg-[#10131a] p-2 rounded-lg border border-gray-800 hover:border-gray-700 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={filterIsPostingsInEnglishAndFrench}
+                        onChange={(e) => setFilterIsPostingsInEnglishAndFrench(e.target.checked)}
+                        className="accent-indigo-600 rounded"
+                      />
+                      <span className="text-gray-300 text-[11px] truncate">英文及法文 (Bilingual)</span>
+                    </label>
+                  </div>
+                </div>
+
+                {/* 10. 排除中介代徵 */}
+                <div className="space-y-2 pt-3">
+                  <div className="font-bold text-gray-200 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+                    <span>10. 排除中介代徵職位</span>
+                  </div>
+                  <label className="flex items-center gap-2 bg-[#10131a] p-2.5 rounded-lg border border-gray-800 hover:border-gray-700 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={filterExcludePlacementAgencyJobs}
+                      onChange={(e) => setFilterExcludePlacementAgencyJobs(e.target.checked)}
+                      className="accent-indigo-600 rounded"
+                    />
+                    <span className="text-gray-300 text-xs font-medium">排除由人力仲介或代徵機構發布的職缺</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Filter Drawer Footer */}
+              <div className="px-4 py-3 bg-[#1a1e29] border-t border-gray-800 flex items-center justify-between shrink-0">
+                <button
+                  type="button"
+                  onClick={resetJobFilters}
+                  className="px-3 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs font-medium transition-colors cursor-pointer"
+                >
+                  重設所有篩選
+                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsJobFilterOpen(false)}
+                    className="px-3 py-1.5 rounded-lg text-gray-400 hover:text-white text-xs transition-colors cursor-pointer"
+                  >
+                    取消
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsJobFilterOpen(false);
+                      fetchJobs(1);
+                    }}
+                    className="px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-colors shadow-md cursor-pointer"
+                  >
+                    套用篩選並搜尋
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -6539,6 +7613,12 @@ function ExploreContent() {
           {activeTab === 'aurora' && (
             <>
               <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：NOAA SWPC</span>
+            </>
+          )}
+          {activeTab === 'jobs' && (
+            <>
+              <span>共 {jobTotalCount.toLocaleString()} 筆職位空缺 (第 {jobPage} / {jobTotalPages} 頁)</span>
+              <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：WorkBC (Government of British Columbia)</span>
             </>
           )}
           {activeTab === 'atm' && (

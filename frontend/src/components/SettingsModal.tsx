@@ -20,11 +20,14 @@ export default function SettingsModal() {
     setTemperatureUnit,
     userLocation,
     setUserLocation,
+    navigationAddress,
+    setNavigationAddress,
     setSearchTarget
   } = useUIStore();
 
-
   const [addressInput, setAddressInput] = useState('');
+  const [navAddressInput, setNavAddressInput] = useState('');
+  const [isNavGpsLoading, setIsNavGpsLoading] = useState(false);
   const [isGeocoding, setIsGeocoding] = useState(false);
   const [isGpsLoading, setIsGpsLoading] = useState(false);
   const [geocodeError, setGeocodeError] = useState<string | null>(null);
@@ -271,6 +274,36 @@ export default function SettingsModal() {
     });
   };
 
+  // Sync navAddressInput with store
+  useEffect(() => {
+    if (navigationAddress) {
+      setNavAddressInput(navigationAddress);
+    }
+  }, [navigationAddress]);
+
+  // GPS for Navigation Starting Address
+  const handleUseGpsForNav = () => {
+    if (!navigator.geolocation) {
+      return;
+    }
+    setIsNavGpsLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const lat = Math.round(pos.coords.latitude * 1000000) / 1000000;
+        const lon = Math.round(pos.coords.longitude * 1000000) / 1000000;
+        const gpsStr = `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+        setNavAddressInput(gpsStr);
+        setNavigationAddress(gpsStr);
+        setIsNavGpsLoading(false);
+      },
+      (err) => {
+        console.error('Nav GPS error:', err);
+        setIsNavGpsLoading(false);
+      },
+      { timeout: 10000, enableHighAccuracy: true }
+    );
+  };
+
   return (
     <div 
       className="fixed top-[72px] right-4 z-50 w-[360px] max-w-[calc(100vw-32px)] bg-[#161922]/98 backdrop-blur-md text-gray-100 rounded-xl shadow-2xl border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-200 select-none overflow-hidden"
@@ -495,6 +528,89 @@ export default function SettingsModal() {
 
         <div className="w-full h-px bg-[#262b38]"></div>
 
+        {/* Setting: 導航地址 (Navigation Starting Address) */}
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <label className="text-xs font-bold text-gray-200 flex items-center gap-1.5">
+              <Navigation className="w-3.5 h-3.5 text-cyan-400" />
+              <span>導航地址 (Navigation Address)</span>
+            </label>
+            <span className="text-[10px] text-gray-400">Google 導航出發點</span>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <div className="relative">
+              <input
+                type="text"
+                value={navAddressInput}
+                onChange={(e) => {
+                  setNavAddressInput(e.target.value);
+                  setNavigationAddress(e.target.value.trim());
+                }}
+                placeholder="輸入導航起點地址 (例如: 1200 Burrard St)"
+                className="w-full bg-[#12151d] text-xs text-white rounded-lg border border-[#343a4a] px-3 py-2 pr-8 focus:outline-none focus:border-cyan-500 transition-colors placeholder:text-gray-500"
+              />
+              {navAddressInput && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setNavAddressInput('');
+                    setNavigationAddress('');
+                  }}
+                  className="absolute right-2 top-2 text-gray-400 hover:text-gray-200"
+                  title="清除導航地址"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleUseGpsForNav}
+                disabled={isNavGpsLoading}
+                className="flex-1 py-1.5 px-3 bg-[#252a38] hover:bg-[#2e3446] text-cyan-300 rounded-lg text-xs font-medium border border-cyan-500/30 transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+              >
+                {isNavGpsLoading ? (
+                  <>
+                    <RefreshCw className="w-3 h-3 animate-spin" />
+                    <span>定位中...</span>
+                  </>
+                ) : (
+                  <>
+                    <Navigation className="w-3 h-3 text-cyan-400" />
+                    <span>GPS 定位出發點</span>
+                  </>
+                )}
+              </button>
+              {userLocation?.confirmed && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const addr = userLocation.displayName || userLocation.address;
+                    setNavAddressInput(addr);
+                    setNavigationAddress(addr);
+                  }}
+                  className="py-1.5 px-2.5 bg-[#1e2330] hover:bg-[#272e3f] text-gray-300 hover:text-white rounded-lg text-xs font-medium border border-[#343d52] transition-colors whitespace-nowrap"
+                  title="同個人住址"
+                >
+                  同個人住址
+                </button>
+              )}
+            </div>
+
+            {navigationAddress && (
+              <p className="text-[10px] text-emerald-400 flex items-center gap-1">
+                <Check className="w-3 h-3" />
+                <span>已設定出發點：{navigationAddress}</span>
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div className="w-full h-px bg-[#262b38]"></div>
+
         {/* Setting 2: 時間顯示方式 (Time Format) */}
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
@@ -695,25 +811,6 @@ export default function SettingsModal() {
           </div>
         </div>
 
-
-        {/* 底部政策條款連結 (已刪除「設定即時自動生效」與「關閉面板」) */}
-        <div className="mt-2 pt-2.5 border-t border-[#262b38] flex items-center justify-center gap-2.5 text-[10.5px] text-gray-400 shrink-0 pb-1">
-          <Link
-            href="/privacy"
-            target="_blank"
-            className="hover:text-blue-400 transition-colors hover:underline"
-          >
-            隱私權政策 (Privacy)
-          </Link>
-          <span>·</span>
-          <Link
-            href="/terms"
-            target="_blank"
-            className="hover:text-amber-400 transition-colors hover:underline"
-          >
-            服務條款 (Terms)
-          </Link>
-        </div>
       </div>
     </div>
   );
