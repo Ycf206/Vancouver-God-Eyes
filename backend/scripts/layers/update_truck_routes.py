@@ -232,6 +232,20 @@ def update_truck_routes():
             }
         })
 
+    # 5. 加入 Kingsway 貫通線段與 12 處接續橋接線段 (補齊 OpenData 原始缺陷斷層)
+    conn_path = os.path.join(CURRENT_DIR, "..", "..", "data", "truck_route_connectors.json")
+    if os.path.exists(conn_path):
+        try:
+            with open(conn_path, "r", encoding="utf-8") as f:
+                c_data = json.load(f)
+                if "kingsway" in c_data:
+                    features.append(c_data["kingsway"])
+                if "connectors" in c_data:
+                    features.append(c_data["connectors"])
+            print("  -> 成功加載 Kingsway 貫通線段及 12 處貨車路線橋接線段。")
+        except Exception as e:
+            print(f"⚠️ 載入貨車路線橋接線段失敗: {e}")
+
     if not features:
         print("ℹ️ 使用現有快取資料備份...")
         existing = load_existing_geojson("vancouver_truck_routes.geojson")

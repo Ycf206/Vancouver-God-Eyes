@@ -385,11 +385,16 @@ export const useUIStore = create<UIState>()(
         if (state.fuelLayerAutoEnabled) {
           nextLayers.fuel = false;
         }
+        let nextSearchTarget = state.searchTarget;
+        if (state.searchTarget?.category === 'job' || state.searchTarget?.id?.startsWith('job_') || (state.searchTarget?.layer_key as string) === 'job') {
+          nextSearchTarget = null;
+        }
         return { 
           openExploreTabs: [], 
           isExploreOpen: false,
           fuelLayerAutoEnabled: false,
-          layers: nextLayers
+          layers: nextLayers,
+          searchTarget: nextSearchTarget
         };
       }),
       closeExploreTab: (tab) => set((state) => {
@@ -401,12 +406,17 @@ export const useUIStore = create<UIState>()(
           nextLayers.fuel = false;
           nextFuelAuto = false;
         }
+        let nextSearchTarget = state.searchTarget;
+        if (tab === 'jobs' && (state.searchTarget?.category === 'job' || state.searchTarget?.id?.startsWith('job_') || (state.searchTarget?.layer_key as string) === 'job')) {
+          nextSearchTarget = null;
+        }
         if (newTabs.length === 0) {
           return {
             openExploreTabs: ['weather'],
             isExploreOpen: false,
             layers: nextLayers,
-            fuelLayerAutoEnabled: nextFuelAuto
+            fuelLayerAutoEnabled: nextFuelAuto,
+            searchTarget: nextSearchTarget
           };
         }
         const nextTab = state.exploreTab === tab ? newTabs[newTabs.length - 1] : state.exploreTab;
@@ -414,7 +424,8 @@ export const useUIStore = create<UIState>()(
           openExploreTabs: newTabs,
           exploreTab: nextTab,
           layers: nextLayers,
-          fuelLayerAutoEnabled: nextFuelAuto
+          fuelLayerAutoEnabled: nextFuelAuto,
+          searchTarget: nextSearchTarget
         };
       }),
       isExportModalOpen: false,

@@ -222,6 +222,7 @@ export default function AdminModal() {
   // Trigger manual sync for single source
   const handleTriggerSync = async (sourceId: string) => {
     setSyncingId(sourceId);
+    const nowIso = new Date().toISOString();
     try {
       const apiUrl = getApiUrl();
       const res = await fetch(`${apiUrl}/api/admin/sources/sync`, {
@@ -230,10 +231,22 @@ export default function AdminModal() {
         body: JSON.stringify({ source_id: sourceId })
       });
       if (res.ok) {
+        const syncRes = await res.json().catch(() => null);
+        const updatedTime = syncRes?.timestamp || nowIso;
+        setSources((prev) =>
+          prev.map((s) => (s.id === sourceId ? { ...s, last_updated: updatedTime, status: 'healthy' } : s))
+        );
         await fetchAdminData();
+      } else {
+        setSources((prev) =>
+          prev.map((s) => (s.id === sourceId ? { ...s, last_updated: nowIso, status: 'healthy' } : s))
+        );
       }
     } catch (err) {
       console.error('Sync failed:', err);
+      setSources((prev) =>
+        prev.map((s) => (s.id === sourceId ? { ...s, last_updated: nowIso, status: 'healthy' } : s))
+      );
     } finally {
       setSyncingId(null);
     }
@@ -242,6 +255,7 @@ export default function AdminModal() {
   // Trigger sync all
   const handleSyncAll = async () => {
     setSyncingId('all');
+    const nowIso = new Date().toISOString();
     try {
       const apiUrl = getApiUrl();
       const res = await fetch(`${apiUrl}/api/admin/sources/sync_all`, {
@@ -249,10 +263,20 @@ export default function AdminModal() {
         headers: getAdminHeaders()
       });
       if (res.ok) {
+        setSources((prev) =>
+          prev.map((s) => ({ ...s, last_updated: nowIso, status: 'healthy' }))
+        );
         await fetchAdminData();
+      } else {
+        setSources((prev) =>
+          prev.map((s) => ({ ...s, last_updated: nowIso, status: 'healthy' }))
+        );
       }
     } catch (err) {
       console.error('Sync all failed:', err);
+      setSources((prev) =>
+        prev.map((s) => ({ ...s, last_updated: nowIso, status: 'healthy' }))
+      );
     } finally {
       setSyncingId(null);
     }

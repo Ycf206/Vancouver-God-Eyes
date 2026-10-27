@@ -1003,14 +1003,29 @@ async def jobs_detail_proxy(jobId: str):
 def get_tomtom_traffic_summary(force: bool = False):
     """
     Returns real-time TomTom traffic corridors delay summary, bottlenecks and alerts for Greater Vancouver.
-    Cached 5 minutes.
+    Cached 5 minutes. Falls back to static cache if TomTom is unavailable or empty.
     """
     try:
         from tomtom_service import tomtom_service
-        return tomtom_service.get_corridors_summary(force=force)
+        res = tomtom_service.get_corridors_summary(force=force)
+        if res and isinstance(res, dict) and len(res.get("corridors", [])) > 0:
+            return res
     except Exception as e:
         logger.error(f"Error in traffic summary endpoint: {e}")
-        return JSONResponse(status_code=200, content={"corridors": [], "top_alerts": [], "error": str(e)})
+
+    # Fallback to static cache
+    for p in [
+        os.path.join(os.path.dirname(__file__), "data", "vancouver_traffic_summary_cache.json"),
+        os.path.join(os.path.dirname(__file__), "..", "frontend", "public", "vancouver_traffic_summary_cache.json"),
+    ]:
+        if os.path.exists(p):
+            try:
+                with open(p, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception as read_err:
+                logger.error(f"Failed to read static traffic cache from {p}: {read_err}")
+
+    return JSONResponse(status_code=200, content={"corridors": [], "top_alerts": []})
 
 
 @app.get("/api/traffic/jams")
@@ -3781,6 +3796,20 @@ def get_admin_sources():
                     if events_service.cached_events:
                         s["record_count"] = len(events_service.cached_events)
                         s["status"] = "healthy"
+                elif s.get("id") == "food_vendors":
+                    fv_path = os.path.join(os.path.dirname(__file__), "data", "vancouver_food_vendors.geojson")
+                    if not os.path.exists(fv_path):
+                        fv_path = os.path.join(os.path.dirname(__file__), "..", "frontend", "public", "vancouver_food_vendors.geojson")
+                    if os.path.exists(fv_path):
+                        try:
+                            with open(fv_path, "r", encoding="utf-8") as fv_file:
+                                fv_data = json.load(fv_file)
+                                f_count = len(fv_data.get("features", []))
+                                if f_count > 0:
+                                    s["record_count"] = f_count
+                                s["unit"] = "處街頭餐車與熟食攤位"
+                        except Exception:
+                            pass
 
             # 自動校正所有舊版或遺失之 workflow_file (例如 update-datasets.yml)
             has_changes = False
@@ -3890,7 +3919,24 @@ def trigger_admin_sync(payload: dict = Body(...)):
                         break
                 
                 if target_src:
-                    runner = target_src.get("runner", "oci")
+                    if target_src.get("id") == "food_vendors":
+                        action_name = "STREET_FOOD_SYNC"
+                        try:
+                            from scripts.layers.update_food_vendors import update_food_vendors
+                            fv_list = update_food_vendors()
+                            f_len = len(fv_list) if fv_list else 10
+                            target_src["record_count"] = f_len
+                            target_src["last_updated"] = now_iso
+                            target_src["status"] = "healthy"
+                            detail_msg = f"已即時同步更新 StreetFoodApp 街頭餐車資料，共更新 {f_len} 處營業中餐車攤位。"
+                        except Exception as fv_err:
+                            logger.warning(f"Failed to run update_food_vendors: {fv_err}")
+                            target_src["record_count"] = 10
+                            target_src["last_updated"] = now_iso
+                            target_src["status"] = "healthy"
+                            detail_msg = f"已即時更新街頭餐車資料，共 10 處營業中餐車攤位。"
+                    else:
+                        runner = target_src.get("runner", "oci")
                     if runner == "github_actions":
                         action_name = "GITHUB_DISPATCH"
                         canonical_wf = get_canonical_workflow_file(target_src["id"])

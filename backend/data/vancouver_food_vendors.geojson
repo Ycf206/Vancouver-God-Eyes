@@ -1,12 +1,141 @@
 {
   "type": "FeatureCollection",
-  "generator": "VancouverGodsEye",
-  "total_count": 1,
-  "updated_at": "2026-10-27T04:44:28.001511+00:00",
   "features": [
     {
       "type": "Feature",
       "id": "food_vendor_sfa_1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.115931,
+          49.23516
+        ]
+      },
+      "properties": {
+        "id": "food_vendor_sfa_1",
+        "facility_type": "food_vendors",
+        "name": "Armanmobile STEAMWORKS",
+        "business_name": "Armanmobile STEAMWORKS",
+        "address": "5516 Cambie St., Vancouver",
+        "hours": "9 AM – 9 PM",
+        "has_credit_card": true,
+        "local_area": "Vancouver",
+        "source": "StreetFoodApp"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_vendor_sfa_2",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.030974,
+          49.206493
+        ]
+      },
+      "properties": {
+        "id": "food_vendor_sfa_2",
+        "facility_type": "food_vendors",
+        "name": "Babb D Thai Food",
+        "business_name": "Babb D Thai Food",
+        "address": "River District Town Centre, 8558 River District Cross, Vancouver, BC",
+        "hours": "11 AM – 7 PM",
+        "has_credit_card": true,
+        "local_area": "Vancouver",
+        "source": "StreetFoodApp"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_vendor_sfa_3",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.030923,
+          49.206418
+        ]
+      },
+      "properties": {
+        "id": "food_vendor_sfa_3",
+        "facility_type": "food_vendors",
+        "name": "Indish",
+        "business_name": "Indish",
+        "address": "River District Crossing, Vancouver",
+        "hours": "11 AM – 7 PM",
+        "has_credit_card": true,
+        "local_area": "Vancouver",
+        "source": "StreetFoodApp"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_vendor_sfa_4",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.133731,
+          49.263539
+        ]
+      },
+      "properties": {
+        "id": "food_vendor_sfa_4",
+        "facility_type": "food_vendors",
+        "name": "Miss Siam",
+        "business_name": "Miss Siam",
+        "address": "Broadway/Birch",
+        "hours": "11 AM – 2 PM",
+        "has_credit_card": true,
+        "local_area": "Vancouver",
+        "source": "StreetFoodApp"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_vendor_sfa_5",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.113481,
+          49.286466
+        ]
+      },
+      "properties": {
+        "id": "food_vendor_sfa_5",
+        "facility_type": "food_vendors",
+        "name": "arturosmexico2go",
+        "business_name": "arturosmexico2go",
+        "address": "Howe St & W Cordova St",
+        "hours": "11:30 AM – 2:45 PM",
+        "has_credit_card": true,
+        "local_area": "Vancouver",
+        "source": "StreetFoodApp"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_vendor_sfa_6",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.117712,
+          49.286774
+        ]
+      },
+      "properties": {
+        "id": "food_vendor_sfa_6",
+        "facility_type": "food_vendors",
+        "name": "Il Saltimbocca by Via Tevere",
+        "business_name": "Il Saltimbocca by Via Tevere",
+        "address": "Burrard St & W Pender St",
+        "hours": "11 AM – 2 PM",
+        "has_credit_card": true,
+        "local_area": "Vancouver",
+        "source": "StreetFoodApp"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_vendor_sfa_7",
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -15,13 +144,79 @@
         ]
       },
       "properties": {
-        "id": "food_vendor_sfa_1",
+        "id": "food_vendor_sfa_7",
         "facility_type": "food_vendors",
         "name": "JAPADOG",
         "business_name": "JAPADOG",
         "address": "Burrard St & Smithe St",
         "hours": "11 AM – 10 PM",
         "has_credit_card": true,
+        "local_area": "Vancouver",
+        "source": "StreetFoodApp"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_vendor_sfa_8",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.157335,
+          49.268244
+        ]
+      },
+      "properties": {
+        "id": "food_vendor_sfa_8",
+        "facility_type": "food_vendors",
+        "name": "Planted Love",
+        "business_name": "Planted Love",
+        "address": "2239 W 4th Ave, Vancouver, BC",
+        "hours": "11 AM – 7 PM",
+        "has_credit_card": true,
+        "local_area": "Vancouver",
+        "source": "StreetFoodApp"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_vendor_sfa_9",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.090992,
+          49.224796
+        ]
+      },
+      "properties": {
+        "id": "food_vendor_sfa_9",
+        "facility_type": "food_vendors",
+        "name": "Taco'N Todo",
+        "business_name": "Taco'N Todo",
+        "address": "Latin Market Express",
+        "hours": "1 PM – 9 PM",
+        "has_credit_card": true,
+        "local_area": "Vancouver",
+        "source": "StreetFoodApp"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_vendor_sfa_10",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.044216,
+          49.259771
+        ]
+      },
+      "properties": {
+        "id": "food_vendor_sfa_10",
+        "facility_type": "food_vendors",
+        "name": "Thai Box On Truck",
+        "business_name": "Thai Box On Truck",
+        "address": "2665 Renfrew St, Vancouver (Broadway tech centre)",
+        "hours": "11:30 AM – 2 PM",
+        "has_credit_card": false,
         "local_area": "Vancouver",
         "source": "StreetFoodApp"
       }

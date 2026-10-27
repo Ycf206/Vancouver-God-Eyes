@@ -739,6 +739,14 @@ function ExploreContent() {
     return Math.round(num);
   };
 
+  const getGoogleNavUrl = (destLat: number, destLon: number) => {
+    const base = `https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLon}`;
+    if (navigationAddress && navigationAddress.trim()) {
+      return `${base}&origin=${encodeURIComponent(navigationAddress.trim())}`;
+    }
+    return base;
+  };
+
   const renderWeatherMiniIcon = (iconType?: string) => {
     const it = String(iconType || '').toLowerCase();
     if (it === 'sunny') {
@@ -2804,7 +2812,7 @@ function ExploreContent() {
       const res = await fetch(`${apiUrl}/api/traffic/summary${force ? '?force=true' : ''}`);
       if (res.ok) {
         const data = await res.json();
-        if (data && Array.isArray(data.corridors)) {
+        if (data && Array.isArray(data.corridors) && data.corridors.length > 0) {
           if (!Array.isArray(data.major_roads) || data.major_roads.length === 0) {
             try {
               const staticRes = await fetch('/vancouver_traffic_summary_cache.json');
@@ -2829,7 +2837,7 @@ function ExploreContent() {
       const staticRes = await fetch('/vancouver_traffic_summary_cache.json');
       if (staticRes.ok) {
         const staticData = await staticRes.json();
-        if (staticData && Array.isArray(staticData.corridors)) {
+        if (staticData && Array.isArray(staticData.corridors) && staticData.corridors.length > 0) {
           setTrafficSummary(staticData);
         }
       }
@@ -3841,60 +3849,66 @@ function ExploreContent() {
 
                     <div className="flex flex-col gap-1.5">
                       {[
-                        { id: 'CWVR', englishName: "Vancouver Int'l Airport", zhName: '溫哥華國際機場', name: "Vancouver Int'l Airport", lat: 49.195, lon: -123.181, temp: '12.4°C', wind: 'WNW 15 km/h', hum: '79%', press: '101.6 kPa' },
-                        { id: 'CWVG', englishName: 'Vancouver Harbour', zhName: '溫哥華港氣象站', name: 'Vancouver Harbour', lat: 49.296, lon: -123.111, temp: '13.1°C', wind: 'W 11 km/h (陣風 18)', hum: '76%', press: '101.5 kPa' },
-                        { id: 'CWPI', englishName: 'Point Atkinson Lighthouse', zhName: '阿特金森岬燈塔', name: 'Point Atkinson Lighthouse', lat: 49.330, lon: -123.264, temp: '11.8°C', wind: 'W 22 km/h (陣風 31)', hum: '82%', press: '101.5 kPa' },
-                        { id: 'CWVN', englishName: 'West Vancouver Marine', zhName: '西溫海港氣象站', name: 'West Vancouver Marine', lat: 49.337, lon: -123.167, temp: '12.0°C', wind: 'NW 9 km/h', hum: '81%', press: '101.5 kPa' },
-                        { id: 'CWRM', englishName: 'Richmond Dike', zhName: '列治文自然保護區', name: 'Richmond Dike', lat: 49.183, lon: -123.197, temp: '12.8°C', wind: 'W 13 km/h', hum: '78%', press: '101.6 kPa' },
-                        { id: 'CWBY', englishName: 'Burnaby Burmount', zhName: '本拿比伯蒙特氣象站', name: 'Burnaby Burmount', lat: 49.245, lon: -122.934, temp: '12.2°C', wind: 'W 8 km/h', hum: '80%', press: '101.5 kPa' },
-                      ].map((st) => (
-                        <div
-                          key={st.id}
-                          onClick={() => {
-                            setSearchTarget({
-                              id: `swob_${st.id}`,
-                              title: st.name,
-                              lon: st.lon,
-                              lat: st.lat,
-                              category: 'swob_station',
-                              badge: '氣象',
-                              icon: '📡',
-                              meta: {
-                                facility_type: 'swob_station',
-                                english_name: st.englishName,
-                                zh_name: st.zhName,
-                                station_id: st.id,
-                                temp: st.temp,
-                                wind: st.wind,
-                                hum: st.hum,
-                                press: st.press
-                              }
-                            });
-                          }}
-                          className="bg-[#141824] hover:bg-[#181d2c] border border-[#242b3c] hover:border-emerald-500/50 p-2 rounded-lg flex items-center justify-between text-xs cursor-pointer transition-all"
-                        >
-                          <div className="flex flex-col min-w-0 flex-1 pr-2">
-                            <div className="flex items-center gap-1.5 min-w-0">
-                              <span className="font-bold text-gray-200 truncate">{st.englishName}</span>
-                              <span className="text-[9.5px] font-mono text-emerald-400 bg-emerald-950/70 border border-emerald-800/40 px-1 rounded shrink-0">{st.id}</span>
+                        { id: 'CWVR', englishName: "Vancouver Int'l Airport", zhName: '溫哥華國際機場', name: "Vancouver Int'l Airport", lat: 49.195, lon: -123.181, tempC: 12.4, wind: 'WNW 15 km/h', hum: '79%', press: '101.6 kPa' },
+                        { id: 'CWVG', englishName: 'Vancouver Harbour', zhName: '溫哥華港氣象站', name: 'Vancouver Harbour', lat: 49.296, lon: -123.111, tempC: 13.1, wind: 'W 11 km/h (陣風 18)', hum: '76%', press: '101.5 kPa' },
+                        { id: 'CWPI', englishName: 'Point Atkinson Lighthouse', zhName: '阿特金森岬燈塔', name: 'Point Atkinson Lighthouse', lat: 49.330, lon: -123.264, tempC: 11.8, wind: 'W 22 km/h (陣風 31)', hum: '82%', press: '101.5 kPa' },
+                        { id: 'CWVN', englishName: 'West Vancouver Marine', zhName: '西溫海港氣象站', name: 'West Vancouver Marine', lat: 49.337, lon: -123.167, tempC: 12.0, wind: 'NW 9 km/h', hum: '81%', press: '101.5 kPa' },
+                        { id: 'CWRM', englishName: 'Richmond Dike', zhName: '列治文自然保護區', name: 'Richmond Dike', lat: 49.183, lon: -123.197, tempC: 12.8, wind: 'W 13 km/h', hum: '78%', press: '101.6 kPa' },
+                        { id: 'CWBY', englishName: 'Burnaby Burmount', zhName: '本拿比伯蒙特氣象站', name: 'Burnaby Burmount', lat: 49.245, lon: -122.934, tempC: 12.2, wind: 'W 8 km/h', hum: '80%', press: '101.5 kPa' },
+                      ].map((st) => {
+                        const displayTemp = temperatureUnit === 'fahrenheit' 
+                          ? `${((st.tempC * 9) / 5 + 32).toFixed(1)}°F` 
+                          : `${st.tempC.toFixed(1)}°C`;
+                        return (
+                          <div
+                            key={st.id}
+                            onClick={() => {
+                              setSearchTarget({
+                                id: `swob_${st.id}`,
+                                title: st.name,
+                                lon: st.lon,
+                                lat: st.lat,
+                                category: 'swob_station',
+                                badge: '氣象',
+                                icon: '📡',
+                                meta: {
+                                  facility_type: 'swob_station',
+                                  english_name: st.englishName,
+                                  zh_name: st.zhName,
+                                  station_id: st.id,
+                                  temp_c: st.tempC,
+                                  temp: displayTemp,
+                                  wind: st.wind,
+                                  hum: st.hum,
+                                  press: st.press
+                                }
+                              });
+                            }}
+                            className="bg-[#141824] hover:bg-[#181d2c] border border-[#242b3c] hover:border-emerald-500/50 p-2 rounded-lg flex items-center justify-between text-xs cursor-pointer transition-all"
+                          >
+                            <div className="flex flex-col min-w-0 flex-1 pr-2">
+                              <div className="flex items-center gap-1.5 min-w-0">
+                                <span className="font-bold text-gray-200 truncate">{st.englishName}</span>
+                                <span className="text-[9.5px] font-mono text-emerald-400 bg-emerald-950/70 border border-emerald-800/40 px-1 rounded shrink-0">{st.id}</span>
+                              </div>
+                              <span className="text-[11px] text-gray-400 mt-0.5 truncate">{st.zhName}</span>
                             </div>
-                            <span className="text-[11px] text-gray-400 mt-0.5 truncate">{st.zhName}</span>
+                            <div className="flex items-center gap-2 shrink-0">
+                              <span className="text-sm font-extrabold text-white font-mono">{displayTemp}</span>
+                              <a
+                                href={getGoogleNavUrl(st.lat, st.lon)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={(e) => e.stopPropagation()}
+                                className="p-1 rounded bg-emerald-950/60 hover:bg-emerald-900 border border-emerald-800/50 text-emerald-300 hover:text-white transition-colors flex items-center justify-center"
+                                title="在 Google Maps 導航至此氣象站"
+                              >
+                                <Navigation className="w-3.5 h-3.5" />
+                              </a>
+                            </div>
                           </div>
-                          <div className="flex items-center gap-2 shrink-0">
-                            <span className="text-sm font-extrabold text-white font-mono">{st.temp}</span>
-                            <a
-                              href={`https://www.google.com/maps/dir/?api=1&destination=${st.lat},${st.lon}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              onClick={(e) => e.stopPropagation()}
-                              className="p-1 rounded bg-emerald-950/60 hover:bg-emerald-900 border border-emerald-800/50 text-emerald-300 hover:text-white transition-colors flex items-center justify-center"
-                              title="在 Google Maps 導航至此氣象站"
-                            >
-                              <Navigation className="w-3.5 h-3.5" />
-                            </a>
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
@@ -4140,7 +4154,7 @@ function ExploreContent() {
                                 <span className="text-xs font-normal text-gray-400">m</span>
                               </div>
                               <a
-                                href={`https://www.google.com/maps/dir/?api=1&destination=${st.lat},${st.lon}`}
+                                href={getGoogleNavUrl(st.lat, st.lon)}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 onClick={(e) => e.stopPropagation()}
@@ -4178,7 +4192,9 @@ function ExploreContent() {
                       </div>
                       <div className="bg-[#141824] border border-[#242c3d] p-2 rounded-lg text-center">
                         <span className="text-[10px] text-gray-400 block">海表水溫 (SST)</span>
-                        <span className="text-base font-extrabold text-sky-300 font-mono">11.2°C</span>
+                        <span className="text-base font-extrabold text-sky-300 font-mono">
+                          {temperatureUnit === 'fahrenheit' ? `${((11.2 * 9) / 5 + 32).toFixed(1)}°F` : '11.2°C'}
+                        </span>
                         <span className="text-[9.5px] text-gray-500 block">常態海溫</span>
                       </div>
                       <div className="bg-[#141824] border border-[#242c3d] p-2 rounded-lg text-center">
@@ -4247,7 +4263,7 @@ function ExploreContent() {
                               {hydro.status}
                             </span>
                             <a
-                              href={`https://www.google.com/maps/dir/?api=1&destination=${hydro.lat},${hydro.lon}`}
+                              href={getGoogleNavUrl(hydro.lat, hydro.lon)}
                               target="_blank"
                               rel="noopener noreferrer"
                               onClick={(e) => e.stopPropagation()}
@@ -4762,7 +4778,7 @@ function ExploreContent() {
                             {spot.drive_min}
                           </span>
                           <a
-                            href={`https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lon}${navigationAddress ? `&origin=${encodeURIComponent(navigationAddress)}` : ''}`}
+                            href={getGoogleNavUrl(spot.lat, spot.lon)}
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={(e) => e.stopPropagation()}
@@ -5612,13 +5628,9 @@ function ExploreContent() {
                         <span className="font-bold text-white text-[13px] truncate group-hover:text-amber-300 transition-colors">
                           {atm.name}
                         </span>
-                        {atm.isOpenToday ? (
+                        {atm.is_24_7 && (
                           <span className="text-[10px] px-1.5 py-0.2 rounded-full font-medium bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shrink-0">
-                            {atm.is_24_7 ? '24/7' : '營業中'}
-                          </span>
-                        ) : (
-                          <span className="text-[10px] px-1.5 py-0.2 rounded-full font-medium bg-gray-700/40 text-gray-400 border border-gray-600/30 shrink-0">
-                            今日休息
+                            24/7
                           </span>
                         )}
                       </div>
@@ -6280,7 +6292,7 @@ function ExploreContent() {
                       </div>
 
                       <a
-                        href={`https://www.google.com/maps/dir/?api=1&destination=${beach.center_lat},${beach.center_lon}`}
+                        href={getGoogleNavUrl(beach.center_lat, beach.center_lon)}
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}

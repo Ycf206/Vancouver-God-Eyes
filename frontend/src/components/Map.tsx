@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { setWorkerUrl } from 'maplibre-gl';
 import Map, { NavigationControl, Marker, Popup, MapRef, Source, Layer } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -487,7 +488,7 @@ const BORDER_CROSSING_POINTS = [
 export default function AppMap() {
   const { 
     layers, mapStyleType, searchTarget, setSearchTarget, isLayerPanelOpen, 
-    contourInterval, timeFormat, distanceUnit, userLocation, setUserLocation, setExploreOpen,
+    contourInterval, timeFormat, distanceUnit, temperatureUnit, userLocation, setUserLocation, setExploreOpen,
     isExploreOpen, exploreTab, weatherSubTab, setExploreTab, openExploreTab, openExploreTabs, setSettingsModalOpen,
     parkingMeterFilter, setParkingMeterFilter,
     motorcycleParkingFilter, setMotorcycleParkingFilter,
@@ -1124,6 +1125,7 @@ export default function AppMap() {
         else if (type === 'truck_routes_restriction' && !layers.truckRoutes) facilityClosed = true;
         else if (type === 'traffic_signals' && !layers.trafficSignals) facilityClosed = true;
         else if (type === 'turn_restrictions' && !layers.turnRestrictions) facilityClosed = true;
+        else if (type === 'job' && (!isExploreOpen || !openExploreTabs?.includes('jobs'))) facilityClosed = true;
 
         if (facilityClosed) {
           setSelectedFacility(null);
@@ -1256,7 +1258,7 @@ export default function AppMap() {
         setSearchTarget(null);
       }
     }
-  }, [layers, selectedFacility, selectedAirport, selectedTerminal, selectedFerry, selectedMaritimeVessel, selectedBus, searchedBusRoute, selectedStop, selectedTrain, selectedSkytrainStation, searchTarget, setSearchTarget, isExploreOpen, exploreTab, radiusExploration, explorationSelectedFacility]);
+  }, [layers, selectedFacility, selectedAirport, selectedTerminal, selectedFerry, selectedMaritimeVessel, selectedBus, searchedBusRoute, selectedStop, selectedTrain, selectedSkytrainStation, searchTarget, setSearchTarget, isExploreOpen, exploreTab, openExploreTabs, radiusExploration, explorationSelectedFacility]);
 
 
   const fetchSkytrainStationSchedule = React.useCallback((stopId: string, stopName?: string, lon?: number, lat?: number) => {
@@ -7222,7 +7224,7 @@ export default function AppMap() {
                         <Copy className="w-3.5 h-3.5" />
                       </button>
                       <a
-                        href={`https://www.google.com/maps/dir/?api=1&destination=${selectedStop.lat},${selectedStop.lon}`}
+                        href={getGoogleNavUrl(selectedStop.lat, selectedStop.lon)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="p-1 rounded-md text-sky-600 hover:text-sky-700 hover:bg-sky-50 transition-colors flex items-center justify-center shadow-xs border border-sky-100"
@@ -7579,7 +7581,7 @@ export default function AppMap() {
                     <Copy className="w-3.5 h-3.5" />
                   </button>
                   <a
-                    href={`https://www.google.com/maps/dir/?api=1&destination=${selectedTerminal.geometry.coordinates[1]},${selectedTerminal.geometry.coordinates[0]}`}
+                    href={getGoogleNavUrl(selectedTerminal.geometry.coordinates[1], selectedTerminal.geometry.coordinates[0])}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-1 rounded-md text-sky-600 hover:text-sky-700 hover:bg-sky-50 transition-colors flex items-center justify-center shadow-xs border border-sky-100"
@@ -7968,7 +7970,7 @@ export default function AppMap() {
                     <Copy className="w-3.5 h-3.5" />
                   </button>
                   <a
-                    href={`https://www.google.com/maps/dir/?api=1&destination=${selectedAirport.geometry.coordinates[1]},${selectedAirport.geometry.coordinates[0]}`}
+                    href={getGoogleNavUrl(selectedAirport.geometry.coordinates[1], selectedAirport.geometry.coordinates[0])}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-1 rounded-md text-sky-600 hover:text-sky-700 hover:bg-sky-50 transition-colors flex items-center justify-center shadow-xs border border-sky-100"
@@ -8723,6 +8725,7 @@ export default function AppMap() {
                   if (t === 'traffic_conditions' || t === 'traffic_corridor') return { label: '路況', bg: 'bg-[#ea580c] text-white' };
                   if (t === 'ski_resort') return { label: '滑雪', bg: 'bg-cyan-500 text-white' };
                   if (t === 'traffic_alerts' || t === 'traffic_incident') return { label: '即時通報', bg: 'bg-amber-600 text-white' };
+                  if (t === 'job') return { label: '工作', bg: 'bg-indigo-600 text-white' };
                   return null;
                 })();
 
@@ -9046,11 +9049,6 @@ export default function AppMap() {
                       </div>
                     </div>
                     <div className="flex items-center gap-1 shrink-0 -mt-1 -mr-1">
-                      {selectedFacility.facility_type === 'job' && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200/80 mr-0.5 shrink-0">
-                          工作
-                        </span>
-                      )}
                       <button
                         onClick={() => copyFacilityDetailsToClipboard(selectedFacility, popupTitle)}
                         className="p-1 rounded-md text-gray-500 hover:text-cyan-600 hover:bg-cyan-50 transition-colors flex items-center justify-center shadow-xs border border-gray-100"
@@ -9059,7 +9057,7 @@ export default function AppMap() {
                         <Copy className="w-3.5 h-3.5" />
                       </button>
                       <a
-                        href={`https://www.google.com/maps/dir/?api=1&destination=${selectedFacility.lat},${selectedFacility.lon}`}
+                        href={getGoogleNavUrl(selectedFacility.lat, selectedFacility.lon)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="p-1 rounded-md text-sky-600 hover:text-sky-700 hover:bg-sky-50 transition-colors flex items-center justify-center shadow-xs border border-sky-100"
@@ -10545,29 +10543,13 @@ export default function AppMap() {
 
                       <div className="w-full h-px bg-gray-200/80"></div>
 
-                      {/* 營業時間 (博物館相同風格，已刪除原本獨立行，當日營業時間顯示在箭頭旁) */}
-                      <details className="group/sched">
-                        <summary className="flex justify-between items-center text-gray-700 cursor-pointer list-none hover:text-gray-900 py-0.5 select-none">
-                          <span className="text-gray-500 font-medium">營業時間</span>
-                          <span className="font-mono text-gray-900 font-semibold flex items-center gap-1">
-                            <span>{curDayObj.label}: {curDayObj.hours || '休息'}</span>
-                            <span className="text-[9px] text-gray-400 group-open/sched:rotate-180 transition-transform">▼</span>
-                          </span>
-                        </summary>
-                        <div className="mt-1.5 pt-1.5 border-t border-gray-100 flex flex-col gap-1 text-[10.5px]">
-                          {days.map(d => (
-                            <div 
-                              key={d.key} 
-                              className={`flex justify-between items-center py-0.5 px-1 rounded ${
-                                d.key === curDow ? 'bg-red-50 text-red-900 font-bold' : 'text-gray-600'
-                              }`}
-                            >
-                              <span>{d.label}</span>
-                              <span className="font-mono">{d.hours || '休息'}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </details>
+                      {/* 營業時間 (統一時間格式與摺疊清單) */}
+                      <FacilityWeeklyHoursSchedule
+                        label="營業時間"
+                        hours={props.schedule}
+                        timeFormat={timeFormat}
+                        theme="red"
+                      />
 
                       {formattedDate && (
                         <>
@@ -11191,7 +11173,6 @@ export default function AppMap() {
                 if (props.IsVeteran) specificTargets.push('退伍軍人');
                 if (props.IsVismin) specificTargets.push('少數族裔');
                 if (props.IsMatureWorker) specificTargets.push('中高齡就業者');
-                if (props.IsFederalJob) specificTargets.push('聯邦政府職位');
 
                 // 申請方法地址拼接
                 const applyPersonAddr = [
@@ -14698,7 +14679,15 @@ export default function AppMap() {
                     <div className="grid grid-cols-2 gap-2 text-xs">
                       <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-200 flex flex-col">
                         <span className="text-[10px] text-gray-500 font-medium">🌡️ 即時氣溫</span>
-                        <span className="font-bold text-base text-gray-900 font-mono mt-0.5">{p.temp || p.temperature || '--'}</span>
+                        <span className="font-bold text-base text-gray-900 font-mono mt-0.5">
+                          {(() => {
+                            const raw = p.temp_c !== undefined ? p.temp_c : (p.temp ? parseFloat(String(p.temp)) : (p.temperature ? parseFloat(String(p.temperature)) : null));
+                            if (raw !== null && !isNaN(raw)) {
+                              return temperatureUnit === 'fahrenheit' ? `${(raw * 9 / 5 + 32).toFixed(1)}°F` : `${raw.toFixed(1)}°C`;
+                            }
+                            return p.temp || p.temperature || '--';
+                          })()}
+                        </span>
                       </div>
                       <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-200 flex flex-col">
                         <span className="text-[10px] text-gray-500 font-medium">💨 當前風速</span>
@@ -16432,7 +16421,7 @@ export default function AppMap() {
                     <Copy className="w-3 h-3 text-cyan-400" />
                   </button>
                   <a
-                    href={`https://www.google.com/maps/dir/?api=1&destination=${radiusExploration.lat},${radiusExploration.lon}`}
+                    href={getGoogleNavUrl(radiusExploration.lat, radiusExploration.lon)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-0.5 rounded text-gray-400 hover:text-white hover:bg-blue-500/20 hover:text-blue-400 transition-colors"
@@ -16639,7 +16628,7 @@ export default function AppMap() {
 
               {/* Google 導航按鈕 (跟隨其他圖層一致) */}
               <a
-                href={`https://www.google.com/maps/dir/?api=1&destination=${selectedSkytrainStation.lat},${selectedSkytrainStation.lon}`}
+                href={getGoogleNavUrl(selectedSkytrainStation.lat, selectedSkytrainStation.lon)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-white p-1.5 rounded-lg hover:bg-blue-500/20 hover:text-blue-400 transition-colors"
@@ -17025,7 +17014,7 @@ export default function AppMap() {
           {/* Action 1: 導航至此 */}
           <button
             onClick={() => {
-              window.open(`https://www.google.com/maps/dir/?api=1&destination=${contextMenu.lat},${contextMenu.lon}`, '_blank', 'noopener,noreferrer');
+              window.open(getGoogleNavUrl(contextMenu.lat, contextMenu.lon), '_blank', 'noopener,noreferrer');
               setContextMenu(null);
             }}
             className="w-full px-2.5 py-1.5 rounded-lg text-gray-200 hover:text-white hover:bg-sky-500/15 flex items-center gap-2 transition-colors text-left"
@@ -17159,9 +17148,9 @@ export default function AppMap() {
       )}
 
       {/* 1.3.1 貨車路線詳細地圖 Modal (Truck Route Map Lightbox) */}
-      {isTruckRouteMapModalOpen && (
+      {isTruckRouteMapModalOpen && typeof document !== 'undefined' && createPortal(
         <div 
-          className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 pt-16 sm:pt-20 pb-4 animate-in fade-in duration-200"
+          className="fixed inset-0 z-[99999] bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 pt-16 sm:pt-20 pb-4 animate-in fade-in duration-200"
           onClick={() => setIsTruckRouteMapModalOpen(false)}
         >
           <div 
@@ -17231,13 +17220,14 @@ export default function AppMap() {
               </a>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* 交通攝影機圖片放大檢視 Modal (Webcam Image Lightbox) */}
-      {enlargedCameraImage && (
+      {enlargedCameraImage && typeof document !== 'undefined' && createPortal(
         <div 
-          className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 pt-20 sm:pt-24 pb-6 animate-in fade-in duration-200"
+          className="fixed inset-0 z-[99999] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 pt-20 sm:pt-24 pb-6 animate-in fade-in duration-200"
           onClick={() => setEnlargedCameraImage(null)}
         >
           <div 
@@ -17302,13 +17292,14 @@ export default function AppMap() {
               <span className="text-cyan-400 font-mono text-[10.5px]">HD 即時路況畫面</span>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* 10.5 & 10.6 職位詳情與技能需求 Modal (WorkBC Job Skill Categories Modal) */}
-      {activeJobSkillModal && (
+      {activeJobSkillModal && typeof document !== 'undefined' && createPortal(
         <div 
-          className="fixed inset-0 z-[130] bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 pt-16 sm:pt-20 pb-4 animate-in fade-in duration-200"
+          className="fixed inset-0 z-[99999] bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 pt-16 sm:pt-20 pb-4 animate-in fade-in duration-200"
           onClick={() => setActiveJobSkillModal(null)}
         >
           <div 
@@ -17403,7 +17394,8 @@ export default function AppMap() {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
