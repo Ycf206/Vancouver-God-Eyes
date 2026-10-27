@@ -1,8 +1,8 @@
-name: Update 電動車充電站點 (每週三 02:00)
+name: Update 電動車充電站點 (每月)
 
 on:
   schedule:
-    - cron: '0 2 * * 3'
+    - cron: '0 0 1 * *'
   workflow_dispatch:
 
 concurrency:
