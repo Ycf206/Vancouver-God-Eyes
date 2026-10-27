@@ -1,7 +1,8 @@
 {
   "type": "FeatureCollection",
-  "generator": "VancouverGodsEye-FoodVendorsSync",
-  "updated_at": "2026-10-27T03:55:27.942Z",
+  "generator": "VancouverGodsEye",
+  "total_count": 92,
+  "updated_at": "2026-10-27T04:41:37.601634+00:00",
   "features": [
     {
       "type": "Feature",
@@ -2094,6 +2095,27 @@
         "local_area": "Downtown",
         "key": "DT74",
         "has_credit_card": true
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "food_vendor_sfa_1000",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.124394,
+          49.28244
+        ]
+      },
+      "properties": {
+        "id": "food_vendor_sfa_1000",
+        "facility_type": "food_vendors",
+        "name": "JAPADOG",
+        "business_name": "JAPADOG",
+        "address": "Burrard St & Smithe St",
+        "hours": "11 AM – 10 PM",
+        "has_credit_card": true,
+        "local_area": "Vancouver"
       }
     }
   ]
