@@ -7,7 +7,7 @@ import Map, { NavigationControl, Marker, Popup, MapRef, Source, Layer } from 're
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl, getWsUrl } from '@/utils/api';
-import { formatTimePreference, formatShipEta, formatTimeRange } from '@/utils/time';
+import { formatTimePreference, formatShipEta, formatTimeRange, formatOpeningHours, formatConstructionSchedule } from '@/utils/time';
 import { formatTitleCase } from '@/utils/text';
 import { getSkytrainStationMapUrls } from '@/utils/skytrainMaps';
 import skytrainStationsData from '@/data/skytrainStations.json';
@@ -5410,7 +5410,7 @@ export default function AppMap() {
         filter: ['==', ['geometry-type'], 'Point'],
         minzoom: 10,
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 5.0, 14, 7.5, 16, 10.0],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 6.0, 14, 9.0, 16, 12.0],
           'circle-color': [
             'case',
             ['==', ['get', 'restriction_type'], 'weight'], '#ea580c',
@@ -5425,15 +5425,16 @@ export default function AppMap() {
         type: 'symbol',
         source: 'truck_routes',
         filter: ['==', ['geometry-type'], 'Point'],
-        minzoom: 11,
+        minzoom: 10,
         layout: {
           'text-field': [
             'case',
             ['==', ['get', 'restriction_type'], 'weight'], '⚖️',
-            '↕'
+            '📏'
           ],
-          'text-size': ['interpolate', ['linear'], ['zoom'], 11, 10, 16, 14],
-          'text-allow-overlap': false
+          'text-size': ['interpolate', ['linear'], ['zoom'], 10, 9, 14, 11, 16, 14],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
         }
       });
     }
@@ -8951,10 +8952,13 @@ export default function AppMap() {
                         <h3 className="font-bold text-gray-900 text-sm leading-snug break-words">
                           {popupTitle}
                         </h3>
-                        {(selectedFacility.local_area || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'motorcycle_parking' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'canada_post' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'impark' || selectedFacility.facility_type === 'ski_resort' ||
+                        {(selectedFacility.local_area || selectedFacility.facility_type === 'job' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'motorcycle_parking' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'canada_post' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'impark' || selectedFacility.facility_type === 'ski_resort' ||
                   selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'truck_routes_restriction' || selectedFacility.facility_type === 'traffic_signals' || selectedFacility.facility_type === 'turn_restrictions') && (
                           <span className="text-[11px] text-gray-400 block leading-snug break-words">
                             {(() => {
+                              if (selectedFacility.facility_type === 'job') {
+                                return selectedFacility.properties?.EmployerName || selectedFacility.properties?.employer_name || selectedFacility.local_area || '僱主資訊';
+                              }
                               if (selectedFacility.facility_type === 'ski_resort') {
                                 const rawArea = selectedFacility.properties?.area || selectedFacility.local_area || '';
                                 const match = rawArea.match(/\(([^)]+)\)/);
@@ -9041,6 +9045,11 @@ export default function AppMap() {
                       </div>
                     </div>
                     <div className="flex items-center gap-1 shrink-0 -mt-1 -mr-1">
+                      {selectedFacility.facility_type === 'job' && (
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200/80 mr-0.5 shrink-0">
+                          工作
+                        </span>
+                      )}
                       <button
                         onClick={() => copyFacilityDetailsToClipboard(selectedFacility, popupTitle)}
                         className="p-1 rounded-md text-gray-500 hover:text-cyan-600 hover:bg-cyan-50 transition-colors flex items-center justify-center shadow-xs border border-gray-100"
@@ -9174,14 +9183,14 @@ export default function AppMap() {
                       <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-2 text-[11px]">
                         {hasTransient && (
                           <div className="flex flex-col gap-1.5">
-                            <div className="flex justify-between items-center text-gray-600">
+                            <div className="flex justify-between items-center text-gray-700">
                               <span className="font-medium">臨時方案</span>
-                              <span className="text-emerald-700 font-semibold text-right">
+                              <span className="text-gray-900 font-semibold text-right">
                                 {transientRate?.label || '時租 / 臨時費率'}
                               </span>
                             </div>
                             {transientRate?.value && (
-                              <div className="flex justify-between items-center text-gray-600">
+                              <div className="flex justify-between items-center text-gray-700">
                                 <span>最低階梯費率</span>
                                 <span className="text-gray-900 font-semibold text-right font-mono">
                                   {transientRate.value}
@@ -9193,14 +9202,14 @@ export default function AppMap() {
 
                         {hasMonthly && (
                           <div className={`flex flex-col gap-1.5 ${hasTransient ? 'pt-2 border-t border-gray-200/60' : ''}`}>
-                            <div className="flex justify-between items-center text-gray-600">
+                            <div className="flex justify-between items-center text-gray-700">
                               <span className="font-medium">月租車位</span>
-                              <span className="text-sky-700 font-semibold text-right">
+                              <span className="text-gray-900 font-semibold text-right">
                                 {monthlyRate?.label || '月租方案'}
                               </span>
                             </div>
                             {monthlyRate?.value && (
-                              <div className="flex justify-between items-center text-gray-600">
+                              <div className="flex justify-between items-center text-gray-700">
                                 <span>最低月租費率</span>
                                 <span className="text-gray-900 font-semibold text-right font-mono">
                                   {monthlyRate.value}
@@ -9211,9 +9220,9 @@ export default function AppMap() {
                         )}
 
                         {hasPromo && (
-                          <div className={`flex justify-between items-center text-gray-600 ${hasTransient || hasMonthly ? 'pt-2 border-t border-gray-200/60' : ''}`}>
+                          <div className={`flex justify-between items-center text-gray-700 ${hasTransient || hasMonthly ? 'pt-2 border-t border-gray-200/60' : ''}`}>
                             <span className="font-medium">優惠活動</span>
-                            <span className="text-amber-700 font-semibold text-right">
+                            <span className="text-gray-900 font-semibold text-right">
                               {typeof p.promotions === 'string' ? p.promotions : '目前有提供優惠活動'}
                             </span>
                           </div>
@@ -10220,7 +10229,7 @@ export default function AppMap() {
                       <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                         <span>開放時間</span>
                         <span className="text-gray-900 font-medium text-right">
-                          {selectedFacility.properties.opening_hours}
+                          {formatOpeningHours(selectedFacility.properties.opening_hours, timeFormat)}
                         </span>
                       </div>
                     )}
@@ -11157,21 +11166,21 @@ export default function AppMap() {
               {selectedFacility.facility_type === 'job' && (() => {
                 const props = selectedFacility.properties || {};
 
-                // 1.5.5 標題下方顏色區塊顯示工時類型與合約形式
+                // 10.3 刪除英文括號顯示，並統一繁體中文工時與合約標籤
                 const hoursZh = (props.HoursOfWork?.Description || []).map((h: string) => {
                   const s = h.toLowerCase();
-                  if (s.includes('full-time') || s.includes('full time')) return '全職 (Full-time)';
-                  if (s.includes('part-time') || s.includes('part time')) return '兼職 (Part-time)';
-                  return h;
+                  if (s.includes('full-time') || s.includes('full time')) return '全職';
+                  if (s.includes('part-time') || s.includes('part time')) return '兼職';
+                  return h.replace(/\s*\([A-Za-z0-9\s\-_/]+\)/g, '').trim();
                 }).join(' · ');
 
                 const periodZh = (props.PeriodOfEmployment?.Description || []).map((p: string) => {
                   const s = p.toLowerCase();
-                  if (s.includes('permanent')) return '永久職位 (Permanent)';
-                  if (s.includes('temporary')) return '臨時合約 (Temporary)';
-                  if (s.includes('casual')) return '散工 (Casual)';
-                  if (s.includes('seasonal')) return '季節性 (Seasonal)';
-                  return p;
+                  if (s.includes('permanent')) return '永久職位';
+                  if (s.includes('temporary')) return '臨時合約';
+                  if (s.includes('casual')) return '散工';
+                  if (s.includes('seasonal')) return '季節性';
+                  return p.replace(/\s*\([A-Za-z0-9\s\-_/]+\)/g, '').trim();
                 }).join(' · ');
 
                 // 薪金 (WageClass / SalaryType 對應 + Salary + SalarySummary)
@@ -11184,24 +11193,25 @@ export default function AppMap() {
                 const salarySummary = props.SalarySummary ? `(${props.SalarySummary})` : '';
                 const fullSalaryDisplay = [salaryLabel, salaryAmount, salarySummary].filter(Boolean).join(' ');
 
-                // 工作模式
+                // 10.3 工作模式去除英文括號
                 const workplaceType = props.WorkplaceType?.Description || '';
                 const workplaceZh = (() => {
                   if (!workplaceType) return '';
                   const s = workplaceType.toLowerCase();
-                  if (s.includes('on-site') || s.includes('onsite')) return '現場 (On-site)';
-                  if (s.includes('hybrid')) return '混合 (Hybrid)';
-                  if (s.includes('virtual') || s.includes('remote')) return '遙距 (Virtual)';
-                  if (s.includes('travel')) return '出差 (Travelling)';
-                  return workplaceType;
+                  if (s.includes('on-site') || s.includes('onsite')) return '現場上班';
+                  if (s.includes('hybrid')) return '混合辦公';
+                  if (s.includes('virtual') || s.includes('remote')) return '遠距辦公';
+                  if (s.includes('travel')) return '需出差';
+                  return workplaceType.replace(/\s*\([A-Za-z0-9\s\-_/]+\)/g, '').trim();
                 })();
 
-                // 工作排班 (EmploymentTerms)
+                // 10.4 工作排班繁中對應 (Early Morning: 清晨間, To be determined: 待定)
                 const termsMap: Record<string, string> = {
-                  'day': '日間班', 'early': '清晨間', 'evening': '傍晚班',
+                  'day': '日間班', 'early': '清晨間', 'early morning': '清晨間', 'evening': '傍晚班',
                   'flexible hours': '彈性工時', 'flexible': '彈性工時',
                   'morning': '早班', 'night': '夜班/通宵', 'on call': '待命', 'oncall': '待命',
-                  'overtime': '需配合加班', 'shift': '輪班', 'tbd': '待定', 'weekend': '週末班', 'weekend hours': '週末班'
+                  'overtime': '需配合加班', 'shift': '輪班', 'tbd': '待定', 'to be determined': '待定',
+                  'weekend': '週末班', 'weekend hours': '週末班'
                 };
                 const employmentTermsZh = (props.EmploymentTerms?.Description || []).map((t: string) => {
                   return termsMap[t.toLowerCase()] || t;
@@ -14140,19 +14150,18 @@ export default function AppMap() {
                           <div className="flex justify-between items-start text-gray-600 gap-2">
                             <span className="shrink-0">預計封閉時程</span>
                             {(() => {
-                              const rawSchedule = selectedFacility.properties.schedule;
-                              const parts = String(rawSchedule).split(';').map(p => p.trim()).filter(Boolean);
-                              if (parts.length > 1) {
+                              const scheduleParts = formatConstructionSchedule(selectedFacility.properties.schedule, timeFormat);
+                              if (scheduleParts.length > 1) {
                                 return (
                                   <div className="flex flex-col text-right leading-tight gap-0.5">
-                                    <span className="text-gray-800 font-medium">{parts[0]}</span>
-                                    <span className="text-gray-600 text-[10.5px]">{parts.slice(1).join('; ')}</span>
+                                    <span className="text-gray-800 font-medium">{scheduleParts[0]}</span>
+                                    <span className="text-gray-600 text-[10.5px]">{scheduleParts.slice(1).join('；')}</span>
                                   </div>
                                 );
                               }
                               return (
                                 <span className="text-gray-800 text-right leading-relaxed">
-                                  {rawSchedule}
+                                  {scheduleParts[0] || selectedFacility.properties.schedule}
                                 </span>
                               );
                             })()}
@@ -14223,19 +14232,18 @@ export default function AppMap() {
                           <div className="flex justify-between items-start text-gray-600 gap-2">
                             <span className="shrink-0">預計施工時程</span>
                             {(() => {
-                              const rawSchedule = selectedFacility.properties.schedule;
-                              const parts = String(rawSchedule).split(';').map(p => p.trim()).filter(Boolean);
-                              if (parts.length > 1) {
+                              const scheduleParts = formatConstructionSchedule(selectedFacility.properties.schedule, timeFormat);
+                              if (scheduleParts.length > 1) {
                                 return (
                                   <div className="flex flex-col text-right leading-tight gap-0.5">
-                                    <span className="text-gray-800 font-medium">{parts[0]}</span>
-                                    <span className="text-gray-600 text-[10.5px]">{parts.slice(1).join('; ')}</span>
+                                    <span className="text-gray-800 font-medium">{scheduleParts[0]}</span>
+                                    <span className="text-gray-600 text-[10.5px]">{scheduleParts.slice(1).join('；')}</span>
                                   </div>
                                 );
                               }
                               return (
                                 <span className="text-gray-800 text-right leading-relaxed">
-                                  {rawSchedule}
+                                  {scheduleParts[0] || selectedFacility.properties.schedule}
                                 </span>
                               );
                             })()}
@@ -17350,10 +17358,10 @@ export default function AppMap() {
         </div>
       )}
 
-      {/* 1.5.7 職位詳情與技能需求 Modal (WorkBC Job Skill Categories Modal) */}
+      {/* 10.5 & 10.6 職位詳情與技能需求 Modal (WorkBC Job Skill Categories Modal) */}
       {activeJobSkillModal && (
         <div 
-          className="fixed inset-0 z-[100] bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 pt-16 sm:pt-20 pb-4 animate-in fade-in duration-200"
+          className="fixed inset-0 z-[130] bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 pt-16 sm:pt-20 pb-4 animate-in fade-in duration-200"
           onClick={() => setActiveJobSkillModal(null)}
         >
           <div 
@@ -17376,12 +17384,6 @@ export default function AppMap() {
                     )}
                     {activeJobSkillModal.EmployerName && activeJobSkillModal.City && <span>·</span>}
                     {activeJobSkillModal.City && <span>{activeJobSkillModal.City}</span>}
-                    {activeJobSkillModal.WorkHours && (
-                      <>
-                        <span>·</span>
-                        <span>{activeJobSkillModal.WorkHours}</span>
-                      </>
-                    )}
                   </div>
                 </div>
               </div>

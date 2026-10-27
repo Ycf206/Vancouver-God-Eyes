@@ -163,6 +163,13 @@ export default function SettingsModal() {
     }
   }, [userLocation]);
 
+  // Sync navAddressInput with store
+  useEffect(() => {
+    if (navigationAddress) {
+      setNavAddressInput(navigationAddress);
+    }
+  }, [navigationAddress]);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isSettingsModalOpen) {
@@ -273,13 +280,6 @@ export default function SettingsModal() {
       zoom: 16
     });
   };
-
-  // Sync navAddressInput with store
-  useEffect(() => {
-    if (navigationAddress) {
-      setNavAddressInput(navigationAddress);
-    }
-  }, [navigationAddress]);
 
   // GPS for Navigation Starting Address
   const handleUseGpsForNav = () => {

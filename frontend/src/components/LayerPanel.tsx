@@ -63,7 +63,7 @@ export default function LayerPanel() {
   const { 
     mapStyleType, setMapStyleType, layers, toggleLayer, resetAllLayers,
     isLayerPanelOpen, toggleLayerPanel, toggleFlightSchedule, isFlightScheduleOpen,
-    contourInterval, setContourInterval
+    contourInterval, setContourInterval, hiddenLayersInPanel
   } = useUIStore();
 
   const [collapsedCategories, setCollapsedCategories] = React.useState<Record<string, boolean>>(() => {
@@ -188,6 +188,10 @@ export default function LayerPanel() {
     title?: string,
     className?: string
   }) => {
+    // 11.3 獨立圖層開關: 若在後台設為隱藏，則不渲染於圖層控制面板中
+    if (hiddenLayersInPanel && hiddenLayersInPanel[layerKey]) {
+      return null;
+    }
     const isActive = layers[layerKey];
     return (
       <button

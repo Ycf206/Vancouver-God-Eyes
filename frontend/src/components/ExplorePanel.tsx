@@ -667,6 +667,7 @@ function ExploreContent() {
     setOpenExploreTabs,
     closeAllExploreTabs,
     userLocation, 
+    navigationAddress,
     setSettingsModalOpen,
     distanceUnit,
     temperatureUnit,
@@ -821,6 +822,7 @@ function ExploreContent() {
   const [loadingJobs, setLoadingJobs] = useState<boolean>(false);
   const [fetchingJobDetailId, setFetchingJobDetailId] = useState<string | null>(null);
   const [isJobFilterOpen, setIsJobFilterOpen] = useState<boolean>(false);
+  const [externalJobConfirmation, setExternalJobConfirmation] = useState<{ url: string; title?: string } | null>(null);
 
   // 1. 工時類型
   const [filterJobTypeFullTime, setFilterJobTypeFullTime] = useState<boolean>(false);
@@ -965,6 +967,7 @@ function ExploreContent() {
         SortOrder: customSortOrder,
         Keyword: jobKeyword.trim(),
         SearchInField: jobSearchInField,
+        SearchLocations: [{ City: "Vancouver", Postal: "", Region: "" }],
         SearchJobTypeFullTime: filterJobTypeFullTime,
         SearchJobTypePartTime: filterJobTypePartTime,
         SearchJobTypeLeadingToFullTime: filterJobTypeLeadingToFullTime,
@@ -1037,10 +1040,10 @@ function ExploreContent() {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleJobClick = async (job: any) => {
-    // 1.5.6 如果有ExternalSource, 按下時直接開啟ExternalSource.source[0].url, 不用顯示popup和以下的灰色區塊資料
+    // 10.7 如果清單項目是打開外部網頁，彈出確認前往之對話框
     const externalUrl = job.ExternalSource?.Source?.[0]?.Url || job.ExternalSource?.Url || (job.ExternalSource && typeof job.ExternalSource === 'string' ? job.ExternalSource : null);
     if (externalUrl) {
-      window.open(externalUrl, '_blank', 'noopener,noreferrer');
+      setExternalJobConfirmation({ url: externalUrl, title: job.Title });
       return;
     }
 
@@ -1090,10 +1093,7 @@ function ExploreContent() {
           }
         }
       });
-
-      if (typeof window !== 'undefined' && window.innerWidth < 768) {
-        setExploreOpen(false);
-      }
+      // 10.5 保持 ExplorePanel 開啟，方便關閉詳情後繼續查看其他工作
     } catch (err) {
       console.error('Failed to handle job selection:', err);
     } finally {
@@ -1117,34 +1117,47 @@ function ExploreContent() {
 
   const translateJobTerm = (val?: string): string => {
     if (!val) return '';
+    // 10.3 刪除英文括號顯示 (如 Full-time, Temporary, On-site 等)
+    const clean = val.replace(/\s*\([A-Za-z0-9\s\-_/]+\)/g, '').trim();
+    const lower = clean.toLowerCase();
     const map: Record<string, string> = {
-      'Full-time': '全職',
-      'Part-time': '兼職',
-      'Leading to full-time': '兼職轉全職',
-      'Permanent': '永久聘用',
-      'Temporary': '臨時約聘',
-      'Casual': '散工 / 零工',
-      'Seasonal': '季節性',
-      'On-site only': '現場上班',
-      'On-site': '現場上班',
-      'Hybrid work': '混合辦公',
-      'Hybrid': '混合辦公',
-      'Virtual work': '遠距辦公',
-      'Virtual': '遠距辦公',
-      'Travelling': '需出差',
-      'Day': '日間班',
-      'Early': '清晨班',
-      'Evening': '傍晚班',
-      'Flexible': '彈性工時',
-      'Morning': '早班',
-      'Night': '夜班/通宵',
-      'On-call': '待命班',
-      'Overtime': '需配合加班',
-      'Shift': '輪班制',
-      'Weekend': '週末班',
-      'TBD': '待定',
+      'full-time': '全職',
+      'full time': '全職',
+      'part-time': '兼職',
+      'part time': '兼職',
+      'leading to full-time': '兼職轉全職',
+      'permanent': '永久聘用',
+      'temporary': '臨時約聘',
+      'casual': '散工 / 零工',
+      'seasonal': '季節性',
+      'on-site only': '現場上班',
+      'on-site': '現場上班',
+      'onsite': '現場上班',
+      'hybrid work': '混合辦公',
+      'hybrid': '混合辦公',
+      'virtual work': '遠距辦公',
+      'virtual': '遠距辦公',
+      'remote': '遠距辦公',
+      'travelling': '需出差',
+      'travel': '需出差',
+      'day': '日間班',
+      'early': '清晨間',
+      'early morning': '清晨間',
+      'evening': '傍晚班',
+      'flexible': '彈性工時',
+      'flexible hours': '彈性工時',
+      'morning': '早班',
+      'night': '夜班/通宵',
+      'on-call': '待命班',
+      'oncall': '待命班',
+      'overtime': '需配合加班',
+      'shift': '輪班制',
+      'weekend': '週末班',
+      'weekend hours': '週末班',
+      'tbd': '待定',
+      'to be determined': '待定',
     };
-    return map[val] || val;
+    return map[lower] || clean;
   };
 
   const jobTotalPages = Math.max(1, Math.ceil(jobTotalCount / jobPageSize));
@@ -4748,15 +4761,14 @@ function ExploreContent() {
                             {spot.drive_min}
                           </span>
                           <a
-                            href={`https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lon}`}
+                            href={`https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lon}${navigationAddress ? `&origin=${encodeURIComponent(navigationAddress)}` : ''}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={(e) => e.stopPropagation()}
-                            className="flex items-center gap-1 px-2 py-1 rounded-md bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-500/40 text-emerald-300 hover:text-white text-[11px] font-medium transition-all shadow-xs shrink-0 cursor-pointer"
+                            className="flex items-center justify-center p-1.5 rounded-md bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-500/40 text-emerald-300 hover:text-white transition-all shadow-xs shrink-0 cursor-pointer"
                             title="Google 導航至此"
                           >
-                            <Navigation className="w-3 h-3 text-emerald-400" />
-                            <span>導航</span>
+                            <Navigation className="w-3.5 h-3.5 text-emerald-400" />
                           </a>
                         </div>
                       </div>
@@ -7734,6 +7746,65 @@ function ExploreContent() {
             <div className="px-4 py-2 bg-[#1a1e29] border-t border-gray-800 flex items-center justify-between text-[11px] text-gray-400 shrink-0">
               <span>紅色實線為極光預估南界觀測線。當紅線向南推移並涵蓋溫哥華以南時，極光可見機率大幅增加</span>
               <span className="text-emerald-400 font-mono text-[10.5px]">NOAA SWPC</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 10.7 外部職缺網頁前往確認對話框 */}
+      {externalJobConfirmation && (
+        <div 
+          className="fixed inset-0 z-[140] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-150"
+          onClick={() => setExternalJobConfirmation(null)}
+        >
+          <div 
+            className="bg-[#151922] border border-[#2b334a] rounded-2xl p-5 max-w-md w-full shadow-2xl flex flex-col gap-4 text-xs select-none"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center gap-2.5 pb-2 border-b border-[#242b3d]">
+              <div className="w-8 h-8 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center shrink-0">
+                <ExternalLink className="w-4 h-4" />
+              </div>
+              <div>
+                <h4 className="font-bold text-sm text-gray-100">確認前往外部職缺網站</h4>
+                <p className="text-[11px] text-gray-400">此職缺由第三方外部網站刊登與受理申請</p>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2 text-gray-300">
+              <p className="leading-relaxed">
+                您即將前往外部職缺來源網頁：
+              </p>
+              {externalJobConfirmation.title && (
+                <div className="font-semibold text-gray-100 text-[12px] bg-[#0f1219] p-2.5 rounded-lg border border-[#23293c]">
+                  {externalJobConfirmation.title}
+                </div>
+              )}
+              <div className="bg-[#0b0e14] p-2.5 rounded-lg border border-[#1e2436] text-[11px] font-mono text-indigo-400 break-all select-all">
+                {externalJobConfirmation.url}
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#242b3d]">
+              <button
+                type="button"
+                onClick={() => setExternalJobConfirmation(null)}
+                className="px-3.5 py-1.5 rounded-lg bg-[#1a202e] hover:bg-[#232b3e] text-gray-300 font-medium transition-colors cursor-pointer"
+              >
+                返回
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const url = externalJobConfirmation.url;
+                  setExternalJobConfirmation(null);
+                  window.open(url, '_blank', 'noopener,noreferrer');
+                }}
+                className="px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>確認前往</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </button>
             </div>
           </div>
         </div>

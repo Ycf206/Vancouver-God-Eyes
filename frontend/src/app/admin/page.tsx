@@ -21,6 +21,7 @@ import {
   Users,
   MessageSquareWarning,
   Eye, 
+  EyeOff,
   ExternalLink,
   ChevronRight,
   Sparkles,
@@ -29,10 +30,85 @@ import {
   X,
   Check,
   Mail,
-  Ban
+  Ban,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
+  Terminal,
+  Download,
+  History
 } from 'lucide-react';
 import { getApiUrl } from '@/utils/api';
 import { DEFAULT_ADMIN_SOURCES } from '@/data/defaultAdminSources';
+import { useUIStore } from '@/store/useUIStore';
+
+// 11.3 數據源對應前台圖層控制面板之 Key
+const SOURCE_TO_LAYER_MAP: Record<string, string> = {
+  bus_realtime: 'bus',
+  bus_routes: 'busRoutes',
+  skytrain_realtime: 'skytrainTrains',
+  skytrain_routes: 'skytrainRoutes',
+  seabus_realtime: 'seabusVehicles',
+  seabus_routes: 'seabusRoutes',
+  bcferries_routes: 'bcferriesRoutes',
+  bcferries_vehicles: 'bcferriesVehicles',
+  bcferries_terminals: 'bcferriesTerminals',
+  parking_meters: 'parkingMeters',
+  impark_parking: 'impark',
+  accessible_parking: 'accessibleParking',
+  motorcycle_parking: 'motorcycleParking',
+  ev_charging: 'evCharging',
+  escooter_locations: 'escooter',
+  shared_bikes: 'sharedBikes',
+  bikeways: 'bikeways',
+  bike_racks: 'bikeRacks',
+  traffic_cameras: 'trafficCameras',
+  safety_cameras: 'safetyCameras',
+  car_sharing: 'carSharing',
+  flight_schedules: 'airports',
+  maritime_shipping: 'maritimeShipping',
+  marine_terminals: 'marineTerminals',
+  fuel_prices: 'fuel',
+  tesla_superchargers: 'tesla',
+  one_way_streets: 'oneWayStreets',
+  traffic_speed_limits: 'trafficSpeedLimits',
+  traffic_crosswalks: 'trafficCrosswalks',
+  road_closures: 'roadClosures',
+  road_construction: 'roadConstruction',
+  snow_removal_routes: 'snowRemovalRoutes',
+  street_lighting: 'streetLighting',
+  street_lighting_conduits: 'streetLightingConduits',
+  water_distribution_mains: 'waterDistributionMains',
+  sewer_mains: 'sewerMains',
+  fire_halls: 'fireHalls',
+  police: 'police',
+  fire_hydrants: 'fireHydrants',
+  disaster_hubs: 'disasterHubs',
+  community_centres: 'communityCentres',
+  canada_post: 'canadaPost',
+  atm: 'atm',
+  hospitals: 'hospitals',
+  parks: 'parks',
+  parks_facilities: 'parksFacilities',
+  community_gardens: 'communityGardens',
+  drinking_fountains: 'drinkingFountains',
+  public_washrooms: 'publicWashrooms',
+  schools: 'schools',
+  libraries: 'libraries',
+  food_vendors: 'foodVendors',
+  food_banks: 'foodBanks',
+  recycling: 'recycling',
+  aed_locations: 'aed',
+  homeless_shelters: 'homelessShelters',
+  public_art: 'publicArt',
+  litter_containers: 'litterContainers',
+  van_wifi: 'vanWifi',
+  tide_stations: 'tideStations',
+  beach_water_quality: 'beachWaterQuality',
+  zoning_districts: 'zoningDistricts',
+  public_trees: 'publicTrees',
+  museums: 'museums',
+};
 
 // 系統 4 大標準分頁與按鈕類別 (對應主導航與探索面板)
 const SYSTEM_CATEGORIES = ['道路', '天氣', '生活', '公共事業'] as const;
@@ -164,10 +240,36 @@ export default function AdminPage() {
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [backendConnected, setBackendConnected] = useState<boolean | null>(null);
-  const [mainTab, setMainTab] = useState<'sources' | 'logs' | 'analytics' | 'issues'>('sources');
+  const [mainTab, setMainTab] = useState<'sources' | 'logs' | 'system_logs' | 'analytics' | 'issues'>('sources');
   const [issueSearch, setIssueSearch] = useState('');
   const [issueStatusFilter, setIssueStatusFilter] = useState<'all' | 'pending' | 'resolved' | 'closed'>('all');
   const [activeTab, setActiveTab] = useState<'all' | 'github_actions' | 'oci'>('all');
+
+  // 11.1 清單多欄位排序狀態
+  const [sortField, setSortField] = useState<'status' | 'category' | 'name' | 'runner' | 'schedule_interval' | 'record_count' | 'last_updated'>('name');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+
+  // 11.3 獨立圖層開關狀態
+  const [hiddenLayersInPanelState, setHiddenLayersInPanelState] = useState<Record<string, boolean>>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const raw = localStorage.getItem('vancouver_hidden_layers_in_panel');
+        if (raw) return JSON.parse(raw);
+      } catch (_) {}
+    }
+    return {};
+  });
+
+  // 11.4 系統日誌狀態
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [systemLogs, setSystemLogs] = useState<any[]>([]);
+  const [loadingSystemLogs, setLoadingSystemLogs] = useState(false);
+  const [systemRetentionDays, setSystemRetentionDays] = useState<number>(30);
+  const [systemLogLevelFilter, setSystemLogLevelFilter] = useState<string>('all');
+  const [systemLogSearch, setSystemLogSearch] = useState<string>('');
+
+  // 11.5 排程歷史保留期限
+  const [scheduleRetentionDays, setScheduleRetentionDays] = useState<number>(30);
   
   // --- Analytics & Stats states (8. 正式推出才開始執行) ---
   const [stats, setStats] = useState<{
@@ -236,8 +338,97 @@ export default function AdminPage() {
   useEffect(() => {
     if (mainTab === 'analytics' || mainTab === 'issues') {
       fetchAnalyticsData();
+    } else if (mainTab === 'system_logs') {
+      fetchSystemLogs();
     }
   }, [mainTab]);
+
+  // 11.4 取得系統運作日誌
+  const fetchSystemLogs = async () => {
+    setLoadingSystemLogs(true);
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const res = await adminApiFetch<any>('/api/admin/system-logs');
+      if (res.ok && res.data) {
+        setSystemLogs(Array.isArray(res.data.logs) ? res.data.logs : []);
+        if (typeof res.data.retention_days === 'number') {
+          setSystemRetentionDays(res.data.retention_days);
+        }
+      }
+    } catch (err) {
+      console.error('Fetch system logs error:', err);
+    } finally {
+      setLoadingSystemLogs(false);
+    }
+  };
+
+  // 11.4 設定系統日誌保留期限
+  const handleSystemRetentionChange = async (days: number) => {
+    setSystemRetentionDays(days);
+    await adminApiFetch('/api/admin/system-logs/retention', {
+      method: 'POST',
+      body: JSON.stringify({ retention_days: days })
+    });
+    await fetchSystemLogs();
+  };
+
+  // 11.4 清空系統日誌
+  const handleClearSystemLogs = async () => {
+    if (!confirm('確定要清空所有系統運作與錯誤日誌嗎？此操作無法還原。')) return;
+    await adminApiFetch('/api/admin/system-logs/clear', { method: 'POST' });
+    await fetchSystemLogs();
+  };
+
+  // 11.4 匯出系統日誌為 JSON
+  const handleExportSystemLogs = () => {
+    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(systemLogs, null, 2));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute('href', dataStr);
+    downloadAnchor.setAttribute('download', `godseye_system_logs_${new Date().toISOString().slice(0, 10)}.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+  };
+
+  // 11.5 設定排程歷史保留期限
+  const handleScheduleRetentionChange = async (days: number) => {
+    setScheduleRetentionDays(days);
+    await adminApiFetch('/api/admin/schedule-history/retention', {
+      method: 'POST',
+      body: JSON.stringify({ retention_days: days })
+    });
+    await fetchAdminData();
+  };
+
+  // 11.3 獨立圖層開關：切換並同步至 localStorage、Zustand 與後端
+  const handleToggleLayerVisibility = async (sourceId: string, layerKey: string) => {
+    const currentHidden = !!hiddenLayersInPanelState[layerKey];
+    const nextHidden = !currentHidden;
+    useUIStore.getState().toggleLayerPanelHidden(layerKey);
+    setHiddenLayersInPanelState(prev => ({ ...prev, [layerKey]: nextHidden }));
+    if (typeof window !== 'undefined') {
+      try {
+        const raw = localStorage.getItem('vancouver_hidden_layers_in_panel') || '{}';
+        const parsed = JSON.parse(raw);
+        parsed[layerKey] = nextHidden;
+        localStorage.setItem('vancouver_hidden_layers_in_panel', JSON.stringify(parsed));
+      } catch (_) {}
+    }
+    await adminApiFetch('/api/admin/sources/visibility', {
+      method: 'POST',
+      body: JSON.stringify({ source_id: sourceId, hidden: nextHidden })
+    });
+  };
+
+  // 11.1 清單列表多欄位排序處理
+  const handleSort = (field: typeof sortField) => {
+    if (sortField === field) {
+      setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
 
   // 更新問題回報狀態 (resolved: 完成 / closed: 關閉 / pending: 待處理)
   const handleUpdateIssueStatus = async (reportId: string, newStatus: 'resolved' | 'closed' | 'pending') => {
@@ -726,9 +917,9 @@ export default function AdminPage() {
     return Array.from(set);
   }, [sources]);
 
-  // Filtered Sources
+  // 11.1 支援多欄位排序之 Filtered & Sorted Sources
   const filteredSources = useMemo(() => {
-    return sources.filter(s => {
+    const list = sources.filter(s => {
       if (activeTab === 'github_actions' && s.runner !== 'github_actions') return false;
       if (activeTab === 'oci' && s.runner !== 'oci') return false;
       if (selectedCategory !== 'all' && getSystemCategory(s) !== selectedCategory) return false;
@@ -745,7 +936,28 @@ export default function AdminPage() {
       }
       return true;
     });
-  }, [sources, activeTab, selectedCategory, searchQuery]);
+
+    return [...list].sort((a, b) => {
+      let cmp = 0;
+      if (sortField === 'status') {
+        const order = (s: DataSource) => s.enabled === false ? 2 : (s.status === 'error' ? 0 : 1);
+        cmp = order(a) - order(b);
+      } else if (sortField === 'category') {
+        cmp = getSystemCategory(a).localeCompare(getSystemCategory(b), 'zh-Hant');
+      } else if (sortField === 'name') {
+        cmp = a.name.localeCompare(b.name, 'zh-Hant');
+      } else if (sortField === 'runner') {
+        cmp = (a.runner || '').localeCompare(b.runner || '');
+      } else if (sortField === 'schedule_interval') {
+        cmp = (a.schedule_interval || '').localeCompare(b.schedule_interval || '', 'zh-Hant');
+      } else if (sortField === 'record_count') {
+        cmp = (a.record_count || 0) - (b.record_count || 0);
+      } else if (sortField === 'last_updated') {
+        cmp = new Date(a.last_updated || 0).getTime() - new Date(b.last_updated || 0).getTime();
+      }
+      return sortDirection === 'asc' ? cmp : -cmp;
+    });
+  }, [sources, activeTab, selectedCategory, searchQuery, sortField, sortDirection]);
 
   const ghCount = sources.filter(s => s.runner === 'github_actions').length;
   const ociCount = sources.filter(s => s.runner === 'oci').length;
@@ -869,6 +1081,27 @@ export default function AdminPage() {
               {logs.length}
             </span>
             {mainTab === 'logs' && (
+              <span className="absolute bottom-[-1px] left-0 right-0 h-[1px] bg-[#141822]" />
+            )}
+          </button>
+
+          {/* 11.4 分頁 3: 系統運作與錯誤日誌 (System Logs) */}
+          <button
+            onClick={() => setMainTab('system_logs')}
+            className={`group relative flex items-center gap-2 px-4 py-2 rounded-t-xl text-xs font-semibold transition-all cursor-pointer ${
+              mainTab === 'system_logs'
+                ? 'bg-[#141822] text-white border-t-2 border-t-sky-500 border-x border-[#232a3b] shadow-sm z-10'
+                : 'bg-[#0f131a] text-gray-400 hover:text-gray-200 hover:bg-[#161c27] border-t-2 border-transparent'
+            }`}
+          >
+            <Terminal className={`w-3.5 h-3.5 ${mainTab === 'system_logs' ? 'text-sky-400' : 'text-gray-500 group-hover:text-gray-400'}`} />
+            <span>系統日誌</span>
+            <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
+              mainTab === 'system_logs' ? 'bg-sky-500/20 text-sky-300' : 'bg-black/30 text-gray-500'
+            }`}>
+              {systemLogs.length}
+            </span>
+            {mainTab === 'system_logs' && (
               <span className="absolute bottom-[-1px] left-0 right-0 h-[1px] bg-[#141822]" />
             )}
           </button>
@@ -1074,16 +1307,51 @@ export default function AdminPage() {
               <div className="overflow-x-auto max-h-[72vh] overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-[#2c374d] [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-[#3e4e6d]">
                 <table className="w-full text-left border-collapse text-xs">
                   <thead>
-                    <tr className="sticky top-0 z-10 bg-[#161c28] border-b border-[#283144] text-gray-300 font-semibold uppercase text-[10.5px] tracking-wider shadow-sm">
-                      <th className="py-3 px-4 w-12 text-center">狀態</th>
-                      <th className="py-3 px-4 w-28">分類</th>
-                      <th className="py-3 px-4 min-w-[200px]">資料源與項目名稱</th>
-                      <th className="py-3 px-4 min-w-[170px]">執行載體 / 管線</th>
-                      <th className="py-3 px-4 min-w-[200px]">排程週期 (Cron)</th>
-                      <th className="py-3 px-4 min-w-[180px]">來源連結 / 端點</th>
-                      <th className="py-3 px-4 w-32">上次更新</th>
-                      <th className="py-3 px-4 w-28">規模筆數</th>
-                      <th className="py-3 px-4 w-48 text-right">管理操作</th>
+                    <tr className="sticky top-0 z-10 bg-[#161c28] border-b border-[#283144] text-gray-300 font-semibold uppercase text-[10.5px] tracking-wider shadow-sm select-none">
+                      <th onClick={() => handleSort('status')} className="py-3 px-3 w-16 text-center cursor-pointer hover:text-white transition-colors">
+                        <div className="flex items-center justify-center gap-1">
+                          <span>狀態</span>
+                          {sortField === 'status' ? (sortDirection === 'asc' ? <ArrowUp className="w-3 h-3 text-indigo-400" /> : <ArrowDown className="w-3 h-3 text-indigo-400" />) : <ArrowUpDown className="w-2.5 h-2.5 text-gray-500" />}
+                        </div>
+                      </th>
+                      <th onClick={() => handleSort('category')} className="py-3 px-3 w-24 cursor-pointer hover:text-white transition-colors">
+                        <div className="flex items-center gap-1">
+                          <span>分類</span>
+                          {sortField === 'category' ? (sortDirection === 'asc' ? <ArrowUp className="w-3 h-3 text-indigo-400" /> : <ArrowDown className="w-3 h-3 text-indigo-400" />) : <ArrowUpDown className="w-2.5 h-2.5 text-gray-500" />}
+                        </div>
+                      </th>
+                      <th onClick={() => handleSort('name')} className="py-3 px-4 min-w-[200px] cursor-pointer hover:text-white transition-colors">
+                        <div className="flex items-center gap-1">
+                          <span>資料源與項目名稱</span>
+                          {sortField === 'name' ? (sortDirection === 'asc' ? <ArrowUp className="w-3 h-3 text-indigo-400" /> : <ArrowDown className="w-3 h-3 text-indigo-400" />) : <ArrowUpDown className="w-2.5 h-2.5 text-gray-500" />}
+                        </div>
+                      </th>
+                      <th onClick={() => handleSort('runner')} className="py-3 px-3 min-w-[150px] cursor-pointer hover:text-white transition-colors">
+                        <div className="flex items-center gap-1">
+                          <span>執行載體 / 管線</span>
+                          {sortField === 'runner' ? (sortDirection === 'asc' ? <ArrowUp className="w-3 h-3 text-indigo-400" /> : <ArrowDown className="w-3 h-3 text-indigo-400" />) : <ArrowUpDown className="w-2.5 h-2.5 text-gray-500" />}
+                        </div>
+                      </th>
+                      <th onClick={() => handleSort('schedule_interval')} className="py-3 px-3 min-w-[180px] cursor-pointer hover:text-white transition-colors">
+                        <div className="flex items-center gap-1">
+                          <span>排程週期 (Cron)</span>
+                          {sortField === 'schedule_interval' ? (sortDirection === 'asc' ? <ArrowUp className="w-3 h-3 text-indigo-400" /> : <ArrowDown className="w-3 h-3 text-indigo-400" />) : <ArrowUpDown className="w-2.5 h-2.5 text-gray-500" />}
+                        </div>
+                      </th>
+                      <th className="py-3 px-3 min-w-[160px]">來源連結 / 端點</th>
+                      <th onClick={() => handleSort('last_updated')} className="py-3 px-3 w-28 cursor-pointer hover:text-white transition-colors">
+                        <div className="flex items-center gap-1">
+                          <span>上次更新</span>
+                          {sortField === 'last_updated' ? (sortDirection === 'asc' ? <ArrowUp className="w-3 h-3 text-indigo-400" /> : <ArrowDown className="w-3 h-3 text-indigo-400" />) : <ArrowUpDown className="w-2.5 h-2.5 text-gray-500" />}
+                        </div>
+                      </th>
+                      <th onClick={() => handleSort('record_count')} className="py-3 px-3 w-24 cursor-pointer hover:text-white transition-colors">
+                        <div className="flex items-center gap-1">
+                          <span>規模筆數</span>
+                          {sortField === 'record_count' ? (sortDirection === 'asc' ? <ArrowUp className="w-3 h-3 text-indigo-400" /> : <ArrowDown className="w-3 h-3 text-indigo-400" />) : <ArrowUpDown className="w-2.5 h-2.5 text-gray-500" />}
+                        </div>
+                      </th>
+                      <th className="py-3 px-4 w-56 text-right">圖層控制 / 管理操作</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#202738]">
@@ -1538,6 +1806,29 @@ export default function AdminPage() {
                                 >
                                   {source.enabled !== false ? '啟用' : '暫停'}
                                 </button>
+
+                                {/* 11.3 獨立圖層開關: 顯示或隱藏在圖層控制界面中 */}
+                                {SOURCE_TO_LAYER_MAP[source.id] && (() => {
+                                  const layerKey = SOURCE_TO_LAYER_MAP[source.id];
+                                  const isLayerHidden = !!hiddenLayersInPanelState[layerKey];
+                                  return (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleToggleLayerVisibility(source.id, layerKey)}
+                                      className={`p-1.5 rounded-md transition-all cursor-pointer flex items-center gap-1 ${
+                                        isLayerHidden
+                                          ? 'bg-rose-500/15 text-rose-300 border border-rose-500/30 hover:bg-rose-500/25'
+                                          : 'bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 hover:bg-indigo-500/25'
+                                      }`}
+                                      title={isLayerHidden ? '目前在圖層控制面板中【隱藏】，點擊切換為【顯示】' : '目前在圖層控制面板中【顯示】，點擊切換為【隱藏】'}
+                                    >
+                                      {isLayerHidden ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                                      <span className="text-[10px] hidden xl:inline">
+                                        {isLayerHidden ? '面板隱藏' : '面板顯示'}
+                                      </span>
+                                    </button>
+                                  );
+                                })()}
                               </div>
                             )}
                           </td>
@@ -1558,36 +1849,60 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* 分頁 2: 系統調度歷史日誌 (Audit Trail) */}
+        {/* 11.5 分頁 2: 資料源更新排程記錄 (持久保留) */}
         {mainTab === 'logs' && (
           <div className="bg-[#141822] border border-[#232a3b] rounded-xl overflow-hidden shadow-xl flex flex-col">
-            <div className="p-4 bg-[#191f2c] border-b border-[#283144] flex items-center justify-between">
-              <div>
+            <div className="p-4 bg-[#191f2c] border-b border-[#283144] flex items-center justify-between flex-wrap gap-3">
+              <div className="flex items-center gap-3">
                 <h3 className="font-bold text-sm text-white flex items-center gap-2">
                   <FileText className="w-4 h-4 text-amber-400" />
-                  <span>系統更新與調度歷程日誌</span>
+                  <span>資料源更新排程記錄</span>
                 </h3>
+                <span className="text-[10.5px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1 font-medium">
+                  <History className="w-3 h-3" />
+                  <span>部署持續保留</span>
+                </span>
               </div>
 
-              <button
-                disabled={!isUnlocked || logs.length === 0}
-                onClick={handleClearLogs}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors ${
-                  isUnlocked && logs.length > 0
-                    ? 'bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/30 cursor-pointer'
-                    : 'bg-gray-800 text-gray-600 cursor-not-allowed'
-                }`}
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-                <span>清空日誌記錄</span>
-              </button>
+              <div className="flex items-center gap-3 flex-wrap">
+                {/* 11.5 排程歷史保留期限設定 */}
+                <div className="flex items-center gap-1.5 text-xs text-gray-300">
+                  <span className="text-gray-400 text-[11px]">保留期限:</span>
+                  <select
+                    value={scheduleRetentionDays}
+                    onChange={(e) => handleScheduleRetentionChange(Number(e.target.value))}
+                    className="bg-[#121620] text-xs text-gray-200 border border-[#2c374d] rounded-lg px-2 py-1 focus:outline-none focus:border-amber-500 cursor-pointer"
+                  >
+                    <option value={7}>7 天</option>
+                    <option value={14}>14 天</option>
+                    <option value={30}>30 天</option>
+                    <option value={90}>90 天</option>
+                    <option value={180}>180 天 (半年)</option>
+                    <option value={365}>365 天 (1 年)</option>
+                    <option value={0}>永久保留</option>
+                  </select>
+                </div>
+
+                <button
+                  disabled={!isUnlocked || logs.length === 0}
+                  onClick={handleClearLogs}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors ${
+                    isUnlocked && logs.length > 0
+                      ? 'bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/30 cursor-pointer'
+                      : 'bg-gray-800 text-gray-600 cursor-not-allowed'
+                  }`}
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>清空記錄</span>
+                </button>
+              </div>
             </div>
 
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto max-h-[72vh] overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-[#2c374d] [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-[#3e4e6d]">
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
-                  <tr className="bg-[#161b26] border-b border-[#242b3b] text-gray-400 font-semibold uppercase text-[10px] tracking-wider">
-                    <th className="py-2.5 px-4 w-40">時間戳記</th>
+                  <tr className="sticky top-0 z-10 bg-[#161b26] border-b border-[#242b3b] text-gray-400 font-semibold uppercase text-[10px] tracking-wider shadow-sm">
+                    <th className="py-2.5 px-4 w-44">時間戳記</th>
                     <th className="py-2.5 px-4 w-32">動作類型</th>
                     <th className="py-2.5 px-4 w-44">目標資料源</th>
                     <th className="py-2.5 px-4 w-28">執行載體</th>
@@ -1597,7 +1912,7 @@ export default function AdminPage() {
                 <tbody className="divide-y divide-[#1e2535]">
                   {logs.map((log) => (
                     <tr key={log.id} className="hover:bg-[#19202e] transition-colors">
-                      <td className="py-3 px-4 font-mono text-[11px] text-gray-400">
+                      <td className="py-3 px-4 font-mono text-[11px] text-gray-400 whitespace-nowrap">
                         {new Date(log.timestamp).toLocaleString('zh-HK', {
                           year: 'numeric',
                           month: '2-digit',
@@ -1636,6 +1951,189 @@ export default function AdminPage() {
                     <tr>
                       <td colSpan={5} className="py-12 text-center text-gray-500 text-xs">
                         尚無任何排程或同步歷史日誌
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* 11.4 分頁 3: 系統日誌 (System Logs) */}
+        {mainTab === 'system_logs' && (
+          <div className="bg-[#141822] border border-[#232a3b] rounded-xl overflow-hidden shadow-xl flex flex-col">
+            <div className="p-4 bg-[#191f2c] border-b border-[#283144] flex items-center justify-between flex-wrap gap-3">
+              <div className="flex items-center gap-3">
+                <h3 className="font-bold text-sm text-white flex items-center gap-2">
+                  <Terminal className="w-4 h-4 text-sky-400" />
+                  <span>系統運作與錯誤日誌 (System Logs)</span>
+                </h3>
+                <span className="text-[11px] text-gray-400">
+                  記錄執行檔案、更新動作與錯誤診斷資訊
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2 flex-wrap">
+                {/* 保留期限設定 */}
+                <div className="flex items-center gap-1.5 text-xs text-gray-300">
+                  <span className="text-gray-400 text-[11px]">保留期限:</span>
+                  <select
+                    value={systemRetentionDays}
+                    onChange={(e) => handleSystemRetentionChange(Number(e.target.value))}
+                    className="bg-[#121620] text-xs text-gray-200 border border-[#2c374d] rounded-lg px-2 py-1 focus:outline-none focus:border-sky-500 cursor-pointer"
+                  >
+                    <option value={7}>7 天</option>
+                    <option value={14}>14 天</option>
+                    <option value={30}>30 天</option>
+                    <option value={90}>90 天</option>
+                    <option value={180}>180 天 (半年)</option>
+                    <option value={365}>365 天 (1 年)</option>
+                    <option value={0}>永久保留</option>
+                  </select>
+                </div>
+
+                {/* 等級篩選 */}
+                <div className="flex items-center gap-1 bg-[#10131d] border border-[#252a38] rounded-lg p-0.5">
+                  {['all', 'INFO', 'WARNING', 'ERROR', 'SUCCESS'].map((lvl) => (
+                    <button
+                      key={lvl}
+                      type="button"
+                      onClick={() => setSystemLogLevelFilter(lvl)}
+                      className={`px-2 py-0.5 rounded text-[10.5px] font-semibold transition-colors cursor-pointer ${
+                        systemLogLevelFilter === lvl
+                          ? 'bg-sky-600 text-white'
+                          : 'text-gray-400 hover:text-gray-200'
+                      }`}
+                    >
+                      {lvl === 'all' ? '全部' : lvl}
+                    </button>
+                  ))}
+                </div>
+
+                {/* 搜尋框 */}
+                <div className="relative">
+                  <Search className="w-3.5 h-3.5 text-gray-500 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={systemLogSearch}
+                    onChange={(e) => setSystemLogSearch(e.target.value)}
+                    placeholder="搜尋檔案或訊息..."
+                    className="bg-[#10131a] text-xs text-gray-200 placeholder-gray-500 pl-8 pr-2.5 py-1 rounded-lg border border-[#283144] focus:outline-none focus:border-sky-500/60 w-36 sm:w-48"
+                  />
+                </div>
+
+                {/* 重新整理 */}
+                <button
+                  type="button"
+                  onClick={fetchSystemLogs}
+                  disabled={loadingSystemLogs}
+                  className="p-1.5 rounded-lg bg-[#1a2130] hover:bg-[#252f44] text-gray-300 border border-[#2b3548] cursor-pointer transition-colors"
+                  title="重新整理日誌"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${loadingSystemLogs ? 'animate-spin text-sky-400' : ''}`} />
+                </button>
+
+                {/* 匯出 */}
+                <button
+                  type="button"
+                  onClick={handleExportSystemLogs}
+                  className="px-2.5 py-1.5 rounded-lg bg-[#1a2130] hover:bg-[#252f44] text-gray-300 border border-[#2b3548] text-xs font-semibold flex items-center gap-1 cursor-pointer transition-colors"
+                  title="匯出日誌 JSON"
+                >
+                  <Download className="w-3.5 h-3.5 text-sky-400" />
+                  <span className="hidden sm:inline">匯出</span>
+                </button>
+
+                {/* 清空日誌 */}
+                <button
+                  type="button"
+                  disabled={!isUnlocked || systemLogs.length === 0}
+                  onClick={handleClearSystemLogs}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors ${
+                    isUnlocked && systemLogs.length > 0
+                      ? 'bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/30 cursor-pointer'
+                      : 'bg-gray-800 text-gray-600 cursor-not-allowed'
+                  }`}
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>清空</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto max-h-[72vh] overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-[#2c374d] [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-[#3e4e6d]">
+              <table className="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr className="sticky top-0 z-10 bg-[#161c28] border-b border-[#283144] text-gray-300 font-semibold uppercase text-[10.5px] tracking-wider shadow-sm">
+                    <th className="py-2.5 px-4 w-44">日期時間</th>
+                    <th className="py-2.5 px-3 w-20 text-center">等級</th>
+                    <th className="py-2.5 px-4 min-w-[220px]">執行的檔案</th>
+                    <th className="py-2.5 px-3 w-36">動作 / 模組</th>
+                    <th className="py-2.5 px-4">日誌內容與詳細訊息</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#1e2535]">
+                  {systemLogs
+                    .filter((log) => {
+                      if (systemLogLevelFilter !== 'all' && log.level !== systemLogLevelFilter) return false;
+                      if (systemLogSearch.trim()) {
+                        const q = systemLogSearch.toLowerCase();
+                        const matchFile = (log.file || '').toLowerCase().includes(q);
+                        const matchMsg = (log.message || '').toLowerCase().includes(q);
+                        const matchAction = (log.action || '').toLowerCase().includes(q);
+                        if (!matchFile && !matchMsg && !matchAction) return false;
+                      }
+                      return true;
+                    })
+                    .map((log) => (
+                      <tr key={log.id} className="hover:bg-[#19202e] transition-colors">
+                        <td className="py-3 px-4 font-mono text-[11px] text-gray-400 whitespace-nowrap">
+                          {new Date(log.timestamp).toLocaleString('zh-HK', {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit',
+                            hour12: false
+                          })}
+                        </td>
+                        <td className="py-3 px-3 text-center">
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                            log.level === 'ERROR'
+                              ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                              : log.level === 'WARNING'
+                                ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                                : log.level === 'SUCCESS'
+                                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                                  : 'bg-sky-500/20 text-sky-300 border border-sky-500/40'
+                          }`}>
+                            {log.level}
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 font-mono text-[11.5px] text-indigo-300">
+                          {log.file}
+                        </td>
+                        <td className="py-3 px-3">
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-gray-800 text-gray-300 border border-gray-700">
+                            {log.action}
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 text-gray-200 text-xs">
+                          <div className="leading-relaxed">{log.message}</div>
+                          {log.details && Object.keys(log.details).length > 0 && (
+                            <div className="mt-1 font-mono text-[10px] text-gray-500 bg-[#0c0f16] px-2 py-1 rounded border border-[#1e2434] inline-block">
+                              {JSON.stringify(log.details)}
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  {systemLogs.length === 0 && (
+                    <tr>
+                      <td colSpan={5} className="py-12 text-center text-gray-500 text-xs">
+                        尚無任何系統日誌
                       </td>
                     </tr>
                   )}

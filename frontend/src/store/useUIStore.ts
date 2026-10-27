@@ -221,6 +221,10 @@ export interface UIState {
   setFlightScheduleOpen: (open: boolean) => void;
   selectedFlightId: string | null;
   setSelectedFlightId: (id: string | null) => void;
+  // 11.3 獨立圖層開關: 顯示或隱藏在圖層控制中界面中
+  hiddenLayersInPanel: Record<string, boolean>;
+  toggleLayerPanelHidden: (layerKey: string) => void;
+  setHiddenLayersInPanel: (hidden: Record<string, boolean>) => void;
 }
 
 
@@ -596,6 +600,15 @@ export const useUIStore = create<UIState>()(
       setFlightScheduleOpen: (open) => set({ isFlightScheduleOpen: open }),
       selectedFlightId: null,
       setSelectedFlightId: (id) => set({ selectedFlightId: id }),
+      hiddenLayersInPanel: {},
+      toggleLayerPanelHidden: (layerKey) =>
+        set((state) => ({
+          hiddenLayersInPanel: {
+            ...state.hiddenLayersInPanel,
+            [layerKey]: !state.hiddenLayersInPanel[layerKey],
+          },
+        })),
+      setHiddenLayersInPanel: (hidden) => set({ hiddenLayersInPanel: hidden }),
     }),
 
     {
@@ -613,6 +626,7 @@ export const useUIStore = create<UIState>()(
         transitAlertsRefreshInterval: state.transitAlertsRefreshInterval,
         userLocation: state.userLocation,
         navigationAddress: state.navigationAddress,
+        hiddenLayersInPanel: state.hiddenLayersInPanel,
       }),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       merge: (persistedState: any, currentState: UIState) => {
@@ -629,6 +643,7 @@ export const useUIStore = create<UIState>()(
           transitAlertsRefreshInterval: persistedState?.transitAlertsRefreshInterval ?? 10,
           userLocation: persistedState?.userLocation || null,
           navigationAddress: persistedState?.navigationAddress || '',
+          hiddenLayersInPanel: persistedState?.hiddenLayersInPanel || {},
           layers: {
             ...currentState.layers,
             ...(persistedState?.layers || {}),

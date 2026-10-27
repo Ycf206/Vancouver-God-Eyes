@@ -98,6 +98,7 @@ from shipping_service import shipping_service
 from news_service import news_service
 from events_service import events_service
 from border_service import border_service
+from system_log_service import system_log_service
 
 import math
 def calculate_bearing(p1, p2):
@@ -999,8 +1000,12 @@ def get_tomtom_traffic_summary(force: bool = False):
     Returns real-time TomTom traffic corridors delay summary, bottlenecks and alerts for Greater Vancouver.
     Cached 5 minutes.
     """
-    from tomtom_service import tomtom_service
-    return tomtom_service.get_corridors_summary(force=force)
+    try:
+        from tomtom_service import tomtom_service
+        return tomtom_service.get_corridors_summary(force=force)
+    except Exception as e:
+        logger.error(f"Error in traffic summary endpoint: {e}")
+        return JSONResponse(status_code=200, content={"corridors": [], "top_alerts": [], "error": str(e)})
 
 
 @app.get("/api/traffic/jams")
@@ -3765,6 +3770,13 @@ def get_admin_sources():
             with open(config_path, 'r', encoding='utf-8') as f:
                 cfg = json.load(f)
 
+            # 11.2 同步 探索-活動 (public_events) 即時數據筆數與狀態
+            for s in cfg.get("sources", []):
+                if s.get("id") == "public_events":
+                    if events_service.cached_events:
+                        s["record_count"] = len(events_service.cached_events)
+                        s["status"] = "healthy"
+
             # 自動校正所有舊版或遺失之 workflow_file (例如 update-datasets.yml)
             has_changes = False
             for s in cfg.get("sources", []):
@@ -3773,6 +3785,15 @@ def get_admin_sources():
                     if s.get("workflow_file") != canonical_wf:
                         s["workflow_file"] = canonical_wf
                         has_changes = True
+
+            # 11.5 從持久化排程歷史恢復 logs，防止 deploy 後資料消失
+            persisted_sched = system_log_service.get_schedule_history()
+            if persisted_sched.get("logs"):
+                cfg["logs"] = persisted_sched["logs"]
+            elif cfg.get("logs"):
+                for lg in cfg["logs"]:
+                    system_log_service.append_schedule_log(lg)
+            cfg["schedule_retention_days"] = system_log_service.get_schedule_retention_days()
 
             if has_changes:
                 try:
@@ -3894,7 +3915,19 @@ def trigger_admin_sync(payload: dict = Body(...)):
                             detail_msg = f"已標記 [{target_name}] 同步請求。綁定工作流: [{wf}]（在右上角設定 GITHUB_TOKEN 即可一鍵遠端喚醒 Actions 雲端執行）。"
                     else:
                         action_name = "OCI_SYNC"
-                        detail_msg = f"OCI 伺服器已即時更新 [{target_name}] 資料快取與連線狀態。"
+                        # 11.2 若觸發探索-活動 (public_events)，執行即時爬取
+                        if target_src.get("id") == "public_events":
+                            try:
+                                events_service.get_latest_events(force_refresh=True)
+                                ev_count = len(events_service.cached_events)
+                                target_src["record_count"] = ev_count
+                                target_src["last_updated"] = now_iso
+                                target_src["status"] = "healthy"
+                                detail_msg = f"OCI 伺服器已即時爬取更新 Daily Hive、Eventbrite 與 Destination Vancouver，共載入 {ev_count} 筆活動。"
+                            except Exception as ev_err:
+                                detail_msg = f"活動更新警告: {ev_err}"
+                        else:
+                            detail_msg = f"OCI 伺服器已即時更新 [{target_name}] 資料快取與連線狀態。"
                 else:
                     return {"status": "error", "message": f"找不到數據源 {source_id}"}
 
@@ -3907,6 +3940,16 @@ def trigger_admin_sync(payload: dict = Body(...)):
                 "status": "success",
                 "detail": detail_msg
             }
+            # 11.4 & 11.5 同步寫入持久化排程歷史與系統日誌
+            system_log_service.append_schedule_log(new_log)
+            system_log_service.add_system_log(
+                level="INFO",
+                file="backend/main.py",
+                action=action_name,
+                message=f"數據源同步觸發：{target_name} ({action_name}) - {detail_msg}",
+                details={"source_id": source_id, "detail": detail_msg}
+            )
+
             logs = cfg.get("logs", [])
             logs.insert(0, new_log)
             cfg["logs"] = logs[:150]
@@ -4046,6 +4089,15 @@ def update_admin_schedule(payload: dict = Body(...)):
                     "status": "success",
                     "detail": f"[{runner_label}] 排程週期變更為 [{schedule_interval or updated_src.get('schedule_interval')}] (Cron: {cron_expr or updated_src.get('cron_expr')})，狀態: {'啟用' if enabled else '暫停'}。{detail_extra}"
                 }
+                system_log_service.append_schedule_log(new_log)
+                system_log_service.add_system_log(
+                    level="INFO",
+                    file="backend/main.py",
+                    action="SCHEDULE_UPDATE",
+                    message=f"排程修改：{updated_src.get('name')} -> {schedule_interval or updated_src.get('schedule_interval')}",
+                    details={"source_id": source_id, "cron": cron_expr}
+                )
+
                 logs = cfg.get("logs", [])
                 logs.insert(0, new_log)
                 cfg["logs"] = logs[:150]
@@ -4065,6 +4117,7 @@ def clear_admin_logs():
     """
     清除管理員操作與排程更新記錄
     """
+    system_log_service.clear_schedule_history()
     config_path = get_admin_config_path()
     if os.path.exists(config_path):
         try:
@@ -4074,6 +4127,92 @@ def clear_admin_logs():
             with open(config_path, 'w', encoding='utf-8') as f:
                 json.dump(cfg, f, ensure_ascii=False, indent=2)
             return {"status": "success", "message": "日誌已清空"}
+        except Exception as e:
+            return {"status": "error", "error": str(e)}
+    return {"status": "error", "message": "配置檔案不存在"}
+
+
+# ==========================================
+# 11.3 & 11.4 & 11.5 後台系統日誌、排程歷史持久化與圖層顯示開關 API
+# ==========================================
+
+@app.get("/api/admin/system-logs")
+def get_admin_system_logs(limit: int = 500):
+    """
+    11.4 取得系統日誌 (包括時間、執行檔案、動作、內容與等級)
+    """
+    return system_log_service.get_system_logs(limit=limit)
+
+
+@app.post("/api/admin/system-logs/retention")
+def set_admin_system_logs_retention(payload: dict = Body(...)):
+    """
+    11.4 設定系統日誌保留期限並自動刪除過期記錄 (0 表示永久保留)
+    """
+    days = int(payload.get("retention_days", 30))
+    system_log_service.set_system_retention_days(days)
+    return {"status": "success", "retention_days": days}
+
+
+@app.post("/api/admin/system-logs/clear")
+def clear_admin_system_logs():
+    """
+    11.4 清空系統日誌
+    """
+    system_log_service.clear_system_logs()
+    return {"status": "success", "message": "系統日誌已清空"}
+
+
+@app.get("/api/admin/schedule-history")
+def get_admin_schedule_history(limit: int = 500):
+    """
+    11.5 取得排程更新與同步歷史記錄 (持久保留)
+    """
+    return system_log_service.get_schedule_history(limit=limit)
+
+
+@app.post("/api/admin/schedule-history/retention")
+def set_admin_schedule_history_retention(payload: dict = Body(...)):
+    """
+    11.5 設定排程更新記錄保留期限並自動刪除過期記錄 (0 表示永久保留)
+    """
+    days = int(payload.get("retention_days", 30))
+    system_log_service.set_schedule_retention_days(days)
+    return {"status": "success", "retention_days": days}
+
+
+@app.post("/api/admin/schedule-history/clear")
+def clear_admin_schedule_history():
+    """
+    11.5 清空排程更新歷史
+    """
+    system_log_service.clear_schedule_history()
+    return {"status": "success", "message": "排程更新歷史已清空"}
+
+
+@app.post("/api/admin/sources/visibility")
+def toggle_source_panel_visibility(payload: dict = Body(...)):
+    """
+    11.3 獨立圖層開關: 顯示或隱藏在圖層控制界面中
+    """
+    source_id = payload.get("source_id")
+    hidden = payload.get("hidden", False)
+    config_path = get_admin_config_path()
+    if os.path.exists(config_path):
+        try:
+            with open(config_path, 'r', encoding='utf-8') as f:
+                cfg = json.load(f)
+            found = False
+            for s in cfg.get("sources", []):
+                if s.get("id") == source_id:
+                    s["hidden_in_layer_panel"] = bool(hidden)
+                    found = True
+                    break
+            if found:
+                with open(config_path, 'w', encoding='utf-8') as f:
+                    json.dump(cfg, f, ensure_ascii=False, indent=2)
+                return {"status": "success", "source_id": source_id, "hidden_in_layer_panel": bool(hidden)}
+            return {"status": "error", "message": f"找不到數據源 {source_id}"}
         except Exception as e:
             return {"status": "error", "error": str(e)}
     return {"status": "error", "message": "配置檔案不存在"}

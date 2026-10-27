@@ -298,7 +298,7 @@ def get_estimated_skytrain_trains():
             rem_min = int(math.ceil(rem_to_next / 60.0))
 
             next_eta_dt = now_van + timedelta(seconds=rem_to_next)
-            eta_time_str = next_eta_dt.strftime("%H:%M:%S")
+            eta_time_str = next_eta_dt.strftime("%H:%M")
 
             # Strictly unique Vehicle ID (e.g. CAN-401, CAN-421, EXP-101, MLN-301)
             train_id = f"{cfg['prefix']}-{cfg['start_id'] + k:03d}"
@@ -329,7 +329,7 @@ def get_estimated_skytrain_trains():
                     diff_sec = max(0, int(s['time_sec'] - elapsed))
                     s_eta_min = int(math.ceil(diff_sec / 60.0))
                     s_dt = now_van + timedelta(seconds=diff_sec)
-                    s_eta_str = s_dt.strftime("%H:%M:%S")
+                    s_eta_str = s_dt.strftime("%H:%M")
 
                 stops_with_eta.append({
                     'seq': s['seq'],
@@ -362,7 +362,7 @@ def get_estimated_skytrain_trains():
                 'current_station': st_curr['name'],
                 'next_station': st_next['name'],
                 'next_stop_minutes': rem_min if not is_dwelling else 0,
-                'next_stop_time': eta_time_str if not is_dwelling else now_van.strftime("%H:%M:%S"),
+                'next_stop_time': eta_time_str if not is_dwelling else now_van.strftime("%H:%M"),
                 'operator': pattern.get('operator') or ('TransLink (ProTrans BC)' if line_id == 'canada' else 'TransLink (BC Rapid Transit Company)'),
                 'pattern_id': pattern['pattern_id'],
                 'stops': stops_with_eta,
@@ -464,7 +464,7 @@ def get_skytrain_station_schedule(stop_id: str):
                     eta_time = s.get('eta_time')
                     if not eta_time:
                         dt = now_van + timedelta(minutes=eta_min)
-                        eta_time = dt.strftime("%H:%M:%S")
+                        eta_time = dt.strftime("%H:%M")
 
                     departures_by_dest[key]['departures'].append({
                         'minutes': max(0, int(eta_min)),
@@ -498,7 +498,7 @@ def get_skytrain_station_schedule(stop_id: str):
             dt = now_van + timedelta(minutes=base_min)
             group['departures'].append({
                 'minutes': base_min,
-                'time': dt.strftime("%H:%M:%S"),
+                'time': dt.strftime("%H:%M"),
                 'formatted': f"{base_min} 分鐘"
             })
 
@@ -527,7 +527,7 @@ def get_skytrain_station_schedule(stop_id: str):
         'has_park_and_ride': meta.get('has_park_and_ride', False),
         'has_bike_parkade': meta.get('has_bike_parkade', False),
         'is_accessible': meta.get('is_accessible', True),
-        'updated_at': now_van.strftime("%H:%M:%S")
+        'updated_at': now_van.strftime("%H:%M")
     }
 
 def _get_station_metadata(st_name: str, lines: list, stop_id: str):

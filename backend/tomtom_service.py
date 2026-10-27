@@ -717,6 +717,7 @@ class TomTomTrafficService:
 
     def refresh(self, force: bool = False):
         now = time.time()
+        pub_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "frontend", "public"))
         if not force and (now - self.last_fetch_time < self.cache_ttl) and self.cached_jams_geojson and self.cached_corridors_summary:
             return
 

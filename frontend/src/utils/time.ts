@@ -27,7 +27,7 @@ export function formatOpeningHours(
     return formattedObj;
   }
 
-  const s = String(val).trim();
+  let s = String(val).trim();
   if (!s || s === '--') return s;
   if (/^(?:24\/7|24\s*hours?|24\s*小時(?:營業)?)$/i.test(s)) {
     return '24 小時營業';
@@ -36,11 +36,20 @@ export function formatOpeningHours(
     return '休館';
   }
 
+  // Common OSM day token translations
+  s = s.replace(/\bMo-Su\b/gi, '週一至週日');
+  s = s.replace(/\bMo-Fr\b/gi, '週一至週五');
+  s = s.replace(/\bSa-Su\b/gi, '週六至週日');
+  s = s.replace(/\bMo,Fr\b/gi, '週一、週五');
+  s = s.replace(/\bTu,We,Th\b/gi, '週二至週四');
+  s = s.replace(/\bPH\s*off\b/gi, '公眾假期休息');
+  s = s.replace(/\bPH\s*closed\b/gi, '公眾假期公休');
+
   // Regex matching time ranges: (Time 1) [separator] (Time 2)
-  const rangeRegex = /(\d{1,2}(?::\d{2})?\s*(?:[ap]\.?m\.?)?)\s*[-–—~至to]+\s*(\d{1,2}(?::\d{2})?\s*(?:[ap]\.?m\.?)?)/gi;
+  const rangeRegex = /(\d{1,2}(?::\d{2})?(?::\d{2})?\s*(?:[ap]\.?m\.?)?)\s*[-–—~至to]+\s*(\d{1,2}(?::\d{2})?(?::\d{2})?\s*(?:[ap]\.?m\.?)?)/gi;
 
   function parseSingleTimeToken(token: string, inferredAmpm: string | null = null): string | null {
-    const m = token.trim().match(/^(\d{1,2})(?::(\d{2}))?\s*([ap]\.?m\.?)?$/i);
+    const m = token.trim().match(/^(\d{1,2})(?::(\d{2}))(?::\d{2})?\s*([ap]\.?m\.?)?$/i);
     if (!m) return null;
     let hour = parseInt(m[1], 10);
     const min = m[2] || '00';
@@ -145,6 +154,45 @@ export function formatTimeRange(
   }
 
   return formatOpeningHours(rawRange, format);
+}
+
+/**
+ * Format road construction / closures schedule text into standardized YYYY-MM-DD and hh:mm.
+ */
+export function formatConstructionSchedule(
+  rawSchedule: string | null | undefined,
+  format: '12h' | '24h' = '24h'
+): string[] {
+  if (!rawSchedule) return [];
+  const months: Record<string, string> = {
+    jan: '01', feb: '02', mar: '03', apr: '04', may: '05', jun: '06',
+    jul: '07', aug: '08', sep: '09', oct: '10', nov: '11', dec: '12'
+  };
+
+  return String(rawSchedule).split(';').map((part) => {
+    let p = part.trim();
+    // Match date range: "Jul 27, 2026 - Oct 19, 2026"
+    p = p.replace(/([a-zA-Z]{3,9})\s+(\d{1,2}),?\s+(\d{4})\s*[-–—~至to]+\s*([a-zA-Z]{3,9})\s+(\d{1,2}),?\s+(\d{4})/gi, (_, m1, d1, y1, m2, d2, y2) => {
+      const mo1 = months[m1.toLowerCase().slice(0, 3)] || '01';
+      const mo2 = months[m2.toLowerCase().slice(0, 3)] || '01';
+      const da1 = String(d1).padStart(2, '0');
+      const da2 = String(d2).padStart(2, '0');
+      return `${y1}-${mo1}-${da1} 至 ${y2}-${mo2}-${da2}`;
+    });
+    // Match single date: "Oct 19, 2026"
+    p = p.replace(/([a-zA-Z]{3,9})\s+(\d{1,2}),?\s+(\d{4})/gi, (_, m1, d1, y1) => {
+      const mo1 = months[m1.toLowerCase().slice(0, 3)] || '01';
+      const da1 = String(d1).padStart(2, '0');
+      return `${y1}-${mo1}-${da1}`;
+    });
+    // Weekdays & common words
+    p = p.replace(/\bweekdays\b/gi, '平日 (週一至週五)');
+    p = p.replace(/\bweekends\b/gi, '週末 (週六至週日)');
+    p = p.replace(/\bdaily\b/gi, '每日');
+    // Format any time component in this part
+    p = formatOpeningHours(p, format);
+    return p;
+  }).filter(Boolean);
 }
 
 export function formatClock(

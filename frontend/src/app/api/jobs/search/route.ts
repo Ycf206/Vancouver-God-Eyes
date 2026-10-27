@@ -5,6 +5,9 @@ export const dynamic = 'force-dynamic';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
+    if (!body.SearchLocations || (Array.isArray(body.SearchLocations) && body.SearchLocations.length === 0)) {
+      body.SearchLocations = [{ City: "Vancouver", Postal: "", Region: "" }];
+    }
     const res = await fetch('https://dev-api-jobboard.workbc.ca/api/Search/JobSearch', {
       method: 'POST',
       headers: {
