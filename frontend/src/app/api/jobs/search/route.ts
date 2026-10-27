@@ -8,6 +8,9 @@ export async function POST(request: Request) {
     if (!body.SearchLocations || (Array.isArray(body.SearchLocations) && body.SearchLocations.length === 0)) {
       body.SearchLocations = [{ City: "Vancouver", Postal: "", Region: "" }];
     }
+    if (body.SearchLocationDistance === undefined || body.SearchLocationDistance === null) {
+      body.SearchLocationDistance = -1;
+    }
     const res = await fetch('https://dev-api-jobboard.workbc.ca/api/Search/JobSearch', {
       method: 'POST',
       headers: {

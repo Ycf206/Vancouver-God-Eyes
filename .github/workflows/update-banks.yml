@@ -17,6 +17,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Fetch Latest GeoJSON Cache from data branch
+        run: |
+          git fetch origin data:refs/remotes/origin/data 2>/dev/null || true
+          git checkout origin/data -- backend/data frontend/public 2>/dev/null || true
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -39,5 +44,5 @@ jobs:
             echo "No changes detected"
           else
             git commit -m "chore(data): auto-update 溫哥華銀行 (Banks) dataset [skip ci]"
-            git push
+            git push origin HEAD:data --force
           fi

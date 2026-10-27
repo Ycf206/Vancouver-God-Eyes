@@ -41,6 +41,182 @@ export default function SettingsModal() {
   const suggestionsContainerRef = useRef<HTMLDivElement>(null);
   const isSelectingSuggestionRef = useRef(false);
 
+  // 導航地址搜尋建議狀態 (參考個人位置)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [navSuggestions, setNavSuggestions] = useState<any[]>([]);
+  const [showNavSuggestions, setShowNavSuggestions] = useState(false);
+  const [isNavSuggesting, setIsNavSuggesting] = useState(false);
+  const navSuggestionsContainerRef = useRef<HTMLDivElement>(null);
+  const isSelectingNavSuggestionRef = useRef(false);
+
+  const calcDistKm = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+    const R = 6371; // km
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLon = ((lon2 - lon1) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  };
+
+  // 導航地址搜尋建議防抖 (參考個人位置)
+  useEffect(() => {
+    if (isSelectingNavSuggestionRef.current) {
+      isSelectingNavSuggestionRef.current = false;
+      return;
+    }
+    const trimmed = navAddressInput.trim();
+    if (!trimmed) {
+      if (userLocation?.confirmed) {
+        setNavSuggestions([
+          {
+            id: 'user_nav_home',
+            title: userLocation.displayName || userLocation.address,
+            subtitle: '我的個人位置',
+            lat: userLocation.lat,
+            lon: userLocation.lon,
+            badge: '個人位置',
+            icon: '📍',
+            distKm: 0,
+          }
+        ]);
+      } else {
+        setNavSuggestions([]);
+        setShowNavSuggestions(false);
+      }
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      try {
+        setIsNavSuggesting(true);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const resultsList: any[] = [];
+
+        // 若有個人位置，且符合關鍵字或置頂參考
+        if (userLocation?.confirmed) {
+          const userAddr = (userLocation.displayName || userLocation.address).toLowerCase();
+          if (userAddr.includes(trimmed.toLowerCase()) || trimmed.length < 3) {
+            resultsList.push({
+              id: 'user_nav_home',
+              title: userLocation.displayName || userLocation.address,
+              subtitle: '我的個人位置',
+              lat: userLocation.lat,
+              lon: userLocation.lon,
+              badge: '個人位置',
+              icon: '📍',
+              distKm: 0,
+            });
+          }
+        }
+
+        // 1. 溫哥華市政官方物業門牌地址資料庫
+        try {
+          const vanRes = await fetch(
+            `https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/property-addresses/records?where=search(*%2C%22${encodeURIComponent(trimmed)}%22)&limit=8`
+          );
+          if (vanRes.ok) {
+            const vanData = await vanRes.json();
+            const recs = vanData.results || [];
+            for (const r of recs) {
+              const civic = (r.civic_number || '').toString().trim();
+              const street = (r.std_street || '').toString().trim();
+              const fullAddr = `${civic} ${street}`.trim();
+              if (fullAddr && r.geo_point_2d?.lat && r.geo_point_2d?.lon) {
+                const dist = userLocation?.lat && userLocation?.lon
+                  ? calcDistKm(userLocation.lat, userLocation.lon, r.geo_point_2d.lat, r.geo_point_2d.lon)
+                  : undefined;
+                resultsList.push({
+                  id: `van_prop_${r.property_use_id || fullAddr}`,
+                  title: fullAddr,
+                  subtitle: `Vancouver, BC${r.postal_code ? ' ' + r.postal_code : ''}`,
+                  lat: r.geo_point_2d.lat,
+                  lon: r.geo_point_2d.lon,
+                  distKm: dist,
+                });
+              }
+            }
+          }
+        } catch (_) {}
+
+        // 2. BC Geocoder 補充
+        if (resultsList.length < 5) {
+          try {
+            const bcRes = await fetch(
+              `https://geocoder.api.gov.bc.ca/addresses.json?addressString=${encodeURIComponent(trimmed)}&maxResults=8`
+            );
+            if (bcRes.ok) {
+              const bcData = await bcRes.json();
+              for (const feat of (bcData.features || [])) {
+                const full = feat.properties?.fullAddress;
+                const coords = feat.geometry?.coordinates;
+                if (full && coords && coords.length >= 2) {
+                  if (!resultsList.some(item => item.title.toLowerCase() === full.toLowerCase())) {
+                    const dist = userLocation?.lat && userLocation?.lon
+                      ? calcDistKm(userLocation.lat, userLocation.lon, coords[1], coords[0])
+                      : undefined;
+                    resultsList.push({
+                      id: `bc_geo_${feat.properties?.siteID || full}`,
+                      title: full,
+                      subtitle: feat.properties?.localityName ? `${feat.properties.localityName}, BC` : 'BC, Canada',
+                      lat: coords[1],
+                      lon: coords[0],
+                      distKm: dist,
+                    });
+                  }
+                }
+              }
+            }
+          } catch (_) {}
+        }
+
+        // 3. 後端 Geocode 備援
+        if (resultsList.length === 0) {
+          const apiUrl = getApiUrl();
+          const res = await fetch(`${apiUrl}/api/geocode?q=${encodeURIComponent(trimmed)}`);
+          const data = await res.json();
+          const list = data.results || [];
+          for (const item of list) {
+            if (item.lat && item.lon) {
+              const dist = userLocation?.lat && userLocation?.lon
+                ? calcDistKm(userLocation.lat, userLocation.lon, item.lat, item.lon)
+                : undefined;
+              resultsList.push({
+                id: `geo_${item.lat}_${item.lon}`,
+                title: item.display_name || item.name,
+                subtitle: '地理位置',
+                lat: item.lat,
+                lon: item.lon,
+                distKm: dist,
+              });
+            }
+          }
+        }
+
+        // 參考個人位置：若有個人座標，將候選地址依與個人位置的距離由近到遠排序（個人位置本身固定置頂）
+        resultsList.sort((a, b) => {
+          if (a.id === 'user_nav_home') return -1;
+          if (b.id === 'user_nav_home') return 1;
+          if (a.distKm !== undefined && b.distKm !== undefined) {
+            return a.distKm - b.distKm;
+          }
+          return 0;
+        });
+
+        const validList = resultsList.slice(0, 8);
+        setNavSuggestions(validList);
+        setShowNavSuggestions(validList.length > 0);
+      } catch (err) {
+        console.error('Nav address suggestion error:', err);
+      } finally {
+        setIsNavSuggesting(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [navAddressInput, userLocation]);
+
   // 搜尋建議防抖 (Debounce)
   useEffect(() => {
     if (isSelectingSuggestionRef.current) {
@@ -151,6 +327,9 @@ export default function SettingsModal() {
     const handleClickOutside = (e: MouseEvent) => {
       if (suggestionsContainerRef.current && !suggestionsContainerRef.current.contains(e.target as Node)) {
         setShowSuggestions(false);
+      }
+      if (navSuggestionsContainerRef.current && !navSuggestionsContainerRef.current.contains(e.target as Node)) {
+        setShowNavSuggestions(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -539,15 +718,21 @@ export default function SettingsModal() {
           </div>
 
           <div className="flex flex-col gap-2">
-            <div className="relative">
+            <div className="relative" ref={navSuggestionsContainerRef}>
               <input
                 type="text"
                 value={navAddressInput}
                 onChange={(e) => {
                   setNavAddressInput(e.target.value);
                   setNavigationAddress(e.target.value.trim());
+                  setShowNavSuggestions(true);
                 }}
-                placeholder="輸入導航起點地址 (例如: 1200 Burrard St)"
+                onFocus={() => {
+                  if (navSuggestions.length > 0 || userLocation?.confirmed) {
+                    setShowNavSuggestions(true);
+                  }
+                }}
+                placeholder="輸入導航起點地址 (參考個人位置，例如: 1200 Burrard St)"
                 className="w-full bg-[#12151d] text-xs text-white rounded-lg border border-[#343a4a] px-3 py-2 pr-8 focus:outline-none focus:border-cyan-500 transition-colors placeholder:text-gray-500"
               />
               {navAddressInput && (
@@ -556,12 +741,56 @@ export default function SettingsModal() {
                   onClick={() => {
                     setNavAddressInput('');
                     setNavigationAddress('');
+                    setShowNavSuggestions(false);
                   }}
                   className="absolute right-2 top-2 text-gray-400 hover:text-gray-200"
                   title="清除導航地址"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
+              )}
+
+              {/* 導航地址搜尋建議選單 (參考個人位置) */}
+              {showNavSuggestions && navSuggestions.length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-[#191c26] border border-[#373e52] rounded-lg shadow-2xl overflow-hidden z-50 max-h-52 overflow-y-auto divide-y divide-[#282f42] [scrollbar-width:thin]">
+                  <div className="px-2.5 py-1 text-[10px] text-gray-400 bg-[#141720] flex items-center justify-between">
+                    <span>導航建議（點選立即套用出發點）</span>
+                    {isNavSuggesting && <RefreshCw className="w-2.5 h-2.5 animate-spin text-cyan-400" />}
+                  </div>
+                  {navSuggestions.map((item, idx) => (
+                    <button
+                      key={item.id || idx}
+                      type="button"
+                      onClick={() => {
+                        isSelectingNavSuggestionRef.current = true;
+                        setNavAddressInput(item.title);
+                        setNavigationAddress(item.title);
+                        setShowNavSuggestions(false);
+                      }}
+                      className="w-full text-left px-2.5 py-2 hover:bg-[#252b3d] transition-colors flex items-center gap-2 group cursor-pointer"
+                    >
+                      <span className="text-sm shrink-0 w-5 h-5 flex items-center justify-center bg-[#252a3a] rounded text-cyan-400">
+                        {item.icon || '📍'}
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs font-semibold text-white group-hover:text-cyan-300 truncate">{item.title}</p>
+                        {item.subtitle && <p className="text-[10px] text-gray-400 truncate">{item.subtitle}</p>}
+                      </div>
+                      {item.badge && (
+                        <span className="text-[9px] px-1.5 py-0.5 rounded bg-cyan-950/70 border border-cyan-800/60 text-cyan-300 shrink-0 font-medium">
+                          {item.badge}
+                        </span>
+                      )}
+                      {item.distKm !== undefined && item.distKm > 0 && (
+                        <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#202535] text-gray-300 shrink-0 font-mono" title="距個人位置">
+                          {distanceUnit === 'imperial'
+                            ? `${(item.distKm * 0.621371).toFixed(1)} mi`
+                            : `${item.distKm.toFixed(1)} km`}
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
               )}
             </div>
 

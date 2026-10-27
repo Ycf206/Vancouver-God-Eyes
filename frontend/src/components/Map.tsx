@@ -8,6 +8,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl, getWsUrl } from '@/utils/api';
 import { formatTimePreference, formatShipEta, formatTimeRange, formatOpeningHours, formatConstructionSchedule } from '@/utils/time';
+import FacilityWeeklyHoursSchedule from '@/components/WeeklyHoursSchedule';
 import { formatTitleCase } from '@/utils/text';
 import { getSkytrainStationMapUrls } from '@/utils/skytrainMaps';
 import skytrainStationsData from '@/data/skytrainStations.json';
@@ -10226,11 +10227,13 @@ export default function AppMap() {
                       </span>
                     </div>
                     {selectedFacility.properties.opening_hours && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
-                        <span>開放時間</span>
-                        <span className="text-gray-900 font-medium text-right">
-                          {formatOpeningHours(selectedFacility.properties.opening_hours, timeFormat)}
-                        </span>
+                      <div className="pt-1.5 border-t border-gray-100">
+                        <FacilityWeeklyHoursSchedule
+                          label="開放時間"
+                          hours={selectedFacility.properties.opening_hours}
+                          timeFormat={timeFormat}
+                          theme="blue"
+                        />
                       </div>
                     )}
                   </div>
@@ -10407,28 +10410,12 @@ export default function AppMap() {
 
                       {/* 開放時間 (博物館相同風格，已刪除英文 Hours，且當日開放時間顯示在箭頭旁) */}
                       {Object.keys(openHours).length > 0 && (
-                        <details className="group/sched">
-                          <summary className="flex justify-between items-center text-gray-700 cursor-pointer list-none hover:text-gray-900 py-0.5 select-none">
-                            <span className="text-gray-500 font-medium">開放時間</span>
-                            <span className="font-mono text-gray-900 font-semibold flex items-center gap-1">
-                              <span>{dayZhMap[curDowKey]}: {todayDisplayStr}</span>
-                              <span className="text-[9px] text-gray-400 group-open/sched:rotate-180 transition-transform">▼</span>
-                            </span>
-                          </summary>
-                          <div className="mt-1.5 pt-1.5 border-t border-gray-100 flex flex-col gap-1 text-[10.5px]">
-                            {daysList.map(d => (
-                              <div 
-                                key={d.key} 
-                                className={`flex justify-between items-center py-0.5 px-1 rounded ${
-                                  d.key === curDowKey ? 'bg-amber-50 text-amber-900 font-bold' : 'text-gray-600'
-                                }`}
-                              >
-                                <span>{d.label}</span>
-                                <span className="font-mono">{d.hours || '休息'}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </details>
+                        <FacilityWeeklyHoursSchedule
+                          label="開放時間"
+                          hours={openHours}
+                          timeFormat={timeFormat}
+                          theme="amber"
+                        />
                       )}
 
                       {/* (分隔線) */}
@@ -10643,30 +10630,12 @@ export default function AppMap() {
                     {/* 36.2.2 灰色區塊 (圖5) */}
                     <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
                       {hours && (
-                        typeof hours === 'object' ? (
-                          <details className="group">
-                            <summary className="flex justify-between items-center text-gray-600 cursor-pointer list-none hover:text-violet-700">
-                              <span>開放時間</span>
-                              <span className="text-gray-800 text-right font-medium flex items-center gap-1">
-                                <span>{dayNamesZh[todayKey]}: {todayHoursStr || '未公佈'}</span>
-                                <span className="text-[9px] text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-                              </span>
-                            </summary>
-                            <div className="mt-1.5 pt-1.5 border-t border-gray-100 flex flex-col gap-1 text-[10.5px]">
-                              {Object.entries(hours).map(([day, val]) => (
-                                <div key={day} className={`flex justify-between gap-2 ${day === todayKey ? 'font-semibold text-violet-800' : 'text-gray-600'}`}>
-                                  <span className="shrink-0">{dayNamesZh[day] || day}</span>
-                                  <span className="text-right leading-tight">{formatTimePreference(String(val), timeFormat)}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </details>
-                        ) : (
-                          <div className="flex justify-between items-center text-gray-600">
-                            <span>開放時間</span>
-                            <span className="text-gray-900 font-medium text-right">{todayHoursStr}</span>
-                          </div>
-                        )
+                        <FacilityWeeklyHoursSchedule
+                          label="開放時間"
+                          hours={hours}
+                          timeFormat={timeFormat}
+                          theme="violet"
+                        />
                       )}
 
                       {(phone || email || fax) && <div className="border-t border-gray-200/80 my-0.5" />}
@@ -10763,30 +10732,12 @@ export default function AppMap() {
                     <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
                       {/* 開放時間 */}
                       {hours && (
-                        typeof hours === 'object' ? (
-                          <details className="group">
-                            <summary className="flex justify-between items-center text-gray-600 cursor-pointer list-none hover:text-slate-800">
-                              <span>開放時間</span>
-                              <span className="text-gray-800 text-right font-medium flex items-center gap-1">
-                                <span>{dayNamesZh[todayKey]}: {todayHoursStr || '未公佈'}</span>
-                                <span className="text-[9px] text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-                              </span>
-                            </summary>
-                            <div className="mt-1.5 pt-1.5 border-t border-gray-100 flex flex-col gap-1 text-[10.5px]">
-                              {Object.entries(hours).map(([day, val]) => (
-                                <div key={day} className={`flex justify-between gap-2 ${day === todayKey ? 'font-semibold text-slate-900' : 'text-gray-600'}`}>
-                                  <span className="shrink-0">{dayNamesZh[day] || (day === 'Holidays_and_Seasonal' ? '節假日／特別排程' : day)}</span>
-                                  <span className="text-right leading-tight">{formatTimePreference(String(val), timeFormat)}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </details>
-                        ) : (
-                          <div className="flex justify-between items-center text-gray-600">
-                            <span>開放時間</span>
-                            <span className="text-gray-900 font-medium text-right">{todayHoursStr}</span>
-                          </div>
-                        )
+                        <FacilityWeeklyHoursSchedule
+                          label="開放時間"
+                          hours={hours}
+                          timeFormat={timeFormat}
+                          theme="slate"
+                        />
                       )}
 
                       {/* 分隔線 */}
@@ -11852,9 +11803,13 @@ export default function AppMap() {
                         </div>
                       )}
                       {selectedFacility.properties?.hours && (
-                        <div className={`flex justify-between items-center text-gray-600 ${(selectedFacility.properties?.services || selectedFacility.properties?.operator) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
-                          <span>{isRehab ? '服務時間' : isUPCC ? '門診服務時間' : '急診門診時間'}</span>
-                          <span className="text-gray-900 font-medium text-right">{selectedFacility.properties.hours}</span>
+                        <div className={`pt-1.5 border-t border-gray-100 ${(selectedFacility.properties?.services || selectedFacility.properties?.operator) ? '' : 'border-t-0 pt-0'}`}>
+                          <FacilityWeeklyHoursSchedule
+                            label={isRehab ? '服務時間' : isUPCC ? '門診服務時間' : '急診門診時間'}
+                            hours={selectedFacility.properties.hours}
+                            timeFormat={timeFormat}
+                            theme="rose"
+                          />
                         </div>
                       )}
                       {selectedFacility.properties?.phone && (
@@ -12315,11 +12270,13 @@ export default function AppMap() {
                     </div>
 
                     <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                      {todayHoursStr && (
-                        <div className="flex justify-between items-center text-gray-600">
-                          <span>開放時間</span>
-                          <span className="text-gray-900 font-medium text-right">{todayHoursStr}</span>
-                        </div>
+                      {hours && (
+                        <FacilityWeeklyHoursSchedule
+                          label="開放時間"
+                          hours={hours}
+                          timeFormat={timeFormat}
+                          theme="amber"
+                        />
                       )}
 
                       {upcomingClosure && (
@@ -12418,9 +12375,13 @@ export default function AppMap() {
                         </div>
                       )}
                       {hours && (
-                        <div className={`flex justify-between items-center text-gray-600 ${(name || address) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
-                          <span>營業時間</span>
-                          <span className="text-gray-900 font-medium text-right">{hours}</span>
+                        <div className={`pt-1.5 border-t border-gray-100 ${(name || address) ? '' : 'border-t-0 pt-0'}`}>
+                          <FacilityWeeklyHoursSchedule
+                            label="營業時間"
+                            hours={hours}
+                            timeFormat={timeFormat}
+                            theme="amber"
+                          />
                         </div>
                       )}
                       {creditCard && (
@@ -12564,9 +12525,13 @@ export default function AppMap() {
                         </div>
                       )}
                       {dayAndTime && (
-                        <div className={`flex justify-between items-start text-gray-600 ${(type || target || showCost) ? 'pt-1.5 border-t border-gray-100' : ''} gap-2`}>
-                          <span className="shrink-0">開放時間</span>
-                          <span className="text-gray-800 text-right font-medium leading-snug break-words">{dayAndTime}</span>
+                        <div className={`pt-1.5 border-t border-gray-100 ${(type || target || showCost) ? '' : 'border-t-0 pt-0'}`}>
+                          <FacilityWeeklyHoursSchedule
+                            label="開放時間"
+                            hours={dayAndTime}
+                            timeFormat={timeFormat}
+                            theme="blue"
+                          />
                         </div>
                       )}
 
@@ -12687,30 +12652,12 @@ export default function AppMap() {
                     {/* 34.2.2 灰色區塊 (圖4) */}
                     <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
                       {hours && (
-                        typeof hours === 'object' ? (
-                          <details className="group">
-                            <summary className="flex justify-between items-center text-gray-600 cursor-pointer list-none hover:text-emerald-700">
-                              <span>開放時間</span>
-                              <span className="text-gray-800 text-right font-medium flex items-center gap-1">
-                                <span>{dayNamesZh[todayKey] || todayKey}: {todayHoursStr || '未公佈'}</span>
-                                <span className="text-[9px] text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-                              </span>
-                            </summary>
-                            <div className="mt-1.5 pt-1.5 border-t border-gray-100 flex flex-col gap-1 text-[10.5px]">
-                              {Object.entries(hours).map(([day, val]) => (
-                                <div key={day} className={`flex justify-between gap-2 ${day === todayKey ? 'font-semibold text-emerald-800' : 'text-gray-600'}`}>
-                                  <span className="shrink-0">{dayNamesZh[day] || day}</span>
-                                  <span className="text-right leading-tight">{formatTimePreference(String(val), timeFormat)}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </details>
-                        ) : (
-                          <div className="flex justify-between items-center text-gray-600">
-                            <span>開放時間</span>
-                            <span className="text-gray-900 font-medium text-right">{todayHoursStr}</span>
-                          </div>
-                        )
+                        <FacilityWeeklyHoursSchedule
+                          label="開放時間"
+                          hours={hours}
+                          timeFormat={timeFormat}
+                          theme="emerald"
+                        />
                       )}
 
                       {(recTypes.length > 0 || otherMat.length > 0 || bevContainers.length > 0 || notes) && (
@@ -13216,12 +13163,12 @@ export default function AppMap() {
                           {(hasChargingModule || stationServices.length > 0) && (
                             <div className="border-t border-gray-200/80 my-0.5" />
                           )}
-                          <div className="flex justify-between items-center text-gray-600">
-                            <span className="shrink-0 text-gray-500">開放時間</span>
-                            <span className="font-medium text-gray-800 text-right">
-                              {formatTimePreference(props.hours, timeFormat)}
-                            </span>
-                          </div>
+                          <FacilityWeeklyHoursSchedule
+                            label="開放時間"
+                            hours={props.hours}
+                            timeFormat={timeFormat}
+                            theme="red"
+                          />
                         </>
                       )}
 

@@ -960,6 +960,11 @@ async def jobs_search_proxy(payload: dict = Body(...)):
     Proxy for WorkBC JobSearch API.
     """
     try:
+        if not payload.get("SearchLocations"):
+            payload["SearchLocations"] = [{"City": "Vancouver", "Postal": "", "Region": ""}]
+        if payload.get("SearchLocationDistance") is None:
+            payload["SearchLocationDistance"] = -1
+
         resp = requests.post(
             "https://dev-api-jobboard.workbc.ca/api/Search/JobSearch",
             json=payload,

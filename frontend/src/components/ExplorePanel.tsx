@@ -968,6 +968,7 @@ function ExploreContent() {
         Keyword: jobKeyword.trim(),
         SearchInField: jobSearchInField,
         SearchLocations: [{ City: "Vancouver", Postal: "", Region: "" }],
+        SearchLocationDistance: -1,
         SearchJobTypeFullTime: filterJobTypeFullTime,
         SearchJobTypePartTime: filterJobTypePartTime,
         SearchJobTypeLeadingToFullTime: filterJobTypeLeadingToFullTime,

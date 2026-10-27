@@ -49,6 +49,8 @@ jobs:
           git fetch origin main
           git checkout main
           git reset --hard origin/main
+          git fetch origin data:refs/remotes/origin/data 2>/dev/null || true
+          git checkout origin/data -- backend/data frontend/public 2>/dev/null || true
           git clean -fd -e backend/.env -e .env -e frontend/.env.local -e backend/data/admin_sources_config.json
 
           # 還原 .env、前端環境變數與管理員排程設定檔

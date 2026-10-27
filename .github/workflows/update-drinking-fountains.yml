@@ -44,7 +44,7 @@ jobs:
             echo "has_changes=false" >> $GITHUB_OUTPUT
           else
             git commit -m "chore(data): auto-update 公共飲水台 dataset [skip ci]"
-            git push origin main
+            git push origin HEAD:data --force
             echo "has_changes=true" >> $GITHUB_OUTPUT
           fi
 
@@ -58,5 +58,6 @@ jobs:
           script: |
             echo "🔄 同步最新 公共飲水台 圖資至 OCI 伺服器..."
             cd ~/Vancouver-God-Eyes || cd ~/vancouver-gods-eye
-            git pull
+            git fetch origin data 2>/dev/null || true
+            git checkout origin/data -- backend/data frontend/public 2>/dev/null || true
             echo "✅ OCI 伺服器 公共飲水台 圖資同步完成！"
