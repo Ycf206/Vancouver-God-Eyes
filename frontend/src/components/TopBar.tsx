@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Search, Settings, ChevronDown, Map as MapIcon, X, Loader2, Layers, AlertCircle, Heart, Download, History, User, MoreHorizontal } from 'lucide-react';
+import { Search, Settings, ChevronDown, Map as MapIcon, X, Loader2, Layers, AlertCircle, Heart, Download, History, User, MoreHorizontal, Compass } from 'lucide-react';
 import { useUIStore, SearchTarget, UIState } from '@/store/useUIStore';
 import ReportIssueModal from '@/components/ReportIssueModal';
 import DonateModal from '@/components/DonateModal';
@@ -23,6 +23,8 @@ export default function TopBar() {
     setAutoEnabledSearchLayer,
     isLayerPanelOpen, 
     toggleLayerPanel,
+    isExploreOpen,
+    toggleExplore,
     timeFormat,
     timeZone,
     setSettingsModalOpen,
@@ -172,6 +174,20 @@ export default function TopBar() {
       >
         <Layers className="w-3.5 h-3.5 text-emerald-500" />
         <span className="hidden sm:inline">圖層</span>
+      </button>
+
+      {/* 探索功能切換按鈕 (便於手機與桌面一鍵開啟/收合探索面板) */}
+      <button 
+        onClick={toggleExplore}
+        className={`flex items-center gap-1.5 px-2.5 h-8 rounded-md border text-xs font-medium transition-all mr-1 shrink-0 ${
+          isExploreOpen 
+            ? 'bg-emerald-500/20 border-emerald-500/60 text-emerald-300 shadow-[0_0_8px_rgba(16,185,129,0.25)]' 
+            : 'bg-[#25262b] border-[#373a40] text-gray-300 hover:text-white hover:bg-[#2c2d33]'
+        }`}
+        title={isExploreOpen ? '收合探索面板' : '展開探索面板'}
+      >
+        <Compass className={`w-3.5 h-3.5 ${isExploreOpen ? 'text-emerald-400' : 'text-gray-400'}`} />
+        <span className="hidden sm:inline">探索</span>
       </button>
 
       <div className="hidden sm:block h-8 w-px bg-gray-700/60 mx-2"></div>
@@ -351,6 +367,13 @@ export default function TopBar() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="py-1">
+                <button
+                  onClick={() => { toggleExplore(); setIsMobileMenuOpen(false); }}
+                  className="w-full px-3.5 py-2 flex items-center gap-2.5 text-gray-200 hover:bg-[#262832] transition-colors text-left font-medium"
+                >
+                  <Compass className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>探索</span>
+                </button>
                 <button
                   onClick={() => { setExportModalOpen(true); setIsMobileMenuOpen(false); }}
                   className="w-full px-3.5 py-2 flex items-center gap-2.5 text-gray-200 hover:bg-[#262832] transition-colors text-left"

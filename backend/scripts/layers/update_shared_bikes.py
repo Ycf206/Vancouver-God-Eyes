@@ -94,7 +94,7 @@ def update_mobi_stations():
         # 取 /entities/stations/{id} 精確數值 (絕不使用 /entities 的 slots，因其不準確)
         bikes, slots = realtime_map.get(st_id, (st.get("availableBikes", 0), 0))
         total_cap = (bikes or 0) + (slots or 0)
-        clean_id = st_id.replace("st_", "").strip().upper()[:8]
+        clean_id = st_id
 
         feat = {
             "type": "Feature",

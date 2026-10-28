@@ -3166,7 +3166,7 @@ function ExploreContent() {
 
   return (
     <div 
-      className="fixed top-[70px] right-3 sm:right-[72px] z-40 w-[520px] max-w-[calc(100vw-24px)] sm:max-w-[calc(100vw-96px)] max-h-[calc(100vh-148px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col animate-in fade-in slide-in-from-right-4 duration-200 select-none overflow-hidden"
+      className="fixed top-[64px] sm:top-[70px] left-2 right-2 sm:left-auto sm:right-[72px] z-50 sm:z-40 w-auto sm:w-[520px] max-w-[calc(100vw-16px)] sm:max-w-[calc(100vw-96px)] max-h-[calc(100dvh-74px)] sm:max-h-[calc(100vh-148px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col animate-in fade-in slide-in-from-right-4 duration-200 select-none overflow-hidden"
       onClick={(e) => e.stopPropagation()}
     >
       {/* 1. 當多於1個分頁時的關閉確認對話框 (Close Confirmation Dialog) */}
@@ -5628,11 +5628,6 @@ function ExploreContent() {
                         <span className="font-bold text-white text-[13px] truncate group-hover:text-amber-300 transition-colors">
                           {atm.name}
                         </span>
-                        {atm.is_24_7 && (
-                          <span className="text-[10px] px-1.5 py-0.2 rounded-full font-medium bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shrink-0">
-                            24/7
-                          </span>
-                        )}
                       </div>
                       <div className="text-[11px] text-gray-400 truncate mt-0.5">
                         {atm.address} · {atm.local_area || 'Vancouver'}

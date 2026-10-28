@@ -5994,7 +5994,7 @@ export default function AppMap() {
 
   return (
     <div 
-      className={`absolute top-[60px] bottom-0 right-0 h-[calc(100vh-60px)] z-0 transition-[left,width] duration-200 overflow-hidden ${
+      className={`absolute top-[60px] bottom-0 right-0 z-0 transition-[left,width] duration-200 overflow-hidden ${
         isLayerPanelOpen ? 'md:left-[240px] md:w-[calc(100%-240px)] left-0 w-full' : 'left-0 w-full'
       }`}
     >
@@ -8977,7 +8977,8 @@ export default function AppMap() {
                                 return selectedFacility.properties?.object_id ? `#${selectedFacility.properties.object_id}` : (selectedFacility.properties?.id ? `#${selectedFacility.properties.id}` : 'Vancouver, BC');
                               }
                               if (selectedFacility.facility_type === 'shared_bikes') {
-                                return selectedFacility.properties?.station_id ? `#${selectedFacility.properties.station_id}` : 'Vancouver, BC';
+                                const sid = selectedFacility.properties?.full_id || selectedFacility.properties?.station_id || selectedFacility.properties?.id || selectedFacility.id;
+                                return sid ? `#${sid}` : 'Vancouver, BC';
                               }
                               if (selectedFacility.facility_type === 'one_way_streets') {
                                 return formatStreetAttrLocal(selectedFacility.properties?.streetuse || selectedFacility.properties?.type) || '單向行車路段';
@@ -12330,10 +12331,8 @@ export default function AppMap() {
               {selectedFacility.facility_type === 'food_vendors' && (() => {
                 const props = selectedFacility.properties || {};
                 const name = props.name || selectedFacility.name;
-                const address = props.address;
-                const rawHours = props.hours || props.operating_hours;
-                const hours = rawHours ? formatTimePreference(rawHours, timeFormat) : null;
-                const creditCard = props.credit_card || props.payment_methods || '支援';
+                const hours = props.hours || props.operating_hours;
+                const creditCard = props.credit_card || props.payment_methods || (props.has_credit_card ? '支援' : null);
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
@@ -12349,14 +12348,8 @@ export default function AppMap() {
                           <span className="text-gray-900 font-medium text-right">{name}</span>
                         </div>
                       )}
-                      {address && (
-                        <div className={`flex justify-between items-center text-gray-600 ${name ? 'pt-1.5 border-t border-gray-100' : ''}`}>
-                          <span>地址</span>
-                          <span className="text-gray-800 text-right max-w-[190px] truncate">{address}</span>
-                        </div>
-                      )}
                       {hours && (
-                        <div className={`pt-1.5 border-t border-gray-100 ${(name || address) ? '' : 'border-t-0 pt-0'}`}>
+                        <div className={`pt-1.5 border-t border-gray-100 ${name ? '' : 'border-t-0 pt-0'}`}>
                           <FacilityWeeklyHoursSchedule
                             label="營業時間"
                             hours={hours}
@@ -12366,7 +12359,7 @@ export default function AppMap() {
                         </div>
                       )}
                       {creditCard && (
-                        <div className={`flex justify-between items-center text-gray-600 ${(name || address || hours) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                        <div className={`flex justify-between items-center text-gray-600 ${(name || hours) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                           <span>支援信用卡</span>
                           <span className="text-gray-900 font-medium text-right">{creditCard}</span>
                         </div>
@@ -13104,14 +13097,14 @@ export default function AppMap() {
                           <div className="py-1 px-2 bg-gray-50/80 border-b border-gray-200/80 font-bold text-gray-800 text-xs">
                             {chargingTitle}
                           </div>
-                          <div className="grid grid-cols-3 divide-x divide-gray-200/80 py-1.5 px-1 items-center">
-                            <div className="font-bold text-gray-800">
+                          <div className="grid grid-cols-[1fr_1fr_1.3fr] divide-x divide-gray-200/80 py-1.5 px-1 items-center">
+                            <div className="font-bold text-gray-800 text-center">
                               {props.power_kw ? `${props.power_kw} kW` : '原廠技術'}
                             </div>
-                            <div className="font-bold text-gray-800">
+                            <div className="font-bold text-gray-800 text-center">
                               {props.stalls != null && props.stalls > 0 ? `${props.stalls} 樁位` : '原廠工位'}
                             </div>
-                            <div className="font-bold text-gray-800 truncate px-1 text-[10.5px]">
+                            <div className="font-bold text-gray-800 px-1 text-[10px] leading-tight break-words text-center flex items-center justify-center">
                               {chargingAccessDisplay}
                             </div>
                           </div>
@@ -14959,50 +14952,59 @@ export default function AppMap() {
       )}
 
       {/* 探索功能橫向平排底欄 (Explore Horizontal Bottom Bar Dock) */}
-      <div className="absolute bottom-[calc(10px+env(safe-area-inset-bottom))] sm:bottom-3 left-1/2 -translate-x-1/2 z-30 pointer-events-auto select-none flex items-center gap-1 px-2.5 py-1.5 bg-[#10131a]/95 backdrop-blur-md rounded-full border border-[#2a2f3d] shadow-2xl max-w-[calc(100vw-16px)] sm:max-w-[calc(100vw-24px)] overflow-x-auto scrollbar-none ring-1 ring-white/5" style={{ WebkitOverflowScrolling: 'touch' }}>
-        {[
-          { id: 'weather', label: '天氣', icon: CloudRain, color: 'text-sky-400' },
-          { id: 'news', label: '新聞', icon: Activity, color: 'text-amber-400' },
-          { id: 'events', label: '活動', icon: Compass, color: 'text-purple-400' },
-          { id: 'beach', label: '泳灘', icon: Waves, color: 'text-teal-300' },
-          { id: 'ski', label: '滑雪', icon: Navigation, color: 'text-cyan-400' },
-          { id: 'aurora', label: '極光', icon: Zap, color: 'text-fuchsia-400' },
-          { id: 'jobs', label: '工作', icon: Briefcase, color: 'text-indigo-400' },
-          { id: 'atm', label: '銀行', icon: Landmark, color: 'text-amber-400' },
-          { id: 'fuel', label: '油站', icon: Fuel, color: 'text-amber-500' },
-          { id: 'ev', label: '充電', icon: Zap, color: 'text-yellow-400' },
-          { id: 'alerts', label: '即時通報', icon: AlertCircle, color: 'text-rose-400' },
-          { id: 'traffic', label: '路況', icon: Activity, color: 'text-amber-400' },
-          { id: 'border', label: '關口', icon: Compass, color: 'text-blue-400' },
-          { id: 'ferry', label: '渡輪', icon: Ship, color: 'text-sky-400' },
-          { id: 'cargo', label: '航運', icon: Ship, color: 'text-teal-400' },
-        ].map((tab) => {
-          const isActive = isExploreOpen && exploreTab === tab.id;
-          const Icon = tab.icon;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => {
-                if (isExploreOpen && exploreTab === tab.id) {
-                  setExploreOpen(false);
-                } else {
-                  openExploreTab(tab.id as any);
-                }
-              }}
-              title={tab.label}
-              className={`group flex items-center justify-center h-8 px-2.5 rounded-full text-xs font-medium transition-all duration-300 shrink-0 ${
-                isActive
-                  ? 'bg-emerald-500/25 text-emerald-300 border border-emerald-500/50 shadow-[0_0_10px_rgba(16,185,129,0.3)]'
-                  : 'text-gray-300 hover:text-white hover:bg-white/10 border border-transparent'
-              }`}
-            >
-              <Icon className={`w-3.5 h-3.5 shrink-0 ${tab.color}`} />
-              <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[75px] group-hover:opacity-100 group-hover:ml-1.5 transition-all duration-300 whitespace-nowrap text-[11px]">
-                {tab.label}
-              </span>
-            </button>
-          );
-        })}
+      <div className="fixed bottom-[calc(10px+env(safe-area-inset-bottom,0px))] sm:bottom-3 left-0 right-0 z-40 pointer-events-none flex justify-center px-2">
+        <div 
+          className="pointer-events-auto select-none flex items-center gap-1 px-2.5 py-1.5 bg-[#10131a]/95 backdrop-blur-md rounded-full border border-[#2a2f3d] shadow-2xl max-w-full sm:max-w-[calc(100vw-24px)] overflow-x-auto scrollbar-none ring-1 ring-white/5 touch-pan-x" 
+          style={{ WebkitOverflowScrolling: 'touch' }}
+        >
+          {[
+            { id: 'weather', label: '天氣', icon: CloudRain, color: 'text-sky-400' },
+            { id: 'news', label: '新聞', icon: Activity, color: 'text-amber-400' },
+            { id: 'events', label: '活動', icon: Compass, color: 'text-purple-400' },
+            { id: 'beach', label: '泳灘', icon: Waves, color: 'text-teal-300' },
+            { id: 'ski', label: '滑雪', icon: Navigation, color: 'text-cyan-400' },
+            { id: 'aurora', label: '極光', icon: Zap, color: 'text-fuchsia-400' },
+            { id: 'jobs', label: '工作', icon: Briefcase, color: 'text-indigo-400' },
+            { id: 'atm', label: '銀行', icon: Landmark, color: 'text-amber-400' },
+            { id: 'fuel', label: '油站', icon: Fuel, color: 'text-amber-500' },
+            { id: 'ev', label: '充電', icon: Zap, color: 'text-yellow-400' },
+            { id: 'alerts', label: '即時通報', icon: AlertCircle, color: 'text-rose-400' },
+            { id: 'traffic', label: '路況', icon: Activity, color: 'text-amber-400' },
+            { id: 'border', label: '關口', icon: Compass, color: 'text-blue-400' },
+            { id: 'ferry', label: '渡輪', icon: Ship, color: 'text-sky-400' },
+            { id: 'cargo', label: '航運', icon: Ship, color: 'text-teal-400' },
+          ].map((tab) => {
+            const isActive = isExploreOpen && exploreTab === tab.id;
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => {
+                  if (isExploreOpen && exploreTab === tab.id) {
+                    setExploreOpen(false);
+                  } else {
+                    openExploreTab(tab.id as any);
+                  }
+                }}
+                title={tab.label}
+                className={`group flex items-center justify-center h-8 sm:h-8.5 px-2.5 sm:px-3 rounded-full text-xs font-medium transition-all duration-300 shrink-0 touch-manipulation cursor-pointer ${
+                  isActive
+                    ? 'bg-emerald-500/25 text-emerald-300 border border-emerald-500/50 shadow-[0_0_10px_rgba(16,185,129,0.3)]'
+                    : 'text-gray-300 hover:text-white hover:bg-white/10 border border-transparent'
+                }`}
+              >
+                <Icon className={`w-3.5 h-3.5 shrink-0 ${tab.color}`} />
+                <span className={`transition-all duration-300 whitespace-nowrap text-[11px] ${
+                  isActive 
+                    ? 'max-w-[75px] opacity-100 ml-1.5' 
+                    : 'max-w-0 overflow-hidden opacity-0 group-hover:max-w-[75px] group-hover:opacity-100 group-hover:ml-1.5'
+                }`}>
+                  {tab.label}
+                </span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* 罪案地區圖例卡片 (Crime Rate Legend) */}

@@ -295,6 +295,7 @@ export default function AdminModal() {
         body: JSON.stringify({
           source_id: sourceId,
           interval: item.interval,
+          schedule_interval: item.interval,
           cron_expr: item.cron,
           enabled: item.enabled
         })

@@ -17,7 +17,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jfu0",
         "name": "7th & Ash",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jfu0",
         "full_id": "st_d0mo5ems6arcv489jfu0",
         "available_bikes": 14,
         "available_slots": 2,
@@ -40,7 +40,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jg2g",
         "name": "Beatty & Nelson",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jg2g",
         "full_id": "st_d0mo5ems6arcv489jg2g",
         "available_bikes": 11,
         "available_slots": 2,
@@ -63,7 +63,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jg3g",
         "name": "Comox & Denman",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jg3g",
         "full_id": "st_d0mo5ems6arcv489jg3g",
         "available_bikes": 10,
         "available_slots": 7,
@@ -86,7 +86,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jg70",
         "name": "7th & Heather",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jg70",
         "full_id": "st_d0mo5ems6arcv489jg70",
         "available_bikes": 15,
         "available_slots": 3,
@@ -109,7 +109,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jga0",
         "name": "Bute & Comox",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jga0",
         "full_id": "st_d0mo5ems6arcv489jga0",
         "available_bikes": 3,
         "available_slots": 19,
@@ -132,7 +132,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgq0",
         "name": "Columbia & 1st",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgq0",
         "full_id": "st_d0mo5ems6arcv489jgq0",
         "available_bikes": 10,
         "available_slots": 12,
@@ -155,7 +155,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jh0g",
         "name": "Alder & 11th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jh0g",
         "full_id": "st_d0mo5ems6arcv489jh0g",
         "available_bikes": 5,
         "available_slots": 9,
@@ -178,7 +178,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jglg",
         "name": "Cypress & Cornwall",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jglg",
         "full_id": "st_d0mo5ems6arcv489jglg",
         "available_bikes": 21,
         "available_slots": 1,
@@ -201,7 +201,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgs0",
         "name": "14th & Main",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgs0",
         "full_id": "st_d0mo5ems6arcv489jgs0",
         "available_bikes": 3,
         "available_slots": 19,
@@ -224,7 +224,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgt0",
         "name": "Olympic Village Station",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgt0",
         "full_id": "st_d0mo5ems6arcv489jgt0",
         "available_bikes": 18,
         "available_slots": 8,
@@ -247,7 +247,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgvg",
         "name": "Heather & 16th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgvg",
         "full_id": "st_d0mo5ems6arcv489jgvg",
         "available_bikes": 3,
         "available_slots": 8,
@@ -270,7 +270,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgk0",
         "name": "Nelson & Richards",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgk0",
         "full_id": "st_d0mo5ems6arcv489jgk0",
         "available_bikes": 3,
         "available_slots": 13,
@@ -293,7 +293,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgng",
         "name": "Beach & Seymour",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgng",
         "full_id": "st_d0mo5ems6arcv489jgng",
         "available_bikes": 13,
         "available_slots": 4,
@@ -316,7 +316,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgsg",
         "name": "Columbia & 5th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgsg",
         "full_id": "st_d0mo5ems6arcv489jgsg",
         "available_bikes": 9,
         "available_slots": 9,
@@ -339,7 +339,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jh3g",
         "name": "Cypress & 10th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jh3g",
         "full_id": "st_d0mo5ems6arcv489jh3g",
         "available_bikes": 1,
         "available_slots": 13,
@@ -362,7 +362,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jfv0",
         "name": "Hornby & Pender",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jfv0",
         "full_id": "st_d0mo5ems6arcv489jfv0",
         "available_bikes": 10,
         "available_slots": 12,
@@ -385,7 +385,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jg7g",
         "name": "Burrard & Drake",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jg7g",
         "full_id": "st_d0mo5ems6arcv489jg7g",
         "available_bikes": 4,
         "available_slots": 19,
@@ -408,7 +408,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgbg",
         "name": "Marinaside & Cooperage",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgbg",
         "full_id": "st_d0mo5ems6arcv489jgbg",
         "available_bikes": 19,
         "available_slots": 7,
@@ -431,7 +431,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jggg",
         "name": "Expo & Carrall",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jggg",
         "full_id": "st_d0mo5ems6arcv489jggg",
         "available_bikes": 8,
         "available_slots": 7,
@@ -454,7 +454,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgmg",
         "name": "Creekside Park North",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgmg",
         "full_id": "st_d0mo5ems6arcv489jgmg",
         "available_bikes": 4,
         "available_slots": 12,
@@ -477,7 +477,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jh4g",
         "name": "Vine & 4th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jh4g",
         "full_id": "st_d0mo5ems6arcv489jh4g",
         "available_bikes": 3,
         "available_slots": 12,
@@ -500,7 +500,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jh5g",
         "name": "5th & Arbutus",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jh5g",
         "full_id": "st_d0mo5ems6arcv489jh5g",
         "available_bikes": 2,
         "available_slots": 14,
@@ -523,7 +523,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jfq0",
         "name": "Bute & Davie",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jfq0",
         "full_id": "st_d0mo5ems6arcv489jfq0",
         "available_bikes": 8,
         "available_slots": 12,
@@ -546,7 +546,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgag",
         "name": "Homer & Robson (Vancouver Public Library)",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgag",
         "full_id": "st_d0mo5ems6arcv489jgag",
         "available_bikes": 5,
         "available_slots": 13,
@@ -569,7 +569,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgfg",
         "name": "14th & Cambie",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgfg",
         "full_id": "st_d0mo5ems6arcv489jgfg",
         "available_bikes": 2,
         "available_slots": 12,
@@ -592,7 +592,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgu0",
         "name": "1st & Chestnut",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgu0",
         "full_id": "st_d0mo5ems6arcv489jgu0",
         "available_bikes": 23,
         "available_slots": 3,
@@ -615,7 +615,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jh6g",
         "name": "Keefer & Columbia",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jh6g",
         "full_id": "st_d0mo5ems6arcv489jh6g",
         "available_bikes": 11,
         "available_slots": 2,
@@ -638,7 +638,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jg60",
         "name": "Chilco & Beach",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jg60",
         "full_id": "st_d0mo5ems6arcv489jg60",
         "available_bikes": 1,
         "available_slots": 13,
@@ -661,7 +661,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgm0",
         "name": "Chilco & Robson",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgm0",
         "full_id": "st_d0mo5ems6arcv489jgm0",
         "available_bikes": 19,
         "available_slots": 0,
@@ -684,7 +684,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jftg",
         "name": "Helmcken & Burrard",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jftg",
         "full_id": "st_d0mo5ems6arcv489jftg",
         "available_bikes": 1,
         "available_slots": 12,
@@ -707,7 +707,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jg20",
         "name": "Beatty & Robson",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jg20",
         "full_id": "st_d0mo5ems6arcv489jg20",
         "available_bikes": 9,
         "available_slots": 10,
@@ -730,7 +730,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jg5g",
         "name": "Cardero & Robson",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jg5g",
         "full_id": "st_d0mo5ems6arcv489jg5g",
         "available_bikes": 22,
         "available_slots": 4,
@@ -753,7 +753,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgcg",
         "name": "Abbott & Cordova",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgcg",
         "full_id": "st_d0mo5ems6arcv489jgcg",
         "available_bikes": 11,
         "available_slots": 2,
@@ -776,7 +776,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgh0",
         "name": "Cypress & 4th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgh0",
         "full_id": "st_d0mo5ems6arcv489jgh0",
         "available_bikes": 9,
         "available_slots": 9,
@@ -799,7 +799,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jghg",
         "name": "Nelson & Mainland",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jghg",
         "full_id": "st_d0mo5ems6arcv489jghg",
         "available_bikes": 8,
         "available_slots": 11,
@@ -822,7 +822,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgj0",
         "name": "Vanier Park",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgj0",
         "full_id": "st_d0mo5ems6arcv489jgj0",
         "available_bikes": 19,
         "available_slots": 8,
@@ -845,7 +845,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgo0",
         "name": "Cambie & Water",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgo0",
         "full_id": "st_d0mo5ems6arcv489jgo0",
         "available_bikes": 15,
         "available_slots": 17,
@@ -868,7 +868,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgug",
         "name": "Richards & Helmcken",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgug",
         "full_id": "st_d0mo5ems6arcv489jgug",
         "available_bikes": 5,
         "available_slots": 10,
@@ -891,7 +891,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jh2g",
         "name": "Chestnut & McNicoll",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jh2g",
         "full_id": "st_d0mo5ems6arcv489jh2g",
         "available_bikes": 2,
         "available_slots": 14,
@@ -914,7 +914,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jfvg",
         "name": "Expo & Smithe",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jfvg",
         "full_id": "st_d0mo5ems6arcv489jfvg",
         "available_bikes": 12,
         "available_slots": 1,
@@ -937,7 +937,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jg4g",
         "name": "Bute & Robson",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jg4g",
         "full_id": "st_d0mo5ems6arcv489jg4g",
         "available_bikes": 1,
         "available_slots": 23,
@@ -960,7 +960,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jg9g",
         "name": "Comox & Broughton",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jg9g",
         "full_id": "st_d0mo5ems6arcv489jg9g",
         "available_bikes": 4,
         "available_slots": 8,
@@ -983,7 +983,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgjg",
         "name": "Ontario & 5th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgjg",
         "full_id": "st_d0mo5ems6arcv489jgjg",
         "available_bikes": 17,
         "available_slots": 3,
@@ -1006,7 +1006,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgkg",
         "name": "Bidwell & Burnaby",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgkg",
         "full_id": "st_d0mo5ems6arcv489jgkg",
         "available_bikes": 6,
         "available_slots": 20,
@@ -1029,7 +1029,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jh10",
         "name": "Yukon & 6th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jh10",
         "full_id": "st_d0mo5ems6arcv489jh10",
         "available_bikes": 15,
         "available_slots": 3,
@@ -1052,7 +1052,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jh30",
         "name": "Robson & Granville",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jh30",
         "full_id": "st_d0mo5ems6arcv489jh30",
         "available_bikes": 12,
         "available_slots": 11,
@@ -1075,7 +1075,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jh60",
         "name": "Yaletown-Roundhouse Station",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jh60",
         "full_id": "st_d0mo5ems6arcv489jh60",
         "available_bikes": 15,
         "available_slots": 1,
@@ -1098,7 +1098,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jh7g",
         "name": "10th & Columbia",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jh7g",
         "full_id": "st_d0mo5ems6arcv489jh7g",
         "available_bikes": 12,
         "available_slots": 1,
@@ -1121,7 +1121,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jfr0",
         "name": "Spyglass & Seawall",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jfr0",
         "full_id": "st_d0mo5ems6arcv489jfr0",
         "available_bikes": 3,
         "available_slots": 11,
@@ -1144,7 +1144,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jfsg",
         "name": "Dunsmuir & Beatty",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jfsg",
         "full_id": "st_d0mo5ems6arcv489jfsg",
         "available_bikes": 5,
         "available_slots": 20,
@@ -1167,7 +1167,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jg50",
         "name": "Cardero & Davie",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jg50",
         "full_id": "st_d0mo5ems6arcv489jg50",
         "available_bikes": 12,
         "available_slots": 4,
@@ -1190,7 +1190,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jge0",
         "name": "Richards & Robson",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jge0",
         "full_id": "st_d0mo5ems6arcv489jge0",
         "available_bikes": 5,
         "available_slots": 8,
@@ -1213,7 +1213,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgeg",
         "name": "Harwood & Bute",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgeg",
         "full_id": "st_d0mo5ems6arcv489jgeg",
         "available_bikes": 17,
         "available_slots": 2,
@@ -1236,7 +1236,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgl0",
         "name": "Chilco & Barclay",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgl0",
         "full_id": "st_d0mo5ems6arcv489jgl0",
         "available_bikes": 6,
         "available_slots": 12,
@@ -1259,7 +1259,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgn0",
         "name": "Pender & Burrard",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgn0",
         "full_id": "st_d0mo5ems6arcv489jgn0",
         "available_bikes": 22,
         "available_slots": 2,
@@ -1282,7 +1282,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgtg",
         "name": "1st & Manitoba",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgtg",
         "full_id": "st_d0mo5ems6arcv489jgtg",
         "available_bikes": 16,
         "available_slots": 11,
@@ -1305,7 +1305,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jh90",
         "name": "Heather & 14th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jh90",
         "full_id": "st_d0mo5ems6arcv489jh90",
         "available_bikes": 7,
         "available_slots": 9,
@@ -1328,7 +1328,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jg80",
         "name": "Hornby & Nelson",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jg80",
         "full_id": "st_d0mo5ems6arcv489jg80",
         "available_bikes": 4,
         "available_slots": 12,
@@ -1351,7 +1351,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgf0",
         "name": "Davie & Beach",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgf0",
         "full_id": "st_d0mo5ems6arcv489jgf0",
         "available_bikes": 28,
         "available_slots": 1,
@@ -1374,7 +1374,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgig",
         "name": "Nicola & Robson",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgig",
         "full_id": "st_d0mo5ems6arcv489jgig",
         "available_bikes": 4,
         "available_slots": 11,
@@ -1397,7 +1397,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jfpg",
         "name": "Rogers Tower",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jfpg",
         "full_id": "st_d0mo5ems6arcv489jfpg",
         "available_bikes": 11,
         "available_slots": 3,
@@ -1420,7 +1420,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jfqg",
         "name": "14th & Granville",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jfqg",
         "full_id": "st_d0mo5ems6arcv489jfqg",
         "available_bikes": 7,
         "available_slots": 7,
@@ -1443,7 +1443,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgp0",
         "name": "Pacific & Richards",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgp0",
         "full_id": "st_d0mo5ems6arcv489jgp0",
         "available_bikes": 7,
         "available_slots": 7,
@@ -1466,7 +1466,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgpg",
         "name": "Marinaside & Davie",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgpg",
         "full_id": "st_d0mo5ems6arcv489jgpg",
         "available_bikes": 22,
         "available_slots": 0,
@@ -1489,7 +1489,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgqg",
         "name": "7th & Granville",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgqg",
         "full_id": "st_d0mo5ems6arcv489jgqg",
         "available_bikes": 1,
         "available_slots": 12,
@@ -1512,7 +1512,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jh20",
         "name": "McNicoll & Arbutus",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jh20",
         "full_id": "st_d0mo5ems6arcv489jh20",
         "available_bikes": 12,
         "available_slots": 17,
@@ -1535,7 +1535,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jfs0",
         "name": "10th & Cambie",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jfs0",
         "full_id": "st_d0mo5ems6arcv489jfs0",
         "available_bikes": 17,
         "available_slots": 17,
@@ -1558,7 +1558,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jg10",
         "name": "12th & Yukon (City Hall)",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jg10",
         "full_id": "st_d0mo5ems6arcv489jg10",
         "available_bikes": 2,
         "available_slots": 9,
@@ -1581,7 +1581,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jg8g",
         "name": "Richards & Smithe",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jg8g",
         "full_id": "st_d0mo5ems6arcv489jg8g",
         "available_bikes": 7,
         "available_slots": 10,
@@ -1604,7 +1604,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jg90",
         "name": "Cypress & 14th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jg90",
         "full_id": "st_d0mo5ems6arcv489jg90",
         "available_bikes": 3,
         "available_slots": 9,
@@ -1627,7 +1627,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgdg",
         "name": "7th & Arbutus",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgdg",
         "full_id": "st_d0mo5ems6arcv489jgdg",
         "available_bikes": 2,
         "available_slots": 14,
@@ -1650,7 +1650,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgog",
         "name": "Arbutus & 16th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgog",
         "full_id": "st_d0mo5ems6arcv489jgog",
         "available_bikes": 3,
         "available_slots": 9,
@@ -1673,7 +1673,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jg0g",
         "name": "Canada Place",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jg0g",
         "full_id": "st_d0mo5ems6arcv489jg0g",
         "available_bikes": 24,
         "available_slots": 2,
@@ -1696,7 +1696,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jg1g",
         "name": "Stamps Landing",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jg1g",
         "full_id": "st_d0mo5ems6arcv489jg1g",
         "available_bikes": 13,
         "available_slots": 0,
@@ -1719,7 +1719,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgi0",
         "name": "Richards & Davie",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgi0",
         "full_id": "st_d0mo5ems6arcv489jgi0",
         "available_bikes": 10,
         "available_slots": 3,
@@ -1742,7 +1742,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgv0",
         "name": "Aquatic Centre",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgv0",
         "full_id": "st_d0mo5ems6arcv489jgv0",
         "available_bikes": 29,
         "available_slots": 11,
@@ -1765,7 +1765,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jft0",
         "name": "Dunsmuir & Richards",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jft0",
         "full_id": "st_d0mo5ems6arcv489jft0",
         "available_bikes": 5,
         "available_slots": 12,
@@ -1788,7 +1788,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jg00",
         "name": "Burrard Station (Melville & Dunsmuir)",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jg00",
         "full_id": "st_d0mo5ems6arcv489jg00",
         "available_bikes": 15,
         "available_slots": 13,
@@ -1811,7 +1811,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgc0",
         "name": "Keefer & Abbott",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgc0",
         "full_id": "st_d0mo5ems6arcv489jgc0",
         "available_bikes": 14,
         "available_slots": 14,
@@ -1834,7 +1834,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jh70",
         "name": "10th & Granville",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jh70",
         "full_id": "st_d0mo5ems6arcv489jh70",
         "available_bikes": 6,
         "available_slots": 8,
@@ -1857,7 +1857,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jh8g",
         "name": "Hornby & Drake",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jh8g",
         "full_id": "st_d0mo5ems6arcv489jh8g",
         "available_bikes": 3,
         "available_slots": 18,
@@ -1880,7 +1880,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jha0",
         "name": "10th & Ontario",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jha0",
         "full_id": "st_d0mo5ems6arcv489jha0",
         "available_bikes": 15,
         "available_slots": 4,
@@ -1903,7 +1903,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jfug",
         "name": "Granville & Georgia",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jfug",
         "full_id": "st_d0mo5ems6arcv489jfug",
         "available_bikes": 2,
         "available_slots": 18,
@@ -1926,7 +1926,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jg6g",
         "name": "Anderson & 2nd",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jg6g",
         "full_id": "st_d0mo5ems6arcv489jg6g",
         "available_bikes": 0,
         "available_slots": 0,
@@ -1949,7 +1949,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jh80",
         "name": "Kitsilano Beach Park",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jh80",
         "full_id": "st_d0mo5ems6arcv489jh80",
         "available_bikes": 19,
         "available_slots": 16,
@@ -1972,7 +1972,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jfrg",
         "name": "Ontario & Seawall",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jfrg",
         "full_id": "st_d0mo5ems6arcv489jfrg",
         "available_bikes": 13,
         "available_slots": 7,
@@ -1995,7 +1995,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jg30",
         "name": "Morton & Denman",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jg30",
         "full_id": "st_d0mo5ems6arcv489jg30",
         "available_bikes": 12,
         "available_slots": 14,
@@ -2018,7 +2018,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgr0",
         "name": "8th & Ontario",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgr0",
         "full_id": "st_d0mo5ems6arcv489jgr0",
         "available_bikes": 11,
         "available_slots": 5,
@@ -2041,7 +2041,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jgrg",
         "name": "Ontario & 16th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jgrg",
         "full_id": "st_d0mo5ems6arcv489jgrg",
         "available_bikes": 5,
         "available_slots": 9,
@@ -2064,7 +2064,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jh00",
         "name": "Alexander & Main",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jh00",
         "full_id": "st_d0mo5ems6arcv489jh00",
         "available_bikes": 13,
         "available_slots": 7,
@@ -2087,7 +2087,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jh50",
         "name": "Robson & Hornby",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jh50",
         "full_id": "st_d0mo5ems6arcv489jh50",
         "available_bikes": 6,
         "available_slots": 23,
@@ -2110,7 +2110,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jhcg",
         "name": "Arbutus Greenway & 14th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jhcg",
         "full_id": "st_d0mo5ems6arcv489jhcg",
         "available_bikes": 4,
         "available_slots": 15,
@@ -2133,7 +2133,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jht0",
         "name": "St Catherines & 10th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jht0",
         "full_id": "st_d0mo5ems6arcv489jht0",
         "available_bikes": 3,
         "available_slots": 9,
@@ -2156,7 +2156,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jifg",
         "name": "Charles & Woodland",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jifg",
         "full_id": "st_d0mo5ems6arcv489jifg",
         "available_bikes": 0,
         "available_slots": 0,
@@ -2179,7 +2179,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jih0",
         "name": "18th & Main",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jih0",
         "full_id": "st_d0mo5ems6arcv489jih0",
         "available_bikes": 1,
         "available_slots": 14,
@@ -2202,7 +2202,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jhag",
         "name": "1st & Scotia",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jhag",
         "full_id": "st_d0mo5ems6arcv489jhag",
         "available_bikes": 14,
         "available_slots": 6,
@@ -2225,7 +2225,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jhj0",
         "name": "14th & Alder",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jhj0",
         "full_id": "st_d0mo5ems6arcv489jhj0",
         "available_bikes": 3,
         "available_slots": 6,
@@ -2248,7 +2248,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489ji6g",
         "name": "Alexander & Dunlevy",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489ji6g",
         "full_id": "st_d0mo5ems6arcv489ji6g",
         "available_bikes": 5,
         "available_slots": 7,
@@ -2271,7 +2271,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jigg",
         "name": "7th & Woodland",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jigg",
         "full_id": "st_d0mo5ems6arcv489jigg",
         "available_bikes": 6,
         "available_slots": 6,
@@ -2294,7 +2294,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jikg",
         "name": "Triumph & Victoria",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jikg",
         "full_id": "st_d0mo5ems6arcv489jikg",
         "available_bikes": 4,
         "available_slots": 11,
@@ -2317,7 +2317,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jim0",
         "name": "Prince Edward & 16th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jim0",
         "full_id": "st_d0mo5ems6arcv489jim0",
         "available_bikes": 2,
         "available_slots": 12,
@@ -2340,7 +2340,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jing",
         "name": "6th & Carolina",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jing",
         "full_id": "st_d0mo5ems6arcv489jing",
         "available_bikes": 5,
         "available_slots": 11,
@@ -2363,7 +2363,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jio0",
         "name": "Science World",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jio0",
         "full_id": "st_d0mo5ems6arcv489jio0",
         "available_bikes": 15,
         "available_slots": 1,
@@ -2386,7 +2386,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jit0",
         "name": "Quebec & 1st",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jit0",
         "full_id": "st_d0mo5ems6arcv489jit0",
         "available_bikes": 15,
         "available_slots": 2,
@@ -2409,7 +2409,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jho0",
         "name": "David Lam Park",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jho0",
         "full_id": "st_d0mo5ems6arcv489jho0",
         "available_bikes": 9,
         "available_slots": 9,
@@ -2432,7 +2432,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489ji30",
         "name": "Charles & Commercial",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489ji30",
         "full_id": "st_d0mo5ems6arcv489ji30",
         "available_bikes": 0,
         "available_slots": 0,
@@ -2455,7 +2455,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489ji7g",
         "name": "Keefer & Princess",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489ji7g",
         "full_id": "st_d0mo5ems6arcv489ji7g",
         "available_bikes": 3,
         "available_slots": 11,
@@ -2478,7 +2478,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jia0",
         "name": "Cordova & Granville",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jia0",
         "full_id": "st_d0mo5ems6arcv489jia0",
         "available_bikes": 5,
         "available_slots": 13,
@@ -2501,7 +2501,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jid0",
         "name": "14th & Oak",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jid0",
         "full_id": "st_d0mo5ems6arcv489jid0",
         "available_bikes": 9,
         "available_slots": 5,
@@ -2524,7 +2524,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jif0",
         "name": "Carolina & Great Northern Way",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jif0",
         "full_id": "st_d0mo5ems6arcv489jif0",
         "available_bikes": 7,
         "available_slots": 9,
@@ -2547,7 +2547,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jimg",
         "name": "Prince Edward & 14th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jimg",
         "full_id": "st_d0mo5ems6arcv489jimg",
         "available_bikes": 0,
         "available_slots": 13,
@@ -2570,7 +2570,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jhbg",
         "name": "Coal Harbour Community Centre",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jhbg",
         "full_id": "st_d0mo5ems6arcv489jhbg",
         "available_bikes": 11,
         "available_slots": 10,
@@ -2593,7 +2593,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jhe0",
         "name": "Pine & 10th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jhe0",
         "full_id": "st_d0mo5ems6arcv489jhe0",
         "available_bikes": 9,
         "available_slots": 10,
@@ -2616,7 +2616,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jhu0",
         "name": "St George & Broadway",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jhu0",
         "full_id": "st_d0mo5ems6arcv489jhu0",
         "available_bikes": 4,
         "available_slots": 10,
@@ -2639,7 +2639,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489ji0g",
         "name": "Grandview & Commercial",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489ji0g",
         "full_id": "st_d0mo5ems6arcv489ji0g",
         "available_bikes": 5,
         "available_slots": 11,
@@ -2662,7 +2662,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489ji70",
         "name": "Alexander & Railway",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489ji70",
         "full_id": "st_d0mo5ems6arcv489ji70",
         "available_bikes": 1,
         "available_slots": 19,
@@ -2685,7 +2685,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jicg",
         "name": "Pender & Gore",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jicg",
         "full_id": "st_d0mo5ems6arcv489jicg",
         "available_bikes": 10,
         "available_slots": 1,
@@ -2708,7 +2708,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jiu0",
         "name": "Columbia & 14th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jiu0",
         "full_id": "st_d0mo5ems6arcv489jiu0",
         "available_bikes": 3,
         "available_slots": 11,
@@ -2731,7 +2731,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jhhg",
         "name": "Stanley Park - Information Booth",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jhhg",
         "full_id": "st_d0mo5ems6arcv489jhhg",
         "available_bikes": 11,
         "available_slots": 19,
@@ -2754,7 +2754,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jhn0",
         "name": "Georgia & Main",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jhn0",
         "full_id": "st_d0mo5ems6arcv489jhn0",
         "available_bikes": 12,
         "available_slots": 8,
@@ -2777,7 +2777,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jhr0",
         "name": "Charleson Park",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jhr0",
         "full_id": "st_d0mo5ems6arcv489jhr0",
         "available_bikes": 3,
         "available_slots": 10,
@@ -2800,7 +2800,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jhv0",
         "name": "Keith & 6th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jhv0",
         "full_id": "st_d0mo5ems6arcv489jhv0",
         "available_bikes": 20,
         "available_slots": 7,
@@ -2823,7 +2823,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jhvg",
         "name": "10th & Commercial",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jhvg",
         "full_id": "st_d0mo5ems6arcv489jhvg",
         "available_bikes": 5,
         "available_slots": 21,
@@ -2846,7 +2846,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489ji40",
         "name": "Adanac & McLean",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489ji40",
         "full_id": "st_d0mo5ems6arcv489ji40",
         "available_bikes": 18,
         "available_slots": 4,
@@ -2869,7 +2869,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489ji50",
         "name": "Melville & Bute",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489ji50",
         "full_id": "st_d0mo5ems6arcv489ji50",
         "available_bikes": 12,
         "available_slots": 2,
@@ -2892,7 +2892,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jiog",
         "name": "15th & Victoria (Trout Lake)",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jiog",
         "full_id": "st_d0mo5ems6arcv489jiog",
         "available_bikes": 3,
         "available_slots": 15,
@@ -2915,7 +2915,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jj00",
         "name": "Stanley Park - Third Beach Parking Lot",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jj00",
         "full_id": "st_d0mo5ems6arcv489jj00",
         "available_bikes": 14,
         "available_slots": 23,
@@ -2938,7 +2938,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jhh0",
         "name": "Stanley Park - Totem Poles",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jhh0",
         "full_id": "st_d0mo5ems6arcv489jhh0",
         "available_bikes": 10,
         "available_slots": 8,
@@ -2961,7 +2961,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489ji2g",
         "name": "Grant & Commercial",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489ji2g",
         "full_id": "st_d0mo5ems6arcv489ji2g",
         "available_bikes": 5,
         "available_slots": 8,
@@ -2984,7 +2984,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jiag",
         "name": "10th & Main",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jiag",
         "full_id": "st_d0mo5ems6arcv489jiag",
         "available_bikes": 6,
         "available_slots": 11,
@@ -3007,7 +3007,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jhm0",
         "name": "Carrall & Seawall",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jhm0",
         "full_id": "st_d0mo5ems6arcv489jhm0",
         "available_bikes": 3,
         "available_slots": 15,
@@ -3030,7 +3030,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jhsg",
         "name": "Glen & Broadway",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jhsg",
         "full_id": "st_d0mo5ems6arcv489jhsg",
         "available_bikes": 12,
         "available_slots": 6,
@@ -3053,7 +3053,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489ji00",
         "name": "8th & Commercial",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489ji00",
         "full_id": "st_d0mo5ems6arcv489ji00",
         "available_bikes": 0,
         "available_slots": 20,
@@ -3076,7 +3076,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489ji1g",
         "name": "4th & Commercial",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489ji1g",
         "full_id": "st_d0mo5ems6arcv489ji1g",
         "available_bikes": 3,
         "available_slots": 11,
@@ -3099,7 +3099,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jibg",
         "name": "15th & Knight",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jibg",
         "full_id": "st_d0mo5ems6arcv489jibg",
         "available_bikes": 0,
         "available_slots": 13,
@@ -3122,7 +3122,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jhk0",
         "name": "Arbutus Greenway & Fir",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jhk0",
         "full_id": "st_d0mo5ems6arcv489jhk0",
         "available_bikes": 10,
         "available_slots": 5,
@@ -3145,7 +3145,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489ji10",
         "name": "Woodland & 10th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489ji10",
         "full_id": "st_d0mo5ems6arcv489ji10",
         "available_bikes": 11,
         "available_slots": 3,
@@ -3168,7 +3168,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489ji20",
         "name": "2nd & Commercial",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489ji20",
         "full_id": "st_d0mo5ems6arcv489ji20",
         "available_bikes": 9,
         "available_slots": 13,
@@ -3191,7 +3191,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489ji5g",
         "name": "Carrall & Hastings",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489ji5g",
         "full_id": "st_d0mo5ems6arcv489ji5g",
         "available_bikes": 13,
         "available_slots": 4,
@@ -3214,7 +3214,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jieg",
         "name": "Alberni & Jervis",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jieg",
         "full_id": "st_d0mo5ems6arcv489jieg",
         "available_bikes": 11,
         "available_slots": 8,
@@ -3237,7 +3237,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jin0",
         "name": "6th & Prince Edward",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jin0",
         "full_id": "st_d0mo5ems6arcv489jin0",
         "available_bikes": 6,
         "available_slots": 9,
@@ -3260,7 +3260,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jipg",
         "name": "Cordova & Bute",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jipg",
         "full_id": "st_d0mo5ems6arcv489jipg",
         "available_bikes": 10,
         "available_slots": 4,
@@ -3283,7 +3283,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jisg",
         "name": "11th & Kingsway",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jisg",
         "full_id": "st_d0mo5ems6arcv489jisg",
         "available_bikes": 1,
         "available_slots": 15,
@@ -3306,7 +3306,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jitg",
         "name": "14th & Fraser",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jitg",
         "full_id": "st_d0mo5ems6arcv489jitg",
         "available_bikes": 2,
         "available_slots": 13,
@@ -3329,7 +3329,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jhp0",
         "name": "Burrard & 4th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jhp0",
         "full_id": "st_d0mo5ems6arcv489jhp0",
         "available_bikes": 12,
         "available_slots": 4,
@@ -3352,7 +3352,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489ji90",
         "name": "Britannia Parking Lot",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489ji90",
         "full_id": "st_d0mo5ems6arcv489ji90",
         "available_bikes": 4,
         "available_slots": 10,
@@ -3375,7 +3375,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jidg",
         "name": "8th & Prince Edward",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jidg",
         "full_id": "st_d0mo5ems6arcv489jidg",
         "available_bikes": 4,
         "available_slots": 14,
@@ -3398,7 +3398,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jik0",
         "name": "Woodland & Graveley",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jik0",
         "full_id": "st_d0mo5ems6arcv489jik0",
         "available_bikes": 3,
         "available_slots": 9,
@@ -3421,7 +3421,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jhc0",
         "name": "14th & Ontario",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jhc0",
         "full_id": "st_d0mo5ems6arcv489jhc0",
         "available_bikes": 5,
         "available_slots": 10,
@@ -3444,7 +3444,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489ji80",
         "name": "Glen & Union",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489ji80",
         "full_id": "st_d0mo5ems6arcv489ji80",
         "available_bikes": 8,
         "available_slots": 5,
@@ -3467,7 +3467,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jiig",
         "name": "Victoria & 10th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jiig",
         "full_id": "st_d0mo5ems6arcv489jiig",
         "available_bikes": 2,
         "available_slots": 10,
@@ -3490,7 +3490,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jil0",
         "name": "Commercial & Pandora",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jil0",
         "full_id": "st_d0mo5ems6arcv489jil0",
         "available_bikes": 6,
         "available_slots": 10,
@@ -3513,7 +3513,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jj0g",
         "name": "Keefer & Hawks",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jj0g",
         "full_id": "st_d0mo5ems6arcv489jj0g",
         "available_bikes": 9,
         "available_slots": 7,
@@ -3536,7 +3536,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jhb0",
         "name": "York & Yew",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jhb0",
         "full_id": "st_d0mo5ems6arcv489jhb0",
         "available_bikes": 5,
         "available_slots": 13,
@@ -3559,7 +3559,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jheg",
         "name": "Beach & Broughton",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jheg",
         "full_id": "st_d0mo5ems6arcv489jheg",
         "available_bikes": 13,
         "available_slots": 8,
@@ -3582,7 +3582,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jhgg",
         "name": "Stanley Park - Second Beach South",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jhgg",
         "full_id": "st_d0mo5ems6arcv489jhgg",
         "available_bikes": 18,
         "available_slots": 0,
@@ -3605,7 +3605,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489ji3g",
         "name": "Napier & Commercial",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489ji3g",
         "full_id": "st_d0mo5ems6arcv489ji3g",
         "available_bikes": 4,
         "available_slots": 10,
@@ -3628,7 +3628,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489ji4g",
         "name": "Commercial & Adanac",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489ji4g",
         "full_id": "st_d0mo5ems6arcv489ji4g",
         "available_bikes": 11,
         "available_slots": 4,
@@ -3651,7 +3651,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489ji8g",
         "name": "8th & Fraser",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489ji8g",
         "full_id": "st_d0mo5ems6arcv489ji8g",
         "available_bikes": 2,
         "available_slots": 14,
@@ -3674,7 +3674,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jib0",
         "name": "Campbell & Hastings",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jib0",
         "full_id": "st_d0mo5ems6arcv489jib0",
         "available_bikes": 12,
         "available_slots": 2,
@@ -3697,7 +3697,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jii0",
         "name": "Pender & Victoria",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jii0",
         "full_id": "st_d0mo5ems6arcv489jii0",
         "available_bikes": 6,
         "available_slots": 10,
@@ -3720,7 +3720,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jijg",
         "name": "Thurlow & Pendrell",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jijg",
         "full_id": "st_d0mo5ems6arcv489jijg",
         "available_bikes": 1,
         "available_slots": 15,
@@ -3743,7 +3743,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jiug",
         "name": "Windsor & 14th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jiug",
         "full_id": "st_d0mo5ems6arcv489jiug",
         "available_bikes": 4,
         "available_slots": 10,
@@ -3766,7 +3766,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jhkg",
         "name": "Burrard & 7th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jhkg",
         "full_id": "st_d0mo5ems6arcv489jhkg",
         "available_bikes": 6,
         "available_slots": 9,
@@ -3789,7 +3789,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jihg",
         "name": "Pender & Commercial",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jihg",
         "full_id": "st_d0mo5ems6arcv489jihg",
         "available_bikes": 5,
         "available_slots": 10,
@@ -3812,7 +3812,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jir0",
         "name": "10th & Kingsway",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jir0",
         "full_id": "st_d0mo5ems6arcv489jir0",
         "available_bikes": 4,
         "available_slots": 15,
@@ -3835,7 +3835,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jhd0",
         "name": "Quebec & 3rd",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jhd0",
         "full_id": "st_d0mo5ems6arcv489jhd0",
         "available_bikes": 18,
         "available_slots": 1,
@@ -3858,7 +3858,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jhlg",
         "name": "Union & Dunlevy",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jhlg",
         "full_id": "st_d0mo5ems6arcv489jhlg",
         "available_bikes": 6,
         "available_slots": 10,
@@ -3881,7 +3881,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jic0",
         "name": "St Catherines & 7th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jic0",
         "full_id": "st_d0mo5ems6arcv489jic0",
         "available_bikes": 4,
         "available_slots": 16,
@@ -3904,7 +3904,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jig0",
         "name": "Woodland & 4th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jig0",
         "full_id": "st_d0mo5ems6arcv489jig0",
         "available_bikes": 11,
         "available_slots": 2,
@@ -3927,7 +3927,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jivg",
         "name": "7th &  Alder",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jivg",
         "full_id": "st_d0mo5ems6arcv489jivg",
         "available_bikes": 3,
         "available_slots": 13,
@@ -3950,7 +3950,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jhi0",
         "name": "5th & Main",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jhi0",
         "full_id": "st_d0mo5ems6arcv489jhi0",
         "available_bikes": 5,
         "available_slots": 15,
@@ -3973,7 +3973,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jhtg",
         "name": "10th & Fraser",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jhtg",
         "full_id": "st_d0mo5ems6arcv489jhtg",
         "available_bikes": 0,
         "available_slots": 14,
@@ -3996,7 +3996,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jilg",
         "name": "McLean & Pender",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jilg",
         "full_id": "st_d0mo5ems6arcv489jilg",
         "available_bikes": 10,
         "available_slots": 4,
@@ -4019,7 +4019,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jip0",
         "name": "Thornton & National",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jip0",
         "full_id": "st_d0mo5ems6arcv489jip0",
         "available_bikes": 9,
         "available_slots": 5,
@@ -4042,7 +4042,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jiv0",
         "name": "7th & Laurel",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jiv0",
         "full_id": "st_d0mo5ems6arcv489jiv0",
         "available_bikes": 5,
         "available_slots": 9,
@@ -4065,7 +4065,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jhog",
         "name": "šxʷƛ̓ənəq Xwtl'e7énḵ Square - Vancouver Art Gallery",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jhog",
         "full_id": "st_d0mo5ems6arcv489jhog",
         "available_bikes": 3,
         "available_slots": 25,
@@ -4088,7 +4088,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jij0",
         "name": "Victoria & 4th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jij0",
         "full_id": "st_d0mo5ems6arcv489jij0",
         "available_bikes": 4,
         "available_slots": 11,
@@ -4111,7 +4111,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jhfg",
         "name": "Stanley Park - Vancouver Aquarium",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jhfg",
         "full_id": "st_d0mo5ems6arcv489jhfg",
         "available_bikes": 11,
         "available_slots": 5,
@@ -4134,7 +4134,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jhg0",
         "name": "Stanley Park - Second Beach North",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jhg0",
         "full_id": "st_d0mo5ems6arcv489jhg0",
         "available_bikes": 13,
         "available_slots": 15,
@@ -4157,7 +4157,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jhig",
         "name": "8th & Scotia",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jhig",
         "full_id": "st_d0mo5ems6arcv489jhig",
         "available_bikes": 5,
         "available_slots": 7,
@@ -4180,7 +4180,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jhl0",
         "name": "Broughton & Davie",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jhl0",
         "full_id": "st_d0mo5ems6arcv489jhl0",
         "available_bikes": 9,
         "available_slots": 11,
@@ -4203,7 +4203,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jie0",
         "name": "13th & St George",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jie0",
         "full_id": "st_d0mo5ems6arcv489jie0",
         "available_bikes": 0,
         "available_slots": 16,
@@ -4226,7 +4226,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjfg",
         "name": "Dunbar & Broadway",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjfg",
         "full_id": "st_d0mo5ems6arcv489jjfg",
         "available_bikes": 11,
         "available_slots": 15,
@@ -4249,7 +4249,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjkg",
         "name": "Station & Terminal",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjkg",
         "full_id": "st_d0mo5ems6arcv489jjkg",
         "available_bikes": 18,
         "available_slots": 0,
@@ -4272,7 +4272,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjtg",
         "name": "Lakewood & Oxford",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjtg",
         "full_id": "st_d0mo5ems6arcv489jjtg",
         "available_bikes": 6,
         "available_slots": 12,
@@ -4295,7 +4295,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jk00",
         "name": "26th & Main",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jk00",
         "full_id": "st_d0mo5ems6arcv489jk00",
         "available_bikes": 4,
         "available_slots": 13,
@@ -4318,7 +4318,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jk4g",
         "name": "Broadway & Alma",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jk4g",
         "full_id": "st_d0mo5ems6arcv489jk4g",
         "available_bikes": 7,
         "available_slots": 9,
@@ -4341,7 +4341,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jkeg",
         "name": "UBC Bookstore",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jkeg",
         "full_id": "st_d0mo5ems6arcv489jkeg",
         "available_bikes": 1,
         "available_slots": 11,
@@ -4364,7 +4364,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jj3g",
         "name": "Beach & Hornby",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jj3g",
         "full_id": "st_d0mo5ems6arcv489jj3g",
         "available_bikes": 16,
         "available_slots": 6,
@@ -4387,7 +4387,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jj60",
         "name": "Richards & Cordova",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jj60",
         "full_id": "st_d0mo5ems6arcv489jj60",
         "available_bikes": 5,
         "available_slots": 8,
@@ -4410,7 +4410,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjgg",
         "name": "8th & Macdonald",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjgg",
         "full_id": "st_d0mo5ems6arcv489jjgg",
         "available_bikes": 13,
         "available_slots": 6,
@@ -4433,7 +4433,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjv0",
         "name": "Commercial & 20th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjv0",
         "full_id": "st_d0mo5ems6arcv489jjv0",
         "available_bikes": 1,
         "available_slots": 19,
@@ -4456,7 +4456,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jk1g",
         "name": "22nd & Main",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jk1g",
         "full_id": "st_d0mo5ems6arcv489jk1g",
         "available_bikes": 6,
         "available_slots": 7,
@@ -4479,7 +4479,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jk5g",
         "name": "War Memorial Gym",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jk5g",
         "full_id": "st_d0mo5ems6arcv489jk5g",
         "available_bikes": 0,
         "available_slots": 27,
@@ -4502,7 +4502,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jj40",
         "name": "Princess & Union",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jj40",
         "full_id": "st_d0mo5ems6arcv489jj40",
         "available_bikes": 6,
         "available_slots": 6,
@@ -4525,7 +4525,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jk10",
         "name": "Adanac & Lakewood",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jk10",
         "full_id": "st_d0mo5ems6arcv489jk10",
         "available_bikes": 4,
         "available_slots": 16,
@@ -4548,7 +4548,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jk6g",
         "name": "Pharmaceutical Sciences",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jk6g",
         "full_id": "st_d0mo5ems6arcv489jk6g",
         "available_bikes": 7,
         "available_slots": 15,
@@ -4571,7 +4571,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjdg",
         "name": "Alma & Point Grey",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjdg",
         "full_id": "st_d0mo5ems6arcv489jjdg",
         "available_bikes": 9,
         "available_slots": 14,
@@ -4594,7 +4594,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jji0",
         "name": "Point Grey & Bayswater",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jji0",
         "full_id": "st_d0mo5ems6arcv489jji0",
         "available_bikes": 16,
         "available_slots": 0,
@@ -4617,7 +4617,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjl0",
         "name": "Dunbar & 6th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjl0",
         "full_id": "st_d0mo5ems6arcv489jjl0",
         "available_bikes": 6,
         "available_slots": 10,
@@ -4640,7 +4640,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjq0",
         "name": "East Blvd & 37th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjq0",
         "full_id": "st_d0mo5ems6arcv489jjq0",
         "available_bikes": 9,
         "available_slots": 4,
@@ -4663,7 +4663,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjhg",
         "name": "Balsam & Cornwall",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjhg",
         "full_id": "st_d0mo5ems6arcv489jjhg",
         "available_bikes": 14,
         "available_slots": 4,
@@ -4686,7 +4686,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjk0",
         "name": "20th & Main",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjk0",
         "full_id": "st_d0mo5ems6arcv489jjk0",
         "available_bikes": 4,
         "available_slots": 12,
@@ -4709,7 +4709,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjng",
         "name": "Nelson & Denman",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjng",
         "full_id": "st_d0mo5ems6arcv489jjng",
         "available_bikes": 3,
         "available_slots": 14,
@@ -4732,7 +4732,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jk90",
         "name": "Maple Tree Square",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jk90",
         "full_id": "st_d0mo5ems6arcv489jk90",
         "available_bikes": 18,
         "available_slots": 7,
@@ -4755,7 +4755,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jkf0",
         "name": "Strangway Building",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jkf0",
         "full_id": "st_d0mo5ems6arcv489jkf0",
         "available_bikes": 1,
         "available_slots": 22,
@@ -4778,7 +4778,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjcg",
         "name": "Jervis & Robson",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjcg",
         "full_id": "st_d0mo5ems6arcv489jjcg",
         "available_bikes": 12,
         "available_slots": 8,
@@ -4801,7 +4801,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjsg",
         "name": "Lakewood & Triumph",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjsg",
         "full_id": "st_d0mo5ems6arcv489jjsg",
         "available_bikes": 5,
         "available_slots": 11,
@@ -4824,7 +4824,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jk0g",
         "name": "Cardero & Bayshore",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jk0g",
         "full_id": "st_d0mo5ems6arcv489jk0g",
         "available_bikes": 19,
         "available_slots": 0,
@@ -4847,7 +4847,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjd0",
         "name": "Jericho Beach",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjd0",
         "full_id": "st_d0mo5ems6arcv489jjd0",
         "available_bikes": 20,
         "available_slots": 5,
@@ -4870,7 +4870,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjh0",
         "name": "Yew & Broadway",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjh0",
         "full_id": "st_d0mo5ems6arcv489jjh0",
         "available_bikes": 1,
         "available_slots": 16,
@@ -4893,7 +4893,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjig",
         "name": "Trafalgar & Broadway",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjig",
         "full_id": "st_d0mo5ems6arcv489jjig",
         "available_bikes": 4,
         "available_slots": 12,
@@ -4916,7 +4916,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjog",
         "name": "29th & Cambie",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjog",
         "full_id": "st_d0mo5ems6arcv489jjog",
         "available_bikes": 6,
         "available_slots": 12,
@@ -4939,7 +4939,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjp0",
         "name": "King Edward & Cambie",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjp0",
         "full_id": "st_d0mo5ems6arcv489jjp0",
         "available_bikes": 8,
         "available_slots": 8,
@@ -4962,7 +4962,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjrg",
         "name": "30th & Ontario",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjrg",
         "full_id": "st_d0mo5ems6arcv489jjrg",
         "available_bikes": 7,
         "available_slots": 15,
@@ -4985,7 +4985,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjs0",
         "name": "Franklin & Nanaimo",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjs0",
         "full_id": "st_d0mo5ems6arcv489jjs0",
         "available_bikes": 6,
         "available_slots": 14,
@@ -5008,7 +5008,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jk80",
         "name": "Orchard Commons",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jk80",
         "full_id": "st_d0mo5ems6arcv489jk80",
         "available_bikes": 2,
         "available_slots": 23,
@@ -5031,7 +5031,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jkg0",
         "name": "Denman & Bayshore",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jkg0",
         "full_id": "st_d0mo5ems6arcv489jkg0",
         "available_bikes": 9,
         "available_slots": 11,
@@ -5054,7 +5054,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jj4g",
         "name": "Smithe & Burrard",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jj4g",
         "full_id": "st_d0mo5ems6arcv489jj4g",
         "available_bikes": 4,
         "available_slots": 11,
@@ -5077,7 +5077,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjbg",
         "name": "Seymour & Cordova",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjbg",
         "full_id": "st_d0mo5ems6arcv489jjbg",
         "available_bikes": 11,
         "available_slots": 7,
@@ -5100,7 +5100,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjm0",
         "name": "Blenheim & 4th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjm0",
         "full_id": "st_d0mo5ems6arcv489jjm0",
         "available_bikes": 3,
         "available_slots": 19,
@@ -5123,7 +5123,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jkh0",
         "name": "qəlɬaləməcən leləm | Orca House",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jkh0",
         "full_id": "st_d0mo5ems6arcv489jkh0",
         "available_bikes": 8,
         "available_slots": 13,
@@ -5146,7 +5146,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jkig",
         "name": "Place Vanier",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jkig",
         "full_id": "st_d0mo5ems6arcv489jkig",
         "available_bikes": 4,
         "available_slots": 11,
@@ -5169,7 +5169,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jj10",
         "name": "Hawks & Union",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jj10",
         "full_id": "st_d0mo5ems6arcv489jj10",
         "available_bikes": 14,
         "available_slots": 0,
@@ -5192,7 +5192,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jj70",
         "name": "Beach & Cardero",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jj70",
         "full_id": "st_d0mo5ems6arcv489jj70",
         "available_bikes": 7,
         "available_slots": 12,
@@ -5215,7 +5215,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjg0",
         "name": "Balaclava & Broadway",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjg0",
         "full_id": "st_d0mo5ems6arcv489jjg0",
         "available_bikes": 7,
         "available_slots": 11,
@@ -5238,7 +5238,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jkhg",
         "name": "Totem Park",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jkhg",
         "full_id": "st_d0mo5ems6arcv489jkhg",
         "available_bikes": 5,
         "available_slots": 16,
@@ -5261,7 +5261,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jj8g",
         "name": "Granville Island",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jj8g",
         "full_id": "st_d0mo5ems6arcv489jj8g",
         "available_bikes": 27,
         "available_slots": 5,
@@ -5284,7 +5284,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jj9g",
         "name": "Haro & Denman",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jj9g",
         "full_id": "st_d0mo5ems6arcv489jj9g",
         "available_bikes": 15,
         "available_slots": 3,
@@ -5307,7 +5307,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjeg",
         "name": "Trafalgar & Cornwall",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjeg",
         "full_id": "st_d0mo5ems6arcv489jjeg",
         "available_bikes": 15,
         "available_slots": 5,
@@ -5330,7 +5330,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjlg",
         "name": "Balaclava & 6th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjlg",
         "full_id": "st_d0mo5ems6arcv489jjlg",
         "available_bikes": 7,
         "available_slots": 9,
@@ -5353,7 +5353,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjt0",
         "name": "Wall & Eton",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjt0",
         "full_id": "st_d0mo5ems6arcv489jjt0",
         "available_bikes": 2,
         "available_slots": 15,
@@ -5376,7 +5376,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jk7g",
         "name": "West Mall Swing Space Building",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jk7g",
         "full_id": "st_d0mo5ems6arcv489jk7g",
         "available_bikes": 3,
         "available_slots": 17,
@@ -5399,7 +5399,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jkgg",
         "name": "Thunderbird & Thunderbird",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jkgg",
         "full_id": "st_d0mo5ems6arcv489jkgg",
         "available_bikes": 1,
         "available_slots": 18,
@@ -5422,7 +5422,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jja0",
         "name": "Arbutus & 10th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jja0",
         "full_id": "st_d0mo5ems6arcv489jja0",
         "available_bikes": 6,
         "available_slots": 10,
@@ -5445,7 +5445,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jju0",
         "name": "22nd & Cambie",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jju0",
         "full_id": "st_d0mo5ems6arcv489jju0",
         "available_bikes": 1,
         "available_slots": 13,
@@ -5468,7 +5468,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jk60",
         "name": "IK Barber Learning Centre",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jk60",
         "full_id": "st_d0mo5ems6arcv489jk60",
         "available_bikes": 7,
         "available_slots": 12,
@@ -5491,7 +5491,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjug",
         "name": "Heather & 29th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjug",
         "full_id": "st_d0mo5ems6arcv489jjug",
         "available_bikes": 2,
         "available_slots": 18,
@@ -5514,7 +5514,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jk3g",
         "name": "Sasamat & 10th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jk3g",
         "full_id": "st_d0mo5ems6arcv489jk3g",
         "available_bikes": 8,
         "available_slots": 14,
@@ -5537,7 +5537,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jke0",
         "name": "Thunderbird Parkade",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jke0",
         "full_id": "st_d0mo5ems6arcv489jke0",
         "available_bikes": 10,
         "available_slots": 8,
@@ -5560,7 +5560,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jki0",
         "name": "Acadia Park",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jki0",
         "full_id": "st_d0mo5ems6arcv489jki0",
         "available_bikes": 8,
         "available_slots": 12,
@@ -5583,7 +5583,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jj80",
         "name": "Wylie & 2nd",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jj80",
         "full_id": "st_d0mo5ems6arcv489jj80",
         "available_bikes": 10,
         "available_slots": 7,
@@ -5606,7 +5606,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjj0",
         "name": "Heather & 18th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjj0",
         "full_id": "st_d0mo5ems6arcv489jjj0",
         "available_bikes": 2,
         "available_slots": 14,
@@ -5629,7 +5629,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjjg",
         "name": "18th & Cambie",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjjg",
         "full_id": "st_d0mo5ems6arcv489jjjg",
         "available_bikes": 3,
         "available_slots": 17,
@@ -5652,7 +5652,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjn0",
         "name": "13th & Cambie",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjn0",
         "full_id": "st_d0mo5ems6arcv489jjn0",
         "available_bikes": 6,
         "available_slots": 8,
@@ -5675,7 +5675,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjvg",
         "name": "Burrard & 14th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjvg",
         "full_id": "st_d0mo5ems6arcv489jjvg",
         "available_bikes": 10,
         "available_slots": 7,
@@ -5698,7 +5698,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jkfg",
         "name": "Agronomy & East Mall",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jkfg",
         "full_id": "st_d0mo5ems6arcv489jkfg",
         "available_bikes": 0,
         "available_slots": 17,
@@ -5721,7 +5721,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jj50",
         "name": "Bute & Barclay",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jj50",
         "full_id": "st_d0mo5ems6arcv489jj50",
         "available_bikes": 3,
         "available_slots": 26,
@@ -5744,7 +5744,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jje0",
         "name": "Point Grey & Blenheim",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jje0",
         "full_id": "st_d0mo5ems6arcv489jje0",
         "available_bikes": 7,
         "available_slots": 7,
@@ -5767,7 +5767,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjo0",
         "name": "Arbutus & Nanton",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjo0",
         "full_id": "st_d0mo5ems6arcv489jjo0",
         "available_bikes": 2,
         "available_slots": 16,
@@ -5790,7 +5790,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjqg",
         "name": "28th & Willow",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjqg",
         "full_id": "st_d0mo5ems6arcv489jjqg",
         "available_bikes": 1,
         "available_slots": 18,
@@ -5813,7 +5813,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jk40",
         "name": "Trimble & 8th",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jk40",
         "full_id": "st_d0mo5ems6arcv489jk40",
         "available_bikes": 4,
         "available_slots": 16,
@@ -5836,7 +5836,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jkdg",
         "name": "Brock Commons",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jkdg",
         "full_id": "st_d0mo5ems6arcv489jkdg",
         "available_bikes": 7,
         "available_slots": 12,
@@ -5859,7 +5859,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jj7g",
         "name": "Georgia & Homer",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jj7g",
         "full_id": "st_d0mo5ems6arcv489jj7g",
         "available_bikes": 0,
         "available_slots": 16,
@@ -5882,7 +5882,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjpg",
         "name": "Rolston & Granville",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjpg",
         "full_id": "st_d0mo5ems6arcv489jjpg",
         "available_bikes": 10,
         "available_slots": 11,
@@ -5905,7 +5905,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jjr0",
         "name": "Ontario & 23rd",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jjr0",
         "full_id": "st_d0mo5ems6arcv489jjr0",
         "available_bikes": 5,
         "available_slots": 7,
@@ -5928,7 +5928,7 @@
       "properties": {
         "id": "st_d0mo5ems6arcv489jk8g",
         "name": "Wesbrook Village - Berton & Shrum",
-        "station_id": "D0MO5E",
+        "station_id": "st_d0mo5ems6arcv489jk8g",
         "full_id": "st_d0mo5ems6arcv489jk8g",
         "available_bikes": 12,
         "available_slots": 12,
@@ -5951,7 +5951,7 @@
       "properties": {
         "id": "st_d15f16fu3tpc73anous0",
         "name": "Heather & 10th",
-        "station_id": "D15F16",
+        "station_id": "st_d15f16fu3tpc73anous0",
         "full_id": "st_d15f16fu3tpc73anous0",
         "available_bikes": 1,
         "available_slots": 21,
@@ -5974,7 +5974,7 @@
       "properties": {
         "id": "st_d4587m9f2imc73a5td50",
         "name": "Pacific & Rolston",
-        "station_id": "D4587M",
+        "station_id": "st_d4587m9f2imc73a5td50",
         "full_id": "st_d4587m9f2imc73a5td50",
         "available_bikes": 11,
         "available_slots": 9,
@@ -5997,7 +5997,7 @@
       "properties": {
         "id": "st_d4b6ltk6ib0c73dseih0",
         "name": "Binning & Wesbrook",
-        "station_id": "D4B6LT",
+        "station_id": "st_d4b6ltk6ib0c73dseih0",
         "full_id": "st_d4b6ltk6ib0c73dseih0",
         "available_bikes": 5,
         "available_slots": 4,
@@ -6020,7 +6020,7 @@
       "properties": {
         "id": "st_d44drubbnf4c739kj49g",
         "name": "Granville & Neon",
-        "station_id": "D44DRU",
+        "station_id": "st_d44drubbnf4c739kj49g",
         "full_id": "st_d44drubbnf4c739kj49g",
         "available_bikes": 6,
         "available_slots": 14,

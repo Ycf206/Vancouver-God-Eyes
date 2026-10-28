@@ -37,6 +37,18 @@ export function formatOpeningHours(
   }
 
   // Common OSM day token translations
+  s = s.replace(/\b(?:mon|monday)\s*(?:to|-|–|—)\s*(?:fri|friday)\b/gi, '週一至週五');
+  s = s.replace(/\b(?:mon|monday)\s*(?:to|-|–|—)\s*(?:thu|thursday)\b/gi, '週一至週四');
+  s = s.replace(/\b(?:mon|monday)\s*(?:to|-|–|—)\s*(?:sat|saturday)\b/gi, '週一至週六');
+  s = s.replace(/\b(?:mon|monday)\s*(?:to|-|–|—)\s*(?:sun|sunday)\b/gi, '週一至週日');
+  s = s.replace(/\btuesdays?\s*and\s*thursdays?\b/gi, '週二及週四');
+  s = s.replace(/\bmondays?\b/gi, '週一');
+  s = s.replace(/\btuesdays?\b/gi, '週二');
+  s = s.replace(/\bwednesdays?\b/gi, '週三');
+  s = s.replace(/\bthursdays?\b/gi, '週四');
+  s = s.replace(/\bfridays?\b/gi, '週五');
+  s = s.replace(/\bsaturdays?\b/gi, '週六');
+  s = s.replace(/\bsundays?\b/gi, '週日');
   s = s.replace(/\bMo-Su\b/gi, '週一至週日');
   s = s.replace(/\bMo-Fr\b/gi, '週一至週五');
   s = s.replace(/\bSa-Su\b/gi, '週六至週日');
@@ -46,10 +58,10 @@ export function formatOpeningHours(
   s = s.replace(/\bPH\s*closed\b/gi, '公眾假期公休');
 
   // Regex matching time ranges: (Time 1) [separator] (Time 2)
-  const rangeRegex = /(\d{1,2}(?::\d{2})?(?::\d{2})?\s*(?:[ap]\.?m\.?)?)\s*[-–—~至to]+\s*(\d{1,2}(?::\d{2})?(?::\d{2})?\s*(?:[ap]\.?m\.?)?)/gi;
+  const rangeRegex = /(\d{1,2}(?::\d{2})?(?::\d{2})?\s*(?:[ap]\.?m\.?)?)\s*(?:[-–—~至]+|\bto\b)\s*(\d{1,2}(?::\d{2})?(?::\d{2})?\s*(?:[ap]\.?m\.?)?)/gi;
 
   function parseSingleTimeToken(token: string, inferredAmpm: string | null = null): string | null {
-    const m = token.trim().match(/^(\d{1,2})(?::(\d{2}))(?::\d{2})?\s*([ap]\.?m\.?)?$/i);
+    const m = token.trim().match(/^(\d{1,2})(?::(\d{2}))?(?::\d{2})?\s*([ap]\.?m\.?)?$/i);
     if (!m) return null;
     let hour = parseInt(m[1], 10);
     const min = m[2] || '00';

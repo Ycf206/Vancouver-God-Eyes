@@ -4028,7 +4028,7 @@ def update_admin_schedule(payload: dict = Body(...)):
     若為 GitHub Actions 資料源，支援直接透過 GitHub Contents API 或本機 yml 同步更新 Cron
     """
     source_id = payload.get("source_id")
-    schedule_interval = payload.get("schedule_interval")
+    schedule_interval = payload.get("schedule_interval") or payload.get("interval")
     cron_expr = payload.get("cron_expr")
     enabled = payload.get("enabled", True)
     
