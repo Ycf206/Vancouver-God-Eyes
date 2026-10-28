@@ -8,7 +8,7 @@ import Map, { NavigationControl, Marker, Popup, MapRef, Source, Layer } from 're
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl, getWsUrl } from '@/utils/api';
-import { formatTimePreference, formatShipEta, formatTimeRange, formatOpeningHours, formatConstructionSchedule } from '@/utils/time';
+import { formatTimePreference, formatShipEta, formatTimeRange, formatOpeningHours, formatConstructionSchedule, formatDateTime } from '@/utils/time';
 import FacilityWeeklyHoursSchedule from '@/components/WeeklyHoursSchedule';
 import { formatTitleCase } from '@/utils/text';
 import { getSkytrainStationMapUrls } from '@/utils/skytrainMaps';
@@ -5300,11 +5300,11 @@ export default function AppMap() {
         id: 'museums-layer',
         type: 'circle',
         source: 'museums',
-        minzoom: 10,
+        minzoom: 11,
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 3.5, 14, 6.5, 16, 9, 18, 12],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#475569',
-          'circle-stroke-width': 1.8,
+          'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
         }
       });
@@ -5312,10 +5312,10 @@ export default function AppMap() {
         id: 'museums-symbol-layer',
         type: 'symbol',
         source: 'museums',
-        minzoom: 13,
+        minzoom: 14,
         layout: {
           'text-field': '🏛️',
-          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 11, 18, 16],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 14, 9, 18, 14],
           'text-allow-overlap': false
         }
       });
@@ -7424,16 +7424,7 @@ export default function AppMap() {
                     matchingAlerts.map((alt: any, idx: number) => {
                       let displayTime = '--';
                       if (alt.lastModified) {
-                        try {
-                          const d = new Date(alt.lastModified);
-                          if (!isNaN(d.getTime())) {
-                            const h = d.getHours().toString().padStart(2, '0');
-                            const m = d.getMinutes().toString().padStart(2, '0');
-                            displayTime = `${d.getMonth() + 1}月${d.getDate()}日 ${h}:${m}`;
-                          }
-                        } catch {
-                          displayTime = String(alt.lastModified);
-                        }
+                        displayTime = formatDateTime(alt.lastModified, timeFormat, timeZone);
                       }
 
                       return (
@@ -9291,7 +9282,8 @@ export default function AppMap() {
                   if (val === null || val === undefined || val === '') return null;
                   const s = String(val).trim();
                   if (/^no(?:\s*time\s*limit)?$/i.test(s) || /no\s*limit/i.test(s)) return '無時限';
-                  return s.replace(/小時/g, 'hr').replace(/\bHours?\b/gi, 'hr').replace(/\bHrs\b/gi, 'hr');
+                  const cleaned = s.replace(/\s*(?:hours?|hrs?|小時)\b/gi, '').trim();
+                  return cleaned ? `${cleaned} 小時` : s;
                 };
 
                 const formatMeterHead = (val?: any) => {
@@ -9415,20 +9407,46 @@ export default function AppMap() {
                               <td className="py-1.5 px-2.5 text-center font-semibold font-mono">{formatRate(props.rate_6pm_10pm) || '-'}</td>
                             </tr>
                           )}
-                          {(props.time_limit_9am_6pm || props.time_limit_6pm_10pm) && (
-                            <tr>
-                              <td className="py-1.5 px-2.5 text-gray-500 whitespace-nowrap">平日上限</td>
-                              <td className="py-1.5 px-2.5 text-center font-mono">{formatTimeLimit(props.time_limit_9am_6pm) || '-'}</td>
-                              <td className="py-1.5 px-2.5 text-center font-mono">{formatTimeLimit(props.time_limit_6pm_10pm) || '-'}</td>
-                            </tr>
-                          )}
-                          {(props.time_limit_weekend_9am_6pm || props.time_limit_weekend_6pm_10pm) && (
-                            <tr>
-                              <td className="py-1.5 px-2.5 text-gray-500 whitespace-nowrap">週末上限</td>
-                              <td className="py-1.5 px-2.5 text-center font-mono">{formatTimeLimit(props.time_limit_weekend_9am_6pm) || '-'}</td>
-                              <td className="py-1.5 px-2.5 text-center font-mono">{formatTimeLimit(props.time_limit_weekend_6pm_10pm) || '-'}</td>
-                            </tr>
-                          )}
+                          {(() => {
+                            const weekdayDayLimit = formatTimeLimit(props.time_limit_9am_6pm);
+                            const weekdayNightLimit = formatTimeLimit(props.time_limit_6pm_10pm);
+                            const weekendDayLimit = formatTimeLimit(props.time_limit_weekend_9am_6pm);
+                            const weekendNightLimit = formatTimeLimit(props.time_limit_weekend_6pm_10pm);
+                            const hasWeekday = weekdayDayLimit || weekdayNightLimit;
+                            const hasWeekend = weekendDayLimit || weekendNightLimit;
+                            const isSame = hasWeekday && hasWeekend &&
+                              (weekdayDayLimit || '-') === (weekendDayLimit || '-') &&
+                              (weekdayNightLimit || '-') === (weekendNightLimit || '-');
+
+                            if (isSame) {
+                              return (
+                                <tr>
+                                  <td className="py-1.5 px-2.5 text-gray-500 whitespace-nowrap">停泊上限</td>
+                                  <td className="py-1.5 px-2.5 text-center font-mono">{weekdayDayLimit || '-'}</td>
+                                  <td className="py-1.5 px-2.5 text-center font-mono">{weekdayNightLimit || '-'}</td>
+                                </tr>
+                              );
+                            }
+
+                            return (
+                              <>
+                                {hasWeekday && (
+                                  <tr>
+                                    <td className="py-1.5 px-2.5 text-gray-500 whitespace-nowrap">平日上限</td>
+                                    <td className="py-1.5 px-2.5 text-center font-mono">{weekdayDayLimit || '-'}</td>
+                                    <td className="py-1.5 px-2.5 text-center font-mono">{weekdayNightLimit || '-'}</td>
+                                  </tr>
+                                )}
+                                {hasWeekend && (
+                                  <tr>
+                                    <td className="py-1.5 px-2.5 text-gray-500 whitespace-nowrap">週末上限</td>
+                                    <td className="py-1.5 px-2.5 text-center font-mono">{weekendDayLimit || '-'}</td>
+                                    <td className="py-1.5 px-2.5 text-center font-mono">{weekendNightLimit || '-'}</td>
+                                  </tr>
+                                )}
+                              </>
+                            );
+                          })()}
                           {(props.am_rush_hours || props.pm_rush_hours) && (
                             <tr className="bg-amber-50/50 text-amber-900">
                               <td className="py-1.5 px-2.5 text-amber-800 whitespace-nowrap font-medium">禁停限制</td>
@@ -9575,7 +9593,8 @@ export default function AppMap() {
                   if (val === null || val === undefined || val === '') return null;
                   const s = String(val).trim();
                   if (/^no(?:\s*time\s*limit)?$/i.test(s) || /no\s*limit/i.test(s)) return '無時限';
-                  return s.replace(/小時/g, 'hr').replace(/\bHours?\b/gi, 'hr').replace(/\bHrs\b/gi, 'hr');
+                  const cleaned = s.replace(/\s*(?:hours?|hrs?|小時)\b/gi, '').trim();
+                  return cleaned ? `${cleaned} 小時` : s;
                 };
 
                 const formatMeterHead = (val?: any) => {
@@ -9703,20 +9722,46 @@ export default function AppMap() {
                                 <td className="py-1.5 px-2.5 text-center font-semibold font-mono">{formatRate(props.rate_6pm_10pm) || '-'}</td>
                               </tr>
                             )}
-                            {(props.time_limit_9am_6pm || props.time_limit_6pm_10pm) && (
-                              <tr>
-                                <td className="py-1.5 px-2.5 text-gray-500 whitespace-nowrap">平日上限</td>
-                                <td className="py-1.5 px-2.5 text-center font-mono">{formatTimeLimit(props.time_limit_9am_6pm) || '-'}</td>
-                                <td className="py-1.5 px-2.5 text-center font-mono">{formatTimeLimit(props.time_limit_6pm_10pm) || '-'}</td>
-                              </tr>
-                            )}
-                            {(props.time_limit_weekend_9am_6pm || props.time_limit_weekend_6pm_10pm) && (
-                              <tr>
-                                <td className="py-1.5 px-2.5 text-gray-500 whitespace-nowrap">週末上限</td>
-                                <td className="py-1.5 px-2.5 text-center font-mono">{formatTimeLimit(props.time_limit_weekend_9am_6pm) || '-'}</td>
-                                <td className="py-1.5 px-2.5 text-center font-mono">{formatTimeLimit(props.time_limit_weekend_6pm_10pm) || '-'}</td>
-                              </tr>
-                            )}
+                            {(() => {
+                              const weekdayDayLimit = formatTimeLimit(props.time_limit_9am_6pm);
+                              const weekdayNightLimit = formatTimeLimit(props.time_limit_6pm_10pm);
+                              const weekendDayLimit = formatTimeLimit(props.time_limit_weekend_9am_6pm);
+                              const weekendNightLimit = formatTimeLimit(props.time_limit_weekend_6pm_10pm);
+                              const hasWeekday = weekdayDayLimit || weekdayNightLimit;
+                              const hasWeekend = weekendDayLimit || weekendNightLimit;
+                              const isSame = hasWeekday && hasWeekend &&
+                                (weekdayDayLimit || '-') === (weekendDayLimit || '-') &&
+                                (weekdayNightLimit || '-') === (weekendNightLimit || '-');
+
+                              if (isSame) {
+                                return (
+                                  <tr>
+                                    <td className="py-1.5 px-2.5 text-gray-500 whitespace-nowrap">停泊上限</td>
+                                    <td className="py-1.5 px-2.5 text-center font-mono">{weekdayDayLimit || '-'}</td>
+                                    <td className="py-1.5 px-2.5 text-center font-mono">{weekdayNightLimit || '-'}</td>
+                                  </tr>
+                                );
+                              }
+
+                              return (
+                                <>
+                                  {hasWeekday && (
+                                    <tr>
+                                      <td className="py-1.5 px-2.5 text-gray-500 whitespace-nowrap">平日上限</td>
+                                      <td className="py-1.5 px-2.5 text-center font-mono">{weekdayDayLimit || '-'}</td>
+                                      <td className="py-1.5 px-2.5 text-center font-mono">{weekdayNightLimit || '-'}</td>
+                                    </tr>
+                                  )}
+                                  {hasWeekend && (
+                                    <tr>
+                                      <td className="py-1.5 px-2.5 text-gray-500 whitespace-nowrap">週末上限</td>
+                                      <td className="py-1.5 px-2.5 text-center font-mono">{weekendDayLimit || '-'}</td>
+                                      <td className="py-1.5 px-2.5 text-center font-mono">{weekendNightLimit || '-'}</td>
+                                    </tr>
+                                  )}
+                                </>
+                              );
+                            })()}
                             {(props.am_rush_hours || props.pm_rush_hours) && (
                               <tr className="bg-amber-50/50 text-amber-900">
                                 <td className="py-1.5 px-2.5 text-amber-800 whitespace-nowrap font-medium">禁停限制</td>
@@ -9910,7 +9955,7 @@ export default function AppMap() {
                       <div className="border-t border-gray-200/80 my-0.5" />
                       <div className="flex justify-between items-center text-gray-600">
                         <span>計費方案</span>
-                        <span className="text-gray-900 font-medium text-right">約 $1.25 解鎖 + $0.39 /min</span>
+                        <span className="text-gray-900 font-medium text-right">約 $1.25 解鎖 + $0.39 /分鐘</span>
                       </div>
                     </div>
 
@@ -9975,7 +10020,7 @@ export default function AppMap() {
                           <div className="flex flex-col gap-1 bg-white p-2 rounded border border-gray-200/70 text-[10.5px]">
                             <div className="flex justify-between items-center">
                               <span className="text-gray-600">每小時</span>
-                              <span className="text-gray-800 font-medium">$5 起 /hr + 35¢ /km</span>
+                              <span className="text-gray-800 font-medium">$5 起 /小時 + 35¢ /km</span>
                             </div>
                             <div className="flex justify-between items-center pt-1 border-t border-gray-100">
                               <span className="text-gray-600">每程附加費</span>
@@ -9983,26 +10028,26 @@ export default function AppMap() {
                             </div>
                             <div className="flex justify-between items-center pt-1 border-t border-gray-100">
                               <span className="text-gray-600">每日特惠</span>
-                              <span className="text-gray-800 font-medium">$100 起 /day (含 500km 里程)</span>
+                              <span className="text-gray-800 font-medium">$100 起 /日 (含 500km 里程)</span>
                             </div>
                           </div>
                         ) : (
                           <div className="grid grid-cols-2 gap-1 bg-white p-2 rounded border border-gray-200/70 text-[10.5px]">
                             <div className="flex justify-between items-center pr-1 border-r border-gray-100">
                               <span className="text-gray-600">每分鐘</span>
-                              <span className="text-gray-800 font-medium">$0.49 /min</span>
+                              <span className="text-gray-800 font-medium">$0.49 /分鐘</span>
                             </div>
                             <div className="flex justify-between items-center pl-1">
                               <span className="text-gray-600">每小時</span>
-                              <span className="text-gray-800 font-medium">$17.99 /hr</span>
+                              <span className="text-gray-800 font-medium">$17.99 /小時</span>
                             </div>
                             <div className="flex justify-between items-center pr-1 border-r border-gray-100 pt-1 border-t border-gray-100">
-                              <span className="text-gray-600">每日 (24hr)</span>
-                              <span className="text-gray-800 font-medium">$104.99 /day</span>
+                              <span className="text-gray-600">每日 (24小時)</span>
+                              <span className="text-gray-800 font-medium">$104.99 /日</span>
                             </div>
                             <div className="flex justify-between items-center pl-1 pt-1 border-t border-gray-100">
                               <span className="text-gray-600">每程附加費</span>
-                              <span className="text-gray-800 font-medium">$1.85 /trip</span>
+                              <span className="text-gray-800 font-medium">$1.85 /程</span>
                             </div>
                             <div className="flex justify-between items-center pr-1 border-r border-gray-100 pt-1 border-t border-gray-100">
                               <span className="text-gray-600">3天特惠</span>
@@ -10086,12 +10131,12 @@ export default function AppMap() {
                         <span className="text-gray-600 font-medium">計費方案</span>
                         <div className="flex flex-col gap-1 bg-white p-2 rounded border border-gray-200/70 text-[10.5px]">
                           <div className="flex justify-between items-center">
-                            <span className="text-gray-600">一般單車 (Classic)</span>
-                            <span className="text-gray-800 font-medium">$1.25 解鎖 + $0.29 /min</span>
+                            <span className="text-gray-600">一般單車</span>
+                            <span className="text-gray-800 font-medium">$1.25 解鎖 + $0.29 /分鐘</span>
                           </div>
                           <div className="flex justify-between items-center pt-1 border-t border-gray-100">
-                            <span className="text-gray-600">電動單車 (E-Bike)</span>
-                            <span className="text-gray-800 font-medium">$2.00 解鎖 + $0.39 /min</span>
+                            <span className="text-gray-600">電動單車</span>
+                            <span className="text-gray-800 font-medium">$2.00 解鎖 + $0.39 /分鐘</span>
                           </div>
                         </div>
                       </div>
@@ -10353,16 +10398,28 @@ export default function AppMap() {
                 let isOpenNow = false;
                 let todayDisplayStr = '休息';
                 if (todayHoursRaw && typeof todayHoursRaw === 'string' && todayHoursRaw.trim().length > 0 && !todayHoursRaw.toLowerCase().includes('closed') && !todayHoursRaw.includes('休息')) {
-                  todayDisplayStr = todayHoursRaw;
-                  const mTime = todayHoursRaw.match(/(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/);
-                  if (mTime) {
-                    const startMin = parseInt(mTime[1], 10) * 60 + parseInt(mTime[2], 10);
-                    const endMin = parseInt(mTime[3], 10) * 60 + parseInt(mTime[4], 10);
-                    if (curMinutes >= startMin && curMinutes < endMin) {
-                      isOpenNow = true;
+                  if (/^0?0:00\s*[-–—~至]\s*23:59$/i.test(todayHoursRaw.trim()) || /^0?0:00\s*[-–—~至]\s*24:00$/i.test(todayHoursRaw.trim()) || /24/i.test(todayHoursRaw.trim())) {
+                    isOpenNow = true;
+                    todayDisplayStr = '24 hrs';
+                  } else {
+                    todayDisplayStr = todayHoursRaw;
+                    const mTime = todayHoursRaw.match(/(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/);
+                    if (mTime) {
+                      const startMin = parseInt(mTime[1], 10) * 60 + parseInt(mTime[2], 10);
+                      const endMin = parseInt(mTime[3], 10) * 60 + parseInt(mTime[4], 10);
+                      if (curMinutes >= startMin && curMinutes < endMin) {
+                        isOpenNow = true;
+                      }
                     }
                   }
+                } else if (Object.keys(openHours).length === 0) {
+                  isOpenNow = true;
+                  todayDisplayStr = '24 hrs';
                 }
+
+                const effectiveBankHours = Object.keys(openHours).length > 0 
+                  ? openHours 
+                  : { monday: '00:00 - 23:59', tuesday: '00:00 - 23:59', wednesday: '00:00 - 23:59', thursday: '00:00 - 23:59', friday: '00:00 - 23:59', saturday: '00:00 - 23:59', sunday: '00:00 - 23:59' };
 
                 return (
                   <div className="flex flex-col gap-2.5 text-xs">
@@ -10407,15 +10464,13 @@ export default function AppMap() {
                         </div>
                       )}
 
-                      {/* 開放時間 (博物館相同風格，已刪除英文 Hours，且當日開放時間顯示在箭頭旁) */}
-                      {Object.keys(openHours).length > 0 && (
-                        <FacilityWeeklyHoursSchedule
-                          label="開放時間"
-                          hours={openHours}
-                          timeFormat={timeFormat}
-                          theme="amber"
-                        />
-                      )}
+                      {/* 營業時間 (統一標準，若00:00-23:59顯示24 hrs) */}
+                      <FacilityWeeklyHoursSchedule
+                        label="營業時間"
+                        hours={effectiveBankHours}
+                        timeFormat={timeFormat}
+                        theme="amber"
+                      />
 
                       {/* (分隔線) */}
                       {(props.transit_number || props.institution_number || props.routing_number || props.cheque_micr || props.swift_code) && (
@@ -13461,7 +13516,7 @@ export default function AppMap() {
                 const formatBikeRackOwner = (owner?: any) => {
                   if (!owner || !String(owner).trim()) return null;
                   const s = String(owner).trim();
-                  if (/^cov$/i.test(s) || /city of vancouver/i.test(s)) return '溫哥華市政府 (COV)';
+                  if (/^cov$/i.test(s) || /city of vancouver/i.test(s)) return '溫哥華市政府';
                   if (/^bia$/i.test(s)) return '商業促進會 (BIA)';
                   if (/contractor/i.test(s)) return '承包商 (Contractor)';
                   if (/engineering/i.test(s)) return '工務工程部 (Engineering)';

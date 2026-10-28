@@ -11,7 +11,7 @@ import { Landmark,
 } from 'lucide-react';
 import { useUIStore, ExploreTabType } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
-import { formatShipEta, formatTimePreference, formatTimeRange } from '@/utils/time';
+import { formatShipEta, formatTimePreference, formatTimeRange, formatDateTime } from '@/utils/time';
 import skytrainStationsData from '@/data/skytrainStations.json';
 import snappedCorridorsData from '@/data/snapped_corridors.json';
 
@@ -4774,9 +4774,6 @@ function ExploreContent() {
                           </h4>
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
-                          <span className="text-[9.5px] bg-[#222a3a] text-cyan-300 px-1.5 py-0.5 rounded font-mono shrink-0 whitespace-nowrap">
-                            {spot.drive_min}
-                          </span>
                           <a
                             href={getGoogleNavUrl(spot.lat, spot.lon)}
                             target="_blank"
@@ -6604,9 +6601,9 @@ function ExploreContent() {
                       <div className="flex items-center justify-between text-[10px] text-gray-400 pt-1 border-t border-[#1a1f2c]">
                         <span className="font-mono">
                           {item.lastModified
-                            ? `更新：${new Date(item.lastModified).toLocaleDateString()} ${new Date(item.lastModified).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+                            ? `更新：${formatDateTime(item.lastModified, timeFormat, timeZone)}`
                             : item.startTime
-                            ? `生效：${new Date(item.startTime).toLocaleDateString()}`
+                            ? `生效：${formatDateTime(item.startTime, timeFormat, timeZone)}`
                             : '即時更新'}
                         </span>
                         {item.url && (

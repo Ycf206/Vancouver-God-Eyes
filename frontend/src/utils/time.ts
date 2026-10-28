@@ -29,8 +29,8 @@ export function formatOpeningHours(
 
   let s = String(val).trim();
   if (!s || s === '--') return s;
-  if (/^(?:24\/7|24\s*hours?|24\s*小時(?:營業)?)$/i.test(s)) {
-    return '24 小時營業';
+  if (/^0?0:00\s*[-–—~至]\s*23:59$/i.test(s) || /^0?0:00\s*[-–—~至]\s*24:00$/i.test(s) || /^(?:24\/7|24\s*hours?|24\s*hrs?|24\s*小時(?:營業)?)$/i.test(s)) {
+    return '24 hrs';
   }
   if (/^closed$/i.test(s)) {
     return '休館';
@@ -246,9 +246,9 @@ export function formatDateWithTimezone(date: Date, timeZone?: string): string {
 }
 
 /**
- * Format shipping ETA with date as dd/MM/yyyy and time based on 12h/24h user preference.
- * E.g. "10-15 14:30" -> 24h: "15/10/2026 14:30"
- *                     -> 12h: "15/10/2026 02:30 PM"
+ * Format shipping ETA with date as yyyy-MM-dd and time based on 12h/24h user preference.
+ * E.g. "10-15 14:30" -> 24h: "2026-10-15 14:30"
+ *                     -> 12h: "2026-10-15 02:30 PM"
  */
 export function formatShipEta(
   etaStr: string | null | undefined,
@@ -308,7 +308,7 @@ export function formatShipEta(
   const dd = String(day).padStart(2, '0');
   const mm = String(month).padStart(2, '0');
   const yyyy = String(year);
-  const dateStr = `${dd}/${mm}/${yyyy}`;
+  const dateStr = `${yyyy}-${mm}-${dd}`;
 
   if (format === '12h') {
     const period = hour >= 12 ? 'PM' : 'AM';
@@ -319,5 +319,42 @@ export function formatShipEta(
     const timeStr = `${String(hour).padStart(2, '0')}:${String(min).padStart(2, '0')}`;
     return `${dateStr} ${timeStr}`;
   }
+}
+
+/**
+ * Format timestamp or ISO string into standardized "yyyy-MM-dd HH:mm" (24h) or "yyyy-MM-dd hh:mm A" (12h)
+ */
+export function formatDateTime(
+  dateInput: Date | string | number | null | undefined,
+  format: '12h' | '24h' = '24h',
+  timeZone?: string
+): string {
+  if (!dateInput) return '';
+  const d = dateInput instanceof Date ? dateInput : new Date(dateInput);
+  if (isNaN(d.getTime())) return String(dateInput);
+
+  const effectiveTimeZone = timeZone === 'America/Vancouver' ? 'Etc/GMT+7' : timeZone;
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour12: format === '12h',
+    hour: '2-digit',
+    minute: '2-digit',
+  };
+  if (effectiveTimeZone && effectiveTimeZone !== 'auto') {
+    options.timeZone = effectiveTimeZone;
+  }
+  const parts = new Intl.DateTimeFormat('en-CA', options).formatToParts(d);
+  const year = parts.find(p => p.type === 'year')?.value || '';
+  const month = parts.find(p => p.type === 'month')?.value || '';
+  const day = parts.find(p => p.type === 'day')?.value || '';
+  const hour = parts.find(p => p.type === 'hour')?.value || '';
+  const minute = parts.find(p => p.type === 'minute')?.value || '';
+  const dayPeriod = parts.find(p => p.type === 'dayPeriod')?.value?.toUpperCase() || '';
+
+  const datePart = `${year}-${month}-${day}`;
+  const timePart = format === '12h' ? `${hour}:${minute} ${dayPeriod}`.trim() : `${hour}:${minute}`;
+  return `${datePart} ${timePart}`;
 }
 

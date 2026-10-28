@@ -213,6 +213,9 @@ def update_atm_dataset():
                     if 'closed' not in h_val.lower() and h_val != '-':
                         opening_hours[day_en] = h_val
 
+            if not opening_hours:
+                opening_hours = {d: "00:00 - 23:59" for d in ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']}
+
             is_open = is_branch_open(opening_hours)
             status_text = "營業中" if is_open else "休息中"
 
