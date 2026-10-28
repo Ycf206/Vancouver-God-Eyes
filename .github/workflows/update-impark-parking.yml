@@ -1,8 +1,8 @@
-name: Update ImPark 私營停車場情報 (每日)
+name: Update ImPark 私營停車場情報 (每月)
 
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 0 1 * *'
   workflow_dispatch:
 
 concurrency:
