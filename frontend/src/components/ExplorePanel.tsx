@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
+import { createPortal } from 'react-dom';
+import { DEFAULT_ADMIN_SOURCES } from '@/data/defaultAdminSources';
 import { Landmark, 
   Compass, X, Fuel, Zap, Ship, MapPin, ArrowUpDown, 
   ChevronDown, RefreshCw, Package, CloudSun, Wind, AlertTriangle, Droplets, Gauge, Eye, Anchor, Navigation,
@@ -696,8 +698,29 @@ function ExploreContent() {
     weatherSubTab,
     setWeatherSubTab,
     fuelLayerAutoEnabled,
-    setFuelLayerAutoEnabled
+    setFuelLayerAutoEnabled,
+    adminSourceIntervals,
+    setAdminSourceIntervals
   } = useUIStore();
+
+  // 取得後台資料源更新頻率並同步
+  useEffect(() => {
+    const apiUrl = getApiUrl();
+    fetch(`${apiUrl}/api/admin/sources`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && Array.isArray(data.sources)) {
+          const map: Record<string, string> = {};
+          data.sources.forEach((s: any) => {
+            if (s.id && s.schedule_interval) {
+              map[s.id] = s.schedule_interval;
+            }
+          });
+          setAdminSourceIntervals(map);
+        }
+      })
+      .catch(() => {});
+  }, [setAdminSourceIntervals]);
 
   // --- TransLink Alerts states ---
   const [transitAlertsData, setTransitAlertsData] = useState<TranslinkAlertsData | null>(null);
@@ -786,6 +809,32 @@ function ExploreContent() {
       .finally(() => setLoadingTnt(false));
   }, [isExploreOpen, exploreTab, tntFlyers.length]);
 
+  // --- 車禍意外 (Crashes) 狀態 ---
+  const [crashesList, setCrashesList] = useState<Array<{
+    location: string;
+    count: number;
+    lat: number;
+    lon: number;
+  }>>([]);
+  const [loadingCrashes, setLoadingCrashes] = useState<boolean>(false);
+  const [crashesSearchQuery, setCrashesSearchQuery] = useState<string>('');
+
+  // 取得溫哥華車禍事故熱點資料
+  useEffect(() => {
+    if (!isExploreOpen || (exploreTab !== 'crashes' && !openExploreTabs?.includes('crashes'))) return;
+    if (crashesList.length > 0) return;
+    setLoadingCrashes(true);
+    fetch('/vancouver_crashes.json')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setCrashesList(data);
+        }
+      })
+      .catch(err => console.error('Failed to load crashes data:', err))
+      .finally(() => setLoadingCrashes(false));
+  }, [isExploreOpen, exploreTab, openExploreTabs, crashesList.length]);
+
   const departments311 = useMemo(() => {
     const set = new Set<string>();
     requests311.forEach(r => {
@@ -811,6 +860,28 @@ function ExploreContent() {
       return sort311Order === 'desc' ? timeB - timeA : timeA - timeB;
     });
   }, [requests311, status311Filter, dept311Filter, search311Query, sort311Order]);
+
+  const yesterday311Count = useMemo(() => {
+    if (!requests311 || requests311.length === 0) return 0;
+    const now = new Date();
+    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const yStr = yesterday.toLocaleDateString('en-CA', { timeZone: 'America/Vancouver' });
+    const count = requests311.filter(r => r.service_request_open_timestamp && r.service_request_open_timestamp.startsWith(yStr)).length;
+    if (count > 0) return count;
+
+    const dates = Array.from(new Set(requests311.map(r => r.service_request_open_timestamp?.slice(0, 10)).filter(Boolean) as string[])).sort().reverse();
+    const targetDate = dates[1] || dates[0];
+    if (targetDate) {
+      return requests311.filter(r => r.service_request_open_timestamp?.startsWith(targetDate)).length;
+    }
+    return requests311.length;
+  }, [requests311]);
+
+  const filteredCrashes = useMemo(() => {
+    if (!crashesSearchQuery.trim()) return crashesList;
+    const q = crashesSearchQuery.trim().toLowerCase();
+    return crashesList.filter(c => c.location.toLowerCase().includes(q));
+  }, [crashesList, crashesSearchQuery]);
 
   const format311DateTime = (val?: string | null) => {
     if (!val) return '';
@@ -3234,6 +3305,7 @@ function ExploreContent() {
     ev: { label: '充電站', icon: Zap, color: 'text-emerald-400' },
     alerts: { label: '即時通報', icon: AlertTriangle, color: 'text-rose-400' },
     traffic: { label: '即時路況', icon: Activity, color: 'text-orange-400' },
+    crashes: { label: '車禍意外', icon: ShieldAlert, color: 'text-rose-400' },
     border: { label: '美加邊境關口', icon: Flag, color: 'text-blue-400' },
     ferry: { label: 'BC 渡輪', icon: Anchor, color: 'text-sky-400' },
     shipping: { label: '即時航運', icon: Ship, color: 'text-teal-400' },
@@ -3257,6 +3329,7 @@ function ExploreContent() {
     ev: '充電',
     alerts: '通報',
     traffic: '路況',
+    crashes: '意外',
     border: '關口',
     ferry: '渡輪',
     shipping: '航運',
@@ -3892,10 +3965,10 @@ function ExploreContent() {
                           href="https://www.star.nesdis.noaa.gov/GOES/sector.php?sat=G18&sector=pnw"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-[10.5px] font-semibold text-sky-400 hover:text-sky-300 hover:underline flex items-center gap-1.5 cursor-pointer bg-sky-950/50 hover:bg-sky-900/60 px-2.5 py-1 rounded-lg border border-sky-800/50 transition-colors shadow-sm"
+                          className="p-1.5 rounded-lg text-sky-400 hover:text-white hover:bg-sky-900/60 border border-sky-800/50 transition-colors shadow-sm cursor-pointer"
+                          title="開啟 NOAA 官方即時衛星雲圖"
                         >
                           <ExternalLink className="w-3.5 h-3.5" />
-                          <span>開啟 NOAA 官方即時衛星雲圖</span>
                         </a>
                       </div>
                     </div>
@@ -5619,27 +5692,18 @@ function ExploreContent() {
       {/* ==================== 1.5 3-1-1 市政服務請求分頁 (3-1-1 Service Requests) ==================== */}
       {activeTab === '311' && (
         <div className="flex flex-col flex-1 min-h-0">
-          {/* Subheader: Range & Location info */}
+          {/* Subheader: 昨日案件數與每日更新 */}
           <div className="flex items-center justify-between mb-2 shrink-0">
             <div className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
               <span className="text-xs text-gray-200 font-semibold">
-                3-1-1 市政服務案件 ({filtered311Requests.length} 筆)
+                昨日市政府服務案件數: {yesterday311Count} 件
               </span>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-[10px] text-emerald-400 bg-emerald-950/70 border border-emerald-800/60 px-1.5 py-0.5 rounded font-mono">
-                每日更新 1 次
+                {adminSourceIntervals['vancouver_311'] || '每日更新 1 次'}
               </span>
-              <a
-                href="https://opendata.vancouver.ca/explore/dataset/3-1-1-service-requests"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[10.5px] text-emerald-400 hover:text-emerald-300 font-medium hover:underline flex items-center gap-0.5"
-              >
-                <span>官方開放數據</span>
-                <ExternalLink className="w-2.5 h-2.5" />
-              </a>
             </div>
           </div>
 
@@ -5668,7 +5732,7 @@ function ExploreContent() {
 
             {/* 篩選與排序選項 */}
             <div className="flex items-center justify-between gap-1.5 flex-wrap">
-              {/* 狀態切換 */}
+              {/* 狀態切換 (刪除英文 Open / Close) */}
               <div className="flex items-center gap-1 bg-[#181d28] p-0.5 rounded-lg border border-[#283042]">
                 <button
                   type="button"
@@ -5690,7 +5754,7 @@ function ExploreContent() {
                       : 'text-gray-400 hover:text-gray-200'
                   }`}
                 >
-                  處理中 (Open)
+                  處理中
                 </button>
                 <button
                   type="button"
@@ -5701,7 +5765,7 @@ function ExploreContent() {
                       : 'text-gray-400 hover:text-gray-200'
                   }`}
                 >
-                  已結束 (Close)
+                  已結束
                 </button>
               </div>
 
@@ -5712,7 +5776,7 @@ function ExploreContent() {
                   onChange={(e) => setDept311Filter(e.target.value)}
                   className="bg-[#181d28] border border-[#283042] text-gray-200 rounded-lg px-2 py-1 text-[11px] focus:outline-none focus:border-emerald-500 max-w-[130px] sm:max-w-[160px] truncate"
                 >
-                  <option value="all">所有部門 (All)</option>
+                  <option value="all">所有部門</option>
                   {departments311.map(d => (
                     <option key={d} value={d}>{d}</option>
                   ))}
@@ -5731,107 +5795,99 @@ function ExploreContent() {
             </div>
           </div>
 
-          {/* 清單列表式 (保留英文語言並顯示規定欄位) */}
-          <div className="flex-1 overflow-y-auto pr-1 flex flex-col gap-2.5">
-            {loading311 ? (
-              <div className="py-12 flex flex-col items-center justify-center text-gray-400 gap-2">
-                <RefreshCw className="w-5 h-5 animate-spin text-emerald-400" />
-                <span className="text-xs">載入最新 3-1-1 服務請求中...</span>
-              </div>
-            ) : filtered311Requests.length === 0 ? (
-              <div className="py-10 text-center text-gray-400 text-xs">
-                沒有符合條件的 3-1-1 服務請求。
-              </div>
-            ) : (
-              filtered311Requests.map((req, idx) => {
-                const isOpen = (req.status || '').toLowerCase() === 'open';
-                const hasNav = req.geom && typeof req.geom.lat === 'number' && typeof req.geom.lon === 'number';
-                return (
-                  <div
-                    key={`${req.service_request_open_timestamp}_${idx}`}
-                    className="bg-[#181c26] border border-[#283042] hover:border-emerald-500/50 rounded-xl p-3 shadow-md flex flex-col gap-2 transition-all hover:bg-[#1d2230]"
-                  >
-                    {/* 第一行：狀態標籤、來源渠道、所屬地區與 Google 導航按鈕 */}
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex items-center gap-1.5 flex-wrap">
-                        {req.status ? (
-                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+          {/* 表格方式顯示 (固定表頭第一行標題，資料列不再重複標籤) */}
+          <div className="flex-1 overflow-auto border border-[#263147] rounded-xl bg-[#121620]">
+            <table className="w-full text-left border-collapse text-xs whitespace-nowrap min-w-[760px]">
+              <thead className="sticky top-0 z-10 bg-[#181e2b] border-b border-[#263147] text-[11px] font-bold text-gray-400 shadow-sm">
+                <tr>
+                  <th className="py-2.5 px-3">狀態</th>
+                  <th className="py-2.5 px-3">部門</th>
+                  <th className="py-2.5 px-3">服務請求類型</th>
+                  <th className="py-2.5 px-3">渠道</th>
+                  <th className="py-2.5 px-3">服務請求開始</th>
+                  <th className="py-2.5 px-3">服務請求結束</th>
+                  <th className="py-2.5 px-3">結束原因</th>
+                  <th className="py-2.5 px-3">所屬地區</th>
+                  <th className="py-2.5 px-3">地址</th>
+                  <th className="py-2.5 px-2 text-center">導航</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#1e2638]">
+                {loading311 ? (
+                  <tr>
+                    <td colSpan={10} className="py-12 text-center text-gray-400">
+                      <div className="flex flex-col items-center justify-center gap-2">
+                        <RefreshCw className="w-5 h-5 animate-spin text-emerald-400" />
+                        <span className="text-xs">載入最新 3-1-1 服務請求中...</span>
+                      </div>
+                    </td>
+                  </tr>
+                ) : filtered311Requests.length === 0 ? (
+                  <tr>
+                    <td colSpan={10} className="py-10 text-center text-gray-400 text-xs">
+                      沒有符合條件的 3-1-1 服務請求。
+                    </td>
+                  </tr>
+                ) : (
+                  filtered311Requests.map((req, idx) => {
+                    const isOpen = (req.status || '').toLowerCase() === 'open';
+                    const hasNav = req.geom && typeof req.geom.lat === 'number' && typeof req.geom.lon === 'number';
+                    const addrTitleCase = req.address 
+                      ? req.address.toLowerCase().replace(/\b\w/g, c => c.toUpperCase()) 
+                      : '—';
+                    return (
+                      <tr 
+                        key={`${req.service_request_open_timestamp}_${idx}`}
+                        className="hover:bg-[#181d28] transition-colors"
+                      >
+                        <td className="py-2 px-3">
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider ${
                             isOpen 
                               ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' 
                               : 'bg-gray-700/40 text-gray-300 border border-gray-600/50'
                           }`}>
-                            {req.status}
+                            {isOpen ? '處理中' : '已結束'}
                           </span>
-                        ) : null}
-                        {req.channel ? (
-                          <span className="text-[10px] text-gray-400 bg-black/30 px-1.5 py-0.5 rounded border border-white/5 font-mono">
-                            {req.channel}
-                          </span>
-                        ) : null}
-                        {req.local_area ? (
-                          <span className="text-[10px] text-cyan-400 bg-cyan-950/50 px-1.5 py-0.5 rounded border border-cyan-800/40">
-                            {req.local_area}
-                          </span>
-                        ) : null}
-                      </div>
-
-                      {hasNav && req.geom && (
-                        <a
-                          href={getGoogleNavUrl(req.geom.lat, req.geom.lon)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-1 px-2 py-1 rounded-md bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-400 hover:text-emerald-300 border border-emerald-500/30 text-[11px] font-medium transition-all shrink-0 cursor-pointer shadow-xs"
-                          title="Google 導航至此"
-                        >
-                          <Navigation className="w-3 h-3" />
-                          <span>Google 導航至此</span>
-                        </a>
-                      )}
-                    </div>
-
-                    {/* 服務請求類型與部門 */}
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-xs font-bold text-white leading-snug">
-                        {req.service_request_type || '—'}
-                      </span>
-                      {req.department && (
-                        <span className="text-[11px] text-gray-400">
-                          {req.department}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* 規範表格欄位 (參照 Image 3 要求) */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[11px] bg-black/25 p-2 rounded-lg border border-white/5">
-                      <div>
-                        <span className="text-gray-400 font-medium">地址 address：</span>
-                        <span className="text-gray-200 ml-1">
-                          {req.address ? req.address.toLowerCase().replace(/\b\w/g, c => c.toUpperCase()) : '—'}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-gray-400 font-medium">結束原因 closure_reason：</span>
-                        <span className="text-gray-200 ml-1">
-                          {req.closure_reason || '—'}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-gray-400 font-medium">服務請求開始：</span>
-                        <span className="text-gray-200 ml-1 font-mono">
+                        </td>
+                        <td className="py-2 px-3 text-gray-300">{req.department || '—'}</td>
+                        <td className="py-2 px-3 font-semibold text-white max-w-[200px] truncate" title={req.service_request_type || ''}>
+                          {req.service_request_type || '—'}
+                        </td>
+                        <td className="py-2 px-3 text-gray-400 font-mono text-[11px]">{req.channel || '—'}</td>
+                        <td className="py-2 px-3 font-mono text-[11px] text-gray-300">
                           {format311DateTime(req.service_request_open_timestamp) || '—'}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-gray-400 font-medium">服務請求結束：</span>
-                        <span className="text-gray-200 ml-1 font-mono">
+                        </td>
+                        <td className="py-2 px-3 font-mono text-[11px] text-gray-400">
                           {format311DateTime(req.service_request_close_date) || '—'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })
-            )}
+                        </td>
+                        <td className="py-2 px-3 text-gray-300 max-w-[150px] truncate" title={req.closure_reason || ''}>
+                          {req.closure_reason || '—'}
+                        </td>
+                        <td className="py-2 px-3 text-cyan-300">{req.local_area || '—'}</td>
+                        <td className="py-2 px-3 text-gray-200 max-w-[180px] truncate" title={addrTitleCase}>
+                          {addrTitleCase}
+                        </td>
+                        <td className="py-2 px-2 text-center">
+                          {hasNav && req.geom ? (
+                            <a
+                              href={getGoogleNavUrl(req.geom.lat, req.geom.lon)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="p-1 rounded-md text-emerald-400 hover:text-white hover:bg-emerald-600/30 transition-colors inline-flex items-center justify-center cursor-pointer"
+                              title="Google 導航至此"
+                            >
+                              <Navigation className="w-3.5 h-3.5" />
+                            </a>
+                          ) : (
+                            <span className="text-gray-600">—</span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
@@ -5839,44 +5895,39 @@ function ExploreContent() {
       {/* ==================== 1.6 購物分頁 (Shopping - 大統華 T&T 每週特價海報) ==================== */}
       {activeTab === 'shopping' && (
         <div className="flex flex-col flex-1 min-h-0">
-          {/* Subheader: Range & Location info */}
-          <div className="flex items-center justify-between mb-2 shrink-0">
+          {/* 子分頁列與右上角資訊 */}
+          <div className="flex items-start justify-between pb-2 mb-2 border-b border-[#262b38] shrink-0">
+            {/* 子分頁切換按鈕 */}
             <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_6px_rgba(244,63,94,0.6)]"></span>
-              <span className="text-xs text-gray-200 font-semibold">
-                大統華超級市場 每週特價海報
-              </span>
+              <button
+                type="button"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-600/30 text-rose-300 border border-rose-500/50 text-xs font-semibold shadow-xs"
+              >
+                <ShoppingBag className="w-3.5 h-3.5 text-rose-400" />
+                <span>大統華 (T&T)</span>
+              </button>
+              {tntFlyers.length > 0 && tntFlyers[0].validity && (
+                <span className="text-[10px] text-gray-400 font-mono hidden sm:inline ml-2">
+                  效期：{tntFlyers[0].validity}
+                </span>
+              )}
             </div>
-            <div className="flex items-center gap-2">
+
+            {/* 右上角：每週五更新 1 次，下方放置大統華官網圖示按鈕 */}
+            <div className="flex flex-col items-end gap-1 shrink-0">
               <span className="text-[10px] text-rose-400 bg-rose-950/70 border border-rose-800/60 px-1.5 py-0.5 rounded font-mono">
-                每週五更新 1 次
+                {adminSourceIntervals['tnt_flyers'] || '每週五更新 1 次'}
               </span>
               <a
                 href="https://www.tntsupermarket.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[10.5px] text-rose-400 hover:text-rose-300 font-medium hover:underline flex items-center gap-0.5"
+                className="p-1 rounded-md text-rose-400 hover:text-white hover:bg-rose-900/50 transition-colors inline-flex items-center justify-center cursor-pointer"
+                title="大統華官方網站"
               >
-                <span>大統華官網</span>
-                <ExternalLink className="w-2.5 h-2.5" />
+                <ExternalLink className="w-3.5 h-3.5" />
               </a>
             </div>
-          </div>
-
-          {/* 子分頁切換列 */}
-          <div className="flex items-center gap-1 pb-2 mb-2 border-b border-[#262b38] shrink-0">
-            <button
-              type="button"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-600/30 text-rose-300 border border-rose-500/50 text-xs font-semibold shadow-xs"
-            >
-              <ShoppingBag className="w-3.5 h-3.5 text-rose-400" />
-              <span>T&T (大統華)</span>
-            </button>
-            {tntFlyers.length > 0 && tntFlyers[0].validity && (
-              <span className="text-[10px] text-gray-400 font-mono ml-auto">
-                效期：{tntFlyers[0].validity}
-              </span>
-            )}
           </div>
 
           {/* 特價海報預覽網格 */}
@@ -5916,7 +5967,6 @@ function ExploreContent() {
                     <div className="p-2 flex flex-col gap-0.5 bg-[#12151e]">
                       <div className="flex items-center justify-between text-[11px] font-bold text-white">
                         <span>第 {idx + 1} 頁</span>
-                        <span className="text-[10px] text-gray-400 font-mono">Page {idx + 1}</span>
                       </div>
                       {flyer.validity && (
                         <span className="text-[9.5px] text-rose-300/80 font-mono truncate">
@@ -5928,6 +5978,96 @@ function ExploreContent() {
                 ))}
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* ==================== 1.7 車禍意外分頁 (Crashes) ==================== */}
+      {activeTab === 'crashes' && (
+        <div className="flex flex-col flex-1 min-h-0">
+          {/* Subheader */}
+          <div className="flex items-center justify-between mb-2 shrink-0">
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+              <span className="text-xs text-gray-200 font-semibold">
+                車禍意外熱點統計 ({filteredCrashes.length} 處)
+              </span>
+            </div>
+            <span className="text-[10px] text-rose-400 bg-rose-950/70 border border-rose-800/60 px-1.5 py-0.5 rounded font-mono">
+              ICBC 統計數據
+            </span>
+          </div>
+
+          {/* 頂部搜尋列 */}
+          <div className="relative mb-2 shrink-0">
+            <Search className="w-3.5 h-3.5 text-gray-500 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              type="text"
+              value={crashesSearchQuery}
+              onChange={(e) => setCrashesSearchQuery(e.target.value)}
+              placeholder="搜尋車禍發生地點、街角或路段..."
+              className="w-full bg-[#1b202c] border border-[#2b3345] rounded-lg pl-8 pr-7 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-rose-500 transition-colors"
+            />
+            {crashesSearchQuery && (
+              <button
+                type="button"
+                onClick={() => setCrashesSearchQuery('')}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white p-0.5 rounded-full"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            )}
+          </div>
+
+          {/* 2 欄式清單 */}
+          <div className="flex-1 overflow-auto border border-[#263147] rounded-xl bg-[#121620]">
+            <div className="sticky top-0 z-10 grid grid-cols-12 bg-[#181e2b] border-b border-[#263147] px-3 py-2 text-[11px] font-bold text-gray-400 shadow-sm">
+              <span className="col-span-9 sm:col-span-10">位置 (Location)</span>
+              <span className="col-span-3 sm:col-span-2 text-right">宗數</span>
+            </div>
+
+            <div className="divide-y divide-[#1e2638]">
+              {loadingCrashes ? (
+                <div className="py-12 flex flex-col items-center justify-center text-gray-400 gap-2">
+                  <RefreshCw className="w-5 h-5 animate-spin text-rose-400" />
+                  <span className="text-xs">載入車禍數據中...</span>
+                </div>
+              ) : filteredCrashes.length === 0 ? (
+                <div className="py-10 text-center text-gray-400 text-xs">
+                  查無符合的車禍地點。
+                </div>
+              ) : (
+                filteredCrashes.slice(0, 300).map((c, idx) => (
+                  <div
+                    key={`${c.location}_${idx}`}
+                    onClick={() => {
+                      const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap?.() || (window as any).__godsEyeMapRef?.current;
+                      if (mapInstance && c.lon && c.lat) {
+                        mapInstance.flyTo({
+                          center: [c.lon, c.lat],
+                          zoom: 16.5,
+                          pitch: 30,
+                          essential: true
+                        });
+                      }
+                    }}
+                    className="grid grid-cols-12 px-3 py-2.5 items-center hover:bg-rose-500/10 cursor-pointer transition-colors group text-xs"
+                    title="點擊直接在地圖跳轉至該位置"
+                  >
+                    <div className="col-span-9 sm:col-span-10 pr-2">
+                      <span className="font-medium text-gray-200 group-hover:text-rose-300 transition-colors break-words">
+                        {c.location}
+                      </span>
+                    </div>
+                    <div className="col-span-3 sm:col-span-2 text-right">
+                      <span className="inline-block px-2 py-0.5 rounded-full font-mono font-bold text-xs bg-rose-950/80 text-rose-300 border border-rose-800/60 shadow-xs">
+                        {c.count}
+                      </span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -7111,7 +7251,7 @@ function ExploreContent() {
 
             <div className="flex items-center gap-1.5 shrink-0">
               <span className="text-[10px] text-purple-400 bg-purple-950/70 border border-purple-800/60 px-1.5 py-0.5 rounded font-mono">
-                每 30 分鐘更新
+                {adminSourceIntervals['public_events'] ? (adminSourceIntervals['public_events'].includes('更新') ? adminSourceIntervals['public_events'] : `${adminSourceIntervals['public_events']}更新`) : '每 30 分鐘更新'}
               </span>
               <button
                 onClick={() => fetchEvents(true)}
@@ -7962,6 +8102,9 @@ function ExploreContent() {
               <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：CBSA & CBP</span>
             </>
           )}
+          {activeTab === 'crashes' && (
+            <span>共 {filteredCrashes.length} 處車禍事故統計熱點</span>
+          )}
         </div>
         <button
           onClick={() => {
@@ -7975,116 +8118,119 @@ function ExploreContent() {
       </div>
 
       {/* 極光觀測預測圖 Lightbox Modal */}
-            {/* 大統華特價海報全螢幕放大檢視視窗 (T&T Flyer Lightbox Modal) */}
-      {selectedFlyerModal !== null && tntFlyers[selectedFlyerModal] && (
+      {/* 大統華特價海報全螢幕放大檢視視窗 (T&T Flyer Lightbox Modal - 參照交通攝影機風格) */}
+      {selectedFlyerModal !== null && tntFlyers[selectedFlyerModal] && typeof document !== 'undefined' && createPortal(
         <div 
-          className="fixed inset-0 z-[120] bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200 select-none"
+          className="fixed inset-0 z-[99999] bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 pt-16 sm:pt-20 pb-4 animate-in fade-in duration-200 select-none"
           onClick={() => setSelectedFlyerModal(null)}
         >
-          {/* 頂部功能列 */}
           <div 
-            className="w-full max-w-4xl flex items-center justify-between pb-3 mb-2 border-b border-gray-800 text-white shrink-0"
+            className="relative max-w-4xl w-full bg-[#161922] border border-rose-500/40 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[85vh] h-full"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center gap-2">
-              <ShoppingBag className="w-4 h-4 text-rose-400" />
-              <span className="font-bold text-sm">
-                大統華每週特價海報 (第 {selectedFlyerModal + 1} 頁 / 共 {tntFlyers.length} 頁)
-              </span>
-              {tntFlyers[selectedFlyerModal].validity && (
-                <span className="text-xs text-rose-300/90 font-mono hidden sm:inline">
-                  [{tntFlyers[selectedFlyerModal].validity}]
-                </span>
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-4 py-3 bg-[#1e2330] border-b border-gray-700/60 shrink-0">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <ShoppingBag className="w-5 h-5 text-rose-400 shrink-0" />
+                <div className="flex flex-col min-w-0">
+                  <h4 className="text-sm font-bold text-gray-100 truncate">
+                    大統華每週特價海報
+                  </h4>
+                  <div className="flex items-center gap-2 text-[11px] text-gray-400">
+                    <span className="text-rose-400 font-semibold">
+                      第 {selectedFlyerModal + 1} 頁 / 共 {tntFlyers.length} 頁
+                    </span>
+                    {tntFlyers[selectedFlyerModal].validity && (
+                      <>
+                        <span>·</span>
+                        <span className="text-gray-300 font-mono">
+                          {tntFlyers[selectedFlyerModal].validity}
+                        </span>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1.5 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setFlyerZoomLevel(prev => Math.min(prev + 0.25, 2.5))}
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                  title="放大海報"
+                >
+                  <ZoomIn className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFlyerZoomLevel(prev => Math.max(prev - 0.25, 0.75))}
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                  title="縮小海報"
+                >
+                  <ZoomOut className="w-4 h-4" />
+                </button>
+                <a
+                  href={tntFlyers[selectedFlyerModal].image_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-rose-400 hover:bg-white/10 transition-colors cursor-pointer"
+                  title="在新分頁開啟或下載高解析度原圖"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setSelectedFlyerModal(null)}
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors ml-1 cursor-pointer"
+                  title="關閉"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Body / Image */}
+            <div className="relative flex-1 bg-black/80 flex items-center justify-center p-3 overflow-hidden min-h-[300px]">
+              {selectedFlyerModal > 0 && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedFlyerModal(prev => (prev !== null ? prev - 1 : 0));
+                    setFlyerZoomLevel(1);
+                  }}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/75 hover:bg-black text-white flex items-center justify-center border border-white/20 shadow-xl transition-all cursor-pointer"
+                  title="上一頁"
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
               )}
-            </div>
 
-            <div className="flex items-center gap-2">
-              {/* 放大 */}
-              <button
-                type="button"
-                onClick={() => setFlyerZoomLevel(prev => Math.min(prev + 0.25, 2.5))}
-                className="p-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 hover:text-white transition-colors cursor-pointer"
-                title="放大海報"
-              >
-                <ZoomIn className="w-4 h-4" />
-              </button>
-              {/* 縮小 */}
-              <button
-                type="button"
-                onClick={() => setFlyerZoomLevel(prev => Math.max(prev - 0.25, 0.75))}
-                className="p-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 hover:text-white transition-colors cursor-pointer"
-                title="縮小海報"
-              >
-                <ZoomOut className="w-4 h-4" />
-              </button>
-              {/* 原圖下載 / 另開 */}
-              <a
-                href={tntFlyers[selectedFlyerModal].image_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 hover:text-white transition-colors cursor-pointer"
-                title="在新分頁開啟或下載高解析度原圖"
-              >
-                <Download className="w-4 h-4" />
-              </a>
-              {/* 關閉按鈕 */}
-              <button
-                type="button"
-                onClick={() => setSelectedFlyerModal(null)}
-                className="p-1.5 rounded-lg bg-rose-600/80 hover:bg-rose-600 text-white transition-colors ml-2 cursor-pointer"
-                title="關閉"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-
-          {/* 圖片展示主體 (支援上一頁/下一頁切換) */}
-          <div 
-            className="relative flex-1 max-w-4xl w-full flex items-center justify-center overflow-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* 上一頁按鈕 */}
-            {selectedFlyerModal > 0 && (
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedFlyerModal(prev => (prev !== null ? prev - 1 : 0));
-                  setFlyerZoomLevel(1);
-                }}
-                className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/70 hover:bg-black text-white flex items-center justify-center border border-white/20 shadow-xl transition-all cursor-pointer"
-                title="上一頁"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-            )}
-
-            {/* 海報圖片 */}
-            <div className="max-h-[82vh] overflow-auto flex items-center justify-center">
               <img
                 src={tntFlyers[selectedFlyerModal].image_url}
                 alt={`Flyer Page ${selectedFlyerModal + 1}`}
                 style={{ transform: `scale(${flyerZoomLevel})`, transformOrigin: 'center center' }}
-                className="max-h-[80vh] max-w-full object-contain rounded-lg shadow-2xl transition-transform duration-200"
+                className="max-h-[70vh] sm:max-h-[74vh] w-auto max-w-full object-contain rounded-lg shadow-2xl transition-transform duration-200 select-none"
               />
-            </div>
 
-            {/* 下一頁按鈕 */}
-            {selectedFlyerModal < tntFlyers.length - 1 && (
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedFlyerModal(prev => (prev !== null ? prev + 1 : prev));
-                  setFlyerZoomLevel(1);
-                }}
-                className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/70 hover:bg-black text-white flex items-center justify-center border border-white/20 shadow-xl transition-all cursor-pointer"
-                title="下一頁"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-            )}
+              {selectedFlyerModal < tntFlyers.length - 1 && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedFlyerModal(prev => (prev !== null ? prev + 1 : prev));
+                    setFlyerZoomLevel(1);
+                  }}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/75 hover:bg-black text-white flex items-center justify-center border border-white/20 shadow-xl transition-all cursor-pointer"
+                  title="下一頁"
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </button>
+              )}
+            </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {enlargedAuroraImage && (

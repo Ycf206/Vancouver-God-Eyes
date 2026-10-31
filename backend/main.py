@@ -1913,6 +1913,7 @@ FACILITY_SEARCH_CONFIGS = [
     ("motorcycle_parking", "摩托車位", "🏍️", "motorcycleParking", 17),
     ("impark", "ImPark 停車場", "🅿️", "impark", 16),
     ("canada_post", "Canada Post", "📮", "canadaPost", 16),
+    ("fedex", "FedEx", "📦", "canadaPost", 16),
     ("atm", "銀行", "🏦", "atm", 16),
     ("traffic_turn_restrictions", "轉向限制", "🚫", "turnRestrictions", 17),
     ("traffic_signals", "交通燈", "🚦", "trafficSignals", 17),
@@ -1986,6 +1987,16 @@ def get_search_facilities_items():
                     title = props.get("lot_name") or f"ImPark Lot {props.get('lot_number')}"
                 elif ftype == "canada_post":
                     title = props.get("name") or props.get("postaladdress") or "Canada Post"
+                elif ftype == "fedex":
+                    comp = props.get("company_name") or props.get("c_companyName")
+                    fname = props.get("fedex_name") or props.get("name") or "FedEx"
+                    bldg = props.get("building") or props.get("c_building")
+                    if comp:
+                        title = f"{comp} ({fname})"
+                    elif bldg:
+                        title = f"{bldg} ({fname})"
+                    else:
+                        title = fname
                 elif ftype == "atm":
                     title = props.get("bank_full_name") or raw_name or "銀行"
                 elif ftype == "traffic_turn_restrictions":
@@ -2011,6 +2022,37 @@ def get_search_facilities_items():
 
                 subtitle = " · ".join(sub_parts)
 
+                category_aliases = {
+                    "canada_post": ["canada post", "郵寄", "郵局", "post office", "canadapost", "寄件", "包裹", "post", "courier"],
+                    "fedex": ["fedex", "郵寄", "快遞", "courier", "聯邦快遞", "寄件", "自取包裹", "post"],
+                    "atm": ["銀行", "atm", "bank", "櫃員機", "自動櫃員機"],
+                    "fuel": ["油站", "加油站", "gas station", "fuel", "petrol"],
+                    "tesla": ["tesla", "特斯拉", "超級充電", "supercharger"],
+                    "ev_charging": ["充電", "充電站", "ev charging", "電動車充電"],
+                    "car_sharing": ["共享汽車", "car sharing", "evo", "modo"],
+                    "shared_bikes": ["共享單車", "mobi", "bike share"],
+                    "bike_racks": ["單車架", "bike rack"],
+                    "public_washrooms": ["公共廁所", "洗手間", "廁所", "washroom", "toilet", "restroom"],
+                    "drinking_fountains": ["飲水器", "飲水機", "water fountain", "drinking fountain"],
+                    "food_vendors": ["食品攤販", "餐車", "food vendor", "food truck"],
+                    "food_banks": ["食物援助", "食物銀行", "food bank"],
+                    "homeless_shelters": ["庇護所", "避難所", "shelter"],
+                    "community_centres": ["社區中心", "community centre"],
+                    "libraries": ["圖書館", "library"],
+                    "schools": ["學校", "小學", "中學", "school"],
+                    "museums": ["博物館", "museum"],
+                    "parks": ["公園", "park"],
+                    "police": ["警察局", "警局", "police"],
+                    "fire_halls": ["消防局", "消防隊", "fire hall"],
+                    "hospitals": ["醫院", "醫療機構", "hospital"],
+                    "impark": ["停車場", "impark", "時租", "月租", "parking"],
+                }
+                aliases = category_aliases.get(ftype, [])
+
+                # Phone number parsing (raw display and clean digits)
+                raw_phone = str(props.get("phone") or (props.get("mainPhone", {}).get("display") if isinstance(props.get("mainPhone"), dict) else props.get("mainPhone")) or props.get("phone_number") or "").strip()
+                phone_digits = re.sub(r"\D", "", raw_phone) if raw_phone else ""
+
                 search_words = [
                     title,
                     raw_name,
@@ -2019,12 +2061,23 @@ def get_search_facilities_items():
                     badge,
                     ftype,
                     category_extra,
+                    raw_phone,
+                    phone_digits,
+                    f"{rep_lat:.4f}, {rep_lon:.4f}",
+                    f"{rep_lat:.6f}, {rep_lon:.6f}",
                     str(props.get("meter_id") or ""),
                     str(props.get("lot_number") or ""),
                     str(props.get("address1") or ""),
                     str(props.get("street") or ""),
                     str(props.get("meter_head") or ""),
                     str(props.get("mobile_payment_number") or ""),
+                    str(props.get("pay_by_phone") or ""),
+                    str(props.get("tree_id") or ""),
+                    str(props.get("stand_id") or ""),
+                    str(props.get("station_id") or ""),
+                    str(props.get("scooter_id") or ""),
+                    str(props.get("pole_number") or ""),
+                    str(props.get("service_panel_number") or ""),
                     str(props.get("title_of_work") or ""),
                     str(props.get("sitename") or ""),
                     str(props.get("siteaddress") or ""),
@@ -2046,7 +2099,8 @@ def get_search_facilities_items():
                     str(props.get("signal_type") or ""),
                     str(props.get("signal_type_zh") or ""),
                     str(props.get("restriction_text") or ""),
-                    str(props.get("clearance") or "")
+                    str(props.get("clearance") or ""),
+                    *aliases
                 ]
                 search_text = " ".join(s for s in search_words if s).lower()
 
@@ -2294,20 +2348,32 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
     # 3. 搜尋設施、學校、公園、轉向限制、政府機構等全圖層資料 (All Point/Polygon Facilities)
     try:
         fac_candidates = []
+        is_category_query = q_clean in (
+            "canada post", "post", "郵寄", "郵局", "fedex", "快遞", "atm", "銀行", "bank",
+            "油站", "gas", "fuel", "tesla", "ev", "charging", "充電", "充電站", "共享汽車",
+            "car sharing", "evo", "modo", "共享單車", "mobi", "單車架", "廁所", "洗手間",
+            "公共廁所", "washroom", "飲水器", "學校", "school", "圖書館", "library",
+            "社區中心", "博物館", "museum", "公園", "park", "警察局", "police", "消防局", "fire hall", "醫院", "hospital", "停車場", "impark"
+        )
         for fac in get_search_facilities_items():
-            # 優先完整字串比對
+            # 優先完整字串比對或類別匹配
             if q_clean in fac["search_text"]:
-                score = 20
-                if fac["title_lower"] == q_clean:
-                    score = 60
+                score = 30
+                # 類別精準命中給予最高權重
+                if fac["category"] in ("canada_post", "fedex") and q_clean in ("canada post", "post", "郵寄", "郵局", "fedex", "快遞"):
+                    score = 95
+                elif q_clean == fac["badge"].lower() or q_clean == fac["category"]:
+                    score = 90
+                elif fac["title_lower"] == q_clean:
+                    score = 80
                 elif fac["title_lower"].startswith(q_clean):
-                    score = 45
+                    score = 65
                 elif q_clean in fac["title_lower"]:
-                    score = 35
+                    score = 50
                 elif fac["address_lower"] and q_clean in fac["address_lower"]:
-                    score = 25
+                    score = 40
                 elif q_clean in fac["badge"].lower():
-                    score = 15
+                    score = 35
                 fac_candidates.append((score, fac))
                 continue
 
@@ -2435,6 +2501,20 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                         })
         except Exception:
             pass
+
+    if is_category_query:
+        cat_matches = []
+        other_matches = []
+        for r in results:
+            cat = r.get("category", "")
+            bdg = (r.get("badge") or "").lower()
+            if cat in ("canada_post", "fedex") and q_clean in ("canada post", "post", "郵寄", "郵局", "fedex", "快遞"):
+                cat_matches.append(r)
+            elif q_clean in bdg or q_clean == cat:
+                cat_matches.append(r)
+            else:
+                other_matches.append(r)
+        results = cat_matches + other_matches
 
     final_results = results[:150]
     if len(_search_query_cache) > 200:
@@ -4736,7 +4816,27 @@ def get_latest_news(refresh: bool = False):
     取得溫哥華各大即時新聞來源：604 Now, CityNews Vancouver, Global News BC, Daily Hive
     由最新至最舊排序，點選可直接開啟原文網頁
     """
-    return news_service.get_latest_news(force_refresh=refresh)
+    res = news_service.get_latest_news(force_refresh=refresh)
+    try:
+        config_path = get_admin_config_path()
+        if os.path.exists(config_path):
+            with open(config_path, "r", encoding="utf-8") as f:
+                cfg = json.load(f)
+            changed = False
+            for s in cfg.get("sources", []):
+                if s.get("id") == "vancouver_news":
+                    s["last_updated"] = datetime.now(timezone.utc).isoformat()
+                    s["record_count"] = res.get("total", len(res.get("news", [])))
+                    s["status"] = "ok"
+                    s["schedule_interval"] = "每 5 分鐘"
+                    s["cron_expr"] = "*/5 * * * *"
+                    changed = True
+            if changed:
+                with open(config_path, "w", encoding="utf-8") as f:
+                    json.dump(cfg, f, ensure_ascii=False, indent=2)
+    except Exception:
+        pass
+    return res
 
 
 # ==========================================
@@ -4748,7 +4848,27 @@ def get_latest_events(refresh: bool = False):
     取得溫哥華熱門即時活動：Destination Vancouver (溫哥華旅遊局) 與 Eventbrite Vancouver
     包含音樂演出、體育賽事、節慶慶典、藝文展演等
     """
-    return events_service.get_latest_events(force_refresh=refresh)
+    res = events_service.get_latest_events(force_refresh=refresh)
+    try:
+        config_path = get_admin_config_path()
+        if os.path.exists(config_path):
+            with open(config_path, "r", encoding="utf-8") as f:
+                cfg = json.load(f)
+            changed = False
+            for s in cfg.get("sources", []):
+                if s.get("id") == "public_events":
+                    s["last_updated"] = datetime.now(timezone.utc).isoformat()
+                    s["record_count"] = res.get("total", len(res.get("events", [])))
+                    s["status"] = "ok"
+                    s["schedule_interval"] = "每 30 分鐘"
+                    s["cron_expr"] = "*/30 * * * *"
+                    changed = True
+            if changed:
+                with open(config_path, "w", encoding="utf-8") as f:
+                    json.dump(cfg, f, ensure_ascii=False, indent=2)
+    except Exception:
+        pass
+    return res
 
 
 # ==========================================

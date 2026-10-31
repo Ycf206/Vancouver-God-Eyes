@@ -27,14 +27,14 @@
       "line_name": "Expo Line",
       "color": "#0033a0",
       "headsign": "To King George",
-      "origin": "Waterfront 站",
-      "destination": "King George 站",
+      "origin": "Waterfront Station",
+      "destination": "King George Station",
       "direction": "outbound",
       "duration_sec": 2400,
       "stations": [
         {
           "stop_id": "8039",
-          "name": "Waterfront 站",
+          "name": "Waterfront Station",
           "raw_name": "Waterfront Station @ Platform 2",
           "lat": 49.285907,
           "lon": -123.111578,
@@ -43,7 +43,7 @@
         },
         {
           "stop_id": "8040",
-          "name": "Burrard 站",
+          "name": "Burrard Station",
           "raw_name": "Burrard Station @ Platform 2",
           "lat": 49.285634,
           "lon": -123.119515,
@@ -52,7 +52,7 @@
         },
         {
           "stop_id": "8041",
-          "name": "Granville 站",
+          "name": "Granville Station",
           "raw_name": "Granville Station @ Platform 2",
           "lat": 49.283136,
           "lon": -123.115744,
@@ -61,7 +61,7 @@
         },
         {
           "stop_id": "8042",
-          "name": "Stadium-Chinatown 站",
+          "name": "Stadium-Chinatown Station",
           "raw_name": "Stadium-Chinatown Station @ Platform 2",
           "lat": 49.279178,
           "lon": -123.109213,
@@ -70,7 +70,7 @@
         },
         {
           "stop_id": "8043",
-          "name": "Main Street-Science World 站",
+          "name": "Main Street-Science World Station",
           "raw_name": "Main Street-Science World Station @ Platform 2",
           "lat": 49.273099,
           "lon": -123.100399,
@@ -79,7 +79,7 @@
         },
         {
           "stop_id": "8044",
-          "name": "Commercial-Broadway 站",
+          "name": "Commercial-Broadway Station",
           "raw_name": "Commercial-Broadway Station @ Platform 4",
           "lat": 49.262317,
           "lon": -123.069179,
@@ -88,7 +88,7 @@
         },
         {
           "stop_id": "8045",
-          "name": "Nanaimo 站",
+          "name": "Nanaimo Station",
           "raw_name": "Nanaimo Station @ Platform 2",
           "lat": 49.248283,
           "lon": -123.055904,
@@ -97,7 +97,7 @@
         },
         {
           "stop_id": "8046",
-          "name": "29th Avenue 站",
+          "name": "29th Avenue Station",
           "raw_name": "29th Avenue Station @ Platform 2",
           "lat": 49.244236,
           "lon": -123.046136,
@@ -106,7 +106,7 @@
         },
         {
           "stop_id": "8047",
-          "name": "Joyce-Collingwood 站",
+          "name": "Joyce-Collingwood Station",
           "raw_name": "Joyce-Collingwood Station @ Platform 2",
           "lat": 49.238353,
           "lon": -123.031827,
@@ -115,7 +115,7 @@
         },
         {
           "stop_id": "8048",
-          "name": "Patterson 站",
+          "name": "Patterson Station",
           "raw_name": "Patterson Station @ Platform 2",
           "lat": 49.229712,
           "lon": -123.012678,
@@ -124,7 +124,7 @@
         },
         {
           "stop_id": "8049",
-          "name": "Metrotown 站",
+          "name": "Metrotown Station",
           "raw_name": "Metrotown Station @ Platform 2",
           "lat": 49.225781,
           "lon": -123.00394,
@@ -133,7 +133,7 @@
         },
         {
           "stop_id": "8050",
-          "name": "Royal Oak 站",
+          "name": "Royal Oak Station",
           "raw_name": "Royal Oak Station @ Platform 2",
           "lat": 49.220013,
           "lon": -122.988475,
@@ -142,7 +142,7 @@
         },
         {
           "stop_id": "8051",
-          "name": "Edmonds 站",
+          "name": "Edmonds Station",
           "raw_name": "Edmonds Station @ Platform 2",
           "lat": 49.211909,
           "lon": -122.959156,
@@ -151,7 +151,7 @@
         },
         {
           "stop_id": "8052",
-          "name": "22nd Street 站",
+          "name": "22nd Street Station",
           "raw_name": "22nd Street Station @ Platform 2",
           "lat": 49.200021,
           "lon": -122.94894,
@@ -160,7 +160,7 @@
         },
         {
           "stop_id": "8053",
-          "name": "New Westminster 站",
+          "name": "New Westminster Station",
           "raw_name": "New Westminster Station @ Platform 2",
           "lat": 49.201406,
           "lon": -122.912573,
@@ -169,7 +169,7 @@
         },
         {
           "stop_id": "8054",
-          "name": "Columbia 站",
+          "name": "Columbia Station",
           "raw_name": "Columbia Station @ Platform 2",
           "lat": 49.204778,
           "lon": -122.906118,
@@ -178,7 +178,7 @@
         },
         {
           "stop_id": "8055",
-          "name": "Scott Road 站",
+          "name": "Scott Road Station",
           "raw_name": "Scott Road Station @ Platform 2",
           "lat": 49.204383,
           "lon": -122.874171,
@@ -187,7 +187,7 @@
         },
         {
           "stop_id": "8056",
-          "name": "Gateway 站",
+          "name": "Gateway Station",
           "raw_name": "Gateway Station @ Platform 2",
           "lat": 49.198946,
           "lon": -122.850673,
@@ -196,7 +196,7 @@
         },
         {
           "stop_id": "8057",
-          "name": "Surrey Central 站",
+          "name": "Surrey Central Station",
           "raw_name": "Surrey Central Station @ Platform 2",
           "lat": 49.189549,
           "lon": -122.847914,
@@ -205,7 +205,7 @@
         },
         {
           "stop_id": "8058",
-          "name": "King George 站",
+          "name": "King George Station",
           "raw_name": "King George Station @ Platform 2",
           "lat": 49.182755,
           "lon": -122.844744,
@@ -3251,14 +3251,14 @@
       "line_name": "Expo Line",
       "color": "#0033a0",
       "headsign": "To Waterfront",
-      "origin": "King George 站",
-      "destination": "Waterfront 站",
+      "origin": "King George Station",
+      "destination": "Waterfront Station",
       "direction": "inbound",
       "duration_sec": 2400,
       "stations": [
         {
           "stop_id": "8059",
-          "name": "King George 站",
+          "name": "King George Station",
           "raw_name": "King George Station @ Platform 1",
           "lat": 49.182812,
           "lon": -122.844691,
@@ -3267,7 +3267,7 @@
         },
         {
           "stop_id": "8060",
-          "name": "Surrey Central 站",
+          "name": "Surrey Central Station",
           "raw_name": "Surrey Central Station @ Platform 1",
           "lat": 49.189561,
           "lon": -122.847796,
@@ -3276,7 +3276,7 @@
         },
         {
           "stop_id": "8061",
-          "name": "Gateway 站",
+          "name": "Gateway Station",
           "raw_name": "Gateway Station @ Platform 1",
           "lat": 49.198955,
           "lon": -122.850542,
@@ -3285,7 +3285,7 @@
         },
         {
           "stop_id": "8062",
-          "name": "Scott Road 站",
+          "name": "Scott Road Station",
           "raw_name": "Scott Road Station @ Platform 1",
           "lat": 49.204448,
           "lon": -122.874185,
@@ -3294,7 +3294,7 @@
         },
         {
           "stop_id": "8063",
-          "name": "Columbia 站",
+          "name": "Columbia Station",
           "raw_name": "Columbia Station @ Platform 1",
           "lat": 49.204859,
           "lon": -122.906187,
@@ -3303,7 +3303,7 @@
         },
         {
           "stop_id": "8064",
-          "name": "New Westminster 站",
+          "name": "New Westminster Station",
           "raw_name": "New Westminster Station @ Platform 1",
           "lat": 49.201459,
           "lon": -122.912629,
@@ -3312,7 +3312,7 @@
         },
         {
           "stop_id": "8065",
-          "name": "22nd Street 站",
+          "name": "22nd Street Station",
           "raw_name": "22nd Street Station @ Platform 1",
           "lat": 49.200083,
           "lon": -122.948971,
@@ -3321,7 +3321,7 @@
         },
         {
           "stop_id": "8066",
-          "name": "Edmonds 站",
+          "name": "Edmonds Station",
           "raw_name": "Edmonds Station @ Platform 1",
           "lat": 49.211945,
           "lon": -122.95904,
@@ -3330,7 +3330,7 @@
         },
         {
           "stop_id": "8067",
-          "name": "Royal Oak 站",
+          "name": "Royal Oak Station",
           "raw_name": "Royal Oak Station @ Platform 1",
           "lat": 49.22011,
           "lon": -122.98844,
@@ -3339,7 +3339,7 @@
         },
         {
           "stop_id": "8068",
-          "name": "Metrotown 站",
+          "name": "Metrotown Station",
           "raw_name": "Metrotown Station @ Platform 1",
           "lat": 49.225852,
           "lon": -123.003876,
@@ -3348,7 +3348,7 @@
         },
         {
           "stop_id": "8069",
-          "name": "Patterson 站",
+          "name": "Patterson Station",
           "raw_name": "Patterson Station @ Platform 1",
           "lat": 49.229798,
           "lon": -123.012613,
@@ -3357,7 +3357,7 @@
         },
         {
           "stop_id": "8070",
-          "name": "Joyce-Collingwood 站",
+          "name": "Joyce-Collingwood Station",
           "raw_name": "Joyce-Collingwood Station @ Platform 1",
           "lat": 49.23843,
           "lon": -123.031759,
@@ -3366,7 +3366,7 @@
         },
         {
           "stop_id": "8071",
-          "name": "29th Avenue 站",
+          "name": "29th Avenue Station",
           "raw_name": "29th Avenue Station @ Platform 1",
           "lat": 49.24431,
           "lon": -123.04608,
@@ -3375,7 +3375,7 @@
         },
         {
           "stop_id": "8072",
-          "name": "Nanaimo 站",
+          "name": "Nanaimo Station",
           "raw_name": "Nanaimo Station @ Platform 1",
           "lat": 49.248334,
           "lon": -123.055868,
@@ -3384,7 +3384,7 @@
         },
         {
           "stop_id": "8073",
-          "name": "Commercial-Broadway 站",
+          "name": "Commercial-Broadway Station",
           "raw_name": "Commercial-Broadway Station @ Platform 3",
           "lat": 49.262311,
           "lon": -123.069077,
@@ -3393,7 +3393,7 @@
         },
         {
           "stop_id": "8074",
-          "name": "Main Street-Science World 站",
+          "name": "Main Street-Science World Station",
           "raw_name": "Main Street-Science World Station @ Platform 1",
           "lat": 49.273172,
           "lon": -123.10035,
@@ -3402,7 +3402,7 @@
         },
         {
           "stop_id": "8075",
-          "name": "Stadium-Chinatown 站",
+          "name": "Stadium-Chinatown Station",
           "raw_name": "Stadium-Chinatown Station @ Platform 1",
           "lat": 49.279271,
           "lon": -123.109109,
@@ -3411,7 +3411,7 @@
         },
         {
           "stop_id": "8076",
-          "name": "Granville 站",
+          "name": "Granville Station",
           "raw_name": "Granville Station @ Platform 1",
           "lat": 49.283193,
           "lon": -123.115674,
@@ -3420,7 +3420,7 @@
         },
         {
           "stop_id": "8077",
-          "name": "Burrard 站",
+          "name": "Burrard Station",
           "raw_name": "Burrard Station @ Platform 1",
           "lat": 49.28558,
           "lon": -123.119598,
@@ -3429,7 +3429,7 @@
         },
         {
           "stop_id": "8078",
-          "name": "Waterfront 站",
+          "name": "Waterfront Station",
           "raw_name": "Waterfront Station @ Platform 1",
           "lat": 49.285962,
           "lon": -123.111516,
@@ -6475,14 +6475,14 @@
       "line_name": "Expo Line",
       "color": "#0033a0",
       "headsign": "To Production Way-University",
-      "origin": "Waterfront 站",
-      "destination": "Production Way-University 站",
+      "origin": "Waterfront Station",
+      "destination": "Production Way-University Station",
       "direction": "outbound",
       "duration_sec": 2760,
       "stations": [
         {
           "stop_id": "8039",
-          "name": "Waterfront 站",
+          "name": "Waterfront Station",
           "raw_name": "Waterfront Station @ Platform 2",
           "lat": 49.285907,
           "lon": -123.111578,
@@ -6491,7 +6491,7 @@
         },
         {
           "stop_id": "8040",
-          "name": "Burrard 站",
+          "name": "Burrard Station",
           "raw_name": "Burrard Station @ Platform 2",
           "lat": 49.285634,
           "lon": -123.119515,
@@ -6500,7 +6500,7 @@
         },
         {
           "stop_id": "8041",
-          "name": "Granville 站",
+          "name": "Granville Station",
           "raw_name": "Granville Station @ Platform 2",
           "lat": 49.283136,
           "lon": -123.115744,
@@ -6509,7 +6509,7 @@
         },
         {
           "stop_id": "8042",
-          "name": "Stadium-Chinatown 站",
+          "name": "Stadium-Chinatown Station",
           "raw_name": "Stadium-Chinatown Station @ Platform 2",
           "lat": 49.279178,
           "lon": -123.109213,
@@ -6518,7 +6518,7 @@
         },
         {
           "stop_id": "8043",
-          "name": "Main Street-Science World 站",
+          "name": "Main Street-Science World Station",
           "raw_name": "Main Street-Science World Station @ Platform 2",
           "lat": 49.273099,
           "lon": -123.100399,
@@ -6527,7 +6527,7 @@
         },
         {
           "stop_id": "8044",
-          "name": "Commercial-Broadway 站",
+          "name": "Commercial-Broadway Station",
           "raw_name": "Commercial-Broadway Station @ Platform 4",
           "lat": 49.262317,
           "lon": -123.069179,
@@ -6536,7 +6536,7 @@
         },
         {
           "stop_id": "8045",
-          "name": "Nanaimo 站",
+          "name": "Nanaimo Station",
           "raw_name": "Nanaimo Station @ Platform 2",
           "lat": 49.248283,
           "lon": -123.055904,
@@ -6545,7 +6545,7 @@
         },
         {
           "stop_id": "8046",
-          "name": "29th Avenue 站",
+          "name": "29th Avenue Station",
           "raw_name": "29th Avenue Station @ Platform 2",
           "lat": 49.244236,
           "lon": -123.046136,
@@ -6554,7 +6554,7 @@
         },
         {
           "stop_id": "8047",
-          "name": "Joyce-Collingwood 站",
+          "name": "Joyce-Collingwood Station",
           "raw_name": "Joyce-Collingwood Station @ Platform 2",
           "lat": 49.238353,
           "lon": -123.031827,
@@ -6563,7 +6563,7 @@
         },
         {
           "stop_id": "8048",
-          "name": "Patterson 站",
+          "name": "Patterson Station",
           "raw_name": "Patterson Station @ Platform 2",
           "lat": 49.229712,
           "lon": -123.012678,
@@ -6572,7 +6572,7 @@
         },
         {
           "stop_id": "8049",
-          "name": "Metrotown 站",
+          "name": "Metrotown Station",
           "raw_name": "Metrotown Station @ Platform 2",
           "lat": 49.225781,
           "lon": -123.00394,
@@ -6581,7 +6581,7 @@
         },
         {
           "stop_id": "8050",
-          "name": "Royal Oak 站",
+          "name": "Royal Oak Station",
           "raw_name": "Royal Oak Station @ Platform 2",
           "lat": 49.220013,
           "lon": -122.988475,
@@ -6590,7 +6590,7 @@
         },
         {
           "stop_id": "8051",
-          "name": "Edmonds 站",
+          "name": "Edmonds Station",
           "raw_name": "Edmonds Station @ Platform 2",
           "lat": 49.211909,
           "lon": -122.959156,
@@ -6599,7 +6599,7 @@
         },
         {
           "stop_id": "8052",
-          "name": "22nd Street 站",
+          "name": "22nd Street Station",
           "raw_name": "22nd Street Station @ Platform 2",
           "lat": 49.200021,
           "lon": -122.94894,
@@ -6608,7 +6608,7 @@
         },
         {
           "stop_id": "8053",
-          "name": "New Westminster 站",
+          "name": "New Westminster Station",
           "raw_name": "New Westminster Station @ Platform 2",
           "lat": 49.201406,
           "lon": -122.912573,
@@ -6617,7 +6617,7 @@
         },
         {
           "stop_id": "8054",
-          "name": "Columbia 站",
+          "name": "Columbia Station",
           "raw_name": "Columbia Station @ Platform 2",
           "lat": 49.204778,
           "lon": -122.906118,
@@ -6626,7 +6626,7 @@
         },
         {
           "stop_id": "8580",
-          "name": "Sapperton 站",
+          "name": "Sapperton Station",
           "raw_name": "Sapperton Station @ Platform 2",
           "lat": 49.224621,
           "lon": -122.889311,
@@ -6635,7 +6635,7 @@
         },
         {
           "stop_id": "8578",
-          "name": "Braid 站",
+          "name": "Braid Station",
           "raw_name": "Braid Station @ Platform 2",
           "lat": 49.233236,
           "lon": -122.882718,
@@ -6644,7 +6644,7 @@
         },
         {
           "stop_id": "8746",
-          "name": "Lougheed Town Centre 站",
+          "name": "Lougheed Town Centre Station",
           "raw_name": "Lougheed Town Centre Station @ Platform 2",
           "lat": 49.248549,
           "lon": -122.896879,
@@ -6653,7 +6653,7 @@
         },
         {
           "stop_id": "8747",
-          "name": "Production Way-University 站",
+          "name": "Production Way-University Station",
           "raw_name": "Production Way-University Station @ Platform 1",
           "lat": 49.253465,
           "lon": -122.918191,
@@ -9451,14 +9451,14 @@
       "line_name": "Expo Line",
       "color": "#0033a0",
       "headsign": "To Waterfront",
-      "origin": "Production Way-University 站",
-      "destination": "Waterfront 站",
+      "origin": "Production Way-University Station",
+      "destination": "Waterfront Station",
       "direction": "inbound",
       "duration_sec": 2520,
       "stations": [
         {
           "stop_id": "8756",
-          "name": "Production Way-University 站",
+          "name": "Production Way-University Station",
           "raw_name": "Production Way-University Station @ Platform 2",
           "lat": 49.253364,
           "lon": -122.918218,
@@ -9467,7 +9467,7 @@
         },
         {
           "stop_id": "8755",
-          "name": "Lougheed Town Centre 站",
+          "name": "Lougheed Town Centre Station",
           "raw_name": "Lougheed Town Centre Station @ Platform 1",
           "lat": 49.248484,
           "lon": -122.896952,
@@ -9476,7 +9476,7 @@
         },
         {
           "stop_id": "8577",
-          "name": "Braid 站",
+          "name": "Braid Station",
           "raw_name": "Braid Station @ Platform 1",
           "lat": 49.233236,
           "lon": -122.882831,
@@ -9485,7 +9485,7 @@
         },
         {
           "stop_id": "8579",
-          "name": "Sapperton 站",
+          "name": "Sapperton Station",
           "raw_name": "Sapperton Station @ Platform 1",
           "lat": 49.2247,
           "lon": -122.889424,
@@ -9494,7 +9494,7 @@
         },
         {
           "stop_id": "8063",
-          "name": "Columbia 站",
+          "name": "Columbia Station",
           "raw_name": "Columbia Station @ Platform 1",
           "lat": 49.204859,
           "lon": -122.906187,
@@ -9503,7 +9503,7 @@
         },
         {
           "stop_id": "8064",
-          "name": "New Westminster 站",
+          "name": "New Westminster Station",
           "raw_name": "New Westminster Station @ Platform 1",
           "lat": 49.201459,
           "lon": -122.912629,
@@ -9512,7 +9512,7 @@
         },
         {
           "stop_id": "8065",
-          "name": "22nd Street 站",
+          "name": "22nd Street Station",
           "raw_name": "22nd Street Station @ Platform 1",
           "lat": 49.200083,
           "lon": -122.948971,
@@ -9521,7 +9521,7 @@
         },
         {
           "stop_id": "8066",
-          "name": "Edmonds 站",
+          "name": "Edmonds Station",
           "raw_name": "Edmonds Station @ Platform 1",
           "lat": 49.211945,
           "lon": -122.95904,
@@ -9530,7 +9530,7 @@
         },
         {
           "stop_id": "8067",
-          "name": "Royal Oak 站",
+          "name": "Royal Oak Station",
           "raw_name": "Royal Oak Station @ Platform 1",
           "lat": 49.22011,
           "lon": -122.98844,
@@ -9539,7 +9539,7 @@
         },
         {
           "stop_id": "8068",
-          "name": "Metrotown 站",
+          "name": "Metrotown Station",
           "raw_name": "Metrotown Station @ Platform 1",
           "lat": 49.225852,
           "lon": -123.003876,
@@ -9548,7 +9548,7 @@
         },
         {
           "stop_id": "8069",
-          "name": "Patterson 站",
+          "name": "Patterson Station",
           "raw_name": "Patterson Station @ Platform 1",
           "lat": 49.229798,
           "lon": -123.012613,
@@ -9557,7 +9557,7 @@
         },
         {
           "stop_id": "8070",
-          "name": "Joyce-Collingwood 站",
+          "name": "Joyce-Collingwood Station",
           "raw_name": "Joyce-Collingwood Station @ Platform 1",
           "lat": 49.23843,
           "lon": -123.031759,
@@ -9566,7 +9566,7 @@
         },
         {
           "stop_id": "8071",
-          "name": "29th Avenue 站",
+          "name": "29th Avenue Station",
           "raw_name": "29th Avenue Station @ Platform 1",
           "lat": 49.24431,
           "lon": -123.04608,
@@ -9575,7 +9575,7 @@
         },
         {
           "stop_id": "8072",
-          "name": "Nanaimo 站",
+          "name": "Nanaimo Station",
           "raw_name": "Nanaimo Station @ Platform 1",
           "lat": 49.248334,
           "lon": -123.055868,
@@ -9584,7 +9584,7 @@
         },
         {
           "stop_id": "8073",
-          "name": "Commercial-Broadway 站",
+          "name": "Commercial-Broadway Station",
           "raw_name": "Commercial-Broadway Station @ Platform 3",
           "lat": 49.262311,
           "lon": -123.069077,
@@ -9593,7 +9593,7 @@
         },
         {
           "stop_id": "8074",
-          "name": "Main Street-Science World 站",
+          "name": "Main Street-Science World Station",
           "raw_name": "Main Street-Science World Station @ Platform 1",
           "lat": 49.273172,
           "lon": -123.10035,
@@ -9602,7 +9602,7 @@
         },
         {
           "stop_id": "8075",
-          "name": "Stadium-Chinatown 站",
+          "name": "Stadium-Chinatown Station",
           "raw_name": "Stadium-Chinatown Station @ Platform 1",
           "lat": 49.279271,
           "lon": -123.109109,
@@ -9611,7 +9611,7 @@
         },
         {
           "stop_id": "8076",
-          "name": "Granville 站",
+          "name": "Granville Station",
           "raw_name": "Granville Station @ Platform 1",
           "lat": 49.283193,
           "lon": -123.115674,
@@ -9620,7 +9620,7 @@
         },
         {
           "stop_id": "8077",
-          "name": "Burrard 站",
+          "name": "Burrard Station",
           "raw_name": "Burrard Station @ Platform 1",
           "lat": 49.28558,
           "lon": -123.119598,
@@ -9629,7 +9629,7 @@
         },
         {
           "stop_id": "8078",
-          "name": "Waterfront 站",
+          "name": "Waterfront Station",
           "raw_name": "Waterfront Station @ Platform 1",
           "lat": 49.285962,
           "lon": -123.111516,
@@ -12427,14 +12427,14 @@
       "line_name": "Millennium Line",
       "color": "#ffcd00",
       "headsign": "To Lafarge Lake-Douglas",
-      "origin": "VCC-Clark 站",
-      "destination": "Lafarge Lake-Douglas 站",
+      "origin": "VCC-Clark Station",
+      "destination": "Lafarge Lake-Douglas Station",
       "direction": "outbound",
       "duration_sec": 2160,
       "stations": [
         {
           "stop_id": "10374",
-          "name": "VCC-Clark 站",
+          "name": "VCC-Clark Station",
           "raw_name": "VCC-Clark Station @ Platform 2",
           "lat": 49.265799,
           "lon": -123.079054,
@@ -12443,7 +12443,7 @@
         },
         {
           "stop_id": "8763",
-          "name": "Commercial-Broadway 站",
+          "name": "Commercial-Broadway Station",
           "raw_name": "Commercial-Broadway Station @ Platform 2",
           "lat": 49.262912,
           "lon": -123.068491,
@@ -12452,7 +12452,7 @@
         },
         {
           "stop_id": "8762",
-          "name": "Renfrew 站",
+          "name": "Renfrew Station",
           "raw_name": "Renfrew Station @ Platform 2",
           "lat": 49.258877,
           "lon": -123.045348,
@@ -12461,7 +12461,7 @@
         },
         {
           "stop_id": "8761",
-          "name": "Rupert 站",
+          "name": "Rupert Station",
           "raw_name": "Rupert Station @ Platform 2",
           "lat": 49.260733,
           "lon": -123.032821,
@@ -12470,7 +12470,7 @@
         },
         {
           "stop_id": "8760",
-          "name": "Gilmore 站",
+          "name": "Gilmore Station",
           "raw_name": "Gilmore Station @ Platform 2",
           "lat": 49.264931,
           "lon": -123.013498,
@@ -12479,7 +12479,7 @@
         },
         {
           "stop_id": "8759",
-          "name": "Brentwood Town Centre 站",
+          "name": "Brentwood Town Centre Station",
           "raw_name": "Brentwood Town Centre Station @ Platform 2",
           "lat": 49.266352,
           "lon": -123.001813,
@@ -12488,7 +12488,7 @@
         },
         {
           "stop_id": "8758",
-          "name": "Holdom 站",
+          "name": "Holdom Station",
           "raw_name": "Holdom Station @ Platform 2",
           "lat": 49.264705,
           "lon": -122.982158,
@@ -12497,7 +12497,7 @@
         },
         {
           "stop_id": "8757",
-          "name": "Sperling-Burnaby Lake 站",
+          "name": "Sperling-Burnaby Lake Station",
           "raw_name": "Sperling-Burnaby Lake Station @ Platform 2",
           "lat": 49.259154,
           "lon": -122.963991,
@@ -12506,7 +12506,7 @@
         },
         {
           "stop_id": "9511",
-          "name": "Lake City Way 站",
+          "name": "Lake City Way Station",
           "raw_name": "Lake City Way Station @ Platform 2",
           "lat": 49.254609,
           "lon": -122.939183,
@@ -12515,7 +12515,7 @@
         },
         {
           "stop_id": "8756",
-          "name": "Production Way-University 站",
+          "name": "Production Way-University Station",
           "raw_name": "Production Way-University Station @ Platform 2",
           "lat": 49.253364,
           "lon": -122.918218,
@@ -12524,7 +12524,7 @@
         },
         {
           "stop_id": "8755",
-          "name": "Lougheed Town Centre 站",
+          "name": "Lougheed Town Centre Station",
           "raw_name": "Lougheed Town Centre Station @ Platform 1",
           "lat": 49.248484,
           "lon": -122.896952,
@@ -12533,7 +12533,7 @@
         },
         {
           "stop_id": "12229",
-          "name": "Burquitlam 站",
+          "name": "Burquitlam Station",
           "raw_name": "Burquitlam Station @ Platform 2",
           "lat": 49.261375,
           "lon": -122.889784,
@@ -12542,7 +12542,7 @@
         },
         {
           "stop_id": "12231",
-          "name": "Moody Centre 站",
+          "name": "Moody Centre Station",
           "raw_name": "Moody Centre Station @ Platform 2",
           "lat": 49.277941,
           "lon": -122.845608,
@@ -12551,7 +12551,7 @@
         },
         {
           "stop_id": "12233",
-          "name": "Inlet Centre 站",
+          "name": "Inlet Centre Station",
           "raw_name": "Inlet Centre Station @ Platform 2",
           "lat": 49.277118,
           "lon": -122.828183,
@@ -12560,7 +12560,7 @@
         },
         {
           "stop_id": "12235",
-          "name": "Coquitlam Central 站",
+          "name": "Coquitlam Central Station",
           "raw_name": "Coquitlam Central Station @ Platform 2",
           "lat": 49.274738,
           "lon": -122.800643,
@@ -12569,7 +12569,7 @@
         },
         {
           "stop_id": "12237",
-          "name": "Lincoln 站",
+          "name": "Lincoln Station",
           "raw_name": "Lincoln Station @ Platform 2",
           "lat": 49.28041,
           "lon": -122.793805,
@@ -12578,7 +12578,7 @@
         },
         {
           "stop_id": "12239",
-          "name": "Lafarge Lake-Douglas 站",
+          "name": "Lafarge Lake-Douglas Station",
           "raw_name": "Lafarge Lake-Douglas Station @ Platform 2",
           "lat": 49.285693,
           "lon": -122.791435,
@@ -14776,14 +14776,14 @@
       "line_name": "Millennium Line",
       "color": "#ffcd00",
       "headsign": "To VCC-Clark",
-      "origin": "Lafarge Lake-Douglas 站",
-      "destination": "VCC-Clark 站",
+      "origin": "Lafarge Lake-Douglas Station",
+      "destination": "VCC-Clark Station",
       "direction": "inbound",
       "duration_sec": 2220,
       "stations": [
         {
           "stop_id": "12238",
-          "name": "Lafarge Lake-Douglas 站",
+          "name": "Lafarge Lake-Douglas Station",
           "raw_name": "Lafarge Lake-Douglas Station @ Platform 1",
           "lat": 49.285743,
           "lon": -122.791623,
@@ -14792,7 +14792,7 @@
         },
         {
           "stop_id": "12236",
-          "name": "Lincoln 站",
+          "name": "Lincoln Station",
           "raw_name": "Lincoln Station @ Platform 1",
           "lat": 49.280417,
           "lon": -122.794097,
@@ -14801,7 +14801,7 @@
         },
         {
           "stop_id": "12234",
-          "name": "Coquitlam Central 站",
+          "name": "Coquitlam Central Station",
           "raw_name": "Coquitlam Central Station @ Platform 1",
           "lat": 49.274919,
           "lon": -122.800551,
@@ -14810,7 +14810,7 @@
         },
         {
           "stop_id": "12232",
-          "name": "Inlet Centre 站",
+          "name": "Inlet Centre Station",
           "raw_name": "Inlet Centre Station @ Platform 1",
           "lat": 49.277294,
           "lon": -122.828164,
@@ -14819,7 +14819,7 @@
         },
         {
           "stop_id": "12230",
-          "name": "Moody Centre 站",
+          "name": "Moody Centre Station",
           "raw_name": "Moody Centre Station @ Platform 1",
           "lat": 49.27798,
           "lon": -122.845609,
@@ -14828,7 +14828,7 @@
         },
         {
           "stop_id": "12228",
-          "name": "Burquitlam 站",
+          "name": "Burquitlam Station",
           "raw_name": "Burquitlam Station @ Platform 1",
           "lat": 49.261421,
           "lon": -122.889853,
@@ -14837,7 +14837,7 @@
         },
         {
           "stop_id": "12227",
-          "name": "Lougheed Town Centre 站",
+          "name": "Lougheed Town Centre Station",
           "raw_name": "Lougheed Town Centre Station @ Platform 3",
           "lat": 49.248611,
           "lon": -122.896818,
@@ -14846,7 +14846,7 @@
         },
         {
           "stop_id": "8747",
-          "name": "Production Way-University 站",
+          "name": "Production Way-University Station",
           "raw_name": "Production Way-University Station @ Platform 1",
           "lat": 49.253465,
           "lon": -122.918191,
@@ -14855,7 +14855,7 @@
         },
         {
           "stop_id": "9510",
-          "name": "Lake City Way 站",
+          "name": "Lake City Way Station",
           "raw_name": "Lake City Way Station @ Platform 1",
           "lat": 49.254654,
           "lon": -122.939183,
@@ -14864,7 +14864,7 @@
         },
         {
           "stop_id": "8748",
-          "name": "Sperling-Burnaby Lake 站",
+          "name": "Sperling-Burnaby Lake Station",
           "raw_name": "Sperling-Burnaby Lake Station @ Platform 1",
           "lat": 49.259213,
           "lon": -122.963982,
@@ -14873,7 +14873,7 @@
         },
         {
           "stop_id": "8749",
-          "name": "Holdom 站",
+          "name": "Holdom Station",
           "raw_name": "Holdom Station @ Platform 1",
           "lat": 49.264753,
           "lon": -122.982149,
@@ -14882,7 +14882,7 @@
         },
         {
           "stop_id": "8750",
-          "name": "Brentwood Town Centre 站",
+          "name": "Brentwood Town Centre Station",
           "raw_name": "Brentwood Town Centre Station @ Platform 1",
           "lat": 49.266431,
           "lon": -123.001813,
@@ -14891,7 +14891,7 @@
         },
         {
           "stop_id": "8751",
-          "name": "Gilmore 站",
+          "name": "Gilmore Station",
           "raw_name": "Gilmore Station @ Platform 1",
           "lat": 49.265002,
           "lon": -123.013571,
@@ -14900,7 +14900,7 @@
         },
         {
           "stop_id": "8752",
-          "name": "Rupert 站",
+          "name": "Rupert Station",
           "raw_name": "Rupert Station @ Platform 1",
           "lat": 49.260815,
           "lon": -123.032869,
@@ -14909,7 +14909,7 @@
         },
         {
           "stop_id": "8753",
-          "name": "Renfrew 站",
+          "name": "Renfrew Station",
           "raw_name": "Renfrew Station @ Platform 1",
           "lat": 49.258942,
           "lon": -123.045374,
@@ -14918,7 +14918,7 @@
         },
         {
           "stop_id": "8754",
-          "name": "Commercial-Broadway 站",
+          "name": "Commercial-Broadway Station",
           "raw_name": "Commercial-Broadway Station @ Platform 1",
           "lat": 49.26298,
           "lon": -123.068426,
@@ -14927,7 +14927,7 @@
         },
         {
           "stop_id": "10375",
-          "name": "VCC-Clark 站",
+          "name": "VCC-Clark Station",
           "raw_name": "VCC-Clark Station @ Platform 1",
           "lat": 49.265873,
           "lon": -123.079049,
@@ -17125,14 +17125,14 @@
       "line_name": "Canada Line",
       "color": "#007c9f",
       "headsign": "To Richmond-Brighouse",
-      "origin": "Waterfront 站",
-      "destination": "Richmond-Brighouse 站",
+      "origin": "Waterfront Station",
+      "destination": "Richmond-Brighouse Station",
       "direction": "outbound",
       "duration_sec": 1620,
       "stations": [
         {
           "stop_id": "11302",
-          "name": "Waterfront 站",
+          "name": "Waterfront Station",
           "raw_name": "Waterfront Station @ Platform 4",
           "lat": 49.285139,
           "lon": -123.114206,
@@ -17141,7 +17141,7 @@
         },
         {
           "stop_id": "11272",
-          "name": "Vancouver City Centre 站",
+          "name": "Vancouver City Centre Station",
           "raw_name": "Vancouver City Centre Station @ Platform 2",
           "lat": 49.282462,
           "lon": -123.118283,
@@ -17150,7 +17150,7 @@
         },
         {
           "stop_id": "11274",
-          "name": "Yaletown-Roundhouse 站",
+          "name": "Yaletown-Roundhouse Station",
           "raw_name": "Yaletown-Roundhouse Station @ Platform 2",
           "lat": 49.274467,
           "lon": -123.122124,
@@ -17159,7 +17159,7 @@
         },
         {
           "stop_id": "11276",
-          "name": "Olympic Village 站",
+          "name": "Olympic Village Station",
           "raw_name": "Olympic Village Station @ Platform 2",
           "lat": 49.266616,
           "lon": -123.115218,
@@ -17168,7 +17168,7 @@
         },
         {
           "stop_id": "11278",
-          "name": "Broadway-City Hall 站",
+          "name": "Broadway-City Hall Station",
           "raw_name": "Broadway-City Hall Station @ Platform 2",
           "lat": 49.262684,
           "lon": -123.114856,
@@ -17177,7 +17177,7 @@
         },
         {
           "stop_id": "11280",
-          "name": "King Edward 站",
+          "name": "King Edward Station",
           "raw_name": "King Edward Station @ Platform 2",
           "lat": 49.249186,
           "lon": -123.115716,
@@ -17186,7 +17186,7 @@
         },
         {
           "stop_id": "11282",
-          "name": "Oakridge-41st Avenue 站",
+          "name": "Oakridge-41st Avenue Station",
           "raw_name": "Oakridge-41st Avenue Station @ Platform 2",
           "lat": 49.233747,
           "lon": -123.116422,
@@ -17195,7 +17195,7 @@
         },
         {
           "stop_id": "11284",
-          "name": "Langara-49th Avenue 站",
+          "name": "Langara-49th Avenue Station",
           "raw_name": "Langara-49th Avenue Station @ Platform 2",
           "lat": 49.225743,
           "lon": -123.116752,
@@ -17204,7 +17204,7 @@
         },
         {
           "stop_id": "11286",
-          "name": "Marine Drive 站",
+          "name": "Marine Drive Station",
           "raw_name": "Marine Drive Station @ Platform 2",
           "lat": 49.209661,
           "lon": -123.117078,
@@ -17213,7 +17213,7 @@
         },
         {
           "stop_id": "11288",
-          "name": "Bridgeport 站",
+          "name": "Bridgeport Station",
           "raw_name": "Bridgeport Station @ Platform 2",
           "lat": 49.195558,
           "lon": -123.126076,
@@ -17222,7 +17222,7 @@
         },
         {
           "stop_id": "12947",
-          "name": "Capstan 站",
+          "name": "Capstan Station",
           "raw_name": "Capstan Station @ Platform 2",
           "lat": 49.189163,
           "lon": -123.131956,
@@ -17231,7 +17231,7 @@
         },
         {
           "stop_id": "11290",
-          "name": "Aberdeen 站",
+          "name": "Aberdeen Station",
           "raw_name": "Aberdeen Station @ Platform 2",
           "lat": 49.184,
           "lon": -123.136398,
@@ -17240,7 +17240,7 @@
         },
         {
           "stop_id": "11292",
-          "name": "Lansdowne 站",
+          "name": "Lansdowne Station",
           "raw_name": "Lansdowne Station @ Platform 2",
           "lat": 49.174762,
           "lon": -123.136507,
@@ -17249,7 +17249,7 @@
         },
         {
           "stop_id": "11294",
-          "name": "Richmond-Brighouse 站",
+          "name": "Richmond-Brighouse Station",
           "raw_name": "Richmond-Brighouse Station @ Canada Line",
           "lat": 49.168092,
           "lon": -123.136247,
@@ -18347,14 +18347,14 @@
       "line_name": "Canada Line",
       "color": "#007c9f",
       "headsign": "To Waterfront",
-      "origin": "Richmond-Brighouse 站",
-      "destination": "Waterfront 站",
+      "origin": "Richmond-Brighouse Station",
+      "destination": "Waterfront Station",
       "direction": "inbound",
       "duration_sec": 1620,
       "stations": [
         {
           "stop_id": "11295",
-          "name": "Richmond-Brighouse 站",
+          "name": "Richmond-Brighouse Station",
           "raw_name": "Richmond-Brighouse Station @ Platform 1",
           "lat": 49.168092,
           "lon": -123.136174,
@@ -18363,7 +18363,7 @@
         },
         {
           "stop_id": "11293",
-          "name": "Lansdowne 站",
+          "name": "Lansdowne Station",
           "raw_name": "Lansdowne Station @ Platform 1",
           "lat": 49.174766,
           "lon": -123.136322,
@@ -18372,7 +18372,7 @@
         },
         {
           "stop_id": "11291",
-          "name": "Aberdeen 站",
+          "name": "Aberdeen Station",
           "raw_name": "Aberdeen Station @ Platform 1",
           "lat": 49.183991,
           "lon": -123.13622,
@@ -18381,7 +18381,7 @@
         },
         {
           "stop_id": "12946",
-          "name": "Capstan 站",
+          "name": "Capstan Station",
           "raw_name": "Capstan Station @ Platform 1",
           "lat": 49.189131,
           "lon": -123.131869,
@@ -18390,7 +18390,7 @@
         },
         {
           "stop_id": "11289",
-          "name": "Bridgeport 站",
+          "name": "Bridgeport Station",
           "raw_name": "Bridgeport Station @ Platform 1",
           "lat": 49.195514,
           "lon": -123.126006,
@@ -18399,7 +18399,7 @@
         },
         {
           "stop_id": "11287",
-          "name": "Marine Drive 站",
+          "name": "Marine Drive Station",
           "raw_name": "Marine Drive Station @ Platform 1",
           "lat": 49.209663,
           "lon": -123.116921,
@@ -18408,7 +18408,7 @@
         },
         {
           "stop_id": "11285",
-          "name": "Langara-49th Avenue 站",
+          "name": "Langara-49th Avenue Station",
           "raw_name": "Langara-49th Avenue Station @ Platform 1",
           "lat": 49.225709,
           "lon": -123.116289,
@@ -18417,7 +18417,7 @@
         },
         {
           "stop_id": "11283",
-          "name": "Oakridge-41st Avenue 站",
+          "name": "Oakridge-41st Avenue Station",
           "raw_name": "Oakridge-41st Avenue Station @ Platform 1",
           "lat": 49.233731,
           "lon": -123.116176,
@@ -18426,7 +18426,7 @@
         },
         {
           "stop_id": "11281",
-          "name": "King Edward 站",
+          "name": "King Edward Station",
           "raw_name": "King Edward Station @ Platform 1",
           "lat": 49.249172,
           "lon": -123.115228,
@@ -18435,7 +18435,7 @@
         },
         {
           "stop_id": "11279",
-          "name": "Broadway-City Hall 站",
+          "name": "Broadway-City Hall Station",
           "raw_name": "Broadway-City Hall Station @ Platform 1",
           "lat": 49.262725,
           "lon": -123.114753,
@@ -18444,7 +18444,7 @@
         },
         {
           "stop_id": "11277",
-          "name": "Olympic Village 站",
+          "name": "Olympic Village Station",
           "raw_name": "Olympic Village Station @ Platform 1",
           "lat": 49.266557,
           "lon": -123.115527,
@@ -18453,7 +18453,7 @@
         },
         {
           "stop_id": "11275",
-          "name": "Yaletown-Roundhouse 站",
+          "name": "Yaletown-Roundhouse Station",
           "raw_name": "Yaletown-Roundhouse Station @ Platform 1",
           "lat": 49.274508,
           "lon": -123.122015,
@@ -18462,7 +18462,7 @@
         },
         {
           "stop_id": "11273",
-          "name": "Vancouver City Centre 站",
+          "name": "Vancouver City Centre Station",
           "raw_name": "Vancouver City Centre Station @ Platform 1",
           "lat": 49.282352,
           "lon": -123.118143,
@@ -18471,7 +18471,7 @@
         },
         {
           "stop_id": "11303",
-          "name": "Waterfront 站",
+          "name": "Waterfront Station",
           "raw_name": "Waterfront Station @ Platform 5",
           "lat": 49.285093,
           "lon": -123.114139,
@@ -19569,14 +19569,14 @@
       "line_name": "Canada Line",
       "color": "#007c9f",
       "headsign": "To YVR-Airport",
-      "origin": "Waterfront 站",
-      "destination": "YVR-Airport 站",
+      "origin": "Waterfront Station",
+      "destination": "YVR-Airport Station",
       "direction": "outbound",
       "duration_sec": 1620,
       "stations": [
         {
           "stop_id": "11302",
-          "name": "Waterfront 站",
+          "name": "Waterfront Station",
           "raw_name": "Waterfront Station @ Platform 4",
           "lat": 49.285139,
           "lon": -123.114206,
@@ -19585,7 +19585,7 @@
         },
         {
           "stop_id": "11272",
-          "name": "Vancouver City Centre 站",
+          "name": "Vancouver City Centre Station",
           "raw_name": "Vancouver City Centre Station @ Platform 2",
           "lat": 49.282462,
           "lon": -123.118283,
@@ -19594,7 +19594,7 @@
         },
         {
           "stop_id": "11274",
-          "name": "Yaletown-Roundhouse 站",
+          "name": "Yaletown-Roundhouse Station",
           "raw_name": "Yaletown-Roundhouse Station @ Platform 2",
           "lat": 49.274467,
           "lon": -123.122124,
@@ -19603,7 +19603,7 @@
         },
         {
           "stop_id": "11276",
-          "name": "Olympic Village 站",
+          "name": "Olympic Village Station",
           "raw_name": "Olympic Village Station @ Platform 2",
           "lat": 49.266616,
           "lon": -123.115218,
@@ -19612,7 +19612,7 @@
         },
         {
           "stop_id": "11278",
-          "name": "Broadway-City Hall 站",
+          "name": "Broadway-City Hall Station",
           "raw_name": "Broadway-City Hall Station @ Platform 2",
           "lat": 49.262684,
           "lon": -123.114856,
@@ -19621,7 +19621,7 @@
         },
         {
           "stop_id": "11280",
-          "name": "King Edward 站",
+          "name": "King Edward Station",
           "raw_name": "King Edward Station @ Platform 2",
           "lat": 49.249186,
           "lon": -123.115716,
@@ -19630,7 +19630,7 @@
         },
         {
           "stop_id": "11282",
-          "name": "Oakridge-41st Avenue 站",
+          "name": "Oakridge-41st Avenue Station",
           "raw_name": "Oakridge-41st Avenue Station @ Platform 2",
           "lat": 49.233747,
           "lon": -123.116422,
@@ -19639,7 +19639,7 @@
         },
         {
           "stop_id": "11284",
-          "name": "Langara-49th Avenue 站",
+          "name": "Langara-49th Avenue Station",
           "raw_name": "Langara-49th Avenue Station @ Platform 2",
           "lat": 49.225743,
           "lon": -123.116752,
@@ -19648,7 +19648,7 @@
         },
         {
           "stop_id": "11286",
-          "name": "Marine Drive 站",
+          "name": "Marine Drive Station",
           "raw_name": "Marine Drive Station @ Platform 2",
           "lat": 49.209661,
           "lon": -123.117078,
@@ -19657,7 +19657,7 @@
         },
         {
           "stop_id": "11288",
-          "name": "Bridgeport 站",
+          "name": "Bridgeport Station",
           "raw_name": "Bridgeport Station @ Platform 2",
           "lat": 49.195558,
           "lon": -123.126076,
@@ -19666,7 +19666,7 @@
         },
         {
           "stop_id": "11296",
-          "name": "Templeton 站",
+          "name": "Templeton Station",
           "raw_name": "Templeton Station @ Platform 2",
           "lat": 49.196715,
           "lon": -123.146335,
@@ -19675,7 +19675,7 @@
         },
         {
           "stop_id": "11298",
-          "name": "Sea Island Centre 站",
+          "name": "Sea Island Centre Station",
           "raw_name": "Sea Island Centre Station @ Platform 2",
           "lat": 49.193053,
           "lon": -123.157851,
@@ -19684,7 +19684,7 @@
         },
         {
           "stop_id": "11300",
-          "name": "YVR-Airport 站",
+          "name": "YVR-Airport Station",
           "raw_name": "YVR-Airport Station @ Canada Line",
           "lat": 49.194189,
           "lon": -123.178251,
@@ -20738,14 +20738,14 @@
       "line_name": "Canada Line",
       "color": "#007c9f",
       "headsign": "To Waterfront",
-      "origin": "YVR-Airport 站",
-      "destination": "Waterfront 站",
+      "origin": "YVR-Airport Station",
+      "destination": "Waterfront Station",
       "direction": "inbound",
       "duration_sec": 1620,
       "stations": [
         {
           "stop_id": "11301",
-          "name": "YVR-Airport 站",
+          "name": "YVR-Airport Station",
           "raw_name": "YVR-Airport Station @ Platform 1",
           "lat": 49.194177,
           "lon": -123.178108,
@@ -20754,7 +20754,7 @@
         },
         {
           "stop_id": "11299",
-          "name": "Sea Island Centre 站",
+          "name": "Sea Island Centre Station",
           "raw_name": "Sea Island Centre Station @ Platform 1",
           "lat": 49.19293,
           "lon": -123.157884,
@@ -20763,7 +20763,7 @@
         },
         {
           "stop_id": "11297",
-          "name": "Templeton 站",
+          "name": "Templeton Station",
           "raw_name": "Templeton Station @ Platform 1",
           "lat": 49.196655,
           "lon": -123.146307,
@@ -20772,7 +20772,7 @@
         },
         {
           "stop_id": "11289",
-          "name": "Bridgeport 站",
+          "name": "Bridgeport Station",
           "raw_name": "Bridgeport Station @ Platform 1",
           "lat": 49.195514,
           "lon": -123.126006,
@@ -20781,7 +20781,7 @@
         },
         {
           "stop_id": "11287",
-          "name": "Marine Drive 站",
+          "name": "Marine Drive Station",
           "raw_name": "Marine Drive Station @ Platform 1",
           "lat": 49.209663,
           "lon": -123.116921,
@@ -20790,7 +20790,7 @@
         },
         {
           "stop_id": "11285",
-          "name": "Langara-49th Avenue 站",
+          "name": "Langara-49th Avenue Station",
           "raw_name": "Langara-49th Avenue Station @ Platform 1",
           "lat": 49.225709,
           "lon": -123.116289,
@@ -20799,7 +20799,7 @@
         },
         {
           "stop_id": "11283",
-          "name": "Oakridge-41st Avenue 站",
+          "name": "Oakridge-41st Avenue Station",
           "raw_name": "Oakridge-41st Avenue Station @ Platform 1",
           "lat": 49.233731,
           "lon": -123.116176,
@@ -20808,7 +20808,7 @@
         },
         {
           "stop_id": "11281",
-          "name": "King Edward 站",
+          "name": "King Edward Station",
           "raw_name": "King Edward Station @ Platform 1",
           "lat": 49.249172,
           "lon": -123.115228,
@@ -20817,7 +20817,7 @@
         },
         {
           "stop_id": "11279",
-          "name": "Broadway-City Hall 站",
+          "name": "Broadway-City Hall Station",
           "raw_name": "Broadway-City Hall Station @ Platform 1",
           "lat": 49.262725,
           "lon": -123.114753,
@@ -20826,7 +20826,7 @@
         },
         {
           "stop_id": "11277",
-          "name": "Olympic Village 站",
+          "name": "Olympic Village Station",
           "raw_name": "Olympic Village Station @ Platform 1",
           "lat": 49.266557,
           "lon": -123.115527,
@@ -20835,7 +20835,7 @@
         },
         {
           "stop_id": "11275",
-          "name": "Yaletown-Roundhouse 站",
+          "name": "Yaletown-Roundhouse Station",
           "raw_name": "Yaletown-Roundhouse Station @ Platform 1",
           "lat": 49.274508,
           "lon": -123.122015,
@@ -20844,7 +20844,7 @@
         },
         {
           "stop_id": "11273",
-          "name": "Vancouver City Centre 站",
+          "name": "Vancouver City Centre Station",
           "raw_name": "Vancouver City Centre Station @ Platform 1",
           "lat": 49.282352,
           "lon": -123.118143,
@@ -20853,7 +20853,7 @@
         },
         {
           "stop_id": "11303",
-          "name": "Waterfront 站",
+          "name": "Waterfront Station",
           "raw_name": "Waterfront Station @ Platform 5",
           "lat": 49.285093,
           "lon": -123.114139,
@@ -21904,7 +21904,7 @@
   "stations": {
     "8039": {
       "stop_id": "8039",
-      "name": "Waterfront 站",
+      "name": "Waterfront Station",
       "raw_name": "Waterfront Station @ Platform 2",
       "lat": 49.285907,
       "lon": -123.111578,
@@ -21914,7 +21914,7 @@
     },
     "8040": {
       "stop_id": "8040",
-      "name": "Burrard 站",
+      "name": "Burrard Station",
       "raw_name": "Burrard Station @ Platform 2",
       "lat": 49.285634,
       "lon": -123.119515,
@@ -21924,7 +21924,7 @@
     },
     "8041": {
       "stop_id": "8041",
-      "name": "Granville 站",
+      "name": "Granville Station",
       "raw_name": "Granville Station @ Platform 2",
       "lat": 49.283136,
       "lon": -123.115744,
@@ -21934,7 +21934,7 @@
     },
     "8042": {
       "stop_id": "8042",
-      "name": "Stadium-Chinatown 站",
+      "name": "Stadium-Chinatown Station",
       "raw_name": "Stadium-Chinatown Station @ Platform 2",
       "lat": 49.279178,
       "lon": -123.109213,
@@ -21944,7 +21944,7 @@
     },
     "8043": {
       "stop_id": "8043",
-      "name": "Main Street-Science World 站",
+      "name": "Main Street-Science World Station",
       "raw_name": "Main Street-Science World Station @ Platform 2",
       "lat": 49.273099,
       "lon": -123.100399,
@@ -21954,7 +21954,7 @@
     },
     "8044": {
       "stop_id": "8044",
-      "name": "Commercial-Broadway 站",
+      "name": "Commercial-Broadway Station",
       "raw_name": "Commercial-Broadway Station @ Platform 4",
       "lat": 49.262317,
       "lon": -123.069179,
@@ -21964,7 +21964,7 @@
     },
     "8045": {
       "stop_id": "8045",
-      "name": "Nanaimo 站",
+      "name": "Nanaimo Station",
       "raw_name": "Nanaimo Station @ Platform 2",
       "lat": 49.248283,
       "lon": -123.055904,
@@ -21974,7 +21974,7 @@
     },
     "8046": {
       "stop_id": "8046",
-      "name": "29th Avenue 站",
+      "name": "29th Avenue Station",
       "raw_name": "29th Avenue Station @ Platform 2",
       "lat": 49.244236,
       "lon": -123.046136,
@@ -21984,7 +21984,7 @@
     },
     "8047": {
       "stop_id": "8047",
-      "name": "Joyce-Collingwood 站",
+      "name": "Joyce-Collingwood Station",
       "raw_name": "Joyce-Collingwood Station @ Platform 2",
       "lat": 49.238353,
       "lon": -123.031827,
@@ -21994,7 +21994,7 @@
     },
     "8048": {
       "stop_id": "8048",
-      "name": "Patterson 站",
+      "name": "Patterson Station",
       "raw_name": "Patterson Station @ Platform 2",
       "lat": 49.229712,
       "lon": -123.012678,
@@ -22004,7 +22004,7 @@
     },
     "8049": {
       "stop_id": "8049",
-      "name": "Metrotown 站",
+      "name": "Metrotown Station",
       "raw_name": "Metrotown Station @ Platform 2",
       "lat": 49.225781,
       "lon": -123.00394,
@@ -22014,7 +22014,7 @@
     },
     "8050": {
       "stop_id": "8050",
-      "name": "Royal Oak 站",
+      "name": "Royal Oak Station",
       "raw_name": "Royal Oak Station @ Platform 2",
       "lat": 49.220013,
       "lon": -122.988475,
@@ -22024,7 +22024,7 @@
     },
     "8051": {
       "stop_id": "8051",
-      "name": "Edmonds 站",
+      "name": "Edmonds Station",
       "raw_name": "Edmonds Station @ Platform 2",
       "lat": 49.211909,
       "lon": -122.959156,
@@ -22034,7 +22034,7 @@
     },
     "8052": {
       "stop_id": "8052",
-      "name": "22nd Street 站",
+      "name": "22nd Street Station",
       "raw_name": "22nd Street Station @ Platform 2",
       "lat": 49.200021,
       "lon": -122.94894,
@@ -22044,7 +22044,7 @@
     },
     "8053": {
       "stop_id": "8053",
-      "name": "New Westminster 站",
+      "name": "New Westminster Station",
       "raw_name": "New Westminster Station @ Platform 2",
       "lat": 49.201406,
       "lon": -122.912573,
@@ -22054,7 +22054,7 @@
     },
     "8054": {
       "stop_id": "8054",
-      "name": "Columbia 站",
+      "name": "Columbia Station",
       "raw_name": "Columbia Station @ Platform 2",
       "lat": 49.204778,
       "lon": -122.906118,
@@ -22064,7 +22064,7 @@
     },
     "8055": {
       "stop_id": "8055",
-      "name": "Scott Road 站",
+      "name": "Scott Road Station",
       "raw_name": "Scott Road Station @ Platform 2",
       "lat": 49.204383,
       "lon": -122.874171,
@@ -22074,7 +22074,7 @@
     },
     "8056": {
       "stop_id": "8056",
-      "name": "Gateway 站",
+      "name": "Gateway Station",
       "raw_name": "Gateway Station @ Platform 2",
       "lat": 49.198946,
       "lon": -122.850673,
@@ -22084,7 +22084,7 @@
     },
     "8057": {
       "stop_id": "8057",
-      "name": "Surrey Central 站",
+      "name": "Surrey Central Station",
       "raw_name": "Surrey Central Station @ Platform 2",
       "lat": 49.189549,
       "lon": -122.847914,
@@ -22094,7 +22094,7 @@
     },
     "8058": {
       "stop_id": "8058",
-      "name": "King George 站",
+      "name": "King George Station",
       "raw_name": "King George Station @ Platform 2",
       "lat": 49.182755,
       "lon": -122.844744,
@@ -22104,7 +22104,7 @@
     },
     "8059": {
       "stop_id": "8059",
-      "name": "King George 站",
+      "name": "King George Station",
       "raw_name": "King George Station @ Platform 1",
       "lat": 49.182812,
       "lon": -122.844691,
@@ -22114,7 +22114,7 @@
     },
     "8060": {
       "stop_id": "8060",
-      "name": "Surrey Central 站",
+      "name": "Surrey Central Station",
       "raw_name": "Surrey Central Station @ Platform 1",
       "lat": 49.189561,
       "lon": -122.847796,
@@ -22124,7 +22124,7 @@
     },
     "8061": {
       "stop_id": "8061",
-      "name": "Gateway 站",
+      "name": "Gateway Station",
       "raw_name": "Gateway Station @ Platform 1",
       "lat": 49.198955,
       "lon": -122.850542,
@@ -22134,7 +22134,7 @@
     },
     "8062": {
       "stop_id": "8062",
-      "name": "Scott Road 站",
+      "name": "Scott Road Station",
       "raw_name": "Scott Road Station @ Platform 1",
       "lat": 49.204448,
       "lon": -122.874185,
@@ -22144,7 +22144,7 @@
     },
     "8063": {
       "stop_id": "8063",
-      "name": "Columbia 站",
+      "name": "Columbia Station",
       "raw_name": "Columbia Station @ Platform 1",
       "lat": 49.204859,
       "lon": -122.906187,
@@ -22154,7 +22154,7 @@
     },
     "8064": {
       "stop_id": "8064",
-      "name": "New Westminster 站",
+      "name": "New Westminster Station",
       "raw_name": "New Westminster Station @ Platform 1",
       "lat": 49.201459,
       "lon": -122.912629,
@@ -22164,7 +22164,7 @@
     },
     "8065": {
       "stop_id": "8065",
-      "name": "22nd Street 站",
+      "name": "22nd Street Station",
       "raw_name": "22nd Street Station @ Platform 1",
       "lat": 49.200083,
       "lon": -122.948971,
@@ -22174,7 +22174,7 @@
     },
     "8066": {
       "stop_id": "8066",
-      "name": "Edmonds 站",
+      "name": "Edmonds Station",
       "raw_name": "Edmonds Station @ Platform 1",
       "lat": 49.211945,
       "lon": -122.95904,
@@ -22184,7 +22184,7 @@
     },
     "8067": {
       "stop_id": "8067",
-      "name": "Royal Oak 站",
+      "name": "Royal Oak Station",
       "raw_name": "Royal Oak Station @ Platform 1",
       "lat": 49.22011,
       "lon": -122.98844,
@@ -22194,7 +22194,7 @@
     },
     "8068": {
       "stop_id": "8068",
-      "name": "Metrotown 站",
+      "name": "Metrotown Station",
       "raw_name": "Metrotown Station @ Platform 1",
       "lat": 49.225852,
       "lon": -123.003876,
@@ -22204,7 +22204,7 @@
     },
     "8069": {
       "stop_id": "8069",
-      "name": "Patterson 站",
+      "name": "Patterson Station",
       "raw_name": "Patterson Station @ Platform 1",
       "lat": 49.229798,
       "lon": -123.012613,
@@ -22214,7 +22214,7 @@
     },
     "8070": {
       "stop_id": "8070",
-      "name": "Joyce-Collingwood 站",
+      "name": "Joyce-Collingwood Station",
       "raw_name": "Joyce-Collingwood Station @ Platform 1",
       "lat": 49.23843,
       "lon": -123.031759,
@@ -22224,7 +22224,7 @@
     },
     "8071": {
       "stop_id": "8071",
-      "name": "29th Avenue 站",
+      "name": "29th Avenue Station",
       "raw_name": "29th Avenue Station @ Platform 1",
       "lat": 49.24431,
       "lon": -123.04608,
@@ -22234,7 +22234,7 @@
     },
     "8072": {
       "stop_id": "8072",
-      "name": "Nanaimo 站",
+      "name": "Nanaimo Station",
       "raw_name": "Nanaimo Station @ Platform 1",
       "lat": 49.248334,
       "lon": -123.055868,
@@ -22244,7 +22244,7 @@
     },
     "8073": {
       "stop_id": "8073",
-      "name": "Commercial-Broadway 站",
+      "name": "Commercial-Broadway Station",
       "raw_name": "Commercial-Broadway Station @ Platform 3",
       "lat": 49.262311,
       "lon": -123.069077,
@@ -22254,7 +22254,7 @@
     },
     "8074": {
       "stop_id": "8074",
-      "name": "Main Street-Science World 站",
+      "name": "Main Street-Science World Station",
       "raw_name": "Main Street-Science World Station @ Platform 1",
       "lat": 49.273172,
       "lon": -123.10035,
@@ -22264,7 +22264,7 @@
     },
     "8075": {
       "stop_id": "8075",
-      "name": "Stadium-Chinatown 站",
+      "name": "Stadium-Chinatown Station",
       "raw_name": "Stadium-Chinatown Station @ Platform 1",
       "lat": 49.279271,
       "lon": -123.109109,
@@ -22274,7 +22274,7 @@
     },
     "8076": {
       "stop_id": "8076",
-      "name": "Granville 站",
+      "name": "Granville Station",
       "raw_name": "Granville Station @ Platform 1",
       "lat": 49.283193,
       "lon": -123.115674,
@@ -22284,7 +22284,7 @@
     },
     "8077": {
       "stop_id": "8077",
-      "name": "Burrard 站",
+      "name": "Burrard Station",
       "raw_name": "Burrard Station @ Platform 1",
       "lat": 49.28558,
       "lon": -123.119598,
@@ -22294,7 +22294,7 @@
     },
     "8078": {
       "stop_id": "8078",
-      "name": "Waterfront 站",
+      "name": "Waterfront Station",
       "raw_name": "Waterfront Station @ Platform 1",
       "lat": 49.285962,
       "lon": -123.111516,
@@ -22304,7 +22304,7 @@
     },
     "8577": {
       "stop_id": "8577",
-      "name": "Braid 站",
+      "name": "Braid Station",
       "raw_name": "Braid Station @ Platform 1",
       "lat": 49.233236,
       "lon": -122.882831,
@@ -22314,7 +22314,7 @@
     },
     "8578": {
       "stop_id": "8578",
-      "name": "Braid 站",
+      "name": "Braid Station",
       "raw_name": "Braid Station @ Platform 2",
       "lat": 49.233236,
       "lon": -122.882718,
@@ -22324,7 +22324,7 @@
     },
     "8579": {
       "stop_id": "8579",
-      "name": "Sapperton 站",
+      "name": "Sapperton Station",
       "raw_name": "Sapperton Station @ Platform 1",
       "lat": 49.2247,
       "lon": -122.889424,
@@ -22334,7 +22334,7 @@
     },
     "8580": {
       "stop_id": "8580",
-      "name": "Sapperton 站",
+      "name": "Sapperton Station",
       "raw_name": "Sapperton Station @ Platform 2",
       "lat": 49.224621,
       "lon": -122.889311,
@@ -22344,7 +22344,7 @@
     },
     "8746": {
       "stop_id": "8746",
-      "name": "Lougheed Town Centre 站",
+      "name": "Lougheed Town Centre Station",
       "raw_name": "Lougheed Town Centre Station @ Platform 2",
       "lat": 49.248549,
       "lon": -122.896879,
@@ -22354,7 +22354,7 @@
     },
     "8747": {
       "stop_id": "8747",
-      "name": "Production Way-University 站",
+      "name": "Production Way-University Station",
       "raw_name": "Production Way-University Station @ Platform 1",
       "lat": 49.253465,
       "lon": -122.918191,
@@ -22365,7 +22365,7 @@
     },
     "8748": {
       "stop_id": "8748",
-      "name": "Sperling-Burnaby Lake 站",
+      "name": "Sperling-Burnaby Lake Station",
       "raw_name": "Sperling-Burnaby Lake Station @ Platform 1",
       "lat": 49.259213,
       "lon": -122.963982,
@@ -22375,7 +22375,7 @@
     },
     "8749": {
       "stop_id": "8749",
-      "name": "Holdom 站",
+      "name": "Holdom Station",
       "raw_name": "Holdom Station @ Platform 1",
       "lat": 49.264753,
       "lon": -122.982149,
@@ -22385,7 +22385,7 @@
     },
     "8750": {
       "stop_id": "8750",
-      "name": "Brentwood Town Centre 站",
+      "name": "Brentwood Town Centre Station",
       "raw_name": "Brentwood Town Centre Station @ Platform 1",
       "lat": 49.266431,
       "lon": -123.001813,
@@ -22395,7 +22395,7 @@
     },
     "8751": {
       "stop_id": "8751",
-      "name": "Gilmore 站",
+      "name": "Gilmore Station",
       "raw_name": "Gilmore Station @ Platform 1",
       "lat": 49.265002,
       "lon": -123.013571,
@@ -22405,7 +22405,7 @@
     },
     "8752": {
       "stop_id": "8752",
-      "name": "Rupert 站",
+      "name": "Rupert Station",
       "raw_name": "Rupert Station @ Platform 1",
       "lat": 49.260815,
       "lon": -123.032869,
@@ -22415,7 +22415,7 @@
     },
     "8753": {
       "stop_id": "8753",
-      "name": "Renfrew 站",
+      "name": "Renfrew Station",
       "raw_name": "Renfrew Station @ Platform 1",
       "lat": 49.258942,
       "lon": -123.045374,
@@ -22425,7 +22425,7 @@
     },
     "8754": {
       "stop_id": "8754",
-      "name": "Commercial-Broadway 站",
+      "name": "Commercial-Broadway Station",
       "raw_name": "Commercial-Broadway Station @ Platform 1",
       "lat": 49.26298,
       "lon": -123.068426,
@@ -22435,7 +22435,7 @@
     },
     "8755": {
       "stop_id": "8755",
-      "name": "Lougheed Town Centre 站",
+      "name": "Lougheed Town Centre Station",
       "raw_name": "Lougheed Town Centre Station @ Platform 1",
       "lat": 49.248484,
       "lon": -122.896952,
@@ -22446,7 +22446,7 @@
     },
     "8756": {
       "stop_id": "8756",
-      "name": "Production Way-University 站",
+      "name": "Production Way-University Station",
       "raw_name": "Production Way-University Station @ Platform 2",
       "lat": 49.253364,
       "lon": -122.918218,
@@ -22457,7 +22457,7 @@
     },
     "8757": {
       "stop_id": "8757",
-      "name": "Sperling-Burnaby Lake 站",
+      "name": "Sperling-Burnaby Lake Station",
       "raw_name": "Sperling-Burnaby Lake Station @ Platform 2",
       "lat": 49.259154,
       "lon": -122.963991,
@@ -22467,7 +22467,7 @@
     },
     "8758": {
       "stop_id": "8758",
-      "name": "Holdom 站",
+      "name": "Holdom Station",
       "raw_name": "Holdom Station @ Platform 2",
       "lat": 49.264705,
       "lon": -122.982158,
@@ -22477,7 +22477,7 @@
     },
     "8759": {
       "stop_id": "8759",
-      "name": "Brentwood Town Centre 站",
+      "name": "Brentwood Town Centre Station",
       "raw_name": "Brentwood Town Centre Station @ Platform 2",
       "lat": 49.266352,
       "lon": -123.001813,
@@ -22487,7 +22487,7 @@
     },
     "8760": {
       "stop_id": "8760",
-      "name": "Gilmore 站",
+      "name": "Gilmore Station",
       "raw_name": "Gilmore Station @ Platform 2",
       "lat": 49.264931,
       "lon": -123.013498,
@@ -22497,7 +22497,7 @@
     },
     "8761": {
       "stop_id": "8761",
-      "name": "Rupert 站",
+      "name": "Rupert Station",
       "raw_name": "Rupert Station @ Platform 2",
       "lat": 49.260733,
       "lon": -123.032821,
@@ -22507,7 +22507,7 @@
     },
     "8762": {
       "stop_id": "8762",
-      "name": "Renfrew 站",
+      "name": "Renfrew Station",
       "raw_name": "Renfrew Station @ Platform 2",
       "lat": 49.258877,
       "lon": -123.045348,
@@ -22517,7 +22517,7 @@
     },
     "8763": {
       "stop_id": "8763",
-      "name": "Commercial-Broadway 站",
+      "name": "Commercial-Broadway Station",
       "raw_name": "Commercial-Broadway Station @ Platform 2",
       "lat": 49.262912,
       "lon": -123.068491,
@@ -22527,7 +22527,7 @@
     },
     "9510": {
       "stop_id": "9510",
-      "name": "Lake City Way 站",
+      "name": "Lake City Way Station",
       "raw_name": "Lake City Way Station @ Platform 1",
       "lat": 49.254654,
       "lon": -122.939183,
@@ -22537,7 +22537,7 @@
     },
     "9511": {
       "stop_id": "9511",
-      "name": "Lake City Way 站",
+      "name": "Lake City Way Station",
       "raw_name": "Lake City Way Station @ Platform 2",
       "lat": 49.254609,
       "lon": -122.939183,
@@ -22547,7 +22547,7 @@
     },
     "10374": {
       "stop_id": "10374",
-      "name": "VCC-Clark 站",
+      "name": "VCC-Clark Station",
       "raw_name": "VCC-Clark Station @ Platform 2",
       "lat": 49.265799,
       "lon": -123.079054,
@@ -22557,7 +22557,7 @@
     },
     "10375": {
       "stop_id": "10375",
-      "name": "VCC-Clark 站",
+      "name": "VCC-Clark Station",
       "raw_name": "VCC-Clark Station @ Platform 1",
       "lat": 49.265873,
       "lon": -123.079049,
@@ -22567,7 +22567,7 @@
     },
     "11272": {
       "stop_id": "11272",
-      "name": "Vancouver City Centre 站",
+      "name": "Vancouver City Centre Station",
       "raw_name": "Vancouver City Centre Station @ Platform 2",
       "lat": 49.282462,
       "lon": -123.118283,
@@ -22577,7 +22577,7 @@
     },
     "11273": {
       "stop_id": "11273",
-      "name": "Vancouver City Centre 站",
+      "name": "Vancouver City Centre Station",
       "raw_name": "Vancouver City Centre Station @ Platform 1",
       "lat": 49.282352,
       "lon": -123.118143,
@@ -22587,7 +22587,7 @@
     },
     "11274": {
       "stop_id": "11274",
-      "name": "Yaletown-Roundhouse 站",
+      "name": "Yaletown-Roundhouse Station",
       "raw_name": "Yaletown-Roundhouse Station @ Platform 2",
       "lat": 49.274467,
       "lon": -123.122124,
@@ -22597,7 +22597,7 @@
     },
     "11275": {
       "stop_id": "11275",
-      "name": "Yaletown-Roundhouse 站",
+      "name": "Yaletown-Roundhouse Station",
       "raw_name": "Yaletown-Roundhouse Station @ Platform 1",
       "lat": 49.274508,
       "lon": -123.122015,
@@ -22607,7 +22607,7 @@
     },
     "11276": {
       "stop_id": "11276",
-      "name": "Olympic Village 站",
+      "name": "Olympic Village Station",
       "raw_name": "Olympic Village Station @ Platform 2",
       "lat": 49.266616,
       "lon": -123.115218,
@@ -22617,7 +22617,7 @@
     },
     "11277": {
       "stop_id": "11277",
-      "name": "Olympic Village 站",
+      "name": "Olympic Village Station",
       "raw_name": "Olympic Village Station @ Platform 1",
       "lat": 49.266557,
       "lon": -123.115527,
@@ -22627,7 +22627,7 @@
     },
     "11278": {
       "stop_id": "11278",
-      "name": "Broadway-City Hall 站",
+      "name": "Broadway-City Hall Station",
       "raw_name": "Broadway-City Hall Station @ Platform 2",
       "lat": 49.262684,
       "lon": -123.114856,
@@ -22637,7 +22637,7 @@
     },
     "11279": {
       "stop_id": "11279",
-      "name": "Broadway-City Hall 站",
+      "name": "Broadway-City Hall Station",
       "raw_name": "Broadway-City Hall Station @ Platform 1",
       "lat": 49.262725,
       "lon": -123.114753,
@@ -22647,7 +22647,7 @@
     },
     "11280": {
       "stop_id": "11280",
-      "name": "King Edward 站",
+      "name": "King Edward Station",
       "raw_name": "King Edward Station @ Platform 2",
       "lat": 49.249186,
       "lon": -123.115716,
@@ -22657,7 +22657,7 @@
     },
     "11281": {
       "stop_id": "11281",
-      "name": "King Edward 站",
+      "name": "King Edward Station",
       "raw_name": "King Edward Station @ Platform 1",
       "lat": 49.249172,
       "lon": -123.115228,
@@ -22667,7 +22667,7 @@
     },
     "11282": {
       "stop_id": "11282",
-      "name": "Oakridge-41st Avenue 站",
+      "name": "Oakridge-41st Avenue Station",
       "raw_name": "Oakridge-41st Avenue Station @ Platform 2",
       "lat": 49.233747,
       "lon": -123.116422,
@@ -22677,7 +22677,7 @@
     },
     "11283": {
       "stop_id": "11283",
-      "name": "Oakridge-41st Avenue 站",
+      "name": "Oakridge-41st Avenue Station",
       "raw_name": "Oakridge-41st Avenue Station @ Platform 1",
       "lat": 49.233731,
       "lon": -123.116176,
@@ -22687,7 +22687,7 @@
     },
     "11284": {
       "stop_id": "11284",
-      "name": "Langara-49th Avenue 站",
+      "name": "Langara-49th Avenue Station",
       "raw_name": "Langara-49th Avenue Station @ Platform 2",
       "lat": 49.225743,
       "lon": -123.116752,
@@ -22697,7 +22697,7 @@
     },
     "11285": {
       "stop_id": "11285",
-      "name": "Langara-49th Avenue 站",
+      "name": "Langara-49th Avenue Station",
       "raw_name": "Langara-49th Avenue Station @ Platform 1",
       "lat": 49.225709,
       "lon": -123.116289,
@@ -22707,7 +22707,7 @@
     },
     "11286": {
       "stop_id": "11286",
-      "name": "Marine Drive 站",
+      "name": "Marine Drive Station",
       "raw_name": "Marine Drive Station @ Platform 2",
       "lat": 49.209661,
       "lon": -123.117078,
@@ -22717,7 +22717,7 @@
     },
     "11287": {
       "stop_id": "11287",
-      "name": "Marine Drive 站",
+      "name": "Marine Drive Station",
       "raw_name": "Marine Drive Station @ Platform 1",
       "lat": 49.209663,
       "lon": -123.116921,
@@ -22727,7 +22727,7 @@
     },
     "11288": {
       "stop_id": "11288",
-      "name": "Bridgeport 站",
+      "name": "Bridgeport Station",
       "raw_name": "Bridgeport Station @ Platform 2",
       "lat": 49.195558,
       "lon": -123.126076,
@@ -22737,7 +22737,7 @@
     },
     "11289": {
       "stop_id": "11289",
-      "name": "Bridgeport 站",
+      "name": "Bridgeport Station",
       "raw_name": "Bridgeport Station @ Platform 1",
       "lat": 49.195514,
       "lon": -123.126006,
@@ -22747,7 +22747,7 @@
     },
     "11290": {
       "stop_id": "11290",
-      "name": "Aberdeen 站",
+      "name": "Aberdeen Station",
       "raw_name": "Aberdeen Station @ Platform 2",
       "lat": 49.184,
       "lon": -123.136398,
@@ -22757,7 +22757,7 @@
     },
     "11291": {
       "stop_id": "11291",
-      "name": "Aberdeen 站",
+      "name": "Aberdeen Station",
       "raw_name": "Aberdeen Station @ Platform 1",
       "lat": 49.183991,
       "lon": -123.13622,
@@ -22767,7 +22767,7 @@
     },
     "11292": {
       "stop_id": "11292",
-      "name": "Lansdowne 站",
+      "name": "Lansdowne Station",
       "raw_name": "Lansdowne Station @ Platform 2",
       "lat": 49.174762,
       "lon": -123.136507,
@@ -22777,7 +22777,7 @@
     },
     "11293": {
       "stop_id": "11293",
-      "name": "Lansdowne 站",
+      "name": "Lansdowne Station",
       "raw_name": "Lansdowne Station @ Platform 1",
       "lat": 49.174766,
       "lon": -123.136322,
@@ -22787,7 +22787,7 @@
     },
     "11294": {
       "stop_id": "11294",
-      "name": "Richmond-Brighouse 站",
+      "name": "Richmond-Brighouse Station",
       "raw_name": "Richmond-Brighouse Station @ Canada Line",
       "lat": 49.168092,
       "lon": -123.136247,
@@ -22797,7 +22797,7 @@
     },
     "11295": {
       "stop_id": "11295",
-      "name": "Richmond-Brighouse 站",
+      "name": "Richmond-Brighouse Station",
       "raw_name": "Richmond-Brighouse Station @ Platform 1",
       "lat": 49.168092,
       "lon": -123.136174,
@@ -22807,7 +22807,7 @@
     },
     "11296": {
       "stop_id": "11296",
-      "name": "Templeton 站",
+      "name": "Templeton Station",
       "raw_name": "Templeton Station @ Platform 2",
       "lat": 49.196715,
       "lon": -123.146335,
@@ -22817,7 +22817,7 @@
     },
     "11297": {
       "stop_id": "11297",
-      "name": "Templeton 站",
+      "name": "Templeton Station",
       "raw_name": "Templeton Station @ Platform 1",
       "lat": 49.196655,
       "lon": -123.146307,
@@ -22827,7 +22827,7 @@
     },
     "11298": {
       "stop_id": "11298",
-      "name": "Sea Island Centre 站",
+      "name": "Sea Island Centre Station",
       "raw_name": "Sea Island Centre Station @ Platform 2",
       "lat": 49.193053,
       "lon": -123.157851,
@@ -22837,7 +22837,7 @@
     },
     "11299": {
       "stop_id": "11299",
-      "name": "Sea Island Centre 站",
+      "name": "Sea Island Centre Station",
       "raw_name": "Sea Island Centre Station @ Platform 1",
       "lat": 49.19293,
       "lon": -123.157884,
@@ -22847,7 +22847,7 @@
     },
     "11300": {
       "stop_id": "11300",
-      "name": "YVR-Airport 站",
+      "name": "YVR-Airport Station",
       "raw_name": "YVR-Airport Station @ Canada Line",
       "lat": 49.194189,
       "lon": -123.178251,
@@ -22857,7 +22857,7 @@
     },
     "11301": {
       "stop_id": "11301",
-      "name": "YVR-Airport 站",
+      "name": "YVR-Airport Station",
       "raw_name": "YVR-Airport Station @ Platform 1",
       "lat": 49.194177,
       "lon": -123.178108,
@@ -22867,7 +22867,7 @@
     },
     "11302": {
       "stop_id": "11302",
-      "name": "Waterfront 站",
+      "name": "Waterfront Station",
       "raw_name": "Waterfront Station @ Platform 4",
       "lat": 49.285139,
       "lon": -123.114206,
@@ -22877,7 +22877,7 @@
     },
     "11303": {
       "stop_id": "11303",
-      "name": "Waterfront 站",
+      "name": "Waterfront Station",
       "raw_name": "Waterfront Station @ Platform 5",
       "lat": 49.285093,
       "lon": -123.114139,
@@ -22887,7 +22887,7 @@
     },
     "12227": {
       "stop_id": "12227",
-      "name": "Lougheed Town Centre 站",
+      "name": "Lougheed Town Centre Station",
       "raw_name": "Lougheed Town Centre Station @ Platform 3",
       "lat": 49.248611,
       "lon": -122.896818,
@@ -22897,7 +22897,7 @@
     },
     "12228": {
       "stop_id": "12228",
-      "name": "Burquitlam 站",
+      "name": "Burquitlam Station",
       "raw_name": "Burquitlam Station @ Platform 1",
       "lat": 49.261421,
       "lon": -122.889853,
@@ -22907,7 +22907,7 @@
     },
     "12229": {
       "stop_id": "12229",
-      "name": "Burquitlam 站",
+      "name": "Burquitlam Station",
       "raw_name": "Burquitlam Station @ Platform 2",
       "lat": 49.261375,
       "lon": -122.889784,
@@ -22917,7 +22917,7 @@
     },
     "12230": {
       "stop_id": "12230",
-      "name": "Moody Centre 站",
+      "name": "Moody Centre Station",
       "raw_name": "Moody Centre Station @ Platform 1",
       "lat": 49.27798,
       "lon": -122.845609,
@@ -22927,7 +22927,7 @@
     },
     "12231": {
       "stop_id": "12231",
-      "name": "Moody Centre 站",
+      "name": "Moody Centre Station",
       "raw_name": "Moody Centre Station @ Platform 2",
       "lat": 49.277941,
       "lon": -122.845608,
@@ -22937,7 +22937,7 @@
     },
     "12232": {
       "stop_id": "12232",
-      "name": "Inlet Centre 站",
+      "name": "Inlet Centre Station",
       "raw_name": "Inlet Centre Station @ Platform 1",
       "lat": 49.277294,
       "lon": -122.828164,
@@ -22947,7 +22947,7 @@
     },
     "12233": {
       "stop_id": "12233",
-      "name": "Inlet Centre 站",
+      "name": "Inlet Centre Station",
       "raw_name": "Inlet Centre Station @ Platform 2",
       "lat": 49.277118,
       "lon": -122.828183,
@@ -22957,7 +22957,7 @@
     },
     "12234": {
       "stop_id": "12234",
-      "name": "Coquitlam Central 站",
+      "name": "Coquitlam Central Station",
       "raw_name": "Coquitlam Central Station @ Platform 1",
       "lat": 49.274919,
       "lon": -122.800551,
@@ -22967,7 +22967,7 @@
     },
     "12235": {
       "stop_id": "12235",
-      "name": "Coquitlam Central 站",
+      "name": "Coquitlam Central Station",
       "raw_name": "Coquitlam Central Station @ Platform 2",
       "lat": 49.274738,
       "lon": -122.800643,
@@ -22977,7 +22977,7 @@
     },
     "12236": {
       "stop_id": "12236",
-      "name": "Lincoln 站",
+      "name": "Lincoln Station",
       "raw_name": "Lincoln Station @ Platform 1",
       "lat": 49.280417,
       "lon": -122.794097,
@@ -22987,7 +22987,7 @@
     },
     "12237": {
       "stop_id": "12237",
-      "name": "Lincoln 站",
+      "name": "Lincoln Station",
       "raw_name": "Lincoln Station @ Platform 2",
       "lat": 49.28041,
       "lon": -122.793805,
@@ -22997,7 +22997,7 @@
     },
     "12238": {
       "stop_id": "12238",
-      "name": "Lafarge Lake-Douglas 站",
+      "name": "Lafarge Lake-Douglas Station",
       "raw_name": "Lafarge Lake-Douglas Station @ Platform 1",
       "lat": 49.285743,
       "lon": -122.791623,
@@ -23007,7 +23007,7 @@
     },
     "12239": {
       "stop_id": "12239",
-      "name": "Lafarge Lake-Douglas 站",
+      "name": "Lafarge Lake-Douglas Station",
       "raw_name": "Lafarge Lake-Douglas Station @ Platform 2",
       "lat": 49.285693,
       "lon": -122.791435,
@@ -23017,7 +23017,7 @@
     },
     "12946": {
       "stop_id": "12946",
-      "name": "Capstan 站",
+      "name": "Capstan Station",
       "raw_name": "Capstan Station @ Platform 1",
       "lat": 49.189131,
       "lon": -123.131869,
@@ -23027,7 +23027,7 @@
     },
     "12947": {
       "stop_id": "12947",
-      "name": "Capstan 站",
+      "name": "Capstan Station",
       "raw_name": "Capstan Station @ Platform 2",
       "lat": 49.189163,
       "lon": -123.131956,

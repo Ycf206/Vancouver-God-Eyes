@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 
 export type MapStyleType = 'street' | 'satellite' | 'light' | 'dark';
 
-export type ExploreTabType = 'weather' | 'news' | 'events' | 'beach' | 'ski' | 'aurora' | 'jobs' | '311' | 'shopping' | 'atm' | 'fuel' | 'charging' | 'ev' | 'ferry' | 'cargo' | 'shipping' | 'flights' | 'border' | 'alerts' | 'traffic';
+export type ExploreTabType = 'weather' | 'news' | 'events' | 'beach' | 'ski' | 'aurora' | 'jobs' | '311' | 'shopping' | 'atm' | 'fuel' | 'charging' | 'ev' | 'ferry' | 'cargo' | 'shipping' | 'flights' | 'border' | 'alerts' | 'traffic' | 'crashes';
 
 export interface SearchTarget {
   id: string;
@@ -140,6 +140,8 @@ export interface UIState {
   } | null) => void;
   navigationAddress: string;
   setNavigationAddress: (addr: string) => void;
+  adminSourceIntervals: Record<string, string>;
+  setAdminSourceIntervals: (intervals: Record<string, string>) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   activeJobSkillModal: any | null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -346,6 +348,14 @@ export const useUIStore = create<UIState>()(
       setNavigationAddress: (addr) => set({ navigationAddress: addr }),
       activeJobSkillModal: null,
       setActiveJobSkillModal: (job) => set({ activeJobSkillModal: job }),
+      adminSourceIntervals: {
+        public_events: '每 30 分鐘',
+        vancouver_news: '每 5 分鐘',
+        vancouver_311: '每日更新 1 次',
+        tnt_flyers: '每週五更新 1 次',
+        crashes: '每月更新 1 次',
+      },
+      setAdminSourceIntervals: (intervals) => set((state) => ({ adminSourceIntervals: { ...state.adminSourceIntervals, ...intervals } })),
       weatherSubTab: 'city',
       setWeatherSubTab: (subTab) => set({ weatherSubTab: subTab }),
       isAdminAuthenticated: false,

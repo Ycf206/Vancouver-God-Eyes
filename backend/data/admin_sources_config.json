@@ -301,11 +301,11 @@
       "id": "vancouver_news",
       "name": "大溫即時新聞快訊 (News Feeds)",
       "type": "api",
-      "cron_expr": "*/30 * * * *",
-      "schedule_interval": "每 30 分鐘",
+      "cron_expr": "*/5 * * * *",
+      "schedule_interval": "每 5 分鐘",
       "record_count": 96,
       "unit": "則即時新聞快訊",
-      "last_updated": "2026-10-26T18:30:00Z",
+      "last_updated": "2026-10-31T03:47:23.265Z",
       "status": "ok",
       "data_pipeline_notes": "整合 CTV News Vancouver、CBC News Canada、604 Now、CityNews Vancouver、Global News BC、Daily Hive 與 The Georgia Straight 之多來源 RSS 即時新聞流 -> 自動過濾非本地新聞與重複項目 -> 依時效性排序與繁體中文在地化標籤分類 -> 寫入快取供探索面板即時瀏覽與官方連結閱讀",
       "runner": "oci",
@@ -335,11 +335,11 @@
       "id": "public_events",
       "name": "溫哥華活動情報與節慶 (Events)",
       "type": "api",
-      "cron_expr": "0 */4 * * *",
-      "schedule_interval": "每 4 小時",
+      "cron_expr": "*/30 * * * *",
+      "schedule_interval": "每 30 分鐘",
       "record_count": 42,
       "unit": "場文娛體育市政活動",
-      "last_updated": "2026-10-24T12:00:00Z",
+      "last_updated": "2026-10-31T03:47:23.265Z",
       "status": "ok",
       "data_pipeline_notes": "整合 Daily Hive Vancouver (listed/events)、Eventbrite 溫哥華精選活動與 Destination Vancouver (溫哥華旅遊局) 官方活動資訊庫 -> 智能解析活動時段、地點坐標、票價類型、主辦單位與官方購票連結 -> 提供今日/本週末/日期範圍多維度篩選與一鍵地圖定位",
       "runner": "oci",
@@ -1320,6 +1320,50 @@
         }
       ],
       "source_url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/railways/exports/geojson"
+    },
+    {
+      "id": "fedex",
+      "name": "FedEx 門市與自取據點",
+      "type": "geojson",
+      "cron_expr": "0 4 1 * *",
+      "schedule_interval": "每月 1 日 04:00",
+      "record_count": 50,
+      "unit": "處門市據點",
+      "last_updated": "2026-10-31T03:47:23.265Z",
+      "status": "ok",
+      "data_pipeline_notes": "定期同步大溫哥華地區 FedEx 服務站點、營業時間、最後取件時間與包裹尺寸規格",
+      "runner": "github_actions",
+      "category": "生活",
+      "workflow_file": "update-fedex.yml",
+      "source_links": [
+        {
+          "label": "FedEx Canada Locations",
+          "url": "https://local.fedex.com/en-ca/bc/vancouver"
+        }
+      ],
+      "source_url": "https://local.fedex.com/en-ca/bc/vancouver"
+    },
+    {
+      "id": "vancouver_crashes",
+      "name": "大溫哥華車禍事故統計熱點",
+      "type": "geojson",
+      "cron_expr": "0 4 1 1 *",
+      "schedule_interval": "每年 1 月 1 日",
+      "record_count": 9841,
+      "unit": "處車禍熱點",
+      "last_updated": "2026-10-31T03:47:23.265Z",
+      "status": "ok",
+      "data_pipeline_notes": "ICBC 大溫哥華歷史車禍事故熱點交叉分析矩陣數據萃取",
+      "runner": "oci",
+      "category": "交通",
+      "workflow_file": null,
+      "source_links": [
+        {
+          "label": "ICBC Lower Mainland Crashes",
+          "url": "https://public.tableau.com/app/profile/icbc/viz/LowerMainlandCrashes"
+        }
+      ],
+      "source_url": "https://public.tableau.com/app/profile/icbc/viz/LowerMainlandCrashes"
     }
   ]
 }

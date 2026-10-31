@@ -106,7 +106,7 @@ export default function TopBar() {
           console.error('Search error:', err);
           setIsLoading(false);
         });
-    }, 150);
+    }, 300);
 
     return () => clearTimeout(handler);
   }, [query]);

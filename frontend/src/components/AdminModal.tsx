@@ -172,14 +172,19 @@ export default function AdminModal() {
         if (Array.isArray(data.sources)) {
           setSources(data.sources);
           const scheds: Record<string, { interval: string; cron: string; enabled: boolean }> = {};
+          const intervalMap: Record<string, string> = {};
           data.sources.forEach((s: AdminSourceItem) => {
             scheds[s.id] = {
               interval: s.schedule_interval,
               cron: s.cron_expr,
               enabled: s.enabled
             };
+            if (s.id && s.schedule_interval) {
+              intervalMap[s.id] = s.schedule_interval;
+            }
           });
           setEditingSchedules(scheds);
+          useUIStore.getState().setAdminSourceIntervals(intervalMap);
         }
         if (Array.isArray(data.logs)) {
           setLogs(data.logs);
@@ -303,6 +308,7 @@ export default function AdminModal() {
       if (res.ok) {
         setScheduleSuccessId(sourceId);
         setTimeout(() => setScheduleSuccessId(null), 2500);
+        useUIStore.getState().setAdminSourceIntervals({ [sourceId]: item.interval });
         await fetchAdminData();
       }
     } catch (err) {

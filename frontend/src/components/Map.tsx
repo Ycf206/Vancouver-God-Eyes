@@ -18,7 +18,7 @@ import {
   Navigation, ExternalLink, Clock, Bike, Car, Info, 
   ChevronDown, ChevronUp, SlidersHorizontal, Fuel, Zap, Wifi, Waves, Play, Pause, CloudRain,
   RotateCcw, RotateCw, MapPin, Crosshair, Activity, Ban, Cone, Lightbulb, Ship,
-  Camera, Gauge, Footprints, ArrowRight, Mail, AlertCircle, Radio, Anchor, CreditCard, Landmark, Truck, Map as MapIcon, Briefcase, PhoneCall, ShoppingBag, Search
+  Camera, Gauge, Footprints, ArrowRight, Mail, AlertCircle, Radio, Anchor, CreditCard, Landmark, Truck, Map as MapIcon, Briefcase, PhoneCall, ShoppingBag, Search, AlertTriangle
 } from 'lucide-react';
 
 function formatJobDateTime(isoStr?: string, timeFormat: '12h' | '24h' = '24h', timeZone: string = 'America/Vancouver'): string {
@@ -630,10 +630,36 @@ export default function AppMap() {
   const [timeInfoHovered, setTimeInfoHovered] = useState(false);
   const [carSharingLegendOpen, setCarSharingLegendOpen] = useState(true);
   const [imparkLegendOpen, setImparkLegendOpen] = useState(true);
-  const [imparkFilter, setImparkFilter] = useState<{ hourly: boolean; monthly: boolean; evCharger: boolean }>({
+  const [imparkFilter, setImparkFilter] = useState<{
+    hourly: boolean;
+    monthly: boolean;
+    evCharger: boolean;
+    companies: {
+      impark: boolean;
+      easyPark: boolean;
+    };
+  }>({
     hourly: true,
     monthly: true,
-    evCharger: false
+    evCharger: false,
+    companies: {
+      impark: true,
+      easyPark: false,
+    }
+  });
+  const [courierLegendOpen, setCourierLegendOpen] = useState(true);
+  const [courierFilter, setCourierFilter] = useState<{
+    canadaPost: boolean;
+    fedex: boolean;
+    ups: boolean;
+    purolator: boolean;
+    dhl: boolean;
+  }>({
+    canadaPost: true,
+    fedex: true,
+    ups: false,
+    purolator: false,
+    dhl: false,
   });
   const [isExploreSearchActive, setIsExploreSearchActive] = useState(false);
   const [exploreSearchInput, setExploreSearchInput] = useState('');
@@ -1006,6 +1032,10 @@ export default function AppMap() {
       if (hasSpeed && !safetyCamerasFilter.redLightSpeed) setSelectedFacility(null);
       if (!hasSpeed && !safetyCamerasFilter.redLightOnly) setSelectedFacility(null);
     } else if (selectedFacility.facility_type === 'impark' || selectedFacility.id?.startsWith('impark_')) {
+      if (!imparkFilter.companies?.impark) {
+        setSelectedFacility(null);
+        return;
+      }
       const props = selectedFacility.properties || (selectedFacility as any);
       const hasHourly = Boolean(props.hasTransientRates);
       const hasMonthly = Boolean(props.hasMonthlyRates);
@@ -1089,7 +1119,8 @@ export default function AppMap() {
         else if (type === 'police' && !layers.police) facilityClosed = true;
         else if (type === 'disaster_hubs' && !layers.disasterHubs) facilityClosed = true;
         else if (type === 'community_centres' && !layers.communityCentres) facilityClosed = true;
-        else if (type === 'canada_post' && !layers.canadaPost) facilityClosed = true;
+        else if (type === 'canada_post' && (!layers.canadaPost || !courierFilter.canadaPost)) facilityClosed = true;
+        else if (type === 'fedex' && (!layers.canadaPost || !courierFilter.fedex)) facilityClosed = true;
         else if (type === 'atm' && !layers.atm) facilityClosed = true;
         else if (type === 'hospitals' && !layers.hospitals) facilityClosed = true;
         else if (type === 'parks' && !layers.parks) facilityClosed = true;
@@ -1277,7 +1308,7 @@ export default function AppMap() {
         setSearchTarget(null);
       }
     }
-  }, [layers, selectedFacility, selectedAirport, selectedTerminal, selectedFerry, selectedMaritimeVessel, selectedBus, searchedBusRoute, selectedStop, selectedTrain, selectedSkytrainStation, searchTarget, setSearchTarget, isExploreOpen, exploreTab, openExploreTabs, radiusExploration, explorationSelectedFacility]);
+  }, [layers, selectedFacility, selectedAirport, selectedTerminal, selectedFerry, selectedMaritimeVessel, selectedBus, searchedBusRoute, selectedStop, selectedTrain, selectedSkytrainStation, searchTarget, setSearchTarget, isExploreOpen, exploreTab, openExploreTabs, radiusExploration, explorationSelectedFacility, courierFilter]);
 
 
   const fetchSkytrainStationSchedule = React.useCallback((stopId: string, stopName?: string, lon?: number, lat?: number) => {
@@ -1299,17 +1330,19 @@ export default function AppMap() {
       .then(res => res.json())
       .then(data => {
         const localMaps = getSkytrainStationMapUrls(data?.name || stopName || '');
+        const normalizedStationName = (data?.name || stopName || 'SkyTrain Station').replace(/\s*Station$/i, '').replace(/\s*站$/, '').trim() + ' Station';
         if (data && !data.error) {
           setSelectedSkytrainStation({
             ...data,
+            name: normalizedStationName,
             station_map_url: data.station_map_url || localMaps?.Station || data.entrance_map_url,
             entrance_map_url: data.entrance_map_url || localMaps?.Entrance || localMaps?.Station
           });
         } else {
           setSelectedSkytrainStation({
             stop_id: stopId,
-            name: stopName || '天車站',
-            raw_name: stopName || '天車站',
+            name: normalizedStationName,
+            raw_name: normalizedStationName,
             lat: lat || 49.2827,
             lon: lon || -123.1207,
             lines: ['SkyTrain 天車'],
@@ -1324,10 +1357,11 @@ export default function AppMap() {
       .catch(err => {
         console.error('Error fetching SkyTrain station schedule:', err);
         const localMaps = getSkytrainStationMapUrls(stopName || '');
+        const fallbackStationName = (stopName || 'SkyTrain Station').replace(/\s*Station$/i, '').replace(/\s*站$/, '').trim() + ' Station';
         setSelectedSkytrainStation({
           stop_id: stopId,
-          name: stopName || '天車站',
-          raw_name: stopName || '天車站',
+          name: fallbackStationName,
+          raw_name: fallbackStationName,
           lat: lat || 49.2827,
           lon: lon || -123.1207,
           lines: ['SkyTrain 天車'],
@@ -2753,6 +2787,7 @@ export default function AppMap() {
     }
     if (layers.canadaPost) {
       style.sources['canada-post'] = { type: 'geojson', data: '/vancouver_canada_post.geojson' };
+      style.sources['fedex'] = { type: 'geojson', data: '/vancouver_fedex.geojson' };
     }
     if (layers.atm) {
       style.sources['atm'] = { type: 'geojson', data: '/vancouver_atm.geojson' };
@@ -3553,7 +3588,7 @@ export default function AppMap() {
 
     
     // Road Facilities: ImPark Lots
-    if (layers.impark) {
+    if (layers.impark && imparkFilter.companies?.impark) {
       const imparkFilters: any[] = ['all'];
       if (imparkFilter.hourly && !imparkFilter.monthly) {
         imparkFilters.push(['==', ['get', 'hasTransientRates'], true]);
@@ -4103,8 +4138,8 @@ export default function AppMap() {
       });
     }
 
-    // Canada Post
-    if (layers.canadaPost) {
+    // 郵寄物流: Canada Post & FedEx
+    if (layers.canadaPost && courierFilter.canadaPost) {
       style.layers.push({
         id: 'canada-post-layer',
         type: 'circle',
@@ -4125,6 +4160,36 @@ export default function AppMap() {
           'text-field': '✉',
           'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
           'text-size': ['interpolate', ['linear'], ['zoom'], 13, 9, 15, 12, 17, 15],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+    }
+
+    if (layers.canadaPost && courierFilter.fedex) {
+      style.layers.push({
+        id: 'fedex-layer',
+        type: 'circle',
+        source: 'fedex',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 3.5, 14, 6.5, 17, 9.5],
+          'circle-color': '#4D148C',
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'fedex-symbol-layer',
+        type: 'symbol',
+        source: 'fedex',
+        minzoom: 13,
+        layout: {
+          'text-field': 'FX',
+          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 8, 15, 10, 17, 12],
           'text-allow-overlap': true,
           'text-ignore-placement': true
         },
@@ -5989,6 +6054,7 @@ export default function AppMap() {
     imparkFilter.hourly,
     imparkFilter.monthly,
     imparkFilter.evCharger,
+    imparkFilter.companies?.impark,
     layers.accessibleParking, 
     layers.motorcycleParking, 
     motorcycleParkingFilter.maxRate,
@@ -6014,6 +6080,8 @@ export default function AppMap() {
     layers.disasterHubs,
     layers.communityCentres,
     layers.canadaPost,
+    courierFilter.canadaPost,
+    courierFilter.fedex,
     layers.atm,
     layers.hospitals,
     layers.parks,
@@ -6246,6 +6314,8 @@ export default function AppMap() {
           'public-trees-symbol-layer',
           'canada-post-layer',
           'canada-post-symbol-layer',
+          'fedex-layer',
+          'fedex-symbol-layer',
           'atm-layer',
           'atm-symbol-layer',
           'truck-routes-restriction-layer',
@@ -6331,7 +6401,8 @@ export default function AppMap() {
             setSelectedBus(null);
             setSelectedTrain(null);
             const stopId = feature.properties?.stop_id || feature.properties?.id;
-            const stopName = feature.properties?.name || '天車站';
+            const rawStopName = feature.properties?.name || 'SkyTrain Station';
+            const stopName = rawStopName.replace(/\s*Station$/i, '').replace(/\s*站$/, '').trim() + ' Station';
             const clickLon = coords?.[0] ?? e.lngLat?.lng;
             const clickLat = coords?.[1] ?? e.lngLat?.lat;
             fetchSkytrainStationSchedule(String(stopId), stopName, clickLon, clickLat);
@@ -6636,6 +6707,7 @@ export default function AppMap() {
             layerId.startsWith('disaster-hubs') ||
             layerId.startsWith('community-centres') ||
             layerId.startsWith('canada-post') ||
+            layerId.startsWith('fedex') ||
             layerId.startsWith('atm') ||
             layerId.startsWith('hospitals') ||
             layerId.startsWith('parks') ||
@@ -6685,7 +6757,8 @@ export default function AppMap() {
             const clickLat = e.lngLat?.lat ?? (Array.isArray(coords[0]) ? (Array.isArray(coords[0][1]) ? coords[0][0][1] : coords[0][1]) : coords[1]);
 
             let facilityType = props.facility_type || derivedFacilityType || 'fac';
-            if (isImpark) facilityType = 'impark';
+            if (layerId.startsWith('fedex')) facilityType = 'fedex';
+            else if (isImpark) facilityType = 'impark';
             else if (isMuseums) facilityType = 'museums';
             else if (isGarbage) facilityType = 'garbage_collection';
             else if (isTruckRestriction) facilityType = 'truck_routes_restriction';
@@ -7274,7 +7347,7 @@ export default function AppMap() {
                   backgroundColor: train.color,
                   boxShadow: `0 0 10px ${train.color}bb`
                 }}
-                title={`${train.line_name} 往 ${train.destination} (${train.status})`}
+                title={`${train.line_name} 往 ${(train.destination || '').replace(/\s*Station$/i, '').replace(/\s*站$/, '').trim() + ' Station'} (${train.status})`}
               >
                 <span className="text-[12px] leading-none select-none">🚆</span>
               </div>
@@ -8764,7 +8837,8 @@ export default function AppMap() {
                   if (t === 'homeless_shelters') return { label: '無家者庇護所', bg: 'bg-rose-600 text-white' };
                   if (t === 'aed') return { label: 'AED 去顫器', bg: 'bg-red-600 text-white' };
                   if (t === 'community_centres') return { label: '社區中心', bg: 'bg-violet-600 text-white' };
-                  if (t === 'canada_post') return { label: 'Canada Post', bg: 'bg-[#E31837] text-white' };
+                  if (t === 'canada_post') return { label: '郵寄', bg: 'bg-[#E31837] text-white' };
+                  if (t === 'fedex') return { label: 'FedEx', bg: 'bg-[#4D148C] text-white' };
                   if (t === 'atm') return { label: '銀行', bg: 'bg-amber-500 text-white' };
                   if (t === 'public_art') return { label: '公共藝術', bg: 'bg-fuchsia-600 text-white' };
                   if (t === 'police') return { label: '警察', bg: 'bg-blue-600 text-white' };
@@ -8846,6 +8920,16 @@ export default function AppMap() {
                     if (selectedFacility.facility_type === 'car_sharing') {
                       if (selectedFacility.properties?.operator === 'Modo') return 'Modo Co-op';
                       return (selectedFacility.name || 'Evo Car Share').replace(/\s*\(\d+\s*車位專用站點\)/g, '').trim();
+                    }
+                    if (selectedFacility.facility_type === 'fedex') {
+                      const p = selectedFacility.properties || {};
+                      const raw = p.raw_item || {};
+                      const comp = p.c_companyName || raw.c_companyName || p.company_name;
+                      const bldg = p.c_building || raw.c_building || p.building;
+                      const nm = p.fedex_name || p.name || raw.name || selectedFacility.name || '';
+                      if (comp) return (nm && !comp.toLowerCase().includes(nm.toLowerCase())) ? `${comp} (${nm})` : comp;
+                      if (bldg) return (nm && !bldg.toLowerCase().includes(nm.toLowerCase())) ? `${bldg} (${nm})` : bldg;
+                      return nm || 'FedEx';
                     }
                     if (selectedFacility.facility_type === 'ski_resort' || selectedFacility.facility_type === 'swob_station' || selectedFacility.facility_type === 'weather_station' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hydrometric_station') {
                       return selectedFacility.properties?.english_name || (selectedFacility as any).english_name || selectedFacility.name;
@@ -8956,6 +9040,16 @@ export default function AppMap() {
                     if (selectedFacility.facility_type === 'museums') {
                       return selectedFacility.properties?.name || selectedFacility.name || '博物館';
                     }
+                    if (selectedFacility.facility_type === 'fedex') {
+                      const p = selectedFacility.properties || {};
+                      const raw = p.raw_item || {};
+                      const comp = p.c_companyName || raw.c_companyName || p.company_name;
+                      const bldg = p.c_building || raw.c_building || p.building;
+                      const nm = p.fedex_name || p.name || raw.name || selectedFacility.name || '';
+                      if (comp) return (nm && !comp.toLowerCase().includes(nm.toLowerCase())) ? `${comp} (${nm})` : comp;
+                      if (bldg) return (nm && !bldg.toLowerCase().includes(nm.toLowerCase())) ? `${bldg} (${nm})` : bldg;
+                      return nm || 'FedEx';
+                    }
                     if (selectedFacility.facility_type === 'ski_resort' || selectedFacility.facility_type === 'swob_station' || selectedFacility.facility_type === 'weather_station' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hydrometric_station') {
                       return selectedFacility.properties?.english_name || (selectedFacility as any).english_name || selectedFacility.name;
                     }
@@ -9040,7 +9134,7 @@ export default function AppMap() {
                         <h3 className="font-bold text-gray-900 text-sm leading-snug break-words">
                           {popupTitle}
                         </h3>
-                        {(selectedFacility.local_area || selectedFacility.facility_type === 'job' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'motorcycle_parking' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'canada_post' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'impark' || selectedFacility.facility_type === 'ski_resort' ||
+                        {(selectedFacility.local_area || selectedFacility.facility_type === 'job' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'motorcycle_parking' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'canada_post' || selectedFacility.facility_type === 'fedex' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'impark' || selectedFacility.facility_type === 'ski_resort' ||
                   selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'truck_routes_restriction' || selectedFacility.facility_type === 'traffic_signals' || selectedFacility.facility_type === 'turn_restrictions') && (
                           <span className="text-[11px] text-gray-400 block leading-snug break-words">
                             {(() => {
@@ -9097,6 +9191,7 @@ export default function AppMap() {
                               if (selectedFacility.facility_type === 'community_gardens') return 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'community_centres') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'canada_post') return formatTitleCase(selectedFacility.properties?.postaladdress || selectedFacility.local_area || 'Vancouver, BC');
+                              if (selectedFacility.facility_type === 'fedex') return formatTitleCase(selectedFacility.properties?.address?.line1 || selectedFacility.properties?.address_line1 || selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC');
                               if (selectedFacility.facility_type === 'atm') return selectedFacility.properties?.address ? `${selectedFacility.properties.address}, Vancouver, BC` : 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'museums') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'garbage_collection') return selectedFacility.properties?.zone_code || selectedFacility.local_area || '';
@@ -10722,6 +10817,253 @@ export default function AppMap() {
                         className="w-full py-2 px-3 rounded-lg bg-[#E31837] hover:bg-[#c4142e] text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm cursor-pointer"
                       >
                         <span>查看 Canada Post 其他分店</span>
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* FedEx (聯邦快遞分店據點) Details */}
+              {selectedFacility.facility_type === 'fedex' && (() => {
+                const props = selectedFacility.properties || {};
+                const rawItem = props.raw_item || {};
+
+                // 營業時間 hours.normalHours // 參考博物館的摺疊式顯示清單
+                const rawHours = props.hours?.normalHours || rawItem.hours?.normalHours || props.hours;
+                const fedexHoursMap: Record<string, string> = {};
+                if (Array.isArray(rawHours)) {
+                  for (const item of rawHours) {
+                    const day = item.day ? item.day.charAt(0).toUpperCase() + item.day.slice(1).toLowerCase() : '';
+                    if (!day) continue;
+                    if (item.isClosed || !item.intervals || item.intervals.length === 0) {
+                      fedexHoursMap[day] = '休息';
+                    } else {
+                      const parts = item.intervals.map((iv: any) => {
+                        const s = String(iv.start).padStart(4, '0');
+                        const e = String(iv.end).padStart(4, '0');
+                        const sFmt = `${s.slice(0, 2)}:${s.slice(2)}`;
+                        const eFmt = `${e.slice(0, 2)}:${e.slice(2)}`;
+                        return formatTimeRange(`${sFmt} - ${eFmt}`, timeFormat);
+                      });
+                      fedexHoursMap[day] = parts.join(', ');
+                    }
+                  }
+                }
+
+                // 站點取件 & 站點投遞 c_locatorDropoff
+                const locatorPickup = props.c_locatorPickup ?? rawItem.c_locatorPickup ?? props.locator_pickup ?? true;
+                const locatorDropoff = props.c_locatorDropoff ?? rawItem.c_locatorDropoff ?? props.locator_dropoff ?? true;
+
+                // 最後一般投遞時間 c_groundLastPickUpHours.normalHours.intervals[].end
+                const groundObj = props.c_groundLastPickUpHours?.normalHours || rawItem.c_groundLastPickUpHours?.normalHours || props.ground_last_pickup?.normalHours;
+                let groundCutoff = '';
+                if (Array.isArray(groundObj)) {
+                  const activeInterval = groundObj.find((d: any) => !d.isClosed && d.intervals?.length > 0);
+                  if (activeInterval && activeInterval.intervals[0]?.end) {
+                    const e = String(activeInterval.intervals[0].end).padStart(4, '0');
+                    groundCutoff = formatTimePreference(`${e.slice(0, 2)}:${e.slice(2)}`, timeFormat);
+                  }
+                }
+
+                // 最後特快投遞時間 c_expressLastPickUp.normalHours.intervals[].end
+                const expressObj = props.c_expressLastPickUp?.normalHours || rawItem.c_expressLastPickUp?.normalHours || props.express_last_pickup?.normalHours;
+                let expressCutoff = '';
+                if (Array.isArray(expressObj)) {
+                  const activeInterval = expressObj.find((d: any) => !d.isClosed && d.intervals?.length > 0);
+                  if (activeInterval && activeInterval.intervals[0]?.end) {
+                    const e = String(activeInterval.intervals[0].end).padStart(4, '0');
+                    expressCutoff = formatTimePreference(`${e.slice(0, 2)}:${e.slice(2)}`, timeFormat);
+                  }
+                }
+
+                // 額外服務 c_additionalServices
+                const additionalServices: string[] = props.c_additionalServices || rawItem.c_additionalServices || props.additional_services || [];
+
+                // 最大重量 & 最少重量
+                const maxWeightVal = props.c_maxAcceptedPackageWeight ?? rawItem.c_maxAcceptedPackageWeight;
+                const weightUnit = props.c_maxAcceptedPackageWeightUnitOfMeasurment || rawItem.c_maxAcceptedPackageWeightUnitOfMeasurment || 'LB';
+                const maxWeight = maxWeightVal ? `${maxWeightVal} ${weightUnit}` : (props.max_weight || '');
+
+                const minWeightVal = props.c_minAcceptedPackageWeight ?? rawItem.c_minAcceptedPackageWeight;
+                const minWeight = minWeightVal !== undefined && minWeightVal !== null ? `${minWeightVal} ${weightUnit}` : (props.min_weight || '');
+
+                // 最大尺寸 (L * W * H)
+                const l = props.c_maxPackageLength ?? rawItem.c_maxPackageLength;
+                const w = props.c_maxPackageWidth ?? rawItem.c_maxPackageWidth;
+                const h = props.c_maxPackageHeight ?? rawItem.c_maxPackageHeight;
+                const dimUnit = props.c_maxPackageDimensionUnitOfMeasurement || rawItem.c_maxPackageDimensionUnitOfMeasurement || 'IN';
+                const maxDim = (l && w && h) ? `${l} × ${w} × ${h} ${dimUnit}` : (props.max_dimensions || '');
+
+                // 接收現金 c_acceptsCash
+                const acceptsCash = props.c_acceptsCash ?? rawItem.c_acceptsCash ?? props.accepts_cash;
+
+                // 職員協助 c_locatorShippingAssistance
+                const shippingAssistance = props.c_locatorShippingAssistance ?? rawItem.c_locatorShippingAssistance ?? props.shipping_assistance;
+
+                // 特別指示 c_specialInstructions
+                const specialInstructions = props.c_specialInstructions || rawItem.c_specialInstructions || props.special_instructions;
+
+                // 詳細資料 description
+                const desc = props.description || rawItem.description;
+
+                // 聯絡電話 mainPhone.display
+                const mainPhone = props.mainPhone?.display || rawItem.mainPhone?.display || props.phone || '';
+                const phoneRaw = props.mainPhone?.raw || rawItem.mainPhone?.raw || props.phone_raw || '';
+
+                // 官網連結
+                const websiteUrl = props.websiteUrl || rawItem.websiteUrl || props.website_url;
+
+                return (
+                  <div className="flex flex-col gap-2.5 text-xs">
+                    {/* 10.1.5 副標題下方淡紫色區塊 */}
+                    <div className="bg-[#4D148C]/10 p-2.5 rounded-lg border border-[#4D148C]/30 text-[#6B21A8] font-medium text-[11px] leading-relaxed">
+                      提示: 如要取件, 請確保攜帶政府發出的有效身份證明文件 (例如: 駕照, 護照等)
+                    </div>
+
+                    {/* 10.1.6 灰色資料區塊 (依照圖 4 規範) */}
+                    <div className="bg-gray-50/90 p-2.5 rounded-lg border border-gray-200/70 flex flex-col gap-2 text-[11px]">
+                      {/* 營業時間 hours.normalHours // 參考博物館的摺疊式顯示清單 */}
+                      {Object.keys(fedexHoursMap).length > 0 && (
+                        <FacilityWeeklyHoursSchedule
+                          label="營業時間"
+                          hours={fedexHoursMap}
+                          timeFormat={timeFormat}
+                          theme="violet"
+                        />
+                      )}
+
+                      {/* (分隔線) */}
+                      <div className="w-full h-px bg-gray-200/80"></div>
+
+                      {/* 站點取件 */}
+                      <div className="flex items-center justify-between text-gray-700">
+                        <span className="text-gray-500 font-medium">站點取件</span>
+                        <span className="font-semibold text-gray-900">{locatorPickup ? '支援' : '不支援'}</span>
+                      </div>
+
+                      {/* 站點投遞 c_locatorDropoff */}
+                      <div className="flex items-center justify-between text-gray-700">
+                        <span className="text-gray-500 font-medium">站點投遞</span>
+                        <span className="font-semibold text-gray-900">{locatorDropoff ? '支援' : '不支援'}</span>
+                      </div>
+
+                      {/* 最後一般投遞時間 */}
+                      {groundCutoff && (
+                        <div className="flex items-center justify-between text-gray-700">
+                          <span className="text-gray-500 font-medium">最後一般投遞時間</span>
+                          <span className="font-mono text-gray-900 font-semibold">{groundCutoff}</span>
+                        </div>
+                      )}
+
+                      {/* 最後特快投遞時間 */}
+                      {expressCutoff && (
+                        <div className="flex items-center justify-between text-gray-700">
+                          <span className="text-gray-500 font-medium">最後特快投遞時間</span>
+                          <span className="font-mono text-gray-900 font-semibold">{expressCutoff}</span>
+                        </div>
+                      )}
+
+                      {/* 額外服務 c_additionalServices */}
+                      {additionalServices && additionalServices.length > 0 && (
+                        <div className="flex flex-col gap-1 pt-0.5">
+                          <span className="text-gray-500 font-medium">額外服務</span>
+                          <div className="flex flex-wrap gap-1">
+                            {additionalServices.map((srv: string, idx: number) => (
+                              <span key={idx} className="px-1.5 py-0.5 rounded bg-purple-100 text-purple-800 text-[10px]">
+                                {srv}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* (分隔線) */}
+                      {(maxWeight || minWeight || maxDim) && (
+                        <>
+                          <div className="w-full h-px bg-gray-200/80"></div>
+                          {maxWeight && (
+                            <div className="flex items-center justify-between text-gray-700">
+                              <span className="text-gray-500 font-medium">最大重量</span>
+                              <span className="font-mono text-gray-900 font-semibold">{maxWeight}</span>
+                            </div>
+                          )}
+                          {minWeight && (
+                            <div className="flex items-center justify-between text-gray-700">
+                              <span className="text-gray-500 font-medium">最少重量</span>
+                              <span className="font-mono text-gray-900 font-semibold">{minWeight}</span>
+                            </div>
+                          )}
+                          {maxDim && (
+                            <div className="flex items-center justify-between text-gray-700">
+                              <span className="text-gray-500 font-medium">最大尺寸 (L × W × H)</span>
+                              <span className="font-mono text-gray-900 font-semibold">{maxDim}</span>
+                            </div>
+                          )}
+                        </>
+                      )}
+
+                      {/* (分隔線) */}
+                      <div className="w-full h-px bg-gray-200/80"></div>
+
+                      {/* 接收現金 c_acceptsCash */}
+                      <div className="flex items-center justify-between text-gray-700">
+                        <span className="text-gray-500 font-medium">接收現金</span>
+                        <span className="font-semibold text-gray-900">{acceptsCash ? '是' : '否 (僅限電子支付)'}</span>
+                      </div>
+
+                      {/* 職員協助 c_locatorShippingAssistance */}
+                      <div className="flex items-center justify-between text-gray-700">
+                        <span className="text-gray-500 font-medium">職員協助</span>
+                        <span className="font-semibold text-gray-900">{shippingAssistance ? '有 (提供專員服務)' : '無 (自助)'}</span>
+                      </div>
+
+                      {/* 特別指示 c_specialInstructions */}
+                      {specialInstructions && (
+                        <>
+                          <div className="w-full h-px bg-gray-200/80"></div>
+                          <div className="flex flex-col gap-0.5 text-gray-700">
+                            <span className="text-gray-500 font-medium">特別指示</span>
+                            <span className="text-gray-800 text-[10.5px] leading-relaxed">
+                              {specialInstructions}
+                            </span>
+                          </div>
+                        </>
+                      )}
+
+                      {/* 詳細資料 description */}
+                      {desc && (
+                        <div className="flex flex-col gap-0.5 text-gray-700 pt-0.5">
+                          <span className="text-gray-500 font-medium">詳細資料</span>
+                          <span className="text-gray-800 text-[10.5px] leading-relaxed">
+                            {desc}
+                          </span>
+                        </div>
+                      )}
+
+                      {/* 聯絡電話 mainPhone.display */}
+                      {mainPhone && (
+                        <>
+                          <div className="w-full h-px bg-gray-200/80"></div>
+                          <div className="flex items-center justify-between text-gray-700">
+                            <span className="text-gray-500 font-medium">聯絡電話</span>
+                            <a href={`tel:${phoneRaw || mainPhone}`} className="font-mono text-purple-600 hover:underline font-semibold">
+                              {mainPhone}
+                            </a>
+                          </div>
+                        </>
+                      )}
+                    </div>
+
+                    {/* 10.1.7 官網連結 (如圖 2 中的 Canada Post) */}
+                    <div className="pt-0.5">
+                      <a
+                        href={websiteUrl || "https://local.fedex.com/en-ca/bc/vancouver"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full py-2 px-3 rounded-lg bg-[#4D148C] hover:bg-[#3b0f6c] text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm cursor-pointer"
+                      >
+                        <span>前往 FedEx 分店資料網頁</span>
                         <ExternalLink className="w-3.5 h-3.5" />
                       </a>
                     </div>
@@ -15098,7 +15440,74 @@ export default function AppMap() {
       )}
 
       {/* 探索功能橫向平排底欄 (Explore Horizontal Bottom Bar Dock) */}
-      <div className="fixed bottom-[calc(10px+env(safe-area-inset-bottom,0px))] sm:bottom-3 left-0 right-0 z-40 pointer-events-none flex justify-center px-2">
+      <div className="fixed bottom-[calc(10px+env(safe-area-inset-bottom,0px))] sm:bottom-3 left-0 right-0 z-40 pointer-events-none flex flex-col items-center px-2">
+        {/* 浮動搜尋結果建議選單 (Floating Search Suggestions Dropup - 移至外層避免被 overflow-x 裁剪) */}
+        {isExploreSearchActive && (
+          <div className="pointer-events-auto mb-2 w-52 sm:w-60 bg-[#141822]/95 backdrop-blur-md border border-emerald-500/50 rounded-xl shadow-2xl p-2 flex flex-col gap-1 z-50 animate-in fade-in slide-in-from-bottom-2 duration-150">
+            <div className="text-[10px] text-gray-400 font-semibold px-2 py-0.5 border-b border-gray-700/60 flex items-center justify-between">
+              <span>探索分頁建議</span>
+              <span className="text-emerald-400 font-mono">
+                {[
+                  { id: 'weather', label: '天氣', icon: CloudRain, color: 'text-sky-400' },
+                  { id: 'news', label: '新聞', icon: Activity, color: 'text-amber-400' },
+                  { id: 'events', label: '活動', icon: Compass, color: 'text-purple-400' },
+                  { id: 'beach', label: '泳灘', icon: Waves, color: 'text-teal-300' },
+                  { id: 'ski', label: '滑雪', icon: Navigation, color: 'text-cyan-400' },
+                  { id: 'aurora', label: '極光', icon: Zap, color: 'text-fuchsia-400' },
+                  { id: 'jobs', label: '工作', icon: Briefcase, color: 'text-indigo-400' },
+                  { id: '311', label: '3-1-1', icon: PhoneCall, color: 'text-emerald-400' },
+                  { id: 'shopping', label: '購物', icon: ShoppingBag, color: 'text-rose-400' },
+                  { id: 'fuel', label: '油站', icon: Fuel, color: 'text-amber-500' },
+                  { id: 'ev', label: '充電', icon: Zap, color: 'text-yellow-400' },
+                  { id: 'alerts', label: '即時通報', icon: AlertCircle, color: 'text-rose-400' },
+                  { id: 'traffic', label: '路況', icon: Activity, color: 'text-amber-400' },
+                  { id: 'crashes', label: '意外', icon: AlertTriangle, color: 'text-rose-400' },
+                  { id: 'border', label: '關口', icon: Compass, color: 'text-blue-400' },
+                  { id: 'ferry', label: '渡輪', icon: Ship, color: 'text-sky-400' },
+                  { id: 'cargo', label: '航運', icon: Ship, color: 'text-teal-400' },
+                ].filter(t => !exploreSearchInput.trim() || t.label.includes(exploreSearchInput.trim()) || t.id.includes(exploreSearchInput.trim().toLowerCase())).length} 項
+              </span>
+            </div>
+            <div className="max-h-48 overflow-y-auto flex flex-col gap-0.5">
+              {[
+                { id: 'weather', label: '天氣', icon: CloudRain, color: 'text-sky-400' },
+                { id: 'news', label: '新聞', icon: Activity, color: 'text-amber-400' },
+                { id: 'events', label: '活動', icon: Compass, color: 'text-purple-400' },
+                { id: 'beach', label: '泳灘', icon: Waves, color: 'text-teal-300' },
+                { id: 'ski', label: '滑雪', icon: Navigation, color: 'text-cyan-400' },
+                { id: 'aurora', label: '極光', icon: Zap, color: 'text-fuchsia-400' },
+                { id: 'jobs', label: '工作', icon: Briefcase, color: 'text-indigo-400' },
+                { id: '311', label: '3-1-1', icon: PhoneCall, color: 'text-emerald-400' },
+                { id: 'shopping', label: '購物', icon: ShoppingBag, color: 'text-rose-400' },
+                { id: 'fuel', label: '油站', icon: Fuel, color: 'text-amber-500' },
+                { id: 'ev', label: '充電', icon: Zap, color: 'text-yellow-400' },
+                { id: 'alerts', label: '即時通報', icon: AlertCircle, color: 'text-rose-400' },
+                { id: 'traffic', label: '路況', icon: Activity, color: 'text-amber-400' },
+                { id: 'crashes', label: '意外', icon: AlertTriangle, color: 'text-rose-400' },
+                { id: 'border', label: '關口', icon: Compass, color: 'text-blue-400' },
+                { id: 'ferry', label: '渡輪', icon: Ship, color: 'text-sky-400' },
+                { id: 'cargo', label: '航運', icon: Ship, color: 'text-teal-400' },
+              ].filter(t => !exploreSearchInput.trim() || t.label.includes(exploreSearchInput.trim()) || t.id.includes(exploreSearchInput.trim().toLowerCase())).map(t => {
+                const TabIcon = t.icon;
+                return (
+                  <button
+                    key={t.id}
+                    onClick={() => {
+                      openExploreTab(t.id as any);
+                      setIsExploreSearchActive(false);
+                      setExploreSearchInput('');
+                    }}
+                    className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-emerald-500/20 text-xs text-left text-gray-200 hover:text-white transition-colors cursor-pointer"
+                  >
+                    <TabIcon className={`w-3.5 h-3.5 shrink-0 ${t.color}`} />
+                    <span className="font-medium text-xs">{t.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         <div 
           className="pointer-events-auto select-none flex items-center gap-1 px-2.5 py-1.5 bg-[#10131a]/95 backdrop-blur-md rounded-full border border-[#2a2f3d] shadow-2xl max-w-full sm:max-w-[calc(100vw-24px)] overflow-x-auto scrollbar-none ring-1 ring-white/5 touch-pan-x" 
           style={{ WebkitOverflowScrolling: 'touch' }}
@@ -15144,68 +15553,6 @@ export default function AppMap() {
               >
                 <X className="w-3.5 h-3.5" />
               </button>
-
-              {/* 浮動搜尋結果建議選單 (Floating Search Suggestions Dropup) */}
-              <div className="absolute bottom-[calc(100%+8px)] left-0 w-44 bg-[#141822]/95 backdrop-blur-md border border-emerald-500/40 rounded-xl shadow-2xl p-1.5 flex flex-col gap-1 z-50 animate-in fade-in slide-in-from-bottom-2 duration-150">
-                <div className="text-[10px] text-gray-400 font-semibold px-2 py-0.5 border-b border-gray-700/60">
-                  探索分頁建議 ({
-                    [
-                      { id: 'weather', label: '天氣', icon: CloudRain, color: 'text-sky-400' },
-                      { id: 'news', label: '新聞', icon: Activity, color: 'text-amber-400' },
-                      { id: 'events', label: '活動', icon: Compass, color: 'text-purple-400' },
-                      { id: 'beach', label: '泳灘', icon: Waves, color: 'text-teal-300' },
-                      { id: 'ski', label: '滑雪', icon: Navigation, color: 'text-cyan-400' },
-                      { id: 'aurora', label: '極光', icon: Zap, color: 'text-fuchsia-400' },
-                      { id: 'jobs', label: '工作', icon: Briefcase, color: 'text-indigo-400' },
-                      { id: '311', label: '3-1-1', icon: PhoneCall, color: 'text-emerald-400' },
-                      { id: 'shopping', label: '購物', icon: ShoppingBag, color: 'text-rose-400' },
-                      { id: 'fuel', label: '油站', icon: Fuel, color: 'text-amber-500' },
-                      { id: 'ev', label: '充電', icon: Zap, color: 'text-yellow-400' },
-                      { id: 'alerts', label: '即時通報', icon: AlertCircle, color: 'text-rose-400' },
-                      { id: 'traffic', label: '路況', icon: Activity, color: 'text-amber-400' },
-                      { id: 'border', label: '關口', icon: Compass, color: 'text-blue-400' },
-                      { id: 'ferry', label: '渡輪', icon: Ship, color: 'text-sky-400' },
-                      { id: 'cargo', label: '航運', icon: Ship, color: 'text-teal-400' },
-                    ].filter(t => !exploreSearchInput.trim() || t.label.includes(exploreSearchInput.trim()) || t.id.includes(exploreSearchInput.trim().toLowerCase())).length
-                  })
-                </div>
-                <div className="max-h-48 overflow-y-auto flex flex-col gap-0.5">
-                  {[
-                    { id: 'weather', label: '天氣', icon: CloudRain, color: 'text-sky-400' },
-                    { id: 'news', label: '新聞', icon: Activity, color: 'text-amber-400' },
-                    { id: 'events', label: '活動', icon: Compass, color: 'text-purple-400' },
-                    { id: 'beach', label: '泳灘', icon: Waves, color: 'text-teal-300' },
-                    { id: 'ski', label: '滑雪', icon: Navigation, color: 'text-cyan-400' },
-                    { id: 'aurora', label: '極光', icon: Zap, color: 'text-fuchsia-400' },
-                    { id: 'jobs', label: '工作', icon: Briefcase, color: 'text-indigo-400' },
-                    { id: '311', label: '3-1-1', icon: PhoneCall, color: 'text-emerald-400' },
-                    { id: 'shopping', label: '購物', icon: ShoppingBag, color: 'text-rose-400' },
-                    { id: 'fuel', label: '油站', icon: Fuel, color: 'text-amber-500' },
-                    { id: 'ev', label: '充電', icon: Zap, color: 'text-yellow-400' },
-                    { id: 'alerts', label: '即時通報', icon: AlertCircle, color: 'text-rose-400' },
-                    { id: 'traffic', label: '路況', icon: Activity, color: 'text-amber-400' },
-                    { id: 'border', label: '關口', icon: Compass, color: 'text-blue-400' },
-                    { id: 'ferry', label: '渡輪', icon: Ship, color: 'text-sky-400' },
-                    { id: 'cargo', label: '航運', icon: Ship, color: 'text-teal-400' },
-                  ].filter(t => !exploreSearchInput.trim() || t.label.includes(exploreSearchInput.trim()) || t.id.includes(exploreSearchInput.trim().toLowerCase())).map(t => {
-                    const TabIcon = t.icon;
-                    return (
-                      <button
-                        key={t.id}
-                        onClick={() => {
-                          openExploreTab(t.id as any);
-                          setIsExploreSearchActive(false);
-                          setExploreSearchInput('');
-                        }}
-                        className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-white/10 text-xs text-left text-gray-200 hover:text-white transition-colors cursor-pointer"
-                      >
-                        <TabIcon className={`w-3.5 h-3.5 shrink-0 ${t.color}`} />
-                        <span className="font-medium text-xs">{t.label}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
             </div>
           )}
 
@@ -15223,10 +15570,11 @@ export default function AppMap() {
             { id: 'ev', label: '充電', icon: Zap, color: 'text-yellow-400' },
             { id: 'alerts', label: '即時通報', icon: AlertCircle, color: 'text-rose-400' },
             { id: 'traffic', label: '路況', icon: Activity, color: 'text-amber-400' },
+            { id: 'crashes', label: '意外', icon: AlertTriangle, color: 'text-rose-400' },
             { id: 'border', label: '關口', icon: Compass, color: 'text-blue-400' },
             { id: 'ferry', label: '渡輪', icon: Ship, color: 'text-sky-400' },
             { id: 'cargo', label: '航運', icon: Ship, color: 'text-teal-400' },
-          ].map((tab) => {
+          ].filter(t => !exploreSearchInput.trim() || t.label.includes(exploreSearchInput.trim()) || t.id.includes(exploreSearchInput.trim().toLowerCase())).map((tab) => {
             const isActive = isExploreOpen && exploreTab === tab.id;
             const Icon = tab.icon;
             return (
@@ -15570,13 +15918,17 @@ export default function AppMap() {
       {/* 點選天車列車時固定在右方展示之即時動態資料面板 */}
       {selectedTrain && (() => {
         const lineName = selectedTrain.line_name;
-        const destName = selectedTrain.destination;
-        const originName = selectedTrain.origin;
+        const destName = (selectedTrain.destination || '').replace(/\s*Station$/i, '').replace(/\s*站$/, '').trim() + ' Station';
+        const originName = (selectedTrain.origin || '').replace(/\s*Station$/i, '').replace(/\s*站$/, '').trim() + ' Station';
         const operatorName = selectedTrain.operator;
-        const nextStopName = selectedTrain.next_station || '沿線行駛中';
+        const nextStopName = selectedTrain.next_station ? (selectedTrain.next_station.replace(/\s*Station$/i, '').replace(/\s*站$/, '').trim() + ' Station') : '沿線行駛中';
         const nextStopTime = selectedTrain.next_stop_time || '';
         const nextStopMin = selectedTrain.next_stop_minutes;
         const stopList = selectedTrain.stops || [];
+        const trainModelClean = (selectedTrain.model || '')
+          .replace(/\s*\([^)]*[\u4e00-\u9fa5][^)]*\)/g, '')
+          .replace(/[\u4e00-\u9fa5]+/g, '')
+          .trim();
 
         return (
           <div className="fixed top-[72px] right-4 z-40 w-[340px] max-w-[calc(100vw-32px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-200 select-none">
@@ -15621,7 +15973,7 @@ export default function AppMap() {
               <div className="flex justify-between items-center gap-2">
                 <span className="text-gray-400 shrink-0">列車型號</span>
                 <span className="font-bold text-gray-100 text-right truncate">
-                  {(selectedTrain.model || '').replace(/\s*\([\u4e00-\u9fa5]+\)/g, '')} ({selectedTrain.cars} 卡)
+                  {trainModelClean || selectedTrain.model || 'SkyTrain'} ({selectedTrain.cars} 卡)
                 </span>
               </div>
               <div className="flex justify-between items-center gap-2">
@@ -15659,7 +16011,7 @@ export default function AppMap() {
             <div className="mt-3 pt-2.5 border-t border-[#262b38] flex-1 flex flex-col min-h-0">
               <div className="bg-[#10131a] rounded-lg border border-[#232836] p-2 flex-1 flex flex-col min-h-0">
                 <div className="text-[11px] text-gray-400 font-medium mb-1.5 px-1 flex items-center justify-between shrink-0">
-                  <span>{stopList.length} 個站</span>
+                  <span>{stopList.length} 個站點</span>
                   <span className="text-[10px] font-mono truncate max-w-[140px]" style={{ color: selectedTrain.color }}>
                     {selectedTrain.line_name}
                   </span>
@@ -15668,13 +16020,14 @@ export default function AppMap() {
                   {stopList.map((st) => {
                     const isNext = st.status === 'next';
                     const isPassed = st.status === 'passed';
+                    const stopStationName = (st.name || '').replace(/\s*Station$/i, '').replace(/\s*站$/, '').trim() + ' Station';
                     return (
                       <div
                         key={`train-popup-stop-${st.seq}`}
                         ref={isNext ? (el) => { el?.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } : undefined}
                         onClick={() => {
                           mapRef.current?.flyTo({ center: [st.lon, st.lat], zoom: 15.5, duration: 800 });
-                          fetchSkytrainStationSchedule(String(st.stop_id), st.name, st.lon, st.lat);
+                          fetchSkytrainStationSchedule(String(st.stop_id), stopStationName, st.lon, st.lat);
                         }}
                         className={`flex items-center justify-between gap-2 px-2 py-1.5 rounded text-[11.5px] cursor-pointer transition-colors ${
                           isNext
@@ -15685,7 +16038,7 @@ export default function AppMap() {
                         }`}
                       >
                         <span className="truncate">
-                          {st.seq}. {st.name}
+                          {st.seq}. {stopStationName}
                         </span>
                         <span className={`shrink-0 text-[10.5px] font-semibold ${
                           isNext
@@ -16643,7 +16996,6 @@ export default function AppMap() {
               </span>
               <div className="flex flex-col">
                 <span className="font-bold text-xs text-white">私人停車場篩選</span>
-                <span className="text-[9.5px] text-gray-400">時租 · 月租 · 充電樁</span>
               </div>
             </div>
             <button
@@ -16657,6 +17009,38 @@ export default function AppMap() {
 
           {imparkLegendOpen ? (
             <div className="flex flex-col gap-2 text-xs">
+              {/* 營運公司篩選 */}
+              <div className="flex flex-col gap-1 pb-2 border-b border-[#262b38]">
+                <span className="text-[10px] text-gray-400 font-semibold">營運公司</span>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => setImparkFilter(prev => ({
+                      ...prev,
+                      companies: { ...prev.companies, impark: !prev.companies?.impark }
+                    }))}
+                    className={`flex-1 flex items-center justify-center gap-1.5 py-1 px-2 rounded border text-xs font-medium transition-all cursor-pointer ${
+                      imparkFilter.companies?.impark
+                        ? 'bg-red-950/40 border-red-500/60 text-white'
+                        : 'bg-[#1b1f2b] border-[#293042] text-gray-400 hover:bg-[#222838]'
+                    }`}
+                  >
+                    <span className={`w-2 h-2 rounded-full ${imparkFilter.companies?.impark ? 'bg-red-500' : 'bg-gray-600'}`} />
+                    <span>ImPark</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    disabled
+                    className="flex-1 flex items-center justify-center gap-1.5 py-1 px-2 rounded border border-gray-800 bg-[#141720] text-gray-500 text-xs font-medium cursor-not-allowed opacity-60"
+                    title="即將支援"
+                  >
+                    <span className="w-2 h-2 rounded-full bg-gray-600" />
+                    <span>EasyPark (即將支援)</span>
+                  </button>
+                </div>
+              </div>
+
               {/* 時租泊車 */}
               <button
                 type="button"
@@ -16758,6 +17142,171 @@ export default function AppMap() {
               <button 
                 onClick={() => setImparkLegendOpen(true)}
                 className="text-[10px] text-red-400 hover:underline cursor-pointer"
+              >
+                展開
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* 郵寄服務圖例與篩選 (Courier Filter Popup: Canada Post, FedEx, UPS, Purolator, DHL) */}
+      {layers.canadaPost && (
+        <div className={`fixed z-30 w-[270px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-purple-500/50 select-none animate-in fade-in duration-200 ${
+          getFloatingPanelPos(
+            (layers.parkingMeters ? 1 : 0) + 
+            (layers.motorcycleParking ? 1 : 0) + 
+            (layers.fuel ? 1 : 0) + 
+            ((layers.evCharging || layers.tesla) ? 1 : 0) + 
+            (layers.carSharing ? 1 : 0) + 
+            (layers.bikeways ? 1 : 0) +
+            (layers.truckRoutes ? 1 : 0) +
+            (layers.safetyCameras ? 1 : 0) +
+            (layers.impark ? 1 : 0)
+          )
+        }`}>
+          <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
+            <div className="flex items-center gap-2">
+              <span className="w-5 h-5 rounded-full bg-[#4D148C] text-white flex items-center justify-center font-bold text-[10px] shadow-sm">
+                📬
+              </span>
+              <div className="flex flex-col">
+                <span className="font-bold text-xs text-white">郵寄物流篩選</span>
+                <span className="text-[9.5px] text-gray-400">包裹投遞 · 站點取件</span>
+              </div>
+            </div>
+            <button
+              onClick={() => setCourierLegendOpen(!courierLegendOpen)}
+              className="text-gray-400 hover:text-white p-0.5 rounded hover:bg-[#252a38] transition-colors"
+              title={courierLegendOpen ? "收合" : "展開"}
+            >
+              {courierLegendOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            </button>
+          </div>
+
+          {courierLegendOpen ? (
+            <div className="flex flex-col gap-1.5 text-xs">
+              {/* Canada Post (預設開, 紅色) */}
+              <button
+                type="button"
+                onClick={() => setCourierFilter(prev => ({ ...prev, canadaPost: !prev.canadaPost }))}
+                className={`flex items-center justify-between p-1.5 rounded-lg border transition-all text-left cursor-pointer ${
+                  courierFilter.canadaPost 
+                    ? 'bg-red-950/40 border-red-500/60 text-white' 
+                    : 'bg-[#1b1f2b] border-[#293042] text-gray-400 hover:bg-[#222838]'
+                }`}
+                title={courierFilter.canadaPost ? "點擊隱藏 Canada Post" : "點擊顯示 Canada Post"}
+              >
+                <div className="flex items-center gap-2">
+                  <span className={`w-3 h-3 rounded-full flex items-center justify-center text-[8px] font-bold text-white ${
+                    courierFilter.canadaPost ? 'bg-[#E31837]' : 'bg-gray-600'
+                  }`}>
+                    CP
+                  </span>
+                  <span className={`font-medium text-xs ${courierFilter.canadaPost ? 'text-white' : 'text-gray-400 line-through'}`}>
+                    Canada Post
+                  </span>
+                </div>
+                <div className={`w-7 h-4 flex items-center rounded-full p-0.5 transition-colors ${
+                  courierFilter.canadaPost ? 'bg-[#E31837] justify-end' : 'bg-gray-700 justify-start'
+                }`}>
+                  <div className="bg-white w-3 h-3 rounded-full shadow-md"></div>
+                </div>
+              </button>
+
+              {/* FedEx (預設開, 紫色) */}
+              <button
+                type="button"
+                onClick={() => setCourierFilter(prev => ({ ...prev, fedex: !prev.fedex }))}
+                className={`flex items-center justify-between p-1.5 rounded-lg border transition-all text-left cursor-pointer ${
+                  courierFilter.fedex 
+                    ? 'bg-purple-950/40 border-purple-500/60 text-white' 
+                    : 'bg-[#1b1f2b] border-[#293042] text-gray-400 hover:bg-[#222838]'
+                }`}
+                title={courierFilter.fedex ? "點擊隱藏 FedEx" : "點擊顯示 FedEx"}
+              >
+                <div className="flex items-center gap-2">
+                  <span className={`w-3 h-3 rounded-full flex items-center justify-center text-[8px] font-bold text-white ${
+                    courierFilter.fedex ? 'bg-[#4D148C]' : 'bg-gray-600'
+                  }`}>
+                    FX
+                  </span>
+                  <span className={`font-medium text-xs ${courierFilter.fedex ? 'text-white' : 'text-gray-400 line-through'}`}>
+                    FedEx
+                  </span>
+                </div>
+                <div className={`w-7 h-4 flex items-center rounded-full p-0.5 transition-colors ${
+                  courierFilter.fedex ? 'bg-[#4D148C] justify-end' : 'bg-gray-700 justify-start'
+                }`}>
+                  <div className="bg-white w-3 h-3 rounded-full shadow-md"></div>
+                </div>
+              </button>
+
+              {/* UPS (預設關閉, 啡色, disable) */}
+              <button
+                type="button"
+                disabled
+                className="flex items-center justify-between p-1.5 rounded-lg border border-amber-950/40 bg-[#161412] text-amber-600/50 cursor-not-allowed opacity-60"
+                title="即將支援"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="w-3 h-3 rounded-full flex items-center justify-center text-[8px] font-bold text-white bg-[#552c0e]/60">
+                    UPS
+                  </span>
+                  <span className="font-medium text-xs">
+                    UPS (即將支援)
+                  </span>
+                </div>
+                <span className="text-[10px] text-gray-500">停用</span>
+              </button>
+
+              {/* Purolator (預設關閉, 藍色, disable) */}
+              <button
+                type="button"
+                disabled
+                className="flex items-center justify-between p-1.5 rounded-lg border border-blue-950/40 bg-[#10141d] text-blue-500/50 cursor-not-allowed opacity-60"
+                title="即將支援"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="w-3 h-3 rounded-full flex items-center justify-center text-[8px] font-bold text-white bg-blue-800/60">
+                    P
+                  </span>
+                  <span className="font-medium text-xs">
+                    Purolator (即將支援)
+                  </span>
+                </div>
+                <span className="text-[10px] text-gray-500">停用</span>
+              </button>
+
+              {/* DHL (預設關閉, 黃色, disable) */}
+              <button
+                type="button"
+                disabled
+                className="flex items-center justify-between p-1.5 rounded-lg border border-yellow-950/40 bg-[#171610] text-yellow-500/50 cursor-not-allowed opacity-60"
+                title="即將支援"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="w-3 h-3 rounded-full flex items-center justify-center text-[8px] font-bold text-gray-900 bg-yellow-500/60">
+                    DHL
+                  </span>
+                  <span className="font-medium text-xs">
+                    DHL (即將支援)
+                  </span>
+                </div>
+                <span className="text-[10px] text-gray-500">停用</span>
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center justify-between text-[11px]">
+              <div className="flex items-center gap-1.5">
+                <span className={`w-2 h-2 rounded-full ${courierFilter.canadaPost ? 'bg-[#E31837]' : 'bg-gray-600'}`} />
+                <span className="text-[10.5px] text-gray-300">Canada Post</span>
+                <span className={`w-2 h-2 rounded-full ml-1 ${courierFilter.fedex ? 'bg-[#4D148C]' : 'bg-gray-600'}`} />
+                <span className="text-[10.5px] text-gray-300">FedEx</span>
+              </div>
+              <button 
+                onClick={() => setCourierLegendOpen(true)}
+                className="text-[10px] text-purple-400 hover:underline cursor-pointer"
               >
                 展開
               </button>
@@ -16992,7 +17541,7 @@ export default function AppMap() {
               </div>
               <div className="min-w-0">
                 <h3 className="font-bold text-white text-[15px] leading-snug tracking-tight truncate">
-                  {selectedSkytrainStation.name.replace(/\s*站$/, ' Station')}
+                  {selectedSkytrainStation.name.replace(/\s*Station$/i, '').replace(/\s*站$/, '').trim() + ' Station'}
                 </h3>
                 <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
                   {selectedSkytrainStation.lines.map((ln) => (
@@ -17008,7 +17557,7 @@ export default function AppMap() {
                     </span>
                   ))}
                   <span className="text-[9.5px] font-semibold px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-                    {selectedSkytrainStation.fare_zone?.match(/Zone\s*[1-3]/i)?.[0] || (selectedSkytrainStation.fare_zone?.startsWith('Zone') ? selectedSkytrainStation.fare_zone.split(' ')[0] : `Zone ${selectedSkytrainStation.fare_zone || 1}`)}
+                    {selectedSkytrainStation.fare_zone?.match(/Zone\s*[1-3]/i)?.[0] || 'Zone 1'}
                   </span>
                   <span className="text-[10px] text-gray-400 font-mono">#{selectedSkytrainStation.stop_id}</span>
                 </div>
@@ -17115,7 +17664,7 @@ export default function AppMap() {
                             {group.line_name}
                           </span>
                           <span className="text-[11px] text-gray-300 truncate">
-                            往 {group.destination}
+                            往 {(group.destination || '').replace(/\s*Station$/i, '').replace(/\s*站$/, '').trim() + ' Station'}
                           </span>
                         </div>
                       </div>
