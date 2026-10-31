@@ -14,7 +14,6 @@ const CHANGELOG_DATA: ChangelogEntry[] = [
   {
     date: '2026-11-01',
     version: 'v2026.11.0',
-    tag: '正式版',
     highlights: [
       '釋出正式版'
     ]
@@ -107,16 +106,9 @@ export default function ChangelogModal({ isOpen, onClose }: ChangelogModalProps)
 
                     {/* 版本欄 */}
                     <td className="py-3.5 px-4 align-top whitespace-nowrap">
-                      <div className="flex flex-col gap-1 items-start">
-                        <span className="font-mono font-bold text-xs text-sky-300 px-2 py-0.5 rounded bg-sky-950/80 border border-sky-500/40">
-                          {entry.version}
-                        </span>
-                        {entry.tag && (
-                          <span className="text-[9.5px] font-semibold text-emerald-300 bg-emerald-950/60 border border-emerald-500/30 px-1.5 py-0.2 rounded-full">
-                            {entry.tag}
-                          </span>
-                        )}
-                      </div>
+                      <span className="font-mono font-bold text-xs text-sky-300 px-2 py-0.5 rounded bg-sky-950/80 border border-sky-500/40 inline-block">
+                        {entry.version}
+                      </span>
                     </td>
 
                     {/* 內容欄 */}

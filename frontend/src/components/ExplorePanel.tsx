@@ -6162,22 +6162,6 @@ function ExploreContent() {
             </span>
           </div>
 
-          {/* 數據說明卡片 (精簡概括段落重點) */}
-          <div className="mb-2 shrink-0 bg-[#141824]/90 border border-rose-900/40 rounded-lg p-2.5 text-[11px] leading-relaxed text-gray-300 shadow-sm">
-            <div className="flex items-center justify-between font-semibold text-rose-300 text-xs mb-1.5">
-              <span className="flex items-center gap-1.5">
-                <AlertTriangle className="w-3.5 h-3.5 text-rose-400 shrink-0" />
-                <span>ICBC 低陸平原車禍數據說明 (2021–2025)</span>
-              </span>
-              <span className="text-[10px] text-gray-400 font-mono">截至 2026/03/31</span>
-            </div>
-            <ul className="list-disc pl-4 space-y-1 text-gray-300 text-[10.5px]">
-              <li><strong className="text-gray-200">案件涵蓋：</strong>包含人員傷亡 (Casualty) 與純財產損失 (PDO) 案件；排除停車場內及涉及靜止車輛之碰撞，單區加總不等同全區總數。</li>
-              <li><strong className="text-gray-200">座標繪製：</strong>路段中間 (Mid-block) 事故取相鄰兩路口中點標繪；市鎮邊界事故計入相鄰兩市；僅收錄具備有效經緯度座標之案件。</li>
-              <li><strong className="text-gray-200">數據特性：</strong>地點由事故當事人自主申報；各年度統計可能因校正或延遲申報微幅變動；2021 年數據受 COVID-19 疫情交通型態變更影響。</li>
-            </ul>
-          </div>
-
           {/* 頂部搜尋列 */}
           <div className="relative mb-2 shrink-0">
             <Search className="w-3.5 h-3.5 text-gray-500 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />

@@ -38,61 +38,143 @@ export default function TopBar() {
   const [isChangelogModalOpen, setIsChangelogModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
-  // 搜尋圖層篩選類別定義
+  // 搜尋圖層篩選類別定義 (根據圖層控制面板 7 大類別分類)
   const SEARCH_CATEGORY_FILTERS = [
     {
-      id: 'transit',
-      label: '大眾運輸',
+      id: 'transport',
+      label: '交通',
       icon: '🚌',
-      matcher: (item: SearchTarget) => ['bus_route', 'skytrain', 'seabus', 'ferry_terminal', 'transit'].includes(item.category)
+      matcher: (item: SearchTarget) => {
+        const targetKeys = [
+          'bus', 'busRoutes', 'busStops', 'skytrainTrains', 'skytrainRoutes', 'skytrainStops',
+          'seabusVehicles', 'seabusRoutes', 'seabusStops', 'bcferriesVehicles', 'bcferriesRoutes',
+          'bcferriesTerminals', 'maritimeShipping', 'marineTerminals', 'airports'
+        ];
+        const targetCats = [
+          'bus_route', 'bus_stop', 'skytrain', 'seabus', 'bcferries', 'ferry_terminal',
+          'transit', 'airports', 'marine_terminals', 'maritimeShipping', 'flights'
+        ];
+        return (item.layer_key && targetKeys.includes(item.layer_key as string)) ||
+          targetCats.includes(item.category) ||
+          targetKeys.some(k => item.id?.startsWith(k));
+      }
     },
     {
-      id: 'postal',
-      label: '郵政快遞',
-      icon: '📮',
-      matcher: (item: SearchTarget) => ['post_offices', 'canada_post', 'fedex', 'ups', 'dhl', 'courier', 'postal_code_fsa'].includes(item.category) || ['canadaPost'].includes(item.layer_key as string)
+      id: 'road',
+      label: '道路',
+      icon: '🛣️',
+      matcher: (item: SearchTarget) => {
+        const targetKeys = [
+          'parkingMeters', 'impark', 'motorcycleParking', 'accessibleParking',
+          'oneWayStreets', 'trafficSpeedLimits', 'trafficCrosswalks', 'carSharing',
+          'bikeways', 'bikeRacks', 'sharedBikes', 'escooter', 'trafficSignals',
+          'turnRestrictions', 'evCharging', 'tesla', 'truckRoutes', 'railways', 'roadClosures',
+          'roadConstruction', 'trafficCameras', 'safetyCameras', 'fuel',
+          'trafficConditions', 'snowRemovalRoutes', 'trafficAlerts'
+        ];
+        const targetCats = [
+          'parking_meters', 'impark', 'motorcycle_parking', 'accessible_parking',
+          'one_way_streets', 'traffic_speed_limits', 'traffic_crosswalks', 'car_sharing',
+          'bikeways', 'bike_racks', 'shared_bikes', 'escooter', 'traffic_signals',
+          'turn_restrictions', 'traffic_turn_restrictions', 'ev_charging', 'tesla',
+          'truck_routes', 'truck_routes_restriction', 'railways', 'road_closures',
+          'road_construction', 'traffic_cameras', 'safety_cameras', 'fuel',
+          'traffic_conditions', 'snow_removal_routes', 'traffic_incident', 'trafficAlerts'
+        ];
+        return (item.layer_key && targetKeys.includes(item.layer_key as string)) ||
+          targetCats.includes(item.category) ||
+          targetKeys.some(k => item.id?.startsWith(k));
+      }
     },
     {
-      id: 'parking',
-      label: '停車泊車',
-      icon: '🅿️',
-      matcher: (item: SearchTarget) => ['parking_meters', 'accessible_parking', 'motorcycle_parking', 'car_sharing', 'impark'].includes(item.category) || ['parkingMeters', 'motorcycleParking', 'accessibleParking', 'impark', 'carSharing'].includes(item.layer_key as string)
+      id: 'lifestyle',
+      label: '生活',
+      icon: '🏬',
+      matcher: (item: SearchTarget) => {
+        const targetKeys = [
+          'schools', 'libraries', 'communityCentres', 'atm', 'aed', 'canadaPost',
+          'publicArt', 'museums', 'foodVendors', 'foodBanks', 'recycling',
+          'garbageCollection', 'litterContainers', 'homelessShelters'
+        ];
+        const targetCats = [
+          'schools', 'libraries', 'community_centres', 'atm', 'aed', 'canada_post',
+          'post_offices', 'public_art', 'museums', 'food_vendors', 'food_banks',
+          'recycling', 'garbage_collection', 'litter_containers', 'homeless_shelters'
+        ];
+        return (item.layer_key && targetKeys.includes(item.layer_key as string)) ||
+          targetCats.includes(item.category) ||
+          targetKeys.some(k => item.id?.startsWith(k));
+      }
     },
     {
-      id: 'energy',
-      label: '油站充電',
-      icon: '⚡',
-      matcher: (item: SearchTarget) => ['fuel', 'tesla', 'ev_charging', 'ev'].includes(item.category) || ['fuel', 'tesla', 'evCharging'].includes(item.layer_key as string)
+      id: 'nature',
+      label: '自然',
+      icon: '🌳',
+      matcher: (item: SearchTarget) => {
+        const targetKeys = [
+          'parks', 'parksFacilities', 'communityGardens', 'publicTrees',
+          'drinkingFountains', 'publicWashrooms'
+        ];
+        const targetCats = [
+          'parks', 'parks_facilities', 'community_gardens', 'public_trees',
+          'drinking_fountains', 'public_washrooms'
+        ];
+        return (item.layer_key && targetKeys.includes(item.layer_key as string)) ||
+          targetCats.includes(item.category) ||
+          targetKeys.some(k => item.id?.startsWith(k));
+      }
     },
     {
-      id: 'emergency',
-      label: '急救醫療',
-      icon: '🚨',
-      matcher: (item: SearchTarget) => ['fire_halls', 'police', 'disaster_hubs', 'hospitals', 'aed', 'homeless_shelters'].includes(item.category) || ['fireHalls', 'police', 'disasterHubs', 'hospitals', 'aed'].includes(item.layer_key as string)
-    },
-    {
-      id: 'community',
-      label: '社區文教',
+      id: 'government',
+      label: '政府',
       icon: '🏛️',
-      matcher: (item: SearchTarget) => ['schools', 'libraries', 'museums', 'community_centres', 'parks', 'public_art', 'community_gardens'].includes(item.category) || ['schools', 'libraries', 'museums', 'communityCentres', 'parks', 'publicArt'].includes(item.layer_key as string)
+      matcher: (item: SearchTarget) => {
+        const targetKeys = [
+          'police', 'crimeAreas', 'fireHalls', 'fireHydrants', 'hospitals',
+          'disasterHubs', 'vanWifi'
+        ];
+        const targetCats = [
+          'police', 'crime_areas', 'fire_halls', 'fire_hydrants', 'hospitals',
+          'disaster_hubs', 'van_wifi'
+        ];
+        return (item.layer_key && targetKeys.includes(item.layer_key as string)) ||
+          targetCats.includes(item.category) ||
+          targetKeys.some(k => item.id?.startsWith(k));
+      }
     },
     {
-      id: 'traffic',
-      label: '路況設施',
-      icon: '📷',
-      matcher: (item: SearchTarget) => ['traffic_cameras', 'traffic_incident', 'road_closures', 'traffic_conditions', 'safety_cameras', 'bikeways', 'traffic_crosswalks', 'turn_restrictions'].includes(item.category) || ['trafficCameras', 'safetyCameras', 'trafficConditions', 'trafficAlerts', 'bikeways'].includes(item.layer_key as string)
+      id: 'utilities',
+      label: '公共事業',
+      icon: '💧',
+      matcher: (item: SearchTarget) => {
+        const targetKeys = [
+          'waterDistributionMains', 'sewerMains', 'streetLightingConduits',
+          'streetLighting'
+        ];
+        const targetCats = [
+          'water_distribution_mains', 'sewer_mains', 'street_lighting_conduits',
+          'street_lighting'
+        ];
+        return (item.layer_key && targetKeys.includes(item.layer_key as string)) ||
+          targetCats.includes(item.category) ||
+          targetKeys.some(k => item.id?.startsWith(k));
+      }
     },
     {
-      id: 'atm',
-      label: '自動櫃員機',
-      icon: '🏧',
-      matcher: (item: SearchTarget) => item.category === 'atm' || item.layer_key === 'atm'
-    },
-    {
-      id: 'ports',
-      label: '海空關卡',
-      icon: '✈️',
-      matcher: (item: SearchTarget) => ['border_crossing', 'airports', 'marine_terminals'].includes(item.category) || ['airports', 'marineTerminals'].includes(item.layer_key as string)
+      id: 'geography',
+      label: '地理',
+      icon: '🧭',
+      matcher: (item: SearchTarget) => {
+        const targetKeys = [
+          'localAreaBoundary', 'postalCodeFSA', 'zoningDistricts', 'beachWaterQuality', 'contours'
+        ];
+        const targetCats = [
+          'local_area_boundary', 'postal_code_fsa', 'zoning_districts', 'beach_water_quality', 'contours'
+        ];
+        return (item.layer_key && targetKeys.includes(item.layer_key as string)) ||
+          targetCats.includes(item.category) ||
+          targetKeys.some(k => item.id?.startsWith(k));
+      }
     }
   ];
 
