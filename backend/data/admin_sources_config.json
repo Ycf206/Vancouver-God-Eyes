@@ -1344,28 +1344,6 @@
       "source_url": "https://local.fedex.com/en-ca/bc/vancouver"
     },
     {
-      "id": "purolator",
-      "name": "Purolator 門市與自取據點",
-      "type": "geojson",
-      "cron_expr": "0 4 1 * *",
-      "schedule_interval": "每月 1 日 04:00",
-      "record_count": 96,
-      "unit": "處門市據點",
-      "last_updated": "2026-10-31T07:39:00Z",
-      "status": "ok",
-      "data_pipeline_notes": "定期同步大溫哥華地區 Purolator 服務據點、營業時間、投遞截止時間與包裹尺寸規格",
-      "runner": "github_actions",
-      "category": "生活",
-      "workflow_file": "update-purolator.yml",
-      "source_links": [
-        {
-          "label": "Purolator Shipping Centre",
-          "url": "https://www.purolator.com/en/shipping/find-shipping-centre"
-        }
-      ],
-      "source_url": "https://www.purolator.com/en/shipping/find-shipping-centre"
-    },
-    {
       "id": "vancouver_crashes",
       "name": "大溫哥華車禍事故統計熱點",
       "type": "geojson",
