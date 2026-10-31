@@ -267,6 +267,9 @@ export default function AdminPage() {
   const [systemRetentionDays, setSystemRetentionDays] = useState<number>(30);
   const [systemLogLevelFilter, setSystemLogLevelFilter] = useState<string>('all');
   const [systemLogSearch, setSystemLogSearch] = useState<string>('');
+  const [systemLogPage, setSystemLogPage] = useState<number>(1);
+  const SYSTEM_LOG_PAGE_SIZE = 25;
+  const [previewModalImage, setPreviewModalImage] = useState<string | null>(null);
 
   // 11.5 排程歷史保留期限
   const [scheduleRetentionDays, setScheduleRetentionDays] = useState<number>(30);
@@ -429,6 +432,27 @@ export default function AdminPage() {
       setSortDirection('asc');
     }
   };
+
+  // 11.4 系統日誌過濾與分頁計算
+  const filteredSystemLogs = useMemo(() => {
+    return systemLogs.filter((log) => {
+      if (systemLogLevelFilter !== 'all' && log.level !== systemLogLevelFilter) return false;
+      if (systemLogSearch.trim()) {
+        const q = systemLogSearch.toLowerCase();
+        const matchFile = (log.file || '').toLowerCase().includes(q);
+        const matchMsg = (log.message || '').toLowerCase().includes(q);
+        const matchAction = (log.action || '').toLowerCase().includes(q);
+        if (!matchFile && !matchMsg && !matchAction) return false;
+      }
+      return true;
+    });
+  }, [systemLogs, systemLogLevelFilter, systemLogSearch]);
+
+  const totalSystemLogPages = Math.max(1, Math.ceil(filteredSystemLogs.length / SYSTEM_LOG_PAGE_SIZE));
+  const pagedSystemLogs = useMemo(() => {
+    const start = (systemLogPage - 1) * SYSTEM_LOG_PAGE_SIZE;
+    return filteredSystemLogs.slice(start, start + SYSTEM_LOG_PAGE_SIZE);
+  }, [filteredSystemLogs, systemLogPage]);
 
   // 更新問題回報狀態 (resolved: 完成 / closed: 關閉 / pending: 待處理)
   const handleUpdateIssueStatus = async (reportId: string, newStatus: 'resolved' | 'closed' | 'pending') => {
@@ -1960,18 +1984,15 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* 11.4 分頁 3: 系統日誌 (System Logs) */}
+        {/* 11.4 分頁 3: 系統日誌 */}
         {mainTab === 'system_logs' && (
           <div className="bg-[#141822] border border-[#232a3b] rounded-xl overflow-hidden shadow-xl flex flex-col">
             <div className="p-4 bg-[#191f2c] border-b border-[#283144] flex items-center justify-between flex-wrap gap-3">
               <div className="flex items-center gap-3">
                 <h3 className="font-bold text-sm text-white flex items-center gap-2">
                   <Terminal className="w-4 h-4 text-sky-400" />
-                  <span>系統運作與錯誤日誌 (System Logs)</span>
+                  <span>系統運作與錯誤日誌</span>
                 </h3>
-                <span className="text-[11px] text-gray-400">
-                  記錄執行檔案、更新動作與錯誤診斷資訊
-                </span>
               </div>
 
               <div className="flex items-center gap-2 flex-wrap">
@@ -1999,7 +2020,10 @@ export default function AdminPage() {
                     <button
                       key={lvl}
                       type="button"
-                      onClick={() => setSystemLogLevelFilter(lvl)}
+                      onClick={() => {
+                        setSystemLogLevelFilter(lvl);
+                        setSystemLogPage(1);
+                      }}
                       className={`px-2 py-0.5 rounded text-[10.5px] font-semibold transition-colors cursor-pointer ${
                         systemLogLevelFilter === lvl
                           ? 'bg-sky-600 text-white'
@@ -2017,7 +2041,10 @@ export default function AdminPage() {
                   <input
                     type="text"
                     value={systemLogSearch}
-                    onChange={(e) => setSystemLogSearch(e.target.value)}
+                    onChange={(e) => {
+                      setSystemLogSearch(e.target.value);
+                      setSystemLogPage(1);
+                    }}
                     placeholder="搜尋檔案或訊息..."
                     className="bg-[#10131a] text-xs text-gray-200 placeholder-gray-500 pl-8 pr-2.5 py-1 rounded-lg border border-[#283144] focus:outline-none focus:border-sky-500/60 w-36 sm:w-48"
                   />
@@ -2074,71 +2101,89 @@ export default function AdminPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#1e2535]">
-                  {systemLogs
-                    .filter((log) => {
-                      if (systemLogLevelFilter !== 'all' && log.level !== systemLogLevelFilter) return false;
-                      if (systemLogSearch.trim()) {
-                        const q = systemLogSearch.toLowerCase();
-                        const matchFile = (log.file || '').toLowerCase().includes(q);
-                        const matchMsg = (log.message || '').toLowerCase().includes(q);
-                        const matchAction = (log.action || '').toLowerCase().includes(q);
-                        if (!matchFile && !matchMsg && !matchAction) return false;
-                      }
-                      return true;
-                    })
-                    .map((log) => (
-                      <tr key={log.id} className="hover:bg-[#19202e] transition-colors">
-                        <td className="py-3 px-4 font-mono text-[11px] text-gray-400 whitespace-nowrap">
-                          {new Date(log.timestamp).toLocaleString('zh-HK', {
-                            year: 'numeric',
-                            month: '2-digit',
-                            day: '2-digit',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            second: '2-digit',
-                            hour12: false
-                          })}
-                        </td>
-                        <td className="py-3 px-3 text-center">
-                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                            log.level === 'ERROR'
-                              ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
-                              : log.level === 'WARNING'
-                                ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
-                                : log.level === 'SUCCESS'
-                                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                                  : 'bg-sky-500/20 text-sky-300 border border-sky-500/40'
-                          }`}>
-                            {log.level}
-                          </span>
-                        </td>
-                        <td className="py-3 px-4 font-mono text-[11.5px] text-indigo-300">
-                          {log.file}
-                        </td>
-                        <td className="py-3 px-3">
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-gray-800 text-gray-300 border border-gray-700">
-                            {log.action}
-                          </span>
-                        </td>
-                        <td className="py-3 px-4 text-gray-200 text-xs">
-                          <div className="leading-relaxed">{log.message}</div>
-                          {log.details && Object.keys(log.details).length > 0 && (
-                            <div className="mt-1 font-mono text-[10px] text-gray-500 bg-[#0c0f16] px-2 py-1 rounded border border-[#1e2434] inline-block">
-                              {JSON.stringify(log.details)}
-                            </div>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  {systemLogs.length === 0 && (
+                  {pagedSystemLogs.map((log) => (
+                    <tr key={log.id} className="hover:bg-[#19202e] transition-colors">
+                      <td className="py-3 px-4 font-mono text-[11px] text-gray-400 whitespace-nowrap">
+                        {new Date(log.timestamp).toLocaleString('zh-HK', {
+                          year: 'numeric',
+                          month: '2-digit',
+                          day: '2-digit',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          second: '2-digit',
+                          hour12: false
+                        })}
+                      </td>
+                      <td className="py-3 px-3 text-center">
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                          log.level === 'ERROR'
+                            ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                            : log.level === 'WARNING'
+                              ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                              : log.level === 'SUCCESS'
+                                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                                : 'bg-sky-500/20 text-sky-300 border border-sky-500/40'
+                        }`}>
+                          {log.level}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 font-mono text-[11.5px] text-indigo-300">
+                        {log.file}
+                      </td>
+                      <td className="py-3 px-3">
+                        <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-gray-800 text-gray-300 border border-gray-700">
+                          {log.action}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 text-gray-200 text-xs">
+                        <div className="leading-relaxed">{log.message}</div>
+                        {log.details && Object.keys(log.details).length > 0 && (
+                          <div className="mt-1 font-mono text-[10px] text-gray-500 bg-[#0c0f16] px-2 py-1 rounded border border-[#1e2434] inline-block">
+                            {JSON.stringify(log.details)}
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                  {filteredSystemLogs.length === 0 && (
                     <tr>
                       <td colSpan={5} className="py-12 text-center text-gray-500 text-xs">
-                        尚無任何系統日誌
+                        尚無符合條件的系統日誌
                       </td>
                     </tr>
                   )}
                 </tbody>
               </table>
+            </div>
+
+            {/* 2.1.2 系統日誌分頁控制列 */}
+            <div className="p-3 bg-[#161c28] border-t border-[#283144] flex items-center justify-between flex-wrap gap-3 text-xs text-gray-400">
+              <div className="flex items-center gap-2">
+                <span>
+                  顯示第 {filteredSystemLogs.length === 0 ? 0 : (systemLogPage - 1) * SYSTEM_LOG_PAGE_SIZE + 1} - {Math.min(systemLogPage * SYSTEM_LOG_PAGE_SIZE, filteredSystemLogs.length)} 筆，共 {filteredSystemLogs.length} 筆
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setSystemLogPage((p) => Math.max(1, p - 1))}
+                  disabled={systemLogPage <= 1}
+                  className="px-2.5 py-1 rounded bg-[#1f2637] hover:bg-[#2b354d] text-gray-200 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                >
+                  上一頁
+                </button>
+                <span className="px-2 font-mono text-gray-300">
+                  {systemLogPage} / {totalSystemLogPages}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setSystemLogPage((p) => Math.min(totalSystemLogPages, p + 1))}
+                  disabled={systemLogPage >= totalSystemLogPages}
+                  className="px-2.5 py-1 rounded bg-[#1f2637] hover:bg-[#2b354d] text-gray-200 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                >
+                  下一頁
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -2209,11 +2254,7 @@ export default function AdminPage() {
                 <div>
                   <h3 className="font-bold text-sm text-white flex items-center gap-2">
                     <span>用戶回報問題與建議清單</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full font-mono bg-rose-500/20 text-rose-300 border border-rose-500/30">
-                      共 {issueReports.length} 則
-                    </span>
                   </h3>
-                  <p className="text-[11px] text-gray-400">管理使用者透過前端「回報問題」遞交之建言，支援完成、關閉、回覆與刪除處理</p>
                 </div>
               </div>
 
@@ -2341,10 +2382,21 @@ export default function AdminPage() {
                             )}
                           </td>
                           <td className="py-3 px-2 text-center">
-                            {item.has_attachment ? (
-                              <span className="px-1.5 py-0.5 rounded text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                                有截圖
-                              </span>
+                            {item.image_base64 || item.has_attachment ? (
+                              <button
+                                type="button"
+                                onClick={() => setPreviewModalImage(item.image_base64 || null)}
+                                disabled={!item.image_base64}
+                                className={`px-2 py-0.5 rounded text-[10.5px] font-semibold transition-colors inline-flex items-center gap-1 ${
+                                  item.image_base64
+                                    ? 'bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 cursor-pointer'
+                                    : 'bg-gray-800 text-gray-500 border border-gray-700 cursor-default'
+                                }`}
+                                title={item.image_base64 ? '點擊檢視截圖' : '未附圖片或純標註'}
+                              >
+                                <Eye className="w-3 h-3" />
+                                <span>{item.image_base64 ? '檢視截圖' : '有截圖'}</span>
+                              </button>
                             ) : (
                               <span className="text-gray-600">-</span>
                             )}
@@ -2571,6 +2623,40 @@ export default function AdminPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* 3.3 截圖預覽 Modal */}
+      {previewModalImage && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={() => setPreviewModalImage(null)}
+        >
+          <div 
+            className="bg-[#141822] border border-[#232a3b] rounded-2xl p-4 max-w-4xl max-h-[92vh] flex flex-col shadow-2xl relative w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between pb-3 border-b border-[#232a3b]">
+              <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                <Eye className="w-4 h-4 text-amber-400" />
+                <span>用戶回報問題截圖 / 相片</span>
+              </h4>
+              <button
+                type="button"
+                onClick={() => setPreviewModalImage(null)}
+                className="p-1 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="mt-3 overflow-auto flex-1 flex items-center justify-center bg-black/50 rounded-xl p-2 min-h-[300px]">
+              <img 
+                src={previewModalImage} 
+                alt="問題截圖預覽" 
+                className="max-h-[78vh] max-w-full object-contain rounded-lg shadow-lg"
+              />
+            </div>
           </div>
         </div>
       )}

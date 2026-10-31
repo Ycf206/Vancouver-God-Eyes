@@ -146,7 +146,8 @@ export default function ReportIssueModal({ isOpen, onClose }: ReportIssueModalPr
           details: details.trim(),
           contact_email: contactEmail.trim() || '',
           has_attachment: Boolean(imageBase64),
-          attachment_name: imageName || ''
+          attachment_name: imageName || '',
+          image_base64: imageBase64 || ''
         };
         const existing = JSON.parse(localStorage.getItem('godseye_local_issue_reports') || '[]');
         existing.unshift(newReport);
@@ -267,42 +268,35 @@ export default function ReportIssueModal({ isOpen, onClose }: ReportIssueModalPr
                   </div>
 
                   <div className="flex items-center gap-1.5 shrink-0">
-                    {/* 複製 Email 按鈕 */}
+                    {/* 複製 Email 按鈕 (圖示按鈕) */}
                     <button
                       type="button"
                       onClick={handleCopyEmail}
-                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-[#25262b] hover:bg-[#2f3136] text-gray-300 hover:text-white border border-[#373a40] transition-colors text-[11px] font-medium cursor-pointer"
-                      title="複製此 Email 地址"
+                      className="p-2 rounded-md bg-[#25262b] hover:bg-[#2f3136] text-gray-300 hover:text-white border border-[#373a40] transition-colors cursor-pointer flex items-center justify-center"
+                      title={copied ? "已複製 Email 地址" : "複製此 Email 地址"}
                     >
                       {copied ? (
-                        <>
-                          <Check className="w-3.5 h-3.5 text-emerald-400" />
-                          <span className="text-emerald-400 font-medium">已複製</span>
-                        </>
+                        <Check className="w-3.5 h-3.5 text-emerald-400" />
                       ) : (
-                        <>
-                          <Copy className="w-3.5 h-3.5 text-gray-400" />
-                          <span>複製 Email</span>
-                        </>
+                        <Copy className="w-3.5 h-3.5 text-gray-400" />
                       )}
                     </button>
 
-                    {/* 發送電郵按鈕 (開啟郵件應用程式) */}
+                    {/* 發送電郵按鈕 (傳送信息圖示按鈕) */}
                     <a
                       href={getMailtoUrl()}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 hover:text-amber-200 border border-amber-500/30 transition-colors text-[11px] font-medium cursor-pointer"
+                      className="p-2 rounded-md bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 hover:text-amber-200 border border-amber-500/30 transition-colors cursor-pointer flex items-center justify-center"
                       title="發送電郵至此 Email (開啟電子郵件軟體)"
                     >
-                      <ExternalLink className="w-3.5 h-3.5" />
-                      <span>發送電郵</span>
+                      <Send className="w-3.5 h-3.5" />
                     </a>
                   </div>
                 </div>
 
                 <div className="text-[10.5px] text-gray-400 leading-normal border-t border-[#25262b] pt-1.5 flex items-center justify-between">
-                  <span>您可填寫下方表單線上遞交，或點擊「發送電郵」直接發信。</span>
+                  <span>您可填寫下方表單線上遞交，或點擊電郵圖示發送。</span>
                 </div>
               </div>
 

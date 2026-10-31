@@ -1,0 +1,45 @@
+name: Update 鐵路網絡圖資 (每年)
+
+on:
+  schedule:
+    - cron: '0 0 1 1 *'
+  workflow_dispatch:
+
+concurrency:
+  group: update-railways
+  cancel-in-progress: true
+
+jobs:
+  update-railways:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run Layer Sync Script (鐵路網絡圖資)
+        run: |
+          python backend/scripts/layers/update_railways.py
+
+      - name: Commit and Push Updated GeoJSON
+        id: git_push
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add backend/data/vancouver_railways.geojson frontend/public/vancouver_railways.geojson
+          if git diff --staged --quiet; then
+            echo "No updates detected for 鐵路網絡圖資."
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            git commit -m "chore(data): auto-update 鐵路網絡圖資 dataset [skip ci]"
+            git push origin HEAD:data --force
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi

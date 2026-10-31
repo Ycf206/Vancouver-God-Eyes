@@ -1,0 +1,45 @@
+name: Update 大統華每週特價海報 (每週五)
+
+on:
+  schedule:
+    - cron: '0 9 * * 5'
+  workflow_dispatch:
+
+concurrency:
+  group: update-tnt-eflyers
+  cancel-in-progress: true
+
+jobs:
+  update-tnt-eflyers:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run Layer Sync Script (大統華每週特價海報)
+        run: |
+          python backend/scripts/layers/update_tnt_eflyers.py
+
+      - name: Commit and Push Updated Data
+        id: git_push
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add backend/data/tnt_eflyers.json frontend/public/tnt_eflyers.json
+          if git diff --staged --quiet; then
+            echo "No updates detected for 大統華每週特價海報."
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            git commit -m "chore(data): auto-update 大統華每週特價海報 [skip ci]"
+            git push origin HEAD:data --force
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi

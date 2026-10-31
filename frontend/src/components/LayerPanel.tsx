@@ -107,7 +107,7 @@ export default function LayerPanel() {
       'parkingMeters', 'impark', 'motorcycleParking', 'accessibleParking',
       'oneWayStreets', 'trafficSpeedLimits', 'trafficCrosswalks', 'carSharing',
       'bikeways', 'bikeRacks', 'sharedBikes', 'escooter', 'trafficSignals',
-      'turnRestrictions', 'evCharging', 'tesla', 'truckRoutes', 'roadClosures',
+      'turnRestrictions', 'evCharging', 'tesla', 'truckRoutes', 'railways', 'roadClosures',
       'roadConstruction', 'trafficCameras', 'safetyCameras', 'fuel',
       'trafficConditions', 'snowRemovalRoutes', 'trafficAlerts'
     ] as const;
@@ -399,7 +399,7 @@ export default function LayerPanel() {
             <div className="grid grid-cols-2 gap-1 animate-in fade-in duration-150">
               {/* Row 1: 停車收費錶 | ImPark */}
               <LayerButton layerKey="parkingMeters" label="停車收費錶" icon={CircleDollarSign} colorClass="text-[#3b82f6]" activeBg="bg-[#1e293b]" activeBorder="border-blue-600/50" activeShadow="shadow-[0_0_6px_rgba(37,99,235,0.2)]" />
-              <LayerButton layerKey="impark" label="ImPark" icon={ImParkIcon} colorClass="text-[#d9261c]" activeBg="bg-[#2d1417]" activeBorder="border-[#d9261c]/60" activeShadow="shadow-[0_0_8px_rgba(217,38,28,0.3)]" />
+              <LayerButton layerKey="impark" label="私人停車場" icon={ImParkIcon} colorClass="text-[#d9261c]" activeBg="bg-[#2d1417]" activeBorder="border-[#d9261c]/60" activeShadow="shadow-[0_0_8px_rgba(217,38,28,0.3)]" />
 
               {/* Row 2: 摩托車停車位 | 無障礙停車位 */}
               <LayerButton layerKey="motorcycleParking" label="摩托車停車位" icon={Bike} colorClass="text-[#3b82f6]" activeBg="bg-[#1e293b]" activeBorder="border-blue-600/50" activeShadow="shadow-[0_0_6px_rgba(37,99,235,0.2)]" />
@@ -429,9 +429,9 @@ export default function LayerPanel() {
               <LayerButton layerKey="evCharging" label="電動車充電站" icon={Zap} colorClass="text-emerald-400" activeBg="bg-[#0b291e]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(5,150,105,0.2)]" />
               <LayerButton layerKey="tesla" label="TESLA" icon={TeslaIcon} colorClass="text-[#E82127]" activeBg="bg-[#2d1417]" activeBorder="border-[#E82127]/60" activeShadow="shadow-[0_0_8px_rgba(232,33,39,0.3)]" />
 
-              {/* Row 9: 貨車路線 (右方預留未來按鈕，交通封閉下移一行) */}
+              {/* Row 9: 貨車路線 | 鐵路 */}
               <LayerButton layerKey="truckRoutes" label="貨車路線" icon={Truck} colorClass="text-sky-400" activeBg="bg-[#0f2438]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(14,165,233,0.2)]" />
-              <div className="w-full h-7 pointer-events-none" aria-hidden="true" />
+              <LayerButton layerKey="railways" label="鐵路" icon={Train} colorClass="text-indigo-400" activeBg="bg-[#181a38]" activeBorder="border-indigo-500/50" activeShadow="shadow-[0_0_6px_rgba(99,102,241,0.2)]" />
 
               {/* Row 10: 交通封閉 | 道路施工 */}
               <LayerButton layerKey="roadClosures" label="交通封閉" icon={Ban} title="交通封閉" colorClass="text-red-400" activeBg="bg-[#2b171c]" activeBorder="border-red-500/50" activeShadow="shadow-[0_0_6px_rgba(220,38,38,0.2)]" />

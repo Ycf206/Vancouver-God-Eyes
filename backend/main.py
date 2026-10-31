@@ -3498,7 +3498,8 @@ def report_issue(payload: IssueReportRequest, db: Session = Depends(database.get
                 "contact_email": payload.contact_email or "",
                 "status": "pending",
                 "has_attachment": bool(payload.image_base64),
-                "attachment_name": payload.image_name or ""
+                "attachment_name": payload.image_name or "",
+                "image_base64": payload.image_base64 or ""
             }, ensure_ascii=False) + "\n")
     except Exception as e:
         print(f"[Issue Report Backup File Error]: {e}")

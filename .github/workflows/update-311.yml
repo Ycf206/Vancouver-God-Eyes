@@ -1,0 +1,45 @@
+name: Update 3-1-1 市政服務請求 (每日)
+
+on:
+  schedule:
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: update-311
+  cancel-in-progress: true
+
+jobs:
+  update-311:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run Layer Sync Script (3-1-1 市政服務請求)
+        run: |
+          python backend/scripts/layers/update_311.py
+
+      - name: Commit and Push Updated Data
+        id: git_push
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add backend/data/vancouver_311.json frontend/public/vancouver_311.json
+          if git diff --staged --quiet; then
+            echo "No updates detected for 3-1-1 市政服務請求."
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            git commit -m "chore(data): auto-update 3-1-1 市政服務請求 dataset [skip ci]"
+            git push origin HEAD:data --force
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi

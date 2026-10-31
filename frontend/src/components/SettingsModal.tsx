@@ -846,7 +846,7 @@ export default function SettingsModal() {
               onChange={(e) => setTimeZone(e.target.value)}
               className="w-full bg-[#1a1e28] border border-[#2c3242] focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 rounded-lg px-3 py-2 text-xs font-medium text-gray-200 outline-none transition-all appearance-none cursor-pointer pr-9 hover:border-gray-500"
             >
-              <option value="America/Vancouver" className="bg-[#1a1b1e] text-white">溫哥華 Vancouver (本地預設 · PDT/PST GMT-7)</option>
+              <option value="America/Vancouver" className="bg-[#1a1b1e] text-white">溫哥華 Vancouver (本地預設 · PCT GMT-7)</option>
               <option value="auto" className="bg-[#1a1b1e] text-white">自動 Auto (跟隨裝置系統本地時區)</option>
               <option value="Asia/Hong_Kong" className="bg-[#1a1b1e] text-white">香港 / 台北 Hong Kong / Taipei (HKT/CST GMT+8)</option>
               <option value="Asia/Tokyo" className="bg-[#1a1b1e] text-white">東京 / 首爾 Tokyo / Seoul (JST/KST GMT+9)</option>
@@ -864,7 +864,7 @@ export default function SettingsModal() {
           <div className="text-[10.5px] text-gray-400 flex items-center gap-1.5 px-1">
             <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 shrink-0"></span>
             <span>
-              {timeZone === 'America/Vancouver' && '目前設定：溫哥華太平洋時間 (永久單一時間制 GMT-7 / PDT)'}
+              {timeZone === 'America/Vancouver' && '目前設定：溫哥華太平洋時間 (永久單一時間制 GMT-7 / PCT)'}
               {timeZone === 'auto' && '目前設定：跟隨您目前設備系統的本地時間與時區'}
               {timeZone === 'Asia/Hong_Kong' && '目前設定：亞洲中原標準時間 (香港 / 台北 GMT+8)'}
               {timeZone === 'Asia/Tokyo' && '目前設定：日本 / 韓國標準時間 (東京 / 首爾 GMT+9)'}
@@ -951,7 +951,6 @@ export default function SettingsModal() {
             >
               <div>
                 <div className="text-xs font-bold">攝氏度 (°C)</div>
-                <div className="text-[10px] text-gray-400 font-mono mt-0.5">加拿大標準單位</div>
               </div>
               {temperatureUnit === 'celsius' && (
                 <Check className="w-3.5 h-3.5 text-amber-400 shrink-0" />
@@ -969,7 +968,6 @@ export default function SettingsModal() {
             >
               <div>
                 <div className="text-xs font-bold">華氏度 (°F)</div>
-                <div className="text-[10px] text-gray-400 font-mono mt-0.5">美制常用單位</div>
               </div>
               {temperatureUnit === 'fahrenheit' && (
                 <Check className="w-3.5 h-3.5 text-amber-400 shrink-0" />

@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 
 export type MapStyleType = 'street' | 'satellite' | 'light' | 'dark';
 
-export type ExploreTabType = 'weather' | 'news' | 'events' | 'beach' | 'ski' | 'aurora' | 'jobs' | 'atm' | 'fuel' | 'charging' | 'ev' | 'ferry' | 'cargo' | 'shipping' | 'flights' | 'border' | 'alerts' | 'traffic';
+export type ExploreTabType = 'weather' | 'news' | 'events' | 'beach' | 'ski' | 'aurora' | 'jobs' | '311' | 'shopping' | 'atm' | 'fuel' | 'charging' | 'ev' | 'ferry' | 'cargo' | 'shipping' | 'flights' | 'border' | 'alerts' | 'traffic';
 
 export interface SearchTarget {
   id: string;
@@ -100,6 +100,7 @@ export interface UIState {
     museums: boolean;
     garbageCollection: boolean;
     truckRoutes: boolean;
+    railways: boolean;
     trafficSignals: boolean;
     turnRestrictions: boolean;
   };
@@ -319,6 +320,7 @@ export const useUIStore = create<UIState>()(
         museums: false,
         garbageCollection: false,
         truckRoutes: false,
+        railways: false,
         trafficSignals: false,
         turnRestrictions: false,
       },
@@ -358,11 +360,22 @@ export const useUIStore = create<UIState>()(
       toggleAdminModal: () => set((state) => ({ isAdminModalOpen: !state.isAdminModalOpen })),
       isExploreOpen: false,
       setExploreOpen: (open) => set({ isExploreOpen: open }),
-      toggleExplore: () => set((state) => ({ isExploreOpen: !state.isExploreOpen })),
+      toggleExplore: () => set((state) => {
+        const nextOpen = !state.isExploreOpen;
+        if (!nextOpen) {
+          return { isExploreOpen: false };
+        }
+        const tabs = (state.openExploreTabs && state.openExploreTabs.length > 0) ? state.openExploreTabs : [state.exploreTab || 'weather'];
+        return {
+          isExploreOpen: true,
+          openExploreTabs: tabs,
+          exploreTab: state.exploreTab || 'weather'
+        };
+      }),
       exploreTab: 'weather',
-      openExploreTabs: ['weather'],
+      openExploreTabs: [],
       setExploreTab: (tab) => set((state) => {
-        const tabs = state.openExploreTabs || [];
+        const tabs = state.isExploreOpen ? (state.openExploreTabs || []) : [];
         const newTabs = tabs.includes(tab) ? tabs : [...tabs, tab];
         return {
           openExploreTabs: newTabs,
@@ -371,7 +384,7 @@ export const useUIStore = create<UIState>()(
         };
       }),
       openExploreTab: (tab) => set((state) => {
-        const tabs = state.openExploreTabs || [];
+        const tabs = state.isExploreOpen ? (state.openExploreTabs || []) : [];
         const newTabs = tabs.includes(tab) ? tabs : [...tabs, tab];
         return {
           openExploreTabs: newTabs,
@@ -412,8 +425,9 @@ export const useUIStore = create<UIState>()(
         }
         if (newTabs.length === 0) {
           return {
-            openExploreTabs: ['weather'],
+            openExploreTabs: [],
             isExploreOpen: false,
+            exploreTab: 'weather',
             layers: nextLayers,
             fuelLayerAutoEnabled: nextFuelAuto,
             searchTarget: nextSearchTarget

@@ -1,0 +1,106 @@
+{
+  "code": 200,
+  "tips": [],
+  "message": "",
+  "data": {
+    "location_code": "BC",
+    "location_label": "BC Store Promotions",
+    "post_code": "V6B",
+    "eflyer_list": [
+      {
+        "id": "9712",
+        "image": "rewards_store_flyer/images/b/c/bc-01-wsp_1030_p1.jpg",
+        "image_url": "https://www.tntsupermarket.com/media/rewards_store_flyer/images/b/c/bc-01-wsp_1030_p1.jpg",
+        "image_name": "bc-01-wsp_1030_p1",
+        "image_width": 1600,
+        "image_height": 2036,
+        "alt": "Weekly special promotion In-store flyers",
+        "pdf": "",
+        "validity": "2026/10/30 - 2026/11/05",
+        "thumbnail": "https://www.tntsupermarket.com/media/rewards_store_flyer/images/b/c/bc-01-wsp_1030_p1_200x250.jpg",
+        "tile_size": 256
+      },
+      {
+        "id": "9713",
+        "image": "rewards_store_flyer/images/b/c/bc-02-wsp_1030_p2.jpg",
+        "image_url": "https://www.tntsupermarket.com/media/rewards_store_flyer/images/b/c/bc-02-wsp_1030_p2.jpg",
+        "image_name": "bc-02-wsp_1030_p2",
+        "image_width": 1600,
+        "image_height": 2036,
+        "alt": "Weekly special promotion In-store flyers",
+        "pdf": "",
+        "validity": "2026/10/30 - 2026/11/05",
+        "thumbnail": "https://www.tntsupermarket.com/media/rewards_store_flyer/images/b/c/bc-02-wsp_1030_p2_200x250.jpg",
+        "tile_size": 256
+      },
+      {
+        "id": "9714",
+        "image": "rewards_store_flyer/images/b/c/bc-03-wsp_1030_p3.jpg",
+        "image_url": "https://www.tntsupermarket.com/media/rewards_store_flyer/images/b/c/bc-03-wsp_1030_p3.jpg",
+        "image_name": "bc-03-wsp_1030_p3",
+        "image_width": 1600,
+        "image_height": 2036,
+        "alt": "Weekly special promotion In-store flyers",
+        "pdf": "",
+        "validity": "2026/10/30 - 2026/11/05",
+        "thumbnail": "https://www.tntsupermarket.com/media/rewards_store_flyer/images/b/c/bc-03-wsp_1030_p3_200x250.jpg",
+        "tile_size": 256
+      },
+      {
+        "id": "9715",
+        "image": "rewards_store_flyer/images/b/c/bc_reward_poster_wr_1030-110526.jpg",
+        "image_url": "https://www.tntsupermarket.com/media/rewards_store_flyer/images/b/c/bc_reward_poster_wr_1030-110526.jpg",
+        "image_name": "bc_reward_poster_wr_1030-110526",
+        "image_width": 1600,
+        "image_height": 2036,
+        "alt": "T&T Rewards Member Benefit In-store flyer",
+        "pdf": "",
+        "validity": "2026/10/30 - 2026/11/05",
+        "thumbnail": "https://www.tntsupermarket.com/media/rewards_store_flyer/images/b/c/bc_reward_poster_wr_1030-110526_200x250.jpg",
+        "tile_size": 256
+      },
+      {
+        "id": "9716",
+        "image": "rewards_store_flyer/images/b/c/bc-05-fnv_weekly_flyer_1030.jpg",
+        "image_url": "https://www.tntsupermarket.com/media/rewards_store_flyer/images/b/c/bc-05-fnv_weekly_flyer_1030.jpg",
+        "image_name": "bc-05-fnv_weekly_flyer_1030",
+        "image_width": 1600,
+        "image_height": 2036,
+        "alt": "Weekly special promotion In-store flyers",
+        "pdf": "",
+        "validity": "2026/10/30 - 2026/11/05",
+        "thumbnail": "https://www.tntsupermarket.com/media/rewards_store_flyer/images/b/c/bc-05-fnv_weekly_flyer_1030_200x250.jpg",
+        "tile_size": 256
+      },
+      {
+        "id": "9663",
+        "image": "rewards_store_flyer/images/2/0/2026-comfort-in-a-dish-poster-_wr_-22wx28h_print-_revised__2.jpg",
+        "image_url": "https://www.tntsupermarket.com/media/rewards_store_flyer/images/2/0/2026-comfort-in-a-dish-poster-_wr_-22wx28h_print-_revised__2.jpg",
+        "image_name": "2026-comfort-in-a-dish-poster-_wr_-22wx28h_print-_revised__2",
+        "image_width": 1600,
+        "image_height": 2036,
+        "alt": "Comfort in a Dish",
+        "pdf": "",
+        "validity": "2026/10/16 - 2026/11/12",
+        "thumbnail": "https://www.tntsupermarket.com/media/rewards_store_flyer/images/2/0/2026-comfort-in-a-dish-poster-_wr_-22wx28h_print-_revised__2_200x250.jpg",
+        "tile_size": 256
+      },
+      {
+        "id": "9629",
+        "image": "rewards_store_flyer/images/2/0/20261005_bk_autumn_baking_festival_poster_1600x2036px_ab_bc.jpg",
+        "image_url": "https://www.tntsupermarket.com/media/rewards_store_flyer/images/2/0/20261005_bk_autumn_baking_festival_poster_1600x2036px_ab_bc.jpg",
+        "image_name": "20261005_bk_autumn_baking_festival_poster_1600x2036px_ab_bc",
+        "image_width": 1600,
+        "image_height": 2036,
+        "alt": "Autumn Baking Festival Promotion",
+        "pdf": "",
+        "validity": "2026/10/09 - 2026/11/19",
+        "thumbnail": "https://www.tntsupermarket.com/media/rewards_store_flyer/images/2/0/20261005_bk_autumn_baking_festival_poster_1600x2036px_ab_bc_200x250.jpg",
+        "tile_size": 256
+      }
+    ],
+    "category_uid": "MzIyMw==",
+    "category_id": "3223",
+    "category_url": "https://www.tntsupermarket.com/eng/weekly-special-wr.html"
+  }
+}

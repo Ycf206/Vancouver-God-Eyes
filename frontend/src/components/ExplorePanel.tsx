@@ -7,7 +7,8 @@ import { Landmark,
   Newspaper, ExternalLink, Search, CalendarDays, Calendar, Tag, Waves, CloudRain, Play, Pause, SkipBack, SkipForward,
   MountainSnow, Sparkles, Clock, ShieldAlert, BellRing, Train, Bus, ShieldCheck, LayoutGrid, TrainTrack,
   Activity, Radar, Cpu, Satellite, Radio, Flag, Plane, Mountain, CreditCard,
-  Briefcase, SlidersHorizontal, ChevronLeft, ChevronRight, Building2, DollarSign
+  Briefcase, SlidersHorizontal, ChevronLeft, ChevronRight, Building2, DollarSign,
+  PhoneCall, ShoppingBag, ZoomIn, ZoomOut, Download, Layers
 } from 'lucide-react';
 import { useUIStore, ExploreTabType } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
@@ -645,8 +646,8 @@ function matchSearchTokens(target: string, query: string): boolean {
 }
 
 export default function ExplorePanel() {
-  const { isExploreOpen, setExploreOpen, setSearchTarget } = useUIStore();
-  if (!isExploreOpen) return null;
+  const { isExploreOpen, openExploreTabs, setExploreOpen, setSearchTarget } = useUIStore();
+  if (!isExploreOpen || (openExploreTabs && openExploreTabs.length === 0)) return null;
 
   return (
     <ExploreErrorBoundary onClose={() => { setExploreOpen(false); setSearchTarget(null); }}>
@@ -719,6 +720,103 @@ function ExploreContent() {
   const [satelliteChannel, setSatelliteChannel] = useState<'geocolor' | 'ir' | 'water_vapor'>('geocolor');
   const [satelliteRefreshKey, setSatelliteRefreshKey] = useState<number>(0);
   const [enlargedAuroraImage, setEnlargedAuroraImage] = useState<{ src: string; title: string; subtitle?: string } | null>(null);
+
+  // --- 3-1-1 市政服務請求狀態 ---
+  const [requests311, setRequests311] = useState<Array<{
+    department?: string | null;
+    service_request_type?: string | null;
+    status?: string | null;
+    closure_reason?: string | null;
+    service_request_open_timestamp?: string | null;
+    service_request_close_date?: string | null;
+    last_modified_timestamp?: string | null;
+    address?: string | null;
+    local_area?: string | null;
+    channel?: string | null;
+    latitude?: number | null;
+    longitude?: number | null;
+    geom?: { lon: number; lat: number } | null;
+  }>>([]);
+  const [loading311, setLoading311] = useState<boolean>(false);
+  const [search311Query, setSearch311Query] = useState<string>('');
+  const [status311Filter, setStatus311Filter] = useState<'all' | 'open' | 'close'>('all');
+  const [dept311Filter, setDept311Filter] = useState<string>('all');
+  const [sort311Order, setSort311Order] = useState<'desc' | 'asc'>('desc');
+
+  // --- 購物 / 大統華 T&T 每週特價海報狀態 ---
+  const [tntFlyers, setTntFlyers] = useState<Array<{
+    id: string;
+    image_url: string;
+    image_name: string;
+    validity: string;
+    thumbnail: string;
+    alt?: string;
+  }>>([]);
+  const [loadingTnt, setLoadingTnt] = useState<boolean>(false);
+  const [selectedFlyerModal, setSelectedFlyerModal] = useState<number | null>(null);
+  const [flyerZoomLevel, setFlyerZoomLevel] = useState<number>(1);
+
+  // 取得 3-1-1 市政服務請求資料
+  useEffect(() => {
+    if (!isExploreOpen || exploreTab !== '311') return;
+    if (requests311.length > 0) return;
+    setLoading311(true);
+    fetch('/vancouver_311.json')
+      .then(res => res.json())
+      .then(data => {
+        const list = Array.isArray(data) ? data : (data.results || []);
+        setRequests311(list);
+      })
+      .catch(err => console.error('Failed to load 311 data:', err))
+      .finally(() => setLoading311(false));
+  }, [isExploreOpen, exploreTab, requests311.length]);
+
+  // 取得大統華特價海報資料
+  useEffect(() => {
+    if (!isExploreOpen || exploreTab !== 'shopping') return;
+    if (tntFlyers.length > 0) return;
+    setLoadingTnt(true);
+    fetch('/tnt_eflyers.json')
+      .then(res => res.json())
+      .then(data => {
+        const list = data?.data?.eflyer_list || [];
+        setTntFlyers(list);
+      })
+      .catch(err => console.error('Failed to load T&T flyers:', err))
+      .finally(() => setLoadingTnt(false));
+  }, [isExploreOpen, exploreTab, tntFlyers.length]);
+
+  const departments311 = useMemo(() => {
+    const set = new Set<string>();
+    requests311.forEach(r => {
+      if (r.department && r.department.trim()) set.add(r.department.trim());
+    });
+    return Array.from(set).sort();
+  }, [requests311]);
+
+  const filtered311Requests = useMemo(() => {
+    return requests311.filter(r => {
+      if (status311Filter === 'open' && (r.status || '').toLowerCase() !== 'open') return false;
+      if (status311Filter === 'close' && (r.status || '').toLowerCase() !== 'close') return false;
+      if (dept311Filter !== 'all' && (r.department || '').trim() !== dept311Filter) return false;
+      if (search311Query.trim()) {
+        const q = search311Query.trim().toLowerCase();
+        const str = `${r.address || ''} ${r.service_request_type || ''} ${r.department || ''} ${r.local_area || ''} ${r.closure_reason || ''}`.toLowerCase();
+        if (!str.includes(q)) return false;
+      }
+      return true;
+    }).sort((a, b) => {
+      const timeA = new Date(a.service_request_open_timestamp || 0).getTime();
+      const timeB = new Date(b.service_request_open_timestamp || 0).getTime();
+      return sort311Order === 'desc' ? timeB - timeA : timeA - timeB;
+    });
+  }, [requests311, status311Filter, dept311Filter, search311Query, sort311Order]);
+
+  const format311DateTime = (val?: string | null) => {
+    if (!val) return '';
+    if (!val.includes(':') && !val.includes('T')) return val;
+    return formatDateTime(val, timeFormat, timeZone);
+  };
 
   // 氣溫單位轉換輔助函式
   const formatTemp = (celsius?: number | string | null) => {
@@ -1879,7 +1977,7 @@ function ExploreContent() {
     });
   }, [shippingVessels]);
 
-  if (!isExploreOpen) return null;
+  if (!isExploreOpen || (openExploreTabs && openExploreTabs.length === 0)) return null;
 
   // Handle ATM click
   const handleSelectAtm = (atm: AtmItem & { distKm?: number; isOpenToday?: boolean; openHoursToday?: string }) => {
@@ -2083,7 +2181,7 @@ function ExploreContent() {
           standard_status: "10 分鐘",
           standard_lanes_open: 5,
           nexus_delay_min: 0,
-          nexus_status: "免等候 (No Delay)",
+          nexus_status: "免等候",
           nexus_lanes_open: 2
         }
       },
@@ -2112,7 +2210,7 @@ function ExploreContent() {
           standard_status: "5 分鐘",
           standard_lanes_open: 3,
           nexus_delay_min: 0,
-          nexus_status: "免等候 (No Delay)",
+          nexus_status: "免等候",
           nexus_lanes_open: 1
         }
       },
@@ -2131,14 +2229,14 @@ function ExploreContent() {
         tips: "位於蘭里與阿伯茨福德交界，前往貝靈漢避開週末和平門長龍的捷徑。",
         canada_bound: {
           traveller_delay_min: 0,
-          traveller_status: "免等候 (No Delay)",
+          traveller_status: "免等候",
           commercial_delay_min: 0,
           commercial_status: "免等候",
           nexus_open: true
         },
         us_bound: {
           standard_delay_min: 0,
-          standard_status: "免等候 (No Delay)",
+          standard_status: "免等候",
           standard_lanes_open: 2,
           nexus_delay_min: 0,
           nexus_status: "免等候",
@@ -2189,14 +2287,14 @@ function ExploreContent() {
         tips: "南三角洲 Tsawwassen 進入美國飛地 Point Roberts 的唯一步行/陸路關卡。",
         canada_bound: {
           traveller_delay_min: 0,
-          traveller_status: "免等候 (No Delay)",
+          traveller_status: "免等候",
           commercial_delay_min: 0,
           commercial_status: "免等候",
           nexus_open: false
         },
         us_bound: {
           standard_delay_min: 0,
-          standard_status: "免等候 (No Delay)",
+          standard_status: "免等候",
           standard_lanes_open: 1,
           nexus_delay_min: 0,
           nexus_status: "免等候",
@@ -3128,6 +3226,8 @@ function ExploreContent() {
     ski: { label: '滑雪場現況', icon: MountainSnow, color: 'text-cyan-400' },
     aurora: { label: '極光觀測', icon: Sparkles, color: 'text-fuchsia-400' },
     jobs: { label: '工作職位', icon: Briefcase, color: 'text-indigo-400' },
+    '311': { label: '3-1-1 市政服務', icon: PhoneCall, color: 'text-emerald-400' },
+    shopping: { label: '購物優惠', icon: ShoppingBag, color: 'text-rose-400' },
     atm: { label: '銀行', icon: Landmark, color: 'text-amber-400' },
     fuel: { label: '油站', icon: Fuel, color: 'text-amber-500' },
     charging: { label: '充電站', icon: Zap, color: 'text-emerald-400' },
@@ -3149,6 +3249,8 @@ function ExploreContent() {
     ski: '滑雪',
     aurora: '極光',
     jobs: '工作',
+    '311': '3-1-1',
+    shopping: '購物',
     atm: '銀行',
     fuel: '油站',
     charging: '充電',
@@ -3166,7 +3268,7 @@ function ExploreContent() {
 
   return (
     <div 
-      className="fixed top-[64px] sm:top-[70px] left-2 right-2 sm:left-auto sm:right-[72px] z-50 sm:z-40 w-auto sm:w-[520px] max-w-[calc(100vw-16px)] sm:max-w-[calc(100vw-96px)] max-h-[calc(100dvh-74px)] sm:max-h-[calc(100vh-148px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col animate-in fade-in slide-in-from-right-4 duration-200 select-none overflow-hidden"
+      className="fixed top-[64px] sm:top-[70px] left-2 right-2 sm:left-auto sm:right-[72px] z-50 sm:z-40 w-auto sm:w-[520px] max-w-[calc(100vw-16px)] sm:max-w-[calc(100vw-96px)] bottom-[calc(62px+env(safe-area-inset-bottom,0px))] sm:bottom-auto max-h-[calc(100dvh-130px)] sm:max-h-[calc(100vh-148px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col animate-in fade-in slide-in-from-right-4 duration-200 select-none overflow-hidden"
       onClick={(e) => e.stopPropagation()}
     >
       {/* 1. 當多於1個分頁時的關閉確認對話框 (Close Confirmation Dialog) */}
@@ -3535,15 +3637,22 @@ function ExploreContent() {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-1.5">
                             <span className="w-2.5 h-2.5 rounded-full bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.4)]"></span>
-                            <h4 className="text-xs font-bold text-white tracking-wide">空氣質素健康指數 (AQHI)</h4>
+                            <h4 className="text-xs font-bold text-white tracking-wide">空氣質素健康指數</h4>
                           </div>
                           <span className="text-[10px] text-sky-400 font-mono bg-sky-950/60 border border-sky-800/40 px-1.5 py-0.5 rounded">
-                            bcaq-001
+                            AQHI
                           </span>
                         </div>
 
                         <div className="text-[10px] text-gray-400 font-mono">
-                          {weather.aqhi.calculated_at || '今日 3:00 AM PDT'}
+                          {(() => {
+                            const raw = weather.aqhi.calculated_at || '';
+                            if (/^\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}/.test(raw)) {
+                              const [datePart, timePart] = raw.split(/\s+/);
+                              return `${datePart} ${formatTimePreference(timePart, timeFormat)}`;
+                            }
+                            return raw || '2026-10-31 03:00';
+                          })()}
                         </div>
 
                         <div className="pt-5 pb-1 relative">
@@ -3655,31 +3764,28 @@ function ExploreContent() {
                   <div className="bg-[#12151e] border border-cyan-500/40 rounded-xl p-3.5 shadow-lg flex flex-col gap-3">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
+                        <div className="w-6 h-6 rounded bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 shrink-0">
                           <CloudRain className="w-3.5 h-3.5" />
                         </div>
-                        <div>
-                          <h4 className="text-xs font-bold text-white tracking-wide flex items-center gap-1.5">
-                            <span>即時降水雷達動態</span>
-                            <span className="text-[9px] bg-cyan-950/80 text-cyan-400 border border-cyan-800/60 px-1 py-0.2 rounded font-mono">
-                              GeoMet RADAR_1KM_RRAI
-                            </span>
-                          </h4>
-                          <span className="text-[10px] text-gray-400">多普勒雙偏極化氣象雷達即時回波</span>
-                        </div>
+                        <h4 className="text-xs font-bold text-white tracking-wide">
+                          即時降水雷達動態
+                        </h4>
+                        <button
+                          onClick={handleToggleRadar}
+                          className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+                            isRadarActive
+                              ? 'bg-cyan-500 text-gray-950 border-cyan-400 shadow-sm'
+                              : 'bg-[#1e2330] text-gray-300 hover:text-white hover:bg-[#282f40] border-[#2d3547]'
+                          }`}
+                          title={isRadarActive ? '關閉主地圖雷達疊加' : '疊加雷達至主地圖'}
+                        >
+                          <Layers className="w-3.5 h-3.5" />
+                        </button>
                       </div>
 
-                      <button
-                        onClick={handleToggleRadar}
-                        className={`px-2.5 py-1 text-[11px] rounded-lg font-bold transition-all flex items-center gap-1.5 shadow-sm ${
-                          isRadarActive
-                            ? 'bg-cyan-500 text-gray-950 ring-2 ring-cyan-400/50'
-                            : 'bg-[#1e2330] text-gray-300 hover:text-white hover:bg-[#282f40] border border-[#2d3547]'
-                        }`}
-                      >
-                        <span className={`w-2 h-2 rounded-full ${isRadarActive ? 'bg-gray-950 animate-ping' : 'bg-gray-500'}`} />
-                        <span>{isRadarActive ? '主地圖疊加中' : '疊加至主地圖'}</span>
-                      </button>
+                      <span className="text-[9px] bg-cyan-950/80 text-cyan-400 border border-cyan-800/60 px-1.5 py-0.5 rounded font-mono">
+                        RADAR_1KM_RRAI
+                      </span>
                     </div>
 
                     {loadingRadar ? (
@@ -3756,13 +3862,10 @@ function ExploreContent() {
                         <div className="w-6 h-6 rounded bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400">
                           <Satellite className="w-3.5 h-3.5" />
                         </div>
-                        <div>
-                          <h4 className="text-xs font-bold text-white tracking-wide">太平洋西北衛星雲圖</h4>
-                          <span className="text-[10px] text-gray-400">GOES-West (GOES-18) 紅外線 / 可見光</span>
-                        </div>
+                        <h4 className="text-xs font-bold text-white tracking-wide">太平洋西北衛星雲圖</h4>
                       </div>
                       <span className="text-[10px] text-blue-400 bg-blue-950/60 border border-blue-800/40 px-2 py-0.5 rounded-full font-mono">
-                        每 10 分鐘更新
+                        GOES-West
                       </span>
                     </div>
 
@@ -3784,8 +3887,7 @@ function ExploreContent() {
                           <span className="font-mono text-sky-400 font-semibold">-12°C ~ -18°C</span>
                         </div>
                       </div>
-                      <div className="flex items-center justify-between pt-2 border-t border-[#1c2232] mt-1">
-                        <span className="text-[10px] text-gray-500">官方高解析度觀測來源</span>
+                      <div className="flex items-center justify-end pt-2 border-t border-[#1c2232] mt-1">
                         <a
                           href="https://www.star.nesdis.noaa.gov/GOES/sector.php?sat=G18&sector=pnw"
                           target="_blank"
@@ -3806,13 +3908,10 @@ function ExploreContent() {
                         <div className="w-6 h-6 rounded bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
                           <Zap className="w-3.5 h-3.5" />
                         </div>
-                        <div>
-                          <h4 className="text-xs font-bold text-white tracking-wide">加拿大防雷網絡 (CLDN) 閃電密度</h4>
-                          <span className="text-[10px] text-gray-400">Canadian Lightning Detection Network</span>
-                        </div>
+                        <h4 className="text-xs font-bold text-white tracking-wide">加拿大防雷網絡閃電密度</h4>
                       </div>
-                      <span className="text-[10px] text-emerald-400 bg-emerald-950/60 border border-emerald-800/40 px-2 py-0.5 rounded-full font-semibold">
-                        安全無落雷
+                      <span className="text-[10px] text-amber-300 bg-amber-950/60 border border-amber-800/40 px-2 py-0.5 rounded-full font-semibold">
+                        CLDN
                       </span>
                     </div>
 
@@ -3839,12 +3938,11 @@ function ExploreContent() {
                         <div className="w-6 h-6 rounded bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
                           <Radio className="w-3.5 h-3.5" />
                         </div>
-                        <div>
-                          <h4 className="text-xs font-bold text-white tracking-wide">加拿大環境部地表氣象站實測</h4>
-                          <span className="text-[10px] text-gray-400">ECCC SWOB-ML 即時實時自動觀測</span>
-                        </div>
+                        <h4 className="text-xs font-bold text-white tracking-wide">加拿大環境部地表氣象站實測</h4>
                       </div>
-                      <span className="text-[10px] font-mono text-gray-400">6 個官方測站</span>
+                      <span className="text-[10px] text-emerald-300 bg-emerald-950/60 border border-emerald-800/40 px-2 py-0.5 rounded-full font-semibold">
+                        ECCC
+                      </span>
                     </div>
 
                     <div className="flex flex-col gap-1.5">
@@ -3924,13 +4022,10 @@ function ExploreContent() {
                         <div className="w-6 h-6 rounded bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center text-indigo-400">
                           <Cpu className="w-3.5 h-3.5" />
                         </div>
-                        <div>
-                          <h4 className="text-xs font-bold text-white tracking-wide">高解析度決定性數值模式 (HRDPS)</h4>
-                          <span className="text-[10px] text-gray-400">High Resolution Deterministic Prediction System</span>
-                        </div>
+                        <h4 className="text-xs font-bold text-white tracking-wide">高解析度決定性數值模式</h4>
                       </div>
                       <span className="text-[10px] text-indigo-300 bg-indigo-950/70 border border-indigo-800/50 px-2 py-0.5 rounded font-mono font-bold">
-                        2.5 km 網格
+                        HRDPS
                       </span>
                     </div>
 
@@ -3940,7 +4035,7 @@ function ExploreContent() {
                         <span className="text-indigo-400 font-mono">預報時效 48h</span>
                       </div>
                       <p className="text-[11px] text-gray-300">
-                        HRDPS 能精確解析大溫地區特殊微氣候，包括北岸山脈 (North Shore Mountains) 迎風抬升降水、豪灣峽谷下坡風及喬治亞海峽海風前緣轉折。
+                        精確解析大溫地區特殊微氣候，包括北岸山脈迎風抬升降水、豪灣峽谷下坡風及喬治亞海峽海風前緣轉折。
                       </p>
                     </div>
                   </div>
@@ -3952,14 +4047,14 @@ function ExploreContent() {
                         <div className="w-6 h-6 rounded bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
                           <Activity className="w-3.5 h-3.5" />
                         </div>
-                        <div>
-                          <h4 className="text-xs font-bold text-white tracking-wide">區域 / 全球數值預報 (RDPS & GDPS)</h4>
-                          <span className="text-[10px] text-gray-400">大尺度鋒面氣壓系統與急流路徑模擬</span>
-                        </div>
+                        <h4 className="text-xs font-bold text-white tracking-wide">區域 / 全球數值預報</h4>
                       </div>
+                      <span className="text-[10px] text-cyan-300 bg-cyan-950/70 border border-cyan-800/50 px-2 py-0.5 rounded font-mono font-bold">
+                        RDPS/GDPS
+                      </span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-1 gap-2">
                       <div className="bg-[#141824] border border-[#242c3d] p-2.5 rounded-lg flex flex-col gap-1">
                         <div className="flex items-center justify-between">
                           <span className="font-bold text-xs text-sky-300">RDPS 區域模式</span>
@@ -3972,11 +4067,11 @@ function ExploreContent() {
 
                       <div className="bg-[#141824] border border-[#242c3d] p-2.5 rounded-lg flex flex-col gap-1">
                         <div className="flex items-center justify-between">
-                          <span className="font-bold text-emerald-300">GDPS 全球模式</span>
+                          <span className="font-bold text-xs text-emerald-300">GDPS 全球模式</span>
                           <span className="text-[9.5px] font-mono text-gray-400">15 km · 10天</span>
                         </div>
                         <p className="text-[10px] text-gray-300 mt-0.5">
-                          中長期大氣環流分析，掌握高空噴射急流 (Jet Stream)、太平洋高壓阻擋與極地冷渦趨勢。
+                          中長期大氣環流分析，掌握高空噴射急流、太平洋高壓阻擋與極地冷渦趨勢。
                         </p>
                       </div>
                     </div>
@@ -3989,11 +4084,11 @@ function ExploreContent() {
                         <div className="w-6 h-6 rounded bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400">
                           <Droplets className="w-3.5 h-3.5" />
                         </div>
-                        <div>
-                          <h4 className="text-xs font-bold text-white tracking-wide">降雨累積與風場模擬 (QPF)</h4>
-                          <span className="text-[10px] text-gray-400">定量降水預報與 10m 地表風場向量</span>
-                        </div>
+                        <h4 className="text-xs font-bold text-white tracking-wide">降雨累積與風場模擬</h4>
                       </div>
+                      <span className="text-[10px] text-blue-300 bg-blue-950/70 border border-blue-800/50 px-2 py-0.5 rounded font-mono font-bold">
+                        QPF
+                      </span>
                     </div>
 
                     <div className="grid grid-cols-2 gap-2 text-xs">
@@ -4013,7 +4108,7 @@ function ExploreContent() {
                         <span className="text-[9.5px] text-gray-500 mt-0.5">西至西南西風</span>
                       </div>
                       <div className="bg-[#141824] border border-[#242c3d] p-2.5 rounded-lg flex flex-col">
-                        <span className="text-[10px] text-gray-400">0°C 雪線高程 (Freezing Lvl)</span>
+                        <span className="text-[10px] text-gray-400">0°C 雪線高程</span>
                         <span className="text-base font-extrabold text-rose-300 font-mono mt-0.5">1,650 m</span>
                         <span className="text-[9.5px] text-gray-500 mt-0.5">松雞山頂部以上無積雪威脅</span>
                       </div>
@@ -4027,19 +4122,16 @@ function ExploreContent() {
                         <div className="w-6 h-6 rounded bg-rose-500/20 border border-rose-500/40 flex items-center justify-center text-rose-400">
                           <Wind className="w-3.5 h-3.5" />
                         </div>
-                        <div>
-                          <h4 className="text-xs font-bold text-white tracking-wide">空氣質素與煙霧模擬 (RAQDPS / FireWork)</h4>
-                          <span className="text-[10px] text-gray-400">野火煙霧顆粒物 PM2.5 擴散動態</span>
-                        </div>
+                        <h4 className="text-xs font-bold text-white tracking-wide">空氣質素與煙霧模擬</h4>
                       </div>
-                      <span className="text-[10px] text-emerald-400 bg-emerald-950/60 border border-emerald-800/40 px-2 py-0.5 rounded-full font-semibold">
-                        空氣優良
+                      <span className="text-[10px] text-rose-300 bg-rose-950/70 border border-rose-800/50 px-2 py-0.5 rounded font-mono font-bold">
+                        RAQDPS
                       </span>
                     </div>
 
                     <div className="bg-[#141824] border border-[#242c3d] p-2.5 rounded-lg text-xs leading-relaxed text-gray-300 flex flex-col gap-1.5">
                       <p className="text-[11px] text-gray-300">
-                        加拿大環境部 FireWork 模擬顯示：未來 72 小時卑詩省內陸與華盛頓州無顯著山火煙霧朝溫哥華低陸平原輸送，PM2.5 濃度維持 4-8 µg/m³ 綠色健康等級。
+                        未來 72 小時卑詩省內陸與華盛頓州無顯著山火煙霧朝溫哥華低陸平原輸送，PM2.5 濃度維持 4-8 µg/m³ 綠色健康等級。
                       </p>
                     </div>
                   </div>
@@ -4056,13 +4148,10 @@ function ExploreContent() {
                         <div className="w-6 h-6 rounded bg-sky-500/20 border border-sky-500/40 flex items-center justify-center text-sky-400">
                           <ShieldAlert className="w-3.5 h-3.5" />
                         </div>
-                        <div>
-                          <h4 className="text-xs font-bold text-white tracking-wide">海事氣象警報與海象預報</h4>
-                          <span className="text-[10px] text-gray-400">加拿大環境部海事預報區 (ECCC Marine)</span>
-                        </div>
+                        <h4 className="text-xs font-bold text-white tracking-wide">海事氣象警報與海象預報</h4>
                       </div>
-                      <span className="text-[10px] text-emerald-400 bg-emerald-950/60 border border-emerald-800/40 px-2 py-0.5 rounded-full font-semibold">
-                        無強風警報
+                      <span className="text-[10px] text-sky-300 bg-sky-950/70 border border-sky-800/50 px-2 py-0.5 rounded font-mono font-bold">
+                        ECCC
                       </span>
                     </div>
 
@@ -4073,7 +4162,7 @@ function ExploreContent() {
                           <span className="text-[10px] text-gray-400 font-mono">風力 10-15 節</span>
                         </div>
                         <p className="text-[10.5px] text-gray-300 leading-relaxed">
-                          今日：西風 10 至 15 節，午後轉西北風 15 節，浪高 0.5 至 1.0 米。明日：西北風 10-15 節，傍晚轉微風 5-10 節。
+                          午後轉西北風 15 節，浪高 0.5 至 1.0 米。明日：西北風 10-15 節，傍晚轉微風 5-10 節。
                         </p>
                       </div>
 
@@ -4093,7 +4182,7 @@ function ExploreContent() {
                           <span className="text-[10px] text-gray-400 font-mono">風力 12-18 節</span>
                         </div>
                         <p className="text-[10.5px] text-gray-300 leading-relaxed">
-                          西南風 12 至 18 節，海浪 1.0 米，潮汐流強勁注意橫向回流。
+                          海浪 1.0 米，潮汐流強勁注意橫向回流。
                         </p>
                       </div>
                     </div>
@@ -4103,26 +4192,24 @@ function ExploreContent() {
                   <div className="bg-[#12151e] border border-blue-500/40 rounded-xl p-3.5 shadow-lg flex flex-col gap-3">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400">
+                        <div className="w-6 h-6 rounded bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400 shrink-0">
                           <Waves className="w-3.5 h-3.5" />
                         </div>
-                        <div>
-                          <h4 className="text-xs font-bold text-white tracking-wide flex items-center gap-1.5">
-                            <span>海岸潮汐水位站</span>
-                            <span className="text-[9px] bg-blue-950/80 text-blue-400 border border-blue-800/60 px-1 py-0.2 rounded font-mono">
-                              DFO / CHS 官方
-                            </span>
-                          </h4>
-                          <span className="text-[10px] text-gray-400">加拿大漁業及海洋部水文即時監測</span>
-                        </div>
+                        <h4 className="text-xs font-bold text-white tracking-wide">
+                          海岸潮汐水位站
+                        </h4>
+                        <button
+                          onClick={() => enableLayer('tideStations')}
+                          className="p-1.5 rounded-lg border bg-[#1e2330] text-gray-300 hover:text-white hover:bg-[#282f40] border-[#2d3547] transition-all cursor-pointer"
+                          title="開啟潮汐圖層"
+                        >
+                          <Layers className="w-3.5 h-3.5" />
+                        </button>
                       </div>
-                      <button
-                        onClick={() => enableLayer('tideStations')}
-                        className="text-[11px] text-blue-400 hover:text-blue-300 hover:underline flex items-center gap-1"
-                      >
-                        <span>開啟潮汐圖層</span>
-                        <span>❯</span>
-                      </button>
+
+                      <span className="text-[10px] text-blue-300 bg-blue-950/70 border border-blue-800/50 px-2 py-0.5 rounded font-mono font-bold">
+                        DFO / CHS
+                      </span>
                     </div>
 
                     {loadingTides ? (
@@ -4143,8 +4230,12 @@ function ExploreContent() {
                             }`}
                           >
                             <div className="flex flex-col min-w-0 pr-2">
-                              <span className="font-bold text-xs text-white truncate">{st.name}</span>
-                              <span className="text-[10px] text-gray-400">{st.area}</span>
+                              <span className="font-bold text-xs text-white truncate">
+                                {st.english_name || st.name.replace(/\s*\([^)]+\)/, '')}
+                              </span>
+                              <span className="text-[10px] text-gray-400">
+                                {st.name.match(/\(([^)]+)\)/)?.[1] || st.area}
+                              </span>
                             </div>
                             <div className="flex items-center gap-2 shrink-0">
                               <div className="flex items-baseline gap-1">
@@ -4177,21 +4268,21 @@ function ExploreContent() {
                         <div className="w-6 h-6 rounded bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
                           <Activity className="w-3.5 h-3.5" />
                         </div>
-                        <div>
-                          <h4 className="text-xs font-bold text-white tracking-wide">海浪與風暴潮數值模式 (CIOPS-W)</h4>
-                          <span className="text-[10px] text-gray-400">Coastal Inland Ocean Prediction System - West</span>
-                        </div>
+                        <h4 className="text-xs font-bold text-white tracking-wide">海浪與風暴潮數值模式</h4>
                       </div>
+                      <span className="text-[10px] text-cyan-300 bg-cyan-950/70 border border-cyan-800/50 px-2 py-0.5 rounded font-mono font-bold">
+                        CIOPS-W
+                      </span>
                     </div>
 
                     <div className="grid grid-cols-3 gap-2">
                       <div className="bg-[#141824] border border-[#242c3d] p-2 rounded-lg text-center">
-                        <span className="text-[10px] text-gray-400 block">有效波高 (Hs)</span>
+                        <span className="text-[10px] text-gray-400 block">有效波高</span>
                         <span className="text-base font-extrabold text-cyan-300 font-mono">0.6 m</span>
                         <span className="text-[9.5px] text-gray-500 block">週期 4.2 秒</span>
                       </div>
                       <div className="bg-[#141824] border border-[#242c3d] p-2 rounded-lg text-center">
-                        <span className="text-[10px] text-gray-400 block">海表水溫 (SST)</span>
+                        <span className="text-[10px] text-gray-400 block">海表水溫</span>
                         <span className="text-base font-extrabold text-sky-300 font-mono">
                           {temperatureUnit === 'fahrenheit' ? `${((11.2 * 9) / 5 + 32).toFixed(1)}°F` : '11.2°C'}
                         </span>
@@ -4212,12 +4303,11 @@ function ExploreContent() {
                         <div className="w-6 h-6 rounded bg-teal-500/20 border border-teal-500/40 flex items-center justify-center text-teal-400">
                           <Anchor className="w-3.5 h-3.5" />
                         </div>
-                        <div>
-                          <h4 className="text-xs font-bold text-white tracking-wide">加拿大國家水文站監察</h4>
-                          <span className="text-[10px] text-gray-400">ECCC National Hydrometric Network</span>
-                        </div>
+                        <h4 className="text-xs font-bold text-white tracking-wide">加拿大國家水文站監察</h4>
                       </div>
-                      <span className="text-[10px] text-teal-300 font-mono">4 個重點水文站</span>
+                      <span className="text-[10px] text-teal-300 bg-teal-950/70 border border-teal-800/50 px-2 py-0.5 rounded font-mono font-bold">
+                        ECCC
+                      </span>
                     </div>
 
                     <div className="flex flex-col gap-1.5">
@@ -4533,9 +4623,6 @@ function ExploreContent() {
                   <div className="flex flex-col justify-center">
                     <span className="text-xs font-bold text-gray-200 tracking-wide leading-normal">
                       地磁極光指數 (Planetary Kp)
-                    </span>
-                    <span className="text-[9.5px] text-gray-400 mt-1">
-                      衡量全球地磁擾動與極光強度的標準指標 (0~9)
                     </span>
                     <div className="flex items-baseline gap-2 mt-1.5">
                       <span className="text-3xl font-extrabold text-white tracking-tight">
@@ -5529,122 +5616,217 @@ function ExploreContent() {
         </div>
       )}
 
-      {/* ==================== 1.5 ATM 櫃員機分頁 (ATM) ==================== */}
-      {activeTab === 'atm' && (
+      {/* ==================== 1.5 3-1-1 市政服務請求分頁 (3-1-1 Service Requests) ==================== */}
+      {activeTab === '311' && (
         <div className="flex flex-col flex-1 min-h-0">
           {/* Subheader: Range & Location info */}
           <div className="flex items-center justify-between mb-2 shrink-0">
-            <span className="text-xs text-gray-300 font-medium">
-              {userLocation?.confirmed
-                ? '距離個人位置最近的 ATM 櫃員機'
-                : '溫哥華 293 處 ATM 櫃員機'}
-            </span>
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] text-amber-400 bg-amber-950/70 border border-amber-800/60 px-1.5 py-0.5 rounded font-mono">
-                每日更新
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span className="text-xs text-gray-200 font-semibold">
+                3-1-1 市政服務案件 ({filtered311Requests.length} 筆)
               </span>
-              {!userLocation?.confirmed && (
-                <button
-                  onClick={() => {
-                    setExploreOpen(false);
-                    setSettingsModalOpen(true);
-                  }}
-                  className="text-[10.5px] text-emerald-400 hover:text-emerald-300 font-medium hover:underline flex items-center gap-0.5"
-                >
-                  <MapPin className="w-2.5 h-2.5" />
-                  <span>設定個人位置</span>
-                </button>
-              )}
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] text-emerald-400 bg-emerald-950/70 border border-emerald-800/60 px-1.5 py-0.5 rounded font-mono">
+                每日更新 1 次
+              </span>
+              <a
+                href="https://opendata.vancouver.ca/explore/dataset/3-1-1-service-requests"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[10.5px] text-emerald-400 hover:text-emerald-300 font-medium hover:underline flex items-center gap-0.5"
+              >
+                <span>官方開放數據</span>
+                <ExternalLink className="w-2.5 h-2.5" />
+              </a>
             </div>
           </div>
 
-          {/* Search Bar */}
-          <div className="relative mb-2.5 shrink-0">
-            <Search className="w-3.5 h-3.5 text-gray-500 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-            <input
-              type="text"
-              value={atmSearchQuery}
-              onChange={(e) => setAtmSearchQuery(e.target.value)}
-              placeholder="搜尋銀行名稱 (如 RBC, BMO, TD)、地址或分行..."
-              className="w-full bg-[#10131a] text-xs text-white placeholder-gray-500 pl-8 pr-7 py-1.5 rounded-lg border border-[#232838] focus:outline-none focus:border-amber-500/50 transition-colors"
-            />
-            {atmSearchQuery && (
-              <button
-                onClick={() => setAtmSearchQuery('')}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white p-0.5"
-                title="清除搜尋"
-              >
-                <X className="w-3 h-3" />
-              </button>
-            )}
-          </div>
-
-          {/* Filter Bar: 僅顯示今日營業中 */}
-          <div className="flex items-center justify-between gap-2 mb-2.5 shrink-0">
-            <span className="text-[11px] text-gray-400">
-              共找到 <span className="text-amber-400 font-mono font-bold">{filteredAtms.length}</span> 間銀行
-            </span>
-            <label className="flex items-center gap-1.5 text-xs text-gray-300 cursor-pointer select-none shrink-0">
+          {/* 固定式控制列 (Fixed Filter Bar: Search, Status, Department, Sort) */}
+          <div className="flex flex-col gap-1.5 mb-2.5 shrink-0 bg-[#12151e]/80 p-2 rounded-xl border border-[#262b38]">
+            {/* 搜尋輸入欄 */}
+            <div className="relative">
+              <Search className="w-3.5 h-3.5 text-gray-500 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
-                type="checkbox"
-                checked={atmOnlyOpenToday}
-                onChange={(e) => setAtmOnlyOpenToday(e.target.checked)}
-                className="w-3.5 h-3.5 rounded bg-[#12151d] border-[#343a4a] text-amber-500 focus:ring-0 focus:ring-offset-0 cursor-pointer accent-amber-500"
+                type="text"
+                value={search311Query}
+                onChange={(e) => setSearch311Query(e.target.value)}
+                placeholder="搜尋地址、服務請求類型、部門或原因..."
+                className="w-full bg-[#1b202c] border border-[#2b3345] rounded-lg pl-8 pr-7 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition-colors"
               />
-              <span>僅顯示今日營業中</span>
-            </label>
+              {search311Query && (
+                <button
+                  type="button"
+                  onClick={() => setSearch311Query('')}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white p-0.5 rounded-full"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              )}
+            </div>
+
+            {/* 篩選與排序選項 */}
+            <div className="flex items-center justify-between gap-1.5 flex-wrap">
+              {/* 狀態切換 */}
+              <div className="flex items-center gap-1 bg-[#181d28] p-0.5 rounded-lg border border-[#283042]">
+                <button
+                  type="button"
+                  onClick={() => setStatus311Filter('all')}
+                  className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
+                    status311Filter === 'all'
+                      ? 'bg-emerald-600 text-white shadow-xs'
+                      : 'text-gray-400 hover:text-gray-200'
+                  }`}
+                >
+                  全部
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setStatus311Filter('open')}
+                  className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
+                    status311Filter === 'open'
+                      ? 'bg-emerald-600 text-white shadow-xs'
+                      : 'text-gray-400 hover:text-gray-200'
+                  }`}
+                >
+                  處理中 (Open)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setStatus311Filter('close')}
+                  className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
+                    status311Filter === 'close'
+                      ? 'bg-emerald-600 text-white shadow-xs'
+                      : 'text-gray-400 hover:text-gray-200'
+                  }`}
+                >
+                  已結束 (Close)
+                </button>
+              </div>
+
+              {/* 部門篩選下拉 */}
+              <div className="flex items-center gap-1">
+                <select
+                  value={dept311Filter}
+                  onChange={(e) => setDept311Filter(e.target.value)}
+                  className="bg-[#181d28] border border-[#283042] text-gray-200 rounded-lg px-2 py-1 text-[11px] focus:outline-none focus:border-emerald-500 max-w-[130px] sm:max-w-[160px] truncate"
+                >
+                  <option value="all">所有部門 (All)</option>
+                  {departments311.map(d => (
+                    <option key={d} value={d}>{d}</option>
+                  ))}
+                </select>
+
+                {/* 排序切換按鈕 */}
+                <button
+                  type="button"
+                  onClick={() => setSort311Order(prev => prev === 'desc' ? 'asc' : 'desc')}
+                  className="p-1 rounded-lg bg-[#181d28] hover:bg-[#202736] border border-[#283042] text-gray-300 hover:text-white transition-colors cursor-pointer"
+                  title={sort311Order === 'desc' ? '開始時間：新至舊' : '開始時間：舊至新'}
+                >
+                  <ArrowUpDown className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
           </div>
 
-          {/* ATM List */}
-          <div className="flex-1 overflow-y-auto space-y-2 pr-1 min-h-0">
-            {loadingAtm ? (
-              <div className="py-12 flex flex-col items-center justify-center gap-2 text-xs text-gray-400">
-                <RefreshCw className="w-5 h-5 text-amber-400 animate-spin" />
-                <span>讀取溫哥華各銀行分行數據...</span>
+          {/* 清單列表式 (保留英文語言並顯示規定欄位) */}
+          <div className="flex-1 overflow-y-auto pr-1 flex flex-col gap-2.5">
+            {loading311 ? (
+              <div className="py-12 flex flex-col items-center justify-center text-gray-400 gap-2">
+                <RefreshCw className="w-5 h-5 animate-spin text-emerald-400" />
+                <span className="text-xs">載入最新 3-1-1 服務請求中...</span>
               </div>
-            ) : filteredAtms.length === 0 ? (
-              <div className="py-12 text-center text-xs text-gray-400 bg-[#10131a] rounded-lg border border-[#232836]">
-                暫無符合條件的銀行
+            ) : filtered311Requests.length === 0 ? (
+              <div className="py-10 text-center text-gray-400 text-xs">
+                沒有符合條件的 3-1-1 服務請求。
               </div>
             ) : (
-              filteredAtms.map((atm) => {
-                const distDisplay = userLocation?.confirmed && atm.distKm > 0
-                  ? distanceUnit === 'imperial'
-                    ? `約 ${(atm.distKm * 0.621371).toFixed(1)} 英里`
-                    : `約 ${atm.distKm.toFixed(1)} 公里`
-                  : null;
-
+              filtered311Requests.map((req, idx) => {
+                const isOpen = (req.status || '').toLowerCase() === 'open';
+                const hasNav = req.geom && typeof req.geom.lat === 'number' && typeof req.geom.lon === 'number';
                 return (
                   <div
-                    key={atm.id}
-                    onClick={() => handleSelectAtm(atm)}
-                    className="p-2.5 rounded-lg bg-[#141720] hover:bg-[#1c212e] border border-[#262c3c] hover:border-amber-500/40 transition-all cursor-pointer flex items-center justify-between gap-3 group"
+                    key={`${req.service_request_open_timestamp}_${idx}`}
+                    className="bg-[#181c26] border border-[#283042] hover:border-emerald-500/50 rounded-xl p-3 shadow-md flex flex-col gap-2 transition-all hover:bg-[#1d2230]"
                   >
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-white text-[13px] truncate group-hover:text-amber-300 transition-colors">
-                          {atm.name}
-                        </span>
+                    {/* 第一行：狀態標籤、來源渠道、所屬地區與 Google 導航按鈕 */}
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        {req.status ? (
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                            isOpen 
+                              ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' 
+                              : 'bg-gray-700/40 text-gray-300 border border-gray-600/50'
+                          }`}>
+                            {req.status}
+                          </span>
+                        ) : null}
+                        {req.channel ? (
+                          <span className="text-[10px] text-gray-400 bg-black/30 px-1.5 py-0.5 rounded border border-white/5 font-mono">
+                            {req.channel}
+                          </span>
+                        ) : null}
+                        {req.local_area ? (
+                          <span className="text-[10px] text-cyan-400 bg-cyan-950/50 px-1.5 py-0.5 rounded border border-cyan-800/40">
+                            {req.local_area}
+                          </span>
+                        ) : null}
                       </div>
-                      <div className="text-[11px] text-gray-400 truncate mt-0.5">
-                        {atm.address} · {atm.local_area || 'Vancouver'}
-                      </div>
-                      {atm.services_str && (
-                        <div className="text-[10px] text-amber-400/80 truncate mt-0.5">
-                          {atm.services_str}
-                        </div>
+
+                      {hasNav && req.geom && (
+                        <a
+                          href={getGoogleNavUrl(req.geom.lat, req.geom.lon)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1 px-2 py-1 rounded-md bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-400 hover:text-emerald-300 border border-emerald-500/30 text-[11px] font-medium transition-all shrink-0 cursor-pointer shadow-xs"
+                          title="Google 導航至此"
+                        >
+                          <Navigation className="w-3 h-3" />
+                          <span>Google 導航至此</span>
+                        </a>
                       )}
                     </div>
 
-                    <div className="text-right shrink-0">
-                      <span className="text-[11px] font-mono text-gray-300 block">
-                        {atm.openHoursToday}
+                    {/* 服務請求類型與部門 */}
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-xs font-bold text-white leading-snug">
+                        {req.service_request_type || '—'}
                       </span>
-                      {distDisplay && (
-                        <div className="text-[10.5px] font-mono text-gray-400 mt-0.5">
-                          {distDisplay}
-                        </div>
+                      {req.department && (
+                        <span className="text-[11px] text-gray-400">
+                          {req.department}
+                        </span>
                       )}
+                    </div>
+
+                    {/* 規範表格欄位 (參照 Image 3 要求) */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[11px] bg-black/25 p-2 rounded-lg border border-white/5">
+                      <div>
+                        <span className="text-gray-400 font-medium">地址 address：</span>
+                        <span className="text-gray-200 ml-1">
+                          {req.address ? req.address.toLowerCase().replace(/\b\w/g, c => c.toUpperCase()) : '—'}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-gray-400 font-medium">結束原因 closure_reason：</span>
+                        <span className="text-gray-200 ml-1">
+                          {req.closure_reason || '—'}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-gray-400 font-medium">服務請求開始：</span>
+                        <span className="text-gray-200 ml-1 font-mono">
+                          {format311DateTime(req.service_request_open_timestamp) || '—'}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-gray-400 font-medium">服務請求結束：</span>
+                        <span className="text-gray-200 ml-1 font-mono">
+                          {format311DateTime(req.service_request_close_date) || '—'}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 );
@@ -5654,6 +5836,101 @@ function ExploreContent() {
         </div>
       )}
 
+      {/* ==================== 1.6 購物分頁 (Shopping - 大統華 T&T 每週特價海報) ==================== */}
+      {activeTab === 'shopping' && (
+        <div className="flex flex-col flex-1 min-h-0">
+          {/* Subheader: Range & Location info */}
+          <div className="flex items-center justify-between mb-2 shrink-0">
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_6px_rgba(244,63,94,0.6)]"></span>
+              <span className="text-xs text-gray-200 font-semibold">
+                大統華超級市場 每週特價海報
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] text-rose-400 bg-rose-950/70 border border-rose-800/60 px-1.5 py-0.5 rounded font-mono">
+                每週五更新 1 次
+              </span>
+              <a
+                href="https://www.tntsupermarket.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[10.5px] text-rose-400 hover:text-rose-300 font-medium hover:underline flex items-center gap-0.5"
+              >
+                <span>大統華官網</span>
+                <ExternalLink className="w-2.5 h-2.5" />
+              </a>
+            </div>
+          </div>
+
+          {/* 子分頁切換列 */}
+          <div className="flex items-center gap-1 pb-2 mb-2 border-b border-[#262b38] shrink-0">
+            <button
+              type="button"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-600/30 text-rose-300 border border-rose-500/50 text-xs font-semibold shadow-xs"
+            >
+              <ShoppingBag className="w-3.5 h-3.5 text-rose-400" />
+              <span>T&T (大統華)</span>
+            </button>
+            {tntFlyers.length > 0 && tntFlyers[0].validity && (
+              <span className="text-[10px] text-gray-400 font-mono ml-auto">
+                效期：{tntFlyers[0].validity}
+              </span>
+            )}
+          </div>
+
+          {/* 特價海報預覽網格 */}
+          <div className="flex-1 overflow-y-auto pr-1">
+            {loadingTnt ? (
+              <div className="py-12 flex flex-col items-center justify-center text-gray-400 gap-2">
+                <RefreshCw className="w-5 h-5 animate-spin text-rose-400" />
+                <span className="text-xs">載入大統華特價海報中...</span>
+              </div>
+            ) : tntFlyers.length === 0 ? (
+              <div className="py-10 text-center text-gray-400 text-xs">
+                暫無特價海報資料。
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                {tntFlyers.map((flyer, idx) => (
+                  <div
+                    key={flyer.id || idx}
+                    onClick={() => {
+                      setSelectedFlyerModal(idx);
+                      setFlyerZoomLevel(1);
+                    }}
+                    className="group relative bg-[#181c26] border border-[#283042] hover:border-rose-500/60 rounded-xl overflow-hidden cursor-pointer shadow-md transition-all hover:shadow-xl hover:scale-[1.02] flex flex-col"
+                  >
+                    <div className="relative aspect-[3/4] bg-black/40 overflow-hidden flex items-center justify-center">
+                      <img
+                        src={flyer.image_url || flyer.thumbnail}
+                        alt={flyer.alt || `Flyer Page ${idx + 1}`}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1 text-white text-xs font-semibold">
+                        <ZoomIn className="w-4 h-4 text-rose-400" />
+                        <span>點擊放大檢視</span>
+                      </div>
+                    </div>
+                    <div className="p-2 flex flex-col gap-0.5 bg-[#12151e]">
+                      <div className="flex items-center justify-between text-[11px] font-bold text-white">
+                        <span>第 {idx + 1} 頁</span>
+                        <span className="text-[10px] text-gray-400 font-mono">Page {idx + 1}</span>
+                      </div>
+                      {flyer.validity && (
+                        <span className="text-[9.5px] text-rose-300/80 font-mono truncate">
+                          {flyer.validity}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
       {/* ==================== 2. 燃油分頁 (Fuel) ==================== */}
       {activeTab === 'fuel' && (
         <div className="flex flex-col flex-1 min-h-0">
@@ -6107,9 +6384,6 @@ function ExploreContent() {
                   <span className={`text-[9px] px-1.5 py-0.2 rounded-full font-medium ${layers?.beachWaterQuality ? 'bg-teal-500/30 text-teal-200 border border-teal-500/40' : 'bg-gray-800 text-gray-400'}`}>
                     {layers?.beachWaterQuality ? '顯示中' : '已隱藏'}
                   </span>
-                </div>
-                <div className="text-[10px] text-gray-400 truncate">
-                  地圖上即時呈現 41 座海灘水域範圍與水質警戒
                 </div>
               </div>
             </div>
@@ -7212,7 +7486,7 @@ function ExploreContent() {
                   return (
                     <div className="py-12 text-center text-gray-400 text-xs">
                       {trafficFilter === 'severe'
-                        ? '🎉 目前全大溫主要幹道與主要道路均無嚴重壅塞路段'
+                        ? '目前全大溫主要幹道與主要道路均無嚴重壅塞路段'
                         : trafficFilter === 'major_roads'
                         ? '目前查無符合條件的主要道路'
                         : '目前查無符合條件的 7 大幹道路況'}
@@ -7521,7 +7795,7 @@ function ExploreContent() {
                     {/* Second Row: Highway Connection & Type Badge */}
                     <div className="flex items-center justify-between gap-1.5 text-[10px] flex-wrap">
                       <div className="flex items-center gap-1.5 min-w-0">
-                        <span className="text-gray-500 shrink-0">連接幹道:</span>
+                        <span className="text-gray-500 shrink-0">連接幹道</span>
                         <span className="font-mono text-cyan-300/90 bg-cyan-950/40 border border-cyan-800/30 px-1.5 py-0.5 rounded leading-tight" title={crossing.highway}>
                           {crossing.highway}
                         </span>
@@ -7551,7 +7825,7 @@ function ExploreContent() {
                           </div>
 
                           <div className="flex items-baseline justify-between mt-0.5">
-                            <span className="text-[10px] text-gray-400">一般車道:</span>
+                            <span className="text-[10px] text-gray-400">一般車道</span>
                             <span className={`text-[11px] font-bold px-1.5 py-0.2 rounded border font-mono ${getStatusColor(usWait)}`}>
                               {crossing.us_bound?.standard_status || (usWait !== null ? `${usWait} 分鐘` : '正常通行')}
                             </span>
@@ -7559,7 +7833,7 @@ function ExploreContent() {
 
                           {crossing.has_nexus && (
                             <div className="flex items-baseline justify-between text-[10px] text-gray-400 pt-1 border-t border-[#182030]">
-                              <span>NEXUS:</span>
+                              <span>NEXUS</span>
                               <span className="text-emerald-400 font-semibold font-mono">
                                 {crossing.us_bound?.nexus_status || (crossing.us_bound?.nexus_delay_min === 0 ? '免等候' : `${crossing.us_bound?.nexus_delay_min} 分鐘`)}
                               </span>
@@ -7579,14 +7853,14 @@ function ExploreContent() {
                           </div>
 
                           <div className="flex items-baseline justify-between mt-0.5">
-                            <span className="text-[10px] text-gray-400">旅客車道:</span>
+                            <span className="text-[10px] text-gray-400">旅客車道</span>
                             <span className={`text-[11px] font-bold px-1.5 py-0.2 rounded border font-mono ${getStatusColor(caWait)}`}>
                               {crossing.canada_bound?.traveller_status || (caWait !== null ? `${caWait} 分鐘` : '正常通行')}
                             </span>
                           </div>
 
                           <div className="flex items-baseline justify-between text-[10px] text-gray-400 pt-1 border-t border-[#182030]">
-                            <span>商業貨運:</span>
+                            <span>商業貨運</span>
                             <span className="text-gray-300 font-mono">
                               {crossing.canada_bound?.commercial_status || '正常'}
                             </span>
@@ -7638,8 +7912,17 @@ function ExploreContent() {
               <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：WorkBC (Government of British Columbia)</span>
             </>
           )}
-          {activeTab === 'atm' && (
-            <span>共有 {filteredAtms.length} 間銀行</span>
+          {activeTab === '311' && (
+            <>
+              <span>共取得 {filtered311Requests.length} 筆市政服務請求記錄</span>
+              <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：City of Vancouver Open Data</span>
+            </>
+          )}
+          {activeTab === 'shopping' && (
+            <>
+              <span>大統華超市最新每週特價海報 (共 {tntFlyers.length} 頁)</span>
+              <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：T&T Supermarket</span>
+            </>
           )}
           {activeTab === 'fuel' && (
             <span>共有 {filteredFuelStations.length} 間油站</span>
@@ -7692,6 +7975,118 @@ function ExploreContent() {
       </div>
 
       {/* 極光觀測預測圖 Lightbox Modal */}
+            {/* 大統華特價海報全螢幕放大檢視視窗 (T&T Flyer Lightbox Modal) */}
+      {selectedFlyerModal !== null && tntFlyers[selectedFlyerModal] && (
+        <div 
+          className="fixed inset-0 z-[120] bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200 select-none"
+          onClick={() => setSelectedFlyerModal(null)}
+        >
+          {/* 頂部功能列 */}
+          <div 
+            className="w-full max-w-4xl flex items-center justify-between pb-3 mb-2 border-b border-gray-800 text-white shrink-0"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center gap-2">
+              <ShoppingBag className="w-4 h-4 text-rose-400" />
+              <span className="font-bold text-sm">
+                大統華每週特價海報 (第 {selectedFlyerModal + 1} 頁 / 共 {tntFlyers.length} 頁)
+              </span>
+              {tntFlyers[selectedFlyerModal].validity && (
+                <span className="text-xs text-rose-300/90 font-mono hidden sm:inline">
+                  [{tntFlyers[selectedFlyerModal].validity}]
+                </span>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2">
+              {/* 放大 */}
+              <button
+                type="button"
+                onClick={() => setFlyerZoomLevel(prev => Math.min(prev + 0.25, 2.5))}
+                className="p-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 hover:text-white transition-colors cursor-pointer"
+                title="放大海報"
+              >
+                <ZoomIn className="w-4 h-4" />
+              </button>
+              {/* 縮小 */}
+              <button
+                type="button"
+                onClick={() => setFlyerZoomLevel(prev => Math.max(prev - 0.25, 0.75))}
+                className="p-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 hover:text-white transition-colors cursor-pointer"
+                title="縮小海報"
+              >
+                <ZoomOut className="w-4 h-4" />
+              </button>
+              {/* 原圖下載 / 另開 */}
+              <a
+                href={tntFlyers[selectedFlyerModal].image_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 hover:text-white transition-colors cursor-pointer"
+                title="在新分頁開啟或下載高解析度原圖"
+              >
+                <Download className="w-4 h-4" />
+              </a>
+              {/* 關閉按鈕 */}
+              <button
+                type="button"
+                onClick={() => setSelectedFlyerModal(null)}
+                className="p-1.5 rounded-lg bg-rose-600/80 hover:bg-rose-600 text-white transition-colors ml-2 cursor-pointer"
+                title="關閉"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* 圖片展示主體 (支援上一頁/下一頁切換) */}
+          <div 
+            className="relative flex-1 max-w-4xl w-full flex items-center justify-center overflow-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* 上一頁按鈕 */}
+            {selectedFlyerModal > 0 && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedFlyerModal(prev => (prev !== null ? prev - 1 : 0));
+                  setFlyerZoomLevel(1);
+                }}
+                className="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/70 hover:bg-black text-white flex items-center justify-center border border-white/20 shadow-xl transition-all cursor-pointer"
+                title="上一頁"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+            )}
+
+            {/* 海報圖片 */}
+            <div className="max-h-[82vh] overflow-auto flex items-center justify-center">
+              <img
+                src={tntFlyers[selectedFlyerModal].image_url}
+                alt={`Flyer Page ${selectedFlyerModal + 1}`}
+                style={{ transform: `scale(${flyerZoomLevel})`, transformOrigin: 'center center' }}
+                className="max-h-[80vh] max-w-full object-contain rounded-lg shadow-2xl transition-transform duration-200"
+              />
+            </div>
+
+            {/* 下一頁按鈕 */}
+            {selectedFlyerModal < tntFlyers.length - 1 && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedFlyerModal(prev => (prev !== null ? prev + 1 : prev));
+                  setFlyerZoomLevel(1);
+                }}
+                className="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/70 hover:bg-black text-white flex items-center justify-center border border-white/20 shadow-xl transition-all cursor-pointer"
+                title="下一頁"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
       {enlargedAuroraImage && (
         <div
           className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 pt-20 sm:pt-24 pb-6 animate-in fade-in duration-200"

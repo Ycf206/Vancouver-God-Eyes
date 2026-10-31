@@ -162,32 +162,36 @@ export default function TopBar() {
         <span className="text-sm font-extrabold leading-none tracking-widest text-white">上帝之眼</span>
       </div>
 
-      {/* 圖層控制切換按鈕 (便於一鍵展開/收合左側欄) */}
+      {/* 圖層控制切換按鈕 (樣式跟隨右上角設定按鈕：預設圖示，hover展開文字；開啟為綠色，關閉為灰色) */}
       <button 
         onClick={toggleLayerPanel}
-        className={`flex items-center gap-1.5 px-2.5 h-8 rounded-md border text-xs font-medium transition-all mr-1 shrink-0 ${
+        className={`flex items-center justify-center group h-9 px-2.5 border rounded-md transition-all shadow-sm text-xs font-semibold select-none mr-1 shrink-0 ${
           isLayerPanelOpen 
-            ? 'bg-[#25262b] border-[#373a40] text-gray-300 hover:text-white hover:bg-[#2c2d33]' 
-            : 'bg-emerald-500/15 border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/25 shadow-[0_0_8px_rgba(16,185,129,0.2)]'
+            ? 'bg-emerald-500/20 border-emerald-500/60 text-emerald-300 shadow-[0_0_8px_rgba(16,185,129,0.25)]' 
+            : 'bg-[#25262b] hover:bg-[#2c2d33] border-[#373a40] text-gray-300 hover:text-emerald-400 hover:border-emerald-500/50'
         }`}
         title={isLayerPanelOpen ? '收合左側圖層面板' : '展開左側圖層面板'}
       >
-        <Layers className="w-3.5 h-3.5 text-emerald-500" />
-        <span className="hidden sm:inline">圖層</span>
+        <Layers className={`w-4 h-4 ${isLayerPanelOpen ? 'text-emerald-400' : 'text-gray-400 group-hover:text-emerald-400'} group-hover:scale-110 transition-transform shrink-0`} />
+        <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[80px] group-hover:opacity-100 group-hover:ml-1.5 transition-all duration-300 whitespace-nowrap hidden sm:inline">
+          圖層
+        </span>
       </button>
 
-      {/* 探索功能切換按鈕 (便於手機與桌面一鍵開啟/收合探索面板) */}
+      {/* 探索功能切換按鈕 (樣式跟隨右上角設定按鈕：預設圖示，hover展開文字；開啟為綠色，關閉為灰色) */}
       <button 
         onClick={toggleExplore}
-        className={`flex items-center gap-1.5 px-2.5 h-8 rounded-md border text-xs font-medium transition-all mr-1 shrink-0 ${
+        className={`flex items-center justify-center group h-9 px-2.5 border rounded-md transition-all shadow-sm text-xs font-semibold select-none mr-1 shrink-0 ${
           isExploreOpen 
             ? 'bg-emerald-500/20 border-emerald-500/60 text-emerald-300 shadow-[0_0_8px_rgba(16,185,129,0.25)]' 
-            : 'bg-[#25262b] border-[#373a40] text-gray-300 hover:text-white hover:bg-[#2c2d33]'
+            : 'bg-[#25262b] hover:bg-[#2c2d33] border-[#373a40] text-gray-300 hover:text-emerald-400 hover:border-emerald-500/50'
         }`}
         title={isExploreOpen ? '收合探索面板' : '展開探索面板'}
       >
-        <Compass className={`w-3.5 h-3.5 ${isExploreOpen ? 'text-emerald-400' : 'text-gray-400'}`} />
-        <span className="hidden sm:inline">探索</span>
+        <Compass className={`w-4 h-4 ${isExploreOpen ? 'text-emerald-400' : 'text-gray-400 group-hover:text-emerald-400'} group-hover:scale-110 transition-transform shrink-0`} />
+        <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[80px] group-hover:opacity-100 group-hover:ml-1.5 transition-all duration-300 whitespace-nowrap hidden sm:inline">
+          探索
+        </span>
       </button>
 
       <div className="hidden sm:block h-8 w-px bg-gray-700/60 mx-2"></div>
@@ -209,12 +213,15 @@ export default function TopBar() {
         )}
       </div>
 
-      {/* 區域選擇 (緊貼左方日期時間) */}
-      <button className="hidden sm:flex items-center gap-1.5 bg-[#25262b] hover:bg-[#2c2d33] border border-[#373a40] px-3 h-9 rounded-md ml-2.5 text-xs sm:text-sm transition-colors text-gray-200 font-medium shadow-sm shrink-0">
-        <MapIcon className="w-3.5 h-3.5 text-gray-400" />
-        <span>大溫哥華</span>
-        <ChevronDown className="w-3 h-3 text-gray-400 ml-1" />
-      </button>
+      {/* 區域選擇 (緊貼左方日期時間，已鎖定為溫哥華，禁止點擊) */}
+      <div 
+        className="hidden sm:flex items-center gap-1.5 bg-[#25262b]/60 border border-[#373a40]/60 px-3 h-9 rounded-md ml-2.5 text-xs sm:text-sm text-gray-400 font-medium shadow-sm shrink-0 cursor-not-allowed select-none opacity-80"
+        title="目前僅支援溫哥華地區（其他市鎮資料陸續建置中）"
+      >
+        <MapIcon className="w-3.5 h-3.5 text-gray-500" />
+        <span>溫哥華</span>
+        <ChevronDown className="w-3 h-3 text-gray-600 ml-1" />
+      </div>
 
       {/* 搜尋列 (緊隨大溫地區) */}
       <div ref={searchContainerRef} className="relative flex-1 min-w-0 max-w-[650px] ml-1.5 sm:ml-2.5 mr-2 sm:mr-4">

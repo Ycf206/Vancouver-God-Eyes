@@ -114,14 +114,14 @@ FLEET_MODELS = {
     'expo': [
         {'name': 'Bombardier Innovia ART 200 (Mark II)', 'cars': 4, 'speed_max': 80},
         {'name': 'Bombardier Innovia ART 300 (Mark III)', 'cars': 4, 'speed_max': 80},
-        {'name': 'Alstom Mark V (次世代天車)', 'cars': 5, 'speed_max': 80},
+        {'name': 'Alstom Mark V', 'cars': 5, 'speed_max': 80},
     ],
     'millennium': [
         {'name': 'Bombardier Innovia ART 300 (Mark III)', 'cars': 4, 'speed_max': 80},
         {'name': 'Bombardier Innovia ART 200 (Mark II)', 'cars': 4, 'speed_max': 80},
     ],
     'canada': [
-        {'name': 'Hyundai Rotem EMU (加拿大線電力動車組)', 'cars': 2, 'speed_max': 80},
+        {'name': 'Hyundai Rotem EMU', 'cars': 2, 'speed_max': 80},
     ]
 }
 
@@ -539,12 +539,11 @@ def _get_station_metadata(st_name: str, lines: list, stop_id: str):
     zone2_keywords = ["patterson", "metrotown", "royal oak", "edmonds", "22nd street", "new westminster", "columbia", "sapperton", "braid", "lougheed", "production way", "lake city", "sperling", "holdom", "brentwood", "gilmore", "bridgeport", "aberdeen", "lansdowne", "richmond-brighouse", "templeton", "sea island", "yvr-airport"]
 
     if any(k in lower for k in zone3_keywords):
-        zone_label = "Zone 3 (大溫外環收費區)"
+        zone_label = "Zone 3"
     elif any(k in lower for k in zone2_keywords):
-        is_yvr = any(k in lower for k in ["yvr", "templeton", "sea island"])
-        zone_label = "Zone 2 (大溫二環收費區)" + (" · 含 YVR 機場附加費" if is_yvr else "")
+        zone_label = "Zone 2"
     else:
-        zone_label = "Zone 1 (溫哥華市區核心收費區)"
+        zone_label = "Zone 1"
 
     # 2. Park & Ride
     park_and_ride_stations = ["bridgeport", "scott road", "coquitlam central", "lafarge lake-douglas", "moody centre", "inlet centre", "south burnaby", "pitt meadows"]

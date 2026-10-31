@@ -309,22 +309,28 @@ class WeatherService:
                     weather_data["aqhi"]["at_risk_msg"] = at_risk_msg
                     weather_data["aqhi"]["general_msg"] = general_msg
                 if calc_m:
-                    weather_data["aqhi"]["calculated_at"] = calc_m.group(1).strip()
+                    calc_raw = calc_m.group(1).strip()
+                    try:
+                        cleaned_calc = re.sub(r'\s+(PDT|PST|PCT)\s+', ' ', calc_raw)
+                        dt_parsed = datetime.strptime(cleaned_calc, "%I:%M %p %d %B %Y")
+                        weather_data["aqhi"]["calculated_at"] = dt_parsed.strftime("%Y-%m-%d %H:%M")
+                    except Exception:
+                        weather_data["aqhi"]["calculated_at"] = calc_raw
 
                 # 預報最大值 (Forecast Maximums)
                 f_blocks = re.findall(r'<div class="col-md-3 col-sm-3"><p>([^<]+)<\/p><\/div>\s*<div class="col-md-4 col-sm-3">\s*<b>(\d+|\+)<\/b>\s*-\s*([^<]+)<\/div>', html)
                 if f_blocks:
                     fcasts = []
-                    for period_name, f_val, f_risk in f_blocks[:4]:
+                    first_p = f_blocks[0][0].strip().lower()
+                    if "night" in first_p:
+                        seq_labels = ["今天晚上", "明天", "明天晚上", "後天"]
+                    else:
+                        seq_labels = ["今天", "今天晚上", "明天", "明天晚上"]
+
+                    for idx, (period_name, f_val, f_risk) in enumerate(f_blocks[:4]):
                         f_val_num = int(f_val) if f_val.isdigit() else 11
                         p_clean = period_name.strip()
-                        p_zh = "今日" if "thursday" in p_clean.lower() and "night" not in p_clean.lower() else (
-                            "今晚" if "thursday night" in p_clean.lower() else (
-                                "明日" if "friday" in p_clean.lower() and "night" not in p_clean.lower() else (
-                                    "明晚" if "friday night" in p_clean.lower() else p_clean
-                                )
-                            )
-                        )
+                        p_zh = seq_labels[idx] if idx < len(seq_labels) else p_clean
                         f_risk_zh = "低風險" if f_val_num <= 3 else "中風險" if f_val_num <= 6 else "高風險"
                         fcasts.append({
                             "period": p_clean,

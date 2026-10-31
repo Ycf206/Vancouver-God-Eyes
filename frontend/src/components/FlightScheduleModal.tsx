@@ -387,14 +387,7 @@ export default function FlightScheduleModal() {
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-base font-bold text-white tracking-wide">YVR 溫哥華國際機場航班資訊板</h3>
-                <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-sky-500/15 border border-sky-500/30 text-sky-400 flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse"></span>
-                  即時表訂航線地圖 (FIDS)
-                </span>
               </div>
-              <p className="text-xs text-gray-400 mt-0.5">
-                Flight Information Display System · Vancouver International Airport (CYVR)
-              </p>
             </div>
           </div>
           <div className="flex items-center gap-2">

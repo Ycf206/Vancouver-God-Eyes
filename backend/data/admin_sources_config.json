@@ -1254,6 +1254,72 @@
         }
       ],
       "source_url": "https://geoportal.vancouver.ca/datasets/f73da0f047c24fbc9533f234c447d57a_1/explore?location=49.260017%2C-123.113080%2C17&showTable=true"
+    },
+    {
+      "id": "service_requests_311",
+      "name": "3-1-1 市政服務請求",
+      "type": "api",
+      "cron_expr": "0 8 * * *",
+      "schedule_interval": "每日 1 次",
+      "record_count": 100,
+      "unit": "筆即時案件",
+      "last_updated": "2026-10-31T00:00:00Z",
+      "status": "ok",
+      "data_pipeline_notes": "Vancouver Open Data 3-1-1 Service Requests API -> 定期同步市民通報市政問題與工單進度 -> 寫入 vancouver_311.json -> 前端探索 3-1-1 列表呈現與導航",
+      "runner": "github",
+      "category": "市政",
+      "workflow_file": "update-311.yml",
+      "source_links": [
+        {
+          "label": "Vancouver OpenData 3-1-1",
+          "url": "https://opendata.vancouver.ca/explore/dataset/3-1-1-service-requests"
+        }
+      ],
+      "source_url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/3-1-1-service-requests/records/?lang=en"
+    },
+    {
+      "id": "tnt_eflyers",
+      "name": "大統華 T&T 超市每週特價海報",
+      "type": "api",
+      "cron_expr": "0 9 * * 5",
+      "schedule_interval": "每週五 1 次",
+      "record_count": 7,
+      "unit": "張高清海報頁面",
+      "last_updated": "2026-10-30T09:00:00Z",
+      "status": "ok",
+      "data_pipeline_notes": "T&T Supermarket xmapi API (卑詩省專區) -> 抓取最新一期特價商品宣傳海報及高解析度圖片 -> 寫入 tnt_eflyers.json -> 探索購物大統華專區點擊查看特惠與燈箱預覽",
+      "runner": "github",
+      "category": "民生",
+      "workflow_file": "update-tnt-eflyers.yml",
+      "source_links": [
+        {
+          "label": "T&T Supermarket E-Flyers",
+          "url": "https://www.tntsupermarket.com/"
+        }
+      ],
+      "source_url": "https://www.tntsupermarket.com/rest/V3/xmapi/get-store-eflyers?postcode=V6B1A1"
+    },
+    {
+      "id": "vancouver_railways",
+      "name": "溫哥華鐵路網絡圖資",
+      "type": "geojson",
+      "cron_expr": "0 0 1 1 *",
+      "schedule_interval": "每年 1 次",
+      "record_count": 936,
+      "unit": "處鐵軌路段",
+      "last_updated": "2026-10-31T00:00:00Z",
+      "status": "ok",
+      "data_pipeline_notes": "Vancouver Open Data Railways Dataset -> 取得加拿大太平洋鐵路 (CPKC)、加拿大國家鐵路 (CN)、美鐵 (Amtrak/BNSF)、VIA Rail 軌道路網 -> 生成 vancouver_railways.geojson -> 地圖路網向量圖層渲染",
+      "runner": "github",
+      "category": "交通",
+      "workflow_file": "update-railways.yml",
+      "source_links": [
+        {
+          "label": "Vancouver OpenData Railways",
+          "url": "https://opendata.vancouver.ca/explore/dataset/railways"
+        }
+      ],
+      "source_url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/railways/exports/geojson"
     }
   ]
 }

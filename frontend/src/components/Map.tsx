@@ -18,7 +18,7 @@ import {
   Navigation, ExternalLink, Clock, Bike, Car, Info, 
   ChevronDown, ChevronUp, SlidersHorizontal, Fuel, Zap, Wifi, Waves, Play, Pause, CloudRain,
   RotateCcw, RotateCw, MapPin, Crosshair, Activity, Ban, Cone, Lightbulb, Ship,
-  Camera, Gauge, Footprints, ArrowRight, Mail, AlertCircle, Radio, Anchor, CreditCard, Landmark, Truck, Map as MapIcon, Briefcase
+  Camera, Gauge, Footprints, ArrowRight, Mail, AlertCircle, Radio, Anchor, CreditCard, Landmark, Truck, Map as MapIcon, Briefcase, PhoneCall, ShoppingBag, Search
 } from 'lucide-react';
 
 function formatJobDateTime(isoStr?: string, timeFormat: '12h' | '24h' = '24h', timeZone: string = 'America/Vancouver'): string {
@@ -500,6 +500,7 @@ export default function AppMap() {
     stationAlertsMap, transitAlertsList, setTransitAlertsList,
     timeZone,
     navigationAddress,
+    setNavigationAddress,
     activeJobSkillModal,
     setActiveJobSkillModal
   } = useUIStore();
@@ -628,6 +629,14 @@ export default function AppMap() {
   const [showTimePeriodInfo, setShowTimePeriodInfo] = useState(false);
   const [timeInfoHovered, setTimeInfoHovered] = useState(false);
   const [carSharingLegendOpen, setCarSharingLegendOpen] = useState(true);
+  const [imparkLegendOpen, setImparkLegendOpen] = useState(true);
+  const [imparkFilter, setImparkFilter] = useState<{ hourly: boolean; monthly: boolean; evCharger: boolean }>({
+    hourly: true,
+    monthly: true,
+    evCharger: false
+  });
+  const [isExploreSearchActive, setIsExploreSearchActive] = useState(false);
+  const [exploreSearchInput, setExploreSearchInput] = useState('');
   const [bikewaysLegendOpen, setBikewaysLegendOpen] = useState(true);
   const [truckRoutesPanelOpen, setTruckRoutesPanelOpen] = useState(true);
   const [isTruckRouteMapModalOpen, setIsTruckRouteMapModalOpen] = useState(false);
@@ -996,8 +1005,18 @@ export default function AppMap() {
       const hasSpeed = Boolean(selectedFacility.properties?.has_speed);
       if (hasSpeed && !safetyCamerasFilter.redLightSpeed) setSelectedFacility(null);
       if (!hasSpeed && !safetyCamerasFilter.redLightOnly) setSelectedFacility(null);
+    } else if (selectedFacility.facility_type === 'impark' || selectedFacility.id?.startsWith('impark_')) {
+      const props = selectedFacility.properties || (selectedFacility as any);
+      const hasHourly = Boolean(props.hasTransientRates);
+      const hasMonthly = Boolean(props.hasMonthlyRates);
+      const matchRate = (imparkFilter.hourly && imparkFilter.monthly) ||
+        (imparkFilter.hourly && hasHourly) ||
+        (imparkFilter.monthly && hasMonthly);
+      const feats = Array.isArray(props.features) ? props.features : [];
+      const matchEv = !imparkFilter.evCharger || feats.includes('EV Charger');
+      if (!matchRate || !matchEv) setSelectedFacility(null);
     }
-  }, [selectedFacility, carSharingFilter, bikewaysFilter, safetyCamerasFilter]);
+  }, [selectedFacility, carSharingFilter, bikewaysFilter, safetyCamerasFilter, imparkFilter]);
 
   // 當設施彈窗切換或關閉時，重設時段說明面板狀態
   useEffect(() => {
@@ -3535,10 +3554,24 @@ export default function AppMap() {
     
     // Road Facilities: ImPark Lots
     if (layers.impark) {
+      const imparkFilters: any[] = ['all'];
+      if (imparkFilter.hourly && !imparkFilter.monthly) {
+        imparkFilters.push(['==', ['get', 'hasTransientRates'], true]);
+      } else if (!imparkFilter.hourly && imparkFilter.monthly) {
+        imparkFilters.push(['==', ['get', 'hasMonthlyRates'], true]);
+      } else if (!imparkFilter.hourly && !imparkFilter.monthly) {
+        imparkFilters.push(['==', ['get', 'hasTransientRates'], '__NONE__']);
+      }
+      if (imparkFilter.evCharger) {
+        imparkFilters.push(['in', 'EV Charger', ['to-string', ['get', 'features']]]);
+      }
+      const imparkFilterExpr = imparkFilters.length > 1 ? imparkFilters : undefined;
+
       style.layers.push({
         id: 'impark-layer',
         type: 'circle',
         source: 'impark',
+        ...(imparkFilterExpr ? { filter: imparkFilterExpr } : {}),
         paint: {
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3.5, 14, 6, 15, 9, 17, 12],
           'circle-color': '#d9261c',
@@ -3551,6 +3584,7 @@ export default function AppMap() {
         type: 'symbol',
         source: 'impark',
         minzoom: 13,
+        ...(imparkFilterExpr ? { filter: imparkFilterExpr } : {}),
         layout: {
           'text-field': 'P',
           'text-size': ['interpolate', ['linear'], ['zoom'], 13, 8.5, 15, 10.5, 17, 12],
@@ -5442,6 +5476,70 @@ export default function AppMap() {
       });
     }
 
+    // Road Facilities: Railways (鐵路網絡圖層 - CPKC / CN / VIA Rail / Amtrak / BNSF)
+    if (layers.railways) {
+      style.sources['railways'] = { type: 'geojson', data: '/vancouver_railways.geojson' };
+      // 1. 鐵路外框 / 枕木底線 (Railway Ties / Casing)
+      style.layers.push({
+        id: 'railways-casing-layer',
+        type: 'line',
+        source: 'railways',
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        paint: {
+          'line-color': '#27272a',
+          'line-width': ['interpolate', ['linear'], ['zoom'], 10, 2.8, 13, 4.8, 16, 7.5],
+          'line-opacity': 0.85
+        }
+      });
+      // 2. 鐵路中心線 (Rail Track Line with dashed ties style)
+      style.layers.push({
+        id: 'railways-line-layer',
+        type: 'line',
+        source: 'railways',
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'butt'
+        },
+        paint: {
+          'line-color': [
+            'match',
+            ['get', 'name'],
+            'Canadian Pacific', '#dc2626',
+            'Canadian National', '#16a34a',
+            'Burlington Northern', '#ea580c',
+            'Via', '#eab308',
+            'Downtown Historical Railway', '#06b6d4',
+            '#e4e4e7'
+          ],
+          'line-width': ['interpolate', ['linear'], ['zoom'], 10, 1.4, 13, 2.4, 16, 3.8],
+          'line-dasharray': [2, 2]
+        }
+      });
+      // 3. 鐵路標籤 (Railway Operator Label on zoom >= 13)
+      style.layers.push({
+        id: 'railways-symbol-layer',
+        type: 'symbol',
+        source: 'railways',
+        minzoom: 13,
+        layout: {
+          'symbol-placement': 'line',
+          'text-field': ['get', 'name'],
+          'text-size': 10,
+          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+          'text-letter-spacing': 0.05,
+          'text-max-angle': 30
+        },
+        paint: {
+          'text-color': '#f4f4f5',
+          'text-halo-color': '#18181b',
+          'text-halo-width': 1.5
+        }
+      });
+    }
+
     // Road Facilities: Traffic Signals (交通燈圖層 - 966 處信號燈)
     if (layers.trafficSignals) {
       style.sources['traffic_signals'] = { type: 'geojson', data: '/vancouver_traffic_signals.geojson' };
@@ -5888,6 +5986,9 @@ export default function AppMap() {
     parkingMeterFilter.timePeriod,
     radiusCircleGeoJSON,
     layers.impark,
+    imparkFilter.hourly,
+    imparkFilter.monthly,
+    imparkFilter.evCharger,
     layers.accessibleParking, 
     layers.motorcycleParking, 
     motorcycleParkingFilter.maxRate,
@@ -5966,6 +6067,7 @@ export default function AppMap() {
     layers.museums,
     layers.garbageCollection,
     layers.truckRoutes,
+    layers.railways,
     layers.trafficSignals,
     layers.turnRestrictions,
     contourInterval,
@@ -7924,13 +8026,9 @@ export default function AppMap() {
             <div className="p-3.5 w-[300px] sm:w-[335px] max-w-[calc(100vw-32px)] text-gray-800">
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
                 <div className="flex items-start gap-2 min-w-0 pr-2">
-                  <span className={`w-3 h-3 rounded-full flex-shrink-0 mt-1 ${
-                    selectedAirport.properties?.sub_type === 'international_airport'
-                      ? 'bg-sky-500'
-                      : selectedAirport.properties?.sub_type === 'seaplane_base' || selectedAirport.properties?.sub_type === 'south_terminal'
-                      ? 'bg-teal-500'
-                      : 'bg-emerald-500'
-                  }`}></span>
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-sky-600 text-white shrink-0 mt-0.5 shadow-xs whitespace-nowrap">
+                    航空
+                  </span>
                   <div className="min-w-0">
                     <h3 className="font-bold text-gray-900 text-sm leading-snug break-words">
                       {selectedAirport.properties?.name_en || selectedAirport.properties?.name}
@@ -7985,15 +8083,10 @@ export default function AppMap() {
               </div>
 
               <div className="flex flex-col gap-2 text-xs">
-                {/* 1.1 淺藍區塊只有:左方是設施類別, 右方是淺藍底白字"航空" */}
-                <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex items-center justify-between gap-2">
-                  <span className="font-bold text-xs text-sky-950 flex items-center gap-1.5">
-                    <span className="text-base text-sky-600 font-bold">🛫</span>
-                    <span>{selectedAirport.properties?.badge || '航空設施'}</span>
-                  </span>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-600 text-white shrink-0 shadow-xs whitespace-nowrap">
-                    航空
-                  </span>
+                {/* 16.2 藍色區塊文字 */}
+                <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/25 flex items-center gap-2 text-xs text-sky-950 leading-relaxed font-medium">
+                  <span className="text-base text-sky-600 font-bold shrink-0">🛫</span>
+                  <span>國際與國內航班起降核心，建議出發前預留充裕時間辦理登機手續並完成安檢。</span>
                 </div>
 
                 {/* 1.3 現在所有資料放到淺藍色區塊下方 (刪除設施地址、設施類別、所在區域) */}
@@ -8819,7 +8912,7 @@ export default function AppMap() {
                       return (selectedFacility.name || '').replace(/\s*(?:公園公廁|公廁|公共洗手間|洗手間)\s*$/g, '').trim() || selectedFacility.name;
                     }
                     if (selectedFacility.facility_type === 'parks_facilities') {
-                      return selectedFacility.properties?.park_name || (selectedFacility.name || '').replace(/\s*-\s*[^-]+$/, '').trim() || selectedFacility.name;
+                      return selectedFacility.properties?.facility_type_name || selectedFacility.properties?.facility_type || selectedFacility.name;
                     }
                     if (selectedFacility.facility_type === 'zoning_districts') {
                       return selectedFacility.properties?.zoning_district || selectedFacility.name;
@@ -8999,7 +9092,7 @@ export default function AppMap() {
                                 return (area ? area.replace(/\s*·\s*溫哥華消防局.*/, '') : '') || 'Vancouver, BC';
                               }
                               if (selectedFacility.facility_type === 'parks') return selectedFacility.properties?.street_address || selectedFacility.local_area || 'Vancouver, BC';
-                              if (selectedFacility.facility_type === 'parks_facilities') return 'Vancouver, BC';
+                              if (selectedFacility.facility_type === 'parks_facilities') return selectedFacility.properties?.park_name || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'zoning_districts') return 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'community_gardens') return 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'community_centres') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
@@ -9299,8 +9392,9 @@ export default function AppMap() {
                 const formatRate = (val?: any) => {
                   if (!val) return null;
                   const s = String(val).trim();
-                  if (s.toLowerCase().includes('/hr') || s.toLowerCase().includes('/小時')) return s.replace(/小時/g, 'hr');
-                  return `${s} /hr`;
+                  if (s.toLowerCase().includes('/hr')) return s.replace(/\/hr/gi, ' /小時');
+                  if (s.includes('/小時')) return s;
+                  return `${s} /小時`;
                 };
 
                 const formatCreditCard = (val?: any) => {
@@ -9610,8 +9704,9 @@ export default function AppMap() {
                 const formatRate = (val?: any) => {
                   if (!val) return null;
                   const s = String(val).trim();
-                  if (s.toLowerCase().includes('/hr') || s.toLowerCase().includes('/小時')) return s.replace(/小時/g, 'hr');
-                  return `${s} /hr`;
+                  if (s.toLowerCase().includes('/hr')) return s.replace(/\/hr/gi, ' /小時');
+                  if (s.includes('/小時')) return s;
+                  return `${s} /小時`;
                 };
 
                 const formatCreditCard = (val?: any) => {
@@ -11941,31 +12036,27 @@ export default function AppMap() {
                     <span>公園設施</span>
                   </div>
 
-                  {/* 27.2 & 27.3 灰底區塊：設施名稱與設施數量 */}
-                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                    <div className="flex justify-between items-center text-gray-600">
-                      <span>設施</span>
-                      <span className="text-gray-900 font-medium text-right">
-                        {selectedFacility.properties.facility_type_name || selectedFacility.name}
-                      </span>
-                    </div>
-                    {selectedFacility.properties.facility_count != null && (
-                      <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
+                  {/* 6.2 灰底區塊：設施數量 (已刪除設施行) */}
+                  {selectedFacility.properties.facility_count != null && (
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                      <div className="flex justify-between items-center text-gray-600">
                         <span>設施數量</span>
                         <span className="text-gray-900 font-medium text-right">{selectedFacility.properties.facility_count} 座</span>
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  )}
 
-                  {/* 27.4 底部加入前往 Vancouver Board of Parks and Recreation 官方網頁 */}
+                  {/* 6.4 底部加入前往官方網頁 */}
                   <div className="pt-1 border-t border-gray-100">
                     <a
-                      href="https://vancouver.ca/parks-recreation-culture/parks-and-recreation.aspx"
+                      href={selectedFacility.properties.facility_url || "https://vancouver.ca/parks-recreation-culture/parks-and-recreation.aspx"}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-teal-600 hover:bg-teal-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
                     >
-                      前往 Vancouver Board of Parks and Recreation 官方網頁 ↗
+                      {selectedFacility.properties.facility_url && selectedFacility.properties.facility_type_name
+                        ? `前往 ${selectedFacility.properties.facility_type_name} 官方網頁 ↗`
+                        : '前往 Vancouver Board of Parks and Recreation 官方網頁 ↗'}
                     </a>
                   </div>
                 </div>
@@ -15012,6 +15103,112 @@ export default function AppMap() {
           className="pointer-events-auto select-none flex items-center gap-1 px-2.5 py-1.5 bg-[#10131a]/95 backdrop-blur-md rounded-full border border-[#2a2f3d] shadow-2xl max-w-full sm:max-w-[calc(100vw-24px)] overflow-x-auto scrollbar-none ring-1 ring-white/5 touch-pan-x" 
           style={{ WebkitOverflowScrolling: 'touch' }}
         >
+          {/* 探索分頁搜尋按鈕 (最左方按鈕，點擊展開輸入欄，支援搜尋建議) */}
+          {!isExploreSearchActive ? (
+            <button
+              onClick={() => {
+                setIsExploreSearchActive(true);
+                setExploreSearchInput('');
+              }}
+              title="搜尋探索分頁"
+              className="group flex items-center justify-center h-8 sm:h-8.5 px-2.5 sm:px-3 rounded-full text-xs font-medium transition-all duration-300 shrink-0 touch-manipulation cursor-pointer text-gray-300 hover:text-white hover:bg-white/10 border border-transparent mr-0.5"
+            >
+              <Search className="w-3.5 h-3.5 shrink-0 text-emerald-400 group-hover:scale-110 transition-transform" />
+              <span className="max-w-0 overflow-hidden opacity-0 group-hover:max-w-[75px] group-hover:opacity-100 group-hover:ml-1.5 transition-all duration-300 whitespace-nowrap text-[11px] text-emerald-300">
+                搜尋分頁
+              </span>
+            </button>
+          ) : (
+            <div className="relative flex items-center bg-[#191f2c] border border-emerald-500/60 rounded-full px-2.5 h-8 sm:h-8.5 mr-1 shrink-0 animate-in fade-in duration-200 shadow-[0_0_10px_rgba(16,185,129,0.25)]">
+              <Search className="w-3.5 h-3.5 text-emerald-400 shrink-0 mr-1.5" />
+              <input
+                autoFocus
+                type="text"
+                value={exploreSearchInput}
+                onChange={(e) => setExploreSearchInput(e.target.value)}
+                placeholder="搜尋分頁..."
+                className="bg-transparent text-xs text-white placeholder-gray-400 outline-none w-24 sm:w-32"
+                onKeyDown={(e) => {
+                  if (e.key === 'Escape') {
+                    setIsExploreSearchActive(false);
+                  }
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  setIsExploreSearchActive(false);
+                  setExploreSearchInput('');
+                }}
+                className="text-gray-400 hover:text-white p-0.5 ml-1 rounded-full hover:bg-white/10"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+
+              {/* 浮動搜尋結果建議選單 (Floating Search Suggestions Dropup) */}
+              <div className="absolute bottom-[calc(100%+8px)] left-0 w-44 bg-[#141822]/95 backdrop-blur-md border border-emerald-500/40 rounded-xl shadow-2xl p-1.5 flex flex-col gap-1 z-50 animate-in fade-in slide-in-from-bottom-2 duration-150">
+                <div className="text-[10px] text-gray-400 font-semibold px-2 py-0.5 border-b border-gray-700/60">
+                  探索分頁建議 ({
+                    [
+                      { id: 'weather', label: '天氣', icon: CloudRain, color: 'text-sky-400' },
+                      { id: 'news', label: '新聞', icon: Activity, color: 'text-amber-400' },
+                      { id: 'events', label: '活動', icon: Compass, color: 'text-purple-400' },
+                      { id: 'beach', label: '泳灘', icon: Waves, color: 'text-teal-300' },
+                      { id: 'ski', label: '滑雪', icon: Navigation, color: 'text-cyan-400' },
+                      { id: 'aurora', label: '極光', icon: Zap, color: 'text-fuchsia-400' },
+                      { id: 'jobs', label: '工作', icon: Briefcase, color: 'text-indigo-400' },
+                      { id: '311', label: '3-1-1', icon: PhoneCall, color: 'text-emerald-400' },
+                      { id: 'shopping', label: '購物', icon: ShoppingBag, color: 'text-rose-400' },
+                      { id: 'fuel', label: '油站', icon: Fuel, color: 'text-amber-500' },
+                      { id: 'ev', label: '充電', icon: Zap, color: 'text-yellow-400' },
+                      { id: 'alerts', label: '即時通報', icon: AlertCircle, color: 'text-rose-400' },
+                      { id: 'traffic', label: '路況', icon: Activity, color: 'text-amber-400' },
+                      { id: 'border', label: '關口', icon: Compass, color: 'text-blue-400' },
+                      { id: 'ferry', label: '渡輪', icon: Ship, color: 'text-sky-400' },
+                      { id: 'cargo', label: '航運', icon: Ship, color: 'text-teal-400' },
+                    ].filter(t => !exploreSearchInput.trim() || t.label.includes(exploreSearchInput.trim()) || t.id.includes(exploreSearchInput.trim().toLowerCase())).length
+                  })
+                </div>
+                <div className="max-h-48 overflow-y-auto flex flex-col gap-0.5">
+                  {[
+                    { id: 'weather', label: '天氣', icon: CloudRain, color: 'text-sky-400' },
+                    { id: 'news', label: '新聞', icon: Activity, color: 'text-amber-400' },
+                    { id: 'events', label: '活動', icon: Compass, color: 'text-purple-400' },
+                    { id: 'beach', label: '泳灘', icon: Waves, color: 'text-teal-300' },
+                    { id: 'ski', label: '滑雪', icon: Navigation, color: 'text-cyan-400' },
+                    { id: 'aurora', label: '極光', icon: Zap, color: 'text-fuchsia-400' },
+                    { id: 'jobs', label: '工作', icon: Briefcase, color: 'text-indigo-400' },
+                    { id: '311', label: '3-1-1', icon: PhoneCall, color: 'text-emerald-400' },
+                    { id: 'shopping', label: '購物', icon: ShoppingBag, color: 'text-rose-400' },
+                    { id: 'fuel', label: '油站', icon: Fuel, color: 'text-amber-500' },
+                    { id: 'ev', label: '充電', icon: Zap, color: 'text-yellow-400' },
+                    { id: 'alerts', label: '即時通報', icon: AlertCircle, color: 'text-rose-400' },
+                    { id: 'traffic', label: '路況', icon: Activity, color: 'text-amber-400' },
+                    { id: 'border', label: '關口', icon: Compass, color: 'text-blue-400' },
+                    { id: 'ferry', label: '渡輪', icon: Ship, color: 'text-sky-400' },
+                    { id: 'cargo', label: '航運', icon: Ship, color: 'text-teal-400' },
+                  ].filter(t => !exploreSearchInput.trim() || t.label.includes(exploreSearchInput.trim()) || t.id.includes(exploreSearchInput.trim().toLowerCase())).map(t => {
+                    const TabIcon = t.icon;
+                    return (
+                      <button
+                        key={t.id}
+                        onClick={() => {
+                          openExploreTab(t.id as any);
+                          setIsExploreSearchActive(false);
+                          setExploreSearchInput('');
+                        }}
+                        className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-white/10 text-xs text-left text-gray-200 hover:text-white transition-colors cursor-pointer"
+                      >
+                        <TabIcon className={`w-3.5 h-3.5 shrink-0 ${t.color}`} />
+                        <span className="font-medium text-xs">{t.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
+
           {[
             { id: 'weather', label: '天氣', icon: CloudRain, color: 'text-sky-400' },
             { id: 'news', label: '新聞', icon: Activity, color: 'text-amber-400' },
@@ -15020,7 +15217,8 @@ export default function AppMap() {
             { id: 'ski', label: '滑雪', icon: Navigation, color: 'text-cyan-400' },
             { id: 'aurora', label: '極光', icon: Zap, color: 'text-fuchsia-400' },
             { id: 'jobs', label: '工作', icon: Briefcase, color: 'text-indigo-400' },
-            { id: 'atm', label: '銀行', icon: Landmark, color: 'text-amber-400' },
+            { id: '311', label: '3-1-1', icon: PhoneCall, color: 'text-emerald-400' },
+            { id: 'shopping', label: '購物', icon: ShoppingBag, color: 'text-rose-400' },
             { id: 'fuel', label: '油站', icon: Fuel, color: 'text-amber-500' },
             { id: 'ev', label: '充電', icon: Zap, color: 'text-yellow-400' },
             { id: 'alerts', label: '即時通報', icon: AlertCircle, color: 'text-rose-400' },
@@ -15422,7 +15620,9 @@ export default function AppMap() {
               </div>
               <div className="flex justify-between items-center gap-2">
                 <span className="text-gray-400 shrink-0">列車型號</span>
-                <span className="font-bold text-gray-100 text-right truncate">{selectedTrain.model} ({selectedTrain.cars} 卡)</span>
+                <span className="font-bold text-gray-100 text-right truncate">
+                  {(selectedTrain.model || '').replace(/\s*\([\u4e00-\u9fa5]+\)/g, '')} ({selectedTrain.cars} 卡)
+                </span>
               </div>
               <div className="flex justify-between items-center gap-2">
                 <span className="text-gray-400 shrink-0">起點</span>
@@ -16422,6 +16622,150 @@ export default function AppMap() {
         </div>
       )}
 
+      {/* 私人停車場圖例與篩選 (ImPark Lots Legend & Filter Popup) */}
+      {layers.impark && (
+        <div className={`fixed z-30 w-[270px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-red-500/50 select-none animate-in fade-in duration-200 ${
+          getFloatingPanelPos(
+            (layers.parkingMeters ? 1 : 0) + 
+            (layers.motorcycleParking ? 1 : 0) + 
+            (layers.fuel ? 1 : 0) + 
+            ((layers.evCharging || layers.tesla) ? 1 : 0) + 
+            (layers.carSharing ? 1 : 0) + 
+            (layers.bikeways ? 1 : 0) +
+            (layers.truckRoutes ? 1 : 0) +
+            (layers.safetyCameras ? 1 : 0)
+          )
+        }`}>
+          <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
+            <div className="flex items-center gap-2">
+              <span className="w-5 h-5 rounded-full bg-[#d9261c] text-white flex items-center justify-center font-bold text-[10px] shadow-sm">
+                P
+              </span>
+              <div className="flex flex-col">
+                <span className="font-bold text-xs text-white">私人停車場篩選</span>
+                <span className="text-[9.5px] text-gray-400">時租 · 月租 · 充電樁</span>
+              </div>
+            </div>
+            <button
+              onClick={() => setImparkLegendOpen(!imparkLegendOpen)}
+              className="text-gray-400 hover:text-white p-0.5 rounded hover:bg-[#252a38] transition-colors"
+              title={imparkLegendOpen ? "收合" : "展開"}
+            >
+              {imparkLegendOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            </button>
+          </div>
+
+          {imparkLegendOpen ? (
+            <div className="flex flex-col gap-2 text-xs">
+              {/* 時租泊車 */}
+              <button
+                type="button"
+                onClick={() => setImparkFilter(prev => ({ ...prev, hourly: !prev.hourly }))}
+                className={`flex items-center justify-between p-1.5 rounded-lg border transition-all text-left ${
+                  imparkFilter.hourly 
+                    ? 'bg-red-950/40 border-red-500/60 text-white' 
+                    : 'bg-[#1b1f2b] border-[#293042] text-gray-400 hover:bg-[#222838]'
+                }`}
+                title={imparkFilter.hourly ? "點擊隱藏時租停車場" : "點擊顯示時租停車場"}
+              >
+                <div className="flex items-center gap-2">
+                  <span className={`w-3 h-3 rounded-full flex items-center justify-center text-[8px] font-bold text-white ${
+                    imparkFilter.hourly ? 'bg-red-500' : 'bg-gray-600'
+                  }`}>
+                    H
+                  </span>
+                  <span className={`font-medium text-xs ${imparkFilter.hourly ? 'text-white' : 'text-gray-400 line-through'}`}>
+                    時租泊車 (Hourly)
+                  </span>
+                </div>
+                <div className={`w-7 h-4 flex items-center rounded-full p-0.5 transition-colors ${
+                  imparkFilter.hourly ? 'bg-red-600 justify-end' : 'bg-gray-700 justify-start'
+                }`}>
+                  <div className="bg-white w-3 h-3 rounded-full shadow-md"></div>
+                </div>
+              </button>
+
+              {/* 月租泊車 */}
+              <button
+                type="button"
+                onClick={() => setImparkFilter(prev => ({ ...prev, monthly: !prev.monthly }))}
+                className={`flex items-center justify-between p-1.5 rounded-lg border transition-all text-left ${
+                  imparkFilter.monthly 
+                    ? 'bg-red-950/40 border-red-500/60 text-white' 
+                    : 'bg-[#1b1f2b] border-[#293042] text-gray-400 hover:bg-[#222838]'
+                }`}
+                title={imparkFilter.monthly ? "點擊隱藏月租停車場" : "點擊顯示月租停車場"}
+              >
+                <div className="flex items-center gap-2">
+                  <span className={`w-3 h-3 rounded-full flex items-center justify-center text-[8px] font-bold text-white ${
+                    imparkFilter.monthly ? 'bg-red-500' : 'bg-gray-600'
+                  }`}>
+                    M
+                  </span>
+                  <span className={`font-medium text-xs ${imparkFilter.monthly ? 'text-white' : 'text-gray-400 line-through'}`}>
+                    月租泊車 (Monthly)
+                  </span>
+                </div>
+                <div className={`w-7 h-4 flex items-center rounded-full p-0.5 transition-colors ${
+                  imparkFilter.monthly ? 'bg-red-600 justify-end' : 'bg-gray-700 justify-start'
+                }`}>
+                  <div className="bg-white w-3 h-3 rounded-full shadow-md"></div>
+                </div>
+              </button>
+
+              {/* 附設充電樁 */}
+              <button
+                type="button"
+                onClick={() => setImparkFilter(prev => ({ ...prev, evCharger: !prev.evCharger }))}
+                className={`flex items-center justify-between p-1.5 rounded-lg border transition-all text-left ${
+                  imparkFilter.evCharger 
+                    ? 'bg-emerald-950/40 border-emerald-500/60 text-white' 
+                    : 'bg-[#1b1f2b] border-[#293042] text-gray-400 hover:bg-[#222838]'
+                }`}
+                title={imparkFilter.evCharger ? "點擊顯示所有停車場" : "點擊僅顯示附充電樁車場"}
+              >
+                <div className="flex items-center gap-2">
+                  <span className={`w-3 h-3 rounded-full flex items-center justify-center text-[8px] font-bold text-white ${
+                    imparkFilter.evCharger ? 'bg-emerald-500' : 'bg-gray-600'
+                  }`}>
+                    ⚡
+                  </span>
+                  <span className={`font-medium text-xs ${imparkFilter.evCharger ? 'text-emerald-300' : 'text-gray-400'}`}>
+                    附設充電樁 (EV Charger)
+                  </span>
+                </div>
+                <div className={`w-7 h-4 flex items-center rounded-full p-0.5 transition-colors ${
+                  imparkFilter.evCharger ? 'bg-emerald-600 justify-end' : 'bg-gray-700 justify-start'
+                }`}>
+                  <div className="bg-white w-3 h-3 rounded-full shadow-md"></div>
+                </div>
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center justify-between text-[11px]">
+              <div className="flex items-center gap-1.5">
+                <span className={`w-2 h-2 rounded-full ${imparkFilter.hourly ? 'bg-red-500' : 'bg-gray-600'}`} />
+                <span className="text-[10.5px] text-gray-300">時租</span>
+                <span className={`w-2 h-2 rounded-full ml-1 ${imparkFilter.monthly ? 'bg-red-500' : 'bg-gray-600'}`} />
+                <span className="text-[10.5px] text-gray-300">月租</span>
+                {imparkFilter.evCharger && (
+                  <>
+                    <span className="w-2 h-2 rounded-full ml-1 bg-emerald-400" />
+                    <span className="text-[10.5px] text-emerald-300">充電樁</span>
+                  </>
+                )}
+              </div>
+              <button 
+                onClick={() => setImparkLegendOpen(true)}
+                className="text-[10px] text-red-400 hover:underline cursor-pointer"
+              >
+                展開
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* 降水雷達地圖即時狀態 HUD (Floating Radar HUD) */}
       {isRadarActive && radarTilePath && (
         <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-30 bg-[#12151e]/90 backdrop-blur-md px-4 py-2 rounded-full border border-cyan-500/50 shadow-2xl flex items-center gap-3 select-none text-xs text-white animate-in fade-in duration-200">
@@ -16431,7 +16775,7 @@ export default function AppMap() {
           </div>
           {radarFrameTime ? (
             <span className="font-mono text-cyan-300 font-bold bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800/40 text-[11px]">
-              {new Date(radarFrameTime * 1000).toLocaleTimeString('zh-TW', { hour12: false, hour: '2-digit', minute: '2-digit', timeZone: 'America/Vancouver' })} PDT
+              {new Date(radarFrameTime * 1000).toLocaleTimeString('zh-TW', { hour12: false, hour: '2-digit', minute: '2-digit', timeZone: 'America/Vancouver' })} PCT
             </span>
           ) : null}
           <button
@@ -16648,7 +16992,7 @@ export default function AppMap() {
               </div>
               <div className="min-w-0">
                 <h3 className="font-bold text-white text-[15px] leading-snug tracking-tight truncate">
-                  {selectedSkytrainStation.name}
+                  {selectedSkytrainStation.name.replace(/\s*站$/, ' Station')}
                 </h3>
                 <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
                   {selectedSkytrainStation.lines.map((ln) => (
@@ -16664,9 +17008,7 @@ export default function AppMap() {
                     </span>
                   ))}
                   <span className="text-[9.5px] font-semibold px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-                    {selectedSkytrainStation.fare_zone?.startsWith('Zone')
-                      ? selectedSkytrainStation.fare_zone
-                      : `Zone ${selectedSkytrainStation.fare_zone || 1}`}
+                    {selectedSkytrainStation.fare_zone?.match(/Zone\s*[1-3]/i)?.[0] || (selectedSkytrainStation.fare_zone?.startsWith('Zone') ? selectedSkytrainStation.fare_zone.split(' ')[0] : `Zone ${selectedSkytrainStation.fare_zone || 1}`)}
                   </span>
                   <span className="text-[10px] text-gray-400 font-mono">#{selectedSkytrainStation.stop_id}</span>
                 </div>
@@ -17002,7 +17344,7 @@ export default function AppMap() {
                   大溫 TransLink 跨區票價提示
                 </span>
                 <span>
-                  本站屬於 <strong className="text-blue-300">Zone {selectedSkytrainStation.fare_zone || 1}</strong>。平日晚上 6:30 之後以及週末假日全天，跨全網各區均統一按 1 區票價收費！
+                  本站屬於 <strong className="text-blue-300">{selectedSkytrainStation.fare_zone?.match(/Zone\s*[1-3]/i)?.[0] || `Zone ${selectedSkytrainStation.fare_zone || 1}`}</strong>。平日晚上 6:30 之後以及週末假日全天，跨全網各區均統一按 1 區票價收費！
                 </span>
               </div>
             </div>
@@ -17114,24 +17456,38 @@ export default function AppMap() {
             <span className="font-medium">複製經緯度</span>
           </button>
 
-          {/* Action: 設成個人位置 */}
+          {/* Action: 設成個人地址 */}
           <button
             onClick={() => {
               const lat = Math.round(contextMenu.lat * 1000000) / 1000000;
               const lon = Math.round(contextMenu.lon * 1000000) / 1000000;
               setUserLocation({
-                address: `自訂位置 (${lat.toFixed(4)}, ${lon.toFixed(4)})`,
-                displayName: `個人位置 (${lat.toFixed(4)}, ${lon.toFixed(4)})`,
+                address: `自訂地址 (${lat.toFixed(4)}, ${lon.toFixed(4)})`,
+                displayName: `個人地址 (${lat.toFixed(4)}, ${lon.toFixed(4)})`,
                 lat,
                 lon,
                 confirmed: true
               });
               setContextMenu(null);
             }}
-            className="w-full px-2.5 py-1.5 rounded-lg text-gray-200 hover:text-white hover:bg-emerald-500/15 flex items-center gap-2 transition-colors text-left"
+            className="w-full px-2.5 py-1.5 rounded-lg text-gray-200 hover:text-white hover:bg-emerald-500/15 flex items-center gap-2 transition-colors text-left cursor-pointer"
           >
             <MapPin className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-            <span className="font-medium">設成個人位置</span>
+            <span className="font-medium">設成個人地址</span>
+          </button>
+
+          {/* Action: 設定導航地址 */}
+          <button
+            onClick={() => {
+              const lat = Math.round(contextMenu.lat * 1000000) / 1000000;
+              const lon = Math.round(contextMenu.lon * 1000000) / 1000000;
+              setNavigationAddress(`${lat.toFixed(5)}, ${lon.toFixed(5)}`);
+              setContextMenu(null);
+            }}
+            className="w-full px-2.5 py-1.5 rounded-lg text-gray-200 hover:text-white hover:bg-amber-500/15 flex items-center gap-2 transition-colors text-left cursor-pointer"
+          >
+            <Navigation className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+            <span className="font-medium">設定導航地址</span>
           </button>
 
           {/* Action 3: 平移置中此處 */}

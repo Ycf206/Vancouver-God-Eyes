@@ -43,7 +43,7 @@ class BorderService:
                     "standard_status": "10 分鐘",
                     "standard_lanes_open": 5,
                     "nexus_delay_min": 0,
-                    "nexus_status": "免等候 (No Delay)",
+                    "nexus_status": "免等候",
                     "nexus_lanes_open": 2,
                     "commercial_delay_min": None,
                     "commercial_status": "不適用",
@@ -79,7 +79,7 @@ class BorderService:
                     "standard_status": "5 分鐘",
                     "standard_lanes_open": 3,
                     "nexus_delay_min": 0,
-                    "nexus_status": "免等候 (No Delay)",
+                    "nexus_status": "免等候",
                     "nexus_lanes_open": 1,
                     "commercial_delay_min": 0,
                     "commercial_status": "免等候",
@@ -104,7 +104,7 @@ class BorderService:
                 "tips": "位於蘭里與阿伯茨福德交界，前往貝靈漢 (Bellingham) 避開週末和平門長龍的絕佳捷徑。",
                 "canada_bound": {
                     "traveller_delay_min": 0,
-                    "traveller_status": "免等候 (No Delay)",
+                    "traveller_status": "免等候",
                     "commercial_delay_min": 0,
                     "commercial_status": "免等候",
                     "nexus_open": True,
@@ -112,7 +112,7 @@ class BorderService:
                 },
                 "us_bound": {
                     "standard_delay_min": 0,
-                    "standard_status": "免等候 (No Delay)",
+                    "standard_status": "免等候",
                     "standard_lanes_open": 2,
                     "nexus_delay_min": 0,
                     "nexus_status": "免等候",
@@ -176,7 +176,7 @@ class BorderService:
                 "tips": "連接南三角洲 Tsawwassen 與美國飛地羅伯茨角 (Point Roberts)，通常免排隊通關極其迅速。",
                 "canada_bound": {
                     "traveller_delay_min": 0,
-                    "traveller_status": "免等候 (No Delay)",
+                    "traveller_status": "免等候",
                     "commercial_delay_min": None,
                     "commercial_status": "不適用",
                     "nexus_open": False,
@@ -184,7 +184,7 @@ class BorderService:
                 },
                 "us_bound": {
                     "standard_delay_min": 0,
-                    "standard_status": "免等候 (No Delay)",
+                    "standard_status": "免等候",
                     "standard_lanes_open": 1,
                     "nexus_delay_min": None,
                     "nexus_status": "無 NEXUS 專道",
@@ -313,7 +313,7 @@ class BorderService:
                 t_min = live.get("traveller_min")
                 t_raw = live.get("traveller_status")
                 c["canada_bound"]["traveller_delay_min"] = t_min
-                c["canada_bound"]["traveller_status"] = "免等候 (No Delay)" if t_min == 0 else (f"{t_min} 分鐘" if t_min is not None else t_raw)
+                c["canada_bound"]["traveller_status"] = "免等候" if t_min == 0 else (f"{t_min} 分鐘" if t_min is not None else t_raw)
                 c_min = live.get("commercial_min")
                 c_raw = live.get("commercial_status")
                 c["canada_bound"]["commercial_delay_min"] = c_min
@@ -333,7 +333,7 @@ class BorderService:
                 std_m = matched_cbp.get("standard_delay_min")
                 if std_m is not None:
                     c["us_bound"]["standard_delay_min"] = std_m
-                    c["us_bound"]["standard_status"] = "免等候 (No Delay)" if std_m == 0 else f"{std_m} 分鐘"
+                    c["us_bound"]["standard_status"] = "免等候" if std_m == 0 else f"{std_m} 分鐘"
                 if matched_cbp.get("standard_lanes_open") is not None:
                     c["us_bound"]["standard_lanes_open"] = matched_cbp["standard_lanes_open"]
 
