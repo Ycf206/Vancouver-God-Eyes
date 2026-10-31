@@ -2176,7 +2176,9 @@ def get_search_facilities_items():
     _search_facilities_cache = items
     return _search_facilities_cache
 
+_search_lock = threading.Lock()
 _search_query_cache = {}
+_addr_search_cache = {}
 _curated_points_synced = False
 
 @app.get("/api/search")
@@ -2184,6 +2186,7 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
     """
     全圖層項目搜尋 (Search Layer Items):
     關鍵字/分詞模糊比對：支援例如 "cypress 16" 命中 "Cypress & 16th"
+    具備執行緒鎖與快取保護，防止高並發擊穿
     """
     global _curated_points_synced
     q_clean = q.strip().lower()
@@ -2193,8 +2196,12 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
     if q_clean in _search_query_cache:
         return {"results": _search_query_cache[q_clean]}
 
-    q_tokens = [t for t in normalize_search_str(q_clean).split() if t]
-    results = []
+    with _search_lock:
+        if q_clean in _search_query_cache:
+            return {"results": _search_query_cache[q_clean]}
+
+        q_tokens = [t for t in normalize_search_str(q_clean).split() if t]
+        results = []
 
     # 確保點狀圖層資料庫同步（僅初次檢查，避免每次即時搜尋重複觸發 DB 查詢）
     if not _curated_points_synced:
@@ -2503,66 +2510,74 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
     except Exception as e:
         print(f"Error searching bikeways: {e}")
 
-    # 8. 搜尋溫哥華官方門牌地址 (Property Addresses API)
-    if len(q_clean) >= 2:
-        try:
-            addr_url = "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/property-addresses/records"
-            params = {
-                "where": f'search(*, "{q_clean}")',
-                "limit": 10
-            }
-            addr_resp = requests.get(addr_url, params=params, timeout=2.5)
-            if addr_resp.status_code == 200:
-                addr_data = addr_resp.json()
-                for rec in addr_data.get("results", []):
-                    c_num = rec.get("civic_number") or ""
-                    street = rec.get("std_street") or ""
-                    area = rec.get("geo_local_area") or "Vancouver"
-                    coords = rec.get("geo_point_2d") or {}
-                    p_lon = coords.get("lon")
-                    p_lat = coords.get("lat")
-                    if p_lon is not None and p_lat is not None:
-                        full_addr = f"{c_num} {street}".strip()
-                        results.append({
-                            "id": f"addr_{rec.get('site_id') or rec.get('pcoord') or full_addr}",
-                            "title": full_addr,
-                            "subtitle": f"{area}, Vancouver (門牌地址)",
-                            "category": "address",
-                            "badge": "地址",
-                            "icon": "📍",
-                            "lon": float(p_lon),
-                            "lat": float(p_lat),
-                            "zoom": 17,
-                            "layer_key": None,
-                            "meta": {
-                                "civic_number": c_num,
-                                "street": street,
-                                "local_area": area,
-                                "full_address": full_addr
-                            }
-                        })
-        except Exception:
-            pass
-
-    if is_category_query:
-        cat_matches = []
-        other_matches = []
-        for r in results:
-            cat = r.get("category", "")
-            bdg = (r.get("badge") or "").lower()
-            if cat in ("canada_post", "fedex") and q_clean in ("canada post", "post", "郵寄", "郵局", "fedex", "快遞"):
-                cat_matches.append(r)
-            elif q_clean in bdg or q_clean == cat:
-                cat_matches.append(r)
+        # 8. 搜尋溫哥華官方門牌地址 (Property Addresses API - 具備本機快取與短超時防護)
+        if len(q_clean) >= 2:
+            if q_clean in _addr_search_cache:
+                results.extend(_addr_search_cache[q_clean])
             else:
-                other_matches.append(r)
-        results = cat_matches + other_matches
+                try:
+                    addr_url = "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/property-addresses/records"
+                    params = {
+                        "where": f'search(*, "{q_clean}")',
+                        "limit": 10
+                    }
+                    addr_resp = requests.get(addr_url, params=params, timeout=0.8)
+                    if addr_resp.status_code == 200:
+                        addr_data = addr_resp.json()
+                        addr_matches = []
+                        for rec in addr_data.get("results", []):
+                            c_num = rec.get("civic_number") or ""
+                            street = rec.get("std_street") or ""
+                            area = rec.get("geo_local_area") or "Vancouver"
+                            coords = rec.get("geo_point_2d") or {}
+                            p_lon = coords.get("lon")
+                            p_lat = coords.get("lat")
+                            if p_lon is not None and p_lat is not None:
+                                full_addr = f"{c_num} {street}".strip()
+                                addr_matches.append({
+                                    "id": f"addr_{rec.get('site_id') or rec.get('pcoord') or full_addr}",
+                                    "title": full_addr,
+                                    "subtitle": f"{area}, Vancouver (門牌地址)",
+                                    "category": "address",
+                                    "badge": "地址",
+                                    "icon": "📍",
+                                    "lon": float(p_lon),
+                                    "lat": float(p_lat),
+                                    "zoom": 17,
+                                    "layer_key": None,
+                                    "meta": {
+                                        "civic_number": c_num,
+                                        "street": street,
+                                        "local_area": area,
+                                        "full_address": full_addr
+                                    }
+                                })
+                        if len(_addr_search_cache) > 500:
+                            _addr_search_cache.clear()
+                        _addr_search_cache[q_clean] = addr_matches
+                        results.extend(addr_matches)
+                except Exception:
+                    pass
 
-    final_results = results[:150]
-    if len(_search_query_cache) > 200:
-        _search_query_cache.clear()
-    _search_query_cache[q_clean] = final_results
-    return {"results": final_results}
+        if is_category_query:
+            cat_matches = []
+            other_matches = []
+            for r in results:
+                cat = r.get("category", "")
+                bdg = (r.get("badge") or "").lower()
+                if cat in ("canada_post", "fedex") and q_clean in ("canada post", "post", "郵寄", "郵局", "fedex", "快遞"):
+                    cat_matches.append(r)
+                elif q_clean in bdg or q_clean == cat:
+                    cat_matches.append(r)
+                else:
+                    other_matches.append(r)
+            results = cat_matches + other_matches
+
+        final_results = results[:150]
+        if len(_search_query_cache) > 500:
+            _search_query_cache.clear()
+        _search_query_cache[q_clean] = final_results
+        return {"results": final_results}
 
 from html.parser import HTMLParser
 
@@ -4006,8 +4021,7 @@ def trigger_admin_sync(payload: dict = Body(...)):
     target_runner = payload.get("runner")  # 'oci' or 'github_actions'
     config_path = get_admin_config_path()
     now_iso = datetime.utcnow().isoformat() + "Z"
-    github_token = os.environ.get("GITHUB_TOKEN", "").strip()
-    github_repo = os.environ.get("GITHUB_REPO", "Ycf206/Vancouver-God-Eyes").strip()
+    github_token, github_repo = get_persisted_github_token()
     
     if os.path.exists(config_path):
         try:
@@ -4089,6 +4103,20 @@ def trigger_admin_sync(payload: dict = Body(...)):
                             target_src["last_updated"] = now_iso
                             target_src["status"] = "healthy"
                             detail_msg = f"已即時更新街頭餐車資料，共 10 處營業中餐車攤位。"
+                    elif target_src.get("id") == "vancouver_311":
+                        action_name = "311_SYNC"
+                        try:
+                            from scripts.layers.update_311 import update_311
+                            res_311 = update_311()
+                            count_311 = len(res_311.get("results", [])) if res_311 else 0
+                            target_src["record_count"] = count_311
+                            target_src["last_updated"] = now_iso
+                            target_src["status"] = "healthy"
+                            detail_msg = f"已即時同步溫哥華 3-1-1 市政服務請求資料，共取得最新 {count_311} 筆記錄。"
+                        except Exception as e_311:
+                            logger.warning(f"Failed to run update_311: {e_311}")
+                            target_src["last_updated"] = now_iso
+                            detail_msg = f"更新 3-1-1 市政請求發生錯誤: {e_311}"
                     else:
                         runner = target_src.get("runner", "oci")
                     if runner == "github_actions":
@@ -4244,8 +4272,7 @@ def update_admin_schedule(payload: dict = Body(...)):
     
     config_path = get_admin_config_path()
     now_iso = datetime.utcnow().isoformat() + "Z"
-    github_token = os.environ.get("GITHUB_TOKEN", "").strip()
-    github_repo = os.environ.get("GITHUB_REPO", "Ycf206/Vancouver-God-Eyes").strip()
+    github_token, github_repo = get_persisted_github_token()
     
     if os.path.exists(config_path):
         try:
@@ -4559,32 +4586,82 @@ def trigger_system_rollback(payload: dict = Body(...)):
 
 @app.get("/api/admin/recent-commits")
 def get_admin_recent_commits():
-    """獲取可供緊急還原的最近提交清單 (提供下拉選單選擇)"""
+    """獲取可供緊急還原的最近提交清單 (提供下拉選單選擇與詳細 Commit 資料)"""
     commits = [
-        {"sha": "PREV", "title": "PREV (上一個運作正常的版本 - HEAD~1)", "date": "推薦選項"},
-        {"sha": "HEAD~2", "title": "HEAD~2 (前兩個版本)", "date": "歷史回溯"},
-        {"sha": "HEAD~3", "title": "HEAD~3 (前三個版本)", "date": "歷史回溯"},
-        {"sha": "HEAD~5", "title": "HEAD~5 (前五個版本)", "date": "歷史回溯"}
+        {"sha": "PREV", "full_sha": "HEAD~1", "title": "PREV (上一個運作正常的版本 - HEAD~1)", "message": "上一筆穩定運作的部署版本", "date": "推薦選項", "author": "系統預設"},
+        {"sha": "HEAD~2", "full_sha": "HEAD~2", "title": "HEAD~2 (前兩個版本)", "message": "倒退兩次提交前之狀態", "date": "歷史回溯", "author": "Git HEAD~2"},
+        {"sha": "HEAD~3", "full_sha": "HEAD~3", "title": "HEAD~3 (前三個版本)", "message": "倒退三次提交前之狀態", "date": "歷史回溯", "author": "Git HEAD~3"},
+        {"sha": "HEAD~5", "full_sha": "HEAD~5", "title": "HEAD~5 (前五個版本)", "message": "倒退五次提交前之狀態", "date": "歷史回溯", "author": "Git HEAD~5"}
     ]
-    try:
-        import subprocess
-        res = subprocess.run(
-            ["git", "log", "-n", "10", "--pretty=format:%h|%s|%ad", "--date=short"],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            timeout=3
-        )
-        if res.returncode == 0 and res.stdout.strip():
-            for line in res.stdout.strip().split("\n"):
-                parts = line.split("|", 2)
-                if len(parts) >= 2:
-                    sha = parts[0].strip()
-                    title = parts[1].strip()
-                    date_str = parts[2].strip() if len(parts) > 2 else ""
-                    commits.append({"sha": sha, "title": f"{sha}: {title}", "date": date_str})
-    except Exception as e:
-        logger.warning(f"Failed to get local git commits: {e}")
+    
+    # 優先嘗試透過 GitHub API 獲取最新的 Commit 詳細資訊
+    token, repo = get_persisted_github_token()
+    got_github_commits = False
+    if token:
+        try:
+            gh_resp = requests.get(
+                f"https://api.github.com/repos/{repo}/commits?per_page=15",
+                headers={
+                    "Authorization": f"Bearer {token}",
+                    "Accept": "application/vnd.github.v3+json",
+                    "User-Agent": "VancouverGodsEye-Admin"
+                },
+                timeout=5
+            )
+            if gh_resp.status_code == 200:
+                gh_data = gh_resp.json()
+                for c in gh_data:
+                    full_sha = c.get("sha", "")
+                    short_sha = full_sha[:7]
+                    c_info = c.get("commit", {})
+                    full_msg = c_info.get("message", "").strip()
+                    title_line = full_msg.split("\n")[0] if full_msg else short_sha
+                    author_name = c_info.get("author", {}).get("name", "") or c.get("author", {}).get("login", "")
+                    date_raw = c_info.get("author", {}).get("date", "")
+                    date_str = date_raw[:10] if len(date_raw) >= 10 else ""
+                    commits.append({
+                        "sha": short_sha,
+                        "full_sha": full_sha,
+                        "title": f"[{short_sha}] {title_line}",
+                        "message": full_msg,
+                        "date": date_str,
+                        "author": author_name
+                    })
+                got_github_commits = True
+        except Exception as gh_e:
+            logger.warning(f"Failed to fetch commits from GitHub API: {gh_e}")
+            
+    # 若無 GitHub API 資訊，則備用嘗試本地 git log
+    if not got_github_commits:
+        try:
+            import subprocess
+            res = subprocess.run(
+                ["git", "log", "-n", "12", "--pretty=format:%h|%s|%ad|%an|%H", "--date=short"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                timeout=3
+            )
+            if res.returncode == 0 and res.stdout.strip():
+                for line in res.stdout.strip().split("\n"):
+                    parts = line.split("|")
+                    if len(parts) >= 2:
+                        short_sha = parts[0].strip()
+                        title = parts[1].strip()
+                        date_str = parts[2].strip() if len(parts) > 2 else ""
+                        author = parts[3].strip() if len(parts) > 3 else ""
+                        full_sha = parts[4].strip() if len(parts) > 4 else short_sha
+                        commits.append({
+                            "sha": short_sha,
+                            "full_sha": full_sha,
+                            "title": f"[{short_sha}] {title}",
+                            "message": title,
+                            "date": date_str,
+                            "author": author
+                        })
+        except Exception as e:
+            logger.warning(f"Failed to get local git commits: {e}")
+            
     return {"commits": commits}
 
 

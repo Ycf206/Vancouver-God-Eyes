@@ -46,16 +46,36 @@ class WeatherService:
         from datetime import timezone, timedelta
         return datetime.now(timezone.utc) - timedelta(hours=7)
 
+    def _background_refresh(self):
+        try:
+            self._do_fetch_weather()
+        except Exception as e:
+            print(f"Background weather refresh error: {e}")
+        finally:
+            self._is_refreshing = False
+
     def fetch_weather(self) -> Dict[str, Any]:
         """
         取得大溫哥華地區即時天氣與氣象警報：
         優先查詢加拿大環境部 (ECCC MSC GeoMet api.weather.gc.ca)，
         輔以 Open-Meteo 高精度數據與備援機制，確保 100% 穩定在線。
+        支援 Stale-While-Revalidate 非同步背景刷新，確保在任何高並發情境下皆能毫秒級回傳。
         """
         now = time.time()
-        if self.cached_weather and (now - self.last_fetch_time < self.cache_ttl):
+        if self.cached_weather:
+            if now - self.last_fetch_time < self.cache_ttl:
+                return self.cached_weather
+            # 若已有快取但過期，直接回傳舊快取並在背景刷新，避免 HTTP 請求阻塞
+            if not getattr(self, '_is_refreshing', False):
+                self._is_refreshing = True
+                import threading
+                threading.Thread(target=self._background_refresh, daemon=True).start()
             return self.cached_weather
 
+        return self._do_fetch_weather()
+
+    def _do_fetch_weather(self) -> Dict[str, Any]:
+        now = time.time()
         now_vancouver = self._get_vancouver_now()
         current_hour = now_vancouver.hour
 

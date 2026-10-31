@@ -46,7 +46,7 @@ jobs:
           fi
 
       - name: Sync Updated Data to OCI VM
-        if: steps.git_push.outputs.has_changes == 'true'
+        if: always()
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.OCI_HOST_IP }}

@@ -51,7 +51,7 @@ services:
       - AISSTREAM_API_KEY=${AISSTREAM_API_KEY:-}
       - TOMTOM_API_KEY=${TOMTOM_API_KEY:-}
       - ADMIN_API_SECRET=${ADMIN_API_SECRET:-}
-      - WORKERS=2
+      - WORKERS=3
     restart: unless-stopped
     logging: *default-logging
 

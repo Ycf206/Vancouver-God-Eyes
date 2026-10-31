@@ -6479,6 +6479,11 @@ export default function AppMap() {
           if (contextMenu) {
             setContextMenu(null);
           }
+          // 8. 打開探索列搜尋按鈕後，按一下地圖自動關閉搜尋按鈕與底部中央建議清單
+          if (isExploreSearchActive) {
+            setIsExploreSearchActive(false);
+            setExploreSearchInput('');
+          }
           // 若剛剛點擊了車輛、列車或標記，阻止地圖畫布背景點擊事件清理所選內容
           if (Date.now() - lastInteractiveItemClickRef.current < 450) {
             return;
@@ -18975,11 +18980,8 @@ export default function AppMap() {
                 重新整理檢查狀態
               </button>
             </div>
-            <div className="pt-2 border-t border-gray-800 w-full flex justify-between items-center text-[11px] text-gray-500">
+            <div className="pt-2 border-t border-gray-800 w-full flex justify-center items-center text-[11px] text-gray-500">
               <span>溫哥華上帝之眼 維護公告</span>
-              <a href="/admin" className="text-gray-400 hover:text-white underline">
-                管理員登入
-              </a>
             </div>
           </div>
         </div>

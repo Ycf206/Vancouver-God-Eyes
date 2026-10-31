@@ -784,6 +784,8 @@ function ExploreContent() {
   const [status311Filter, setStatus311Filter] = useState<'all' | 'open' | 'close'>('all');
   const [dept311Filter, setDept311Filter] = useState<string>('all');
   const [sort311Order, setSort311Order] = useState<'desc' | 'asc'>('desc');
+  const [page311, setPage311] = useState<number>(1);
+  const PAGE_SIZE_311 = 20;
 
   // --- 購物 / 大統華 T&T 每週特價海報狀態 ---
   const [tntFlyers, setTntFlyers] = useState<Array<{
@@ -884,6 +886,16 @@ function ExploreContent() {
       return sort311Order === 'desc' ? timeB - timeA : timeA - timeB;
     });
   }, [requests311, status311Filter, dept311Filter, search311Query, sort311Order]);
+
+  const totalPages311 = Math.max(1, Math.ceil(filtered311Requests.length / PAGE_SIZE_311));
+  const paged311Requests = useMemo(() => {
+    const start = (page311 - 1) * PAGE_SIZE_311;
+    return filtered311Requests.slice(start, start + PAGE_SIZE_311);
+  }, [filtered311Requests, page311]);
+
+  useEffect(() => {
+    setPage311(1);
+  }, [search311Query, status311Filter, dept311Filter, sort311Order]);
 
   const yesterday311Count = useMemo(() => {
     if (!requests311 || requests311.length === 0) return 0;
@@ -6042,7 +6054,7 @@ function ExploreContent() {
                     </td>
                   </tr>
                 ) : (
-                  filtered311Requests.map((req, idx) => {
+                  paged311Requests.map((req, idx) => {
                     const isOpen = (req.status || '').toLowerCase() === 'open';
                     const hasNav = req.geom && typeof req.geom.lat === 'number' && typeof req.geom.lon === 'number';
                     const addrTitleCase = req.address 
@@ -6102,6 +6114,54 @@ function ExploreContent() {
               </tbody>
             </table>
           </div>
+
+          {/* 6. 3-1-1 頁數分頁導航列 */}
+          {totalPages311 > 1 && (
+            <div className="flex items-center justify-between px-3 py-1.5 bg-[#121620] border border-[#263147] rounded-lg text-xs shrink-0 mt-1">
+              <div className="text-[11px] text-gray-400">
+                顯示第 <span className="font-semibold text-emerald-400">{(page311 - 1) * PAGE_SIZE_311 + 1}</span> - <span className="font-semibold text-emerald-400">{Math.min(page311 * PAGE_SIZE_311, filtered311Requests.length)}</span> 筆 (共 {filtered311Requests.length} 筆)
+              </div>
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setPage311(1)}
+                  disabled={page311 <= 1}
+                  className="px-2 py-0.5 rounded bg-[#1c2230] hover:bg-[#252e40] text-gray-300 disabled:opacity-40 disabled:hover:bg-[#1c2230] text-[11px] transition-colors cursor-pointer"
+                >
+                  首頁
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPage311(p => Math.max(1, p - 1))}
+                  disabled={page311 <= 1}
+                  className="p-1 rounded bg-[#1c2230] hover:bg-[#252e40] text-gray-300 disabled:opacity-40 disabled:hover:bg-[#1c2230] transition-colors cursor-pointer"
+                  title="上一頁"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                </button>
+                <span className="px-1 text-[11px] font-mono text-gray-300">
+                  {page311} / {totalPages311}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setPage311(p => Math.min(totalPages311, p + 1))}
+                  disabled={page311 >= totalPages311}
+                  className="p-1 rounded bg-[#1c2230] hover:bg-[#252e40] text-gray-300 disabled:opacity-40 disabled:hover:bg-[#1c2230] transition-colors cursor-pointer"
+                  title="下一頁"
+                >
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPage311(totalPages311)}
+                  disabled={page311 >= totalPages311}
+                  className="px-2 py-0.5 rounded bg-[#1c2230] hover:bg-[#252e40] text-gray-300 disabled:opacity-40 disabled:hover:bg-[#1c2230] text-[11px] transition-colors cursor-pointer"
+                >
+                  末頁
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -8312,22 +8372,13 @@ function ExploreContent() {
             </>
           )}
           {activeTab === 'jobs' && (
-            <>
-              <span>共 {jobTotalCount.toLocaleString()} 筆職位空缺 (第 {jobPage} / {jobTotalPages} 頁)</span>
-              <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：WorkBC (Government of British Columbia)</span>
-            </>
+            <span className="text-[9.5px] text-gray-500">資料來源：WorkBC (Government of British Columbia)</span>
           )}
           {activeTab === '311' && (
-            <>
-              <span>共取得 {filtered311Requests.length} 筆市政服務請求記錄</span>
-              <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：City of Vancouver Open Data</span>
-            </>
+            <span className="text-[9.5px] text-gray-500">資料來源：City of Vancouver Open Data</span>
           )}
           {activeTab === 'shopping' && (
-            <>
-              <span>大統華超市最新每週特價海報 (共 {tntFlyers.length} 頁)</span>
-              <span className="text-[9.5px] text-gray-500 mt-0.5">資料來源：T&T Supermarket</span>
-            </>
+            <span className="text-[9.5px] text-gray-500">資料來源：T&T Supermarket</span>
           )}
           {activeTab === 'fuel' && (
             <span>共有 {filteredFuelStations.length} 間油站</span>
@@ -8371,26 +8422,6 @@ function ExploreContent() {
             <span>共 {filteredCrashes.length} 處車禍事故統計熱點</span>
           )}
         </div>
-        <button
-          onClick={() => {
-            if (activeTab === 'crashes' && selectedCrash) {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap?.() || (window as any).__godsEyeMapRef?.current;
-              if (mapInstance) {
-                mapInstance.flyTo({
-                  center: [selectedCrash.lon, selectedCrash.lat],
-                  zoom: 16.5,
-                  essential: true
-                });
-              }
-            }
-            setExploreOpen(false);
-            setSearchTarget(null);
-          }}
-          className="text-gray-400 hover:text-white hover:underline text-[11px] shrink-0"
-        >
-          關閉
-        </button>
       </div>
 
       {/* 極光觀測預測圖 Lightbox Modal */}

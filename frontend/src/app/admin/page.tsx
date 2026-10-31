@@ -251,11 +251,11 @@ export default function AdminPage() {
   const [rollbackTarget, setRollbackTarget] = useState('PREV');
   const [isTriggeringRollback, setIsTriggeringRollback] = useState(false);
   const [copiedLogId, setCopiedLogId] = useState<string | null>(null);
-  const [recentCommits, setRecentCommits] = useState<Array<{ sha: string; title: string; date?: string }>>([
-    { sha: 'PREV', title: 'PREV (上一個運作正常的版本 - HEAD~1)', date: '推薦選項' },
-    { sha: 'HEAD~2', title: 'HEAD~2 (前兩個版本)', date: '歷史回溯' },
-    { sha: 'HEAD~3', title: 'HEAD~3 (前三個版本)', date: '歷史回溯' },
-    { sha: 'HEAD~5', title: 'HEAD~5 (前五個版本)', date: '歷史回溯' }
+  const [recentCommits, setRecentCommits] = useState<Array<{ sha: string; full_sha?: string; title: string; message?: string; date?: string; author?: string }>>([
+    { sha: 'PREV', full_sha: 'HEAD~1', title: 'PREV (上一個運作正常的版本 - HEAD~1)', message: '上一筆穩定運作的部署版本', date: '推薦選項', author: '系統預設' },
+    { sha: 'HEAD~2', full_sha: 'HEAD~2', title: 'HEAD~2 (前兩個版本)', message: '倒退兩次提交前之狀態', date: '歷史回溯', author: 'Git HEAD~2' },
+    { sha: 'HEAD~3', full_sha: 'HEAD~3', title: 'HEAD~3 (前三個版本)', message: '倒退三次提交前之狀態', date: '歷史回溯', author: 'Git HEAD~3' },
+    { sha: 'HEAD~5', full_sha: 'HEAD~5', title: 'HEAD~5 (前五個版本)', message: '倒退五次提交前之狀態', date: '歷史回溯', author: 'Git HEAD~5' }
   ]);
   const [issueSearch, setIssueSearch] = useState('');
   const [issueStatusFilter, setIssueStatusFilter] = useState<'all' | 'pending' | 'resolved' | 'closed'>('all');
@@ -373,7 +373,7 @@ export default function AdminPage() {
         if (res.data.updated_at) setMaintenanceUpdatedAt(res.data.updated_at);
       }
       // 讀取可供還原的 Commit 清單
-      const commitsRes = await adminApiFetch<{ commits: Array<{ sha: string; title: string; date?: string }> }>('/api/admin/recent-commits');
+      const commitsRes = await adminApiFetch<{ commits: Array<{ sha: string; full_sha?: string; title: string; message?: string; date?: string; author?: string }> }>('/api/admin/recent-commits');
       if (commitsRes.ok && commitsRes.data?.commits && commitsRes.data.commits.length > 0) {
         setRecentCommits(commitsRes.data.commits);
       }
@@ -2625,9 +2625,9 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* 分頁 5: 系統維護與還原 (Maintenance & Rollback) */}
+        {/* 分頁 5: 系統維護與還原 (Maintenance & Rollback) - 2欄1列並排佈局 */}
         {mainTab === 'maintenance' && (
-          <div className="flex flex-col gap-5 animate-in fade-in duration-200">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-start animate-in fade-in duration-200">
             {/* Card 1: 系統維護模式控制 */}
             <div className="bg-[#141822] border border-[#232a3b] rounded-xl p-5 shadow-xl flex flex-col gap-4">
               <div className="flex flex-wrap items-center justify-between pb-3 border-b border-[#232a3b] gap-2">
@@ -2755,6 +2755,37 @@ export default function AdminPage() {
                     </button>
                   </div>
                 </div>
+
+                {/* 9.2 還原目標詳細資訊卡片 (顯示 Commit 代碼、內容、作者與時間) */}
+                {(() => {
+                  const selectedCommit = recentCommits.find(c => c.sha === rollbackTarget);
+                  if (!selectedCommit) return null;
+                  return (
+                    <div className="bg-[#0b0e14] border border-[#232b3c] rounded-lg p-3 text-xs flex flex-col gap-1.5 shadow-inner">
+                      <div className="flex items-center justify-between text-gray-400 text-[11px]">
+                        <span className="font-semibold text-rose-300 flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-pulse" />
+                          已選版本代碼 (Commit SHA):
+                        </span>
+                        <span className="font-mono bg-rose-950/60 text-rose-300 border border-rose-800/50 px-1.5 py-0.5 rounded text-[10.5px]">
+                          {selectedCommit.full_sha || selectedCommit.sha}
+                        </span>
+                      </div>
+                      <div className="text-gray-200 font-medium text-xs leading-snug">
+                        {selectedCommit.title}
+                      </div>
+                      {selectedCommit.message && selectedCommit.message !== selectedCommit.title && (
+                        <div className="text-[11px] text-gray-400 font-mono bg-black/40 p-2 rounded border border-gray-800/80 whitespace-pre-wrap max-h-24 overflow-y-auto">
+                          {selectedCommit.message}
+                        </div>
+                      )}
+                      <div className="flex items-center justify-between text-[10.5px] text-gray-500 pt-1 border-t border-gray-800/60">
+                        <span>作者: {selectedCommit.author || 'Vancouver God\'s Eye'}</span>
+                        <span>日期: {selectedCommit.date || '最近'}</span>
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 <div className="flex flex-col gap-1">
                   <label className="text-[11px] text-gray-400">
