@@ -1,8 +1,8 @@
-name: Update 門牌地址檢索索引 (每週)
+name: Update 門牌地址檢索索引 (每半年)
 
 on:
   schedule:
-    - cron: '0 4 * * 1'
+    - cron: '0 0 1 */6 *'
   workflow_dispatch:
 
 concurrency:
