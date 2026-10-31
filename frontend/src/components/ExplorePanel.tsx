@@ -3417,7 +3417,7 @@ function ExploreContent() {
   if (isExploreMinimized) {
     return (
       <div 
-        className="fixed top-[64px] sm:top-[70px] right-2 sm:right-[72px] z-50 sm:z-40 bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-full px-3 py-1.5 shadow-2xl border border-emerald-500/50 flex items-center gap-2 cursor-pointer select-none hover:bg-[#1e2330] transition-all animate-in fade-in"
+        className="fixed top-[108px] sm:top-[112px] right-2.5 sm:right-3 z-50 sm:z-40 bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-full px-3 py-1.5 shadow-2xl border border-emerald-500/50 flex items-center gap-2 cursor-pointer select-none hover:bg-[#1e2330] transition-all animate-in fade-in"
         onClick={() => setExploreMinimized(false)}
         title="點擊展開探索面板"
       >
@@ -6255,7 +6255,7 @@ function ExploreContent() {
               type="text"
               value={crashesSearchQuery}
               onChange={(e) => setCrashesSearchQuery(e.target.value)}
-              placeholder="搜尋車禍發生地點、街角或路段 (支援 St/Street、Ave、49th、E. 等簡寫)..."
+              placeholder="搜尋車禍發生地點、街角或路段"
               className="w-full bg-[#1b202c] border border-[#2b3345] rounded-lg pl-8 pr-7 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-rose-500 transition-colors"
             />
             {crashesSearchQuery && (

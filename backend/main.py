@@ -13,7 +13,7 @@ import os
 import uuid
 import hashlib
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 
 logger = logging.getLogger(__name__)
 
@@ -4556,6 +4556,36 @@ def trigger_system_rollback(payload: dict = Body(...)):
             return {"status": "error", "message": f"GitHub API 調度失敗 (HTTP {resp.status_code}): {resp.text}"}
     except Exception as e:
         return {"status": "error", "message": f"調度系統還原發生異常: {str(e)}"}
+
+@app.get("/api/admin/recent-commits")
+def get_admin_recent_commits():
+    """獲取可供緊急還原的最近提交清單 (提供下拉選單選擇)"""
+    commits = [
+        {"sha": "PREV", "title": "PREV (上一個運作正常的版本 - HEAD~1)", "date": "推薦選項"},
+        {"sha": "HEAD~2", "title": "HEAD~2 (前兩個版本)", "date": "歷史回溯"},
+        {"sha": "HEAD~3", "title": "HEAD~3 (前三個版本)", "date": "歷史回溯"},
+        {"sha": "HEAD~5", "title": "HEAD~5 (前五個版本)", "date": "歷史回溯"}
+    ]
+    try:
+        import subprocess
+        res = subprocess.run(
+            ["git", "log", "-n", "10", "--pretty=format:%h|%s|%ad", "--date=short"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            timeout=3
+        )
+        if res.returncode == 0 and res.stdout.strip():
+            for line in res.stdout.strip().split("\n"):
+                parts = line.split("|", 2)
+                if len(parts) >= 2:
+                    sha = parts[0].strip()
+                    title = parts[1].strip()
+                    date_str = parts[2].strip() if len(parts) > 2 else ""
+                    commits.append({"sha": sha, "title": f"{sha}: {title}", "date": date_str})
+    except Exception as e:
+        logger.warning(f"Failed to get local git commits: {e}")
+    return {"commits": commits}
 
 
 @app.post("/api/admin/sources/visibility")

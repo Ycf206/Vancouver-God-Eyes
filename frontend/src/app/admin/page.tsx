@@ -38,7 +38,8 @@ import {
   Download,
   History,
   Wrench,
-  RotateCcw
+  RotateCcw,
+  Copy
 } from 'lucide-react';
 import { getApiUrl } from '@/utils/api';
 import { DEFAULT_ADMIN_SOURCES } from '@/data/defaultAdminSources';
@@ -249,6 +250,13 @@ export default function AdminPage() {
   const [isUpdatingMaintenance, setIsUpdatingMaintenance] = useState(false);
   const [rollbackTarget, setRollbackTarget] = useState('PREV');
   const [isTriggeringRollback, setIsTriggeringRollback] = useState(false);
+  const [copiedLogId, setCopiedLogId] = useState<string | null>(null);
+  const [recentCommits, setRecentCommits] = useState<Array<{ sha: string; title: string; date?: string }>>([
+    { sha: 'PREV', title: 'PREV (上一個運作正常的版本 - HEAD~1)', date: '推薦選項' },
+    { sha: 'HEAD~2', title: 'HEAD~2 (前兩個版本)', date: '歷史回溯' },
+    { sha: 'HEAD~3', title: 'HEAD~3 (前三個版本)', date: '歷史回溯' },
+    { sha: 'HEAD~5', title: 'HEAD~5 (前五個版本)', date: '歷史回溯' }
+  ]);
   const [issueSearch, setIssueSearch] = useState('');
   const [issueStatusFilter, setIssueStatusFilter] = useState<'all' | 'pending' | 'resolved' | 'closed'>('all');
   const [activeTab, setActiveTab] = useState<'all' | 'github_actions' | 'oci'>('all');
@@ -364,9 +372,25 @@ export default function AdminPage() {
         if (res.data.message) setMaintenanceMessage(res.data.message);
         if (res.data.updated_at) setMaintenanceUpdatedAt(res.data.updated_at);
       }
+      // 讀取可供還原的 Commit 清單
+      const commitsRes = await adminApiFetch<{ commits: Array<{ sha: string; title: string; date?: string }> }>('/api/admin/recent-commits');
+      if (commitsRes.ok && commitsRes.data?.commits && commitsRes.data.commits.length > 0) {
+        setRecentCommits(commitsRes.data.commits);
+      }
     } catch (e) {
       console.error('Fetch maintenance status error:', e);
     }
+  };
+
+  const handleCopyLogContent = (log: any) => {
+    const fullText = `[${log.level}] ${new Date(log.timestamp).toLocaleString('zh-HK')} | ${log.file} | ${log.action}\n訊息: ${log.message}${
+      log.details && Object.keys(log.details).length > 0
+        ? `\n詳細資訊:\n${JSON.stringify(log.details, null, 2)}`
+        : ''
+    }`;
+    navigator.clipboard.writeText(fullText);
+    setCopiedLogId(log.id);
+    setTimeout(() => setCopiedLogId(null), 2000);
   };
 
   const handleToggleMaintenance = async () => {
@@ -2236,13 +2260,31 @@ export default function AdminPage() {
                           {log.action}
                         </span>
                       </td>
-                      <td className="py-3 px-4 text-gray-200 text-xs">
-                        <div className="leading-relaxed">{log.message}</div>
-                        {log.details && Object.keys(log.details).length > 0 && (
-                          <div className="mt-1 font-mono text-[10px] text-gray-500 bg-[#0c0f16] px-2 py-1 rounded border border-[#1e2434] inline-block">
-                            {JSON.stringify(log.details)}
+                      <td className="py-3 px-4 text-gray-200 text-xs max-w-[500px]">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex-1 min-w-0">
+                            <div className="max-h-[110px] overflow-y-auto overflow-x-auto whitespace-pre-wrap font-mono text-[11px] leading-relaxed text-gray-300 bg-[#0b0e15] p-2 rounded-lg border border-[#202738] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-700 hover:[&::-webkit-scrollbar-thumb]:bg-gray-600 [&::-webkit-scrollbar-thumb]:rounded-full">
+                              {log.message}
+                            </div>
+                            {log.details && Object.keys(log.details).length > 0 && (
+                              <div className="mt-1.5 max-h-[85px] overflow-y-auto overflow-x-auto font-mono text-[10px] text-gray-400 bg-[#0c0f16] px-2 py-1 rounded border border-[#1e2434] whitespace-pre-wrap [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-700 [&::-webkit-scrollbar-thumb]:rounded-full">
+                                {typeof log.details === 'string' ? log.details : JSON.stringify(log.details, null, 2)}
+                              </div>
+                            )}
                           </div>
-                        )}
+                          <button
+                            type="button"
+                            onClick={() => handleCopyLogContent(log)}
+                            className="p-1.5 rounded-md hover:bg-[#20283a] text-gray-400 hover:text-white transition-colors shrink-0 cursor-pointer border border-transparent hover:border-gray-700 mt-0.5"
+                            title="複製此日誌完整內容"
+                          >
+                            {copiedLogId === log.id ? (
+                              <Check className="w-3.5 h-3.5 text-emerald-400" />
+                            ) : (
+                              <Copy className="w-3.5 h-3.5" />
+                            )}
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -2595,7 +2637,7 @@ export default function AdminPage() {
                   </div>
                   <div>
                     <h2 className="text-sm font-bold text-white tracking-wide">
-                      系統維護模式控制 (System Maintenance Mode)
+                      系統維護模式控制
                     </h2>
                     <p className="text-xs text-gray-400">
                       應付嚴重故障或架構升級時，暫時對一般訪客關閉地圖服務並導向維護頁面
@@ -2655,7 +2697,7 @@ export default function AdminPage() {
                 </div>
                 <div>
                   <h2 className="text-sm font-bold text-white tracking-wide">
-                    緊急系統還原 (Emergency Production Rollback)
+                    緊急系統還原
                   </h2>
                   <p className="text-xs text-rose-300/80">
                     當部署後遇到重大問題或不可逆損壞時，可立即觸發 GitHub Actions 將生產伺服器還原至穩定版本
@@ -2671,15 +2713,53 @@ export default function AdminPage() {
                 <p className="text-[11.5px] leading-relaxed text-gray-300">
                   1. 預設目標 <code className="bg-black/40 px-1 py-0.5 rounded text-amber-300 font-mono">PREV</code> 會自動將工作目錄 Reset 至上一筆 Git 提交 (HEAD~1)。
                   <br />
-                  2. 您也可以輸入特定的 Git Commit SHA (例如 <code className="bg-black/40 px-1 py-0.5 rounded text-amber-300 font-mono">b4d21e8</code>) 或 Release Tag (例如 <code className="bg-black/40 px-1 py-0.5 rounded text-amber-300 font-mono">v2026.10.30</code>)。
+                  2. 可直接從下方清單選擇預設回溯級距或最近的 Commit 記錄，亦可自行輸入特定的 Git Commit SHA 或 Release Tag。
                   <br />
                   3. 觸發後 GitHub Actions Deploy 工作流將重新編譯前端與啟動容器，請預留 1-2 分鐘生效時間。
                 </p>
               </div>
 
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
-                <div className="flex-1 flex flex-col gap-1">
-                  <label className="text-xs font-semibold text-gray-300">還原目標 (Commit SHA / Tag / PREV)：</label>
+              <div className="flex flex-col gap-3 pt-2">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-end gap-3">
+                  <div className="flex-1 flex flex-col gap-1.5">
+                    <label className="text-xs font-semibold text-gray-300">
+                      選擇還原目標版本清單 (快速選取常用回退點或最近 Commit)：
+                    </label>
+                    <select
+                      value={recentCommits.some(c => c.sha === rollbackTarget) ? rollbackTarget : 'CUSTOM'}
+                      onChange={(e) => {
+                        if (e.target.value !== 'CUSTOM') {
+                          setRollbackTarget(e.target.value);
+                        }
+                      }}
+                      className="w-full bg-[#0d1017] border border-[#2a3246] rounded-lg px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-rose-500/70"
+                    >
+                      {recentCommits.map((c) => (
+                        <option key={c.sha} value={c.sha}>
+                          {c.title} {c.date ? `[${c.date}]` : ''}
+                        </option>
+                      ))}
+                      <option value="CUSTOM">-- 手動自訂輸入 (Commit SHA 或 Tag) --</option>
+                    </select>
+                  </div>
+
+                  <div className="sm:self-end">
+                    <button
+                      type="button"
+                      onClick={handleTriggerRollback}
+                      disabled={isTriggeringRollback}
+                      className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-rose-600 hover:bg-rose-500 active:bg-rose-700 text-white font-semibold text-xs transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                    >
+                      <RotateCcw className={`w-4 h-4 ${isTriggeringRollback ? 'animate-spin' : ''}`} />
+                      <span>{isTriggeringRollback ? '正在發送還原指令...' : '執行緊急版本還原'}</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <label className="text-[11px] text-gray-400">
+                    目前已選還原目標 (可手動修改)：
+                  </label>
                   <input
                     type="text"
                     value={rollbackTarget}
@@ -2687,17 +2767,6 @@ export default function AdminPage() {
                     placeholder="PREV 或 Git SHA / Tag"
                     className="w-full bg-[#0d1017] border border-[#2a3246] rounded-lg px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-rose-500/70"
                   />
-                </div>
-                <div className="sm:self-end">
-                  <button
-                    type="button"
-                    onClick={handleTriggerRollback}
-                    disabled={isTriggeringRollback}
-                    className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-rose-600 hover:bg-rose-500 active:bg-rose-700 text-white font-semibold text-xs transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-                  >
-                    <RotateCcw className={`w-4 h-4 ${isTriggeringRollback ? 'animate-spin' : ''}`} />
-                    <span>{isTriggeringRollback ? '正在發送還原指令...' : '執行緊急版本還原'}</span>
-                  </button>
                 </div>
               </div>
             </div>

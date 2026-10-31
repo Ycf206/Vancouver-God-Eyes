@@ -427,7 +427,7 @@ export default function LayerPanel() {
               type="text"
               value={layerSearchQuery}
               onChange={(e) => setLayerSearchQuery(e.target.value)}
-              placeholder="搜尋圖層 (如: 巴士、郵寄、洗手間)..."
+              placeholder="搜尋圖層"
               className="w-full bg-[#16181f] border border-[#2b303e] rounded-lg pl-8 pr-7 py-1.5 text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-emerald-500/80 transition-colors"
             />
             {layerSearchQuery && (

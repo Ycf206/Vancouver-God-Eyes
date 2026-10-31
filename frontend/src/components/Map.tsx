@@ -682,6 +682,7 @@ export default function AppMap() {
   });
   const [isLocating, setIsLocating] = useState(false);
   const [isTrackingLocation, setIsTrackingLocation] = useState(false);
+  const [currentRealtimeLocation, setCurrentRealtimeLocation] = useState<{ lat: number; lon: number } | null>(null);
   const geolocationWatchIdRef = useRef<number | null>(null);
   const hasInitialFlyRef = useRef(false);
 
@@ -690,11 +691,11 @@ export default function AppMap() {
       navigator.geolocation.clearWatch(geolocationWatchIdRef.current);
       geolocationWatchIdRef.current = null;
     }
-    setUserLocation(null);
+    setCurrentRealtimeLocation(null);
     setIsTrackingLocation(false);
     setIsLocating(false);
     hasInitialFlyRef.current = false;
-  }, [setUserLocation]);
+  }, []);
 
   const handleGeolocate = useCallback(() => {
     if (typeof window === 'undefined' || !navigator.geolocation) {
@@ -703,7 +704,7 @@ export default function AppMap() {
     }
 
     // 若當前正處於即時定位追蹤中，點擊則為「取消定位」
-    if (isTrackingLocation || userLocation?.isRealtime || geolocationWatchIdRef.current !== null) {
+    if (isTrackingLocation || currentRealtimeLocation !== null || geolocationWatchIdRef.current !== null) {
       stopGeolocation();
       return;
     }
@@ -716,14 +717,10 @@ export default function AppMap() {
         (pos) => {
           const lat = pos.coords.latitude;
           const lon = pos.coords.longitude;
-          setUserLocation({
-            address: `目前即時位置 (${lat.toFixed(4)}, ${lon.toFixed(4)})`,
-            displayName: '目前即時位置',
-            lat,
-            lon,
-            confirmed: true,
-            isRealtime: true,
-          });
+          setCurrentRealtimeLocation({ lat, lon });
+          // 修改導航地址，如有本身地址可直接覆蓋 (不改動設定中的個人位置)
+          setNavigationAddress(`${lat.toFixed(5)}, ${lon.toFixed(5)}`);
+
           if (!hasInitialFlyRef.current) {
             mapRef.current?.flyTo({
               center: [lon, lat],
@@ -748,7 +745,7 @@ export default function AppMap() {
       console.error('watchPosition error:', e);
       setIsLocating(false);
     }
-  }, [isTrackingLocation, userLocation, setUserLocation, stopGeolocation]);
+  }, [isTrackingLocation, currentRealtimeLocation, setNavigationAddress, stopGeolocation]);
 
   useEffect(() => {
     return () => {
@@ -7148,55 +7145,62 @@ export default function AppMap() {
           </Marker>
         )}
 
-        {/* 個人設定位置標記 (User Confirmed Personal Location / Realtime GPS) */}
+        {/* 即時 GPS 當前定位標記 (Realtime GPS Location Marker) */}
+        {currentRealtimeLocation && (
+          <Marker 
+            longitude={currentRealtimeLocation.lon} 
+            latitude={currentRealtimeLocation.lat} 
+            anchor="center"
+          >
+            <div 
+              className="group relative flex items-center justify-center cursor-pointer z-45 select-none"
+              onClick={(e) => {
+                e.stopPropagation();
+                mapRef.current?.flyTo({
+                  center: [currentRealtimeLocation.lon, currentRealtimeLocation.lat],
+                  zoom: 16,
+                  duration: 800
+                });
+              }}
+            >
+              <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-8 px-2.5 py-1 rounded-md bg-gray-900/95 text-white text-[11px] font-medium whitespace-nowrap shadow-xl pointer-events-none border border-sky-500/50 z-50">
+                <span>📍 我的目前即時位置</span>
+              </div>
+              <div className="relative flex items-center justify-center pointer-events-auto">
+                <span className="animate-ping absolute inline-flex h-9 w-9 rounded-full bg-sky-400 opacity-60"></span>
+                <span className="absolute inline-flex h-6 w-6 rounded-full bg-sky-500/30 border border-sky-400"></span>
+                <div className="relative inline-flex rounded-full h-4 w-4 bg-sky-500 border-2 border-white shadow-[0_0_12px_rgba(14,165,233,0.9)]"></div>
+              </div>
+            </div>
+          </Marker>
+        )}
+
+        {/* 個人設定位置標記 (User Confirmed Personal Location / Home Address in Settings) */}
         {userLocation?.confirmed && userLocation.lat && userLocation.lon && (
           <Marker 
             longitude={userLocation.lon} 
             latitude={userLocation.lat} 
-            anchor={userLocation.address?.includes('GPS') || userLocation.displayName?.includes('GPS') ? 'center' : 'bottom'}
+            anchor="bottom"
           >
-            {userLocation.address?.includes('GPS') || userLocation.displayName?.includes('GPS') ? (
-              <div 
-                className="group relative flex items-center justify-center cursor-pointer z-40 select-none"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  mapRef.current?.flyTo({
-                    center: [userLocation.lon!, userLocation.lat!],
-                    zoom: 16,
-                    duration: 800
-                  });
-                }}
-              >
-                <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-8 px-2.5 py-1 rounded-md bg-gray-900/95 text-white text-[11px] font-medium whitespace-nowrap shadow-xl pointer-events-none border border-sky-500/50 z-50">
-                  <span>📍 我的目前即時位置</span>
-                </div>
-                <div className="relative flex items-center justify-center pointer-events-auto">
-                  <span className="animate-ping absolute inline-flex h-9 w-9 rounded-full bg-sky-400 opacity-60"></span>
-                  <span className="absolute inline-flex h-6 w-6 rounded-full bg-sky-500/30 border border-sky-400"></span>
-                  <div className="relative inline-flex rounded-full h-4 w-4 bg-sky-500 border-2 border-white shadow-[0_0_12px_rgba(14,165,233,0.9)]"></div>
-                </div>
+            <div 
+              className="group relative flex flex-col items-center cursor-pointer z-35 select-none"
+              onClick={(e) => {
+                e.stopPropagation();
+                mapRef.current?.flyTo({
+                  center: [userLocation.lon!, userLocation.lat!],
+                  zoom: 15,
+                  duration: 800
+                });
+              }}
+            >
+              <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-8 px-2.5 py-1 rounded-md bg-gray-900/95 text-white text-[11px] font-medium whitespace-nowrap shadow-xl pointer-events-none border border-indigo-500/40 z-50">
+                <span>🏠 個人位置：{userLocation.displayName || userLocation.address}</span>
               </div>
-            ) : (
-              <div 
-                className="group relative flex flex-col items-center cursor-pointer z-35 select-none"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  mapRef.current?.flyTo({
-                    center: [userLocation.lon!, userLocation.lat!],
-                    zoom: 15,
-                    duration: 800
-                  });
-                }}
-              >
-                <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-8 px-2.5 py-1 rounded-md bg-gray-900/95 text-white text-[11px] font-medium whitespace-nowrap shadow-xl pointer-events-none border border-indigo-500/40 z-50">
-                  <span>🏠 個人位置：{userLocation.displayName || userLocation.address}</span>
-                </div>
-                <div className="relative flex items-center justify-center w-8 h-8 rounded-full bg-indigo-600 border-2 border-white shadow-[0_2px_12px_rgba(79,70,229,0.5)] text-white hover:scale-115 transition-transform">
-                  <span className="text-base leading-none">🏠</span>
-                </div>
-                <div className="w-2 h-2 bg-indigo-600 rotate-45 -mt-1 border-r border-b border-white shadow-sm"></div>
+              <div className="relative flex items-center justify-center w-8 h-8 rounded-full bg-indigo-600 border-2 border-white shadow-[0_2px_12px_rgba(79,70,229,0.5)] text-white hover:scale-115 transition-transform">
+                <span className="text-base leading-none">🏠</span>
               </div>
-            )}
+              <div className="w-2 h-2 bg-indigo-600 rotate-45 -mt-1 border-r border-b border-white shadow-sm"></div>
+            </div>
           </Marker>
         )}
 
@@ -7524,7 +7528,7 @@ export default function AppMap() {
             offset={[0, -8]}
             maxWidth="none"
           >
-            <div className="p-3 w-[300px] sm:w-[335px] max-w-[calc(100vw-32px)] max-h-[75vh] sm:max-h-[80vh] overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400 [&::-webkit-scrollbar-thumb]:rounded-full text-gray-800">
+            <div className="p-3 w-[300px] sm:w-[335px] max-w-[calc(100vw-32px)] max-h-[50vh] sm:max-h-[55vh] overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400 [&::-webkit-scrollbar-thumb]:rounded-full text-gray-800">
               {(() => {
                 const isSeaBusStop = selectedStop.id === '8035' || selectedStop.id === '8036' || selectedStop.name.includes('SeaBus') || selectedStop.name.includes('Lonsdale Quay') || selectedStop.name.includes('Waterfront');
                 const cleanStopName = selectedStop.name.replace(/\s*(?:Northbound|Southbound)\s*$/i, '').trim();
@@ -8982,7 +8986,11 @@ export default function AppMap() {
               (selectedFacility.facility_type === 'traffic_cameras') ? 'w-[320px] sm:w-[350px]' : 
               (selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'street_lighting') ? 'w-[280px] sm:w-[310px]' :
               'w-[300px] sm:w-[335px]'
-            } max-w-[calc(100vw-32px)] max-h-[75vh] sm:max-h-[80vh] overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400 [&::-webkit-scrollbar-thumb]:rounded-full text-gray-800`}>
+            } max-w-[calc(100vw-32px)] ${
+              selectedFacility.facility_type === 'post_offices' 
+                ? 'max-h-[42vh] sm:max-h-[46vh]' 
+                : 'max-h-[50vh] sm:max-h-[55vh]'
+            } overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400 [&::-webkit-scrollbar-thumb]:rounded-full text-gray-800`}>
               {(() => {
                 const headerBadge = (() => {
                   const t = selectedFacility.facility_type;
@@ -15939,21 +15947,21 @@ export default function AppMap() {
           onClick={handleGeolocate}
           disabled={isLocating}
           className={`group relative flex items-center justify-center w-[29px] h-[29px] rounded border shadow-md backdrop-blur-md transition-all active:scale-95 cursor-pointer disabled:opacity-50 ${
-            isTrackingLocation || userLocation?.isRealtime
+            isTrackingLocation || currentRealtimeLocation !== null
               ? 'bg-sky-500/25 border-sky-400 text-sky-300 shadow-[0_0_12px_rgba(14,165,233,0.5)] ring-1 ring-sky-400'
               : 'bg-[#161922]/95 hover:bg-[#202533] text-gray-200 hover:text-white border-[#2d3448] hover:border-sky-500/60 hover:shadow-[0_0_10px_rgba(14,165,233,0.3)]'
           }`}
-          title={isTrackingLocation || userLocation?.isRealtime ? '取消即時定位' : '即時定位目前位置'}
+          title={isTrackingLocation || currentRealtimeLocation !== null ? '取消即時定位' : '即時定位目前位置'}
         >
           <Crosshair className={`w-3.5 h-3.5 shrink-0 ${
             isLocating 
               ? 'animate-spin text-sky-400' 
-              : isTrackingLocation || userLocation?.isRealtime
+              : isTrackingLocation || currentRealtimeLocation !== null
                 ? 'text-sky-300 animate-pulse'
                 : 'text-sky-400 group-hover:scale-110 transition-transform'
           }`} />
           <span className="pointer-events-none absolute right-[36px] top-1/2 -translate-y-1/2 px-2 py-1 bg-[#10131a]/95 text-white text-[11px] font-medium rounded border border-[#262b3a] shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
-            {isTrackingLocation || userLocation?.isRealtime ? '取消目前即時定位 (點擊解除)' : '即時定位目前位置'}
+            {isTrackingLocation || currentRealtimeLocation !== null ? '取消目前即時定位 (點擊解除)' : '即時定位目前位置'}
           </span>
         </button>
       </div>
@@ -18952,14 +18960,11 @@ export default function AppMap() {
             </div>
             <div className="flex flex-col gap-1.5">
               <h2 className="text-xl font-bold text-white tracking-wide">
-                系統維護中 System Maintenance
+                系統維護中
               </h2>
-              <p className="text-xs text-amber-300 font-mono">
-                Vancouver God&apos;s Eye Service Notice
-              </p>
             </div>
             <p className="text-sm text-gray-300 leading-relaxed bg-[#0e111a] p-4 rounded-xl border border-gray-800 text-left">
-              {maintenanceState.message || '為了提供更穩定優質的服務，溫哥華天眼系統目前正在進行維護升級，暫時停止地圖服務。我們將盡快恢復運作，造成不便敬請見諒。'}
+              {maintenanceState.message || '為了提供更穩定優質的服務，溫哥華上帝之眼系統目前正在進行維護升級，暫時停止地圖服務。我們將盡快恢復運作，造成不便敬請見諒。'}
             </p>
             <div className="flex items-center gap-3 w-full">
               <button
@@ -18971,7 +18976,7 @@ export default function AppMap() {
               </button>
             </div>
             <div className="pt-2 border-t border-gray-800 w-full flex justify-between items-center text-[11px] text-gray-500">
-              <span>溫哥華天眼 維護公告</span>
+              <span>溫哥華上帝之眼 維護公告</span>
               <a href="/admin" className="text-gray-400 hover:text-white underline">
                 管理員登入
               </a>
