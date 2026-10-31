@@ -3084,29 +3084,34 @@ def get_road_facilities_geojson(
 
 @app.get("/api/explore/311")
 def get_311_service_requests():
-    """取得最新溫哥華 3-1-1 市政服務請求資料"""
+    """取得最新溫哥華 3-1-1 市政服務請求資料 (禁用快取保證即時性)"""
+    cache_headers = {
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0"
+    }
     data_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'vancouver_311.json')
     if os.path.exists(data_file):
         try:
             with open(data_file, 'r', encoding='utf-8') as f:
-                return json.load(f)
+                return JSONResponse(content=json.load(f), headers=cache_headers)
         except Exception as e:
             logger.error(f"Error reading 311 data: {e}")
     fe_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'frontend', 'public', 'vancouver_311.json')
     if os.path.exists(fe_file):
         try:
             with open(fe_file, 'r', encoding='utf-8') as f:
-                return json.load(f)
+                return JSONResponse(content=json.load(f), headers=cache_headers)
         except Exception:
             pass
     try:
         from scripts.layers.update_311 import update_311
         data = update_311()
         if data:
-            return data
+            return JSONResponse(content=data, headers=cache_headers)
     except Exception as e:
         logger.error(f"Failed to fetch 311 data on demand: {e}")
-    return {"results": []}
+    return JSONResponse(content={"results": []}, headers=cache_headers)
 
 @app.get("/api/explore/nearby")
 def explore_nearby_facilities(
@@ -4458,6 +4463,99 @@ def clear_admin_schedule_history():
     """
     system_log_service.clear_schedule_history()
     return {"status": "success", "message": "排程更新歷史已清空"}
+
+
+def get_maintenance_file_path():
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'system_maintenance.json')
+
+def load_maintenance_status():
+    p = get_maintenance_file_path()
+    if os.path.exists(p):
+        try:
+            with open(p, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {"enabled": False, "message": "系統正在進行例行升級與維護，請稍後再試。", "updated_at": None}
+
+@app.get("/api/system/maintenance")
+def get_public_maintenance_status():
+    """公開系統維護模式狀態檢查端點 (不需身分驗證)"""
+    data = load_maintenance_status()
+    return JSONResponse(
+        content=data,
+        headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
+    )
+
+@app.get("/api/admin/maintenance")
+def get_admin_maintenance_status():
+    """管理後台獲取維護狀態"""
+    return load_maintenance_status()
+
+@app.post("/api/admin/maintenance")
+def set_admin_maintenance_status(payload: dict = Body(...)):
+    """管理後台開啟或關閉系統維護模式"""
+    enabled = bool(payload.get("enabled", False))
+    message = str(payload.get("message", "系統正在進行例行升級與維護，請稍後再試。")).strip()
+    data = {
+        "enabled": enabled,
+        "message": message,
+        "updated_at": datetime.now(timezone.utc).isoformat()
+    }
+    p = get_maintenance_file_path()
+    os.makedirs(os.path.dirname(p), exist_ok=True)
+    with open(p, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+    
+    system_log_service.add_system_log(
+        level="WARN" if enabled else "INFO",
+        file="backend/main.py",
+        action="MAINTENANCE_MODE_CHANGE",
+        message=f"系統維護模式已{'【開啟】' if enabled else '【關閉】'}",
+        details={"enabled": enabled, "message": message}
+    )
+    return {"status": "success", "maintenance": data}
+
+@app.post("/api/admin/system-rollback")
+def trigger_system_rollback(payload: dict = Body(...)):
+    """緊急系統還原至指定版本或上一版本 (PREV)"""
+    target = str(payload.get("target", "PREV")).strip()
+    github_token = os.getenv("GITHUB_TOKEN") or os.getenv("ADMIN_GITHUB_TOKEN")
+    github_repo = os.getenv("GITHUB_REPOSITORY", "Ycf206/Vancouver-God-Eyes")
+    
+    if not github_token:
+        return {
+            "status": "error",
+            "message": "尚未在伺服器環境變數設定 GITHUB_TOKEN，無法自動調度 GitHub Actions 進行系統還原。請至 GitHub 儲存庫手動執行 Deploy 工作流之 Rollback 任務。"
+        }
+    
+    try:
+        dispatch_url = f"https://api.github.com/repos/{github_repo}/actions/workflows/deploy.yml/dispatches"
+        headers = {
+            "Authorization": f"Bearer {github_token}",
+            "Accept": "application/vnd.github.v3+json",
+            "User-Agent": "VancouverGodsEye-Rollback"
+        }
+        body = {
+            "ref": "main",
+            "inputs": {
+                "rollback_target": target
+            }
+        }
+        resp = requests.post(dispatch_url, json=body, headers=headers, timeout=10)
+        if resp.status_code in [200, 204]:
+            system_log_service.add_system_log(
+                level="WARN",
+                file="backend/main.py",
+                action="SYSTEM_ROLLBACK_DISPATCHED",
+                message=f"已成功調度緊急系統還原工作流至目標: {target}",
+                details={"target": target}
+            )
+            return {"status": "success", "message": f"已成功調度 GitHub Actions 緊急系統還原工作流！還原目標：{target}"}
+        else:
+            return {"status": "error", "message": f"GitHub API 調度失敗 (HTTP {resp.status_code}): {resp.text}"}
+    except Exception as e:
+        return {"status": "error", "message": f"調度系統還原發生異常: {str(e)}"}
 
 
 @app.post("/api/admin/sources/visibility")

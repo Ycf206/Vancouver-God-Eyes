@@ -12,6 +12,12 @@ on:
       - 'backend/data/admin_sources_config.json'
       - 'README.md'
       - 'docs/**'
+  workflow_dispatch:
+    inputs:
+      rollback_target:
+        description: '緊急系統還原目標 (可輸入 Git Commit SHA、Tag 如 v2026.11.0，或 PREV 代表還原上一版本；留空則部署最新 main)'
+        required: false
+        default: ''
 
 concurrency:
   group: deploy-oci-vm
@@ -28,11 +34,12 @@ jobs:
         FLIGHTAWARE_API_KEY: ${{ secrets.FLIGHTAWARE_API_KEY }}
         TOMTOM_API_KEY: ${{ secrets.TOMTOM_API_KEY }}
         ADMIN_API_SECRET: ${{ secrets.ADMIN_API_SECRET }}
+        ROLLBACK_TARGET: ${{ github.event.inputs.rollback_target }}
       with:
         host: ${{ secrets.OCI_HOST_IP }}
         username: ubuntu
         key: ${{ secrets.OCI_SSH_KEY }}
-        envs: FLIGHTAWARE_API_KEY,TOMTOM_API_KEY,ADMIN_API_SECRET
+        envs: FLIGHTAWARE_API_KEY,TOMTOM_API_KEY,ADMIN_API_SECRET,ROLLBACK_TARGET
         script: |
           set -e
           cd ~/Vancouver-God-Eyes || cd ~/vancouver-gods-eye
@@ -45,10 +52,22 @@ jobs:
           [ -f frontend/.env.local ] && cp frontend/.env.local /tmp/godseye_frontend_env.bak || true
           [ -f backend/data/admin_sources_config.json ] && cp backend/data/admin_sources_config.json /tmp/godseye_admin_cfg.bak || true
 
-          # 強制同步至遠端最新 commit，徹底避免本機快取與衝突阻止更新
-          git fetch origin main
-          git checkout main
-          git reset --hard origin/main
+          # 檢查是否有指定緊急系統還原目標
+          if [ -n "$ROLLBACK_TARGET" ]; then
+            echo "🚨 啟動緊急系統還原程序，目標：$ROLLBACK_TARGET ..."
+            git fetch --all --tags
+            if [ "$ROLLBACK_TARGET" = "PREV" ]; then
+              git checkout HEAD~1
+            else
+              git checkout "$ROLLBACK_TARGET"
+            fi
+            echo "✅ 已切換至還原版本：$(git rev-parse HEAD)"
+          else
+            # 強制同步至遠端最新 commit，徹底避免本機快取與衝突阻止更新
+            git fetch origin main
+            git checkout main
+            git reset --hard origin/main
+          fi
           git fetch origin data:refs/remotes/origin/data 2>/dev/null || true
           git checkout origin/data -- backend/data frontend/public 2>/dev/null || true
           git clean -fd -e backend/.env -e .env -e frontend/.env.local -e backend/data/admin_sources_config.json

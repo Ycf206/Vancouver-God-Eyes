@@ -10,7 +10,7 @@ import { Landmark,
   MountainSnow, Sparkles, Clock, ShieldAlert, BellRing, Train, Bus, ShieldCheck, LayoutGrid, TrainTrack,
   Activity, Radar, Cpu, Satellite, Radio, Flag, Plane, Mountain, CreditCard,
   Briefcase, SlidersHorizontal, ChevronLeft, ChevronRight, Building2, DollarSign,
-  PhoneCall, ShoppingBag, ZoomIn, ZoomOut, Download, Layers
+  PhoneCall, ShoppingBag, ZoomIn, ZoomOut, Download, Layers, Minus, Maximize2, AlertCircle
 } from 'lucide-react';
 import { useUIStore, ExploreTabType } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
@@ -662,6 +662,8 @@ function ExploreContent() {
   const { 
     isExploreOpen, 
     setExploreOpen, 
+    isExploreMinimized,
+    setExploreMinimized,
     exploreTab,
     setExploreTab,
     openExploreTabs,
@@ -801,12 +803,12 @@ function ExploreContent() {
     if (!isExploreOpen || exploreTab !== '311') return;
     if (requests311.length > 0) return;
     setLoading311(true);
-    fetch('/api/explore/311')
+    fetch(`/api/explore/311?t=${Date.now()}`, { cache: 'no-store' })
       .then(res => {
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         return res.json();
       })
-      .catch(() => fetch(`/vancouver_311.json?t=${Date.now()}`).then(r => r.json()))
+      .catch(() => fetch(`/vancouver_311.json?t=${Date.now()}`, { cache: 'no-store' }).then(r => r.json()))
       .then(data => {
         const list = Array.isArray(data) ? data : (data.results || []);
         setRequests311(list);
@@ -820,7 +822,7 @@ function ExploreContent() {
     if (!isExploreOpen || exploreTab !== 'shopping') return;
     if (tntFlyers.length > 0) return;
     setLoadingTnt(true);
-    fetch('/tnt_eflyers.json')
+    fetch(`/tnt_eflyers.json?t=${Date.now()}`, { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
         const list = data?.data?.eflyer_list || [];
@@ -839,6 +841,7 @@ function ExploreContent() {
   }>>([]);
   const [loadingCrashes, setLoadingCrashes] = useState<boolean>(false);
   const [crashesSearchQuery, setCrashesSearchQuery] = useState<string>('');
+  const [showCrashDisclaimer, setShowCrashDisclaimer] = useState<boolean>(false);
 
   // 取得溫哥華車禍事故熱點資料
   useEffect(() => {
@@ -3411,6 +3414,46 @@ function ExploreContent() {
 
   const tabsToRender = (openExploreTabs && openExploreTabs.length > 0) ? openExploreTabs : [activeTab];
 
+  if (isExploreMinimized) {
+    return (
+      <div 
+        className="fixed top-[64px] sm:top-[70px] right-2 sm:right-[72px] z-50 sm:z-40 bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-full px-3 py-1.5 shadow-2xl border border-emerald-500/50 flex items-center gap-2 cursor-pointer select-none hover:bg-[#1e2330] transition-all animate-in fade-in"
+        onClick={() => setExploreMinimized(false)}
+        title="點擊展開探索面板"
+      >
+        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+        <Compass className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+        <span className="text-xs font-semibold text-white truncate max-w-[150px] sm:max-w-[200px]">
+          探索 ({tabShortTitleMap[activeTab] || activeTab}) · 已最小化
+        </span>
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            setExploreMinimized(false);
+          }}
+          className="p-1 rounded-full hover:bg-emerald-500/20 text-emerald-400 transition-colors shrink-0"
+          title="展開探索面板"
+        >
+          <Maximize2 className="w-3 h-3" />
+        </button>
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            closeAllExploreTabs();
+            setSearchTarget(null);
+            setExploreMinimized(false);
+          }}
+          className="p-1 rounded-full hover:bg-rose-500/20 text-gray-400 hover:text-rose-400 transition-colors shrink-0"
+          title="關閉探索面板"
+        >
+          <X className="w-3 h-3" />
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div 
       className="fixed top-[64px] sm:top-[70px] left-2 right-2 sm:left-auto sm:right-[72px] z-50 sm:z-40 w-auto sm:w-[520px] max-w-[calc(100vw-16px)] sm:max-w-[calc(100vw-96px)] bottom-[calc(62px+env(safe-area-inset-bottom,0px))] sm:bottom-auto max-h-[calc(100dvh-130px)] sm:max-h-[calc(100vh-148px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col animate-in fade-in slide-in-from-right-4 duration-200 select-none overflow-hidden"
@@ -3555,6 +3598,16 @@ function ExploreContent() {
             );
           })}
         </div>
+
+        {/* 最小化按鈕 (一條橫線) */}
+        <button
+          type="button"
+          onClick={() => setExploreMinimized(true)}
+          className="text-gray-400 hover:text-white p-1 rounded-md hover:bg-[#252a38] transition-colors shrink-0 ml-1 cursor-pointer"
+          title="最小化探索視窗 (保留目前分頁與地圖位置)"
+        >
+          <Minus className="w-4 h-4" />
+        </button>
 
         {/* 右側視窗關閉按鈕 (當多於1個分頁時彈出確認對話框) */}
         <button
@@ -4017,7 +4070,7 @@ function ExploreContent() {
                         </div>
 
                         <div className="pt-2 border-t border-[#1f2533] flex flex-col gap-1 text-[10px] text-gray-400">
-                          <span className="text-[9.5px]">降水強度圖例:</span>
+                          <span className="text-[9.5px]">降水強度圖例</span>
                           <div className="grid grid-cols-5 text-center gap-1 text-[9px] font-mono">
                             <div className="py-0.5 rounded bg-sky-900/60 text-sky-200 border border-sky-700/50">細雨 &lt;0.5</div>
                             <div className="py-0.5 rounded bg-emerald-900/60 text-emerald-200 border border-emerald-700/50">小雨 0.5-2</div>
@@ -4077,7 +4130,7 @@ function ExploreContent() {
                       {/* 太平洋西北衛星雲圖即時影像 (空間解析度下方) */}
                       <div className="mt-1 pt-2 border-t border-[#1c2232] flex flex-col gap-1.5">
                         <div className="flex items-center justify-between text-[11px]">
-                          <span className="text-gray-400 font-medium">太平洋西北雲圖即時監控 (PNW)</span>
+                          <span className="text-gray-400 font-medium">太平洋西北雲圖即時監控</span>
                           <div className="flex items-center gap-1 bg-[#131722] p-0.5 rounded border border-[#242c3b]">
                             <button
                               type="button"
@@ -6153,9 +6206,46 @@ function ExploreContent() {
                 車禍意外熱點統計 ({filteredCrashes.length} 處)
               </span>
             </div>
-            <span className="text-[10px] text-rose-400 bg-rose-950/70 border border-rose-800/60 px-1.5 py-0.5 rounded font-mono">
-              ICBC 統計數據
-            </span>
+            <div className="flex items-center gap-1.5 relative">
+              {/* 感嘆號按鈕顯示數據說明 */}
+              <button
+                type="button"
+                onClick={() => setShowCrashDisclaimer(!showCrashDisclaimer)}
+                onMouseEnter={() => setShowCrashDisclaimer(true)}
+                className="p-0.5 text-rose-400/80 hover:text-rose-300 transition-colors cursor-pointer rounded-full hover:bg-rose-950/50"
+                title="ICBC 數據說明"
+              >
+                <AlertCircle className="w-3.5 h-3.5" />
+              </button>
+
+              {showCrashDisclaimer && (
+                <div 
+                  onMouseLeave={() => setShowCrashDisclaimer(false)}
+                  className="absolute right-0 top-6 w-[300px] sm:w-[360px] bg-[#141824] border border-rose-500/50 rounded-xl shadow-2xl p-3 z-50 text-[11px] leading-relaxed text-gray-200 animate-in fade-in zoom-in-95 duration-150 backdrop-blur-md"
+                >
+                  <div className="flex items-center justify-between pb-1.5 mb-1.5 border-b border-rose-500/30">
+                    <span className="font-bold text-rose-300 flex items-center gap-1">
+                      <AlertCircle className="w-3.5 h-3.5 text-rose-400" />
+                      ICBC 數據統計範圍與限制說明
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setShowCrashDisclaimer(false)}
+                      className="text-gray-400 hover:text-white p-0.5 rounded"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                  <p className="text-gray-300 text-[10.5px] leading-relaxed font-normal">
+                    截至2026年3月31日的ICBC 交通意外地圖數據的統計範圍與限制，包括傷亡意外指造成人員受傷或死亡的事故，而純財物損失意外則涉及物產損壞；統計地圖排除了停車場內及涉及停泊車輛的碰撞，因此單純將個別市鎮的數值相加並無法反映該區的整體意外全貌。此外，路段中間（非十字路口）的意外會標註在最近兩個路口的正中央；邊界上的事故會同時顯示在兩個相鄰城市中。最後，地圖僅涵蓋具備明確經緯度資訊的意外，地點資訊為自行申報且未必能完全核實；與過往發布數據相比，數據可能因四捨五入、延遲申報或修正而有所差異，且2021年起的統計數據亦可能受COVID-19疫情影響。
+                  </p>
+                </div>
+              )}
+
+              <span className="text-[10px] text-rose-400 bg-rose-950/70 border border-rose-800/60 px-1.5 py-0.5 rounded font-mono">
+                ICBC 統計數據
+              </span>
+            </div>
           </div>
 
           {/* 頂部搜尋列 */}
@@ -8197,7 +8287,7 @@ function ExploreContent() {
       <div className="mt-2.5 pt-2 border-t border-[#262b38] flex items-center justify-between text-[11px] text-gray-400 shrink-0">
         <div className="flex flex-col text-[10.5px] leading-tight text-gray-400 min-w-0 pr-2">
           {activeTab === 'weather' && (
-            <span>氣象數據：加拿大環境部 (ECCC MSC GeoMet / api.weather.gc.ca)</span>
+            <span>氣象數據：加拿大環境部 (ECCC MSC GeoMet)</span>
           )}
           {activeTab === 'news' && (
             <span>共有 {filteredNews.length} 則即時新聞</span>

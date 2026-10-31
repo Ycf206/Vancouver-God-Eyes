@@ -36,13 +36,32 @@ jobs:
           python backend/scripts/layers/update_truck_routes.py
 
       - name: Commit and push changes
+        id: git_push
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add backend/data/vancouver_truck_routes.geojson frontend/public/vancouver_truck_routes.geojson
           if git diff --staged --quiet; then
             echo "No changes detected"
+            echo "has_changes=false" >> $GITHUB_OUTPUT
           else
             git commit -m "chore(data): auto-update 溫哥華法定貨車路線 (Truck Routes) [skip ci]"
             git push origin HEAD:data --force
+            echo "has_changes=true" >> $GITHUB_OUTPUT
           fi
+
+      - name: Sync Updated Data to OCI VM
+        if: steps.git_push.outputs.has_changes == 'true'
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.OCI_HOST_IP }}
+          username: ubuntu
+          key: ${{ secrets.OCI_SSH_KEY }}
+          script: |
+            echo "🔄 同步最新 卡車貨運路線 圖資至 OCI 伺服器..."
+            cd ~/Vancouver-God-Eyes || cd ~/vancouver-gods-eye
+            git fetch origin data 2>/dev/null || true
+            git checkout origin/data -- backend/data frontend/public 2>/dev/null || true
+            mkdir -p backend/data frontend/public
+            sudo docker compose restart backend || sudo docker-compose restart backend || true
+            echo "✅ OCI 伺服器 卡車貨運路線 圖資同步完成！"

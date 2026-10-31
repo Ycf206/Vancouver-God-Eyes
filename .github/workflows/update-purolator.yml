@@ -47,3 +47,18 @@ jobs:
             echo "has_changes=true" >> $GITHUB_OUTPUT
             git push
           fi
+
+      - name: Sync Updated Data to OCI VM
+        if: steps.git_push.outputs.has_changes == 'true'
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.OCI_HOST_IP }}
+          username: ubuntu
+          key: ${{ secrets.OCI_SSH_KEY }}
+          script: |
+            echo "🔄 同步最新 Purolator 門市據點 圖資至 OCI 伺服器..."
+            cd ~/Vancouver-God-Eyes || cd ~/vancouver-gods-eye
+            git pull origin main 2>/dev/null || true
+            mkdir -p backend/data frontend/public
+            sudo docker compose restart backend || sudo docker-compose restart backend || true
+            echo "✅ OCI 伺服器 Purolator 門市據點 圖資同步完成！"

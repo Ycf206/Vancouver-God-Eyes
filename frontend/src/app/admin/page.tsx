@@ -36,7 +36,9 @@ import {
   ArrowDown,
   Terminal,
   Download,
-  History
+  History,
+  Wrench,
+  RotateCcw
 } from 'lucide-react';
 import { getApiUrl } from '@/utils/api';
 import { DEFAULT_ADMIN_SOURCES } from '@/data/defaultAdminSources';
@@ -240,7 +242,13 @@ export default function AdminPage() {
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [backendConnected, setBackendConnected] = useState<boolean | null>(null);
-  const [mainTab, setMainTab] = useState<'sources' | 'logs' | 'system_logs' | 'analytics' | 'issues'>('sources');
+  const [mainTab, setMainTab] = useState<'sources' | 'logs' | 'system_logs' | 'analytics' | 'issues' | 'maintenance'>('sources');
+  const [maintenanceEnabled, setMaintenanceEnabled] = useState(false);
+  const [maintenanceMessage, setMaintenanceMessage] = useState('系統正在進行例行升級與維護，請稍後再試。');
+  const [maintenanceUpdatedAt, setMaintenanceUpdatedAt] = useState<string | null>(null);
+  const [isUpdatingMaintenance, setIsUpdatingMaintenance] = useState(false);
+  const [rollbackTarget, setRollbackTarget] = useState('PREV');
+  const [isTriggeringRollback, setIsTriggeringRollback] = useState(false);
   const [issueSearch, setIssueSearch] = useState('');
   const [issueStatusFilter, setIssueStatusFilter] = useState<'all' | 'pending' | 'resolved' | 'closed'>('all');
   const [activeTab, setActiveTab] = useState<'all' | 'github_actions' | 'oci'>('all');
@@ -343,8 +351,80 @@ export default function AdminPage() {
       fetchAnalyticsData();
     } else if (mainTab === 'system_logs') {
       fetchSystemLogs();
+    } else if (mainTab === 'maintenance') {
+      fetchMaintenanceStatus();
     }
   }, [mainTab]);
+
+  const fetchMaintenanceStatus = async () => {
+    try {
+      const res = await adminApiFetch<{ enabled: boolean; message: string; updated_at?: string }>('/api/admin/maintenance');
+      if (res.ok && res.data) {
+        setMaintenanceEnabled(Boolean(res.data.enabled));
+        if (res.data.message) setMaintenanceMessage(res.data.message);
+        if (res.data.updated_at) setMaintenanceUpdatedAt(res.data.updated_at);
+      }
+    } catch (e) {
+      console.error('Fetch maintenance status error:', e);
+    }
+  };
+
+  const handleToggleMaintenance = async () => {
+    const nextState = !maintenanceEnabled;
+    const confirmPrompt = nextState
+      ? '確定要開啟系統維護模式嗎？開啟後，所有訪客進入首頁將會看見維護頁面且無法使用地圖。'
+      : '確定要解除系統維護模式嗎？解除後系統將對所有訪客恢復正常服務。';
+    if (!window.confirm(confirmPrompt)) return;
+
+    setIsUpdatingMaintenance(true);
+    try {
+      const res = await adminApiFetch<{ status: string; maintenance: any }>('/api/admin/maintenance', {
+        method: 'POST',
+        body: JSON.stringify({
+          enabled: nextState,
+          message: maintenanceMessage
+        })
+      });
+      if (res.ok) {
+        setMaintenanceEnabled(nextState);
+        setSuccessMsg(nextState ? '已成功開啟系統維護模式！訪客將跳轉至維護頁面。' : '已成功關閉維護模式！系統已恢復對外營運。');
+      } else {
+        alert(res.error || '維護模式更新失敗');
+      }
+    } catch (err: any) {
+      alert(err?.message || '維護模式設定失敗');
+    } finally {
+      setIsUpdatingMaintenance(false);
+    }
+  };
+
+  const handleTriggerRollback = async () => {
+    if (!rollbackTarget.trim()) {
+      alert('請輸入還原目標 (PREV 或 Commit SHA / Tag)');
+      return;
+    }
+    const confirmPrompt = `⚠️ 警告：確定要執行緊急系統還原嗎？\n\n目標版本：${rollbackTarget}\n\n此操作將透過 GitHub Actions 立即重新簽出並在生產環境 (OCI VM) 重新建置部署容器。請確認無誤後再繼續！`;
+    if (!window.confirm(confirmPrompt)) return;
+
+    setIsTriggeringRollback(true);
+    try {
+      const res = await adminApiFetch<{ status: string; message: string }>('/api/admin/system-rollback', {
+        method: 'POST',
+        body: JSON.stringify({
+          target: rollbackTarget.trim()
+        })
+      });
+      if (res.ok && res.data?.status === 'success') {
+        setSuccessMsg(`🚀 ${res.data.message}`);
+      } else {
+        alert(res.data?.message || res.error || '系統還原觸發失敗');
+      }
+    } catch (err: any) {
+      alert(err?.message || '緊急系統還原請求失敗');
+    } finally {
+      setIsTriggeringRollback(false);
+    }
+  };
 
   // 11.4 取得系統運作日誌
   const fetchSystemLogs = async () => {
@@ -1168,6 +1248,27 @@ export default function AdminPage() {
               {issueReports.length}
             </span>
             {mainTab === 'issues' && (
+              <span className="absolute bottom-[-1px] left-0 right-0 h-[1px] bg-[#141822]" />
+            )}
+          </button>
+
+          {/* 分頁 5: 系統維護與還原 */}
+          <button
+            onClick={() => setMainTab('maintenance')}
+            className={`group relative flex items-center gap-2 px-4 py-2 rounded-t-xl text-xs font-semibold transition-all cursor-pointer ${
+              mainTab === 'maintenance'
+                ? 'bg-[#141822] text-white border-t-2 border-t-amber-500 border-x border-[#232a3b] shadow-sm z-10'
+                : 'bg-[#0f131a] text-gray-400 hover:text-gray-200 hover:bg-[#161c27] border-t-2 border-transparent'
+            }`}
+          >
+            <Wrench className={`w-3.5 h-3.5 ${mainTab === 'maintenance' ? 'text-amber-400' : 'text-gray-500 group-hover:text-gray-400'}`} />
+            <span>系統維護與還原</span>
+            {maintenanceEnabled && (
+              <span className="text-[10px] px-1.5 py-0.2 rounded-full font-mono bg-amber-500/20 text-amber-300 animate-pulse">
+                維護中
+              </span>
+            )}
+            {mainTab === 'maintenance' && (
               <span className="absolute bottom-[-1px] left-0 right-0 h-[1px] bg-[#141822]" />
             )}
           </button>
@@ -2482,8 +2583,126 @@ export default function AdminPage() {
           </div>
         )}
 
+        {/* 分頁 5: 系統維護與還原 (Maintenance & Rollback) */}
+        {mainTab === 'maintenance' && (
+          <div className="flex flex-col gap-5 animate-in fade-in duration-200">
+            {/* Card 1: 系統維護模式控制 */}
+            <div className="bg-[#141822] border border-[#232a3b] rounded-xl p-5 shadow-xl flex flex-col gap-4">
+              <div className="flex flex-wrap items-center justify-between pb-3 border-b border-[#232a3b] gap-2">
+                <div className="flex items-center gap-2.5">
+                  <div className={`p-2 rounded-lg ${maintenanceEnabled ? 'bg-amber-500/20 text-amber-400' : 'bg-emerald-500/20 text-emerald-400'}`}>
+                    <Wrench className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h2 className="text-sm font-bold text-white tracking-wide">
+                      系統維護模式控制 (System Maintenance Mode)
+                    </h2>
+                    <p className="text-xs text-gray-400">
+                      應付嚴重故障或架構升級時，暫時對一般訪客關閉地圖服務並導向維護頁面
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  <span className={`px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 ${
+                    maintenanceEnabled 
+                      ? 'bg-amber-950/80 text-amber-400 border border-amber-500/50' 
+                      : 'bg-emerald-950/80 text-emerald-400 border border-emerald-500/50'
+                  }`}>
+                    <span className={`w-2 h-2 rounded-full ${maintenanceEnabled ? 'bg-amber-400 animate-pulse' : 'bg-emerald-400'}`} />
+                    {maintenanceEnabled ? '維護模式生效中' : '系統正常運作中'}
+                  </span>
+                </div>
+              </div>
 
-        
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-semibold text-gray-300">
+                  訪客顯示之公告內容 (可自訂)：
+                </label>
+                <textarea
+                  value={maintenanceMessage}
+                  onChange={(e) => setMaintenanceMessage(e.target.value)}
+                  rows={3}
+                  className="w-full bg-[#0d1017] border border-[#2a3246] rounded-lg p-3 text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-amber-500/70"
+                  placeholder="輸入顯示於全螢幕維護頁面之公告訊息..."
+                />
+              </div>
+
+              <div className="flex flex-wrap items-center justify-between pt-2 gap-2">
+                <div className="text-[11px] text-gray-400">
+                  {maintenanceUpdatedAt && `上次更新時間: ${maintenanceUpdatedAt}`}
+                </div>
+                <button
+                  type="button"
+                  onClick={handleToggleMaintenance}
+                  disabled={isUpdatingMaintenance}
+                  className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all shadow-md cursor-pointer flex items-center gap-2 ${
+                    maintenanceEnabled
+                      ? 'bg-emerald-600 hover:bg-emerald-500 text-white'
+                      : 'bg-amber-600 hover:bg-amber-500 text-white'
+                  }`}
+                >
+                  <Wrench className="w-4 h-4" />
+                  <span>{maintenanceEnabled ? '關閉維護模式 (恢復對外服務)' : '立即開啟維護模式'}</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Card 2: 生產環境緊急系統還原 (Emergency Rollback) */}
+            <div className="bg-[#141822] border border-rose-900/50 rounded-xl p-5 shadow-xl flex flex-col gap-4">
+              <div className="flex items-center gap-2.5 pb-3 border-b border-rose-900/40">
+                <div className="p-2 rounded-lg bg-rose-500/20 text-rose-400">
+                  <RotateCcw className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="text-sm font-bold text-white tracking-wide">
+                    緊急系統還原 (Emergency Production Rollback)
+                  </h2>
+                  <p className="text-xs text-rose-300/80">
+                    當部署後遇到重大問題或不可逆損壞時，可立即觸發 GitHub Actions 將生產伺服器還原至穩定版本
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-rose-950/30 border border-rose-800/40 rounded-lg p-3 text-xs text-rose-200 flex flex-col gap-1.5">
+                <div className="font-semibold flex items-center gap-1.5 text-rose-300">
+                  <AlertCircle className="w-4 h-4 text-rose-400" />
+                  注意事項：
+                </div>
+                <p className="text-[11.5px] leading-relaxed text-gray-300">
+                  1. 預設目標 <code className="bg-black/40 px-1 py-0.5 rounded text-amber-300 font-mono">PREV</code> 會自動將工作目錄 Reset 至上一筆 Git 提交 (HEAD~1)。
+                  <br />
+                  2. 您也可以輸入特定的 Git Commit SHA (例如 <code className="bg-black/40 px-1 py-0.5 rounded text-amber-300 font-mono">b4d21e8</code>) 或 Release Tag (例如 <code className="bg-black/40 px-1 py-0.5 rounded text-amber-300 font-mono">v2026.10.30</code>)。
+                  <br />
+                  3. 觸發後 GitHub Actions Deploy 工作流將重新編譯前端與啟動容器，請預留 1-2 分鐘生效時間。
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+                <div className="flex-1 flex flex-col gap-1">
+                  <label className="text-xs font-semibold text-gray-300">還原目標 (Commit SHA / Tag / PREV)：</label>
+                  <input
+                    type="text"
+                    value={rollbackTarget}
+                    onChange={(e) => setRollbackTarget(e.target.value)}
+                    placeholder="PREV 或 Git SHA / Tag"
+                    className="w-full bg-[#0d1017] border border-[#2a3246] rounded-lg px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-rose-500/70"
+                  />
+                </div>
+                <div className="sm:self-end">
+                  <button
+                    type="button"
+                    onClick={handleTriggerRollback}
+                    disabled={isTriggeringRollback}
+                    className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-rose-600 hover:bg-rose-500 active:bg-rose-700 text-white font-semibold text-xs transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  >
+                    <RotateCcw className={`w-4 h-4 ${isTriggeringRollback ? 'animate-spin' : ''}`} />
+                    <span>{isTriggeringRollback ? '正在發送還原指令...' : '執行緊急版本還原'}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
 
       {/* GitHub Token Setup Modal */}

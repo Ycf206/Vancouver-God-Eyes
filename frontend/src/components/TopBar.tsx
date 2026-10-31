@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { Search, Settings, ChevronDown, Map as MapIcon, X, Loader2, Layers, AlertCircle, Heart, Download, History, User, MoreHorizontal, Compass, Filter, Check } from 'lucide-react';
+import { Search, Settings, ChevronDown, Map as MapIcon, X, Loader2, Layers, AlertCircle, Heart, Download, History, User, MoreHorizontal, Compass, Filter, Check, Bus, Milestone, Store, Trees, Landmark, Droplets } from 'lucide-react';
 import { useUIStore, SearchTarget, UIState } from '@/store/useUIStore';
 import ReportIssueModal from '@/components/ReportIssueModal';
 import DonateModal from '@/components/DonateModal';
@@ -38,12 +38,13 @@ export default function TopBar() {
   const [isChangelogModalOpen, setIsChangelogModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
-  // 搜尋圖層篩選類別定義 (根據圖層控制面板 7 大類別分類)
+  // 搜尋圖層篩選類別定義 (根據圖層控制面板 7 大類別分類，全採用 SVG 圖示)
   const SEARCH_CATEGORY_FILTERS = [
     {
       id: 'transport',
       label: '交通',
-      icon: '🚌',
+      icon: Bus,
+      iconColor: 'text-emerald-400',
       matcher: (item: SearchTarget) => {
         const targetKeys = [
           'bus', 'busRoutes', 'busStops', 'skytrainTrains', 'skytrainRoutes', 'skytrainStops',
@@ -62,7 +63,8 @@ export default function TopBar() {
     {
       id: 'road',
       label: '道路',
-      icon: '🛣️',
+      icon: Milestone,
+      iconColor: 'text-amber-400',
       matcher: (item: SearchTarget) => {
         const targetKeys = [
           'parkingMeters', 'impark', 'motorcycleParking', 'accessibleParking',
@@ -89,7 +91,8 @@ export default function TopBar() {
     {
       id: 'lifestyle',
       label: '生活',
-      icon: '🏬',
+      icon: Store,
+      iconColor: 'text-purple-400',
       matcher: (item: SearchTarget) => {
         const targetKeys = [
           'schools', 'libraries', 'communityCentres', 'atm', 'aed', 'canadaPost',
@@ -109,7 +112,8 @@ export default function TopBar() {
     {
       id: 'nature',
       label: '自然',
-      icon: '🌳',
+      icon: Trees,
+      iconColor: 'text-emerald-400',
       matcher: (item: SearchTarget) => {
         const targetKeys = [
           'parks', 'parksFacilities', 'communityGardens', 'publicTrees',
@@ -127,7 +131,8 @@ export default function TopBar() {
     {
       id: 'government',
       label: '政府',
-      icon: '🏛️',
+      icon: Landmark,
+      iconColor: 'text-blue-400',
       matcher: (item: SearchTarget) => {
         const targetKeys = [
           'police', 'crimeAreas', 'fireHalls', 'fireHydrants', 'hospitals',
@@ -145,7 +150,8 @@ export default function TopBar() {
     {
       id: 'utilities',
       label: '公共事業',
-      icon: '💧',
+      icon: Droplets,
+      iconColor: 'text-cyan-400',
       matcher: (item: SearchTarget) => {
         const targetKeys = [
           'waterDistributionMains', 'sewerMains', 'streetLightingConduits',
@@ -163,7 +169,8 @@ export default function TopBar() {
     {
       id: 'geography',
       label: '地理',
-      icon: '🧭',
+      icon: Compass,
+      iconColor: 'text-teal-400',
       matcher: (item: SearchTarget) => {
         const targetKeys = [
           'localAreaBoundary', 'postalCodeFSA', 'zoningDistricts', 'beachWaterQuality', 'contours'
@@ -457,7 +464,7 @@ export default function TopBar() {
                         }`}
                       >
                         <div className="flex items-center gap-2">
-                          <span className="text-sm">{cat.icon}</span>
+                          <cat.icon className={`w-3.5 h-3.5 ${cat.iconColor || 'text-gray-300'} shrink-0`} />
                           <span className="text-xs font-medium">{cat.label}</span>
                         </div>
                         <div className={`w-4 h-4 rounded flex items-center justify-center border transition-colors ${
@@ -644,13 +651,6 @@ export default function TopBar() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="py-1">
-                <button
-                  onClick={() => { toggleExplore(); setIsMobileMenuOpen(false); }}
-                  className="w-full px-3.5 py-2 flex items-center gap-2.5 text-gray-200 hover:bg-[#262832] transition-colors text-left font-medium"
-                >
-                  <Compass className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>探索</span>
-                </button>
                 <button
                   onClick={() => { setExportModalOpen(true); setIsMobileMenuOpen(false); }}
                   className="w-full px-3.5 py-2 flex items-center gap-2.5 text-gray-200 hover:bg-[#262832] transition-colors text-left"

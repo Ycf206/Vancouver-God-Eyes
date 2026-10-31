@@ -62,6 +62,8 @@ services:
         - NEXT_PUBLIC_ADMIN_API_SECRET=${NEXT_PUBLIC_ADMIN_API_SECRET:-${ADMIN_API_SECRET:-}}
     expose:
       - "3000"
+    volumes:
+      - ./frontend/public:/app/public:ro
     depends_on:
       - backend
     environment:

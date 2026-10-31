@@ -9,7 +9,8 @@ import {
   Droplets, Bath, Leaf, Landmark, GraduationCap, BookOpen, UtensilsCrossed, Bed, Heart,
   PlaneTakeoff, Calendar, Car, ShieldAlert, LifeBuoy, HeartPulse, Mountain,
   Compass, MapPin, Fuel, Train, Anchor, ArrowRight, Snowflake, Fingerprint, Waves,
-  Gauge, Mail, Radio, Trash2, Soup, Recycle, RotateCcw, Wifi, Activity, Ban, Cone, Lightbulb, LandPlot, Megaphone, Palette, Truck
+  Gauge, Mail, Radio, Trash2, Soup, Recycle, RotateCcw, Wifi, Activity, Ban, Cone, Lightbulb, LandPlot, Megaphone, Palette, Truck,
+  Search, X, Check
 } from 'lucide-react';
 
 // Helper component for Tesla Icon
@@ -59,12 +60,104 @@ const HydrantIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+// 支援圖層快速搜尋之索引資料表
+const SEARCHABLE_LAYERS: Array<{
+  id: string;
+  name: string;
+  category: string;
+  keywords: string[];
+  icon: React.ElementType;
+  isSpecialAction?: boolean;
+}> = [
+  // 交通 TRANSPORT
+  { id: 'bus', name: '巴士車輛', category: '交通', keywords: ['bus', '巴士', '公車', '車輛'], icon: Bus },
+  { id: 'busRoutes', name: '巴士路線', category: '交通', keywords: ['bus', 'route', '路線', '巴士路線'], icon: Route },
+  { id: 'skytrainTrains', name: '天車列車 (推算)', category: '交通', keywords: ['skytrain', 'train', '天車', '捷運', '列車'], icon: Train },
+  { id: 'skytrainRoutes', name: '天車路線', category: '交通', keywords: ['skytrain', 'route', '天車路線', '世博線', '千禧線', '加拿大線'], icon: Route },
+  { id: 'seabusVehicles', name: '海上巴士車輛', category: '交通', keywords: ['seabus', '渡輪', '船', '海上巴士'], icon: Ship },
+  { id: 'seabusRoutes', name: '海上巴士路線', category: '交通', keywords: ['seabus', '航線', '海上巴士路線'], icon: Route },
+  { id: 'bcferriesVehicles', name: '卑詩渡輪車輛', category: '交通', keywords: ['bc ferries', 'ferry', '渡輪', '卑詩渡輪'], icon: Ship },
+  { id: 'bcferriesRoutes', name: '卑詩渡輪路線', category: '交通', keywords: ['ferry route', '渡輪航線', '航線'], icon: Route },
+  { id: 'maritimeShipping', name: '航運船舶', category: '交通', keywords: ['ship', 'marine', 'ais', '船舶', '貨輪'], icon: Ship },
+  { id: 'marineTerminals', name: '航運碼頭', category: '交通', keywords: ['terminal', 'port', '碼頭', '港口'], icon: Anchor },
+  { id: 'airports', name: '機場', category: '交通', keywords: ['airport', 'yvr', '機場', '起降'], icon: PlaneTakeoff },
+  { id: 'flightSchedule', name: '機場起降時刻', category: '交通', keywords: ['flight', 'schedule', '航班', '時刻表', '飛機'], icon: Calendar, isSpecialAction: true },
+  { id: 'skytrainStations', name: '天車站', category: '交通', keywords: ['station', 'skytrain station', '車站', '天車站'], icon: Landmark },
+  { id: 'bikeway', name: '單車道', category: '交通', keywords: ['bike', 'bikeway', 'bicycle', '自行車', '單車道'], icon: Bike },
+  { id: 'parkingMeters', name: '咪錶車位', category: '交通', keywords: ['parking', 'meter', '咪錶', '停車位', '泊車'], icon: CircleDollarSign },
+  { id: 'impark', name: '私人車位 (Impark)', category: '交通', keywords: ['impark', 'parking', '私人停車場', '泊車'], icon: ImParkIcon },
+  { id: 'motorcycleParking', name: '電單車位', category: '交通', keywords: ['motorcycle', 'moto', '電單車', '機車位'], icon: Bike },
+  { id: 'accessibleParking', name: '無障礙車位', category: '交通', keywords: ['accessible', 'handicap', '無障礙', '殘疾泊車'], icon: Accessibility },
+  { id: 'oneWayStreets', name: '單程路', category: '交通', keywords: ['one way', 'street', '單行道', '單程路'], icon: ArrowRight },
+  { id: 'trafficSpeedLimits', name: '車速限制', category: '交通', keywords: ['speed', 'limit', '限速', '車速'], icon: Gauge },
+  { id: 'truckRoutes', name: '貨車路網', category: '交通', keywords: ['truck', 'freight', '貨車', '卡車'], icon: Truck },
+  { id: 'sharedBikes', name: '共享單車 (Mobi)', category: '交通', keywords: ['mobi', 'shared bike', '單車', '共享單車'], icon: Bike },
+  { id: 'escooter', name: '共享滑板車', category: '交通', keywords: ['escooter', 'scooter', '滑板車'], icon: Scooter },
+  { id: 'trafficSignals', name: '交通燈', category: '交通', keywords: ['traffic light', 'signal', '交通燈', '紅綠燈'], icon: TrafficLightIcon },
+  { id: 'turnRestrictions', name: '轉向限制', category: '交通', keywords: ['turn restriction', '轉彎', '左轉', '轉向'], icon: TurnRestrictionIcon },
+  { id: 'railways', name: '鐵路', category: '交通', keywords: ['railway', 'rail', '鐵路', '火車'], icon: Train },
+  { id: 'roadClosures', name: '交通管制', category: '交通', keywords: ['closure', 'block', '封路', '管制'], icon: Ban },
+  { id: 'roadConstruction', name: '道路施工', category: '交通', keywords: ['construction', 'work', '施工', '修路'], icon: Cone },
+  { id: 'trafficCameras', name: '交通攝影機', category: '交通', keywords: ['traffic camera', 'webcam', '路況', '攝影機', '鏡頭'], icon: Camera },
+  { id: 'safetyCameras', name: '安全攝影機', category: '交通', keywords: ['safety camera', 'speed camera', '測速', '衝紅燈', '攝影機'], icon: Siren },
+
+  // 生活 LIFESTYLE
+  { id: 'communityCentres', name: '社區中心', category: '生活', keywords: ['community centre', '社區中心', '活動中心'], icon: Building2 },
+  { id: 'libraries', name: '圖書館', category: '生活', keywords: ['library', '圖書館', '借書'], icon: BookOpen },
+  { id: 'postOffices', name: '郵寄站點', category: '生活', keywords: ['post', 'mail', 'postal', 'canada post', 'fedex', 'purolator', 'dhl', '郵局', '郵寄', '快遞'], icon: Mail },
+  { id: 'banks', name: '銀行', category: '生活', keywords: ['bank', 'atm', 'td', 'rbc', 'bmo', 'cibc', 'scotia', 'vancity', '銀行', '櫃員機'], icon: Landmark },
+  { id: 'evStations', name: '充電站', category: '生活', keywords: ['ev', 'charger', 'tesla', '充電', '電動車'], icon: Zap },
+  { id: 'drinkingFountains', name: '飲水機', category: '生活', keywords: ['drinking water', 'fountain', '飲水機', '裝水'], icon: Droplets },
+  { id: 'publicWashrooms', name: '公共洗手間', category: '生活', keywords: ['washroom', 'toilet', 'restroom', '廁所', '洗手間', '公共洗手間'], icon: Bath },
+
+  // 自然 NATURE
+  { id: 'parks', name: '公園', category: '自然', keywords: ['park', '公園', '綠地'], icon: Trees },
+  { id: 'heritageTrees', name: '古蹟樹木', category: '自然', keywords: ['heritage tree', '古樹', '樹木'], icon: Leaf },
+  { id: 'streetTrees', name: '街道樹木', category: '自然', keywords: ['street tree', '路樹', '林蔭'], icon: Trees },
+  { id: 'shoreline', name: '海岸線', category: '自然', keywords: ['shoreline', 'coast', '海岸', '海濱'], icon: Waves },
+  { id: 'contourLines', name: '等高線', category: '自然', keywords: ['contour', 'elevation', '等高線', '地形'], icon: Mountain },
+
+  // 政府 / 公共安全 GOVERNMENT
+  { id: 'police', name: '警署', category: '政府', keywords: ['police', 'vpd', 'rcmp', '警署', '警察局'], icon: ShieldAlert },
+  { id: 'crimeAreas', name: '罪案熱點', category: '政府', keywords: ['crime', '罪案', '治安'], icon: Fingerprint },
+  { id: 'fireHalls', name: '消防局', category: '政府', keywords: ['fire', 'firehall', '消防局'], icon: Flame },
+  { id: 'fireHydrants', name: '消防栓', category: '政府', keywords: ['fire hydrant', '消防栓', '水龍頭'], icon: Droplets },
+  { id: 'hospitals', name: '醫院', category: '政府', keywords: ['hospital', 'clinic', '醫院', '急診'], icon: Hospital },
+  { id: 'disasterHubs', name: '地震災難支援點', category: '政府', keywords: ['disaster hub', 'earthquake', '防災', '避難', '地震'], icon: LifeBuoy },
+  { id: 'vanWifi', name: 'VanWiFi 免費熱點', category: '政府', keywords: ['wifi', 'vanwifi', '無線網路', '免費wifi'], icon: Wifi },
+
+  // 公共事業 UTILITIES
+  { id: 'waterDistributionMains', name: '自來水主管', category: '公共事業', keywords: ['water main', '自來水', '供水'], icon: Droplets },
+  { id: 'sewerMains', name: '污水管網', category: '公共事業', keywords: ['sewer', '污水', '排水'], icon: Waves },
+  { id: 'streetLightingConduits', name: '街燈電纜', category: '公共事業', keywords: ['conduit', '電纜', '路燈電線'], icon: Zap },
+  { id: 'streetLighting', name: '街燈', category: '公共事業', keywords: ['street light', 'lamp', '街燈', '路燈'], icon: Lightbulb },
+
+  // 地理 GEOGRAPHY
+  { id: 'localAreaBoundary', name: '社區界線', category: '地理', keywords: ['neighbourhood', 'boundary', '社區', '分區界線'], icon: MapPin },
+  { id: 'postalCodeFSA', name: '郵遞區號 (FSA)', category: '地理', keywords: ['fsa', 'postal code', '郵區', '郵遞區號'], icon: Mail },
+  { id: 'zoningDistricts', name: '土地規劃區', category: '地理', keywords: ['zoning', '土地分區', '地政', '規劃'], icon: LandPlot },
+  { id: 'beachWaterQuality', name: '泳灘水質', category: '地理', keywords: ['beach', 'water quality', '水質', '海灘', '泳灘'], icon: Droplets },
+  { id: 'propertyBoundaries', name: '土地地界線', category: '地理', keywords: ['property', 'boundary', '地界', '土地邊界'], icon: Layers },
+];
+
 export default function LayerPanel() {
   const { 
     mapStyleType, setMapStyleType, layers, toggleLayer, resetAllLayers,
     isLayerPanelOpen, toggleLayerPanel, toggleFlightSchedule, isFlightScheduleOpen,
     contourInterval, setContourInterval, hiddenLayersInPanel
   } = useUIStore();
+
+  const [layerSearchQuery, setLayerSearchQuery] = React.useState('');
+
+  const matchedLayers = React.useMemo(() => {
+    const q = layerSearchQuery.trim().toLowerCase();
+    if (!q) return [];
+    return SEARCHABLE_LAYERS.filter(item => {
+      if (item.name.toLowerCase().includes(q)) return true;
+      if (item.category.toLowerCase().includes(q)) return true;
+      return item.keywords.some(k => k.toLowerCase().includes(q));
+    });
+  }, [layerSearchQuery]);
 
   const [collapsedCategories, setCollapsedCategories] = React.useState<Record<string, boolean>>(() => {
     if (typeof window !== 'undefined') {
@@ -325,6 +418,84 @@ export default function LayerPanel() {
 
         {/* Divider */}
         <div className="w-full h-px bg-[#26282d]"></div>
+
+        {/* 圖層快速搜尋列 (Layer Quick Search) - 介於底層風格和交通類別之間 */}
+        <div className="relative">
+          <div className="relative flex items-center">
+            <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 pointer-events-none" />
+            <input
+              type="text"
+              value={layerSearchQuery}
+              onChange={(e) => setLayerSearchQuery(e.target.value)}
+              placeholder="搜尋圖層 (如: 巴士、郵寄、洗手間)..."
+              className="w-full bg-[#16181f] border border-[#2b303e] rounded-lg pl-8 pr-7 py-1.5 text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-emerald-500/80 transition-colors"
+            />
+            {layerSearchQuery && (
+              <button
+                type="button"
+                onClick={() => setLayerSearchQuery('')}
+                className="absolute right-2 text-gray-400 hover:text-white p-0.5 rounded cursor-pointer"
+                title="清除搜尋"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            )}
+          </div>
+
+          {/* 搜尋建議清單 (Autocomplete Suggestions) */}
+          {layerSearchQuery.trim().length > 0 && (
+            <div className="mt-1.5 bg-[#141720] border border-emerald-500/40 rounded-lg shadow-2xl p-1.5 flex flex-col gap-1 max-h-56 overflow-y-auto z-30 animate-in fade-in slide-in-from-top-1 duration-150">
+              {matchedLayers.length === 0 ? (
+                <div className="text-center py-2.5 text-[11px] text-gray-400">
+                  未找到相符圖層
+                </div>
+              ) : (
+                matchedLayers.map(item => {
+                  const Icon = item.icon;
+                  const isLayerActive = item.isSpecialAction 
+                    ? isFlightScheduleOpen 
+                    : !!(layers as any)[item.id];
+
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => {
+                        if (item.isSpecialAction) {
+                          toggleFlightSchedule();
+                        } else {
+                          toggleLayer(item.id as any);
+                        }
+                      }}
+                      className={`flex items-center justify-between px-2 py-1.5 rounded text-left transition-all cursor-pointer ${
+                        isLayerActive 
+                          ? 'bg-emerald-950/60 border border-emerald-600/40 text-emerald-200' 
+                          : 'hover:bg-[#1f2533] text-gray-300'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 min-w-0 pr-2">
+                        <Icon className={`w-3.5 h-3.5 shrink-0 ${isLayerActive ? 'text-emerald-400' : 'text-gray-400'}`} />
+                        <span className="text-xs truncate font-medium">{item.name}</span>
+                        <span className="text-[9.5px] px-1 py-0.2 rounded bg-black/40 text-gray-400 shrink-0">
+                          {item.category}
+                        </span>
+                      </div>
+                      <div className="shrink-0 flex items-center">
+                        <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono font-medium ${
+                          isLayerActive 
+                            ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' 
+                            : 'bg-gray-800 text-gray-400'
+                        }`}>
+                          {isLayerActive ? '已開啟' : '已關閉'}
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })
+              )}
+            </div>
+          )}
+        </div>
 
         {/* 2. Transport Row (交通) */}
         <div className="flex flex-col gap-1.5">

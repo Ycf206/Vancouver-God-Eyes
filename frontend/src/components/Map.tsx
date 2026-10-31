@@ -485,6 +485,23 @@ const BORDER_CROSSING_POINTS = [
   }
 ];
 
+const FEDEX_SERVICE_ZH_MAP: Record<string, string> = {
+  'Get a shipping label': '索取託運單 / 標籤',
+  'Express drop off': '特快件投遞',
+  'Ground drop off': '平郵件投遞',
+  'Hold Express package for pickup': '特快件暫存自取',
+  'Hold Ground package for pickup': '平郵件暫存自取',
+  'Hold service offered on Saturday': '週六暫存自取',
+  'QR code returns': 'QR 碼退件服務',
+  'Return shipping services': '退貨退件服務',
+  'Sunday service': '週日營業服務',
+  'Saturday service': '週六營業服務',
+  'International shipping': '國際寄件服務',
+  'Dangerous goods shipping': '危險品寄件服務',
+  'Packaging Supplies': '包裝耗材供應',
+  'Direct to Locker': '智慧儲物櫃自取',
+};
+
 export default function AppMap() {
   const { 
     layers, mapStyleType, searchTarget, setSearchTarget, isLayerPanelOpen, 
@@ -664,40 +681,100 @@ export default function AppMap() {
     dhl: false,
   });
   const [isLocating, setIsLocating] = useState(false);
+  const [isTrackingLocation, setIsTrackingLocation] = useState(false);
+  const geolocationWatchIdRef = useRef<number | null>(null);
+  const hasInitialFlyRef = useRef(false);
+
+  const stopGeolocation = useCallback(() => {
+    if (geolocationWatchIdRef.current !== null) {
+      navigator.geolocation.clearWatch(geolocationWatchIdRef.current);
+      geolocationWatchIdRef.current = null;
+    }
+    setUserLocation(null);
+    setIsTrackingLocation(false);
+    setIsLocating(false);
+    hasInitialFlyRef.current = false;
+  }, [setUserLocation]);
 
   const handleGeolocate = useCallback(() => {
     if (typeof window === 'undefined' || !navigator.geolocation) {
       alert('您的瀏覽器不支援地理定位功能');
       return;
     }
+
+    // 若當前正處於即時定位追蹤中，點擊則為「取消定位」
+    if (isTrackingLocation || userLocation?.isRealtime || geolocationWatchIdRef.current !== null) {
+      stopGeolocation();
+      return;
+    }
+
     setIsLocating(true);
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const lat = pos.coords.latitude;
-        const lon = pos.coords.longitude;
-        setUserLocation({
-          address: `GPS 當刻位置 (${lat.toFixed(4)}, ${lon.toFixed(4)})`,
-          displayName: 'GPS 當刻位置',
-          lat,
-          lon,
-          confirmed: true,
-        });
-        mapRef.current?.flyTo({
-          center: [lon, lat],
-          zoom: 15.5,
-          duration: 1200,
-          essential: true
-        });
-        setIsLocating(false);
-      },
-      (err) => {
-        console.warn('Geolocation error:', err);
-        alert('無法取得您的位置，請確認已在瀏覽器中允許定位權限。');
-        setIsLocating(false);
-      },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 }
-    );
-  }, [setUserLocation]);
+    hasInitialFlyRef.current = false;
+
+    try {
+      const watchId = navigator.geolocation.watchPosition(
+        (pos) => {
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+          setUserLocation({
+            address: `目前即時位置 (${lat.toFixed(4)}, ${lon.toFixed(4)})`,
+            displayName: '目前即時位置',
+            lat,
+            lon,
+            confirmed: true,
+            isRealtime: true,
+          });
+          if (!hasInitialFlyRef.current) {
+            mapRef.current?.flyTo({
+              center: [lon, lat],
+              zoom: 15.5,
+              duration: 1200,
+              essential: true
+            });
+            hasInitialFlyRef.current = true;
+          }
+          setIsLocating(false);
+          setIsTrackingLocation(true);
+        },
+        (err) => {
+          console.warn('Geolocation error:', err);
+          alert('無法取得您的位置，請確認已在瀏覽器中允許定位權限。');
+          stopGeolocation();
+        },
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 5000 }
+      );
+      geolocationWatchIdRef.current = watchId;
+    } catch (e) {
+      console.error('watchPosition error:', e);
+      setIsLocating(false);
+    }
+  }, [isTrackingLocation, userLocation, setUserLocation, stopGeolocation]);
+
+  useEffect(() => {
+    return () => {
+      if (geolocationWatchIdRef.current !== null) {
+        navigator.geolocation.clearWatch(geolocationWatchIdRef.current);
+      }
+    };
+  }, []);
+  const [maintenanceState, setMaintenanceState] = useState<{ enabled: boolean; message: string } | null>(null);
+
+  useEffect(() => {
+    // 檢查系統維護模式狀態
+    const checkMaintenance = async () => {
+      try {
+        const res = await fetch('/api/system/maintenance', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.enabled) {
+            setMaintenanceState(data);
+          }
+        }
+      } catch (_) {}
+    };
+    checkMaintenance();
+  }, []);
+
   const [isExploreSearchActive, setIsExploreSearchActive] = useState(false);
   const [exploreSearchInput, setExploreSearchInput] = useState('');
   const [bikewaysLegendOpen, setBikewaysLegendOpen] = useState(true);
@@ -6151,6 +6228,7 @@ export default function AppMap() {
     layers.canadaPost,
     courierFilter.canadaPost,
     courierFilter.fedex,
+    courierFilter.purolator,
     layers.atm,
     layers.hospitals,
     layers.parks,
@@ -7090,7 +7168,7 @@ export default function AppMap() {
                 }}
               >
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-8 px-2.5 py-1 rounded-md bg-gray-900/95 text-white text-[11px] font-medium whitespace-nowrap shadow-xl pointer-events-none border border-sky-500/50 z-50">
-                  <span>📍 我的目前即時位置 (GPS)</span>
+                  <span>📍 我的目前即時位置</span>
                 </div>
                 <div className="relative flex items-center justify-center pointer-events-auto">
                   <span className="animate-ping absolute inline-flex h-9 w-9 rounded-full bg-sky-400 opacity-60"></span>
@@ -7446,7 +7524,7 @@ export default function AppMap() {
             offset={[0, -8]}
             maxWidth="none"
           >
-            <div className="p-3 w-[300px] sm:w-[335px] max-w-[calc(100vw-32px)] text-gray-800">
+            <div className="p-3 w-[300px] sm:w-[335px] max-w-[calc(100vw-32px)] max-h-[75vh] sm:max-h-[80vh] overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400 [&::-webkit-scrollbar-thumb]:rounded-full text-gray-800">
               {(() => {
                 const isSeaBusStop = selectedStop.id === '8035' || selectedStop.id === '8036' || selectedStop.name.includes('SeaBus') || selectedStop.name.includes('Lonsdale Quay') || selectedStop.name.includes('Waterfront');
                 const cleanStopName = selectedStop.name.replace(/\s*(?:Northbound|Southbound)\s*$/i, '').trim();
@@ -8904,7 +8982,7 @@ export default function AppMap() {
               (selectedFacility.facility_type === 'traffic_cameras') ? 'w-[320px] sm:w-[350px]' : 
               (selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'street_lighting') ? 'w-[280px] sm:w-[310px]' :
               'w-[300px] sm:w-[335px]'
-            } max-w-[calc(100vw-32px)] text-gray-800`}>
+            } max-w-[calc(100vw-32px)] max-h-[75vh] sm:max-h-[80vh] overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400 [&::-webkit-scrollbar-thumb]:rounded-full text-gray-800`}>
               {(() => {
                 const headerBadge = (() => {
                   const t = selectedFacility.facility_type;
@@ -11094,14 +11172,14 @@ export default function AppMap() {
                         </div>
                       )}
 
-                      {/* 4.3 站點服務 c_additionalServices */}
+                      {/* 4.3 站點服務 c_additionalServices (中文項目顯示) */}
                       {additionalServices && additionalServices.length > 0 && (
                         <div className="flex flex-col gap-1 pt-0.5">
                           <span className="text-gray-500 font-medium">站點服務</span>
                           <div className="flex flex-wrap gap-1">
                             {additionalServices.map((srv: string, idx: number) => (
                               <span key={idx} className="px-1.5 py-0.5 rounded bg-purple-100 text-purple-800 text-[10px]">
-                                {srv}
+                                {FEDEX_SERVICE_ZH_MAP[srv] || srv}
                               </span>
                             ))}
                           </div>
@@ -15860,17 +15938,28 @@ export default function AppMap() {
           type="button"
           onClick={handleGeolocate}
           disabled={isLocating}
-          className="group relative flex items-center justify-center w-[29px] h-[29px] bg-[#161922]/95 hover:bg-[#202533] text-gray-200 hover:text-white rounded border border-[#2d3448] shadow-md backdrop-blur-md transition-all hover:border-sky-500/60 hover:shadow-[0_0_10px_rgba(14,165,233,0.3)] active:scale-95 cursor-pointer disabled:opacity-50"
+          className={`group relative flex items-center justify-center w-[29px] h-[29px] rounded border shadow-md backdrop-blur-md transition-all active:scale-95 cursor-pointer disabled:opacity-50 ${
+            isTrackingLocation || userLocation?.isRealtime
+              ? 'bg-sky-500/25 border-sky-400 text-sky-300 shadow-[0_0_12px_rgba(14,165,233,0.5)] ring-1 ring-sky-400'
+              : 'bg-[#161922]/95 hover:bg-[#202533] text-gray-200 hover:text-white border-[#2d3448] hover:border-sky-500/60 hover:shadow-[0_0_10px_rgba(14,165,233,0.3)]'
+          }`}
+          title={isTrackingLocation || userLocation?.isRealtime ? '取消即時定位' : '即時定位目前位置'}
         >
-          <Crosshair className={`w-3.5 h-3.5 text-sky-400 shrink-0 ${isLocating ? 'animate-spin' : 'group-hover:scale-110 transition-transform'}`} />
+          <Crosshair className={`w-3.5 h-3.5 shrink-0 ${
+            isLocating 
+              ? 'animate-spin text-sky-400' 
+              : isTrackingLocation || userLocation?.isRealtime
+                ? 'text-sky-300 animate-pulse'
+                : 'text-sky-400 group-hover:scale-110 transition-transform'
+          }`} />
           <span className="pointer-events-none absolute right-[36px] top-1/2 -translate-y-1/2 px-2 py-1 bg-[#10131a]/95 text-white text-[11px] font-medium rounded border border-[#262b3a] shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
-            即時定位目前位置
+            {isTrackingLocation || userLocation?.isRealtime ? '取消目前即時定位 (點擊解除)' : '即時定位目前位置'}
           </span>
         </button>
       </div>
 
-      {/* Google Earth 風格固定長度比例圖例 (Google Earth Style Fixed-Width Scale Ruler) - 提高底部間距以防與底圖版權白底甲面重疊 */}
-      <div className="absolute bottom-[38px] right-14 z-20 pointer-events-none select-none">
+      {/* Google Earth 風格固定長度比例圖例 (Google Earth Style Fixed-Width Scale Ruler) - 手機版抬高至探索底欄上方避免被遮蔽 */}
+      <div className="absolute bottom-[calc(64px+env(safe-area-inset-bottom,0px))] sm:bottom-[38px] right-3 sm:right-14 z-20 pointer-events-none select-none">
         <div className="flex flex-col items-end">
           <div className="text-right text-[11px] font-sans font-semibold text-white tracking-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.95)] mb-0.5 leading-none select-none">
             {scaleText}
@@ -18407,7 +18496,7 @@ export default function AppMap() {
 
             <div className="flex flex-col items-center gap-1 text-center">
               <h3 className="text-sm font-bold text-white tracking-wide">
-                正在載入大溫哥華即時 API 與圖資數據
+                正在取得即時資料及載入地圖
               </h3>
               <p className="text-xs text-emerald-400 font-medium">
                 {apiLoadingText}
@@ -18852,6 +18941,43 @@ export default function AppMap() {
           </div>
         </div>,
         document.body
+      )}
+
+      {/* 系統維護模式全螢幕通知 (System Maintenance Fullscreen Notice) */}
+      {maintenanceState?.enabled && (
+        <div className="fixed inset-0 z-[9999] bg-[#0c0e14] flex flex-col items-center justify-center p-6 text-center select-none animate-in fade-in duration-200">
+          <div className="max-w-md w-full bg-[#141824] border border-amber-500/40 rounded-2xl p-8 shadow-2xl flex flex-col items-center gap-5">
+            <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+              <AlertTriangle className="w-8 h-8" />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <h2 className="text-xl font-bold text-white tracking-wide">
+                系統維護中 System Maintenance
+              </h2>
+              <p className="text-xs text-amber-300 font-mono">
+                Vancouver God&apos;s Eye Service Notice
+              </p>
+            </div>
+            <p className="text-sm text-gray-300 leading-relaxed bg-[#0e111a] p-4 rounded-xl border border-gray-800 text-left">
+              {maintenanceState.message || '為了提供更穩定優質的服務，溫哥華天眼系統目前正在進行維護升級，暫時停止地圖服務。我們將盡快恢復運作，造成不便敬請見諒。'}
+            </p>
+            <div className="flex items-center gap-3 w-full">
+              <button
+                type="button"
+                onClick={() => window.location.reload()}
+                className="flex-1 py-2.5 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white font-semibold text-xs rounded-xl transition-all shadow-lg cursor-pointer"
+              >
+                重新整理檢查狀態
+              </button>
+            </div>
+            <div className="pt-2 border-t border-gray-800 w-full flex justify-between items-center text-[11px] text-gray-500">
+              <span>溫哥華天眼 維護公告</span>
+              <a href="/admin" className="text-gray-400 hover:text-white underline">
+                管理員登入
+              </a>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

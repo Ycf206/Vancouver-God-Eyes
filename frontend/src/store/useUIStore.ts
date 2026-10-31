@@ -130,6 +130,7 @@ export interface UIState {
     lat: number;
     lon: number;
     confirmed: boolean;
+    isRealtime?: boolean;
   } | null;
   setUserLocation: (loc: {
     address: string;
@@ -137,6 +138,7 @@ export interface UIState {
     lat: number;
     lon: number;
     confirmed: boolean;
+    isRealtime?: boolean;
   } | null) => void;
   navigationAddress: string;
   setNavigationAddress: (addr: string) => void;
@@ -159,7 +161,9 @@ export interface UIState {
   setAdminModalOpen: (open: boolean) => void;
   toggleAdminModal: () => void;
   isExploreOpen: boolean;
+  isExploreMinimized: boolean;
   setExploreOpen: (open: boolean) => void;
+  setExploreMinimized: (minimized: boolean) => void;
   toggleExplore: () => void;
   exploreTab: ExploreTabType;
   openExploreTabs: ExploreTabType[];
@@ -371,15 +375,18 @@ export const useUIStore = create<UIState>()(
       setAdminModalOpen: (open) => set({ isAdminModalOpen: open }),
       toggleAdminModal: () => set((state) => ({ isAdminModalOpen: !state.isAdminModalOpen })),
       isExploreOpen: false,
-      setExploreOpen: (open) => set({ isExploreOpen: open }),
+      isExploreMinimized: false,
+      setExploreOpen: (open) => set({ isExploreOpen: open, isExploreMinimized: false }),
+      setExploreMinimized: (minimized) => set({ isExploreMinimized: minimized }),
       toggleExplore: () => set((state) => {
         const nextOpen = !state.isExploreOpen;
         if (!nextOpen) {
-          return { isExploreOpen: false };
+          return { isExploreOpen: false, isExploreMinimized: false };
         }
         const tabs = (state.openExploreTabs && state.openExploreTabs.length > 0) ? state.openExploreTabs : [state.exploreTab || 'weather'];
         return {
           isExploreOpen: true,
+          isExploreMinimized: false,
           openExploreTabs: tabs,
           exploreTab: state.exploreTab || 'weather'
         };
@@ -392,7 +399,8 @@ export const useUIStore = create<UIState>()(
         return {
           openExploreTabs: newTabs,
           exploreTab: tab,
-          isExploreOpen: true
+          isExploreOpen: true,
+          isExploreMinimized: false
         };
       }),
       openExploreTab: (tab) => set((state) => {
@@ -401,7 +409,8 @@ export const useUIStore = create<UIState>()(
         return {
           openExploreTabs: newTabs,
           exploreTab: tab,
-          isExploreOpen: true
+          isExploreOpen: true,
+          isExploreMinimized: false
         };
       }),
       setOpenExploreTabs: (tabs) => set({ openExploreTabs: tabs }),
@@ -417,6 +426,7 @@ export const useUIStore = create<UIState>()(
         return { 
           openExploreTabs: [], 
           isExploreOpen: false,
+          isExploreMinimized: false,
           fuelLayerAutoEnabled: false,
           layers: nextLayers,
           searchTarget: nextSearchTarget
@@ -663,7 +673,7 @@ export const useUIStore = create<UIState>()(
         temperatureUnit: state.temperatureUnit,
         newsRefreshInterval: state.newsRefreshInterval,
         transitAlertsRefreshInterval: state.transitAlertsRefreshInterval,
-        userLocation: state.userLocation,
+        userLocation: (state.userLocation && !state.userLocation.isRealtime && !state.userLocation.address?.includes('即時') && !state.userLocation.address?.includes('GPS')) ? state.userLocation : null,
         navigationAddress: state.navigationAddress,
         hiddenLayersInPanel: state.hiddenLayersInPanel,
       }),
@@ -680,7 +690,7 @@ export const useUIStore = create<UIState>()(
           temperatureUnit: persistedState?.temperatureUnit || 'celsius',
           newsRefreshInterval: persistedState?.newsRefreshInterval ?? 15,
           transitAlertsRefreshInterval: persistedState?.transitAlertsRefreshInterval ?? 10,
-          userLocation: persistedState?.userLocation || null,
+          userLocation: (persistedState?.userLocation && !persistedState?.userLocation?.isRealtime && !persistedState?.userLocation?.address?.includes('即時') && !persistedState?.userLocation?.address?.includes('GPS')) ? persistedState.userLocation : null,
           navigationAddress: persistedState?.navigationAddress || '',
           hiddenLayersInPanel: persistedState?.hiddenLayersInPanel || {},
           layers: {
