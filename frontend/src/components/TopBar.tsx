@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { Search, Settings, ChevronDown, Map as MapIcon, X, Loader2, Layers, AlertCircle, Heart, Download, History, User, MoreHorizontal, Compass } from 'lucide-react';
+import { useState, useEffect, useRef, useMemo } from 'react';
+import { Search, Settings, ChevronDown, Map as MapIcon, X, Loader2, Layers, AlertCircle, Heart, Download, History, User, MoreHorizontal, Compass, Filter, Check } from 'lucide-react';
 import { useUIStore, SearchTarget, UIState } from '@/store/useUIStore';
 import ReportIssueModal from '@/components/ReportIssueModal';
 import DonateModal from '@/components/DonateModal';
@@ -38,15 +38,86 @@ export default function TopBar() {
   const [isChangelogModalOpen, setIsChangelogModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
+  // 搜尋圖層篩選類別定義
+  const SEARCH_CATEGORY_FILTERS = [
+    {
+      id: 'transit',
+      label: '大眾運輸',
+      icon: '🚌',
+      matcher: (item: SearchTarget) => ['bus_route', 'skytrain', 'seabus', 'ferry_terminal', 'transit'].includes(item.category)
+    },
+    {
+      id: 'postal',
+      label: '郵政快遞',
+      icon: '📮',
+      matcher: (item: SearchTarget) => ['post_offices', 'canada_post', 'fedex', 'ups', 'dhl', 'courier', 'postal_code_fsa'].includes(item.category) || ['canadaPost'].includes(item.layer_key as string)
+    },
+    {
+      id: 'parking',
+      label: '停車泊車',
+      icon: '🅿️',
+      matcher: (item: SearchTarget) => ['parking_meters', 'accessible_parking', 'motorcycle_parking', 'car_sharing', 'impark'].includes(item.category) || ['parkingMeters', 'motorcycleParking', 'accessibleParking', 'impark', 'carSharing'].includes(item.layer_key as string)
+    },
+    {
+      id: 'energy',
+      label: '油站充電',
+      icon: '⚡',
+      matcher: (item: SearchTarget) => ['fuel', 'tesla', 'ev_charging', 'ev'].includes(item.category) || ['fuel', 'tesla', 'evCharging'].includes(item.layer_key as string)
+    },
+    {
+      id: 'emergency',
+      label: '急救醫療',
+      icon: '🚨',
+      matcher: (item: SearchTarget) => ['fire_halls', 'police', 'disaster_hubs', 'hospitals', 'aed', 'homeless_shelters'].includes(item.category) || ['fireHalls', 'police', 'disasterHubs', 'hospitals', 'aed'].includes(item.layer_key as string)
+    },
+    {
+      id: 'community',
+      label: '社區文教',
+      icon: '🏛️',
+      matcher: (item: SearchTarget) => ['schools', 'libraries', 'museums', 'community_centres', 'parks', 'public_art', 'community_gardens'].includes(item.category) || ['schools', 'libraries', 'museums', 'communityCentres', 'parks', 'publicArt'].includes(item.layer_key as string)
+    },
+    {
+      id: 'traffic',
+      label: '路況設施',
+      icon: '📷',
+      matcher: (item: SearchTarget) => ['traffic_cameras', 'traffic_incident', 'road_closures', 'traffic_conditions', 'safety_cameras', 'bikeways', 'traffic_crosswalks', 'turn_restrictions'].includes(item.category) || ['trafficCameras', 'safetyCameras', 'trafficConditions', 'trafficAlerts', 'bikeways'].includes(item.layer_key as string)
+    },
+    {
+      id: 'atm',
+      label: '自動櫃員機',
+      icon: '🏧',
+      matcher: (item: SearchTarget) => item.category === 'atm' || item.layer_key === 'atm'
+    },
+    {
+      id: 'ports',
+      label: '海空關卡',
+      icon: '✈️',
+      matcher: (item: SearchTarget) => ['border_crossing', 'airports', 'marine_terminals'].includes(item.category) || ['airports', 'marineTerminals'].includes(item.layer_key as string)
+    }
+  ];
+
   // 搜尋狀態
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchTarget[]>([]);
   const [displayLimit, setDisplayLimit] = useState(40);
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [filterPopoverOpen, setFilterPopoverOpen] = useState(false);
+  const [selectedFilterCategoryIds, setSelectedFilterCategoryIds] = useState<string[]>([]);
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const isSelectingRef = useRef(false);
   const searchCacheRef = useRef<Map<string, SearchTarget[]>>(new Map());
+
+  // 依選取的圖層篩選類別過濾搜尋結果
+  const filteredResults = useMemo(() => {
+    if (selectedFilterCategoryIds.length === 0) return results;
+    return results.filter(item => {
+      return selectedFilterCategoryIds.some(catId => {
+        const f = SEARCH_CATEGORY_FILTERS.find(x => x.id === catId);
+        return f ? f.matcher(item) : false;
+      });
+    });
+  }, [results, selectedFilterCategoryIds]);
 
   useEffect(() => {
     setTime(new Date());
@@ -59,6 +130,7 @@ export default function TopBar() {
     const handleClickOutside = (e: MouseEvent) => {
       if (searchContainerRef.current && !searchContainerRef.current.contains(e.target as Node)) {
         setIsOpen(false);
+        setFilterPopoverOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -225,7 +297,107 @@ export default function TopBar() {
 
       {/* 搜尋列 (緊隨大溫地區) */}
       <div ref={searchContainerRef} className="relative flex-1 min-w-0 max-w-[650px] ml-1.5 sm:ml-2.5 mr-2 sm:mr-4">
-        <div className="flex items-center bg-[#25262b] border border-[#373a40] rounded-md px-3 h-9 focus-within:border-emerald-500/70 focus-within:ring-1 focus-within:ring-emerald-500/30 transition-all shadow-inner">
+        <div className="flex items-center bg-[#25262b] border border-[#373a40] rounded-md px-2 sm:px-3 h-9 focus-within:border-emerald-500/70 focus-within:ring-1 focus-within:ring-emerald-500/30 transition-all shadow-inner">
+          {/* 搜尋欄左方圖層篩選按鈕 */}
+          <div className="relative shrink-0 mr-1 sm:mr-1.5">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setFilterPopoverOpen(prev => !prev);
+              }}
+              className={`flex items-center gap-1 px-1.5 py-1 rounded text-xs transition-colors cursor-pointer select-none ${
+                selectedFilterCategoryIds.length > 0
+                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-semibold'
+                  : 'text-gray-400 hover:text-gray-200 hover:bg-[#32353d]'
+              }`}
+              title="篩選特定圖層搜尋"
+            >
+              <Filter className={`w-3.5 h-3.5 ${selectedFilterCategoryIds.length > 0 ? 'text-emerald-400' : 'text-gray-400'}`} />
+              <span className="hidden sm:inline text-[11px]">
+                {selectedFilterCategoryIds.length > 0 ? `已選 ${selectedFilterCategoryIds.length}` : '圖層'}
+              </span>
+              <ChevronDown className="w-2.5 h-2.5 text-gray-500" />
+            </button>
+
+            {/* 圖層篩選下拉選單 */}
+            {filterPopoverOpen && (
+              <div 
+                onClick={(e) => e.stopPropagation()}
+                className="absolute top-[36px] left-0 w-64 bg-[#1b1d24] border border-[#383d4a] rounded-xl shadow-2xl p-2.5 z-[120] flex flex-col gap-2 text-xs animate-in fade-in zoom-in-95 duration-150"
+              >
+                <div className="flex items-center justify-between pb-1.5 border-b border-[#2a2f3d]">
+                  <span className="font-bold text-gray-200 text-xs flex items-center gap-1.5">
+                    <Layers className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>搜尋圖層篩選</span>
+                  </span>
+                  <div className="flex items-center gap-1 text-[10px]">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedFilterCategoryIds(SEARCH_CATEGORY_FILTERS.map(f => f.id))}
+                      className="text-emerald-400 hover:underline px-1 py-0.5 rounded cursor-pointer"
+                    >
+                      全選
+                    </button>
+                    <span className="text-gray-600">|</span>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedFilterCategoryIds([])}
+                      className="text-gray-400 hover:underline px-1 py-0.5 rounded cursor-pointer"
+                    >
+                      重設 (全部)
+                    </button>
+                  </div>
+                </div>
+
+                <div className="max-h-60 overflow-y-auto flex flex-col gap-1 pr-0.5 [scrollbar-width:thin] [scrollbar-color:#4a4d57_transparent]">
+                  {SEARCH_CATEGORY_FILTERS.map((cat) => {
+                    const isChecked = selectedFilterCategoryIds.includes(cat.id);
+                    return (
+                      <button
+                        key={cat.id}
+                        type="button"
+                        onClick={() => {
+                          setSelectedFilterCategoryIds(prev => 
+                            prev.includes(cat.id) ? prev.filter(x => x !== cat.id) : [...prev, cat.id]
+                          );
+                        }}
+                        className={`flex items-center justify-between px-2 py-1.5 rounded-lg text-left transition-colors cursor-pointer ${
+                          isChecked 
+                            ? 'bg-emerald-950/60 text-emerald-200 border border-emerald-800/50' 
+                            : 'hover:bg-[#252a38] text-gray-300'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm">{cat.icon}</span>
+                          <span className="text-xs font-medium">{cat.label}</span>
+                        </div>
+                        <div className={`w-4 h-4 rounded flex items-center justify-center border transition-colors ${
+                          isChecked ? 'bg-emerald-600 border-emerald-500 text-white' : 'border-gray-600 bg-[#161820]'
+                        }`}>
+                          {isChecked && <Check className="w-3 h-3 stroke-[3]" />}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="pt-1.5 border-t border-[#2a2f3d] flex items-center justify-between text-[10.5px] text-gray-400">
+                  <span className="truncate pr-1">
+                    {selectedFilterCategoryIds.length === 0 ? '目前搜尋：全部圖層' : `已限定 ${selectedFilterCategoryIds.length} 個類別`}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setFilterPopoverOpen(false)}
+                    className="px-2 py-0.5 rounded bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-semibold cursor-pointer shrink-0"
+                  >
+                    完成
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
           <Search className="w-4 h-4 text-gray-400 mr-2 shrink-0" />
           <input 
             type="text" 
@@ -263,22 +435,29 @@ export default function TopBar() {
         {isOpen && query.trim().length > 0 && (
           <div className="absolute top-[44px] left-0 w-full bg-[#1e2025]/95 backdrop-blur-md border border-[#373a40] rounded-lg shadow-2xl overflow-hidden z-[100] max-h-[460px] max-h-[70vh] flex flex-col">
             <div className="flex items-center justify-between px-3.5 py-2 border-b border-[#2d2e34] bg-[#191a1e]/80 text-[11px] text-gray-400 shrink-0">
-              <span>圖層項目搜尋結果</span>
-              <span>{results.length} 筆項目</span>
+              <div className="flex items-center gap-2">
+                <span>圖層項目搜尋結果</span>
+                {selectedFilterCategoryIds.length > 0 && (
+                  <span className="text-[10px] bg-emerald-950/80 text-emerald-300 border border-emerald-800/60 px-1.5 py-0.2 rounded font-medium">
+                    已依圖層篩選
+                  </span>
+                )}
+              </div>
+              <span>{filteredResults.length} 筆項目</span>
             </div>
 
             <div 
               onScroll={(e) => {
                 const target = e.currentTarget;
                 if (target.scrollTop + target.clientHeight >= target.scrollHeight - 40) {
-                  setDisplayLimit(prev => Math.min(prev + 40, results.length));
+                  setDisplayLimit(prev => Math.min(prev + 40, filteredResults.length));
                 }
               }}
               className="overflow-y-auto flex-1 min-h-0 divide-y divide-[#2a2c33]/60 py-1 [scrollbar-width:thin] [scrollbar-color:#4a4d57_transparent]"
             >
-              {results.length > 0 ? (
+              {filteredResults.length > 0 ? (
                 <>
-                  {results.slice(0, displayLimit).map((item) => (
+                  {filteredResults.slice(0, displayLimit).map((item) => (
                     <button
                       key={item.id}
                       onClick={() => handleSelect(item)}
@@ -338,16 +517,26 @@ export default function TopBar() {
                       </span>
                     </button>
                   ))}
-                  {results.length > displayLimit && (
+                  {filteredResults.length > displayLimit && (
                     <div className="text-center py-2 text-[10.5px] text-gray-400 bg-[#16171a]/50">
-                      向下滾動載入更多項目 ({displayLimit} / {results.length})
+                      向下滾動載入更多項目 ({displayLimit} / {filteredResults.length})
                     </div>
                   )}
                 </>
               ) : (
                 !isLoading && (
-                  <div className="py-6 px-4 text-center text-xs text-gray-400">
-                    查無相符圖層項目（可搜尋巴士路線、站名、碼頭名、地址、設施名）
+                  <div className="py-6 px-4 text-center text-xs text-gray-400 flex flex-col items-center gap-1.5">
+                    <AlertCircle className="w-4 h-4 text-gray-500" />
+                    <span>查無相符圖層項目（可搜尋巴士路線、站名、碼頭名、地址、設施名）</span>
+                    {selectedFilterCategoryIds.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => setSelectedFilterCategoryIds([])}
+                        className="text-emerald-400 hover:underline text-xs mt-1 cursor-pointer"
+                      >
+                        清除已選圖層篩選以檢視全部結果
+                      </button>
+                    )}
                   </div>
                 )
               )}

@@ -10,7 +10,7 @@ import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl, getWsUrl } from '@/utils/api';
 import { formatTimePreference, formatShipEta, formatTimeRange, formatOpeningHours, formatConstructionSchedule, formatDateTime } from '@/utils/time';
 import FacilityWeeklyHoursSchedule from '@/components/WeeklyHoursSchedule';
-import { formatTitleCase } from '@/utils/text';
+import { formatTitleCase, formatPhoneNumber } from '@/utils/text';
 import { getSkytrainStationMapUrls } from '@/utils/skytrainMaps';
 import skytrainStationsData from '@/data/skytrainStations.json';
 import { 
@@ -501,6 +501,8 @@ export default function AppMap() {
     timeZone,
     navigationAddress,
     setNavigationAddress,
+    selectedCrash,
+    setSelectedCrash,
     activeJobSkillModal,
     setActiveJobSkillModal
   } = useUIStore();
@@ -4157,9 +4159,9 @@ export default function AppMap() {
         source: 'canada-post',
         minzoom: 13,
         layout: {
-          'text-field': '✉',
+          'text-field': 'CP',
           'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
-          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 9, 15, 12, 17, 15],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 8, 15, 10, 17, 12],
           'text-allow-overlap': true,
           'text-ignore-placement': true
         },
@@ -8479,6 +8481,44 @@ export default function AppMap() {
           </Marker>
         )}
 
+        {/* 車禍意外標記 (點擊清單項目時顯示準確位置紅點) */}
+        {selectedCrash && (
+          <Marker
+            longitude={selectedCrash.lon}
+            latitude={selectedCrash.lat}
+            anchor="center"
+          >
+            <div 
+              onClick={(e) => e.stopPropagation()}
+              className="relative group cursor-pointer flex items-center justify-center select-none"
+            >
+              <div className="absolute w-10 h-10 rounded-full bg-rose-500/30 animate-ping pointer-events-none" />
+              <div className="absolute w-6 h-6 rounded-full bg-rose-500/50 animate-pulse pointer-events-none" />
+              <div className="relative w-4 h-4 rounded-full bg-rose-600 border-2 border-white shadow-[0_0_10px_rgba(225,29,72,0.8)] flex items-center justify-center">
+                <div className="w-1.5 h-1.5 rounded-full bg-white" />
+              </div>
+              <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-[#121620]/95 backdrop-blur-md text-white text-[11px] px-2.5 py-1.5 rounded-lg border border-rose-500/70 shadow-2xl whitespace-nowrap z-50 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
+                <span className="font-semibold text-rose-200">{selectedCrash.location}</span>
+                <span className="bg-rose-950/90 text-rose-300 px-1.5 py-0.5 rounded text-[10px] font-mono border border-rose-800">
+                  {selectedCrash.count} 宗意外
+                </span>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedCrash(null);
+                  }}
+                  className="text-gray-400 hover:text-white ml-1 p-0.5 rounded hover:bg-white/10 text-xs leading-none"
+                  title="清除標記"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+          </Marker>
+        )}
+
         {/* 即時通報選中圖釘 (當在探索分頁點選通報時，在地圖上精準顯示標記圖釘) */}
         {selectedFacility && (selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident') && selectedFacility.lat && selectedFacility.lon && (
           <Marker
@@ -10503,7 +10543,7 @@ export default function AppMap() {
                       <div className="flex justify-between items-center text-gray-600">
                         <span>聯絡電話</span>
                         <a href={`tel:${selectedFacility.properties.phone}`} className="font-bold text-rose-600 font-mono hover:underline">
-                          {selectedFacility.properties.phone}
+                          {formatPhoneNumber(selectedFacility.properties.phone)}
                         </a>
                       </div>
                     </div>
@@ -10714,7 +10754,7 @@ export default function AppMap() {
                           <div className="flex items-center justify-between text-gray-700">
                             <span className="text-gray-500 font-medium">聯絡電話</span>
                             <a href={`tel:${props.telephone}`} className="font-mono font-semibold text-blue-600 hover:underline">
-                              {props.telephone}
+                              {formatPhoneNumber(props.telephone)}
                             </a>
                           </div>
                         </>
@@ -11048,7 +11088,7 @@ export default function AppMap() {
                           <div className="flex items-center justify-between text-gray-700">
                             <span className="text-gray-500 font-medium">聯絡電話</span>
                             <a href={`tel:${phoneRaw || mainPhone}`} className="font-mono text-purple-600 hover:underline font-semibold">
-                              {mainPhone}
+                              {formatPhoneNumber(mainPhone)}
                             </a>
                           </div>
                         </>
@@ -11119,7 +11159,7 @@ export default function AppMap() {
                         <div className="flex justify-between items-center text-gray-600">
                           <span>聯絡電話</span>
                           <a href={`tel:${phone}`} className="font-bold text-rose-600 font-mono hover:underline">
-                            {phone}
+                            {formatPhoneNumber(phone)}
                           </a>
                         </div>
                       )}
@@ -11256,7 +11296,7 @@ export default function AppMap() {
                         <div className="flex justify-between items-center text-gray-600">
                           <span>聯絡電話</span>
                           <a href={`tel:${phone}`} className="font-bold text-rose-600 font-mono hover:underline">
-                            {phone}
+                            {formatPhoneNumber(phone)}
                           </a>
                         </div>
                       )}
@@ -11797,7 +11837,7 @@ export default function AppMap() {
                             <div className="flex justify-between items-center">
                               <span className="text-gray-600">電話申請</span>
                               <a href={`tel:${props.ApplyPhoneNumber}`} className="text-indigo-600 hover:underline font-mono text-[10.5px]">
-                                {props.ApplyPhoneNumber}{props.ApplyPhoneNumberExt ? ` ext. ${props.ApplyPhoneNumberExt}` : ''}
+                                {formatPhoneNumber(props.ApplyPhoneNumber)}{props.ApplyPhoneNumberExt ? ` ext. ${props.ApplyPhoneNumberExt}` : ''}
                               </a>
                             </div>
                           )}
@@ -12290,7 +12330,7 @@ export default function AppMap() {
                         <div className={`flex justify-between items-center text-gray-600 ${(selectedFacility.properties?.services || selectedFacility.properties?.operator || selectedFacility.properties?.hours) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                           <span>聯絡電話</span>
                           <a href={`tel:${selectedFacility.properties.phone}`} className="font-bold text-rose-600 font-mono hover:underline">
-                            {selectedFacility.properties.phone}
+                            {formatPhoneNumber(selectedFacility.properties.phone)}
                           </a>
                         </div>
                       )}
@@ -12663,7 +12703,7 @@ export default function AppMap() {
                         <div className="flex justify-between items-center text-gray-600">
                           <span>聯絡電話</span>
                           <a href={`tel:${phone}`} className="font-bold text-rose-600 font-mono hover:underline">
-                            {phone}
+                            {formatPhoneNumber(phone)}
                           </a>
                         </div>
                       )}
@@ -12771,7 +12811,7 @@ export default function AppMap() {
                         <div className="flex justify-between items-center text-gray-600">
                           <span>聯絡電話</span>
                           <a href={`tel:${phone}`} className="font-bold text-rose-600 font-mono hover:underline">
-                            {phone}
+                            {formatPhoneNumber(phone)}
                           </a>
                         </div>
                       )}
@@ -12921,7 +12961,7 @@ export default function AppMap() {
                           <div className="flex justify-between items-center text-gray-600">
                             <span>聯絡專線</span>
                             <a href={`tel:${selectedFacility.properties.phone}`} className="font-bold text-rose-600 font-mono hover:underline">
-                              {selectedFacility.properties.phone}
+                              {formatPhoneNumber(selectedFacility.properties.phone)}
                             </a>
                           </div>
                         )}
@@ -13015,7 +13055,7 @@ export default function AppMap() {
                         <div className="flex justify-between items-center text-gray-600">
                           <span>聯絡電話</span>
                           <a href={`tel:${phone}`} className="font-bold text-rose-600 font-mono hover:underline">
-                            {phone}
+                            {formatPhoneNumber(phone)}
                           </a>
                         </div>
                       )}
@@ -13188,7 +13228,7 @@ export default function AppMap() {
                         <div className="flex justify-between items-center text-gray-600">
                           <span>聯絡電話</span>
                           <a href={`tel:${phone}`} className="font-bold text-rose-600 font-mono hover:underline">
-                            {phone}
+                            {formatPhoneNumber(phone)}
                           </a>
                         </div>
                       )}
@@ -13643,7 +13683,7 @@ export default function AppMap() {
                           <div className="flex justify-between items-center text-gray-600">
                             <span className="shrink-0 text-gray-500">聯絡電話</span>
                             <a href={`tel:${props.phone}`} className="font-bold text-rose-600 font-mono hover:underline">
-                              {props.phone}
+                              {formatPhoneNumber(props.phone)}
                             </a>
                           </div>
                         </>

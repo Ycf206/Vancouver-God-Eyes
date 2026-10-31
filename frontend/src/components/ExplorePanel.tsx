@@ -700,11 +700,14 @@ function ExploreContent() {
     fuelLayerAutoEnabled,
     setFuelLayerAutoEnabled,
     adminSourceIntervals,
-    setAdminSourceIntervals
+    setAdminSourceIntervals,
+    selectedCrash,
+    setSelectedCrash
   } = useUIStore();
 
-  // 取得後台資料源更新頻率並同步
+  // 取得後台資料源更新頻率並同步 (當探索面板開啟時動態連動)
   useEffect(() => {
+    if (!isExploreOpen) return;
     const apiUrl = getApiUrl();
     fetch(`${apiUrl}/api/admin/sources`)
       .then(res => res.json())
@@ -720,7 +723,7 @@ function ExploreContent() {
         }
       })
       .catch(() => {});
-  }, [setAdminSourceIntervals]);
+  }, [isExploreOpen, setAdminSourceIntervals]);
 
   // --- TransLink Alerts states ---
   const [transitAlertsData, setTransitAlertsData] = useState<TranslinkAlertsData | null>(null);
@@ -742,7 +745,21 @@ function ExploreContent() {
   const [satelliteModalOpen, setSatelliteModalOpen] = useState<boolean>(false);
   const [satelliteChannel, setSatelliteChannel] = useState<'geocolor' | 'ir' | 'water_vapor'>('geocolor');
   const [satelliteRefreshKey, setSatelliteRefreshKey] = useState<number>(0);
+  const [satelliteZoomLevel, setSatelliteZoomLevel] = useState<number>(1);
   const [enlargedAuroraImage, setEnlargedAuroraImage] = useState<{ src: string; title: string; subtitle?: string } | null>(null);
+  const [auroraZoomLevel, setAuroraZoomLevel] = useState<number>(1);
+
+  // Close modals on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (satelliteModalOpen) setSatelliteModalOpen(false);
+        if (enlargedAuroraImage) setEnlargedAuroraImage(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [satelliteModalOpen, enlargedAuroraImage]);
 
   // --- 3-1-1 市政服務請求狀態 ---
   const [requests311, setRequests311] = useState<Array<{
@@ -877,10 +894,62 @@ function ExploreContent() {
     return requests311.length;
   }, [requests311]);
 
+  const ROAD_ABBREVIATIONS: Record<string, string> = {
+    street: 'st',
+    streets: 'st',
+    str: 'st',
+    avenue: 'ave',
+    avenues: 'ave',
+    av: 'ave',
+    road: 'rd',
+    roads: 'rd',
+    boulevard: 'blvd',
+    boulevards: 'blvd',
+    blv: 'blvd',
+    drive: 'dr',
+    highway: 'hwy',
+    highways: 'hwy',
+    court: 'ct',
+    crescent: 'cres',
+    way: 'wy',
+    lane: 'ln',
+    place: 'pl',
+    parkway: 'pkwy',
+    east: 'e',
+    west: 'w',
+    north: 'n',
+    south: 's',
+    northeast: 'ne',
+    northwest: 'nw',
+    southeast: 'se',
+    southwest: 'sw'
+  };
+
+  const normalizeRoadTokens = (input: string): string[] => {
+    if (!input) return [];
+    const cleaned = input
+      .toLowerCase()
+      .replace(/[.,/&\\()\-#_]/g, ' ')
+      .replace(/\b(\d+)(st|nd|rd|th)\b/gi, '$1');
+
+    return cleaned
+      .split(/\s+/)
+      .map(t => t.trim())
+      .filter(Boolean)
+      .map(t => ROAD_ABBREVIATIONS[t] || t);
+  };
+
   const filteredCrashes = useMemo(() => {
     if (!crashesSearchQuery.trim()) return crashesList;
-    const q = crashesSearchQuery.trim().toLowerCase();
-    return crashesList.filter(c => c.location.toLowerCase().includes(q));
+    const queryTokens = normalizeRoadTokens(crashesSearchQuery);
+    if (queryTokens.length === 0) return crashesList;
+
+    return crashesList.filter(c => {
+      const locTokens = normalizeRoadTokens(c.location);
+      return queryTokens.every(qToken =>
+        locTokens.some(lToken => lToken === qToken || lToken.startsWith(qToken) || lToken.includes(qToken))
+      );
+    });
   }, [crashesList, crashesSearchQuery]);
 
   const format311DateTime = (val?: string | null) => {
@@ -3369,6 +3438,16 @@ function ExploreContent() {
                 type="button"
                 onClick={() => {
                   setShowCloseConfirm(false);
+                  if (selectedCrash) {
+                    const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap?.() || (window as any).__godsEyeMapRef?.current;
+                    if (mapInstance) {
+                      mapInstance.flyTo({
+                        center: [selectedCrash.lon, selectedCrash.lat],
+                        zoom: 16.5,
+                        essential: true
+                      });
+                    }
+                  }
                   closeAllExploreTabs();
                   setSearchTarget(null);
                 }}
@@ -3452,6 +3531,16 @@ function ExploreContent() {
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
+                    if (tabId === 'crashes' && selectedCrash) {
+                      const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap?.() || (window as any).__godsEyeMapRef?.current;
+                      if (mapInstance) {
+                        mapInstance.flyTo({
+                          center: [selectedCrash.lon, selectedCrash.lat],
+                          zoom: 16.5,
+                          essential: true
+                        });
+                      }
+                    }
                     closeExploreTab(tabId);
                   }}
                   className="ml-0.5 p-0.5 rounded hover:bg-white/10 text-gray-400 hover:text-rose-400 transition-colors"
@@ -3470,6 +3559,16 @@ function ExploreContent() {
             if (tabsToRender.length > 1) {
               setShowCloseConfirm(true);
             } else {
+              if (selectedCrash) {
+                const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap?.() || (window as any).__godsEyeMapRef?.current;
+                if (mapInstance) {
+                  mapInstance.flyTo({
+                    center: [selectedCrash.lon, selectedCrash.lat],
+                    zoom: 16.5,
+                    essential: true
+                  });
+                }
+              }
               closeAllExploreTabs();
               setSearchTarget(null);
             }
@@ -3950,26 +4049,91 @@ function ExploreContent() {
                       <p className="text-[11px] text-gray-300 leading-relaxed">
                         目前溫哥華低陸平原上空受中低層層積雲覆蓋，外海約 250 公里處可見太平洋低壓鋒面雲系持續東移。
                       </p>
-                      <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#1c2232] text-[10.5px]">
+                      <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#1c2232] text-[10.5px] items-center">
                         <div className="flex flex-col">
                           <span className="text-gray-500">空間解析度</span>
                           <span className="font-mono text-gray-200 font-semibold">1 km (VIS) / 2 km (IR)</span>
                         </div>
-                        <div className="flex flex-col">
-                          <span className="text-gray-500">雲頂亮溫</span>
-                          <span className="font-mono text-sky-400 font-semibold">-12°C ~ -18°C</span>
+                        <div className="flex items-center justify-between">
+                          <div className="flex flex-col">
+                            <span className="text-gray-500">雲頂亮溫</span>
+                            <span className="font-mono text-sky-400 font-semibold">-12°C ~ -18°C</span>
+                          </div>
+                          <a
+                            href="https://www.star.nesdis.noaa.gov/GOES/sector.php?sat=G18&sector=pnw"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-1.5 rounded-lg text-sky-400 hover:text-white hover:bg-sky-900/60 border border-sky-800/50 transition-colors shadow-sm cursor-pointer ml-auto"
+                            title="開啟 NOAA 官方即時衛星雲圖"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </a>
                         </div>
                       </div>
-                      <div className="flex items-center justify-end pt-2 border-t border-[#1c2232] mt-1">
-                        <a
-                          href="https://www.star.nesdis.noaa.gov/GOES/sector.php?sat=G18&sector=pnw"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-1.5 rounded-lg text-sky-400 hover:text-white hover:bg-sky-900/60 border border-sky-800/50 transition-colors shadow-sm cursor-pointer"
-                          title="開啟 NOAA 官方即時衛星雲圖"
+
+                      {/* 太平洋西北衛星雲圖即時影像 (空間解析度下方) */}
+                      <div className="mt-1 pt-2 border-t border-[#1c2232] flex flex-col gap-1.5">
+                        <div className="flex items-center justify-between text-[11px]">
+                          <span className="text-gray-400 font-medium">太平洋西北雲圖即時監控 (PNW)</span>
+                          <div className="flex items-center gap-1 bg-[#131722] p-0.5 rounded border border-[#242c3b]">
+                            <button
+                              type="button"
+                              onClick={() => setSatelliteChannel('geocolor')}
+                              className={`px-1.5 py-0.5 rounded text-[10px] font-medium transition-colors ${
+                                satelliteChannel === 'geocolor' ? 'bg-sky-600 text-white font-bold' : 'text-gray-400 hover:text-white'
+                              }`}
+                            >
+                              可見光
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setSatelliteChannel('ir')}
+                              className={`px-1.5 py-0.5 rounded text-[10px] font-medium transition-colors ${
+                                satelliteChannel === 'ir' ? 'bg-sky-600 text-white font-bold' : 'text-gray-400 hover:text-white'
+                              }`}
+                            >
+                              紅外線
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setSatelliteRefreshKey(k => k + 1)}
+                              className="p-0.5 text-gray-400 hover:text-white rounded"
+                              title="重新整理雲圖"
+                            >
+                              <RefreshCw className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </div>
+
+                        <div
+                          onClick={() => {
+                            setSatelliteModalOpen(true);
+                            setSatelliteZoomLevel(1);
+                          }}
+                          className="relative w-full h-44 rounded-lg overflow-hidden border border-[#202738] bg-black group cursor-zoom-in shadow-inner"
+                          title="點擊全螢幕放大檢視即時衛星雲圖"
                         >
-                          <ExternalLink className="w-3.5 h-3.5" />
-                        </a>
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={satelliteChannel === 'geocolor'
+                              ? `https://cdn.star.nesdis.noaa.gov/GOES18/ABI/SECTOR/pnw/GEOCOLOR/1200x1200.jpg?t=${satelliteRefreshKey}`
+                              : `https://cdn.star.nesdis.noaa.gov/GOES18/ABI/SECTOR/pnw/13/1200x1200.jpg?t=${satelliteRefreshKey}`}
+                            alt="NOAA GOES-18 太平洋西北即時衛星雲圖"
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            onError={(e) => {
+                              const target = e.currentTarget;
+                              if (!target.src.includes('weather.gc.ca')) {
+                                target.src = 'https://weather.gc.ca/data/satellite/goes_wcan_visible_100.jpg';
+                              }
+                            }}
+                          />
+                          <div className="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                            <span className="bg-black/80 backdrop-blur-xs text-white text-[11px] px-2.5 py-1 rounded-full flex items-center gap-1.5 shadow-md">
+                              <ZoomIn className="w-3.5 h-3.5 text-sky-300" />
+                              <span>點擊放大檢視全螢幕雲圖</span>
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -5795,21 +5959,21 @@ function ExploreContent() {
             </div>
           </div>
 
-          {/* 表格方式顯示 (固定表頭第一行標題，資料列不再重複標籤) */}
+          {/* 表格方式顯示 (縮窄表格，文字斷行顯示，避免過度水平滑動) */}
           <div className="flex-1 overflow-auto border border-[#263147] rounded-xl bg-[#121620]">
-            <table className="w-full text-left border-collapse text-xs whitespace-nowrap min-w-[760px]">
-              <thead className="sticky top-0 z-10 bg-[#181e2b] border-b border-[#263147] text-[11px] font-bold text-gray-400 shadow-sm">
+            <table className="w-full text-left border-collapse text-[11px]">
+              <thead className="sticky top-0 z-10 bg-[#181e2b] border-b border-[#263147] text-[10.5px] font-bold text-gray-400 shadow-sm">
                 <tr>
-                  <th className="py-2.5 px-3">狀態</th>
-                  <th className="py-2.5 px-3">部門</th>
-                  <th className="py-2.5 px-3">服務請求類型</th>
-                  <th className="py-2.5 px-3">渠道</th>
-                  <th className="py-2.5 px-3">服務請求開始</th>
-                  <th className="py-2.5 px-3">服務請求結束</th>
-                  <th className="py-2.5 px-3">結束原因</th>
-                  <th className="py-2.5 px-3">所屬地區</th>
-                  <th className="py-2.5 px-3">地址</th>
-                  <th className="py-2.5 px-2 text-center">導航</th>
+                  <th className="py-2 px-2 whitespace-nowrap">狀態</th>
+                  <th className="py-2 px-2 whitespace-nowrap">部門</th>
+                  <th className="py-2 px-2">服務請求類型</th>
+                  <th className="py-2 px-1.5 whitespace-nowrap">渠道</th>
+                  <th className="py-2 px-1.5 whitespace-nowrap">開始時間</th>
+                  <th className="py-2 px-1.5 whitespace-nowrap">結束時間</th>
+                  <th className="py-2 px-2">結束原因</th>
+                  <th className="py-2 px-2 whitespace-nowrap">所屬地區</th>
+                  <th className="py-2 px-2">地址</th>
+                  <th className="py-2 px-1.5 text-center whitespace-nowrap">導航</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#1e2638]">
@@ -5840,8 +6004,8 @@ function ExploreContent() {
                         key={`${req.service_request_open_timestamp}_${idx}`}
                         className="hover:bg-[#181d28] transition-colors"
                       >
-                        <td className="py-2 px-3">
-                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider ${
+                        <td className="py-2 px-2 whitespace-nowrap">
+                          <span className={`px-1.5 py-0.5 rounded-full text-[9.5px] font-bold tracking-wider ${
                             isOpen 
                               ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' 
                               : 'bg-gray-700/40 text-gray-300 border border-gray-600/50'
@@ -5849,25 +6013,25 @@ function ExploreContent() {
                             {isOpen ? '處理中' : '已結束'}
                           </span>
                         </td>
-                        <td className="py-2 px-3 text-gray-300">{req.department || '—'}</td>
-                        <td className="py-2 px-3 font-semibold text-white max-w-[200px] truncate" title={req.service_request_type || ''}>
+                        <td className="py-2 px-2 text-gray-300 whitespace-normal break-words max-w-[85px] leading-snug">{req.department || '—'}</td>
+                        <td className="py-2 px-2 font-semibold text-white whitespace-normal break-words max-w-[140px] leading-snug" title={req.service_request_type || ''}>
                           {req.service_request_type || '—'}
                         </td>
-                        <td className="py-2 px-3 text-gray-400 font-mono text-[11px]">{req.channel || '—'}</td>
-                        <td className="py-2 px-3 font-mono text-[11px] text-gray-300">
+                        <td className="py-2 px-1.5 text-gray-400 font-mono text-[10px] whitespace-nowrap">{req.channel || '—'}</td>
+                        <td className="py-2 px-1.5 font-mono text-[10px] text-gray-300 whitespace-nowrap">
                           {format311DateTime(req.service_request_open_timestamp) || '—'}
                         </td>
-                        <td className="py-2 px-3 font-mono text-[11px] text-gray-400">
+                        <td className="py-2 px-1.5 font-mono text-[10px] text-gray-400 whitespace-nowrap">
                           {format311DateTime(req.service_request_close_date) || '—'}
                         </td>
-                        <td className="py-2 px-3 text-gray-300 max-w-[150px] truncate" title={req.closure_reason || ''}>
+                        <td className="py-2 px-2 text-gray-300 whitespace-normal break-words max-w-[120px] leading-snug" title={req.closure_reason || ''}>
                           {req.closure_reason || '—'}
                         </td>
-                        <td className="py-2 px-3 text-cyan-300">{req.local_area || '—'}</td>
-                        <td className="py-2 px-3 text-gray-200 max-w-[180px] truncate" title={addrTitleCase}>
+                        <td className="py-2 px-2 text-cyan-300 whitespace-normal break-words max-w-[90px] leading-snug">{req.local_area || '—'}</td>
+                        <td className="py-2 px-2 text-gray-200 whitespace-normal break-words max-w-[130px] leading-snug" title={addrTitleCase}>
                           {addrTitleCase}
                         </td>
-                        <td className="py-2 px-2 text-center">
+                        <td className="py-2 px-1.5 text-center whitespace-nowrap">
                           {hasNav && req.geom ? (
                             <a
                               href={getGoogleNavUrl(req.geom.lat, req.geom.lon)}
@@ -5998,6 +6162,22 @@ function ExploreContent() {
             </span>
           </div>
 
+          {/* 數據說明卡片 (精簡概括段落重點) */}
+          <div className="mb-2 shrink-0 bg-[#141824]/90 border border-rose-900/40 rounded-lg p-2.5 text-[11px] leading-relaxed text-gray-300 shadow-sm">
+            <div className="flex items-center justify-between font-semibold text-rose-300 text-xs mb-1.5">
+              <span className="flex items-center gap-1.5">
+                <AlertTriangle className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+                <span>ICBC 低陸平原車禍數據說明 (2021–2025)</span>
+              </span>
+              <span className="text-[10px] text-gray-400 font-mono">截至 2026/03/31</span>
+            </div>
+            <ul className="list-disc pl-4 space-y-1 text-gray-300 text-[10.5px]">
+              <li><strong className="text-gray-200">案件涵蓋：</strong>包含人員傷亡 (Casualty) 與純財產損失 (PDO) 案件；排除停車場內及涉及靜止車輛之碰撞，單區加總不等同全區總數。</li>
+              <li><strong className="text-gray-200">座標繪製：</strong>路段中間 (Mid-block) 事故取相鄰兩路口中點標繪；市鎮邊界事故計入相鄰兩市；僅收錄具備有效經緯度座標之案件。</li>
+              <li><strong className="text-gray-200">數據特性：</strong>地點由事故當事人自主申報；各年度統計可能因校正或延遲申報微幅變動；2021 年數據受 COVID-19 疫情交通型態變更影響。</li>
+            </ul>
+          </div>
+
           {/* 頂部搜尋列 */}
           <div className="relative mb-2 shrink-0">
             <Search className="w-3.5 h-3.5 text-gray-500 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -6005,7 +6185,7 @@ function ExploreContent() {
               type="text"
               value={crashesSearchQuery}
               onChange={(e) => setCrashesSearchQuery(e.target.value)}
-              placeholder="搜尋車禍發生地點、街角或路段..."
+              placeholder="搜尋車禍發生地點、街角或路段 (支援 St/Street、Ave、49th、E. 等簡寫)..."
               className="w-full bg-[#1b202c] border border-[#2b3345] rounded-lg pl-8 pr-7 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-rose-500 transition-colors"
             />
             {crashesSearchQuery && (
@@ -6037,35 +6217,50 @@ function ExploreContent() {
                   查無符合的車禍地點。
                 </div>
               ) : (
-                filteredCrashes.slice(0, 300).map((c, idx) => (
-                  <div
-                    key={`${c.location}_${idx}`}
-                    onClick={() => {
-                      const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap?.() || (window as any).__godsEyeMapRef?.current;
-                      if (mapInstance && c.lon && c.lat) {
-                        mapInstance.flyTo({
-                          center: [c.lon, c.lat],
-                          zoom: 16.5,
-                          pitch: 30,
-                          essential: true
+                filteredCrashes.slice(0, 300).map((c, idx) => {
+                  const isSelected = selectedCrash?.location === c.location;
+                  return (
+                    <div
+                      key={`${c.location}_${idx}`}
+                      onClick={() => {
+                        setSelectedCrash({
+                          location: c.location,
+                          count: c.count,
+                          lat: c.lat,
+                          lon: c.lon
                         });
-                      }
-                    }}
-                    className="grid grid-cols-12 px-3 py-2.5 items-center hover:bg-rose-500/10 cursor-pointer transition-colors group text-xs"
-                    title="點擊直接在地圖跳轉至該位置"
-                  >
-                    <div className="col-span-9 sm:col-span-10 pr-2">
-                      <span className="font-medium text-gray-200 group-hover:text-rose-300 transition-colors break-words">
-                        {c.location}
-                      </span>
+                        const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap?.() || (window as any).__godsEyeMapRef?.current;
+                        if (mapInstance && c.lon && c.lat) {
+                          mapInstance.flyTo({
+                            center: [c.lon, c.lat],
+                            zoom: 16.5,
+                            pitch: 30,
+                            essential: true
+                          });
+                        }
+                      }}
+                      className={`grid grid-cols-12 px-3 py-2.5 items-center cursor-pointer transition-colors group text-xs ${
+                        isSelected 
+                          ? 'bg-rose-500/20 border-l-2 border-rose-500' 
+                          : 'hover:bg-rose-500/10'
+                      }`}
+                      title="點擊直接在地圖跳轉並標示圓點位置"
+                    >
+                      <div className="col-span-9 sm:col-span-10 pr-2">
+                        <span className={`font-medium transition-colors break-words ${
+                          isSelected ? 'text-rose-200 font-bold' : 'text-gray-200 group-hover:text-rose-300'
+                        }`}>
+                          {c.location}
+                        </span>
+                      </div>
+                      <div className="col-span-3 sm:col-span-2 text-right">
+                        <span className="inline-block px-2 py-0.5 rounded-full font-mono font-bold text-xs bg-rose-950/80 text-rose-300 border border-rose-800/60 shadow-xs">
+                          {c.count}
+                        </span>
+                      </div>
                     </div>
-                    <div className="col-span-3 sm:col-span-2 text-right">
-                      <span className="inline-block px-2 py-0.5 rounded-full font-mono font-bold text-xs bg-rose-950/80 text-rose-300 border border-rose-800/60 shadow-xs">
-                        {c.count}
-                      </span>
-                    </div>
-                  </div>
-                ))
+                  );
+                })
               )}
             </div>
           </div>
@@ -8108,6 +8303,17 @@ function ExploreContent() {
         </div>
         <button
           onClick={() => {
+            if (activeTab === 'crashes' && selectedCrash) {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const mapInstance = (window as any).__godsEyeMapRef?.current?.getMap?.() || (window as any).__godsEyeMapRef?.current;
+              if (mapInstance) {
+                mapInstance.flyTo({
+                  center: [selectedCrash.lon, selectedCrash.lat],
+                  zoom: 16.5,
+                  essential: true
+                });
+              }
+            }
             setExploreOpen(false);
             setSearchTarget(null);
           }}
@@ -8233,13 +8439,138 @@ function ExploreContent() {
         document.body
       )}
 
-      {enlargedAuroraImage && (
+      {/* 太平洋西北即時衛星雲圖全螢幕燈箱視窗 (參照交通攝影機風格) */}
+      {satelliteModalOpen && typeof document !== 'undefined' && createPortal(
+        <div 
+          className="fixed inset-0 z-[99999] bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 pt-16 sm:pt-20 pb-4 animate-in fade-in duration-200 select-none"
+          onClick={() => setSatelliteModalOpen(false)}
+        >
+          <div 
+            className="relative max-w-5xl w-full bg-[#161922] border border-sky-500/40 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[88vh] h-full"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-4 py-3 bg-[#1e2330] border-b border-gray-700/60 shrink-0">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <span className="text-xl">🛰️</span>
+                <div className="flex flex-col min-w-0">
+                  <h4 className="text-sm font-bold text-gray-100 truncate">
+                    NOAA GOES-18 太平洋西北 (PNW) 即時衛星雲圖
+                  </h4>
+                  <div className="flex items-center gap-2 text-[11px] text-gray-400">
+                    <span className="text-sky-400 font-semibold">
+                      {satelliteChannel === 'geocolor' ? 'GeoColor 真實色彩多光譜通道 (1 km)' : 'Band 13 清潔紅外線雲頂亮溫 (2 km)'}
+                    </span>
+                    <span>·</span>
+                    <span className="text-gray-300 font-mono">GOES-West Pacific Northwest</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1.5 shrink-0">
+                {/* 頻道切換 */}
+                <div className="flex items-center gap-1 bg-[#131722] p-0.5 rounded border border-[#242c3b] mr-1">
+                  <button
+                    type="button"
+                    onClick={() => setSatelliteChannel('geocolor')}
+                    className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
+                      satelliteChannel === 'geocolor' ? 'bg-sky-600 text-white font-bold' : 'text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    可見光
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSatelliteChannel('ir')}
+                    className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
+                      satelliteChannel === 'ir' ? 'bg-sky-600 text-white font-bold' : 'text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    紅外線
+                  </button>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setSatelliteRefreshKey(k => k + 1)}
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                  title="重新整理雲圖"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSatelliteZoomLevel(prev => Math.min(prev + 0.25, 2.5))}
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                  title="放大雲圖"
+                >
+                  <ZoomIn className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSatelliteZoomLevel(prev => Math.max(prev - 0.25, 0.75))}
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                  title="縮小雲圖"
+                >
+                  <ZoomOut className="w-4 h-4" />
+                </button>
+                <a
+                  href="https://www.star.nesdis.noaa.gov/GOES/sector.php?sat=G18&sector=pnw"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-sky-400 hover:bg-white/10 transition-colors cursor-pointer"
+                  title="於 NOAA 官方頁面開啟"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setSatelliteModalOpen(false)}
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors ml-1 cursor-pointer"
+                  title="關閉 (Esc)"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Body / Image */}
+            <div className="relative flex-1 bg-black/95 flex items-center justify-center p-3 overflow-hidden min-h-[300px]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={satelliteChannel === 'geocolor'
+                  ? `https://cdn.star.nesdis.noaa.gov/GOES18/ABI/SECTOR/pnw/GEOCOLOR/1200x1200.jpg?t=${satelliteRefreshKey}`
+                  : `https://cdn.star.nesdis.noaa.gov/GOES18/ABI/SECTOR/pnw/13/1200x1200.jpg?t=${satelliteRefreshKey}`}
+                alt="NOAA GOES-18 太平洋西北即時衛星雲圖"
+                style={{ transform: `scale(${satelliteZoomLevel})`, transformOrigin: 'center center' }}
+                className="max-h-[72vh] sm:max-h-[76vh] w-auto max-w-full object-contain rounded-lg shadow-2xl transition-transform duration-200 select-none border border-white/10"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (!target.src.includes('weather.gc.ca')) {
+                    target.src = 'https://weather.gc.ca/data/satellite/goes_wcan_visible_100.jpg';
+                  }
+                }}
+              />
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-4 py-2 bg-[#1a1e29] border-t border-gray-800 flex items-center justify-between text-[11px] text-gray-400 shrink-0">
+              <span>資料來源：NOAA NESDIS STAR 即時氣象衛星 · 每 5-10 分鐘自動更新</span>
+              <span className="text-sky-400 font-mono text-[10.5px]">HD 衛星雲圖</span>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* 極光預測圖全螢幕燈箱視窗 (參照交通攝影機風格透過 Portal 開啟) */}
+      {enlargedAuroraImage && typeof document !== 'undefined' && createPortal(
         <div
-          className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 pt-20 sm:pt-24 pb-6 animate-in fade-in duration-200"
+          className="fixed inset-0 z-[99999] bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 pt-16 sm:pt-20 pb-4 animate-in fade-in duration-200 select-none"
           onClick={() => setEnlargedAuroraImage(null)}
         >
           <div
-            className="relative max-w-4xl w-full bg-[#161922] border border-emerald-500/40 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[85vh]"
+            className="relative max-w-4xl w-full bg-[#161922] border border-emerald-500/40 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[85vh] h-full"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
@@ -8258,11 +8589,27 @@ function ExploreContent() {
                 </div>
               </div>
               <div className="flex items-center gap-1.5 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setAuroraZoomLevel(prev => Math.min(prev + 0.25, 2.5))}
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                  title="放大預測圖"
+                >
+                  <ZoomIn className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAuroraZoomLevel(prev => Math.max(prev - 0.25, 0.75))}
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                  title="縮小預測圖"
+                >
+                  <ZoomOut className="w-4 h-4" />
+                </button>
                 <a
                   href={enlargedAuroraImage.src}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-1.5 rounded-lg text-gray-400 hover:text-emerald-300 hover:bg-white/10 transition-colors"
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-emerald-300 hover:bg-white/10 transition-colors cursor-pointer"
                   title="在新分頁開啟高解析度原圖"
                 >
                   <ExternalLink className="w-4 h-4" />
@@ -8270,7 +8617,7 @@ function ExploreContent() {
                 <button
                   type="button"
                   onClick={() => setEnlargedAuroraImage(null)}
-                  className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors ml-1 cursor-pointer"
                   title="關閉 (Esc)"
                 >
                   <X className="w-4 h-4" />
@@ -8279,12 +8626,13 @@ function ExploreContent() {
             </div>
 
             {/* Modal Body */}
-            <div className="p-3 sm:p-4 flex items-center justify-center bg-black/95 overflow-hidden flex-1 min-h-0">
+            <div className="relative flex-1 bg-black/95 flex items-center justify-center p-3 overflow-hidden min-h-[300px]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={enlargedAuroraImage.src}
                 alt={enlargedAuroraImage.title}
-                className="max-w-full max-h-[62vh] object-contain rounded-lg shadow-2xl border border-white/10"
+                style={{ transform: `scale(${auroraZoomLevel})`, transformOrigin: 'center center' }}
+                className="max-h-[70vh] sm:max-h-[74vh] w-auto max-w-full object-contain rounded-lg shadow-2xl transition-transform duration-200 select-none border border-white/10"
               />
             </div>
 
@@ -8294,7 +8642,8 @@ function ExploreContent() {
               <span className="text-emerald-400 font-mono text-[10.5px]">NOAA SWPC</span>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* 10.7 外部職缺網頁前往確認對話框 */}

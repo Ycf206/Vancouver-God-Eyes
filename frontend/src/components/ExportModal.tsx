@@ -66,7 +66,26 @@ const LAYER_METADATA: Record<string, { label: string; url: string; category: str
   vanWifi: { label: 'VanWiFi 免費無線網路', url: '/api/geojson/road/van_wifi', category: '政府' },
   hospitals: { label: '綜合急診醫院', url: '/api/geojson/road/hospitals', category: '政府' },
   crimeAreas: { label: '罪案發生率熱區', url: '/api/geojson/road/crime_areas', category: '政府' },
-  tideStations: { label: '潮汐水位', url: '/api/tides/stations/geojson', category: '地理' }
+  tideStations: { label: '潮汐水位', url: '/api/tides/stations/geojson', category: '地理' },
+  atm: { label: 'ATM 自動櫃員機', url: '/api/geojson/road/atm', category: '生活' },
+  airports: { label: '溫哥華國際機場 (YVR)', url: '/api/geojson/road/airports', category: '交通' },
+  crashes: { label: '車禍意外熱點統計', url: '/vancouver_crashes.json', category: '道路' },
+  trafficConditions: { label: '即時路況幹道與橋樑', url: '/api/traffic/corridors', category: '道路' },
+  trafficAlerts: { label: '即時交通突發事件', url: '/api/traffic/incidents', category: '道路' },
+  roadClosures: { label: '道路封閉管制', url: '/api/traffic/road-closures', category: '道路' },
+  roadConstruction: { label: '道路施工工程', url: '/api/traffic/construction', category: '道路' },
+  streetLighting: { label: '城市路燈設施', url: '/api/geojson/road/street_lighting', category: '公共事業' },
+  streetLightingConduits: { label: '路燈地下管線', url: '/api/geojson/road/street_lighting_conduits', category: '公共事業' },
+  beachWaterQuality: { label: '海灘泳區水質監測', url: '/api/beach/water-quality', category: '自然' },
+  fireHydrants: { label: '消防栓設施', url: '/api/geojson/road/fire_hydrants', category: '公共事業' },
+  zoningDistricts: { label: '土地分區規劃', url: '/api/geojson/road/zoning_districts', category: '地理' },
+  publicTrees: { label: '街道樹木', url: '/api/geojson/road/public_trees', category: '自然' },
+  museums: { label: '博物館與展館', url: '/api/geojson/road/museums', category: '生活' },
+  garbageCollection: { label: '垃圾清運時程', url: '/api/geojson/road/garbage_collection', category: '生活' },
+  truckRoutes: { label: '指定貨車行駛路線', url: '/api/geojson/road/truck_routes', category: '道路' },
+  railways: { label: '鐵路軌道網絡', url: '/api/geojson/road/railways', category: '交通' },
+  trafficSignals: { label: '交通號誌燈', url: '/api/geojson/road/traffic_signals', category: '道路' },
+  turnRestrictions: { label: '路口轉向限制', url: '/api/geojson/road/turn_restrictions', category: '道路' }
 };
 
 // 匯出地圖圖例圖標與色彩對照表
@@ -125,7 +144,26 @@ const LAYER_LEGEND_MAP: Record<string, { label: string; icon: string; color: str
   vanWifi: { label: 'VanWiFi', icon: '📶', color: '#06b6d4' },
   hospitals: { label: '急診醫院', icon: '🏥', color: '#10b981' },
   crimeAreas: { label: '罪案熱區', icon: '⚠️', color: '#e11d48' },
-  tideStations: { label: '潮汐水位', icon: '🌊', color: '#06b6d4' }
+  tideStations: { label: '潮汐水位', icon: '🌊', color: '#06b6d4' },
+  atm: { label: 'ATM', icon: '🏧', color: '#f59e0b' },
+  airports: { label: '機場', icon: '✈️', color: '#0284c7' },
+  crashes: { label: '車禍熱點', icon: '💥', color: '#e11d48' },
+  trafficConditions: { label: '即時路況', icon: '🚦', color: '#10b981' },
+  trafficAlerts: { label: '交通警報', icon: '⚠️', color: '#f59e0b' },
+  roadClosures: { label: '道路封閉', icon: '🚫', color: '#ef4444' },
+  roadConstruction: { label: '道路工程', icon: '🚧', color: '#ea580c' },
+  streetLighting: { label: '路燈設施', icon: '💡', color: '#fbbf24' },
+  streetLightingConduits: { label: '路燈管線', icon: '⚡', color: '#fbbf24' },
+  beachWaterQuality: { label: '海灘水質', icon: '🏖️', color: '#06b6d4' },
+  fireHydrants: { label: '消防栓', icon: '🚒', color: '#ef4444' },
+  zoningDistricts: { label: '土地分區', icon: '📐', color: '#8b5cf6' },
+  publicTrees: { label: '街道樹木', icon: '🌳', color: '#10b981' },
+  museums: { label: '博物館', icon: '🏛️', color: '#64748b' },
+  garbageCollection: { label: '垃圾清運', icon: '🚛', color: '#f97316' },
+  truckRoutes: { label: '貨車路線', icon: '🚚', color: '#0ea5e9' },
+  railways: { label: '鐵路軌道', icon: '🚆', color: '#6366f1' },
+  trafficSignals: { label: '交通燈', icon: '🚥', color: '#eab308' },
+  turnRestrictions: { label: '轉向限制', icon: '🚷', color: '#e11d48' }
 };
 
 // 統一繪製圖例與水印標註至畫布底部 (支援即時預覽與高畫質匯出)
@@ -445,9 +483,62 @@ export default function ExportModal() {
     if (!meta) return null;
     const apiUrl = getApiUrl();
     try {
-      const res = await fetch(`${apiUrl}${meta.url}`);
+      const fullUrl = meta.url.startsWith('http://') || meta.url.startsWith('https://')
+        ? meta.url
+        : meta.url.startsWith('/api/')
+          ? `${apiUrl}${meta.url}`
+          : meta.url;
+
+      const res = await fetch(fullUrl);
       if (!res.ok) return null;
-      const data = await res.json();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data: any = await res.json();
+
+      // 若回傳為普通陣列 (例如 crashes: [{ location, count, lat, lon }])
+      if (Array.isArray(data)) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const features = data.map((item: any, idx: number) => {
+          const lat = parseFloat(item.lat || item.latitude || 0);
+          const lon = parseFloat(item.lon || item.lng || item.longitude || 0);
+          return {
+            type: 'Feature',
+            id: item.id || `item_${idx}`,
+            geometry: {
+              type: 'Point',
+              coordinates: [lon, lat]
+            },
+            properties: { ...item }
+          };
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }).filter((f: any) => !isNaN(f.geometry.coordinates[0]) && !isNaN(f.geometry.coordinates[1]) && (f.geometry.coordinates[0] !== 0 || f.geometry.coordinates[1] !== 0));
+        return { layerKey, meta, data: { type: 'FeatureCollection', features } };
+      }
+
+      // 若回傳已有 features 陣列
+      if (data && Array.isArray(data.features)) {
+        return { layerKey, meta, data };
+      }
+
+      // 若物件內含 records/items/data 陣列
+      const candidateList = data?.records || data?.items || data?.corridors || data?.incidents || data?.closures || data?.events || [];
+      if (Array.isArray(candidateList) && candidateList.length > 0) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const features = candidateList.map((item: any, idx: number) => {
+          const lat = parseFloat(item.lat || item.latitude || (item.geometry?.coordinates ? item.geometry.coordinates[1] : 0));
+          const lon = parseFloat(item.lon || item.lng || item.longitude || (item.geometry?.coordinates ? item.geometry.coordinates[0] : 0));
+          return {
+            type: 'Feature',
+            id: item.id || `rec_${idx}`,
+            geometry: item.geometry || {
+              type: 'Point',
+              coordinates: [lon, lat]
+            },
+            properties: { ...item }
+          };
+        });
+        return { layerKey, meta, data: { type: 'FeatureCollection', features } };
+      }
+
       return { layerKey, meta, data };
     } catch (e) {
       console.warn(`Fetch error for layer ${layerKey}:`, e);

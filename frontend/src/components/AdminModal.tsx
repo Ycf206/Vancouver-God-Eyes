@@ -131,21 +131,26 @@ export default function AdminModal() {
   const [savingScheduleId, setSavingScheduleId] = useState<string | null>(null);
   const [scheduleSuccessId, setScheduleSuccessId] = useState<string | null>(null);
 
-  // Format admin time using user timezone
+  // Format admin time using user timezone in unified format yyyy-MM-dd hh:mm
   const formatAdminTime = (iso?: string | null) => {
     if (!iso) return '未記錄';
     try {
       const tz = timeZone || 'America/Vancouver';
-      return new Date(iso).toLocaleString('zh-TW', {
+      const d = new Date(iso);
+      if (isNaN(d.getTime())) return iso;
+
+      const parts = new Intl.DateTimeFormat('en-CA', {
         timeZone: tz,
-        hour12: timeFormat === '12h',
         year: 'numeric',
         month: '2-digit',
         day: '2-digit',
         hour: '2-digit',
         minute: '2-digit',
-        second: '2-digit'
-      });
+        hour12: false
+      }).formatToParts(d);
+
+      const getPart = (type: string) => parts.find(p => p.type === type)?.value || '';
+      return `${getPart('year')}-${getPart('month')}-${getPart('day')} ${getPart('hour')}:${getPart('minute')}`;
     } catch {
       return iso;
     }

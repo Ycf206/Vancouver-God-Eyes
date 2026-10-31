@@ -224,6 +224,8 @@ export interface UIState {
   setFlightScheduleOpen: (open: boolean) => void;
   selectedFlightId: string | null;
   setSelectedFlightId: (id: string | null) => void;
+  selectedCrash: { location: string; count: number; lat: number; lon: number } | null;
+  setSelectedCrash: (crash: { location: string; count: number; lat: number; lon: number } | null) => void;
   // 11.3 獨立圖層開關: 顯示或隱藏在圖層控制中界面中
   hiddenLayersInPanel: Record<string, boolean>;
   toggleLayerPanelHidden: (layerKey: string) => void;
@@ -635,6 +637,8 @@ export const useUIStore = create<UIState>()(
       setFlightScheduleOpen: (open) => set({ isFlightScheduleOpen: open }),
       selectedFlightId: null,
       setSelectedFlightId: (id) => set({ selectedFlightId: id }),
+      selectedCrash: null,
+      setSelectedCrash: (crash) => set({ selectedCrash: crash }),
       hiddenLayersInPanel: {},
       toggleLayerPanelHidden: (layerKey) =>
         set((state) => ({

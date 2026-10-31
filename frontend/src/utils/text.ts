@@ -28,3 +28,29 @@ export function formatTitleCase(str: string | null | undefined): string {
 
   return s.replace(/(\d+)(st|nd|rd|th)\b/gi, (_m, num, suf) => `${num}${suf.toLowerCase()}`);
 }
+
+/**
+ * 統一格式化北美電話號碼為 (XXX) XXX-XXXX
+ */
+export function formatPhoneNumber(phone: string | number | null | undefined): string {
+  if (!phone) return '';
+  const str = String(phone).trim();
+  if (!str) return '';
+  
+  const digits = str.replace(/\D/g, '');
+  if (digits.length === 10) {
+    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+  }
+  if (digits.length === 11 && digits.startsWith('1')) {
+    return `(${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7)}`;
+  }
+  if (digits.length === 7) {
+    return `(604) ${digits.slice(0, 3)}-${digits.slice(3)}`;
+  }
+  if (digits.length > 10) {
+    const main10 = digits.startsWith('1') ? digits.slice(1, 11) : digits.slice(0, 10);
+    const ext = digits.startsWith('1') ? digits.slice(11) : digits.slice(10);
+    return `(${main10.slice(0, 3)}) ${main10.slice(3, 6)}-${main10.slice(6)}${ext ? ` ext. ${ext}` : ''}`;
+  }
+  return str;
+}
