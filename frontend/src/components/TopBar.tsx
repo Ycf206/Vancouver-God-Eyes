@@ -244,9 +244,11 @@ export default function TopBar() {
 
     setIsLoading(true);
     const apiUrl = getApiUrl();
+    const controller = new AbortController();
     
+    // 迅速呈現搜尋建議 (Debounce 降至 120ms 並搭配 AbortController 避免慢速競態)
     const handler = setTimeout(() => {
-      fetch(`${apiUrl}/api/search?q=${encodeURIComponent(trimmed)}`)
+      fetch(`${apiUrl}/api/search?q=${encodeURIComponent(trimmed)}`, { signal: controller.signal })
         .then(res => res.json())
         .then(data => {
           const list = Array.isArray(data) ? data : (data.results || []);
@@ -257,12 +259,16 @@ export default function TopBar() {
           setIsOpen(true);
         })
         .catch(err => {
+          if (err.name === 'AbortError') return;
           console.error('Search error:', err);
           setIsLoading(false);
         });
-    }, 300);
+    }, 120);
 
-    return () => clearTimeout(handler);
+    return () => {
+      clearTimeout(handler);
+      controller.abort();
+    };
   }, [query]);
 
   const handleSelect = (target: SearchTarget) => {
@@ -465,16 +471,9 @@ export default function TopBar() {
                 </div>
 
                 <div className="pt-1.5 border-t border-[#2a2f3d] flex items-center justify-between text-[10.5px] text-gray-400">
-                  <span className="truncate pr-1">
+                  <span className="truncate">
                     {selectedFilterCategoryIds.length === 0 ? '目前搜尋：全部圖層' : `已限定 ${selectedFilterCategoryIds.length} 個類別`}
                   </span>
-                  <button
-                    type="button"
-                    onClick={() => setFilterPopoverOpen(false)}
-                    className="px-2 py-0.5 rounded bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-semibold cursor-pointer shrink-0"
-                  >
-                    完成
-                  </button>
                 </div>
               </div>
             )}

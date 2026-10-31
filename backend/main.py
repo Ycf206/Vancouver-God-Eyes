@@ -66,6 +66,30 @@ async def verify_admin_api_token(request: Request, call_next):
                 )
     return await call_next(request)
 
+@app.middleware("http")
+async def system_error_logging_middleware(request: Request, call_next):
+    try:
+        response = await call_next(request)
+        if response.status_code >= 500:
+            system_log_service.add_system_log(
+                level="ERROR",
+                file="backend/main.py",
+                action="HTTP_500_ERROR",
+                message=f"HTTP {response.status_code} 錯誤：{request.method} {request.url.path}",
+                details={"method": request.method, "path": request.url.path, "status_code": response.status_code}
+            )
+        return response
+    except Exception as exc:
+        import traceback
+        system_log_service.add_system_log(
+            level="ERROR",
+            file="backend/main.py",
+            action="UNHANDLED_EXCEPTION",
+            message=f"未捕捉例外狀況：{request.method} {request.url.path} - {str(exc)}",
+            details={"method": request.method, "path": request.url.path, "error": str(exc), "traceback": traceback.format_exc()}
+        )
+        raise exc
+
 # WebSocket connection manager
 active_connections: list[WebSocket] = []
 stop_arrivals = {}
@@ -880,6 +904,16 @@ async def broadcast_maritime_vessels():
 
 @app.on_event("startup")
 async def startup_event():
+    try:
+        system_log_service.add_system_log(
+            level="INFO",
+            file="backend/main.py",
+            action="SERVER_STARTUP",
+            message="Vancouver God's Eye 後端系統啟動成功，背景資料同步與 WebSocket 廣播任務就緒",
+            details={"environment": "production", "tasks": ["translink", "bcferries", "skytrain", "aisstream", "maritime"]}
+        )
+    except Exception:
+        pass
     asyncio.create_task(fetch_translink_realtime())
     asyncio.create_task(fetch_bcferries_realtime())
     asyncio.create_task(fetch_translink_trip_updates())
@@ -1914,6 +1948,7 @@ FACILITY_SEARCH_CONFIGS = [
     ("impark", "ImPark 停車場", "🅿️", "impark", 16),
     ("canada_post", "Canada Post", "📮", "canadaPost", 16),
     ("fedex", "FedEx", "📦", "canadaPost", 16),
+    ("purolator", "Purolator", "📦", "canadaPost", 16),
     ("atm", "銀行", "🏦", "atm", 16),
     ("traffic_turn_restrictions", "轉向限制", "🚫", "turnRestrictions", 17),
     ("traffic_signals", "交通燈", "🚦", "trafficSignals", 17),
@@ -1997,6 +2032,8 @@ def get_search_facilities_items():
                         title = f"{bldg} ({fname})"
                     else:
                         title = fname
+                elif ftype == "purolator":
+                    title = props.get("locationName") or props.get("name") or "Purolator"
                 elif ftype == "atm":
                     title = props.get("bank_full_name") or raw_name or "銀行"
                 elif ftype == "traffic_turn_restrictions":
@@ -2025,6 +2062,7 @@ def get_search_facilities_items():
                 category_aliases = {
                     "canada_post": ["canada post", "郵寄", "郵局", "post office", "canadapost", "寄件", "包裹", "post", "courier"],
                     "fedex": ["fedex", "郵寄", "快遞", "courier", "聯邦快遞", "寄件", "自取包裹", "post"],
+                    "purolator": ["purolator", "郵寄", "快遞", "courier", "寄件", "自取包裹", "post"],
                     "atm": ["銀行", "atm", "bank", "櫃員機", "自動櫃員機"],
                     "fuel": ["油站", "加油站", "gas station", "fuel", "petrol"],
                     "tesla": ["tesla", "特斯拉", "超級充電", "supercharger"],
@@ -2139,6 +2177,7 @@ def get_search_facilities_items():
     return _search_facilities_cache
 
 _search_query_cache = {}
+_curated_points_synced = False
 
 @app.get("/api/search")
 def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
@@ -2146,6 +2185,7 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
     全圖層項目搜尋 (Search Layer Items):
     關鍵字/分詞模糊比對：支援例如 "cypress 16" 命中 "Cypress & 16th"
     """
+    global _curated_points_synced
     q_clean = q.strip().lower()
     if not q_clean:
         return {"results": []}
@@ -2156,11 +2196,13 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
     q_tokens = [t for t in normalize_search_str(q_clean).split() if t]
     results = []
 
-    # 確保點狀圖層資料庫同步，供搜尋即時定位
-    try:
-        sync_curated_point_types(db)
-    except Exception as e:
-        print(f"Error ensuring curated sync in search: {e}")
+    # 確保點狀圖層資料庫同步（僅初次檢查，避免每次即時搜尋重複觸發 DB 查詢）
+    if not _curated_points_synced:
+        try:
+            sync_curated_point_types(db)
+            _curated_points_synced = True
+        except Exception as e:
+            print(f"Error ensuring curated sync in search: {e}")
 
     # 0. 搜尋大眾運輸巴士路線 (Transit Bus Routes)
     try:
@@ -2349,7 +2391,7 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
     try:
         fac_candidates = []
         is_category_query = q_clean in (
-            "canada post", "post", "郵寄", "郵局", "fedex", "快遞", "atm", "銀行", "bank",
+            "canada post", "post", "郵寄", "郵局", "fedex", "purolator", "快遞", "atm", "銀行", "bank",
             "油站", "gas", "fuel", "tesla", "ev", "charging", "充電", "充電站", "共享汽車",
             "car sharing", "evo", "modo", "共享單車", "mobi", "單車架", "廁所", "洗手間",
             "公共廁所", "washroom", "飲水器", "學校", "school", "圖書館", "library",
@@ -2360,7 +2402,7 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
             if q_clean in fac["search_text"]:
                 score = 30
                 # 類別精準命中給予最高權重
-                if fac["category"] in ("canada_post", "fedex") and q_clean in ("canada post", "post", "郵寄", "郵局", "fedex", "快遞"):
+                if fac["category"] in ("canada_post", "fedex", "purolator") and q_clean in ("canada post", "post", "郵寄", "郵局", "fedex", "purolator", "快遞"):
                     score = 95
                 elif q_clean == fac["badge"].lower() or q_clean == fac["category"]:
                     score = 90
@@ -4129,6 +4171,13 @@ def trigger_admin_sync(payload: dict = Body(...)):
                 "timestamp": now_iso
             }
         except Exception as e:
+            system_log_service.add_system_log(
+                level="ERROR",
+                file="backend/main.py",
+                action="SYNC_ERROR",
+                message=f"數據源同步異常: {str(e)}",
+                details={"error": str(e)}
+            )
             return {"status": "error", "error": str(e)}
             
     return {"status": "error", "message": "找不到配置檔案"}
@@ -4279,6 +4328,13 @@ def update_admin_schedule(payload: dict = Body(...)):
                 return {"status": "success", "source": updated_src, "detail": detail_extra}
             return {"status": "error", "message": "找不到指定的數據源 ID"}
         except Exception as e:
+            system_log_service.add_system_log(
+                level="ERROR",
+                file="backend/main.py",
+                action="SCHEDULE_UPDATE_ERROR",
+                message=f"排程修改失敗: {str(e)}",
+                details={"error": str(e)}
+            )
             return {"status": "error", "error": str(e)}
             
     return {"status": "error", "message": "配置檔案不存在"}
@@ -4300,6 +4356,13 @@ def clear_admin_logs():
                 json.dump(cfg, f, ensure_ascii=False, indent=2)
             return {"status": "success", "message": "日誌已清空"}
         except Exception as e:
+            system_log_service.add_system_log(
+                level="ERROR",
+                file="backend/main.py",
+                action="CLEAR_LOGS_ERROR",
+                message=f"清空日誌失敗: {str(e)}",
+                details={"error": str(e)}
+            )
             return {"status": "error", "error": str(e)}
     return {"status": "error", "message": "配置檔案不存在"}
 
@@ -4386,6 +4449,13 @@ def toggle_source_panel_visibility(payload: dict = Body(...)):
                 return {"status": "success", "source_id": source_id, "hidden_in_layer_panel": bool(hidden)}
             return {"status": "error", "message": f"找不到數據源 {source_id}"}
         except Exception as e:
+            system_log_service.add_system_log(
+                level="ERROR",
+                file="backend/main.py",
+                action="LAYER_TOGGLE_ERROR",
+                message=f"更新圖層隱藏狀態失敗: {str(e)}",
+                details={"source_id": source_id, "error": str(e)}
+            )
             return {"status": "error", "error": str(e)}
     return {"status": "error", "message": "配置檔案不存在"}
 

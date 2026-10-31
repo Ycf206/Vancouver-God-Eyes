@@ -14,7 +14,7 @@ import { Landmark,
 } from 'lucide-react';
 import { useUIStore, ExploreTabType } from '@/store/useUIStore';
 import { getApiUrl } from '@/utils/api';
-import { formatShipEta, formatTimePreference, formatTimeRange, formatDateTime } from '@/utils/time';
+import { formatShipEta, formatTimePreference, formatTimeRange, formatDateTime, formatDateOnly, formatTimeOnly } from '@/utils/time';
 import skytrainStationsData from '@/data/skytrainStations.json';
 import snappedCorridorsData from '@/data/snapped_corridors.json';
 
@@ -1679,8 +1679,7 @@ function ExploreContent() {
 
   const formatRadarTime = (ts: number) => {
     if (!ts) return '--:--';
-    const d = new Date(ts * 1000);
-    const timeStr = d.toLocaleTimeString('zh-TW', { hour12: false, hour: '2-digit', minute: '2-digit', timeZone: 'America/Vancouver' });
+    const timeStr = formatTimeOnly(ts * 1000, timeFormat, timeZone);
     const nowTs = Math.floor(Date.now() / 1000);
     const diffMins = Math.round((ts - nowTs) / 60);
     if (Math.abs(diffMins) <= 5) {
@@ -2579,7 +2578,7 @@ function ExploreContent() {
     if (diffHr < 24) return `${diffHr} 小時前`;
     const diffDay = Math.floor(diffHr / 24);
     if (diffDay < 7) return `${diffDay} 天前`;
-    return new Date(ts).toLocaleDateString('zh-HK', { month: 'numeric', day: 'numeric' });
+    return formatDateOnly(ts, timeZone);
   };
 
   // Handle Cargo Ship click
@@ -4990,14 +4989,7 @@ function ExploreContent() {
                       try {
                         const d = new Date(auroraData.latest.time_tag.endsWith('Z') ? auroraData.latest.time_tag : auroraData.latest.time_tag + 'Z');
                         if (!isNaN(d.getTime())) {
-                          return d.toLocaleString('zh-TW', {
-                            timeZone,
-                            month: '2-digit',
-                            day: '2-digit',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            hour12: timeFormat === '12h'
-                          });
+                          return formatDateTime(d, timeFormat, timeZone);
                         }
                       } catch {}
                       return auroraData.latest.time_tag.replace('T', ' ');

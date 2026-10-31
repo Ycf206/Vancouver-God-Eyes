@@ -8,7 +8,7 @@ import Map, { NavigationControl, Marker, Popup, MapRef, Source, Layer } from 're
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useUIStore } from '@/store/useUIStore';
 import { getApiUrl, getWsUrl } from '@/utils/api';
-import { formatTimePreference, formatShipEta, formatTimeRange, formatOpeningHours, formatConstructionSchedule, formatDateTime } from '@/utils/time';
+import { formatTimePreference, formatShipEta, formatTimeRange, formatOpeningHours, formatConstructionSchedule, formatDateTime, formatDateOnly, formatTimeOnly } from '@/utils/time';
 import FacilityWeeklyHoursSchedule from '@/components/WeeklyHoursSchedule';
 import { formatTitleCase, formatPhoneNumber } from '@/utils/text';
 import { getSkytrainStationMapUrls } from '@/utils/skytrainMaps';
@@ -660,9 +660,44 @@ export default function AppMap() {
     canadaPost: true,
     fedex: true,
     ups: false,
-    purolator: false,
+    purolator: true,
     dhl: false,
   });
+  const [isLocating, setIsLocating] = useState(false);
+
+  const handleGeolocate = useCallback(() => {
+    if (typeof window === 'undefined' || !navigator.geolocation) {
+      alert('您的瀏覽器不支援地理定位功能');
+      return;
+    }
+    setIsLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
+        setUserLocation({
+          address: `GPS 當刻位置 (${lat.toFixed(4)}, ${lon.toFixed(4)})`,
+          displayName: 'GPS 當刻位置',
+          lat,
+          lon,
+          confirmed: true,
+        });
+        mapRef.current?.flyTo({
+          center: [lon, lat],
+          zoom: 15.5,
+          duration: 1200,
+          essential: true
+        });
+        setIsLocating(false);
+      },
+      (err) => {
+        console.warn('Geolocation error:', err);
+        alert('無法取得您的位置，請確認已在瀏覽器中允許定位權限。');
+        setIsLocating(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 }
+    );
+  }, [setUserLocation]);
   const [isExploreSearchActive, setIsExploreSearchActive] = useState(false);
   const [exploreSearchInput, setExploreSearchInput] = useState('');
   const [bikewaysLegendOpen, setBikewaysLegendOpen] = useState(true);
@@ -1123,6 +1158,7 @@ export default function AppMap() {
         else if (type === 'community_centres' && !layers.communityCentres) facilityClosed = true;
         else if (type === 'canada_post' && (!layers.canadaPost || !courierFilter.canadaPost)) facilityClosed = true;
         else if (type === 'fedex' && (!layers.canadaPost || !courierFilter.fedex)) facilityClosed = true;
+        else if (type === 'purolator' && (!layers.canadaPost || !courierFilter.purolator)) facilityClosed = true;
         else if (type === 'atm' && !layers.atm) facilityClosed = true;
         else if (type === 'hospitals' && !layers.hospitals) facilityClosed = true;
         else if (type === 'parks' && !layers.parks) facilityClosed = true;
@@ -2790,6 +2826,7 @@ export default function AppMap() {
     if (layers.canadaPost) {
       style.sources['canada-post'] = { type: 'geojson', data: '/vancouver_canada_post.geojson' };
       style.sources['fedex'] = { type: 'geojson', data: '/vancouver_fedex.geojson' };
+      style.sources['purolator'] = { type: 'geojson', data: '/vancouver_purolator.geojson' };
     }
     if (layers.atm) {
       style.sources['atm'] = { type: 'geojson', data: '/vancouver_atm.geojson' };
@@ -4190,6 +4227,36 @@ export default function AppMap() {
         minzoom: 13,
         layout: {
           'text-field': 'FX',
+          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 8, 15, 10, 17, 12],
+          'text-allow-overlap': true,
+          'text-ignore-placement': true
+        },
+        paint: {
+          'text-color': '#ffffff'
+        }
+      });
+    }
+
+    if (layers.canadaPost && courierFilter.purolator) {
+      style.layers.push({
+        id: 'purolator-layer',
+        type: 'circle',
+        source: 'purolator',
+        paint: {
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 3.5, 14, 6.5, 17, 9.5],
+          'circle-color': '#00529B',
+          'circle-stroke-width': 1.5,
+          'circle-stroke-color': '#ffffff'
+        }
+      });
+      style.layers.push({
+        id: 'purolator-symbol-layer',
+        type: 'symbol',
+        source: 'purolator',
+        minzoom: 13,
+        layout: {
+          'text-field': 'P',
           'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
           'text-size': ['interpolate', ['linear'], ['zoom'], 13, 8, 15, 10, 17, 12],
           'text-allow-overlap': true,
@@ -6318,6 +6385,8 @@ export default function AppMap() {
           'canada-post-symbol-layer',
           'fedex-layer',
           'fedex-symbol-layer',
+          'purolator-layer',
+          'purolator-symbol-layer',
           'atm-layer',
           'atm-symbol-layer',
           'truck-routes-restriction-layer',
@@ -6710,6 +6779,7 @@ export default function AppMap() {
             layerId.startsWith('community-centres') ||
             layerId.startsWith('canada-post') ||
             layerId.startsWith('fedex') ||
+            layerId.startsWith('purolator') ||
             layerId.startsWith('atm') ||
             layerId.startsWith('hospitals') ||
             layerId.startsWith('parks') ||
@@ -6760,6 +6830,7 @@ export default function AppMap() {
 
             let facilityType = props.facility_type || derivedFacilityType || 'fac';
             if (layerId.startsWith('fedex')) facilityType = 'fedex';
+            else if (layerId.startsWith('purolator')) facilityType = 'purolator';
             else if (isImpark) facilityType = 'impark';
             else if (isMuseums) facilityType = 'museums';
             else if (isGarbage) facilityType = 'garbage_collection';
@@ -8878,7 +8949,8 @@ export default function AppMap() {
                   if (t === 'aed') return { label: 'AED 去顫器', bg: 'bg-red-600 text-white' };
                   if (t === 'community_centres') return { label: '社區中心', bg: 'bg-violet-600 text-white' };
                   if (t === 'canada_post') return { label: '郵寄', bg: 'bg-[#E31837] text-white' };
-                  if (t === 'fedex') return { label: 'FedEx', bg: 'bg-[#4D148C] text-white' };
+                  if (t === 'fedex') return { label: '郵寄', bg: 'bg-[#4D148C] text-white' };
+                  if (t === 'purolator') return { label: '郵寄', bg: 'bg-[#00529B] text-white' };
                   if (t === 'atm') return { label: '銀行', bg: 'bg-amber-500 text-white' };
                   if (t === 'public_art') return { label: '公共藝術', bg: 'bg-fuchsia-600 text-white' };
                   if (t === 'police') return { label: '警察', bg: 'bg-blue-600 text-white' };
@@ -8970,6 +9042,10 @@ export default function AppMap() {
                       if (comp) return (nm && !comp.toLowerCase().includes(nm.toLowerCase())) ? `${comp} (${nm})` : comp;
                       if (bldg) return (nm && !bldg.toLowerCase().includes(nm.toLowerCase())) ? `${bldg} (${nm})` : bldg;
                       return nm || 'FedEx';
+                    }
+                    if (selectedFacility.facility_type === 'purolator') {
+                      const p = selectedFacility.properties || {};
+                      return p.locationName || p.name || selectedFacility.name || 'Purolator';
                     }
                     if (selectedFacility.facility_type === 'ski_resort' || selectedFacility.facility_type === 'swob_station' || selectedFacility.facility_type === 'weather_station' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hydrometric_station') {
                       return selectedFacility.properties?.english_name || (selectedFacility as any).english_name || selectedFacility.name;
@@ -9090,6 +9166,10 @@ export default function AppMap() {
                       if (bldg) return (nm && !bldg.toLowerCase().includes(nm.toLowerCase())) ? `${bldg} (${nm})` : bldg;
                       return nm || 'FedEx';
                     }
+                    if (selectedFacility.facility_type === 'purolator') {
+                      const p = selectedFacility.properties || {};
+                      return p.locationName || p.name || selectedFacility.name || 'Purolator';
+                    }
                     if (selectedFacility.facility_type === 'ski_resort' || selectedFacility.facility_type === 'swob_station' || selectedFacility.facility_type === 'weather_station' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hydrometric_station') {
                       return selectedFacility.properties?.english_name || (selectedFacility as any).english_name || selectedFacility.name;
                     }
@@ -9174,7 +9254,7 @@ export default function AppMap() {
                         <h3 className="font-bold text-gray-900 text-sm leading-snug break-words">
                           {popupTitle}
                         </h3>
-                        {(selectedFacility.local_area || selectedFacility.facility_type === 'job' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'motorcycle_parking' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'canada_post' || selectedFacility.facility_type === 'fedex' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'impark' || selectedFacility.facility_type === 'ski_resort' ||
+                        {(selectedFacility.local_area || selectedFacility.facility_type === 'job' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'motorcycle_parking' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'canada_post' || selectedFacility.facility_type === 'fedex' || selectedFacility.facility_type === 'purolator' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'impark' || selectedFacility.facility_type === 'ski_resort' ||
                   selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'truck_routes_restriction' || selectedFacility.facility_type === 'traffic_signals' || selectedFacility.facility_type === 'turn_restrictions') && (
                           <span className="text-[11px] text-gray-400 block leading-snug break-words">
                             {(() => {
@@ -9232,6 +9312,16 @@ export default function AppMap() {
                               if (selectedFacility.facility_type === 'community_centres') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'canada_post') return formatTitleCase(selectedFacility.properties?.postaladdress || selectedFacility.local_area || 'Vancouver, BC');
                               if (selectedFacility.facility_type === 'fedex') return formatTitleCase(selectedFacility.properties?.address?.line1 || selectedFacility.properties?.address_line1 || selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC');
+                              if (selectedFacility.facility_type === 'purolator') {
+                                const p = selectedFacility.properties || {};
+                                const addr = (typeof p.address === 'object' && p.address !== null) ? p.address : p;
+                                const streetParts = [addr.streetNumber, addr.streetName, addr.streetType].filter(Boolean).join(' ');
+                                const unit = addr.unitSuiteApt ? ` #${addr.unitSuiteApt}` : '';
+                                const streetPart = streetParts ? `${streetParts}${unit}` : '';
+                                const provPostal = [addr.provinceCode, addr.postalCode].filter(Boolean).join(' ');
+                                const parts = [streetPart, addr.city, addr.countryCode, provPostal].filter(Boolean);
+                                return formatTitleCase(parts.join(', ') || selectedFacility.local_area || 'Vancouver, BC');
+                              }
                               if (selectedFacility.facility_type === 'atm') return selectedFacility.properties?.address ? `${selectedFacility.properties.address}, Vancouver, BC` : 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'museums') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'garbage_collection') return selectedFacility.properties?.zone_code || selectedFacility.local_area || '';
@@ -10782,7 +10872,7 @@ export default function AppMap() {
                 const props = selectedFacility.properties || {};
                 const facilityTypeEn = props.facilitytypeen || 'Retail Postal Outlet';
                 const openingDate = props.openingdate;
-                const formattedDate = openingDate ? new Date(Number(openingDate)).toLocaleDateString('zh-TW', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '-') : null;
+                const formattedDate = openingDate ? formatDateOnly(Number(openingDate), timeZone) : null;
 
                 const sched = props.schedule || {};
                 const days = [
@@ -10848,7 +10938,7 @@ export default function AppMap() {
                       )}
                     </div>
 
-                    {/* 4.7 查看 Canada Post 其他分店 (箭頭在尾端) */}
+                    {/* 7.1 前往 Canada Post 分店資料網頁 (箭頭在尾端) */}
                     <div className="pt-0.5">
                       <a
                         href="https://www.canadapost-postescanada.ca/cpc/en/tools/find-a-post-office.page?location=vancouver"
@@ -10856,7 +10946,7 @@ export default function AppMap() {
                         rel="noopener noreferrer"
                         className="w-full py-2 px-3 rounded-lg bg-[#E31837] hover:bg-[#c4142e] text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm cursor-pointer"
                       >
-                        <span>查看 Canada Post 其他分店</span>
+                        <span>前往 Canada Post 分店資料網頁</span>
                         <ExternalLink className="w-3.5 h-3.5" />
                       </a>
                     </div>
@@ -10917,7 +11007,7 @@ export default function AppMap() {
                   }
                 }
 
-                // 額外服務 c_additionalServices
+                // 站點服務 c_additionalServices
                 const additionalServices: string[] = props.c_additionalServices || rawItem.c_additionalServices || props.additional_services || [];
 
                 // 最大重量 & 最少重量
@@ -10956,9 +11046,9 @@ export default function AppMap() {
 
                 return (
                   <div className="flex flex-col gap-2.5 text-xs">
-                    {/* 10.1.5 副標題下方淡紫色區塊 */}
+                    {/* 4.2 副標題下方淡紫色區塊 (文字與 Canada Post 紅色區塊相同) */}
                     <div className="bg-[#4D148C]/10 p-2.5 rounded-lg border border-[#4D148C]/30 text-[#6B21A8] font-medium text-[11px] leading-relaxed">
-                      提示: 如要取件, 請確保攜帶政府發出的有效身份證明文件 (例如: 駕照, 護照等)
+                      自取包裹請攜帶政府簽發之有效相片證件及提領通知單，以便現場快速核對核發。
                     </div>
 
                     {/* 10.1.6 灰色資料區塊 (依照圖 4 規範) */}
@@ -10976,16 +11066,16 @@ export default function AppMap() {
                       {/* (分隔線) */}
                       <div className="w-full h-px bg-gray-200/80"></div>
 
-                      {/* 站點取件 */}
+                      {/* 4.1 站點取件 */}
                       <div className="flex items-center justify-between text-gray-700">
                         <span className="text-gray-500 font-medium">站點取件</span>
-                        <span className="font-semibold text-gray-900">{locatorPickup ? '支援' : '不支援'}</span>
+                        <span className="font-semibold text-gray-900">{locatorPickup ? '是' : '否'}</span>
                       </div>
 
-                      {/* 站點投遞 c_locatorDropoff */}
+                      {/* 4.1 站點投遞 c_locatorDropoff */}
                       <div className="flex items-center justify-between text-gray-700">
                         <span className="text-gray-500 font-medium">站點投遞</span>
-                        <span className="font-semibold text-gray-900">{locatorDropoff ? '支援' : '不支援'}</span>
+                        <span className="font-semibold text-gray-900">{locatorDropoff ? '是' : '否'}</span>
                       </div>
 
                       {/* 最後一般投遞時間 */}
@@ -11004,10 +11094,10 @@ export default function AppMap() {
                         </div>
                       )}
 
-                      {/* 額外服務 c_additionalServices */}
+                      {/* 4.3 站點服務 c_additionalServices */}
                       {additionalServices && additionalServices.length > 0 && (
                         <div className="flex flex-col gap-1 pt-0.5">
-                          <span className="text-gray-500 font-medium">額外服務</span>
+                          <span className="text-gray-500 font-medium">站點服務</span>
                           <div className="flex flex-wrap gap-1">
                             {additionalServices.map((srv: string, idx: number) => (
                               <span key={idx} className="px-1.5 py-0.5 rounded bg-purple-100 text-purple-800 text-[10px]">
@@ -11104,6 +11194,343 @@ export default function AppMap() {
                         className="w-full py-2 px-3 rounded-lg bg-[#4D148C] hover:bg-[#3b0f6c] text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm cursor-pointer"
                       >
                         <span>前往 FedEx 分店資料網頁</span>
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Purolator (加拿大普羅快遞分店據點) Details */}
+              {selectedFacility.facility_type === 'purolator' && (() => {
+                const props = selectedFacility.properties || {};
+
+                // 營業時間 (週一至週日，對應 openMon/closeMon, openTue/closeTue ...)
+                const purolatorDays = [
+                  { dayKey: 'Monday', openKey: 'openMon', closeKey: 'closeMon' },
+                  { dayKey: 'Tuesday', openKey: 'openTue', closeKey: 'closeTue' },
+                  { dayKey: 'Wednesday', openKey: 'openWed', closeKey: 'closeWed' },
+                  { dayKey: 'Thursday', openKey: 'openThu', closeKey: 'closeThu' },
+                  { dayKey: 'Friday', openKey: 'openFri', closeKey: 'closeFri' },
+                  { dayKey: 'Saturday', openKey: 'openSat', closeKey: 'closeSat' },
+                  { dayKey: 'Sunday', openKey: 'openSun', closeKey: 'closeSun' },
+                ];
+
+                const purolatorHoursMap: Record<string, string> = {};
+                let hasHoursData = false;
+                for (const { dayKey, openKey, closeKey } of purolatorDays) {
+                  const o = props[openKey];
+                  const c = props[closeKey];
+                  if (o && c && o !== 'null' && c !== 'null' && o !== '' && c !== '') {
+                    hasHoursData = true;
+                    const s = String(o).slice(0, 5);
+                    const e = String(c).slice(0, 5);
+                    purolatorHoursMap[dayKey] = formatTimeRange(`${s} - ${e}`, timeFormat);
+                  } else {
+                    purolatorHoursMap[dayKey] = '休息';
+                  }
+                }
+
+                // 24小時營業 location24By7
+                const is24h = props.location24By7 != null && props.location24By7 !== '' && props.location24By7 !== 'null';
+                const is24hVal = String(props.location24By7).toLowerCase() === 'true';
+
+                // 營運日期 activationDate
+                const actDate = props.activationDate && props.activationDate !== 'null' ? formatDateOnly(props.activationDate, timeZone) : '';
+
+                // 站點取件 holdForPickup
+                const hasHoldForPickup = props.holdForPickup != null && props.holdForPickup !== '' && props.holdForPickup !== 'null';
+                const holdForPickupVal = String(props.holdForPickup).toLowerCase() === 'true';
+
+                // 站點投遞 dropOff
+                const hasDropOff = props.dropOff != null && props.dropOff !== '' && props.dropOff !== 'null';
+                const dropOffVal = String(props.dropOff).toLowerCase() === 'true';
+
+                // 最後平郵投遞時間 dropOffWeekDayGndDom (本地), dropOffWeekDayGndUS (美國)
+                const gndDom = props.dropOffWeekDayGndDom && props.dropOffWeekDayGndDom !== 'null' ? formatTimePreference(props.dropOffWeekDayGndDom, timeFormat) : '';
+                const gndUS = props.dropOffWeekDayGndUS && props.dropOffWeekDayGndUS !== 'null' ? formatTimePreference(props.dropOffWeekDayGndUS, timeFormat) : '';
+
+                // 最後空郵投遞時間 dropOffWeekDayAirDom (本地), dropOffWeekDayAirUS (美國), dropOffWeekDayAirIntl (國際)
+                const airDom = props.dropOffWeekDayAirDom && props.dropOffWeekDayAirDom !== 'null' ? formatTimePreference(props.dropOffWeekDayAirDom, timeFormat) : '';
+                const airUS = props.dropOffWeekDayAirUS && props.dropOffWeekDayAirUS !== 'null' ? formatTimePreference(props.dropOffWeekDayAirUS, timeFormat) : '';
+                const airIntl = props.dropOffWeekDayAirIntl && props.dropOffWeekDayAirIntl !== 'null' ? formatTimePreference(props.dropOffWeekDayAirIntl, timeFormat) : '';
+
+                // 站點投遞箱 dropBoxesOnsitePurolator
+                const hasDropBoxes = props.dropBoxesOnsitePurolator != null && props.dropBoxesOnsitePurolator !== '' && props.dropBoxesOnsitePurolator !== 'null';
+                const dropBoxesVal = String(props.dropBoxesOnsitePurolator).toLowerCase() === 'true';
+
+                // 站點服務
+                const srvBadges: string[] = [];
+                if (String(props.suppliesavailable).toLowerCase() === 'true') srvBadges.push('包裝耗材');
+                if (String(props.additionalHandling).toLowerCase() === 'true') srvBadges.push('額外裝卸');
+                if (String(props.parcelLockersOnsitePurolator).toLowerCase() === 'true') srvBadges.push('智能包裹櫃');
+                if (String(props.packageFreeService).toLowerCase() === 'true') srvBadges.push('無包裝退件');
+                if (String(props.outboundShippingPrepaid).toLowerCase() === 'true') srvBadges.push('預付寄件');
+                if (String(props.outboundShippingPayCounter).toLowerCase() === 'true') srvBadges.push('櫃台付費寄件');
+                if (String(props.labelFreeService).toLowerCase() === 'true') srvBadges.push('免標籤 QR 寄件');
+
+                // 危險品
+                const hasDG = props.dangerousGoods != null && props.dangerousGoods !== '' && props.dangerousGoods !== 'null';
+                const dgVal = String(props.dangerousGoods).toLowerCase() === 'true';
+                const hasDGLimited = props.dangerousGoodsLimitedQuantity != null && props.dangerousGoodsLimitedQuantity !== '' && props.dangerousGoodsLimitedQuantity !== 'null';
+                const dgLimitedVal = String(props.dangerousGoodsLimitedQuantity).toLowerCase() === 'true';
+
+                // 最大重量 & 尺寸
+                const maxWeight = props.shipmentWeightLimit && props.shipmentWeightLimit !== 'null' ? `${props.shipmentWeightLimit} LB` : '';
+                const l = props.shipmentLengthLimit && props.shipmentLengthLimit !== 'null' ? props.shipmentLengthLimit : '';
+                const w = props.shipmentWidthLimit && props.shipmentWidthLimit !== 'null' ? props.shipmentWidthLimit : '';
+                const h = props.shipmentHeightLimit && props.shipmentHeightLimit !== 'null' ? props.shipmentHeightLimit : '';
+                const maxDim = (l && w && h) ? `${l} × ${w} × ${h} IN` : '';
+
+                // 站點設施
+                const hasStreet = props.streetAccess != null && props.streetAccess !== '' && props.streetAccess !== 'null';
+                const streetVal = String(props.streetAccess).toLowerCase() === 'true';
+                const hasParking = props.parkingAccess != null && props.parkingAccess !== '' && props.parkingAccess !== 'null';
+                const parkingVal = String(props.parkingAccess).toLowerCase() === 'true';
+                const hasWheelchair = props.wheelChairAccess != null && props.wheelChairAccess !== '' && props.wheelChairAccess !== 'null';
+                const wheelchairVal = String(props.wheelChairAccess).toLowerCase() === 'true';
+                const hasFacilityAccess = hasStreet || hasParking || hasWheelchair;
+
+                // 特別指示
+                const specialInstr = props.specialInstructionsEn && props.specialInstructionsEn !== 'null' ? props.specialInstructionsEn : '';
+
+                // 聯絡電話
+                const phone = props.phoneNumber && props.phoneNumber !== 'null' ? props.phoneNumber : '';
+
+                return (
+                  <div className="flex flex-col gap-2.5 text-xs">
+                    {/* 標題下方藍色區塊 (文字與 Canada Post 紅色區塊相同) */}
+                    <div className="bg-[#00529B]/10 p-2.5 rounded-lg border border-[#00529B]/30 text-[#00529B] font-medium text-[11px] leading-relaxed">
+                      自取包裹請攜帶政府簽發之有效相片證件及提領通知單，以便現場快速核對核發。
+                    </div>
+
+                    {/* 灰色資料區塊 (依照圖 1, 2 規範，為 null 不顯示) */}
+                    <div className="bg-gray-50/90 p-2.5 rounded-lg border border-gray-200/70 flex flex-col gap-2 text-[11px]">
+                      {props.LocationCategory && props.LocationCategory !== 'null' && (
+                        <div className="flex items-center justify-between text-gray-700">
+                          <span className="text-gray-500 font-medium">設施種類</span>
+                          <span className="font-semibold text-gray-900">{props.LocationCategory}</span>
+                        </div>
+                      )}
+
+                      {is24h && (
+                        <div className="flex items-center justify-between text-gray-700">
+                          <span className="text-gray-500 font-medium">24小時營業</span>
+                          <span className="font-semibold text-gray-900">{is24hVal ? '是' : '否'}</span>
+                        </div>
+                      )}
+
+                      {hasHoursData && (
+                        <FacilityWeeklyHoursSchedule
+                          label="營業時間"
+                          hours={purolatorHoursMap}
+                          timeFormat={timeFormat}
+                          theme="blue"
+                        />
+                      )}
+
+                      {actDate && (
+                        <>
+                          <div className="w-full h-px bg-gray-200/80"></div>
+                          <div className="flex items-center justify-between text-gray-700">
+                            <span className="text-gray-500 font-medium">營運日期</span>
+                            <span className="font-mono text-gray-900 font-semibold">{actDate}</span>
+                          </div>
+                        </>
+                      )}
+
+                      {/* (分隔線) */}
+                      {(hasHoldForPickup || hasDropOff || gndDom || gndUS || airDom || airUS || airIntl || hasDropBoxes) && (
+                        <>
+                          <div className="w-full h-px bg-gray-200/80"></div>
+
+                          {hasHoldForPickup && (
+                            <div className="flex items-center justify-between text-gray-700">
+                              <span className="text-gray-500 font-medium">站點取件</span>
+                              <span className="font-semibold text-gray-900">{holdForPickupVal ? '是' : '否'}</span>
+                            </div>
+                          )}
+
+                          {hasDropOff && (
+                            <div className="flex items-center justify-between text-gray-700">
+                              <span className="text-gray-500 font-medium">站點投遞</span>
+                              <span className="font-semibold text-gray-900">{dropOffVal ? '是' : '否'}</span>
+                            </div>
+                          )}
+
+                          {(gndDom || gndUS) && (
+                            <div className="flex flex-col gap-1">
+                              <span className="text-gray-500 font-medium">最後平郵投遞時間</span>
+                              <div className="flex flex-col gap-0.5 pl-2 border-l-2 border-blue-200">
+                                {gndDom && (
+                                  <div className="flex items-center justify-between text-gray-700">
+                                    <span className="text-gray-600">本地</span>
+                                    <span className="font-mono text-gray-900 font-semibold">{gndDom}</span>
+                                  </div>
+                                )}
+                                {gndUS && (
+                                  <div className="flex items-center justify-between text-gray-700">
+                                    <span className="text-gray-600">美國</span>
+                                    <span className="font-mono text-gray-900 font-semibold">{gndUS}</span>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          )}
+
+                          {(airDom || airUS || airIntl) && (
+                            <div className="flex flex-col gap-1">
+                              <span className="text-gray-500 font-medium">最後空郵投遞時間</span>
+                              <div className="flex flex-col gap-0.5 pl-2 border-l-2 border-blue-200">
+                                {airDom && (
+                                  <div className="flex items-center justify-between text-gray-700">
+                                    <span className="text-gray-600">本地</span>
+                                    <span className="font-mono text-gray-900 font-semibold">{airDom}</span>
+                                  </div>
+                                )}
+                                {airUS && (
+                                  <div className="flex items-center justify-between text-gray-700">
+                                    <span className="text-gray-600">美國</span>
+                                    <span className="font-mono text-gray-900 font-semibold">{airUS}</span>
+                                  </div>
+                                )}
+                                {airIntl && (
+                                  <div className="flex items-center justify-between text-gray-700">
+                                    <span className="text-gray-600">國際</span>
+                                    <span className="font-mono text-gray-900 font-semibold">{airIntl}</span>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          )}
+
+                          {hasDropBoxes && (
+                            <div className="flex items-center justify-between text-gray-700">
+                              <span className="text-gray-500 font-medium">站點投遞箱</span>
+                              <span className="font-semibold text-gray-900">{dropBoxesVal ? '是' : '否'}</span>
+                            </div>
+                          )}
+                        </>
+                      )}
+
+                      {/* 站點服務 & 危險品 */}
+                      {(srvBadges.length > 0 || hasDG || hasDGLimited) && (
+                        <>
+                          <div className="w-full h-px bg-gray-200/80"></div>
+                          {srvBadges.length > 0 && (
+                            <div className="flex flex-col gap-1 pt-0.5">
+                              <span className="text-gray-500 font-medium">站點服務</span>
+                              <div className="flex flex-wrap gap-1">
+                                {srvBadges.map((srv, idx) => (
+                                  <span key={idx} className="px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 text-[10px]">
+                                    {srv}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {hasDG && (
+                            <div className="flex items-center justify-between text-gray-700">
+                              <span className="text-gray-500 font-medium">接受危險品</span>
+                              <span className="font-semibold text-gray-900">{dgVal ? '是' : '否'}</span>
+                            </div>
+                          )}
+
+                          {hasDGLimited && (
+                            <div className="flex items-center justify-between text-gray-700">
+                              <span className="text-gray-500 font-medium">危險品數量限制</span>
+                              <span className="font-semibold text-gray-900">{dgLimitedVal ? '是' : '否'}</span>
+                            </div>
+                          )}
+                        </>
+                      )}
+
+                      {/* (分隔線) 最大重量 & 最大尺寸 */}
+                      {(maxWeight || maxDim) && (
+                        <>
+                          <div className="w-full h-px bg-gray-200/80"></div>
+                          {maxWeight && (
+                            <div className="flex items-center justify-between text-gray-700">
+                              <span className="text-gray-500 font-medium">最大重量</span>
+                              <span className="font-mono text-gray-900 font-semibold">{maxWeight}</span>
+                            </div>
+                          )}
+                          {maxDim && (
+                            <div className="flex items-center justify-between text-gray-700">
+                              <span className="text-gray-500 font-medium">最大尺寸 (L × W × H)</span>
+                              <span className="font-mono text-gray-900 font-semibold">{maxDim}</span>
+                            </div>
+                          )}
+                        </>
+                      )}
+
+                      {/* (分隔線) 站點設施 */}
+                      {hasFacilityAccess && (
+                        <>
+                          <div className="w-full h-px bg-gray-200/80"></div>
+                          <div className="flex flex-col gap-1">
+                            <span className="text-gray-500 font-medium">站點設施</span>
+                            <div className="grid grid-cols-3 gap-1.5 pt-0.5">
+                              {hasStreet && (
+                                <div className="bg-white px-2 py-1 rounded border border-gray-100 flex flex-col items-center text-center">
+                                  <span className="text-[10px] text-gray-500">街道出入</span>
+                                  <span className="font-semibold text-gray-900 text-[11px]">{streetVal ? '有' : '無'}</span>
+                                </div>
+                              )}
+                              {hasParking && (
+                                <div className="bg-white px-2 py-1 rounded border border-gray-100 flex flex-col items-center text-center">
+                                  <span className="text-[10px] text-gray-500">專用泊車</span>
+                                  <span className="font-semibold text-gray-900 text-[11px]">{parkingVal ? '有' : '無'}</span>
+                                </div>
+                              )}
+                              {hasWheelchair && (
+                                <div className="bg-white px-2 py-1 rounded border border-gray-100 flex flex-col items-center text-center">
+                                  <span className="text-[10px] text-gray-500">無障礙設施</span>
+                                  <span className="font-semibold text-gray-900 text-[11px]">{wheelchairVal ? '有' : '無'}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </>
+                      )}
+
+                      {/* (分隔線) 特別指示 */}
+                      {specialInstr && (
+                        <>
+                          <div className="w-full h-px bg-gray-200/80"></div>
+                          <div className="flex flex-col gap-0.5 text-gray-700">
+                            <span className="text-gray-500 font-medium">特別指示</span>
+                            <span className="text-gray-800 text-[10.5px] leading-relaxed">
+                              {specialInstr}
+                            </span>
+                          </div>
+                        </>
+                      )}
+
+                      {/* (分隔線) 聯絡電話 */}
+                      {phone && (
+                        <>
+                          <div className="w-full h-px bg-gray-200/80"></div>
+                          <div className="flex items-center justify-between text-gray-700">
+                            <span className="text-gray-500 font-medium">聯絡電話</span>
+                            <a href={`tel:${phone}`} className="font-mono text-blue-600 hover:underline font-semibold">
+                              {formatPhoneNumber(phone)}
+                            </a>
+                          </div>
+                        </>
+                      )}
+                    </div>
+
+                    {/* 6.8 灰色區塊下方加入連結按鈕 "前往 Purolator 分店資料網頁" */}
+                    <div className="pt-0.5">
+                      <a
+                        href="https://www.purolator.com/en/shipping/find-shipping-centre"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full py-2 px-3 rounded-lg bg-[#00529B] hover:bg-[#003d75] text-white font-medium text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm cursor-pointer"
+                      >
+                        <span>前往 Purolator 分店資料網頁</span>
                         <ExternalLink className="w-3.5 h-3.5" />
                       </a>
                     </div>
@@ -15405,8 +15832,8 @@ export default function AppMap() {
         </div>
       )}
 
-      {/* 重設地圖視角至溫哥華地區按鈕 (Reset Map View to Vancouver) - 精緻控制項樣式避免阻擋地圖或縮放控制 */}
-      <div className="absolute bottom-[164px] right-2.5 z-20 select-none">
+      {/* 重設地圖視角至溫哥華地區按鈕 (Reset Map View to Vancouver) - 稍為移上一點 */}
+      <div className="absolute bottom-[180px] right-2.5 z-20 select-none">
         <button
           type="button"
           onClick={() => {
@@ -15420,9 +15847,24 @@ export default function AppMap() {
           }}
           className="group relative flex items-center justify-center w-[29px] h-[29px] bg-[#161922]/95 hover:bg-[#202533] text-gray-200 hover:text-white rounded border border-[#2d3448] shadow-md backdrop-blur-md transition-all hover:border-emerald-500/60 hover:shadow-[0_0_10px_rgba(16,185,129,0.25)] active:scale-95 cursor-pointer"
         >
-          <LocateFixed className="w-4 h-4 text-emerald-400 group-hover:rotate-90 transition-transform duration-300 shrink-0" />
+          <RotateCcw className="w-3.5 h-3.5 text-emerald-400 group-hover:-rotate-90 transition-transform duration-300 shrink-0" />
           <span className="pointer-events-none absolute right-[36px] top-1/2 -translate-y-1/2 px-2 py-1 bg-[#10131a]/95 text-white text-[11px] font-medium rounded border border-[#262b3a] shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
             重設溫哥華視角
+          </span>
+        </button>
+      </div>
+
+      {/* 3. 即時定位按鈕 (Geolocate Current Position) - 介於重設視角與縮放 + 按鈕之間 */}
+      <div className="absolute bottom-[144px] right-2.5 z-20 select-none">
+        <button
+          type="button"
+          onClick={handleGeolocate}
+          disabled={isLocating}
+          className="group relative flex items-center justify-center w-[29px] h-[29px] bg-[#161922]/95 hover:bg-[#202533] text-gray-200 hover:text-white rounded border border-[#2d3448] shadow-md backdrop-blur-md transition-all hover:border-sky-500/60 hover:shadow-[0_0_10px_rgba(14,165,233,0.3)] active:scale-95 cursor-pointer disabled:opacity-50"
+        >
+          <Crosshair className={`w-3.5 h-3.5 text-sky-400 shrink-0 ${isLocating ? 'animate-spin' : 'group-hover:scale-110 transition-transform'}`} />
+          <span className="pointer-events-none absolute right-[36px] top-1/2 -translate-y-1/2 px-2 py-1 bg-[#10131a]/95 text-white text-[11px] font-medium rounded border border-[#262b3a] shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+            即時定位目前位置
           </span>
         </button>
       </div>
@@ -17300,22 +17742,32 @@ export default function AppMap() {
                 <span className="text-[10px] text-gray-500">停用</span>
               </button>
 
-              {/* Purolator (預設關閉, 藍色, disable) */}
+              {/* Purolator (預設開啟, 藍色) */}
               <button
                 type="button"
-                disabled
-                className="flex items-center justify-between p-1.5 rounded-lg border border-blue-950/40 bg-[#10141d] text-blue-500/50 cursor-not-allowed opacity-60"
-                title="即將支援"
+                onClick={() => setCourierFilter(prev => ({ ...prev, purolator: !prev.purolator }))}
+                className={`flex items-center justify-between p-1.5 rounded-lg border transition-all text-left cursor-pointer ${
+                  courierFilter.purolator 
+                    ? 'bg-blue-950/40 border-blue-500/60 text-white' 
+                    : 'bg-[#1b1f2b] border-[#293042] text-gray-400 hover:bg-[#222838]'
+                }`}
+                title={courierFilter.purolator ? "點擊隱藏 Purolator" : "點擊顯示 Purolator"}
               >
                 <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full flex items-center justify-center text-[8px] font-bold text-white bg-blue-800/60">
+                  <span className={`w-3 h-3 rounded-full flex items-center justify-center text-[8px] font-bold text-white ${
+                    courierFilter.purolator ? 'bg-[#00529B]' : 'bg-gray-600'
+                  }`}>
                     P
                   </span>
-                  <span className="font-medium text-xs">
-                    Purolator (即將支援)
+                  <span className={`font-medium text-xs ${courierFilter.purolator ? 'text-white' : 'text-gray-400 line-through'}`}>
+                    Purolator
                   </span>
                 </div>
-                <span className="text-[10px] text-gray-500">停用</span>
+                <div className={`w-7 h-4 flex items-center rounded-full p-0.5 transition-colors ${
+                  courierFilter.purolator ? 'bg-[#00529B] justify-end' : 'bg-gray-700 justify-start'
+                }`}>
+                  <div className="bg-white w-3 h-3 rounded-full shadow-md"></div>
+                </div>
               </button>
 
               {/* DHL (預設關閉, 黃色, disable) */}
@@ -17343,6 +17795,8 @@ export default function AppMap() {
                 <span className="text-[10.5px] text-gray-300">Canada Post</span>
                 <span className={`w-2 h-2 rounded-full ml-1 ${courierFilter.fedex ? 'bg-[#4D148C]' : 'bg-gray-600'}`} />
                 <span className="text-[10.5px] text-gray-300">FedEx</span>
+                <span className={`w-2 h-2 rounded-full ml-1 ${courierFilter.purolator ? 'bg-[#00529B]' : 'bg-gray-600'}`} />
+                <span className="text-[10.5px] text-gray-300">Purolator</span>
               </div>
               <button 
                 onClick={() => setCourierLegendOpen(true)}
@@ -17364,7 +17818,7 @@ export default function AppMap() {
           </div>
           {radarFrameTime ? (
             <span className="font-mono text-cyan-300 font-bold bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800/40 text-[11px]">
-              {new Date(radarFrameTime * 1000).toLocaleTimeString('zh-TW', { hour12: false, hour: '2-digit', minute: '2-digit', timeZone: 'America/Vancouver' })} PCT
+              {formatTimeOnly(radarFrameTime * 1000, timeFormat, timeZone)}
             </span>
           ) : null}
           <button

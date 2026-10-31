@@ -358,3 +358,57 @@ export function formatDateTime(
   return `${datePart} ${timePart}`;
 }
 
+/**
+ * Format timestamp or ISO string into standardized "yyyy-MM-dd" date string.
+ */
+export function formatDateOnly(
+  dateInput: Date | string | number | null | undefined,
+  timeZone?: string
+): string {
+  if (!dateInput) return '';
+  const d = dateInput instanceof Date ? dateInput : new Date(dateInput);
+  if (isNaN(d.getTime())) return String(dateInput).slice(0, 10);
+  const effectiveTimeZone = timeZone === 'America/Vancouver' ? 'Etc/GMT+7' : timeZone;
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  };
+  if (effectiveTimeZone && effectiveTimeZone !== 'auto') {
+    options.timeZone = effectiveTimeZone;
+  }
+  const parts = new Intl.DateTimeFormat('en-CA', options).formatToParts(d);
+  const year = parts.find(p => p.type === 'year')?.value || '';
+  const month = parts.find(p => p.type === 'month')?.value || '';
+  const day = parts.find(p => p.type === 'day')?.value || '';
+  return `${year}-${month}-${day}`;
+}
+
+/**
+ * Format timestamp or ISO string into standardized "hh:mm" (24h) or "hh:mm AM/PM" (12h).
+ */
+export function formatTimeOnly(
+  dateInput: Date | string | number | null | undefined,
+  format: '12h' | '24h' = '24h',
+  timeZone?: string
+): string {
+  if (!dateInput) return '';
+  const d = dateInput instanceof Date ? dateInput : new Date(dateInput);
+  if (isNaN(d.getTime())) return String(dateInput);
+  const effectiveTimeZone = timeZone === 'America/Vancouver' ? 'Etc/GMT+7' : timeZone;
+  const options: Intl.DateTimeFormatOptions = {
+    hour12: format === '12h',
+    hour: '2-digit',
+    minute: '2-digit',
+  };
+  if (effectiveTimeZone && effectiveTimeZone !== 'auto') {
+    options.timeZone = effectiveTimeZone;
+  }
+  const parts = new Intl.DateTimeFormat('en-CA', options).formatToParts(d);
+  const hour = parts.find(p => p.type === 'hour')?.value || '';
+  const minute = parts.find(p => p.type === 'minute')?.value || '';
+  const dayPeriod = parts.find(p => p.type === 'dayPeriod')?.value?.toUpperCase() || '';
+  return format === '12h' ? `${hour}:${minute} ${dayPeriod}`.trim() : `${hour}:${minute}`;
+}
+
+
