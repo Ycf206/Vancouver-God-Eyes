@@ -34,12 +34,30 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
+          git pull origin main --rebase || true
           git add backend/data/vancouver_311.json frontend/public/vancouver_311.json
           if git diff --staged --quiet; then
             echo "No updates detected for 3-1-1 市政服務請求."
             echo "has_changes=false" >> $GITHUB_OUTPUT
           else
             git commit -m "chore(data): auto-update 3-1-1 市政服務請求 dataset [skip ci]"
-            git push origin HEAD:data --force
+            git push origin HEAD:main || git push
             echo "has_changes=true" >> $GITHUB_OUTPUT
           fi
+
+      - name: Sync Updated Data to OCI VM
+        if: steps.git_push.outputs.has_changes == 'true'
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.OCI_HOST_IP }}
+          username: ubuntu
+          key: ${{ secrets.OCI_SSH_KEY }}
+          script: |
+            echo "🔄 同步最新 3-1-1 市政服務請求資料至 OCI 伺服器..."
+            cd ~/Vancouver-God-Eyes || cd ~/vancouver-gods-eye
+            git pull origin main 2>/dev/null || true
+            mkdir -p backend/data frontend/public
+            cp -f backend/data/vancouver_311.json backend/data/ 2>/dev/null || true
+            cp -f frontend/public/vancouver_311.json frontend/public/ 2>/dev/null || true
+            sudo docker compose restart backend || sudo docker-compose restart backend || true
+            echo "✅ 3-1-1 OCI 同步完成！"

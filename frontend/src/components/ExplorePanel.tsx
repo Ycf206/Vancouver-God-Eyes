@@ -801,8 +801,12 @@ function ExploreContent() {
     if (!isExploreOpen || exploreTab !== '311') return;
     if (requests311.length > 0) return;
     setLoading311(true);
-    fetch('/vancouver_311.json')
-      .then(res => res.json())
+    fetch('/api/explore/311')
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return res.json();
+      })
+      .catch(() => fetch(`/vancouver_311.json?t=${Date.now()}`).then(r => r.json()))
       .then(data => {
         const list = Array.isArray(data) ? data : (data.results || []);
         setRequests311(list);

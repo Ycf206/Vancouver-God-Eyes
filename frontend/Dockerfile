@@ -2,6 +2,9 @@ FROM node:18-alpine
 
 WORKDIR /app
 
+# 優化 Node.js 記憶體限制 (2048MB)，防範記憶體溢位 (OOM)
+ENV NODE_OPTIONS="--max-old-space-size=2048"
+
 # Install dependencies
 COPY package*.json ./
 RUN npm install

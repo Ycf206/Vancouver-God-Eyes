@@ -3082,6 +3082,32 @@ def get_road_facilities_geojson(
         })
     return {"type": "FeatureCollection", "features": features}
 
+@app.get("/api/explore/311")
+def get_311_service_requests():
+    """取得最新溫哥華 3-1-1 市政服務請求資料"""
+    data_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'vancouver_311.json')
+    if os.path.exists(data_file):
+        try:
+            with open(data_file, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception as e:
+            logger.error(f"Error reading 311 data: {e}")
+    fe_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'frontend', 'public', 'vancouver_311.json')
+    if os.path.exists(fe_file):
+        try:
+            with open(fe_file, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception:
+            pass
+    try:
+        from scripts.layers.update_311 import update_311
+        data = update_311()
+        if data:
+            return data
+    except Exception as e:
+        logger.error(f"Failed to fetch 311 data on demand: {e}")
+    return {"results": []}
+
 @app.get("/api/explore/nearby")
 def explore_nearby_facilities(
     lat: float,
@@ -4114,10 +4140,19 @@ def trigger_admin_sync(payload: dict = Body(...)):
                                 except Exception:
                                     pass
                             detail_msg = f"OCI 伺服器已即時同步 ICBC 車禍熱點資料，共載入 {target_src.get('record_count', 0)} 處事故地點。"
-                        elif target_src.get("id") == "vancouver_311":
+                        elif target_src.get("id") in ["service_requests_311", "vancouver_311"]:
+                            count_311 = 0
+                            try:
+                                from scripts.layers.update_311 import update_311
+                                res_311 = update_311()
+                                if res_311 and "results" in res_311:
+                                    count_311 = len(res_311["results"])
+                                    target_src["record_count"] = count_311
+                            except Exception as ex_311:
+                                logger.error(f"Error during 311 sync: {ex_311}")
                             target_src["last_updated"] = now_iso
                             target_src["status"] = "healthy"
-                            detail_msg = f"OCI 伺服器已即時同步更新 City of Vancouver 3-1-1 市政服務請求資料。"
+                            detail_msg = f"OCI 伺服器已即時同步更新 City of Vancouver 3-1-1 市政服務請求資料，共取得 {target_src.get('record_count', count_311)} 筆最新記錄。"
                         elif target_src.get("id") in ["eccc_weather", "weather_live"]:
                             target_src["last_updated"] = now_iso
                             target_src["status"] = "healthy"

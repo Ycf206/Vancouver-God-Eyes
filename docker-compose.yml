@@ -1,3 +1,9 @@
+x-logging: &default-logging
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "3"
+
 services:
   db:
     image: kartoza/postgis:15-3.4
@@ -13,6 +19,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql
     restart: unless-stopped
+    logging: *default-logging
 
   redis:
     image: redis:7-alpine
@@ -22,6 +29,7 @@ services:
     volumes:
       - redis_data:/data
     restart: unless-stopped
+    logging: *default-logging
 
   backend:
     build: ./backend
@@ -43,7 +51,9 @@ services:
       - AISSTREAM_API_KEY=${AISSTREAM_API_KEY:-}
       - TOMTOM_API_KEY=${TOMTOM_API_KEY:-}
       - ADMIN_API_SECRET=${ADMIN_API_SECRET:-}
+      - WORKERS=2
     restart: unless-stopped
+    logging: *default-logging
 
   frontend:
     build:
@@ -55,6 +65,7 @@ services:
     depends_on:
       - backend
     environment:
+      - NODE_OPTIONS=--max-old-space-size=2048
       - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-}
       - NEXT_PUBLIC_TOMTOM_API_KEY=${TOMTOM_API_KEY:-}
       - NEXT_PUBLIC_ADMIN_API_SECRET=${NEXT_PUBLIC_ADMIN_API_SECRET:-${ADMIN_API_SECRET:-}}
@@ -62,6 +73,7 @@ services:
       - NEXT_PUBLIC_BUYMEACOFFEE_URL=${NEXT_PUBLIC_BUYMEACOFFEE_URL:-}
       - NEXT_PUBLIC_PAYPAL_URL=${NEXT_PUBLIC_PAYPAL_URL:-}
     restart: unless-stopped
+    logging: *default-logging
 
   nginx:
     image: nginx:alpine
@@ -73,6 +85,7 @@ services:
       - frontend
       - backend
     restart: unless-stopped
+    logging: *default-logging
 
 volumes:
   postgres_data:
