@@ -1,4 +1,4 @@
-name: Update Purolator 門市與自取據點 (每月更新 1 次)
+name: "Update Purolator 門市與自取據點 (每月更新 1 次)"
 
 on:
   schedule:
@@ -12,13 +12,17 @@ concurrency:
 jobs:
   update-purolator:
     runs-on: ubuntu-latest
-
     permissions:
       contents: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Fetch latest layer cache from data branch
+        run: |
+          git fetch origin data:refs/remotes/origin/data 2>/dev/null || true
+          git checkout refs/remotes/origin/data -- backend/data/vancouver_purolator.geojson frontend/public/vancouver_purolator.geojson 2>/dev/null || true
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -29,36 +33,75 @@ jobs:
         run: |
           pip install requests
 
-      - name: Run Layer Sync Script (Purolator)
+      - name: Run layer update script (Purolator 門市與自取據點)
         run: |
           python backend/scripts/layers/update_purolator.py
 
-      - name: Commit and Push Updated GeoJSON
+      - name: Commit and push updated data to data branch
         id: git_push
         run: |
+          set -e
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add backend/data/vancouver_purolator.geojson frontend/public/vancouver_purolator.geojson
-          if git diff --staged --quiet; then
-            echo "No updates detected for Purolator."
-            echo "has_changes=false" >> $GITHUB_OUTPUT
-          else
-            git commit -m "chore(data): auto-update Purolator locations [skip ci]"
-            echo "has_changes=true" >> $GITHUB_OUTPUT
-            git push
-          fi
 
-      - name: Sync Updated Data to OCI VM
-        if: steps.git_push.outputs.has_changes == 'true'
+          mkdir -p /tmp/wf_stage
+          for f in backend/data/vancouver_purolator.geojson frontend/public/vancouver_purolator.geojson; do
+            if [ -f "$f" ]; then
+              mkdir -p "/tmp/wf_stage/$(dirname "$f")"
+              cp -f "$f" "/tmp/wf_stage/$f"
+            fi
+          done
+
+          has_changes="false"
+          for attempt in 1 2 3 4 5; do
+            git fetch origin data:refs/remotes/origin/data 2>/dev/null || true
+            if git show-ref --verify --quiet refs/remotes/origin/data; then
+              git checkout -B data refs/remotes/origin/data
+            else
+              git checkout -B data
+            fi
+
+            for f in backend/data/vancouver_purolator.geojson frontend/public/vancouver_purolator.geojson; do
+              if [ -f "/tmp/wf_stage/$f" ]; then
+                mkdir -p "$(dirname "$f")"
+                cp -f "/tmp/wf_stage/$f" "$f"
+              fi
+            done
+
+            git add backend/data/vancouver_purolator.geojson frontend/public/vancouver_purolator.geojson
+            if git diff -I '"updated_at"' -I '"generated_at"' --staged --quiet; then
+              echo "No substantive feature changes detected for Purolator 門市與自取據點."
+              git reset --hard HEAD >/dev/null 2>&1 || true
+              has_changes="false"
+              break
+            fi
+
+            git commit -m "chore(data): auto-update Purolator 門市與自取據點 (purolator) [skip ci]"
+            if git push origin HEAD:data; then
+              has_changes="true"
+              break
+            fi
+
+            echo "Push conflict on data branch (attempt $attempt), retrying..."
+            sleep $((attempt * 2))
+          done
+
+          echo "has_changes=$has_changes" >> "$GITHUB_OUTPUT"
+
+      - name: Sync data and update timestamp on OCI VM
+        if: success()
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.OCI_HOST_IP }}
           username: ubuntu
           key: ${{ secrets.OCI_SSH_KEY }}
           script: |
-            echo "🔄 同步最新 Purolator 門市據點 圖資至 OCI 伺服器..."
+            echo "🔄 同步 [Purolator 門市與自取據點] 更新狀態與圖資至 OCI 伺服器..."
             cd ~/Vancouver-God-Eyes || cd ~/vancouver-gods-eye
-            git pull origin main 2>/dev/null || true
             mkdir -p backend/data frontend/public
-            sudo docker compose restart backend || sudo docker-compose restart backend || true
-            echo "✅ OCI 伺服器 Purolator 門市據點 圖資同步完成！"
+            if [ "${{ steps.git_push.outputs.has_changes }}" = "true" ]; then
+              git fetch origin data:refs/remotes/origin/data 2>/dev/null || git fetch origin data 2>/dev/null || true
+              git checkout refs/remotes/origin/data -- backend/data/vancouver_purolator.geojson frontend/public/vancouver_purolator.geojson 2>/dev/null || git checkout origin/data -- backend/data/vancouver_purolator.geojson frontend/public/vancouver_purolator.geojson 2>/dev/null || true
+            fi
+            python3 backend/scripts/record_workflow_sync.py --source "purolator" --workflow "update-purolator.yml" --has-changes "${{ steps.git_push.outputs.has_changes }}" --run-id "${{ github.run_id }}" --event "${{ github.event_name }}" || docker compose exec -T backend python /app/scripts/record_workflow_sync.py --source "purolator" --workflow "update-purolator.yml" --has-changes "${{ steps.git_push.outputs.has_changes }}" --run-id "${{ github.run_id }}" --event "${{ github.event_name }}" || true
+            echo "✅ OCI 伺服器 [Purolator 門市與自取據點] 資料與後台時間戳同步完成！"

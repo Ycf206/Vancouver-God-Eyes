@@ -2,8 +2,13 @@ import os
 import sys
 import json
 import urllib.request
+from datetime import datetime, timezone
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+if CURRENT_DIR not in sys.path:
+    sys.path.insert(0, CURRENT_DIR)
+from base import update_admin_source_metadata
+
 PROJECT_ROOT = os.path.abspath(os.path.join(CURRENT_DIR, "..", "..", ".."))
 BACKEND_DATA_DIR = os.path.join(PROJECT_ROOT, "backend", "data")
 FRONTEND_DATA_DIR = os.path.join(PROJECT_ROOT, "frontend", "public")
@@ -22,6 +27,10 @@ def update_tnt_eflyers():
             if response.status == 200:
                 data = json.loads(response.read().decode('utf-8'))
                 
+                now_iso = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
+                if isinstance(data, dict):
+                    data["updated_at"] = now_iso
+                
                 os.makedirs(BACKEND_DATA_DIR, exist_ok=True)
                 os.makedirs(FRONTEND_DATA_DIR, exist_ok=True)
                 
@@ -34,6 +43,7 @@ def update_tnt_eflyers():
                     json.dump(data, f, ensure_ascii=False, indent=2)
                 
                 flyers = data.get("data", {}).get("eflyer_list", [])
+                update_admin_source_metadata("tnt_eflyers", record_count=len(flyers), updated_at=now_iso)
                 print(f"✅ 大統華特價海報更新完成，共取得 {len(flyers)} 張特價頁面。")
                 return data
             else:

@@ -18,6 +18,7 @@ def update_street_lighting():
 
     if features:
         save_layer_geojson("vancouver_street_lighting.geojson", features)
+        save_layer_geojson("vancouver_street_lighting_poles.geojson", features)
         print(f"✅ 路燈燈桿更新完成，共 {len(features)} 處燈桿。")
     return features
 

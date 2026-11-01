@@ -4,6 +4,7 @@ import json
 import urllib.request
 import io
 import time
+from datetime import datetime, timezone
 
 if sys.platform == "win32":
     try:
@@ -13,6 +14,10 @@ if sys.platform == "win32":
         pass
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+if CURRENT_DIR not in sys.path:
+    sys.path.insert(0, CURRENT_DIR)
+from base import update_admin_source_metadata
+
 PROJECT_ROOT = os.path.abspath(os.path.join(CURRENT_DIR, "..", "..", ".."))
 BACKEND_DATA_DIR = os.path.join(PROJECT_ROOT, "backend", "data")
 FRONTEND_DATA_DIR = os.path.join(PROJECT_ROOT, "frontend", "public")
@@ -58,8 +63,10 @@ def update_311(target_count=1000, page_limit=100):
         print("❌ 未能獲取任何 3-1-1 數據。")
         return None
 
+    now_iso = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
     final_data = {
         "total_count": total_dataset_count or len(all_results),
+        "updated_at": now_iso,
         "results": all_results
     }
     
@@ -73,6 +80,7 @@ def update_311(target_count=1000, page_limit=100):
         json.dump(final_data, f, ensure_ascii=False, indent=2)
     with open(out_path_fe, "w", encoding="utf-8") as f:
         json.dump(final_data, f, ensure_ascii=False, indent=2)
+    update_admin_source_metadata("service_requests_311", record_count=len(all_results), updated_at=now_iso)
         
     print(f"✅ 3-1-1 服務請求更新完成！成功儲存最新 {len(all_results)} 筆記錄 (OpenData 總數據庫筆數: {total_dataset_count:,})。")
     return final_data

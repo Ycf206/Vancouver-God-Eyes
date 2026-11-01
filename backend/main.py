@@ -328,6 +328,7 @@ cached_bcferries_vehicles: list[dict] = []
 cached_bcferries_raw_data: dict = {"timestamp": 0.0, "data": None}
 cached_flight_schedules: dict = {}
 cached_skytrain_trains: list[dict] = []
+_oci_runtime_ts: dict[str, float] = {}
 
 
 async def _send_ws_safe(conn: WebSocket, raw_text: str) -> WebSocket | None:
@@ -697,6 +698,7 @@ async def fetch_bcferries_realtime():
                         })
             
             cached_bcferries_vehicles = vehicles
+            _oci_runtime_ts["translink_realtime"] = time.time()
             print(f"[BC Ferries] Found {len(vehicles)} ships currently sailing.")
             
             await broadcast_ws({"type": "bc_ferries_update", "data": vehicles})
@@ -1153,6 +1155,7 @@ async def fetch_translink_realtime():
 
             vehicles.extend(seabus_simulated)
             cached_translink_vehicles = vehicles
+            _oci_runtime_ts["translink_realtime"] = time.time()
             
             await broadcast_ws({"type": "vehicles_update", "data": vehicles})
                     
@@ -1222,6 +1225,7 @@ async def fetch_translink_trip_updates():
                 
             stop_arrivals = new_arrivals
             trip_realtime_etas = new_trip_etas
+            _oci_runtime_ts["translink_realtime"] = time.time()
             print(f"[OK] Updated TripUpdates for {len(stop_arrivals)} stops")
             
         except Exception as e:
@@ -1244,6 +1248,7 @@ async def broadcast_maritime_vessels():
     while True:
         try:
             vessels = shipping_service.get_vessels()
+            _oci_runtime_ts["maritime_shipping"] = time.time()
             await broadcast_ws({"type": "maritime_vessels_update", "data": vessels})
         except Exception as e:
             print(f"Error in maritime vessels broadcast: {e}")
@@ -1293,6 +1298,7 @@ def get_flight_schedules():
     schedules = flights.fetch_flightaware_schedules(allow_api_call=True)
     if schedules:
         cached_flight_schedules = schedules
+        _oci_runtime_ts["flight_schedules"] = time.time()
     return cached_flight_schedules or schedules or {"arrivals": [], "departures": []}
 
 @app.get("/api/tides/live")
@@ -2170,13 +2176,15 @@ def get_search_local_area_items():
     return _search_local_area_cache
 
 _search_bikeways_cache = None
+_search_bikeways_mtime = 0.0
 def get_search_bikeway_items():
-    global _search_bikeways_cache
-    if _search_bikeways_cache is not None:
+    global _search_bikeways_cache, _search_bikeways_mtime
+    path = os.path.join(os.path.dirname(__file__), "data", "vancouver_bikeways.geojson")
+    curr_mtime = os.path.getmtime(path) if os.path.exists(path) else 0.0
+    if _search_bikeways_cache is not None and curr_mtime == _search_bikeways_mtime:
         return _search_bikeways_cache
     items = []
-    path = os.path.join(os.path.dirname(__file__), "data", "vancouver_bikeways.geojson")
-    if os.path.exists(path):
+    if curr_mtime > 0.0:
         try:
             import json
             with open(path, "r", encoding="utf-8") as f:
@@ -2217,6 +2225,7 @@ def get_search_bikeway_items():
         except Exception as e:
             print(f"Error loading bikeway items for search: {e}")
     _search_bikeways_cache = items
+    _search_bikeways_mtime = curr_mtime
     return _search_bikeways_cache
 
 def normalize_search_str(s: str) -> str:
@@ -2271,6 +2280,7 @@ def match_query_tokens(query_tokens: list[str], target_str: str) -> tuple[bool, 
     return (True, score)
 
 _search_facilities_cache = None
+_search_facilities_mtime_state = {"last_check": 0.0, "max_mtime": 0.0}
 
 FACILITY_SEARCH_CONFIGS = [
     ("schools", "學校", "🏫", "schools", 16),
@@ -2322,17 +2332,39 @@ FACILITY_SEARCH_CONFIGS = [
 
 def get_search_facilities_items():
     global _search_facilities_cache
+    base_data_dir = os.path.join(os.path.dirname(__file__), "data")
+    now_ts = time.time()
     if _search_facilities_cache is not None:
-        return _search_facilities_cache
+        if now_ts - _search_facilities_mtime_state["last_check"] < 30.0:
+            return _search_facilities_cache
+        _search_facilities_mtime_state["last_check"] = now_ts
+        latest_mtime = 0.0
+        for ftype, *_ in FACILITY_SEARCH_CONFIGS:
+            fp = os.path.join(base_data_dir, f"vancouver_{ftype}.geojson")
+            if os.path.exists(fp):
+                try:
+                    mt = os.path.getmtime(fp)
+                    if mt > latest_mtime:
+                        latest_mtime = mt
+                except OSError:
+                    pass
+        if latest_mtime <= _search_facilities_mtime_state["max_mtime"]:
+            return _search_facilities_cache
 
     items = []
-    base_data_dir = os.path.join(os.path.dirname(__file__), "data")
+    max_seen_mtime = 0.0
 
     for ftype, badge, icon, layer_key, zoom in FACILITY_SEARCH_CONFIGS:
         fname = f"vancouver_{ftype}.geojson"
         fpath = os.path.join(base_data_dir, fname)
         if not os.path.exists(fpath):
             continue
+        try:
+            mt = os.path.getmtime(fpath)
+            if mt > max_seen_mtime:
+                max_seen_mtime = mt
+        except OSError:
+            pass
         try:
             with open(fpath, "r", encoding="utf-8") as f:
                 data = json.load(f)
@@ -2540,6 +2572,13 @@ def get_search_facilities_items():
             print(f"Error indexing {ftype} for search: {e}")
 
     _search_facilities_cache = items
+    _search_facilities_mtime_state["max_mtime"] = max_seen_mtime
+    _search_facilities_mtime_state["last_check"] = now_ts
+    try:
+        with _search_lock:
+            _search_query_cache.clear()
+    except Exception:
+        pass
     return _search_facilities_cache
 
 _search_lock = threading.Lock()
@@ -4521,14 +4560,448 @@ def set_admin_github_token(payload: dict = Body(...)):
     return {"status": "success", "message": msg}
 
 
+import json
+import re
+
+CANONICAL_WORKFLOW_MAP: dict[str, str] = {
+    "shared_bikes": "update-shared-bikes-hourly.yml",
+    "escooter": "update-escooter-hourly.yml",
+    "turn_restrictions": "update-traffic-turn-restrictions.yml",
+    "service_requests_311": "update-311.yml",
+    "vancouver_311": "update-311.yml",
+    "vancouver_railways": "update-railways.yml",
+}
+
+EXTRA_WORKFLOW_TO_SOURCES: dict[str, list[str]] = {
+    "update-shared-bikes-monthly.yml": ["shared_bikes"],
+    "update-escooter-monthly.yml": ["escooter"],
+    "oci-monthly-sync.yml": ["translink_realtime"],
+}
+
+ADMIN_SOURCE_DATA_FILES: dict[str, list[str]] = {
+    "traffic_cameras": ["vancouver_traffic_cameras.geojson"],
+    "traffic_conditions": ["vancouver_traffic_conditions.geojson"],
+    "beach_water": ["vancouver_beach_water.geojson"],
+    "impark_parking": ["vancouver_impark.geojson"],
+    "schools": ["vancouver_schools.geojson"],
+    "libraries": ["vancouver_libraries.geojson"],
+    "parks": ["vancouver_parks.geojson"],
+    "community_centres": ["vancouver_community_centres.geojson"],
+    "public_art": ["vancouver_public_art.geojson"],
+    "museums": ["vancouver_museums.geojson"],
+    "garbage_collection": ["vancouver_garbage_collection.geojson"],
+    "recycling": ["vancouver_recycling.geojson"],
+    "homeless_shelters": ["vancouver_homeless_shelters.geojson"],
+    "food_banks": ["vancouver_food_banks.geojson"],
+    "food_vendors": ["vancouver_food_vendors.geojson"],
+    "aed": ["vancouver_aed.geojson"],
+    "zoning_districts": ["vancouver_zoning_districts.geojson"],
+    "parking_meters": ["vancouver_parking_meters.geojson"],
+    "motorcycle_parking": ["vancouver_motorcycle_parking.geojson"],
+    "bikeways": ["vancouver_bikeways.geojson"],
+    "public_trees": ["vancouver_public_trees.geojson"],
+    "fire_hydrants": ["vancouver_fire_hydrants.geojson"],
+    "drinking_fountains": ["vancouver_drinking_fountains.geojson"],
+    "public_washrooms": ["vancouver_public_washrooms.geojson"],
+    "street_lighting": ["vancouver_street_lighting.geojson", "vancouver_street_lighting_poles.geojson"],
+    "street_lighting_conduits": ["vancouver_street_lighting_conduits.geojson"],
+    "water_distribution_mains": ["vancouver_water_distribution_mains.geojson"],
+    "sewer_mains": ["vancouver_sewer_mains.geojson"],
+    "traffic_speed_limits": ["vancouver_traffic_speed_limits.geojson"],
+    "traffic_crosswalks": ["vancouver_traffic_crosswalks.geojson"],
+    "litter_containers": ["vancouver_litter_containers.geojson"],
+    "one_way_streets": ["vancouver_one_way_streets.geojson"],
+    "snow_removal_routes": ["vancouver_snow_removal_routes.geojson"],
+    "contours": ["vancouver_contours.geojson", "vancouver_contours_10m.geojson"],
+    "ev_charging": ["vancouver_ev_charging.geojson"],
+    "canada_post": ["vancouver_canada_post.geojson"],
+    "property_addresses": ["vancouver_property_addresses_meta.json"],
+    "banks": ["vancouver_banks.geojson"],
+    "shared_bikes": ["vancouver_shared_bikes.geojson"],
+    "escooter": ["vancouver_escooter.geojson"],
+    "truck_routes": ["vancouver_truck_routes.geojson"],
+    "traffic_signals": ["vancouver_traffic_signals.geojson"],
+    "turn_restrictions": ["vancouver_traffic_turn_restrictions.geojson"],
+    "service_requests_311": ["vancouver_311.json"],
+    "tnt_eflyers": ["tnt_eflyers.json"],
+    "vancouver_railways": ["vancouver_railways.geojson"],
+    "fedex": ["vancouver_fedex.geojson"],
+    "purolator": ["vancouver_purolator.geojson"],
+    "vancouver_crashes": ["vancouver_crashes.json"],
+}
+
+
 def get_canonical_workflow_file(source_id: str) -> str:
     """傳回特定資料源所對應之獨立 GitHub Actions 工作流檔案名稱"""
-    if source_id == "shared_bikes":
-        return "update-shared-bikes-hourly.yml"
-    if source_id == "escooter":
-        return "update-escooter-hourly.yml"
+    if source_id in CANONICAL_WORKFLOW_MAP:
+        return CANONICAL_WORKFLOW_MAP[source_id]
     clean_id = source_id.replace("_", "-")
     return f"update-{clean_id}.yml"
+
+
+def _parse_iso_epoch(ts_str: str | None) -> float:
+    if not ts_str or not isinstance(ts_str, str):
+        return 0.0
+    try:
+        dt = datetime.fromisoformat(ts_str.strip().replace("Z", "+00:00"))
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return dt.timestamp()
+    except Exception:
+        return 0.0
+
+
+def _unix_to_iso(ts_val: float | int | None) -> str | None:
+    if not ts_val or ts_val <= 0:
+        return None
+    try:
+        return datetime.fromtimestamp(float(ts_val), tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    except Exception:
+        return None
+
+
+def _max_iso_ts(ts_a: str | None, ts_b: str | None) -> str | None:
+    ep_a = _parse_iso_epoch(ts_a)
+    ep_b = _parse_iso_epoch(ts_b)
+    if ep_b > ep_a:
+        return ts_b
+    return ts_a if ep_a > 0 else ts_b
+
+
+_admin_file_meta_cache: dict[str, tuple[float, int, str | None]] = {}
+_gh_runs_lock = threading.Lock()
+_gh_runs_sync_state: dict = {
+    "last_check": 0.0,
+    "boot_synced": False,
+    "runs": [],
+}
+
+
+def _extract_disk_file_meta(fpath: str) -> tuple[int, str | None]:
+    """以 mtime 快取極速擷取本地資料檔之 record_count 與內嵌 updated_at (對 >15MB 大檔僅讀前 4KB 標頭)"""
+    try:
+        st = os.stat(fpath)
+    except OSError:
+        return (0, None)
+
+    cached = _admin_file_meta_cache.get(fpath)
+    if cached and cached[0] == st.st_mtime:
+        return (cached[1], cached[2])
+
+    count = 0
+    updated_at: str | None = None
+    try:
+        with open(fpath, "r", encoding="utf-8") as f:
+            head = f.read(4096)
+        m_ts = re.search(r'"(?:updated_at|generated_at)"\s*:\s*"([^"]+)"', head)
+        if m_ts:
+            updated_at = m_ts.group(1)
+        m_cnt = re.search(r'"total_count"\s*:\s*(\d+)', head)
+        if m_cnt:
+            count = int(m_cnt.group(1))
+
+        if count == 0 and st.st_size <= 15 * 1024 * 1024:
+            with open(fpath, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            if isinstance(data, list):
+                count = len(data)
+            elif isinstance(data, dict):
+                if not updated_at:
+                    updated_at = data.get("updated_at") or data.get("generated_at")
+                if isinstance(data.get("features"), list):
+                    count = len(data["features"])
+                elif isinstance(data.get("results"), list):
+                    count = len(data["results"])
+                elif isinstance(data.get("data"), dict) and isinstance(data["data"].get("eflyer_list"), list):
+                    count = len(data["data"]["eflyer_list"])
+                elif isinstance(data.get("total_count"), int):
+                    count = data["total_count"]
+    except Exception:
+        pass
+
+    _admin_file_meta_cache[fpath] = (st.st_mtime, count, updated_at)
+    return (count, updated_at)
+
+
+def _fetch_github_workflow_runs_cached() -> tuple[list[dict], bool]:
+    """
+    每 90 秒向 GitHub Actions API 查詢最近工作流執行紀錄 (具備記憶體快取與 4 秒逾時保護，不阻塞請求)。
+    支援已綁定 GITHUB_TOKEN (5000 req/hr) 與未綁定公開倉庫 API (60 req/hr)，確保後台永遠與 GitHub 實際排程同步。
+    回傳 (runs_list, is_first_boot_sync)。
+    """
+    now = time.time()
+    if _gh_runs_sync_state["runs"] and (now - _gh_runs_sync_state["last_check"] < 90.0):
+        return (_gh_runs_sync_state["runs"], False)
+
+    with _gh_runs_lock:
+        now = time.time()
+        if now - _gh_runs_sync_state["last_check"] < 90.0:
+            return (_gh_runs_sync_state["runs"], False)
+        _gh_runs_sync_state["last_check"] = now
+        is_first_boot = not _gh_runs_sync_state["boot_synced"]
+
+    github_token, github_repo = get_persisted_github_token()
+    repo = (github_repo or "Ycf206/Vancouver-God-Eyes").strip()
+    headers = {
+        "Accept": "application/vnd.github.v3+json",
+        "User-Agent": "VancouverGodsEye-AdminSync",
+    }
+    if github_token:
+        headers["Authorization"] = f"Bearer {github_token}"
+
+    collected_runs: list[dict] = []
+    pages_to_fetch = 3 if is_first_boot else 1
+    fetch_ok = False
+    for page_num in range(1, pages_to_fetch + 1):
+        url = f"https://api.github.com/repos/{repo}/actions/runs?per_page=100&page={page_num}"
+        try:
+            resp = requests.get(url, headers=headers, timeout=4)
+            if resp.status_code == 200:
+                body = resp.json()
+                w_runs = body.get("workflow_runs")
+                if isinstance(w_runs, list):
+                    collected_runs.extend(w_runs)
+                    fetch_ok = True
+                    if len(w_runs) < 100:
+                        break
+            else:
+                break
+        except Exception:
+            break
+
+    if fetch_ok:
+        with _gh_runs_lock:
+            _gh_runs_sync_state["runs"] = collected_runs
+            _gh_runs_sync_state["boot_synced"] = True
+        return (collected_runs, is_first_boot)
+
+    return (_gh_runs_sync_state["runs"], False)
+
+
+def _reconcile_admin_sources_live(cfg: dict, gh_runs: list[dict], is_first_boot: bool) -> bool:
+    """
+    多通道即時對齊所有 60 個資料源狀態：
+    1. 正規化 runner / workflow_file 並補齊預設欄位
+    2. 對齊本地資料檔 (GeoJSON / JSON) 內嵌 updated_at 與精確筆數 record_count
+    3. 對齊 OCI 伺服器 14 個即時服務記憶體快取時間戳與即時筆數
+    4. 對齊 GitHub Actions 雲端工作流真實執行紀錄 (last_updated, status, 持久化排程日誌)
+    回傳是否有持久化欄位異動需寫回 admin_sources_config.json。
+    """
+    changed = False
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    data_dir = os.path.join(base_dir, "data")
+    pub_dir = os.path.abspath(os.path.join(base_dir, "..", "frontend", "public"))
+
+    sources = cfg.get("sources", [])
+    src_by_id: dict[str, dict] = {}
+    wf_to_sids: dict[str, list[str]] = {k: list(v) for k, v in EXTRA_WORKFLOW_TO_SOURCES.items()}
+
+    # 1. 正規化設定與建立 workflow -> source_ids 雙向映射
+    for s in sources:
+        sid = str(s.get("id") or "").strip()
+        if not sid:
+            continue
+        src_by_id[sid] = s
+        if s.get("runner") == "github":
+            s["runner"] = "github_actions"
+            changed = True
+        if s.get("runner") == "github_actions":
+            canonical_wf = get_canonical_workflow_file(sid)
+            if s.get("workflow_file") != canonical_wf:
+                s["workflow_file"] = canonical_wf
+                changed = True
+            wf_to_sids.setdefault(canonical_wf, [])
+            if sid not in wf_to_sids[canonical_wf]:
+                wf_to_sids[canonical_wf].append(sid)
+
+    # 2. 同步本地磁碟資料檔 record_count 與內嵌 updated_at
+    for sid, fnames in ADMIN_SOURCE_DATA_FILES.items():
+        s = src_by_id.get(sid)
+        if not s:
+            continue
+        for fname in fnames:
+            fpath = os.path.join(data_dir, fname)
+            if not os.path.exists(fpath):
+                fpath = os.path.join(pub_dir, fname)
+            if not os.path.exists(fpath):
+                continue
+            f_cnt, f_ts = _extract_disk_file_meta(fpath)
+            if f_cnt > 0 and s.get("record_count") != f_cnt:
+                s["record_count"] = f_cnt
+                changed = True
+            if f_ts:
+                best_ts = _max_iso_ts(s.get("last_updated"), f_ts)
+                if best_ts and best_ts != s.get("last_updated"):
+                    s["last_updated"] = best_ts
+                    changed = True
+            if sid == "food_vendors":
+                s["unit"] = "處街頭餐車與熟食攤位"
+            break
+
+    # 3. 同步 OCI 伺服器 14 個即時服務記憶體快取時間戳與即時筆數
+    try:
+        import tides_service
+        import ski_service
+        import fuel_service
+        import aurora_service
+        from tomtom_service import tomtom_service
+    except Exception:
+        tides_service = ski_service = fuel_service = aurora_service = tomtom_service = None
+
+    oci_live_updates: dict[str, tuple[str | None, int | None]] = {}
+
+    tl_cnt = len(cached_translink_vehicles) + len(cached_skytrain_trains) + len(cached_bcferries_vehicles)
+    oci_live_updates["translink_realtime"] = (
+        _unix_to_iso(_oci_runtime_ts.get("translink_realtime")),
+        tl_cnt if tl_cnt > 0 else None,
+    )
+    oci_live_updates["maritime_shipping"] = (
+        _unix_to_iso(_oci_runtime_ts.get("maritime_shipping")),
+        len(getattr(shipping_service, "vessels", {}) or {}) or None,
+    )
+    oci_live_updates["weather_monitoring"] = (
+        _unix_to_iso(getattr(weather_service, "last_fetch_time", 0.0)),
+        None,
+    )
+    if tides_service is not None:
+        oci_live_updates["tides_hydrometric"] = (
+            _unix_to_iso(tides_service._tide_cache.get("timestamp", 0)),
+            len(getattr(tides_service, "STATIONS_CONFIG", []) or []) or None,
+        )
+    if ski_service is not None:
+        oci_live_updates["ski_resorts"] = (
+            _unix_to_iso(ski_service._ski_cache.get("timestamp", 0)),
+            len(getattr(ski_service, "RESORTS_CONFIG", []) or []) or None,
+        )
+    if fuel_service is not None:
+        fuel_st = fuel_service._fuel_cache.get("stations") or []
+        oci_live_updates["fuel_prices"] = (
+            _unix_to_iso(fuel_service._fuel_cache.get("timestamp", 0)),
+            len(fuel_st) if fuel_st else None,
+        )
+    fl_ts = max(_oci_runtime_ts.get("flight_schedules", 0.0), float(flights._flightaware_cache.get("timestamp", 0) or 0.0))
+    fl_data = cached_flight_schedules or flights._flightaware_cache.get("data") or {}
+    fl_cnt = (len(fl_data.get("arrivals", [])) + len(fl_data.get("departures", []))) if isinstance(fl_data, dict) else 0
+    oci_live_updates["flight_schedules"] = (_unix_to_iso(fl_ts), fl_cnt if fl_cnt > 0 else None)
+
+    oci_live_updates["border_wait_times"] = (
+        _unix_to_iso(getattr(border_service, "last_fetch_time", 0.0)),
+        5,
+    )
+    if aurora_service is not None:
+        oci_live_updates["aurora_forecast"] = (
+            _unix_to_iso(aurora_service._aurora_cache.get("timestamp", 0)),
+            len(getattr(aurora_service, "VANCOUVER_AURORA_SPOTS", []) or []) or None,
+        )
+    oci_live_updates["vancouver_news"] = (
+        _unix_to_iso(getattr(news_service, "last_fetch_time", 0.0)),
+        len(news_service.cached_news) if news_service.cached_news else None,
+    )
+    oci_live_updates["public_events"] = (
+        _unix_to_iso(getattr(events_service, "last_fetch_time", 0.0)),
+        len(events_service.cached_events) if events_service.cached_events else None,
+    )
+    if tomtom_service is not None:
+        tt_summary = getattr(tomtom_service, "cached_corridors_summary", None) or {}
+        tt_ts = tt_summary.get("updated_at") or _unix_to_iso(getattr(tomtom_service, "last_fetch_time", 0.0))
+        tt_cnt = tt_summary.get("total_roads_count")
+        oci_live_updates["traffic_conditions"] = (tt_ts, int(tt_cnt) if tt_cnt else None)
+
+    for sid, (live_iso, live_cnt) in oci_live_updates.items():
+        s = src_by_id.get(sid)
+        if not s:
+            continue
+        if live_cnt is not None and live_cnt > 0 and s.get("record_count") != live_cnt:
+            s["record_count"] = live_cnt
+            changed = True
+        if live_iso:
+            best_ts = _max_iso_ts(s.get("last_updated"), live_iso)
+            if best_ts and best_ts != s.get("last_updated"):
+                s["last_updated"] = best_ts
+            s["status"] = "healthy"
+
+    # 4. 同步 GitHub Actions 雲端工作流真實執行狀態與排程歷史
+    if gh_runs:
+        existing_sched = system_log_service.read_schedule_history_raw()
+        existing_log_ids = {str(item.get("id", "")) for item in existing_sched if isinstance(item, dict)}
+        active_sids: set[str] = set()
+        seen_latest_completed: set[str] = set()
+        logged_per_sid: dict[str, int] = {}
+        max_logs_per_sid = 2 if is_first_boot else 5
+        new_gh_logs: list[dict] = []
+
+        # gh_runs 由 GitHub API 依建立時間由新到舊排列
+        for run in gh_runs:
+            if not isinstance(run, dict):
+                continue
+            wf_file = os.path.basename(str(run.get("path") or ""))
+            sids = wf_to_sids.get(wf_file)
+            if not sids:
+                continue
+
+            run_id = run.get("id")
+            r_status = str(run.get("status") or "")
+            conclusion = str(run.get("conclusion") or "")
+            event_name = str(run.get("event") or "schedule")
+            run_ts = str(run.get("updated_at") or run.get("created_at") or "")
+
+            for sid in sids:
+                s = src_by_id.get(sid)
+                if not s:
+                    continue
+                if r_status in ("in_progress", "queued", "waiting"):
+                    active_sids.add(sid)
+                    continue
+                if r_status != "completed":
+                    continue
+
+                if conclusion == "success" and run_ts:
+                    best_ts = _max_iso_ts(s.get("last_updated"), run_ts)
+                    if best_ts and best_ts != s.get("last_updated"):
+                        s["last_updated"] = best_ts
+                        changed = True
+                    if sid not in seen_latest_completed:
+                        s["status"] = "healthy"
+                elif conclusion == "failure" and sid not in seen_latest_completed:
+                    if _parse_iso_epoch(run_ts) >= _parse_iso_epoch(s.get("last_updated")):
+                        if s.get("status") != "error":
+                            s["status"] = "error"
+                            changed = True
+
+                seen_latest_completed.add(sid)
+
+                if run_id and conclusion in ("success", "failure") and run_ts:
+                    log_id = f"gh-run-{run_id}-{sid}"
+                    if log_id not in existing_log_ids and logged_per_sid.get(sid, 0) < max_logs_per_sid:
+                        existing_log_ids.add(log_id)
+                        logged_per_sid[sid] = logged_per_sid.get(sid, 0) + 1
+                        trig_label = "手動觸發" if event_name == "workflow_dispatch" else "排程自動執行"
+                        ok = conclusion == "success"
+                        new_gh_logs.append({
+                            "id": log_id,
+                            "timestamp": run_ts,
+                            "action": "GITHUB_WORKFLOW_SYNC" if ok else "GITHUB_WORKFLOW_ERROR",
+                            "source_name": s.get("name", sid),
+                            "runner": "github_actions",
+                            "status": "success" if ok else "error",
+                            "detail": (
+                                f"[GitHub Actions · {trig_label}] 工作流 {wf_file} 執行成功，目前共 {s.get('record_count', 0)} {s.get('unit', '筆')}。"
+                                if ok
+                                else f"[GitHub Actions · {trig_label}] 工作流 {wf_file} 執行失敗 (Run #{run_id})，請檢查 Actions 日誌。"
+                            ),
+                        })
+
+        for sid in active_sids:
+            if sid in src_by_id:
+                src_by_id[sid]["status"] = "updating"
+
+        if new_gh_logs:
+            # 依時間由舊到新寫入 append_schedule_log，使最新項目排在頂端
+            for entry in reversed(new_gh_logs):
+                system_log_service.append_schedule_log(entry)
+            changed = True
+
+    return changed
 
 
 _public_intervals_cache: dict = {"ts": 0.0, "data": None}
@@ -4568,48 +5041,19 @@ def get_public_source_intervals():
 def get_admin_sources():
     """
     獲取系統所有數據源 (API 與 GeoJSON) 之最新狀態、排程頻率、上次更新時間與記錄筆數
-    (回應前自動剔除 github_token 等敏感欄位，防止憑證外洩)
+    (自動同步 GitHub Actions 真實運行時間、磁碟圖資內嵌時間與 OCI 即時服務快取；回應前剔除 github_token)
     """
     config_path = get_admin_config_path()
     if os.path.exists(config_path):
         try:
+            # 於鎖外拉取 GitHub Actions 最近運行狀態 (90 秒快取 + 4 秒逾時保護)
+            gh_runs, is_first_boot = _fetch_github_workflow_runs_cached()
+
             with _admin_cfg_lock:
                 with open(config_path, 'r', encoding='utf-8') as f:
                     cfg = json.load(f)
 
-                # 11.2 同步 探索-活動 (public_events) 即時數據筆數與狀態
-                for s in cfg.get("sources", []):
-                    if s.get("id") == "public_events":
-                        if events_service.cached_events:
-                            s["record_count"] = len(events_service.cached_events)
-                            s["status"] = "healthy"
-                    elif s.get("id") == "vancouver_news":
-                        if news_service.cached_news:
-                            s["record_count"] = len(news_service.cached_news)
-                            s["status"] = "healthy"
-                    elif s.get("id") == "food_vendors":
-                        fv_path = os.path.join(os.path.dirname(__file__), "data", "vancouver_food_vendors.geojson")
-                        if not os.path.exists(fv_path):
-                            fv_path = os.path.join(os.path.dirname(__file__), "..", "frontend", "public", "vancouver_food_vendors.geojson")
-                        if os.path.exists(fv_path):
-                            try:
-                                with open(fv_path, "r", encoding="utf-8") as fv_file:
-                                    fv_data = json.load(fv_file)
-                                    f_count = len(fv_data.get("features", []))
-                                    if f_count > 0:
-                                        s["record_count"] = f_count
-                                    s["unit"] = "處街頭餐車與熟食攤位"
-                            except Exception:
-                                pass
-
-                # 自動校正所有舊版或遺失之 workflow_file (例如 update-datasets.yml)
-                has_changes = False
-                for s in cfg.get("sources", []):
-                    if s.get("runner") == "github_actions":
-                        canonical_wf = get_canonical_workflow_file(s["id"])
-                        if s.get("workflow_file") != canonical_wf:
-                            s["workflow_file"] = canonical_wf
-                            has_changes = True
+                has_changes = _reconcile_admin_sources_live(cfg, gh_runs, is_first_boot)
 
                 # 11.5 從持久化排程歷史恢復 logs，防止 deploy 後資料消失
                 persisted_sched = system_log_service.get_schedule_history()
@@ -4622,7 +5066,9 @@ def get_admin_sources():
 
                 if has_changes:
                     try:
-                        _atomic_write_json(config_path, cfg)
+                        persist_copy = dict(cfg)
+                        persist_copy["logs"] = (cfg.get("logs") or [])[:150]
+                        _atomic_write_json(config_path, persist_copy)
                     except Exception:
                         pass
 
@@ -4634,6 +5080,69 @@ def get_admin_sources():
     return {"sources": [], "logs": []}
 
 
+def _refresh_single_oci_service(sid: str) -> tuple[int | None, str]:
+    """手動同步單一 OCI 即時服務時，實際刷新其後端快取並回傳 (最新筆數, 摘要訊息)"""
+    if sid == "public_events":
+        events_service.get_latest_events(force_refresh=True)
+        cnt = len(events_service.cached_events)
+        return (cnt, f"OCI 伺服器已即時爬取更新 Daily Hive、Eventbrite 與 Destination Vancouver，共載入 {cnt} 筆活動。")
+    if sid == "vancouver_news":
+        news_service.get_latest_news(force_refresh=True)
+        cnt = len(news_service.cached_news)
+        return (cnt, f"OCI 伺服器已即時抓取 CBC、CTV、Global News、CityNews 等本地新聞 RSS，共載入 {cnt} 則要聞。")
+    if sid in ("weather_monitoring", "eccc_weather", "weather_live"):
+        weather_service._do_fetch_weather()
+        return (None, "OCI 伺服器已即時同步加拿大環境部 (ECCC) 與 Open-Meteo 即時氣象及預報快取。")
+    if sid == "border_wait_times":
+        border_service.get_border_wait_times(force_refresh=True)
+        return (5, "OCI 伺服器已即時同步 CBSA / CBP 美加邊境 5 大陸路關卡雙向等候時間。")
+    if sid == "tides_hydrometric":
+        import tides_service
+        tides_service._tide_cache["timestamp"] = 0
+        tides_service.get_live_tides_data()
+        return (len(tides_service.STATIONS_CONFIG), "OCI 伺服器已即時同步加拿大漁業及海洋部 (DFO IWLS) 潮汐水位觀測數據。")
+    if sid == "ski_resorts":
+        import ski_service
+        ski_service._ski_cache["timestamp"] = 0
+        ski_service.get_live_ski_data()
+        return (len(ski_service.RESORTS_CONFIG), "OCI 伺服器已即時同步北岸三大滑雪場雪況、積雪深度與吊椅開放狀態。")
+    if sid == "fuel_prices":
+        import fuel_service
+        fuel_service._fuel_cache["timestamp"] = 0
+        stations = fuel_service.get_live_fuel_prices()
+        return (len(stations) if stations else None, "OCI 伺服器已即時更新大溫哥華地區油站即時油價快取。")
+    if sid in ("aurora_forecast", "aurora_swpc"):
+        import aurora_service
+        aurora_service.get_aurora_data(force=True)
+        return (len(aurora_service.VANCOUVER_AURORA_SPOTS), "OCI 伺服器已即時同步 NOAA SWPC 行星 K 指數與極光觀測預報數據。")
+    if sid == "traffic_conditions":
+        from tomtom_service import tomtom_service
+        summary = tomtom_service.get_corridors_summary(force=True)
+        cnt = summary.get("total_roads_count") if isinstance(summary, dict) else None
+        return (cnt, "OCI 伺服器已即時刷新 TomTom 與 DriveBC 大溫哥華主要幹道路況與交通事件快取。")
+    if sid == "vancouver_crashes":
+        crash_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "vancouver_crashes.json")
+        if not os.path.exists(crash_file):
+            crash_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "frontend", "public", "vancouver_crashes.json")
+        cnt, _ = _extract_disk_file_meta(crash_file)
+        return (cnt if cnt > 0 else None, f"OCI 伺服器已即時同步 ICBC 車禍熱點資料，共載入 {cnt} 處事故地點。")
+    if sid == "translink_realtime":
+        _oci_runtime_ts["translink_realtime"] = time.time()
+        cnt = len(cached_translink_vehicles) + len(cached_skytrain_trains) + len(cached_bcferries_vehicles)
+        return (cnt if cnt > 0 else None, "OCI 伺服器已即時同步 TransLink 巴士、天車、海上巴士與 BC Ferries 實時動態。")
+    if sid == "maritime_shipping":
+        vessels = shipping_service.get_vessels()
+        _oci_runtime_ts["maritime_shipping"] = time.time()
+        return (len(vessels) if vessels else None, f"OCI 伺服器已即時同步 AIS 海事船舶追蹤快取，目前監控 {len(vessels)} 艘船隻。")
+    if sid == "flight_schedules":
+        schedules = flights.fetch_flightaware_schedules(allow_api_call=True)
+        if schedules:
+            _oci_runtime_ts["flight_schedules"] = time.time()
+        cnt = (len(schedules.get("arrivals", [])) + len(schedules.get("departures", []))) if isinstance(schedules, dict) else None
+        return (cnt, "OCI 伺服器已即時同步 YVR 溫哥華國際機場航班時刻與起降狀態快取。")
+    return (None, f"OCI 伺服器已即時更新 [{sid}] 資料快取與連線狀態。")
+
+
 @app.post("/api/admin/sources/sync")
 def trigger_admin_sync(payload: dict = Body(...)):
     """
@@ -4642,47 +5151,57 @@ def trigger_admin_sync(payload: dict = Body(...)):
     """
     source_id = payload.get("source_id")
     target_runner = payload.get("runner")  # 'oci' or 'github_actions'
+    if target_runner == "github":
+        target_runner = "github_actions"
     config_path = get_admin_config_path()
-    now_iso = datetime.utcnow().isoformat() + "Z"
+    now_iso = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     github_token, github_repo = get_persisted_github_token()
-    
+
     if os.path.exists(config_path):
         try:
-            with open(config_path, 'r', encoding='utf-8') as f:
-                cfg = json.load(f)
-            
+            with _admin_cfg_lock:
+                with open(config_path, 'r', encoding='utf-8') as f:
+                    cfg = json.load(f)
+
             updated_count = 0
             dispatched_workflows = []
             target_name = "所有數據源"
             detail_msg = ""
             action_name = "MANUAL_SYNC"
-            
+            log_status = "success"
+
             # 判斷是否為批次觸發
             if source_id == 'all_oci' or (source_id == 'all' and target_runner == 'oci'):
                 target_name = "全部 OCI 伺服器即時服務"
+                for idx_s in ("weather_monitoring", "vancouver_news", "public_events", "border_wait_times", "translink_realtime", "maritime_shipping"):
+                    try:
+                        _refresh_single_oci_service(idx_s)
+                    except Exception:
+                        pass
                 for src in cfg.get("sources", []):
                     if src.get("runner") == "oci":
                         src["last_updated"] = now_iso
                         src["status"] = "healthy"
                         updated_count += 1
-                detail_msg = f"管理員立即更新全部 OCI 伺服器即時服務（共 {updated_count} 項即時交通、天氣、航班等資料）。"
+                detail_msg = f"管理員已立即刷新全部 OCI 伺服器即時服務（共 {updated_count} 項即時交通、天氣、新聞、活動、海關等快取）。"
                 action_name = "OCI_BATCH_SYNC"
             elif source_id == 'all_github' or (source_id == 'all' and target_runner == 'github_actions'):
                 target_name = "全部 GitHub Actions 雲端資料管線"
                 seen_workflows = set()
                 for src in cfg.get("sources", []):
-                    if src.get("runner") == "github_actions":
-                        src["last_updated"] = now_iso
-                        src["status"] = "healthy"
-                        updated_count += 1
+                    if src.get("runner") in ("github_actions", "github"):
+                        src["runner"] = "github_actions"
                         canonical_wf = get_canonical_workflow_file(src["id"])
                         src["workflow_file"] = canonical_wf
+                        updated_count += 1
+                        if github_token:
+                            src["status"] = "updating"
                         if canonical_wf not in seen_workflows:
                             seen_workflows.add(canonical_wf)
                             dispatched_workflows.append(canonical_wf)
-                
-                # 若有 GITHUB_TOKEN，嘗試觸發各工作流
+
                 if github_token and dispatched_workflows:
+                    ok_dispatches = 0
                     for wf in dispatched_workflows:
                         try:
                             dispatch_url = f"https://api.github.com/repos/{github_repo}/actions/workflows/{wf}/dispatches"
@@ -4691,57 +5210,33 @@ def trigger_admin_sync(payload: dict = Body(...)):
                                 "Accept": "application/vnd.github.v3+json",
                                 "User-Agent": "VancouverGodsEye-Admin"
                             }
-                            requests.post(dispatch_url, json={"ref": "main"}, headers=headers, timeout=5)
+                            r = requests.post(dispatch_url, json={"ref": "main"}, headers=headers, timeout=5)
+                            if r.status_code in (200, 204):
+                                ok_dispatches += 1
                         except Exception as e:
                             print(f"Failed to dispatch workflow {wf}: {e}")
-                    detail_msg = f"已透過 GitHub Workflow Dispatch 觸發 {len(dispatched_workflows)} 個 Actions 雲端工作流立即執行！"
+                    with _gh_runs_lock:
+                        _gh_runs_sync_state["last_check"] = 0.0
+                    detail_msg = f"已透過 GitHub Workflow Dispatch 成功喚醒 {ok_dispatches}/{len(dispatched_workflows)} 個 Actions 雲端工作流執行！完成後將自動回寫上次更新時間。"
                 else:
-                    detail_msg = f"已排程觸發 {updated_count} 項 GitHub Actions 圖層更新（如需直接遠端呼叫 GitHub，請在後台設定 GITHUB_TOKEN）。"
+                    log_status = "warning"
+                    detail_msg = f"尚未設定 GITHUB_TOKEN，無法直接遠端喚醒 {len(dispatched_workflows)} 個 GitHub Actions 工作流（請於右上角綁定 GitHub Token）。"
                 action_name = "GITHUB_BATCH_SYNC"
             else:
                 # 單一項目觸發
                 target_src = None
                 for src in cfg.get("sources", []):
                     if src.get("id") == source_id:
-                        src["last_updated"] = now_iso
-                        src["status"] = "healthy"
                         target_src = src
                         target_name = src.get("name", source_id)
                         break
-                
+
                 if target_src:
+                    if target_src.get("runner") == "github":
+                        target_src["runner"] = "github_actions"
                     runner = target_src.get("runner", "oci")
-                    if target_src.get("id") == "food_vendors":
-                        action_name = "STREET_FOOD_SYNC"
-                        try:
-                            from scripts.layers.update_food_vendors import update_food_vendors
-                            fv_list = update_food_vendors()
-                            f_len = len(fv_list) if fv_list else 10
-                            target_src["record_count"] = f_len
-                            target_src["last_updated"] = now_iso
-                            target_src["status"] = "healthy"
-                            detail_msg = f"已即時同步更新 StreetFoodApp 街頭餐車資料，共更新 {f_len} 處營業中餐車攤位。"
-                        except Exception as fv_err:
-                            logger.warning(f"Failed to run update_food_vendors: {fv_err}")
-                            target_src["record_count"] = 10
-                            target_src["last_updated"] = now_iso
-                            target_src["status"] = "healthy"
-                            detail_msg = f"已即時更新街頭餐車資料，共 10 處營業中餐車攤位。"
-                    elif target_src.get("id") == "vancouver_311":
-                        action_name = "311_SYNC"
-                        try:
-                            from scripts.layers.update_311 import update_311
-                            res_311 = update_311()
-                            count_311 = len(res_311.get("results", [])) if res_311 else 0
-                            target_src["record_count"] = count_311
-                            target_src["last_updated"] = now_iso
-                            target_src["status"] = "healthy"
-                            detail_msg = f"已即時同步溫哥華 3-1-1 市政服務請求資料，共取得最新 {count_311} 筆記錄。"
-                        except Exception as e_311:
-                            logger.warning(f"Failed to run update_311: {e_311}")
-                            target_src["last_updated"] = now_iso
-                            detail_msg = f"更新 3-1-1 市政請求發生錯誤: {e_311}"
-                    elif runner == "github_actions":
+
+                    if runner == "github_actions":
                         action_name = "GITHUB_DISPATCH"
                         canonical_wf = get_canonical_workflow_file(target_src["id"])
                         target_src["workflow_file"] = canonical_wf
@@ -4756,8 +5251,12 @@ def trigger_admin_sync(payload: dict = Body(...)):
                                 }
                                 resp = requests.post(dispatch_url, json={"ref": "main"}, headers=headers, timeout=8)
                                 if resp.status_code in [200, 204]:
-                                    detail_msg = f"已成功調度 GitHub Actions 工作流 [{wf}] 立即在雲端執行！"
+                                    target_src["status"] = "updating"
+                                    with _gh_runs_lock:
+                                        _gh_runs_sync_state["last_check"] = 0.0
+                                    detail_msg = f"已成功調度 GitHub Actions 工作流 [{wf}] 立即在雲端執行！執行完成後將自動同步更新時間與筆數。"
                                 else:
+                                    log_status = "error"
                                     err_json = {}
                                     try:
                                         err_json = resp.json()
@@ -4765,65 +5264,51 @@ def trigger_admin_sync(payload: dict = Body(...)):
                                         pass
                                     detail_msg = f"呼叫 GitHub Actions API 失敗 (HTTP {resp.status_code}): {err_json.get('message', '未知錯誤')}"
                             except Exception as ex:
+                                log_status = "error"
                                 detail_msg = f"GitHub API 連線異常: {ex}"
                         else:
-                            detail_msg = f"已標記 [{target_name}] 同步請求。綁定工作流: [{wf}]（在右上角設定 GITHUB_TOKEN 即可一鍵遠端喚醒 Actions 雲端執行）。"
+                            # 若未設定 GITHUB_TOKEN，對於支援輕量本機同步的項目 (如 food_vendors / service_requests_311) 提供即時本機備援執行
+                            if target_src.get("id") == "food_vendors":
+                                try:
+                                    from scripts.layers.update_food_vendors import update_food_vendors
+                                    fv_list = update_food_vendors()
+                                    f_len = len(fv_list) if fv_list else target_src.get("record_count", 0)
+                                    target_src["record_count"] = f_len
+                                    target_src["last_updated"] = now_iso
+                                    target_src["status"] = "healthy"
+                                    detail_msg = f"已於伺服器本機即時同步更新街頭餐車資料，共更新 {f_len} 處攤位。"
+                                except Exception as fv_err:
+                                    log_status = "warning"
+                                    detail_msg = f"本機同步餐車資料失敗 ({fv_err})；請於右上角設定 GITHUB_TOKEN 以遠端觸發 [{wf}]。"
+                            elif target_src.get("id") in ("service_requests_311", "vancouver_311"):
+                                try:
+                                    from scripts.layers.update_311 import update_311
+                                    res_311 = update_311()
+                                    count_311 = len(res_311.get("results", [])) if isinstance(res_311, dict) else 0
+                                    if count_311 > 0:
+                                        target_src["record_count"] = count_311
+                                    target_src["last_updated"] = now_iso
+                                    target_src["status"] = "healthy"
+                                    detail_msg = f"已於伺服器本機即時同步溫哥華 3-1-1 市政服務請求資料，共取得 {target_src.get('record_count', count_311)} 筆記錄。"
+                                except Exception as e_311:
+                                    log_status = "warning"
+                                    detail_msg = f"本機同步 3-1-1 資料失敗 ({e_311})；請於右上角設定 GITHUB_TOKEN 以遠端觸發 [{wf}]。"
+                            else:
+                                log_status = "warning"
+                                detail_msg = f"此項目由 GitHub Actions 工作流 [{wf}] 負責執行；請於右上角設定 GITHUB_TOKEN 以一鍵遠端喚醒雲端排程。"
                     else:
                         action_name = "OCI_SYNC"
-                        # 11.2 若觸發探索-活動 (public_events)，執行即時爬取
-                        if target_src.get("id") == "public_events":
-                            try:
-                                events_service.get_latest_events(force_refresh=True)
-                                ev_count = len(events_service.cached_events)
-                                target_src["record_count"] = ev_count
-                                target_src["last_updated"] = now_iso
-                                target_src["status"] = "healthy"
-                                detail_msg = f"OCI 伺服器已即時爬取更新 Daily Hive、Eventbrite 與 Destination Vancouver，共載入 {ev_count} 筆活動。"
-                            except Exception as ev_err:
-                                detail_msg = f"活動更新警告: {ev_err}"
-                        elif target_src.get("id") == "vancouver_crashes":
+                        try:
+                            new_cnt, msg = _refresh_single_oci_service(target_src["id"])
+                            if new_cnt is not None and new_cnt > 0:
+                                target_src["record_count"] = new_cnt
                             target_src["last_updated"] = now_iso
                             target_src["status"] = "healthy"
-                            crash_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'frontend', 'public', 'vancouver_crashes.json')
-                            if not os.path.exists(crash_file):
-                                crash_file = os.path.join(os.getcwd(), 'frontend', 'public', 'vancouver_crashes.json')
-                            if os.path.exists(crash_file):
-                                try:
-                                    with open(crash_file, 'r', encoding='utf-8') as cf:
-                                        cdata = json.load(cf)
-                                        target_src["record_count"] = len(cdata)
-                                except Exception:
-                                    pass
-                            detail_msg = f"OCI 伺服器已即時同步 ICBC 車禍熱點資料，共載入 {target_src.get('record_count', 0)} 處事故地點。"
-                        elif target_src.get("id") in ["service_requests_311", "vancouver_311"]:
-                            count_311 = 0
-                            try:
-                                from scripts.layers.update_311 import update_311
-                                res_311 = update_311()
-                                if res_311 and "results" in res_311:
-                                    count_311 = len(res_311["results"])
-                                    target_src["record_count"] = count_311
-                            except Exception as ex_311:
-                                logger.error(f"Error during 311 sync: {ex_311}")
-                            target_src["last_updated"] = now_iso
-                            target_src["status"] = "healthy"
-                            detail_msg = f"OCI 伺服器已即時同步更新 City of Vancouver 3-1-1 市政服務請求資料，共取得 {target_src.get('record_count', count_311)} 筆最新記錄。"
-                        elif target_src.get("id") in ["eccc_weather", "weather_live"]:
-                            target_src["last_updated"] = now_iso
-                            target_src["status"] = "healthy"
-                            detail_msg = f"OCI 伺服器已即時同步加拿大環境部 (ECCC) 即時氣象與預報快取。"
-                        elif target_src.get("id") == "aurora_swpc":
-                            target_src["last_updated"] = now_iso
-                            target_src["status"] = "healthy"
-                            detail_msg = f"OCI 伺服器已即時同步 NOAA SWPC 北美極光觀測與太空天氣預報數據。"
-                        elif target_src.get("id") == "translink_realtime":
-                            target_src["last_updated"] = now_iso
-                            target_src["status"] = "healthy"
-                            detail_msg = f"OCI 伺服器已即時同步 TransLink 實時車輛動態與系統警報。"
-                        else:
-                            target_src["last_updated"] = now_iso
-                            target_src["status"] = "healthy"
-                            detail_msg = f"OCI 伺服器已即時更新 [{target_name}] 資料快取與連線狀態。"
+                            detail_msg = msg
+                        except Exception as oci_err:
+                            log_status = "error"
+                            target_src["status"] = "error"
+                            detail_msg = f"OCI 即時服務 [{target_name}] 刷新發生異常: {oci_err}"
                 else:
                     return {"status": "error", "message": f"找不到數據源 {source_id}"}
 
@@ -4833,29 +5318,44 @@ def trigger_admin_sync(payload: dict = Body(...)):
                 "action": action_name,
                 "source_name": target_name,
                 "runner": target_runner or (target_src.get("runner") if 'target_src' in locals() and target_src else "all"),
-                "status": "success",
+                "status": log_status,
                 "detail": detail_msg
             }
             # 11.4 & 11.5 同步寫入持久化排程歷史與系統日誌
             system_log_service.append_schedule_log(new_log)
             system_log_service.add_system_log(
-                level="INFO",
+                level="INFO" if log_status == "success" else ("WARNING" if log_status == "warning" else "ERROR"),
                 file="backend/main.py",
                 action=action_name,
                 message=f"數據源同步觸發：{target_name} ({action_name}) - {detail_msg}",
                 details={"source_id": source_id, "detail": detail_msg}
             )
 
-            logs = cfg.get("logs", [])
-            logs.insert(0, new_log)
-            cfg["logs"] = logs[:150]
-            
             with _admin_cfg_lock:
+                # 重新讀取最新磁碟設定並套用本次變更，避免覆蓋並發寫入
+                try:
+                    with open(config_path, 'r', encoding='utf-8') as rf:
+                        latest_cfg = json.load(rf)
+                    updated_map = {s["id"]: s for s in cfg.get("sources", []) if isinstance(s, dict) and "id" in s}
+                    for s in latest_cfg.get("sources", []):
+                        sid = s.get("id")
+                        if sid in updated_map:
+                            s["last_updated"] = updated_map[sid].get("last_updated", s.get("last_updated"))
+                            s["status"] = updated_map[sid].get("status", s.get("status"))
+                            s["record_count"] = updated_map[sid].get("record_count", s.get("record_count"))
+                            if updated_map[sid].get("workflow_file"):
+                                s["workflow_file"] = updated_map[sid]["workflow_file"]
+                    cfg = latest_cfg
+                except Exception:
+                    pass
+                logs = cfg.get("logs", [])
+                logs.insert(0, new_log)
+                cfg["logs"] = logs[:150]
                 _atomic_write_json(config_path, cfg)
             _public_intervals_cache["ts"] = 0.0
-            
+
             return {
-                "status": "success",
+                "status": "success" if log_status != "error" else "error",
                 "message": detail_msg,
                 "source_id": source_id,
                 "target_name": target_name,
@@ -4870,7 +5370,7 @@ def trigger_admin_sync(payload: dict = Body(...)):
                 details={"error": str(e)}
             )
             return {"status": "error", "error": str(e)}
-            
+
     return {"status": "error", "message": "找不到配置檔案"}
 
 
@@ -4895,35 +5395,38 @@ def update_admin_schedule(payload: dict = Body(...)):
     enabled = bool(payload.get("enabled", True))
     if cron_expr and not re.fullmatch(r"[0-9*,/\-]+\s+[0-9*,/\-]+\s+[0-9*,/\-]+\s+[0-9*,/\-]+\s+[0-9*,/\-]+", cron_expr):
         return JSONResponse(status_code=400, content={"status": "error", "message": "無效的 Cron 表達式格式 (需為標準 5 欄位 Cron)"})
-    
+
     config_path = get_admin_config_path()
-    now_iso = datetime.utcnow().isoformat() + "Z"
+    now_iso = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     github_token, github_repo = get_persisted_github_token()
-    
+
     if os.path.exists(config_path):
         try:
-            with open(config_path, 'r', encoding='utf-8') as f:
-                cfg = json.load(f)
-                
+            with _admin_cfg_lock:
+                with open(config_path, 'r', encoding='utf-8') as f:
+                    cfg = json.load(f)
+
             updated_src = None
             for src in cfg.get("sources", []):
                 if src.get("id") == source_id:
                     if payload.get("name"):
-                        src["name"] = payload.get("name").strip()
+                        src["name"] = str(payload.get("name")).strip()
                     if schedule_interval:
                         src["schedule_interval"] = schedule_interval
                     if cron_expr:
                         src["cron_expr"] = cron_expr
+                    if src.get("runner") == "github":
+                        src["runner"] = "github_actions"
                     src["enabled"] = enabled
                     updated_src = src
                     break
-                    
+
             if updated_src:
                 runner = updated_src.get("runner", "oci")
                 wf = updated_src.get("workflow_file")
                 detail_extra = ""
-                
-                                # 若為 GitHub Actions 項目，更新工作流 cron
+
+                # 若為 GitHub Actions 項目，更新工作流 cron
                 if runner == "github_actions" and cron_expr:
                     canonical_wf = get_canonical_workflow_file(updated_src["id"])
                     updated_src["workflow_file"] = canonical_wf
@@ -4944,7 +5447,6 @@ def update_admin_schedule(payload: dict = Body(...)):
                                 file_info = get_resp.json()
                                 sha = file_info.get("sha")
                                 raw_yml = base64.b64decode(file_info.get("content", "")).decode("utf-8")
-                                import re
                                 new_yml = re.sub(r"-\s*cron:\s*['\"].+?['\"]", f"- cron: '{cron_expr}'", raw_yml)
                                 if schedule_interval:
                                     new_yml = re.sub(r"^name:\s*Update\s+([^(]+)\([^)]+\)", f"name: Update \\1({schedule_interval})", new_yml, flags=re.MULTILINE)
@@ -4974,7 +5476,7 @@ def update_admin_schedule(payload: dict = Body(...)):
                         except Exception as gh_ex:
                             detail_extra = f"⚠️ 本地已儲存，但呼叫 GitHub API 異常: {gh_ex}"
                     else:
-                        detail_extra = f"（提示：目前尚未綁定 GITHUB_TOKEN，排程已在伺服器儲存；若需自動同步至 GitHub 倉庫，請於右上角設定 GitHub Token）。"
+                        detail_extra = "（提示：目前尚未綁定 GITHUB_TOKEN，排程已在伺服器儲存；若需自動同步至 GitHub 倉庫，請於右上角設定 GitHub Token）。"
 
                     # 2. 備份：同步修改本機倉庫的 yml (若本機存在此檔案)
                     try:
@@ -4983,7 +5485,6 @@ def update_admin_schedule(payload: dict = Body(...)):
                         if os.path.exists(wf_path):
                             with open(wf_path, 'r', encoding='utf-8') as yf:
                                 ycontent = yf.read()
-                            import re
                             new_ycontent = re.sub(r"-\s*cron:\s*['\"].+?['\"]", f"- cron: '{cron_expr}'", ycontent)
                             if schedule_interval:
                                 new_ycontent = re.sub(r"^name:\s*Update\s+([^(]+)\([^)]+\)", f"name: Update \\1({schedule_interval})", new_ycontent, flags=re.MULTILINE)
@@ -4992,7 +5493,7 @@ def update_admin_schedule(payload: dict = Body(...)):
                                     yf.write(new_ycontent)
                     except Exception as yerr:
                         print("Local workflow file update:", yerr)
-                
+
                 runner_label = "GitHub Actions 雲端管線" if runner == "github_actions" else "OCI 伺服器服務"
                 new_log = {
                     "id": f"log-{int(time.time() * 1000)}",
@@ -5012,11 +5513,20 @@ def update_admin_schedule(payload: dict = Body(...)):
                     details={"source_id": source_id, "cron": cron_expr}
                 )
 
-                logs = cfg.get("logs", [])
-                logs.insert(0, new_log)
-                cfg["logs"] = logs[:150]
-                
                 with _admin_cfg_lock:
+                    try:
+                        with open(config_path, 'r', encoding='utf-8') as rf:
+                            latest_cfg = json.load(rf)
+                        for s in latest_cfg.get("sources", []):
+                            if s.get("id") == source_id:
+                                s.update(updated_src)
+                                break
+                        cfg = latest_cfg
+                    except Exception:
+                        pass
+                    logs = cfg.get("logs", [])
+                    logs.insert(0, new_log)
+                    cfg["logs"] = logs[:150]
                     _atomic_write_json(config_path, cfg)
                 _public_intervals_cache["ts"] = 0.0
                 return {"status": "success", "source": updated_src, "detail": detail_extra}
@@ -5030,7 +5540,7 @@ def update_admin_schedule(payload: dict = Body(...)):
                 details={"error": str(e)}
             )
             return {"status": "error", "error": str(e)}
-            
+
     return {"status": "error", "message": "配置檔案不存在"}
 
 

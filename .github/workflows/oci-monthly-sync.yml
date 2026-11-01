@@ -63,4 +63,5 @@ jobs:
               echo "✅ 路口安全攝影機更新完成！"
             fi
             
+            python3 backend/scripts/record_workflow_sync.py --source "translink_realtime,parking_meters,ev_charging,escooter" --workflow "oci-monthly-sync.yml" --has-changes "true" --run-id "${{ github.run_id }}" --event "${{ github.event_name }}" || docker compose exec -T backend python /app/scripts/record_workflow_sync.py --source "translink_realtime,parking_meters,ev_charging,escooter" --workflow "oci-monthly-sync.yml" --has-changes "true" --run-id "${{ github.run_id }}" --event "${{ github.event_name }}" || true
             echo "🎉 所有伺服器排程維護任務順利完成！"

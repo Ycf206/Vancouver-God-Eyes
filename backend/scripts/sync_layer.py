@@ -44,8 +44,21 @@ LAYERS_MAP = {
     "snow_removal_routes": "update_snow_removal_routes",
     "contours": "update_contours",
     "ev_charging": "update_ev_charging",
+    "canada_post": "update_canada_post",
+    "property_addresses": "update_property_addresses",
     "banks": "update_banks",
-    "atm": "update_banks"
+    "shared_bikes": "update_shared_bikes",
+    "escooter": "update_escooter",
+    "truck_routes": "update_truck_routes",
+    "traffic_signals": "update_traffic_signals",
+    "turn_restrictions": "update_traffic_turn_restrictions",
+    "service_requests_311": "update_311",
+    "vancouver_311": "update_311",
+    "tnt_eflyers": "update_tnt_eflyers",
+    "vancouver_railways": "update_railways",
+    "fedex": "update_fedex",
+    "purolator": "update_purolator",
+    "vancouver_crashes": "update_crashes",
 }
 
 def run_layer(layer_id):

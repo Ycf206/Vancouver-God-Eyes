@@ -47,6 +47,7 @@ import { useUIStore } from '@/store/useUIStore';
 
 // 11.3 數據源對應前台圖層控制面板之 Key
 const SOURCE_TO_LAYER_MAP: Record<string, string> = {
+  traffic_conditions: 'traffic',
   bus_realtime: 'bus',
   bus_routes: 'busRoutes',
   skytrain_realtime: 'skytrainTrains',
@@ -61,6 +62,7 @@ const SOURCE_TO_LAYER_MAP: Record<string, string> = {
   accessible_parking: 'accessibleParking',
   motorcycle_parking: 'motorcycleParking',
   ev_charging: 'evCharging',
+  escooter: 'escooter',
   escooter_locations: 'escooter',
   shared_bikes: 'sharedBikes',
   bikeways: 'bikeways',
@@ -76,6 +78,11 @@ const SOURCE_TO_LAYER_MAP: Record<string, string> = {
   one_way_streets: 'oneWayStreets',
   traffic_speed_limits: 'trafficSpeedLimits',
   traffic_crosswalks: 'trafficCrosswalks',
+  truck_routes: 'truckRoutes',
+  traffic_signals: 'trafficSignals',
+  turn_restrictions: 'turnRestrictions',
+  vancouver_railways: 'railways',
+  vancouver_crashes: 'crashes',
   road_closures: 'roadClosures',
   road_construction: 'roadConstruction',
   snow_removal_routes: 'snowRemovalRoutes',
@@ -83,13 +90,16 @@ const SOURCE_TO_LAYER_MAP: Record<string, string> = {
   street_lighting_conduits: 'streetLightingConduits',
   water_distribution_mains: 'waterDistributionMains',
   sewer_mains: 'sewerMains',
+  contours: 'contours',
   fire_halls: 'fireHalls',
   police: 'police',
   fire_hydrants: 'fireHydrants',
   disaster_hubs: 'disasterHubs',
   community_centres: 'communityCentres',
   canada_post: 'canadaPost',
-  atm: 'atm',
+  fedex: 'fedex',
+  purolator: 'purolator',
+  banks: 'banks',
   hospitals: 'hospitals',
   parks: 'parks',
   parks_facilities: 'parksFacilities',
@@ -100,13 +110,17 @@ const SOURCE_TO_LAYER_MAP: Record<string, string> = {
   libraries: 'libraries',
   food_vendors: 'foodVendors',
   food_banks: 'foodBanks',
+  garbage_collection: 'garbageCollection',
   recycling: 'recycling',
+  aed: 'aed',
   aed_locations: 'aed',
   homeless_shelters: 'homelessShelters',
   public_art: 'publicArt',
   litter_containers: 'litterContainers',
   van_wifi: 'vanWifi',
+  tides_hydrometric: 'tideStations',
   tide_stations: 'tideStations',
+  beach_water: 'beachWaterQuality',
   beach_water_quality: 'beachWaterQuality',
   zoning_districts: 'zoningDistricts',
   public_trees: 'publicTrees',
@@ -121,7 +135,9 @@ function getSystemCategory(source: { id: string; category?: string; name?: strin
     'traffic_conditions', 'traffic_cameras', 'translink_realtime', 'snow_removal_routes',
     'fuel_prices', 'border_wait_times', 'flight_schedules', 'maritime_shipping',
     'parking_meters', 'impark_parking', 'motorcycle_parking', 'bikeways',
-    'ev_charging', 'traffic_speed_limits', 'traffic_crosswalks', 'one_way_streets'
+    'ev_charging', 'traffic_speed_limits', 'traffic_crosswalks', 'one_way_streets',
+    'shared_bikes', 'escooter', 'truck_routes', 'traffic_signals',
+    'turn_restrictions', 'vancouver_railways', 'vancouver_crashes'
   ]);
   const weatherIds = new Set([
     'weather_monitoring', 'tides_hydrometric', 'beach_water', 'aurora_forecast', 'ski_resorts'
@@ -812,6 +828,7 @@ export default function AdminPage() {
       try {
         localStorage.removeItem('gods_eye_github_token');
         localStorage.removeItem('vancouver_godseye_admin_token');
+        localStorage.removeItem('gods_eye_schedule_overrides');
       } catch (_) {}
     }
     (async () => {
@@ -839,33 +856,15 @@ export default function AdminPage() {
       const res = await adminApiFetch<{ sources: DataSource[]; logs: AuditLog[] }>('/api/admin/sources');
       let loadedSources: DataSource[] = [];
       if (res.ok && res.data && Array.isArray(res.data.sources) && res.data.sources.length > 0) {
-        loadedSources = res.data.sources;
+        loadedSources = res.data.sources.map(s => ({
+          ...s,
+          runner: (s.runner as string) === 'github' ? 'github_actions' : s.runner
+        }));
         setLogs(res.data.logs || []);
         setBackendConnected(true);
       } else {
         loadedSources = DEFAULT_ADMIN_SOURCES as DataSource[];
         setBackendConnected(false);
-      }
-
-      // 合併本機持久化排程修改快取，杜絕重整或容器部署時被舊版覆蓋
-      if (typeof window !== 'undefined') {
-        try {
-          const raw = localStorage.getItem('gods_eye_schedule_overrides');
-          if (raw) {
-            const overrides = JSON.parse(raw);
-            loadedSources = loadedSources.map(s => {
-              if (overrides[s.id]) {
-                return {
-                  ...s,
-                  cron_expr: overrides[s.id].cron_expr || s.cron_expr,
-                  schedule_interval: overrides[s.id].schedule_interval || s.schedule_interval,
-                  enabled: overrides[s.id].enabled !== undefined ? overrides[s.id].enabled : s.enabled
-                };
-              }
-              return s;
-            });
-          }
-        } catch (_) {}
       }
       setSources(loadedSources);
 
@@ -1021,19 +1020,6 @@ export default function AdminPage() {
         })
       });
       if (res.ok && res.data) {
-        // 即刻本機持久化排程修改
-        if (typeof window !== 'undefined') {
-          try {
-            const raw = localStorage.getItem('gods_eye_schedule_overrides');
-            const map = raw ? JSON.parse(raw) : {};
-            map[source.id] = {
-              cron_expr: editCron || source.cron_expr,
-              schedule_interval: editInterval || source.schedule_interval,
-              enabled: source.enabled !== false
-            };
-            localStorage.setItem('gods_eye_schedule_overrides', JSON.stringify(map));
-          } catch (_) {}
-        }
         setSuccessMsg(`排程已儲存！${res.data.detail || res.data.message || ''}`);
         setTimeout(() => setSuccessMsg(null), 6000);
         setEditingId(null);
@@ -1626,13 +1612,13 @@ export default function AdminPage() {
                         </div>
                       </th>
                       <th className="py-3 px-3 min-w-[160px]">來源連結 / 端點</th>
-                      <th onClick={() => handleSort('last_updated')} className="py-3 px-3 w-28 cursor-pointer hover:text-white transition-colors">
+                      <th onClick={() => handleSort('last_updated')} className="py-3 px-3 w-36 whitespace-nowrap cursor-pointer hover:text-white transition-colors">
                         <div className="flex items-center gap-1">
                           <span>上次更新</span>
                           {sortField === 'last_updated' ? (sortDirection === 'asc' ? <ArrowUp className="w-3 h-3 text-indigo-400" /> : <ArrowDown className="w-3 h-3 text-indigo-400" />) : <ArrowUpDown className="w-2.5 h-2.5 text-gray-500" />}
                         </div>
                       </th>
-                      <th onClick={() => handleSort('record_count')} className="py-3 px-3 w-24 cursor-pointer hover:text-white transition-colors">
+                      <th onClick={() => handleSort('record_count')} className="py-3 px-3 w-28 whitespace-nowrap cursor-pointer hover:text-white transition-colors">
                         <div className="flex items-center gap-1">
                           <span>規模筆數</span>
                           {sortField === 'record_count' ? (sortDirection === 'asc' ? <ArrowUp className="w-3 h-3 text-indigo-400" /> : <ArrowDown className="w-3 h-3 text-indigo-400" />) : <ArrowUpDown className="w-2.5 h-2.5 text-gray-500" />}
@@ -1644,34 +1630,37 @@ export default function AdminPage() {
                   <tbody className="divide-y divide-[#202738]">
                     {filteredSources.map((source) => {
                       const isEditing = editingId === source.id;
-                      const isSyncing = syncingId === source.id;
+                      const isSyncing = syncingId === source.id || source.status === 'updating';
                       const isOci = source.runner === 'oci';
                       const isGitHubUnbound = !isOci && !githubStatus.configured;
 
                       return (
                         <tr 
                           key={source.id} 
-                          className={`hover:bg-[#1a202d] transition-colors group ${isGitHubUnbound ? 'opacity-85' : ''}`}
+                          className="hover:bg-[#1a202d] transition-colors group"
                         >
                           {/* 狀態燈號 */}
                           <td className="py-3.5 px-4 text-center">
-                            {isGitHubUnbound ? (
-                              <span 
-                                className="inline-block w-2.5 h-2.5 rounded-full bg-gray-600 border border-gray-500/40" 
-                                title="未綁定 GitHub Token，處於預留空白待啟用狀態"
-                              />
-                            ) : (
-                              <span 
-                                className={`inline-block w-2.5 h-2.5 rounded-full ${
-                                  isSyncing
-                                    ? 'bg-sky-400 animate-ping'
+                            <span 
+                              className={`inline-block w-2.5 h-2.5 rounded-full ${
+                                isSyncing
+                                  ? 'bg-sky-400 animate-ping'
+                                  : source.status === 'error'
+                                    ? 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]'
                                     : source.enabled !== false
                                       ? isOci ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]' : 'bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.5)]'
                                       : 'bg-gray-500'
-                                }`} 
-                                title={source.enabled !== false ? '排程啟用中' : '排程已暫停'}
-                              />
-                            )}
+                              }`} 
+                              title={
+                                isSyncing
+                                  ? '雲端工作流 / 資料同步執行中'
+                                  : source.status === 'error'
+                                    ? '最近一次更新執行失敗，請查看排程日誌'
+                                    : source.enabled !== false
+                                      ? '排程正常啟用中'
+                                      : '排程已暫停'
+                              }
+                            />
                           </td>
 
                           {/* 1. 分類 (已移至資料源名稱左方) */}
@@ -1711,9 +1700,14 @@ export default function AdminPage() {
                               <div className="flex flex-col">
                                 <span className="font-bold text-white text-xs group-hover:text-sky-300 transition-colors flex items-center gap-1.5">
                                   <span>{source.name}</span>
-                                  {isGitHubUnbound && (
-                                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-normal">
-                                      待連接 Token
+                                  {source.status === 'updating' && (
+                                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-sky-500/15 text-sky-300 border border-sky-500/30 font-normal animate-pulse">
+                                      執行中
+                                    </span>
+                                  )}
+                                  {source.status === 'error' && (
+                                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-rose-500/15 text-rose-300 border border-rose-500/30 font-normal">
+                                      異常
                                     </span>
                                   )}
                                 </span>
@@ -1742,8 +1736,8 @@ export default function AdminPage() {
                                   <Cloud className="w-3 h-3" />
                                   <span>GitHub Actions</span>
                                 </span>
-                                <span className="text-[10px] text-sky-400/80 font-mono truncate max-w-[170px]" title={source.workflow_file || `update-${source.id.replace(/_/g, "-")}.yml`}>
-                                  {isGitHubUnbound ? '未綁定 Token (待激活)' : (source.workflow_file || `update-${source.id.replace(/_/g, "-")}.yml`)}
+                                <span className="text-[10px] text-sky-400/80 font-mono truncate max-w-[190px]" title={source.workflow_file || `update-${source.id.replace(/_/g, "-")}.yml`}>
+                                  {source.workflow_file || `update-${source.id.replace(/_/g, "-")}.yml`}
                                 </span>
                               </div>
                             )}
@@ -1751,9 +1745,7 @@ export default function AdminPage() {
 
                           {/* 排程週期 (Cron 或間隔) 逐行行內編輯 */}
                           <td className="py-3.5 px-4">
-                            {isGitHubUnbound ? (
-                              <span className="text-gray-500 font-mono text-[11px]">—</span>
-                            ) : isEditing ? (
+                            {isEditing ? (
                               <div className="flex flex-col gap-2 p-2.5 bg-[#0f1218] rounded-xl border border-indigo-500/50 shadow-xl min-w-[280px] max-w-[340px] animate-in fade-in">
                                 <div className="flex flex-col gap-1.5">
                                   <div className="flex items-center gap-1.5">
@@ -1981,12 +1973,11 @@ export default function AdminPage() {
                           </td>
 
                           {/* 上次更新時間 */}
-                          <td className="py-3.5 px-4 text-gray-300 font-mono text-[11px]">
-                            {isGitHubUnbound ? (
-                              <span className="text-gray-500 font-mono text-[11px]">—</span>
-                            ) : source.last_updated ? (
-                              <span>
+                          <td className="py-3.5 px-4 text-gray-300 font-mono text-[11px] whitespace-nowrap">
+                            {source.last_updated ? (
+                              <span title={`UTC: ${source.last_updated}`}>
                                 {new Date(source.last_updated).toLocaleString('zh-HK', {
+                                  year: 'numeric',
                                   month: '2-digit',
                                   day: '2-digit',
                                   hour: '2-digit',
@@ -2000,33 +1991,25 @@ export default function AdminPage() {
                           </td>
 
                           {/* 規模 / 筆數 */}
-                          <td className="py-3.5 px-4 text-gray-400 text-[11px]">
-                            {isGitHubUnbound ? (
-                              <span className="text-gray-500 font-mono text-[11px]">—</span>
-                            ) : (
-                              <>
-                                <span className="text-white font-medium">{source.record_count.toLocaleString()}</span>{' '}
-                                <span>{source.unit}</span>
-                              </>
-                            )}
+                          <td className="py-3.5 px-4 text-gray-400 text-[11px] whitespace-nowrap">
+                            <span className="text-white font-medium">{(source.record_count ?? 0).toLocaleString()}</span>{' '}
+                            <span>{source.unit}</span>
                           </td>
 
                           {/* 管理操作按鈕 */}
                           <td className="py-3.5 px-4 text-right">
-                            {isGitHubUnbound ? (
-                              <div className="flex items-center justify-end">
+                            <div className="flex items-center justify-end gap-1.5">
+                              {/* 立即同步 / 綁定 Token 按鈕 */}
+                              {isGitHubUnbound && source.id !== 'food_vendors' && source.id !== 'service_requests_311' ? (
                                 <button
                                   onClick={() => setIsGithubModalOpen(true)}
-                                  className="px-2.5 py-1 rounded-md font-semibold text-[11px] bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 transition-all cursor-pointer flex items-center gap-1.5 shadow-xs hover:scale-105"
-                                  title="點擊設定 GitHub Token 以啟用此管線的實際狀態與調度操作"
+                                  className="px-2 py-1 rounded-md font-semibold text-[11px] bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 transition-all cursor-pointer flex items-center gap-1 shadow-xs"
+                                  title="排程已自動於 GitHub 雲端執行並回寫狀態；如需從後台手動觸發此工作流，請先連接 GitHub Token"
                                 >
                                   <Key className="w-3 h-3 text-amber-400" />
-                                  <span>連接 Token 啟用</span>
+                                  <span>綁定觸發</span>
                                 </button>
-                              </div>
-                            ) : (
-                              <div className="flex items-center justify-end gap-1.5">
-                                {/* 立即同步按鈕 */}
+                              ) : (
                                 <button
                                   disabled={!isUnlocked || isSyncing}
                                   onClick={() => handleSync(source.id, source.runner)}
@@ -2044,80 +2027,80 @@ export default function AdminPage() {
                                   <Play className={`w-3 h-3 ${isSyncing ? 'animate-spin' : ''}`} />
                                   <span>{isSyncing ? '同步中' : '立即同步'}</span>
                                 </button>
+                              )}
 
-                                {/* 修改排程按鈕 */}
-                                <button
-                                  disabled={!isUnlocked}
-                                  onClick={() => {
-                                    setEditingId(source.id);
-                                    setEditName(source.name);
-                                    setEditCron(source.cron_expr);
-                                    setEditInterval(source.schedule_interval);
-                                    const detected = parseSourcePreset(source.cron_expr, source.schedule_interval);
-                                    setSelectedSchedulePreset(detected);
-                                    const parts = (source.cron_expr || '').trim().split(/\s+/);
-                                    if (parts.length === 5) {
-                                      const [min, hour, dom, mon, dow] = parts;
-                                      const hNum = parseInt(hour, 10);
-                                      const mNum = parseInt(min, 10);
-                                      if (!isNaN(hNum) && !isNaN(mNum)) {
-                                        setCustomTime(`${String(hNum).padStart(2, '0')}:${String(mNum).padStart(2, '0')}`);
-                                      }
-                                      if (dow !== '*' && !isNaN(parseInt(dow, 10))) setCustomDow(parseInt(dow, 10));
-                                      if (dom !== '*' && !isNaN(parseInt(dom, 10))) setCustomDom(parseInt(dom, 10));
-                                      if (mon !== '*' && !isNaN(parseInt(mon, 10))) setCustomMonth(parseInt(mon, 10));
+                              {/* 修改排程按鈕 */}
+                              <button
+                                disabled={!isUnlocked}
+                                onClick={() => {
+                                  setEditingId(source.id);
+                                  setEditName(source.name);
+                                  setEditCron(source.cron_expr);
+                                  setEditInterval(source.schedule_interval);
+                                  const detected = parseSourcePreset(source.cron_expr, source.schedule_interval);
+                                  setSelectedSchedulePreset(detected);
+                                  const parts = (source.cron_expr || '').trim().split(/\s+/);
+                                  if (parts.length === 5) {
+                                    const [min, hour, dom, mon, dow] = parts;
+                                    const hNum = parseInt(hour, 10);
+                                    const mNum = parseInt(min, 10);
+                                    if (!isNaN(hNum) && !isNaN(mNum)) {
+                                      setCustomTime(`${String(hNum).padStart(2, '0')}:${String(mNum).padStart(2, '0')}`);
                                     }
-                                  }}
-                                  className={`p-1 rounded-md transition-colors ${
-                                    isUnlocked
-                                      ? 'hover:bg-[#252d3d] text-gray-400 hover:text-gray-100 cursor-pointer'
-                                      : 'text-gray-700 cursor-not-allowed'
-                                  }`}
-                                  title="修改排程週期與 Cron"
-                                >
-                                  <Sliders className="w-3.5 h-3.5" />
-                                </button>
+                                    if (dow !== '*' && !isNaN(parseInt(dow, 10))) setCustomDow(parseInt(dow, 10));
+                                    if (dom !== '*' && !isNaN(parseInt(dom, 10))) setCustomDom(parseInt(dom, 10));
+                                    if (mon !== '*' && !isNaN(parseInt(mon, 10))) setCustomMonth(parseInt(mon, 10));
+                                  }
+                                }}
+                                className={`p-1 rounded-md transition-colors ${
+                                  isUnlocked
+                                    ? 'hover:bg-[#252d3d] text-gray-400 hover:text-gray-100 cursor-pointer'
+                                    : 'text-gray-700 cursor-not-allowed'
+                                }`}
+                                title="修改排程週期與 Cron"
+                              >
+                                <Sliders className="w-3.5 h-3.5" />
+                              </button>
 
-                                {/* 啟用/暫停切換 */}
-                                <button
-                                  disabled={!isUnlocked}
-                                  onClick={() => handleToggleEnabled(source)}
-                                  className={`px-1.5 py-0.5 rounded text-[10px] font-bold transition-colors cursor-pointer ${
-                                    !isUnlocked
-                                      ? 'text-gray-700 cursor-not-allowed'
-                                      : source.enabled !== false
-                                        ? 'text-emerald-400 hover:bg-emerald-500/10'
-                                        : 'text-rose-400 hover:bg-rose-500/10'
-                                  }`}
-                                  title={source.enabled !== false ? '點擊暫停排程' : '點擊啟用排程'}
-                                >
-                                  {source.enabled !== false ? '啟用' : '暫停'}
-                                </button>
+                              {/* 啟用/暫停切換 */}
+                              <button
+                                disabled={!isUnlocked}
+                                onClick={() => handleToggleEnabled(source)}
+                                className={`px-1.5 py-0.5 rounded text-[10px] font-bold transition-colors cursor-pointer ${
+                                  !isUnlocked
+                                    ? 'text-gray-700 cursor-not-allowed'
+                                    : source.enabled !== false
+                                      ? 'text-emerald-400 hover:bg-emerald-500/10'
+                                      : 'text-rose-400 hover:bg-rose-500/10'
+                                }`}
+                                title={source.enabled !== false ? '點擊暫停排程' : '點擊啟用排程'}
+                              >
+                                {source.enabled !== false ? '啟用' : '暫停'}
+                              </button>
 
-                                {/* 11.3 獨立圖層開關: 顯示或隱藏在圖層控制界面中 */}
-                                {SOURCE_TO_LAYER_MAP[source.id] && (() => {
-                                  const layerKey = SOURCE_TO_LAYER_MAP[source.id];
-                                  const isLayerHidden = !!hiddenLayersInPanelState[layerKey];
-                                  return (
-                                    <button
-                                      type="button"
-                                      onClick={() => handleToggleLayerVisibility(source.id, layerKey)}
-                                      className={`p-1.5 rounded-md transition-all cursor-pointer flex items-center gap-1 ${
-                                        isLayerHidden
-                                          ? 'bg-rose-500/15 text-rose-300 border border-rose-500/30 hover:bg-rose-500/25'
-                                          : 'bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 hover:bg-indigo-500/25'
-                                      }`}
-                                      title={isLayerHidden ? '目前在圖層控制面板中【隱藏】，點擊切換為【顯示】' : '目前在圖層控制面板中【顯示】，點擊切換為【隱藏】'}
-                                    >
-                                      {isLayerHidden ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                                      <span className="text-[10px] hidden xl:inline">
-                                        {isLayerHidden ? '面板隱藏' : '面板顯示'}
-                                      </span>
-                                    </button>
-                                  );
-                                })()}
-                              </div>
-                            )}
+                              {/* 11.3 獨立圖層開關: 顯示或隱藏在圖層控制界面中 */}
+                              {SOURCE_TO_LAYER_MAP[source.id] && (() => {
+                                const layerKey = SOURCE_TO_LAYER_MAP[source.id];
+                                const isLayerHidden = !!hiddenLayersInPanelState[layerKey];
+                                return (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleToggleLayerVisibility(source.id, layerKey)}
+                                    className={`p-1.5 rounded-md transition-all cursor-pointer flex items-center gap-1 ${
+                                      isLayerHidden
+                                        ? 'bg-rose-500/15 text-rose-300 border border-rose-500/30 hover:bg-rose-500/25'
+                                        : 'bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 hover:bg-indigo-500/25'
+                                    }`}
+                                    title={isLayerHidden ? '目前在圖層控制面板中【隱藏】，點擊切換為【顯示】' : '目前在圖層控制面板中【顯示】，點擊切換為【隱藏】'}
+                                  >
+                                    {isLayerHidden ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                                    <span className="text-[10px] hidden xl:inline">
+                                      {isLayerHidden ? '面板隱藏' : '面板顯示'}
+                                    </span>
+                                  </button>
+                                );
+                              })()}
+                            </div>
                           </td>
                         </tr>
                       );
@@ -2211,12 +2194,14 @@ export default function AdminPage() {
                         })}
                       </td>
                       <td className="py-3 px-4">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                          log.action.includes('GITHUB')
-                            ? 'bg-sky-500/15 text-sky-300 border border-sky-500/30'
-                            : log.action.includes('OCI')
-                              ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
-                              : 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold whitespace-nowrap ${
+                          log.status === 'error' || log.action.includes('ERROR')
+                            ? 'bg-rose-500/15 text-rose-300 border border-rose-500/30'
+                            : log.action.includes('GITHUB')
+                              ? 'bg-sky-500/15 text-sky-300 border border-sky-500/30'
+                              : log.action.includes('OCI')
+                                ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
+                                : 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
                         }`}>
                           {log.action}
                         </span>

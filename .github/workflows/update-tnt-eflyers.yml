@@ -1,4 +1,4 @@
-name: Update 大統華每週特價海報 (每週五)
+name: "Update 大統華每週特價海報 (每週五)"
 
 on:
   schedule:
@@ -12,7 +12,6 @@ concurrency:
 jobs:
   update-tnt-eflyers:
     runs-on: ubuntu-latest
-
     permissions:
       contents: write
 
@@ -20,42 +19,89 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Fetch latest layer cache from data branch
+        run: |
+          git fetch origin data:refs/remotes/origin/data 2>/dev/null || true
+          git checkout refs/remotes/origin/data -- backend/data/tnt_eflyers.json frontend/public/tnt_eflyers.json 2>/dev/null || true
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Run Layer Sync Script (大統華每週特價海報)
+      - name: Install dependencies
+        run: |
+          pip install requests
+
+      - name: Run layer update script (大統華 T&T 超市每週特價海報)
         run: |
           python backend/scripts/layers/update_tnt_eflyers.py
 
-      - name: Commit and Push Updated Data
+      - name: Commit and push updated data to data branch
         id: git_push
         run: |
+          set -e
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add backend/data/tnt_eflyers.json frontend/public/tnt_eflyers.json
-          if git diff --staged --quiet; then
-            echo "No updates detected for 大統華每週特價海報."
-            echo "has_changes=false" >> $GITHUB_OUTPUT
-          else
-            git commit -m "chore(data): auto-update 大統華每週特價海報 [skip ci]"
-            git push origin HEAD:data --force
-            echo "has_changes=true" >> $GITHUB_OUTPUT
-          fi
 
-      - name: Sync Updated Data to OCI VM
-        if: steps.git_push.outputs.has_changes == 'true'
+          mkdir -p /tmp/wf_stage
+          for f in backend/data/tnt_eflyers.json frontend/public/tnt_eflyers.json; do
+            if [ -f "$f" ]; then
+              mkdir -p "/tmp/wf_stage/$(dirname "$f")"
+              cp -f "$f" "/tmp/wf_stage/$f"
+            fi
+          done
+
+          has_changes="false"
+          for attempt in 1 2 3 4 5; do
+            git fetch origin data:refs/remotes/origin/data 2>/dev/null || true
+            if git show-ref --verify --quiet refs/remotes/origin/data; then
+              git checkout -B data refs/remotes/origin/data
+            else
+              git checkout -B data
+            fi
+
+            for f in backend/data/tnt_eflyers.json frontend/public/tnt_eflyers.json; do
+              if [ -f "/tmp/wf_stage/$f" ]; then
+                mkdir -p "$(dirname "$f")"
+                cp -f "/tmp/wf_stage/$f" "$f"
+              fi
+            done
+
+            git add backend/data/tnt_eflyers.json frontend/public/tnt_eflyers.json
+            if git diff -I '"updated_at"' -I '"generated_at"' --staged --quiet; then
+              echo "No substantive feature changes detected for 大統華 T&T 超市每週特價海報."
+              git reset --hard HEAD >/dev/null 2>&1 || true
+              has_changes="false"
+              break
+            fi
+
+            git commit -m "chore(data): auto-update 大統華 T&T 超市每週特價海報 (tnt_eflyers) [skip ci]"
+            if git push origin HEAD:data; then
+              has_changes="true"
+              break
+            fi
+
+            echo "Push conflict on data branch (attempt $attempt), retrying..."
+            sleep $((attempt * 2))
+          done
+
+          echo "has_changes=$has_changes" >> "$GITHUB_OUTPUT"
+
+      - name: Sync data and update timestamp on OCI VM
+        if: success()
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.OCI_HOST_IP }}
           username: ubuntu
           key: ${{ secrets.OCI_SSH_KEY }}
           script: |
-            echo "🔄 同步最新 大統華每週特價海報 圖資至 OCI 伺服器..."
+            echo "🔄 同步 [大統華 T&T 超市每週特價海報] 更新狀態與圖資至 OCI 伺服器..."
             cd ~/Vancouver-God-Eyes || cd ~/vancouver-gods-eye
-            git fetch origin data 2>/dev/null || true
-            git checkout origin/data -- backend/data frontend/public 2>/dev/null || true
             mkdir -p backend/data frontend/public
-            sudo docker compose restart backend || sudo docker-compose restart backend || true
-            echo "✅ OCI 伺服器 大統華每週特價海報 圖資同步完成！"
+            if [ "${{ steps.git_push.outputs.has_changes }}" = "true" ]; then
+              git fetch origin data:refs/remotes/origin/data 2>/dev/null || git fetch origin data 2>/dev/null || true
+              git checkout refs/remotes/origin/data -- backend/data/tnt_eflyers.json frontend/public/tnt_eflyers.json 2>/dev/null || git checkout origin/data -- backend/data/tnt_eflyers.json frontend/public/tnt_eflyers.json 2>/dev/null || true
+            fi
+            python3 backend/scripts/record_workflow_sync.py --source "tnt_eflyers" --workflow "update-tnt-eflyers.yml" --has-changes "${{ steps.git_push.outputs.has_changes }}" --run-id "${{ github.run_id }}" --event "${{ github.event_name }}" || docker compose exec -T backend python /app/scripts/record_workflow_sync.py --source "tnt_eflyers" --workflow "update-tnt-eflyers.yml" --has-changes "${{ steps.git_push.outputs.has_changes }}" --run-id "${{ github.run_id }}" --event "${{ github.event_name }}" || true
+            echo "✅ OCI 伺服器 [大統華 T&T 超市每週特價海報] 資料與後台時間戳同步完成！"

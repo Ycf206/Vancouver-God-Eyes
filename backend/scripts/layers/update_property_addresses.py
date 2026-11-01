@@ -2,9 +2,14 @@ import os
 import sys
 import json
 import requests
+from datetime import datetime, timezone
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.abspath(os.path.join(CURRENT_DIR, "../../data"))
+if CURRENT_DIR not in sys.path:
+    sys.path.insert(0, CURRENT_DIR)
+from base import BACKEND_DATA_DIR, FRONTEND_DATA_DIR, update_admin_source_metadata
+
+DATA_DIR = BACKEND_DATA_DIR
 
 OPENDATA_ADDRESS_URL = "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/property-addresses/records"
 
@@ -22,9 +27,11 @@ def update_property_addresses():
         total_count = data.get("total_count", 0)
         print(f"ℹ️ 溫哥華 OpenData 全市門牌地址共 {total_count} 筆。")
 
+        now_iso = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
         meta = {
             "dataset_id": "property-addresses",
             "total_count": total_count,
+            "updated_at": now_iso,
             "api_endpoint": OPENDATA_ADDRESS_URL,
             "status": "healthy"
         }
@@ -32,6 +39,12 @@ def update_property_addresses():
         with open(cache_file, "w", encoding="utf-8") as f:
             json.dump(meta, f, ensure_ascii=False, indent=2)
 
+        if os.path.exists(FRONTEND_DATA_DIR):
+            fe_meta = os.path.join(FRONTEND_DATA_DIR, "vancouver_property_addresses_meta.json")
+            with open(fe_meta, "w", encoding="utf-8") as f:
+                json.dump(meta, f, ensure_ascii=False, indent=2)
+
+        update_admin_source_metadata("property_addresses", record_count=total_count, updated_at=now_iso)
         print(f"✅ 溫哥華門牌地址索引更新完成，共 {total_count} 筆可用地址。")
         return meta
     except Exception as e:

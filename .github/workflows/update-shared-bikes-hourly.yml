@@ -1,8 +1,7 @@
-name: Update 共享單車 (Mobi Shared Bikes) (每小時即時車況)
+name: "Update 共享單車 (Mobi Shared Bikes) (每小時即時車況)"
 
 on:
   schedule:
-    # 每小時整點執行 (UTC)
     - cron: '0 * * * *'
   workflow_dispatch:
 
@@ -17,13 +16,13 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Fetch Latest GeoJSON Cache from data branch
+      - name: Fetch latest layer cache from data branch
         run: |
           git fetch origin data:refs/remotes/origin/data 2>/dev/null || true
-          git checkout origin/data -- backend/data frontend/public 2>/dev/null || true
+          git checkout refs/remotes/origin/data -- backend/data/vancouver_shared_bikes.geojson frontend/public/vancouver_shared_bikes.geojson 2>/dev/null || true
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -34,37 +33,75 @@ jobs:
         run: |
           pip install requests
 
-      - name: Run Mobi 共享單車 hourly status update
+      - name: Run layer update script (Mobi 共享單車)
         run: |
           python backend/scripts/layers/update_shared_bikes.py --mode status
 
-      - name: Commit and push changes
+      - name: Commit and push updated data to data branch
         id: git_push
         run: |
+          set -e
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add backend/data/vancouver_shared_bikes.geojson frontend/public/vancouver_shared_bikes.geojson
-          if git diff --staged --quiet; then
-            echo "No changes detected"
-            echo "has_changes=false" >> $GITHUB_OUTPUT
-          else
-            git commit -m "chore(data): auto-update Mobi 共享單車即時車況 (Shared Bikes) [skip ci]"
-            git push origin HEAD:data --force
-            echo "has_changes=true" >> $GITHUB_OUTPUT
-          fi
 
-      - name: Sync Updated Data to OCI VM
-        if: steps.git_push.outputs.has_changes == 'true'
+          mkdir -p /tmp/wf_stage
+          for f in backend/data/vancouver_shared_bikes.geojson frontend/public/vancouver_shared_bikes.geojson; do
+            if [ -f "$f" ]; then
+              mkdir -p "/tmp/wf_stage/$(dirname "$f")"
+              cp -f "$f" "/tmp/wf_stage/$f"
+            fi
+          done
+
+          has_changes="false"
+          for attempt in 1 2 3 4 5; do
+            git fetch origin data:refs/remotes/origin/data 2>/dev/null || true
+            if git show-ref --verify --quiet refs/remotes/origin/data; then
+              git checkout -B data refs/remotes/origin/data
+            else
+              git checkout -B data
+            fi
+
+            for f in backend/data/vancouver_shared_bikes.geojson frontend/public/vancouver_shared_bikes.geojson; do
+              if [ -f "/tmp/wf_stage/$f" ]; then
+                mkdir -p "$(dirname "$f")"
+                cp -f "/tmp/wf_stage/$f" "$f"
+              fi
+            done
+
+            git add backend/data/vancouver_shared_bikes.geojson frontend/public/vancouver_shared_bikes.geojson
+            if git diff -I '"updated_at"' -I '"generated_at"' --staged --quiet; then
+              echo "No substantive feature changes detected for Mobi 共享單車."
+              git reset --hard HEAD >/dev/null 2>&1 || true
+              has_changes="false"
+              break
+            fi
+
+            git commit -m "chore(data): auto-update Mobi 共享單車 (shared_bikes) [skip ci]"
+            if git push origin HEAD:data; then
+              has_changes="true"
+              break
+            fi
+
+            echo "Push conflict on data branch (attempt $attempt), retrying..."
+            sleep $((attempt * 2))
+          done
+
+          echo "has_changes=$has_changes" >> "$GITHUB_OUTPUT"
+
+      - name: Sync data and update timestamp on OCI VM
+        if: success()
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.OCI_HOST_IP }}
           username: ubuntu
           key: ${{ secrets.OCI_SSH_KEY }}
           script: |
-            echo "🔄 同步最新 Mobi 共享單車即時站點 圖資至 OCI 伺服器..."
+            echo "🔄 同步 [Mobi 共享單車] 更新狀態與圖資至 OCI 伺服器..."
             cd ~/Vancouver-God-Eyes || cd ~/vancouver-gods-eye
-            git fetch origin data 2>/dev/null || true
-            git checkout origin/data -- backend/data frontend/public 2>/dev/null || true
             mkdir -p backend/data frontend/public
-            sudo docker compose restart backend || sudo docker-compose restart backend || true
-            echo "✅ OCI 伺服器 Mobi 共享單車即時站點 圖資同步完成！"
+            if [ "${{ steps.git_push.outputs.has_changes }}" = "true" ]; then
+              git fetch origin data:refs/remotes/origin/data 2>/dev/null || git fetch origin data 2>/dev/null || true
+              git checkout refs/remotes/origin/data -- backend/data/vancouver_shared_bikes.geojson frontend/public/vancouver_shared_bikes.geojson 2>/dev/null || git checkout origin/data -- backend/data/vancouver_shared_bikes.geojson frontend/public/vancouver_shared_bikes.geojson 2>/dev/null || true
+            fi
+            python3 backend/scripts/record_workflow_sync.py --source "shared_bikes" --workflow "update-shared-bikes-hourly.yml" --has-changes "${{ steps.git_push.outputs.has_changes }}" --run-id "${{ github.run_id }}" --event "${{ github.event_name }}" || docker compose exec -T backend python /app/scripts/record_workflow_sync.py --source "shared_bikes" --workflow "update-shared-bikes-hourly.yml" --has-changes "${{ steps.git_push.outputs.has_changes }}" --run-id "${{ github.run_id }}" --event "${{ github.event_name }}" || true
+            echo "✅ OCI 伺服器 [Mobi 共享單車] 資料與後台時間戳同步完成！"

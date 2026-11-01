@@ -1,4 +1,4 @@
-name: Update 路燈電網管道 (每年)
+name: "Update 路燈電網管道 (每年)"
 
 on:
   schedule:
@@ -12,13 +12,17 @@ concurrency:
 jobs:
   update-street-lighting-conduits:
     runs-on: ubuntu-latest
-
     permissions:
       contents: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Fetch latest layer cache from data branch
+        run: |
+          git fetch origin data:refs/remotes/origin/data 2>/dev/null || true
+          git checkout refs/remotes/origin/data -- backend/data/vancouver_street_lighting_conduits.geojson frontend/public/vancouver_street_lighting_conduits.geojson 2>/dev/null || true
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -29,35 +33,75 @@ jobs:
         run: |
           pip install requests
 
-      - name: Run Layer Sync Script (路燈電網管道)
+      - name: Run layer update script (路燈電網管道)
         run: |
           python backend/scripts/layers/update_street_lighting_conduits.py
 
-      - name: Commit and Push Updated GeoJSON
+      - name: Commit and push updated data to data branch
         id: git_push
         run: |
+          set -e
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add backend/data/vancouver_street_lighting_conduits.geojson frontend/public/vancouver_street_lighting_conduits.geojson
-          if git diff --staged --quiet; then
-            echo "No updates detected for 路燈電網管道."
-            echo "has_changes=false" >> $GITHUB_OUTPUT
-          else
-            git commit -m "chore(data): auto-update 路燈電網管道 dataset [skip ci]"
-            git push origin HEAD:data --force
-            echo "has_changes=true" >> $GITHUB_OUTPUT
-          fi
 
-      - name: Sync Updated GeoJSON to OCI VM
-        if: steps.git_push.outputs.has_changes == 'true'
+          mkdir -p /tmp/wf_stage
+          for f in backend/data/vancouver_street_lighting_conduits.geojson frontend/public/vancouver_street_lighting_conduits.geojson; do
+            if [ -f "$f" ]; then
+              mkdir -p "/tmp/wf_stage/$(dirname "$f")"
+              cp -f "$f" "/tmp/wf_stage/$f"
+            fi
+          done
+
+          has_changes="false"
+          for attempt in 1 2 3 4 5; do
+            git fetch origin data:refs/remotes/origin/data 2>/dev/null || true
+            if git show-ref --verify --quiet refs/remotes/origin/data; then
+              git checkout -B data refs/remotes/origin/data
+            else
+              git checkout -B data
+            fi
+
+            for f in backend/data/vancouver_street_lighting_conduits.geojson frontend/public/vancouver_street_lighting_conduits.geojson; do
+              if [ -f "/tmp/wf_stage/$f" ]; then
+                mkdir -p "$(dirname "$f")"
+                cp -f "/tmp/wf_stage/$f" "$f"
+              fi
+            done
+
+            git add backend/data/vancouver_street_lighting_conduits.geojson frontend/public/vancouver_street_lighting_conduits.geojson
+            if git diff -I '"updated_at"' -I '"generated_at"' --staged --quiet; then
+              echo "No substantive feature changes detected for 路燈電網管道."
+              git reset --hard HEAD >/dev/null 2>&1 || true
+              has_changes="false"
+              break
+            fi
+
+            git commit -m "chore(data): auto-update 路燈電網管道 (street_lighting_conduits) [skip ci]"
+            if git push origin HEAD:data; then
+              has_changes="true"
+              break
+            fi
+
+            echo "Push conflict on data branch (attempt $attempt), retrying..."
+            sleep $((attempt * 2))
+          done
+
+          echo "has_changes=$has_changes" >> "$GITHUB_OUTPUT"
+
+      - name: Sync data and update timestamp on OCI VM
+        if: success()
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.OCI_HOST_IP }}
           username: ubuntu
           key: ${{ secrets.OCI_SSH_KEY }}
           script: |
-            echo "🔄 同步最新 路燈電網管道 圖資至 OCI 伺服器..."
+            echo "🔄 同步 [路燈電網管道] 更新狀態與圖資至 OCI 伺服器..."
             cd ~/Vancouver-God-Eyes || cd ~/vancouver-gods-eye
-            git fetch origin data 2>/dev/null || true
-            git checkout origin/data -- backend/data frontend/public 2>/dev/null || true
-            echo "✅ OCI 伺服器 路燈電網管道 圖資同步完成！"
+            mkdir -p backend/data frontend/public
+            if [ "${{ steps.git_push.outputs.has_changes }}" = "true" ]; then
+              git fetch origin data:refs/remotes/origin/data 2>/dev/null || git fetch origin data 2>/dev/null || true
+              git checkout refs/remotes/origin/data -- backend/data/vancouver_street_lighting_conduits.geojson frontend/public/vancouver_street_lighting_conduits.geojson 2>/dev/null || git checkout origin/data -- backend/data/vancouver_street_lighting_conduits.geojson frontend/public/vancouver_street_lighting_conduits.geojson 2>/dev/null || true
+            fi
+            python3 backend/scripts/record_workflow_sync.py --source "street_lighting_conduits" --workflow "update-street-lighting-conduits.yml" --has-changes "${{ steps.git_push.outputs.has_changes }}" --run-id "${{ github.run_id }}" --event "${{ github.event_name }}" || docker compose exec -T backend python /app/scripts/record_workflow_sync.py --source "street_lighting_conduits" --workflow "update-street-lighting-conduits.yml" --has-changes "${{ steps.git_push.outputs.has_changes }}" --run-id "${{ github.run_id }}" --event "${{ github.event_name }}" || true
+            echo "✅ OCI 伺服器 [路燈電網管道] 資料與後台時間戳同步完成！"

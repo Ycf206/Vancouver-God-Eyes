@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import tempfile
 import requests
 from datetime import datetime, timezone
 
@@ -82,12 +83,101 @@ def fetch_geojson_export(dataset_id, timeout=90):
         print(f"  ❌ 下載例外異常: {e}")
         return None
 
+FILENAME_TO_SOURCE_ID = {
+    "vancouver_beach_water.geojson": "beach_water",
+    "vancouver_impark.geojson": "impark_parking",
+    "vancouver_schools.geojson": "schools",
+    "vancouver_libraries.geojson": "libraries",
+    "vancouver_parks.geojson": "parks",
+    "vancouver_community_centres.geojson": "community_centres",
+    "vancouver_public_art.geojson": "public_art",
+    "vancouver_museums.geojson": "museums",
+    "vancouver_garbage_collection.geojson": "garbage_collection",
+    "vancouver_recycling.geojson": "recycling",
+    "vancouver_homeless_shelters.geojson": "homeless_shelters",
+    "vancouver_food_banks.geojson": "food_banks",
+    "vancouver_food_vendors.geojson": "food_vendors",
+    "vancouver_aed.geojson": "aed",
+    "vancouver_zoning_districts.geojson": "zoning_districts",
+    "vancouver_parking_meters.geojson": "parking_meters",
+    "vancouver_motorcycle_parking.geojson": "motorcycle_parking",
+    "vancouver_bikeways.geojson": "bikeways",
+    "vancouver_public_trees.geojson": "public_trees",
+    "vancouver_fire_hydrants.geojson": "fire_hydrants",
+    "vancouver_drinking_fountains.geojson": "drinking_fountains",
+    "vancouver_public_washrooms.geojson": "public_washrooms",
+    "vancouver_street_lighting.geojson": "street_lighting",
+    "vancouver_street_lighting_poles.geojson": "street_lighting",
+    "vancouver_street_lighting_conduits.geojson": "street_lighting_conduits",
+    "vancouver_water_distribution_mains.geojson": "water_distribution_mains",
+    "vancouver_sewer_mains.geojson": "sewer_mains",
+    "vancouver_traffic_speed_limits.geojson": "traffic_speed_limits",
+    "vancouver_traffic_crosswalks.geojson": "traffic_crosswalks",
+    "vancouver_litter_containers.geojson": "litter_containers",
+    "vancouver_one_way_streets.geojson": "one_way_streets",
+    "vancouver_snow_removal_routes.geojson": "snow_removal_routes",
+    "vancouver_contours.geojson": "contours",
+    "vancouver_contours_10m.geojson": "contours",
+    "vancouver_ev_charging.geojson": "ev_charging",
+    "vancouver_canada_post.geojson": "canada_post",
+    "vancouver_property_addresses_meta.json": "property_addresses",
+    "vancouver_banks.geojson": "banks",
+    "vancouver_shared_bikes.geojson": "shared_bikes",
+    "vancouver_escooter.geojson": "escooter",
+    "vancouver_truck_routes.geojson": "truck_routes",
+    "vancouver_traffic_signals.geojson": "traffic_signals",
+    "vancouver_traffic_turn_restrictions.geojson": "turn_restrictions",
+    "vancouver_311.json": "service_requests_311",
+    "tnt_eflyers.json": "tnt_eflyers",
+    "vancouver_railways.geojson": "vancouver_railways",
+    "vancouver_fedex.geojson": "fedex",
+    "vancouver_purolator.geojson": "purolator",
+    "vancouver_crashes.json": "vancouver_crashes",
+}
+
+
+def update_admin_source_metadata(source_id: str, record_count: int = None, updated_at: str = None):
+    """原子更新本機 backend/data/admin_sources_config.json 中對應資料源的 last_updated 與 record_count。"""
+    if not source_id:
+        return
+    cfg_path = os.path.join(BACKEND_DATA_DIR, "admin_sources_config.json")
+    if not os.path.exists(cfg_path):
+        return
+    ts = updated_at or (datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z")
+    try:
+        with open(cfg_path, "r", encoding="utf-8") as f:
+            cfg = json.load(f)
+        changed = False
+        for src in cfg.get("sources", []):
+            if src.get("id") == source_id:
+                src["last_updated"] = ts
+                src["status"] = "healthy"
+                if isinstance(record_count, int) and record_count > 0:
+                    src["record_count"] = record_count
+                changed = True
+                break
+        if changed:
+            fd, tmp_path = tempfile.mkstemp(dir=BACKEND_DATA_DIR, prefix=".tmp_admin_cfg_", suffix=".json")
+            try:
+                with os.fdopen(fd, "w", encoding="utf-8") as f:
+                    json.dump(cfg, f, ensure_ascii=False, indent=2)
+                os.replace(tmp_path, cfg_path)
+            except Exception:
+                if os.path.exists(tmp_path):
+                    try:
+                        os.remove(tmp_path)
+                    except OSError:
+                        pass
+    except Exception as e:
+        print(f"  ⚠️ 無法同步更新 admin_sources_config.json [{source_id}]: {e}")
+
+
 def save_layer_geojson(filename, data_or_features, is_feature_list=True):
-    """Saves GeoJSON file to backend/data and frontend/public."""
+    """Saves GeoJSON file to backend/data and frontend/public and syncs admin source metadata."""
     if not filename.endswith(".geojson"):
         filename = f"{filename}.geojson"
         
-    now_iso = datetime.now(timezone.utc).isoformat()
+    now_iso = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
     if is_feature_list:
         fc = {
             "type": "FeatureCollection",
@@ -113,7 +203,10 @@ def save_layer_geojson(filename, data_or_features, is_feature_list=True):
             json.dump(fc, f, ensure_ascii=False, indent=2)
 
     feat_count = len(fc.get("features", [])) if isinstance(fc, dict) else len(data_or_features)
-    print(f"💾 已儲存 {filename} (共 {feat_count} 個圖徵)")
+    source_id = FILENAME_TO_SOURCE_ID.get(filename)
+    if source_id:
+        update_admin_source_metadata(source_id, record_count=feat_count, updated_at=now_iso)
+    print(f"💾 已儲存 {filename} (共 {feat_count} 個圖徵，時間: {now_iso})")
     return backend_path
 
 def load_existing_geojson(filename):

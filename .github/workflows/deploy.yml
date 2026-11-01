@@ -47,11 +47,15 @@ jobs:
           
           echo "Working directory: $(pwd)"
           
-          # 備份保護本機 .env、前端環境變數與管理員排程設定檔
+          # 備份保護本機 .env、前端環境變數與所有後台持久化執行狀態檔 (防止 git reset / origin/data 覆蓋)
           [ -f .env ] && cp .env /tmp/godseye_root_env.bak || true
           [ -f backend/.env ] && cp backend/.env /tmp/godseye_backend_env.bak || true
           [ -f frontend/.env.local ] && cp frontend/.env.local /tmp/godseye_frontend_env.bak || true
           [ -f backend/data/admin_sources_config.json ] && cp backend/data/admin_sources_config.json /tmp/godseye_admin_cfg.bak || true
+          mkdir -p /tmp/godseye_runtime_bak
+          for rt_file in admin_schedule_history.json schedule_history_config.json system_logs.json system_logs_config.json stats_pv.json issue_reports.jsonl .admin_session_key system_maintenance.json flightaware_quota.json; do
+            [ -f "backend/data/$rt_file" ] && cp -f "backend/data/$rt_file" "/tmp/godseye_runtime_bak/$rt_file" || true
+          done
 
           # 檢查是否有指定緊急系統還原目標
           if [ -n "$ROLLBACK_TARGET" ]; then
@@ -70,13 +74,20 @@ jobs:
             git reset --hard origin/main
           fi
           git fetch origin data:refs/remotes/origin/data 2>/dev/null || true
-          git checkout origin/data -- backend/data frontend/public 2>/dev/null || true
+          git checkout refs/remotes/origin/data -- backend/data frontend/public 2>/dev/null || true
+          # 確保 backend/data/admin_sources_config.json 以最新 main 分支為基底再與備份合併，不被 data 分支舊版覆蓋
+          git checkout HEAD -- backend/data/admin_sources_config.json 2>/dev/null || true
           git clean -fd -e backend/.env -e .env -e frontend/.env.local -e backend/data/admin_sources_config.json
 
-          # 還原 .env、前端環境變數與管理員排程設定檔
+          # 還原 .env、前端環境變數、持久化執行狀態檔與合併管理員設定檔
           [ -f /tmp/godseye_root_env.bak ] && cp /tmp/godseye_root_env.bak .env || true
           [ -f /tmp/godseye_backend_env.bak ] && cp /tmp/godseye_backend_env.bak backend/.env || true
           [ -f /tmp/godseye_frontend_env.bak ] && cp /tmp/godseye_frontend_env.bak frontend/.env.local || true
+          mkdir -p backend/data
+          for rt_file in admin_schedule_history.json schedule_history_config.json system_logs.json system_logs_config.json stats_pv.json issue_reports.jsonl .admin_session_key system_maintenance.json flightaware_quota.json; do
+            [ -f "/tmp/godseye_runtime_bak/$rt_file" ] && cp -f "/tmp/godseye_runtime_bak/$rt_file" "backend/data/$rt_file" || true
+          done
+          rm -rf /tmp/godseye_runtime_bak || true
           python3 backend/scripts/merge_admin_config.py || true
 
           # 如果 GitHub Secrets 有設定 FLIGHTAWARE_API_KEY，自動同步至 backend/.env 與根目錄 .env

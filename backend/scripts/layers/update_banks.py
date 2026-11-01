@@ -21,7 +21,7 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 if CURRENT_DIR not in sys.path:
     sys.path.insert(0, CURRENT_DIR)
 
-from base import BACKEND_DATA_DIR, FRONTEND_DATA_DIR
+from base import BACKEND_DATA_DIR, FRONTEND_DATA_DIR, update_admin_source_metadata
 
 try:
     import requests
@@ -169,8 +169,6 @@ def update_banks():
     candidate_files = [
         out_file,
         public_file,
-        os.path.join(BACKEND_DATA_DIR, "vancouver_atm.geojson"),
-        os.path.join(FRONTEND_DATA_DIR, "vancouver_atm.geojson")
     ]
 
     for candidate_path in candidate_files:
@@ -374,12 +372,8 @@ def update_banks():
     with open(public_file, 'w', encoding='utf-8') as f:
         json.dump(geojson_data, f, ensure_ascii=False, indent=2)
     print(f"✅ Saved copy to {public_file}")
+    update_admin_source_metadata("banks", record_count=len(features), updated_at=now_iso)
     return geojson_data
-
-
-# Backward-compatible aliases
-update_atm = update_banks
-update_atm_dataset = update_banks
 
 
 if __name__ == '__main__':
