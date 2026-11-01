@@ -3055,8 +3055,12 @@ def get_tracks_geojson(group: str, db: Session = Depends(database.get_db)):
     if not features:
         if group == 'skytrain':
             st_data = skytrain_service.get_skytrain_data()
-            for pat_key, pat in st_data.get("patterns", {}).items():
-                coords = pat.get("shape_coords", [])
+            raw_patterns = st_data.get("patterns", [])
+            pat_list = raw_patterns.values() if isinstance(raw_patterns, dict) else (raw_patterns if isinstance(raw_patterns, list) else [])
+            for pat in pat_list:
+                if not isinstance(pat, dict):
+                    continue
+                coords = pat.get("shape", []) or pat.get("shape_coords", [])
                 if len(coords) >= 2:
                     features.append({
                         "type": "Feature",
@@ -3065,7 +3069,7 @@ def get_tracks_geojson(group: str, db: Session = Depends(database.get_db)):
                             "coordinates": coords
                         },
                         "properties": {
-                            "shape_id": pat_key,
+                            "shape_id": pat.get("pattern_id") or pat.get("trip_id") or "skytrain_track",
                             "route_id": pat.get("line_name", "SkyTrain"),
                             "color": pat.get("color", "#0033a0")
                         }

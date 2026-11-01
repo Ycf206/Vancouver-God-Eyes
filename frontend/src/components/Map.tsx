@@ -1199,6 +1199,48 @@ export default function AppMap() {
     setShowTimePeriodInfo(false);
     setTimeInfoHovered(false);
   }, [selectedFacility?.id]);
+
+  // 實時動態切換單車徑篩選 (即時開關地圖上 4 類單車道)
+  useEffect(() => {
+    const map = mapRef.current?.getMap();
+    if (!map || !layers.bikeways) return;
+
+    const activeBikewayTypes = Object.entries(bikewaysFilter)
+      .filter(([, active]) => active)
+      .map(([type]) => type);
+
+    const typeZhMap: Record<string, string> = {
+      'Protected Bike Lanes': '受保護獨立街道',
+      'Painted Lanes': '路面標線單車路',
+      'Local Street': '社區慢速單車街',
+      'Shared Lanes': '混合共用車道',
+    };
+
+    const bikewayMapFilter: any =
+      activeBikewayTypes.length === 4 ? null :
+      activeBikewayTypes.length === 0 ? ['==', ['get', 'bikeway_type'], '__NONE__'] :
+      ['any', ...activeBikewayTypes.flatMap(t => [
+        ['==', ['get', 'bikeway_type'], t],
+        ['==', ['get', 'bikeway_type_zh'], typeZhMap[t] || t]
+      ])];
+
+    try {
+      if (map.getLayer('bikeways-layer')) {
+        map.setFilter('bikeways-layer', bikewayMapFilter);
+      }
+      if (map.getLayer('bikeways-casing-layer')) {
+        map.setFilter('bikeways-casing-layer', bikewayMapFilter);
+      }
+    } catch {
+      // Ignore if map or layer is not yet loaded
+    }
+  }, [
+    layers.bikeways,
+    bikewaysFilter['Protected Bike Lanes'],
+    bikewaysFilter['Painted Lanes'],
+    bikewaysFilter['Local Street'],
+    bikewaysFilter['Shared Lanes'],
+  ]);
   const [selectedBus, setSelectedBus] = useState<Vehicle | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [busDetails, setBusDetails] = useState<any | null>(null);
@@ -6267,6 +6309,10 @@ export default function AppMap() {
     carSharingFilter.modo,
     layers.sharedBikes,
     layers.bikeways,
+    bikewaysFilter['Protected Bike Lanes'],
+    bikewaysFilter['Painted Lanes'],
+    bikewaysFilter['Local Street'],
+    bikewaysFilter['Shared Lanes'],
     layers.trafficCameras,
     layers.safetyCameras,
     safetyCamerasFilter.redLightSpeed,
@@ -6650,8 +6696,8 @@ export default function AppMap() {
             setSelectedFacility({
               id: props.id || '',
               facility_type: 'bikeways',
-              name: props.name || '溫哥華單車專用道',
-              local_area: props.local_area || '溫哥華市',
+              name: props.street_name || props.name || '單車徑',
+              local_area: 'Vancouver, BC',
               lon: clickLon,
               lat: clickLat,
               properties: props
@@ -9084,21 +9130,21 @@ export default function AppMap() {
 
         {/* Road Facility Popup */}
         {selectedFacility && (
-          <Popup
-            longitude={selectedFacility.lon}
-            latitude={selectedFacility.lat}
-            anchor="bottom"
-            onClose={() => {
-              setSelectedFacility(null);
-              setSearchTarget(null);
-            }}
-            closeOnClick={false}
-            closeButton={false}
-            className="z-50"
-            offset={[0, -10]}
-            maxWidth="none"
-          >
-            <PopupErrorBoundary>
+          <PopupErrorBoundary key={`popup-${selectedFacility.id}-${selectedFacility.facility_type}`}>
+            <Popup
+              longitude={selectedFacility.lon}
+              latitude={selectedFacility.lat}
+              anchor="bottom"
+              onClose={() => {
+                setSelectedFacility(null);
+                setSearchTarget(null);
+              }}
+              closeOnClick={false}
+              closeButton={false}
+              className="z-50"
+              offset={[0, -10]}
+              maxWidth="none"
+            >
               <div className={`p-3.5 ${
               (selectedFacility.facility_type === 'traffic_conditions' || selectedFacility.facility_type === 'traffic_corridor') ? 'w-[300px] sm:w-[335px]' :
               (selectedFacility.facility_type === 'traffic_cameras') ? 'w-[320px] sm:w-[350px]' : 
@@ -9242,7 +9288,7 @@ export default function AppMap() {
                       return selectedFacility.properties?.name || selectedFacility.name || '社區中心';
                     }
                     if (selectedFacility.facility_type === 'bikeways') {
-                      return selectedFacility.properties?.name || selectedFacility.name || '單車徑';
+                      return selectedFacility.properties?.street_name || selectedFacility.properties?.name || selectedFacility.name || '單車徑';
                     }
                     if (selectedFacility.facility_type === 'bike_racks') {
                       return (selectedFacility.properties?.location || selectedFacility.name || '').replace(/^單車架\s*-\s*/, '').trim();
@@ -9560,7 +9606,7 @@ export default function AppMap() {
                               if (selectedFacility.facility_type === 'motorcycle_parking') return selectedFacility.properties?.local_area || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'snow_removal_routes') return 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'traffic_speed_limits') return 'Vancouver, BC';
-                              if (selectedFacility.facility_type === 'bikeways') return selectedFacility.properties?.street_name || selectedFacility.local_area || 'Vancouver, BC';
+                              if (selectedFacility.facility_type === 'bikeways') return 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'bike_racks') return 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'tesla') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'road_closures') return 'Vancouver, BC';
@@ -16212,9 +16258,9 @@ export default function AppMap() {
                 </button>
               </div>
             </div>
-            </PopupErrorBoundary>
           </Popup>
-        )}
+        </PopupErrorBoundary>
+      )}
 
       </Map>
 
@@ -16748,23 +16794,23 @@ export default function AppMap() {
             <div className="flex flex-col gap-2 text-xs shrink-0">
               <div className="flex justify-between items-start gap-2">
                 <span className="text-gray-400 shrink-0 mt-0.5">營辦商</span>
-                <span className="font-bold text-gray-100 text-right break-words leading-tight max-w-[270px]">{operatorName}</span>
+                <span className="font-bold text-gray-100 text-right break-words leading-tight flex-1">{operatorName}</span>
               </div>
               <div className="flex justify-between items-start gap-2">
                 <span className="text-gray-400 shrink-0 mt-0.5">起點</span>
-                <span className="font-bold text-gray-100 text-right break-words leading-tight max-w-[270px]">{originName}</span>
+                <span className="font-bold text-gray-100 text-right break-words leading-tight flex-1">{originName}</span>
               </div>
               <div className="flex justify-between items-start gap-2">
                 <span className="text-gray-400 shrink-0 mt-0.5">終點</span>
-                <span className="font-bold text-gray-100 text-right break-words leading-tight max-w-[270px]">{destName}</span>
+                <span className="font-bold text-gray-100 text-right break-words leading-tight flex-1">{destName}</span>
               </div>
               <div className="flex justify-between items-start gap-2">
                 <span className="text-gray-400 shrink-0 mt-0.5">當前</span>
-                <span className="font-bold text-emerald-400 text-right break-words leading-tight max-w-[270px]">開往 {destName}</span>
+                <span className="font-bold text-emerald-400 text-right break-words leading-tight flex-1">開往 {destName}</span>
               </div>
               <div className="flex justify-between items-start gap-2 pt-0.5">
                 <span className="text-gray-400 shrink-0 mt-0.5">下一站</span>
-                <div className="flex flex-col items-end text-right min-w-0 max-w-[270px]">
+                <div className="flex flex-col items-end text-right min-w-0 flex-1">
                   <span className="font-bold text-white leading-snug break-words">{nextStopName}</span>
                   <span className="text-[11px] font-bold text-amber-400 mt-0.5">
                     {nextStopTime
@@ -16907,31 +16953,31 @@ export default function AppMap() {
             <div className="flex flex-col gap-2 text-xs shrink-0">
               <div className="flex justify-between items-start gap-2">
                 <span className="text-gray-400 shrink-0 mt-0.5">營辦商</span>
-                <span className="font-bold text-gray-100 text-right break-words leading-tight max-w-[270px]">{operatorName}</span>
+                <span className="font-bold text-gray-100 text-right break-words leading-tight flex-1">{operatorName}</span>
               </div>
               <div className="flex justify-between items-start gap-2">
                 <span className="text-gray-400 shrink-0 mt-0.5">列車型號</span>
-                <span className="font-bold text-gray-100 text-right break-words leading-tight max-w-[270px]">
+                <span className="font-bold text-gray-100 text-right break-words leading-tight flex-1">
                   {trainModelClean || selectedTrain.model || 'SkyTrain'} ({selectedTrain.cars} 卡)
                 </span>
               </div>
               <div className="flex justify-between items-start gap-2">
                 <span className="text-gray-400 shrink-0 mt-0.5">起點</span>
-                <span className="font-bold text-gray-100 text-right break-words leading-tight max-w-[270px]">{originName}</span>
+                <span className="font-bold text-gray-100 text-right break-words leading-tight flex-1">{originName}</span>
               </div>
               <div className="flex justify-between items-start gap-2">
                 <span className="text-gray-400 shrink-0 mt-0.5">終點</span>
-                <span className="font-bold text-gray-100 text-right break-words leading-tight max-w-[270px]">{destName}</span>
+                <span className="font-bold text-gray-100 text-right break-words leading-tight flex-1">{destName}</span>
               </div>
               <div className="flex justify-between items-start gap-2">
                 <span className="text-gray-400 shrink-0 mt-0.5">當前</span>
-                <span className="font-bold text-right break-words leading-tight max-w-[270px]" style={{ color: selectedTrain.color }}>
+                <span className="font-bold text-right break-words leading-tight flex-1" style={{ color: selectedTrain.color }}>
                   開往 {destName} ({selectedTrain.status}{selectedTrain.speed_kmh > 0 ? ` · ${selectedTrain.speed_kmh} km/h` : ''})
                 </span>
               </div>
               <div className="flex justify-between items-start gap-2 pt-0.5">
                 <span className="text-gray-400 shrink-0 mt-0.5">下一站</span>
-                <div className="flex flex-col items-end text-right min-w-0 max-w-[270px]">
+                <div className="flex flex-col items-end text-right min-w-0 flex-1">
                   <span className="font-bold text-white leading-snug break-words">{nextStopName}</span>
                   <span className="text-[11px] font-bold text-amber-400 mt-0.5">
                     {nextStopTime
@@ -18564,15 +18610,15 @@ export default function AppMap() {
                       className="bg-[#10131a] rounded-lg border border-[#232836] p-2.5 flex flex-col gap-2"
                     >
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1.5 min-w-0">
+                        <div className="flex items-center gap-1.5 min-w-0 flex-wrap">
                           <span 
                             className="w-2.5 h-2.5 rounded-full shrink-0"
                             style={{ backgroundColor: group.color }}
                           ></span>
-                          <span className="font-bold text-xs text-white truncate">
+                          <span className="font-bold text-xs text-white shrink-0">
                             {group.line_name}
                           </span>
-                          <span className="text-[11px] text-gray-300 truncate">
+                          <span className="text-[11px] text-gray-300 break-words">
                             往 {(group.destination || '').replace(/\s*Station$/i, '').replace(/\s*站$/, '').trim() + ' Station'}
                           </span>
                         </div>

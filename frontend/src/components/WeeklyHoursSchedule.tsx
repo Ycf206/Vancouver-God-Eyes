@@ -356,12 +356,21 @@ export default function FacilityWeeklyHoursSchedule({
 
     // 統一成圖2風格：只要成功解析出週間時程，一律呈現完整的 7 日時程列表 (預設為收合狀態，僅顯示當日時程)
     if (parsedDays.length > 0) {
+      const summaryTodayText = (() => {
+        const s = String(todayHoursStr || '未公佈').trim();
+        if (s.length > 20) {
+          if (/^closed/i.test(s) || /休館/i.test(s)) return '休館 (特別排程)';
+          return s.slice(0, 18) + '...';
+        }
+        return s;
+      })();
+
       return (
         <details className="group">
           <summary className="flex justify-between items-center text-gray-600 cursor-pointer list-none hover:text-slate-800 select-none">
             <span>{label}</span>
-            <span className="text-gray-800 text-right font-medium flex items-center gap-1 font-mono">
-              <span>{todayZhName}: {todayHoursStr || '未公佈'}</span>
+            <span className="text-gray-800 text-right font-medium flex items-center gap-1 font-mono max-w-[200px] truncate" title={String(todayHoursStr || '未公佈')}>
+              <span>{todayZhName}: {summaryTodayText}</span>
               <span className="text-[9px] text-gray-400 group-open:rotate-180 transition-transform">▼</span>
             </span>
           </summary>
@@ -374,7 +383,7 @@ export default function FacilityWeeklyHoursSchedule({
                 }`}
               >
                 <span className="shrink-0">{d.label}</span>
-                <span className="text-right leading-tight font-mono">{d.hours}</span>
+                <span className="text-right leading-tight font-mono break-words max-w-[200px]">{String(d.hours || '休息')}</span>
               </div>
             ))}
           </div>
