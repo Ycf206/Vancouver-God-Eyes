@@ -1,6 +1,8 @@
 {
   "type": "FeatureCollection",
-  "name": "vancouver_museums",
+  "generator": "VancouverGodsEye",
+  "total_count": 11,
+  "updated_at": "2026-11-01T06:05:39.502Z",
   "features": [
     {
       "type": "Feature",
