@@ -774,17 +774,10 @@ export default function AppMap() {
 
   const [isExploreSearchActive, setIsExploreSearchActive] = useState(false);
   const [exploreSearchInput, setExploreSearchInput] = useState('');
-  const [bikewaysLegendOpen, setBikewaysLegendOpen] = useState(true);
   const [truckRoutesPanelOpen, setTruckRoutesPanelOpen] = useState(true);
   const [isTruckRouteMapModalOpen, setIsTruckRouteMapModalOpen] = useState(false);
   const [isTruckMapImgLoaded, setIsTruckMapImgLoaded] = useState(false);
   const [carSharingFilter, setCarSharingFilter] = useState<{ evo: boolean; modo: boolean }>({ evo: true, modo: true });
-  const [bikewaysFilter, setBikewaysFilter] = useState<Record<string, boolean>>({
-    'Protected Bike Lanes': true,
-    'Painted Lanes': true,
-    'Local Street': true,
-    'Shared Lanes': true,
-  });
   const [safetyCamerasLegendOpen, setSafetyCamerasLegendOpen] = useState(true);
   const [safetyCamerasFilter, setSafetyCamerasFilter] = useState<{ redLightSpeed: boolean; redLightOnly: boolean }>({
     redLightSpeed: true,
@@ -1135,9 +1128,6 @@ export default function AppMap() {
       const op = selectedFacility.properties?.operator;
       if (op === 'Evo' && !carSharingFilter.evo) setSelectedFacility(null);
       if (op === 'Modo' && !carSharingFilter.modo) setSelectedFacility(null);
-    } else if (selectedFacility.facility_type === 'bikeways') {
-      const bType = selectedFacility.properties?.bikeway_type;
-      if (bType && bikewaysFilter[bType] === false) setSelectedFacility(null);
     } else if (selectedFacility.facility_type === 'safety_cameras') {
       const hasSpeed = Boolean(selectedFacility.properties?.has_speed);
       if (hasSpeed && !safetyCamerasFilter.redLightSpeed) setSelectedFacility(null);
@@ -1157,7 +1147,7 @@ export default function AppMap() {
       const matchEv = !imparkFilter.evCharger || feats.includes('EV Charger');
       if (!matchRate || !matchEv) setSelectedFacility(null);
     }
-  }, [selectedFacility, carSharingFilter, bikewaysFilter, safetyCamerasFilter, imparkFilter]);
+  }, [selectedFacility, carSharingFilter, safetyCamerasFilter, imparkFilter]);
 
   // 當設施彈窗切換或關閉時，重設時段說明面板狀態
   useEffect(() => {
@@ -3269,54 +3259,34 @@ export default function AppMap() {
       });
     }
 
-    // Road Facilities: Bikeways (單車徑 LineString — 4 種高對比度鮮明配色)
+    // Road Facilities: Bikeways (單車徑 LineString — 統一翠綠單一配色)
     if (layers.bikeways) {
-      const activeBikewayTypes = Object.entries(bikewaysFilter)
-        .filter(([, active]) => active)
-        .map(([type]) => type);
-
-      const bikewayMapFilter = 
-        activeBikewayTypes.length === 4 ? undefined :
-        activeBikewayTypes.length === 0 ? ['==', ['get', 'bikeway_type'], '__NONE__'] :
-        activeBikewayTypes.length === 1 ? ['==', ['get', 'bikeway_type'], activeBikewayTypes[0]] :
-        ['any', ...activeBikewayTypes.map(t => ['==', ['get', 'bikeway_type'], t])];
-
       style.layers.push({
         id: 'bikeways-casing-layer',
         type: 'line',
         source: 'bikeways',
-        ...(bikewayMapFilter ? { filter: bikewayMapFilter } : {}),
         layout: {
           'line-join': 'round',
           'line-cap': 'round'
         },
         paint: {
-          'line-color': '#0f172a',
+          'line-color': '#064e3b',
           'line-width': ['interpolate', ['linear'], ['zoom'], 10, 2.6, 13, 4.6, 16, 7.2],
-          'line-opacity': 0.6
+          'line-opacity': 0.7
         }
       });
       style.layers.push({
         id: 'bikeways-layer',
         type: 'line',
         source: 'bikeways',
-        ...(bikewayMapFilter ? { filter: bikewayMapFilter } : {}),
         layout: {
           'line-join': 'round',
           'line-cap': 'round'
         },
         paint: {
-          'line-color': [
-            'match',
-            ['get', 'bikeway_type'],
-            'Protected Bike Lanes', '#10b981', // 翠綠 Emerald (受保護獨立單車道)
-            'Painted Lanes', '#0ea5e9',        // 天藍 Sky Blue (路面標線單車道)
-            'Local Street', '#f59e0b',         // 琥珀金 Amber (社區慢速單車街)
-            'Shared Lanes', '#a855f7',         // 紫羅蘭 Purple (混合共用車道)
-            '#10b981'
-          ],
+          'line-color': '#10b981',
           'line-width': ['interpolate', ['linear'], ['zoom'], 10, 1.6, 13, 3.0, 16, 4.8],
-          'line-opacity': 0.94
+          'line-opacity': 0.95
         }
       });
     }
@@ -6219,10 +6189,6 @@ export default function AppMap() {
     carSharingFilter.modo,
     layers.sharedBikes,
     layers.bikeways,
-    bikewaysFilter['Protected Bike Lanes'],
-    bikewaysFilter['Painted Lanes'],
-    bikewaysFilter['Local Street'],
-    bikewaysFilter['Shared Lanes'],
     layers.trafficCameras,
     layers.safetyCameras,
     safetyCamerasFilter.redLightSpeed,
@@ -9079,12 +9045,7 @@ export default function AppMap() {
                     return { label: '共享汽車', bg: isModo ? 'bg-[#B91C1C] text-white' : 'bg-[#0284C7] text-white' };
                   }
                   if (t === 'bikeways') {
-                    const bType = selectedFacility.properties?.bikeway_type;
-                    let bg = 'bg-[#10b981] text-white';
-                    if (bType === 'Painted Lanes') bg = 'bg-[#0ea5e9] text-white';
-                    else if (bType === 'Local Street') bg = 'bg-[#f59e0b] text-white';
-                    else if (bType === 'Shared Lanes') bg = 'bg-[#a855f7] text-white';
-                    return { label: '單車徑', bg };
+                    return { label: '單車徑', bg: 'bg-[#10b981] text-white' };
                   }
                   if (t === 'bike_racks') return { label: '單車架', bg: 'bg-[#065F46] text-white' };
                   if (t === 'shared_bikes') return { label: '共享單車', bg: 'bg-[#00A3AD] text-white' };
@@ -10643,65 +10604,57 @@ export default function AppMap() {
 
               {/* Bikeways (單車徑 LineString) Details */}
               {selectedFacility.facility_type === 'bikeways' && (() => {
-                const bType = selectedFacility.properties.bikeway_type || '';
-                const theme = 
-                  bType === 'Protected Bike Lanes' ? { bg: 'bg-emerald-500/10 border-emerald-500/25 text-emerald-950', badge: 'bg-emerald-600' } :
-                  bType === 'Painted Lanes' ? { bg: 'bg-sky-500/10 border-sky-500/25 text-sky-950', badge: 'bg-sky-600' } :
-                  bType === 'Local Street' ? { bg: 'bg-amber-500/10 border-amber-500/25 text-amber-950', badge: 'bg-amber-600' } :
-                  bType === 'Shared Lanes' ? { bg: 'bg-purple-500/10 border-purple-500/25 text-purple-950', badge: 'bg-purple-600' } :
-                  { bg: 'bg-teal-500/10 border-teal-500/25 text-teal-950', badge: 'bg-teal-600' };
+                const props = selectedFacility.properties || {};
+                const routeName = props.bike_route_name || props.bikeway_name || props.name || selectedFacility.name || '單車徑';
+                const streetName = props.street_name || '';
 
-                const bikewayLabel = (() => {
-                  if (bType === 'Protected Bike Lanes') return '受保護獨立單車道';
-                  if (bType === 'Painted Lanes') return '路面標線單車道';
-                  if (bType === 'Local Street') return '社區慢速單車街';
-                  if (bType === 'Shared Lanes') return '混合共用車道';
-                  return (selectedFacility.properties.bikeway_type_zh || '單車專用道').replace(/\s*\([^)]*\)/g, '').trim();
-                })();
-
-                const dirRaw = String(selectedFacility.properties.bikeway_direction || '').trim();
+                const dirRaw = String(props.bikeway_direction || '').trim();
                 const dirLower = dirRaw.toLowerCase();
                 const isTwoWay = dirLower.includes('bidirectional') || dirLower.includes('two-way') || dirLower.includes('two way') || dirRaw.includes('雙向');
                 const isContraFlow = dirLower.includes('cflow') || dirLower.includes('contra') || dirLower.includes('counter') || dirRaw.includes('逆向');
                 const isOneWay = dirLower.includes('one-way') || dirLower.includes('one way') || dirLower === 'ow' || dirRaw.includes('單向');
                 const dirZh = isTwoWay ? '雙向通行' : isContraFlow ? '逆向通行' : isOneWay ? '單向通行' : dirRaw.replace(/\s*\([^)]*\)/g, '').trim();
 
-                const surfaceZh = selectedFacility.properties.surface_type 
-                  ? String(selectedFacility.properties.surface_type).replace(/\s*\([^)]*\)/g, '').trim() 
+                const surfaceZh = props.surface_type 
+                  ? String(props.surface_type).replace(/\s*\([^)]*\)/g, '').trim() 
                   : '';
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
-                    {/* 8.1 刪除「道路設施」那行，下半部改成騎乘單車必須佩戴頭盔警語 */}
-                    <div className={`p-2.5 rounded-lg border flex items-center gap-1.5 text-[11px] font-medium leading-snug ${theme.bg}`}>
-                      <Bike className="w-3.5 h-3.5 text-teal-700 shrink-0" />
+                    <div className="p-2.5 rounded-lg border border-emerald-500/25 bg-emerald-500/10 text-emerald-950 flex items-center gap-1.5 text-[11px] font-medium leading-snug">
+                      <Bike className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
                       <span>騎乘單車必須佩戴符合安全規範的頭盔，並注意安全。</span>
                     </div>
 
-                    {/* 灰色區塊：統一文字字體、大小 text-[11px]、顏色黑色 text-gray-800、不粗體；8.2 刪除雪花圖示 */}
                     <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                      {bikewayLabel && (
+                      {routeName && (
                         <div className="flex justify-between items-center text-gray-600">
-                          <span>單車道類型</span>
-                          <span className="text-gray-900 font-medium text-right">{bikewayLabel}</span>
+                          <span>路線名稱</span>
+                          <span className="text-gray-900 font-medium text-right">{routeName}</span>
+                        </div>
+                      )}
+                      {streetName && (
+                        <div className={`flex justify-between items-center text-gray-600 ${routeName ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                          <span>所在街道</span>
+                          <span className="text-gray-900 font-medium text-right">{streetName}</span>
                         </div>
                       )}
                       {dirZh && (
-                        <div className={`flex justify-between items-center text-gray-600 ${bikewayLabel ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                        <div className={`flex justify-between items-center text-gray-600 ${(routeName || streetName) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                           <span>通行方向</span>
                           <span className="text-gray-900 font-medium text-right">{dirZh}</span>
                         </div>
                       )}
                       {surfaceZh && (
-                        <div className={`flex justify-between items-center text-gray-600 ${(bikewayLabel || dirZh) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                        <div className={`flex justify-between items-center text-gray-600 ${(routeName || streetName || dirZh) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                           <span>路面材質</span>
                           <span className="text-gray-900 font-medium text-right">{surfaceZh}</span>
                         </div>
                       )}
-                      {selectedFacility.properties.speed_limit && (
-                        <div className={`flex justify-between items-center text-gray-600 ${(bikewayLabel || dirZh || surfaceZh) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                      {props.speed_limit && (
+                        <div className={`flex justify-between items-center text-gray-600 ${(routeName || streetName || dirZh || surfaceZh) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
                           <span>路段速限</span>
-                          <span className="text-gray-900 font-medium text-right">{selectedFacility.properties.speed_limit} km/h</span>
+                          <span className="text-gray-900 font-medium text-right">{props.speed_limit} km/h</span>
                         </div>
                       )}
                     </div>
@@ -17489,132 +17442,10 @@ export default function AppMap() {
         </div>
       )}
 
-      {/* 單車徑分級圖例與篩選 (Bikeways Legend & Filter Popup) */}
-      {layers.bikeways && (
-        <div className={`fixed z-30 w-[270px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-emerald-500/40 select-none animate-in fade-in duration-200 ${
-          getFloatingPanelPos((layers.parkingMeters ? 1 : 0) + (layers.motorcycleParking ? 1 : 0) + (layers.fuel ? 1 : 0) + ((layers.evCharging || layers.tesla) ? 1 : 0) + (layers.carSharing ? 1 : 0))
-        }`}>
-          <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
-            <div className="flex items-center gap-2">
-              <span className="p-1 rounded bg-emerald-500/20 text-emerald-400">
-                <Bike className="w-3.5 h-3.5" />
-              </span>
-              <div className="flex flex-col">
-                <span className="font-bold text-xs text-white">單車徑路網篩選</span>
-                <span className="text-[9.5px] text-gray-400">點擊項目可開關車道</span>
-              </div>
-            </div>
-            <button
-              onClick={() => setBikewaysLegendOpen(!bikewaysLegendOpen)}
-              className="text-gray-400 hover:text-white p-0.5 rounded hover:bg-[#252a38] transition-colors"
-              title={bikewaysLegendOpen ? "收合" : "展開"}
-            >
-              {bikewaysLegendOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-            </button>
-          </div>
-
-          {bikewaysLegendOpen ? (
-            <div className="flex flex-col gap-1.5 text-xs">
-              {[
-                { key: 'Protected Bike Lanes', label: '受保護獨立單車道', tag: 'Protected', color: '#10b981', borderActive: 'border-emerald-500/50', bgActive: 'bg-emerald-950/30', tagColor: 'text-emerald-400', toggleBg: 'bg-emerald-600' },
-                { key: 'Painted Lanes', label: '路面標線單車道', tag: 'Painted', color: '#0ea5e9', borderActive: 'border-sky-500/50', bgActive: 'bg-sky-950/30', tagColor: 'text-sky-400', toggleBg: 'bg-sky-600' },
-                { key: 'Local Street', label: '社區慢速單車街', tag: 'Local Street', color: '#f59e0b', borderActive: 'border-amber-500/50', bgActive: 'bg-amber-950/30', tagColor: 'text-amber-400', toggleBg: 'bg-amber-600' },
-                { key: 'Shared Lanes', label: '混合共用車道', tag: 'Shared', color: '#a855f7', borderActive: 'border-purple-500/50', bgActive: 'bg-purple-950/30', tagColor: 'text-purple-400', toggleBg: 'bg-purple-600' },
-              ].map((item) => {
-                const isActive = bikewaysFilter[item.key] !== false;
-                return (
-                  <button
-                    type="button"
-                    key={item.key}
-                    onClick={() => {
-                      setBikewaysFilter(prev => ({
-                        ...prev,
-                        [item.key]: !isActive
-                      }));
-                    }}
-                    className={`w-full flex items-center justify-between p-1.5 rounded border text-left transition-all ${
-                      isActive 
-                        ? `${item.bgActive} ${item.borderActive} shadow-xs` 
-                        : 'bg-[#10141e]/50 border-[#262b38] opacity-45 hover:opacity-75'
-                    }`}
-                    title={isActive ? `點擊隱藏 ${item.label}` : `點擊顯示 ${item.label}`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <span 
-                        className="w-5 h-1.5 rounded-full shrink-0 transition-all" 
-                        style={{ 
-                          backgroundColor: isActive ? item.color : '#4b5563',
-                          boxShadow: isActive ? `0 0 6px ${item.color}B3` : 'none'
-                        }} 
-                      />
-                      <span className={`text-[11px] font-medium transition-colors ${isActive ? 'text-gray-200' : 'text-gray-500 line-through'}`}>
-                        {item.label}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <span className={`text-[9.5px] font-mono ${isActive ? item.tagColor : 'text-gray-600'}`}>
-                        {item.tag}
-                      </span>
-                      <div className={`w-6 h-3.5 rounded-full transition-colors p-0.5 flex items-center ${
-                        isActive ? item.toggleBg + ' justify-end' : 'bg-gray-700 justify-start'
-                      }`}>
-                        <span className="w-2.5 h-2.5 rounded-full bg-white shadow-xs" />
-                      </div>
-                    </div>
-                  </button>
-                );
-              })}
-
-              {Object.values(bikewaysFilter).some(v => v === false) && (
-                <div className="flex items-center justify-between pt-1 border-t border-[#262b38] text-[10.5px]">
-                  <span className="text-gray-400">已自訂篩選</span>
-                  <button
-                    type="button"
-                    onClick={() => setBikewaysFilter({
-                      'Protected Bike Lanes': true,
-                      'Painted Lanes': true,
-                      'Local Street': true,
-                      'Shared Lanes': true,
-                    })}
-                    className="text-emerald-400 hover:text-emerald-300 hover:underline"
-                  >
-                    重設全部顯示
-                  </button>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="flex items-center justify-between text-[11px] text-gray-300">
-              <div className="flex items-center gap-1.5">
-                {[
-                  { key: 'Protected Bike Lanes', color: '#10b981', label: '受保護獨立道' },
-                  { key: 'Painted Lanes', color: '#0ea5e9', label: '路面標線' },
-                  { key: 'Local Street', color: '#f59e0b', label: '社區慢速街' },
-                  { key: 'Shared Lanes', color: '#a855f7', label: '混合共用' },
-                ].map(item => (
-                  <span 
-                    key={item.key}
-                    className="w-3 h-1 rounded-full transition-colors"
-                    style={{ backgroundColor: bikewaysFilter[item.key] !== false ? item.color : '#4b5563' }}
-                    title={`${item.label} (${bikewaysFilter[item.key] !== false ? '已開啟' : '已關閉'})`}
-                  />
-                ))}
-              </div>
-              <button 
-                onClick={() => setBikewaysLegendOpen(true)}
-                className="text-[10px] text-emerald-400 hover:underline"
-              >
-                篩選/展開
-              </button>
-            </div>
-          )}
-        </div>
-      )}
-
       {/* 貨車路線資訊與地圖按鈕小界面 (Truck Routes Info & Map Modal Trigger) */}
       {layers.truckRoutes && (
         <div className={`fixed z-30 w-[280px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-sky-500/50 select-none animate-in fade-in duration-200 ${
-          getFloatingPanelPos((layers.parkingMeters ? 1 : 0) + (layers.motorcycleParking ? 1 : 0) + (layers.fuel ? 1 : 0) + ((layers.evCharging || layers.tesla) ? 1 : 0) + (layers.carSharing ? 1 : 0) + (layers.bikeways ? 1 : 0))
+          getFloatingPanelPos((layers.parkingMeters ? 1 : 0) + (layers.motorcycleParking ? 1 : 0) + (layers.fuel ? 1 : 0) + ((layers.evCharging || layers.tesla) ? 1 : 0) + (layers.carSharing ? 1 : 0))
         }`}>
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
             <div className="flex items-center gap-2">
@@ -17675,7 +17506,7 @@ export default function AppMap() {
       {/* 路口安全相機圖例與篩選 (Intersection Safety Cameras Legend & Filter Popup) */}
       {layers.safetyCameras && (
         <div className={`fixed z-30 w-[260px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-rose-500/40 select-none animate-in fade-in duration-200 ${
-          getFloatingPanelPos((layers.parkingMeters ? 1 : 0) + (layers.motorcycleParking ? 1 : 0) + (layers.fuel ? 1 : 0) + ((layers.evCharging || layers.tesla) ? 1 : 0) + (layers.carSharing ? 1 : 0) + (layers.bikeways ? 1 : 0))
+          getFloatingPanelPos((layers.parkingMeters ? 1 : 0) + (layers.motorcycleParking ? 1 : 0) + (layers.fuel ? 1 : 0) + ((layers.evCharging || layers.tesla) ? 1 : 0) + (layers.carSharing ? 1 : 0))
         }`}>
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
             <div className="flex items-center gap-2">
@@ -17804,7 +17635,6 @@ export default function AppMap() {
             (layers.fuel ? 1 : 0) + 
             ((layers.evCharging || layers.tesla) ? 1 : 0) + 
             (layers.carSharing ? 1 : 0) + 
-            (layers.bikeways ? 1 : 0) +
             (layers.truckRoutes ? 1 : 0) +
             (layers.safetyCameras ? 1 : 0)
           )
@@ -17979,7 +17809,6 @@ export default function AppMap() {
             (layers.fuel ? 1 : 0) + 
             ((layers.evCharging || layers.tesla) ? 1 : 0) + 
             (layers.carSharing ? 1 : 0) + 
-            (layers.bikeways ? 1 : 0) +
             (layers.truckRoutes ? 1 : 0) +
             (layers.safetyCameras ? 1 : 0) +
             (layers.impark ? 1 : 0)
