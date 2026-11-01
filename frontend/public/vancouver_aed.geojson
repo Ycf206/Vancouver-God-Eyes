@@ -1,5 +1,8 @@
 {
   "type": "FeatureCollection",
+  "generator": "VancouverGodsEye",
+  "total_count": 81,
+  "updated_at": "2026-11-01T06:05:48.204Z",
   "features": [
     {
       "type": "Feature",
