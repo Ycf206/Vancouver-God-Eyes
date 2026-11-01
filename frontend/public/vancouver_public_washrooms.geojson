@@ -2,3534 +2,3240 @@
   "type": "FeatureCollection",
   "generator": "VancouverGodsEye",
   "total_count": 147,
-  "updated_at": "2026-10-11T17:35:17.705460Z",
+  "updated_at": "2026-11-01T06:05:54.454Z",
   "features": [
     {
       "type": "Feature",
-      "id": "washroom_1",
-      "properties": {
-        "id": "washroom_1",
-        "facility_type": "public_washrooms",
-        "name": "Bute at Davie 公廁",
-        "park_name": null,
-        "location": "Bute at Davie",
-        "washroom_type": "LargeAPT",
-        "summer_hours": "24hrs - 24hrs",
-        "winter_hours": "24hrs - 24hrs",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "West End"
-      },
+      "id": "washroom_0",
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.13309096598624,
-          49.282049830174515
+          -123.119849,
+          49.282955
         ]
+      },
+      "properties": {
+        "id": "washroom_0",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - 公共洗手間",
+        "park_name": "公共洗手間",
+        "location": "Vancouver Art Gallery",
+        "wheelchair_access": "Yes",
+        "summer_hours": "6am - 10pm",
+        "winter_hours": "6am - 10pm",
+        "notes": null
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "washroom_1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.118039,
+          49.280319
+        ]
+      },
+      "properties": {
+        "id": "washroom_1",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - 公共洗手間",
+        "park_name": "公共洗手間",
+        "location": "Robson St and Richards St",
+        "wheelchair_access": "No",
+        "summer_hours": "24hrs - 24hrs",
+        "winter_hours": "24hrs - 24hrs",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_2",
-      "properties": {
-        "id": "washroom_2",
-        "facility_type": "public_washrooms",
-        "name": "Bute St, Nelson Park 公廁",
-        "park_name": null,
-        "location": "Bute St, Nelson Park",
-        "washroom_type": "LargeAPT",
-        "summer_hours": "24hrs - 24hrs",
-        "winter_hours": "24hrs - 24hrs",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "West End"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.13066155087947,
-          49.28337239139535
+          -123.133091,
+          49.28205
         ]
+      },
+      "properties": {
+        "id": "washroom_2",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - 公共洗手間",
+        "park_name": "公共洗手間",
+        "location": "Bute at Davie",
+        "wheelchair_access": "Yes",
+        "summer_hours": "24hrs - 24hrs",
+        "winter_hours": "24hrs - 24hrs",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_3",
-      "properties": {
-        "id": "washroom_3",
-        "facility_type": "public_washrooms",
-        "name": "Robson St and Richards St 公廁",
-        "park_name": null,
-        "location": "Robson St and Richards St",
-        "washroom_type": "SmallAPT",
-        "summer_hours": "24hrs - 24hrs",
-        "winter_hours": "24hrs - 24hrs",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Downtown"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.11803855424995,
-          49.28031868986395
+          -123.130662,
+          49.283372
         ]
+      },
+      "properties": {
+        "id": "washroom_3",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - 公共洗手間",
+        "park_name": "公共洗手間",
+        "location": "Bute St, Nelson Park",
+        "wheelchair_access": "Yes",
+        "summer_hours": "24hrs - 24hrs",
+        "winter_hours": "24hrs - 24hrs",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_4",
-      "properties": {
-        "id": "washroom_4",
-        "facility_type": "public_washrooms",
-        "name": "Vancouver Art Gallery 公廁",
-        "park_name": null,
-        "location": "Vancouver Art Gallery",
-        "washroom_type": "LargeAPT",
-        "summer_hours": "6am - 10pm",
-        "winter_hours": "6am - 10pm",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Downtown"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.11984855327826,
-          49.28295538959993
+          -123.103599,
+          49.277821
         ]
+      },
+      "properties": {
+        "id": "washroom_4",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Andy Livingstone Park",
+        "park_name": "Andy Livingstone Park",
+        "location": "South side, fieldhouse",
+        "wheelchair_access": "Yes",
+        "summer_hours": "10:00 am - 11:00 pm",
+        "winter_hours": "10:00 am - 11:00 pm",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_5",
-      "properties": {
-        "id": "washroom_5",
-        "facility_type": "public_washrooms",
-        "name": "Andy Livingstone Park 公園公廁",
-        "park_name": "Andy Livingstone Park",
-        "location": "South side, fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "10:00 am - 11:00 pm",
-        "winter_hours": "10:00 am - 11:00 pm",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Downtown"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.10359902275324,
-          49.27782096548095
+          -123.175461,
+          49.245234
         ]
+      },
+      "properties": {
+        "id": "washroom_5",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Balaclava Park",
+        "park_name": "Balaclava Park",
+        "location": "Central, field house",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_6",
-      "properties": {
-        "id": "washroom_6",
-        "facility_type": "public_washrooms",
-        "name": "Balaclava Park 公園公廁",
-        "park_name": "Balaclava Park",
-        "location": "Central, field house",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Dunbar-Southlands"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.17546094914353,
-          49.245233993113295
+          -123.191125,
+          49.249427
         ]
+      },
+      "properties": {
+        "id": "washroom_6",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Chaldecott Park",
+        "park_name": "Chaldecott Park",
+        "location": "East side fieldhouse",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_7",
-      "properties": {
-        "id": "washroom_7",
-        "facility_type": "public_washrooms",
-        "name": "Chaldecott Park 公園公廁",
-        "park_name": "Chaldecott Park",
-        "location": "East side fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Dunbar-Southlands"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.19112496215543,
-          49.24942695917802
+          -123.058334,
+          49.268286
         ]
+      },
+      "properties": {
+        "id": "washroom_7",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Garden Park",
+        "park_name": "Garden Park",
+        "location": "North east corner, fieldhouse",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_8",
-      "properties": {
-        "id": "washroom_8",
-        "facility_type": "public_washrooms",
-        "name": "Garden Park 公園公廁",
-        "park_name": "Garden Park",
-        "location": "North east corner, fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Grandview-Woodland"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.05833399382524,
-          49.268285997582815
+          -123.0695,
+          49.22387
         ]
+      },
+      "properties": {
+        "id": "washroom_8",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Gordon Park",
+        "park_name": "Gordon Park",
+        "location": "East side",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_9",
-      "properties": {
-        "id": "washroom_9",
-        "facility_type": "public_washrooms",
-        "name": "Gordon Park 公園公廁",
-        "park_name": "Gordon Park",
-        "location": "East side",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Victoria-Fraserview"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.06949997797808,
-          49.22387004403736
+          -123.08522,
+          49.240961
         ]
+      },
+      "properties": {
+        "id": "washroom_9",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Grays Park",
+        "park_name": "Grays Park",
+        "location": "Centre west by parking lot",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_10",
-      "properties": {
-        "id": "washroom_10",
-        "facility_type": "public_washrooms",
-        "name": "Grays Park 公園公廁",
-        "park_name": "Grays Park",
-        "location": "Centre west by parking lot",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Kensington-Cedar Cottage"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.08522025523621,
-          49.24096092890344
+          -123.121467,
+          49.289804
         ]
+      },
+      "properties": {
+        "id": "washroom_10",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Harbour Green Park",
+        "park_name": "Harbour Green Park",
+        "location": "Central",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_11",
-      "properties": {
-        "id": "washroom_11",
-        "facility_type": "public_washrooms",
-        "name": "Harbour Green Park 公園公廁",
-        "park_name": "Harbour Green Park",
-        "location": "Central",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Downtown"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.12146699909354,
-          49.28980401354857
+          -123.089366,
+          49.279007
         ]
+      },
+      "properties": {
+        "id": "washroom_11",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - MacLean Park",
+        "park_name": "MacLean Park",
+        "location": "North west corner, fieldhouse",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_12",
-      "properties": {
-        "id": "washroom_12",
-        "facility_type": "public_washrooms",
-        "name": "MacLean Park 公園公廁",
-        "park_name": "MacLean Park",
-        "location": "North west corner, fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Strathcona"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.08936604005851,
-          49.27900702156459
+          -123.180141,
+          49.268107
         ]
+      },
+      "properties": {
+        "id": "washroom_12",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - McBride Park",
+        "park_name": "McBride Park",
+        "location": "Central, field house",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_13",
-      "properties": {
-        "id": "washroom_13",
-        "facility_type": "public_washrooms",
-        "name": "McBride Park 公園公廁",
-        "park_name": "McBride Park",
-        "location": "Central, field house",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Kitsilano"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.18014096216841,
-          49.26810696562739
+          -123.188455,
+          49.243335
         ]
+      },
+      "properties": {
+        "id": "washroom_13",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Memorial West Park",
+        "park_name": "Memorial West Park",
+        "location": "Central, field house",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_14",
-      "properties": {
-        "id": "washroom_14",
-        "facility_type": "public_washrooms",
-        "name": "Memorial West Park 公園公廁",
-        "park_name": "Memorial West Park",
-        "location": "Central, field house",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Dunbar-Southlands"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.1884550035118,
-          49.2433349838613
+          -123.087355,
+          49.215253
         ]
+      },
+      "properties": {
+        "id": "washroom_14",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Moberly Park",
+        "park_name": "Moberly Park",
+        "location": "South west corner at Community Hall",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_15",
-      "properties": {
-        "id": "washroom_15",
-        "facility_type": "public_washrooms",
-        "name": "Moberly Park 公園公廁",
-        "park_name": "Moberly Park",
-        "location": "South west corner at Community Hall",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Sunset"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.08735497868791,
-          49.21525299478923
+          -123.057429,
+          49.228242
         ]
+      },
+      "properties": {
+        "id": "washroom_15",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Nanaimo Park",
+        "park_name": "Nanaimo Park",
+        "location": "North side, fieldhouse",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_16",
-      "properties": {
-        "id": "washroom_16",
-        "facility_type": "public_washrooms",
-        "name": "Nanaimo Park 公園公廁",
-        "park_name": "Nanaimo Park",
-        "location": "North side, fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Victoria-Fraserview"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.05742904218603,
-          49.22824199783262
+          -123.051425,
+          49.237975
         ]
+      },
+      "properties": {
+        "id": "washroom_16",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Norquay Park",
+        "park_name": "Norquay Park",
+        "location": "West side, field house",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_17",
-      "properties": {
-        "id": "washroom_17",
-        "facility_type": "public_washrooms",
-        "name": "Norquay Park 公園公廁",
-        "park_name": "Norquay Park",
-        "location": "West side, field house",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Renfrew-Collingwood"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.05142495965826,
-          49.23797498982322
+          -123.148724,
+          49.244643
         ]
+      },
+      "properties": {
+        "id": "washroom_17",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Quilchena Park",
+        "park_name": "Quilchena Park",
+        "location": "North east corner, fieldhouse",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_18",
-      "properties": {
-        "id": "washroom_18",
-        "facility_type": "public_washrooms",
-        "name": "Quilchena Park 公園公廁",
-        "park_name": "Quilchena Park",
-        "location": "North east corner, fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Arbutus Ridge"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.14872394440481,
-          49.24464304772313
+          -123.047952,
+          49.244438
         ]
+      },
+      "properties": {
+        "id": "washroom_18",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Slocan Park",
+        "park_name": "Slocan Park",
+        "location": "North side",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_19",
-      "properties": {
-        "id": "washroom_19",
-        "facility_type": "public_washrooms",
-        "name": "Slocan Park 公園公廁",
-        "park_name": "Slocan Park",
-        "location": "North side",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Renfrew-Collingwood"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.04795201778296,
-          49.24443797709505
+          -123.036018,
+          49.266923
         ]
+      },
+      "properties": {
+        "id": "washroom_19",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Sunrise Park",
+        "park_name": "Sunrise Park",
+        "location": "North west corner, fieldhouse",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_20",
-      "properties": {
-        "id": "washroom_20",
-        "facility_type": "public_washrooms",
-        "name": "Sunrise Park 公園公廁",
-        "park_name": "Sunrise Park",
-        "location": "North west corner, fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Hastings-Sunrise"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.0360179829702,
-          49.26692299064806
+          -123.13795,
+          49.278837
         ]
+      },
+      "properties": {
+        "id": "washroom_20",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Sunset Beach Park",
+        "park_name": "Sunset Beach Park",
+        "location": "Concession",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "7:00 am - Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_21",
-      "properties": {
-        "id": "washroom_21",
-        "facility_type": "public_washrooms",
-        "name": "Sunset Beach Park 公園公廁",
-        "park_name": "Sunset Beach Park",
-        "location": "Concession",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "7:00 am - Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "West End"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.1379500438107,
-          49.27883701378158
+          -123.163472,
+          49.251555
         ]
+      },
+      "properties": {
+        "id": "washroom_21",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Trafalgar Park",
+        "park_name": "Trafalgar Park",
+        "location": "North side, fieldhouse",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_22",
-      "properties": {
-        "id": "washroom_22",
-        "facility_type": "public_washrooms",
-        "name": "Trafalgar Park 公園公廁",
-        "park_name": "Trafalgar Park",
-        "location": "North side, fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Arbutus Ridge"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.16347197280245,
-          49.25155496544428
+          -123.139856,
+          49.275196
         ]
+      },
+      "properties": {
+        "id": "washroom_22",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Vanier Park",
+        "park_name": "Vanier Park",
+        "location": "Burrard Civic Marina",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_23",
-      "properties": {
-        "id": "washroom_23",
-        "facility_type": "public_washrooms",
-        "name": "Vanier Park 公園公廁",
-        "park_name": "Vanier Park",
-        "location": "Burrard Civic Marina",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Kitsilano"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.13985594322915,
-          49.275196010470154
+          -123.07322,
+          49.278369
         ]
+      },
+      "properties": {
+        "id": "washroom_23",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Woodland Park",
+        "park_name": "Woodland Park",
+        "location": "Central, field house",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_24",
-      "properties": {
-        "id": "washroom_24",
-        "facility_type": "public_washrooms",
-        "name": "Woodland Park 公園公廁",
-        "park_name": "Woodland Park",
-        "location": "Central, field house",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Grandview-Woodland"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.07322000486613,
-          49.278368970968174
+          -123.070653,
+          49.275043
         ]
+      },
+      "properties": {
+        "id": "washroom_24",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Britannia",
+        "park_name": "Britannia",
+        "location": "1661 Napier St",
+        "wheelchair_access": null,
+        "summer_hours": "as per CC operating hours",
+        "winter_hours": "as per CC operating hours",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_25",
-      "properties": {
-        "id": "washroom_25",
-        "facility_type": "public_washrooms",
-        "name": "Britannia 公園公廁",
-        "park_name": "Britannia",
-        "location": "1661 Napier St",
-        "washroom_type": "Community Center",
-        "summer_hours": "as per CC operating hours",
-        "winter_hours": "as per CC operating hours",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Grandview-Woodland"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.07065277917624,
-          49.27504267038139
+          -123.188252,
+          49.242815
         ]
+      },
+      "properties": {
+        "id": "washroom_25",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Dunbar",
+        "park_name": "Dunbar",
+        "location": "4747 Dunbar St",
+        "wheelchair_access": null,
+        "summer_hours": "as per CC operating hours",
+        "winter_hours": "as per CC operating hours",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_26",
-      "properties": {
-        "id": "washroom_26",
-        "facility_type": "public_washrooms",
-        "name": "Dunbar 公園公廁",
-        "park_name": "Dunbar",
-        "location": "4747 Dunbar St",
-        "washroom_type": "Community Center",
-        "summer_hours": "as per CC operating hours",
-        "winter_hours": "as per CC operating hours",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Dunbar-Southlands"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.1882519609546,
-          49.24281542583472
+          -123.097084,
+          49.283875
         ]
+      },
+      "properties": {
+        "id": "washroom_26",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Evelyne Saller Centre",
+        "park_name": "Evelyne Saller Centre",
+        "location": "320 Alexander St",
+        "wheelchair_access": null,
+        "summer_hours": "as per CC operating hours",
+        "winter_hours": "as per CC operating hours",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_27",
-      "properties": {
-        "id": "washroom_27",
-        "facility_type": "public_washrooms",
-        "name": "Evelyne Saller Centre 公園公廁",
-        "park_name": "Evelyne Saller Centre",
-        "location": "320 Alexander St",
-        "washroom_type": "Community Center",
-        "summer_hours": "as per CC operating hours",
-        "winter_hours": "as per CC operating hours",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Strathcona"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.09708430739617,
-          49.2838745131322
+          -123.123482,
+          49.27799
         ]
+      },
+      "properties": {
+        "id": "washroom_27",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Gathering Place",
+        "park_name": "Gathering Place",
+        "location": "609 Helmcken St",
+        "wheelchair_access": null,
+        "summer_hours": "as per CC operating hours",
+        "winter_hours": "as per CC operating hours",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_28",
-      "properties": {
-        "id": "washroom_28",
-        "facility_type": "public_washrooms",
-        "name": "Gathering Place 公園公廁",
-        "park_name": "Gathering Place",
-        "location": "609 Helmcken St",
-        "washroom_type": "Community Center",
-        "summer_hours": "as per CC operating hours",
-        "winter_hours": "as per CC operating hours",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Downtown"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.12348216441735,
-          49.27798999137303
+          -123.161859,
+          49.262343
         ]
+      },
+      "properties": {
+        "id": "washroom_28",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Kitsilano War Memorial",
+        "park_name": "Kitsilano War Memorial",
+        "location": "2690 Larch St",
+        "wheelchair_access": null,
+        "summer_hours": "as per CC operating hours",
+        "winter_hours": "as per CC operating hours",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_29",
-      "properties": {
-        "id": "washroom_29",
-        "facility_type": "public_washrooms",
-        "name": "Kitsilano War Memorial 公園公廁",
-        "park_name": "Kitsilano War Memorial",
-        "location": "2690 Larch St",
-        "washroom_type": "Community Center",
-        "summer_hours": "as per CC operating hours",
-        "winter_hours": "as per CC operating hours",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Kitsilano"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.16185934533652,
-          49.26234325331214
+          -123.222679,
+          49.277472
         ]
+      },
+      "properties": {
+        "id": "washroom_29",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Spanish Banks Beach Park",
+        "park_name": "Spanish Banks Beach Park",
+        "location": "West, fieldhouse",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_30",
-      "properties": {
-        "id": "washroom_30",
-        "facility_type": "public_washrooms",
-        "name": "Spanish Banks Beach Park 公園公廁",
-        "park_name": "Spanish Banks Beach Park",
-        "location": "West, fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "West Point Grey"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.22267905551811,
-          49.27747198504818
+          -123.153703,
+          49.274472
         ]
+      },
+      "properties": {
+        "id": "washroom_30",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Kitsilano Beach Park",
+        "park_name": "Kitsilano Beach Park",
+        "location": "Lifeguard station",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_31",
-      "properties": {
-        "id": "washroom_31",
-        "facility_type": "public_washrooms",
-        "name": "Kitsilano Beach Park 公園公廁",
-        "park_name": "Kitsilano Beach Park",
-        "location": "Lifeguard station",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Kitsilano"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.15370297407691,
-          49.27447199236721
+          -123.030605,
+          49.270135
         ]
+      },
+      "properties": {
+        "id": "washroom_31",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Rupert Park",
+        "park_name": "Rupert Park",
+        "location": "South side, fieldhouse",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_32",
-      "properties": {
-        "id": "washroom_32",
-        "facility_type": "public_washrooms",
-        "name": "Rupert Park 公園公廁",
-        "park_name": "Rupert Park",
-        "location": "South side, fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Hastings-Sunrise"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.03060498029191,
-          49.27013500332388
+          -123.148388,
+          49.31055
         ]
+      },
+      "properties": {
+        "id": "washroom_32",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Stanley Park",
+        "park_name": "Stanley Park",
+        "location": "Prospect Point Picnic, fieldhouse",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_33",
-      "properties": {
-        "id": "washroom_33",
-        "facility_type": "public_washrooms",
-        "name": "Stanley Park 公園公廁",
-        "park_name": "Stanley Park",
-        "location": "Prospect Point Picnic, fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Vancouver"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.14838804055674,
-          49.31055002745345
+          -123.14658,
+          49.292293
         ]
+      },
+      "properties": {
+        "id": "washroom_33",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Stanley Park",
+        "park_name": "Stanley Park",
+        "location": "SP Brewing",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_34",
-      "properties": {
-        "id": "washroom_34",
-        "facility_type": "public_washrooms",
-        "name": "Stanley Park 公園公廁",
-        "park_name": "Stanley Park",
-        "location": "SP Brewing",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Vancouver"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.14658004093583,
-          49.29229302081527
+          -123.130708,
+          49.302926
         ]
+      },
+      "properties": {
+        "id": "washroom_34",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Stanley Park",
+        "park_name": "Stanley Park",
+        "location": "Lumberman's Arch",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_35",
-      "properties": {
-        "id": "washroom_35",
-        "facility_type": "public_washrooms",
-        "name": "Stanley Park 公園公廁",
-        "park_name": "Stanley Park",
-        "location": "Lumberman's Arch",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Vancouver"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.13070797861168,
-          49.30292598376159
+          -123.131433,
+          49.297753
         ]
+      },
+      "properties": {
+        "id": "washroom_35",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Stanley Park",
+        "park_name": "Stanley Park",
+        "location": "Info Booth",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_36",
-      "properties": {
-        "id": "washroom_36",
-        "facility_type": "public_washrooms",
-        "name": "Stanley Park 公園公廁",
-        "park_name": "Stanley Park",
-        "location": "Info Booth",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Vancouver"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.13143296597215,
-          49.297753013370894
+          -123.121278,
+          49.29944
         ]
+      },
+      "properties": {
+        "id": "washroom_36",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Stanley Park",
+        "park_name": "Stanley Park",
+        "location": "Totems",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_37",
-      "properties": {
-        "id": "washroom_37",
-        "facility_type": "public_washrooms",
-        "name": "Stanley Park 公園公廁",
-        "park_name": "Stanley Park",
-        "location": "Totems",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Vancouver"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.12127801954023,
-          49.29944002244882
+          -123.138591,
+          49.293922
         ]
+      },
+      "properties": {
+        "id": "washroom_37",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Stanley Park",
+        "park_name": "Stanley Park",
+        "location": "Chilco - Lost Lagoon",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_38",
-      "properties": {
-        "id": "washroom_38",
-        "facility_type": "public_washrooms",
-        "name": "Stanley Park 公園公廁",
-        "park_name": "Stanley Park",
-        "location": "Chilco - Lost Lagoon",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Vancouver"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.13859102966137,
-          49.2939220370603
+          -123.034309,
+          49.282506
         ]
+      },
+      "properties": {
+        "id": "washroom_38",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Empire Fields - Hastings Park",
+        "park_name": "Empire Fields - Hastings Park",
+        "location": "West Side",
+        "wheelchair_access": null,
+        "summer_hours": null,
+        "winter_hours": null,
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_39",
-      "properties": {
-        "id": "washroom_39",
-        "facility_type": "public_washrooms",
-        "name": "Empire Fields - Hastings Park 公園公廁",
-        "park_name": "Empire Fields - Hastings Park",
-        "location": "West Side",
-        "washroom_type": "公園洗手間",
-        "summer_hours": null,
-        "winter_hours": null,
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Hastings-Sunrise"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.03430857894679,
-          49.28250644914341
+          -123.101833,
+          49.284588
         ]
+      },
+      "properties": {
+        "id": "washroom_39",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - CRAB Park at Portside",
+        "park_name": "CRAB Park at Portside",
+        "location": "101 E Waterfront Rd",
+        "wheelchair_access": "Yes",
+        "summer_hours": "24 hrs",
+        "winter_hours": "24 hrs",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_40",
-      "properties": {
-        "id": "washroom_40",
-        "facility_type": "public_washrooms",
-        "name": "CRAB Park at Portside 公園公廁",
-        "park_name": "CRAB Park at Portside",
-        "location": "101 E Waterfront Rd",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "24 hrs",
-        "winter_hours": "24 hrs",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Downtown"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.10183295751148,
-          49.28458764705696
+          -123.189923,
+          49.229432
         ]
+      },
+      "properties": {
+        "id": "washroom_40",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Musqueam Park",
+        "park_name": "Musqueam Park",
+        "location": "4000 SW Marine Dr",
+        "wheelchair_access": null,
+        "summer_hours": null,
+        "winter_hours": null,
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_41",
-      "properties": {
-        "id": "washroom_41",
-        "facility_type": "public_washrooms",
-        "name": "Musqueam Park 公園公廁",
-        "park_name": "Musqueam Park",
-        "location": "4000 SW Marine Dr",
-        "washroom_type": "公園洗手間",
-        "summer_hours": null,
-        "winter_hours": null,
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Dunbar-Southlands"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.18992303549682,
-          49.22943227927681
+          -123.112515,
+          49.223887
         ]
+      },
+      "properties": {
+        "id": "washroom_41",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Langara Golf Course",
+        "park_name": "Langara Golf Course",
+        "location": "Exterior of Building",
+        "wheelchair_access": null,
+        "summer_hours": null,
+        "winter_hours": null,
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_42",
-      "properties": {
-        "id": "washroom_42",
-        "facility_type": "public_washrooms",
-        "name": "Langara Golf Course 公園公廁",
-        "park_name": "Langara Golf Course",
-        "location": "Exterior of Building",
-        "washroom_type": "公園洗手間",
-        "summer_hours": null,
-        "winter_hours": null,
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Oakridge"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.1125147594454,
-          49.223887357607616
+          -123.099763,
+          49.273133
         ]
+      },
+      "properties": {
+        "id": "washroom_42",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - 公共洗手間",
+        "park_name": "公共洗手間",
+        "location": "Main St and Terminal Ave",
+        "wheelchair_access": "Yes",
+        "summer_hours": "6am - 10pm",
+        "winter_hours": "6am - 10pm",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_43",
-      "properties": {
-        "id": "washroom_43",
-        "facility_type": "public_washrooms",
-        "name": "Main St and Terminal Ave 公廁",
-        "park_name": null,
-        "location": "Main St and Terminal Ave",
-        "washroom_type": "LargeAPT",
-        "summer_hours": "6am - 10pm",
-        "winter_hours": "6am - 10pm",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Strathcona"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.09976255831502,
-          49.273133087824995
+          -123.099853,
+          49.283276
         ]
+      },
+      "properties": {
+        "id": "washroom_43",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - 公共洗手間",
+        "park_name": "公共洗手間",
+        "location": "Powell St and Main St",
+        "wheelchair_access": "No",
+        "summer_hours": "24hrs - 24hrs",
+        "winter_hours": "24hrs - 24hrs",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_44",
-      "properties": {
-        "id": "washroom_44",
-        "facility_type": "public_washrooms",
-        "name": "Robson St and Granville St 公廁",
-        "park_name": null,
-        "location": "Robson St and Granville St",
-        "washroom_type": "LargeAPT",
-        "summer_hours": "6am - 10pm",
-        "winter_hours": "6am - 10pm",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Downtown"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.12006655436043,
-          49.28162689042019
+          -123.120067,
+          49.281627
         ]
+      },
+      "properties": {
+        "id": "washroom_44",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - 公共洗手間",
+        "park_name": "公共洗手間",
+        "location": "Robson St and Granville St",
+        "wheelchair_access": "Yes",
+        "summer_hours": "6am - 10pm",
+        "winter_hours": "6am - 10pm",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_45",
-      "properties": {
-        "id": "washroom_45",
-        "facility_type": "public_washrooms",
-        "name": "Powell St and Main St 公廁",
-        "park_name": null,
-        "location": "Powell St and Main St",
-        "washroom_type": "SmallAPT",
-        "summer_hours": "24hrs - 24hrs",
-        "winter_hours": "24hrs - 24hrs",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Downtown"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.09985255600299,
-          49.28327564457818
+          -123.065426,
+          49.247855
         ]
+      },
+      "properties": {
+        "id": "washroom_45",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Brewers Park",
+        "park_name": "Brewers Park",
+        "location": "North east corner fieldhouse",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_46",
-      "properties": {
-        "id": "washroom_46",
-        "facility_type": "public_washrooms",
-        "name": "Brewers Park 公園公廁",
-        "park_name": "Brewers Park",
-        "location": "North east corner fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Kensington-Cedar Cottage"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.06542594968943,
-          49.247854989502486
+          -123.172609,
+          49.256742
         ]
+      },
+      "properties": {
+        "id": "washroom_46",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Carnarvon Park",
+        "park_name": "Carnarvon Park",
+        "location": "West side, field house",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_47",
-      "properties": {
-        "id": "washroom_47",
-        "facility_type": "public_washrooms",
-        "name": "Carnarvon Park 公園公廁",
-        "park_name": "Carnarvon Park",
-        "location": "West side, field house",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Arbutus Ridge"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.17260900971546,
-          49.25674201569476
+          -123.113138,
+          49.231775
         ]
+      },
+      "properties": {
+        "id": "washroom_47",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Columbia Park",
+        "park_name": "Columbia Park",
+        "location": "West Side",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk Weekends only",
+        "winter_hours": "Dawn to Dusk Weekends only",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_48",
-      "properties": {
-        "id": "washroom_48",
-        "facility_type": "public_washrooms",
-        "name": "Columbia Park 公園公廁",
-        "park_name": "Columbia Park",
-        "location": "West Side",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk Weekends only",
-        "winter_hours": "Dawn to Dusk Weekends only",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Oakridge"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.11313783023915,
-          49.2317747997683
+          -123.149856,
+          49.207395
         ]
+      },
+      "properties": {
+        "id": "washroom_48",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Fraser River Park",
+        "park_name": "Fraser River Park",
+        "location": "West corner",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Closed",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_49",
-      "properties": {
-        "id": "washroom_49",
-        "facility_type": "public_washrooms",
-        "name": "Fraser River Park 公園公廁",
-        "park_name": "Fraser River Park",
-        "location": "West corner",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Closed",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Kerrisdale"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.14985600420111,
-          49.20739499780086
+          -123.14197,
+          49.258493
         ]
+      },
+      "properties": {
+        "id": "washroom_49",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Granville Park",
+        "park_name": "Granville Park",
+        "location": "Central, field house",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_50",
-      "properties": {
-        "id": "washroom_50",
-        "facility_type": "public_washrooms",
-        "name": "Granville Park 公園公廁",
-        "park_name": "Granville Park",
-        "location": "Central, field house",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Fairview"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.14196994941648,
-          49.25849301101233
+          -123.15031,
+          49.277461
         ]
+      },
+      "properties": {
+        "id": "washroom_50",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Hadden Park",
+        "park_name": "Hadden Park",
+        "location": "West, caretaker house (actually in Kits)",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_51",
-      "properties": {
-        "id": "washroom_51",
-        "facility_type": "public_washrooms",
-        "name": "Hadden Park 公園公廁",
-        "park_name": "Hadden Park",
-        "location": "West, caretaker house (actually in Kits)",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Kitsilano"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.15030998197221,
-          49.27746099218739
+          -123.037874,
+          49.280648
         ]
+      },
+      "properties": {
+        "id": "washroom_51",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Hastings Community Park",
+        "park_name": "Hastings Community Park",
+        "location": "Central, field house",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Closed",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_52",
-      "properties": {
-        "id": "washroom_52",
-        "facility_type": "public_washrooms",
-        "name": "Hastings Community Park 公園公廁",
-        "park_name": "Hastings Community Park",
-        "location": "Central, field house",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Closed",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Hastings-Sunrise"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.03787394911473,
-          49.28064797025612
+          -123.061388,
+          49.253926
         ]
+      },
+      "properties": {
+        "id": "washroom_52",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - John Hendry (Trout Lake) Park",
+        "park_name": "John Hendry (Trout Lake) Park",
+        "location": "At Trout Lake",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_53",
-      "properties": {
-        "id": "washroom_53",
-        "facility_type": "public_washrooms",
-        "name": "John Hendry (Trout Lake) Park 公園公廁",
-        "park_name": "John Hendry (Trout Lake) Park",
-        "location": "At Trout Lake",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Kensington-Cedar Cottage"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.0613879883137,
-          49.25392603796801
+          -123.10762,
+          49.264498
         ]
+      },
+      "properties": {
+        "id": "washroom_53",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Jonathan Rogers Park",
+        "park_name": "Jonathan Rogers Park",
+        "location": "North side, fieldhouse",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_54",
-      "properties": {
-        "id": "washroom_54",
-        "facility_type": "public_washrooms",
-        "name": "Jonathan Rogers Park 公園公廁",
-        "park_name": "Jonathan Rogers Park",
-        "location": "North side, fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Mount Pleasant"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.1076200160498,
-          49.26449802893671
+          -123.206555,
+          49.275066
         ]
+      },
+      "properties": {
+        "id": "washroom_54",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Locarno Park",
+        "park_name": "Locarno Park",
+        "location": "Concession at fieldhouse",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_55",
-      "properties": {
-        "id": "washroom_55",
-        "facility_type": "public_washrooms",
-        "name": "Locarno Park 公園公廁",
-        "park_name": "Locarno Park",
-        "location": "Concession at fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "West Point Grey"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.20655501267096,
-          49.27506599115432
+          -123.159583,
+          49.223384
         ]
+      },
+      "properties": {
+        "id": "washroom_55",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Maple Grove Park",
+        "park_name": "Maple Grove Park",
+        "location": "Central, field house",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_56",
-      "properties": {
-        "id": "washroom_56",
-        "facility_type": "public_washrooms",
-        "name": "Maple Grove Park 公園公廁",
-        "park_name": "Maple Grove Park",
-        "location": "Central, field house",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Kerrisdale"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.15958297476698,
-          49.22338402069528
+          -123.084388,
+          49.230738
         ]
+      },
+      "properties": {
+        "id": "washroom_56",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Memorial South Park",
+        "park_name": "Memorial South Park",
+        "location": "Oval",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_57",
-      "properties": {
-        "id": "washroom_57",
-        "facility_type": "public_washrooms",
-        "name": "Memorial South Park 公園公廁",
-        "park_name": "Memorial South Park",
-        "location": "Oval",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Sunset"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.08438800219717,
-          49.230738034136294
+          -123.129241,
+          49.231826
         ]
+      },
+      "properties": {
+        "id": "washroom_57",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Montgomery Park",
+        "park_name": "Montgomery Park",
+        "location": "North east corner",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_58",
-      "properties": {
-        "id": "washroom_58",
-        "facility_type": "public_washrooms",
-        "name": "Montgomery Park 公園公廁",
-        "park_name": "Montgomery Park",
-        "location": "North east corner",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Oakridge"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.12924098629415,
-          49.2318260455406
+          -123.057478,
+          49.28228
         ]
+      },
+      "properties": {
+        "id": "washroom_58",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Pandora Park",
+        "park_name": "Pandora Park",
+        "location": "South side, fieldhouse",
+        "wheelchair_access": "No",
+        "summer_hours": "9:00 am - 7:00 pm",
+        "winter_hours": "Closed",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_59",
-      "properties": {
-        "id": "washroom_59",
-        "facility_type": "public_washrooms",
-        "name": "Pandora Park 公園公廁",
-        "park_name": "Pandora Park",
-        "location": "South side, fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "9:00 am - 7:00 pm",
-        "winter_hours": "Closed",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Grandview-Woodland"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.05747804862285,
-          49.2822799973955
+          -123.051847,
+          49.205768
         ]
+      },
+      "properties": {
+        "id": "washroom_59",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Riverfront Park",
+        "park_name": "Riverfront Park",
+        "location": "North side",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_60",
-      "properties": {
-        "id": "washroom_60",
-        "facility_type": "public_washrooms",
-        "name": "Riverfront Park 公園公廁",
-        "park_name": "Riverfront Park",
-        "location": "North side",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Killarney"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.05184697138017,
-          49.2057680363815
+          -123.082798,
+          49.2167
         ]
+      },
+      "properties": {
+        "id": "washroom_60",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Ross Park",
+        "park_name": "Ross Park",
+        "location": "South west corner, fieldhouse",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_61",
-      "properties": {
-        "id": "washroom_61",
-        "facility_type": "public_washrooms",
-        "name": "Ross Park 公園公廁",
-        "park_name": "Ross Park",
-        "location": "South west corner, fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Sunset"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.08279803559799,
-          49.216699980120325
+          -123.20458,
+          49.266542
         ]
+      },
+      "properties": {
+        "id": "washroom_61",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - West Point Grey Park",
+        "park_name": "West Point Grey Park",
+        "location": "Centre",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_62",
-      "properties": {
-        "id": "washroom_62",
-        "facility_type": "public_washrooms",
-        "name": "West Point Grey Park 公園公廁",
-        "park_name": "West Point Grey Park",
-        "location": "Centre",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "West Point Grey"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.20457956432331,
-          49.2665415424518
+          -123.032066,
+          49.214448
         ]
+      },
+      "properties": {
+        "id": "washroom_62",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Champlain Heights",
+        "park_name": "Champlain Heights",
+        "location": "3350 Maquinna Drive",
+        "wheelchair_access": null,
+        "summer_hours": "as per CC operating hours",
+        "winter_hours": "as per CC operating hours",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_63",
-      "properties": {
-        "id": "washroom_63",
-        "facility_type": "public_washrooms",
-        "name": "Champlain Heights 公園公廁",
-        "park_name": "Champlain Heights",
-        "location": "3350 Maquinna Drive",
-        "washroom_type": "Community Center",
-        "summer_hours": "as per CC operating hours",
-        "winter_hours": "as per CC operating hours",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Killarney"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.03206634777003,
-          49.21444806144973
+          -123.125053,
+          49.290299
         ]
+      },
+      "properties": {
+        "id": "washroom_63",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Coal Harbour",
+        "park_name": "Coal Harbour",
+        "location": "480 Broughton St",
+        "wheelchair_access": null,
+        "summer_hours": "as per CC operating hours",
+        "winter_hours": "as per CC operating hours",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_64",
-      "properties": {
-        "id": "washroom_64",
-        "facility_type": "public_washrooms",
-        "name": "Coal Harbour 公園公廁",
-        "park_name": "Coal Harbour",
-        "location": "480 Broughton St",
-        "washroom_type": "Community Center",
-        "summer_hours": "as per CC operating hours",
-        "winter_hours": "as per CC operating hours",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Downtown"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.12505292931655,
-          49.29029937888676
+          -123.108011,
+          49.243863
         ]
+      },
+      "properties": {
+        "id": "washroom_64",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Hillcrest",
+        "park_name": "Hillcrest",
+        "location": "4575 Clancy Loranger Way",
+        "wheelchair_access": null,
+        "summer_hours": "as per CC operating hours",
+        "winter_hours": "as per CC operating hours",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_65",
-      "properties": {
-        "id": "washroom_65",
-        "facility_type": "public_washrooms",
-        "name": "Hillcrest 公園公廁",
-        "park_name": "Hillcrest",
-        "location": "4575 Clancy Loranger Way",
-        "washroom_type": "Community Center",
-        "summer_hours": "as per CC operating hours",
-        "winter_hours": "as per CC operating hours",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Riley Park"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.10801095525639,
-          49.24386283539728
+          -123.157093,
+          49.233185
         ]
+      },
+      "properties": {
+        "id": "washroom_65",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Kerrisdale",
+        "park_name": "Kerrisdale",
+        "location": "5851 West Boulevard",
+        "wheelchair_access": null,
+        "summer_hours": "as per CC operating hours",
+        "winter_hours": "as per CC operating hours",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_66",
-      "properties": {
-        "id": "washroom_66",
-        "facility_type": "public_washrooms",
-        "name": "Kerrisdale 公園公廁",
-        "park_name": "Kerrisdale",
-        "location": "5851 West Boulevard",
-        "washroom_type": "Community Center",
-        "summer_hours": "as per CC operating hours",
-        "winter_hours": "as per CC operating hours",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Kerrisdale"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.157092907393,
-          49.233185354157136
+          -123.084089,
+          49.280736
         ]
+      },
+      "properties": {
+        "id": "washroom_66",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Ray-Cam Co-Operative Center",
+        "park_name": "Ray-Cam Co-Operative Center",
+        "location": "920 E Hastings St",
+        "wheelchair_access": null,
+        "summer_hours": "as per CC operating hours",
+        "winter_hours": "as per CC operating hours",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_67",
-      "properties": {
-        "id": "washroom_67",
-        "facility_type": "public_washrooms",
-        "name": "Ray-Cam Co-Operative Center 公園公廁",
-        "park_name": "Ray-Cam Co-Operative Center",
-        "location": "920 E Hastings St",
-        "washroom_type": "Community Center",
-        "summer_hours": "as per CC operating hours",
-        "winter_hours": "as per CC operating hours",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Strathcona"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.08408933364618,
-          49.28073616037553
+          -123.032104,
+          49.263608
         ]
+      },
+      "properties": {
+        "id": "washroom_67",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Thunderbird",
+        "park_name": "Thunderbird",
+        "location": "2311 Cassiar St",
+        "wheelchair_access": null,
+        "summer_hours": "as per CC operating hours",
+        "winter_hours": "as per CC operating hours",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_68",
-      "properties": {
-        "id": "washroom_68",
-        "facility_type": "public_washrooms",
-        "name": "Thunderbird 公園公廁",
-        "park_name": "Thunderbird",
-        "location": "2311 Cassiar St",
-        "washroom_type": "Community Center",
-        "summer_hours": "as per CC operating hours",
-        "winter_hours": "as per CC operating hours",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Hastings-Sunrise"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.03210372093348,
-          49.26360783508792
+          -123.065528,
+          49.255292
         ]
+      },
+      "properties": {
+        "id": "washroom_68",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Trout Lake",
+        "park_name": "Trout Lake",
+        "location": "3360 Victoria Drive",
+        "wheelchair_access": null,
+        "summer_hours": "as per CC operating hours",
+        "winter_hours": "as per CC operating hours",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_69",
-      "properties": {
-        "id": "washroom_69",
-        "facility_type": "public_washrooms",
-        "name": "Trout Lake 公園公廁",
-        "park_name": "Trout Lake",
-        "location": "3360 Victoria Drive",
-        "washroom_type": "Community Center",
-        "summer_hours": "as per CC operating hours",
-        "winter_hours": "as per CC operating hours",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Kensington-Cedar Cottage"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.0655282767287,
-          49.25529203109934
+          -123.204533,
+          49.271797
         ]
+      },
+      "properties": {
+        "id": "washroom_69",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - West Point Grey",
+        "park_name": "West Point Grey",
+        "location": "4397 W 2nd Av",
+        "wheelchair_access": null,
+        "summer_hours": "as per CC operating hours",
+        "winter_hours": "as per CC operating hours",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_70",
-      "properties": {
-        "id": "washroom_70",
-        "facility_type": "public_washrooms",
-        "name": "West Point Grey 公園公廁",
-        "park_name": "West Point Grey",
-        "location": "4397 W 2nd Av",
-        "washroom_type": "Community Center",
-        "summer_hours": "as per CC operating hours",
-        "winter_hours": "as per CC operating hours",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "West Point Grey"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.20453347756238,
-          49.271797159807804
+          -123.157543,
+          49.273014
         ]
+      },
+      "properties": {
+        "id": "washroom_70",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Kitsilano Beach Park",
+        "park_name": "Kitsilano Beach Park",
+        "location": "Kitsilano Showboat concession",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_71",
-      "properties": {
-        "id": "washroom_71",
-        "facility_type": "public_washrooms",
-        "name": "Kitsilano Beach Park 公園公廁",
-        "park_name": "Kitsilano Beach Park",
-        "location": "Kitsilano Showboat concession",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Kitsilano"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.15754296825493,
-          49.273014033021276
+          -123.111577,
+          49.238938
         ]
+      },
+      "properties": {
+        "id": "washroom_71",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Queen Elizabeth Park",
+        "park_name": "Queen Elizabeth Park",
+        "location": "Fieldhouse",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_72",
-      "properties": {
-        "id": "washroom_72",
-        "facility_type": "public_washrooms",
-        "name": "Queen Elizabeth Park 公園公廁",
-        "park_name": "Queen Elizabeth Park",
-        "location": "Fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Riley Park"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.11157705659876,
-          49.2389380168478
+          -123.112939,
+          49.242212
         ]
+      },
+      "properties": {
+        "id": "washroom_72",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Queen Elizabeth Park",
+        "park_name": "Queen Elizabeth Park",
+        "location": "Lookout",
+        "wheelchair_access": "No",
+        "summer_hours": "7:30 am - 9:00 pm",
+        "winter_hours": "7:30 am - 9:00 pm",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_73",
-      "properties": {
-        "id": "washroom_73",
-        "facility_type": "public_washrooms",
-        "name": "Queen Elizabeth Park 公園公廁",
-        "park_name": "Queen Elizabeth Park",
-        "location": "Lookout",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "7:30 am - 9:00 pm",
-        "winter_hours": "7:30 am - 9:00 pm",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Riley Park"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.1129392155845,
-          49.24221158928431
+          -123.111764,
+          49.241829
         ]
+      },
+      "properties": {
+        "id": "washroom_73",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Queen Elizabeth Park",
+        "park_name": "Queen Elizabeth Park",
+        "location": "Under \"Seasons\"",
+        "wheelchair_access": "No",
+        "summer_hours": "7:30 am - 9:00 pm",
+        "winter_hours": "7:30 am - 9:00 pm",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_74",
-      "properties": {
-        "id": "washroom_74",
-        "facility_type": "public_washrooms",
-        "name": "Queen Elizabeth Park 公園公廁",
-        "park_name": "Queen Elizabeth Park",
-        "location": "Under \"Seasons\"",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "7:30 am - 9:00 pm",
-        "winter_hours": "7:30 am - 9:00 pm",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Riley Park"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.11176444175848,
-          49.24182883201318
+          -123.128638,
+          49.23851
         ]
+      },
+      "properties": {
+        "id": "washroom_74",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - VanDusen Botanical Garden",
+        "park_name": "VanDusen Botanical Garden",
+        "location": "At front entrance",
+        "wheelchair_access": "No",
+        "summer_hours": null,
+        "winter_hours": null,
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_75",
-      "properties": {
-        "id": "washroom_75",
-        "facility_type": "public_washrooms",
-        "name": "VanDusen Botanical Garden 公園公廁",
-        "park_name": "VanDusen Botanical Garden",
-        "location": "At front entrance",
-        "washroom_type": "公園洗手間",
-        "summer_hours": null,
-        "winter_hours": null,
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Shaughnessy"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.12863834069155,
-          49.23851044913808
+          -123.142649,
+          49.312411
         ]
+      },
+      "properties": {
+        "id": "washroom_75",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Stanley Park",
+        "park_name": "Stanley Park",
+        "location": "Prospect Point",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_76",
-      "properties": {
-        "id": "washroom_76",
-        "facility_type": "public_washrooms",
-        "name": "Stanley Park 公園公廁",
-        "park_name": "Stanley Park",
-        "location": "Prospect Point",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Vancouver"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.1426488314594,
-          49.312411041972126
+          -123.150581,
+          49.295531
         ]
+      },
+      "properties": {
+        "id": "washroom_76",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Stanley Park",
+        "park_name": "Stanley Park",
+        "location": "2nd Beach, fieldhouse",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_77",
-      "properties": {
-        "id": "washroom_77",
-        "facility_type": "public_washrooms",
-        "name": "Stanley Park 公園公廁",
-        "park_name": "Stanley Park",
-        "location": "2nd Beach, fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Vancouver"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.15058105411318,
-          49.2955311006131
+          -123.146599,
+          49.293035
         ]
+      },
+      "properties": {
+        "id": "washroom_77",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Stanley Park",
+        "park_name": "Stanley Park",
+        "location": "Pitch & Putt Golf Course",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_78",
-      "properties": {
-        "id": "washroom_78",
-        "facility_type": "public_washrooms",
-        "name": "Stanley Park 公園公廁",
-        "park_name": "Stanley Park",
-        "location": "Pitch & Putt Golf Course",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Vancouver"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.14659902498151,
-          49.293035036480276
+          -123.155931,
+          49.303153
         ]
+      },
+      "properties": {
+        "id": "washroom_78",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Stanley Park",
+        "park_name": "Stanley Park",
+        "location": "3rd Beach, fieldhouse",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_79",
-      "properties": {
-        "id": "washroom_79",
-        "facility_type": "public_washrooms",
-        "name": "Stanley Park 公園公廁",
-        "park_name": "Stanley Park",
-        "location": "3rd Beach, fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Vancouver"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.15593104827661,
-          49.303152991481056
+          -123.132923,
+          49.302069
         ]
+      },
+      "properties": {
+        "id": "washroom_79",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Stanley Park",
+        "park_name": "Stanley Park",
+        "location": "Train, Picnic Shelter",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_80",
-      "properties": {
-        "id": "washroom_80",
-        "facility_type": "public_washrooms",
-        "name": "Stanley Park 公園公廁",
-        "park_name": "Stanley Park",
-        "location": "Train, Picnic Shelter",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Vancouver"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.1329230416995,
-          49.30206900196531
+          -123.134051,
+          49.299549
         ]
+      },
+      "properties": {
+        "id": "washroom_80",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Stanley Park",
+        "park_name": "Stanley Park",
+        "location": "Pavilion",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_81",
-      "properties": {
-        "id": "washroom_81",
-        "facility_type": "public_washrooms",
-        "name": "Stanley Park 公園公廁",
-        "park_name": "Stanley Park",
-        "location": "Pavilion",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Vancouver"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.13405101599089,
-          49.29954903031209
+          -123.135425,
+          49.276779
         ]
+      },
+      "properties": {
+        "id": "washroom_81",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Sunset Beach",
+        "park_name": "Sunset Beach",
+        "location": "Vancouver Aquatic Center",
+        "wheelchair_access": null,
+        "summer_hours": null,
+        "winter_hours": null,
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_82",
-      "properties": {
-        "id": "washroom_82",
-        "facility_type": "public_washrooms",
-        "name": "Sunset Beach 公園公廁",
-        "park_name": "Sunset Beach",
-        "location": "Vancouver Aquatic Center",
-        "washroom_type": "公園洗手間",
-        "summer_hours": null,
-        "winter_hours": null,
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "West End"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.1354245669431,
-          49.27677906038726
+          -123.074602,
+          49.247312
         ]
+      },
+      "properties": {
+        "id": "washroom_82",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Kingcrest Park",
+        "park_name": "Kingcrest Park",
+        "location": "Playground",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_83",
-      "properties": {
-        "id": "washroom_83",
-        "facility_type": "public_washrooms",
-        "name": "Kingcrest Park 公園公廁",
-        "park_name": "Kingcrest Park",
-        "location": "Playground",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Kensington-Cedar Cottage"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.07460205675565,
-          49.247311891660345
+          -123.050089,
+          49.260558
         ]
+      },
+      "properties": {
+        "id": "washroom_83",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Vancouver Technical Secondary",
+        "park_name": "Vancouver Technical Secondary",
+        "location": "NE of synturf field",
+        "wheelchair_access": null,
+        "summer_hours": null,
+        "winter_hours": null,
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_84",
-      "properties": {
-        "id": "washroom_84",
-        "facility_type": "public_washrooms",
-        "name": "Vancouver Technical Secondary 公園公廁",
-        "park_name": "Vancouver Technical Secondary",
-        "location": "NE of synturf field",
-        "washroom_type": "公園洗手間",
-        "summer_hours": null,
-        "winter_hours": null,
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Renfrew-Collingwood"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.05008933604122,
-          49.260558155229134
+          -123.114419,
+          49.273042
         ]
+      },
+      "properties": {
+        "id": "washroom_84",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Coopers' Park",
+        "park_name": "Coopers' Park",
+        "location": "East side of baskeball court",
+        "wheelchair_access": "Yes",
+        "summer_hours": "24 hrs",
+        "winter_hours": "24 hrs",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_85",
-      "properties": {
-        "id": "washroom_85",
-        "facility_type": "public_washrooms",
-        "name": "Coopers' Park 公園公廁",
-        "park_name": "Coopers' Park",
-        "location": "East side of baskeball court",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "24 hrs",
-        "winter_hours": "24 hrs",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Downtown"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.11441858743608,
-          49.27304228604446
+          -123.037195,
+          49.20494
         ]
+      },
+      "properties": {
+        "id": "washroom_85",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Kinross Corridor - South",
+        "park_name": "Kinross Corridor - South",
+        "location": "Central",
+        "wheelchair_access": "Yes",
+        "summer_hours": "24 hours",
+        "winter_hours": "24 hours",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_86",
-      "properties": {
-        "id": "washroom_86",
-        "facility_type": "public_washrooms",
-        "name": "Kinross Corridor - South 公園公廁",
-        "park_name": "Kinross Corridor - South",
-        "location": "Central",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "24 hours",
-        "winter_hours": "24 hours",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Killarney"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.03719454359039,
-          49.20494028165919
+          -123.133126,
+          49.281848
         ]
+      },
+      "properties": {
+        "id": "washroom_86",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - 公共洗手間",
+        "park_name": "公共洗手間",
+        "location": "Bute St and Davie St",
+        "wheelchair_access": "No",
+        "summer_hours": "24hrs - 24hrs",
+        "winter_hours": "24hrs - 24hrs",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_87",
-      "properties": {
-        "id": "washroom_87",
-        "facility_type": "public_washrooms",
-        "name": "Victory Square 公廁",
-        "park_name": null,
-        "location": "Victory Square",
-        "washroom_type": "ComfortStation",
-        "summer_hours": "6:00am - Midnight",
-        "winter_hours": "6:00am - Midnight",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Downtown"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.11011655435033,
-          49.282584988709225
+          -123.124099,
+          49.276049
         ]
+      },
+      "properties": {
+        "id": "washroom_87",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - 公共洗手間",
+        "park_name": "公共洗手間",
+        "location": "Richards St and Davie St, Emery Barnes Park",
+        "wheelchair_access": "No",
+        "summer_hours": "24hrs - 24hrs",
+        "winter_hours": "24hrs - 24hrs",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_88",
-      "properties": {
-        "id": "washroom_88",
-        "facility_type": "public_washrooms",
-        "name": "Nelson St and Howe St 公廁",
-        "park_name": null,
-        "location": "Nelson St and Howe St",
-        "washroom_type": "SmallAPT",
-        "summer_hours": "24hrs - 24hrs",
-        "winter_hours": "24hrs - 24hrs",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Downtown"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.12350055300314,
-          49.27969079080763
+          -123.099835,
+          49.281101
         ]
+      },
+      "properties": {
+        "id": "washroom_88",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - 公共洗手間",
+        "park_name": "公共洗手間",
+        "location": "Main St and E Hastings St",
+        "wheelchair_access": "No",
+        "summer_hours": "8am (female) 6am (male) - Midnight",
+        "winter_hours": "8am (female) 6am (male) - Midnight",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_89",
-      "properties": {
-        "id": "washroom_89",
-        "facility_type": "public_washrooms",
-        "name": "Main St and E Hastings St 公廁",
-        "park_name": null,
-        "location": "Main St and E Hastings St",
-        "washroom_type": "ComfortStation",
-        "summer_hours": "8am (female) 6am (male) - Midnight",
-        "winter_hours": "8am (female) 6am (male) - Midnight",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Downtown"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.09983455686556,
-          49.281101387409784
+          -123.123501,
+          49.279691
         ]
+      },
+      "properties": {
+        "id": "washroom_89",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - 公共洗手間",
+        "park_name": "公共洗手間",
+        "location": "Nelson St and Howe St",
+        "wheelchair_access": "No",
+        "summer_hours": "24hrs - 24hrs",
+        "winter_hours": "24hrs - 24hrs",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_90",
-      "properties": {
-        "id": "washroom_90",
-        "facility_type": "public_washrooms",
-        "name": "Bute St and Davie St 公廁",
-        "park_name": null,
-        "location": "Bute St and Davie St",
-        "washroom_type": "SmallAPT",
-        "summer_hours": "24hrs - 24hrs",
-        "winter_hours": "24hrs - 24hrs",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "West End"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.1331255518689,
-          49.28184849172984
+          -123.110117,
+          49.282585
         ]
+      },
+      "properties": {
+        "id": "washroom_90",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - 公共洗手間",
+        "park_name": "公共洗手間",
+        "location": "Victory Square",
+        "wheelchair_access": "No",
+        "summer_hours": "6:00am - Midnight",
+        "winter_hours": "6:00am - Midnight",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_91",
-      "properties": {
-        "id": "washroom_91",
-        "facility_type": "public_washrooms",
-        "name": "W Hastings St and Carral St - Pigeon Park 公廁",
-        "park_name": null,
-        "location": "W Hastings St and Carral St - Pigeon Park",
-        "washroom_type": "SmallAPT",
-        "summer_hours": "9am - 9pm",
-        "winter_hours": "9am - 9pm",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Downtown"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.104586555944,
-          49.2816327884418
+          -123.104587,
+          49.281633
         ]
+      },
+      "properties": {
+        "id": "washroom_91",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - 公共洗手間",
+        "park_name": "公共洗手間",
+        "location": "W Hastings St and Carral St - Pigeon Park",
+        "wheelchair_access": "No",
+        "summer_hours": "9am - 9pm",
+        "winter_hours": "9am - 9pm",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_92",
-      "properties": {
-        "id": "washroom_92",
-        "facility_type": "public_washrooms",
-        "name": "Richards St and Davie St, Emery Barnes Park 公廁",
-        "park_name": null,
-        "location": "Richards St and Davie St, Emery Barnes Park",
-        "washroom_type": "SmallAPT",
-        "summer_hours": "24hrs - 24hrs",
-        "winter_hours": "24hrs - 24hrs",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Downtown"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.12409855430492,
-          49.27604879058913
+          -123.024072,
+          49.275881
         ]
+      },
+      "properties": {
+        "id": "washroom_92",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Adanac Park",
+        "park_name": "Adanac Park",
+        "location": "East side, fieldhouse",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_93",
-      "properties": {
-        "id": "washroom_93",
-        "facility_type": "public_washrooms",
-        "name": "Adanac Park 公園公廁",
-        "park_name": "Adanac Park",
-        "location": "East side, fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Hastings-Sunrise"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.02407196073857,
-          49.27588096678511
+          -123.132561,
+          49.287215
         ]
+      },
+      "properties": {
+        "id": "washroom_93",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Barclay Heritage Square",
+        "park_name": "Barclay Heritage Square",
+        "location": "Barclay Manor (WECC)",
+        "wheelchair_access": "No",
+        "summer_hours": "as per CC operating hours",
+        "winter_hours": "as per CC operating hours",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_94",
-      "properties": {
-        "id": "washroom_94",
-        "facility_type": "public_washrooms",
-        "name": "Barclay Heritage Square 公園公廁",
-        "park_name": "Barclay Heritage Square",
-        "location": "Barclay Manor (WECC)",
-        "washroom_type": "Community Center",
-        "summer_hours": "as per CC operating hours",
-        "winter_hours": "as per CC operating hours",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "West End"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.13256051081169,
-          49.28721486906602
+          -123.049934,
+          49.255233
         ]
+      },
+      "properties": {
+        "id": "washroom_94",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Beaconsfield Park",
+        "park_name": "Beaconsfield Park",
+        "location": "East side, fieldhouse",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_95",
-      "properties": {
-        "id": "washroom_95",
-        "facility_type": "public_washrooms",
-        "name": "Beaconsfield Park 公園公廁",
-        "park_name": "Beaconsfield Park",
-        "location": "East side, fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Renfrew-Collingwood"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.0499339599333,
-          49.25523298883689
+          -123.056415,
+          49.215607
         ]
+      },
+      "properties": {
+        "id": "washroom_95",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Bobolink Park",
+        "park_name": "Bobolink Park",
+        "location": "North side, fieldhouse",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_96",
-      "properties": {
-        "id": "washroom_96",
-        "facility_type": "public_washrooms",
-        "name": "Bobolink Park 公園公廁",
-        "park_name": "Bobolink Park",
-        "location": "North side, fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Victoria-Fraserview"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.0564149547593,
-          49.2156069853625
+          -123.124483,
+          49.247421
         ]
+      },
+      "properties": {
+        "id": "washroom_96",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Braemar Park",
+        "park_name": "Braemar Park",
+        "location": "East edge, fieldhouse",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_97",
-      "properties": {
-        "id": "washroom_97",
-        "facility_type": "public_washrooms",
-        "name": "Braemar Park 公園公廁",
-        "park_name": "Braemar Park",
-        "location": "East edge, fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "South Cambie"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.12448302133969,
-          49.247420993345145
+          -123.049649,
+          49.290364
         ]
+      },
+      "properties": {
+        "id": "washroom_97",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Burrard View Park",
+        "park_name": "Burrard View Park",
+        "location": "Fieldhouse",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_98",
-      "properties": {
-        "id": "washroom_98",
-        "facility_type": "public_washrooms",
-        "name": "Burrard View Park 公園公廁",
-        "park_name": "Burrard View Park",
-        "location": "Fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Hastings-Sunrise"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.0496489708471,
-          49.29036396132682
+          -123.049782,
+          49.271145
         ]
+      },
+      "properties": {
+        "id": "washroom_98",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Clinton Park",
+        "park_name": "Clinton Park",
+        "location": "North east corner, fieldhouse",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_99",
-      "properties": {
-        "id": "washroom_99",
-        "facility_type": "public_washrooms",
-        "name": "Clinton Park 公園公廁",
-        "park_name": "Clinton Park",
-        "location": "North east corner, fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Hastings-Sunrise"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.04978202766654,
-          49.27114503208771
+          -123.036716,
+          49.23653
         ]
+      },
+      "properties": {
+        "id": "washroom_99",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Collingwood Park",
+        "park_name": "Collingwood Park",
+        "location": "South corner, fieldhouse",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_100",
-      "properties": {
-        "id": "washroom_100",
-        "facility_type": "public_washrooms",
-        "name": "Collingwood Park 公園公廁",
-        "park_name": "Collingwood Park",
-        "location": "South corner, fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Renfrew-Collingwood"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.03671596074693,
-          49.23652996299787
+          -123.125415,
+          49.272383
         ]
+      },
+      "properties": {
+        "id": "washroom_100",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - David Lam Park",
+        "park_name": "David Lam Park",
+        "location": "West side",
+        "wheelchair_access": "No",
+        "summer_hours": "10:00 am - Dusk",
+        "winter_hours": "10:00 am - Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_101",
-      "properties": {
-        "id": "washroom_101",
-        "facility_type": "public_washrooms",
-        "name": "David Lam Park 公園公廁",
-        "park_name": "David Lam Park",
-        "location": "West side",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "10:00 am - Dusk",
-        "winter_hours": "10:00 am - Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Downtown"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.12541503573891,
-          49.272383006623514
+          -123.163284,
+          49.233432
         ]
+      },
+      "properties": {
+        "id": "washroom_101",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Elm Park",
+        "park_name": "Elm Park",
+        "location": "Central, field house",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_102",
-      "properties": {
-        "id": "washroom_102",
-        "facility_type": "public_washrooms",
-        "name": "Elm Park 公園公廁",
-        "park_name": "Elm Park",
-        "location": "Central, field house",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Kerrisdale"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.16328394393362,
-          49.233431978269714
+          -123.142805,
+          49.286154
         ]
+      },
+      "properties": {
+        "id": "washroom_102",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - English Bay Beach Park",
+        "park_name": "English Bay Beach Park",
+        "location": "Bathhouse",
+        "wheelchair_access": "Yes",
+        "summer_hours": "7:00 am - Dusk",
+        "winter_hours": "10:00 am - Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_103",
-      "properties": {
-        "id": "washroom_103",
-        "facility_type": "public_washrooms",
-        "name": "English Bay Beach Park 公園公廁",
-        "park_name": "English Bay Beach Park",
-        "location": "Bathhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "7:00 am - Dusk",
-        "winter_hours": "10:00 am - Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "West End"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.14280496653114,
-          49.28615403907862
+          -123.029406,
+          49.255123
         ]
+      },
+      "properties": {
+        "id": "washroom_103",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Falaise Park",
+        "park_name": "Falaise Park",
+        "location": "Community Hall",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_104",
-      "properties": {
-        "id": "washroom_104",
-        "facility_type": "public_washrooms",
-        "name": "Falaise Park 公園公廁",
-        "park_name": "Falaise Park",
-        "location": "Community Hall",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Renfrew-Collingwood"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.02940598630023,
-          49.25512303377224
+          -123.0423,
+          49.211295
         ]
+      },
+      "properties": {
+        "id": "washroom_104",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Fraserview Golf Course",
+        "park_name": "Fraserview Golf Course",
+        "location": "Kerr Road @13th hole",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_105",
-      "properties": {
-        "id": "washroom_105",
-        "facility_type": "public_washrooms",
-        "name": "Fraserview Golf Course 公園公廁",
-        "park_name": "Fraserview Golf Course",
-        "location": "Kerr Road @13th hole",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Killarney"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.04229966821495,
-          49.21129535127276
+          -123.069954,
+          49.273762
         ]
+      },
+      "properties": {
+        "id": "washroom_105",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Grandview Park",
+        "park_name": "Grandview Park",
+        "location": "North East Corner",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_106",
-      "properties": {
-        "id": "washroom_106",
-        "facility_type": "public_washrooms",
-        "name": "Grandview Park 公園公廁",
-        "park_name": "Grandview Park",
-        "location": "North East Corner",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Grandview-Woodland"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.06995444645655,
-          49.27376163002459
+          -123.068328,
+          49.236205
         ]
+      },
+      "properties": {
+        "id": "washroom_106",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Jones Park",
+        "park_name": "Jones Park",
+        "location": "North west corner, fieldhouse",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_107",
-      "properties": {
-        "id": "washroom_107",
-        "facility_type": "public_washrooms",
-        "name": "Jones Park 公園公廁",
-        "park_name": "Jones Park",
-        "location": "North west corner, fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Kensington-Cedar Cottage"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.06832802681417,
-          49.23620495798543
+          -123.127641,
+          49.216286
         ]
+      },
+      "properties": {
+        "id": "washroom_107",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Oak Park",
+        "park_name": "Oak Park",
+        "location": "East side field house",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_108",
-      "properties": {
-        "id": "washroom_108",
-        "facility_type": "public_washrooms",
-        "name": "Oak Park 公園公廁",
-        "park_name": "Oak Park",
-        "location": "East side field house",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Marpole"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.12764097866085,
-          49.216285994146425
+          -123.093822,
+          49.282726
         ]
+      },
+      "properties": {
+        "id": "washroom_108",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Oppenheimer Park",
+        "park_name": "Oppenheimer Park",
+        "location": "North east corner",
+        "wheelchair_access": "No",
+        "summer_hours": "Tue - Sat 9:00 am - 8:00 pm",
+        "winter_hours": "Tue - Sat 9:00 am - 5:00 pm",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_109",
-      "properties": {
-        "id": "washroom_109",
-        "facility_type": "public_washrooms",
-        "name": "Oppenheimer Park 公園公廁",
-        "park_name": "Oppenheimer Park",
-        "location": "North east corner",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Tue - Sat 9:00 am - 8:00 pm",
-        "winter_hours": "Tue - Sat 9:00 am - 5:00 pm",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Strathcona"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.09382210202949,
-          49.282726316667315
+          -123.097057,
+          49.251191
         ]
+      },
+      "properties": {
+        "id": "washroom_109",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Prince Edward Park",
+        "park_name": "Prince Edward Park",
+        "location": "Sout east corner, fieldhouse",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_110",
-      "properties": {
-        "id": "washroom_110",
-        "facility_type": "public_washrooms",
-        "name": "Prince Edward Park 公園公廁",
-        "park_name": "Prince Edward Park",
-        "location": "Sout east corner, fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Riley Park"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.09705699407515,
-          49.2511909708645
+          -123.086189,
+          49.274557
         ]
+      },
+      "properties": {
+        "id": "washroom_110",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Strathcona Park",
+        "park_name": "Strathcona Park",
+        "location": "South side, fieldhouse",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_111",
-      "properties": {
-        "id": "washroom_111",
-        "facility_type": "public_washrooms",
-        "name": "Strathcona Park 公園公廁",
-        "park_name": "Strathcona Park",
-        "location": "South side, fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Strathcona"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.08618899110523,
-          49.274557005731424
+          -123.169512,
+          49.269476
         ]
+      },
+      "properties": {
+        "id": "washroom_111",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Tatlow Park",
+        "park_name": "Tatlow Park",
+        "location": "South, field house",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_112",
-      "properties": {
-        "id": "washroom_112",
-        "facility_type": "public_washrooms",
-        "name": "Tatlow Park 公園公廁",
-        "park_name": "Tatlow Park",
-        "location": "South, field house",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Kitsilano"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.1695119500403,
-          49.269476011035984
+          -123.092792,
+          49.274908
         ]
+      },
+      "properties": {
+        "id": "washroom_112",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Trillium Park",
+        "park_name": "Trillium Park",
+        "location": "Fieldhouses North of Fields",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to 10:15 pm",
+        "winter_hours": "Dawn to 10:15 pm",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_113",
-      "properties": {
-        "id": "washroom_113",
-        "facility_type": "public_washrooms",
-        "name": "Trillium Park 公園公廁",
-        "park_name": "Trillium Park",
-        "location": "Fieldhouses North of Fields",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to 10:15 pm",
-        "winter_hours": "Dawn to 10:15 pm",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Strathcona"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.09279211961659,
-          49.27490778897944
+          -123.067413,
+          49.271744
         ]
+      },
+      "properties": {
+        "id": "washroom_113",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Victoria Park",
+        "park_name": "Victoria Park",
+        "location": "West side",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_114",
-      "properties": {
-        "id": "washroom_114",
-        "facility_type": "public_washrooms",
-        "name": "Victoria Park 公園公廁",
-        "park_name": "Victoria Park",
-        "location": "West side",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Grandview-Woodland"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.06741301627554,
-          49.27174404161037
+          -123.112949,
+          49.215718
         ]
+      },
+      "properties": {
+        "id": "washroom_114",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Winona Park",
+        "park_name": "Winona Park",
+        "location": "Fieldhouse",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_115",
-      "properties": {
-        "id": "washroom_115",
-        "facility_type": "public_washrooms",
-        "name": "Winona Park 公園公廁",
-        "park_name": "Winona Park",
-        "location": "Fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Marpole"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.1129489448175,
-          49.2157179794086
+          -123.100127,
+          49.281052
         ]
+      },
+      "properties": {
+        "id": "washroom_115",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Carnegie Centre",
+        "park_name": "Carnegie Centre",
+        "location": "401 Main St",
+        "wheelchair_access": null,
+        "summer_hours": "as per CC operating hours",
+        "winter_hours": "as per CC operating hours",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_116",
-      "properties": {
-        "id": "washroom_116",
-        "facility_type": "public_washrooms",
-        "name": "Carnegie Centre 公園公廁",
-        "park_name": "Carnegie Centre",
-        "location": "401 Main St",
-        "washroom_type": "Community Center",
-        "summer_hours": "as per CC operating hours",
-        "winter_hours": "as per CC operating hours",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Downtown"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.1001272122058,
-          49.28105198363573
+          -123.105586,
+          49.271787
         ]
+      },
+      "properties": {
+        "id": "washroom_116",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Creekside",
+        "park_name": "Creekside",
+        "location": "1 Athletes Way",
+        "wheelchair_access": null,
+        "summer_hours": "as per CC operating hours",
+        "winter_hours": "as per CC operating hours",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_117",
-      "properties": {
-        "id": "washroom_117",
-        "facility_type": "public_washrooms",
-        "name": "Creekside 公園公廁",
-        "park_name": "Creekside",
-        "location": "1 Athletes Way",
-        "washroom_type": "Community Center",
-        "summer_hours": "as per CC operating hours",
-        "winter_hours": "as per CC operating hours",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Mount Pleasant"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.10558600026903,
-          49.271786998950255
+          -123.122485,
+          49.252116
         ]
+      },
+      "properties": {
+        "id": "washroom_117",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Douglas Park",
+        "park_name": "Douglas Park",
+        "location": "801 W 22nd Av",
+        "wheelchair_access": null,
+        "summer_hours": "as per CC operating hours",
+        "winter_hours": "as per CC operating hours",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_118",
-      "properties": {
-        "id": "washroom_118",
-        "facility_type": "public_washrooms",
-        "name": "Douglas Park 公園公廁",
-        "park_name": "Douglas Park",
-        "location": "801 W 22nd Av",
-        "washroom_type": "Community Center",
-        "summer_hours": "as per CC operating hours",
-        "winter_hours": "as per CC operating hours",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "South Cambie"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.1224846980371,
-          49.25211550271029
+          -123.13402,
+          49.269397
         ]
+      },
+      "properties": {
+        "id": "washroom_118",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - False Creek",
+        "park_name": "False Creek",
+        "location": "1318 Cartwright St",
+        "wheelchair_access": null,
+        "summer_hours": "as per CC operating hours",
+        "winter_hours": "as per CC operating hours",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_119",
-      "properties": {
-        "id": "washroom_119",
-        "facility_type": "public_washrooms",
-        "name": "False Creek 公園公廁",
-        "park_name": "False Creek",
-        "location": "1318 Cartwright St",
-        "washroom_type": "Community Center",
-        "summer_hours": "as per CC operating hours",
-        "winter_hours": "as per CC operating hours",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Fairview"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.13402027146624,
-          49.26939706950529
+          -123.03931,
+          49.280805
         ]
+      },
+      "properties": {
+        "id": "washroom_119",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Hastings",
+        "park_name": "Hastings",
+        "location": "3096 E Hastings St",
+        "wheelchair_access": null,
+        "summer_hours": "as per CC operating hours",
+        "winter_hours": "as per CC operating hours",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_120",
-      "properties": {
-        "id": "washroom_120",
-        "facility_type": "public_washrooms",
-        "name": "Hastings 公園公廁",
-        "park_name": "Hastings",
-        "location": "3096 E Hastings St",
-        "washroom_type": "Community Center",
-        "summer_hours": "as per CC operating hours",
-        "winter_hours": "as per CC operating hours",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Hastings-Sunrise"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.03930991502807,
-          49.28080523369717
+          -123.074663,
+          49.237166
         ]
+      },
+      "properties": {
+        "id": "washroom_120",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Kensington",
+        "park_name": "Kensington",
+        "location": "5175 Dumfries St",
+        "wheelchair_access": null,
+        "summer_hours": "as per CC operating hours",
+        "winter_hours": "as per CC operating hours",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_121",
-      "properties": {
-        "id": "washroom_121",
-        "facility_type": "public_washrooms",
-        "name": "Kensington 公園公廁",
-        "park_name": "Kensington",
-        "location": "5175 Dumfries St",
-        "washroom_type": "Community Center",
-        "summer_hours": "as per CC operating hours",
-        "winter_hours": "as per CC operating hours",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Kensington-Cedar Cottage"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.07466320602174,
-          49.23716575410908
+          -123.043969,
+          49.227037
         ]
+      },
+      "properties": {
+        "id": "washroom_121",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Killarney",
+        "park_name": "Killarney",
+        "location": "6260 Killarney St",
+        "wheelchair_access": null,
+        "summer_hours": "as per CC operating hours",
+        "winter_hours": "as per CC operating hours",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_122",
-      "properties": {
-        "id": "washroom_122",
-        "facility_type": "public_washrooms",
-        "name": "Killarney 公園公廁",
-        "park_name": "Killarney",
-        "location": "6260 Killarney St",
-        "washroom_type": "Community Center",
-        "summer_hours": "as per CC operating hours",
-        "winter_hours": "as per CC operating hours",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Killarney"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.04396930018117,
-          49.227036528639395
+          -123.12868,
+          49.216772
         ]
+      },
+      "properties": {
+        "id": "washroom_122",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Marpole-Oakridge",
+        "park_name": "Marpole-Oakridge",
+        "location": "990 W 59th Av",
+        "wheelchair_access": null,
+        "summer_hours": "as per CC operating hours",
+        "winter_hours": "as per CC operating hours",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_123",
-      "properties": {
-        "id": "washroom_123",
-        "facility_type": "public_washrooms",
-        "name": "Marpole-Oakridge 公園公廁",
-        "park_name": "Marpole-Oakridge",
-        "location": "990 W 59th Av",
-        "washroom_type": "Community Center",
-        "summer_hours": "as per CC operating hours",
-        "winter_hours": "as per CC operating hours",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Marpole"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.12867950214907,
-          49.21677185719457
+          -123.100221,
+          49.264315
         ]
+      },
+      "properties": {
+        "id": "washroom_123",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Mount Pleasant",
+        "park_name": "Mount Pleasant",
+        "location": "1 Kingsway",
+        "wheelchair_access": null,
+        "summer_hours": "as per CC operating hours",
+        "winter_hours": "as per CC operating hours",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_124",
-      "properties": {
-        "id": "washroom_124",
-        "facility_type": "public_washrooms",
-        "name": "Mount Pleasant 公園公廁",
-        "park_name": "Mount Pleasant",
-        "location": "1 Kingsway",
-        "washroom_type": "Community Center",
-        "summer_hours": "as per CC operating hours",
-        "winter_hours": "as per CC operating hours",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Mount Pleasant"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.10022103999769,
-          49.26431464836041
+          -123.042536,
+          49.251393
         ]
+      },
+      "properties": {
+        "id": "washroom_124",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Renfrew Park",
+        "park_name": "Renfrew Park",
+        "location": "2929 E 22nd Av",
+        "wheelchair_access": null,
+        "summer_hours": "as per CC operating hours",
+        "winter_hours": "as per CC operating hours",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_125",
-      "properties": {
-        "id": "washroom_125",
-        "facility_type": "public_washrooms",
-        "name": "Renfrew Park 公園公廁",
-        "park_name": "Renfrew Park",
-        "location": "2929 E 22nd Av",
-        "washroom_type": "Community Center",
-        "summer_hours": "as per CC operating hours",
-        "winter_hours": "as per CC operating hours",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Renfrew-Collingwood"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.04253597366501,
-          49.25139334511461
+          -123.121873,
+          49.273314
         ]
+      },
+      "properties": {
+        "id": "washroom_125",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Roundhouse",
+        "park_name": "Roundhouse",
+        "location": "181 Roundhouse Mews",
+        "wheelchair_access": null,
+        "summer_hours": "as per CC operating hours",
+        "winter_hours": "as per CC operating hours",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_126",
-      "properties": {
-        "id": "washroom_126",
-        "facility_type": "public_washrooms",
-        "name": "Roundhouse 公園公廁",
-        "park_name": "Roundhouse",
-        "location": "181 Roundhouse Mews",
-        "washroom_type": "Community Center",
-        "summer_hours": "as per CC operating hours",
-        "winter_hours": "as per CC operating hours",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Downtown"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.12187292336921,
-          49.27331410684991
+          -123.091546,
+          49.27978
         ]
+      },
+      "properties": {
+        "id": "washroom_126",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Strathcona",
+        "park_name": "Strathcona",
+        "location": "601 Keefer St",
+        "wheelchair_access": null,
+        "summer_hours": "as per CC operating hours",
+        "winter_hours": "as per CC operating hours",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_127",
-      "properties": {
-        "id": "washroom_127",
-        "facility_type": "public_washrooms",
-        "name": "Strathcona 公園公廁",
-        "park_name": "Strathcona",
-        "location": "601 Keefer St",
-        "washroom_type": "Community Center",
-        "summer_hours": "as per CC operating hours",
-        "winter_hours": "as per CC operating hours",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Strathcona"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.09154620769537,
-          49.27977979182844
+          -123.10061,
+          49.222867
         ]
+      },
+      "properties": {
+        "id": "washroom_127",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Sunset",
+        "park_name": "Sunset",
+        "location": "6810 Main St",
+        "wheelchair_access": null,
+        "summer_hours": "as per CC operating hours",
+        "winter_hours": "as per CC operating hours",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_128",
-      "properties": {
-        "id": "washroom_128",
-        "facility_type": "public_washrooms",
-        "name": "Sunset 公園公廁",
-        "park_name": "Sunset",
-        "location": "6810 Main St",
-        "washroom_type": "Community Center",
-        "summer_hours": "as per CC operating hours",
-        "winter_hours": "as per CC operating hours",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Sunset"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.10061043466422,
-          49.22286659360109
+          -123.136074,
+          49.289913
         ]
+      },
+      "properties": {
+        "id": "washroom_128",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - West End",
+        "park_name": "West End",
+        "location": "870 Denman St",
+        "wheelchair_access": null,
+        "summer_hours": "as per CC operating hours",
+        "winter_hours": "as per CC operating hours",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_129",
-      "properties": {
-        "id": "washroom_129",
-        "facility_type": "public_washrooms",
-        "name": "West End 公園公廁",
-        "park_name": "West End",
-        "location": "870 Denman St",
-        "washroom_type": "Community Center",
-        "summer_hours": "as per CC operating hours",
-        "winter_hours": "as per CC operating hours",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "West End"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.13607377734198,
-          49.28991296095057
+          -123.21492,
+          49.276244
         ]
+      },
+      "properties": {
+        "id": "washroom_129",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Spanish Banks Beach Park",
+        "park_name": "Spanish Banks Beach Park",
+        "location": "East, fieldhouse",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_130",
-      "properties": {
-        "id": "washroom_130",
-        "facility_type": "public_washrooms",
-        "name": "Spanish Banks Beach Park 公園公廁",
-        "park_name": "Spanish Banks Beach Park",
-        "location": "East, fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "West Point Grey"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.21492003723965,
-          49.27624397436314
+          -123.20282,
+          49.274429
         ]
+      },
+      "properties": {
+        "id": "washroom_130",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Jericho Beach Park",
+        "park_name": "Jericho Beach Park",
+        "location": "Service Yard - public exterior attached to service building",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn - 11:00 pm",
+        "winter_hours": "Dawn - 11:00 pm",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_131",
-      "properties": {
-        "id": "washroom_131",
-        "facility_type": "public_washrooms",
-        "name": "Jericho Beach Park 公園公廁",
-        "park_name": "Jericho Beach Park",
-        "location": "Service Yard - public exterior attached to service building",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn - 11:00 pm",
-        "winter_hours": "Dawn - 11:00 pm",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "West Point Grey"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.20282013106964,
-          49.27442916398478
+          -123.191659,
+          49.27158
         ]
+      },
+      "properties": {
+        "id": "washroom_131",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Jericho Beach Park",
+        "park_name": "Jericho Beach Park",
+        "location": "Concession/fieldhouse",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_132",
-      "properties": {
-        "id": "washroom_132",
-        "facility_type": "public_washrooms",
-        "name": "Jericho Beach Park 公園公廁",
-        "park_name": "Jericho Beach Park",
-        "location": "Concession/fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "West Point Grey"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.19165896021171,
-          49.27158002043445
+          -123.036025,
+          49.289334
         ]
+      },
+      "properties": {
+        "id": "washroom_132",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - New Brighton Park",
+        "park_name": "New Brighton Park",
+        "location": "North east corner, fieldhouse",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_133",
-      "properties": {
-        "id": "washroom_133",
-        "facility_type": "public_washrooms",
-        "name": "New Brighton Park 公園公廁",
-        "park_name": "New Brighton Park",
-        "location": "North east corner, fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Hastings-Sunrise"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.03602500739287,
-          49.2893339689014
+          -123.030683,
+          49.27305
         ]
+      },
+      "properties": {
+        "id": "washroom_133",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Rupert Park",
+        "park_name": "Rupert Park",
+        "location": "Pitch & Putt (north side)",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_134",
-      "properties": {
-        "id": "washroom_134",
-        "facility_type": "public_washrooms",
-        "name": "Rupert Park 公園公廁",
-        "park_name": "Rupert Park",
-        "location": "Pitch & Putt (north side)",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Hastings-Sunrise"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.03068295983304,
-          49.27305000034845
+          -123.129558,
+          49.238659
         ]
+      },
+      "properties": {
+        "id": "washroom_134",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - VanDusen Botanical Garden",
+        "park_name": "VanDusen Botanical Garden",
+        "location": "Floral hall",
+        "wheelchair_access": "No",
+        "summer_hours": null,
+        "winter_hours": null,
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_135",
-      "properties": {
-        "id": "washroom_135",
-        "facility_type": "public_washrooms",
-        "name": "VanDusen Botanical Garden 公園公廁",
-        "park_name": "VanDusen Botanical Garden",
-        "location": "Floral hall",
-        "washroom_type": "公園洗手間",
-        "summer_hours": null,
-        "winter_hours": null,
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Shaughnessy"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.12955764644593,
-          49.23865943194846
+          -123.14868,
+          49.293595
         ]
+      },
+      "properties": {
+        "id": "washroom_135",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Stanley Park",
+        "park_name": "Stanley Park",
+        "location": "Ceperley Picnic Shelter",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_136",
-      "properties": {
-        "id": "washroom_136",
-        "facility_type": "public_washrooms",
-        "name": "Stanley Park 公園公廁",
-        "park_name": "Stanley Park",
-        "location": "Ceperley Picnic Shelter",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Vancouver"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.14868000781655,
-          49.29359490461841
+          -123.1307,
+          49.299868
         ]
+      },
+      "properties": {
+        "id": "washroom_136",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Stanley Park",
+        "park_name": "Stanley Park",
+        "location": "Aquarium plaza",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_137",
-      "properties": {
-        "id": "washroom_137",
-        "facility_type": "public_washrooms",
-        "name": "Stanley Park 公園公廁",
-        "park_name": "Stanley Park",
-        "location": "Aquarium plaza",
-        "washroom_type": "Other Facilities",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Vancouver"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.13070000527493,
-          49.29986799505516
+          -123.126023,
+          49.299626
         ]
+      },
+      "properties": {
+        "id": "washroom_137",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Stanley Park",
+        "park_name": "Stanley Park",
+        "location": "Brockton Oval",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_138",
-      "properties": {
-        "id": "washroom_138",
-        "facility_type": "public_washrooms",
-        "name": "Stanley Park 公園公廁",
-        "park_name": "Stanley Park",
-        "location": "Brockton Oval",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Vancouver"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.1260230030714,
-          49.29962596371272
+          -123.091335,
+          49.257733
         ]
+      },
+      "properties": {
+        "id": "washroom_138",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Robson Park",
+        "park_name": "Robson Park",
+        "location": "South East Corner Fieldhouse",
+        "wheelchair_access": null,
+        "summer_hours": null,
+        "winter_hours": null,
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_139",
-      "properties": {
-        "id": "washroom_139",
-        "facility_type": "public_washrooms",
-        "name": "Robson Park 公園公廁",
-        "park_name": "Robson Park",
-        "location": "South East Corner Fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": null,
-        "winter_hours": null,
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Mount Pleasant"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.09133535945465,
-          49.25773293061713
+          -123.231698,
+          49.278552
         ]
+      },
+      "properties": {
+        "id": "washroom_139",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Spanish Banks - Extension",
+        "park_name": "Spanish Banks - Extension",
+        "location": "West Parking Lot",
+        "wheelchair_access": null,
+        "summer_hours": null,
+        "winter_hours": null,
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_140",
-      "properties": {
-        "id": "washroom_140",
-        "facility_type": "public_washrooms",
-        "name": "Spanish Banks - Extension 公園公廁",
-        "park_name": "Spanish Banks - Extension",
-        "location": "West Parking Lot",
-        "washroom_type": "公園洗手間",
-        "summer_hours": null,
-        "winter_hours": null,
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Vancouver"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.2316979575523,
-          49.27855190506317
+          -123.12696,
+          49.239024
         ]
+      },
+      "properties": {
+        "id": "washroom_140",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Oak Meadows Park",
+        "park_name": "Oak Meadows Park",
+        "location": "NW Corner",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_141",
-      "properties": {
-        "id": "washroom_141",
-        "facility_type": "public_washrooms",
-        "name": "Oak Meadows Park 公園公廁",
-        "park_name": "Oak Meadows Park",
-        "location": "NW Corner",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "South Cambie"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.12696035775168,
-          49.239023555593874
+          -123.103603,
+          49.242037
         ]
+      },
+      "properties": {
+        "id": "washroom_141",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Riley Park",
+        "park_name": "Riley Park",
+        "location": "Fieldhouse",
+        "wheelchair_access": "No",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_142",
-      "properties": {
-        "id": "washroom_142",
-        "facility_type": "public_washrooms",
-        "name": "Riley Park 公園公廁",
-        "park_name": "Riley Park",
-        "location": "Fieldhouse",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Riley Park"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.10360324008157,
-          49.242037351407895
+          -123.118932,
+          49.278986
         ]
+      },
+      "properties": {
+        "id": "washroom_142",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - s??q?lxen?m ts'exwts'a?xwi7 (Rainbow)",
+        "park_name": "s??q?lxen?m ts'exwts'a?xwi7 (Rainbow)",
+        "location": "872 Richards St",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_143",
-      "properties": {
-        "id": "washroom_143",
-        "facility_type": "public_washrooms",
-        "name": "s??q?lxen?m ts'exwts'a?xwi7 (Rainbow) 公園公廁",
-        "park_name": "s??q?lxen?m ts'exwts'a?xwi7 (Rainbow)",
-        "location": "872 Richards St",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Downtown"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.11893195123973,
-          49.27898586086035
+          -123.081531,
+          49.264494
         ]
+      },
+      "properties": {
+        "id": "washroom_143",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - China Creek North Park",
+        "park_name": "China Creek North Park",
+        "location": "south-east corner",
+        "wheelchair_access": "Yes",
+        "summer_hours": "Dawn to Dusk",
+        "winter_hours": "Dawn to Dusk",
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_144",
-      "properties": {
-        "id": "washroom_144",
-        "facility_type": "public_washrooms",
-        "name": "China Creek North Park 公園公廁",
-        "park_name": "China Creek North Park",
-        "location": "south-east corner",
-        "washroom_type": "公園洗手間",
-        "summer_hours": "Dawn to Dusk",
-        "winter_hours": "Dawn to Dusk",
-        "wheelchair_access": "無障礙友善 ♿",
-        "notes": "",
-        "local_area": "Mount Pleasant"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.08153102730606,
-          49.26449424499932
+          -123.167874,
+          49.221023
         ]
+      },
+      "properties": {
+        "id": "washroom_144",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Mccleery Golf Course",
+        "park_name": "Mccleery Golf Course",
+        "location": "Unsure of exact location",
+        "wheelchair_access": null,
+        "summer_hours": null,
+        "winter_hours": null,
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_145",
-      "properties": {
-        "id": "washroom_145",
-        "facility_type": "public_washrooms",
-        "name": "Mccleery Golf Course 公園公廁",
-        "park_name": "Mccleery Golf Course",
-        "location": "Unsure of exact location",
-        "washroom_type": "公園洗手間",
-        "summer_hours": null,
-        "winter_hours": null,
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Kerrisdale"
-      },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -123.16787418477044,
-          49.22102317203254
+          -123.153533,
+          49.235438
         ]
+      },
+      "properties": {
+        "id": "washroom_145",
+        "facility_type": "public_washrooms",
+        "name": "公廁 - Kerrisdale Park",
+        "park_name": "Kerrisdale Park",
+        "location": "Ice Rink",
+        "wheelchair_access": null,
+        "summer_hours": null,
+        "winter_hours": null,
+        "notes": null
       }
     },
     {
       "type": "Feature",
       "id": "washroom_146",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -123.044647,
+          49.20617
+        ]
+      },
       "properties": {
         "id": "washroom_146",
         "facility_type": "public_washrooms",
-        "name": "Kerrisdale Park 公園公廁",
-        "park_name": "Kerrisdale Park",
-        "location": "Ice Rink",
-        "washroom_type": "公園洗手間",
-        "summer_hours": null,
-        "winter_hours": null,
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Shaughnessy"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.15353285764631,
-          49.23543806888743
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "id": "washroom_147",
-      "properties": {
-        "id": "washroom_147",
-        "facility_type": "public_washrooms",
-        "name": "West Fraserlands Childare Centre 公園公廁",
+        "name": "公廁 - West Fraserlands Childare Centre",
         "park_name": "West Fraserlands Childare Centre",
         "location": "West Fraserlands Childcare Centre",
-        "washroom_type": "公園洗手間",
+        "wheelchair_access": null,
         "summer_hours": null,
         "winter_hours": null,
-        "wheelchair_access": "一般規格",
-        "notes": "",
-        "local_area": "Killarney"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -123.04464654205405,
-          49.20617033163431
-        ]
+        "notes": null
       }
     }
   ]
