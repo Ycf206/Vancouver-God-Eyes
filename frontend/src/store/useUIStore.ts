@@ -10,12 +10,15 @@ export interface SearchTarget {
   title: string;
   subtitle?: string;
   category: string;
+  ui_group?: 'poi' | 'transit' | 'road' | 'area';
   badge?: string;
   icon: string;
   lon: number;
   lat: number;
   zoom?: number;
-  layer_key?: keyof UIState['layers'];
+  distance_km?: number;
+  score?: number;
+  layer_key?: keyof UIState['layers'] | null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   meta?: any;
 }
@@ -546,12 +549,26 @@ export const useUIStore = create<UIState>()(
           };
         }),
       disableLayer: (layer: keyof UIState['layers']) =>
-        set((state) => ({
-          layers: {
+        set((state) => {
+          const updatedLayers = {
             ...state.layers,
             [layer]: false,
-          },
-        })),
+          };
+          if (layer === 'skytrainRoutes' || layer === 'skytrainStops') {
+            updatedLayers.skytrainRoutes = false;
+            updatedLayers.skytrainStops = false;
+          } else if (layer === 'bcferriesRoutes' || layer === 'bcferriesTerminals') {
+            updatedLayers.bcferriesRoutes = false;
+            updatedLayers.bcferriesTerminals = false;
+          } else if (layer === 'busRoutes' || layer === 'busStops') {
+            updatedLayers.busRoutes = false;
+            updatedLayers.busStops = false;
+          } else if (layer === 'seabusRoutes' || layer === 'seabusStops') {
+            updatedLayers.seabusRoutes = false;
+            updatedLayers.seabusStops = false;
+          }
+          return { layers: updatedLayers };
+        }),
       resetAllLayers: () =>
         set((state) => {
           const allFalseLayers = Object.keys(state.layers).reduce((acc, k) => {
@@ -634,9 +651,24 @@ export const useUIStore = create<UIState>()(
       setAutoEnabledSearchLayer: (layer) => set({ autoEnabledSearchLayer: layer }),
       searchTarget: null,
       setSearchTarget: (target) => set((state) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const updates: any = { searchTarget: target };
         if (target === null && state.autoEnabledSearchLayer) {
-          updates.layers = { ...state.layers, [state.autoEnabledSearchLayer]: false };
+          const restored = { ...state.layers, [state.autoEnabledSearchLayer]: false };
+          if (state.autoEnabledSearchLayer === 'skytrainRoutes' || state.autoEnabledSearchLayer === 'skytrainStops') {
+            restored.skytrainRoutes = false;
+            restored.skytrainStops = false;
+          } else if (state.autoEnabledSearchLayer === 'bcferriesRoutes' || state.autoEnabledSearchLayer === 'bcferriesTerminals') {
+            restored.bcferriesRoutes = false;
+            restored.bcferriesTerminals = false;
+          } else if (state.autoEnabledSearchLayer === 'busRoutes' || state.autoEnabledSearchLayer === 'busStops') {
+            restored.busRoutes = false;
+            restored.busStops = false;
+          } else if (state.autoEnabledSearchLayer === 'seabusRoutes' || state.autoEnabledSearchLayer === 'seabusStops') {
+            restored.seabusRoutes = false;
+            restored.seabusStops = false;
+          }
+          updates.layers = restored;
           updates.autoEnabledSearchLayer = null;
         }
         return updates;

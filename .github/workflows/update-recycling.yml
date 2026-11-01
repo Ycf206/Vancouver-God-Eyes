@@ -52,13 +52,16 @@ jobs:
             fi
           done
 
+          git reset --hard HEAD
+          git clean -fd
+
           has_changes="false"
           for attempt in 1 2 3 4 5; do
             git fetch origin data:refs/remotes/origin/data 2>/dev/null || true
             if git show-ref --verify --quiet refs/remotes/origin/data; then
-              git checkout -B data refs/remotes/origin/data
+              git checkout -f -B data refs/remotes/origin/data
             else
-              git checkout -B data
+              git checkout -f -B data
             fi
 
             for f in backend/data/vancouver_recycling.geojson frontend/public/vancouver_recycling.geojson; do

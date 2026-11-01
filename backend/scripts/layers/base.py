@@ -140,6 +140,11 @@ def update_admin_source_metadata(source_id: str, record_count: int = None, updat
     """原子更新本機 backend/data/admin_sources_config.json 中對應資料源的 last_updated 與 record_count。"""
     if not source_id:
         return
+    # 在 GitHub Actions runner 環境中，圖資更新後需切換分支推送至 data 分支。
+    # 為避免本機工作目錄出現未提交的 admin_sources_config.json 變更導致 git checkout 衝突終止，
+    # runner 內跳過寫入本機檔案（後續 workflow 步驟會透過 SSH 在 OCI VM 上執行 record_workflow_sync.py 正式更新）。
+    if os.getenv("GITHUB_ACTIONS") == "true":
+        return
     cfg_path = os.path.join(BACKEND_DATA_DIR, "admin_sources_config.json")
     if not os.path.exists(cfg_path):
         return

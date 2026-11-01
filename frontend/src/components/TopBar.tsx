@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useRef, useMemo } from 'react';
-import { Search, Settings, ChevronDown, Map as MapIcon, X, Loader2, Layers, AlertCircle, Heart, Download, History, User, MoreHorizontal, Compass, Filter, Check, Bus, Milestone, Store, Trees, Landmark, Droplets } from 'lucide-react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { Search, Settings, ChevronDown, Map as MapIcon, X, Loader2, Layers, AlertCircle, Heart, Download, History, MoreHorizontal, Compass, Filter, Check, Bus, Milestone, Store, Trees, Landmark, Droplets, Clock, Sparkles, Navigation } from 'lucide-react';
 import { useUIStore, SearchTarget, UIState } from '@/store/useUIStore';
 import ReportIssueModal from '@/components/ReportIssueModal';
 import DonateModal from '@/components/DonateModal';
@@ -13,12 +13,119 @@ import AuthModal from '@/components/AuthModal';
 import { getApiUrl } from '@/utils/api';
 import { formatClock, formatDateWithTimezone } from '@/utils/time';
 
+const RECENT_SEARCHES_KEY = 'vangodseye_recent_searches_v1';
+const MAX_RECENT_SEARCHES = 6;
+
+const SIMP_TRAD_PAIRS: Array<[string, string]> = [
+  ['温', '溫'], ['华', '華'], ['银', '銀'], ['邮', '郵'], ['电', '電'], ['车', '車'],
+  ['站', '站'], ['医', '醫'], ['馆', '館'], ['图', '圖'], ['书', '書'], ['学', '學'],
+  ['园', '園'], ['场', '場'], ['厕', '廁'], ['卫', '衛'], ['间', '間'], ['机', '機'],
+  ['飞', '飛'], ['轮', '輪'], ['码', '碼'], ['头', '頭'], ['铁', '鐵'], ['路', '路'],
+  ['桥', '橋'], ['门', '門'], ['关', '關'], ['边', '邊'], ['单', '單'], ['饮', '飲'],
+  ['环', '環'], ['艺', '藝'], ['术', '術'], ['区', '區'], ['号', '號'], ['线', '線'],
+];
+
+function escapeRegExp(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function buildHighlightRegex(rawQuery: string): RegExp | null {
+  const cleaned = rawQuery.trim().slice(0, 60);
+  if (!cleaned) return null;
+  const rawTokens = cleaned
+    .split(/[\s,·/|\-&]+/)
+    .map(t => t.trim())
+    .filter(Boolean)
+    .slice(0, 6);
+  if (rawTokens.length === 0) return null;
+
+  // Sort longer tokens first so longest match wins
+  rawTokens.sort((a, b) => b.length - a.length);
+  const patterns = rawTokens.map(tok => {
+    let pat = '';
+    for (const ch of tok) {
+      const pair = SIMP_TRAD_PAIRS.find(([s, t]) => s === ch || t === ch);
+      if (pair) {
+        pat += `[${escapeRegExp(pair[0])}${escapeRegExp(pair[1])}]`;
+      } else {
+        pat += escapeRegExp(ch);
+      }
+    }
+    return pat;
+  });
+
+  try {
+    return new RegExp(`(${patterns.join('|')})`, 'gi');
+  } catch {
+    return null;
+  }
+}
+
+function HighlightMatch({ text, query, subtle = false }: { text: string; query: string; subtle?: boolean }) {
+  const regex = useMemo(() => buildHighlightRegex(query), [query]);
+  if (!regex || !text) return <>{text}</>;
+  const parts = text.split(regex);
+  if (parts.length <= 1) return <>{text}</>;
+  return (
+    <>
+      {parts.map((part, i) =>
+        i % 2 === 1 ? (
+          <mark
+            key={i}
+            className={
+              subtle
+                ? 'bg-emerald-500/20 text-emerald-300 rounded-xs px-0.5 not-italic'
+                : 'bg-emerald-500/25 text-emerald-200 rounded-xs px-0.5 font-bold not-italic'
+            }
+          >
+            {part}
+          </mark>
+        ) : (
+          <span key={i}>{part}</span>
+        )
+      )}
+    </>
+  );
+}
+
+const QUICK_SEARCH_SHORTCUTS = [
+  { label: '銀行', query: '銀行', icon: '🏦' },
+  { label: '洗手間', query: '公共洗手間', icon: '🚻' },
+  { label: '油站', query: '油站', icon: '⛽' },
+  { label: '充電站', query: '充電站', icon: '⚡' },
+  { label: '醫院', query: '醫院', icon: '🏥' },
+  { label: '天車站', query: '天車站', icon: '🚇' },
+  { label: '停車場', query: '停車場', icon: '🅿️' },
+  { label: '郵寄快遞', query: '郵寄', icon: '📮' },
+  { label: '潮汐站', query: '潮汐', icon: '🌊' },
+  { label: '邊境關卡', query: '邊境', icon: '🛂' },
+];
+
+type QuickGroupTab = 'all' | 'poi' | 'transit' | 'road' | 'area';
+
+function inferUiGroup(item: SearchTarget): Exclude<QuickGroupTab, 'all'> {
+  if (item.ui_group) return item.ui_group;
+  const c = item.category;
+  if (['skytrain', 'seabus', 'bus_route', 'bus_stop', 'ferry_terminal', 'ferry_vehicle', 'airports', 'maritime_vessel', 'marine_terminals', 'railways'].includes(c)) {
+    return 'transit';
+  }
+  if (['address', 'coordinate', 'local_area_boundary', 'postal_code_fsa', 'zoning_districts', 'garbage_collection', 'crime_areas'].includes(c)) {
+    return 'area';
+  }
+  if (['impark', 'accessible_parking', 'motorcycle_parking', 'parking_meters', 'traffic_cameras', 'safety_cameras', 'traffic_conditions', 'traffic_alerts', 'road_closures', 'road_construction', 'snow_removal_routes', 'one_way_streets', 'traffic_speed_limits', 'truck_routes', 'truck_routes_restriction', 'turn_restrictions', 'traffic_signals', 'traffic_crosswalks'].includes(c)) {
+    return 'road';
+  }
+  return 'poi';
+}
+
 export default function TopBar() {
   const { 
     setSearchTarget, 
     enableLayer, 
     disableLayer,
     layers,
+    userLocation,
+    distanceUnit,
     autoEnabledSearchLayer,
     setAutoEnabledSearchLayer,
     isLayerPanelOpen, 
@@ -49,11 +156,11 @@ export default function TopBar() {
         const targetKeys = [
           'bus', 'busRoutes', 'busStops', 'skytrainTrains', 'skytrainRoutes', 'skytrainStops',
           'seabusVehicles', 'seabusRoutes', 'seabusStops', 'bcferriesVehicles', 'bcferriesRoutes',
-          'bcferriesTerminals', 'maritimeShipping', 'marineTerminals', 'airports'
+          'bcferriesTerminals', 'maritimeShipping', 'marineTerminals', 'airports', 'railways'
         ];
         const targetCats = [
           'bus_route', 'bus_stop', 'skytrain', 'seabus', 'bcferries', 'ferry_terminal',
-          'transit', 'airports', 'marine_terminals', 'maritimeShipping', 'flights', 'maritime_vessel'
+          'ferry_vehicle', 'transit', 'airports', 'marine_terminals', 'maritimeShipping', 'flights', 'maritime_vessel', 'railways'
         ];
         return (item.layer_key && targetKeys.includes(item.layer_key as string)) ||
           targetCats.includes(item.category) ||
@@ -70,7 +177,7 @@ export default function TopBar() {
           'parkingMeters', 'impark', 'motorcycleParking', 'accessibleParking',
           'oneWayStreets', 'trafficSpeedLimits', 'trafficCrosswalks', 'carSharing',
           'bikeways', 'bikeRacks', 'sharedBikes', 'escooter', 'trafficSignals',
-          'turnRestrictions', 'evCharging', 'tesla', 'truckRoutes', 'railways', 'roadClosures',
+          'turnRestrictions', 'evCharging', 'tesla', 'truckRoutes', 'roadClosures',
           'roadConstruction', 'trafficCameras', 'safetyCameras', 'fuel',
           'trafficConditions', 'snowRemovalRoutes', 'trafficAlerts'
         ];
@@ -79,7 +186,7 @@ export default function TopBar() {
           'one_way_streets', 'traffic_speed_limits', 'traffic_crosswalks', 'car_sharing',
           'bikeways', 'bike_racks', 'shared_bikes', 'escooter', 'traffic_signals',
           'turn_restrictions', 'traffic_turn_restrictions', 'ev_charging', 'tesla',
-          'truck_routes', 'truck_routes_restriction', 'railways', 'road_closures',
+          'truck_routes', 'truck_routes_restriction', 'road_closures',
           'road_construction', 'traffic_cameras', 'safety_cameras', 'fuel',
           'traffic_conditions', 'snow_removal_routes', 'traffic_incident', 'trafficAlerts'
         ];
@@ -117,11 +224,11 @@ export default function TopBar() {
       matcher: (item: SearchTarget) => {
         const targetKeys = [
           'parks', 'parksFacilities', 'communityGardens', 'publicTrees',
-          'drinkingFountains', 'publicWashrooms'
+          'drinkingFountains', 'publicWashrooms', 'skiResorts', 'beachWaterQuality'
         ];
         const targetCats = [
           'parks', 'parks_facilities', 'community_gardens', 'public_trees',
-          'drinking_fountains', 'public_washrooms'
+          'drinking_fountains', 'public_washrooms', 'ski_resort', 'beach_water_quality'
         ];
         return (item.layer_key && targetKeys.includes(item.layer_key as string)) ||
           targetCats.includes(item.category) ||
@@ -136,11 +243,11 @@ export default function TopBar() {
       matcher: (item: SearchTarget) => {
         const targetKeys = [
           'police', 'crimeAreas', 'fireHalls', 'fireHydrants', 'hospitals',
-          'disasterHubs', 'vanWifi'
+          'disasterHubs', 'vanWifi', 'borderCrossings'
         ];
         const targetCats = [
           'police', 'crime_areas', 'fire_halls', 'fire_hydrants', 'hospitals',
-          'disaster_hubs', 'van_wifi'
+          'disaster_hubs', 'van_wifi', 'border_crossing'
         ];
         return (item.layer_key && targetKeys.includes(item.layer_key as string)) ||
           targetCats.includes(item.category) ||
@@ -173,10 +280,10 @@ export default function TopBar() {
       iconColor: 'text-teal-400',
       matcher: (item: SearchTarget) => {
         const targetKeys = [
-          'localAreaBoundary', 'postalCodeFSA', 'zoningDistricts', 'beachWaterQuality', 'contours'
+          'localAreaBoundary', 'postalCodeFSA', 'zoningDistricts', 'beachWaterQuality', 'contours', 'tides'
         ];
         const targetCats = [
-          'local_area_boundary', 'postal_code_fsa', 'zoning_districts', 'beach_water_quality', 'contours'
+          'local_area_boundary', 'postal_code_fsa', 'zoning_districts', 'beach_water_quality', 'contours', 'tide_stations', 'address', 'coordinate'
         ];
         return (item.layer_key && targetKeys.includes(item.layer_key as string)) ||
           targetCats.includes(item.category) ||
@@ -193,12 +300,88 @@ export default function TopBar() {
   const [isOpen, setIsOpen] = useState(false);
   const [filterPopoverOpen, setFilterPopoverOpen] = useState(false);
   const [selectedFilterCategoryIds, setSelectedFilterCategoryIds] = useState<string[]>([]);
+  const [quickGroup, setQuickGroup] = useState<QuickGroupTab>('all');
+  const [activeIndex, setActiveIndex] = useState<number>(-1);
+  const [recentSearches, setRecentSearches] = useState<SearchTarget[]>([]);
+
   const searchContainerRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const listContainerRef = useRef<HTMLDivElement>(null);
   const isSelectingRef = useRef(false);
   const searchCacheRef = useRef<Map<string, SearchTarget[]>>(new Map());
+  const lastServerResultsRef = useRef<SearchTarget[]>([]);
 
-  // 依選取的圖層篩選類別過濾搜尋結果
-  const filteredResults = useMemo(() => {
+  // 讀取最近搜尋紀錄
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(RECENT_SEARCHES_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          setRecentSearches(parsed.slice(0, 8));
+        }
+      }
+    } catch (e) {
+      // ignore localStorage errors
+    }
+  }, []);
+
+  const saveRecentSearch = useCallback((target: SearchTarget) => {
+    setRecentSearches(prev => {
+      const filtered = prev.filter(x => x.id !== target.id);
+      const updated = [target, ...filtered].slice(0, 8);
+      try {
+        localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(updated));
+      } catch (e) {
+        // ignore
+      }
+      return updated;
+    });
+  }, []);
+
+  const removeRecentSearch = useCallback((id: string, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    setRecentSearches(prev => {
+      const updated = prev.filter(x => x.id !== id);
+      try {
+        localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(updated));
+      } catch (e) {
+        // ignore
+      }
+      return updated;
+    });
+  }, []);
+
+  const clearRecentSearches = useCallback((e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    setRecentSearches([]);
+    try {
+      localStorage.removeItem(RECENT_SEARCHES_KEY);
+    } catch (e) {
+      // ignore
+    }
+  }, []);
+
+  // 全域鍵盤快捷鍵 '/' 快速聚焦搜尋欄
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === '/' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        const tag = (e.target as HTMLElement)?.tagName?.toLowerCase();
+        const isEditable = (e.target as HTMLElement)?.isContentEditable;
+        if (tag === 'input' || tag === 'textarea' || tag === 'select' || isEditable) {
+          return;
+        }
+        e.preventDefault();
+        searchInputRef.current?.focus();
+        setIsOpen(true);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // 依選取的圖層面板 7 大類別過濾
+  const layerFilteredResults = useMemo(() => {
     if (selectedFilterCategoryIds.length === 0) return results;
     return results.filter(item => {
       return selectedFilterCategoryIds.some(catId => {
@@ -207,6 +390,53 @@ export default function TopBar() {
       });
     });
   }, [results, selectedFilterCategoryIds]);
+
+  // 計算快捷分組數量 (全部 / 設施地標 / 交通航運 / 道路車位 / 地址區域)
+  const groupCounts = useMemo(() => {
+    const counts = { all: layerFilteredResults.length, poi: 0, transit: 0, road: 0, area: 0 };
+    for (const item of layerFilteredResults) {
+      const g = inferUiGroup(item);
+      if (counts[g] !== undefined) counts[g]++;
+    }
+    return counts;
+  }, [layerFilteredResults]);
+
+  // 再依上方快捷分組切換過濾
+  const filteredResults = useMemo(() => {
+    if (quickGroup === 'all') return layerFilteredResults;
+    return layerFilteredResults.filter(item => inferUiGroup(item) === quickGroup);
+  }, [layerFilteredResults, quickGroup]);
+
+  // 重置鍵盤游標至首項
+  useEffect(() => {
+    setActiveIndex(-1);
+  }, [filteredResults, quickGroup]);
+
+  // 鍵盤移動時自動滾動至可見區域
+  useEffect(() => {
+    if (activeIndex >= 0 && listContainerRef.current) {
+      const activeEl = listContainerRef.current.querySelector(`[data-search-idx="${activeIndex}"]`);
+      if (activeEl) {
+        (activeEl as HTMLElement).scrollIntoView({ block: 'nearest' });
+      }
+    }
+  }, [activeIndex]);
+
+  // 距離格式化輔助函數
+  const formatDistance = useCallback((km?: number) => {
+    if (km === undefined || km === null || Number.isNaN(km)) return null;
+    if (distanceUnit === 'imperial') {
+      const miles = km * 0.621371;
+      if (miles < 0.1) {
+        return `${Math.round(miles * 5280)} ft`;
+      }
+      return `${miles.toFixed(1)} mi`;
+    }
+    if (km < 1) {
+      return `${Math.round(km * 1000)} m`;
+    }
+    return `${km.toFixed(1)} km`;
+  }, [distanceUnit]);
 
   useEffect(() => {
     setTime(new Date());
@@ -226,7 +456,7 @@ export default function TopBar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // 搜尋防抖 (Debounce) 與快顯快取
+  // 搜尋防抖 (Debounce 75ms) + 坐標關聯排序 + 0ms 即時快顯
   useEffect(() => {
     if (isSelectingRef.current) {
       isSelectingRef.current = false;
@@ -240,29 +470,57 @@ export default function TopBar() {
       return;
     }
 
+    // 取得當前地圖中心或使用者位置坐標作為參考點
+    const mapCenter = (window as any).__godsEyeMapCenter as { lat?: number; lon?: number } | undefined;
+    const refLat = userLocation?.lat ?? mapCenter?.lat ?? 49.2827;
+    const refLon = userLocation?.lon ?? mapCenter?.lon ?? -123.1207;
+    const cacheKey = `${trimmed.toLowerCase()}|${refLat.toFixed(3)}|${refLon.toFixed(3)}`;
+
     // 0ms 快取命中：已搜尋過的字詞立即呈現建議清單
-    if (searchCacheRef.current.has(trimmed)) {
-      setResults(searchCacheRef.current.get(trimmed)!);
+    if (searchCacheRef.current.has(cacheKey)) {
+      const cached = searchCacheRef.current.get(cacheKey)!;
+      setResults(cached);
+      lastServerResultsRef.current = cached;
       setDisplayLimit(40);
       setIsLoading(false);
       setIsOpen(true);
       return;
     }
 
+    // 0ms 樂觀本機快顯：若前次結果非空，先依子字串即時縮減以提供無縫輸入體驗
+    if (lastServerResultsRef.current.length > 0) {
+      const qLower = trimmed.toLowerCase();
+      const optimistic = lastServerResultsRef.current.filter(item => 
+        item.title.toLowerCase().includes(qLower) || 
+        (item.subtitle && item.subtitle.toLowerCase().includes(qLower)) ||
+        (item.badge && item.badge.toLowerCase().includes(qLower))
+      );
+      if (optimistic.length > 0) {
+        setResults(optimistic);
+      }
+    }
+
     setIsLoading(true);
     const apiUrl = getApiUrl();
     const controller = new AbortController();
     
-    // 迅速呈現搜尋建議 (Debounce 降至 120ms 並搭配 AbortController 避免慢速競態)
+    // 超快速 Debounce (75ms) 搭配 AbortController 避免慢速競態
     const handler = setTimeout(() => {
-      fetch(`${apiUrl}/api/search?q=${encodeURIComponent(trimmed)}`, { signal: controller.signal })
+      const url = `${apiUrl}/api/search?q=${encodeURIComponent(trimmed)}&lat=${refLat.toFixed(6)}&lon=${refLon.toFixed(6)}&limit=80`;
+      fetch(url, { signal: controller.signal })
         .then(res => {
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
           return res.json();
         })
         .then(data => {
-          const list = Array.isArray(data) ? data : (data?.results || []);
-          searchCacheRef.current.set(trimmed, list);
+          const list: SearchTarget[] = Array.isArray(data) ? data : (data?.results || []);
+          // 保留最多 100 筆 LRU 快取
+          if (searchCacheRef.current.size > 100) {
+            const firstKey = searchCacheRef.current.keys().next().value;
+            if (firstKey) searchCacheRef.current.delete(firstKey);
+          }
+          searchCacheRef.current.set(cacheKey, list);
+          lastServerResultsRef.current = list;
           setResults(list);
           setDisplayLimit(40);
           setIsLoading(false);
@@ -273,16 +531,18 @@ export default function TopBar() {
           console.error('Search error:', err);
           setIsLoading(false);
         });
-    }, 120);
+    }, 75);
 
     return () => {
       clearTimeout(handler);
       controller.abort();
     };
-  }, [query]);
+  }, [query, userLocation?.lat, userLocation?.lon]);
 
   const handleSelect = (target: SearchTarget) => {
     isSelectingRef.current = true;
+    saveRecentSearch(target);
+
     // 巴士路線為獨立搜尋展示，不自動開啟全域靜態巴士路線圖層
     if (target.layer_key && target.category !== 'bus_route') {
       const lk = target.layer_key as keyof UIState['layers'];
@@ -299,12 +559,14 @@ export default function TopBar() {
     setSearchTarget(target);
     setQuery(target.title);
     setIsOpen(false);
+    setActiveIndex(-1);
   };
 
   const handleClear = () => {
     setQuery('');
     setResults([]);
     setIsOpen(false);
+    setActiveIndex(-1);
     setSearchTarget(null);
     if ((window as any).__godsEyeDismissPopup) {
       (window as any).__godsEyeDismissPopup();
@@ -494,11 +756,13 @@ export default function TopBar() {
 
           <Search className="w-4 h-4 text-gray-400 mr-2 shrink-0" />
           <input 
+            ref={searchInputRef}
             type="text" 
             value={query}
             onChange={(e) => {
               const val = e.target.value;
               setQuery(val);
+              setActiveIndex(-1);
               if (val.trim() === '') {
                 handleClear();
               } else {
@@ -506,11 +770,48 @@ export default function TopBar() {
               }
             }}
             onFocus={() => {
-              if (results.length > 0 || query.trim()) setIsOpen(true);
+              setIsOpen(true);
             }}
-            placeholder="搜尋" 
+            onKeyDown={(e) => {
+              if (!isOpen) {
+                if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                  setIsOpen(true);
+                  e.preventDefault();
+                }
+                return;
+              }
+              const currentList = filteredResults.slice(0, displayLimit);
+              if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                setActiveIndex(prev => {
+                  const next = prev + 1;
+                  return next < currentList.length ? next : 0;
+                });
+              } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                setActiveIndex(prev => {
+                  const next = prev - 1;
+                  return next >= -1 ? next : currentList.length - 1;
+                });
+              } else if (e.key === 'Enter') {
+                if (activeIndex >= 0 && currentList[activeIndex]) {
+                  e.preventDefault();
+                  handleSelect(currentList[activeIndex]);
+                }
+              } else if (e.key === 'Escape') {
+                e.preventDefault();
+                setIsOpen(false);
+                searchInputRef.current?.blur();
+              }
+            }}
+            placeholder="搜尋地標、地址、站牌號碼、路線或分類..." 
             className="bg-transparent text-sm text-white w-full focus:outline-none placeholder:text-gray-500"
           />
+          {!query && (
+            <kbd className="hidden sm:inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-mono text-gray-500 bg-[#1c1d22] border border-[#383a42] rounded shrink-0 select-none pointer-events-none mr-1">
+              /
+            </kbd>
+          )}
           {isLoading && (
             <Loader2 className="w-3.5 h-3.5 text-emerald-400 animate-spin mr-1 shrink-0" />
           )}
@@ -525,22 +826,111 @@ export default function TopBar() {
           )}
         </div>
 
+        {/* 搜尋欄空狀態面板：最近搜尋與熱門分類捷徑 */}
+        {isOpen && query.trim().length === 0 && (
+          <div className="absolute top-[44px] left-0 w-full bg-[#1e2025]/98 backdrop-blur-md border border-[#373a40] rounded-xl shadow-2xl overflow-hidden z-[100] max-h-[460px] flex flex-col p-3 text-xs animate-in fade-in zoom-in-95 duration-100">
+            {recentSearches.length > 0 && (
+              <div className="mb-3">
+                <div className="flex items-center justify-between pb-1.5 mb-1.5 border-b border-[#2d2e34] text-[11px] text-gray-400">
+                  <span className="flex items-center gap-1.5 font-semibold text-gray-300">
+                    <Clock className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>最近搜尋</span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={clearRecentSearches}
+                    className="text-[10px] text-gray-500 hover:text-rose-400 transition-colors"
+                  >
+                    全部清除
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {recentSearches.map(item => (
+                    <div
+                      key={item.id}
+                      onClick={() => handleSelect(item)}
+                      className="group flex items-center gap-1.5 bg-[#252830] hover:bg-[#2e323d] border border-gray-700/60 hover:border-emerald-500/50 rounded-lg px-2.5 py-1 text-gray-200 transition-all cursor-pointer shadow-sm"
+                    >
+                      <span className="text-xs">{item.icon}</span>
+                      <span className="text-xs font-medium max-w-[140px] truncate">{item.title}</span>
+                      <button
+                        type="button"
+                        onClick={(e) => removeRecentSearch(item.id, e)}
+                        className="text-gray-500 hover:text-rose-400 ml-0.5 p-0.5 rounded-full hover:bg-rose-950/40"
+                        title="移除此紀錄"
+                      >
+                        <X className="w-2.5 h-2.5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div>
+              <div className="flex items-center gap-1.5 pb-1.5 mb-2 border-b border-[#2d2e34] text-[11px] font-semibold text-gray-300">
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <span>熱門分類捷徑</span>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5">
+                {QUICK_SEARCH_SHORTCUTS.map(sc => (
+                  <button
+                    key={sc.query}
+                    type="button"
+                    onClick={() => {
+                      setQuery(sc.query);
+                      searchInputRef.current?.focus();
+                    }}
+                    className="flex items-center gap-1.5 bg-[#23262e] hover:bg-emerald-950/40 hover:border-emerald-500/40 border border-[#343740] rounded-lg px-2 py-1.5 text-gray-300 hover:text-emerald-300 transition-all text-left text-xs"
+                  >
+                    <span className="text-sm shrink-0">{sc.icon}</span>
+                    <span className="truncate font-medium">{sc.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* 搜尋下拉選單 (Dropdown Results) */}
         {isOpen && query.trim().length > 0 && (
-          <div className="absolute top-[44px] left-0 w-full bg-[#1e2025]/95 backdrop-blur-md border border-[#373a40] rounded-lg shadow-2xl overflow-hidden z-[100] max-h-[460px] max-h-[70vh] flex flex-col">
-            <div className="flex items-center justify-between px-3.5 py-2 border-b border-[#2d2e34] bg-[#191a1e]/80 text-[11px] text-gray-400 shrink-0">
-              <div className="flex items-center gap-2">
-                <span>圖層項目搜尋結果</span>
-                {selectedFilterCategoryIds.length > 0 && (
-                  <span className="text-[10px] bg-emerald-950/80 text-emerald-300 border border-emerald-800/60 px-1.5 py-0.2 rounded font-medium">
-                    已依圖層篩選
-                  </span>
-                )}
+          <div className="absolute top-[44px] left-0 w-full bg-[#1e2025]/95 backdrop-blur-md border border-[#373a40] rounded-lg shadow-2xl overflow-hidden z-[100] max-h-[500px] max-h-[75vh] flex flex-col">
+            {/* 分類快速篩選標籤列 */}
+            <div className="flex items-center justify-between px-3 py-1.5 border-b border-[#2d2e34] bg-[#191a1e]/90 text-[11px] shrink-0 gap-2 overflow-x-auto [scrollbar-width:none]">
+              <div className="flex items-center gap-1 shrink-0">
+                {(
+                  [
+                    { id: 'all', label: '全部', count: groupCounts.all },
+                    { id: 'poi', label: '設施地標', count: groupCounts.poi },
+                    { id: 'transit', label: '交通航運', count: groupCounts.transit },
+                    { id: 'road', label: '道路車位', count: groupCounts.road },
+                    { id: 'area', label: '地址區域', count: groupCounts.area },
+                  ] as const
+                ).map(tab => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setQuickGroup(tab.id)}
+                    className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs transition-colors cursor-pointer ${
+                      quickGroup === tab.id
+                        ? 'bg-emerald-600 text-white font-semibold shadow-sm'
+                        : 'text-gray-400 hover:text-gray-200 hover:bg-[#2c2f38]'
+                    }`}
+                  >
+                    <span>{tab.label}</span>
+                    <span className={`text-[10px] ${quickGroup === tab.id ? 'text-emerald-100' : 'text-gray-500'}`}>
+                      {tab.count}
+                    </span>
+                  </button>
+                ))}
               </div>
-              <span>{filteredResults.length} 筆項目</span>
+              <span className="text-gray-500 text-[10.5px] shrink-0 hidden sm:inline">
+                按 ↑↓ 瀏覽，Enter 確定
+              </span>
             </div>
 
             <div 
+              ref={listContainerRef}
               onScroll={(e) => {
                 const target = e.currentTarget;
                 if (target.scrollTop + target.clientHeight >= target.scrollHeight - 40) {
@@ -551,66 +941,98 @@ export default function TopBar() {
             >
               {filteredResults.length > 0 ? (
                 <>
-                  {filteredResults.slice(0, displayLimit).map((item) => (
-                    <button
-                      key={item.id}
-                      onClick={() => handleSelect(item)}
-                      className="w-full text-left px-3.5 py-2.5 hover:bg-[#2c2f38] transition-colors flex items-center gap-3 group"
-                    >
-                      <span className="text-base flex-shrink-0 w-7 h-7 flex items-center justify-center bg-[#282a30] rounded border border-gray-700/50 group-hover:scale-110 transition-transform">
-                        {item.icon}
-                      </span>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-sm font-semibold text-gray-100 group-hover:text-white truncate">
-                          {item.title}
-                        </div>
-                        {item.subtitle && (
-                          <div className="text-[11px] text-gray-400 truncate">
-                            {item.subtitle}
+                  {filteredResults.slice(0, displayLimit).map((item, idx) => {
+                    const isSelected = idx === activeIndex;
+                    const distStr = formatDistance(item.distance_km);
+                    return (
+                      <button
+                        key={item.id}
+                        data-search-idx={idx}
+                        onClick={() => handleSelect(item)}
+                        className={`w-full text-left px-3.5 py-2.5 transition-colors flex items-center gap-3 group ${
+                          isSelected
+                            ? 'bg-emerald-950/60 border-l-2 border-l-emerald-400 text-white shadow-inner'
+                            : 'hover:bg-[#2c2f38]'
+                        }`}
+                      >
+                        <span className="text-base flex-shrink-0 w-7 h-7 flex items-center justify-center bg-[#282a30] rounded border border-gray-700/50 group-hover:scale-110 transition-transform">
+                          {item.icon}
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-semibold text-gray-100 group-hover:text-white truncate">
+                            <HighlightMatch text={item.title} query={query} />
                           </div>
-                        )}
-                      </div>
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium border flex-shrink-0 ${
-                        item.category === 'bus_route' ? 'bg-emerald-950/80 text-emerald-300 border-emerald-800/60 font-bold' :
-                        item.category === 'skytrain' ? 'bg-sky-950/80 text-sky-400 border-sky-800/60' :
-                        item.category === 'ferry_terminal' ? 'bg-blue-950/80 text-blue-300 border-blue-800/60' :
-                        item.category === 'seabus' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
-                        item.category === 'fire_halls' ? 'bg-rose-950/80 text-rose-300 border-rose-800/60' :
-                        item.category === 'police' ? 'bg-blue-950/80 text-blue-300 border-blue-800/60 font-bold' :
-                        item.category === 'hospitals' ? 'bg-emerald-950/80 text-emerald-300 border-emerald-800/60' :
-                        item.category === 'disaster_hubs' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
-                        item.category === 'fuel' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
-                        item.category === 'tesla' ? 'bg-red-950/80 text-red-300 border-red-800/60 font-bold' :
-                        item.category === 'impark' ? 'bg-red-950/80 text-red-300 border-red-800/60 font-semibold' :
-                        item.category === 'aed' ? 'bg-rose-950/80 text-rose-300 border-rose-800/60' :
-                        item.category === 'car_sharing' ? 'bg-sky-950/80 text-sky-300 border-sky-800/60' :
-                        item.category === 'postal_code_fsa' ? 'bg-indigo-950/80 text-indigo-300 border-indigo-800/60 font-bold' :
-                        item.category === 'local_area_boundary' ? 'bg-teal-950/80 text-teal-300 border-teal-800/60' :
-                        item.category === 'bikeways' ? 'bg-teal-950/80 text-teal-300 border-teal-800/60' :
-                        item.category === 'traffic_crosswalks' ? 'bg-yellow-950/80 text-yellow-300 border-yellow-800/60' :
-                        item.category === 'litter_containers' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
-                        item.category === 'public_art' ? 'bg-fuchsia-950/80 text-fuchsia-300 border-fuchsia-800/60 font-semibold' :
-                        item.category === 'motorcycle_parking' ? 'bg-orange-950/80 text-orange-300 border-orange-800/60 font-semibold' :
-                        item.category === 'community_centres' ? 'bg-violet-950/80 text-violet-300 border-violet-800/60' :
-                        item.category === 'museums' ? 'bg-slate-800 text-slate-200 border-slate-600 font-semibold' :
-                        item.category === 'canada_post' ? 'bg-red-950/80 text-red-300 border-red-800/60' :
-                        (item.category === 'banks' || item.category === 'atm') ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
-                        (item.category === 'turn_restrictions' || item.category === 'traffic_turn_restrictions') ? 'bg-rose-950/80 text-rose-300 border-rose-800/60 font-semibold' :
-                        item.category === 'traffic_signals' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
-                        item.category === 'truck_routes' ? 'bg-sky-950/80 text-sky-300 border-sky-800/60' :
-                        item.category === 'garbage_collection' ? 'bg-orange-950/80 text-orange-300 border-orange-800/60' :
-                        item.category === 'escooter' ? 'bg-lime-950/80 text-lime-300 border-lime-800/60' :
-                        item.category === 'ev_charging' ? 'bg-emerald-950/80 text-emerald-300 border-emerald-800/60' :
-                        item.category === 'schools' ? 'bg-blue-950/80 text-blue-300 border-blue-800/60' :
-                        item.category === 'libraries' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
-                        item.category === 'food_vendors' ? 'bg-orange-950/80 text-orange-300 border-orange-800/60' :
-                        item.category === 'homeless_shelters' ? 'bg-rose-950/80 text-rose-300 border-rose-800/60' :
-                        'bg-gray-800 text-gray-300 border-gray-700'
-                      }`}>
-                        {item.badge}
-                      </span>
-                    </button>
-                  ))}
+                          {item.subtitle && (
+                            <div className="text-[11px] text-gray-400 truncate">
+                              <HighlightMatch text={item.subtitle} query={query} subtle />
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-1.5 flex-shrink-0">
+                          {distStr && (
+                            <span className="flex items-center gap-0.5 text-[10px] text-gray-400 bg-[#242730] border border-gray-700/60 px-1.5 py-0.5 rounded font-mono">
+                              <Navigation className="w-2.5 h-2.5 text-emerald-400" />
+                              <span>{distStr}</span>
+                            </span>
+                          )}
+                          <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium border ${
+                            item.category === 'bus_route' ? 'bg-emerald-950/80 text-emerald-300 border-emerald-800/60 font-bold' :
+                            item.category === 'bus_stop' ? 'bg-emerald-950/70 text-emerald-300 border-emerald-800/50' :
+                            item.category === 'skytrain' ? 'bg-sky-950/80 text-sky-400 border-sky-800/60' :
+                            item.category === 'ferry_terminal' ? 'bg-blue-950/80 text-blue-300 border-blue-800/60' :
+                            item.category === 'ferry_vehicle' ? 'bg-blue-950/80 text-blue-300 border-blue-800/60 font-bold' :
+                            item.category === 'seabus' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
+                            item.category === 'airports' ? 'bg-indigo-950/80 text-indigo-300 border-indigo-800/60 font-bold' :
+                            item.category === 'border_crossing' ? 'bg-cyan-950/80 text-cyan-300 border-cyan-800/60 font-bold' :
+                            item.category === 'fire_halls' ? 'bg-rose-950/80 text-rose-300 border-rose-800/60' :
+                            item.category === 'police' ? 'bg-blue-950/80 text-blue-300 border-blue-800/60 font-bold' :
+                            item.category === 'hospitals' ? 'bg-emerald-950/80 text-emerald-300 border-emerald-800/60' :
+                            item.category === 'disaster_hubs' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
+                            item.category === 'fuel' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
+                            item.category === 'tesla' ? 'bg-red-950/80 text-red-300 border-red-800/60 font-bold' :
+                            item.category === 'impark' ? 'bg-red-950/80 text-red-300 border-red-800/60 font-semibold' :
+                            item.category === 'parking_meters' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
+                            item.category === 'accessible_parking' ? 'bg-blue-950/80 text-blue-300 border-blue-800/60' :
+                            item.category === 'aed' ? 'bg-rose-950/80 text-rose-300 border-rose-800/60' :
+                            item.category === 'car_sharing' ? 'bg-sky-950/80 text-sky-300 border-sky-800/60' :
+                            item.category === 'postal_code_fsa' ? 'bg-indigo-950/80 text-indigo-300 border-indigo-800/60 font-bold' :
+                            item.category === 'local_area_boundary' ? 'bg-teal-950/80 text-teal-300 border-teal-800/60' :
+                            item.category === 'bikeways' ? 'bg-teal-950/80 text-teal-300 border-teal-800/60' :
+                            item.category === 'traffic_crosswalks' ? 'bg-yellow-950/80 text-yellow-300 border-yellow-800/60' :
+                            item.category === 'litter_containers' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
+                            item.category === 'public_art' ? 'bg-fuchsia-950/80 text-fuchsia-300 border-fuchsia-800/60 font-semibold' :
+                            item.category === 'motorcycle_parking' ? 'bg-orange-950/80 text-orange-300 border-orange-800/60 font-semibold' :
+                            item.category === 'community_centres' ? 'bg-violet-950/80 text-violet-300 border-violet-800/60' :
+                            item.category === 'museums' ? 'bg-slate-800 text-slate-200 border-slate-600 font-semibold' :
+                            item.category === 'canada_post' ? 'bg-red-950/80 text-red-300 border-red-800/60' :
+                            item.category === 'fedex' ? 'bg-purple-950/80 text-purple-300 border-purple-800/60' :
+                            item.category === 'purolator' ? 'bg-blue-950/80 text-blue-300 border-blue-800/60' :
+                            (item.category === 'banks' || item.category === 'atm') ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
+                            item.category === 'public_washrooms' ? 'bg-cyan-950/80 text-cyan-300 border-cyan-800/60' :
+                            item.category === 'ski_resort' ? 'bg-sky-950/80 text-sky-300 border-sky-800/60' :
+                            item.category === 'tide_stations' ? 'bg-teal-950/80 text-teal-300 border-teal-800/60' :
+                            item.category === 'address' ? 'bg-emerald-950/80 text-emerald-300 border-emerald-800/60' :
+                            item.category === 'coordinate' ? 'bg-gray-800 text-emerald-300 border-gray-600 font-mono' :
+                            item.category === 'railways' ? 'bg-orange-950/80 text-orange-300 border-orange-800/60' :
+                            item.category === 'crime_areas' ? 'bg-red-950/80 text-red-300 border-red-800/60' :
+                            (item.category === 'turn_restrictions' || item.category === 'traffic_turn_restrictions') ? 'bg-rose-950/80 text-rose-300 border-rose-800/60 font-semibold' :
+                            item.category === 'traffic_signals' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
+                            item.category === 'truck_routes' ? 'bg-sky-950/80 text-sky-300 border-sky-800/60' :
+                            item.category === 'garbage_collection' ? 'bg-orange-950/80 text-orange-300 border-orange-800/60' :
+                            item.category === 'escooter' ? 'bg-lime-950/80 text-lime-300 border-lime-800/60' :
+                            item.category === 'ev_charging' ? 'bg-emerald-950/80 text-emerald-300 border-emerald-800/60' :
+                            item.category === 'schools' ? 'bg-blue-950/80 text-blue-300 border-blue-800/60' :
+                            item.category === 'libraries' ? 'bg-amber-950/80 text-amber-300 border-amber-800/60' :
+                            item.category === 'food_vendors' ? 'bg-orange-950/80 text-orange-300 border-orange-800/60' :
+                            item.category === 'homeless_shelters' ? 'bg-rose-950/80 text-rose-300 border-rose-800/60' :
+                            'bg-gray-800 text-gray-300 border-gray-700'
+                          }`}>
+                            {item.badge}
+                          </span>
+                        </div>
+                      </button>
+                    );
+                  })}
                   {filteredResults.length > displayLimit && (
                     <div className="text-center py-2 text-[10.5px] text-gray-400 bg-[#16171a]/50">
                       向下滾動載入更多項目 ({displayLimit} / {filteredResults.length})
@@ -621,7 +1043,7 @@ export default function TopBar() {
                 !isLoading && (
                   <div className="py-6 px-4 text-center text-xs text-gray-400 flex flex-col items-center gap-1.5">
                     <AlertCircle className="w-4 h-4 text-gray-500" />
-                    <span>查無相符圖層項目（可搜尋巴士路線、站名、碼頭名、地址、設施名）</span>
+                    <span>查無相符圖層項目（可搜尋地標、地址、巴士路線/站號、設施名）</span>
                     {selectedFilterCategoryIds.length > 0 && (
                       <button
                         type="button"

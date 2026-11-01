@@ -18,7 +18,7 @@ import {
   Navigation, ExternalLink, Clock, Bike, Car, Info, 
   ChevronDown, ChevronUp, SlidersHorizontal, Fuel, Zap, Wifi, Waves, Play, Pause, CloudRain,
   RotateCcw, RotateCw, MapPin, Crosshair, Activity, Ban, Cone, Lightbulb, Ship,
-  Camera, Gauge, Footprints, ArrowRight, Mail, AlertCircle, Radio, Anchor, CreditCard, Landmark, Truck, Map as MapIcon, Briefcase, PhoneCall, ShoppingBag, Search, AlertTriangle
+  Camera, Gauge, Footprints, ArrowRight, Mail, AlertCircle, Radio, Anchor, CreditCard, Landmark, Truck, Map as MapIcon, Briefcase, PhoneCall, ShoppingBag, Search, AlertTriangle, ShieldAlert
 } from 'lucide-react';
 
 function formatJobDateTime(isoStr?: string, timeFormat: '12h' | '24h' = '24h', timeZone: string = 'America/Vancouver'): string {
@@ -1287,6 +1287,7 @@ export default function AppMap() {
         else if (type === 'truck_routes_restriction' && !layers.truckRoutes) facilityClosed = true;
         else if (type === 'traffic_signals' && !layers.trafficSignals) facilityClosed = true;
         else if (type === 'turn_restrictions' && !layers.turnRestrictions) facilityClosed = true;
+        else if (type === 'railways' && !layers.railways) facilityClosed = true;
         else if (type === 'job' && (!isExploreOpen || !openExploreTabs?.includes('jobs'))) facilityClosed = true;
 
         if (facilityClosed) {
@@ -2676,7 +2677,8 @@ export default function AppMap() {
       setSelectedTrain(null);
       setSelectedFerry(null);
 
-      const ship = maritimeVessels.find(v => v.mmsi === searchTarget.id || v.name === searchTarget.title);
+      const rawMmsi = String(searchTarget.meta?.mmsi || searchTarget.id.replace(/^vessel_/, ''));
+      const ship = maritimeVessels.find(v => String(v.mmsi) === rawMmsi || v.name === searchTarget.title);
       if (ship) {
         setSelectedMaritimeVessel(ship);
       } else if (searchTarget.meta) {
@@ -2696,6 +2698,13 @@ export default function AppMap() {
       setSelectedFlight(null);
       setSelectedAirport(null);
       const facType = searchTarget.meta?.facility_type || searchTarget.meta?.properties?.facility_type || (searchTarget.category === 'road' ? (searchTarget.id?.startsWith('fuel_') ? 'fuel' : 'ev_charging') : searchTarget.category);
+      if (facType === 'canada_post') {
+        setCourierFilter(prev => prev.canadaPost ? prev : { ...prev, canadaPost: true });
+      } else if (facType === 'fedex') {
+        setCourierFilter(prev => prev.fedex ? prev : { ...prev, fedex: true });
+      } else if (facType === 'purolator') {
+        setCourierFilter(prev => prev.purolator ? prev : { ...prev, purolator: true });
+      }
       setSelectedFacility({
         id: searchTarget.id,
         facility_type: facType,
@@ -6323,6 +6332,9 @@ export default function AppMap() {
         onMove={(e: any) => {
           updateScale();
           if (e.viewState?.zoom !== undefined) setCurrentZoom(e.viewState.zoom);
+          if (e.viewState?.latitude !== undefined && e.viewState?.longitude !== undefined) {
+            (window as any).__godsEyeMapCenter = { lat: e.viewState.latitude, lon: e.viewState.longitude };
+          }
         }}
         onZoom={(e: any) => {
           updateScale();
@@ -6332,6 +6344,10 @@ export default function AppMap() {
           updateScale();
           const z = e.target?.getZoom ? e.target.getZoom() : e.viewState?.zoom;
           if (z !== undefined) setCurrentZoom(z);
+          const c = e.target?.getCenter ? e.target.getCenter() : null;
+          if (c) {
+            (window as any).__godsEyeMapCenter = { lat: c.lat, lon: c.lng };
+          }
         }}
         onMouseMove={handleMapMouseMove}
         onMouseLeave={handleMapMouseLeave}
@@ -9137,6 +9153,11 @@ export default function AppMap() {
                   if (t === 'hydrometric_station') return { label: '水文', bg: 'bg-[#0284c7] text-white' };
                   if (t === 'traffic_conditions' || t === 'traffic_corridor') return { label: '路況', bg: 'bg-[#ea580c] text-white' };
                   if (t === 'ski_resort') return { label: '滑雪', bg: 'bg-cyan-500 text-white' };
+                  if (t === 'border_crossing') return { label: '邊境關卡', bg: 'bg-cyan-700 text-white' };
+                  if (t === 'address') return { label: '門牌地址', bg: 'bg-emerald-700 text-white' };
+                  if (t === 'coordinate') return { label: '地理坐標', bg: 'bg-gray-700 text-white font-mono' };
+                  if (t === 'railways') return { label: '鐵路軌道', bg: 'bg-orange-700 text-white' };
+                  if (t === 'crime_areas') return { label: '社區治安', bg: 'bg-red-700 text-white' };
                   if (t === 'traffic_alerts' || t === 'traffic_incident') return { label: '即時通報', bg: 'bg-amber-600 text-white' };
                   if (t === 'job') return { label: '工作', bg: 'bg-indigo-600 text-white' };
                   return null;
@@ -13197,6 +13218,22 @@ export default function AppMap() {
                   if (/^dawn\s*to\s*dusk$/i.test(cleaned)) {
                     return '日出至日落';
                   }
+                  const rTW = /(\d{1,2}(?::\d{2})?\s*(?:[ap]\.?m\.?)?)\s*(?:[-–—~至]+|\bto\b)\s*(midnight|dusk|dawn|noon)/i;
+                  const mTW = cleaned.match(rTW);
+                  if (mTW) {
+                    const parsed = formatOpeningHours(mTW[1], timeFormat);
+                    const wordMap: Record<string, string> = { midnight: '午夜', dusk: '日落', dawn: '日出', noon: '中午' };
+                    const zh = wordMap[mTW[2].toLowerCase()] || mTW[2];
+                    return `${parsed} - ${zh}`;
+                  }
+                  const rWT = /(midnight|dusk|dawn|noon)\s*(?:[-–—~至]+|\bto\b)\s*(\d{1,2}(?::\d{2})?\s*(?:[ap]\.?m\.?)?)/i;
+                  const mWT = cleaned.match(rWT);
+                  if (mWT) {
+                    const parsed = formatOpeningHours(mWT[2], timeFormat);
+                    const wordMap: Record<string, string> = { midnight: '午夜', dusk: '日落', dawn: '日出', noon: '中午' };
+                    const zh = wordMap[mWT[1].toLowerCase()] || mWT[1];
+                    return `${zh} - ${parsed}`;
+                  }
                   return formatOpeningHours(cleaned, timeFormat);
                 };
                 const summerH = formatHours(selectedFacility.properties.summer_hours);
@@ -15903,6 +15940,140 @@ export default function AppMap() {
                     </div>
 
 
+                  </div>
+                );
+              })()}
+
+              {/* 門牌地址 (Civic Address) */}
+              {selectedFacility.facility_type === 'address' && (() => {
+                const p = selectedFacility.properties || {};
+                const civNo = p.civic_number || '';
+                const street = p.street || '';
+                const area = selectedFacility.local_area || p.local_area || '';
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    <div className="bg-emerald-500/10 p-2.5 rounded-lg border border-emerald-500/30 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <MapPin className="w-4 h-4 text-emerald-600" />
+                        <span className="font-bold text-emerald-950 text-xs">溫哥華法定門牌地址</span>
+                      </div>
+                      <span className="text-[10px] font-bold bg-emerald-600 text-white px-2 py-0.5 rounded">
+                        City of Vancouver
+                      </span>
+                    </div>
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                      {civNo && (
+                        <div className="flex justify-between items-center text-gray-600">
+                          <span>門牌號碼</span>
+                          <span className="text-gray-900 font-semibold font-mono">{civNo}</span>
+                        </div>
+                      )}
+                      {street && (
+                        <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
+                          <span>街道名稱</span>
+                          <span className="text-gray-900 font-medium">{street}</span>
+                        </div>
+                      )}
+                      {area && (
+                        <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
+                          <span>所屬社區</span>
+                          <span className="text-gray-900 font-medium">{area}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* 地理坐標 (GPS Coordinates) */}
+              {selectedFacility.facility_type === 'coordinate' && (
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="bg-gray-700/10 p-2.5 rounded-lg border border-gray-400/30 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Navigation className="w-4 h-4 text-gray-700" />
+                      <span className="font-bold text-gray-900 text-xs">WGS84 地理坐標</span>
+                    </div>
+                    <span className="text-[10px] font-mono font-bold bg-gray-700 text-white px-2 py-0.5 rounded">
+                      GPS
+                    </span>
+                  </div>
+                  <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px] font-mono">
+                    <div className="flex justify-between items-center text-gray-600">
+                      <span className="font-sans">緯度 (Latitude)</span>
+                      <span className="text-gray-900 font-semibold">{selectedFacility.lat.toFixed(6)}° N</span>
+                    </div>
+                    <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
+                      <span className="font-sans">經度 (Longitude)</span>
+                      <span className="text-gray-900 font-semibold">{selectedFacility.lon.toFixed(6)}° W</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* 鐵路網絡 (Railways) */}
+              {selectedFacility.facility_type === 'railways' && (() => {
+                const p = selectedFacility.properties || {};
+                const name = p.name || selectedFacility.name || 'Vancouver Railway Track';
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    <div className="bg-orange-500/10 p-2.5 rounded-lg border border-orange-500/30 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Train className="w-4 h-4 text-orange-600" />
+                        <span className="font-bold text-orange-950 text-xs">溫哥華鐵路路網</span>
+                      </div>
+                      <span className="text-[10px] font-bold bg-orange-600 text-white px-2 py-0.5 rounded">
+                        Railway
+                      </span>
+                    </div>
+                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                      <div className="flex justify-between items-center text-gray-600">
+                        <span>營運鐵路公司</span>
+                        <span className="text-gray-900 font-semibold">{name}</span>
+                      </div>
+                      {selectedFacility.local_area && (
+                        <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
+                          <span>路段區域</span>
+                          <span className="text-gray-900 font-medium">{selectedFacility.local_area}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* 社區治安 (Crime Areas) */}
+              {selectedFacility.facility_type === 'crime_areas' && (() => {
+                const p = selectedFacility.properties || {};
+                const count = p.crime_count ?? p.count ?? '--';
+                const density = p.density ? `${Number(p.density).toFixed(1)} 件/km²` : (p.density_label || '--');
+                const areaKm = p.area_km2 ? `${Number(p.area_km2).toFixed(2)} km²` : '--';
+                return (
+                  <div className="flex flex-col gap-2 text-xs">
+                    <div className="bg-rose-500/10 p-2.5 rounded-lg border border-rose-500/30 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <ShieldAlert className="w-4 h-4 text-rose-600" />
+                        <span className="font-bold text-rose-950 text-xs">溫哥華市警察局 (VPD) 治安統計</span>
+                      </div>
+                      <span className="text-[10px] font-bold bg-rose-600 text-white px-2 py-0.5 rounded">
+                        2026 年度
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-200 flex flex-col">
+                        <span className="text-[10px] text-gray-500 font-medium">通報案件總數</span>
+                        <span className="font-extrabold text-base text-rose-700 font-mono mt-0.5">{count} 件</span>
+                      </div>
+                      <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-200 flex flex-col">
+                        <span className="text-[10px] text-gray-500 font-medium">犯罪密度</span>
+                        <span className="font-extrabold text-base text-rose-700 font-mono mt-0.5">{density}</span>
+                      </div>
+                    </div>
+                    {areaKm !== '--' && (
+                      <div className="p-2.5 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-between text-[11px]">
+                        <span className="text-gray-500">分區土地面積</span>
+                        <span className="font-semibold text-gray-800 font-mono">{areaKm}</span>
+                      </div>
+                    )}
                   </div>
                 );
               })()}
