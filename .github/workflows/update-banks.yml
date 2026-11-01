@@ -29,7 +29,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install requests
+          pip install requests curl_cffi
 
       - name: Run 銀行 (Banks) update script
         run: |

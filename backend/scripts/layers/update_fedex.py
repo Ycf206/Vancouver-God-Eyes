@@ -73,9 +73,6 @@ def parse_fedex_entity(item):
 def update_fedex():
     print("🚀 正在更新 FedEx 門市與自取據點資料...")
 
-    backend_data_dir = os.path.join(os.path.dirname(CURRENT_DIR), "data")
-    existing_geojson_path = os.path.join(backend_data_dir, "vancouver_fedex.geojson")
-    
     features = []
     
     # 嘗試由 FedEx 實體 API 取得最新門市清單
@@ -102,29 +99,19 @@ def update_fedex():
         print(f"⚠️ 連線 FedEx API 異常或受限: {e}，切換為現有快取資料庫驗證更新。")
 
     # 若 API 回傳為空或失敗，使用本機現有已爬取完整資料集
-    if not features and os.path.exists(existing_geojson_path):
-        try:
-            with open(existing_geojson_path, "r", encoding="utf-8") as f:
-                existing = json.load(f)
-                features = existing.get("features", [])
-        except Exception as e:
-            print(f"Warning: Could not read existing geojson: {e}")
+    if not features:
+        existing = load_existing_geojson("vancouver_fedex.geojson")
+        if existing:
+            features = existing.get("features", [])
 
-    # 建立標準 GeoJSON FeatureCollection
-    geojson = {
-        "type": "FeatureCollection",
-        "features": features
-    }
+    if not features:
+        print("❌ 未能載入或擷取任何 FedEx 據點資料，中止寫入以保護既有資料集。")
+        sys.exit(1)
 
-    frontend_path = os.path.join(os.path.dirname(os.path.dirname(CURRENT_DIR)), "frontend", "public", "vancouver_fedex.geojson")
-    save_layer_geojson(geojson, "vancouver_fedex.geojson")
-    
-    os.makedirs(os.path.dirname(frontend_path), exist_ok=True)
-    with open(frontend_path, "w", encoding="utf-8") as f:
-        json.dump(geojson, f, ensure_ascii=False, indent=2)
+    save_layer_geojson("vancouver_fedex.geojson", features)
 
     print(f"✅ FedEx 門市資料已更新完成，共 {len(features)} 處據點。")
-    return geojson
+    return {"type": "FeatureCollection", "features": features}
 
 if __name__ == "__main__":
     update_fedex()
