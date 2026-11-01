@@ -1,6 +1,8 @@
 {
   "type": "FeatureCollection",
-  "name": "vancouver_food_asset_map",
+  "generator": "VancouverGodsEye",
+  "total_count": 967,
+  "updated_at": "2026-11-01T06:05:46.473Z",
   "features": [
     {
       "type": "Feature",
