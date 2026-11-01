@@ -3275,11 +3275,20 @@ export default function AppMap() {
         .filter(([, active]) => active)
         .map(([type]) => type);
 
+      const typeZhMap: Record<string, string> = {
+        'Protected Bike Lanes': '受保護獨立街道',
+        'Painted Lanes': '路面標線單車路',
+        'Local Street': '社區慢速單車街',
+        'Shared Lanes': '混合共用車道',
+      };
+
       const bikewayMapFilter = 
         activeBikewayTypes.length === 4 ? undefined :
         activeBikewayTypes.length === 0 ? ['==', ['get', 'bikeway_type'], '__NONE__'] :
-        activeBikewayTypes.length === 1 ? ['==', ['get', 'bikeway_type'], activeBikewayTypes[0]] :
-        ['any', ...activeBikewayTypes.map(t => ['==', ['get', 'bikeway_type'], t])];
+        ['any', ...activeBikewayTypes.flatMap(t => [
+          ['==', ['get', 'bikeway_type'], t],
+          ['==', ['get', 'bikeway_type_zh'], typeZhMap[t] || t]
+        ])];
 
       style.layers.push({
         id: 'bikeways-casing-layer',
@@ -3308,11 +3317,15 @@ export default function AppMap() {
         paint: {
           'line-color': [
             'match',
-            ['get', 'bikeway_type'],
+            ['coalesce', ['get', 'bikeway_type'], ['get', 'bikeway_type_zh'], ''],
             'Protected Bike Lanes', '#10b981', // 綠色 (受保護獨立街道)
+            '受保護獨立街道', '#10b981',
             'Painted Lanes', '#0ea5e9',        // 淺藍色 (路面標線單車路)
+            '路面標線單車路', '#0ea5e9',
             'Local Street', '#f59e0b',         // 橙色 (社區慢速單車街)
+            '社區慢速單車街', '#f59e0b',
             'Shared Lanes', '#a855f7',         // 紫色 (混合共用車道)
+            '混合共用車道', '#a855f7',
             '#10b981'
           ],
           'line-width': ['interpolate', ['linear'], ['zoom'], 10, 1.6, 13, 3.0, 16, 4.8],
@@ -9260,7 +9273,7 @@ export default function AppMap() {
                     }
                     if (selectedFacility.facility_type === 'drinking_fountains') {
                       const rawName = selectedFacility.properties?.name || selectedFacility.name || '';
-                      const cleanName = rawName.replace(/^Fountain location:\s*/i, '').trim();
+                      const cleanName = rawName.replace(/^(?:Temporary\s+)?(?:Fountain|Fountian|Bottle Filling Station|Misting Station|Handwashing Station)?\s*(?:location|Location)?\s*:\s*/i, '').trim();
                       return cleanName || selectedFacility.properties?.location || '飲水器';
                     }
                     if (selectedFacility.facility_type === 'public_washrooms') {
@@ -9462,6 +9475,7 @@ export default function AppMap() {
                               }
                               if (selectedFacility.facility_type === 'parks') return selectedFacility.properties?.street_address || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'parks_facilities') return selectedFacility.properties?.park_name || 'Vancouver, BC';
+                              if (selectedFacility.facility_type === 'drinking_fountains') return selectedFacility.properties?.local_area || selectedFacility.properties?.geo_local_area || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'zoning_districts') return 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'community_gardens') return 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'community_centres') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
@@ -12975,19 +12989,19 @@ export default function AppMap() {
                     <div className="flex justify-between items-center text-gray-600">
                       <span>綠地面積</span>
                       <span className="text-gray-900 font-medium text-right">
-                        {selectedFacility.properties.hectare != null ? `${selectedFacility.properties.hectare} 公頃 (ha)` : '—'}
+                        {(selectedFacility.properties.hectare != null ? selectedFacility.properties.hectare : selectedFacility.properties.hectares) != null ? `${selectedFacility.properties.hectare ?? selectedFacility.properties.hectares} 公頃 (ha)` : '—'}
                       </span>
                     </div>
                     <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                       <span>休閒設施</span>
                       <span className="text-gray-900 font-medium text-right">
-                        {selectedFacility.properties.facilities === '有' ? '有' : '無'}
+                        {(selectedFacility.properties.facilities === '是' || selectedFacility.properties.facilities === '有' || selectedFacility.properties.facilities === 'Y') ? '是' : '否'}
                       </span>
                     </div>
                     <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                       <span>園區廁所</span>
                       <span className="text-gray-900 font-medium text-right">
-                        {selectedFacility.properties.washrooms === '有' ? '有' : '無'}
+                        {(selectedFacility.properties.washrooms === '是' || selectedFacility.properties.washrooms === '有' || selectedFacility.properties.washrooms === 'Y') ? '是' : '否'}
                       </span>
                     </div>
                   </div>
@@ -13164,35 +13178,35 @@ export default function AppMap() {
                       <span>公園設施</span>
                     </div>
 
-                    {/* 30.6 灰底資料掛序：開放營運(不加粗) -> 詳細位置 -> 寵物友善(是/否) -> 管理維護單位 */}
-                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                      {inOpZh && (
-                        <div className="flex justify-between items-center text-gray-600">
-                          <span>開放營運</span>
-                          <span className="text-gray-900 font-medium text-right">
-                            {inOpZh}
-                          </span>
-                        </div>
-                      )}
-                      {loc && (
-                        <div className={`flex justify-between items-center text-gray-600 ${inOpZh ? 'pt-1.5 border-t border-gray-100' : ''}`}>
-                          <span className="shrink-0">詳細位置</span>
-                          <span className="text-gray-900 font-medium text-right">{loc}</span>
-                        </div>
-                      )}
-                      {pfZh && (
-                        <div className={`flex justify-between items-center text-gray-600 ${(inOpZh || loc) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
-                          <span>寵物友善</span>
-                          <span className="text-gray-900 font-medium text-right">{pfZh}</span>
-                        </div>
-                      )}
-                      {maintainerZh && (
-                        <div className={`flex justify-between items-center text-gray-600 ${(inOpZh || loc || pfZh) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
-                          <span>管理維護單位</span>
-                          <span className="text-gray-900 font-medium text-right">{maintainerZh}</span>
-                        </div>
-                      )}
-                    </div>
+                    {/* 2.3 灰色區塊中管理營運單位下方加入更多資料 (如果是null, 不用顯示) */}
+                    {(maintainerZh || loc || inOpZh || pfZh) && (
+                      <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                        {maintainerZh && (
+                          <div className="flex justify-between items-center text-gray-600">
+                            <span>管理營運單位</span>
+                            <span className="text-gray-900 font-medium text-right">{maintainerZh}</span>
+                          </div>
+                        )}
+                        {loc && (
+                          <div className={`flex justify-between items-center text-gray-600 ${maintainerZh ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                            <span className="shrink-0">詳細位置</span>
+                            <span className="text-gray-900 font-medium text-right">{loc}</span>
+                          </div>
+                        )}
+                        {inOpZh && (
+                          <div className={`flex justify-between items-center text-gray-600 ${(maintainerZh || loc) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                            <span>開放時間</span>
+                            <span className="text-gray-900 font-medium text-right">{inOpZh}</span>
+                          </div>
+                        )}
+                        {pfZh && (
+                          <div className={`flex justify-between items-center text-gray-600 ${(maintainerZh || loc || inOpZh) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                            <span>寵物友善</span>
+                            <span className="text-gray-900 font-medium text-right">{pfZh}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 );
               })()}

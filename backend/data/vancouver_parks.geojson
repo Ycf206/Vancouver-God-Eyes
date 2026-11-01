@@ -2,7 +2,7 @@
   "type": "FeatureCollection",
   "generator": "VancouverGodsEye",
   "total_count": 218,
-  "updated_at": "2026-10-11T17:35:13.281248Z",
+  "updated_at": "2026-11-01T12:36:11.800Z",
   "features": [
     {
       "type": "Feature",
@@ -14,13 +14,14 @@
         "parkid": 1,
         "street_address": "4202 Valley Drive",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Arbutus-Ridge",
         "hectare": 1.41,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Arbutus-Ridge",
+        "hectares": 1.41
       },
       "geometry": {
         "type": "Point",
@@ -40,13 +41,14 @@
         "parkid": 8,
         "street_address": "2610 W 23rd Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Arbutus-Ridge",
         "hectare": 4.85,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Arbutus-Ridge",
+        "hectares": 4.85
       },
       "geometry": {
         "type": "Point",
@@ -66,13 +68,14 @@
         "parkid": 14,
         "street_address": "1020 Marinaside Crescent",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Downtown",
         "hectare": 1.71,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Vancouver"
+        "local_area": "Downtown",
+        "hectares": 1.71
       },
       "geometry": {
         "type": "Point",
@@ -92,13 +95,14 @@
         "parkid": 18,
         "street_address": "1929 W Georgia Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Downtown",
         "hectare": 4.42,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Vancouver"
+        "local_area": "Downtown",
+        "hectares": 4.42
       },
       "geometry": {
         "type": "Point",
@@ -118,13 +122,14 @@
         "parkid": 20,
         "street_address": "1170 Richards Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Downtown",
         "hectare": 0.85,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Downtown",
+        "hectares": 0.85
       },
       "geometry": {
         "type": "Point",
@@ -144,13 +149,14 @@
         "parkid": 32,
         "street_address": "199 Alexander Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Downtown",
         "hectare": 0.04,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Downtown",
+        "hectares": 0.04
       },
       "geometry": {
         "type": "Point",
@@ -170,13 +176,14 @@
         "parkid": 38,
         "street_address": "3530 Deering Island Pl.",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Dunbar-Southlands",
         "hectare": 0.74,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Dunbar-Southlands",
+        "hectares": 0.74
       },
       "geometry": {
         "type": "Point",
@@ -196,13 +203,14 @@
         "parkid": 42,
         "street_address": "3210 W 22nd Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Dunbar-Southlands",
         "hectare": 0.77,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Dunbar-Southlands",
+        "hectares": 0.77
       },
       "geometry": {
         "type": "Point",
@@ -222,13 +230,14 @@
         "parkid": 48,
         "street_address": "802 W 7th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Fairview",
         "hectare": 0.07,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Fairview",
+        "hectares": 0.07
       },
       "geometry": {
         "type": "Point",
@@ -248,13 +257,14 @@
         "parkid": 49,
         "street_address": "1775 Woodland Drive",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Grandview-Woodland",
         "hectare": 0.22,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Grandview-Woodland",
+        "hectares": 0.22
       },
       "geometry": {
         "type": "Point",
@@ -274,13 +284,14 @@
         "parkid": 50,
         "street_address": "2099 Wall Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Grandview-Woodland",
         "hectare": 0.19,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Grandview-Woodland",
+        "hectares": 0.19
       },
       "geometry": {
         "type": "Point",
@@ -300,13 +311,14 @@
         "parkid": 54,
         "street_address": "2125 Victoria Drive",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Grandview-Woodland",
         "hectare": 1.62,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Grandview-Woodland",
+        "hectares": 1.62
       },
       "geometry": {
         "type": "Point",
@@ -326,13 +338,14 @@
         "parkid": 55,
         "street_address": "1475 Charles Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Grandview-Woodland",
         "hectare": 0.11,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Grandview-Woodland",
+        "hectares": 0.11
       },
       "geometry": {
         "type": "Point",
@@ -352,13 +365,14 @@
         "parkid": 58,
         "street_address": "1806 Adanac Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Grandview-Woodland",
         "hectare": 0.17,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Grandview-Woodland",
+        "hectares": 0.17
       },
       "geometry": {
         "type": "Point",
@@ -378,13 +392,14 @@
         "parkid": 62,
         "street_address": "1425 Victoria Drive",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Grandview-Woodland",
         "hectare": 0.89,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Grandview-Woodland",
+        "hectares": 0.89
       },
       "geometry": {
         "type": "Point",
@@ -404,13 +419,14 @@
         "parkid": 63,
         "street_address": "1500 E 8th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Grandview-Woodland",
         "hectare": 0.3,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Grandview-Woodland",
+        "hectares": 0.3
       },
       "geometry": {
         "type": "Point",
@@ -430,13 +446,14 @@
         "parkid": 67,
         "street_address": "650 North Penticton Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Hastings-Sunrise",
         "hectare": 2.76,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Hastings-Sunrise",
+        "hectares": 2.76
       },
       "geometry": {
         "type": "Point",
@@ -456,13 +473,14 @@
         "parkid": 68,
         "street_address": "2875 Oxford Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Hastings-Sunrise",
         "hectare": 1.45,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Hastings-Sunrise",
+        "hectares": 1.45
       },
       "geometry": {
         "type": "Point",
@@ -482,13 +500,14 @@
         "parkid": 73,
         "street_address": "3000 E Pender Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Hastings-Sunrise",
         "hectare": 4.19,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Hastings-Sunrise",
+        "hectares": 4.19
       },
       "geometry": {
         "type": "Point",
@@ -508,13 +527,14 @@
         "parkid": 74,
         "street_address": "2851 E 7th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Hastings-Sunrise",
         "hectare": 0.45,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Hastings-Sunrise",
+        "hectares": 0.45
       },
       "geometry": {
         "type": "Point",
@@ -534,13 +554,14 @@
         "parkid": 77,
         "street_address": "1950 Windermere Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Hastings-Sunrise",
         "hectare": 3.18,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Hastings-Sunrise",
+        "hectares": 3.18
       },
       "geometry": {
         "type": "Point",
@@ -560,13 +581,14 @@
         "parkid": 79,
         "street_address": "4175 Victoria Drive",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kensington-Cedar Cottage",
         "hectare": 1.38,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kensington-Cedar Cottage",
+        "hectares": 1.38
       },
       "geometry": {
         "type": "Point",
@@ -586,13 +608,14 @@
         "parkid": 81,
         "street_address": "1500 E 14th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kensington-Cedar Cottage",
         "hectare": 4.28,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kensington-Cedar Cottage",
+        "hectares": 4.28
       },
       "geometry": {
         "type": "Point",
@@ -612,13 +635,14 @@
         "parkid": 83,
         "street_address": "3999 Glen Drive",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kensington-Cedar Cottage",
         "hectare": 1.09,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kensington-Cedar Cottage",
+        "hectares": 1.09
       },
       "geometry": {
         "type": "Point",
@@ -638,13 +662,14 @@
         "parkid": 86,
         "street_address": "5350 Commercial Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kensington-Cedar Cottage",
         "hectare": 1.42,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kensington-Cedar Cottage",
+        "hectares": 1.42
       },
       "geometry": {
         "type": "Point",
@@ -664,13 +689,14 @@
         "parkid": 89,
         "street_address": "1100 E 17th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kensington-Cedar Cottage",
         "hectare": 0.97,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kensington-Cedar Cottage",
+        "hectares": 0.97
       },
       "geometry": {
         "type": "Point",
@@ -690,13 +716,14 @@
         "parkid": 95,
         "street_address": "6001 Balaclava Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kerrisdale",
         "hectare": 2.42,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kerrisdale",
+        "hectares": 2.42
       },
       "geometry": {
         "type": "Point",
@@ -716,13 +743,14 @@
         "parkid": 97,
         "street_address": "6501 Marine Crescent",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kerrisdale",
         "hectare": 0.25,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kerrisdale",
+        "hectares": 0.25
       },
       "geometry": {
         "type": "Point",
@@ -742,13 +770,14 @@
         "parkid": 98,
         "street_address": "7188 Macdonald Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kerrisdale",
         "hectare": 48.57,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kerrisdale",
+        "hectares": 48.57
       },
       "geometry": {
         "type": "Point",
@@ -768,13 +797,14 @@
         "parkid": 101,
         "street_address": "8200 Kerr Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Killarney",
         "hectare": 38.08,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Killarney",
+        "hectares": 38.08
       },
       "geometry": {
         "type": "Point",
@@ -794,13 +824,14 @@
         "parkid": 103,
         "street_address": "6205 Kerr Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Killarney",
         "hectare": 13.36,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Killarney",
+        "hectares": 13.36
       },
       "geometry": {
         "type": "Point",
@@ -820,13 +851,14 @@
         "parkid": 104,
         "street_address": "3350 SE Marine Drive",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Killarney",
         "hectare": 1.2,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Killarney",
+        "hectares": 1.2
       },
       "geometry": {
         "type": "Point",
@@ -846,13 +878,14 @@
         "parkid": 106,
         "street_address": "3600 W 12th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kitsilano",
         "hectare": 1.61,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kitsilano",
+        "hectares": 1.61
       },
       "geometry": {
         "type": "Point",
@@ -872,13 +905,14 @@
         "parkid": 108,
         "street_address": "2390 W 10th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kitsilano",
         "hectare": 5.98,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kitsilano",
+        "hectares": 5.98
       },
       "geometry": {
         "type": "Point",
@@ -898,13 +932,14 @@
         "parkid": 109,
         "street_address": "2091 W 7th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kitsilano",
         "hectare": 0.22,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kitsilano",
+        "hectares": 0.22
       },
       "geometry": {
         "type": "Point",
@@ -924,13 +959,14 @@
         "parkid": 114,
         "street_address": "3350 W 4th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kitsilano",
         "hectare": 1.71,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kitsilano",
+        "hectares": 1.71
       },
       "geometry": {
         "type": "Point",
@@ -950,13 +986,14 @@
         "parkid": 115,
         "street_address": "3215 Point Grey Road",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kitsilano",
         "hectare": 0.22,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kitsilano",
+        "hectares": 0.22
       },
       "geometry": {
         "type": "Point",
@@ -976,13 +1013,14 @@
         "parkid": 126,
         "street_address": "900 W 59th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Marpole",
         "hectare": 5.25,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Marpole",
+        "hectares": 5.25
       },
       "geometry": {
         "type": "Point",
@@ -1002,13 +1040,14 @@
         "parkid": 127,
         "street_address": "1751 W 66th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Marpole",
         "hectare": 2.38,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Marpole",
+        "hectares": 2.38
       },
       "geometry": {
         "type": "Point",
@@ -1028,13 +1067,14 @@
         "parkid": 131,
         "street_address": "7575 Columbia Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Marpole",
         "hectare": 5.31,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Marpole",
+        "hectares": 5.31
       },
       "geometry": {
         "type": "Point",
@@ -1054,13 +1094,14 @@
         "parkid": 136,
         "street_address": "2390 Brunswick Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Mount Pleasant",
         "hectare": 1.04,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Mount Pleasant",
+        "hectares": 1.04
       },
       "geometry": {
         "type": "Point",
@@ -1080,13 +1121,14 @@
         "parkid": 137,
         "street_address": "110 W 7th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Mount Pleasant",
         "hectare": 1.4,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Mount Pleasant",
+        "hectares": 1.4
       },
       "geometry": {
         "type": "Point",
@@ -1106,13 +1148,14 @@
         "parkid": 140,
         "street_address": "599 Kingsway",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Mount Pleasant",
         "hectare": 1.56,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Mount Pleasant",
+        "hectares": 1.56
       },
       "geometry": {
         "type": "Point",
@@ -1132,13 +1175,14 @@
         "parkid": 142,
         "street_address": "500 W 54th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Oakridge",
         "hectare": 0.93,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Oakridge",
+        "hectares": 0.93
       },
       "geometry": {
         "type": "Point",
@@ -1158,13 +1202,14 @@
         "parkid": 143,
         "street_address": "5908 Alberta Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Oakridge",
         "hectare": 2.78,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Oakridge",
+        "hectares": 2.78
       },
       "geometry": {
         "type": "Point",
@@ -1184,13 +1229,14 @@
         "parkid": 147,
         "street_address": "6210 Tisdall Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Oakridge",
         "hectare": 5.02,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Vancouver"
+        "local_area": "Oakridge",
+        "hectares": 5.02
       },
       "geometry": {
         "type": "Point",
@@ -1210,13 +1256,14 @@
         "parkid": 148,
         "street_address": "3215 Slocan Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Renfrew-Collingwood",
         "hectare": 4.43,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Renfrew-Collingwood",
+        "hectares": 4.43
       },
       "geometry": {
         "type": "Point",
@@ -1236,13 +1283,14 @@
         "parkid": 151,
         "street_address": "5275 McKinnon Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Renfrew-Collingwood",
         "hectare": 1.27,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Renfrew-Collingwood",
+        "hectares": 1.27
       },
       "geometry": {
         "type": "Point",
@@ -1262,13 +1310,14 @@
         "parkid": 157,
         "street_address": "5050 Wales Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Renfrew-Collingwood",
         "hectare": 2.26,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Renfrew-Collingwood",
+        "hectares": 2.26
       },
       "geometry": {
         "type": "Point",
@@ -1288,13 +1337,14 @@
         "parkid": 159,
         "street_address": "2929 E 22nd Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Renfrew-Collingwood",
         "hectare": 5.0,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Renfrew-Collingwood",
+        "hectares": 5.0
       },
       "geometry": {
         "type": "Point",
@@ -1314,13 +1364,14 @@
         "parkid": 160,
         "street_address": "3900 Renfrew Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Renfrew-Collingwood",
         "hectare": 5.89,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Renfrew-Collingwood",
+        "hectares": 5.89
       },
       "geometry": {
         "type": "Point",
@@ -1340,13 +1391,14 @@
         "parkid": 161,
         "street_address": "2750 E 29th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Renfrew-Collingwood",
         "hectare": 4.14,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Renfrew-Collingwood",
+        "hectares": 4.14
       },
       "geometry": {
         "type": "Point",
@@ -1366,13 +1418,14 @@
         "parkid": 163,
         "street_address": "169 E 19th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Riley Park",
         "hectare": 0.24,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Riley Park",
+        "hectares": 0.24
       },
       "geometry": {
         "type": "Point",
@@ -1392,13 +1445,14 @@
         "parkid": 164,
         "street_address": "4501 Clancy Loranger Way",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Riley Park",
         "hectare": 7.51,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Riley Park",
+        "hectares": 7.51
       },
       "geometry": {
         "type": "Point",
@@ -1418,13 +1472,14 @@
         "parkid": 167,
         "street_address": "4600 Cambie Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Riley Park",
         "hectare": 52.98,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Riley Park",
+        "hectares": 52.98
       },
       "geometry": {
         "type": "Point",
@@ -1444,13 +1499,14 @@
         "parkid": 168,
         "street_address": "50 E 30th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Riley Park",
         "hectare": 2.7,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Riley Park",
+        "hectares": 2.7
       },
       "geometry": {
         "type": "Point",
@@ -1470,13 +1526,14 @@
         "parkid": 171,
         "street_address": "5670 E Boulevard",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Shaughnessy",
         "hectare": 2.99,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Shaughnessy",
+        "hectares": 2.99
       },
       "geometry": {
         "type": "Point",
@@ -1496,13 +1553,14 @@
         "parkid": 173,
         "street_address": "5251 Oak Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Shaughnessy",
         "hectare": 22.29,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Shaughnessy",
+        "hectares": 22.29
       },
       "geometry": {
         "type": "Point",
@@ -1522,13 +1580,14 @@
         "parkid": 181,
         "street_address": "857 Malkin Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Strathcona",
         "hectare": 10.07,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Strathcona",
+        "hectares": 10.07
       },
       "geometry": {
         "type": "Point",
@@ -1548,13 +1607,14 @@
         "parkid": 183,
         "street_address": "1166 Main Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Strathcona",
         "hectare": 1.49,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Strathcona",
+        "hectares": 1.49
       },
       "geometry": {
         "type": "Point",
@@ -1574,13 +1634,14 @@
         "parkid": 184,
         "street_address": "500 E 63rd Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Sunset",
         "hectare": 1.43,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Sunset",
+        "hectares": 1.43
       },
       "geometry": {
         "type": "Point",
@@ -1600,13 +1661,14 @@
         "parkid": 186,
         "street_address": "5955 Ross Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Sunset",
         "hectare": 13.59,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Sunset",
+        "hectares": 13.59
       },
       "geometry": {
         "type": "Point",
@@ -1626,13 +1688,14 @@
         "parkid": 187,
         "street_address": "7646 Prince Albert Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Sunset",
         "hectare": 3.6,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Sunset",
+        "hectares": 3.6
       },
       "geometry": {
         "type": "Point",
@@ -1652,13 +1715,14 @@
         "parkid": 188,
         "street_address": "7402 Ross Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Sunset",
         "hectare": 1.51,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Sunset",
+        "hectares": 1.51
       },
       "geometry": {
         "type": "Point",
@@ -1678,13 +1742,14 @@
         "parkid": 192,
         "street_address": "7595 Victoria Drive",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Victoria-Fraserview",
         "hectare": 1.27,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Vancouver"
+        "local_area": "Victoria-Fraserview",
+        "hectares": 1.27
       },
       "geometry": {
         "type": "Point",
@@ -1704,13 +1769,14 @@
         "parkid": 194,
         "street_address": "6675 Commercial Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Victoria-Fraserview",
         "hectare": 6.51,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Victoria-Fraserview",
+        "hectares": 6.51
       },
       "geometry": {
         "type": "Point",
@@ -1730,13 +1796,14 @@
         "parkid": 199,
         "street_address": "1755 Beach Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "West End",
         "hectare": 0.55,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "West End",
+        "hectares": 0.55
       },
       "geometry": {
         "type": "Point",
@@ -1756,13 +1823,14 @@
         "parkid": 200,
         "street_address": "1433 Barclay Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "West End",
         "hectare": 0.56,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "West End",
+        "hectares": 0.56
       },
       "geometry": {
         "type": "Point",
@@ -1782,13 +1850,14 @@
         "parkid": 204,
         "street_address": "3101 Rosemont Drive",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Killarney",
         "hectare": 1.36,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Killarney",
+        "hectares": 1.36
       },
       "geometry": {
         "type": "Point",
@@ -1808,13 +1877,14 @@
         "parkid": 209,
         "street_address": "200 W 49th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Oakridge",
         "hectare": 1.21,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Oakridge",
+        "hectares": 1.21
       },
       "geometry": {
         "type": "Point",
@@ -1834,13 +1904,14 @@
         "parkid": 213,
         "street_address": "9250 Shaughnessy Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Marpole",
         "hectare": 0.56,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Marpole",
+        "hectares": 0.56
       },
       "geometry": {
         "type": "Point",
@@ -1860,13 +1931,14 @@
         "parkid": 217,
         "street_address": "1575 Alma Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "West Point Grey",
         "hectare": 1.23,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "West Point Grey",
+        "hectares": 1.23
       },
       "geometry": {
         "type": "Point",
@@ -1886,13 +1958,14 @@
         "parkid": 222,
         "street_address": "4651 W 2nd Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "West Point Grey",
         "hectare": 0.4,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "West Point Grey",
+        "hectares": 0.4
       },
       "geometry": {
         "type": "Point",
@@ -1912,13 +1985,14 @@
         "parkid": 233,
         "street_address": "2205 W11th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kitsilano",
         "hectare": 1.08,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kitsilano",
+        "hectares": 1.08
       },
       "geometry": {
         "type": "Point",
@@ -1938,13 +2012,14 @@
         "parkid": 235,
         "street_address": "1348 Cartwright Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Fairview",
         "hectare": 0.0,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Fairview",
+        "hectares": 0.0
       },
       "geometry": {
         "type": "Point",
@@ -1964,13 +2039,14 @@
         "parkid": 237,
         "street_address": "901 Mainland Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Downtown",
         "hectare": 0.17,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Downtown",
+        "hectares": 0.17
       },
       "geometry": {
         "type": "Point",
@@ -1990,13 +2066,14 @@
         "parkid": 238,
         "street_address": "2100 Carolina Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Mount Pleasant",
         "hectare": 0.08,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Mount Pleasant",
+        "hectares": 0.08
       },
       "geometry": {
         "type": "Point",
@@ -2016,13 +2093,14 @@
         "parkid": 241,
         "street_address": "1616 Columbia Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Mount Pleasant",
         "hectare": 0.6,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Mount Pleasant",
+        "hectares": 0.6
       },
       "geometry": {
         "type": "Point",
@@ -2042,13 +2120,14 @@
         "parkid": 244,
         "street_address": "9149 Hudson Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Marpole",
         "hectare": 0.35,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Marpole",
+        "hectares": 0.35
       },
       "geometry": {
         "type": "Point",
@@ -2068,13 +2147,14 @@
         "parkid": 2,
         "street_address": "2995 W 19th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Arbutus-Ridge",
         "hectare": 3.79,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Arbutus-Ridge",
+        "hectares": 3.79
       },
       "geometry": {
         "type": "Point",
@@ -2094,13 +2174,14 @@
         "parkid": 13,
         "street_address": "480 Broughton Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Downtown",
         "hectare": 0.95,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Downtown",
+        "hectares": 0.95
       },
       "geometry": {
         "type": "Point",
@@ -2120,13 +2201,14 @@
         "parkid": 16,
         "street_address": "1300 Pacific Boulevard",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Downtown",
         "hectare": 4.34,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Vancouver"
+        "local_area": "Downtown",
+        "hectares": 4.34
       },
       "geometry": {
         "type": "Point",
@@ -2146,13 +2228,14 @@
         "parkid": 25,
         "street_address": "801 Beach Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Downtown",
         "hectare": 0.25,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Downtown",
+        "hectares": 0.25
       },
       "geometry": {
         "type": "Point",
@@ -2172,13 +2255,14 @@
         "parkid": 26,
         "street_address": "399 Carrall Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Downtown",
         "hectare": 0.03,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Downtown",
+        "hectares": 0.03
       },
       "geometry": {
         "type": "Point",
@@ -2198,13 +2282,14 @@
         "parkid": 27,
         "street_address": "1099 W Hastings Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Downtown",
         "hectare": 0.1,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Downtown",
+        "hectares": 0.1
       },
       "geometry": {
         "type": "Point",
@@ -2224,13 +2309,14 @@
         "parkid": 28,
         "street_address": "101 E Waterfront Road",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Downtown",
         "hectare": 3.31,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Downtown",
+        "hectares": 3.31
       },
       "geometry": {
         "type": "Point",
@@ -2250,13 +2336,14 @@
         "parkid": 29,
         "street_address": "181 Roundhouse Mews",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Downtown",
         "hectare": 0.91,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Downtown",
+        "hectares": 0.91
       },
       "geometry": {
         "type": "Point",
@@ -2276,13 +2363,14 @@
         "parkid": 34,
         "street_address": "4594 Balaclava Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Dunbar-Southlands",
         "hectare": 5.0,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Dunbar-Southlands",
+        "hectares": 5.0
       },
       "geometry": {
         "type": "Point",
@@ -2302,13 +2390,14 @@
         "parkid": 37,
         "street_address": "4175 Wallace Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Dunbar-Southlands",
         "hectare": 3.45,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Dunbar-Southlands",
+        "hectares": 3.45
       },
       "geometry": {
         "type": "Point",
@@ -2328,13 +2417,14 @@
         "parkid": 40,
         "street_address": "4000 SW Marine Drive",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Dunbar-Southlands",
         "hectare": 22.05,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Dunbar-Southlands",
+        "hectares": 22.05
       },
       "geometry": {
         "type": "Point",
@@ -2354,13 +2444,14 @@
         "parkid": 43,
         "street_address": "999 Charleson Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Fairview",
         "hectare": 7.14,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Vancouver"
+        "local_area": "Fairview",
+        "hectares": 7.14
       },
       "geometry": {
         "type": "Point",
@@ -2380,13 +2471,14 @@
         "parkid": 44,
         "street_address": "3001 Fir Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Fairview",
         "hectare": 1.96,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Fairview",
+        "hectares": 1.96
       },
       "geometry": {
         "type": "Point",
@@ -2406,13 +2498,14 @@
         "parkid": 45,
         "street_address": "1435 W 5th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Fairview",
         "hectare": 1.05,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Fairview",
+        "hectares": 1.05
       },
       "geometry": {
         "type": "Point",
@@ -2432,13 +2525,14 @@
         "parkid": 51,
         "street_address": "1851 Garden Drive",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Grandview-Woodland",
         "hectare": 0.97,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Grandview-Woodland",
+        "hectares": 0.97
       },
       "geometry": {
         "type": "Point",
@@ -2458,13 +2552,14 @@
         "parkid": 52,
         "street_address": "1255 Commercial Drive",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Grandview-Woodland",
         "hectare": 0.89,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Grandview-Woodland",
+        "hectares": 0.89
       },
       "geometry": {
         "type": "Point",
@@ -2484,13 +2579,14 @@
         "parkid": 53,
         "street_address": "2305 McGill Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Grandview-Woodland",
         "hectare": 0.19,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Grandview-Woodland",
+        "hectares": 0.19
       },
       "geometry": {
         "type": "Point",
@@ -2510,13 +2606,14 @@
         "parkid": 56,
         "street_address": "2050 Wall Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Grandview-Woodland",
         "hectare": 0.22,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Grandview-Woodland",
+        "hectares": 0.22
       },
       "geometry": {
         "type": "Point",
@@ -2536,13 +2633,14 @@
         "parkid": 64,
         "street_address": "705 Woodland Drive",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Grandview-Woodland",
         "hectare": 1.58,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Grandview-Woodland",
+        "hectares": 1.58
       },
       "geometry": {
         "type": "Point",
@@ -2562,13 +2660,14 @@
         "parkid": 65,
         "street_address": "1025 Boundary Road",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Hastings-Sunrise",
         "hectare": 4.17,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Hastings-Sunrise",
+        "hectares": 4.17
       },
       "geometry": {
         "type": "Point",
@@ -2588,13 +2687,14 @@
         "parkid": 66,
         "street_address": "669 Fellowes Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Hastings-Sunrise",
         "hectare": 0.3,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Hastings-Sunrise",
+        "hectares": 0.3
       },
       "geometry": {
         "type": "Point",
@@ -2614,13 +2714,14 @@
         "parkid": 70,
         "street_address": "2690 Grant Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Hastings-Sunrise",
         "hectare": 3.04,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Hastings-Sunrise",
+        "hectares": 3.04
       },
       "geometry": {
         "type": "Point",
@@ -2640,13 +2741,14 @@
         "parkid": 71,
         "street_address": "2799 Wall Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Hastings-Sunrise",
         "hectare": 0.44,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Hastings-Sunrise",
+        "hectares": 0.44
       },
       "geometry": {
         "type": "Point",
@@ -2666,13 +2768,14 @@
         "parkid": 72,
         "street_address": "2901 E Hastings",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Hastings-Sunrise",
         "hectare": 62.0,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Hastings-Sunrise",
+        "hectares": 62.0
       },
       "geometry": {
         "type": "Point",
@@ -2692,13 +2795,14 @@
         "parkid": 75,
         "street_address": "3201 New Brighton Road",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Hastings-Sunrise",
         "hectare": 10.0,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Hastings-Sunrise",
+        "hectares": 10.0
       },
       "geometry": {
         "type": "Point",
@@ -2718,13 +2822,14 @@
         "parkid": 76,
         "street_address": "1600 Rupert Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Hastings-Sunrise",
         "hectare": 11.43,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Hastings-Sunrise",
+        "hectares": 11.43
       },
       "geometry": {
         "type": "Point",
@@ -2744,13 +2849,14 @@
         "parkid": 84,
         "street_address": "4850 St. Catherines Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kensington-Cedar Cottage",
         "hectare": 1.61,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kensington-Cedar Cottage",
+        "hectares": 1.61
       },
       "geometry": {
         "type": "Point",
@@ -2770,13 +2876,14 @@
         "parkid": 85,
         "street_address": "3300 Victoria Drive",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kensington-Cedar Cottage",
         "hectare": 27.31,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kensington-Cedar Cottage",
+        "hectares": 27.31
       },
       "geometry": {
         "type": "Point",
@@ -2796,13 +2903,14 @@
         "parkid": 90,
         "street_address": "7601 Arbutus Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kerrisdale",
         "hectare": 0.74,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kerrisdale",
+        "hectares": 0.74
       },
       "geometry": {
         "type": "Point",
@@ -2822,13 +2930,14 @@
         "parkid": 91,
         "street_address": "5800 Elm Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kerrisdale",
         "hectare": 1.49,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kerrisdale",
+        "hectares": 1.49
       },
       "geometry": {
         "type": "Point",
@@ -2848,13 +2957,14 @@
         "parkid": 96,
         "street_address": "6875 Yew Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kerrisdale",
         "hectare": 4.2,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kerrisdale",
+        "hectares": 4.2
       },
       "geometry": {
         "type": "Point",
@@ -2874,13 +2984,14 @@
         "parkid": 99,
         "street_address": "3398 E 54th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Killarney",
         "hectare": 5.49,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Killarney",
+        "hectares": 5.49
       },
       "geometry": {
         "type": "Point",
@@ -2900,13 +3011,14 @@
         "parkid": 100,
         "street_address": "3351 Maquinna Drive",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Killarney",
         "hectare": 7.84,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Killarney",
+        "hectares": 7.84
       },
       "geometry": {
         "type": "Point",
@@ -2926,13 +3038,14 @@
         "parkid": 102,
         "street_address": "7800 Vivian Drive",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Killarney",
         "hectare": 84.34,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Killarney",
+        "hectares": 84.34
       },
       "geometry": {
         "type": "Point",
@@ -2952,13 +3065,14 @@
         "parkid": 105,
         "street_address": "6998 Arlington Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Killarney",
         "hectare": 3.6,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Killarney",
+        "hectares": 3.6
       },
       "geometry": {
         "type": "Point",
@@ -2978,13 +3092,14 @@
         "parkid": 110,
         "street_address": "1905 Ogden Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kitsilano",
         "hectare": 2.92,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Vancouver"
+        "local_area": "Kitsilano",
+        "hectares": 2.92
       },
       "geometry": {
         "type": "Point",
@@ -3004,13 +3119,14 @@
         "parkid": 112,
         "street_address": "1499 Arbutus Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kitsilano",
         "hectare": 13.47,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Vancouver"
+        "local_area": "Kitsilano",
+        "hectares": 13.47
       },
       "geometry": {
         "type": "Point",
@@ -3030,13 +3146,14 @@
         "parkid": 116,
         "street_address": "2699 Point Grey Road",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kitsilano",
         "hectare": 0.23,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kitsilano",
+        "hectares": 0.23
       },
       "geometry": {
         "type": "Point",
@@ -3056,13 +3173,14 @@
         "parkid": 117,
         "street_address": "2601 Point Grey Road",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kitsilano",
         "hectare": 0.22,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kitsilano",
+        "hectares": 0.22
       },
       "geometry": {
         "type": "Point",
@@ -3082,13 +3200,14 @@
         "parkid": 118,
         "street_address": "1620 Chestnut Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kitsilano",
         "hectare": 0.74,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kitsilano",
+        "hectares": 0.74
       },
       "geometry": {
         "type": "Point",
@@ -3108,13 +3227,14 @@
         "parkid": 134,
         "street_address": "1255 E 10th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Mount Pleasant",
         "hectare": 1.47,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Mount Pleasant",
+        "hectares": 1.47
       },
       "geometry": {
         "type": "Point",
@@ -3134,13 +3254,14 @@
         "parkid": 138,
         "street_address": "2627 Manitoba Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Mount Pleasant",
         "hectare": 0.06,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Mount Pleasant",
+        "hectares": 0.06
       },
       "geometry": {
         "type": "Point",
@@ -3160,13 +3281,14 @@
         "parkid": 141,
         "street_address": "266 E 15th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Mount Pleasant",
         "hectare": 0.09,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Mount Pleasant",
+        "hectares": 0.09
       },
       "geometry": {
         "type": "Point",
@@ -3186,13 +3308,14 @@
         "parkid": 145,
         "street_address": "6706 Alberta Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "South Cambie",
         "hectare": 48.57,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "South Cambie",
+        "hectares": 48.57
       },
       "geometry": {
         "type": "Point",
@@ -3212,13 +3335,14 @@
         "parkid": 150,
         "street_address": "3450 Price Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Renfrew-Collingwood",
         "hectare": 0.68,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Renfrew-Collingwood",
+        "hectares": 0.68
       },
       "geometry": {
         "type": "Point",
@@ -3238,13 +3362,14 @@
         "parkid": 152,
         "street_address": "2801 E 41st Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Renfrew-Collingwood",
         "hectare": 1.59,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Renfrew-Collingwood",
+        "hectares": 1.59
       },
       "geometry": {
         "type": "Point",
@@ -3264,13 +3389,14 @@
         "parkid": 153,
         "street_address": "3434 Falaise Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Renfrew-Collingwood",
         "hectare": 7.57,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Renfrew-Collingwood",
+        "hectares": 7.57
       },
       "geometry": {
         "type": "Point",
@@ -3290,13 +3416,14 @@
         "parkid": 155,
         "street_address": "3470 Crowley Drive",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Renfrew-Collingwood",
         "hectare": 1.5,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Renfrew-Collingwood",
+        "hectares": 1.5
       },
       "geometry": {
         "type": "Point",
@@ -3316,13 +3443,14 @@
         "parkid": 166,
         "street_address": "3773 Prince Edward Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Riley Park",
         "hectare": 1.21,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Riley Park",
+        "hectares": 1.21
       },
       "geometry": {
         "type": "Point",
@@ -3342,13 +3470,14 @@
         "parkid": 169,
         "street_address": "3600 Angus Drive",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Shaughnessy",
         "hectare": 1.0,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Shaughnessy",
+        "hectares": 1.0
       },
       "geometry": {
         "type": "Point",
@@ -3368,13 +3497,14 @@
         "parkid": 170,
         "street_address": "1250 Devonshire Crescent",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Shaughnessy",
         "hectare": 1.53,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Shaughnessy",
+        "hectares": 1.53
       },
       "geometry": {
         "type": "Point",
@@ -3394,13 +3524,14 @@
         "parkid": 172,
         "street_address": "1300 The Crescent",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Shaughnessy",
         "hectare": 1.45,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Shaughnessy",
+        "hectares": 1.45
       },
       "geometry": {
         "type": "Point",
@@ -3420,13 +3551,14 @@
         "parkid": 177,
         "street_address": "702 W 18th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "South Cambie",
         "hectare": 0.98,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "South Cambie",
+        "hectares": 0.98
       },
       "geometry": {
         "type": "Point",
@@ -3446,13 +3578,14 @@
         "parkid": 193,
         "street_address": "2500 E Kent Street S",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Victoria-Fraserview",
         "hectare": 1.07,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Victoria-Fraserview",
+        "hectares": 1.07
       },
       "geometry": {
         "type": "Point",
@@ -3472,13 +3605,14 @@
         "parkid": 195,
         "street_address": "7250 Humm Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Victoria-Fraserview",
         "hectare": 0.47,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Victoria-Fraserview",
+        "hectares": 0.47
       },
       "geometry": {
         "type": "Point",
@@ -3498,13 +3632,14 @@
         "parkid": 196,
         "street_address": "2390 E 46th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Victoria-Fraserview",
         "hectare": 2.91,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Victoria-Fraserview",
+        "hectares": 2.91
       },
       "geometry": {
         "type": "Point",
@@ -3524,13 +3659,14 @@
         "parkid": 197,
         "street_address": "2750 E Kent Ave S",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Killarney",
         "hectare": 4.01,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Killarney",
+        "hectares": 4.01
       },
       "geometry": {
         "type": "Point",
@@ -3550,13 +3686,14 @@
         "parkid": 198,
         "street_address": "1751 E 45th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Victoria-Fraserview",
         "hectare": 2.09,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Victoria-Fraserview",
+        "hectares": 2.09
       },
       "geometry": {
         "type": "Point",
@@ -3576,13 +3713,14 @@
         "parkid": 202,
         "street_address": "1800 Morton Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "West End",
         "hectare": 0.22,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "West End",
+        "hectares": 0.22
       },
       "geometry": {
         "type": "Point",
@@ -3602,13 +3740,14 @@
         "parkid": 203,
         "street_address": "1030 Bute Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "West End",
         "hectare": 1.16,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "West End",
+        "hectares": 1.16
       },
       "geometry": {
         "type": "Point",
@@ -3628,13 +3767,14 @@
         "parkid": 207,
         "street_address": "1204 Beach Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "West End",
         "hectare": 3.61,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Vancouver"
+        "local_area": "West End",
+        "hectares": 3.61
       },
       "geometry": {
         "type": "Point",
@@ -3654,13 +3794,14 @@
         "parkid": 220,
         "street_address": "4801 NW Marine Drive",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "West Point Grey",
         "hectare": 6.53,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Vancouver"
+        "local_area": "West Point Grey",
+        "hectares": 6.53
       },
       "geometry": {
         "type": "Point",
@@ -3680,13 +3821,14 @@
         "parkid": 221,
         "street_address": "2250 Trimble Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "West Point Grey",
         "hectare": 3.4,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "West Point Grey",
+        "hectares": 3.4
       },
       "geometry": {
         "type": "Point",
@@ -3706,13 +3848,14 @@
         "parkid": 224,
         "street_address": "2400 Spruce Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Fairview",
         "hectare": 0.07,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Fairview",
+        "hectares": 0.07
       },
       "geometry": {
         "type": "Point",
@@ -3732,13 +3875,14 @@
         "parkid": 225,
         "street_address": "450 Beach Crescent",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Downtown",
         "hectare": 2.49,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Vancouver"
+        "local_area": "Downtown",
+        "hectares": 2.49
       },
       "geometry": {
         "type": "Point",
@@ -3758,13 +3902,14 @@
         "parkid": 231,
         "street_address": "4102 W 16th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Dunbar-Southlands",
         "hectare": 0.0,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Dunbar-Southlands",
+        "hectares": 0.0
       },
       "geometry": {
         "type": "Point",
@@ -3784,13 +3929,14 @@
         "parkid": 246,
         "street_address": "2901 E Hastings Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Hastings-Sunrise",
         "hectare": 8.0,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Hastings-Sunrise",
+        "hectares": 8.0
       },
       "geometry": {
         "type": "Point",
@@ -3810,13 +3956,14 @@
         "parkid": 249,
         "street_address": "1551 W 57th Ave",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kerrisdale",
         "hectare": 0.69,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kerrisdale",
+        "hectares": 0.69
       },
       "geometry": {
         "type": "Point",
@@ -3836,13 +3983,14 @@
         "parkid": 3,
         "street_address": "4780 Haggart Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Arbutus-Ridge",
         "hectare": 2.89,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Arbutus-Ridge",
+        "hectares": 2.89
       },
       "geometry": {
         "type": "Point",
@@ -3862,13 +4010,14 @@
         "parkid": 4,
         "street_address": "4309 Puget Drive",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Arbutus-Ridge",
         "hectare": 0.09,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Arbutus-Ridge",
+        "hectares": 0.09
       },
       "geometry": {
         "type": "Point",
@@ -3888,13 +4037,14 @@
         "parkid": 5,
         "street_address": "4301 Quesnel Drive",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Arbutus-Ridge",
         "hectare": 0.03,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Arbutus-Ridge",
+        "hectares": 0.03
       },
       "geometry": {
         "type": "Point",
@@ -3914,13 +4064,14 @@
         "parkid": 6,
         "street_address": "4590 Magnolia Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Arbutus-Ridge",
         "hectare": 7.67,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Vancouver"
+        "local_area": "Arbutus-Ridge",
+        "hectares": 7.67
       },
       "geometry": {
         "type": "Point",
@@ -3940,13 +4091,14 @@
         "parkid": 7,
         "street_address": "2159 W 36th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Arbutus-Ridge",
         "hectare": 0.72,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Arbutus-Ridge",
+        "hectares": 0.72
       },
       "geometry": {
         "type": "Point",
@@ -3966,13 +4118,14 @@
         "parkid": 9,
         "street_address": "4600 Trafalgar Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Arbutus-Ridge",
         "hectare": 0.14,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Arbutus-Ridge",
+        "hectares": 0.14
       },
       "geometry": {
         "type": "Point",
@@ -3992,13 +4145,14 @@
         "parkid": 10,
         "street_address": "89 Expo Boulevard",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Downtown",
         "hectare": 4.21,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Downtown",
+        "hectares": 4.21
       },
       "geometry": {
         "type": "Point",
@@ -4018,13 +4172,14 @@
         "parkid": 11,
         "street_address": "1601 Bayshore Drive",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "West End",
         "hectare": 0.33,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Vancouver"
+        "local_area": "West End",
+        "hectares": 0.33
       },
       "geometry": {
         "type": "Point",
@@ -4044,13 +4199,14 @@
         "parkid": 12,
         "street_address": "566 Richards Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Downtown",
         "hectare": 0.27,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Downtown",
+        "hectares": 0.27
       },
       "geometry": {
         "type": "Point",
@@ -4070,13 +4226,14 @@
         "parkid": 15,
         "street_address": "1455 Quebec Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Downtown",
         "hectare": 2.53,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Vancouver"
+        "local_area": "Downtown",
+        "hectares": 2.53
       },
       "geometry": {
         "type": "Point",
@@ -4096,13 +4253,14 @@
         "parkid": 19,
         "street_address": "625 Burrard Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Downtown",
         "hectare": 0.1,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Downtown",
+        "hectares": 0.1
       },
       "geometry": {
         "type": "Point",
@@ -4122,13 +4280,14 @@
         "parkid": 21,
         "street_address": "1199 W Cordova Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Downtown",
         "hectare": 3.1,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Vancouver"
+        "local_area": "Downtown",
+        "hectares": 3.1
       },
       "geometry": {
         "type": "Point",
@@ -4148,13 +4307,14 @@
         "parkid": 23,
         "street_address": "1103 Pacific Boulevard",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Downtown",
         "hectare": 0.17,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Downtown",
+        "hectares": 0.17
       },
       "geometry": {
         "type": "Point",
@@ -4174,13 +4334,14 @@
         "parkid": 24,
         "street_address": "1675 Bayshore Drive",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Downtown",
         "hectare": 0.63,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Vancouver"
+        "local_area": "Downtown",
+        "hectares": 0.63
       },
       "geometry": {
         "type": "Point",
@@ -4200,13 +4361,14 @@
         "parkid": 30,
         "street_address": "578 Carrall Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Downtown",
         "hectare": 0.83,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Downtown",
+        "hectares": 0.83
       },
       "geometry": {
         "type": "Point",
@@ -4226,13 +4388,14 @@
         "parkid": 31,
         "street_address": "200 W Hastings Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Downtown",
         "hectare": 0.39,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Downtown",
+        "hectares": 0.39
       },
       "geometry": {
         "type": "Point",
@@ -4252,13 +4415,14 @@
         "parkid": 35,
         "street_address": "3500 Quadra Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Arbutus-Ridge",
         "hectare": 0.07,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Arbutus-Ridge",
+        "hectares": 0.07
       },
       "geometry": {
         "type": "Point",
@@ -4278,13 +4442,14 @@
         "parkid": 39,
         "street_address": "4747 Dunbar Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Dunbar-Southlands",
         "hectare": 7.49,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Dunbar-Southlands",
+        "hectares": 7.49
       },
       "geometry": {
         "type": "Point",
@@ -4304,13 +4469,14 @@
         "parkid": 41,
         "street_address": "3250 Quadra Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Dunbar-Southlands",
         "hectare": 0.17,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Dunbar-Southlands",
+        "hectares": 0.17
       },
       "geometry": {
         "type": "Point",
@@ -4330,13 +4496,14 @@
         "parkid": 47,
         "street_address": "1318 Cartwright Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Fairview",
         "hectare": 2.88,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Vancouver"
+        "local_area": "Fairview",
+        "hectares": 2.88
       },
       "geometry": {
         "type": "Point",
@@ -4356,13 +4523,14 @@
         "parkid": 57,
         "street_address": "2325 Franklin Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Grandview-Woodland",
         "hectare": 1.66,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Grandview-Woodland",
+        "hectares": 1.66
       },
       "geometry": {
         "type": "Point",
@@ -4382,13 +4550,14 @@
         "parkid": 60,
         "street_address": "700 Templeton Drive",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Grandview-Woodland",
         "hectare": 1.93,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Grandview-Woodland",
+        "hectares": 1.93
       },
       "geometry": {
         "type": "Point",
@@ -4408,13 +4577,14 @@
         "parkid": 61,
         "street_address": "2303 Wall Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Hastings-Sunrise",
         "hectare": 0.1,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Hastings-Sunrise",
+        "hectares": 0.1
       },
       "geometry": {
         "type": "Point",
@@ -4434,13 +4604,14 @@
         "parkid": 69,
         "street_address": "3400 Charles Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Hastings-Sunrise",
         "hectare": 1.55,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Hastings-Sunrise",
+        "hectares": 1.55
       },
       "geometry": {
         "type": "Point",
@@ -4460,13 +4631,14 @@
         "parkid": 78,
         "street_address": "3485 E 2nd Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Hastings-Sunrise",
         "hectare": 0.89,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Hastings-Sunrise",
+        "hectares": 0.89
       },
       "geometry": {
         "type": "Point",
@@ -4486,13 +4658,14 @@
         "parkid": 80,
         "street_address": "2650 Clark Drive",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kensington-Cedar Cottage",
         "hectare": 0.47,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kensington-Cedar Cottage",
+        "hectares": 0.47
       },
       "geometry": {
         "type": "Point",
@@ -4512,13 +4685,14 @@
         "parkid": 82,
         "street_address": "2301 Brock Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kensington-Cedar Cottage",
         "hectare": 2.11,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kensington-Cedar Cottage",
+        "hectares": 2.11
       },
       "geometry": {
         "type": "Point",
@@ -4538,13 +4712,14 @@
         "parkid": 87,
         "street_address": "5175 Dumfries Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kensington-Cedar Cottage",
         "hectare": 5.84,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kensington-Cedar Cottage",
+        "hectares": 5.84
       },
       "geometry": {
         "type": "Point",
@@ -4564,13 +4739,14 @@
         "parkid": 88,
         "street_address": "4150 Knight Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kensington-Cedar Cottage",
         "hectare": 2.41,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kensington-Cedar Cottage",
+        "hectares": 2.41
       },
       "geometry": {
         "type": "Point",
@@ -4590,13 +4766,14 @@
         "parkid": 92,
         "street_address": "8705 Angus Drive",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kerrisdale",
         "hectare": 9.1,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kerrisdale",
+        "hectares": 9.1
       },
       "geometry": {
         "type": "Point",
@@ -4616,13 +4793,14 @@
         "parkid": 93,
         "street_address": "5898 Yew Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kerrisdale",
         "hectare": 1.53,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kerrisdale",
+        "hectares": 1.53
       },
       "geometry": {
         "type": "Point",
@@ -4642,13 +4820,14 @@
         "parkid": 111,
         "street_address": "3393 Point Grey Road",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "West Point Grey",
         "hectare": 0.04,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "West Point Grey",
+        "hectares": 0.04
       },
       "geometry": {
         "type": "Point",
@@ -4668,13 +4847,14 @@
         "parkid": 113,
         "street_address": "2743 Point Grey Road",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kitsilano",
         "hectare": 0.38,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kitsilano",
+        "hectares": 0.38
       },
       "geometry": {
         "type": "Point",
@@ -4694,13 +4874,14 @@
         "parkid": 119,
         "street_address": "2845 W 3rd Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kitsilano",
         "hectare": 1.4,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kitsilano",
+        "hectares": 1.4
       },
       "geometry": {
         "type": "Point",
@@ -4720,13 +4901,14 @@
         "parkid": 120,
         "street_address": "1000 Chestnut Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kitsilano",
         "hectare": 16.95,
-        "facilities": "無",
-        "washrooms": "有",
+        "facilities": "否",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Vancouver"
+        "local_area": "Kitsilano",
+        "hectares": 16.95
       },
       "geometry": {
         "type": "Point",
@@ -4746,13 +4928,14 @@
         "parkid": 121,
         "street_address": "2855 Point Grey Road",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kitsilano",
         "hectare": 0.72,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kitsilano",
+        "hectares": 0.72
       },
       "geometry": {
         "type": "Point",
@@ -4772,13 +4955,14 @@
         "parkid": 122,
         "street_address": "8288 Ash Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Marpole",
         "hectare": 0.51,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Marpole",
+        "hectares": 0.51
       },
       "geometry": {
         "type": "Point",
@@ -4798,13 +4982,14 @@
         "parkid": 123,
         "street_address": "950 W 71st Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Marpole",
         "hectare": 0.9,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Marpole",
+        "hectares": 0.9
       },
       "geometry": {
         "type": "Point",
@@ -4824,13 +5009,14 @@
         "parkid": 124,
         "street_address": "1410 W 72nd Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Marpole",
         "hectare": 0.27,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Marpole",
+        "hectares": 0.27
       },
       "geometry": {
         "type": "Point",
@@ -4850,13 +5036,14 @@
         "parkid": 128,
         "street_address": "1575 W 62nd Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Marpole",
         "hectare": 0.94,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Marpole",
+        "hectares": 0.94
       },
       "geometry": {
         "type": "Point",
@@ -4876,13 +5063,14 @@
         "parkid": 130,
         "street_address": "1592 W 71st Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Marpole",
         "hectare": 0.37,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Marpole",
+        "hectares": 0.37
       },
       "geometry": {
         "type": "Point",
@@ -4902,13 +5090,14 @@
         "parkid": 133,
         "street_address": "1001 E 7th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Mount Pleasant",
         "hectare": 3.16,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Mount Pleasant",
+        "hectares": 3.16
       },
       "geometry": {
         "type": "Point",
@@ -4928,13 +5117,14 @@
         "parkid": 139,
         "street_address": "3161 Ontario Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Mount Pleasant",
         "hectare": 1.12,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Mount Pleasant",
+        "hectares": 1.12
       },
       "geometry": {
         "type": "Point",
@@ -4954,13 +5144,14 @@
         "parkid": 146,
         "street_address": "1040 W 43rd Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Oakridge",
         "hectare": 4.02,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Oakridge",
+        "hectares": 4.02
       },
       "geometry": {
         "type": "Point",
@@ -4980,13 +5171,14 @@
         "parkid": 149,
         "street_address": "3450 E 29th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Renfrew-Collingwood",
         "hectare": 0.77,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Renfrew-Collingwood",
+        "hectares": 0.77
       },
       "geometry": {
         "type": "Point",
@@ -5006,13 +5198,14 @@
         "parkid": 154,
         "street_address": "5501 Aberdeen Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Renfrew-Collingwood",
         "hectare": 0.29,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Renfrew-Collingwood",
+        "hectares": 0.29
       },
       "geometry": {
         "type": "Point",
@@ -5032,13 +5225,14 @@
         "parkid": 156,
         "street_address": "3530 Vanness Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Renfrew-Collingwood",
         "hectare": 0.49,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Renfrew-Collingwood",
+        "hectares": 0.49
       },
       "geometry": {
         "type": "Point",
@@ -5058,13 +5252,14 @@
         "parkid": 158,
         "street_address": "3650 Price Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Renfrew-Collingwood",
         "hectare": 0.35,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Renfrew-Collingwood",
+        "hectares": 0.35
       },
       "geometry": {
         "type": "Point",
@@ -5084,13 +5279,14 @@
         "parkid": 162,
         "street_address": "390 E 36th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Riley Park",
         "hectare": 0.37,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Riley Park",
+        "hectares": 0.37
       },
       "geometry": {
         "type": "Point",
@@ -5110,13 +5306,14 @@
         "parkid": 165,
         "street_address": "4601 Ontario Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Riley Park",
         "hectare": 6.21,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Riley Park",
+        "hectares": 6.21
       },
       "geometry": {
         "type": "Point",
@@ -5136,13 +5333,14 @@
         "parkid": 174,
         "street_address": "895 W 27th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "South Cambie",
         "hectare": 1.26,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "South Cambie",
+        "hectares": 1.26
       },
       "geometry": {
         "type": "Point",
@@ -5162,13 +5360,14 @@
         "parkid": 175,
         "street_address": "801 W 22nd Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "South Cambie",
         "hectare": 5.32,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "South Cambie",
+        "hectares": 5.32
       },
       "geometry": {
         "type": "Point",
@@ -5188,13 +5387,14 @@
         "parkid": 179,
         "street_address": "710 Keefer Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Strathcona",
         "hectare": 1.21,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Strathcona",
+        "hectares": 1.21
       },
       "geometry": {
         "type": "Point",
@@ -5214,13 +5414,14 @@
         "parkid": 180,
         "street_address": "488 Powell Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Strathcona",
         "hectare": 1.0,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Vancouver"
+        "local_area": "Strathcona",
+        "hectares": 1.0
       },
       "geometry": {
         "type": "Point",
@@ -5240,13 +5441,14 @@
         "parkid": 182,
         "street_address": "787 Prior Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Strathcona",
         "hectare": 0.3,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Strathcona",
+        "hectares": 0.3
       },
       "geometry": {
         "type": "Point",
@@ -5266,13 +5468,14 @@
         "parkid": 185,
         "street_address": "300 E 44th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Sunset",
         "hectare": 1.05,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Sunset",
+        "hectares": 1.05
       },
       "geometry": {
         "type": "Point",
@@ -5292,13 +5495,14 @@
         "parkid": 189,
         "street_address": "404 E 51st Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Sunset",
         "hectare": 3.42,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Sunset",
+        "hectares": 3.42
       },
       "geometry": {
         "type": "Point",
@@ -5318,13 +5522,14 @@
         "parkid": 191,
         "street_address": "2510 Hoylake Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Victoria-Fraserview",
         "hectare": 3.82,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Victoria-Fraserview",
+        "hectares": 3.82
       },
       "geometry": {
         "type": "Point",
@@ -5344,13 +5549,14 @@
         "parkid": 201,
         "street_address": "1700 Beach Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "West End",
         "hectare": 9.83,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Vancouver"
+        "local_area": "West End",
+        "hectares": 9.83
       },
       "geometry": {
         "type": "Point",
@@ -5370,13 +5576,14 @@
         "parkid": 206,
         "street_address": "2000 W Georgia Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "West End",
         "hectare": 400.0,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Vancouver"
+        "local_area": "West End",
+        "hectares": 400.0
       },
       "geometry": {
         "type": "Point",
@@ -5396,13 +5603,14 @@
         "parkid": 208,
         "street_address": "2299 Redbud Lane",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Kitsilano",
         "hectare": 0.12,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Kitsilano",
+        "hectares": 0.12
       },
       "geometry": {
         "type": "Point",
@@ -5422,13 +5630,14 @@
         "parkid": 212,
         "street_address": "2300 Fraser Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Mount Pleasant",
         "hectare": 0.06,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Mount Pleasant",
+        "hectares": 0.06
       },
       "geometry": {
         "type": "Point",
@@ -5448,13 +5657,14 @@
         "parkid": 218,
         "street_address": "3941 Point Grey Road",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "West Point Grey",
         "hectare": 46.71,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "West Point Grey",
+        "hectares": 46.71
       },
       "geometry": {
         "type": "Point",
@@ -5474,13 +5684,14 @@
         "parkid": 219,
         "street_address": "4445 NW Marine Drive",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "West Point Grey",
         "hectare": 19.0,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "West Point Grey",
+        "hectares": 19.0
       },
       "geometry": {
         "type": "Point",
@@ -5500,13 +5711,14 @@
         "parkid": 228,
         "street_address": "899 W 37th Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "South Cambie",
         "hectare": 5.0,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "Y",
-        "local_area": "Vancouver"
+        "local_area": "South Cambie",
+        "hectares": 5.0
       },
       "geometry": {
         "type": "Point",
@@ -5526,13 +5738,14 @@
         "parkid": 234,
         "street_address": "3525 Foster Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Renfrew-Collingwood",
         "hectare": 1.0,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Renfrew-Collingwood",
+        "hectares": 1.0
       },
       "geometry": {
         "type": "Point",
@@ -5552,13 +5765,14 @@
         "parkid": 236,
         "street_address": "8805 Olser Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Marpole",
         "hectare": 0.4,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Marpole",
+        "hectares": 0.4
       },
       "geometry": {
         "type": "Point",
@@ -5578,13 +5792,14 @@
         "parkid": 240,
         "street_address": "215 W 1st Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Mount Pleasant",
         "hectare": 0.95,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Mount Pleasant",
+        "hectares": 0.95
       },
       "geometry": {
         "type": "Point",
@@ -5604,13 +5819,14 @@
         "parkid": 245,
         "street_address": "600 National Avenue",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Strathcona",
         "hectare": 3.05,
-        "facilities": "有",
-        "washrooms": "有",
+        "facilities": "是",
+        "washrooms": "是",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Strathcona",
+        "hectares": 3.05
       },
       "geometry": {
         "type": "Point",
@@ -5630,13 +5846,14 @@
         "parkid": 247,
         "street_address": "699 Kingsway",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Mount Pleasant",
         "hectare": 0.0,
-        "facilities": "無",
-        "washrooms": "無",
+        "facilities": "否",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Mount Pleasant",
+        "hectares": 0.0
       },
       "geometry": {
         "type": "Point",
@@ -5656,13 +5873,14 @@
         "parkid": 248,
         "street_address": "860 Richards Street",
         "intersection": "",
-        "neighbourhood": "",
+        "neighbourhood": "Downtown",
         "hectare": 0.32,
-        "facilities": "有",
-        "washrooms": "無",
+        "facilities": "是",
+        "washrooms": "否",
         "advisories": "N",
         "specialfeatures": "N",
-        "local_area": "Vancouver"
+        "local_area": "Downtown",
+        "hectares": 0.32
       },
       "geometry": {
         "type": "Point",
