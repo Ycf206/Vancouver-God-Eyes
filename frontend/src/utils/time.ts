@@ -29,26 +29,31 @@ export function formatOpeningHours(
 
   let s = String(val).trim();
   if (!s || s === '--') return s;
-  if (/^0?0:00\s*[-–—~至]\s*23:59$/i.test(s) || /^0?0:00\s*[-–—~至]\s*24:00$/i.test(s) || /^(?:24\/7|24\s*hours?|24\s*hrs?|24\s*小時(?:營業)?)$/i.test(s)) {
-    return '24 hrs';
+  if (/^0?0:00\s*[-–—~至]\s*23:59$/i.test(s) || /^0?0:00\s*[-–—~至]\s*24:00$/i.test(s) || /^(?:24\/7|24\s*hours?|24\s*hrs?|24hrs\s*-\s*24hrs|24\s*小時(?:營業)?)$/i.test(s)) {
+    return '全日';
   }
   if (/^closed$/i.test(s)) {
     return '休館';
   }
-  if (/^as\s*per\s*cc\s*op(?:e|ea)?ting\s*hours$/i.test(s)) {
+  if (/as\s*per\s*(?:cc|community\s*centre)\s*op\w*\s*hours/i.test(s)) {
     return '依照社區中心開放時間';
+  }
+  if (/^dawn\s*to\s*dusk\s*weekends?\s*only$/i.test(s)) {
+    return '週末 日出至日落';
   }
   if (/^dawn\s*to\s*dusk$/i.test(s)) {
     return '日出至日落';
   }
 
   // Common OSM day token translations
-  s = s.replace(/\bas\s*per\s*cc\s*op(?:e|ea)?ting\s*hours\b/gi, '依照社區中心開放時間');
+  s = s.replace(/\bas\s*per\s*(?:cc|community\s*centre)\s*op\w*\s*hours\b/gi, '依照社區中心開放時間');
+  s = s.replace(/\bdawn\s*to\s*dusk\s*weekends?\s*only\b/gi, '週末 日出至日落');
   s = s.replace(/\bdawn\s*to\s*dusk\b/gi, '日出至日落');
   s = s.replace(/\b(?:mon|monday)\s*(?:to|-|–|—)\s*(?:fri|friday)\b/gi, '週一至週五');
   s = s.replace(/\b(?:mon|monday)\s*(?:to|-|–|—)\s*(?:thu|thursday)\b/gi, '週一至週四');
   s = s.replace(/\b(?:mon|monday)\s*(?:to|-|–|—)\s*(?:sat|saturday)\b/gi, '週一至週六');
   s = s.replace(/\b(?:mon|monday)\s*(?:to|-|–|—)\s*(?:sun|sunday)\b/gi, '週一至週日');
+  s = s.replace(/\b(?:tue|tuesday)\s*(?:to|-|–|—)\s*(?:sat|saturday)\b/gi, '週二至週六');
   s = s.replace(/\btuesdays?\s*and\s*thursdays?\b/gi, '週二及週四');
   s = s.replace(/\bmondays?\b/gi, '週一');
   s = s.replace(/\btuesdays?\b/gi, '週二');
@@ -65,9 +70,7 @@ export function formatOpeningHours(
   s = s.replace(/\bPH\s*off\b/gi, '公眾假期休息');
   s = s.replace(/\bPH\s*closed\b/gi, '公眾假期公休');
 
-  // Regex matching time ranges: (Time 1) [separator] (Time 2)
-  const rangeRegex = /(\d{1,2}(?::\d{2})?(?::\d{2})?\s*(?:[ap]\.?m\.?)?)\s*(?:[-–—~至]+|\bto\b)\s*(\d{1,2}(?::\d{2})?(?::\d{2})?\s*(?:[ap]\.?m\.?)?)/gi;
-
+  // Single time token parser
   function parseSingleTimeToken(token: string, inferredAmpm: string | null = null): string | null {
     const m = token.trim().match(/^(\d{1,2})(?::(\d{2}))?(?::\d{2})?\s*([ap]\.?m\.?)?$/i);
     if (!m) return null;
@@ -87,6 +90,29 @@ export function formatOpeningHours(
       return `${String(hour).padStart(2, '0')}:${min}`;
     }
   }
+
+  // Mixed named and numeric time ranges: e.g. "6:00am - Midnight", "10:00 am - Dusk", "7:00 am - Dusk"
+  const rTimeWord = /(\d{1,2}(?::\d{2})?\s*(?:[ap]\.?m\.?)?)\s*[-–—~至to]+\s*(midnight|dusk|dawn|noon)/i;
+  const mTimeWord = s.match(rTimeWord);
+  if (mTimeWord) {
+    const t = parseSingleTimeToken(mTimeWord[1]);
+    const wordZh: Record<string, string> = { midnight: '午夜', dusk: '日落', dawn: '日出', noon: '中午' };
+    const w = wordZh[mTimeWord[2].toLowerCase()] || mTimeWord[2];
+    if (t) s = s.replace(mTimeWord[0], `${t} - ${w}`);
+  }
+
+  // e.g. "Dawn - 10:15pm", "Dawn to 10:15 pm", "Dawn - 11:00 pm"
+  const rWordTime = /(midnight|dusk|dawn|noon)\s*[-–—~至to]+\s*(\d{1,2}(?::\d{2})?\s*(?:[ap]\.?m\.?)?)/i;
+  const mWordTime = s.match(rWordTime);
+  if (mWordTime) {
+    const t = parseSingleTimeToken(mWordTime[2]);
+    const wordZh: Record<string, string> = { midnight: '午夜', dusk: '日落', dawn: '日出', noon: '中午' };
+    const w = wordZh[mWordTime[1].toLowerCase()] || mWordTime[1];
+    if (t) s = s.replace(mWordTime[0], `${w} - ${t}`);
+  }
+
+  // Regex matching time ranges: (Time 1) [separator] (Time 2)
+  const rangeRegex = /(\d{1,2}(?::\d{2})?(?::\d{2})?\s*(?:[ap]\.?m\.?)?)\s*(?:[-–—~至]+|\bto\b)\s*(\d{1,2}(?::\d{2})?(?::\d{2})?\s*(?:[ap]\.?m\.?)?)/gi;
 
   // Replace ranges
   let result = s.replace(rangeRegex, (match, t1, t2) => {

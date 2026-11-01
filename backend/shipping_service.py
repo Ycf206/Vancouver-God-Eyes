@@ -239,27 +239,27 @@ def interpolate_along_path(coords: List[List[float]], progress: float) -> Tuple[
 def parse_ship_type(type_code: int) -> Tuple[str, str]:
     if 70 <= type_code <= 79:
         if type_code == 71:
-            return "貨櫃輪 (Container Ship)", "cargo"
+            return "貨櫃輪", "cargo"
         elif type_code == 72:
-            return "散裝貨輪 (Bulk Carrier)", "cargo"
+            return "散裝貨輪", "cargo"
         elif type_code == 73:
             return "油輪/散裝多用途船", "cargo"
-        return "貨輪 (Cargo Vessel)", "cargo"
+        return "貨輪", "cargo"
     elif 80 <= type_code <= 89:
         if type_code == 81:
-            return "原油輪 (Crude Tanker)", "tanker"
+            return "原油輪", "tanker"
         elif type_code == 82:
-            return "化學品油輪 (Chemical Tanker)", "tanker"
-        return "油輪 (Tanker)", "tanker"
+            return "化學品油輪", "tanker"
+        return "油輪", "tanker"
     elif type_code in (52, 31, 32):
-        return "拖船 / 引水船 (Tug / Pilot)", "tug"
+        return "拖船 / 引水船", "tug"
     elif 60 <= type_code <= 69:
-        return "大型客輪 / 郵輪 (Passenger / Cruise)", "passenger"
+        return "大型客輪 / 郵輪", "passenger"
     elif type_code == 30:
-        return "漁船 (Fishing Vessel)", "other"
+        return "漁船", "other"
     elif 36 <= type_code <= 37:
-        return "遊艇 / 休閒帆船 (Pleasure Craft)", "other"
-    return "商務船隻 (Commercial Vessel)", "cargo"
+        return "遊艇 / 休閒帆船", "other"
+    return "商務船隻", "cargo"
 
 def parse_nav_status(status_code: int) -> str:
     status_map = {
@@ -295,7 +295,7 @@ class MaritimeShippingService:
                 "imo": "9820881",
                 "callsign": "3FXC2",
                 "type_code": 71,
-                "ship_type": "超大型貨櫃輪 (Container Ship)",
+                "ship_type": "超大型貨櫃輪",
                 "type_group": "cargo",
                 "sog": 11.8,
                 "nav_status": "發動機航行中 (Underway)",
@@ -315,7 +315,7 @@ class MaritimeShippingService:
                 "imo": "9467304",
                 "callsign": "VRJM8",
                 "type_code": 71,
-                "ship_type": "貨櫃輪 (Container Ship)",
+                "ship_type": "貨櫃輪",
                 "type_group": "cargo",
                 "lat": 49.2890,
                 "lon": -123.0760,
@@ -337,7 +337,7 @@ class MaritimeShippingService:
                 "imo": "9619907",
                 "callsign": "OWZW2",
                 "type_code": 71,
-                "ship_type": "貨櫃輪 (Container Ship)",
+                "ship_type": "貨櫃輪",
                 "type_group": "cargo",
                 "sog": 14.2,
                 "nav_status": "發動機航行中 (Underway)",
@@ -357,7 +357,7 @@ class MaritimeShippingService:
                 "imo": "9442086",
                 "callsign": "V7UB5",
                 "type_code": 72,
-                "ship_type": "海岬型散裝貨輪 (Bulk Carrier)",
+                "ship_type": "海岬型散裝貨輪",
                 "type_group": "cargo",
                 "lat": 49.2935,
                 "lon": -123.2080,
@@ -379,7 +379,7 @@ class MaritimeShippingService:
                 "imo": "9518828",
                 "callsign": "C6ZM3",
                 "type_code": 72,
-                "ship_type": "散裝小麥貨輪 (Bulk Carrier)",
+                "ship_type": "散裝小麥貨輪",
                 "type_group": "cargo",
                 "lat": 49.3050,
                 "lon": -123.2420,
@@ -401,7 +401,7 @@ class MaritimeShippingService:
                 "imo": "9087283",
                 "callsign": "CFD3491",
                 "type_code": 52,
-                "ship_type": "港口作業拖船 (Harbor Tug)",
+                "ship_type": "港口作業拖船",
                 "type_group": "tug",
                 "sog": 8.5,
                 "nav_status": "發動機航行中 (Underway)",
@@ -421,7 +421,7 @@ class MaritimeShippingService:
                 "imo": "8974518",
                 "callsign": "VYY4321",
                 "type_code": 52,
-                "ship_type": "護航引導拖船 (Escort Tug)",
+                "ship_type": "護航引導拖船",
                 "type_group": "tug",
                 "sog": 9.2,
                 "nav_status": "發動機航行中 (Underway)",
@@ -441,7 +441,7 @@ class MaritimeShippingService:
                 "imo": "9818228",
                 "callsign": "D5QY9",
                 "type_code": 81,
-                "ship_type": "阿芙拉型原油輪 (Aframax Tanker)",
+                "ship_type": "阿芙拉型原油輪",
                 "type_group": "tanker",
                 "lat": 49.2960,
                 "lon": -122.9550,
@@ -463,7 +463,7 @@ class MaritimeShippingService:
                 "imo": "9218941",
                 "callsign": "CFD8921",
                 "type_code": 52,
-                "ship_type": "菲沙河內河推船 (River Tug)",
+                "ship_type": "菲沙河內河推船",
                 "type_group": "tug",
                 "sog": 6.8,
                 "nav_status": "發動機航行中 (Underway)",
@@ -483,7 +483,7 @@ class MaritimeShippingService:
                 "imo": "9721451",
                 "callsign": "C6BR4",
                 "type_code": 70,
-                "ship_type": "滾裝汽車載運船 (Pure Car Carrier)",
+                "ship_type": "滾裝汽車載運船",
                 "type_group": "cargo",
                 "lat": 49.1665,
                 "lon": -122.9580,
@@ -505,7 +505,7 @@ class MaritimeShippingService:
                 "imo": "9421110",
                 "callsign": "CFD5501",
                 "type_code": 72,
-                "ship_type": "散裝硫磺/化肥船 (Bulk Carrier)",
+                "ship_type": "散裝硫磺/化肥船",
                 "type_group": "cargo",
                 "lat": 49.3070,
                 "lon": -123.0560,
@@ -528,7 +528,7 @@ class MaritimeShippingService:
                 "imo": "9273456",
                 "callsign": "CFD1122",
                 "type_code": 70,
-                "ship_type": "大湖型散裝散貨船 (Laker Bulk Carrier)",
+                "ship_type": "大湖型散裝散貨船",
                 "type_group": "cargo",
                 "lat": 49.2910,
                 "lon": -123.1850,
@@ -550,7 +550,7 @@ class MaritimeShippingService:
                 "imo": "9312890",
                 "callsign": "A8KC5",
                 "type_code": 72,
-                "ship_type": "好望角型散裝貨輪 (Capesize Bulk Carrier)",
+                "ship_type": "好望角型散裝貨輪",
                 "type_group": "cargo",
                 "lat": 49.2970,
                 "lon": -123.1950,
@@ -572,7 +572,7 @@ class MaritimeShippingService:
                 "imo": "9621345",
                 "callsign": "DSQH9",
                 "type_code": 71,
-                "ship_type": "巴拿馬型散裝穀物船 (Panamax Bulker)",
+                "ship_type": "巴拿馬型散裝穀物船",
                 "type_group": "cargo",
                 "lat": 49.3020,
                 "lon": -123.2150,
@@ -594,7 +594,7 @@ class MaritimeShippingService:
                 "imo": "9842100",
                 "callsign": "9V5821",
                 "type_code": 70,
-                "ship_type": "極限靈便型散裝船 (Ultramax Bulker)",
+                "ship_type": "極限靈便型散裝船",
                 "type_group": "cargo",
                 "lat": 49.2960,
                 "lon": -123.2300,
@@ -616,7 +616,7 @@ class MaritimeShippingService:
                 "imo": "9598878",
                 "callsign": "SVCP4",
                 "type_code": 72,
-                "ship_type": "散裝鐵礦貨輪 (Ore Carrier)",
+                "ship_type": "散裝鐵礦貨輪",
                 "type_group": "cargo",
                 "lat": 49.2990,
                 "lon": -123.2480,
@@ -638,7 +638,7 @@ class MaritimeShippingService:
                 "imo": "9412356",
                 "callsign": "3FEQ8",
                 "type_code": 71,
-                "ship_type": "多用途貨輪 (General Cargo)",
+                "ship_type": "多用途貨輪",
                 "type_group": "cargo",
                 "lat": 49.3120,
                 "lon": -123.2250,
@@ -660,7 +660,7 @@ class MaritimeShippingService:
                 "imo": "9701140",
                 "callsign": "VRKP3",
                 "type_code": 72,
-                "ship_type": "散裝煤炭貨輪 (Coal Bulk Carrier)",
+                "ship_type": "散裝煤炭貨輪",
                 "type_group": "cargo",
                 "lat": 49.3150,
                 "lon": -123.2550,
@@ -682,7 +682,7 @@ class MaritimeShippingService:
                 "imo": "9612340",
                 "callsign": "C6ZM8",
                 "type_code": 71,
-                "ship_type": "散裝小麥貨輪 (Bulk Carrier)",
+                "ship_type": "散裝小麥貨輪",
                 "type_group": "cargo",
                 "lat": 49.3200,
                 "lon": -123.2650,
@@ -704,7 +704,7 @@ class MaritimeShippingService:
                 "imo": "9421188",
                 "callsign": "LAKB7",
                 "type_code": 72,
-                "ship_type": "好望角型礦砂船 (Capesize Bulk Carrier)",
+                "ship_type": "好望角型礦砂船",
                 "type_group": "cargo",
                 "lat": 49.3240,
                 "lon": -123.2350,
@@ -726,7 +726,7 @@ class MaritimeShippingService:
                 "imo": "9451120",
                 "callsign": "LAJV8",
                 "type_code": 70,
-                "ship_type": "極限靈便型散裝船 (Ultramax Bulker)",
+                "ship_type": "極限靈便型散裝船",
                 "type_group": "cargo",
                 "lat": 49.3260,
                 "lon": -123.2100,
@@ -748,7 +748,7 @@ class MaritimeShippingService:
                 "imo": "9688123",
                 "callsign": "DSQI3",
                 "type_code": 71,
-                "ship_type": "巴拿馬型散裝貨輪 (Panamax Bulker)",
+                "ship_type": "巴拿馬型散裝貨輪",
                 "type_group": "cargo",
                 "lat": 49.3220,
                 "lon": -123.1880,
@@ -770,7 +770,7 @@ class MaritimeShippingService:
                 "imo": "9812900",
                 "callsign": "9V6781",
                 "type_code": 72,
-                "ship_type": "超大型散裝貨輪 (VLOC)",
+                "ship_type": "超大型散裝貨輪",
                 "type_group": "cargo",
                 "lat": 49.3050,
                 "lon": -123.2750,
@@ -793,7 +793,7 @@ class MaritimeShippingService:
                 "imo": "9182390",
                 "callsign": "CFD7821",
                 "type_code": 70,
-                "ship_type": "穀物載運散裝船 (Grain Carrier)",
+                "ship_type": "穀物載運散裝船",
                 "type_group": "cargo",
                 "lat": 49.3090,
                 "lon": -123.0900,
@@ -815,7 +815,7 @@ class MaritimeShippingService:
                 "imo": "9381200",
                 "callsign": "3EVB2",
                 "type_code": 71,
-                "ship_type": "散裝農作穀物船 (Agricultural Bulker)",
+                "ship_type": "散裝農作穀物船",
                 "type_group": "cargo",
                 "lat": 49.3060,
                 "lon": -123.0720,
@@ -837,7 +837,7 @@ class MaritimeShippingService:
                 "imo": "9512390",
                 "callsign": "3FTD8",
                 "type_code": 70,
-                "ship_type": "散裝大豆貨輪 (Soybean Bulker)",
+                "ship_type": "散裝大豆貨輪",
                 "type_group": "cargo",
                 "lat": 49.2930,
                 "lon": -123.0550,
@@ -859,7 +859,7 @@ class MaritimeShippingService:
                 "imo": "9721340",
                 "callsign": "CFD9921",
                 "type_code": 52,
-                "ship_type": "港口護航拖船 (Harbor Escort Tug)",
+                "ship_type": "港口護航拖船",
                 "type_group": "tug",
                 "lat": 49.3040,
                 "lon": -123.0750,
@@ -884,7 +884,7 @@ class MaritimeShippingService:
                 "imo": "",
                 "callsign": "CFD4410",
                 "type_code": 37,
-                "ship_type": "大型豪華動力遊艇 (Motor Yacht)",
+                "ship_type": "大型豪華動力遊艇",
                 "type_group": "pleasure",
                 "lat": 49.2925,
                 "lon": -123.1180,
@@ -906,7 +906,7 @@ class MaritimeShippingService:
                 "imo": "",
                 "callsign": "CFD6612",
                 "type_code": 36,
-                "ship_type": "雙桅休閒帆船 (Sailing Yacht)",
+                "ship_type": "雙桅休閒帆船",
                 "type_group": "sailing",
                 "lat": 49.2920,
                 "lon": -123.1230,
@@ -928,7 +928,7 @@ class MaritimeShippingService:
                 "imo": "",
                 "callsign": "CFD8102",
                 "type_code": 36,
-                "ship_type": "單桅休閒帆船 (Sloop)",
+                "ship_type": "單桅休閒帆船",
                 "type_group": "sailing",
                 "lat": 49.2710,
                 "lon": -123.1350,
@@ -950,7 +950,7 @@ class MaritimeShippingService:
                 "imo": "",
                 "callsign": "CFD3100",
                 "type_code": 60,
-                "ship_type": "福溪水上觀光客船 (Water Taxi)",
+                "ship_type": "福溪水上觀光客船",
                 "type_group": "passenger",
                 "lat": 49.2700,
                 "lon": -123.1210,
@@ -974,7 +974,7 @@ class MaritimeShippingService:
                 "imo": "",
                 "callsign": "CFD5519",
                 "type_code": 37,
-                "ship_type": "巡航動力遊艇 (Cabin Cruiser)",
+                "ship_type": "巡航動力遊艇",
                 "type_group": "pleasure",
                 "lat": 49.2705,
                 "lon": -123.1285,
@@ -996,7 +996,7 @@ class MaritimeShippingService:
                 "imo": "",
                 "callsign": "CFD9810",
                 "type_code": 37,
-                "ship_type": "雙體豪華遊艇 (Catamaran)",
+                "ship_type": "雙體豪華遊艇",
                 "type_group": "pleasure",
                 "lat": 49.2725,
                 "lon": -123.1090,
@@ -1018,7 +1018,7 @@ class MaritimeShippingService:
                 "imo": "",
                 "callsign": "CFD7712",
                 "type_code": 37,
-                "ship_type": "港內休閒快艇 (Speedboat)",
+                "ship_type": "港內休閒快艇",
                 "type_group": "pleasure",
                 "lat": 49.2735,
                 "lon": -123.1040,
@@ -1041,7 +1041,7 @@ class MaritimeShippingService:
                 "imo": "9812490",
                 "callsign": "CFD2180",
                 "type_code": 52,
-                "ship_type": "菲沙河道駁船推船 (River Push Tug)",
+                "ship_type": "菲沙河道駁船推船",
                 "type_group": "tug",
                 "lat": 49.2060,
                 "lon": -123.1180,
@@ -1065,7 +1065,7 @@ class MaritimeShippingService:
                 "imo": "8912300",
                 "callsign": "CFD4490",
                 "type_code": 52,
-                "ship_type": "木材排拖曳船 (Log Towing Tug)",
+                "ship_type": "木材排拖曳船",
                 "type_group": "tug",
                 "sog": 4.1,
                 "nav_status": "發動機航行中 (Underway)",
@@ -1158,7 +1158,7 @@ class MaritimeShippingService:
                 "cog": 0.0,
                 "heading": 0.0,
                 "nav_status": "航行中",
-                "ship_type": "商務船隻 (Commercial Vessel)",
+                "ship_type": "商務船隻",
                 "type_group": "cargo",
                 "length": 150,
                 "width": 25,

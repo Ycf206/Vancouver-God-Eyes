@@ -75,7 +75,7 @@ export default function DonateModal({ isOpen, onClose }: DonateModalProps) {
               <span>如果您喜歡這個作品，歡迎給予一份溫暖鼓勵！</span>
             </div>
             <p className="text-gray-300 text-[11.5px] leading-relaxed">
-              「溫哥華上帝之眼」（Vancouver God&apos;s Eye）由獨立開發者用心打造與維護，致力為大家帶來直覺流暢的即時城市數據體驗。若本系統為您的生活帶來了便利或價值，歡迎隨喜贊助一份心意，您的欣賞就是對創作者最大的肯定與動力！
+              「溫哥華上帝之眼」由獨立開發者用心打造與維護，致力為大家帶來直覺流暢的即時城市數據體驗。若本系統為您的生活帶來了便利或價值，歡迎隨喜贊助一份心意，您的欣賞就是對創作者最大的肯定與動力！
             </p>
           </div>
 
@@ -132,7 +132,7 @@ export default function DonateModal({ isOpen, onClose }: DonateModalProps) {
                       type="number"
                       min="0.5"
                       step="0.5"
-                      placeholder="輸入贊助金額（最低 $0.5 CAD）"
+                      placeholder="輸入贊助金額"
                       value={customAmount}
                       onChange={(e) => setCustomAmount(e.target.value)}
                       className="w-full bg-[#191a1e] border border-rose-500/60 rounded-lg pl-7 pr-12 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-rose-500"
@@ -256,12 +256,6 @@ export default function DonateModal({ isOpen, onClose }: DonateModalProps) {
             <Info className="w-3 h-3 text-gray-400" />
             <span>感謝您對「溫哥華上帝之眼」的欣賞與支持！</span>
           </span>
-          <button
-            onClick={onClose}
-            className="px-3 py-1 bg-[#25262c] hover:bg-[#31333a] text-gray-300 rounded border border-[#373a40] transition-colors"
-          >
-            關閉
-          </button>
         </div>
       </div>
     </div>

@@ -2602,14 +2602,15 @@ function ExploreContent() {
 
   // Handle Cargo Ship click
   const handleSelectShip = (ship: MaritimeVessel) => {
+    const cleanType = (ship.ship_type || '').replace(/\s*\([^)]*\)/g, '').trim();
     enableLayer('maritimeShipping');
     setSearchTarget({
       id: ship.mmsi,
       title: ship.name,
-      subtitle: `${ship.ship_type} · ${ship.sog} 節 · ${ship.destination || 'VANCOUVER'}`,
+      subtitle: `${cleanType} · ${ship.sog} 節 · ${ship.destination || 'VANCOUVER'}`,
       category: 'maritime_vessel',
       layer_key: 'maritimeShipping',
-      badge: ship.ship_type,
+      badge: cleanType,
       icon: '🚢',
       lat: ship.lat,
       lon: ship.lon,
@@ -6763,7 +6764,7 @@ function ExploreContent() {
                         )}
                       </div>
                       <span className={`text-[10px] px-1.5 py-0.5 rounded border font-medium shrink-0 ${typeBg}`}>
-                        {(ship.ship_type || '商船').split(' ')[0]}
+                        {(ship.ship_type || '商船').replace(/\s*\([^)]*\)/g, '').trim().split(' ')[0]}
                       </span>
                     </div>
 

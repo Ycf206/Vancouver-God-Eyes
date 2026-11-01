@@ -7539,10 +7539,10 @@ export default function AppMap() {
                 const cleanStopName = selectedStop.name.replace(/\s*(?:Northbound|Southbound)\s*$/i, '').trim();
                 return (
                   <div className="flex items-start justify-between pb-1.5 mb-2 border-b border-gray-100">
-                    <div className="flex items-center gap-1.5 min-w-0 pr-2">
-                      <span className="text-base shrink-0">{isSeaBusStop ? '⛴️' : '🚏'}</span>
-                      <div className="min-w-0">
-                        <h3 className="font-bold text-sm leading-tight text-gray-900 truncate max-w-[160px] sm:max-w-[190px]" title={cleanStopName}>
+                    <div className="flex items-start gap-1.5 min-w-0 flex-1 pr-2">
+                      <span className="text-base shrink-0 mt-0.5">{isSeaBusStop ? '⛴️' : '🚏'}</span>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="font-bold text-sm leading-snug text-gray-900 break-words" title={cleanStopName}>
                           {cleanStopName}
                         </h3>
                         <span className="text-[10px] text-gray-400 font-mono">
@@ -7894,9 +7894,9 @@ export default function AppMap() {
           >
             <div className="p-3.5 w-[300px] sm:w-[335px] max-w-[calc(100vw-32px)] overflow-hidden">
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
-                <div className="flex items-start gap-2 pt-0.5 min-w-0 pr-2">
+                <div className="flex items-start gap-2 pt-0.5 min-w-0 flex-1 pr-2">
                   <span className="w-2.5 h-2.5 bg-[#0060a9] rounded-full flex-shrink-0 mt-1.5 shadow-sm"></span>
-                  <h3 className="font-bold text-gray-900 text-base leading-snug truncate">{selectedTerminal.properties?.name}</h3>
+                  <h3 className="font-bold text-gray-900 text-base leading-snug break-words">{selectedTerminal.properties?.name}</h3>
                 </div>
                 <div className="flex items-center gap-1 shrink-0 -mt-0.5 -mr-0.5">
                   <button
@@ -7929,7 +7929,19 @@ export default function AppMap() {
               </div>
               
               <div>
-                <h4 className="text-[11px] font-semibold tracking-wider uppercase text-gray-400 mb-2">今日班次 (Today&apos;s Sailings)</h4>
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="text-[11px] font-bold text-gray-600">今日班次</h4>
+                  <a
+                    href="https://www.bcferries.com/web_image/h90/h4b/9089486028830.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-blue-50 hover:bg-blue-100 text-[#0060a9] text-[10.5px] font-semibold transition-colors border border-blue-200/50"
+                    title="前往卑詩渡輪官方收費表 (PDF)"
+                  >
+                    <span>卑詩渡輪收費表</span>
+                    <ExternalLink className="w-3 h-3 text-[#0060a9]" />
+                  </a>
+                </div>
                 
                 {loadingSchedule ? (
                   <div className="flex flex-col items-center justify-center py-6 text-gray-500 text-xs gap-2">
@@ -7938,44 +7950,78 @@ export default function AppMap() {
                   </div>
                 ) : terminalSchedule.length === 0 ? (
                   <div className="text-xs text-gray-500 py-4 text-center bg-gray-50 rounded-lg">目前沒有即將開航的班次。</div>
-                ) : (
-                  <div className="flex flex-col gap-2 max-h-[300px] overflow-y-auto pr-1">
-                    {terminalSchedule.map((sailing, i) => (
-                      <div key={i} className="flex flex-col gap-1 text-xs bg-gray-50/80 p-2.5 rounded-lg border border-gray-200/60 shadow-xs hover:border-gray-300 transition-colors">
-                        <div className="flex justify-between items-center">
-                          <span className="font-bold text-[#0060a9] text-sm tracking-tight">
-                            {formatTimePreference(sailing.time, timeFormat)} {sailing.arrival_time ? `➝ ${formatTimePreference(sailing.arrival_time, timeFormat)}` : ""}
-                          </span>
-                          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
-                            sailing.status === 'past' ? 'bg-gray-100 text-gray-500' : 
-                            sailing.status === 'current' ? 'bg-emerald-100 text-emerald-800 font-bold animate-pulse' : 
-                            'bg-blue-100/80 text-blue-800'
-                          }`}>
-                            {sailing.status === 'past' ? '已抵達' : sailing.status === 'current' ? '航行中' : '即將開航'}
-                          </span>
-                        </div>
-                        <div className="flex justify-between items-center text-gray-600 mt-0.5">
-                          <span className="font-medium text-gray-800 truncate max-w-[130px] sm:max-w-[160px]">{sailing.vessel_name || '渡輪 (航線營運中)'}</span>
-                          <span className="bg-white border border-gray-200 text-gray-600 px-1.5 py-0.5 rounded text-[10px] font-medium">開往 {sailing.destination}</span>
-                        </div>
-                        {sailing.fill > 0 && (
-                          <div className="mt-1 pt-1 border-t border-gray-100">
-                            <div className="flex justify-between items-center text-[10px] text-gray-500 mb-0.5">
-                              <span>車位載車率 (Deck Fill)</span>
-                              <span className="font-semibold text-gray-700">{sailing.fill}%</span>
-                            </div>
-                            <div className="w-full bg-gray-200/80 rounded-full h-1.5 overflow-hidden">
-                              <div 
-                                className={`h-1.5 rounded-full transition-all duration-300 ${sailing.fill >= 80 ? 'bg-amber-500' : 'bg-[#0060a9]'}`} 
-                                style={{ width: `${Math.min(100, Math.max(0, sailing.fill))}%` }}
-                              ></div>
-                            </div>
-                          </div>
-                        )}
+                ) : (() => {
+                  const activeSailings = terminalSchedule.filter(s => s.status !== 'past');
+                  const pastSailings = terminalSchedule.filter(s => s.status === 'past');
+
+                  const renderSailingCard = (sailing: any, i: number, isDimmed = false) => (
+                    <div key={i} className={`flex flex-col gap-1 text-xs p-2.5 rounded-lg border transition-colors ${
+                      isDimmed 
+                        ? 'bg-gray-100/70 border-gray-200 text-gray-500' 
+                        : 'bg-gray-50/80 border-gray-200/60 shadow-xs hover:border-gray-300'
+                    }`}>
+                      <div className="flex justify-between items-center">
+                        <span className={`font-bold text-sm tracking-tight ${isDimmed ? 'text-gray-600' : 'text-[#0060a9]'}`}>
+                          {formatTimePreference(sailing.time, timeFormat)} {sailing.arrival_time ? `➝ ${formatTimePreference(sailing.arrival_time, timeFormat)}` : ""}
+                        </span>
+                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                          sailing.status === 'past' ? 'bg-gray-100 text-gray-500' : 
+                          sailing.status === 'current' ? 'bg-emerald-100 text-emerald-800 font-bold animate-pulse' : 
+                          'bg-blue-100/80 text-blue-800'
+                        }`}>
+                          {sailing.status === 'past' ? '已抵達' : sailing.status === 'current' ? '航行中' : '即將開航'}
+                        </span>
                       </div>
-                    ))}
-                  </div>
-                )}
+                      <div className="flex justify-between items-center text-gray-600 mt-0.5">
+                        <span className="font-medium text-gray-800 truncate max-w-[130px] sm:max-w-[160px]">{sailing.vessel_name || '渡輪 (航線營運中)'}</span>
+                        <span className="bg-white border border-gray-200 text-gray-600 px-1.5 py-0.5 rounded text-[10px] font-medium">開往 {sailing.destination}</span>
+                      </div>
+                      {sailing.fill > 0 && (
+                        <div className="mt-1 pt-1 border-t border-gray-100">
+                          <div className="flex justify-between items-center text-[10px] text-gray-500 mb-0.5">
+                            <span>車位載車率 (Deck Fill)</span>
+                            <span className="font-semibold text-gray-700">{sailing.fill}%</span>
+                          </div>
+                          <div className="w-full bg-gray-200/80 rounded-full h-1.5 overflow-hidden">
+                            <div 
+                              className={`h-1.5 rounded-full transition-all duration-300 ${sailing.fill >= 80 ? 'bg-amber-500' : 'bg-[#0060a9]'}`} 
+                              style={{ width: `${Math.min(100, Math.max(0, sailing.fill))}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+
+                  return (
+                    <div className="flex flex-col gap-2 max-h-[320px] overflow-y-auto pr-1">
+                      {activeSailings.length === 0 ? (
+                        <div className="text-xs text-gray-500 py-3 text-center bg-gray-50 rounded-lg">
+                          今日目前無即將開航的班次。
+                        </div>
+                      ) : (
+                        activeSailings.map((sailing, i) => renderSailingCard(sailing, i))
+                      )}
+
+                      {pastSailings.length > 0 && (
+                        <details className="group mt-1 border-t border-gray-200/70 pt-2">
+                          <summary className="flex justify-between items-center text-[11px] text-gray-500 hover:text-gray-800 cursor-pointer list-none select-none py-1 px-1 rounded hover:bg-gray-100/50">
+                            <span className="font-medium flex items-center gap-1.5">
+                              <span>已抵達班次</span>
+                              <span className="px-1.5 py-0.2 rounded-full bg-gray-200 text-gray-600 text-[9.5px] font-mono">
+                                {pastSailings.length}
+                              </span>
+                            </span>
+                            <span className="text-[9px] text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+                          </summary>
+                          <div className="flex flex-col gap-1.5 mt-2 opacity-85">
+                            {pastSailings.map((sailing, i) => renderSailingCard(sailing, i + 100, true))}
+                          </div>
+                        </details>
+                      )}
+                    </div>
+                  );
+                })()}
               </div>
             </div>
           </Popup>
@@ -8136,7 +8182,9 @@ export default function AppMap() {
               <div className="flex flex-col gap-1.5 mb-2.5 bg-gray-50/80 p-2.5 rounded-lg border border-gray-100 text-[11px]">
                 <div className="flex justify-between items-center text-gray-600">
                   <span>船舶類型</span>
-                  <span className="text-gray-900 font-medium text-right">{selectedMaritimeVessel.ship_type}</span>
+                  <span className="text-gray-900 font-medium text-right">
+                    {selectedMaritimeVessel.ship_type?.replace(/\s*\([^)]*\)/g, '').trim()}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
                   <span>即時航速</span>
@@ -13132,11 +13180,17 @@ export default function AppMap() {
 
                 const formatHours = (h?: string) => {
                   if (!h) return null;
-                  const cleaned = h.replace(/24hrs\s*-\s*24hrs/gi, '24 hrs');
-                  if (/as\s*per\s*cc\s*op(?:e|ea)?ting\s*hours/i.test(cleaned)) {
+                  let cleaned = h.trim();
+                  if (/^(?:24hrs\s*-\s*24hrs|24\s*hrs?|24\s*hours?|24\/7)$/i.test(cleaned)) {
+                    return '全日';
+                  }
+                  if (/as\s*per\s*(?:cc|community\s*centre)\s*op\w*\s*hours/i.test(cleaned)) {
                     return '依照社區中心開放時間';
                   }
-                  if (/dawn\s*to\s*dusk/i.test(cleaned)) {
+                  if (/dawn\s*to\s*dusk\s*weekends?\s*only/i.test(cleaned)) {
+                    return '週末 日出至日落';
+                  }
+                  if (/^dawn\s*to\s*dusk$/i.test(cleaned)) {
                     return '日出至日落';
                   }
                   return formatOpeningHours(cleaned, timeFormat);
