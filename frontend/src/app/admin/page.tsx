@@ -304,19 +304,21 @@ export default function AdminPage() {
   // 11.5 排程歷史保留期限
   const [scheduleRetentionDays, setScheduleRetentionDays] = useState<number>(30);
   
-  // --- Analytics & Stats states (8. 正式推出才開始執行) ---
+  // --- Analytics & Stats states (正式開始執行後台統計資料) ---
   const [stats, setStats] = useState<{
     today_page_views: number;
     total_page_views: number;
     online_users: number;
     issue_reports_count: number;
     status_note?: string;
+    daily_pv?: Record<string, number>;
   }>({
     today_page_views: 0,
     total_page_views: 0,
     online_users: 1,
     issue_reports_count: 0,
-    status_note: '正式推出才開始執行'
+    status_note: '實時統計運作中',
+    daily_pv: {}
   });
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [issueReports, setIssueReports] = useState<any[]>([]);
@@ -331,9 +333,10 @@ export default function AdminPage() {
         setStats({
           today_page_views: resStats.data.today_page_views ?? 0,
           total_page_views: resStats.data.total_page_views ?? 0,
-          online_users: resStats.data.online_users ?? 1,
-          issue_reports_count: resStats.data.issue_reports_count ?? 0,
-          status_note: resStats.data.status_note ?? '正式推出才開始執行'
+          online_users: resStats.data.online_users ?? resStats.data.active_online_users ?? 1,
+          issue_reports_count: resStats.data.issue_reports_count ?? resStats.data.total_issue_reports ?? 0,
+          status_note: resStats.data.status_note ?? '實時統計運作中',
+          daily_pv: resStats.data.daily_pv || {}
         });
       }
       let combinedReports: any[] = [];
@@ -1358,7 +1361,7 @@ export default function AdminPage() {
 
           
 
-          {/* 分頁 3: 系統統計與分析 (正式推出才開始執行) */}
+          {/* 分頁 3: 系統統計與分析 (正式執行中) */}
           <button
             onClick={() => setMainTab('analytics')}
             className={`group relative flex items-center gap-2 px-4 py-2 rounded-t-xl text-xs font-semibold transition-all cursor-pointer ${
@@ -1369,8 +1372,9 @@ export default function AdminPage() {
           >
             <BarChart3 className={`w-3.5 h-3.5 ${mainTab === 'analytics' ? 'text-emerald-400' : 'text-gray-500 group-hover:text-gray-400'}`} />
             <span>統計數據</span>
-            <span className="text-[9px] px-1.5 py-0.2 rounded-full font-sans bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
-              正式推出啟用
+            <span className="text-[9px] px-1.5 py-0.2 rounded-full font-sans bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              實時統計中
             </span>
             {mainTab === 'analytics' && (
               <span className="absolute bottom-[-1px] left-0 right-0 h-[1px] bg-[#141822]" />
@@ -2452,7 +2456,7 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* 分頁 3: 系統統計資料 (正式推出啟用) */}
+        {/* 分頁 3: 系統統計資料 (正式開始執行) */}
         {mainTab === 'analytics' && (
           <div className="flex flex-col gap-5 animate-in fade-in duration-200">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -2467,7 +2471,10 @@ export default function AdminPage() {
                   <span className="text-2xl font-bold font-mono text-white">{stats.today_page_views}</span>
                   <span className="text-xs text-gray-500 font-mono">(總計: {stats.total_page_views})</span>
                 </div>
-                <span className="text-[10px] text-emerald-400/80 mt-2">正式推出才開始執行</span>
+                <div className="flex items-center gap-1.5 mt-2 text-[10.5px] text-emerald-400 font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span>實時統計運作中</span>
+                </div>
               </div>
 
               <div className="bg-[#141822] border border-[#232a3b] rounded-xl p-5 shadow-xl flex flex-col justify-between">
@@ -2481,7 +2488,10 @@ export default function AdminPage() {
                   <span className="text-2xl font-bold font-mono text-white">{stats.online_users}</span>
                   <span className="text-xs text-sky-400">位使用者在線</span>
                 </div>
-                <span className="text-[10px] text-sky-400/80 mt-2">正式推出才開始執行</span>
+                <div className="flex items-center gap-1.5 mt-2 text-[10.5px] text-sky-400 font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse"></span>
+                  <span>即時 WebSocket 連線數</span>
+                </div>
               </div>
 
               <div className="bg-[#141822] border border-[#232a3b] rounded-xl p-5 shadow-xl flex flex-col justify-between">
@@ -2495,14 +2505,45 @@ export default function AdminPage() {
                   <span className="text-2xl font-bold font-mono text-white">{issueReports.length}</span>
                   <span className="text-xs text-rose-400">件用戶反饋與建議</span>
                 </div>
-                <span className="text-[10px] text-rose-400/80 mt-2">正式推出才開始執行</span>
+                <div className="flex items-center gap-1.5 mt-2 text-[10.5px] text-rose-400 font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-pulse"></span>
+                  <span>已同步雲端反饋庫</span>
+                </div>
               </div>
             </div>
 
-            <div className="bg-[#141822] border border-[#232a3b] rounded-xl p-5 text-center text-gray-400 text-xs">
-              <Sparkles className="w-5 h-5 mx-auto mb-2 text-emerald-400 animate-pulse" />
-              <p className="font-medium text-gray-200">全域訪客統計與熱點行為追蹤系統已就緒</p>
-              <p className="text-[11px] text-gray-500 mt-1">系統將於正式推出時自動啟動實時流量統計分析與熱門圖層儀表板。</p>
+            {/* 近期每日訪客瀏覽趨勢 */}
+            {stats.daily_pv && Object.keys(stats.daily_pv).length > 0 && (
+              <div className="bg-[#141822] border border-[#232a3b] rounded-xl p-5 shadow-xl flex flex-col gap-3">
+                <div className="flex items-center justify-between border-b border-[#232a3b] pb-3">
+                  <h4 className="text-xs font-bold text-gray-200 flex items-center gap-2">
+                    <BarChart3 className="w-4 h-4 text-emerald-400" />
+                    <span>近期每日瀏覽趨勢記錄 (Daily Page Views)</span>
+                  </h4>
+                  <span className="text-[10px] text-gray-500">每 30 秒自動更新並原子持久化</span>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2 pt-1">
+                  {Object.entries(stats.daily_pv)
+                    .sort((a, b) => b[0].localeCompare(a[0]))
+                    .slice(0, 7)
+                    .reverse()
+                    .map(([day, pv]) => (
+                      <div key={day} className="bg-[#0f131a] border border-[#232a3b] rounded-lg p-2.5 flex flex-col items-center justify-between text-center gap-1">
+                        <span className="text-[10px] text-gray-400 font-mono">{day.slice(5)}</span>
+                        <span className="text-base font-bold font-mono text-white">{pv}</span>
+                        <span className="text-[9px] text-emerald-400">次瀏覽</span>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
+
+            <div className="bg-[#141822] border border-emerald-500/20 rounded-xl p-4.5 text-center text-gray-400 text-xs flex items-center justify-center gap-3">
+              <Sparkles className="w-5 h-5 text-emerald-400 shrink-0" />
+              <div className="text-left">
+                <p className="font-semibold text-emerald-300 text-xs">全域訪客統計與系統監控已正式啟用</p>
+                <p className="text-[11px] text-gray-400 mt-0.5">系統正實時統計全網訪客造訪流量、WebSocket 在線使用者與問題回報反饋。所有計數定時持久化儲存。</p>
+              </div>
             </div>
           </div>
         )}

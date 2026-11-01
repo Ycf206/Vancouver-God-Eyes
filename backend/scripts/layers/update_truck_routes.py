@@ -19,84 +19,84 @@ CLEARANCE_POINTS = [
         "lat": 49.2687809, "lon": -123.1391959,
         "title": "Granville Bridge",
         "subtitle": "1508 W 3rd Ave",
-        "restriction_text": "Vertical Clearances - 5.1m",
+        "restriction_text": "垂直限制 - 5.1m",
         "clearance": "5.1m"
     },
     {
         "lat": 49.2666347, "lon": -123.1148279,
         "title": "Cambie Bridge",
         "subtitle": "W 2nd Ave",
-        "restriction_text": "Vertical Clearances - 4.95m",
+        "restriction_text": "垂直限制 - 4.95m",
         "clearance": "4.95m"
     },
     {
         "lat": 49.2648935, "lon": -123.0736911,
         "title": "N Grandview Hwy",
         "subtitle": "2222 Woodland Dr",
-        "restriction_text": "Vertical Clearances - 4.3m",
+        "restriction_text": "垂直限制 - 4.3m",
         "clearance": "4.3m"
     },
     {
         "lat": 49.2580739, "lon": -123.0601001,
         "title": "South Grandview Highway",
         "subtitle": "South Grandview Highway",
-        "restriction_text": "Vertical Clearances - 4.3m",
+        "restriction_text": "垂直限制 - 4.3m",
         "clearance": "4.3m"
     },
     {
         "lat": 49.2695639, "lon": -123.0276953,
         "title": "Trans-Canada Highway",
         "subtitle": "3401 E 1st Ave",
-        "restriction_text": "Vertical Clearances - 4.8m",
+        "restriction_text": "垂直限制 - 4.8m",
         "clearance": "4.8m"
     },
     {
         "lat": 49.2891476, "lon": -123.0405671,
         "title": "Commissioner St",
         "subtitle": "Wall St",
-        "restriction_text": "Vertical Clearances - 4.9m",
+        "restriction_text": "垂直限制 - 4.9m",
         "clearance": "4.9m"
     },
     {
         "lat": 49.2887019, "lon": -123.0362056,
         "title": "New Brighton Rd",
         "subtitle": "Wall St",
-        "restriction_text": "Vertical Clearances - 4.18m",
+        "restriction_text": "垂直限制 - 4.18m",
         "clearance": "4.18m"
     },
     {
         "lat": 49.2905475, "lon": -123.0268953,
         "title": "Iron Workers Memorial Bridge",
         "subtitle": "Trans-Canada Highway",
-        "restriction_text": "Vertical Clearances - 4.8m",
+        "restriction_text": "垂直限制 - 4.8m",
         "clearance": "4.8m"
     },
     {
         "lat": 49.208187, "lon": -123.0236626,
         "title": "SE Marine Drive",
         "subtitle": "Boundary Way",
-        "restriction_text": "Vertical Clearances - 5.25m",
+        "restriction_text": "垂直限制 - 5.25m",
         "clearance": "5.25m"
     },
     {
         "lat": 49.2110453, "lon": -123.0240717,
         "title": "Grey Gum Trail",
         "subtitle": "Boundary Way",
-        "restriction_text": "Vertical Clearances - 5.85m",
+        "restriction_text": "垂直限制 - 5.85m",
         "clearance": "5.85m"
     },
     {
         "lat": 49.2111431, "lon": -123.0770888,
         "title": "Knight Street Bridge",
         "subtitle": "SE Marine Drive",
-        "restriction_text": "Vertical Clearances - 4.85m",
+        "restriction_text": "垂直限制 - 4.85m",
         "clearance": "4.85m"
     },
     {
         "lat": 49.203073, "lon": -123.1348706,
         "title": "Arthur Laing Bridge",
         "subtitle": "Hudson Street",
-        "restriction_text": "Vertical Clearances - 4.15m",
+        "restriction_text": "垂直限制 - 4.15m",
         "clearance": "4.15m"
     }
 ]
@@ -202,7 +202,7 @@ def update_truck_routes():
                 "restriction_type": "clearance",
                 "name": p["title"],
                 "subtitle": p["subtitle"],
-                "badge": "高度限制",
+                "badge": "垂直限制",
                 "clearance": p["clearance"],
                 "restriction_text": p["restriction_text"],
                 "color": "#f59e0b"

@@ -38605,9 +38605,9 @@
         "restriction_type": "clearance",
         "name": "Granville Bridge",
         "subtitle": "1508 W 3rd Ave",
-        "badge": "高度限制",
+        "badge": "垂直限制",
         "clearance": "5.1m",
-        "restriction_text": "垂直淨高 - 5.1m",
+        "restriction_text": "垂直限制 - 5.1m",
         "color": "#f59e0b"
       }
     },
@@ -38627,9 +38627,9 @@
         "restriction_type": "clearance",
         "name": "Cambie Bridge",
         "subtitle": "W 2nd Ave",
-        "badge": "高度限制",
+        "badge": "垂直限制",
         "clearance": "4.95m",
-        "restriction_text": "垂直淨高 - 4.95m",
+        "restriction_text": "垂直限制 - 4.95m",
         "color": "#f59e0b"
       }
     },
@@ -38649,9 +38649,9 @@
         "restriction_type": "clearance",
         "name": "N Grandview Hwy",
         "subtitle": "2222 Woodland Dr",
-        "badge": "高度限制",
+        "badge": "垂直限制",
         "clearance": "4.3m",
-        "restriction_text": "垂直淨高 - 4.3m",
+        "restriction_text": "垂直限制 - 4.3m",
         "color": "#f59e0b"
       }
     },
@@ -38671,9 +38671,9 @@
         "restriction_type": "clearance",
         "name": "South Grandview Highway",
         "subtitle": "South Grandview Highway",
-        "badge": "高度限制",
+        "badge": "垂直限制",
         "clearance": "4.3m",
-        "restriction_text": "垂直淨高 - 4.3m",
+        "restriction_text": "垂直限制 - 4.3m",
         "color": "#f59e0b"
       }
     },
@@ -38693,9 +38693,9 @@
         "restriction_type": "clearance",
         "name": "Trans-Canada Highway",
         "subtitle": "3401 E 1st Ave",
-        "badge": "高度限制",
+        "badge": "垂直限制",
         "clearance": "4.8m",
-        "restriction_text": "垂直淨高 - 4.8m",
+        "restriction_text": "垂直限制 - 4.8m",
         "color": "#f59e0b"
       }
     },
@@ -38715,9 +38715,9 @@
         "restriction_type": "clearance",
         "name": "Commissioner St",
         "subtitle": "Wall St",
-        "badge": "高度限制",
+        "badge": "垂直限制",
         "clearance": "4.9m",
-        "restriction_text": "垂直淨高 - 4.9m",
+        "restriction_text": "垂直限制 - 4.9m",
         "color": "#f59e0b"
       }
     },
@@ -38737,9 +38737,9 @@
         "restriction_type": "clearance",
         "name": "New Brighton Rd",
         "subtitle": "Wall St",
-        "badge": "高度限制",
+        "badge": "垂直限制",
         "clearance": "4.18m",
-        "restriction_text": "垂直淨高 - 4.18m",
+        "restriction_text": "垂直限制 - 4.18m",
         "color": "#f59e0b"
       }
     },
@@ -38759,9 +38759,9 @@
         "restriction_type": "clearance",
         "name": "Iron Workers Memorial Bridge",
         "subtitle": "Trans-Canada Highway",
-        "badge": "高度限制",
+        "badge": "垂直限制",
         "clearance": "4.8m",
-        "restriction_text": "垂直淨高 - 4.8m",
+        "restriction_text": "垂直限制 - 4.8m",
         "color": "#f59e0b"
       }
     },
@@ -38781,9 +38781,9 @@
         "restriction_type": "clearance",
         "name": "SE Marine Drive",
         "subtitle": "Boundary Way",
-        "badge": "高度限制",
+        "badge": "垂直限制",
         "clearance": "5.25m",
-        "restriction_text": "垂直淨高 - 5.25m",
+        "restriction_text": "垂直限制 - 5.25m",
         "color": "#f59e0b"
       }
     },
@@ -38803,9 +38803,9 @@
         "restriction_type": "clearance",
         "name": "Grey Gum Trail",
         "subtitle": "Boundary Way",
-        "badge": "高度限制",
+        "badge": "垂直限制",
         "clearance": "5.85m",
-        "restriction_text": "垂直淨高 - 5.85m",
+        "restriction_text": "垂直限制 - 5.85m",
         "color": "#f59e0b"
       }
     },
@@ -38825,9 +38825,9 @@
         "restriction_type": "clearance",
         "name": "Knight Street Bridge",
         "subtitle": "SE Marine Drive",
-        "badge": "高度限制",
+        "badge": "垂直限制",
         "clearance": "4.85m",
-        "restriction_text": "垂直淨高 - 4.85m",
+        "restriction_text": "垂直限制 - 4.85m",
         "color": "#f59e0b"
       }
     },
@@ -38847,9 +38847,9 @@
         "restriction_type": "clearance",
         "name": "Arthur Laing Bridge",
         "subtitle": "Hudson Street",
-        "badge": "高度限制",
+        "badge": "垂直限制",
         "clearance": "4.15m",
-        "restriction_text": "垂直淨高 - 4.15m",
+        "restriction_text": "垂直限制 - 4.15m",
         "color": "#f59e0b"
       }
     },

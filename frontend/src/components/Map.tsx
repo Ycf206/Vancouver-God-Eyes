@@ -39,6 +39,32 @@ if (typeof window !== 'undefined') {
   setWorkerUrl('/maplibre-gl-worker.mjs');
 }
 
+class PopupErrorBoundary extends React.Component<
+  { children: React.ReactNode; fallback?: React.ReactNode },
+  { hasError: boolean }
+> {
+  constructor(props: { children: React.ReactNode; fallback?: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  componentDidCatch(error: Error, info: React.ErrorInfo) {
+    console.error('Popup caught runtime error:', error, info);
+  }
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback || (
+        <div className="p-3 text-xs text-rose-600 bg-rose-50 rounded border border-rose-200">
+          此設施資訊載入發生暫時性異常，請關閉後重新點擊
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 interface Vehicle {
   id: string;
   route_id: string;
@@ -550,6 +576,15 @@ export default function AppMap() {
       setSelectedStationAlertMarker(null);
     }
   }, [isExploreOpen, exploreTab]);
+
+  // 4. 正式開始執行後台統計資料：每次進入地圖頁面觸發一次造訪統計計數
+  useEffect(() => {
+    try {
+      fetch('/api/stats/visit', { method: 'POST', keepalive: true }).catch(() => {});
+    } catch {
+      // ignore
+    }
+  }, []);
 
   // 保底：若探索交通警報開啟但本地尚未加載 alerts 列表，預載靜態快取
   useEffect(() => {
@@ -9063,7 +9098,8 @@ export default function AppMap() {
             offset={[0, -10]}
             maxWidth="none"
           >
-            <div className={`p-3.5 ${
+            <PopupErrorBoundary>
+              <div className={`p-3.5 ${
               (selectedFacility.facility_type === 'traffic_conditions' || selectedFacility.facility_type === 'traffic_corridor') ? 'w-[300px] sm:w-[335px]' :
               (selectedFacility.facility_type === 'traffic_cameras') ? 'w-[320px] sm:w-[350px]' : 
               (selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'street_lighting') ? 'w-[280px] sm:w-[310px]' :
@@ -9158,7 +9194,7 @@ export default function AppMap() {
                   if (t === 'turn_restrictions') return { label: '轉向限制', bg: 'bg-rose-600 text-white' };
                   if (t === 'truck_routes_restriction') {
                     const isWeight = selectedFacility.properties?.restriction_type === 'weight';
-                    return { label: isWeight ? '重量限制' : '高度限制', bg: isWeight ? 'bg-orange-600 text-white' : 'bg-amber-600 text-white' };
+                    return { label: isWeight ? '重量限制' : '垂直限制', bg: isWeight ? 'bg-orange-600 text-white' : 'bg-amber-600 text-white' };
                   }
                   if (t === 'recycling') return { label: '環保回收', bg: 'bg-emerald-600 text-white' };
                   if (t === 'litter_containers') return { label: '垃圾箱', bg: 'bg-amber-600 text-white' };
@@ -11839,7 +11875,7 @@ export default function AppMap() {
                                 </a>
                                 <a
                                   href={`mailto:${email}`}
-                                  className="p-1 rounded bg-white hover:bg-violet-50 text-violet-600 border border-gray-200 transition-colors shadow-2xs shrink-0"
+                                  className="p-1 rounded bg-white hover:bg-violet-50 text-violet-600 border border-gray-200 transition-colors shadow-xs shrink-0"
                                   title={`發送郵件至 ${email}`}
                                 >
                                   <Mail className="w-3 h-3" />
@@ -12165,11 +12201,15 @@ export default function AppMap() {
                 );
               })()}
 
-              {/* Truck Routes Restriction (貨車路線特別限制 - 高度限制 Vertical Clearances / 重量限制 Weight Restriction) */}
+              {/* Truck Routes Restriction (貨車路線特別限制 - 垂直限制 Vertical Clearances / 重量限制 Weight Restriction) */}
               {selectedFacility.facility_type === 'truck_routes_restriction' && (() => {
                 const props = selectedFacility.properties || {};
                 const isWeight = props.restriction_type === 'weight';
-                const restrictionText = isWeight ? '重量限制' : (props.restriction_text || `Vertical Clearances - ${props.clearance || '5.1m'}`);
+                const restrictionText = isWeight 
+                  ? '重量限制' 
+                  : (props.restriction_text 
+                      ? String(props.restriction_text).replace(/vertical\s*clearances?/gi, '垂直限制').replace(/垂直淨高/g, '垂直限制')
+                      : `垂直限制 - ${props.clearance || '5.1m'}`);
                 const themeColor = isWeight ? '#ea580c' : '#f59e0b';
                 
                 return (
@@ -16172,6 +16212,7 @@ export default function AppMap() {
                 </button>
               </div>
             </div>
+            </PopupErrorBoundary>
           </Popup>
         )}
 
@@ -16653,10 +16694,10 @@ export default function AppMap() {
         const stopList = selectedBus.is_seabus ? seabusStops : (busDetails?.stops || []);
 
         return (
-          <div className="fixed top-[72px] right-4 z-40 w-[340px] max-w-[calc(100vw-32px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-200 select-none">
+          <div className="fixed top-[72px] right-4 z-40 w-[390px] sm:w-[430px] max-w-[calc(100vw-32px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-200 select-none">
             {/* Header */}
-            <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-[#262b38] shrink-0">
-              <div className="flex items-start gap-2.5 min-w-0">
+            <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-[#262b38] shrink-0 gap-2">
+              <div className="flex items-start gap-2.5 min-w-0 flex-1">
                 <div className={`w-8 h-8 rounded-lg ${
                   selectedBus.is_seabus 
                     ? 'bg-sky-500/20 border border-sky-500/40 text-sky-400' 
@@ -16670,8 +16711,8 @@ export default function AppMap() {
                     </svg>
                   )}
                 </div>
-                <div className="min-w-0">
-                  <h3 className="font-bold text-white text-[15px] leading-snug tracking-tight truncate">
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-bold text-white text-[15px] leading-snug tracking-tight break-words">
                     {selectedBus.is_seabus ? `SeaBus 跨海渡輪 去 ${destName}` : `${busNum} 去 ${destName}`}
                   </h3>
                   <div className="flex items-center gap-1.5 mt-0.5">
@@ -16705,26 +16746,26 @@ export default function AppMap() {
 
             {/* Info Rows */}
             <div className="flex flex-col gap-2 text-xs shrink-0">
-              <div className="flex justify-between items-center gap-2">
-                <span className="text-gray-400 shrink-0">營辦商</span>
-                <span className="font-bold text-gray-100 text-right truncate">{operatorName}</span>
+              <div className="flex justify-between items-start gap-2">
+                <span className="text-gray-400 shrink-0 mt-0.5">營辦商</span>
+                <span className="font-bold text-gray-100 text-right break-words leading-tight max-w-[270px]">{operatorName}</span>
               </div>
-              <div className="flex justify-between items-center gap-2">
-                <span className="text-gray-400 shrink-0">起點</span>
-                <span className="font-bold text-gray-100 text-right truncate">{originName}</span>
+              <div className="flex justify-between items-start gap-2">
+                <span className="text-gray-400 shrink-0 mt-0.5">起點</span>
+                <span className="font-bold text-gray-100 text-right break-words leading-tight max-w-[270px]">{originName}</span>
               </div>
-              <div className="flex justify-between items-center gap-2">
-                <span className="text-gray-400 shrink-0">終點</span>
-                <span className="font-bold text-gray-100 text-right truncate">{destName}</span>
+              <div className="flex justify-between items-start gap-2">
+                <span className="text-gray-400 shrink-0 mt-0.5">終點</span>
+                <span className="font-bold text-gray-100 text-right break-words leading-tight max-w-[270px]">{destName}</span>
               </div>
-              <div className="flex justify-between items-center gap-2">
-                <span className="text-gray-400 shrink-0">當前</span>
-                <span className="font-bold text-emerald-400 text-right truncate">開往 {destName}</span>
+              <div className="flex justify-between items-start gap-2">
+                <span className="text-gray-400 shrink-0 mt-0.5">當前</span>
+                <span className="font-bold text-emerald-400 text-right break-words leading-tight max-w-[270px]">開往 {destName}</span>
               </div>
               <div className="flex justify-between items-start gap-2 pt-0.5">
                 <span className="text-gray-400 shrink-0 mt-0.5">下一站</span>
-                <div className="flex flex-col items-end text-right min-w-0">
-                  <span className="font-bold text-white leading-snug">{nextStopName}</span>
+                <div className="flex flex-col items-end text-right min-w-0 max-w-[270px]">
+                  <span className="font-bold text-white leading-snug break-words">{nextStopName}</span>
                   <span className="text-[11px] font-bold text-amber-400 mt-0.5">
                     {nextStopTime
                       ? `預計 ${formatTimePreference(nextStopTime, timeFormat)} (${nextStopMin !== undefined && nextStopMin !== null ? (nextStopMin <= 0 ? '即將進站' : `${nextStopMin} 分鐘後`) : '行駛中'})`
@@ -16829,18 +16870,18 @@ export default function AppMap() {
           .trim();
 
         return (
-          <div className="fixed top-[72px] right-4 z-40 w-[340px] max-w-[calc(100vw-32px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-200 select-none">
+          <div className="fixed top-[72px] right-4 z-40 w-[390px] sm:w-[430px] max-w-[calc(100vw-32px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-200 select-none">
             {/* Header */}
-            <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-[#262b38] shrink-0">
-              <div className="flex items-start gap-2.5 min-w-0">
+            <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-[#262b38] shrink-0 gap-2">
+              <div className="flex items-start gap-2.5 min-w-0 flex-1">
                 <div 
                   className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 shadow-sm text-white"
                   style={{ backgroundColor: `${selectedTrain.color}33`, borderColor: `${selectedTrain.color}88`, borderWidth: '1px' }}
                 >
                   <Train className="w-4 h-4" style={{ color: selectedTrain.color }} />
                 </div>
-                <div className="min-w-0">
-                  <h3 className="font-bold text-white text-[15px] leading-snug tracking-tight truncate">
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-bold text-white text-[15px] leading-snug tracking-tight break-words">
                     {lineName} 去 {destName}
                   </h3>
                   <div className="flex items-center gap-1.5 mt-0.5">
@@ -16864,34 +16905,34 @@ export default function AppMap() {
 
             {/* Info Rows */}
             <div className="flex flex-col gap-2 text-xs shrink-0">
-              <div className="flex justify-between items-center gap-2">
-                <span className="text-gray-400 shrink-0">營辦商</span>
-                <span className="font-bold text-gray-100 text-right truncate">{operatorName}</span>
+              <div className="flex justify-between items-start gap-2">
+                <span className="text-gray-400 shrink-0 mt-0.5">營辦商</span>
+                <span className="font-bold text-gray-100 text-right break-words leading-tight max-w-[270px]">{operatorName}</span>
               </div>
-              <div className="flex justify-between items-center gap-2">
-                <span className="text-gray-400 shrink-0">列車型號</span>
-                <span className="font-bold text-gray-100 text-right truncate">
+              <div className="flex justify-between items-start gap-2">
+                <span className="text-gray-400 shrink-0 mt-0.5">列車型號</span>
+                <span className="font-bold text-gray-100 text-right break-words leading-tight max-w-[270px]">
                   {trainModelClean || selectedTrain.model || 'SkyTrain'} ({selectedTrain.cars} 卡)
                 </span>
               </div>
-              <div className="flex justify-between items-center gap-2">
-                <span className="text-gray-400 shrink-0">起點</span>
-                <span className="font-bold text-gray-100 text-right truncate">{originName}</span>
+              <div className="flex justify-between items-start gap-2">
+                <span className="text-gray-400 shrink-0 mt-0.5">起點</span>
+                <span className="font-bold text-gray-100 text-right break-words leading-tight max-w-[270px]">{originName}</span>
               </div>
-              <div className="flex justify-between items-center gap-2">
-                <span className="text-gray-400 shrink-0">終點</span>
-                <span className="font-bold text-gray-100 text-right truncate">{destName}</span>
+              <div className="flex justify-between items-start gap-2">
+                <span className="text-gray-400 shrink-0 mt-0.5">終點</span>
+                <span className="font-bold text-gray-100 text-right break-words leading-tight max-w-[270px]">{destName}</span>
               </div>
-              <div className="flex justify-between items-center gap-2">
-                <span className="text-gray-400 shrink-0">當前</span>
-                <span className="font-bold text-right truncate" style={{ color: selectedTrain.color }}>
+              <div className="flex justify-between items-start gap-2">
+                <span className="text-gray-400 shrink-0 mt-0.5">當前</span>
+                <span className="font-bold text-right break-words leading-tight max-w-[270px]" style={{ color: selectedTrain.color }}>
                   開往 {destName} ({selectedTrain.status}{selectedTrain.speed_kmh > 0 ? ` · ${selectedTrain.speed_kmh} km/h` : ''})
                 </span>
               </div>
               <div className="flex justify-between items-start gap-2 pt-0.5">
                 <span className="text-gray-400 shrink-0 mt-0.5">下一站</span>
-                <div className="flex flex-col items-end text-right min-w-0">
-                  <span className="font-bold text-white leading-snug">{nextStopName}</span>
+                <div className="flex flex-col items-end text-right min-w-0 max-w-[270px]">
+                  <span className="font-bold text-white leading-snug break-words">{nextStopName}</span>
                   <span className="text-[11px] font-bold text-amber-400 mt-0.5">
                     {nextStopTime
                       ? `預計 ${formatTimePreference(nextStopTime, timeFormat)} (${nextStopMin <= 0 ? '即將進站' : `${nextStopMin} 分鐘後`})`
@@ -18400,15 +18441,15 @@ export default function AppMap() {
 
       {/* 點選天車站點時展示之路線班次與綜合資訊面板 */}
       {selectedSkytrainStation && (
-        <div className="fixed top-[72px] right-4 z-40 w-[360px] max-w-[calc(100vw-32px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-200 select-none">
+        <div className="fixed top-[72px] right-4 z-40 w-[390px] sm:w-[430px] max-w-[calc(100vw-32px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-200 select-none">
           {/* Header */}
-          <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-[#262b38] shrink-0">
-            <div className="flex items-start gap-2.5 min-w-0">
+          <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-[#262b38] shrink-0 gap-2">
+            <div className="flex items-start gap-2.5 min-w-0 flex-1">
               <div className="w-8 h-8 rounded-lg bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400 shrink-0 mt-0.5 shadow-sm">
                 <span className="text-base select-none">🚉</span>
               </div>
-              <div className="min-w-0">
-                <h3 className="font-bold text-white text-[15px] leading-snug tracking-tight truncate">
+              <div className="min-w-0 flex-1">
+                <h3 className="font-bold text-white text-[15px] leading-snug tracking-tight break-words">
                   {selectedSkytrainStation.name.replace(/\s*Station$/i, '').replace(/\s*站$/, '').trim() + ' Station'}
                 </h3>
                 <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">

@@ -5071,7 +5071,11 @@ def get_ev_stations_api(
             continue
 
         dist = haversine_distance(ref_lat, ref_lon, st_lat, st_lon)
-        power_kw = float(props.get("power_kw", 7.2))
+        raw_power = props.get("power_kw")
+        try:
+            power_kw = float(raw_power) if raw_power is not None and str(raw_power).strip() != "" else 7.2
+        except (ValueError, TypeError):
+            power_kw = 7.2
         cost_str = props.get("cost", "依現場計費")
 
         # 綜合最優打分：功率越高加分越多，距離越遠減分
@@ -5443,9 +5447,14 @@ def get_admin_analytics(db: Session = Depends(database.get_db)):
         "today_str": today_str,
         "today_page_views": today_pv,
         "total_page_views": total_pv,
+        "online_users": online_count,
         "active_online_users": online_count,
         "total_issue_reports": issue_count,
+        "issue_reports_count": issue_count,
+        "daily_pv": pv_data.get("daily_pv", {}),
         "recent_issues": issue_list[-20:][::-1],
+        "status_note": "實時統計運作中",
+        "is_active": True,
         "is_ready_for_launch": True
     }
 

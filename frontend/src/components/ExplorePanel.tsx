@@ -7794,20 +7794,6 @@ function ExploreContent() {
               </div>
             </div>
 
-            {trafficSummary?.worst_corridor && (
-              <div className={`text-[10px] rounded px-2 py-0.5 flex items-center gap-1.5 truncate border ${
-                (trafficSummary?.overall_congestion_score ?? 18) < 35
-                  ? 'bg-emerald-950/40 border-emerald-800/40 text-emerald-200'
-                  : 'bg-red-950/40 border-red-800/40 text-red-200'
-              }`}>
-                <span className="text-[10px] shrink-0">{(trafficSummary?.overall_congestion_score ?? 18) < 35 ? '✅' : '⚠️'}</span>
-                <span className={`font-medium shrink-0 ${(trafficSummary?.overall_congestion_score ?? 18) < 35 ? 'text-emerald-300' : 'text-red-300'}`}>
-                  {(trafficSummary?.overall_congestion_score ?? 18) < 35 ? '路況：' : '瓶頸：'}
-                </span>
-                <span className="truncate text-gray-300">{trafficSummary.worst_corridor}</span>
-              </div>
-            )}
-
             {/* 路況色彩圖例 (Fast to Slow) */}
             <div className="flex items-center justify-between px-1.5 py-1 text-[10px] text-gray-400 border-t border-[#1e2332] bg-black/20 rounded">
               <span className="text-emerald-400 font-medium">暢通 (Fast)</span>

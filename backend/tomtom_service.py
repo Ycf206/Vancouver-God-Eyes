@@ -1305,6 +1305,13 @@ class TomTomTrafficService:
         freeflow_roads_count = sum(1 for r in all_monitored_roads if r["delay_min"] <= 1)
         severe_roads_count = sum(1 for r in all_monitored_roads if r["delay_min"] >= 5 or (isinstance(r.get("status"), str) and ("Heavy" in r["status"] or "嚴重" in r["status"] or "重度" in r["status"])))
 
+        # 計算綜合壅塞評分 (0 - 100)
+        if total_roads_count > 0:
+            congestion_score = int(round((1.0 - (freeflow_roads_count / total_roads_count)) * 70 + (severe_roads_count / total_roads_count) * 30))
+            congestion_score = max(0, min(100, congestion_score))
+        else:
+            congestion_score = 0
+
         # 城市整體路況 (無 "大溫" 與 "(Free Flow)")
         if severe_roads_count == 0 and freeflow_roads_count >= int(total_roads_count * 0.9):
             city_status = "全線暢通"
