@@ -1,10 +1,12 @@
 {
   "type": "FeatureCollection",
   "metadata": {
-    "generated_at": "2026-10-25T17:55:55.183Z",
+    "generated_at": "2026-11-01T06:06:35.524Z",
     "source": "https://bankee.ca/bc/vancouver/atm/",
     "count": 293
   },
+  "total_count": 293,
+  "updated_at": "2026-11-01T06:06:35.524Z",
   "features": [
     {
       "type": "Feature",
@@ -41,7 +43,7 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:30 - 16:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "27150",
         "institution_number": "001",
         "routing_number": "000127150",
@@ -83,7 +85,7 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "16180",
         "institution_number": "809",
         "routing_number": "080916180",
@@ -313,7 +315,7 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "05600",
         "institution_number": "003",
         "routing_number": "000305600",
@@ -401,7 +403,7 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "19680",
         "institution_number": "809",
         "routing_number": "080919680",
@@ -443,7 +445,7 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "30170",
         "institution_number": "809",
         "routing_number": "080930170",
@@ -492,7 +494,7 @@
           "friday": "09:00 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "94500",
         "institution_number": "004",
         "routing_number": "000494500",
@@ -679,7 +681,7 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:30 - 16:00"
         },
-        "status_text": "營業中",
+        "status_text": "休息中",
         "transit_number": "83220",
         "institution_number": "002",
         "routing_number": "000283220",
@@ -1094,7 +1096,7 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:30 - 16:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "07600",
         "institution_number": "001",
         "routing_number": "000107600",
@@ -1138,7 +1140,7 @@
           "friday": "00:00 - 00:00",
           "saturday": "00:00 - 00:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -1180,7 +1182,7 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "10940",
         "institution_number": "809",
         "routing_number": "080910940",
@@ -1367,7 +1369,7 @@
           "friday": "09:00 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "96510",
         "institution_number": "004",
         "routing_number": "000496510",
@@ -1643,7 +1645,7 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "status_text": "休息中",
+        "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -1870,7 +1872,7 @@
           "friday": "00:00 - 00:00",
           "saturday": "00:00 - 00:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -1963,7 +1965,7 @@
           "friday": "09:00 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "94480",
         "institution_number": "004",
         "routing_number": "000494480",
@@ -2097,7 +2099,7 @@
           "friday": "00:00 - 00:00",
           "saturday": "00:00 - 00:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -2187,7 +2189,7 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -2412,7 +2414,7 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -2817,7 +2819,7 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "07200",
         "institution_number": "003",
         "routing_number": "000307200",
@@ -2866,7 +2868,7 @@
           "friday": "09:00 - 20:00",
           "saturday": "09:00 - 16:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "94000",
         "institution_number": "004",
         "routing_number": "000494000",
@@ -2952,7 +2954,7 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "16190",
         "institution_number": "809",
         "routing_number": "080916190",
@@ -3001,7 +3003,7 @@
           "friday": "09:00 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "94530",
         "institution_number": "004",
         "routing_number": "000494530",
@@ -3045,7 +3047,7 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -3133,7 +3135,7 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "16480",
         "institution_number": "809",
         "routing_number": "080916480",
@@ -3177,7 +3179,7 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -3631,7 +3633,7 @@
           "friday": "09:00 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "00440",
         "institution_number": "004",
         "routing_number": "000400440",
@@ -3675,7 +3677,7 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -3815,7 +3817,7 @@
           "friday": "09:30 - 19:00",
           "saturday": "09:30 - 16:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "13440",
         "institution_number": "001",
         "routing_number": "000113440",
@@ -3857,7 +3859,7 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "16300",
         "institution_number": "809",
         "routing_number": "080916300",
@@ -3990,7 +3992,7 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -4032,7 +4034,7 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "19180",
         "institution_number": "809",
         "routing_number": "080919180",
@@ -4387,7 +4389,7 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -4431,7 +4433,7 @@
           "thursday": "09:00 - 17:00",
           "friday": "09:00 - 17:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "02160",
         "institution_number": "004",
         "routing_number": "000402160",
@@ -4475,7 +4477,7 @@
           "friday": "05:00 - 23:50",
           "saturday": "05:00 - 23:50"
         },
-        "status_text": "休息中",
+        "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -4561,7 +4563,7 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "00270",
         "institution_number": "809",
         "routing_number": "080900270",
@@ -4742,7 +4744,7 @@
           "friday": "00:00 - 00:00",
           "saturday": "00:00 - 00:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -5097,7 +5099,7 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -5233,7 +5235,7 @@
           "thursday": "09:00 - 17:00",
           "friday": "09:00 - 17:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "94400",
         "institution_number": "004",
         "routing_number": "000494400",
@@ -5275,7 +5277,7 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 15:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "16310",
         "institution_number": "809",
         "routing_number": "080916310",
@@ -5409,7 +5411,7 @@
           "friday": "08:00 - 20:00",
           "saturday": "08:00 - 20:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -5451,7 +5453,7 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "09860",
         "institution_number": "001",
         "routing_number": "000109860",
@@ -5495,7 +5497,7 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:30 - 16:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "27130",
         "institution_number": "001",
         "routing_number": "000127130",
@@ -5544,7 +5546,7 @@
           "friday": "09:00 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "00600",
         "institution_number": "004",
         "routing_number": "000400600",
@@ -5725,7 +5727,7 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -5813,7 +5815,7 @@
           "friday": "00:00 - 00:00",
           "saturday": "00:00 - 00:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -5899,7 +5901,7 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -5989,7 +5991,7 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -6266,7 +6268,7 @@
           "friday": "09:30 - 19:00",
           "saturday": "09:30 - 16:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "08930",
         "institution_number": "001",
         "routing_number": "000108930",
@@ -6356,7 +6358,7 @@
           "friday": "08:00 - 20:00",
           "saturday": "08:00 - 20:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -6542,7 +6544,7 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -6636,7 +6638,7 @@
           "friday": "09:30 - 19:00",
           "saturday": "09:30 - 16:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "08650",
         "institution_number": "001",
         "routing_number": "000108650",
@@ -6955,7 +6957,7 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "27100",
         "institution_number": "001",
         "routing_number": "000127100",
@@ -7085,7 +7087,7 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -7177,7 +7179,7 @@
           "friday": "08:00 - 23:00",
           "saturday": "08:00 - 23:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -7269,7 +7271,7 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 15:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "16320",
         "institution_number": "809",
         "routing_number": "080916320",
@@ -7311,7 +7313,7 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "03650",
         "institution_number": "809",
         "routing_number": "080903650",
@@ -7355,7 +7357,7 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -7399,7 +7401,7 @@
           "friday": "08:00 - 23:00",
           "saturday": "08:00 - 23:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -7532,7 +7534,7 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:30 - 16:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "07240",
         "institution_number": "001",
         "routing_number": "000107240",
@@ -7799,7 +7801,7 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 15:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "16140",
         "institution_number": "809",
         "routing_number": "080916140",
@@ -8032,7 +8034,7 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -8219,7 +8221,7 @@
           "friday": "00:00 - 00:00",
           "saturday": "00:00 - 00:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -8360,7 +8362,7 @@
           "friday": "00:00 - 00:00",
           "saturday": "00:00 - 00:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -8586,7 +8588,7 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -8631,7 +8633,7 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:30 - 16:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "07690",
         "institution_number": "001",
         "routing_number": "000107690",
@@ -8763,7 +8765,7 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "11910",
         "institution_number": "809",
         "routing_number": "080911910",
@@ -8905,7 +8907,7 @@
           "friday": "00:00 - 00:00",
           "saturday": "00:00 - 00:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -8949,7 +8951,7 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -9265,7 +9267,7 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 15:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "16130",
         "institution_number": "809",
         "routing_number": "080916130",
@@ -9308,7 +9310,7 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 16:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "03820",
         "institution_number": "809",
         "routing_number": "080903820",
@@ -9401,7 +9403,7 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:30 - 16:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "27210",
         "institution_number": "001",
         "routing_number": "000127210",
@@ -9444,7 +9446,7 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 15:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "16120",
         "institution_number": "809",
         "routing_number": "080916120",
@@ -9763,7 +9765,7 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:30 - 16:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "07680",
         "institution_number": "001",
         "routing_number": "000107680",
@@ -9807,7 +9809,7 @@
           "friday": "06:00 - 22:00",
           "saturday": "06:00 - 22:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -10124,7 +10126,7 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -10407,7 +10409,7 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -10542,7 +10544,7 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:30 - 16:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "30970",
         "institution_number": "001",
         "routing_number": "000130970",
@@ -10586,7 +10588,7 @@
           "friday": "10:00 - 20:00",
           "saturday": "10:00 - 18:00"
         },
-        "status_text": "營業中",
+        "status_text": "休息中",
         "transit_number": "3185",
         "institution_number": null,
         "routing_number": null,
@@ -10679,7 +10681,7 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -10948,7 +10950,7 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 18:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "27200",
         "institution_number": "001",
         "routing_number": "000127200",
@@ -11080,7 +11082,7 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -11124,7 +11126,7 @@
           "friday": "10:00 - 20:00",
           "saturday": "10:00 - 18:00"
         },
-        "status_text": "營業中",
+        "status_text": "休息中",
         "transit_number": "350",
         "institution_number": null,
         "routing_number": null,
@@ -11358,7 +11360,7 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:30 - 16:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "07580",
         "institution_number": "001",
         "routing_number": "000107580",
@@ -11538,7 +11540,7 @@
           "friday": "09:00 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "07510",
         "institution_number": "004",
         "routing_number": "000407510",
@@ -11628,7 +11630,7 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "16330",
         "institution_number": "809",
         "routing_number": "080916330",
@@ -11672,7 +11674,7 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -12085,7 +12087,7 @@
           "friday": "09:30 - 18:00",
           "saturday": "09:30 - 16:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "08380",
         "institution_number": "001",
         "routing_number": "000108380",
@@ -12129,7 +12131,7 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -12173,7 +12175,7 @@
           "friday": "00:00 - 00:00",
           "saturday": "00:00 - 00:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -12263,7 +12265,7 @@
           "thursday": "09:30 - 17:00",
           "friday": "09:30 - 17:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "08110",
         "institution_number": "001",
         "routing_number": "000108110",
@@ -12310,7 +12312,7 @@
           "friday": "10:00 - 18:00",
           "saturday": "09:00 - 16:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "91980",
         "institution_number": "004",
         "routing_number": "000491980",
@@ -12352,7 +12354,7 @@
           "friday": "09:30 - 17:00",
           "saturday": "09:30 - 15:00"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "休息中",
         "transit_number": "13220",
         "institution_number": "809",
         "routing_number": "080913220",
@@ -12532,7 +12534,7 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -12576,7 +12578,7 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -12843,7 +12845,7 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -12976,7 +12978,7 @@
           "friday": "09:00 - 21:00",
           "saturday": "09:00 - 21:00"
         },
-        "status_text": "營業中",
+        "status_text": "休息中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
@@ -13020,7 +13022,7 @@
           "friday": "00:00 - 23:59",
           "saturday": "00:00 - 23:59"
         },
-        "status_text": "營業中 (24/7)",
+        "status_text": "營業中",
         "transit_number": null,
         "institution_number": null,
         "routing_number": null,
