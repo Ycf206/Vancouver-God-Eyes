@@ -3062,7 +3062,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'bus-stops',
         paint: {
-          'circle-radius': 4.5,
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#ffffff',
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#22c55e'
@@ -3181,7 +3181,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'seabus-stops',
         paint: {
-          'circle-radius': 4.5,
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#ffffff',
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#8b786d'
@@ -3721,7 +3721,7 @@ export default function AppMap() {
         source: 'impark',
         ...(imparkFilterExpr ? { filter: imparkFilterExpr } : {}),
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3.5, 14, 6, 15, 9, 17, 12],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#d9261c',
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
@@ -4258,7 +4258,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'canada-post',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 3, 14, 6, 17, 9],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#E31837',
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
@@ -4272,7 +4272,7 @@ export default function AppMap() {
         layout: {
           'text-field': 'CP',
           'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
-          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 8, 15, 10, 17, 12],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 7, 15, 9, 17, 11],
           'text-allow-overlap': true,
           'text-ignore-placement': true
         },
@@ -4288,7 +4288,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'fedex',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 3.5, 14, 6.5, 17, 9.5],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#4D148C',
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
@@ -4302,7 +4302,7 @@ export default function AppMap() {
         layout: {
           'text-field': 'FX',
           'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
-          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 8, 15, 10, 17, 12],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 7, 15, 9, 17, 11],
           'text-allow-overlap': true,
           'text-ignore-placement': true
         },
@@ -4318,7 +4318,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'purolator',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 3.5, 14, 6.5, 17, 9.5],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#00529B',
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
@@ -4332,7 +4332,7 @@ export default function AppMap() {
         layout: {
           'text-field': 'P',
           'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
-          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 8, 15, 10, 17, 12],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 13, 7, 15, 9, 17, 11],
           'text-allow-overlap': true,
           'text-ignore-placement': true
         },
@@ -4349,7 +4349,7 @@ export default function AppMap() {
         type: 'circle',
         source: 'atm',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 10, 3, 14, 6, 17, 9],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#f59e0b',
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
@@ -4622,7 +4622,7 @@ export default function AppMap() {
         source: 'van-wifi',
         filter: ['!', ['has', 'point_count']],
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3, 14, 5.5, 16, 9],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#06b6d4',
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
@@ -5516,7 +5516,7 @@ export default function AppMap() {
         source: 'public_art',
         minzoom: 11,
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3, 14, 5.5, 16, 8, 18, 10],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#c026d3',
           'circle-stroke-width': 1.5,
           'circle-stroke-color': '#ffffff'
@@ -5757,7 +5757,7 @@ export default function AppMap() {
         source: 'traffic_signals',
         minzoom: 11,
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3.5, 14, 5.5, 16, 7.5, 18, 10],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#eab308',
           'circle-stroke-width': 1.6,
           'circle-stroke-color': '#ffffff'
@@ -5850,7 +5850,7 @@ export default function AppMap() {
         filter: ['all', ['==', ['get', 'has_restrictions'], true], ['!', ['has', 'is_arrow_symbol']], ['!', ['has', 'is_restriction_arrow']], ['!', ['has', 'is_arrow_head']], ['!', ['has', 'is_arrow_wings']]],
         minzoom: 11,
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 4.5, 14, 6.5, 16, 9.0, 18, 11],
+          'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#dc2626',
           'circle-stroke-width': 2.5,
           'circle-stroke-color': '#ffffff'
@@ -7533,7 +7533,7 @@ export default function AppMap() {
             offset={[0, -8]}
             maxWidth="none"
           >
-            <div className="p-3 w-[300px] sm:w-[335px] max-w-[calc(100vw-32px)] max-h-[50vh] sm:max-h-[55vh] overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400 [&::-webkit-scrollbar-thumb]:rounded-full text-gray-800">
+            <div className="p-3 w-[300px] sm:w-[335px] max-w-[calc(100vw-32px)] max-h-[74vh] sm:max-h-[80vh] overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400 [&::-webkit-scrollbar-thumb]:rounded-full text-gray-800">
               {(() => {
                 const isSeaBusStop = selectedStop.id === '8035' || selectedStop.id === '8036' || selectedStop.name.includes('SeaBus') || selectedStop.name.includes('Lonsdale Quay') || selectedStop.name.includes('Waterfront');
                 const cleanStopName = selectedStop.name.replace(/\s*(?:Northbound|Southbound)\s*$/i, '').trim();
@@ -7997,7 +7997,7 @@ export default function AppMap() {
             offset={[0, -14]}
             maxWidth="none"
           >
-            <div className="p-3.5 w-[300px] sm:w-[335px] max-w-[calc(100vw-32px)] text-gray-800">
+            <div className="p-3.5 w-[320px] sm:w-[365px] max-w-[calc(100vw-32px)] text-gray-800">
               <div className="flex items-start justify-between pb-2 mb-2.5 border-b border-gray-100">
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 bg-[#0060a9] rounded-lg flex items-center justify-center text-white shadow-sm flex-shrink-0">
@@ -8029,10 +8029,10 @@ export default function AppMap() {
                   <span className="text-gray-400 text-[10px] uppercase font-bold tracking-wider">航線 (Route)</span>
                   <span className="font-bold text-[#0060a9]">{selectedFerry.route_id}</span>
                 </div>
-                <div className="text-xs text-gray-700 flex justify-between items-center bg-white p-1.5 rounded border border-gray-100">
-                  <span className="font-medium truncate max-w-[100px] sm:max-w-[115px]">{selectedFerry.dep_name || selectedFerry.dep_code}</span>
-                  <span className="text-gray-400 font-bold">➝</span>
-                  <span className="font-medium truncate max-w-[100px] sm:max-w-[115px] text-right">{selectedFerry.arr_name || selectedFerry.arr_code}</span>
+                <div className="text-xs text-gray-700 flex items-center justify-between gap-1.5 bg-white p-2 rounded border border-gray-100">
+                  <span className="font-medium flex-1 text-left leading-snug break-words">{selectedFerry.dep_name || selectedFerry.dep_code}</span>
+                  <span className="text-gray-400 font-bold shrink-0 px-1">➝</span>
+                  <span className="font-medium flex-1 text-right leading-snug break-words">{selectedFerry.arr_name || selectedFerry.arr_code}</span>
                 </div>
                 <div className="flex justify-between items-center text-xs pt-1 border-t border-gray-200/50">
                   <span className="text-gray-500">預計時間</span>
@@ -8091,7 +8091,7 @@ export default function AppMap() {
             offset={[0, -14]}
             maxWidth="none"
           >
-            <div className="p-3.5 w-[300px] sm:w-[335px] max-w-[calc(100vw-32px)] text-gray-800">
+            <div className="p-3.5 w-[320px] sm:w-[365px] max-w-[calc(100vw-32px)] text-gray-800">
               <div className="flex items-start justify-between pb-2 mb-2.5 border-b border-gray-100">
                 <div className="flex items-center gap-2.5">
                   <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-white shadow-sm flex-shrink-0 ${
@@ -8139,7 +8139,7 @@ export default function AppMap() {
                   <span className="text-gray-900 font-medium text-right">{selectedMaritimeVessel.ship_type}</span>
                 </div>
                 <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
-                  <span>即時航速 (SOG)</span>
+                  <span>即時航速</span>
                   <span className="text-gray-900 font-medium text-right">
                     {selectedMaritimeVessel.sog} 節 ({Math.round(selectedMaritimeVessel.sog * 1.852)} km/h)
                   </span>
@@ -8165,7 +8165,7 @@ export default function AppMap() {
                 )}
                 {selectedMaritimeVessel.eta && (
                   <div className={`flex justify-between items-center text-gray-600 ${selectedMaritimeVessel.destination ? 'pt-1.5 border-t border-gray-100' : ''}`}>
-                    <span>預計抵達 (ETA)</span>
+                    <span>預計抵達</span>
                     <span className="text-gray-900 font-medium text-right">{formatShipEta(selectedMaritimeVessel.eta, timeFormat)}</span>
                   </div>
                 )}
@@ -8256,7 +8256,7 @@ export default function AppMap() {
             offset={[0, -12]}
             maxWidth="none"
           >
-            <div className="p-3.5 w-[300px] sm:w-[335px] max-w-[calc(100vw-32px)] text-gray-800">
+            <div className="p-3.5 w-[320px] sm:w-[365px] max-w-[calc(100vw-32px)] text-gray-800">
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
                 <div className="flex items-start gap-2 min-w-0 pr-2">
                   <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-sky-600 text-white shrink-0 mt-0.5 shadow-xs whitespace-nowrap">
@@ -8759,7 +8759,7 @@ export default function AppMap() {
             offset={[0, -14]}
             maxWidth="none"
           >
-            <div className="p-3.5 w-[300px] sm:w-[335px] max-w-[calc(100vw-32px)] text-gray-800">
+            <div className="p-3.5 w-[320px] sm:w-[365px] max-w-[calc(100vw-32px)] text-gray-800">
               {/* Header */}
               <div className="flex items-start justify-between pb-2 mb-2.5 border-b border-gray-100">
                 <div className="flex items-center gap-2.5">
@@ -8993,8 +8993,8 @@ export default function AppMap() {
               'w-[300px] sm:w-[335px]'
             } max-w-[calc(100vw-32px)] ${
               selectedFacility.facility_type === 'post_offices' 
-                ? 'max-h-[42vh] sm:max-h-[46vh]' 
-                : 'max-h-[50vh] sm:max-h-[55vh]'
+                ? 'max-h-[70vh] sm:max-h-[75vh]' 
+                : 'max-h-[74vh] sm:max-h-[80vh]'
             } overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400 [&::-webkit-scrollbar-thumb]:rounded-full text-gray-800`}>
               {(() => {
                 const headerBadge = (() => {
@@ -13060,9 +13060,9 @@ export default function AppMap() {
                 const formatMaintainer = (raw?: string | null) => {
                   if (!raw) return null;
                   const s = String(raw).trim();
-                  if (s.toLowerCase() === 'parks') return '公園局 (Parks)';
-                  if (s.toLowerCase() === 'engineering') return '工程局 (Engineering)';
-                  return raw;
+                  if (/parks?/i.test(s)) return '公園局';
+                  if (/engineering/i.test(s)) return '工程局';
+                  return s.replace(/\s*\([A-Za-z\s]+\)/g, '').replace(/[A-Za-z]/g, '').trim() || '市政府';
                 };
                 const maintainerZh = formatMaintainer(maintainer);
 
@@ -13132,7 +13132,9 @@ export default function AppMap() {
 
                 const formatHours = (h?: string) => {
                   if (!h) return null;
-                  return h.replace(/24hrs\s*-\s*24hrs/gi, '24hrs');
+                  const cleaned = h.replace(/24hrs\s*-\s*24hrs/gi, '24 hrs');
+                  if (/dawn\s*to\s*dusk/i.test(cleaned)) return '日出至日落 (Dawn to Dusk)';
+                  return formatOpeningHours(cleaned, timeFormat);
                 };
                 const summerH = formatHours(selectedFacility.properties.summer_hours);
                 const winterH = formatHours(selectedFacility.properties.winter_hours);
@@ -17826,24 +17828,6 @@ export default function AppMap() {
                 </div>
               </button>
 
-              {/* UPS (預設關閉, 啡色, disable) */}
-              <button
-                type="button"
-                disabled
-                className="flex items-center justify-between p-1.5 rounded-lg border border-amber-950/40 bg-[#161412] text-amber-600/50 cursor-not-allowed opacity-60"
-                title="即將支援"
-              >
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full flex items-center justify-center text-[8px] font-bold text-white bg-[#552c0e]/60">
-                    UPS
-                  </span>
-                  <span className="font-medium text-xs">
-                    UPS (即將支援)
-                  </span>
-                </div>
-                <span className="text-[10px] text-gray-500">停用</span>
-              </button>
-
               {/* Purolator (預設開啟, 藍色) */}
               <button
                 type="button"
@@ -17870,24 +17854,6 @@ export default function AppMap() {
                 }`}>
                   <div className="bg-white w-3 h-3 rounded-full shadow-md"></div>
                 </div>
-              </button>
-
-              {/* DHL (預設關閉, 黃色, disable) */}
-              <button
-                type="button"
-                disabled
-                className="flex items-center justify-between p-1.5 rounded-lg border border-yellow-950/40 bg-[#171610] text-yellow-500/50 cursor-not-allowed opacity-60"
-                title="即將支援"
-              >
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full flex items-center justify-center text-[8px] font-bold text-gray-900 bg-yellow-500/60">
-                    DHL
-                  </span>
-                  <span className="font-medium text-xs">
-                    DHL (即將支援)
-                  </span>
-                </div>
-                <span className="text-[10px] text-gray-500">停用</span>
               </button>
             </div>
           ) : (
@@ -18307,66 +18273,67 @@ export default function AppMap() {
                   <span>首班車 / 尾班車時刻</span>
                 </div>
 
-                <div className="grid grid-cols-3 gap-1.5 text-[11px]">
-                  <div className="bg-[#181d28] p-2 rounded border border-[#292f3f] flex flex-col gap-1.5">
-                    <span className="text-gray-300 font-semibold border-b border-[#292f3f] pb-1 text-xs">平日</span>
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-[10px] text-emerald-400 font-bold flex items-center gap-1 shrink-0">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>首班車
-                      </span>
-                      <span className="font-mono text-emerald-300 font-medium text-[10.5px] leading-snug pl-2.5 break-words">
-                        {selectedSkytrainStation.first_last?.weekday?.first_train || selectedSkytrainStation.first_last?.weekday?.first || '05:08'}
-                      </span>
-                    </div>
-                    <div className="flex flex-col gap-0.5 pt-1 border-t border-[#232836]">
-                      <span className="text-[10px] text-amber-400 font-bold flex items-center gap-1 shrink-0">
-                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0"></span>尾班車
-                      </span>
-                      <span className="font-mono text-amber-300 font-medium text-[10.5px] leading-snug pl-2.5 break-words">
-                        {selectedSkytrainStation.first_last?.weekday?.last_train || selectedSkytrainStation.first_last?.weekday?.last || '01:15'}
-                      </span>
-                    </div>
-                  </div>
+                {/* 3欄表格：第1欄平日/週六/週日及假日，第2欄首班車，第3欄尾班車 */}
+                <div className="overflow-hidden rounded border border-[#292f3f] bg-[#141822]">
+                  <table className="w-full text-left border-collapse text-[11px]">
+                    <thead>
+                      <tr className="border-b border-[#292f3f] bg-[#181d28] text-gray-400">
+                        <th className="py-2 px-2.5 font-semibold text-gray-300 w-[72px] shrink-0">營運日</th>
+                        <th className="py-2 px-2.5 font-semibold text-emerald-400">首班車</th>
+                        <th className="py-2 px-2.5 font-semibold text-amber-400">尾班車</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#232836]">
+                      {(() => {
+                        const formatSkytrainDest = (raw?: string) => {
+                          if (!raw) return '';
+                          return raw
+                            .replace(/往\s*YVR\s*機場/gi, 'to YVR-Airport')
+                            .replace(/往\s*列治文/gi, 'to Richmond-Brighouse')
+                            .replace(/往\s*Waterfront/gi, 'to Waterfront')
+                            .replace(/往\s*喬治王/gi, 'to King George')
+                            .replace(/往\s*素里/gi, 'to King George')
+                            .replace(/Waterfront\s*往素里/gi, 'to King George')
+                            .replace(/往\s*本拿比/gi, 'to Production Way')
+                            .replace(/往\s*高貴林/gi, 'to Lafarge Lake-Douglas')
+                            .replace(/往\s*VCC-Clark/gi, 'to VCC-Clark')
+                            .replace(/往\s*Lafarge Lake/gi, 'to Lafarge Lake-Douglas');
+                        };
 
-                  <div className="bg-[#181d28] p-2 rounded border border-[#292f3f] flex flex-col gap-1.5">
-                    <span className="text-gray-300 font-semibold border-b border-[#292f3f] pb-1 text-xs">週六</span>
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-[10px] text-emerald-400 font-bold flex items-center gap-1 shrink-0">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>首班車
-                      </span>
-                      <span className="font-mono text-emerald-300 font-medium text-[10.5px] leading-snug break-words">
-                        {selectedSkytrainStation.first_last?.saturday?.first_train || selectedSkytrainStation.first_last?.saturday?.first || '06:08'}
-                      </span>
-                    </div>
-                    <div className="flex flex-col gap-0.5 pt-1 border-t border-[#232836]">
-                      <span className="text-[10px] text-amber-400 font-bold flex items-center gap-1 shrink-0">
-                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0"></span>尾班車
-                      </span>
-                      <span className="font-mono text-amber-300 font-medium text-[10.5px] leading-snug break-words">
-                        {selectedSkytrainStation.first_last?.saturday?.last_train || selectedSkytrainStation.first_last?.saturday?.last || '01:15'}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="bg-[#181d28] p-2 rounded border border-[#292f3f] flex flex-col gap-1.5">
-                    <span className="text-gray-300 font-semibold border-b border-[#292f3f] pb-1 text-xs">週日 / 假日</span>
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-[10px] text-emerald-400 font-bold flex items-center gap-1 shrink-0">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>首班車
-                      </span>
-                      <span className="font-mono text-emerald-300 font-medium text-[10.5px] leading-snug break-words">
-                        {selectedSkytrainStation.first_last?.sunday_holiday?.first_train || selectedSkytrainStation.first_last?.sunday_holiday?.first || '07:08'}
-                      </span>
-                    </div>
-                    <div className="flex flex-col gap-0.5 pt-1 border-t border-[#232836]">
-                      <span className="text-[10px] text-amber-400 font-bold flex items-center gap-1 shrink-0">
-                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0"></span>尾班車
-                      </span>
-                      <span className="font-mono text-amber-300 font-medium text-[10.5px] leading-snug break-words">
-                        {selectedSkytrainStation.first_last?.sunday_holiday?.last_train || selectedSkytrainStation.first_last?.sunday_holiday?.last || '00:15'}
-                      </span>
-                    </div>
-                  </div>
+                        return (
+                          <>
+                            <tr>
+                              <td className="py-2 px-2.5 font-medium text-gray-200 align-top">平日</td>
+                              <td className="py-2 px-2.5 font-mono text-emerald-300 font-medium leading-relaxed align-top">
+                                {formatSkytrainDest(selectedSkytrainStation.first_last?.weekday?.first_train || selectedSkytrainStation.first_last?.weekday?.first || '05:08')}
+                              </td>
+                              <td className="py-2 px-2.5 font-mono text-amber-300 font-medium leading-relaxed align-top">
+                                {formatSkytrainDest(selectedSkytrainStation.first_last?.weekday?.last_train || selectedSkytrainStation.first_last?.weekday?.last || '01:15')}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td className="py-2 px-2.5 font-medium text-gray-200 align-top">週六</td>
+                              <td className="py-2 px-2.5 font-mono text-emerald-300 font-medium leading-relaxed align-top">
+                                {formatSkytrainDest(selectedSkytrainStation.first_last?.saturday?.first_train || selectedSkytrainStation.first_last?.saturday?.first || '06:08')}
+                              </td>
+                              <td className="py-2 px-2.5 font-mono text-amber-300 font-medium leading-relaxed align-top">
+                                {formatSkytrainDest(selectedSkytrainStation.first_last?.saturday?.last_train || selectedSkytrainStation.first_last?.saturday?.last || '01:15')}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td className="py-2 px-2.5 font-medium text-gray-200 align-top whitespace-nowrap">週日 / 假日</td>
+                              <td className="py-2 px-2.5 font-mono text-emerald-300 font-medium leading-relaxed align-top">
+                                {formatSkytrainDest(selectedSkytrainStation.first_last?.sunday_holiday?.first_train || selectedSkytrainStation.first_last?.sunday_holiday?.first || '07:08')}
+                              </td>
+                              <td className="py-2 px-2.5 font-mono text-amber-300 font-medium leading-relaxed align-top">
+                                {formatSkytrainDest(selectedSkytrainStation.first_last?.sunday_holiday?.last_train || selectedSkytrainStation.first_last?.sunday_holiday?.last || '00:15')}
+                              </td>
+                            </tr>
+                          </>
+                        );
+                      })()}
+                    </tbody>
+                  </table>
                 </div>
               </div>
 
@@ -18377,22 +18344,22 @@ export default function AppMap() {
                   <span>列車發車班距頻率</span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-1.5 text-[11px]">
-                  <div className="bg-[#181d28] p-2 rounded border border-[#292f3f] flex items-center justify-between">
-                    <span className="text-gray-400">尖峰時段</span>
-                    <span className="font-bold text-white font-mono">{selectedSkytrainStation.frequencies?.peak || '2 - 3.5 分鐘'}</span>
+                <div className="flex flex-col gap-1.5 text-[11px]">
+                  <div className="bg-[#181d28] px-2.5 py-1.5 rounded border border-[#292f3f] flex items-center justify-between">
+                    <span className="text-gray-300 shrink-0">尖峰時段</span>
+                    <span className="font-bold text-white font-mono text-right">{selectedSkytrainStation.frequencies?.peak || '2 - 3.5 分鐘'}</span>
                   </div>
-                  <div className="bg-[#181d28] p-2 rounded border border-[#292f3f] flex items-center justify-between">
-                    <span className="text-gray-400">日間離峰</span>
-                    <span className="font-bold text-white font-mono">{selectedSkytrainStation.frequencies?.midday || '3 - 6 分鐘'}</span>
+                  <div className="bg-[#181d28] px-2.5 py-1.5 rounded border border-[#292f3f] flex items-center justify-between">
+                    <span className="text-gray-300 shrink-0">日間離峰</span>
+                    <span className="font-bold text-white font-mono text-right">{selectedSkytrainStation.frequencies?.midday || '3 - 6 分鐘'}</span>
                   </div>
-                  <div className="bg-[#181d28] p-2 rounded border border-[#292f3f] flex items-center justify-between">
-                    <span className="text-gray-400">晚間時段</span>
-                    <span className="font-bold text-white font-mono">{selectedSkytrainStation.frequencies?.evening || '6 - 8 分鐘'}</span>
+                  <div className="bg-[#181d28] px-2.5 py-1.5 rounded border border-[#292f3f] flex items-center justify-between">
+                    <span className="text-gray-300 shrink-0">晚間時段</span>
+                    <span className="font-bold text-white font-mono text-right">{selectedSkytrainStation.frequencies?.evening || '6 - 8 分鐘'}</span>
                   </div>
-                  <div className="bg-[#181d28] p-2 rounded border border-[#292f3f] flex items-center justify-between">
-                    <span className="text-gray-400">深夜時段</span>
-                    <span className="font-bold text-white font-mono">{selectedSkytrainStation.frequencies?.late_night || '10 - 15 分鐘'}</span>
+                  <div className="bg-[#181d28] px-2.5 py-1.5 rounded border border-[#292f3f] flex items-center justify-between">
+                    <span className="text-gray-300 shrink-0">深夜時段</span>
+                    <span className="font-bold text-white font-mono text-right">{selectedSkytrainStation.frequencies?.late_night || '10 - 15 分鐘'}</span>
                   </div>
                 </div>
                 <div className="text-[10px] text-gray-400 text-center">
@@ -18410,17 +18377,11 @@ export default function AppMap() {
                 href={selectedSkytrainStation.station_map_url || selectedSkytrainStation.entrance_map_url || "https://www.translink.ca/schedules-and-maps/skytrain"}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between p-2.5 rounded-lg bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/40 text-blue-300 hover:text-white text-xs font-medium transition-all group shadow-sm"
+                className="flex items-center gap-2 p-2.5 rounded-lg bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/40 text-blue-300 hover:text-white text-xs font-medium transition-all group shadow-sm"
                 title="開啟 TransLink 官方車站出入口與立體平面圖 PDF"
               >
-                <div className="flex items-center gap-2 min-w-0">
-                  <ExternalLink className="w-4 h-4 text-blue-400 group-hover:scale-110 transition-transform shrink-0" />
-                  <div className="flex flex-col min-w-0">
-                    <span className="font-bold text-white truncate">TransLink 官方出入口地圖</span>
-                    <span className="text-[10px] text-blue-300/80">各出入口街道位置、月台層與轉乘動線</span>
-                  </div>
-                </div>
-                <span className="text-[10px] bg-blue-500/30 text-blue-200 px-2 py-0.5 rounded font-mono shrink-0 ml-1">PDF 官網</span>
+                <ExternalLink className="w-4 h-4 text-blue-400 group-hover:scale-110 transition-transform shrink-0" />
+                <span className="font-bold text-white truncate">TransLink 官方出入口地圖</span>
               </a>
 
               {/* TransLink 無障礙電梯地圖 */}
@@ -18429,17 +18390,11 @@ export default function AppMap() {
                   href={selectedSkytrainStation.entrance_map_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-between p-2.5 rounded-lg bg-emerald-600/15 hover:bg-emerald-600/25 border border-emerald-500/40 text-emerald-300 hover:text-white text-xs font-medium transition-all group shadow-sm"
+                  className="flex items-center gap-2 p-2.5 rounded-lg bg-emerald-600/15 hover:bg-emerald-600/25 border border-emerald-500/40 text-emerald-300 hover:text-white text-xs font-medium transition-all group shadow-sm"
                   title="開啟 TransLink 無障礙電梯與輪椅出入口平面圖 PDF"
                 >
-                  <div className="flex items-center gap-2 min-w-0">
-                    <ExternalLink className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform shrink-0" />
-                    <div className="flex flex-col min-w-0">
-                      <span className="font-bold text-white truncate">TransLink 無障礙電梯與出入口地圖</span>
-                      <span className="text-[10px] text-emerald-300/80">無障礙電梯位置、無障礙閘門與地面連通道</span>
-                    </div>
-                  </div>
-                  <span className="text-[10px] bg-emerald-500/30 text-emerald-200 px-2 py-0.5 rounded font-mono shrink-0 ml-1">無障礙 PDF</span>
+                  <ExternalLink className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform shrink-0" />
+                  <span className="font-bold text-white truncate">TransLink 無障礙電梯與出入口地圖</span>
                 </a>
               )}
 
@@ -18486,7 +18441,7 @@ export default function AppMap() {
               <div className="bg-blue-950/20 border border-blue-500/25 p-2 rounded-lg text-[10.5px] text-blue-200/90 flex flex-col gap-1">
                 <span className="font-bold flex items-center gap-1">
                   <Info className="w-3.5 h-3.5 text-blue-400" />
-                  大溫 TransLink 跨區票價提示
+                  TransLink 跨區票價提示
                 </span>
                 <span>
                   本站屬於 <strong className="text-blue-300">{selectedSkytrainStation.fare_zone?.match(/Zone\s*[1-3]/i)?.[0] || `Zone ${selectedSkytrainStation.fare_zone || 1}`}</strong>。平日晚上 6:30 之後以及週末假日全天，跨全網各區均統一按 1 區票價收費！

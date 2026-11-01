@@ -324,9 +324,17 @@ export default function TopBar() {
     <div className="fixed top-0 left-0 w-full h-[60px] bg-[#1a1b1e] border-b border-[#2d2e32] flex items-center px-4 z-50 text-white shadow-lg">
       
       {/* 標誌區域 */}
-      <div className="flex flex-col justify-center mr-3 select-none shrink-0">
-        <span className="text-[11px] font-bold text-emerald-400 tracking-wider leading-none mb-1">溫哥華</span>
-        <span className="text-sm font-extrabold leading-none tracking-widest text-white">上帝之眼</span>
+      <div className="flex items-center justify-center mr-3 select-none shrink-0">
+        <img
+          src="/logo-web.jpg"
+          alt="溫哥華上帝之眼"
+          className="hidden sm:block h-9 w-auto max-w-[170px] object-contain rounded select-none"
+        />
+        <img
+          src="/logo-mobile.jpg"
+          alt="溫哥華上帝之眼"
+          className="block sm:hidden h-8 w-8 object-cover rounded-md select-none"
+        />
       </div>
 
       {/* 圖層控制切換按鈕 (樣式跟隨右上角設定按鈕：預設圖示，hover展開文字；開啟為綠色，關閉為灰色) */}

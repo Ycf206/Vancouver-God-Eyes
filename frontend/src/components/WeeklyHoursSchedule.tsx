@@ -36,10 +36,16 @@ const JS_DOW_TO_DAY: Record<number, string> = {
 };
 
 function parseStringSchedule(s: string): Record<string, string | null> | null {
-  const parts = s.split(';').map(p => p.trim()).filter(Boolean);
-  if (parts.length <= 1 && !/\b(?:mo|tu|we|th|fr|sa|su|週[一二三四五六日]|ph)\b/i.test(s)) {
-    return null;
-  }
+  const weekDayKeys = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const dayIndices: Record<string, number> = {
+    monday: 0, mon: 0, '週一': 0, '一': 0,
+    tuesday: 1, tue: 1, tues: 1, '週二': 1, '二': 1,
+    wednesday: 2, wed: 2, '週三': 2, '三': 2,
+    thursday: 3, thu: 3, thur: 3, thurs: 3, '週四': 3, '四': 3,
+    friday: 4, fri: 4, '週五': 4, '五': 4,
+    saturday: 5, sat: 5, '週六': 5, '六': 5,
+    sunday: 6, sun: 6, '週日': 6, '日': 6
+  };
 
   const result: Record<string, string | null> = {
     Monday: null,
@@ -52,7 +58,64 @@ function parseStringSchedule(s: string): Record<string, string | null> | null {
     Holidays: null,
   };
 
-  const weekDayKeys = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const parseDaysSpec = (spec: string): string[] => {
+    const list: string[] = [];
+    const rangeMatch = spec.match(/([a-zA-Z\u4e00-\u9fa5]+)\s*(?:to|-|至)\s*([a-zA-Z\u4e00-\u9fa5]+)/i);
+    if (rangeMatch) {
+      const d1 = rangeMatch[1].toLowerCase().replace(/週/g, '');
+      const d2 = rangeMatch[2].toLowerCase().replace(/週/g, '');
+      const i1 = dayIndices[d1];
+      const i2 = dayIndices[d2];
+      if (i1 !== undefined && i2 !== undefined) {
+        let cur = i1;
+        while (true) {
+          list.push(weekDayKeys[cur]);
+          if (cur === i2) break;
+          cur = (cur + 1) % 7;
+        }
+      }
+    }
+    const tokens = spec.split(/[,、\s&]+|\band\b/i).map(t => t.trim().toLowerCase().replace(/週/g, ''));
+    for (const t of tokens) {
+      const idx = dayIndices[t];
+      if (idx !== undefined && !list.includes(weekDayKeys[idx])) {
+        list.push(weekDayKeys[idx]);
+      }
+    }
+    return list;
+  };
+
+  // 1. Narrative schedule extraction (e.g. "11:30 AM - 8:30 PM, Sunday, Tuesday to Thursday 11:30 AM - 9 PM Friday and Saturday Closed Monday")
+  const rTimeFirst = /(?:(\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?\s*[-–—~至to]+\s*\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?)\s*,?\s*([A-Za-z\s,toand\u4e00-\u9fa5]+?)(?=\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?|Closed|休息|$))|(?:(?:Closed|休息)\s+([A-Za-z\s,toand\u4e00-\u9fa5]+))/gi;
+  let match;
+  let count = 0;
+  while ((match = rTimeFirst.exec(s)) !== null) {
+    const time = match[1];
+    const daysSpec = match[2];
+    const closedSpec = match[3];
+    if (closedSpec) {
+      const days = parseDaysSpec(closedSpec);
+      days.forEach(d => result[d] = '休息');
+      count++;
+    } else if (time && daysSpec) {
+      const days = parseDaysSpec(daysSpec);
+      days.forEach(d => result[d] = time.trim());
+      count++;
+    }
+  }
+
+  if (count > 0 && weekDayKeys.some(k => result[k])) {
+    for (const d of weekDayKeys) {
+      if (!result[d]) result[d] = '休息';
+    }
+    return result;
+  }
+
+  // 2. Standard semicolon or comma separated days+time
+  const parts = s.split(/[;,]/).map(p => p.trim()).filter(Boolean);
+  if (parts.length <= 1 && !/\b(?:mo|tu|we|th|fr|sa|su|週[一二三四五六日]|ph)\b/i.test(s)) {
+    return null;
+  }
 
   for (const part of parts) {
     if (/^(?:PH|公眾假期|節假日)\s*(?:off|closed|休息|公休)?$/i.test(part)) {
@@ -63,31 +126,7 @@ function parseStringSchedule(s: string): Record<string, string | null> | null {
     if (m) {
       const daySpec = m[1].trim();
       const timeSpec = m[2].trim();
-      const matchedDays: string[] = [];
-
-      if (daySpec.includes('-') || daySpec.includes('至')) {
-        const [startD, endD] = daySpec.split(/[-至]/).map(d => d.trim().toLowerCase().replace(/週/g, ''));
-        const shortKeys = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'];
-        const zhShort = ['一', '二', '三', '四', '五', '六', '日'];
-        let startIdx = shortKeys.findIndex(k => startD.startsWith(k));
-        if (startIdx === -1) startIdx = zhShort.indexOf(startD);
-        let endIdx = shortKeys.findIndex(k => endD.startsWith(k));
-        if (endIdx === -1) endIdx = zhShort.indexOf(endD);
-        if (startIdx !== -1 && endIdx !== -1) {
-          for (let i = startIdx; i <= endIdx; i++) {
-            matchedDays.push(weekDayKeys[i]);
-          }
-        }
-      } else {
-        const tokens = daySpec.split(/[,、\s]+/).map(t => t.trim().toLowerCase().replace(/週/g, ''));
-        const shortKeys = ['mo', 'tu', 'we', 'th', 'fr', 'sa', 'su'];
-        const zhShort = ['一', '二', '三', '四', '五', '六', '日'];
-        for (const t of tokens) {
-          let idx = shortKeys.findIndex(k => t.startsWith(k));
-          if (idx === -1) idx = zhShort.indexOf(t);
-          if (idx !== -1) matchedDays.push(weekDayKeys[idx]);
-        }
-      }
+      const matchedDays = parseDaysSpec(daySpec);
       for (const d of matchedDays) {
         result[d] = timeSpec;
       }
@@ -207,6 +246,17 @@ export default function FacilityWeeklyHoursSchedule({
     const singleDisplay = typeof hours === 'string'
       ? formatOpeningHours(hours, timeFormat)
       : (todayHoursStr || formatOpeningHours(Object.values(hours)[0] as string, timeFormat));
+
+    if (typeof singleDisplay === 'string' && singleDisplay.length > 25) {
+      return (
+        <div className="flex flex-col gap-1 text-gray-600">
+          <span className="font-semibold text-gray-700">{label}</span>
+          <div className="text-gray-900 font-medium font-mono text-xs leading-relaxed bg-white/70 p-1.5 rounded border border-gray-100 break-words">
+            {singleDisplay}
+          </div>
+        </div>
+      );
+    }
 
     return (
       <div className="flex justify-between items-center text-gray-600">

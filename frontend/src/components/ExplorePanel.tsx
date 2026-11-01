@@ -4960,9 +4960,6 @@ function ExploreContent() {
                             <Sparkles className="w-3 h-3" />
                             {displayScale}
                           </span>
-                          <span className="text-[10px] text-gray-400 mt-1">
-                            {displayDesc || '平靜平穩'}
-                          </span>
                         </>
                       );
                     })()}

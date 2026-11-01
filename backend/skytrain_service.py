@@ -559,16 +559,16 @@ def _get_station_metadata(st_name: str, lines: list, stop_id: str):
     if is_canada_line:
         first_last = {
             "weekday": {
-                "first_train": "04:48 (往 YVR 機場) / 05:02 (往列治文)",
-                "last_train": "01:05 (往 Waterfront) / 01:15"
+                "first_train": "04:48 (to YVR-Airport) / 05:02 (to Richmond-Brighouse)",
+                "last_train": "01:05 (to Waterfront) / 01:15 (to Richmond-Brighouse)"
             },
             "saturday": {
-                "first_train": "05:05 (往 YVR 機場) / 05:32",
-                "last_train": "01:05 (往 Waterfront) / 01:15"
+                "first_train": "05:05 (to YVR-Airport) / 05:32 (to Richmond-Brighouse)",
+                "last_train": "01:05 (to Waterfront) / 01:15 (to Richmond-Brighouse)"
             },
             "sunday_holiday": {
-                "first_train": "05:05 (往 YVR 機場) / 05:32",
-                "last_train": "00:05 (往 Waterfront) / 00:15"
+                "first_train": "05:05 (to YVR-Airport) / 05:32 (to Richmond-Brighouse)",
+                "last_train": "00:05 (to Waterfront) / 00:15 (to Richmond-Brighouse)"
             }
         }
         frequencies = {
@@ -580,16 +580,16 @@ def _get_station_metadata(st_name: str, lines: list, stop_id: str):
     elif any("Millennium" in l for l in lines) and not any("Expo" in l for l in lines):
         first_last = {
             "weekday": {
-                "first_train": "05:05 (往 VCC-Clark) / 05:30 (往高貴林)",
-                "last_train": "01:22 (往 Lafarge Lake) / 00:59"
+                "first_train": "05:05 (to VCC-Clark) / 05:30 (to Lafarge Lake-Douglas)",
+                "last_train": "01:22 (to Lafarge Lake-Douglas) / 00:59 (to VCC-Clark)"
             },
             "saturday": {
-                "first_train": "06:05 (往 VCC-Clark) / 06:30",
-                "last_train": "01:22 (往 Lafarge Lake) / 00:59"
+                "first_train": "06:05 (to VCC-Clark) / 06:30 (to Lafarge Lake-Douglas)",
+                "last_train": "01:22 (to Lafarge Lake-Douglas) / 00:59 (to VCC-Clark)"
             },
             "sunday_holiday": {
-                "first_train": "07:05 (往 VCC-Clark) / 07:30",
-                "last_train": "00:22 (往 Lafarge Lake) / 23:59"
+                "first_train": "07:05 (to VCC-Clark) / 07:30 (to Lafarge Lake-Douglas)",
+                "last_train": "00:22 (to Lafarge Lake-Douglas) / 23:59 (to VCC-Clark)"
             }
         }
         frequencies = {
@@ -601,16 +601,16 @@ def _get_station_metadata(st_name: str, lines: list, stop_id: str):
     else:
         first_last = {
             "weekday": {
-                "first_train": "05:32 (Waterfront 往素里) / 05:38 (往喬治王)",
-                "last_train": "01:16 (往喬治王) / 01:11 (往本拿比)"
+                "first_train": "05:32 (to King George) / 05:38 (to Production Way-University)",
+                "last_train": "01:16 (to King George) / 01:11 (to Waterfront)"
             },
             "saturday": {
-                "first_train": "06:48 (往素里) / 06:38",
-                "last_train": "01:16 (往喬治王) / 01:11"
+                "first_train": "06:48 (to King George) / 06:38 (to Production Way-University)",
+                "last_train": "01:16 (to King George) / 01:11 (to Waterfront)"
             },
             "sunday_holiday": {
-                "first_train": "07:48 (往素里) / 07:38",
-                "last_train": "00:16 (往喬治王) / 00:11"
+                "first_train": "07:48 (to King George) / 07:38 (to Production Way-University)",
+                "last_train": "00:16 (to King George) / 00:11 (to Waterfront)"
             }
         }
         frequencies = {
