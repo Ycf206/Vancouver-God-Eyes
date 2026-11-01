@@ -260,147 +260,158 @@ export default function FacilityWeeklyHoursSchedule({
 }: WeeklyHoursScheduleProps) {
   if (!hours) return null;
 
-  const todayDayName = JS_DOW_TO_DAY[new Date().getDay()] || 'Monday';
-  const todayZhName = DAY_ZH_NAMES[todayDayName] || '今日';
-
-  // Normalize hours into schedule object if applicable
-  let scheduleMap: Record<string, string | null> | null = null;
-  if (typeof hours === 'object' && hours !== null && !Array.isArray(hours)) {
-    scheduleMap = {};
-    for (const [k, v] of Object.entries(hours)) {
-      // Find matching standard day name
-      const lower = k.toLowerCase().trim();
-      const standardKey = Object.keys(DAY_ZH_NAMES).find(
-        key => key.toLowerCase() === lower || key.toLowerCase().startsWith(lower)
-      ) || k;
-      if (v !== null && v !== undefined && String(v).toLowerCase() !== 'null' && String(v).trim() !== '') {
-        scheduleMap[standardKey] = String(v).trim();
+  try {
+    let normalizedHours = hours;
+    if (typeof hours === 'string' && (hours.trim().startsWith('{') || hours.trim().startsWith('['))) {
+      try {
+        normalizedHours = JSON.parse(hours);
+      } catch {
+        normalizedHours = hours;
       }
     }
-  } else if (typeof hours === 'string') {
-    scheduleMap = parseStringSchedule(hours);
-  }
 
-  // Check if days are NOT identical
-  let isVariableSchedule = false;
-  let parsedDays: { key: string; label: string; hours: string; isToday: boolean }[] = [];
-  let todayHoursStr = '';
+    const todayDayName = JS_DOW_TO_DAY[new Date().getDay()] || 'Monday';
+    const todayZhName = DAY_ZH_NAMES[todayDayName] || '今日';
 
-  if (scheduleMap) {
-    const rawTodayVal = scheduleMap[todayDayName];
-    if (rawTodayVal) {
-      todayHoursStr = formatOpeningHours(rawTodayVal, timeFormat);
-      if (/^(closed|休館|休息|off)$/i.test(todayHoursStr.trim())) {
+    // Normalize hours into schedule object if applicable
+    let scheduleMap: Record<string, string | null> | null = null;
+    if (typeof normalizedHours === 'object' && normalizedHours !== null && !Array.isArray(normalizedHours)) {
+      scheduleMap = {};
+      for (const [k, v] of Object.entries(normalizedHours)) {
+        // Find matching standard day name
+        const lower = k.toLowerCase().trim();
+        const standardKey = Object.keys(DAY_ZH_NAMES).find(
+          key => key.toLowerCase() === lower || key.toLowerCase().startsWith(lower)
+        ) || k;
+        if (v !== null && v !== undefined && String(v).toLowerCase() !== 'null' && String(v).trim() !== '') {
+          scheduleMap[standardKey] = String(v).trim();
+        }
+      }
+    } else if (typeof normalizedHours === 'string') {
+      scheduleMap = parseStringSchedule(normalizedHours);
+    }
+
+    // Check if days are NOT identical
+    let parsedDays: { key: string; label: string; hours: string; isToday: boolean }[] = [];
+    let todayHoursStr = '';
+
+    if (scheduleMap) {
+      const rawTodayVal = scheduleMap[todayDayName];
+      if (rawTodayVal) {
+        const fmt = formatOpeningHours(rawTodayVal, timeFormat);
+        todayHoursStr = typeof fmt === 'string' ? fmt : (typeof fmt === 'object' && fmt ? String(Object.values(fmt)[0] || '') : String(fmt || ''));
+        if (/^(closed|休館|休息|off)$/i.test(todayHoursStr.trim())) {
+          todayHoursStr = '休息';
+        }
+      } else {
         todayHoursStr = '休息';
       }
-    } else {
-      todayHoursStr = '休息';
-    }
 
-    const dayValues: string[] = [];
-    for (const day of WEEK_DAYS) {
-      const val = scheduleMap[day];
-      if (val) {
-        dayValues.push(val.trim());
-      }
-    }
-
-    // Variable if some days differ, or some days missing, or holidays present
-    const uniqueValues = new Set(dayValues);
-    const hasHolidays = Boolean(scheduleMap['Holidays'] || scheduleMap['Holidays_and_Seasonal']);
-    if (uniqueValues.size > 1 || dayValues.length < 7 || hasHolidays) {
-      isVariableSchedule = true;
-    }
-
-    // Build ordered list
-    for (const day of WEEK_DAYS) {
-      const val = scheduleMap[day];
-      const isToday = day === todayDayName;
-      let displayHours = val ? formatOpeningHours(val, timeFormat) : '休息';
-      if (/^(closed|休館|休息|off)$/i.test(displayHours.trim())) {
-        displayHours = '休息';
-      }
-      parsedDays.push({
-        key: day,
-        label: DAY_ZH_NAMES[day] || day,
-        hours: displayHours,
-        isToday
-      });
-    }
-
-    // Append holidays if not null
-    for (const holidayKey of ['Holidays', 'Holidays_and_Seasonal']) {
-      const hVal = scheduleMap[holidayKey];
-      if (hVal && hVal !== 'null' && hVal.trim() !== '') {
+      // Build ordered list
+      for (const day of WEEK_DAYS) {
+        const val = scheduleMap[day];
+        const isToday = day === todayDayName;
+        let displayHours = '休息';
+        if (val) {
+          const fmt = formatOpeningHours(val, timeFormat);
+          displayHours = typeof fmt === 'string' ? fmt : (typeof fmt === 'object' && fmt ? String(Object.values(fmt)[0] || '休息') : String(fmt || '休息'));
+        }
+        if (/^(closed|休館|休息|off)$/i.test(displayHours.trim())) {
+          displayHours = '休息';
+        }
         parsedDays.push({
-          key: holidayKey,
-          label: DAY_ZH_NAMES[holidayKey] || '節假日／特別排程',
-          hours: formatOpeningHours(hVal, timeFormat),
-          isToday: false
+          key: day,
+          label: DAY_ZH_NAMES[day] || day,
+          hours: displayHours,
+          isToday
         });
       }
+
+      // Append holidays if not null
+      for (const holidayKey of ['Holidays', 'Holidays_and_Seasonal']) {
+        const hVal = scheduleMap[holidayKey];
+        if (hVal && hVal !== 'null' && hVal.trim() !== '') {
+          const fmtH = formatOpeningHours(hVal, timeFormat);
+          const hStr = typeof fmtH === 'string' ? fmtH : (typeof fmtH === 'object' && fmtH ? String(Object.values(fmtH)[0] || '') : String(fmtH || ''));
+          parsedDays.push({
+            key: holidayKey,
+            label: DAY_ZH_NAMES[holidayKey] || '節假日／特別排程',
+            hours: hStr,
+            isToday: false
+          });
+        }
+      }
     }
-  }
 
-  // Theme highlighting colors
-  const themeTodayClass = {
-    slate: 'font-semibold text-slate-900',
-    violet: 'font-semibold text-violet-800',
-    amber: 'font-semibold text-amber-900',
-    emerald: 'font-semibold text-emerald-800',
-    blue: 'font-semibold text-blue-900',
-    rose: 'font-semibold text-rose-900',
-    red: 'font-semibold text-red-900',
-  }[theme] || 'font-semibold text-slate-900';
+    // Theme highlighting colors
+    const themeTodayClass = {
+      slate: 'font-semibold text-slate-900',
+      violet: 'font-semibold text-violet-800',
+      amber: 'font-semibold text-amber-900',
+      emerald: 'font-semibold text-emerald-800',
+      blue: 'font-semibold text-blue-900',
+      rose: 'font-semibold text-rose-900',
+      red: 'font-semibold text-red-900',
+    }[theme] || 'font-semibold text-slate-900';
 
-  // 統一成圖2風格：只要成功解析出週間時程，一律呈現完整的 7 日時程列表 (預設為收合狀態，僅顯示當日時程)
-  if (parsedDays.length > 0) {
-    return (
-      <details className="group">
-        <summary className="flex justify-between items-center text-gray-600 cursor-pointer list-none hover:text-slate-800 select-none">
-          <span>{label}</span>
-          <span className="text-gray-800 text-right font-medium flex items-center gap-1 font-mono">
-            <span>{todayZhName}: {todayHoursStr || '未公佈'}</span>
-            <span className="text-[9px] text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-          </span>
-        </summary>
-        <div className="mt-1.5 pt-1.5 border-t border-gray-100 flex flex-col gap-1 text-[10.5px]">
-          {parsedDays.map((d) => (
-            <div
-              key={d.key}
-              className={`flex justify-between gap-2 py-0.5 px-0.5 rounded ${
-                d.isToday ? themeTodayClass : 'text-gray-600'
-              }`}
-            >
-              <span className="shrink-0">{d.label}</span>
-              <span className="text-right leading-tight font-mono">{d.hours}</span>
-            </div>
-          ))}
+    // 統一成圖2風格：只要成功解析出週間時程，一律呈現完整的 7 日時程列表 (預設為收合狀態，僅顯示當日時程)
+    if (parsedDays.length > 0) {
+      return (
+        <details className="group">
+          <summary className="flex justify-between items-center text-gray-600 cursor-pointer list-none hover:text-slate-800 select-none">
+            <span>{label}</span>
+            <span className="text-gray-800 text-right font-medium flex items-center gap-1 font-mono">
+              <span>{todayZhName}: {todayHoursStr || '未公佈'}</span>
+              <span className="text-[9px] text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+            </span>
+          </summary>
+          <div className="mt-1.5 pt-1.5 border-t border-gray-100 flex flex-col gap-1 text-[10.5px]">
+            {parsedDays.map((d) => (
+              <div
+                key={d.key}
+                className={`flex justify-between gap-2 py-0.5 px-0.5 rounded ${
+                  d.isToday ? themeTodayClass : 'text-gray-600'
+                }`}
+              >
+                <span className="shrink-0">{d.label}</span>
+                <span className="text-right leading-tight font-mono">{d.hours}</span>
+              </div>
+            ))}
+          </div>
+        </details>
+      );
+    }
+
+    // 僅在完全無法解析為星期結構時作為單行 / 單區塊備用呈現
+    const rawSingle = typeof normalizedHours === 'string'
+      ? formatOpeningHours(normalizedHours, timeFormat)
+      : (todayHoursStr || (typeof normalizedHours === 'object' && normalizedHours ? formatOpeningHours(Object.values(normalizedHours)[0] as string, timeFormat) : ''));
+    const singleDisplay = typeof rawSingle === 'string' ? rawSingle : (typeof rawSingle === 'object' && rawSingle ? String(Object.values(rawSingle)[0] || '') : String(rawSingle || ''));
+
+    if (singleDisplay.length > 25) {
+      return (
+        <div className="flex flex-col gap-1 text-gray-600">
+          <span className="font-semibold text-gray-700">{label}</span>
+          <div className="text-gray-900 font-medium font-mono text-xs leading-relaxed bg-white/70 p-1.5 rounded border border-gray-100 break-words">
+            {singleDisplay}
+          </div>
         </div>
-      </details>
+      );
+    }
+
+    return (
+      <div className="flex justify-between items-center text-gray-600">
+        <span>{label}</span>
+        <span className="text-gray-900 font-medium text-right font-mono">{singleDisplay || '開放營業'}</span>
+      </div>
     );
-  }
-
-  // 僅在完全無法解析為星期結構時作為單行 / 單區塊備用呈現
-  const singleDisplay = typeof hours === 'string'
-    ? formatOpeningHours(hours, timeFormat)
-    : (todayHoursStr || formatOpeningHours(Object.values(hours)[0] as string, timeFormat));
-
-  if (typeof singleDisplay === 'string' && singleDisplay.length > 25) {
+  } catch (err) {
+    console.error('Error rendering FacilityWeeklyHoursSchedule:', err);
     return (
-      <div className="flex flex-col gap-1 text-gray-600">
-        <span className="font-semibold text-gray-700">{label}</span>
-        <div className="text-gray-900 font-medium font-mono text-xs leading-relaxed bg-white/70 p-1.5 rounded border border-gray-100 break-words">
-          {singleDisplay}
-        </div>
+      <div className="flex justify-between items-center text-gray-600">
+        <span>{label}</span>
+        <span className="text-gray-900 font-medium text-right font-mono">開放營業</span>
       </div>
     );
   }
-
-  return (
-    <div className="flex justify-between items-center text-gray-600">
-      <span>{label}</span>
-      <span className="text-gray-900 font-medium text-right font-mono">{singleDisplay}</span>
-    </div>
-  );
 }

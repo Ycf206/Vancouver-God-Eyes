@@ -9088,6 +9088,17 @@ export default function AppMap() {
                     return { label: '共享汽車', bg: isModo ? 'bg-[#B91C1C] text-white' : 'bg-[#0284C7] text-white' };
                   }
                   if (t === 'bikeways') {
+                    const bp = selectedFacility.properties || {};
+                    const bType = bp.bikeway_type || bp.bikeway_type_zh || '';
+                    if (bType === 'Shared Lanes' || bType.includes('混合共用') || bType.includes('Shared')) {
+                      return { label: '單車徑', bg: 'bg-[#a855f7] text-white' };
+                    }
+                    if (bType === 'Local Street' || bType.includes('社區慢速') || bType.includes('Local')) {
+                      return { label: '單車徑', bg: 'bg-[#f59e0b] text-white' };
+                    }
+                    if (bType === 'Painted Lanes' || bType.includes('路面標線') || bType.includes('Painted')) {
+                      return { label: '單車徑', bg: 'bg-[#0ea5e9] text-white' };
+                    }
                     return { label: '單車徑', bg: 'bg-[#10b981] text-white' };
                   }
                   if (t === 'bike_racks') return { label: '單車架', bg: 'bg-[#065F46] text-white' };
@@ -9190,6 +9201,9 @@ export default function AppMap() {
                     }
                     if (selectedFacility.facility_type === 'traffic_crosswalks') {
                       return (selectedFacility.properties?.location || selectedFacility.name || '').replace(/^斑馬線\s*-\s*/, '').trim();
+                    }
+                    if (selectedFacility.facility_type === 'community_centres') {
+                      return selectedFacility.properties?.name || selectedFacility.name || '社區中心';
                     }
                     if (selectedFacility.facility_type === 'bikeways') {
                       return selectedFacility.properties?.name || selectedFacility.name || '單車徑';
@@ -9396,7 +9410,14 @@ export default function AppMap() {
                           selectedFacility.facility_type === 'escooter' ? 'bg-lime-500' :
                           selectedFacility.facility_type === 'car_sharing' ? (selectedFacility.properties?.operator === 'Modo' ? 'bg-red-700' : 'bg-sky-600') :
                           selectedFacility.facility_type === 'shared_bikes' ? 'bg-[#00A3AD]' :
-                          selectedFacility.facility_type === 'bikeways' ? 'bg-teal-600' :
+                          selectedFacility.facility_type === 'bikeways' ? (() => {
+                            const bp = selectedFacility.properties || {};
+                            const bType = bp.bikeway_type || bp.bikeway_type_zh || '';
+                            if (bType === 'Shared Lanes' || bType.includes('混合共用') || bType.includes('Shared')) return 'bg-[#a855f7]';
+                            if (bType === 'Local Street' || bType.includes('社區慢速') || bType.includes('Local')) return 'bg-[#f59e0b]';
+                            if (bType === 'Painted Lanes' || bType.includes('路面標線') || bType.includes('Painted')) return 'bg-[#0ea5e9]';
+                            return 'bg-[#10b981]';
+                          })() :
                           selectedFacility.facility_type === 'traffic_cameras' ? 'bg-sky-600' :
                           selectedFacility.facility_type === 'safety_cameras' ? (selectedFacility.properties?.has_speed ? 'bg-gray-950 border border-gray-400 shadow-[0_0_6px_rgba(0,0,0,0.6)]' : 'bg-red-600 shadow-[0_0_6px_rgba(239,68,68,0.5)]') :
                           selectedFacility.facility_type === 'hospitals' ? 'bg-emerald-500' :
@@ -10660,6 +10681,33 @@ export default function AppMap() {
                 const rawTypeZh = props.bikeway_type_zh || (props.bikeway_type ? typeMap[props.bikeway_type] : null);
                 const bikewayTypeZh = rawTypeZh ? String(rawTypeZh).replace(/\s*\([^)]*\)/g, '').trim() : null;
 
+                // 根據單車徑種類設定標題下方顏色區塊樣式
+                const bType = String(props.bikeway_type || props.bikeway_type_zh || '');
+                const tipStyle = (() => {
+                  if (bType === 'Shared Lanes' || bType.includes('混合共用') || bType.includes('Shared')) {
+                    return {
+                      box: 'border-[#a855f7]/30 bg-[#a855f7]/10 text-purple-950',
+                      icon: 'text-[#a855f7]'
+                    };
+                  }
+                  if (bType === 'Local Street' || bType.includes('社區慢速') || bType.includes('Local')) {
+                    return {
+                      box: 'border-[#f59e0b]/30 bg-[#f59e0b]/10 text-amber-950',
+                      icon: 'text-[#d97706]'
+                    };
+                  }
+                  if (bType === 'Painted Lanes' || bType.includes('路面標線') || bType.includes('Painted')) {
+                    return {
+                      box: 'border-[#0ea5e9]/30 bg-[#0ea5e9]/10 text-sky-950',
+                      icon: 'text-[#0284c7]'
+                    };
+                  }
+                  return {
+                    box: 'border-emerald-500/25 bg-emerald-500/10 text-emerald-950',
+                    icon: 'text-emerald-700'
+                  };
+                })();
+
                 // 道段方向 (只需要中文)
                 const dirRaw = String(props.bikeway_direction || '').trim();
                 let dirZh: string | null = null;
@@ -10709,8 +10757,8 @@ export default function AppMap() {
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
-                    <div className="p-2.5 rounded-lg border border-emerald-500/25 bg-emerald-500/10 text-emerald-950 flex items-center gap-1.5 text-[11px] font-medium leading-snug">
-                      <Bike className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+                    <div className={`p-2.5 rounded-lg border ${tipStyle.box} flex items-center gap-1.5 text-[11px] font-medium leading-snug`}>
+                      <Bike className={`w-3.5 h-3.5 ${tipStyle.icon} shrink-0`} />
                       <span>騎乘單車必須佩戴符合安全規範的頭盔，並注意安全。</span>
                     </div>
 
@@ -11726,110 +11774,109 @@ export default function AppMap() {
 
               {/* Community Centres Details */}
               {selectedFacility.facility_type === 'community_centres' && (() => {
-                const props = selectedFacility.properties || {};
-                const hours = props.hours;
-                const phone = props.phone;
-                const fax = props.fax;
-                const email = props.email;
-                const urllink = props.urllink || 'https://vancouver.ca/parks-recreation-culture/community-and-cultural-centres.aspx';
+                try {
+                  const props = selectedFacility.properties || {};
+                  let hours = props.hours;
+                  if (typeof hours === 'string' && (hours.trim().startsWith('{') || hours.trim().startsWith('['))) {
+                    try {
+                      hours = JSON.parse(hours);
+                    } catch {
+                      // keep raw string
+                    }
+                  }
+                  const phone = typeof props.phone === 'string' && props.phone.trim() !== '' && props.phone.trim() !== 'null' ? props.phone.trim() : null;
+                  const email = typeof props.email === 'string' && props.email.trim() !== '' && props.email.trim() !== 'null' ? props.email.trim() : null;
+                  const fax = typeof props.fax === 'string' && props.fax.trim() !== '' && props.fax.trim() !== 'null' ? props.fax.trim() : null;
+                  const ccName = props.name || selectedFacility.name || '社區中心';
+                  const urllink = props.urllink || props.website || 'https://vancouver.ca/parks-recreation-culture/community-and-cultural-centres.aspx';
 
-                const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-                const dayNamesZh: Record<string, string> = {
-                  Sunday: '週日',
-                  Monday: '週一',
-                  Tuesday: '週二',
-                  Wednesday: '週三',
-                  Thursday: '週四',
-                  Friday: '週五',
-                  Saturday: '週六'
-                };
-                const todayKey = daysOfWeek[new Date().getDay()];
-                const todayVal = hours && typeof hours === 'object' ? hours[todayKey] : (typeof hours === 'string' ? hours : null);
-                const todayHoursStr = todayVal ? formatTimePreference(todayVal, timeFormat) : '';
+                  return (
+                    <div className="flex flex-col gap-2 text-xs">
+                      {/* 36.1 紫色區塊 */}
+                      <div className="bg-violet-500/10 p-2.5 rounded-lg border border-violet-500/25 flex items-center gap-1.5 text-[11px] text-violet-950 font-medium leading-relaxed">
+                        <span className="text-base text-violet-600 font-bold shrink-0">🏛️</span>
+                        <span>鄰里共融的休閒與文康樞紐，提供各類康體設施、場地租借及豐富的社區居民活動。</span>
+                      </div>
 
-                return (
-                  <div className="flex flex-col gap-2 text-xs">
-                    {/* 36.1 紫色區塊 */}
-                    <div className="bg-violet-500/10 p-2.5 rounded-lg border border-violet-500/25 flex items-center gap-1.5 text-[11px] text-violet-950 font-medium leading-relaxed">
-                      <span className="text-base text-violet-600 font-bold shrink-0">🏛️</span>
-                      <span>鄰里共融的休閒與文康樞紐，提供各類康體設施、場地租借及豐富的社區居民活動。</span>
-                    </div>
+                      {/* 灰色區塊 (如果數值是null, 不用顯示) */}
+                      {(hours || phone || email || fax) && (
+                        <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                          {/* 開放時間 (摺疊式顯示，跟隨統一的時間格式 hh:mm 或 hh:mm AM/PM) */}
+                          {hours && (
+                            <FacilityWeeklyHoursSchedule
+                              label="開放時間"
+                              hours={hours}
+                              timeFormat={timeFormat}
+                              theme="violet"
+                            />
+                          )}
 
-                    {/* 灰色區塊 (如果數值是null, 不用顯示) */}
-                    {(hours || phone || email || fax) && (
-                      <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                        {/* 開放時間 (摺疊式顯示，跟隨統一的時間格式 hh:mm 或 hh:mm AM/PM) */}
-                        {hours && (
-                          <FacilityWeeklyHoursSchedule
-                            label="開放時間"
-                            hours={hours}
-                            timeFormat={timeFormat}
-                            theme="violet"
-                          />
-                        )}
+                          {/* (分隔線) */}
+                          {Boolean(hours && (phone || email || fax)) && (
+                            <div className="w-full h-px bg-gray-200/80 my-0.5" />
+                          )}
 
-                        {/* (分隔線) */}
-                        {Boolean(hours && (phone || email || fax)) && (
-                          <div className="w-full h-px bg-gray-200/80 my-0.5" />
-                        )}
-
-                        {/* 聯絡電話 "phone" */}
-                        {phone && (
-                          <div className="flex justify-between items-center text-gray-600">
-                            <span>聯絡電話</span>
-                            <a href={`tel:${phone}`} className="font-bold text-rose-600 font-mono hover:underline">
-                              {formatPhoneNumber(phone)}
-                            </a>
-                          </div>
-                        )}
-
-                        {/* 聯絡電郵 "email" //在右方加電郵的圖示按鈕 */}
-                        {email && (
-                          <div className={`flex justify-between items-center text-gray-600 ${phone ? 'pt-1.5 border-t border-gray-100' : ''} gap-2`}>
-                            <span className="shrink-0">聯絡電郵</span>
-                            <div className="flex items-center gap-1.5 min-w-0 justify-end">
-                              <a
-                                href={`mailto:${email}`}
-                                className="text-gray-800 hover:text-violet-600 font-medium break-all text-right text-[10.5px] leading-tight"
-                              >
-                                {email}
-                              </a>
-                              <a
-                                href={`mailto:${email}`}
-                                className="p-1 rounded bg-white hover:bg-violet-50 text-violet-600 border border-gray-200 transition-colors shadow-2xs shrink-0"
-                                title={`發送郵件至 ${email}`}
-                              >
-                                <Mail className="w-3 h-3" />
+                          {/* 聯絡電話 "phone" */}
+                          {phone && (
+                            <div className="flex justify-between items-center text-gray-600">
+                              <span>聯絡電話</span>
+                              <a href={`tel:${phone}`} className="font-bold text-rose-600 font-mono hover:underline">
+                                {formatPhoneNumber(phone)}
                               </a>
                             </div>
-                          </div>
-                        )}
+                          )}
 
-                        {/* 傳真 "fax" */}
-                        {fax && (
-                          <div className={`flex justify-between items-center text-gray-600 ${(phone || email) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
-                            <span>傳真</span>
-                            <span className="text-gray-800 font-medium">{fax}</span>
-                          </div>
-                        )}
-                      </div>
-                    )}
+                          {/* 聯絡電郵 "email" //在右方加電郵的圖示按鈕 */}
+                          {email && (
+                            <div className={`flex justify-between items-center text-gray-600 ${phone ? 'pt-1.5 border-t border-gray-100' : ''} gap-2`}>
+                              <span className="shrink-0">聯絡電郵</span>
+                              <div className="flex items-center gap-1.5 min-w-0 justify-end">
+                                <a
+                                  href={`mailto:${email}`}
+                                  className="text-gray-800 hover:text-violet-600 font-medium break-all text-right text-[10.5px] leading-tight"
+                                >
+                                  {email}
+                                </a>
+                                <a
+                                  href={`mailto:${email}`}
+                                  className="p-1 rounded bg-white hover:bg-violet-50 text-violet-600 border border-gray-200 transition-colors shadow-2xs shrink-0"
+                                  title={`發送郵件至 ${email}`}
+                                >
+                                  <Mail className="w-3 h-3" />
+                                </a>
+                              </div>
+                            </div>
+                          )}
 
-                    {urllink && (
-                      <div className="pt-1 border-t border-gray-100">
-                        <a 
-                          href={urllink} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-violet-600 hover:bg-violet-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
-                        >
-                          <span>前往 {props.name || selectedFacility.name || '社區中心'} 官方網頁</span>
-                          <ExternalLink className="w-3.5 h-3.5 ml-1" />
-                        </a>
-                      </div>
-                    )}
-                  </div>
-                );
+                          {/* 傳真 "fax" */}
+                          {fax && (
+                            <div className={`flex justify-between items-center text-gray-600 ${(phone || email) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                              <span>傳真</span>
+                              <span className="text-gray-800 font-medium">{fax}</span>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {urllink && (
+                        <div className="pt-1 border-t border-gray-100">
+                          <a 
+                            href={urllink} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-violet-600 hover:bg-violet-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
+                          >
+                            <span>前往 {ccName} 官方網頁</span>
+                            <ExternalLink className="w-3.5 h-3.5 ml-1" />
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  );
+                } catch (e) {
+                  console.error('Error rendering community_centres popup:', e);
+                  return null;
+                }
               })()}
 
               {/* Museums (38 博物館) Details */}
@@ -12989,7 +13036,7 @@ export default function AppMap() {
                     <div className="flex justify-between items-center text-gray-600">
                       <span>綠地面積</span>
                       <span className="text-gray-900 font-medium text-right">
-                        {(selectedFacility.properties.hectare != null ? selectedFacility.properties.hectare : selectedFacility.properties.hectares) != null ? `${selectedFacility.properties.hectare ?? selectedFacility.properties.hectares} 公頃 (ha)` : '—'}
+                        {(selectedFacility.properties.hectare != null ? selectedFacility.properties.hectare : selectedFacility.properties.hectares) != null ? `${selectedFacility.properties.hectare ?? selectedFacility.properties.hectares} 公頃` : '—'}
                       </span>
                     </div>
                     <div className="flex justify-between items-center text-gray-600 pt-1.5 border-t border-gray-100">
