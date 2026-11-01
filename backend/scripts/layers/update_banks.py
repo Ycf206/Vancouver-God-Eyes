@@ -156,7 +156,7 @@ def normalize_bankee_url(raw_href):
     return u
 
 
-def update_atm_dataset():
+def update_banks():
     os.makedirs(BACKEND_DATA_DIR, exist_ok=True)
     os.makedirs(FRONTEND_DATA_DIR, exist_ok=True)
 
@@ -366,15 +366,13 @@ def update_atm_dataset():
     with open(public_file, 'w', encoding='utf-8') as f:
         json.dump(geojson_data, f, ensure_ascii=False, indent=2)
     print(f"✅ Saved copy to {public_file}")
+    return geojson_data
 
 
-def update_banks():
-    return update_atm_dataset()
-
-
-def update_atm():
-    return update_atm_dataset()
+# Backward-compatible aliases
+update_atm = update_banks
+update_atm_dataset = update_banks
 
 
 if __name__ == '__main__':
-    update_atm_dataset()
+    update_banks()

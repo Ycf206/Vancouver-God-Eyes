@@ -19,8 +19,9 @@ jobs:
 
       - name: Fetch Latest GeoJSON Cache from data branch
         run: |
+          mkdir -p backend/data frontend/public
           git fetch origin data:refs/remotes/origin/data 2>/dev/null || true
-          git checkout origin/data -- backend/data frontend/public 2>/dev/null || true
+          git checkout origin/data -- backend/data/vancouver_atm.geojson frontend/public/vancouver_atm.geojson 2>/dev/null || true
 
       - name: Set up Python
         uses: actions/setup-python@v5

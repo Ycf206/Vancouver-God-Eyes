@@ -43,7 +43,9 @@ LAYERS_MAP = {
     "one_way_streets": "update_one_way_streets",
     "snow_removal_routes": "update_snow_removal_routes",
     "contours": "update_contours",
-    "ev_charging": "update_ev_charging"
+    "ev_charging": "update_ev_charging",
+    "banks": "update_banks",
+    "atm": "update_banks"
 }
 
 def run_layer(layer_id):
