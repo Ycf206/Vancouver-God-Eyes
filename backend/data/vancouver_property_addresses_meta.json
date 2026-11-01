@@ -1,6 +1,7 @@
 {
   "dataset_id": "property-addresses",
-  "total_count": 99741,
+  "total_count": 99735,
+  "updated_at": "2026-11-01T06:06:23.904Z",
   "api_endpoint": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/property-addresses/records",
   "status": "healthy"
 }
