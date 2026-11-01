@@ -38,13 +38,13 @@ const JS_DOW_TO_DAY: Record<number, string> = {
 function parseStringSchedule(s: string): Record<string, string | null> | null {
   const weekDayKeys = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   const dayIndices: Record<string, number> = {
-    monday: 0, mon: 0, '週一': 0, '一': 0,
-    tuesday: 1, tue: 1, tues: 1, '週二': 1, '二': 1,
-    wednesday: 2, wed: 2, '週三': 2, '三': 2,
-    thursday: 3, thu: 3, thur: 3, thurs: 3, '週四': 3, '四': 3,
-    friday: 4, fri: 4, '週五': 4, '五': 4,
-    saturday: 5, sat: 5, '週六': 5, '六': 5,
-    sunday: 6, sun: 6, '週日': 6, '日': 6
+    monday: 0, mon: 0, mondays: 0, '週一': 0, '一': 0,
+    tuesday: 1, tue: 1, tues: 1, tuesdays: 1, '週二': 1, '二': 1,
+    wednesday: 2, wed: 2, wednesdays: 2, '週三': 2, '三': 2,
+    thursday: 3, thu: 3, thur: 3, thurs: 3, thursdays: 3, '週四': 3, '四': 3,
+    friday: 4, fri: 4, fridays: 4, '週五': 4, '五': 4,
+    saturday: 5, sat: 5, saturdays: 5, '週六': 5, '六': 5,
+    sunday: 6, sun: 6, sundays: 6, '週日': 6, '日': 6
   };
 
   const result: Record<string, string | null> = {
@@ -59,8 +59,9 @@ function parseStringSchedule(s: string): Record<string, string | null> | null {
   };
 
   const parseDaysSpec = (spec: string): string[] => {
+    if (!spec) return [];
     const list: string[] = [];
-    const rangeMatch = spec.match(/([a-zA-Z\u4e00-\u9fa5]+)\s*(?:to|-|至)\s*([a-zA-Z\u4e00-\u9fa5]+)/i);
+    const rangeMatch = spec.match(/([a-zA-Z\u4e00-\u9fa5]+)\s*(?:to|-|–|—|至)\s*([a-zA-Z\u4e00-\u9fa5]+)/i);
     if (rangeMatch) {
       const d1 = rangeMatch[1].toLowerCase().replace(/週/g, '');
       const d2 = rangeMatch[2].toLowerCase().replace(/週/g, '');
@@ -75,7 +76,7 @@ function parseStringSchedule(s: string): Record<string, string | null> | null {
         }
       }
     }
-    const tokens = spec.split(/[,、\s&]+|\band\b/i).map(t => t.trim().toLowerCase().replace(/週/g, ''));
+    const tokens = spec.split(/[,、\s&/]+|\band\b/i).map(t => t.trim().toLowerCase().replace(/週/g, ''));
     for (const t of tokens) {
       const idx = dayIndices[t];
       if (idx !== undefined && !list.includes(weekDayKeys[idx])) {
@@ -85,10 +86,10 @@ function parseStringSchedule(s: string): Record<string, string | null> | null {
     return list;
   };
 
-  // 1. 7 days a week / daily / 365 days (7天相同營業時間)
-  if (/(?:7\s*days\s*a\s*week|seven\s*days\s*a\s*week|daily|every\s*day|365\s*days)/i.test(s)) {
+  // 1. 7 days a week / daily / 365 days / everyday (7天相同營業時間)
+  if (/(?:7\s*days\s*a\s*week|seven\s*days\s*a\s*week|daily|every\s*day|everyday|365\s*days|7\s*days\/week)/i.test(s)) {
     const time = s
-      .replace(/,?\s*(?:7\s*days\s*a\s*week|seven\s*days\s*a\s*week|daily|every\s*day|365\s*days\s*(?:a\s*year)?|We offer our hot morning meal at)\b/gi, '')
+      .replace(/,?\s*(?:7\s*days\s*a\s*week|seven\s*days\s*a\s*week|daily|every\s*day|everyday|365\s*days\s*(?:a\s*year)?|7\s*days\/week|We offer our hot morning meal at)\b/gi, '')
       .replace(/^[,;\s]+|[,;\s]+$/g, '')
       .trim();
     if (time) {
@@ -97,8 +98,47 @@ function parseStringSchedule(s: string): Record<string, string | null> | null {
     }
   }
 
-  // 2. Colon-prefixed day sections: e.g. 'Monday – Saturday: 9 AM – 8 PM Sunday & Holidays: 9:30 AM – 8 PM'
-  const dayHeaderRegex = /(?:^|\b)(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday|Mon|Tue|Wed|Thu|Fri|Sat|Sun|Holidays?)(?:\s*(?:to|[-–—~至])\s*(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday|Mon|Tue|Wed|Thu|Fri|Sat|Sun))?(?:\s*(?:&|and)\s*Holidays?)?\s*:/gi;
+  // 2. Pre-process: Semicolon or newline separated chunks (e.g. "Monday - Friday: 9 AM - 6:30 PM; Sat 9 Am - 5:30 PM; Sunday: CLOSED")
+  if (s.includes(';') || s.includes('\n')) {
+    const chunks = s.split(/[;\n]+/).map(c => c.trim()).filter(Boolean);
+    let chunkCount = 0;
+    for (const chunk of chunks) {
+      if (/^(?:closed|休息|休館)\b/i.test(chunk) || /\b(?:closed|休息|休館)$/i.test(chunk)) {
+        const days = parseDaysSpec(chunk.replace(/closed|休息|休館|[:,\-–—~]/gi, '').trim());
+        if (days.length > 0) {
+          days.forEach(d => result[d] = '休息');
+          chunkCount++;
+          continue;
+        }
+      }
+      const mDaysTime = chunk.match(/^([A-Za-z\s,toand\u4e00-\u9fa5\-–—~]+?)\s*[:,\-–—~]?\s*(?:from\s+)?(\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?\s*(?:[-–—~至to]+\s*\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?|\s*(?:AM|PM|am|pm)))$/i);
+      if (mDaysTime) {
+        const days = parseDaysSpec(mDaysTime[1]);
+        if (days.length > 0) {
+          days.forEach(d => result[d] = mDaysTime[2].trim());
+          chunkCount++;
+          continue;
+        }
+      }
+      const mTimeDays = chunk.match(/^(?:from\s+)?(\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?\s*(?:[-–—~至to]+\s*\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?|\s*(?:AM|PM|am|pm)))\s*[,:\-–—~]?\s*(?:on\s+)?([A-Za-z\s,toand\u4e00-\u9fa5\-–—~]+)$/i);
+      if (mTimeDays) {
+        const days = parseDaysSpec(mTimeDays[2]);
+        if (days.length > 0) {
+          days.forEach(d => result[d] = mTimeDays[1].trim());
+          chunkCount++;
+          continue;
+        }
+      }
+    }
+    if (chunkCount > 0 && weekDayKeys.some(k => result[k])) {
+      weekDayKeys.forEach(d => { if (!result[d]) result[d] = '休息'; });
+      return result;
+    }
+  }
+
+  // 3. Colon-prefixed day sections: e.g. 'Monday – Saturday: 9 AM – 8 PM Sunday & Holidays: 9:30 AM – 8 PM'
+  const dayNamesUnion = 'Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday|Mon|Tue|Wed|Thu|Fri|Sat|Sun|Holidays?';
+  const dayHeaderRegex = new RegExp(`(?:^|\\b)(${dayNamesUnion})(?:\\s*(?:to|[-–—~至])\\s*(${dayNamesUnion}))?(?:\\s*(?:&|and)\\s*Holidays?)?\\s*:`, 'gi');
   const headerMatches: { header: string; index: number; length: number }[] = [];
   let hm: RegExpExecArray | null;
   while ((hm = dayHeaderRegex.exec(s)) !== null) {
@@ -123,8 +163,8 @@ function parseStringSchedule(s: string): Record<string, string | null> | null {
     return result;
   }
 
-  // 3. Narrative schedule extraction (e.g. "11:30 AM - 8:30 PM, Sunday, Tuesday to Thursday 11:30 AM - 9 PM Friday and Saturday Closed Monday")
-  const rTimeFirst = /(?:(\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?\s*[-–—~至to]+\s*\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?)\s*,?\s*([A-Za-z\s,toand\u4e00-\u9fa5]+?)(?=\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?|Closed|休息|$))|(?:(?:Closed|休息)\s+([A-Za-z\s,toand\u4e00-\u9fa5]+))/gi;
+  // 4. Narrative schedule extraction (e.g. "11:30 AM - 8:30 PM, Sunday, Tuesday to Thursday 11:30 AM - 9 PM Friday and Saturday Closed Monday")
+  const rTimeFirst = /(?:(?:from\s+)?(\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?\s*[-–—~至to]+\s*\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?|\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?)\s*,?\s*([A-Za-z\s,toand\u4e00-\u9fa5]+?)(?=(?:from\s+)?\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?|Closed|休息|$))|(?:(?:Closed|休息)\s+([A-Za-z\s,toand\u4e00-\u9fa5]+))/gi;
   let match;
   let count = 0;
   while ((match = rTimeFirst.exec(s)) !== null) {
@@ -149,8 +189,8 @@ function parseStringSchedule(s: string): Record<string, string | null> | null {
     return result;
   }
 
-  // 4. Days followed by time (e.g. 'Monday to Friday 10:00-14:00' or 'Mon - Fri, 8:30am - 4:30pm')
-  const rDaysFirst = /([A-Za-z\s,toand\u4e00-\u9fa5\-–—~]+?)\s*[,:\-–—~]?\s*(\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?\s*[-–—~至to]+\s*\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?|\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm))/gi;
+  // 5. Days followed by time (e.g. 'Monday to Friday 10:00-14:00' or 'Mon - Fri, 8:30am - 4:30pm')
+  const rDaysFirst = /([A-Za-z\s,toand\u4e00-\u9fa5\-–—~]+?)\s*[,:\-–—~]?\s*(?:from\s+)?(\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?\s*[-–—~至to]+\s*\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?|\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm))/gi;
   while ((match = rDaysFirst.exec(s)) !== null) {
     const daysSpec = match[1].trim();
     const time = match[2].trim();
@@ -165,11 +205,18 @@ function parseStringSchedule(s: string): Record<string, string | null> | null {
     return result;
   }
 
-  // 5. Days-only range e.g. "Monday to Friday" without explicit hours
+  // 6. Days-only range e.g. "Monday to Friday" without explicit hours
   const pureDays = parseDaysSpec(s);
   if (pureDays.length > 0 && pureDays.length < 7) {
     pureDays.forEach(d => result[d] = '開放營業');
     weekDayKeys.forEach(d => { if (!result[d]) result[d] = '休息'; });
+    return result;
+  }
+
+  // 7. Pure time range without days e.g. "10 AM - 6 PM" -> 7 days a week
+  const pureTime = s.match(/^(?:from\s+)?(\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?\s*[-–—~至to]+\s*\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?|\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm))$/i);
+  if (pureTime) {
+    weekDayKeys.forEach(d => result[d] = pureTime[1].trim());
     return result;
   }
 
@@ -243,8 +290,11 @@ export default function FacilityWeeklyHoursSchedule({
     const rawTodayVal = scheduleMap[todayDayName];
     if (rawTodayVal) {
       todayHoursStr = formatOpeningHours(rawTodayVal, timeFormat);
+      if (/^(closed|休館|休息|off)$/i.test(todayHoursStr.trim())) {
+        todayHoursStr = '休息';
+      }
     } else {
-      todayHoursStr = label.includes('營運') || label.includes('營業') ? '休息' : '休館';
+      todayHoursStr = '休息';
     }
 
     const dayValues: string[] = [];
@@ -266,9 +316,9 @@ export default function FacilityWeeklyHoursSchedule({
     for (const day of WEEK_DAYS) {
       const val = scheduleMap[day];
       const isToday = day === todayDayName;
-      let displayHours = val ? formatOpeningHours(val, timeFormat) : (label.includes('營運') || label.includes('營業') ? '休息' : '休館');
-      if (displayHours.toLowerCase() === 'closed') {
-        displayHours = label.includes('營運') || label.includes('營業') ? '休息' : '休館';
+      let displayHours = val ? formatOpeningHours(val, timeFormat) : '休息';
+      if (/^(closed|休館|休息|off)$/i.test(displayHours.trim())) {
+        displayHours = '休息';
       }
       parsedDays.push({
         key: day,
@@ -303,10 +353,10 @@ export default function FacilityWeeklyHoursSchedule({
     red: 'font-semibold text-red-900',
   }[theme] || 'font-semibold text-slate-900';
 
-  // 統一成圖2風格：只要成功解析出週間時程，一律呈現完整的 7 日時程列表
+  // 統一成圖2風格：只要成功解析出週間時程，一律呈現完整的 7 日時程列表 (預設為收合狀態，僅顯示當日時程)
   if (parsedDays.length > 0) {
     return (
-      <details className="group" open>
+      <details className="group">
         <summary className="flex justify-between items-center text-gray-600 cursor-pointer list-none hover:text-slate-800 select-none">
           <span>{label}</span>
           <span className="text-gray-800 text-right font-medium flex items-center gap-1 font-mono">

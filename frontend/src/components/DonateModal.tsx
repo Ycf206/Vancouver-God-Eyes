@@ -12,6 +12,7 @@ export default function DonateModal({ isOpen, onClose }: DonateModalProps) {
   // 預設贊助金額 (CAD 加幣)
   const [selectedAmount, setSelectedAmount] = useState<number | 'custom'>(15);
   const [customAmount, setCustomAmount] = useState<string>('');
+  const [showEnglishNotice, setShowEnglishNotice] = useState(false);
 
   if (!isOpen) return null;
 
@@ -26,8 +27,13 @@ export default function DonateModal({ isOpen, onClose }: DonateModalProps) {
 
     if (selectedAmount !== 'custom' && selectedAmount) {
       targetUrl = `${stripePaymentLink}${delimiter}prefilled_amount=${selectedAmount * 100}`;
-    } else if (customAmount && parseFloat(customAmount) > 0) {
-      targetUrl = `${stripePaymentLink}${delimiter}prefilled_amount=${Math.round(parseFloat(customAmount) * 100)}`;
+    } else if (selectedAmount === 'custom') {
+      const num = parseFloat(customAmount);
+      if (isNaN(num) || num < 0.5) {
+        alert('自訂贊助金額最低為 CAD $0.5，請重新輸入。');
+        return;
+      }
+      targetUrl = `${stripePaymentLink}${delimiter}prefilled_amount=${Math.round(num * 100)}`;
     }
     window.open(targetUrl, '_blank', 'noopener,noreferrer');
   };
@@ -106,30 +112,38 @@ export default function DonateModal({ isOpen, onClose }: DonateModalProps) {
             </div>
 
             {/* Custom Amount Field */}
-            <div className="pt-1 flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setSelectedAmount('custom')}
-                className={`px-3 py-2 rounded-lg border text-xs font-medium transition-colors shrink-0 ${
-                  selectedAmount === 'custom'
-                    ? 'bg-rose-500/15 border-rose-500 text-rose-300 font-bold'
-                    : 'bg-[#25262c] border-[#373a40] text-gray-400 hover:text-gray-200'
-                }`}
-              >
-                自訂金額
-              </button>
+            <div className="pt-1 flex flex-col gap-1.5">
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setSelectedAmount('custom')}
+                  className={`px-3 py-2 rounded-lg border text-xs font-medium transition-colors shrink-0 ${
+                    selectedAmount === 'custom'
+                      ? 'bg-rose-500/15 border-rose-500 text-rose-300 font-bold'
+                      : 'bg-[#25262c] border-[#373a40] text-gray-400 hover:text-gray-200'
+                  }`}
+                >
+                  自訂金額
+                </button>
+                {selectedAmount === 'custom' && (
+                  <div className="relative flex-1">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">$</span>
+                    <input
+                      type="number"
+                      min="0.5"
+                      step="0.5"
+                      placeholder="輸入贊助金額（最低 $0.5 CAD）"
+                      value={customAmount}
+                      onChange={(e) => setCustomAmount(e.target.value)}
+                      className="w-full bg-[#191a1e] border border-rose-500/60 rounded-lg pl-7 pr-12 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-rose-500"
+                    />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-[10px]">CAD</span>
+                  </div>
+                )}
+              </div>
               {selectedAmount === 'custom' && (
-                <div className="relative flex-1">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">$</span>
-                  <input
-                    type="number"
-                    min="1"
-                    placeholder="輸入贊助金額 (CAD)"
-                    value={customAmount}
-                    onChange={(e) => setCustomAmount(e.target.value)}
-                    className="w-full bg-[#191a1e] border border-rose-500/60 rounded-lg pl-7 pr-12 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-rose-500"
-                  />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-[10px]">CAD</span>
+                <div className="text-[10.5px] text-rose-400/90 pl-1">
+                  * 自訂贊助金額最低為 CAD $0.5
                 </div>
               )}
             </div>
@@ -175,22 +189,59 @@ export default function DonateModal({ isOpen, onClose }: DonateModalProps) {
           </div>
 
           {/* Compliance & Legal Notice Box (金流合規與條款聲明) */}
-          <div className="mt-2 bg-[#191a1e] p-3 rounded-lg border border-[#2d2e34] text-[10.5px] text-gray-400 flex flex-col gap-1.5 leading-relaxed">
-            <div className="flex items-center gap-1.5 font-bold text-gray-300">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-              <span>贊助條款、隱私與合規聲明</span>
+          <div className="mt-2 bg-[#191a1e] p-3 rounded-lg border border-[#2d2e34] text-[10.5px] text-gray-400 flex flex-col gap-1.5 leading-relaxed relative">
+            <div className="flex items-center justify-between font-bold text-gray-300">
+              <div className="flex items-center gap-1.5">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                <span>贊助條款、隱私與合規聲明</span>
+              </div>
+              
+              {/* 英文聲明觸碰/懸浮按鈕 (參考停車錶提示風格) */}
+              <div 
+                className="relative"
+                onMouseEnter={() => setShowEnglishNotice(true)}
+                onMouseLeave={() => setShowEnglishNotice(false)}
+              >
+                <button
+                  type="button"
+                  onClick={() => setShowEnglishNotice(prev => !prev)}
+                  className="w-4 h-4 rounded-full bg-[#25262c] hover:bg-[#323640] text-emerald-400 hover:text-emerald-300 border border-emerald-500/40 flex items-center justify-center font-bold text-[10.5px] shadow-sm transition-colors cursor-pointer select-none"
+                  title="查看英文聲明 (View English Statement)"
+                >
+                  !
+                </button>
+
+                {showEnglishNotice && (
+                  <div className="absolute right-0 bottom-full mb-2 w-[280px] sm:w-[320px] bg-[#161922]/95 backdrop-blur-md text-gray-200 p-3 rounded-lg shadow-2xl border border-gray-700 text-[10.5px] leading-relaxed z-50 animate-in fade-in duration-150">
+                    <div className="flex items-center justify-between pb-1.5 mb-1.5 border-b border-gray-700/80">
+                      <span className="font-bold text-white text-[11px] flex items-center gap-1">
+                        <ShieldCheck className="w-3 h-3 text-emerald-400" />
+                        <span>Terms &amp; Compliance Statement</span>
+                      </span>
+                      <span className="text-[9.5px] text-emerald-400 font-mono">English</span>
+                    </div>
+                    <ul className="space-y-1.5 text-gray-300 text-[10px]">
+                      <li>• <strong>Nature of Contribution</strong>: Purely a voluntary gift / tip supporting this project, with no physical goods, commercial returns, or service consideration.</li>
+                      <li>• <strong>Non-refundable</strong>: Voluntary contribution and non-refundable once processed. Please verify the amount prior to payment.</li>
+                      <li>• <strong>Not Tax Deductible</strong>: Independent open-source civic map project, not a registered charity. Cannot issue tax receipts or be claimed for tax deduction.</li>
+                      <li>• <strong>Payment Security</strong>: Securely encrypted via Stripe (PCI-DSS Level 1 certified). No card data is stored or accessed by this website.</li>
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="flex items-start gap-1.5">
+              <span className="text-gray-500 shrink-0">•</span>
+              <span><strong>贊助性質</strong>：本贊助純屬對本專案與作者心血付出之自願贈與及打賞，不包含任何實體商品、商業回饋或特定服務對價。</span>
             </div>
             <div className="flex items-start gap-1.5">
               <span className="text-gray-500 shrink-0">•</span>
-              <span><strong>贊助性質</strong>：本贊助純屬對本專案與作者心血付出之自願贈與及打賞（Voluntary Gift / Tip），不包含任何實體商品、商業回饋或特定服務對價。</span>
-            </div>
-            <div className="flex items-start gap-1.5">
-              <span className="text-gray-500 shrink-0">•</span>
-              <span><strong>不可退款說明 (Non-refundable)</strong>：贊助為自願性無償支持行為，款項一經處理完成恕無法提供退款，請於支付前確認金額。</span>
+              <span><strong>不可退款說明</strong>：贊助為自願性無償支持行為，款項一經處理完成恕無法提供退款，請於支付前確認金額。</span>
             </div>
             <div className="flex items-start gap-1.5">
               <span className="text-amber-400 shrink-0">⚠️</span>
-              <span><strong>不可申報扣抵稅額聲明</strong>：本專案為個人獨立開發之開源公益地圖工具，非加拿大政府立案之慈善機構（Registered Charity），<strong>因此贊助款項無法開立免稅收據，亦不可申報抵扣個人或企業所得稅額</strong>。</span>
+              <span><strong>不可申報扣抵稅額聲明</strong>：本專案為個人獨立開發之開源公益地圖工具，非加拿大政府立案之慈善機構，<strong>因此贊助款項無法開立免稅收據，亦不可申報抵扣個人或企業所得稅額</strong>。</span>
             </div>
             <div className="flex items-start gap-1.5">
               <span className="text-emerald-400 shrink-0">🔒</span>

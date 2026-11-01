@@ -847,7 +847,7 @@ ${placemarksKML}
             </div>
             <div>
               <h3 className="font-bold text-white text-base leading-snug">
-                地圖與圖資匯出中心 (Export Center)
+                地圖與圖資匯出中心
               </h3>
               <p className="text-xs text-gray-400">
                 匯出純淨地圖快照、打包向量圖資或試算表表格
@@ -904,7 +904,7 @@ ${placemarksKML}
               {/* 畫布縮圖預覽 */}
               <div className="flex flex-col gap-1.5">
                 <div className="flex justify-between items-center text-gray-300 font-medium">
-                  <span>當前畫面預覽 (Live Canvas Preview):</span>
+                  <span>當前畫面預覽:</span>
                   <button 
                     onClick={updateMapPreview}
                     className="flex items-center gap-1 text-[11px] text-cyan-400 hover:underline"
@@ -941,7 +941,7 @@ ${placemarksKML}
               {/* 設定選項 */}
               <div className="grid grid-cols-2 gap-3 pt-2">
                 <div className="flex flex-col gap-1.5 bg-[#10131a] p-3 rounded-xl border border-[#262b38]">
-                  <span className="text-gray-400 font-medium">檔案格式 (Format):</span>
+                  <span className="text-gray-400 font-medium">檔案格式:</span>
                   <div className="grid grid-cols-2 gap-1.5">
                     <button
                       onClick={() => setImageFormat('png')}
@@ -975,7 +975,7 @@ ${placemarksKML}
                       onChange={(e) => setIncludeLegend(e.target.checked)}
                       className="rounded border-gray-600 accent-cyan-500"
                     />
-                    <span className="text-[11.5px]">加上設施圖例橫條 (Legend)</span>
+                    <span className="text-[11.5px]">加上設施圖例橫條</span>
                   </label>
                   <label className="flex items-center gap-2 text-gray-300 cursor-pointer">
                     <input
@@ -996,7 +996,7 @@ ${placemarksKML}
                 className="w-full py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-gray-950 font-bold text-xs flex items-center justify-center gap-2 shadow-lg transition-all disabled:opacity-50 mt-1"
               >
                 <Download className="w-4 h-4" />
-                <span>{isExporting ? '生成圖片中...' : '下載純淨地圖圖片 (Download Image)'}</span>
+                <span>{isExporting ? '生成圖片中...' : '下載純淨地圖圖片'}</span>
               </button>
             </div>
           )}
@@ -1035,13 +1035,13 @@ ${placemarksKML}
 
               {/* 匯出範圍選項 */}
               <div className="flex flex-col gap-1.5">
-                <span className="text-gray-400 font-medium">選擇匯出範圍 (Scope):</span>
+                <span className="text-gray-400 font-medium">選擇匯出範圍:</span>
                 <select
                   value={selectedGeojsonScope}
                   onChange={(e) => setSelectedGeojsonScope(e.target.value)}
                   className="w-full bg-[#10131a] border border-[#262b38] rounded-xl px-3 py-2 text-gray-200 outline-none focus:border-cyan-500"
                 >
-                  <option value="all_active">🌟 打包全部已開啟圖層 (All Active Layers into One GeoJSON)</option>
+                  <option value="all_active">🌟 打包全部已開啟圖層</option>
                   {activeLayerKeys.map((k) => (
                     <option key={k} value={k}>
                       僅匯出此圖層：{LAYER_METADATA[k]?.label || k}
@@ -1060,7 +1060,7 @@ ${placemarksKML}
                 className="w-full py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-gray-950 font-bold text-xs flex items-center justify-center gap-2 shadow-lg transition-all disabled:opacity-50 mt-1"
               >
                 <Download className="w-4 h-4" />
-                <span>{isExporting ? '打包向量圖資中...' : '匯出 GeoJSON 檔案 (Download GeoJSON)'}</span>
+                <span>{isExporting ? '打包向量圖資中...' : '匯出 GeoJSON 檔案'}</span>
               </button>
             </div>
           )}
@@ -1071,7 +1071,7 @@ ${placemarksKML}
               <div className="p-3 rounded-xl bg-[#10131a] border border-[#262b38] flex flex-col gap-2">
                 <div className="flex items-center gap-2 text-white font-bold text-xs">
                   <FileSpreadsheet className="w-4 h-4 text-emerald-400" />
-                  <span>結構化數據試算表 (CSV / Excel Format)</span>
+                  <span>結構化數據試算表</span>
                 </div>
                 <p className="text-[11px] text-gray-400 leading-relaxed">
                   將目前畫面上已開啟的各類公共設施（如 AED、公廁、食物銀行、垃圾箱、單車架、學校等）轉換為標準表格，包含中文名稱、分類、經度、緯度、地址與社區。
@@ -1102,7 +1102,7 @@ ${placemarksKML}
                 className="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-bold text-xs flex items-center justify-center gap-2 shadow-lg transition-all disabled:opacity-50 mt-1"
               >
                 <Download className="w-4 h-4" />
-                <span>{isExporting ? '生成 CSV 中...' : '下載 CSV 試算表 (Download CSV)'}</span>
+                <span>{isExporting ? '生成 CSV 中...' : '下載 CSV 試算表'}</span>
               </button>
             </div>
           )}
@@ -1113,7 +1113,7 @@ ${placemarksKML}
               <div className="p-3 rounded-xl bg-[#10131a] border border-[#262b38] flex flex-col gap-2">
                 <div className="flex items-center gap-2 text-white font-bold text-xs">
                   <Globe className="w-4 h-4 text-sky-400" />
-                  <span>Google Earth 標記檔案 (KML Format)</span>
+                  <span>Google Earth 標記檔案</span>
                 </div>
                 <p className="text-[11px] text-gray-400 leading-relaxed">
                   Keyhole Markup Language (KML) 是 Google Earth 與各類 GPS 手持設備的通用標準，可將大溫哥華設施點位與天車路線直接投射至 3D 衛星地球上。
@@ -1137,7 +1137,7 @@ ${placemarksKML}
                 className="w-full py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-gray-950 font-bold text-xs flex items-center justify-center gap-2 shadow-lg transition-all disabled:opacity-50 mt-1"
               >
                 <Download className="w-4 h-4" />
-                <span>{isExporting ? '生成 KML 中...' : '下載 KML 標記檔案 (Download KML)'}</span>
+                <span>{isExporting ? '生成 KML 中...' : '下載 KML 標記檔案'}</span>
               </button>
             </div>
           )}

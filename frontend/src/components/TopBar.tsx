@@ -324,11 +324,11 @@ export default function TopBar() {
     <div className="fixed top-0 left-0 w-full h-[60px] bg-[#1a1b1e] border-b border-[#2d2e32] flex items-center px-4 z-50 text-white shadow-lg">
       
       {/* 標誌區域 (電腦版與手機版統一使用清晰 Icon 圖示) */}
-      <div className="flex items-center justify-center mr-3 select-none shrink-0">
+      <div className="flex items-center justify-center mr-2.5 sm:mr-3.5 select-none shrink-0">
         <img
           src="/logo-mobile.jpg"
           alt="溫哥華上帝之眼"
-          className="h-8 w-8 sm:h-9 sm:w-9 object-cover rounded-md select-none shadow-sm"
+          className="h-8 w-8 sm:h-10 sm:w-10 object-cover rounded-lg select-none shadow-sm border border-emerald-500/20"
         />
       </div>
 
@@ -393,8 +393,8 @@ export default function TopBar() {
         <ChevronDown className="w-3 h-3 text-gray-600 ml-1" />
       </div>
 
-      {/* 搜尋列 (緊隨大溫地區) */}
-      <div ref={searchContainerRef} className="relative flex-1 min-w-0 max-w-[650px] ml-1.5 sm:ml-2.5 mr-2 sm:mr-4">
+      {/* 搜尋列 (緊隨大溫地區，調闊寬度以容納豐富搜尋與圖標空間) */}
+      <div ref={searchContainerRef} className="relative flex-1 min-w-0 max-w-[780px] ml-1.5 sm:ml-2.5 mr-2 sm:mr-4">
         <div className="flex items-center bg-[#25262b] border border-[#373a40] rounded-md px-2 sm:px-3 h-9 focus-within:border-emerald-500/70 focus-within:ring-1 focus-within:ring-emerald-500/30 transition-all shadow-inner">
           {/* 搜尋欄左方圖層篩選按鈕 */}
           <div className="relative shrink-0 mr-1 sm:mr-1.5">
