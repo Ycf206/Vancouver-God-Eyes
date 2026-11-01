@@ -5462,6 +5462,21 @@ def get_admin_analytics(db: Session = Depends(database.get_db)):
         "is_ready_for_launch": True
     }
 
+@app.post("/api/admin/stats/reset")
+def reset_admin_stats():
+    """重設全站造訪 / 瀏覽次數紀錄"""
+    global _pv_mem_cache
+    with _stats_lock:
+        _pv_mem_cache = {"daily_pv": {}, "total_pv": 0}
+        _save_pv_stats(_pv_mem_cache, force=True)
+    return {
+        "status": "ok",
+        "message": "瀏覽次數紀錄已成功重設",
+        "today_page_views": 0,
+        "total_page_views": 0,
+        "daily_pv": {}
+    }
+
 @app.get("/api/admin/issue-reports")
 def get_admin_issue_reports(db: Session = Depends(database.get_db)):
     """獲取全部問題回報列表"""

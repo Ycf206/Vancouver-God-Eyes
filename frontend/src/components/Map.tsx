@@ -7504,7 +7504,7 @@ export default function AppMap() {
                   className={`relative flex items-center justify-center w-5 h-5 bg-emerald-500/90 rounded-full cursor-pointer tooltip border border-white/80 shadow-md backdrop-blur-sm hover:scale-125 transition-transform z-10 ${
                     isSelected ? 'ring-4 ring-emerald-300/90 bg-emerald-600 scale-125 z-30' : ''
                   }`}
-                  title={`巴士 ${busNum}${v.destination ? ` 去 ${v.destination}` : ''}`}
+                  title={`巴士 ${busNum}${v.destination ? ` 往 ${v.destination}` : ''}`}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/></svg>
                 </div>
@@ -8092,7 +8092,7 @@ export default function AppMap() {
                       {sailing.fill > 0 && (
                         <div className="mt-1 pt-1 border-t border-gray-100">
                           <div className="flex justify-between items-center text-[10px] text-gray-500 mb-0.5">
-                            <span>車位載車率 (Deck Fill)</span>
+                            <span>車位載車率</span>
                             <span className="font-semibold text-gray-700">{sailing.fill}%</span>
                           </div>
                           <div className="w-full bg-gray-200/80 rounded-full h-1.5 overflow-hidden">
@@ -8219,7 +8219,7 @@ export default function AppMap() {
               {selectedFerry.fill !== undefined && selectedFerry.fill > 0 && (
                 <div>
                   <div className="flex justify-between items-center text-[10px] text-gray-500 mb-1">
-                    <span>車位載車率 (Deck Fill)</span>
+                    <span>車位載車率</span>
                     <span className="font-bold text-gray-800">{selectedFerry.fill}%</span>
                   </div>
                   <div className="w-full bg-gray-200/80 rounded-full h-1.5 overflow-hidden">
@@ -15233,13 +15233,10 @@ export default function AppMap() {
                   <div className="flex flex-col gap-2 text-xs">
                     {/* Delay & Speed Grid */}
                     <div className="grid grid-cols-2 gap-2">
-                      <div className="p-2 rounded-lg bg-gray-50 border border-gray-200 flex flex-col">
+                      <div className="p-2 rounded-lg bg-gray-50 border border-gray-200 flex flex-col justify-between">
                         <span className="text-[10px] text-gray-500 font-medium">⏱️ 通過延誤時間</span>
                         <span className={`font-bold text-sm mt-0.5 ${isFreeFlow ? 'text-emerald-600' : delayMin >= 8 ? 'text-rose-600' : 'text-amber-600'}`}>
                           {delayMin <= 0 ? '+0 分鐘 (順暢)' : `+${delayMin} 分鐘`}
-                        </span>
-                        <span className="text-[9.5px] text-gray-400 mt-0.5">
-                          {props.trend === 'worsening' ? '↗️ 車流回堵加劇中' : props.trend === 'improving' ? '↘️ 車流改善中' : isFreeFlow ? '✅ 全線車流順暢' : '➡️ 車流穩定'}
                         </span>
                       </div>
                       <div className="p-2 rounded-lg bg-gray-50 border border-gray-200 flex flex-col">
@@ -16674,7 +16671,7 @@ export default function AppMap() {
           </div>
           <div className="min-w-0 pr-1">
             <div className="text-sm font-bold text-white truncate">
-              {searchedBusRoute.route_number || searchedBusRoute.route_id} 去 {searchedBusRoute.destination || '終點站'}
+              {searchedBusRoute.route_number || searchedBusRoute.route_id} 往 {searchedBusRoute.destination || '終點站'}
             </div>
             <div className="text-[11px] text-gray-400 mt-0.5 truncate">
               {searchedBusRoute.stops ? `沿途 ${searchedBusRoute.stops.length} 個站點 · ` : ''}
@@ -16707,15 +16704,17 @@ export default function AppMap() {
       {/* 點選巴士時固定在右方展示之即時動態資料面板 */}
       {selectedBus && (() => {
         const busNum = busDetails?.route_number || selectedBus.route_number || selectedBus.route_id;
-        const destName = busDetails?.destination || selectedBus.destination || '終點站';
-        const originName = busDetails?.origin || selectedBus.origin || '起點站';
+        const rawDestName = busDetails?.destination || selectedBus.destination || (selectedBus.is_seabus ? 'Waterfront Station' : '終點站');
+        const destName = selectedBus.is_seabus ? rawDestName.replace(/\s*朗斯代爾碼頭/g, '').replace(/\s*濱海站渡輪碼頭/g, '').trim() : rawDestName;
+        const rawOriginName = busDetails?.origin || selectedBus.origin || (selectedBus.is_seabus ? 'Lonsdale Quay' : '起點站');
+        const originName = selectedBus.is_seabus ? rawOriginName.replace(/\s*朗斯代爾碼頭/g, '').replace(/\s*濱海站渡輪碼頭/g, '').trim() : rawOriginName;
         const operatorName = busDetails?.operator || selectedBus.operator || 'TransLink (CMBC 岸山巴士)';
         const nextStopName = busDetails?.next_stop_name || selectedBus.next_stop_name || '沿線行駛中';
         const nextStopTime = busDetails?.next_stop_time || selectedBus.next_stop_time || '';
         const nextStopMin = busDetails?.next_stop_minutes ?? selectedBus.next_stop_minutes;
 
-        const seabusOriginName = destName.toLowerCase().includes('waterfront') ? 'Lonsdale Quay 朗斯代爾碼頭' : 'Waterfront Station 濱海站渡輪碼頭';
-        const seabusDestName = destName.toLowerCase().includes('waterfront') ? 'Waterfront Station 濱海站渡輪碼頭' : 'Lonsdale Quay 朗斯代爾碼頭';
+        const seabusOriginName = destName.toLowerCase().includes('waterfront') ? 'Lonsdale Quay' : 'Waterfront Station';
+        const seabusDestName = destName.toLowerCase().includes('waterfront') ? 'Waterfront Station' : 'Lonsdale Quay';
         const seabusOriginCoords = destName.toLowerCase().includes('waterfront') ? [-123.0815, 49.3105] : [-123.1118, 49.2861];
         const seabusDestCoords = destName.toLowerCase().includes('waterfront') ? [-123.1118, 49.2861] : [-123.0815, 49.3105];
 
@@ -16762,7 +16761,7 @@ export default function AppMap() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <h3 className="font-bold text-white text-[15px] leading-snug tracking-tight break-words">
-                    {selectedBus.is_seabus ? `SeaBus 跨海渡輪 去 ${destName}` : `${busNum} 去 ${destName}`}
+                    {selectedBus.is_seabus ? `SeaBus 跨海渡輪 往 ${destName}` : `${busNum} 往 ${destName}`}
                   </h3>
                   <div className="flex items-center gap-1.5 mt-0.5">
                     <span className={`w-2 h-2 rounded-full ${
@@ -16931,7 +16930,7 @@ export default function AppMap() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <h3 className="font-bold text-white text-[15px] leading-snug tracking-tight break-words">
-                    {lineName} 去 {destName}
+                    {lineName} 往 {destName}
                   </h3>
                   <div className="flex items-center gap-1.5 mt-0.5">
                     <span 

@@ -323,6 +323,32 @@ export default function AdminPage() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [issueReports, setIssueReports] = useState<any[]>([]);
   const [loadingStats, setLoadingStats] = useState(false);
+  const [loadingResetStats, setLoadingResetStats] = useState(false);
+
+  const handleResetStats = async () => {
+    if (!window.confirm('確定要重設全站造訪次數紀錄嗎？此操作將清空本日與歷史累計瀏覽次數。')) return;
+    setLoadingResetStats(true);
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const res = await adminApiFetch<any>('/api/admin/stats/reset', { method: 'POST' });
+      if (res.ok) {
+        setStats(prev => ({
+          ...prev,
+          today_page_views: 0,
+          total_page_views: 0,
+          daily_pv: {}
+        }));
+        await fetchAnalyticsData();
+      } else {
+        alert(res.error || '重設失敗，請檢查權限');
+      }
+    } catch (err) {
+      console.error('Reset stats error:', err);
+      alert('重設過程發生錯誤');
+    } finally {
+      setLoadingResetStats(false);
+    }
+  };
 
   const fetchAnalyticsData = async () => {
     setLoadingStats(true);
@@ -2459,6 +2485,33 @@ export default function AdminPage() {
         {/* 分頁 3: 系統統計資料 (正式開始執行) */}
         {mainTab === 'analytics' && (
           <div className="flex flex-col gap-5 animate-in fade-in duration-200">
+            <div className="flex flex-wrap items-center justify-between gap-3 pb-1 border-b border-[#232a3b]">
+              <div className="flex items-center gap-2">
+                <BarChart3 className="w-4 h-4 text-emerald-400" />
+                <h3 className="text-sm font-bold text-white">全站造訪與系統流量統計</h3>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleResetStats}
+                  disabled={loadingResetStats}
+                  className="px-3 py-1.5 rounded-lg bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 border border-rose-500/30 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+                  title="重設全站造訪次數紀錄"
+                >
+                  <RotateCcw className={`w-3.5 h-3.5 ${loadingResetStats ? 'animate-spin' : ''}`} />
+                  <span>{loadingResetStats ? '重設中...' : '重設瀏覽紀錄'}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={fetchAnalyticsData}
+                  className="px-3 py-1.5 rounded-lg bg-[#222a3b] hover:bg-[#2b354c] text-gray-200 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer border border-[#343f58]"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${loadingStats ? 'animate-spin text-emerald-400' : ''}`} />
+                  <span>刷新數據</span>
+                </button>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="bg-[#141822] border border-[#232a3b] rounded-xl p-5 shadow-xl flex flex-col justify-between">
                 <div className="flex items-center justify-between text-gray-400">
@@ -2518,7 +2571,7 @@ export default function AdminPage() {
                 <div className="flex items-center justify-between border-b border-[#232a3b] pb-3">
                   <h4 className="text-xs font-bold text-gray-200 flex items-center gap-2">
                     <BarChart3 className="w-4 h-4 text-emerald-400" />
-                    <span>近期每日瀏覽趨勢記錄 (Daily Page Views)</span>
+                    <span>近期每日瀏覽趨勢記錄</span>
                   </h4>
                   <span className="text-[10px] text-gray-500">每 30 秒自動更新並原子持久化</span>
                 </div>
@@ -2537,14 +2590,6 @@ export default function AdminPage() {
                 </div>
               </div>
             )}
-
-            <div className="bg-[#141822] border border-emerald-500/20 rounded-xl p-4.5 text-center text-gray-400 text-xs flex items-center justify-center gap-3">
-              <Sparkles className="w-5 h-5 text-emerald-400 shrink-0" />
-              <div className="text-left">
-                <p className="font-semibold text-emerald-300 text-xs">全域訪客統計與系統監控已正式啟用</p>
-                <p className="text-[11px] text-gray-400 mt-0.5">系統正實時統計全網訪客造訪流量、WebSocket 在線使用者與問題回報反饋。所有計數定時持久化儲存。</p>
-              </div>
-            </div>
           </div>
         )}
 
