@@ -1177,7 +1177,7 @@ export default function AppMap() {
       const hasSpeed = Boolean(selectedFacility.properties?.has_speed);
       if (hasSpeed && !safetyCamerasFilter.redLightSpeed) setSelectedFacility(null);
       if (!hasSpeed && !safetyCamerasFilter.redLightOnly) setSelectedFacility(null);
-    } else if (selectedFacility.facility_type === 'impark' || selectedFacility.id?.startsWith('impark_')) {
+    } else if (selectedFacility.facility_type === 'impark' || String(selectedFacility.id ?? '').startsWith('impark_')) {
       if (!imparkFilter.companies?.impark) {
         setSelectedFacility(null);
         return;
@@ -1480,11 +1480,11 @@ export default function AppMap() {
     if (searchTarget) {
       if (searchTarget.layer_key && !layers[searchTarget.layer_key]) {
         setSearchTarget(null);
-      } else if ((searchTarget.category === 'fuel' || searchTarget.id?.startsWith('fuel_')) && !layers.fuel) {
+      } else if ((searchTarget.category === 'fuel' || String(searchTarget.id ?? '').startsWith('fuel_')) && !layers.fuel) {
         setSearchTarget(null);
-      } else if ((searchTarget.category === 'tesla' || searchTarget.id?.startsWith('tesla_')) && !layers.tesla) {
+      } else if ((searchTarget.category === 'tesla' || String(searchTarget.id ?? '').startsWith('tesla_')) && !layers.tesla) {
         setSearchTarget(null);
-      } else if ((searchTarget.category === 'ev_charging' || searchTarget.id?.startsWith('ev_')) && !layers.evCharging) {
+      } else if ((searchTarget.category === 'ev_charging' || String(searchTarget.id ?? '').startsWith('ev_')) && !layers.evCharging) {
         setSearchTarget(null);
       } else if (searchTarget.category === 'aed' && !layers.aed) {
         setSearchTarget(null);
@@ -2774,7 +2774,7 @@ export default function AppMap() {
       setSelectedStop(null);
       setSelectedFlight(null);
       setSelectedAirport(null);
-      const facType = searchTarget.meta?.facility_type || searchTarget.meta?.properties?.facility_type || (searchTarget.category === 'road' ? (searchTarget.id?.startsWith('fuel_') ? 'fuel' : 'ev_charging') : searchTarget.category);
+      const facType = searchTarget.meta?.facility_type || searchTarget.meta?.properties?.facility_type || (searchTarget.category === 'road' ? (String(searchTarget.id ?? '').startsWith('fuel_') ? 'fuel' : 'ev_charging') : searchTarget.category);
       if (facType === 'canada_post') {
         setCourierFilter(prev => prev.canadaPost ? prev : { ...prev, canadaPost: true });
       } else if (facType === 'fedex') {
@@ -7073,7 +7073,10 @@ export default function AppMap() {
             else facilityLocalArea = props.waterway || props.area || props.local_area || props.location || props.company || props.address || props.city || '';
 
             setSelectedFacility({
-              id: props.id || (props.object_id ? `${facilityType}_${props.object_id}` : (props.registryid ? `art_${props.registryid}` : '')),
+              // GeoJSON 的 id 可能是數字 (例如社區中心 id: 1)，統一轉成字串，避免後續 .startsWith() 等字串方法拋出 TypeError
+              id: (props.id !== undefined && props.id !== null && props.id !== '')
+                ? (typeof props.id === 'number' ? `${facilityType}_${props.id}` : String(props.id))
+                : (props.object_id ? `${facilityType}_${props.object_id}` : (props.registryid ? `art_${props.registryid}` : '')),
               facility_type: facilityType,
               name: facilityName || '設施',
               local_area: facilityLocalArea,
@@ -15945,9 +15948,9 @@ export default function AppMap() {
                   {/* 詳細資料 (Snow Report / SkiResort) 外部連結按鈕 */}
                   {(() => {
                     const detailUrl = selectedFacility.properties.skiresort_url || (
-                      selectedFacility.id?.includes('cypress') ? 'https://www.skiresort.com/en/ski-resort/cypress-mountain/snow-report/' :
-                      selectedFacility.id?.includes('grouse') ? 'https://www.skiresort.com/en/ski-resort/grouse-mountain/snow-report/' :
-                      selectedFacility.id?.includes('seymour') ? 'https://www.skiresort.com/en/ski-resort/mount-seymour/snow-report/' :
+                      String(selectedFacility.id ?? '').includes('cypress') ? 'https://www.skiresort.com/en/ski-resort/cypress-mountain/snow-report/' :
+                      String(selectedFacility.id ?? '').includes('grouse') ? 'https://www.skiresort.com/en/ski-resort/grouse-mountain/snow-report/' :
+                      String(selectedFacility.id ?? '').includes('seymour') ? 'https://www.skiresort.com/en/ski-resort/mount-seymour/snow-report/' :
                       null
                     );
                     if (!detailUrl) return null;

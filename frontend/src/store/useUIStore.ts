@@ -425,7 +425,7 @@ export const useUIStore = create<UIState>()(
           nextLayers.fuel = false;
         }
         let nextSearchTarget = state.searchTarget;
-        if (state.searchTarget?.category === 'job' || state.searchTarget?.id?.startsWith('job_') || (state.searchTarget?.layer_key as string) === 'job') {
+        if (state.searchTarget?.category === 'job' || String(state.searchTarget?.id ?? '').startsWith('job_') || (state.searchTarget?.layer_key as string) === 'job') {
           nextSearchTarget = null;
         }
         return { 
@@ -447,7 +447,7 @@ export const useUIStore = create<UIState>()(
           nextFuelAuto = false;
         }
         let nextSearchTarget = state.searchTarget;
-        if (tab === 'jobs' && (state.searchTarget?.category === 'job' || state.searchTarget?.id?.startsWith('job_') || (state.searchTarget?.layer_key as string) === 'job')) {
+        if (tab === 'jobs' && (state.searchTarget?.category === 'job' || String(state.searchTarget?.id ?? '').startsWith('job_') || (state.searchTarget?.layer_key as string) === 'job')) {
           nextSearchTarget = null;
         }
         if (newTabs.length === 0) {
@@ -480,21 +480,21 @@ export const useUIStore = create<UIState>()(
             const st = state.searchTarget;
             const isTargetMatch =
               st.layer_key === layer ||
-              (layer === 'impark' && (st.category === 'impark' || st.id?.startsWith('impark_'))) ||
-              (layer === 'recycling' && (st.category === 'recycling' || st.id?.startsWith('recycling_'))) ||
-              (layer === 'fuel' && (st.category === 'fuel' || st.id?.startsWith('fuel_'))) ||
-              (layer === 'tesla' && (st.category === 'tesla' || st.id?.startsWith('tesla_'))) ||
-              (layer === 'evCharging' && (st.category === 'ev_charging' || st.id?.startsWith('ev_'))) ||
-              (layer === 'vanWifi' && (st.category === 'van_wifi' || st.id?.startsWith('vanwifi_'))) ||
+              (layer === 'impark' && (st.category === 'impark' || String(st.id ?? '').startsWith('impark_'))) ||
+              (layer === 'recycling' && (st.category === 'recycling' || String(st.id ?? '').startsWith('recycling_'))) ||
+              (layer === 'fuel' && (st.category === 'fuel' || String(st.id ?? '').startsWith('fuel_'))) ||
+              (layer === 'tesla' && (st.category === 'tesla' || String(st.id ?? '').startsWith('tesla_'))) ||
+              (layer === 'evCharging' && (st.category === 'ev_charging' || String(st.id ?? '').startsWith('ev_'))) ||
+              (layer === 'vanWifi' && (st.category === 'van_wifi' || String(st.id ?? '').startsWith('vanwifi_'))) ||
               (layer === 'airports' && st.category === 'airports') ||
               ((layer === 'bcferriesTerminals' || layer === 'bcferriesRoutes') && st.category === 'ferry_terminal') ||
               (layer === 'bcferriesVehicles' && st.category === 'ferry_vehicle') ||
               (layer === 'maritimeShipping' && st.category === 'maritime_vessel') ||
               (layer === 'marineTerminals' && st.category === 'marine_terminals') ||
-              (layer === 'oneWayStreets' && (st.category === 'one_way_streets' || st.id?.startsWith('oneway_'))) ||
-              (layer === 'snowRemovalRoutes' && (st.category === 'snow_removal_routes' || st.id?.startsWith('snow_'))) ||
-              (layer === 'waterDistributionMains' && (st.category === 'water_distribution_mains' || st.id?.startsWith('water_'))) ||
-              (layer === 'sewerMains' && (st.category === 'sewer_mains' || st.id?.startsWith('sewer_'))) ||
+              (layer === 'oneWayStreets' && (st.category === 'one_way_streets' || String(st.id ?? '').startsWith('oneway_'))) ||
+              (layer === 'snowRemovalRoutes' && (st.category === 'snow_removal_routes' || String(st.id ?? '').startsWith('snow_'))) ||
+              (layer === 'waterDistributionMains' && (st.category === 'water_distribution_mains' || String(st.id ?? '').startsWith('water_'))) ||
+              (layer === 'sewerMains' && (st.category === 'sewer_mains' || String(st.id ?? '').startsWith('sewer_'))) ||
               ((layer === 'skytrainRoutes' || layer === 'skytrainStops') && st.category === 'skytrain') ||
               ((layer === 'seabusRoutes' || layer === 'seabusStops') && st.category === 'seabus') ||
               ((layer === 'busRoutes' || layer === 'busStops') && (st.category === 'bus_stop' || st.category === 'bus_route')) ||
