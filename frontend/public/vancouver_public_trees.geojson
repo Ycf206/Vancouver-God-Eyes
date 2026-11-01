@@ -1,10 +1,8 @@
 {
   "type": "FeatureCollection",
-  "generator": "City of Vancouver Open Data - Public Trees",
-  "updated_at": "2026-10-18T00:13:37.133Z",
-  "update_interval": "每 1 個月更新 (Monthly)",
-  "dataset_url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/public-trees/records/?lang=en",
+  "generator": "VancouverGodsEye",
   "total_count": 2081,
+  "updated_at": "2026-11-01T06:05:53.116Z",
   "features": [
     {
       "type": "Feature",
