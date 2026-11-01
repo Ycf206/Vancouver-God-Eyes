@@ -9192,7 +9192,7 @@ export default function AppMap() {
                       return (selectedFacility.properties?.location || selectedFacility.name || '').replace(/^斑馬線\s*-\s*/, '').trim();
                     }
                     if (selectedFacility.facility_type === 'bikeways') {
-                      return selectedFacility.properties?.bike_route_name || (selectedFacility.name || '').replace(/\s*單車徑.*$/, '').trim();
+                      return selectedFacility.properties?.name || selectedFacility.name || '單車徑';
                     }
                     if (selectedFacility.facility_type === 'bike_racks') {
                       return (selectedFacility.properties?.location || selectedFacility.name || '').replace(/^單車架\s*-\s*/, '').trim();

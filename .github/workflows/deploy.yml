@@ -75,8 +75,17 @@ jobs:
           fi
           git fetch origin data:refs/remotes/origin/data 2>/dev/null || true
           git checkout refs/remotes/origin/data -- backend/data frontend/public 2>/dev/null || true
-          # 確保 backend/data/admin_sources_config.json 以最新 main 分支為基底再與備份合併，不被 data 分支舊版覆蓋
-          git checkout HEAD -- backend/data/admin_sources_config.json 2>/dev/null || true
+          # 確保核心圖資與後台設定以最新 main 分支為基準，防止 data 分支舊快取損壞屬性與格式
+          git checkout HEAD -- \
+            backend/data/vancouver_bikeways.geojson \
+            frontend/public/vancouver_bikeways.geojson \
+            backend/data/vancouver_community_centres.geojson \
+            frontend/public/vancouver_community_centres.geojson \
+            backend/data/vancouver_parks.geojson \
+            frontend/public/vancouver_parks.geojson \
+            backend/data/vancouver_drinking_fountains.geojson \
+            frontend/public/vancouver_drinking_fountains.geojson \
+            backend/data/admin_sources_config.json 2>/dev/null || true
           git clean -fd -e backend/.env -e .env -e frontend/.env.local -e backend/data/admin_sources_config.json
 
           # 還原 .env、前端環境變數、持久化執行狀態檔與合併管理員設定檔
