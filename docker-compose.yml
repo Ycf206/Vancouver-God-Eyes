@@ -8,26 +8,37 @@ services:
   db:
     image: kartoza/postgis:15-3.4
     environment:
-      POSTGRES_USER: gods_eye_user
-      POSTGRES_PASSWORD: password
-      POSTGRES_PASS: password
-      POSTGRES_DB: gods_eye
-      POSTGRES_DBNAME: gods_eye
+      POSTGRES_USER: ${POSTGRES_USER:-gods_eye_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_PASS: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: ${POSTGRES_DB:-gods_eye}
+      POSTGRES_DBNAME: ${POSTGRES_DB:-gods_eye}
     # 關閉 5432 外網暴露，保護資料庫安全，僅允許 Docker 容器內部連線
     expose:
       - "5432"
     volumes:
       - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-gods_eye_user} -d ${POSTGRES_DB:-gods_eye}"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
     restart: unless-stopped
     logging: *default-logging
 
   redis:
     image: redis:7-alpine
+    command: ["redis-server", "--maxmemory", "256mb", "--maxmemory-policy", "allkeys-lru", "--save", "60", "1000"]
     # 關閉 6379 外網暴露，保護快取安全，僅允許 Docker 容器內部連線
     expose:
       - "6379"
     volumes:
       - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
     restart: unless-stopped
     logging: *default-logging
 
@@ -44,22 +55,24 @@ services:
       - 8.8.8.8
       - 1.1.1.1
     environment:
-      - DATABASE_URL=postgresql://gods_eye_user:password@db:5432/gods_eye
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-gods_eye_user}:${POSTGRES_PASSWORD:-password}@db:5432/${POSTGRES_DB:-gods_eye}
       - REDIS_URL=redis://redis:6379/0
       - FLIGHTAWARE_API_KEY=${FLIGHTAWARE_API_KEY:-}
       - FLIGHTAWARE_MAX_MONTHLY_CALLS=${FLIGHTAWARE_MAX_MONTHLY_CALLS:-480}
       - AISSTREAM_API_KEY=${AISSTREAM_API_KEY:-}
       - TOMTOM_API_KEY=${TOMTOM_API_KEY:-}
       - ADMIN_API_SECRET=${ADMIN_API_SECRET:-}
-      - WORKERS=3
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-}
+      - WORKERS=${WORKERS:-3}
+      - DB_POOL_SIZE=${DB_POOL_SIZE:-20}
+      - DB_MAX_OVERFLOW=${DB_MAX_OVERFLOW:-20}
     restart: unless-stopped
     logging: *default-logging
 
   frontend:
     build:
       context: ./frontend
-      args:
-        - NEXT_PUBLIC_ADMIN_API_SECRET=${NEXT_PUBLIC_ADMIN_API_SECRET:-${ADMIN_API_SECRET:-}}
     expose:
       - "3000"
     volumes:
@@ -69,8 +82,6 @@ services:
     environment:
       - NODE_OPTIONS=--max-old-space-size=2048
       - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-}
-      - NEXT_PUBLIC_TOMTOM_API_KEY=${TOMTOM_API_KEY:-}
-      - NEXT_PUBLIC_ADMIN_API_SECRET=${NEXT_PUBLIC_ADMIN_API_SECRET:-${ADMIN_API_SECRET:-}}
       - NEXT_PUBLIC_STRIPE_PAYMENT_LINK=${NEXT_PUBLIC_STRIPE_PAYMENT_LINK:-https://donate.stripe.com/6oU14g6Y7fgig6N1UfcMM00}
       - NEXT_PUBLIC_BUYMEACOFFEE_URL=${NEXT_PUBLIC_BUYMEACOFFEE_URL:-}
       - NEXT_PUBLIC_PAYPAL_URL=${NEXT_PUBLIC_PAYPAL_URL:-}

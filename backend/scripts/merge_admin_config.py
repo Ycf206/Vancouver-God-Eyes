@@ -1,5 +1,6 @@
 import os
 import json
+import tempfile
 
 def merge_admin_config():
     bak_p = '/tmp/godseye_admin_cfg.bak'
@@ -25,8 +26,20 @@ def merge_admin_config():
             if 'github_repo' in bak:
                 cur['github_repo'] = bak['github_repo']
                 
-            with open(cur_p, 'w', encoding='utf-8') as f:
-                json.dump(cur, f, indent=2, ensure_ascii=False)
+            parent_dir = os.path.dirname(os.path.abspath(cur_p))
+            fd, tmp_p = tempfile.mkstemp(prefix='.admin_cfg_', suffix='.tmp', dir=parent_dir)
+            try:
+                with os.fdopen(fd, 'w', encoding='utf-8') as f:
+                    json.dump(cur, f, indent=2, ensure_ascii=False)
+                    f.flush()
+                    os.fsync(f.fileno())
+                os.replace(tmp_p, cur_p)
+            except Exception:
+                try:
+                    os.unlink(tmp_p)
+                except OSError:
+                    pass
+                raise
             print("✅ Merged admin_sources_config.json with latest workflows successfully!")
         except Exception as e:
             print(f"⚠️ Merge admin config warning: {e}")

@@ -2,6 +2,7 @@ import time
 import re
 import json
 import html
+import threading
 import urllib.request
 from datetime import datetime, timezone
 from typing import List, Dict, Any, Optional
@@ -37,6 +38,8 @@ class EventsService:
         }
         self.last_fetch_time: float = 0.0
         self.cache_ttl: float = 1800.0  # 30 minutes cache
+        self.min_force_interval: float = 60.0  # 防刷保護：即使 force_refresh 最短仍間隔 60 秒
+        self._lock = threading.Lock()
         self.user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
 
     def fetch_dailyhive_events(self) -> List[Dict[str, Any]]:
@@ -400,7 +403,8 @@ class EventsService:
         依「進行中活動優先置頂」，其餘依「開始時間由近至遠 (升序)」精密排序
         """
         now = time.time()
-        if not force_refresh and self.cached_events and (now - self.last_fetch_time < self.cache_ttl):
+        ttl = self.min_force_interval if force_refresh else self.cache_ttl
+        if self.cached_events and (now - self.last_fetch_time < ttl):
             return {
                 "events": self.cached_events,
                 "total": len(self.cached_events),
@@ -408,49 +412,60 @@ class EventsService:
                 "updated_at": datetime.fromtimestamp(self.last_fetch_time, tz=timezone.utc).isoformat()
             }
 
-        all_events = []
-        now_ts = int(now * 1000)
+        with self._lock:
+            now = time.time()
+            if self.cached_events and (now - self.last_fetch_time < ttl):
+                return {
+                    "events": self.cached_events,
+                    "total": len(self.cached_events),
+                    "sources": ["Daily Hive", "Eventbrite", "Destination Vancouver"],
+                    "updated_at": datetime.fromtimestamp(self.last_fetch_time, tz=timezone.utc).isoformat()
+                }
 
-        # 1. 抓取 Daily Hive (listed/events)
-        dh = self.fetch_dailyhive_events()
-        all_events.extend(dh)
+            all_events = []
+            now_ts = int(now * 1000)
 
-        # 2. 抓取 Eventbrite
-        eb = self.fetch_eventbrite_events()
-        all_events.extend(eb)
-        
-        # 3. 抓取 溫哥華旅遊局 (Destination Vancouver)
-        dv = self.fetch_destination_vancouver_events()
-        all_events.extend(dv)
+            # 1. 抓取 Daily Hive (listed/events)
+            dh = self.fetch_dailyhive_events()
+            all_events.extend(dh)
 
-        # 再次統一檢查過濾已完全結束的活動 (確保絕對不含 2025 年過去活動)
-        valid_events = []
-        for ev in all_events:
-            end_ts = ev.get("end_ts") or ev.get("start_ts") or ev.get("timestamp", 0)
-            if end_ts and end_ts < now_ts - 2 * 3600 * 1000:
-                continue
-            # 更新即時進行中狀態
-            start_ts = ev.get("start_ts") or ev.get("timestamp", 0)
-            ev["is_ongoing"] = start_ts <= now_ts <= end_ts
-            if ev.get("url"):
-                ev["url"] = re.sub(r'RUSH-Fifty-Something-261215\d{4}', 'RUSH-Fifty-Something-2612151830', ev["url"], flags=re.IGNORECASE)
-            valid_events.append(ev)
+            # 2. 抓取 Eventbrite
+            eb = self.fetch_eventbrite_events()
+            all_events.extend(eb)
+            
+            # 3. 抓取 溫哥華旅遊局 (Destination Vancouver)
+            dv = self.fetch_destination_vancouver_events()
+            all_events.extend(dv)
 
-        # 排序：進行中的活動置頂 (0)，即將舉行依開始日期由近至遠 (1, start_ts 升序)
-        valid_events.sort(key=lambda x: (
-            0 if x.get("is_ongoing") else 1,
-            x.get("start_ts", 0) or x.get("timestamp", 0)
-        ))
+            # 再次統一檢查過濾已完全結束的活動 (確保絕對不含 2025 年過去活動)
+            valid_events = []
+            for ev in all_events:
+                end_ts = ev.get("end_ts") or ev.get("start_ts") or ev.get("timestamp", 0)
+                if end_ts and end_ts < now_ts - 2 * 3600 * 1000:
+                    continue
+                # 更新即時進行中狀態
+                start_ts = ev.get("start_ts") or ev.get("timestamp", 0)
+                ev["is_ongoing"] = start_ts <= now_ts <= end_ts
+                if ev.get("url"):
+                    ev["url"] = re.sub(r'RUSH-Fifty-Something-261215\d{4}', 'RUSH-Fifty-Something-2612151830', ev["url"], flags=re.IGNORECASE)
+                valid_events.append(ev)
 
-        self.cached_events = valid_events
-        self.last_fetch_time = now
+            # 排序：進行中的活動置頂 (0)，即將舉行依開始日期由近至遠 (1, start_ts 升序)
+            valid_events.sort(key=lambda x: (
+                0 if x.get("is_ongoing") else 1,
+                x.get("start_ts", 0) or x.get("timestamp", 0)
+            ))
 
-        return {
-            "events": valid_events,
-            "total": len(valid_events),
-            "sources": ["Daily Hive", "Eventbrite", "Destination Vancouver"],
-            "updated_at": datetime.now(timezone.utc).isoformat()
-        }
+            if valid_events or not self.cached_events:
+                self.cached_events = valid_events
+            self.last_fetch_time = now
+
+            return {
+                "events": self.cached_events,
+                "total": len(self.cached_events),
+                "sources": ["Daily Hive", "Eventbrite", "Destination Vancouver"],
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            }
 
     def get_eventbrite_fallback_events(self) -> List[Dict[str, Any]]:
         now_ts = int(time.time() * 1000)

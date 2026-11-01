@@ -9,24 +9,27 @@ SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://gods_eye_user:
 if SQLALCHEMY_DATABASE_URL.startswith("sqlite"):
     engine = create_engine(
         SQLALCHEMY_DATABASE_URL,
-        connect_args={"check_same_thread": False},
+        connect_args={"check_same_thread": False, "timeout": 10},
     )
     @event.listens_for(engine, "connect")
     def set_sqlite_pragma(dbapi_connection, connection_record):
         cursor = dbapi_connection.cursor()
-        # 啟用 SQLite 預寫日誌 (WAL) 模式與效能調校，支援高並發讀寫
+        # 啟用 SQLite 預寫日誌 (WAL) 模式與效能調校，支援高並發讀寫並防止 database is locked
         cursor.execute("PRAGMA journal_mode=WAL")
         cursor.execute("PRAGMA synchronous=NORMAL")
+        cursor.execute("PRAGMA busy_timeout=5000")
         cursor.execute("PRAGMA cache_size=-64000")  # 64MB 快取
         cursor.execute("PRAGMA temp_store=MEMORY")
         cursor.close()
 else:
     engine = create_engine(
         SQLALCHEMY_DATABASE_URL,
-        pool_size=20,
-        max_overflow=10,
+        pool_size=int(os.getenv("DB_POOL_SIZE", "20")),
+        max_overflow=int(os.getenv("DB_MAX_OVERFLOW", "20")),
+        pool_timeout=15,
         pool_pre_ping=True,
-        pool_recycle=3600,
+        pool_recycle=1800,
+        connect_args={"connect_timeout": 5},
     )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

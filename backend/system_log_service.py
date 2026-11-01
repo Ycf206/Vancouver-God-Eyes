@@ -1,6 +1,8 @@
 import os
 import json
 import time
+import tempfile
+import threading
 from datetime import datetime, timezone, timedelta
 from typing import List, Dict, Any, Optional
 
@@ -12,8 +14,41 @@ SYSTEM_LOGS_CONFIG_FILE = os.path.join(DATA_DIR, 'system_logs_config.json')
 SCHEDULE_HISTORY_FILE = os.path.join(DATA_DIR, 'admin_schedule_history.json')
 SCHEDULE_CONFIG_FILE = os.path.join(DATA_DIR, 'schedule_history_config.json')
 
+
+def _atomic_write_json(path: str, payload: Any) -> None:
+    """Thread/process-safe atomic JSON write via temp file + os.replace to prevent file truncation/corruption."""
+    dir_name = os.path.dirname(os.path.abspath(path))
+    os.makedirs(dir_name, exist_ok=True)
+    fd, tmp_path = tempfile.mkstemp(dir=dir_name, prefix=".tmp_", suffix=".json")
+    try:
+        with os.fdopen(fd, 'w', encoding='utf-8') as f:
+            json.dump(payload, f, ensure_ascii=False, indent=2)
+        os.replace(tmp_path, path)
+    except Exception:
+        try:
+            if os.path.exists(tmp_path):
+                os.remove(tmp_path)
+        except Exception:
+            pass
+        raise
+
+
+def _is_ts_on_or_after(ts_str: Optional[str], cutoff: datetime) -> bool:
+    """Safely compare ISO timestamp (naive or aware) against UTC-aware cutoff without raising TypeError/ValueError."""
+    if not ts_str or not isinstance(ts_str, str):
+        return True
+    try:
+        dt = datetime.fromisoformat(ts_str.replace("Z", "+00:00"))
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return dt >= cutoff
+    except Exception:
+        return True
+
+
 class SystemLogService:
     def __init__(self):
+        self._lock = threading.RLock()
         self._ensure_files()
 
     def _ensure_files(self):
@@ -100,13 +135,13 @@ class SystemLogService:
         return 30
 
     def set_system_retention_days(self, days: int) -> int:
-        try:
-            with open(SYSTEM_LOGS_CONFIG_FILE, 'w', encoding='utf-8') as f:
-                json.dump({"retention_days": int(days)}, f, indent=2)
-        except Exception:
-            pass
-        # Auto-prune with new retention
-        self.prune_system_logs(days)
+        days = max(0, min(3650, int(days)))
+        with self._lock:
+            try:
+                _atomic_write_json(SYSTEM_LOGS_CONFIG_FILE, {"retention_days": days})
+            except Exception:
+                pass
+            self.prune_system_logs(days)
         return days
 
     def get_schedule_retention_days(self) -> int:
@@ -120,43 +155,33 @@ class SystemLogService:
         return 30
 
     def set_schedule_retention_days(self, days: int) -> int:
-        try:
-            with open(SCHEDULE_CONFIG_FILE, 'w', encoding='utf-8') as f:
-                json.dump({"retention_days": int(days)}, f, indent=2)
-        except Exception:
-            pass
-        self.prune_schedule_history(days)
+        days = max(0, min(3650, int(days)))
+        with self._lock:
+            try:
+                _atomic_write_json(SCHEDULE_CONFIG_FILE, {"retention_days": days})
+            except Exception:
+                pass
+            self.prune_schedule_history(days)
         return days
 
     def prune_system_logs(self, retention_days: Optional[int] = None) -> List[Dict[str, Any]]:
-        if retention_days is None:
-            retention_days = self.get_system_retention_days()
-        
-        logs = self.read_system_logs_raw()
-        if retention_days <= 0:
-            # 0 means forever (永久保留)
-            return logs
+        with self._lock:
+            if retention_days is None:
+                retention_days = self.get_system_retention_days()
+            
+            logs = self.read_system_logs_raw()
+            if retention_days <= 0:
+                return logs
 
-        cutoff = datetime.now(timezone.utc) - timedelta(days=retention_days)
-        valid_logs = []
-        for l in logs:
-            ts_str = l.get("timestamp")
-            if not ts_str:
-                valid_logs.append(l)
-                continue
-            try:
-                dt = datetime.fromisoformat(ts_str.replace("Z", "+00:00"))
-                if dt >= cutoff:
-                    valid_logs.append(l)
-            except Exception:
-                valid_logs.append(l)
+            cutoff = datetime.now(timezone.utc) - timedelta(days=retention_days)
+            valid_logs = [l for l in logs if isinstance(l, dict) and _is_ts_on_or_after(l.get("timestamp"), cutoff)]
 
-        try:
-            with open(SYSTEM_LOGS_FILE, 'w', encoding='utf-8') as f:
-                json.dump(valid_logs, f, ensure_ascii=False, indent=2)
-        except Exception:
-            pass
-        return valid_logs
+            if len(valid_logs) != len(logs):
+                try:
+                    _atomic_write_json(SYSTEM_LOGS_FILE, valid_logs[:1000])
+                except Exception:
+                    pass
+            return valid_logs
 
     def read_system_logs_raw(self) -> List[Dict[str, Any]]:
         if not os.path.exists(SYSTEM_LOGS_FILE):
@@ -169,48 +194,49 @@ class SystemLogService:
             return []
 
     def get_system_logs(self, limit: int = 500) -> Dict[str, Any]:
-        logs = self.prune_system_logs()
-        # Sort newest first
-        sorted_logs = sorted(logs, key=lambda x: x.get("timestamp", ""), reverse=True)
-        retention_days = self.get_system_retention_days()
-        return {
-            "logs": sorted_logs[:limit],
-            "total": len(sorted_logs),
-            "retention_days": retention_days
-        }
+        limit = max(1, min(2000, int(limit)))
+        with self._lock:
+            logs = self.prune_system_logs()
+            sorted_logs = sorted(logs, key=lambda x: str(x.get("timestamp", "")), reverse=True)
+            retention_days = self.get_system_retention_days()
+            return {
+                "logs": sorted_logs[:limit],
+                "total": len(sorted_logs),
+                "retention_days": retention_days
+            }
 
     def add_system_log(self, level: str, file: str, action: str, message: str, details: Optional[Dict[str, Any]] = None):
         now_iso = datetime.now(timezone.utc).isoformat()
         entry = {
-            "id": f"syslog_{int(time.time()*1000)}_{len(message)%1000}",
+            "id": f"syslog_{int(time.time()*1000)}_{len(str(message))%1000}",
             "timestamp": now_iso,
-            "level": level.upper(),
-            "file": file,
-            "action": action,
-            "message": message,
-            "details": details or {}
+            "level": str(level).upper(),
+            "file": str(file)[:200],
+            "action": str(action)[:100],
+            "message": str(message)[:2000],
+            "details": details if isinstance(details, dict) else {}
         }
-        logs = self.read_system_logs_raw()
-        logs.insert(0, entry)
-        
-        retention_days = self.get_system_retention_days()
-        if retention_days > 0:
-            cutoff = datetime.now(timezone.utc) - timedelta(days=retention_days)
-            logs = [l for l in logs if not l.get("timestamp") or datetime.fromisoformat(l["timestamp"].replace("Z", "+00:00")) >= cutoff]
+        with self._lock:
+            logs = self.read_system_logs_raw()
+            logs.insert(0, entry)
+            
+            retention_days = self.get_system_retention_days()
+            if retention_days > 0:
+                cutoff = datetime.now(timezone.utc) - timedelta(days=retention_days)
+                logs = [l for l in logs if isinstance(l, dict) and _is_ts_on_or_after(l.get("timestamp"), cutoff)]
 
-        try:
-            with open(SYSTEM_LOGS_FILE, 'w', encoding='utf-8') as f:
-                json.dump(logs[:1000], f, ensure_ascii=False, indent=2)
-        except Exception:
-            pass
+            try:
+                _atomic_write_json(SYSTEM_LOGS_FILE, logs[:1000])
+            except Exception:
+                pass
         return entry
 
     def clear_system_logs(self):
-        try:
-            with open(SYSTEM_LOGS_FILE, 'w', encoding='utf-8') as f:
-                json.dump([], f, indent=2)
-        except Exception:
-            pass
+        with self._lock:
+            try:
+                _atomic_write_json(SYSTEM_LOGS_FILE, [])
+            except Exception:
+                pass
 
     # --- Schedule History Management ---
     def read_schedule_history_raw(self) -> List[Dict[str, Any]]:
@@ -224,64 +250,57 @@ class SystemLogService:
             return []
 
     def prune_schedule_history(self, retention_days: Optional[int] = None) -> List[Dict[str, Any]]:
-        if retention_days is None:
-            retention_days = self.get_schedule_retention_days()
+        with self._lock:
+            if retention_days is None:
+                retention_days = self.get_schedule_retention_days()
 
-        history = self.read_schedule_history_raw()
-        if retention_days <= 0:
-            # 0 means forever
-            return history
+            history = self.read_schedule_history_raw()
+            if retention_days <= 0:
+                return history
 
-        cutoff = datetime.now(timezone.utc) - timedelta(days=retention_days)
-        valid_items = []
-        for item in history:
-            ts_str = item.get("timestamp")
-            if not ts_str:
-                valid_items.append(item)
-                continue
-            try:
-                dt = datetime.fromisoformat(ts_str.replace("Z", "+00:00"))
-                if dt >= cutoff:
-                    valid_items.append(item)
-            except Exception:
-                valid_items.append(item)
+            cutoff = datetime.now(timezone.utc) - timedelta(days=retention_days)
+            valid_items = [item for item in history if isinstance(item, dict) and _is_ts_on_or_after(item.get("timestamp"), cutoff)]
 
-        try:
-            with open(SCHEDULE_HISTORY_FILE, 'w', encoding='utf-8') as f:
-                json.dump(valid_items, f, ensure_ascii=False, indent=2)
-        except Exception:
-            pass
-        return valid_items
+            if len(valid_items) != len(history):
+                try:
+                    _atomic_write_json(SCHEDULE_HISTORY_FILE, valid_items[:1000])
+                except Exception:
+                    pass
+            return valid_items
 
     def get_schedule_history(self, limit: int = 500) -> Dict[str, Any]:
-        history = self.prune_schedule_history()
-        sorted_history = sorted(history, key=lambda x: x.get("timestamp", ""), reverse=True)
-        return {
-            "logs": sorted_history[:limit],
-            "total": len(sorted_history),
-            "retention_days": self.get_schedule_retention_days()
-        }
+        limit = max(1, min(2000, int(limit)))
+        with self._lock:
+            history = self.prune_schedule_history()
+            sorted_history = sorted(history, key=lambda x: str(x.get("timestamp", "")), reverse=True)
+            return {
+                "logs": sorted_history[:limit],
+                "total": len(sorted_history),
+                "retention_days": self.get_schedule_retention_days()
+            }
 
     def append_schedule_log(self, log_entry: Dict[str, Any]):
-        history = self.read_schedule_history_raw()
-        history.insert(0, log_entry)
-        
-        retention_days = self.get_schedule_retention_days()
-        if retention_days > 0:
-            cutoff = datetime.now(timezone.utc) - timedelta(days=retention_days)
-            history = [h for h in history if not h.get("timestamp") or datetime.fromisoformat(h["timestamp"].replace("Z", "+00:00")) >= cutoff]
+        if not isinstance(log_entry, dict):
+            return
+        with self._lock:
+            history = self.read_schedule_history_raw()
+            history.insert(0, log_entry)
+            
+            retention_days = self.get_schedule_retention_days()
+            if retention_days > 0:
+                cutoff = datetime.now(timezone.utc) - timedelta(days=retention_days)
+                history = [h for h in history if isinstance(h, dict) and _is_ts_on_or_after(h.get("timestamp"), cutoff)]
 
-        try:
-            with open(SCHEDULE_HISTORY_FILE, 'w', encoding='utf-8') as f:
-                json.dump(history[:1000], f, ensure_ascii=False, indent=2)
-        except Exception:
-            pass
+            try:
+                _atomic_write_json(SCHEDULE_HISTORY_FILE, history[:1000])
+            except Exception:
+                pass
 
     def clear_schedule_history(self):
-        try:
-            with open(SCHEDULE_HISTORY_FILE, 'w', encoding='utf-8') as f:
-                json.dump([], f, indent=2)
-        except Exception:
-            pass
+        with self._lock:
+            try:
+                _atomic_write_json(SCHEDULE_HISTORY_FILE, [])
+            except Exception:
+                pass
 
 system_log_service = SystemLogService()

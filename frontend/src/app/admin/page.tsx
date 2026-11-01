@@ -354,7 +354,17 @@ export default function AdminPage() {
     }
   };
 
+  // 伺服器端 HMAC 簽章 Session 認證狀態 (預設鎖定，未通過後端驗證前絕不渲染後台內容)
+  const [authChecking, setAuthChecking] = useState(true);
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [pinInput, setPinInput] = useState('');
+  const [pinError, setPinError] = useState(false);
+  const [pinErrorMsg, setPinErrorMsg] = useState<string | null>(null);
+  const [isUnlockModalOpen, setIsUnlockModalOpen] = useState(false);
+
   useEffect(() => {
+    if (!isUnlocked) return;
     if (mainTab === 'analytics' || mainTab === 'issues') {
       fetchAnalyticsData();
     } else if (mainTab === 'system_logs') {
@@ -362,7 +372,7 @@ export default function AdminPage() {
     } else if (mainTab === 'maintenance') {
       fetchMaintenanceStatus();
     }
-  }, [mainTab]);
+  }, [mainTab, isUnlocked]);
 
   const fetchMaintenanceStatus = async () => {
     try {
@@ -625,12 +635,6 @@ export default function AdminPage() {
     }
   };
 
-  // Security PIN protection (Default: 0206)
-  const [isUnlocked, setIsUnlocked] = useState(false);
-  const [pinInput, setPinInput] = useState('');
-  const [pinError, setPinError] = useState(false);
-  const [isUnlockModalOpen, setIsUnlockModalOpen] = useState(false);
-
   // GitHub Token State & Modal
   const [githubStatus, setGithubStatus] = useState<{ configured: boolean; repo: string; token_masked: string }>({
     configured: false,
@@ -718,33 +722,27 @@ export default function AdminPage() {
     }
   }, []);
 
-  // Check sessionStorage for unlocked status
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const unlocked = sessionStorage.getItem('gods_eye_admin_unlocked');
-      if (unlocked === 'true') {
-        setIsUnlocked(true);
-      }
-    }
-  }, []);
-
-  // 統一防禦型管理 API 請求輔助函數 (完全杜絕 HTML 502/404 造成之 SyntaxError 與跨域 CORS 問題)
+  // 統一防禦型管理 API 請求輔助函數 (嚴格透過 HttpOnly Cookie + 簽章 Session Token 驗證，絕不暴露 NEXT_PUBLIC 密鑰)
   const adminApiFetch = async <T = any>(
     path: string, 
     options: RequestInit = {}
   ): Promise<{ ok: boolean; data?: T; error?: string; status?: number }> => {
-    const adminSecret = process.env.NEXT_PUBLIC_ADMIN_API_SECRET || (typeof window !== 'undefined' ? (localStorage.getItem('vancouver_godseye_admin_token') || sessionStorage.getItem('vancouver_godseye_admin_token')) : '') || '';
+    const sessionToken =
+      typeof window !== 'undefined'
+        ? sessionStorage.getItem('gods_eye_admin_session_token') || ''
+        : '';
     const tryFetch = async (url: string) => {
       const customHeaders: Record<string, string> = {
         'Content-Type': 'application/json',
         ...(options.headers as Record<string, string> || {})
       };
-      if (adminSecret) {
-        customHeaders['X-Admin-Token'] = adminSecret;
-        customHeaders['Authorization'] = `Bearer ${adminSecret}`;
+      if (sessionToken) {
+        customHeaders['X-Admin-Token'] = sessionToken;
+        customHeaders['Authorization'] = `Bearer ${sessionToken}`;
       }
       return await fetch(url, {
         ...options,
+        credentials: 'include',
         headers: customHeaders
       });
     };
@@ -775,6 +773,14 @@ export default function AdminPage() {
       return { ok: false, error: lastError || '無法連線至伺服器，請檢查網路連線或稍候再試' };
     }
 
+    if ((res.status === 401 || res.status === 403) && !path.includes('/api/admin/auth/login') && !path.includes('/api/admin/auth/verify')) {
+      if (typeof window !== 'undefined') {
+        sessionStorage.removeItem('gods_eye_admin_session_token');
+        sessionStorage.removeItem('gods_eye_admin_unlocked');
+      }
+      setIsUnlocked(false);
+    }
+
     const contentType = res.headers.get('content-type') || '';
     if (contentType.includes('application/json')) {
       try {
@@ -798,6 +804,33 @@ export default function AdminPage() {
     }
     return { ok: false, error: `伺服器回應異常 (HTTP ${res.status})`, status: res.status };
   };
+
+  // 啟動時向後端驗證現有安全 Session，並清除舊版曾殘留於瀏覽器 localStorage 的明文 Token
+  useEffect(() => {
+    let cancelled = false;
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.removeItem('gods_eye_github_token');
+        localStorage.removeItem('vancouver_godseye_admin_token');
+      } catch (_) {}
+    }
+    (async () => {
+      try {
+        const res = await adminApiFetch<{ authenticated: boolean }>('/api/admin/auth/verify');
+        if (!cancelled) {
+          setIsUnlocked(Boolean(res.ok && res.data?.authenticated));
+        }
+      } catch (_) {
+        if (!cancelled) setIsUnlocked(false);
+      } finally {
+        if (!cancelled) setAuthChecking(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const fetchAdminData = async () => {
     try {
@@ -836,32 +869,9 @@ export default function AdminPage() {
       }
       setSources(loadedSources);
 
-      // 查詢 GitHub Token 配置狀態
+      // 查詢 GitHub Token 配置狀態 (僅由伺服器安全保存，不再寫入瀏覽器 localStorage)
       const ghRes = await adminApiFetch<{ configured: boolean; repo: string; token_masked: string }>('/api/admin/github-status');
       if (ghRes.ok && ghRes.data) {
-        if (!ghRes.data.configured && typeof window !== 'undefined') {
-          // 自動從本機 localStorage 檢查是否有先前儲存之 Token，若有則自動重連，杜絕重新載入後遺失問題
-          const cachedToken = localStorage.getItem('gods_eye_github_token');
-          if (cachedToken && cachedToken.startsWith('ghp_')) {
-            try {
-              const rehydrateRes = await adminApiFetch<{ status: string; message: string }>('/api/admin/github-token', {
-                method: 'POST',
-                body: JSON.stringify({
-                  token: cachedToken,
-                  repo: ghRes.data.repo || 'Ycf206/Vancouver-God-Eyes'
-                })
-              });
-              if (rehydrateRes.ok) {
-                setGithubStatus({
-                  configured: true,
-                  repo: ghRes.data.repo || 'Ycf206/Vancouver-God-Eyes',
-                  token_masked: cachedToken.slice(0, 7) + '...' + cachedToken.slice(-4)
-                });
-                return;
-              }
-            } catch (_) {}
-          }
-        }
         setGithubStatus(ghRes.data);
       }
     } catch (err) {
@@ -874,27 +884,65 @@ export default function AdminPage() {
   };
 
   useEffect(() => {
+    if (!isUnlocked) return;
     fetchAdminData();
     const interval = setInterval(fetchAdminData, 30000);
     return () => clearInterval(interval);
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isUnlocked]);
 
-  // 密碼解鎖 (依使用者指示設為 0206)
-  const handleUnlock = (e: React.FormEvent) => {
+  // 伺服器端密碼驗證解鎖 (具備防暴力破解鎖定與 HMAC 簽章憑證)
+  const handleUnlock = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (pinInput === '0206') {
-      setIsUnlocked(true);
-      setPinError(false);
-      setIsUnlockModalOpen(false);
-      if (typeof window !== 'undefined') {
-        sessionStorage.setItem('gods_eye_admin_unlocked', 'true');
+    const pwd = pinInput.trim();
+    if (!pwd || isLoggingIn) return;
+    setIsLoggingIn(true);
+    setPinError(false);
+    setPinErrorMsg(null);
+    try {
+      const res = await adminApiFetch<{ ok: boolean; token?: string; expires_in?: number }>('/api/admin/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ password: pwd })
+      });
+      if (res.ok && res.data) {
+        if (typeof window !== 'undefined') {
+          if (res.data.token) {
+            sessionStorage.setItem('gods_eye_admin_session_token', res.data.token);
+          }
+          sessionStorage.setItem('gods_eye_admin_unlocked', 'true');
+        }
+        setPinInput('');
+        setPinError(false);
+        setPinErrorMsg(null);
+        setIsUnlockModalOpen(false);
+        setIsUnlocked(true);
+      } else {
+        setPinError(true);
+        setPinErrorMsg(res.error || '管理員密碼錯誤，請重新輸入');
+        setPinInput('');
       }
-    } else {
+    } catch (err: any) {
       setPinError(true);
+      setPinErrorMsg(err?.message || '伺服器驗證連線失敗');
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 
-  // 儲存 GitHub Token (雙重持久化：伺服器檔案 + 瀏覽器 localStorage)
+  // 安全登出並撤銷瀏覽器與 Cookie 憑證
+  const handleLogout = async () => {
+    try {
+      await adminApiFetch('/api/admin/auth/logout', { method: 'POST' });
+    } catch (_) {}
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem('gods_eye_admin_session_token');
+      sessionStorage.removeItem('gods_eye_admin_unlocked');
+    }
+    setIsUnlocked(false);
+    setPinInput('');
+  };
+
+  // 儲存 GitHub Token (僅安全寫入伺服器端，絕不落地於瀏覽器 localStorage)
   const handleSaveGithubToken = async (e: React.FormEvent) => {
     e.preventDefault();
     const token = inputGithubToken.trim();
@@ -909,10 +957,7 @@ export default function AdminPage() {
         })
       });
       if (res.ok && res.data) {
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('gods_eye_github_token', token);
-        }
-        setSuccessMsg(res.data.message || 'GitHub Token 已成功儲存！');
+        setSuccessMsg(res.data.message || 'GitHub Token 已成功安全儲存於伺服器！');
         setTimeout(() => setSuccessMsg(null), 6000);
         setIsGithubModalOpen(false);
         setInputGithubToken('');
@@ -1090,6 +1135,102 @@ export default function AdminPage() {
   const ghCount = sources.filter(s => s.runner === 'github_actions').length;
   const ociCount = sources.filter(s => s.runner === 'oci').length;
 
+  const isSafeEmail = (val?: string | null): boolean =>
+    Boolean(val && /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,24}$/.test(val.trim()));
+
+  const isSafeRasterDataUrl = (val?: string | null): boolean =>
+    Boolean(val && /^data:image\/(png|jpeg|jpg|gif|webp);base64,[A-Za-z0-9+/=\s]+$/i.test(val.trim()));
+
+  // 未通過後端身分驗證前，嚴格阻斷渲染任何後台介面、統計與控制項
+  if (authChecking) {
+    return (
+      <div className="min-h-screen bg-[#0d1017] text-gray-100 flex flex-col items-center justify-center p-6 select-none">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-11 h-11 rounded-2xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center">
+            <RefreshCw className="w-5 h-5 text-indigo-400 animate-spin" />
+          </div>
+          <p className="text-xs text-gray-400 font-medium">正在驗證安全憑證與管理員連線...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isUnlocked) {
+    return (
+      <div className="min-h-screen bg-[#0d1017] text-gray-100 flex flex-col items-center justify-center p-6 select-none">
+        <div className="max-w-md w-full bg-[#141822] border border-[#283147] rounded-2xl p-7 shadow-2xl flex flex-col gap-5">
+          <div className="flex flex-col items-center text-center gap-2.5">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-indigo-600 to-sky-500 flex items-center justify-center shadow-lg shadow-indigo-500/25">
+              <Shield className="w-7 h-7 text-white" />
+            </div>
+            <div>
+              <div className="flex items-center justify-center gap-2">
+                <h1 className="font-bold text-base text-white tracking-wide">Vancouver God&apos;s Eye</h1>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                  SOC
+                </span>
+              </div>
+              <p className="text-xs text-gray-400 mt-1">獨立安全管理控制台 · 受保護存取區域</p>
+            </div>
+          </div>
+
+          <form onSubmit={handleUnlock} className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-gray-300 flex items-center gap-1.5">
+                <Lock className="w-3.5 h-3.5 text-amber-400" />
+                <span>管理員安全密碼 / 存取金鑰</span>
+              </label>
+              <input
+                type="password"
+                autoFocus
+                autoComplete="current-password"
+                placeholder="請輸入管理員驗證密碼"
+                value={pinInput}
+                onChange={(e) => {
+                  setPinInput(e.target.value);
+                  setPinError(false);
+                  setPinErrorMsg(null);
+                }}
+                maxLength={128}
+                className={`w-full bg-[#0b0e14] border ${
+                  pinError ? 'border-rose-500 ring-1 ring-rose-500/60' : 'border-[#2b344a] focus:border-indigo-500'
+                } px-3.5 py-2.5 rounded-xl text-white font-mono text-sm outline-none transition-colors`}
+              />
+              {pinError && (
+                <div className="flex items-center gap-1.5 text-rose-400 text-xs font-medium mt-0.5">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                  <span>{pinErrorMsg || '密碼錯誤，請重新輸入'}</span>
+                </div>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              disabled={!pinInput.trim() || isLoggingIn}
+              className="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-bold rounded-xl text-xs transition-all cursor-pointer shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2"
+            >
+              {isLoggingIn ? (
+                <>
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                  <span>正在向伺服器驗證...</span>
+                </>
+              ) : (
+                <>
+                  <Unlock className="w-3.5 h-3.5" />
+                  <span>驗證並進入管理後台</span>
+                </>
+              )}
+            </button>
+          </form>
+
+          <div className="pt-3 border-t border-[#22293a] text-[11px] text-gray-500 text-center leading-relaxed">
+            所有登入嘗試均受伺服器頻率限制與安全審計日誌保護。未授權訪問將被自動封鎖。
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#0d1017] text-gray-100 flex flex-col font-sans select-none">
       {/* Top Banner / Navigation */}
@@ -1141,15 +1282,12 @@ export default function AdminPage() {
 
           {isUnlocked ? (
             <button
-              onClick={() => {
-                setIsUnlocked(false);
-                sessionStorage.removeItem('gods_eye_admin_unlocked');
-              }}
+              onClick={handleLogout}
               className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/30 rounded-lg text-xs font-semibold transition-all cursor-pointer"
-              title="點擊鎖定面板恢復唯讀保護"
+              title="安全登出並鎖定管理後台"
             >
-              <Unlock className="w-3.5 h-3.5" />
-              <span>鎖定面板</span>
+              <Lock className="w-3.5 h-3.5" />
+              <span>登出鎖定</span>
             </button>
           ) : (
             <button
@@ -2511,34 +2649,36 @@ export default function AdminPage() {
                             {item.details || '無描述內容'}
                           </td>
                           <td className="py-3 px-4 font-mono text-[11px]">
-                            {item.contact_email ? (
+                            {isSafeEmail(item.contact_email) ? (
                               <a
-                                href={`mailto:${item.contact_email}?subject=${encodeURIComponent(`回覆：溫哥華上帝之眼 - ${item.title || '問題回報'}`)}`}
+                                href={`mailto:${encodeURIComponent(item.contact_email.trim())}?subject=${encodeURIComponent(`回覆：溫哥華上帝之眼 - ${item.title || '問題回報'}`)}`}
                                 className="text-sky-400 hover:underline flex items-center gap-1"
                                 title="點擊寄信回覆"
                               >
-                                <span>{item.contact_email}</span>
+                                <span>{item.contact_email.trim()}</span>
                                 <ExternalLink className="w-3 h-3 shrink-0" />
                               </a>
+                            ) : item.contact_email ? (
+                              <span className="text-gray-400">{String(item.contact_email)}</span>
                             ) : (
                               <span className="text-gray-500">未提供</span>
                             )}
                           </td>
                           <td className="py-3 px-2 text-center">
-                            {item.image_base64 || item.has_attachment ? (
+                            {isSafeRasterDataUrl(item.image_base64) || item.has_attachment ? (
                               <button
                                 type="button"
-                                onClick={() => setPreviewModalImage(item.image_base64 || null)}
-                                disabled={!item.image_base64}
+                                onClick={() => setPreviewModalImage(isSafeRasterDataUrl(item.image_base64) ? item.image_base64.trim() : null)}
+                                disabled={!isSafeRasterDataUrl(item.image_base64)}
                                 className={`px-2 py-0.5 rounded text-[10.5px] font-semibold transition-colors inline-flex items-center gap-1 ${
-                                  item.image_base64
+                                  isSafeRasterDataUrl(item.image_base64)
                                     ? 'bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 cursor-pointer'
                                     : 'bg-gray-800 text-gray-500 border border-gray-700 cursor-default'
                                 }`}
-                                title={item.image_base64 ? '點擊檢視截圖' : '未附圖片或純標註'}
+                                title={isSafeRasterDataUrl(item.image_base64) ? '點擊檢視截圖' : '未附圖片或純標註'}
                               >
                                 <Eye className="w-3 h-3" />
-                                <span>{item.image_base64 ? '檢視截圖' : '有截圖'}</span>
+                                <span>{isSafeRasterDataUrl(item.image_base64) ? '檢視截圖' : '有截圖'}</span>
                               </button>
                             ) : (
                               <span className="text-gray-600">-</span>
@@ -2577,9 +2717,9 @@ export default function AdminPage() {
                               </button>
 
                               {/* 回覆按鈕 (若有提供電郵) */}
-                              {item.contact_email ? (
+                              {isSafeEmail(item.contact_email) ? (
                                 <a
-                                  href={`mailto:${item.contact_email}?subject=${encodeURIComponent(`回覆：溫哥華上帝之眼 - ${item.title || '問題回報'}`)}`}
+                                  href={`mailto:${encodeURIComponent(item.contact_email.trim())}?subject=${encodeURIComponent(`回覆：溫哥華上帝之眼 - ${item.title || '問題回報'}`)}`}
                                   className="flex items-center gap-1 px-2 py-1 rounded bg-sky-500/15 hover:bg-sky-500/30 text-sky-300 border border-sky-500/40 text-[10.5px] font-semibold transition-all hover:shadow-sm"
                                   title="寄信回覆用家"
                                 >
@@ -2910,18 +3050,19 @@ export default function AdminPage() {
                 </label>
                 <input
                   type="password"
-                  placeholder="輸入 4 位密碼"
+                  placeholder="輸入管理員驗證密碼"
                   value={pinInput}
                   autoFocus
                   onChange={(e) => {
                     setPinInput(e.target.value);
                     setPinError(false);
+                    setPinErrorMsg(null);
                   }}
-                  maxLength={8}
-                  className={`w-full bg-[#0d1017] border ${pinError ? 'border-rose-500 ring-1 ring-rose-500' : 'border-[#2e374c] focus:border-amber-400'} px-3 py-2 rounded-lg text-white font-mono text-center tracking-widest text-sm outline-none`}
+                  maxLength={128}
+                  className={`w-full bg-[#0d1017] border ${pinError ? 'border-rose-500 ring-1 ring-rose-500' : 'border-[#2e374c] focus:border-amber-400'} px-3 py-2 rounded-lg text-white font-mono text-center text-sm outline-none`}
                 />
                 {pinError && (
-                  <p className="text-rose-400 text-[10px] mt-1 font-semibold text-center">密碼錯誤，請重新輸入</p>
+                  <p className="text-rose-400 text-[10px] mt-1 font-semibold text-center">{pinErrorMsg || '密碼錯誤，請重新輸入'}</p>
                 )}
               </div>
 
@@ -2946,8 +3087,8 @@ export default function AdminPage() {
         </div>
       )}
 
-      {/* 3.3 截圖預覽 Modal */}
-      {previewModalImage && (
+      {/* 3.3 截圖預覽 Modal (嚴格限定安全點陣圖 Data URL) */}
+      {previewModalImage && isSafeRasterDataUrl(previewModalImage) && (
         <div 
           className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4"
           onClick={() => setPreviewModalImage(null)}

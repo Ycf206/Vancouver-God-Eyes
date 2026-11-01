@@ -9,4 +9,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD ["gunicorn", "-w", "2", "-k", "uvicorn.workers.UvicornWorker", "main:app", "--bind", "0.0.0.0:8000", "--timeout", "120", "--graceful-timeout", "30", "--access-logfile", "-"]
+CMD ["sh", "-c", "exec gunicorn -w ${WORKERS:-3} -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:8000 --max-requests 2000 --max-requests-jitter 200 --keep-alive 5 --timeout 120 --graceful-timeout 30 --access-logfile -"]

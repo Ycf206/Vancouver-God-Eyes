@@ -6,6 +6,13 @@ import asyncio
 import requests
 import time
 import threading
+import tempfile
+import hmac
+import secrets
+import ipaddress
+import socket
+import urllib.parse
+from collections import OrderedDict
 from google.transit import gtfs_realtime_pb2
 import database
 import models
@@ -17,54 +24,276 @@ from datetime import datetime, timezone
 
 logger = logging.getLogger(__name__)
 
+# ==========================================
+# 🔒 執行緒安全與原子寫檔輔助工具 (Crash & Corruption Guard)
+# ==========================================
+_admin_cfg_lock = threading.RLock()
+_issue_reports_lock = threading.RLock()
+_road_seed_lock = threading.Lock()
+
+
+def _atomic_write_json(path: str, payload, indent: int = 2) -> None:
+    """透過暫存檔 + os.replace 執行原子寫入，徹底杜絕高並發寫檔截斷或 JSON 損毀崩潰"""
+    import json as _json
+    abs_path = os.path.abspath(path)
+    dir_name = os.path.dirname(abs_path)
+    os.makedirs(dir_name, exist_ok=True)
+    fd, tmp_path = tempfile.mkstemp(dir=dir_name, prefix=".tmp_", suffix=".json")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            _json.dump(payload, f, ensure_ascii=False, indent=indent)
+        os.replace(tmp_path, abs_path)
+    except Exception:
+        try:
+            if os.path.exists(tmp_path):
+                os.remove(tmp_path)
+        except Exception:
+            pass
+        raise
+
+
+def _atomic_write_lines(path: str, lines: list[str]) -> None:
+    """透過暫存檔 + os.replace 原子更新 JSONL / .env 文字檔"""
+    abs_path = os.path.abspath(path)
+    dir_name = os.path.dirname(abs_path)
+    os.makedirs(dir_name, exist_ok=True)
+    fd, tmp_path = tempfile.mkstemp(dir=dir_name, prefix=".tmp_", suffix=".txt")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            f.writelines(lines)
+        os.replace(tmp_path, abs_path)
+    except Exception:
+        try:
+            if os.path.exists(tmp_path):
+                os.remove(tmp_path)
+        except Exception:
+            pass
+        raise
+
+
+def _get_client_ip(request: Request) -> str:
+    """安全擷取真實客戶端 IP (優先讀取 Cloudflare CF-Connecting-IP 與反向代理 X-Real-IP)"""
+    cf_ip = request.headers.get("CF-Connecting-IP", "").strip()
+    if cf_ip:
+        return cf_ip[:64]
+    real_ip = request.headers.get("X-Real-IP", "").strip()
+    if real_ip:
+        return real_ip[:64]
+    xff = request.headers.get("X-Forwarded-For", "").strip()
+    if xff:
+        return xff.split(",")[0].strip()[:64]
+    return (request.client.host if request.client else "unknown")[:64]
+
+
+# ==========================================
+# 🛡️ 記憶體有界滑動視窗限流器 & 暴力破解鎖定防護
+# ==========================================
+class BoundedRateLimiter:
+    def __init__(self, max_keys: int = 10000):
+        self._max_keys = max_keys
+        self._buckets: OrderedDict[str, list[float]] = OrderedDict()
+        self._lock = threading.Lock()
+
+    def allow(self, key: str, max_requests: int, window_seconds: float) -> tuple[bool, int]:
+        now = time.monotonic()
+        cutoff = now - window_seconds
+        with self._lock:
+            hits = self._buckets.get(key)
+            if hits is not None:
+                hits = [t for t in hits if t > cutoff]
+                self._buckets.move_to_end(key)
+            else:
+                hits = []
+                if len(self._buckets) >= self._max_keys:
+                    self._buckets.popitem(last=False)
+            if len(hits) >= max_requests:
+                self._buckets[key] = hits
+                retry_after = max(1, int(window_seconds - (now - hits[0])))
+                return False, retry_after
+            hits.append(now)
+            self._buckets[key] = hits
+            return True, 0
+
+
+_rate_limiter = BoundedRateLimiter(max_keys=12000)
+_admin_login_failures = BoundedRateLimiter(max_keys=4000)
+_ADMIN_SESSION_KEY_CACHE: bytes | None = None
+_ADMIN_SESSION_COOKIE = "godseye_admin_session"
+
+
+def _get_admin_signing_key() -> bytes:
+    """產生或載入伺服器專屬簽章密鑰（絕不外洩至前端），支援多 Worker 共用持久化密鑰檔"""
+    global _ADMIN_SESSION_KEY_CACHE
+    if _ADMIN_SESSION_KEY_CACHE is not None:
+        return _ADMIN_SESSION_KEY_CACHE
+    env_secret = os.environ.get("ADMIN_SESSION_SECRET", "").strip() or os.environ.get("ADMIN_API_SECRET", "").strip()
+    key_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", ".admin_session_key")
+    file_secret = ""
+    try:
+        os.makedirs(os.path.dirname(key_file), exist_ok=True)
+        if os.path.exists(key_file):
+            with open(key_file, "r", encoding="utf-8") as f:
+                file_secret = f.read().strip()
+        if not file_secret or len(file_secret) < 32:
+            file_secret = secrets.token_hex(32)
+            _atomic_write_lines(key_file, [file_secret])
+            try:
+                os.chmod(key_file, 0o600)
+            except Exception:
+                pass
+    except Exception:
+        file_secret = secrets.token_hex(32)
+    combined = f"{env_secret}:{file_secret}".encode("utf-8")
+    _ADMIN_SESSION_KEY_CACHE = hashlib.sha256(combined).digest()
+    return _ADMIN_SESSION_KEY_CACHE
+
+
+def _create_admin_session_token(ttl_seconds: int = 28800) -> str:
+    """簽發具備時效性 (預設 8 小時) 的 HMAC-SHA256 管理員 Session Token"""
+    exp = int(time.time()) + ttl_seconds
+    nonce = secrets.token_hex(16)
+    payload = f"v1.{exp}.{nonce}"
+    sig = hmac.new(_get_admin_signing_key(), payload.encode("utf-8"), hashlib.sha256).hexdigest()
+    return f"{payload}.{sig}"
+
+
+def _verify_admin_session_token(token: str) -> bool:
+    """常數時間驗證 HMAC-SHA256 管理員 Session Token 或伺服器端 ADMIN_API_SECRET"""
+    if not token or len(token) > 512:
+        return False
+    # 1. 支援伺服器端自動化腳本 / Webhook 攜帶 ADMIN_API_SECRET (常數時間比對)
+    admin_secret = os.environ.get("ADMIN_API_SECRET", "").strip()
+    if admin_secret and len(admin_secret) >= 8 and hmac.compare_digest(token, admin_secret):
+        return True
+    # 2. 驗證時效性 HMAC Session Token: v1.<exp>.<nonce>.<sig>
+    parts = token.split(".")
+    if len(parts) != 4 or parts[0] != "v1":
+        return False
+    try:
+        exp = int(parts[1])
+    except ValueError:
+        return False
+    if exp < int(time.time()):
+        return False
+    payload = f"{parts[0]}.{parts[1]}.{parts[2]}"
+    expected_sig = hmac.new(_get_admin_signing_key(), payload.encode("utf-8"), hashlib.sha256).hexdigest()
+    return hmac.compare_digest(parts[3], expected_sig)
+
+
 try:
     models.Base.metadata.create_all(bind=database.engine)
 except Exception as e:
     print(f"Database connection error on startup (might be booting): {e}")
 
-app = FastAPI(title="Vancouver God's Eye API")
+# 生產環境隱藏 Swagger /docs 與 /redoc，減少 API 探測攻擊面 (可透過 ENABLE_API_DOCS=true 開啟)
+_enable_docs = os.getenv("ENABLE_API_DOCS", "false").lower() in ("1", "true", "yes")
+app = FastAPI(
+    title="Vancouver God's Eye API",
+    docs_url="/docs" if _enable_docs else None,
+    redoc_url="/redoc" if _enable_docs else None,
+    openapi_url="/openapi.json" if _enable_docs else None,
+)
 
 from fastapi.middleware.gzip import GZipMiddleware
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 
+_default_origins = [
+    "https://vangodseye.fyi",
+    "https://www.vangodseye.fyi",
+    "https://admin.vangodseye.fyi",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+]
+_extra_origins = [o.strip() for o in os.getenv("ALLOWED_ORIGINS", "").split(",") if o.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origin_regex=r"https?://.*",
+    allow_origins=_default_origins + _extra_origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization", "X-Admin-Token", "Accept"],
 )
 
+
 @app.middleware("http")
-async def verify_admin_api_token(request: Request, call_next):
+async def security_and_rate_limit_middleware(request: Request, call_next):
     """
-    後端 API 嚴格校驗 (防禦外部直接呼叫 API):
-    針對 /api/admin/* 路由，若後端 .env 設定了 ADMIN_API_SECRET，
-    要求請求必須攜帶正確之 X-Admin-Token 或 Authorization: Bearer <token> 密鑰，
-    否則一律嚴格攔截並回傳 403 Forbidden。
+    全域安全防護中介層：
+    1. 請求負載大小上限檢查 (防範超大封包記憶體耗盡 OOM)
+    2. 針對高風險端點 (/api/report-issue, /api/search, /api/jobs, /api/webcam) 實施滑動視窗限流
+    3. 針對 /api/admin/* 與 /api/debug/* 採 Fail-Closed (預設拒絕) 嚴格驗證管理員憑證
     """
-    if request.url.path.startswith("/api/admin"):
-        # 允許 CORS 預檢請求 OPTIONS 正常通過
-        if request.method == "OPTIONS":
+    path = request.url.path
+
+    if request.method == "OPTIONS":
+        return await call_next(request)
+
+    # 1. Request Body Size Guard
+    content_length = request.headers.get("content-length")
+    if content_length:
+        try:
+            max_bytes = 25 * 1024 * 1024 if path.startswith("/api/admin/geojson/upload") else 10 * 1024 * 1024
+            if int(content_length) > max_bytes:
+                return JSONResponse(status_code=413, content={"status": "error", "detail": "請求內容超過安全大小上限 (Payload Too Large)"})
+        except ValueError:
+            return JSONResponse(status_code=400, content={"status": "error", "detail": "Invalid Content-Length header"})
+
+    # 2. Per-IP Rate Limiting
+    client_ip = _get_client_ip(request)
+    if path == "/api/report-issue" and request.method == "POST":
+        allowed, retry_after = _rate_limiter.allow(f"report:{client_ip}", max_requests=5, window_seconds=600)
+        if not allowed:
+            return JSONResponse(
+                status_code=429,
+                headers={"Retry-After": str(retry_after)},
+                content={"status": "error", "message": f"提交過於頻繁，請於 {retry_after} 秒後再試。"}
+            )
+    elif path in ("/api/search", "/api/geocode") or path.startswith(("/api/jobs/", "/api/webcam/")):
+        allowed, retry_after = _rate_limiter.allow(f"heavy:{client_ip}", max_requests=90, window_seconds=60)
+        if not allowed:
+            return JSONResponse(
+                status_code=429,
+                headers={"Retry-After": str(retry_after)},
+                content={"status": "error", "detail": "請求頻率過高，請稍候再試 (Too Many Requests)。"}
+            )
+    elif path.startswith("/api/"):
+        allowed, retry_after = _rate_limiter.allow(f"api:{client_ip}", max_requests=360, window_seconds=60)
+        if not allowed:
+            return JSONResponse(
+                status_code=429,
+                headers={"Retry-After": str(retry_after)},
+                content={"status": "error", "detail": "請求頻率過高，請稍候再試。"}
+            )
+
+    # 3. Fail-Closed Admin & Debug Route Protection
+    if path.startswith("/api/admin") or path.startswith("/api/debug"):
+        if path in ("/api/admin/auth/login", "/api/admin/auth/logout"):
             return await call_next(request)
 
-        admin_secret = os.environ.get("ADMIN_API_SECRET", "").strip()
-        if admin_secret:
-            x_token = request.headers.get("X-Admin-Token", "").strip()
-            auth_header = request.headers.get("Authorization", "").strip()
-            bearer_token = ""
-            if auth_header.startswith("Bearer "):
-                bearer_token = auth_header[7:].strip()
+        cookie_token = request.cookies.get(_ADMIN_SESSION_COOKIE, "").strip()
+        x_token = request.headers.get("X-Admin-Token", "").strip()
+        auth_header = request.headers.get("Authorization", "").strip()
+        bearer_token = auth_header[7:].strip() if auth_header.startswith("Bearer ") else ""
 
-            if x_token != admin_secret and bearer_token != admin_secret:
-                return JSONResponse(
-                    status_code=403,
-                    content={
-                        "status": "error",
-                        "detail": "403 Forbidden: 未攜帶有效之管理員密鑰 (X-Admin-Token 或 Bearer Token 驗證失敗)。"
-                    }
-                )
-    return await call_next(request)
+        is_valid = (
+            (cookie_token and _verify_admin_session_token(cookie_token))
+            or (x_token and _verify_admin_session_token(x_token))
+            or (bearer_token and _verify_admin_session_token(bearer_token))
+        )
+        if not is_valid:
+            return JSONResponse(
+                status_code=401,
+                content={
+                    "status": "error",
+                    "detail": "401 Unauthorized: 未授權存取管理後台 API，請先通過管理員身分驗證。"
+                }
+            )
+
+    response = await call_next(request)
+    response.headers.setdefault("X-Content-Type-Options", "nosniff")
+    return response
 
 @app.middleware("http")
 async def system_error_logging_middleware(request: Request, call_next):
@@ -90,8 +319,9 @@ async def system_error_logging_middleware(request: Request, call_next):
         )
         raise exc
 
-# WebSocket connection manager
-active_connections: list[WebSocket] = []
+# WebSocket connection manager (使用 set 實現 O(1) 移除，並設最大連線上限與單一 Socket 逾時保護)
+MAX_WS_CONNECTIONS = int(os.getenv("MAX_WS_CONNECTIONS", "2000"))
+active_connections: set[WebSocket] = set()
 stop_arrivals = {}
 cached_translink_vehicles: list[dict] = []
 cached_bcferries_vehicles: list[dict] = []
@@ -100,19 +330,29 @@ cached_flight_schedules: dict = {}
 cached_skytrain_trains: list[dict] = []
 
 
+async def _send_ws_safe(conn: WebSocket, raw_text: str) -> WebSocket | None:
+    try:
+        await asyncio.wait_for(conn.send_text(raw_text), timeout=2.5)
+        return None
+    except Exception:
+        return conn
+
+
 async def broadcast_ws(message: dict):
-    """Broadcast JSON message to all active WebSocket connections and prune dead sockets."""
+    """並發非阻塞 WebSocket 廣播：預先序列化一次 JSON，並對每個連線施加 2.5s 逾時防卡死"""
     if not active_connections:
         return
-    dead_connections = []
-    for connection in list(active_connections):
-        try:
-            await connection.send_json(message)
-        except Exception:
-            dead_connections.append(connection)
-    for dead in dead_connections:
-        if dead in active_connections:
-            active_connections.remove(dead)
+    import json as _json
+    try:
+        raw_text = _json.dumps(message, ensure_ascii=False)
+    except Exception:
+        return
+
+    snapshot = list(active_connections)
+    results = await asyncio.gather(*(_send_ws_safe(conn, raw_text) for conn in snapshot), return_exceptions=True)
+    for res in results:
+        if isinstance(res, WebSocket):
+            active_connections.discard(res)
 
 
 import flights
@@ -123,6 +363,104 @@ from news_service import news_service
 from events_service import events_service
 from border_service import border_service
 from system_log_service import system_log_service
+
+
+# ==========================================
+# 🔐 管理員後台伺服器端身分驗證端點 (無前端明文密碼洩漏)
+# ==========================================
+@app.post("/api/admin/auth/login")
+async def admin_auth_login(request: Request, payload: dict = Body(...)):
+    client_ip = _get_client_ip(request)
+    # 嚴格防暴力破解鎖定：同一 IP 15 分鐘內最多允許 5 次錯誤嘗試
+    can_try, retry_after = _admin_login_failures.allow(f"check:{client_ip}", max_requests=999999, window_seconds=900)
+    with _admin_login_failures._lock:
+        recent_fails = [
+            t for t in _admin_login_failures._buckets.get(f"fail:{client_ip}", [])
+            if t > time.monotonic() - 900
+        ]
+    if len(recent_fails) >= 5:
+        wait_secs = max(60, int(900 - (time.monotonic() - recent_fails[0])))
+        return JSONResponse(
+            status_code=429,
+            headers={"Retry-After": str(wait_secs)},
+            content={
+                "status": "error",
+                "message": f"密碼連續輸入錯誤已達安全上限，此 IP 已暫時鎖定，請於 {wait_secs // 60 + 1} 分鐘後再試。"
+            }
+        )
+
+    password = str(payload.get("password") or payload.get("pin") or "").strip()
+    if not password or len(password) > 256:
+        return JSONResponse(status_code=400, content={"status": "error", "message": "請輸入管理員密碼"})
+
+    configured_pw = os.environ.get("ADMIN_PASSWORD", "").strip()
+    configured_secret = os.environ.get("ADMIN_API_SECRET", "").strip()
+    matched = False
+
+    if configured_pw and hmac.compare_digest(password, configured_pw):
+        matched = True
+    elif configured_secret and len(configured_secret) >= 4 and hmac.compare_digest(password, configured_secret):
+        matched = True
+    elif not configured_pw and hmac.compare_digest(password, "0206"):
+        # 向後相容：僅當伺服器尚未設定獨立 ADMIN_PASSWORD 時接受既有管理密碼（建議於 .env 設定高強度 ADMIN_PASSWORD）
+        matched = True
+
+    if not matched:
+        _admin_login_failures.allow(f"fail:{client_ip}", max_requests=100, window_seconds=900)
+        system_log_service.add_system_log(
+            level="WARN",
+            file="backend/main.py",
+            action="ADMIN_LOGIN_FAILED",
+            message=f"管理後台登入驗證失敗 (來源 IP: {client_ip})",
+            details={"ip": client_ip}
+        )
+        return JSONResponse(status_code=401, content={"status": "error", "message": "管理員密碼驗證錯誤，請重新輸入"})
+
+    # 登入成功：清除該 IP 失敗計數，簽發 8 小時時效之 HMAC Session Token 與 HttpOnly Cookie
+    with _admin_login_failures._lock:
+        _admin_login_failures._buckets.pop(f"fail:{client_ip}", None)
+
+    session_token = _create_admin_session_token(ttl_seconds=28800)
+    is_https = request.headers.get("X-Forwarded-Proto", "").lower() == "https" or request.url.scheme == "https"
+    resp = JSONResponse(
+        content={
+            "status": "ok",
+            "token": session_token,
+            "expires_in": 28800,
+            "has_custom_password": bool(configured_pw),
+        }
+    )
+    resp.set_cookie(
+        key=_ADMIN_SESSION_COOKIE,
+        value=session_token,
+        max_age=28800,
+        httponly=True,
+        secure=is_https,
+        samesite="strict",
+        path="/",
+    )
+    system_log_service.add_system_log(
+        level="INFO",
+        file="backend/main.py",
+        action="ADMIN_LOGIN_SUCCESS",
+        message=f"管理員成功登入後台 (來源 IP: {client_ip})",
+        details={"ip": client_ip}
+    )
+    return resp
+
+
+@app.get("/api/admin/auth/verify")
+def admin_auth_verify():
+    """供管理後台前端檢查目前 Session Cookie / Token 是否仍然有效"""
+    return {"status": "ok", "authenticated": True}
+
+
+@app.post("/api/admin/auth/logout")
+def admin_auth_logout():
+    resp = JSONResponse(content={"status": "ok", "message": "已安全登出管理後台"})
+    resp.delete_cookie(key=_ADMIN_SESSION_COOKIE, path="/")
+    return resp
+
 
 import math
 def calculate_bearing(p1, p2):
@@ -135,31 +473,40 @@ def calculate_bearing(p1, p2):
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
+    if len(active_connections) >= MAX_WS_CONNECTIONS:
+        await websocket.close(code=1013, reason="Server busy, maximum WebSocket connections reached")
+        return
+
     await websocket.accept()
-    active_connections.append(websocket)
+    active_connections.add(websocket)
     try:
         # Instantly send cached vehicles upon connection so map is never empty
         if cached_translink_vehicles:
-            await websocket.send_json({"type": "vehicles_update", "data": cached_translink_vehicles})
+            await asyncio.wait_for(websocket.send_json({"type": "vehicles_update", "data": cached_translink_vehicles}), timeout=3.0)
         if cached_bcferries_vehicles:
-            await websocket.send_json({"type": "bc_ferries_update", "data": cached_bcferries_vehicles})
+            await asyncio.wait_for(websocket.send_json({"type": "bc_ferries_update", "data": cached_bcferries_vehicles}), timeout=3.0)
         if cached_skytrain_trains:
-            await websocket.send_json({"type": "skytrain_trains_update", "data": cached_skytrain_trains})
+            await asyncio.wait_for(websocket.send_json({"type": "skytrain_trains_update", "data": cached_skytrain_trains}), timeout=3.0)
         
         # Send maritime shipping vessels from Aisstream / Vancouver marine tracking
         maritime_vessels = shipping_service.get_vessels()
         if maritime_vessels:
-            await websocket.send_json({"type": "maritime_vessels_update", "data": maritime_vessels})
+            await asyncio.wait_for(websocket.send_json({"type": "maritime_vessels_update", "data": maritime_vessels}), timeout=3.0)
 
         while True:
-            await websocket.receive_text()
+            try:
+                msg = await asyncio.wait_for(websocket.receive_text(), timeout=90.0)
+                if len(msg) > 4096:
+                    break
+            except asyncio.TimeoutError:
+                # 定期心跳探測，自動清理半開殭屍連線 (Half-open sockets)
+                await asyncio.wait_for(websocket.send_json({"type": "ping", "ts": int(time.time())}), timeout=2.5)
     except WebSocketDisconnect:
         pass
     except Exception:
         pass
     finally:
-        if websocket in active_connections:
-            active_connections.remove(websocket)
+        active_connections.discard(websocket)
 
 
 
@@ -991,46 +1338,64 @@ def get_translink_alerts(force: bool = False):
 @app.post("/api/jobs/search")
 async def jobs_search_proxy(payload: dict = Body(...)):
     """
-    Proxy for WorkBC JobSearch API.
+    Proxy for WorkBC JobSearch API (非阻塞執行緒池呼叫 + 輸入欄位型別與長度防護).
     """
     try:
-        if not payload.get("SearchLocations"):
-            payload["SearchLocations"] = [{"City": "Vancouver", "Postal": "", "Region": ""}]
-        if payload.get("SearchLocationDistance") is None:
-            payload["SearchLocationDistance"] = -1
+        if not isinstance(payload, dict):
+            return JSONResponse(status_code=400, content={"error": "Invalid search payload"})
+        safe_payload = dict(payload)
+        if "SearchKeywords" in safe_payload and isinstance(safe_payload["SearchKeywords"], str):
+            safe_payload["SearchKeywords"] = safe_payload["SearchKeywords"][:150]
+        if "Keywords" in safe_payload and isinstance(safe_payload["Keywords"], str):
+            safe_payload["Keywords"] = safe_payload["Keywords"][:150]
+        if "PageSize" in safe_payload:
+            try:
+                safe_payload["PageSize"] = max(1, min(50, int(safe_payload["PageSize"])))
+            except (ValueError, TypeError):
+                safe_payload["PageSize"] = 20
+        if not safe_payload.get("SearchLocations"):
+            safe_payload["SearchLocations"] = [{"City": "Vancouver", "Postal": "", "Region": ""}]
+        if safe_payload.get("SearchLocationDistance") is None:
+            safe_payload["SearchLocationDistance"] = -1
 
-        resp = requests.post(
+        resp = await asyncio.to_thread(
+            requests.post,
             "https://dev-api-jobboard.workbc.ca/api/Search/JobSearch",
-            json=payload,
+            json=safe_payload,
             headers={
                 "Content-Type": "application/json",
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
             },
-            timeout=15,
+            timeout=12,
         )
         return Response(content=resp.content, status_code=resp.status_code, media_type="application/json")
     except Exception as e:
         logger.error(f"Error proxying WorkBC job search: {e}")
-        return JSONResponse(status_code=500, content={"error": str(e)})
+        return JSONResponse(status_code=502, content={"error": "無法連線至職缺搜尋服務，請稍後再試"})
 
 
 @app.get("/api/jobs/detail")
 async def jobs_detail_proxy(jobId: str):
     """
-    Proxy for WorkBC GetJobDetail API.
+    Proxy for WorkBC GetJobDetail API (嚴格驗證 jobId 格式防範參數注入 + 非阻塞呼叫).
     """
+    clean_id = (jobId or "").strip()
+    if not clean_id or len(clean_id) > 64 or not all(c.isalnum() or c in "-_" for c in clean_id):
+        return JSONResponse(status_code=400, content={"error": "Invalid jobId format"})
     try:
-        resp = requests.get(
-            f"https://workbc-jb.a55eb5-prod.stratus.cloud.gov.bc.ca/api/Search/GetJobDetail?jobId={jobId}",
+        encoded_id = urllib.parse.quote(clean_id, safe="")
+        resp = await asyncio.to_thread(
+            requests.get,
+            f"https://workbc-jb.a55eb5-prod.stratus.cloud.gov.bc.ca/api/Search/GetJobDetail?jobId={encoded_id}",
             headers={
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
             },
-            timeout=15,
+            timeout=12,
         )
         return Response(content=resp.content, status_code=resp.status_code, media_type="application/json")
     except Exception as e:
         logger.error(f"Error proxying WorkBC job detail: {e}")
-        return JSONResponse(status_code=500, content={"error": str(e)})
+        return JSONResponse(status_code=502, content={"error": "無法載入職缺詳情，請稍後再試"})
 
 
 @app.get("/api/traffic/summary")
@@ -2178,31 +2543,35 @@ def get_search_facilities_items():
     return _search_facilities_cache
 
 _search_lock = threading.Lock()
-_search_query_cache = {}
-_addr_search_cache = {}
+_search_query_cache: OrderedDict[str, list] = OrderedDict()
+_addr_search_cache: OrderedDict[str, list] = OrderedDict()
 _curated_points_synced = False
+
+
+def _escape_sql_like(val: str) -> str:
+    """跳脫 SQL LIKE 萬用字元 (%, _, \\)，防範惡意萬用字元拖慢資料庫查詢"""
+    return val.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+
 
 @app.get("/api/search")
 def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
     """
     全圖層項目搜尋 (Search Layer Items):
     關鍵字/分詞模糊比對：支援例如 "cypress 16" 命中 "Cypress & 16th"
-    具備執行緒鎖與快取保護，防止高並發擊穿
+    具備執行緒鎖、長度與分詞上限、SQL LIKE 萬用字元跳脫與有界 LRU 快取保護，防止高並發擊穿
     """
     global _curated_points_synced
-    q_clean = q.strip().lower()
+    q_clean = (q or "").strip()[:100].lower()
     if not q_clean:
         return {"results": []}
 
-    if q_clean in _search_query_cache:
-        return {"results": _search_query_cache[q_clean]}
-
     with _search_lock:
         if q_clean in _search_query_cache:
+            _search_query_cache.move_to_end(q_clean)
             return {"results": _search_query_cache[q_clean]}
 
-        q_tokens = [t for t in normalize_search_str(q_clean).split() if t]
-        results = []
+    q_tokens = [t for t in normalize_search_str(q_clean).split() if t][:6]
+    results = []
 
     # 0. 搜尋大眾運輸巴士路線 (Transit Bus Routes)
     try:
@@ -2324,16 +2693,20 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                 "meta": term["meta"]
             })
 
-    # 2. 搜尋大眾運輸車站與站牌 (Transit Stops) - 支援關鍵字分詞 AND 查詢
+    # 2. 搜尋大眾運輸車站與站牌 (Transit Stops) - 支援關鍵字分詞 AND 查詢與安全跳脫
     try:
         from sqlalchemy import and_
-        stop_conditions = [models.TransitStop.name.ilike(f"%{tok}%") for tok in q_tokens] if q_tokens else []
+        stop_conditions = [
+            models.TransitStop.name.ilike(f"%{_escape_sql_like(tok)}%", escape="\\")
+            for tok in q_tokens
+        ] if q_tokens else []
         if stop_conditions:
             stops = db.query(models.TransitStop).filter(and_(*stop_conditions)).limit(150).all()
         else:
+            esc_q = _escape_sql_like(q_clean)
             stops = db.query(models.TransitStop).filter(
-                models.TransitStop.name.ilike(f"%{q_clean}%") |
-                models.TransitStop.stop_id.ilike(f"{q_clean}%")
+                models.TransitStop.name.ilike(f"%{esc_q}%", escape="\\") |
+                models.TransitStop.stop_id.ilike(f"{esc_q}%", escape="\\")
             ).limit(150).all()
 
         skytrain_stops = [s for s in stops if s.stop_group == 'skytrain']
@@ -2503,15 +2876,22 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
     except Exception as e:
         print(f"Error searching bikeways: {e}")
 
-    # 8. 搜尋溫哥華官方門牌地址 (Property Addresses API - 具備本機快取與短超時防護)
-    if len(q_clean) >= 2:
-        if q_clean in _addr_search_cache:
-            results.extend(_addr_search_cache[q_clean])
+    # 8. 搜尋溫哥華官方門牌地址 (Property Addresses API - 具備本機有界 LRU 快取、查詢字串淨化與短超時防護)
+    safe_odsql_q = "".join(ch for ch in q_clean if ch.isalnum() or ch in " -&#'.")
+    safe_odsql_q = " ".join(safe_odsql_q.split())[:80]
+    if len(safe_odsql_q) >= 2:
+        cached_addr = None
+        with _search_lock:
+            if safe_odsql_q in _addr_search_cache:
+                _addr_search_cache.move_to_end(safe_odsql_q)
+                cached_addr = _addr_search_cache[safe_odsql_q]
+        if cached_addr is not None:
+            results.extend(cached_addr)
         else:
             try:
                 addr_url = "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/property-addresses/records"
                 params = {
-                    "where": f'search(*, "{q_clean}")',
+                    "where": f'search(*, "{safe_odsql_q}")',
                     "limit": 10
                 }
                 addr_resp = requests.get(addr_url, params=params, timeout=0.8)
@@ -2545,14 +2925,15 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
                                     "full_address": full_addr
                                 }
                             })
-                    if len(_addr_search_cache) > 500:
-                        _addr_search_cache.clear()
-                    _addr_search_cache[q_clean] = addr_matches
+                    with _search_lock:
+                        _addr_search_cache[safe_odsql_q] = addr_matches
+                        while len(_addr_search_cache) > 600:
+                            _addr_search_cache.popitem(last=False)
                     results.extend(addr_matches)
             except Exception:
                 pass
 
-    if is_category_query:
+    if locals().get("is_category_query"):
         cat_matches = []
         other_matches = []
         for r in results:
@@ -2568,9 +2949,9 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
 
     final_results = results[:150]
     with _search_lock:
-        if len(_search_query_cache) > 500:
-            _search_query_cache.clear()
         _search_query_cache[q_clean] = final_results
+        while len(_search_query_cache) > 800:
+            _search_query_cache.popitem(last=False)
     return {"results": final_results}
 
 from html.parser import HTMLParser
@@ -2583,19 +2964,68 @@ class ImgTagParser(HTMLParser):
         if tag.lower() == 'img':
             self.tags.append(dict(attrs))
 
+_ALLOWED_WEBCAM_HOSTS = {
+    "trafficcams.vancouver.ca",
+    "images.drivebc.ca",
+    "www.drivebc.ca",
+    "drivebc.ca",
+    "webcams.drivebc.ca",
+    "ns-webcams.its.sfu.ca",
+}
+
+
+def _validate_safe_webcam_url(raw_url: str) -> str | None:
+    """
+    嚴格驗證交通攝影機 URL，徹底防範 SSRF (Server-Side Request Forgery) 探測內網容器或雲端 Metadata (169.254.169.254)。
+    僅允許白名單官方交通攝影機網域、標準埠號，且解析後 IP 不得為私有/迴路/鏈路本地位址。
+    """
+    if not raw_url or not isinstance(raw_url, str) or len(raw_url) > 1024:
+        return None
+    u = raw_url.strip()
+    if u.startswith("http://"):
+        u = "https://" + u[7:]
+    try:
+        parsed = urllib.parse.urlparse(u)
+    except Exception:
+        return None
+    if parsed.scheme != "https":
+        return None
+    if parsed.username or parsed.password:
+        return None
+    if parsed.port not in (None, 443):
+        return None
+    hostname = (parsed.hostname or "").lower().strip(".")
+    if hostname not in _ALLOWED_WEBCAM_HOSTS:
+        return None
+    try:
+        infos = socket.getaddrinfo(hostname, 443, proto=socket.IPPROTO_TCP)
+        for info in infos:
+            ip_obj = ipaddress.ip_address(info[4][0])
+            if (
+                ip_obj.is_private
+                or ip_obj.is_loopback
+                or ip_obj.is_link_local
+                or ip_obj.is_multicast
+                or ip_obj.is_reserved
+                or ip_obj.is_unspecified
+            ):
+                return None
+    except Exception:
+        return None
+    return u
+
+
 webcam_images_cache = {}
 
 @app.get("/api/webcam/images")
 def get_webcam_images(url: str):
     """
-    獲取溫哥華交通攝影機頁面 (trafficcams.vancouver.ca) 的即時畫面圖片
+    獲取溫哥華交通攝影機頁面 (trafficcams.vancouver.ca) 的即時畫面圖片 (內建 SSRF 白名單防護)
     """
-    if not url:
+    safe_url = _validate_safe_webcam_url(url)
+    if not safe_url:
         return {"images": []}
-
-    url = url.strip()
-    if url.startswith("http://"):
-        url = "https://" + url[7:]
+    url = safe_url
 
     now = time.time()
     if url in webcam_images_cache:
@@ -2607,14 +3037,14 @@ def get_webcam_images(url: str):
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     }
     try:
-        resp = requests.get(url, headers=headers, timeout=12)
+        resp = requests.get(url, headers=headers, timeout=12, allow_redirects=False)
         if resp.status_code != 200:
             print(f"Webcam page returned status {resp.status_code} for {url}")
             return {"images": []}
 
         # Parse with standard library HTMLParser (zero external dependency)
         parser = ImgTagParser()
-        parser.feed(resp.text)
+        parser.feed(resp.text[:512000])
         img_tags = parser.tags
 
         images = []
@@ -2623,6 +3053,8 @@ def get_webcam_images(url: str):
             alt = img.get('alt', '')
             if 'cameraimages' in src or (src.endswith('.jpg') and 'city-emblem' not in src and 'favicon' not in src):
                 full_src = src if src.startswith('http') else f"https://trafficcams.vancouver.ca/{src.lstrip('/')}"
+                if not _validate_safe_webcam_url(full_src):
+                    continue
                 direction = "即時路況"
                 alt_clean = alt.replace("Traffic Camera Images", "").strip()
                 if " - " in alt_clean:
@@ -2645,7 +3077,7 @@ def get_webcam_images(url: str):
                 })
 
         if len(webcam_images_cache) > 200:
-            expired_keys = [k for k, (t_val, _) in webcam_images_cache.items() if now - t_val >= 300]
+            expired_keys = [k for k, (t_val, _) in list(webcam_images_cache.items()) if now - t_val >= 300]
             for k in expired_keys:
                 webcam_images_cache.pop(k, None)
             if len(webcam_images_cache) > 200:
@@ -2666,10 +3098,12 @@ MAX_WEBCAM_BYTES_CACHE_ITEMS = 120
 @app.get("/api/webcam/proxy")
 def proxy_webcam_image(url: str):
     """
-    代理交通攝影機圖片，避免瀏覽器跨域 (CORS) 或 Referrer 限制，並提供快取與充足逾時時間
+    代理交通攝影機圖片，避免瀏覽器跨域 (CORS) 或 Referrer 限制，內建 SSRF 白名單與圖片大小上限防護
     """
-    if not url:
-        return Response(status_code=400)
+    safe_url = _validate_safe_webcam_url(url)
+    if not safe_url:
+        return Response(status_code=403)
+    url = safe_url
     now = time.time()
     if url in webcam_image_bytes_cache:
         ts, content, mtype = webcam_image_bytes_cache[url]
@@ -2684,22 +3118,35 @@ def proxy_webcam_image(url: str):
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
             "Referer": "https://trafficcams.vancouver.ca/"
         }
-        r = requests.get(url, headers=headers, timeout=18)
-        if r.status_code == 200 and r.content:
-            mtype = r.headers.get("content-type", "image/jpeg")
-            if len(webcam_image_bytes_cache) >= MAX_WEBCAM_BYTES_CACHE_ITEMS:
-                expired = [k for k, (t_val, _, _) in webcam_image_bytes_cache.items() if now - t_val >= 180]
-                for k in expired:
-                    webcam_image_bytes_cache.pop(k, None)
+        r = requests.get(url, headers=headers, timeout=12, allow_redirects=False, stream=True)
+        if r.status_code == 200:
+            mtype = (r.headers.get("content-type") or "image/jpeg").split(";")[0].strip().lower()
+            if not mtype.startswith("image/"):
+                r.close()
+                return Response(status_code=415)
+            chunks = []
+            total_len = 0
+            for chunk in r.iter_content(chunk_size=65536):
+                total_len += len(chunk)
+                if total_len > 5 * 1024 * 1024:
+                    r.close()
+                    return Response(status_code=413)
+                chunks.append(chunk)
+            content = b"".join(chunks)
+            if content:
                 if len(webcam_image_bytes_cache) >= MAX_WEBCAM_BYTES_CACHE_ITEMS:
-                    oldest_key = min(webcam_image_bytes_cache, key=lambda k: webcam_image_bytes_cache[k][0])
-                    webcam_image_bytes_cache.pop(oldest_key, None)
-            webcam_image_bytes_cache[url] = (now, r.content, mtype)
-            return Response(
-                content=r.content,
-                media_type=mtype,
-                headers={"Cache-Control": "public, max-age=180"}
-            )
+                    expired = [k for k, (t_val, _, _) in list(webcam_image_bytes_cache.items()) if now - t_val >= 180]
+                    for k in expired:
+                        webcam_image_bytes_cache.pop(k, None)
+                    if len(webcam_image_bytes_cache) >= MAX_WEBCAM_BYTES_CACHE_ITEMS:
+                        oldest_key = min(webcam_image_bytes_cache, key=lambda k: webcam_image_bytes_cache[k][0])
+                        webcam_image_bytes_cache.pop(oldest_key, None)
+                webcam_image_bytes_cache[url] = (now, content, mtype)
+                return Response(
+                    content=content,
+                    media_type=mtype,
+                    headers={"Cache-Control": "public, max-age=180"}
+                )
         return Response(status_code=404)
     except Exception as e:
         print(f"Webcam proxy error for {url}: {e}")
@@ -2856,6 +3303,47 @@ _contours_caches = {
     "10m": {"data": None, "mtime": 0},
 }
 
+_ALLOWED_DB_ROAD_FACILITY_TYPES = {
+    "parking_meters",
+    "motorcycle_parking",
+    "accessible_parking",
+    "ev_charging",
+    "bike_racks",
+    "shared_bikes",
+    "escooter",
+    "car_sharing",
+    "traffic_signals",
+    "traffic_crosswalks",
+    "traffic_cameras",
+    "safety_cameras",
+    "aed",
+    "public_washrooms",
+    "drinking_fountains",
+    "litter_containers",
+    "community_centres",
+    "libraries",
+    "schools",
+    "museums",
+    "public_art",
+    "food_banks",
+    "food_vendors",
+    "homeless_shelters",
+    "recycling",
+    "fire_halls",
+    "fire_hydrants",
+    "police",
+    "hospitals",
+    "disaster_hubs",
+    "van_wifi",
+    "canada_post",
+    "fedex",
+    "purolator",
+    "banks",
+    "fuel",
+    "tesla",
+    "impark",
+}
+
 @app.get("/api/geojson/road/{facility_type}")
 def get_road_facilities_geojson(
     facility_type: str, 
@@ -2868,7 +3356,12 @@ def get_road_facilities_geojson(
     """
     facility_type can be 'parking_meters', 'accessible_parking', 'motorcycle_parking', 'ev_charging', 'bikeways', 'contours', etc.
     For contours, interval can be '1m', '2m', '10m'.
+    內建嚴格路徑字元白名單檢查，防範目錄穿越 (Path Traversal) 與任意資料庫自動寫入。
     """
+    facility_type = (facility_type or "").strip().lower()
+    if not re.fullmatch(r"[a-z0-9_]{1,50}", facility_type):
+        return JSONResponse(status_code=400, content={"type": "FeatureCollection", "features": [], "error": "Invalid facility_type"})
+
     # 1. Handle Contours with 1m, 2m, 10m intervals
     if facility_type.startswith("contours"):
         raw_int = "10m"
@@ -2936,55 +3429,62 @@ def get_road_facilities_geojson(
         if os.path.exists(static_geojson_path):
             return FileResponse(static_geojson_path, media_type="application/json", headers={"Cache-Control": "public, max-age=3600, stale-while-revalidate=86400"})
 
+    if facility_type not in _ALLOWED_DB_ROAD_FACILITY_TYPES:
+        return {"type": "FeatureCollection", "features": []}
+
     facilities = db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).all()
     
-    # Auto-import on-the-fly if not yet populated in DB
+    # Auto-import on-the-fly if not yet populated in DB (加鎖保護，防止高並發冷啟動重複寫入衝突)
     if not facilities:
-        # 1. Check for precompiled verified GeoJSON in backend/data/
-        if os.path.exists(static_geojson_path):
-            try:
-                with open(static_geojson_path, "r", encoding="utf-8") as f:
-                    static_geojson = json.load(f)
-                
-                # Auto-populate DB for future queries & search using bulk save
-                facs_to_add = []
-                for feat in static_geojson.get("features", []):
-                    props = feat.get("properties", {})
-                    coords = feat.get("geometry", {}).get("coordinates", [])
-                    if len(coords) >= 2:
-                        lon, lat = coords[0], coords[1]
-                        fac_id = feat.get("id") or props.get("id") or f"{facility_type}_{lon}_{lat}"
-                        fac = models.RoadFacility(
-                            id=str(fac_id),
-                            facility_type=facility_type,
-                            name=props.get("name", "Unknown"),
-                            local_area=props.get("local_area") or props.get("municipality", ""),
-                            lat=lat,
-                            lon=lon,
-                            geom=f"SRID=4326;POINT({lon} {lat})",
-                            details={k: v for k, v in props.items() if k not in ("id", "facility_type", "name", "local_area")},
-                            last_updated=datetime.utcnow()
-                        )
-                        facs_to_add.append(fac)
-                if facs_to_add:
-                    db.bulk_save_objects(facs_to_add)
-                db.commit()
-                if facility_type not in ('parking_meters', 'motorcycle_parking'):
-                    return FileResponse(static_geojson_path, media_type="application/json", headers={"Cache-Control": "public, max-age=3600, stale-while-revalidate=86400"})
-                facilities = db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).all()
-            except Exception as e:
-                db.rollback()
-                print(f"Error populating {facility_type} from static geojson: {e}")
-                if os.path.exists(static_geojson_path) and facility_type not in ('parking_meters', 'motorcycle_parking'):
-                    return FileResponse(static_geojson_path, media_type="application/json", headers={"Cache-Control": "public, max-age=3600, stale-while-revalidate=86400"})
-
-        # 2. Try online API import
-        try:
-            from scripts.import_road_data import import_single_facility_type
-            import_single_facility_type(facility_type, db)
+        with _road_seed_lock:
             facilities = db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).all()
-        except Exception as e:
-            print(f"Auto-import error for {facility_type}: {e}")
+            if not facilities:
+                # 1. Check for precompiled verified GeoJSON in backend/data/
+                if os.path.exists(static_geojson_path):
+                    try:
+                        with open(static_geojson_path, "r", encoding="utf-8") as f:
+                            static_geojson = json.load(f)
+                        
+                        facs_to_add = []
+                        for feat in static_geojson.get("features", []):
+                            props = feat.get("properties", {})
+                            coords = feat.get("geometry", {}).get("coordinates", [])
+                            if len(coords) >= 2 and isinstance(coords[0], (int, float)) and isinstance(coords[1], (int, float)):
+                                lon, lat = coords[0], coords[1]
+                                fac_id = feat.get("id") or props.get("id") or f"{facility_type}_{lon}_{lat}"
+                                fac = models.RoadFacility(
+                                    id=str(fac_id),
+                                    facility_type=facility_type,
+                                    name=props.get("name", "Unknown"),
+                                    local_area=props.get("local_area") or props.get("municipality", ""),
+                                    lat=lat,
+                                    lon=lon,
+                                    geom=f"SRID=4326;POINT({lon} {lat})",
+                                    details={k: v for k, v in props.items() if k not in ("id", "facility_type", "name", "local_area")},
+                                    last_updated=datetime.utcnow()
+                                )
+                                facs_to_add.append(fac)
+                        if facs_to_add:
+                            db.bulk_save_objects(facs_to_add)
+                        db.commit()
+                        if facility_type not in ('parking_meters', 'motorcycle_parking'):
+                            return FileResponse(static_geojson_path, media_type="application/json", headers={"Cache-Control": "public, max-age=3600, stale-while-revalidate=86400"})
+                        facilities = db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).all()
+                    except Exception as e:
+                        db.rollback()
+                        print(f"Error populating {facility_type} from static geojson: {e}")
+                        if os.path.exists(static_geojson_path) and facility_type not in ('parking_meters', 'motorcycle_parking'):
+                            return FileResponse(static_geojson_path, media_type="application/json", headers={"Cache-Control": "public, max-age=3600, stale-while-revalidate=86400"})
+
+                # 2. Try online API import only if still empty
+                if not facilities:
+                    try:
+                        from scripts.import_road_data import import_single_facility_type
+                        import_single_facility_type(facility_type, db)
+                        facilities = db.query(models.RoadFacility).filter(models.RoadFacility.facility_type == facility_type).all()
+                    except Exception as e:
+                        db.rollback()
+                        print(f"Auto-import error for {facility_type}: {e}")
 
     # Fallback to static geojson file if still empty
     if not facilities:
@@ -3139,7 +3639,13 @@ def explore_nearby_facilities(
     """
     Returns facilities and transit stops within radius (meters) of given (lat, lon).
     Calculates exact distance and walking time (minutes).
+    內建經緯度有效範圍檢查與搜尋半徑上限保護 (50m ~ 5000m)，防範全表掃描 DoS。
     """
+    if not (math.isfinite(lat) and math.isfinite(lon) and -90.0 <= lat <= 90.0 and -180.0 <= lon <= 180.0):
+        return JSONResponse(status_code=400, content={"error": "Invalid coordinates", "items": []})
+    radius = max(50, min(5000, int(radius)))
+    if layers and len(layers) > 2000:
+        layers = layers[:2000]
     def haversine_m(lat1, lon1, lat2, lon2):
         R = 6371000
         p1, p2 = math.radians(lat1), math.radians(lat2)
@@ -3614,7 +4120,7 @@ def get_debug_gtfs_routes():
         return {"error": str(e)}
     return {"total": len(routes), "route_short_names": list(set(routes))}
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 import smtplib
 import base64
@@ -3624,25 +4130,147 @@ from email.mime.base import MIMEBase
 from email import encoders
 
 class IssueReportRequest(BaseModel):
-    title: str
-    details: str
-    contact_email: Optional[str] = None
-    image_base64: Optional[str] = None
-    image_name: Optional[str] = None
+    title: str = Field(..., min_length=1, max_length=200)
+    details: str = Field(..., min_length=1, max_length=5000)
+    contact_email: Optional[str] = Field(default=None, max_length=254)
+    image_base64: Optional[str] = Field(default=None, max_length=7500000)
+    image_name: Optional[str] = Field(default=None, max_length=120)
+
+
+def _sanitize_raster_image_base64(raw_b64: Optional[str]) -> tuple[Optional[str], Optional[bytes], str]:
+    """
+    嚴格驗證問題回報圖片附件：
+    1. 僅允許安全點陣圖格式 (PNG, JPEG, GIF, WEBP)，徹底攔截 image/svg+xml (Stored XSS 風險) 或偽造執行檔。
+    2. 檢查真實檔案魔術位元組 (Magic Bytes) 並限制解碼後不超過 5.5 MB。
+    """
+    if not raw_b64 or not isinstance(raw_b64, str):
+        return None, None, "png"
+    b64_part = raw_b64.strip()
+    if "," in b64_part:
+        header, b64_part = b64_part.split(",", 1)
+        header_low = header.lower()
+        if "svg" in header_low or "html" in header_low or "xml" in header_low:
+            raise ValueError("不支援 SVG 或網頁格式附件，請上傳 PNG / JPG / WEBP 圖片")
+    try:
+        img_bytes = base64.b64decode(b64_part, validate=False)
+    except Exception:
+        raise ValueError("圖片編碼格式無效")
+    if len(img_bytes) == 0 or len(img_bytes) > 5_500_000:
+        raise ValueError("圖片檔案超過 5MB 安全上限")
+
+    if img_bytes.startswith(b"\x89PNG\r\n\x1a\n"):
+        mime, ext = "image/png", "png"
+    elif img_bytes.startswith(b"\xff\xd8\xff"):
+        mime, ext = "image/jpeg", "jpg"
+    elif img_bytes.startswith((b"GIF87a", b"GIF89a")):
+        mime, ext = "image/gif", "gif"
+    elif len(img_bytes) >= 12 and img_bytes[:4] == b"RIFF" and img_bytes[8:12] == b"WEBP":
+        mime, ext = "image/webp", "webp"
+    else:
+        raise ValueError("僅支援標準 PNG、JPG、GIF 或 WEBP 圖片檔案")
+
+    clean_b64_str = base64.b64encode(img_bytes).decode("ascii")
+    return f"data:{mime};base64,{clean_b64_str}", img_bytes, ext
+
+
+def _send_issue_report_email_bg(
+    clean_title: str,
+    clean_details: str,
+    clean_email: str,
+    clean_img_name: str,
+    img_bytes: Optional[bytes],
+    created_str: str,
+) -> None:
+    target_email = "vancouvergodseye@gmail.com"
+    smtp_host = os.getenv("SMTP_HOST")
+    try:
+        smtp_port = int(os.getenv("SMTP_PORT", "587"))
+    except ValueError:
+        smtp_port = 587
+    smtp_user = os.getenv("SMTP_USER")
+    smtp_pass = os.getenv("SMTP_PASSWORD")
+    if not (smtp_host and smtp_user and smtp_pass):
+        return
+    try:
+        msg = MIMEMultipart("mixed")
+        msg["Subject"] = f"[上帝之眼問題回報] {clean_title}"
+        msg["From"] = smtp_user
+        msg["To"] = target_email
+
+        body_text = f"""溫哥華上帝之眼 - 使用者問題回報
+=============================================
+回報標題: {clean_title}
+送出時間: {created_str}
+聯絡 Email: {clean_email or '未提供'}
+圖片附件: {'有 (詳見附件: ' + clean_img_name + ')' if img_bytes else '無'}
+
+問題詳情:
+---------------------------------------------
+{clean_details}
+=============================================
+"""
+        msg.attach(MIMEText(body_text, "plain", "utf-8"))
+        if img_bytes:
+            part = MIMEBase("application", "octet-stream")
+            part.set_payload(img_bytes)
+            encoders.encode_base64(part)
+            part.add_header("Content-Disposition", f'attachment; filename="{clean_img_name}"')
+            msg.attach(part)
+
+        if smtp_port == 465:
+            server = smtplib.SMTP_SSL(smtp_host, smtp_port, timeout=10)
+        else:
+            server = smtplib.SMTP(smtp_host, smtp_port, timeout=10)
+            server.starttls()
+        server.login(smtp_user, smtp_pass)
+        server.sendmail(smtp_user, [target_email], msg.as_string())
+        server.quit()
+    except Exception as e:
+        print(f"[Issue Report Email Error]: {e}")
+
 
 @app.post("/api/report-issue")
-def report_issue(payload: IssueReportRequest, db: Session = Depends(database.get_db)):
+def report_issue(
+    payload: IssueReportRequest,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(database.get_db)
+):
     """
-    接收使用者回報的問題與建議，儲存至資料庫與備份檔案，並嘗試發送通知郵件至 vancouvergodseye@gmail.com
+    接收使用者回報的問題與建議，經嚴格淨化與圖片魔術位元組檢查後儲存至資料庫與備份檔案，
+    並透過背景任務非阻塞發送通知郵件。
     """
+    # 移除換行控制字元，防範 SMTP Header Injection 與日誌偽造
+    clean_title = re.sub(r"[\r\n\x00-\x1f]+", " ", payload.title).strip()[:200]
+    clean_details = payload.details.replace("\x00", "").strip()[:5000]
+    if not clean_title or not clean_details:
+        return JSONResponse(status_code=400, content={"status": "error", "message": "標題與問題詳情不得為空"})
+
+    clean_email = ""
+    if payload.contact_email:
+        cand_email = re.sub(r"[\r\n\x00-\x1f\s]+", "", payload.contact_email)[:254]
+        if cand_email and not re.fullmatch(r"[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,24}", cand_email):
+            return JSONResponse(status_code=400, content={"status": "error", "message": "聯絡電子郵件格式不正確"})
+        clean_email = cand_email
+
+    try:
+        safe_data_url, img_bytes, ext = _sanitize_raster_image_base64(payload.image_base64)
+    except ValueError as ve:
+        return JSONResponse(status_code=400, content={"status": "error", "message": str(ve)})
+
+    raw_name = os.path.basename(payload.image_name or "")
+    clean_img_name = re.sub(r"[^A-Za-z0-9._\-]", "_", raw_name)[:80] or f"report_screenshot.{ext}"
+    if img_bytes and "." not in clean_img_name:
+        clean_img_name = f"{clean_img_name}.{ext}"
+
     now_utc = datetime.utcnow()
     report_id = f"rep_{int(now_utc.timestamp() * 1000)}_{uuid.uuid4().hex[:6]}"
-    # 1. 儲存至資料庫
+
+    # 1. 儲存至資料庫 (ORM 參數化綁定，杜絕 SQL Injection)
     try:
         report = models.IssueReport(
-            title=payload.title,
-            details=payload.details,
-            contact_email=payload.contact_email or None,
+            title=clean_title,
+            details=clean_details,
+            contact_email=clean_email or None,
             status="pending",
             created_at=now_utc
         )
@@ -3652,94 +4280,47 @@ def report_issue(payload: IssueReportRequest, db: Session = Depends(database.get
         print(f"[Issue Report DB Error]: {e}")
         db.rollback()
 
-    # 2. 備份至 JSONL 檔案 (確保即便離線或無 DB 亦可持久保存)
+    # 2. 執行緒鎖保護備份至 JSONL 檔案
     try:
         data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
         os.makedirs(data_dir, exist_ok=True)
         report_file = os.path.join(data_dir, 'issue_reports.jsonl')
-        with open(report_file, 'a', encoding='utf-8') as f:
-            f.write(json.dumps({
-                "id": report_id,
-                "timestamp": now_utc.isoformat(),
-                "title": payload.title,
-                "details": payload.details,
-                "contact_email": payload.contact_email or "",
-                "status": "pending",
-                "has_attachment": bool(payload.image_base64),
-                "attachment_name": payload.image_name or "",
-                "image_base64": payload.image_base64 or ""
-            }, ensure_ascii=False) + "\n")
+        record_line = json.dumps({
+            "id": report_id,
+            "timestamp": now_utc.isoformat(),
+            "title": clean_title,
+            "details": clean_details,
+            "contact_email": clean_email,
+            "status": "pending",
+            "has_attachment": bool(safe_data_url),
+            "attachment_name": clean_img_name if safe_data_url else "",
+            "image_base64": safe_data_url or ""
+        }, ensure_ascii=False) + "\n"
+        with _issue_reports_lock:
+            with open(report_file, 'a', encoding='utf-8') as f:
+                f.write(record_line)
     except Exception as e:
         print(f"[Issue Report Backup File Error]: {e}")
 
-    # 3. 發送郵件至 vancouvergodseye@gmail.com
-    target_email = "vancouvergodseye@gmail.com"
-    smtp_host = os.getenv("SMTP_HOST") # 例如 smtp.gmail.com
-    smtp_port = int(os.getenv("SMTP_PORT", "587"))
-    smtp_user = os.getenv("SMTP_USER")
-    smtp_pass = os.getenv("SMTP_PASSWORD")
-
-    email_sent = False
-    email_error = None
-
-    if smtp_host and smtp_user and smtp_pass:
-        try:
-            msg = MIMEMultipart("mixed")
-            msg["Subject"] = f"[上帝之眼問題回報] {payload.title}"
-            msg["From"] = smtp_user
-            msg["To"] = target_email
-
-            body_text = f"""溫哥華上帝之眼 - 使用者問題回報
-=============================================
-回報標題: {payload.title}
-送出時間: {now_utc.strftime('%Y-%m-%d %H:%M:%S UTC')}
-聯絡 Email: {payload.contact_email or '未提供'}
-圖片附件: {'有 (詳見附件: ' + (payload.image_name or 'attachment.png') + ')' if payload.image_base64 else '無'}
-
-問題詳情:
----------------------------------------------
-{payload.details}
-=============================================
-"""
-            msg.attach(MIMEText(body_text, "plain", "utf-8"))
-
-            if payload.image_base64:
-                try:
-                    img_raw = payload.image_base64
-                    if "," in img_raw:
-                        img_raw = img_raw.split(",", 1)[1]
-                    img_bytes = base64.b64decode(img_raw)
-                    part = MIMEBase("application", "octet-stream")
-                    part.set_payload(img_bytes)
-                    encoders.encode_base64(part)
-                    filename = payload.image_name or "report_screenshot.png"
-                    part.add_header("Content-Disposition", f'attachment; filename="{filename}"')
-                    msg.attach(part)
-                except Exception as img_err:
-                    print(f"[Issue Report Image Attach Error]: {img_err}")
-
-            if smtp_port == 465:
-                server = smtplib.SMTP_SSL(smtp_host, smtp_port, timeout=10)
-            else:
-                server = smtplib.SMTP(smtp_host, smtp_port, timeout=10)
-                server.starttls()
-            server.login(smtp_user, smtp_pass)
-            server.sendmail(smtp_user, [target_email], msg.as_string())
-            server.quit()
-            email_sent = True
-            print(f"[Issue Report] Email successfully dispatched to {target_email}")
-        except Exception as e:
-            email_error = str(e)
-            print(f"[Issue Report Email Error]: {e}")
-    else:
-        print(f"[Issue Report] Stored report '{payload.title}' locally. (SMTP credentials not configured, skipping SMTP dispatch)")
+    # 3. 排入背景任務發送郵件，不阻塞 HTTP 回應
+    has_smtp = bool(os.getenv("SMTP_HOST") and os.getenv("SMTP_USER") and os.getenv("SMTP_PASSWORD"))
+    if has_smtp:
+        background_tasks.add_task(
+            _send_issue_report_email_bg,
+            clean_title,
+            clean_details,
+            clean_email,
+            clean_img_name,
+            img_bytes,
+            now_utc.strftime('%Y-%m-%d %H:%M:%S UTC'),
+        )
 
     return {
         "status": "success",
         "message": "問題回報已成功送出！",
-        "target_email": target_email,
-        "email_dispatched": email_sent,
-        "email_error": email_error
+        "target_email": "vancouvergodseye@gmail.com",
+        "email_dispatched": has_smtp,
+        "email_error": None
     }
 
 @app.post("/api/admin/update-open-data")
@@ -3869,10 +4450,12 @@ def set_admin_github_token(payload: dict = Body(...)):
     從後台介面直接儲存 GITHUB_TOKEN，無須手動 SSH
     全面寫入記憶體、多個 .env 以及 admin_sources_config.json
     """
-    token = payload.get("token", "").strip()
-    repo = payload.get("repo", "Ycf206/Vancouver-God-Eyes").strip()
-    if not token:
-        return {"status": "error", "message": "Token 不能為空"}
+    token = str(payload.get("token") or "").strip()
+    repo = str(payload.get("repo") or "Ycf206/Vancouver-God-Eyes").strip()
+    if not token or len(token) > 256 or any(c in token for c in ("\r", "\n", " ", '"', "'")):
+        return {"status": "error", "message": "Token 格式無效或不能為空"}
+    if not re.fullmatch(r"[A-Za-z0-9_.\-]{1,60}/[A-Za-z0-9_.\-]{1,100}", repo):
+        return {"status": "error", "message": "GitHub Repository 格式無效 (應為 owner/repo)"}
 
     # 驗證 Token 是否具備有效 GitHub 授權
     user_name = ""
@@ -3921,18 +4504,18 @@ def set_admin_github_token(payload: dict = Body(...)):
         except Exception as e:
             print(f"Failed to save to {env_path}:", e)
 
-    # 3. 寫入 admin_sources_config.json 保證容器重啟持久性
+    # 3. 寫入 admin_sources_config.json 保證容器重啟持久性 (原子寫入 + 執行緒鎖)
     cfg_path = get_admin_config_path()
-    if os.path.exists(cfg_path):
-        try:
-            with open(cfg_path, 'r', encoding='utf-8') as f:
-                cfg = json.load(f)
-            cfg["github_token"] = token
-            cfg["github_repo"] = repo
-            with open(cfg_path, 'w', encoding='utf-8') as f:
-                json.dump(cfg, f, ensure_ascii=False, indent=2)
-        except Exception as ce:
-            print("Failed to save token to json config:", ce)
+    with _admin_cfg_lock:
+        if os.path.exists(cfg_path):
+            try:
+                with open(cfg_path, 'r', encoding='utf-8') as f:
+                    cfg = json.load(f)
+                cfg["github_token"] = token
+                cfg["github_repo"] = repo
+                _atomic_write_json(cfg_path, cfg)
+            except Exception as ce:
+                print("Failed to save token to json config:", ce)
 
     msg = f"GitHub Token 儲存成功！已綁定帳號 @{user_name}，現在可一鍵觸發 Actions 工作流與自動 Commit 排程。" if user_name else "GitHub Token 已成功儲存！"
     return {"status": "success", "message": msg}
@@ -3948,64 +4531,104 @@ def get_canonical_workflow_file(source_id: str) -> str:
     return f"update-{clean_id}.yml"
 
 
+_public_intervals_cache: dict = {"ts": 0.0, "data": None}
+
+
+@app.get("/api/system/source-intervals")
+def get_public_source_intervals():
+    """
+    公開唯讀端點：僅回傳各資料源的更新頻率文字 (如「每 5 分鐘」)，絕不暴露任何管理日誌、Token 或腳本路徑。
+    供前台 ExplorePanel 顯示資料更新週期，徹底隔離 /api/admin/sources。
+    """
+    now = time.time()
+    if _public_intervals_cache["data"] is not None and (now - _public_intervals_cache["ts"] < 60.0):
+        return _public_intervals_cache["data"]
+
+    intervals: dict[str, str] = {}
+    config_path = get_admin_config_path()
+    if os.path.exists(config_path):
+        try:
+            with _admin_cfg_lock:
+                with open(config_path, "r", encoding="utf-8") as f:
+                    cfg = json.load(f)
+            for s in cfg.get("sources", []):
+                sid = s.get("id")
+                sched = s.get("schedule_interval")
+                if sid and sched:
+                    intervals[str(sid)] = str(sched)
+        except Exception:
+            pass
+    payload = {"intervals": intervals}
+    _public_intervals_cache["ts"] = now
+    _public_intervals_cache["data"] = payload
+    return payload
+
+
 @app.get("/api/admin/sources")
 def get_admin_sources():
     """
     獲取系統所有數據源 (API 與 GeoJSON) 之最新狀態、排程頻率、上次更新時間與記錄筆數
+    (回應前自動剔除 github_token 等敏感欄位，防止憑證外洩)
     """
     config_path = get_admin_config_path()
     if os.path.exists(config_path):
         try:
-            with open(config_path, 'r', encoding='utf-8') as f:
-                cfg = json.load(f)
+            with _admin_cfg_lock:
+                with open(config_path, 'r', encoding='utf-8') as f:
+                    cfg = json.load(f)
 
-            # 11.2 同步 探索-活動 (public_events) 即時數據筆數與狀態
-            for s in cfg.get("sources", []):
-                if s.get("id") == "public_events":
-                    if events_service.cached_events:
-                        s["record_count"] = len(events_service.cached_events)
-                        s["status"] = "healthy"
-                elif s.get("id") == "food_vendors":
-                    fv_path = os.path.join(os.path.dirname(__file__), "data", "vancouver_food_vendors.geojson")
-                    if not os.path.exists(fv_path):
-                        fv_path = os.path.join(os.path.dirname(__file__), "..", "frontend", "public", "vancouver_food_vendors.geojson")
-                    if os.path.exists(fv_path):
-                        try:
-                            with open(fv_path, "r", encoding="utf-8") as fv_file:
-                                fv_data = json.load(fv_file)
-                                f_count = len(fv_data.get("features", []))
-                                if f_count > 0:
-                                    s["record_count"] = f_count
-                                s["unit"] = "處街頭餐車與熟食攤位"
-                        except Exception:
-                            pass
+                # 11.2 同步 探索-活動 (public_events) 即時數據筆數與狀態
+                for s in cfg.get("sources", []):
+                    if s.get("id") == "public_events":
+                        if events_service.cached_events:
+                            s["record_count"] = len(events_service.cached_events)
+                            s["status"] = "healthy"
+                    elif s.get("id") == "vancouver_news":
+                        if news_service.cached_news:
+                            s["record_count"] = len(news_service.cached_news)
+                            s["status"] = "healthy"
+                    elif s.get("id") == "food_vendors":
+                        fv_path = os.path.join(os.path.dirname(__file__), "data", "vancouver_food_vendors.geojson")
+                        if not os.path.exists(fv_path):
+                            fv_path = os.path.join(os.path.dirname(__file__), "..", "frontend", "public", "vancouver_food_vendors.geojson")
+                        if os.path.exists(fv_path):
+                            try:
+                                with open(fv_path, "r", encoding="utf-8") as fv_file:
+                                    fv_data = json.load(fv_file)
+                                    f_count = len(fv_data.get("features", []))
+                                    if f_count > 0:
+                                        s["record_count"] = f_count
+                                    s["unit"] = "處街頭餐車與熟食攤位"
+                            except Exception:
+                                pass
 
-            # 自動校正所有舊版或遺失之 workflow_file (例如 update-datasets.yml)
-            has_changes = False
-            for s in cfg.get("sources", []):
-                if s.get("runner") == "github_actions":
-                    canonical_wf = get_canonical_workflow_file(s["id"])
-                    if s.get("workflow_file") != canonical_wf:
-                        s["workflow_file"] = canonical_wf
-                        has_changes = True
+                # 自動校正所有舊版或遺失之 workflow_file (例如 update-datasets.yml)
+                has_changes = False
+                for s in cfg.get("sources", []):
+                    if s.get("runner") == "github_actions":
+                        canonical_wf = get_canonical_workflow_file(s["id"])
+                        if s.get("workflow_file") != canonical_wf:
+                            s["workflow_file"] = canonical_wf
+                            has_changes = True
 
-            # 11.5 從持久化排程歷史恢復 logs，防止 deploy 後資料消失
-            persisted_sched = system_log_service.get_schedule_history()
-            if persisted_sched.get("logs"):
-                cfg["logs"] = persisted_sched["logs"]
-            elif cfg.get("logs"):
-                for lg in cfg["logs"]:
-                    system_log_service.append_schedule_log(lg)
-            cfg["schedule_retention_days"] = system_log_service.get_schedule_retention_days()
+                # 11.5 從持久化排程歷史恢復 logs，防止 deploy 後資料消失
+                persisted_sched = system_log_service.get_schedule_history()
+                if persisted_sched.get("logs"):
+                    cfg["logs"] = persisted_sched["logs"]
+                elif cfg.get("logs"):
+                    for lg in cfg["logs"]:
+                        system_log_service.append_schedule_log(lg)
+                cfg["schedule_retention_days"] = system_log_service.get_schedule_retention_days()
 
-            if has_changes:
-                try:
-                    with open(config_path, 'w', encoding='utf-8') as f:
-                        json.dump(cfg, f, ensure_ascii=False, indent=2)
-                except Exception:
-                    pass
+                if has_changes:
+                    try:
+                        _atomic_write_json(config_path, cfg)
+                    except Exception:
+                        pass
 
-            return cfg
+                # 嚴格剔除 github_token 敏感欄位，絕不透過 HTTP 回傳明文 PAT
+                safe_cfg = {k: v for k, v in cfg.items() if k != "github_token"}
+                return safe_cfg
         except Exception as e:
             return {"error": str(e), "sources": [], "logs": []}
     return {"sources": [], "logs": []}
@@ -4087,6 +4710,7 @@ def trigger_admin_sync(payload: dict = Body(...)):
                         break
                 
                 if target_src:
+                    runner = target_src.get("runner", "oci")
                     if target_src.get("id") == "food_vendors":
                         action_name = "STREET_FOOD_SYNC"
                         try:
@@ -4117,9 +4741,7 @@ def trigger_admin_sync(payload: dict = Body(...)):
                             logger.warning(f"Failed to run update_311: {e_311}")
                             target_src["last_updated"] = now_iso
                             detail_msg = f"更新 3-1-1 市政請求發生錯誤: {e_311}"
-                    else:
-                        runner = target_src.get("runner", "oci")
-                    if runner == "github_actions":
+                    elif runner == "github_actions":
                         action_name = "GITHUB_DISPATCH"
                         canonical_wf = get_canonical_workflow_file(target_src["id"])
                         target_src["workflow_file"] = canonical_wf
@@ -4228,8 +4850,9 @@ def trigger_admin_sync(payload: dict = Body(...)):
             logs.insert(0, new_log)
             cfg["logs"] = logs[:150]
             
-            with open(config_path, 'w', encoding='utf-8') as f:
-                json.dump(cfg, f, ensure_ascii=False, indent=2)
+            with _admin_cfg_lock:
+                _atomic_write_json(config_path, cfg)
+            _public_intervals_cache["ts"] = 0.0
             
             return {
                 "status": "success",
@@ -4265,10 +4888,13 @@ def update_admin_schedule(payload: dict = Body(...)):
     更新特定數據源之排程週期 (Cron 或間隔) 與自動同步開關
     若為 GitHub Actions 資料源，支援直接透過 GitHub Contents API 或本機 yml 同步更新 Cron
     """
-    source_id = payload.get("source_id")
-    schedule_interval = payload.get("schedule_interval") or payload.get("interval")
-    cron_expr = payload.get("cron_expr")
-    enabled = payload.get("enabled", True)
+    source_id = str(payload.get("source_id") or "").strip()
+    schedule_interval = str(payload.get("schedule_interval") or payload.get("interval") or "").strip()[:80]
+    schedule_interval = re.sub(r"[\r\n\\'\"`]+", "", schedule_interval)
+    cron_expr = str(payload.get("cron_expr") or "").strip()
+    enabled = bool(payload.get("enabled", True))
+    if cron_expr and not re.fullmatch(r"[0-9*,/\-]+\s+[0-9*,/\-]+\s+[0-9*,/\-]+\s+[0-9*,/\-]+\s+[0-9*,/\-]+", cron_expr):
+        return JSONResponse(status_code=400, content={"status": "error", "message": "無效的 Cron 表達式格式 (需為標準 5 欄位 Cron)"})
     
     config_path = get_admin_config_path()
     now_iso = datetime.utcnow().isoformat() + "Z"
@@ -4390,8 +5016,9 @@ def update_admin_schedule(payload: dict = Body(...)):
                 logs.insert(0, new_log)
                 cfg["logs"] = logs[:150]
                 
-                with open(config_path, 'w', encoding='utf-8') as f:
-                    json.dump(cfg, f, ensure_ascii=False, indent=2)
+                with _admin_cfg_lock:
+                    _atomic_write_json(config_path, cfg)
+                _public_intervals_cache["ts"] = 0.0
                 return {"status": "success", "source": updated_src, "detail": detail_extra}
             return {"status": "error", "message": "找不到指定的數據源 ID"}
         except Exception as e:
@@ -4416,11 +5043,11 @@ def clear_admin_logs():
     config_path = get_admin_config_path()
     if os.path.exists(config_path):
         try:
-            with open(config_path, 'r', encoding='utf-8') as f:
-                cfg = json.load(f)
-            cfg["logs"] = []
-            with open(config_path, 'w', encoding='utf-8') as f:
-                json.dump(cfg, f, ensure_ascii=False, indent=2)
+            with _admin_cfg_lock:
+                with open(config_path, 'r', encoding='utf-8') as f:
+                    cfg = json.load(f)
+                cfg["logs"] = []
+                _atomic_write_json(config_path, cfg)
             return {"status": "success", "message": "日誌已清空"}
         except Exception as e:
             system_log_service.add_system_log(
@@ -4523,16 +5150,14 @@ def get_admin_maintenance_status():
 def set_admin_maintenance_status(payload: dict = Body(...)):
     """管理後台開啟或關閉系統維護模式"""
     enabled = bool(payload.get("enabled", False))
-    message = str(payload.get("message", "系統正在進行例行升級與維護，請稍後再試。")).strip()
+    message = str(payload.get("message", "系統正在進行例行升級與維護，請稍後再試。")).strip()[:500]
     data = {
         "enabled": enabled,
         "message": message,
         "updated_at": datetime.now(timezone.utc).isoformat()
     }
     p = get_maintenance_file_path()
-    os.makedirs(os.path.dirname(p), exist_ok=True)
-    with open(p, 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+    _atomic_write_json(p, data)
     
     system_log_service.add_system_log(
         level="WARN" if enabled else "INFO",
@@ -4547,6 +5172,8 @@ def set_admin_maintenance_status(payload: dict = Body(...)):
 def trigger_system_rollback(payload: dict = Body(...)):
     """緊急系統還原至指定版本或上一版本 (PREV)"""
     target = str(payload.get("target", "PREV")).strip()
+    if not target or not re.fullmatch(r"[A-Za-z0-9._/\-~^]{1,64}", target):
+        return JSONResponse(status_code=400, content={"status": "error", "message": "無效的還原目標格式 (僅接受 PREV、HEAD~N、Tag 或 Git Commit SHA)"})
     github_token = os.getenv("GITHUB_TOKEN") or os.getenv("ADMIN_GITHUB_TOKEN")
     github_repo = os.getenv("GITHUB_REPOSITORY", "Ycf206/Vancouver-God-Eyes")
     
@@ -4675,18 +5302,18 @@ def toggle_source_panel_visibility(payload: dict = Body(...)):
     config_path = get_admin_config_path()
     if os.path.exists(config_path):
         try:
-            with open(config_path, 'r', encoding='utf-8') as f:
-                cfg = json.load(f)
-            found = False
-            for s in cfg.get("sources", []):
-                if s.get("id") == source_id:
-                    s["hidden_in_layer_panel"] = bool(hidden)
-                    found = True
-                    break
-            if found:
-                with open(config_path, 'w', encoding='utf-8') as f:
-                    json.dump(cfg, f, ensure_ascii=False, indent=2)
-                return {"status": "success", "source_id": source_id, "hidden_in_layer_panel": bool(hidden)}
+            with _admin_cfg_lock:
+                with open(config_path, 'r', encoding='utf-8') as f:
+                    cfg = json.load(f)
+                found = False
+                for s in cfg.get("sources", []):
+                    if s.get("id") == source_id:
+                        s["hidden_in_layer_panel"] = bool(hidden)
+                        found = True
+                        break
+                if found:
+                    _atomic_write_json(config_path, cfg)
+                    return {"status": "success", "source_id": source_id, "hidden_in_layer_panel": bool(hidden)}
             return {"status": "error", "message": f"找不到數據源 {source_id}"}
         except Exception as e:
             system_log_service.add_system_log(
@@ -4712,9 +5339,13 @@ def upload_admin_geojson(payload: dict = Body(...)):
     if not filename or not geojson_data:
         return {"status": "error", "message": "缺少檔名 (filename) 或 GeoJSON 內容 (geojson_data)"}
         
-    safe_filename = os.path.basename(filename)
+    safe_filename = os.path.basename(str(filename)).strip()
+    if not re.fullmatch(r"[A-Za-z0-9._\-]{1,120}", safe_filename):
+        return JSONResponse(status_code=400, content={"status": "error", "message": "無效的檔案名稱格式"})
     if not safe_filename.endswith(('.geojson', '.json')):
         safe_filename += '.geojson'
+    if safe_filename in ("admin_sources_config.json", "system_logs.json", "admin_schedule_history.json", "stats_pv.json"):
+        return JSONResponse(status_code=403, content={"status": "error", "message": "不允許覆寫系統核心設定檔"})
         
     if isinstance(geojson_data, str):
         try:
@@ -4733,47 +5364,45 @@ def upload_admin_geojson(payload: dict = Body(...)):
     
     backend_data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
     backend_target = os.path.join(backend_data_dir, safe_filename)
-    with open(backend_target, 'w', encoding='utf-8') as f:
-        json.dump(parsed, f, ensure_ascii=False, indent=2)
+    _atomic_write_json(backend_target, parsed)
         
     frontend_public_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'frontend', 'public'))
     if os.path.exists(frontend_public_dir):
         frontend_target = os.path.join(frontend_public_dir, safe_filename)
-        with open(frontend_target, 'w', encoding='utf-8') as f:
-            json.dump(parsed, f, ensure_ascii=False, indent=2)
+        _atomic_write_json(frontend_target, parsed)
             
     now_iso = datetime.utcnow().isoformat() + "Z"
     
     config_path = os.path.join(backend_data_dir, 'admin_sources_config.json')
     if os.path.exists(config_path):
         try:
-            with open(config_path, 'r', encoding='utf-8') as f:
-                cfg = json.load(f)
-                
-            layer_name = safe_filename
-            for src in cfg.get("sources", []):
-                if src.get("filename") == safe_filename or (layer_id and src.get("id") == layer_id):
-                    src["last_updated"] = now_iso
-                    src["record_count"] = feature_count
-                    src["status"] = "healthy"
-                    layer_name = src.get("name", safe_filename)
-                    break
+            with _admin_cfg_lock:
+                with open(config_path, 'r', encoding='utf-8') as f:
+                    cfg = json.load(f)
                     
-            new_log = {
-                "id": f"log-{int(time.time())}",
-                "timestamp": now_iso,
-                "action": "GEOJSON_UPLOAD",
-                "source_name": layer_name,
-                "status": "success",
-                "detail": f"管理員經網頁上傳更新 [{safe_filename}] 成功，共載入 {feature_count} 筆要素特徵。"
-            }
-            logs = cfg.get("logs", [])
-            logs.insert(0, new_log)
-            cfg["logs"] = logs[:100]
-            
-            with open(config_path, 'w', encoding='utf-8') as f:
-                json.dump(cfg, f, ensure_ascii=False, indent=2)
-        except Exception as e:
+                layer_name = safe_filename
+                for src in cfg.get("sources", []):
+                    if src.get("filename") == safe_filename or (layer_id and src.get("id") == layer_id):
+                        src["last_updated"] = now_iso
+                        src["record_count"] = feature_count
+                        src["status"] = "healthy"
+                        layer_name = src.get("name", safe_filename)
+                        break
+                        
+                new_log = {
+                    "id": f"log-{int(time.time())}",
+                    "timestamp": now_iso,
+                    "action": "GEOJSON_UPLOAD",
+                    "source_name": layer_name,
+                    "status": "success",
+                    "detail": f"管理員經網頁上傳更新 [{safe_filename}] 成功，共載入 {feature_count} 筆要素特徵。"
+                }
+                logs = cfg.get("logs", [])
+                logs.insert(0, new_log)
+                cfg["logs"] = logs[:100]
+                
+                _atomic_write_json(config_path, cfg)
+        except Exception:
             pass
             
     return {
@@ -4789,14 +5418,23 @@ def upload_admin_geojson(payload: dict = Body(...)):
 # ==========================================
 # 📍 Geocoding API (個人住址驗證與座標獲取)
 # ==========================================
+_geocode_cache: OrderedDict[str, list] = OrderedDict()
+_geocode_lock = threading.Lock()
+
 @app.get("/api/geocode")
 def geocode_address(q: str = ""):
     """
-    Geocode an address to lat/lon coordinates, with focus on Metro Vancouver.
+    Geocode an address to lat/lon coordinates, with focus on Metro Vancouver (內建有界 LRU 快取保護 Nominatim API).
     """
-    query = (q or "").strip()
+    query = (q or "").strip()[:160]
     if not query:
         return {"results": []}
+
+    cache_key = query.lower()
+    with _geocode_lock:
+        if cache_key in _geocode_cache:
+            _geocode_cache.move_to_end(cache_key)
+            return {"results": _geocode_cache[cache_key]}
 
     search_q = query
     lower_q = query.lower()
@@ -4834,6 +5472,10 @@ def geocode_address(q: str = ""):
                 except (ValueError, KeyError):
                     continue
             if results:
+                with _geocode_lock:
+                    _geocode_cache[cache_key] = results
+                    while len(_geocode_cache) > 500:
+                        _geocode_cache.popitem(last=False)
                 return {"results": results}
     except Exception as e:
         logger.error(f"Geocoding error: {e}")
@@ -5164,29 +5806,9 @@ def get_shipping_vessels():
 def get_latest_news(refresh: bool = False):
     """
     取得溫哥華各大即時新聞來源：604 Now, CityNews Vancouver, Global News BC, Daily Hive
-    由最新至最舊排序，點選可直接開啟原文網頁
+    由最新至最舊排序，點選可直接開啟原文網頁 (移除每次請求覆寫設定檔之磁碟競爭問題)
     """
-    res = news_service.get_latest_news(force_refresh=refresh)
-    try:
-        config_path = get_admin_config_path()
-        if os.path.exists(config_path):
-            with open(config_path, "r", encoding="utf-8") as f:
-                cfg = json.load(f)
-            changed = False
-            for s in cfg.get("sources", []):
-                if s.get("id") == "vancouver_news":
-                    s["last_updated"] = datetime.now(timezone.utc).isoformat()
-                    s["record_count"] = res.get("total", len(res.get("news", [])))
-                    s["status"] = "ok"
-                    s["schedule_interval"] = "每 5 分鐘"
-                    s["cron_expr"] = "*/5 * * * *"
-                    changed = True
-            if changed:
-                with open(config_path, "w", encoding="utf-8") as f:
-                    json.dump(cfg, f, ensure_ascii=False, indent=2)
-    except Exception:
-        pass
-    return res
+    return news_service.get_latest_news(force_refresh=refresh)
 
 
 # ==========================================
@@ -5196,29 +5818,9 @@ def get_latest_news(refresh: bool = False):
 def get_latest_events(refresh: bool = False):
     """
     取得溫哥華熱門即時活動：Destination Vancouver (溫哥華旅遊局) 與 Eventbrite Vancouver
-    包含音樂演出、體育賽事、節慶慶典、藝文展演等
+    包含音樂演出、體育賽事、節慶慶典、藝文展演等 (移除每次請求覆寫設定檔之磁碟競爭問題)
     """
-    res = events_service.get_latest_events(force_refresh=refresh)
-    try:
-        config_path = get_admin_config_path()
-        if os.path.exists(config_path):
-            with open(config_path, "r", encoding="utf-8") as f:
-                cfg = json.load(f)
-            changed = False
-            for s in cfg.get("sources", []):
-                if s.get("id") == "public_events":
-                    s["last_updated"] = datetime.now(timezone.utc).isoformat()
-                    s["record_count"] = res.get("total", len(res.get("events", [])))
-                    s["status"] = "ok"
-                    s["schedule_interval"] = "每 30 分鐘"
-                    s["cron_expr"] = "*/30 * * * *"
-                    changed = True
-            if changed:
-                with open(config_path, "w", encoding="utf-8") as f:
-                    json.dump(cfg, f, ensure_ascii=False, indent=2)
-    except Exception:
-        pass
-    return res
+    return events_service.get_latest_events(force_refresh=refresh)
 
 
 # ==========================================
@@ -5239,32 +5841,49 @@ def get_border_wait_times(refresh: bool = False):
 
 
 # ==========================================
-# 📊 System Analytics & Issue Reports
+# 📊 System Analytics & Issue Reports (記憶體緩衝 + 定期原子刷盤，防高流量磁碟 I/O 阻塞)
 # ==========================================
 _STATS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "stats_pv.json")
 _stats_lock = threading.Lock()
+_pv_mem_cache: dict | None = None
+_pv_last_flush_ts: float = 0.0
 
 def _get_pv_stats():
+    global _pv_mem_cache
+    if _pv_mem_cache is not None:
+        return _pv_mem_cache
     if os.path.exists(_STATS_FILE):
         try:
             with open(_STATS_FILE, "r", encoding="utf-8") as f:
-                return json.load(f)
+                loaded = json.load(f)
+                if isinstance(loaded, dict):
+                    _pv_mem_cache = loaded
+                    return _pv_mem_cache
         except Exception:
             pass
-    return {"daily_pv": {}, "total_pv": 0}
+    _pv_mem_cache = {"daily_pv": {}, "total_pv": 0}
+    return _pv_mem_cache
 
-def _save_pv_stats(data):
+def _save_pv_stats(data, force: bool = False):
+    global _pv_last_flush_ts
+    now_m = time.monotonic()
+    if not force and (now_m - _pv_last_flush_ts < 30.0):
+        return
     try:
-        os.makedirs(os.path.dirname(_STATS_FILE), exist_ok=True)
-        with open(_STATS_FILE, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
+        daily = data.get("daily_pv", {})
+        if len(daily) > 120:
+            sorted_days = sorted(daily.keys())
+            for old_d in sorted_days[:-120]:
+                daily.pop(old_d, None)
+        _atomic_write_json(_STATS_FILE, data)
+        _pv_last_flush_ts = now_m
     except Exception as e:
         print(f"Error saving pv stats: {e}")
 
 @app.post("/api/stats/visit")
 @app.get("/api/stats/visit")
 def record_page_visit():
-    """記錄網頁瀏覽次數 (Page View)"""
+    """記錄網頁瀏覽次數 (Page View - 記憶體累加，最多每 30 秒原子寫入磁碟一次)"""
     today_str = datetime.utcnow().strftime("%Y-%m-%d")
     with _stats_lock:
         data = _get_pv_stats()
@@ -5272,7 +5891,7 @@ def record_page_visit():
         daily[today_str] = daily.get(today_str, 0) + 1
         data["total_pv"] = data.get("total_pv", 0) + 1
         data["daily_pv"] = daily
-        _save_pv_stats(data)
+        _save_pv_stats(data, force=False)
         return {
             "status": "ok",
             "today": today_str,
@@ -5394,25 +6013,25 @@ def update_admin_issue_report_status(
     data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
     report_file = os.path.join(data_dir, "issue_reports.jsonl")
 
-    # 1. 更新 JSONL 備份
-    if os.path.exists(report_file):
-        lines = []
-        with open(report_file, "r", encoding="utf-8") as f:
-            for idx, line in enumerate(f):
-                line = line.strip()
-                if not line:
-                    continue
-                try:
-                    item = json.loads(line)
-                    item_id = item.get("id") or f"rep_{idx}"
-                    if item_id == report_id or str(item.get("timestamp")) == report_id:
-                        item["status"] = new_status
-                        item["updated_at"] = datetime.utcnow().isoformat()
-                    lines.append(json.dumps(item, ensure_ascii=False) + "\n")
-                except Exception:
-                    lines.append(line + "\n")
-        with open(report_file, "w", encoding="utf-8") as f:
-            f.writelines(lines)
+    # 1. 更新 JSONL 備份 (執行緒鎖 + 原子寫檔)
+    with _issue_reports_lock:
+        if os.path.exists(report_file):
+            lines = []
+            with open(report_file, "r", encoding="utf-8") as f:
+                for idx, line in enumerate(f):
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        item = json.loads(line)
+                        item_id = item.get("id") or f"rep_{idx}"
+                        if item_id == report_id or str(item.get("timestamp")) == report_id:
+                            item["status"] = new_status
+                            item["updated_at"] = datetime.utcnow().isoformat()
+                        lines.append(json.dumps(item, ensure_ascii=False) + "\n")
+                    except Exception:
+                        lines.append(line + "\n")
+            _atomic_write_lines(report_file, lines)
 
     # 2. 更新資料庫
     try:
@@ -5442,24 +6061,24 @@ def delete_admin_issue_report(
     data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
     report_file = os.path.join(data_dir, "issue_reports.jsonl")
 
-    # 1. 從 JSONL 備份移除
-    if os.path.exists(report_file):
-        remaining_lines = []
-        with open(report_file, "r", encoding="utf-8") as f:
-            for idx, line in enumerate(f):
-                line = line.strip()
-                if not line:
-                    continue
-                try:
-                    item = json.loads(line)
-                    item_id = item.get("id") or f"rep_{idx}"
-                    if item_id == report_id or str(item.get("timestamp")) == report_id:
+    # 1. 從 JSONL 備份移除 (執行緒鎖 + 原子寫檔)
+    with _issue_reports_lock:
+        if os.path.exists(report_file):
+            remaining_lines = []
+            with open(report_file, "r", encoding="utf-8") as f:
+                for idx, line in enumerate(f):
+                    line = line.strip()
+                    if not line:
                         continue
-                    remaining_lines.append(json.dumps(item, ensure_ascii=False) + "\n")
-                except Exception:
-                    remaining_lines.append(line + "\n")
-        with open(report_file, "w", encoding="utf-8") as f:
-            f.writelines(remaining_lines)
+                    try:
+                        item = json.loads(line)
+                        item_id = item.get("id") or f"rep_{idx}"
+                        if item_id == report_id or str(item.get("timestamp")) == report_id:
+                            continue
+                        remaining_lines.append(json.dumps(item, ensure_ascii=False) + "\n")
+                    except Exception:
+                        remaining_lines.append(line + "\n")
+            _atomic_write_lines(report_file, remaining_lines)
 
     # 2. 從資料庫移除
     try:

@@ -157,11 +157,14 @@ export default function AdminModal() {
   };
 
   const getAdminHeaders = () => {
-    const adminSecret = process.env.NEXT_PUBLIC_ADMIN_API_SECRET || (typeof window !== 'undefined' ? (localStorage.getItem('vancouver_godseye_admin_token') || sessionStorage.getItem('vancouver_godseye_admin_token')) : '') || '';
+    const sessionToken =
+      typeof window !== 'undefined'
+        ? sessionStorage.getItem('gods_eye_admin_session_token') || ''
+        : '';
     const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-    if (adminSecret) {
-      headers['X-Admin-Token'] = adminSecret;
-      headers['Authorization'] = `Bearer ${adminSecret}`;
+    if (sessionToken) {
+      headers['X-Admin-Token'] = sessionToken;
+      headers['Authorization'] = `Bearer ${sessionToken}`;
     }
     return headers;
   };
@@ -171,7 +174,14 @@ export default function AdminModal() {
     setLoading(true);
     try {
       const apiUrl = getApiUrl();
-      const res = await fetch(`${apiUrl}/api/admin/sources`, { headers: getAdminHeaders() });
+      const res = await fetch(`${apiUrl}/api/admin/sources`, {
+        headers: getAdminHeaders(),
+        credentials: 'include'
+      });
+      if (res.status === 401 || res.status === 403) {
+        setAdminAuthenticated(false);
+        return;
+      }
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data.sources)) {
@@ -200,7 +210,7 @@ export default function AdminModal() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [setAdminAuthenticated]);
 
   useEffect(() => {
     if (isAdminModalOpen && isAdminAuthenticated) {
@@ -208,23 +218,50 @@ export default function AdminModal() {
     }
   }, [isAdminModalOpen, isAdminAuthenticated, fetchAdminData]);
 
-  // Handle PIN unlock
-  const handleUnlock = (e: React.FormEvent) => {
+  // Handle server-verified password unlock
+  const handleUnlock = async (e: React.FormEvent) => {
     e.preventDefault();
-    const correctPin = typeof window !== 'undefined' ? (localStorage.getItem('vancouver_admin_pin') || '8888') : '8888';
-    if (enteredPin.trim() === correctPin) {
-      setAdminAuthenticated(true);
-      setPinError(null);
-      setEnteredPin('');
-      fetchAdminData();
-    } else {
-      setPinError('管理員安全 PIN 碼不正確，請重新輸入 (預設: 8888)');
-      setEnteredPin('');
+    const pwd = enteredPin.trim();
+    if (!pwd) return;
+    try {
+      const apiUrl = getApiUrl();
+      const res = await fetch(`${apiUrl}/api/admin/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ password: pwd })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) {
+        if (typeof window !== 'undefined' && data?.token) {
+          sessionStorage.setItem('gods_eye_admin_session_token', data.token);
+        }
+        setAdminAuthenticated(true);
+        setPinError(null);
+        setEnteredPin('');
+        fetchAdminData();
+      } else {
+        setPinError(data?.detail || '管理員驗證密碼不正確，請重新輸入');
+        setEnteredPin('');
+      }
+    } catch (_) {
+      setPinError('無法連線至後端驗證服務，請稍後再試');
     }
   };
 
   // Handle Logout / Lock
-  const handleLock = () => {
+  const handleLock = async () => {
+    try {
+      const apiUrl = getApiUrl();
+      await fetch(`${apiUrl}/api/admin/auth/logout`, {
+        method: 'POST',
+        headers: getAdminHeaders(),
+        credentials: 'include'
+      });
+    } catch (_) {}
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem('gods_eye_admin_session_token');
+    }
     setAdminAuthenticated(false);
     setPinError(null);
   };
@@ -238,6 +275,7 @@ export default function AdminModal() {
       const res = await fetch(`${apiUrl}/api/admin/sources/sync`, {
         method: 'POST',
         headers: getAdminHeaders(),
+        credentials: 'include',
         body: JSON.stringify({ source_id: sourceId })
       });
       if (res.ok) {
@@ -247,16 +285,9 @@ export default function AdminModal() {
           prev.map((s) => (s.id === sourceId ? { ...s, last_updated: updatedTime, status: 'healthy' } : s))
         );
         await fetchAdminData();
-      } else {
-        setSources((prev) =>
-          prev.map((s) => (s.id === sourceId ? { ...s, last_updated: nowIso, status: 'healthy' } : s))
-        );
       }
     } catch (err) {
       console.error('Sync failed:', err);
-      setSources((prev) =>
-        prev.map((s) => (s.id === sourceId ? { ...s, last_updated: nowIso, status: 'healthy' } : s))
-      );
     } finally {
       setSyncingId(null);
     }
@@ -270,23 +301,17 @@ export default function AdminModal() {
       const apiUrl = getApiUrl();
       const res = await fetch(`${apiUrl}/api/admin/sources/sync_all`, {
         method: 'POST',
-        headers: getAdminHeaders()
+        headers: getAdminHeaders(),
+        credentials: 'include'
       });
       if (res.ok) {
         setSources((prev) =>
           prev.map((s) => ({ ...s, last_updated: nowIso, status: 'healthy' }))
         );
         await fetchAdminData();
-      } else {
-        setSources((prev) =>
-          prev.map((s) => ({ ...s, last_updated: nowIso, status: 'healthy' }))
-        );
       }
     } catch (err) {
       console.error('Sync all failed:', err);
-      setSources((prev) =>
-        prev.map((s) => ({ ...s, last_updated: nowIso, status: 'healthy' }))
-      );
     } finally {
       setSyncingId(null);
     }
@@ -302,6 +327,7 @@ export default function AdminModal() {
       const res = await fetch(`${apiUrl}/api/admin/sources/schedule`, {
         method: 'POST',
         headers: getAdminHeaders(),
+        credentials: 'include',
         body: JSON.stringify({
           source_id: sourceId,
           interval: item.interval,
@@ -398,7 +424,8 @@ export default function AdminModal() {
       const apiUrl = getApiUrl();
       const res = await fetch(`${apiUrl}/api/admin/geojson/upload`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAdminHeaders(),
+        credentials: 'include',
         body: JSON.stringify({
           layer_id: selectedLayerKey,
           filename: uploadFileName,
@@ -541,10 +568,11 @@ export default function AdminModal() {
                   <input
                     type="password"
                     autoFocus
+                    maxLength={128}
                     value={enteredPin}
                     onChange={(e) => setEnteredPin(e.target.value)}
-                    placeholder="輸入管理員安全 PIN 碼 (預設: 8888)"
-                    className="w-full bg-[#0f121d] text-white text-center font-mono tracking-widest text-lg pl-9 pr-4 py-2.5 rounded-xl border border-[#2a334d] focus:outline-none focus:border-indigo-500"
+                    placeholder="輸入伺服器管理員驗證密碼"
+                    className="w-full bg-[#0f121d] text-white text-center font-mono text-sm pl-9 pr-4 py-2.5 rounded-xl border border-[#2a334d] focus:outline-none focus:border-indigo-500"
                   />
                 </div>
                 {pinError && (
@@ -556,12 +584,12 @@ export default function AdminModal() {
                 type="submit"
                 className="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-indigo-600/30 cursor-pointer"
               >
-                解鎖進入管理後台
+                驗證並解鎖管理後台
               </button>
 
               <div className="pt-2 text-[11px] text-gray-500 border-t border-[#232b3f] flex items-center justify-center gap-1">
                 <Info className="w-3.5 h-3.5 text-gray-400" />
-                <span>預設管理員 PIN 為 8888，可在後台設定或自訂金鑰</span>
+                <span>受伺服器端簽章憑證與暴力破解鎖定機制保護</span>
               </div>
             </form>
           </div>

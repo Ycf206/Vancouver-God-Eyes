@@ -4,6 +4,7 @@ import time
 import math
 import asyncio
 import logging
+import threading
 from typing import Dict, Any, List, Optional, Tuple
 from datetime import datetime, timezone, timedelta
 
@@ -279,6 +280,7 @@ class MaritimeShippingService:
     def __init__(self):
         self.api_key = os.getenv("AISSTREAM_API_KEY", "").strip()
         self.vessels: Dict[str, Dict[str, Any]] = {}
+        self._vessels_lock = threading.Lock()
         self.last_update_time = time.time()
         self.is_connected = False
         self._init_realistic_vancouver_fleet()
@@ -1107,7 +1109,10 @@ class MaritimeShippingService:
         # 防止時間差異常暴增
         elapsed = min(elapsed, 10.0)
 
-        for mmsi, v in self.vessels.items():
+        with self._vessels_lock:
+            vessel_items = list(self.vessels.items())
+
+        for mmsi, v in vessel_items:
             if v.get("is_live_ais"):
                 continue  # 真實 AIS 數據不介入模擬
 
@@ -1211,7 +1216,17 @@ class MaritimeShippingService:
                 vessel["width"] = width
 
             vessel["updated_at"] = datetime.now(timezone.utc).isoformat()
-            self.vessels[mmsi] = vessel
+            vessel["_ts"] = time.time()
+            with self._vessels_lock:
+                self.vessels[mmsi] = vessel
+                if len(self.vessels) > 800:
+                    cutoff_ts = time.time() - 7200
+                    stale_keys = [
+                        k for k, v_obj in self.vessels.items()
+                        if v_obj.get("is_live_ais") and v_obj.get("_ts", 0) < cutoff_ts
+                    ]
+                    for k in stale_keys:
+                        self.vessels.pop(k, None)
 
         except Exception as e:
             logger.warning(f"Error parsing AIS message: {e}")
@@ -1262,8 +1277,11 @@ class MaritimeShippingService:
         now = datetime.now()
         now_date_str = now.strftime("%m-%d")
 
+        with self._vessels_lock:
+            snapshot = list(self.vessels.values())
+
         # 動態補正所有船舶之 ETA，保證永不滯留在過去日期 (如 10-15)
-        for v in self.vessels.values():
+        for v in snapshot:
             if not v.get("is_live_ais"):
                 # 依 progress 或預設時間動態計算未來抵達時間
                 current_p = v.get("progress", 0.0)
@@ -1275,7 +1293,7 @@ class MaritimeShippingService:
                     v["eta"] = (now + timedelta(hours=1.5)).strftime("%m-%d %H:%M")
 
         # 最終輸出守衛：過濾掉任何可能落入陸地多邊形的船舶
-        vessels = [v for v in self.vessels.values() if not is_point_on_vancouver_land(v.get("lon", 0.0), v.get("lat", 0.0))]
+        vessels = [v for v in snapshot if not is_point_on_vancouver_land(v.get("lon", 0.0), v.get("lat", 0.0))]
 
         # 排序：抵達時間由近至遠，已泊岸（繫泊停靠碼頭）排在最底
         def vessel_sort_key(v: Dict[str, Any]):

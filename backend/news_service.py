@@ -1,6 +1,7 @@
 import time
 import re
 import html
+import threading
 import urllib.request
 import xml.etree.ElementTree as ET
 import email.utils
@@ -98,6 +99,8 @@ class NewsService:
         self.cached_news: List[Dict[str, Any]] = []
         self.last_fetch_time: float = 0.0
         self.cache_ttl: float = 120.0  # 2 minutes default cache
+        self.min_force_interval: float = 30.0  # 防刷保護：即使 force_refresh 最短仍間隔 30 秒
+        self._lock = threading.Lock()
         self.user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 
     def fetch_feed(self, feed_info: Dict[str, str]) -> List[Dict[str, Any]]:
@@ -108,7 +111,9 @@ class NewsService:
                 headers={"User-Agent": self.user_agent, "Accept": "application/rss+xml, application/xml, text/xml"}
             )
             with urllib.request.urlopen(req, timeout=10) as resp:
-                xml_data = resp.read()
+                xml_data = resp.read(2 * 1024 * 1024)
+                if b"<!ENTITY" in xml_data:
+                    return articles
                 root = ET.fromstring(xml_data)
                 items = root.findall(".//item")
 
@@ -170,7 +175,8 @@ class NewsService:
 
     def get_latest_news(self, force_refresh: bool = False) -> Dict[str, Any]:
         now = time.time()
-        if not force_refresh and self.cached_news and (now - self.last_fetch_time < self.cache_ttl):
+        ttl = self.min_force_interval if force_refresh else self.cache_ttl
+        if self.cached_news and (now - self.last_fetch_time < ttl):
             return {
                 "news": self.cached_news,
                 "total": len(self.cached_news),
@@ -178,23 +184,34 @@ class NewsService:
                 "updated_at": datetime.fromtimestamp(self.last_fetch_time, tz=timezone.utc).isoformat()
             }
 
-        all_articles: List[Dict[str, Any]] = []
-        for feed in FEEDS:
-            feed_articles = self.fetch_feed(feed)
-            all_articles.extend(feed_articles)
+        with self._lock:
+            now = time.time()
+            if self.cached_news and (now - self.last_fetch_time < ttl):
+                return {
+                    "news": self.cached_news,
+                    "total": len(self.cached_news),
+                    "cached": True,
+                    "updated_at": datetime.fromtimestamp(self.last_fetch_time, tz=timezone.utc).isoformat()
+                }
 
-        # Sort by timestamp descending (newest first)
-        all_articles.sort(key=lambda x: x.get("timestamp", 0), reverse=True)
+            all_articles: List[Dict[str, Any]] = []
+            for feed in FEEDS:
+                feed_articles = self.fetch_feed(feed)
+                all_articles.extend(feed_articles)
 
-        # Keep top 80 most recent articles
-        self.cached_news = all_articles[:80]
-        self.last_fetch_time = now
+            # Sort by timestamp descending (newest first)
+            all_articles.sort(key=lambda x: x.get("timestamp", 0), reverse=True)
 
-        return {
-            "news": self.cached_news,
-            "total": len(self.cached_news),
-            "cached": False,
-            "updated_at": datetime.fromtimestamp(self.last_fetch_time, tz=timezone.utc).isoformat()
-        }
+            # Keep top 80 most recent articles
+            if all_articles or not self.cached_news:
+                self.cached_news = all_articles[:80]
+            self.last_fetch_time = now
+
+            return {
+                "news": self.cached_news,
+                "total": len(self.cached_news),
+                "cached": False,
+                "updated_at": datetime.fromtimestamp(self.last_fetch_time, tz=timezone.utc).isoformat()
+            }
 
 news_service = NewsService()

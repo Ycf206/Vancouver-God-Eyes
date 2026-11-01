@@ -707,21 +707,15 @@ function ExploreContent() {
     setSelectedCrash
   } = useUIStore();
 
-  // 取得後台資料源更新頻率並同步 (當探索面板開啟時動態連動)
+  // 取得後台資料源更新頻率並同步 (透過公開唯讀端點，避免觸發管理員權限 API)
   useEffect(() => {
     if (!isExploreOpen) return;
     const apiUrl = getApiUrl();
-    fetch(`${apiUrl}/api/admin/sources`)
-      .then(res => res.json())
+    fetch(`${apiUrl}/api/system/source-intervals`)
+      .then(res => (res.ok ? res.json() : null))
       .then(data => {
-        if (data && Array.isArray(data.sources)) {
-          const map: Record<string, string> = {};
-          data.sources.forEach((s: any) => {
-            if (s.id && s.schedule_interval) {
-              map[s.id] = s.schedule_interval;
-            }
-          });
-          setAdminSourceIntervals(map);
+        if (data && data.intervals && typeof data.intervals === 'object') {
+          setAdminSourceIntervals(data.intervals as Record<string, string>);
         }
       })
       .catch(() => {});

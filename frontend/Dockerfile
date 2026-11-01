@@ -12,9 +12,7 @@ RUN npm install
 # Copy all files
 COPY . .
 
-# Accept build-time environment variable for Next.js build
-ARG NEXT_PUBLIC_ADMIN_API_SECRET
-ENV NEXT_PUBLIC_ADMIN_API_SECRET=$NEXT_PUBLIC_ADMIN_API_SECRET
+# 注意：切勿在此注入 NEXT_PUBLIC_ADMIN_API_SECRET 等後端密鑰，以防密鑰被編譯進公開瀏覽器靜態資源
 
 # Build Next.js application
 RUN npm run build

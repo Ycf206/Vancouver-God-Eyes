@@ -34,12 +34,13 @@ jobs:
         FLIGHTAWARE_API_KEY: ${{ secrets.FLIGHTAWARE_API_KEY }}
         TOMTOM_API_KEY: ${{ secrets.TOMTOM_API_KEY }}
         ADMIN_API_SECRET: ${{ secrets.ADMIN_API_SECRET }}
+        ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
         ROLLBACK_TARGET: ${{ github.event.inputs.rollback_target }}
       with:
         host: ${{ secrets.OCI_HOST_IP }}
         username: ubuntu
         key: ${{ secrets.OCI_SSH_KEY }}
-        envs: FLIGHTAWARE_API_KEY,TOMTOM_API_KEY,ADMIN_API_SECRET,ROLLBACK_TARGET
+        envs: FLIGHTAWARE_API_KEY,TOMTOM_API_KEY,ADMIN_API_SECRET,ADMIN_PASSWORD,ROLLBACK_TARGET
         script: |
           set -e
           cd ~/Vancouver-God-Eyes || cd ~/vancouver-gods-eye
@@ -114,7 +115,7 @@ jobs:
             echo "✅ TOMTOM_API_KEY successfully synced from GitHub Secrets"
           fi
 
-          # 如果 GitHub Secrets 有設定 ADMIN_API_SECRET，自動同步至 backend/.env、根目錄 .env 與 frontend/.env.local
+          # 如果 GitHub Secrets 有設定 ADMIN_API_SECRET，僅同步至後端與根目錄 .env (嚴禁寫入前端 NEXT_PUBLIC_* 防止密鑰外洩)
           if [ -n "$ADMIN_API_SECRET" ]; then
             mkdir -p backend
             touch backend/.env
@@ -129,20 +130,33 @@ jobs:
             else
               echo "ADMIN_API_SECRET=$ADMIN_API_SECRET" >> .env
             fi
-            if grep -q "^NEXT_PUBLIC_ADMIN_API_SECRET=" .env 2>/dev/null; then
-              sed -i "s|^NEXT_PUBLIC_ADMIN_API_SECRET=.*|NEXT_PUBLIC_ADMIN_API_SECRET=$ADMIN_API_SECRET|" .env
-            else
-              echo "NEXT_PUBLIC_ADMIN_API_SECRET=$ADMIN_API_SECRET" >> .env
-            fi
-            mkdir -p frontend
-            touch frontend/.env.local
-            if grep -q "^NEXT_PUBLIC_ADMIN_API_SECRET=" frontend/.env.local 2>/dev/null; then
-              sed -i "s|^NEXT_PUBLIC_ADMIN_API_SECRET=.*|NEXT_PUBLIC_ADMIN_API_SECRET=$ADMIN_API_SECRET|" frontend/.env.local
-            else
-              echo "NEXT_PUBLIC_ADMIN_API_SECRET=$ADMIN_API_SECRET" >> frontend/.env.local
-            fi
-            echo "✅ ADMIN_API_SECRET successfully synced to backend and frontend from GitHub Secrets"
+            echo "✅ ADMIN_API_SECRET successfully synced to backend only"
           fi
+
+          # 如果 GitHub Secrets 有設定 ADMIN_PASSWORD，同步至後端與根目錄 .env
+          if [ -n "$ADMIN_PASSWORD" ]; then
+            mkdir -p backend
+            touch backend/.env
+            if grep -q "^ADMIN_PASSWORD=" backend/.env 2>/dev/null; then
+              sed -i "s|^ADMIN_PASSWORD=.*|ADMIN_PASSWORD=$ADMIN_PASSWORD|" backend/.env
+            else
+              echo "ADMIN_PASSWORD=$ADMIN_PASSWORD" >> backend/.env
+            fi
+            touch .env
+            if grep -q "^ADMIN_PASSWORD=" .env 2>/dev/null; then
+              sed -i "s|^ADMIN_PASSWORD=.*|ADMIN_PASSWORD=$ADMIN_PASSWORD|" .env
+            else
+              echo "ADMIN_PASSWORD=$ADMIN_PASSWORD" >> .env
+            fi
+            echo "✅ ADMIN_PASSWORD successfully synced to backend"
+          fi
+
+          # 自動清除舊版曾寫入前端公開變數的機密項目，並收緊 .env 檔案權限
+          [ -f .env ] && sed -i '/^NEXT_PUBLIC_ADMIN_API_SECRET=/d; /^NEXT_PUBLIC_TOMTOM_API_KEY=/d' .env || true
+          [ -f frontend/.env.local ] && sed -i '/^NEXT_PUBLIC_ADMIN_API_SECRET=/d; /^NEXT_PUBLIC_TOMTOM_API_KEY=/d' frontend/.env.local || true
+          [ -f .env ] && chmod 600 .env || true
+          [ -f backend/.env ] && chmod 600 backend/.env || true
+          rm -f /tmp/godseye_root_env.bak /tmp/godseye_backend_env.bak /tmp/godseye_frontend_env.bak /tmp/godseye_admin_cfg.bak || true
           
           echo "Current Git Commit on VM: $(git rev-parse HEAD)"
 
