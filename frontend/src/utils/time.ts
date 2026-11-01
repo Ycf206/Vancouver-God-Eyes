@@ -35,8 +35,16 @@ export function formatOpeningHours(
   if (/^closed$/i.test(s)) {
     return '休館';
   }
+  if (/^as\s*per\s*cc\s*op(?:e|ea)?ting\s*hours$/i.test(s)) {
+    return '依照社區中心開放時間';
+  }
+  if (/^dawn\s*to\s*dusk$/i.test(s)) {
+    return '日出至日落';
+  }
 
   // Common OSM day token translations
+  s = s.replace(/\bas\s*per\s*cc\s*op(?:e|ea)?ting\s*hours\b/gi, '依照社區中心開放時間');
+  s = s.replace(/\bdawn\s*to\s*dusk\b/gi, '日出至日落');
   s = s.replace(/\b(?:mon|monday)\s*(?:to|-|–|—)\s*(?:fri|friday)\b/gi, '週一至週五');
   s = s.replace(/\b(?:mon|monday)\s*(?:to|-|–|—)\s*(?:thu|thursday)\b/gi, '週一至週四');
   s = s.replace(/\b(?:mon|monday)\s*(?:to|-|–|—)\s*(?:sat|saturday)\b/gi, '週一至週六');

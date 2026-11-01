@@ -85,7 +85,45 @@ function parseStringSchedule(s: string): Record<string, string | null> | null {
     return list;
   };
 
-  // 1. Narrative schedule extraction (e.g. "11:30 AM - 8:30 PM, Sunday, Tuesday to Thursday 11:30 AM - 9 PM Friday and Saturday Closed Monday")
+  // 1. 7 days a week / daily / 365 days (7天相同營業時間)
+  if (/(?:7\s*days\s*a\s*week|seven\s*days\s*a\s*week|daily|every\s*day|365\s*days)/i.test(s)) {
+    const time = s
+      .replace(/,?\s*(?:7\s*days\s*a\s*week|seven\s*days\s*a\s*week|daily|every\s*day|365\s*days\s*(?:a\s*year)?|We offer our hot morning meal at)\b/gi, '')
+      .replace(/^[,;\s]+|[,;\s]+$/g, '')
+      .trim();
+    if (time) {
+      weekDayKeys.forEach(d => result[d] = time);
+      return result;
+    }
+  }
+
+  // 2. Colon-prefixed day sections: e.g. 'Monday – Saturday: 9 AM – 8 PM Sunday & Holidays: 9:30 AM – 8 PM'
+  const dayHeaderRegex = /(?:^|\b)(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday|Mon|Tue|Wed|Thu|Fri|Sat|Sun|Holidays?)(?:\s*(?:to|[-–—~至])\s*(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday|Mon|Tue|Wed|Thu|Fri|Sat|Sun))?(?:\s*(?:&|and)\s*Holidays?)?\s*:/gi;
+  const headerMatches: { header: string; index: number; length: number }[] = [];
+  let hm: RegExpExecArray | null;
+  while ((hm = dayHeaderRegex.exec(s)) !== null) {
+    headerMatches.push({ header: hm[0], index: hm.index, length: hm[0].length });
+  }
+
+  if (headerMatches.length > 0) {
+    for (let i = 0; i < headerMatches.length; i++) {
+      const cur = headerMatches[i];
+      const start = cur.index + cur.length;
+      const end = i + 1 < headerMatches.length ? headerMatches[i + 1].index : s.length;
+      const timeVal = s.slice(start, end).replace(/^[,;\s]+|[,;\s]+$/g, '').trim();
+      const daySection = cur.header.replace(/:$/, '').trim();
+      const hasHolidays = /holiday/i.test(daySection);
+      if (hasHolidays) {
+        result.Holidays = timeVal;
+      }
+      const days = parseDaysSpec(daySection);
+      days.forEach(d => result[d] = timeVal);
+    }
+    weekDayKeys.forEach(d => { if (!result[d]) result[d] = '休息'; });
+    return result;
+  }
+
+  // 3. Narrative schedule extraction (e.g. "11:30 AM - 8:30 PM, Sunday, Tuesday to Thursday 11:30 AM - 9 PM Friday and Saturday Closed Monday")
   const rTimeFirst = /(?:(\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?\s*[-–—~至to]+\s*\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?)\s*,?\s*([A-Za-z\s,toand\u4e00-\u9fa5]+?)(?=\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?|Closed|休息|$))|(?:(?:Closed|休息)\s+([A-Za-z\s,toand\u4e00-\u9fa5]+))/gi;
   let match;
   let count = 0;
@@ -108,6 +146,30 @@ function parseStringSchedule(s: string): Record<string, string | null> | null {
     for (const d of weekDayKeys) {
       if (!result[d]) result[d] = '休息';
     }
+    return result;
+  }
+
+  // 4. Days followed by time (e.g. 'Monday to Friday 10:00-14:00' or 'Mon - Fri, 8:30am - 4:30pm')
+  const rDaysFirst = /([A-Za-z\s,toand\u4e00-\u9fa5\-–—~]+?)\s*[,:\-–—~]?\s*(\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?\s*[-–—~至to]+\s*\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm)?|\d{1,2}(?::\d{2})?\s*(?:AM|PM|am|pm))/gi;
+  while ((match = rDaysFirst.exec(s)) !== null) {
+    const daysSpec = match[1].trim();
+    const time = match[2].trim();
+    const days = parseDaysSpec(daysSpec);
+    if (days.length > 0) {
+      days.forEach(d => result[d] = time);
+      count++;
+    }
+  }
+  if (count > 0 && weekDayKeys.some(k => result[k])) {
+    weekDayKeys.forEach(d => { if (!result[d]) result[d] = '休息'; });
+    return result;
+  }
+
+  // 5. Days-only range e.g. "Monday to Friday" without explicit hours
+  const pureDays = parseDaysSpec(s);
+  if (pureDays.length > 0 && pureDays.length < 7) {
+    pureDays.forEach(d => result[d] = '開放營業');
+    weekDayKeys.forEach(d => { if (!result[d]) result[d] = '休息'; });
     return result;
   }
 
@@ -241,54 +303,54 @@ export default function FacilityWeeklyHoursSchedule({
     red: 'font-semibold text-red-900',
   }[theme] || 'font-semibold text-slate-900';
 
-  // If not variable (every day is the same), display single row
-  if (!isVariableSchedule || parsedDays.length === 0) {
-    const singleDisplay = typeof hours === 'string'
-      ? formatOpeningHours(hours, timeFormat)
-      : (todayHoursStr || formatOpeningHours(Object.values(hours)[0] as string, timeFormat));
-
-    if (typeof singleDisplay === 'string' && singleDisplay.length > 25) {
-      return (
-        <div className="flex flex-col gap-1 text-gray-600">
-          <span className="font-semibold text-gray-700">{label}</span>
-          <div className="text-gray-900 font-medium font-mono text-xs leading-relaxed bg-white/70 p-1.5 rounded border border-gray-100 break-words">
-            {singleDisplay}
-          </div>
-        </div>
-      );
-    }
-
+  // 統一成圖2風格：只要成功解析出週間時程，一律呈現完整的 7 日時程列表
+  if (parsedDays.length > 0) {
     return (
-      <div className="flex justify-between items-center text-gray-600">
-        <span>{label}</span>
-        <span className="text-gray-900 font-medium text-right font-mono">{singleDisplay}</span>
+      <details className="group" open>
+        <summary className="flex justify-between items-center text-gray-600 cursor-pointer list-none hover:text-slate-800 select-none">
+          <span>{label}</span>
+          <span className="text-gray-800 text-right font-medium flex items-center gap-1 font-mono">
+            <span>{todayZhName}: {todayHoursStr || '未公佈'}</span>
+            <span className="text-[9px] text-gray-400 group-open:rotate-180 transition-transform">▼</span>
+          </span>
+        </summary>
+        <div className="mt-1.5 pt-1.5 border-t border-gray-100 flex flex-col gap-1 text-[10.5px]">
+          {parsedDays.map((d) => (
+            <div
+              key={d.key}
+              className={`flex justify-between gap-2 py-0.5 px-0.5 rounded ${
+                d.isToday ? themeTodayClass : 'text-gray-600'
+              }`}
+            >
+              <span className="shrink-0">{d.label}</span>
+              <span className="text-right leading-tight font-mono">{d.hours}</span>
+            </div>
+          ))}
+        </div>
+      </details>
+    );
+  }
+
+  // 僅在完全無法解析為星期結構時作為單行 / 單區塊備用呈現
+  const singleDisplay = typeof hours === 'string'
+    ? formatOpeningHours(hours, timeFormat)
+    : (todayHoursStr || formatOpeningHours(Object.values(hours)[0] as string, timeFormat));
+
+  if (typeof singleDisplay === 'string' && singleDisplay.length > 25) {
+    return (
+      <div className="flex flex-col gap-1 text-gray-600">
+        <span className="font-semibold text-gray-700">{label}</span>
+        <div className="text-gray-900 font-medium font-mono text-xs leading-relaxed bg-white/70 p-1.5 rounded border border-gray-100 break-words">
+          {singleDisplay}
+        </div>
       </div>
     );
   }
 
-  // Variable schedule: display museum-style collapsible list
   return (
-    <details className="group">
-      <summary className="flex justify-between items-center text-gray-600 cursor-pointer list-none hover:text-slate-800 select-none">
-        <span>{label}</span>
-        <span className="text-gray-800 text-right font-medium flex items-center gap-1 font-mono">
-          <span>{todayZhName}: {todayHoursStr || '未公佈'}</span>
-          <span className="text-[9px] text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-        </span>
-      </summary>
-      <div className="mt-1.5 pt-1.5 border-t border-gray-100 flex flex-col gap-1 text-[10.5px]">
-        {parsedDays.map((d) => (
-          <div
-            key={d.key}
-            className={`flex justify-between gap-2 py-0.5 px-0.5 rounded ${
-              d.isToday ? themeTodayClass : 'text-gray-600'
-            }`}
-          >
-            <span className="shrink-0">{d.label}</span>
-            <span className="text-right leading-tight font-mono">{d.hours}</span>
-          </div>
-        ))}
-      </div>
-    </details>
+    <div className="flex justify-between items-center text-gray-600">
+      <span>{label}</span>
+      <span className="text-gray-900 font-medium text-right font-mono">{singleDisplay}</span>
+    </div>
   );
 }

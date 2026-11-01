@@ -88,7 +88,7 @@
 
 ### 🔗 立即體驗平台：
 歡迎瀏覽 **溫哥華上帝之眼（Vancouver God's Eye）**，開啟嶄新的都市動態視野：
-**[https://vancouvergodseye.ca](https://vancouvergodseye.ca)**
+**[https://vangodseye.fyi/](https://vangodseye.fyi/)**
 *(或參閱專案 GitHub 官方儲存庫了解開放架構與技術文件)*
 
 ---

@@ -323,17 +323,12 @@ export default function TopBar() {
   return (
     <div className="fixed top-0 left-0 w-full h-[60px] bg-[#1a1b1e] border-b border-[#2d2e32] flex items-center px-4 z-50 text-white shadow-lg">
       
-      {/* 標誌區域 */}
+      {/* 標誌區域 (電腦版與手機版統一使用清晰 Icon 圖示) */}
       <div className="flex items-center justify-center mr-3 select-none shrink-0">
-        <img
-          src="/logo-web.jpg"
-          alt="溫哥華上帝之眼"
-          className="hidden sm:block h-9 w-auto max-w-[170px] object-contain rounded select-none"
-        />
         <img
           src="/logo-mobile.jpg"
           alt="溫哥華上帝之眼"
-          className="block sm:hidden h-8 w-8 object-cover rounded-md select-none"
+          className="h-8 w-8 sm:h-9 sm:w-9 object-cover rounded-md select-none shadow-sm"
         />
       </div>
 

@@ -13133,7 +13133,12 @@ export default function AppMap() {
                 const formatHours = (h?: string) => {
                   if (!h) return null;
                   const cleaned = h.replace(/24hrs\s*-\s*24hrs/gi, '24 hrs');
-                  if (/dawn\s*to\s*dusk/i.test(cleaned)) return '日出至日落 (Dawn to Dusk)';
+                  if (/as\s*per\s*cc\s*op(?:e|ea)?ting\s*hours/i.test(cleaned)) {
+                    return '依照社區中心開放時間';
+                  }
+                  if (/dawn\s*to\s*dusk/i.test(cleaned)) {
+                    return '日出至日落';
+                  }
                   return formatOpeningHours(cleaned, timeFormat);
                 };
                 const summerH = formatHours(selectedFacility.properties.summer_hours);
