@@ -774,6 +774,13 @@ export default function AppMap() {
 
   const [isExploreSearchActive, setIsExploreSearchActive] = useState(false);
   const [exploreSearchInput, setExploreSearchInput] = useState('');
+  const [bikewaysLegendOpen, setBikewaysLegendOpen] = useState(true);
+  const [bikewaysFilter, setBikewaysFilter] = useState<Record<string, boolean>>({
+    'Protected Bike Lanes': true,
+    'Painted Lanes': true,
+    'Local Street': true,
+    'Shared Lanes': true,
+  });
   const [truckRoutesPanelOpen, setTruckRoutesPanelOpen] = useState(true);
   const [isTruckRouteMapModalOpen, setIsTruckRouteMapModalOpen] = useState(false);
   const [isTruckMapImgLoaded, setIsTruckMapImgLoaded] = useState(false);
@@ -1128,6 +1135,9 @@ export default function AppMap() {
       const op = selectedFacility.properties?.operator;
       if (op === 'Evo' && !carSharingFilter.evo) setSelectedFacility(null);
       if (op === 'Modo' && !carSharingFilter.modo) setSelectedFacility(null);
+    } else if (selectedFacility.facility_type === 'bikeways') {
+      const bType = selectedFacility.properties?.bikeway_type;
+      if (bType && bikewaysFilter[bType] === false) setSelectedFacility(null);
     } else if (selectedFacility.facility_type === 'safety_cameras') {
       const hasSpeed = Boolean(selectedFacility.properties?.has_speed);
       if (hasSpeed && !safetyCamerasFilter.redLightSpeed) setSelectedFacility(null);
@@ -1147,7 +1157,7 @@ export default function AppMap() {
       const matchEv = !imparkFilter.evCharger || feats.includes('EV Charger');
       if (!matchRate || !matchEv) setSelectedFacility(null);
     }
-  }, [selectedFacility, carSharingFilter, safetyCamerasFilter, imparkFilter]);
+  }, [selectedFacility, carSharingFilter, bikewaysFilter, safetyCamerasFilter, imparkFilter]);
 
   // 當設施彈窗切換或關閉時，重設時段說明面板狀態
   useEffect(() => {
@@ -3259,18 +3269,29 @@ export default function AppMap() {
       });
     }
 
-    // Road Facilities: Bikeways (單車徑 LineString — 統一翠綠單一配色)
+    // Road Facilities: Bikeways (單車徑 LineString — 4 種高對比度鮮明配色與篩選)
     if (layers.bikeways) {
+      const activeBikewayTypes = Object.entries(bikewaysFilter)
+        .filter(([, active]) => active)
+        .map(([type]) => type);
+
+      const bikewayMapFilter = 
+        activeBikewayTypes.length === 4 ? undefined :
+        activeBikewayTypes.length === 0 ? ['==', ['get', 'bikeway_type'], '__NONE__'] :
+        activeBikewayTypes.length === 1 ? ['==', ['get', 'bikeway_type'], activeBikewayTypes[0]] :
+        ['any', ...activeBikewayTypes.map(t => ['==', ['get', 'bikeway_type'], t])];
+
       style.layers.push({
         id: 'bikeways-casing-layer',
         type: 'line',
         source: 'bikeways',
+        ...(bikewayMapFilter ? { filter: bikewayMapFilter } : {}),
         layout: {
           'line-join': 'round',
           'line-cap': 'round'
         },
         paint: {
-          'line-color': '#064e3b',
+          'line-color': '#0f172a',
           'line-width': ['interpolate', ['linear'], ['zoom'], 10, 2.6, 13, 4.6, 16, 7.2],
           'line-opacity': 0.7
         }
@@ -3279,12 +3300,21 @@ export default function AppMap() {
         id: 'bikeways-layer',
         type: 'line',
         source: 'bikeways',
+        ...(bikewayMapFilter ? { filter: bikewayMapFilter } : {}),
         layout: {
           'line-join': 'round',
           'line-cap': 'round'
         },
         paint: {
-          'line-color': '#10b981',
+          'line-color': [
+            'match',
+            ['get', 'bikeway_type'],
+            'Protected Bike Lanes', '#10b981', // 綠色 (受保護獨立街道)
+            'Painted Lanes', '#0ea5e9',        // 淺藍色 (路面標線單車路)
+            'Local Street', '#f59e0b',         // 橙色 (社區慢速單車街)
+            'Shared Lanes', '#a855f7',         // 紫色 (混合共用車道)
+            '#10b981'
+          ],
           'line-width': ['interpolate', ['linear'], ['zoom'], 10, 1.6, 13, 3.0, 16, 4.8],
           'line-opacity': 0.95
         }
@@ -9459,7 +9489,7 @@ export default function AppMap() {
                               if (selectedFacility.facility_type === 'motorcycle_parking') return selectedFacility.properties?.local_area || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'snow_removal_routes') return 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'traffic_speed_limits') return 'Vancouver, BC';
-                              if (selectedFacility.facility_type === 'bikeways') return 'Vancouver, BC';
+                              if (selectedFacility.facility_type === 'bikeways') return selectedFacility.properties?.street_name || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'bike_racks') return 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'tesla') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'road_closures') return 'Vancouver, BC';
@@ -10605,19 +10635,63 @@ export default function AppMap() {
               {/* Bikeways (單車徑 LineString) Details */}
               {selectedFacility.facility_type === 'bikeways' && (() => {
                 const props = selectedFacility.properties || {};
-                const routeName = props.bike_route_name || props.bikeway_name || props.name || selectedFacility.name || '單車徑';
-                const streetName = props.street_name || '';
 
+                // 6.2 & 6.4.2 道段類別 (只需要中文)
+                const typeMap: Record<string, string> = {
+                  'Protected Bike Lanes': '受保護獨立街道',
+                  'Painted Lanes': '路面標線單車路',
+                  'Local Street': '社區慢速單車街',
+                  'Shared Lanes': '混合共用車道',
+                };
+                const rawTypeZh = props.bikeway_type_zh || (props.bikeway_type ? typeMap[props.bikeway_type] : null);
+                const bikewayTypeZh = rawTypeZh ? String(rawTypeZh).replace(/\s*\([^)]*\)/g, '').trim() : null;
+
+                // 道段方向 (只需要中文)
                 const dirRaw = String(props.bikeway_direction || '').trim();
-                const dirLower = dirRaw.toLowerCase();
-                const isTwoWay = dirLower.includes('bidirectional') || dirLower.includes('two-way') || dirLower.includes('two way') || dirRaw.includes('雙向');
-                const isContraFlow = dirLower.includes('cflow') || dirLower.includes('contra') || dirLower.includes('counter') || dirRaw.includes('逆向');
-                const isOneWay = dirLower.includes('one-way') || dirLower.includes('one way') || dirLower === 'ow' || dirRaw.includes('單向');
-                const dirZh = isTwoWay ? '雙向通行' : isContraFlow ? '逆向通行' : isOneWay ? '單向通行' : dirRaw.replace(/\s*\([^)]*\)/g, '').trim();
+                let dirZh: string | null = null;
+                if (dirRaw) {
+                  const dirLower = dirRaw.toLowerCase();
+                  if (dirLower.includes('bidirectional') || dirLower.includes('two-way') || dirLower.includes('two way') || dirRaw === '2W' || dirRaw.includes('雙向')) {
+                    dirZh = '雙向通行';
+                  } else if (dirLower.includes('cflow') || dirLower.includes('contra') || dirLower.includes('counter') || dirRaw.includes('逆向')) {
+                    dirZh = '逆向通行';
+                  } else if (dirLower.includes('one-way') || dirLower.includes('one way') || dirRaw === '1W' || dirRaw === 'OW' || dirRaw.includes('單向')) {
+                    dirZh = '單向通行';
+                  } else if (dirLower === 'eb') {
+                    dirZh = '東行';
+                  } else if (dirLower === 'wb') {
+                    dirZh = '西行';
+                  } else if (dirLower === 'nb') {
+                    dirZh = '北行';
+                  } else if (dirLower === 'sb') {
+                    dirZh = '南行';
+                  } else {
+                    dirZh = dirRaw.replace(/\s*\([^)]*\)/g, '').trim() || null;
+                  }
+                }
 
-                const surfaceZh = props.surface_type 
-                  ? String(props.surface_type).replace(/\s*\([^)]*\)/g, '').trim() 
-                  : '';
+                // 速度限制 (加上 km /hr)
+                const speedNum = props.speed_limit ? String(props.speed_limit).replace(/[^\d]/g, '') : null;
+                const speedLimitStr = speedNum ? `${speedNum} km /hr` : null;
+
+                // 優先鏟雪 (刪除雪花 Emoji)
+                const rawSnow = props.snow_removal ? String(props.snow_removal).replace(/[❄️❄]/g, '').trim() : null;
+                const snowRemovalStr = rawSnow && rawSnow !== 'null' && rawSnow !== 'undefined' ? rawSnow : null;
+
+                // 建設年份
+                const yearConst = props.year_of_construction ? String(props.year_of_construction).trim() : null;
+
+                // 升級年份
+                const yearUpg = props.upgrade_year ? String(props.upgrade_year).trim() : null;
+
+                const items = [
+                  { label: '道段類別', val: bikewayTypeZh },
+                  { label: '道段方向', val: dirZh },
+                  { label: '速度限制', val: speedLimitStr },
+                  { label: '優先鏟雪', val: snowRemovalStr },
+                  { label: '建設年份', val: yearConst },
+                  { label: '升級年份', val: yearUpg },
+                ].filter(it => it.val !== null && it.val !== '' && it.val !== 'null');
 
                 return (
                   <div className="flex flex-col gap-2 text-xs">
@@ -10626,38 +10700,19 @@ export default function AppMap() {
                       <span>騎乘單車必須佩戴符合安全規範的頭盔，並注意安全。</span>
                     </div>
 
-                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                      {routeName && (
-                        <div className="flex justify-between items-center text-gray-600">
-                          <span>路線名稱</span>
-                          <span className="text-gray-900 font-medium text-right">{routeName}</span>
-                        </div>
-                      )}
-                      {streetName && (
-                        <div className={`flex justify-between items-center text-gray-600 ${routeName ? 'pt-1.5 border-t border-gray-100' : ''}`}>
-                          <span>所在街道</span>
-                          <span className="text-gray-900 font-medium text-right">{streetName}</span>
-                        </div>
-                      )}
-                      {dirZh && (
-                        <div className={`flex justify-between items-center text-gray-600 ${(routeName || streetName) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
-                          <span>通行方向</span>
-                          <span className="text-gray-900 font-medium text-right">{dirZh}</span>
-                        </div>
-                      )}
-                      {surfaceZh && (
-                        <div className={`flex justify-between items-center text-gray-600 ${(routeName || streetName || dirZh) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
-                          <span>路面材質</span>
-                          <span className="text-gray-900 font-medium text-right">{surfaceZh}</span>
-                        </div>
-                      )}
-                      {props.speed_limit && (
-                        <div className={`flex justify-between items-center text-gray-600 ${(routeName || streetName || dirZh || surfaceZh) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
-                          <span>路段速限</span>
-                          <span className="text-gray-900 font-medium text-right">{props.speed_limit} km/h</span>
-                        </div>
-                      )}
-                    </div>
+                    {items.length > 0 && (
+                      <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                        {items.map((it, idx) => (
+                          <div 
+                            key={it.label}
+                            className={`flex justify-between items-center text-gray-600 ${idx > 0 ? 'pt-1.5 border-t border-gray-100' : ''}`}
+                          >
+                            <span>{it.label}</span>
+                            <span className="text-gray-900 font-medium text-right">{it.val}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 );
               })()}
@@ -11686,56 +11741,65 @@ export default function AppMap() {
                       <span>鄰里共融的休閒與文康樞紐，提供各類康體設施、場地租借及豐富的社區居民活動。</span>
                     </div>
 
-                    {/* 36.2.2 灰色區塊 (圖5) */}
-                    <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
-                      {hours && (
-                        <FacilityWeeklyHoursSchedule
-                          label="開放時間"
-                          hours={hours}
-                          timeFormat={timeFormat}
-                          theme="violet"
-                        />
-                      )}
+                    {/* 灰色區塊 (如果數值是null, 不用顯示) */}
+                    {(hours || phone || email || fax) && (
+                      <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
+                        {/* 開放時間 (摺疊式顯示，跟隨統一的時間格式 hh:mm 或 hh:mm AM/PM) */}
+                        {hours && (
+                          <FacilityWeeklyHoursSchedule
+                            label="開放時間"
+                            hours={hours}
+                            timeFormat={timeFormat}
+                            theme="violet"
+                          />
+                        )}
 
-                      {(phone || email || fax) && <div className="border-t border-gray-200/80 my-0.5" />}
+                        {/* (分隔線) */}
+                        {Boolean(hours && (phone || email || fax)) && (
+                          <div className="w-full h-px bg-gray-200/80 my-0.5" />
+                        )}
 
-                      {phone && (
-                        <div className="flex justify-between items-center text-gray-600">
-                          <span>聯絡電話</span>
-                          <a href={`tel:${phone}`} className="font-bold text-rose-600 font-mono hover:underline">
-                            {formatPhoneNumber(phone)}
-                          </a>
-                        </div>
-                      )}
-
-                      {email && (
-                        <div className={`flex justify-between items-center text-gray-600 ${phone ? 'pt-1.5 border-t border-gray-100' : ''} gap-2`}>
-                          <span className="shrink-0">聯絡電郵</span>
-                          <div className="flex items-center gap-1.5 min-w-0 justify-end">
-                            <a
-                              href={`mailto:${email}`}
-                              className="text-gray-800 hover:text-violet-600 font-medium break-all text-right text-[10.5px] leading-tight"
-                            >
-                              {email}
-                            </a>
-                            <a
-                              href={`mailto:${email}`}
-                              className="p-1 rounded bg-white hover:bg-violet-50 text-violet-600 border border-gray-200 transition-colors shadow-2xs shrink-0"
-                              title={`發送郵件至 ${email}`}
-                            >
-                              <Mail className="w-3 h-3" />
+                        {/* 聯絡電話 "phone" */}
+                        {phone && (
+                          <div className="flex justify-between items-center text-gray-600">
+                            <span>聯絡電話</span>
+                            <a href={`tel:${phone}`} className="font-bold text-rose-600 font-mono hover:underline">
+                              {formatPhoneNumber(phone)}
                             </a>
                           </div>
-                        </div>
-                      )}
+                        )}
 
-                      {fax && (
-                        <div className={`flex justify-between items-center text-gray-600 ${(phone || email) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
-                          <span>傳真</span>
-                          <span className="text-gray-800 font-medium">{fax}</span>
-                        </div>
-                      )}
-                    </div>
+                        {/* 聯絡電郵 "email" //在右方加電郵的圖示按鈕 */}
+                        {email && (
+                          <div className={`flex justify-between items-center text-gray-600 ${phone ? 'pt-1.5 border-t border-gray-100' : ''} gap-2`}>
+                            <span className="shrink-0">聯絡電郵</span>
+                            <div className="flex items-center gap-1.5 min-w-0 justify-end">
+                              <a
+                                href={`mailto:${email}`}
+                                className="text-gray-800 hover:text-violet-600 font-medium break-all text-right text-[10.5px] leading-tight"
+                              >
+                                {email}
+                              </a>
+                              <a
+                                href={`mailto:${email}`}
+                                className="p-1 rounded bg-white hover:bg-violet-50 text-violet-600 border border-gray-200 transition-colors shadow-2xs shrink-0"
+                                title={`發送郵件至 ${email}`}
+                              >
+                                <Mail className="w-3 h-3" />
+                              </a>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* 傳真 "fax" */}
+                        {fax && (
+                          <div className={`flex justify-between items-center text-gray-600 ${(phone || email) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
+                            <span>傳真</span>
+                            <span className="text-gray-800 font-medium">{fax}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
 
                     {urllink && (
                       <div className="pt-1 border-t border-gray-100">
@@ -11745,7 +11809,7 @@ export default function AppMap() {
                           rel="noopener noreferrer"
                           className="inline-flex items-center justify-center w-full py-1.5 px-3 bg-violet-600 hover:bg-violet-700 text-white rounded font-medium text-xs transition-colors shadow-sm"
                         >
-                          <span>前往 {selectedFacility.name || props.name || '社區中心'} 官方網頁</span>
+                          <span>前往 {props.name || selectedFacility.name || '社區中心'} 官方網頁</span>
                           <ExternalLink className="w-3.5 h-3.5 ml-1" />
                         </a>
                       </div>
@@ -17442,10 +17506,126 @@ export default function AppMap() {
         </div>
       )}
 
+      {/* 單車徑路網圖例與篩選 (Bikeways Network Legend & Filter Popup) */}
+      {layers.bikeways && (
+        <div className={`fixed z-30 w-[260px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-emerald-500/40 select-none animate-in fade-in duration-200 ${
+          getFloatingPanelPos((layers.parkingMeters ? 1 : 0) + (layers.motorcycleParking ? 1 : 0) + (layers.fuel ? 1 : 0) + ((layers.evCharging || layers.tesla) ? 1 : 0) + (layers.carSharing ? 1 : 0))
+        }`}>
+          <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
+            <div className="flex items-center gap-2">
+              <span className="p-1 rounded bg-emerald-500/20 text-emerald-400">
+                <Bike className="w-3.5 h-3.5" />
+              </span>
+              <div className="flex flex-col">
+                <span className="font-bold text-xs text-white">單車徑路網篩選</span>
+                <span className="text-[9.5px] text-gray-400">點擊項目可開關車道</span>
+              </div>
+            </div>
+            <button
+              onClick={() => setBikewaysLegendOpen(!bikewaysLegendOpen)}
+              className="text-gray-400 hover:text-white p-0.5 rounded hover:bg-[#252a38] transition-colors cursor-pointer"
+              title={bikewaysLegendOpen ? "收合" : "展開"}
+            >
+              {bikewaysLegendOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            </button>
+          </div>
+
+          {bikewaysLegendOpen ? (
+            <div className="flex flex-col gap-1.5 text-xs">
+              {[
+                { key: 'Protected Bike Lanes', label: '受保護獨立街道', en: 'Protected', color: '#10b981', border: 'border-emerald-500/40', bg: 'bg-emerald-500/10' },
+                { key: 'Painted Lanes', label: '路面標線單車路', en: 'Painted', color: '#0ea5e9', border: 'border-sky-500/40', bg: 'bg-sky-500/10' },
+                { key: 'Local Street', label: '社區慢速單車街', en: 'Local Street', color: '#f59e0b', border: 'border-amber-500/40', bg: 'bg-amber-500/10' },
+                { key: 'Shared Lanes', label: '混合共用車道', en: 'Shared', color: '#a855f7', border: 'border-purple-500/40', bg: 'bg-purple-500/10' },
+              ].map(item => {
+                const isActive = bikewaysFilter[item.key] !== false;
+                return (
+                  <button
+                    key={item.key}
+                    type="button"
+                    onClick={() => {
+                      setBikewaysFilter(prev => ({
+                        ...prev,
+                        [item.key]: !isActive
+                      }));
+                    }}
+                    className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg border transition-all text-[11px] cursor-pointer ${
+                      isActive 
+                        ? `${item.bg} ${item.border} text-white` 
+                        : 'bg-[#1b1f2b]/60 border-[#2a3040] text-gray-500 hover:border-gray-600'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span 
+                        className="w-4 h-1.5 rounded-full shrink-0" 
+                        style={{ backgroundColor: isActive ? item.color : '#4b5563' }}
+                      />
+                      <span className={`font-medium truncate ${isActive ? 'text-gray-200' : 'text-gray-500'}`}>
+                        {item.label}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                      <span className="text-[9.5px] font-mono text-gray-400">{item.en}</span>
+                      <div className={`w-6 h-3.5 rounded-full transition-colors flex items-center px-0.5 ${
+                        isActive ? 'bg-white/90 justify-end' : 'bg-gray-700 justify-start'
+                      }`}>
+                        <span className={`w-2.5 h-2.5 rounded-full shadow-xs ${isActive ? '' : 'bg-gray-400'}`} style={{ backgroundColor: isActive ? item.color : undefined }} />
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+
+              {Object.values(bikewaysFilter).some(v => v === false) && (
+                <div className="flex items-center justify-between pt-1 border-t border-[#262b38] text-[10.5px]">
+                  <span className="text-gray-400">已自訂篩選</span>
+                  <button
+                    type="button"
+                    onClick={() => setBikewaysFilter({
+                      'Protected Bike Lanes': true,
+                      'Painted Lanes': true,
+                      'Local Street': true,
+                      'Shared Lanes': true,
+                    })}
+                    className="text-emerald-400 hover:text-emerald-300 hover:underline cursor-pointer"
+                  >
+                    重設全部顯示
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="flex items-center justify-between text-[11px] text-gray-300">
+              <div className="flex items-center gap-1.5">
+                {[
+                  { key: 'Protected Bike Lanes', color: '#10b981', label: '受保護獨立街道' },
+                  { key: 'Painted Lanes', color: '#0ea5e9', label: '路面標線單車路' },
+                  { key: 'Local Street', color: '#f59e0b', label: '社區慢速單車街' },
+                  { key: 'Shared Lanes', color: '#a855f7', label: '混合共用車道' },
+                ].map(item => (
+                  <span 
+                    key={item.key}
+                    className="w-3 h-1 rounded-full transition-colors"
+                    style={{ backgroundColor: bikewaysFilter[item.key] !== false ? item.color : '#4b5563' }}
+                    title={`${item.label} (${bikewaysFilter[item.key] !== false ? '已開啟' : '已關閉'})`}
+                  />
+                ))}
+              </div>
+              <button 
+                onClick={() => setBikewaysLegendOpen(true)}
+                className="text-[10px] text-emerald-400 hover:underline cursor-pointer"
+              >
+                篩選/展開
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* 貨車路線資訊與地圖按鈕小界面 (Truck Routes Info & Map Modal Trigger) */}
       {layers.truckRoutes && (
         <div className={`fixed z-30 w-[280px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-sky-500/50 select-none animate-in fade-in duration-200 ${
-          getFloatingPanelPos((layers.parkingMeters ? 1 : 0) + (layers.motorcycleParking ? 1 : 0) + (layers.fuel ? 1 : 0) + ((layers.evCharging || layers.tesla) ? 1 : 0) + (layers.carSharing ? 1 : 0))
+          getFloatingPanelPos((layers.parkingMeters ? 1 : 0) + (layers.motorcycleParking ? 1 : 0) + (layers.fuel ? 1 : 0) + ((layers.evCharging || layers.tesla) ? 1 : 0) + (layers.carSharing ? 1 : 0) + (layers.bikeways ? 1 : 0))
         }`}>
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
             <div className="flex items-center gap-2">
@@ -17506,7 +17686,7 @@ export default function AppMap() {
       {/* 路口安全相機圖例與篩選 (Intersection Safety Cameras Legend & Filter Popup) */}
       {layers.safetyCameras && (
         <div className={`fixed z-30 w-[260px] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3 shadow-2xl border border-rose-500/40 select-none animate-in fade-in duration-200 ${
-          getFloatingPanelPos((layers.parkingMeters ? 1 : 0) + (layers.motorcycleParking ? 1 : 0) + (layers.fuel ? 1 : 0) + ((layers.evCharging || layers.tesla) ? 1 : 0) + (layers.carSharing ? 1 : 0))
+          getFloatingPanelPos((layers.parkingMeters ? 1 : 0) + (layers.motorcycleParking ? 1 : 0) + (layers.fuel ? 1 : 0) + ((layers.evCharging || layers.tesla) ? 1 : 0) + (layers.carSharing ? 1 : 0) + (layers.bikeways ? 1 : 0) + (layers.truckRoutes ? 1 : 0))
         }`}>
           <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#262b38]">
             <div className="flex items-center gap-2">
@@ -17635,6 +17815,7 @@ export default function AppMap() {
             (layers.fuel ? 1 : 0) + 
             ((layers.evCharging || layers.tesla) ? 1 : 0) + 
             (layers.carSharing ? 1 : 0) + 
+            (layers.bikeways ? 1 : 0) +
             (layers.truckRoutes ? 1 : 0) +
             (layers.safetyCameras ? 1 : 0)
           )
@@ -17809,6 +17990,7 @@ export default function AppMap() {
             (layers.fuel ? 1 : 0) + 
             ((layers.evCharging || layers.tesla) ? 1 : 0) + 
             (layers.carSharing ? 1 : 0) + 
+            (layers.bikeways ? 1 : 0) +
             (layers.truckRoutes ? 1 : 0) +
             (layers.safetyCameras ? 1 : 0) +
             (layers.impark ? 1 : 0)

@@ -4712,9 +4712,7 @@ def get_admin_recent_commits():
     """獲取可供緊急還原的最近提交清單 (提供下拉選單選擇與詳細 Commit 資料)"""
     commits = [
         {"sha": "PREV", "full_sha": "HEAD~1", "title": "PREV (上一個運作正常的版本 - HEAD~1)", "message": "上一筆穩定運作的部署版本", "date": "推薦選項", "author": "系統預設"},
-        {"sha": "HEAD~2", "full_sha": "HEAD~2", "title": "HEAD~2 (前兩個版本)", "message": "倒退兩次提交前之狀態", "date": "歷史回溯", "author": "Git HEAD~2"},
-        {"sha": "HEAD~3", "full_sha": "HEAD~3", "title": "HEAD~3 (前三個版本)", "message": "倒退三次提交前之狀態", "date": "歷史回溯", "author": "Git HEAD~3"},
-        {"sha": "HEAD~5", "full_sha": "HEAD~5", "title": "HEAD~5 (前五個版本)", "message": "倒退五次提交前之狀態", "date": "歷史回溯", "author": "Git HEAD~5"}
+        {"sha": "HEAD~2", "full_sha": "HEAD~2", "title": "HEAD~2 (前兩個版本)", "message": "倒退兩次提交前之狀態", "date": "歷史回溯", "author": "Git HEAD~2"}
     ]
     
     # 優先嘗試透過 GitHub API 獲取最新的 Commit 詳細資訊

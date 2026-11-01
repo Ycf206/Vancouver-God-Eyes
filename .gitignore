@@ -36,3 +36,13 @@ generate_bc_ferries.py
 bcferries.json
 temp_gtfs/
 scratch/
+
+# Security, Certificates & Private Keys (mTLS / SSL)
+nginx/certs/
+*.key
+*.p12
+*.pfx
+*.crt
+*.csr
+*.srl
+*.pem

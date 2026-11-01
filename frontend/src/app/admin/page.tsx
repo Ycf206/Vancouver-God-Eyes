@@ -269,9 +269,7 @@ export default function AdminPage() {
   const [copiedLogId, setCopiedLogId] = useState<string | null>(null);
   const [recentCommits, setRecentCommits] = useState<Array<{ sha: string; full_sha?: string; title: string; message?: string; date?: string; author?: string }>>([
     { sha: 'PREV', full_sha: 'HEAD~1', title: 'PREV (上一個運作正常的版本 - HEAD~1)', message: '上一筆穩定運作的部署版本', date: '推薦選項', author: '系統預設' },
-    { sha: 'HEAD~2', full_sha: 'HEAD~2', title: 'HEAD~2 (前兩個版本)', message: '倒退兩次提交前之狀態', date: '歷史回溯', author: 'Git HEAD~2' },
-    { sha: 'HEAD~3', full_sha: 'HEAD~3', title: 'HEAD~3 (前三個版本)', message: '倒退三次提交前之狀態', date: '歷史回溯', author: 'Git HEAD~3' },
-    { sha: 'HEAD~5', full_sha: 'HEAD~5', title: 'HEAD~5 (前五個版本)', message: '倒退五次提交前之狀態', date: '歷史回溯', author: 'Git HEAD~5' }
+    { sha: 'HEAD~2', full_sha: 'HEAD~2', title: 'HEAD~2 (前兩個版本)', message: '倒退兩次提交前之狀態', date: '歷史回溯', author: 'Git HEAD~2' }
   ]);
   const [issueSearch, setIssueSearch] = useState('');
   const [issueStatusFilter, setIssueStatusFilter] = useState<'all' | 'pending' | 'resolved' | 'closed'>('all');
@@ -1581,50 +1579,50 @@ export default function AdminPage() {
                 <table className="w-full text-left border-collapse text-xs">
                   <thead>
                     <tr className="sticky top-0 z-10 bg-[#161c28] border-b border-[#283144] text-gray-300 font-semibold uppercase text-[10.5px] tracking-wider shadow-sm select-none">
-                      <th onClick={() => handleSort('status')} className="py-3 px-3 w-16 text-center cursor-pointer hover:text-white transition-colors">
+                      <th onClick={() => handleSort('status')} className="py-2.5 px-2 w-12 text-center cursor-pointer hover:text-white transition-colors">
                         <div className="flex items-center justify-center gap-1">
                           <span>狀態</span>
                           {sortField === 'status' ? (sortDirection === 'asc' ? <ArrowUp className="w-3 h-3 text-indigo-400" /> : <ArrowDown className="w-3 h-3 text-indigo-400" />) : <ArrowUpDown className="w-2.5 h-2.5 text-gray-500" />}
                         </div>
                       </th>
-                      <th onClick={() => handleSort('category')} className="py-3 px-3 w-24 cursor-pointer hover:text-white transition-colors">
+                      <th onClick={() => handleSort('category')} className="py-2.5 px-2 w-16 cursor-pointer hover:text-white transition-colors">
                         <div className="flex items-center gap-1">
                           <span>分類</span>
                           {sortField === 'category' ? (sortDirection === 'asc' ? <ArrowUp className="w-3 h-3 text-indigo-400" /> : <ArrowDown className="w-3 h-3 text-indigo-400" />) : <ArrowUpDown className="w-2.5 h-2.5 text-gray-500" />}
                         </div>
                       </th>
-                      <th onClick={() => handleSort('name')} className="py-3 px-4 min-w-[200px] cursor-pointer hover:text-white transition-colors">
+                      <th onClick={() => handleSort('name')} className="py-2.5 px-2.5 min-w-[150px] max-w-[200px] cursor-pointer hover:text-white transition-colors">
                         <div className="flex items-center gap-1">
                           <span>資料源與項目名稱</span>
                           {sortField === 'name' ? (sortDirection === 'asc' ? <ArrowUp className="w-3 h-3 text-indigo-400" /> : <ArrowDown className="w-3 h-3 text-indigo-400" />) : <ArrowUpDown className="w-2.5 h-2.5 text-gray-500" />}
                         </div>
                       </th>
-                      <th onClick={() => handleSort('runner')} className="py-3 px-3 min-w-[150px] cursor-pointer hover:text-white transition-colors">
+                      <th onClick={() => handleSort('runner')} className="py-2.5 px-2 w-[110px] cursor-pointer hover:text-white transition-colors">
                         <div className="flex items-center gap-1">
                           <span>執行載體 / 管線</span>
                           {sortField === 'runner' ? (sortDirection === 'asc' ? <ArrowUp className="w-3 h-3 text-indigo-400" /> : <ArrowDown className="w-3 h-3 text-indigo-400" />) : <ArrowUpDown className="w-2.5 h-2.5 text-gray-500" />}
                         </div>
                       </th>
-                      <th onClick={() => handleSort('schedule_interval')} className="py-3 px-3 min-w-[180px] cursor-pointer hover:text-white transition-colors">
+                      <th onClick={() => handleSort('schedule_interval')} className="py-2.5 px-2 w-[130px] cursor-pointer hover:text-white transition-colors">
                         <div className="flex items-center gap-1">
                           <span>排程週期 (Cron)</span>
                           {sortField === 'schedule_interval' ? (sortDirection === 'asc' ? <ArrowUp className="w-3 h-3 text-indigo-400" /> : <ArrowDown className="w-3 h-3 text-indigo-400" />) : <ArrowUpDown className="w-2.5 h-2.5 text-gray-500" />}
                         </div>
                       </th>
-                      <th className="py-3 px-3 min-w-[160px]">來源連結 / 端點</th>
-                      <th onClick={() => handleSort('last_updated')} className="py-3 px-3 w-36 whitespace-nowrap cursor-pointer hover:text-white transition-colors">
+                      <th className="py-2.5 px-2 w-[100px]">來源連結</th>
+                      <th onClick={() => handleSort('last_updated')} className="py-2.5 px-2 w-[115px] whitespace-nowrap cursor-pointer hover:text-white transition-colors">
                         <div className="flex items-center gap-1">
                           <span>上次更新</span>
                           {sortField === 'last_updated' ? (sortDirection === 'asc' ? <ArrowUp className="w-3 h-3 text-indigo-400" /> : <ArrowDown className="w-3 h-3 text-indigo-400" />) : <ArrowUpDown className="w-2.5 h-2.5 text-gray-500" />}
                         </div>
                       </th>
-                      <th onClick={() => handleSort('record_count')} className="py-3 px-3 w-28 whitespace-nowrap cursor-pointer hover:text-white transition-colors">
+                      <th onClick={() => handleSort('record_count')} className="py-2.5 px-2 w-[85px] whitespace-nowrap cursor-pointer hover:text-white transition-colors">
                         <div className="flex items-center gap-1">
                           <span>規模筆數</span>
                           {sortField === 'record_count' ? (sortDirection === 'asc' ? <ArrowUp className="w-3 h-3 text-indigo-400" /> : <ArrowDown className="w-3 h-3 text-indigo-400" />) : <ArrowUpDown className="w-2.5 h-2.5 text-gray-500" />}
                         </div>
                       </th>
-                      <th className="py-3 px-4 w-56 text-right">圖層控制 / 管理操作</th>
+                      <th className="py-2.5 px-2.5 w-[145px] text-right">圖層控制 / 管理操作</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#202738]">
@@ -1640,7 +1638,7 @@ export default function AdminPage() {
                           className="hover:bg-[#1a202d] transition-colors group"
                         >
                           {/* 狀態燈號 */}
-                          <td className="py-3.5 px-4 text-center">
+                          <td className="py-2.5 px-2 text-center">
                             <span 
                               className={`inline-block w-2.5 h-2.5 rounded-full ${
                                 isSyncing
@@ -1664,7 +1662,7 @@ export default function AdminPage() {
                           </td>
 
                           {/* 1. 分類 (已移至資料源名稱左方) */}
-                          <td className="py-3.5 px-4">
+                          <td className="py-2.5 px-2">
                             {(() => {
                               const cat = getSystemCategory(source);
                               const catColors: Record<string, string> = {
@@ -1682,7 +1680,7 @@ export default function AdminPage() {
                           </td>
 
                           {/* 2. 資料源名稱與 ID (支援名稱修改) */}
-                          <td className="py-3.5 px-4">
+                          <td className="py-2.5 px-2.5">
                             {isEditing ? (
                               <div className="flex flex-col gap-1">
                                 <input
@@ -1719,7 +1717,7 @@ export default function AdminPage() {
                           </td>
 
                           {/* 執行載體標籤 */}
-                          <td className="py-3.5 px-4">
+                          <td className="py-2.5 px-2">
                             {isOci ? (
                               <div className="flex flex-col gap-0.5">
                                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 w-fit">
@@ -1744,7 +1742,7 @@ export default function AdminPage() {
                           </td>
 
                           {/* 排程週期 (Cron 或間隔) 逐行行內編輯 */}
-                          <td className="py-3.5 px-4">
+                          <td className="py-2.5 px-2">
                             {isEditing ? (
                               <div className="flex flex-col gap-2 p-2.5 bg-[#0f1218] rounded-xl border border-indigo-500/50 shadow-xl min-w-[280px] max-w-[340px] animate-in fade-in">
                                 <div className="flex flex-col gap-1.5">
@@ -1939,8 +1937,8 @@ export default function AdminPage() {
                           </td>
 
                           {/* 來源連結 / 端點 */}
-                          <td className="py-3.5 px-4">
-                            <div className="flex flex-wrap items-center gap-1.5 max-w-[220px]">
+                          <td className="py-2.5 px-2">
+                            <div className="flex flex-wrap items-center gap-1.5 max-w-[140px]">
                               {source.source_links && source.source_links.length > 0 ? (
                                 source.source_links.map((link, idx) => (
                                   <a
@@ -1948,7 +1946,7 @@ export default function AdminPage() {
                                     href={link.url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-[#1d2433] hover:bg-sky-950/80 text-sky-300 hover:text-sky-200 border border-[#2f3950] hover:border-sky-500/40 transition-all shadow-xs max-w-[190px] truncate"
+                                    className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-[#1d2433] hover:bg-sky-950/80 text-sky-300 hover:text-sky-200 border border-[#2f3950] hover:border-sky-500/40 transition-all shadow-xs max-w-[130px] truncate"
                                     title={link.url}
                                   >
                                     <ExternalLink className="w-2.5 h-2.5 shrink-0 text-sky-400" />
@@ -1960,7 +1958,7 @@ export default function AdminPage() {
                                   href={source.source_url}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-[#1d2433] hover:bg-sky-950/80 text-sky-300 hover:text-sky-200 border border-[#2f3950] hover:border-sky-500/40 transition-all shadow-xs"
+                                  className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-[#1d2433] hover:bg-sky-950/80 text-sky-300 hover:text-sky-200 border border-[#2f3950] hover:border-sky-500/40 transition-all shadow-xs"
                                   title={source.source_url}
                                 >
                                   <ExternalLink className="w-2.5 h-2.5 shrink-0 text-sky-400" />
@@ -1973,7 +1971,7 @@ export default function AdminPage() {
                           </td>
 
                           {/* 上次更新時間 */}
-                          <td className="py-3.5 px-4 text-gray-300 font-mono text-[11px] whitespace-nowrap">
+                          <td className="py-2.5 px-2 text-gray-300 font-mono text-[11px] whitespace-nowrap">
                             {source.last_updated ? (
                               <span title={`UTC: ${source.last_updated}`}>
                                 {new Date(source.last_updated).toLocaleString('zh-HK', {
@@ -1991,13 +1989,13 @@ export default function AdminPage() {
                           </td>
 
                           {/* 規模 / 筆數 */}
-                          <td className="py-3.5 px-4 text-gray-400 text-[11px] whitespace-nowrap">
+                          <td className="py-2.5 px-2 text-gray-400 text-[11px] whitespace-nowrap">
                             <span className="text-white font-medium">{(source.record_count ?? 0).toLocaleString()}</span>{' '}
                             <span>{source.unit}</span>
                           </td>
 
                           {/* 管理操作按鈕 */}
-                          <td className="py-3.5 px-4 text-right">
+                          <td className="py-2.5 px-2.5 text-right">
                             <div className="flex items-center justify-end gap-1.5">
                               {/* 立即同步 / 綁定 Token 按鈕 */}
                               {isGitHubUnbound && source.id !== 'food_vendors' && source.id !== 'service_requests_311' ? (

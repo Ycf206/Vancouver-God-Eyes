@@ -373,7 +373,7 @@ export default function FlightScheduleModal() {
   };
 
   return (
-    <div className="fixed top-[64px] right-2 sm:right-4 md:right-6 bottom-4 w-[95vw] sm:w-[90vw] md:w-[780px] lg:w-[840px] max-w-[calc(100vw-16px)] z-40 flex flex-col pointer-events-none animate-fade-in">
+    <div className="fixed top-[64px] right-2 sm:right-4 md:right-6 bottom-4 w-[96vw] sm:w-[94vw] md:w-[920px] lg:w-[1040px] xl:w-[1140px] max-w-[calc(100vw-24px)] z-40 flex flex-col pointer-events-none animate-fade-in">
       <div 
         className="w-full h-full bg-[#13151a]/95 backdrop-blur-md border border-[#2b303c] rounded-2xl shadow-2xl flex flex-col overflow-hidden text-gray-200 pointer-events-auto"
         onClick={(e) => e.stopPropagation()}
@@ -570,7 +570,7 @@ export default function FlightScheduleModal() {
                   }`}
                 >
                   {/* Grid Layout for Medium+ Screens */}
-                  <div className="hidden md:grid grid-cols-[70px_125px_1fr_135px_110px_80px] gap-3 items-center">
+                  <div className="hidden md:grid grid-cols-[70px_150px_1fr_140px_120px_85px] gap-3 items-center">
                     {/* Col 1: Date & Time (Compact, tight width) */}
                     <div className="w-[70px] shrink-0">
                       <div className="text-center w-[66px] py-1 px-0.5 rounded-lg bg-[#0e1015] border border-[#232732]">
@@ -715,12 +715,12 @@ export default function FlightScheduleModal() {
                         <div>
                           <div className="flex items-center gap-1.5">
                             <span className="font-bold text-sm text-sky-300 font-mono">{flight.flight_no}</span>
-                            <span className="text-xs text-gray-300 truncate max-w-[120px]">{flight.airline}</span>
+                            <span className="text-xs text-gray-300 truncate max-w-[160px]">{flight.airline}</span>
                           </div>
                           <div className="text-[11px] text-gray-300 font-mono mt-0.5">
                             {orig} ➔ {dest}
                           </div>
-                          <div className="text-[10px] text-gray-400 font-medium truncate max-w-[180px]">
+                          <div className="text-[10px] text-gray-400 font-medium truncate max-w-[240px]">
                             {flight.city}
                           </div>
                         </div>

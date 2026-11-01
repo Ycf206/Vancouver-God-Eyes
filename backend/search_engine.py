@@ -1760,10 +1760,18 @@ class LayerSearchEngine:
                 elif fstem == "banks":
                     title = str(props.get("bank_full_name") or raw_name or "銀行").strip()
                 elif fstem == "bikeways":
-                    bname = str(props.get("bikeway_name") or props.get("street_name") or raw_name or "").strip()
-                    if not bname:
+                    r_name = str(props.get("bike_route_name") or props.get("bikeway_name") or "").strip()
+                    s_name = str(props.get("street_name") or "").strip()
+                    if r_name and s_name and r_name.lower() != s_name.lower():
+                        title = f"{r_name} ({s_name}) (單車徑)"
+                    elif r_name:
+                        title = f"{r_name} (單車徑)"
+                    elif s_name:
+                        title = f"{s_name} (單車徑)"
+                    else:
+                        title = str(raw_name or "單車徑").strip()
+                    if not title or title == "(單車徑)":
                         continue
-                    title = f"{bname} (單車徑)"
                 elif fstem == "railways":
                     rname = raw_name
                     if not rname or rname.lower() == "unknown":
