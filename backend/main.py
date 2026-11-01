@@ -1949,7 +1949,7 @@ FACILITY_SEARCH_CONFIGS = [
     ("canada_post", "Canada Post", "📮", "canadaPost", 16),
     ("fedex", "FedEx", "📦", "canadaPost", 16),
     ("purolator", "Purolator", "📦", "canadaPost", 16),
-    ("atm", "銀行", "🏦", "atm", 16),
+    ("banks", "銀行", "🏦", "banks", 16),
     ("traffic_turn_restrictions", "轉向限制", "🚫", "turnRestrictions", 17),
     ("traffic_signals", "交通燈", "🚦", "trafficSignals", 17),
     ("truck_routes", "貨車限制", "🚛", "truckRoutes", 16),
@@ -2034,7 +2034,7 @@ def get_search_facilities_items():
                         title = fname
                 elif ftype == "purolator":
                     title = props.get("locationName") or props.get("name") or "Purolator"
-                elif ftype == "atm":
+                elif ftype in ("banks", "atm"):
                     title = props.get("bank_full_name") or raw_name or "銀行"
                 elif ftype == "traffic_turn_restrictions":
                     title = props.get("signal_location") or raw_name or "轉向限制路口"
@@ -2063,7 +2063,8 @@ def get_search_facilities_items():
                     "canada_post": ["canada post", "郵寄", "郵局", "post office", "canadapost", "寄件", "包裹", "post", "courier"],
                     "fedex": ["fedex", "郵寄", "快遞", "courier", "聯邦快遞", "寄件", "自取包裹", "post"],
                     "purolator": ["purolator", "郵寄", "快遞", "courier", "寄件", "自取包裹", "post"],
-                    "atm": ["銀行", "atm", "bank", "櫃員機", "自動櫃員機"],
+                    "banks": ["銀行", "banks", "bank", "atm", "櫃員機", "自動櫃員機"],
+                    "atm": ["銀行", "banks", "bank", "atm", "櫃員機", "自動櫃員機"],
                     "fuel": ["油站", "加油站", "gas station", "fuel", "petrol"],
                     "tesla": ["tesla", "特斯拉", "超級充電", "supercharger"],
                     "ev_charging": ["充電", "充電站", "ev charging", "電動車充電"],
@@ -2390,7 +2391,7 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
     try:
         fac_candidates = []
         is_category_query = q_clean in (
-            "canada post", "post", "郵寄", "郵局", "fedex", "purolator", "快遞", "atm", "銀行", "bank",
+            "canada post", "post", "郵寄", "郵局", "fedex", "purolator", "快遞", "banks", "bank", "atm", "銀行",
             "油站", "gas", "fuel", "tesla", "ev", "charging", "充電", "充電站", "共享汽車",
             "car sharing", "evo", "modo", "共享單車", "mobi", "單車架", "廁所", "洗手間",
             "公共廁所", "washroom", "飲水器", "學校", "school", "圖書館", "library",
@@ -2922,6 +2923,12 @@ def get_road_facilities_geojson(
         conduits_path = os.path.join(os.path.dirname(__file__), "data", "vancouver_street_lighting_conduits.geojson")
         if os.path.exists(conduits_path):
             return FileResponse(conduits_path, media_type="application/json", headers={"Cache-Control": "public, max-age=3600, stale-while-revalidate=86400"})
+
+    # Handle Banks (formerly ATM)
+    if facility_type in ("banks", "atm"):
+        banks_path = os.path.join(os.path.dirname(__file__), "data", "vancouver_banks.geojson")
+        if os.path.exists(banks_path):
+            return FileResponse(banks_path, media_type="application/json", headers={"Cache-Control": "public, max-age=3600, stale-while-revalidate=86400"})
 
     # 2. Prioritize verified precompiled static GeoJSON files (instant zero-copy static serving)
     static_geojson_path = os.path.join(os.path.dirname(__file__), "data", f"vancouver_{facility_type}.geojson")

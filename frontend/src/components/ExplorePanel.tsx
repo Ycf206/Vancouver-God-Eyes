@@ -1783,15 +1783,15 @@ function ExploreContent() {
       });
   }, [isExploreOpen, activeTab]);
 
-  // 1.5 Fetch ATM Stations
+  // 1.5 Fetch Bank / ATM Stations
   useEffect(() => {
-    if (!isExploreOpen || activeTab !== 'atm') return;
+    if (!isExploreOpen || (activeTab !== 'banks' && activeTab !== 'atm')) return;
     if (atmStations.length > 0) return;
 
     setLoadingAtm(true);
-    fetch('/vancouver_atm.geojson')
+    fetch('/vancouver_banks.geojson')
       .then((res) => {
-        if (!res.ok) throw new Error('Failed to load ATM data');
+        if (!res.ok) throw new Error('Failed to load Bank data');
         return res.json();
       })
       .then((data) => {
@@ -1799,8 +1799,8 @@ function ExploreContent() {
         const features = data.features || [];
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const list: AtmItem[] = features.map((f: any) => ({
-          id: f.id || f.properties?.id || `atm_${Math.random()}`,
-          name: f.properties?.name || 'ATM',
+          id: f.id || f.properties?.id || `bank_${Math.random()}`,
+          name: f.properties?.name || '銀行分行',
           bank_code: f.properties?.bank_code || '',
           bank_full_name: f.properties?.bank_full_name || '',
           branch_name: f.properties?.branch_name || '',
@@ -2137,17 +2137,17 @@ function ExploreContent() {
 
   if (!isExploreOpen || (openExploreTabs && openExploreTabs.length === 0)) return null;
 
-  // Handle ATM click
+  // Handle ATM/Bank click
   const handleSelectAtm = (atm: AtmItem & { distKm?: number; isOpenToday?: boolean; openHoursToday?: string }) => {
-    enableLayer('atm');
+    enableLayer('banks');
     setSearchTarget({
       id: atm.id,
       title: atm.name,
       subtitle: atm.address,
-      category: 'atm',
-      layer_key: 'atm',
+      category: 'banks',
+      layer_key: 'banks',
       badge: '銀行',
-      icon: '🏧',
+      icon: '🏦',
       lat: atm.lat,
       lon: atm.lon,
       meta: {
@@ -2175,7 +2175,7 @@ function ExploreContent() {
           url: atm.url,
           bank_website: atm.bank_website,
           official_url: atm.bank_website || atm.url,
-          facility_type: 'atm',
+          facility_type: 'banks',
         }
       },
       zoom: 16.5
@@ -3387,6 +3387,7 @@ function ExploreContent() {
     jobs: { label: '工作職位', icon: Briefcase, color: 'text-indigo-400' },
     '311': { label: '3-1-1 市政服務', icon: PhoneCall, color: 'text-emerald-400' },
     shopping: { label: '購物優惠', icon: ShoppingBag, color: 'text-rose-400' },
+    banks: { label: '銀行', icon: Landmark, color: 'text-amber-400' },
     atm: { label: '銀行', icon: Landmark, color: 'text-amber-400' },
     fuel: { label: '油站', icon: Fuel, color: 'text-amber-500' },
     charging: { label: '充電站', icon: Zap, color: 'text-emerald-400' },
@@ -3411,6 +3412,7 @@ function ExploreContent() {
     jobs: '工作',
     '311': '3-1-1',
     shopping: '購物',
+    banks: '銀行',
     atm: '銀行',
     fuel: '油站',
     charging: '充電',

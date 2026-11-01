@@ -2,7 +2,7 @@
 """
 Automated updater for Vancouver Banks (銀行) dataset.
 Scrapes bank listings and branch detail metadata from bankee.ca/bc/vancouver/atm/
-and saves directly to backend/data/vancouver_atm.geojson and frontend/public/vancouver_atm.geojson.
+and saves directly to backend/data/vancouver_banks.geojson and frontend/public/vancouver_banks.geojson.
 """
 
 import os
@@ -160,13 +160,20 @@ def update_banks():
     os.makedirs(BACKEND_DATA_DIR, exist_ok=True)
     os.makedirs(FRONTEND_DATA_DIR, exist_ok=True)
 
-    out_file = os.path.join(BACKEND_DATA_DIR, "vancouver_atm.geojson")
-    public_file = os.path.join(FRONTEND_DATA_DIR, "vancouver_atm.geojson")
+    out_file = os.path.join(BACKEND_DATA_DIR, "vancouver_banks.geojson")
+    public_file = os.path.join(FRONTEND_DATA_DIR, "vancouver_banks.geojson")
 
     existing_features = []
     existing_urls = set()
 
-    for candidate_path in (out_file, public_file):
+    candidate_files = [
+        out_file,
+        public_file,
+        os.path.join(BACKEND_DATA_DIR, "vancouver_atm.geojson"),
+        os.path.join(FRONTEND_DATA_DIR, "vancouver_atm.geojson")
+    ]
+
+    for candidate_path in candidate_files:
         if os.path.exists(candidate_path):
             try:
                 with open(candidate_path, 'r', encoding='utf-8') as f:
@@ -176,6 +183,7 @@ def update_banks():
                         existing_features = loaded
                         for feat in existing_features:
                             props = feat.get('properties', {})
+                            props['facility_type'] = 'banks'
                             if 'is_24_7' in props:
                                 del props['is_24_7']
                             hours = props.get('opening_hours')
@@ -308,14 +316,14 @@ def update_banks():
 
             feat = {
                 "type": "Feature",
-                "id": f"atm_{len(features) + 1}",
+                "id": f"bank_{len(features) + 1}",
                 "geometry": {
                     "type": "Point",
                     "coordinates": [round(lon, 6), round(lat, 6)]
                 },
                 "properties": {
-                    "id": f"atm_{len(features) + 1}",
-                    "facility_type": "atm",
+                    "id": f"bank_{len(features) + 1}",
+                    "facility_type": "banks",
                     "name": clean_title,
                     "bank_code": bank_code,
                     "bank_full_name": bank_full_name,

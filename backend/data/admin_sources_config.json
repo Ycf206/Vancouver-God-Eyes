@@ -1108,7 +1108,7 @@
       "source_url": "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/property-addresses/records/"
     },
     {
-      "id": "atm",
+      "id": "banks",
       "name": "銀行 (Banks)",
       "type": "geojson",
       "cron_expr": "0 4 * * *",
@@ -1117,7 +1117,7 @@
       "unit": "間銀行分行",
       "last_updated": "2026-10-25T17:57:21.402Z",
       "status": "ok",
-      "data_pipeline_notes": "Bankee 溫哥華銀行與分行清冊 -> 解析服務、開放時間、Transit/Institution/SWIFT 編號 -> 寫入 /backend/data/vancouver_atm.geojson",
+      "data_pipeline_notes": "Bankee 溫哥華銀行與分行清冊 -> 解析服務、開放時間、Transit/Institution/SWIFT 編號 -> 寫入 /backend/data/vancouver_banks.geojson",
       "runner": "github_actions",
       "workflow_file": "update-banks.yml",
       "category": "生活",

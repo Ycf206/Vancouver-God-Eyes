@@ -1233,7 +1233,7 @@ export default function AppMap() {
         else if (type === 'canada_post' && (!layers.canadaPost || !courierFilter.canadaPost)) facilityClosed = true;
         else if (type === 'fedex' && (!layers.canadaPost || !courierFilter.fedex)) facilityClosed = true;
         else if (type === 'purolator' && (!layers.canadaPost || !courierFilter.purolator)) facilityClosed = true;
-        else if (type === 'atm' && !layers.atm) facilityClosed = true;
+        else if ((type === 'banks' || type === 'atm') && !layers.banks && !layers.atm) facilityClosed = true;
         else if (type === 'hospitals' && !layers.hospitals) facilityClosed = true;
         else if (type === 'parks' && !layers.parks) facilityClosed = true;
         else if (type === 'parks_facilities' && !layers.parksFacilities) facilityClosed = true;
@@ -2052,7 +2052,7 @@ export default function AppMap() {
 
   // Compute distance from user's personal location to currently selected gas station
   const userDistanceToFuel = useMemo(() => {
-    if (!selectedFacility || (selectedFacility.facility_type !== 'fuel' && selectedFacility.facility_type !== 'ev_charging' && selectedFacility.facility_type !== 'atm') || !userLocation?.confirmed || !userLocation.lat || !userLocation.lon) {
+    if (!selectedFacility || (selectedFacility.facility_type !== 'fuel' && selectedFacility.facility_type !== 'ev_charging' && selectedFacility.facility_type !== 'banks' && selectedFacility.facility_type !== 'atm') || !userLocation?.confirmed || !userLocation.lat || !userLocation.lon) {
       return null;
     }
     const R = 6371; // km
@@ -2902,8 +2902,8 @@ export default function AppMap() {
       style.sources['fedex'] = { type: 'geojson', data: '/vancouver_fedex.geojson' };
       style.sources['purolator'] = { type: 'geojson', data: '/vancouver_purolator.geojson' };
     }
-    if (layers.atm) {
-      style.sources['atm'] = { type: 'geojson', data: '/vancouver_atm.geojson' };
+    if (layers.banks || layers.atm) {
+      style.sources['banks'] = { type: 'geojson', data: '/vancouver_banks.geojson' };
     }
 
     if (layers.communityCentres) {
@@ -4342,12 +4342,12 @@ export default function AppMap() {
       });
     }
 
-    // Bank ATMs
-    if (layers.atm) {
+    // Banks (銀行)
+    if (layers.banks || layers.atm) {
       style.layers.push({
-        id: 'atm-layer',
+        id: 'banks-layer',
         type: 'circle',
-        source: 'atm',
+        source: 'banks',
         paint: {
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 2.5, 14, 4.5, 15, 8, 17, 10],
           'circle-color': '#f59e0b',
@@ -4356,9 +4356,9 @@ export default function AppMap() {
         }
       });
       style.layers.push({
-        id: 'atm-symbol-layer',
+        id: 'banks-symbol-layer',
         type: 'symbol',
-        source: 'atm',
+        source: 'banks',
         minzoom: 14,
         layout: {
           'text-field': '$',
@@ -6226,6 +6226,7 @@ export default function AppMap() {
     courierFilter.canadaPost,
     courierFilter.fedex,
     courierFilter.purolator,
+    layers.banks,
     layers.atm,
     layers.hospitals,
     layers.parks,
@@ -6462,6 +6463,8 @@ export default function AppMap() {
           'fedex-symbol-layer',
           'purolator-layer',
           'purolator-symbol-layer',
+          'banks-layer',
+          'banks-symbol-layer',
           'atm-layer',
           'atm-symbol-layer',
           'truck-routes-restriction-layer',
@@ -6860,6 +6863,7 @@ export default function AppMap() {
             layerId.startsWith('canada-post') ||
             layerId.startsWith('fedex') ||
             layerId.startsWith('purolator') ||
+            layerId.startsWith('banks') ||
             layerId.startsWith('atm') ||
             layerId.startsWith('hospitals') ||
             layerId.startsWith('parks') ||
@@ -9090,7 +9094,7 @@ export default function AppMap() {
                   if (t === 'canada_post') return { label: '郵寄', bg: 'bg-[#E31837] text-white' };
                   if (t === 'fedex') return { label: '郵寄', bg: 'bg-[#4D148C] text-white' };
                   if (t === 'purolator') return { label: '郵寄', bg: 'bg-[#00529B] text-white' };
-                  if (t === 'atm') return { label: '銀行', bg: 'bg-amber-500 text-white' };
+                  if (t === 'banks' || t === 'atm') return { label: '銀行', bg: 'bg-amber-500 text-white' };
                   if (t === 'public_art') return { label: '公共藝術', bg: 'bg-fuchsia-600 text-white' };
                   if (t === 'police') return { label: '警察', bg: 'bg-blue-600 text-white' };
                   if (t === 'fire_halls') return { label: '消防', bg: 'bg-rose-600 text-white' };
@@ -9239,7 +9243,7 @@ export default function AppMap() {
                       if (street) return `${block ? block + ' ' : ''}${street}`.trim();
                       return '摩托車停車位';
                     }
-                    if (selectedFacility.facility_type === 'atm') {
+                    if (selectedFacility.facility_type === 'banks' || selectedFacility.facility_type === 'atm') {
                       return selectedFacility.properties?.bank_full_name || (selectedFacility.name || '').split(/—|–|-/)[0].trim() || '銀行';
                     }
                     if (selectedFacility.facility_type === 'drinking_fountains') {
@@ -9461,7 +9465,7 @@ export default function AppMap() {
                                 const parts = [streetPart, addr.city, addr.countryCode, provPostal].filter(Boolean);
                                 return formatTitleCase(parts.join(', ') || selectedFacility.local_area || 'Vancouver, BC');
                               }
-                              if (selectedFacility.facility_type === 'atm') return selectedFacility.properties?.address ? `${selectedFacility.properties.address}, Vancouver, BC` : 'Vancouver, BC';
+                              if (selectedFacility.facility_type === 'banks' || selectedFacility.facility_type === 'atm') return selectedFacility.properties?.address ? `${selectedFacility.properties.address}, Vancouver, BC` : 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'museums') return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
                               if (selectedFacility.facility_type === 'garbage_collection') return selectedFacility.properties?.zone_code || selectedFacility.local_area || '';
                               if (selectedFacility.facility_type === 'traffic_signals') return 'Vancouver, BC';
@@ -10793,7 +10797,7 @@ export default function AppMap() {
               )}
 
               {/* Bank (銀行) Details */}
-              {selectedFacility.facility_type === 'atm' && (() => {
+              {(selectedFacility.facility_type === 'banks' || selectedFacility.facility_type === 'atm') && (() => {
                 const props = selectedFacility.properties || {};
                 const bankFullName = props.bank_full_name || '加拿大銀行';
                 const officialUrl = props.official_url || props.bank_website || props.url || 'https://www.google.com';

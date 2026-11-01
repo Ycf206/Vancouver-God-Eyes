@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 
 export type MapStyleType = 'street' | 'satellite' | 'light' | 'dark';
 
-export type ExploreTabType = 'weather' | 'news' | 'events' | 'beach' | 'ski' | 'aurora' | 'jobs' | '311' | 'shopping' | 'atm' | 'fuel' | 'charging' | 'ev' | 'ferry' | 'cargo' | 'shipping' | 'flights' | 'border' | 'alerts' | 'traffic' | 'crashes';
+export type ExploreTabType = 'weather' | 'news' | 'events' | 'beach' | 'ski' | 'aurora' | 'jobs' | '311' | 'shopping' | 'banks' | 'atm' | 'fuel' | 'charging' | 'ev' | 'ferry' | 'cargo' | 'shipping' | 'flights' | 'border' | 'alerts' | 'traffic' | 'crashes';
 
 export interface SearchTarget {
   id: string;
@@ -52,7 +52,8 @@ export interface UIState {
     disasterHubs: boolean;
     communityCentres: boolean;
     canadaPost: boolean;
-    atm: boolean;
+    banks: boolean;
+    atm?: boolean;
     hospitals: boolean;
     parks: boolean;
     parksFacilities: boolean;
@@ -281,6 +282,7 @@ export const useUIStore = create<UIState>()(
         disasterHubs: false,
         communityCentres: false,
         canadaPost: false,
+        banks: false,
         atm: false,
         hospitals: false,
         parks: false,

@@ -635,9 +635,9 @@ export default function LayerPanel() {
               <LayerButton layerKey="schools" label="學校" icon={GraduationCap} colorClass="text-blue-400" activeBg="bg-[#142334]" activeBorder="border-blue-500/50" activeShadow="shadow-[0_0_6px_rgba(59,130,246,0.15)]" />
               <LayerButton layerKey="libraries" label="圖書館" icon={BookOpen} colorClass="text-amber-400" activeBg="bg-[#292215]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
 
-              {/* Row 2: 社區中心 | ATM */}
+              {/* Row 2: 社區中心 | 銀行 */}
               <LayerButton layerKey="communityCentres" label="社區中心" icon={Building2} colorClass="text-violet-400" activeBg="bg-[#211a2f]" activeBorder="border-violet-500/50" activeShadow="shadow-[0_0_6px_rgba(139,92,246,0.15)]" />
-              <LayerButton layerKey="atm" label="銀行" icon={Landmark} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
+              <LayerButton layerKey="banks" label="銀行" icon={Landmark} colorClass="text-amber-400" activeBg="bg-[#2a2214]" activeBorder="border-amber-500/50" activeShadow="shadow-[0_0_6px_rgba(245,158,11,0.15)]" />
 
               {/* Row 3: AED | Canada Post */}
               <LayerButton layerKey="aed" label="AED" icon={HeartPulse} colorClass="text-red-400" activeBg="bg-[#2c1518]" activeBorder="border-red-500/50" activeShadow="shadow-[0_0_6px_rgba(239,68,68,0.15)]" />

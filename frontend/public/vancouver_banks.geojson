@@ -18,7 +18,7 @@
       },
       "properties": {
         "id": "atm_1",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 777 West Broadway",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -63,7 +63,7 @@
       },
       "properties": {
         "id": "atm_2",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Vancity Credit Union — 501 West 10th Avenue",
         "bank_code": "vancity",
         "bank_full_name": "Vancity Credit Union",
@@ -105,7 +105,7 @@
       },
       "properties": {
         "id": "atm_3",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 999 West Broadway",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -149,7 +149,7 @@
       },
       "properties": {
         "id": "atm_4",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 885 West Broadway",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -193,7 +193,7 @@
       },
       "properties": {
         "id": "atm_5",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Canadian Imperial Bank of Commerce (CIBC) — 538 West Broadway",
         "bank_code": "cibc",
         "bank_full_name": "Canadian Imperial Bank of Commerce (CIBC)",
@@ -240,7 +240,7 @@
       },
       "properties": {
         "id": "atm_6",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 710 West 6Th Ave.",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -286,7 +286,7 @@
       },
       "properties": {
         "id": "atm_7",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 505 West Broadway",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -335,7 +335,7 @@
       },
       "properties": {
         "id": "atm_8",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 555 West 12th Avenue #130",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -380,7 +380,7 @@
       },
       "properties": {
         "id": "atm_9",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Coast Capital — 445 West Broadway",
         "bank_code": "coast-capital",
         "bank_full_name": "Coast Capital",
@@ -423,7 +423,7 @@
       },
       "properties": {
         "id": "atm_10",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Coast Capital — 120 Davie Street",
         "bank_code": "coast-capital",
         "bank_full_name": "Coast Capital",
@@ -465,7 +465,7 @@
       },
       "properties": {
         "id": "atm_11",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 1689 Manitoba Street",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -514,7 +514,7 @@
       },
       "properties": {
         "id": "atm_12",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 1195 Pacific Boulevard",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -563,7 +563,7 @@
       },
       "properties": {
         "id": "atm_13",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 433 West 8th Avenue",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -611,7 +611,7 @@
       },
       "properties": {
         "id": "atm_14",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 103 West 2nd Avenue",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -656,7 +656,7 @@
       },
       "properties": {
         "id": "atm_15",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 1750 Manitoba Street",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -701,7 +701,7 @@
       },
       "properties": {
         "id": "atm_16",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 3401 Cambie Street",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -748,7 +748,7 @@
       },
       "properties": {
         "id": "atm_17",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Canadian Imperial Bank of Commerce (CIBC) — 1096 Homer Street",
         "bank_code": "cibc",
         "bank_full_name": "Canadian Imperial Bank of Commerce (CIBC)",
@@ -794,7 +794,7 @@
       },
       "properties": {
         "id": "atm_18",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "PC Financial ATM — 1508 Anderson St.",
         "bank_code": "pc-financial",
         "bank_full_name": "PC Financial ATM",
@@ -838,7 +838,7 @@
       },
       "properties": {
         "id": "atm_19",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 1497 West Broadway",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -887,7 +887,7 @@
       },
       "properties": {
         "id": "atm_20",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 2804 Granville Street",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -934,7 +934,7 @@
       },
       "properties": {
         "id": "atm_21",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 1108 Homer Street",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -980,7 +980,7 @@
       },
       "properties": {
         "id": "atm_22",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 1622 Salt Street",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -1024,7 +1024,7 @@
       },
       "properties": {
         "id": "atm_23",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Canadian Imperial Bank of Commerce (CIBC) — 2904 Granville Street",
         "bank_code": "cibc",
         "bank_full_name": "Canadian Imperial Bank of Commerce (CIBC)",
@@ -1071,7 +1071,7 @@
       },
       "properties": {
         "id": "atm_24",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 2609 Granville Street #301",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -1116,7 +1116,7 @@
       },
       "properties": {
         "id": "atm_25",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Beem Credit Union ATM — 1 2949 Main St",
         "bank_code": "beem",
         "bank_full_name": "Beem Credit Union ATM",
@@ -1160,7 +1160,7 @@
       },
       "properties": {
         "id": "atm_26",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Coast Capital — 3088 Granville Street",
         "bank_code": "coast-capital",
         "bank_full_name": "Coast Capital",
@@ -1202,7 +1202,7 @@
       },
       "properties": {
         "id": "atm_27",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 2801 Granville Street",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -1251,7 +1251,7 @@
       },
       "properties": {
         "id": "atm_28",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "ALLPOINT",
         "bank_code": "allpoint",
         "bank_full_name": "ALLPOINT",
@@ -1296,7 +1296,7 @@
       },
       "properties": {
         "id": "atm_29",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — Unit 201 — 1431 Cont",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -1340,7 +1340,7 @@
       },
       "properties": {
         "id": "atm_30",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 1001 Hamilton Street",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -1389,7 +1389,7 @@
       },
       "properties": {
         "id": "atm_31",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 1004 Hamilton Street",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -1434,7 +1434,7 @@
       },
       "properties": {
         "id": "atm_32",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 99 Smithe St",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -1480,7 +1480,7 @@
       },
       "properties": {
         "id": "atm_33",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 3935 Oak Street",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -1528,7 +1528,7 @@
       },
       "properties": {
         "id": "atm_34",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 996 Homer Street",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -1577,7 +1577,7 @@
       },
       "properties": {
         "id": "atm_35",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 1689 Johnston St",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -1621,7 +1621,7 @@
       },
       "properties": {
         "id": "atm_36",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 121, 370 East Broadway",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -1665,7 +1665,7 @@
       },
       "properties": {
         "id": "atm_37",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 1294 Granville St.",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -1711,7 +1711,7 @@
       },
       "properties": {
         "id": "atm_38",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 3373 Main Street",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -1760,7 +1760,7 @@
       },
       "properties": {
         "id": "atm_39",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 100 — 4088 Cambie Street",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -1804,7 +1804,7 @@
       },
       "properties": {
         "id": "atm_40",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 1423 Continental Str",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -1848,7 +1848,7 @@
       },
       "properties": {
         "id": "atm_41",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Vancity Credit Union — 100 183 Terminal Ave",
         "bank_code": "vancity",
         "bank_full_name": "Vancity Credit Union",
@@ -1892,7 +1892,7 @@
       },
       "properties": {
         "id": "atm_42",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 1026 Granville Street",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -1936,7 +1936,7 @@
       },
       "properties": {
         "id": "atm_43",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 1200 Burrard Street",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -1985,7 +1985,7 @@
       },
       "properties": {
         "id": "atm_44",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 900 West King Edward Avenue",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -2031,7 +2031,7 @@
       },
       "properties": {
         "id": "atm_45",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — Seymour Street",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -2075,7 +2075,7 @@
       },
       "properties": {
         "id": "atm_46",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Vancity Credit Union — 183 Terminal Avenue",
         "bank_code": "vancity",
         "bank_full_name": "Vancity Credit Union",
@@ -2119,7 +2119,7 @@
       },
       "properties": {
         "id": "atm_47",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 310 Robson St",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -2165,7 +2165,7 @@
       },
       "properties": {
         "id": "atm_48",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 4110 Oak St",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -2209,7 +2209,7 @@
       },
       "properties": {
         "id": "atm_49",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 401 West Georgia Street #100",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -2251,7 +2251,7 @@
       },
       "properties": {
         "id": "atm_50",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Canadian Imperial Bank of Commerce (CIBC) — 783 Richards Street",
         "bank_code": "cibc",
         "bank_full_name": "Canadian Imperial Bank of Commerce (CIBC)",
@@ -2297,7 +2297,7 @@
       },
       "properties": {
         "id": "atm_51",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 1081 Burrard St",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -2341,7 +2341,7 @@
       },
       "properties": {
         "id": "atm_52",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 1010 Hornby Street",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -2390,7 +2390,7 @@
       },
       "properties": {
         "id": "atm_53",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 345 Robson Street",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -2434,7 +2434,7 @@
       },
       "properties": {
         "id": "atm_54",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 1205 Burrard St",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -2480,7 +2480,7 @@
       },
       "properties": {
         "id": "atm_55",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 731 Homer St",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -2526,7 +2526,7 @@
       },
       "properties": {
         "id": "atm_56",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 489 Robson St",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -2570,7 +2570,7 @@
       },
       "properties": {
         "id": "atm_57",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 1051 Davie St",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -2616,7 +2616,7 @@
       },
       "properties": {
         "id": "atm_58",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — Canada — 1743 Burrard St",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -2660,7 +2660,7 @@
       },
       "properties": {
         "id": "atm_59",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 99 Keefer Place",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -2704,7 +2704,7 @@
       },
       "properties": {
         "id": "atm_60",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 650 West Georgia Street",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -2747,7 +2747,7 @@
       },
       "properties": {
         "id": "atm_61",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Manulife Bank ATM — 605 East Broadway",
         "bank_code": "manulife-bank",
         "bank_full_name": "Manulife Bank ATM",
@@ -2791,7 +2791,7 @@
       },
       "properties": {
         "id": "atm_62",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 4095 Main Street",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -2839,7 +2839,7 @@
       },
       "properties": {
         "id": "atm_63",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 700 West Georgia Street",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -2888,7 +2888,7 @@
       },
       "properties": {
         "id": "atm_64",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 110—909 Burrard St",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -2932,7 +2932,7 @@
       },
       "properties": {
         "id": "atm_65",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Vancity Credit Union — 4205 Main Street",
         "bank_code": "vancity",
         "bank_full_name": "Vancity Credit Union",
@@ -2974,7 +2974,7 @@
       },
       "properties": {
         "id": "atm_66",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 1911 West 4th Avenue",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -3023,7 +3023,7 @@
       },
       "properties": {
         "id": "atm_67",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 1000 Robson Street",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -3067,7 +3067,7 @@
       },
       "properties": {
         "id": "atm_68",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 596 Seymour St.",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -3113,7 +3113,7 @@
       },
       "properties": {
         "id": "atm_69",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Vancity Credit Union — 608 Main St",
         "bank_code": "vancity",
         "bank_full_name": "Vancity Credit Union",
@@ -3155,7 +3155,7 @@
       },
       "properties": {
         "id": "atm_70",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Manulife Bank ATM — 1198 Davie Street",
         "bank_code": "manulife-bank",
         "bank_full_name": "Manulife Bank ATM",
@@ -3199,7 +3199,7 @@
       },
       "properties": {
         "id": "atm_71",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "PC Financial ATM — 1255 Davie Street",
         "bank_code": "pc-financial",
         "bank_full_name": "PC Financial ATM",
@@ -3243,7 +3243,7 @@
       },
       "properties": {
         "id": "atm_72",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 601 Main Street",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -3288,7 +3288,7 @@
       },
       "properties": {
         "id": "atm_73",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "PC Financial ATM — 1255 Davie Street",
         "bank_code": "pc-financial",
         "bank_full_name": "PC Financial ATM",
@@ -3332,7 +3332,7 @@
       },
       "properties": {
         "id": "atm_74",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Canadian Imperial Bank of Commerce (CIBC) — 501 Main Street",
         "bank_code": "cibc",
         "bank_full_name": "Canadian Imperial Bank of Commerce (CIBC)",
@@ -3380,7 +3380,7 @@
       },
       "properties": {
         "id": "atm_75",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Canadian Imperial Bank of Commerce (CIBC) — 1036 West Georgia Street",
         "bank_code": "cibc",
         "bank_full_name": "Canadian Imperial Bank of Commerce (CIBC)",
@@ -3423,7 +3423,7 @@
       },
       "properties": {
         "id": "atm_76",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 101",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -3467,7 +3467,7 @@
       },
       "properties": {
         "id": "atm_77",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 666 Burrard Street #2500",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -3514,7 +3514,7 @@
       },
       "properties": {
         "id": "atm_78",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 1025 West Georgia Street",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -3561,7 +3561,7 @@
       },
       "properties": {
         "id": "atm_79",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "National Bank of Canada — 805 West Pender Street",
         "bank_code": "national-bank",
         "bank_full_name": "National Bank of Canada",
@@ -3604,7 +3604,7 @@
       },
       "properties": {
         "id": "atm_80",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 450 Main Street",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -3653,7 +3653,7 @@
       },
       "properties": {
         "id": "atm_81",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Manulife Bank ATM — 1997 Cornwall Avenue",
         "bank_code": "manulife-bank",
         "bank_full_name": "Manulife Bank ATM",
@@ -3697,7 +3697,7 @@
       },
       "properties": {
         "id": "atm_82",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Canadian Imperial Bank of Commerce (CIBC) — 2092 West 4th Avenue",
         "bank_code": "cibc",
         "bank_full_name": "Canadian Imperial Bank of Commerce (CIBC)",
@@ -3743,7 +3743,7 @@
       },
       "properties": {
         "id": "atm_83",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 400 Main Street",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -3792,7 +3792,7 @@
       },
       "properties": {
         "id": "atm_84",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 4402 Main Street",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -3837,7 +3837,7 @@
       },
       "properties": {
         "id": "atm_85",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Vancity Credit Union — 898 West Pender Street",
         "bank_code": "vancity",
         "bank_full_name": "Vancity Credit Union",
@@ -3879,7 +3879,7 @@
       },
       "properties": {
         "id": "atm_86",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "National Bank of Canada — 805 Pender St. W",
         "bank_code": "national-bank",
         "bank_full_name": "National Bank of Canada",
@@ -3923,7 +3923,7 @@
       },
       "properties": {
         "id": "atm_87",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 685 West Hastings Street",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -3968,7 +3968,7 @@
       },
       "properties": {
         "id": "atm_88",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 2103 West Broadway",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -4012,7 +4012,7 @@
       },
       "properties": {
         "id": "atm_89",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Coast Capital Savings — 1075 West Georgia St. — Plaza Level",
         "bank_code": "coast-capital",
         "bank_full_name": "Coast Capital Savings",
@@ -4054,7 +4054,7 @@
       },
       "properties": {
         "id": "atm_90",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 601 Cordova St",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -4098,7 +4098,7 @@
       },
       "properties": {
         "id": "atm_91",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Canadian Imperial Bank of Commerce (CIBC) — 4493 Main Street",
         "bank_code": "cibc",
         "bank_full_name": "Canadian Imperial Bank of Commerce (CIBC)",
@@ -4146,7 +4146,7 @@
       },
       "properties": {
         "id": "atm_92",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 510 Burrard Street",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -4191,7 +4191,7 @@
       },
       "properties": {
         "id": "atm_93",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "National Bank of Canada — 1131 West Georgia Street",
         "bank_code": "national-bank",
         "bank_full_name": "National Bank of Canada",
@@ -4235,7 +4235,7 @@
       },
       "properties": {
         "id": "atm_94",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "National Bank of Canada — 1070 West Georgia Street",
         "bank_code": "national-bank",
         "bank_full_name": "National Bank of Canada",
@@ -4277,7 +4277,7 @@
       },
       "properties": {
         "id": "atm_95",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "PC Financial ATM — 3185 Arbutus Street",
         "bank_code": "pc-financial",
         "bank_full_name": "PC Financial ATM",
@@ -4321,7 +4321,7 @@
       },
       "properties": {
         "id": "atm_96",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 1187 Robson St",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -4365,7 +4365,7 @@
       },
       "properties": {
         "id": "atm_97",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 1055 Dunsmuir Street",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -4409,7 +4409,7 @@
       },
       "properties": {
         "id": "atm_98",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 1055 Dunsmuir Street",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -4453,7 +4453,7 @@
       },
       "properties": {
         "id": "atm_99",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 595 Burrard Street",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -4497,7 +4497,7 @@
       },
       "properties": {
         "id": "atm_100",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "PC Financial ATM — 3113 Arbutus Street",
         "bank_code": "pc-financial",
         "bank_full_name": "PC Financial ATM",
@@ -4541,7 +4541,7 @@
       },
       "properties": {
         "id": "atm_101",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Beem Credit Union — 2212 W Broadway",
         "bank_code": "beem",
         "bank_full_name": "Beem Credit Union",
@@ -4583,7 +4583,7 @@
       },
       "properties": {
         "id": "atm_102",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Canadian Imperial Bank of Commerce (CIBC) — 400 Burrard Street",
         "bank_code": "cibc",
         "bank_full_name": "Canadian Imperial Bank of Commerce (CIBC)",
@@ -4628,7 +4628,7 @@
       },
       "properties": {
         "id": "atm_103",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 3205 Arbutus Street",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -4672,7 +4672,7 @@
       },
       "properties": {
         "id": "atm_104",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 1205 Robson Street",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -4720,7 +4720,7 @@
       },
       "properties": {
         "id": "atm_105",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Beem Credit Union — 101 1095 West Pender St",
         "bank_code": "beem",
         "bank_full_name": "Beem Credit Union",
@@ -4764,7 +4764,7 @@
       },
       "properties": {
         "id": "atm_106",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Vancity Credit Union — 346 E. Hastings",
         "bank_code": "vancity",
         "bank_full_name": "Vancity Credit Union",
@@ -4808,7 +4808,7 @@
       },
       "properties": {
         "id": "atm_107",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 2230 W Broadway",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -4852,7 +4852,7 @@
       },
       "properties": {
         "id": "atm_108",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 4064 Fraser St",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -4898,7 +4898,7 @@
       },
       "properties": {
         "id": "atm_109",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 200 Burrard St",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -4942,7 +4942,7 @@
       },
       "properties": {
         "id": "atm_110",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 2286 W Broadway",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -4986,7 +4986,7 @@
       },
       "properties": {
         "id": "atm_111",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 4064 Fraser Street",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -5030,7 +5030,7 @@
       },
       "properties": {
         "id": "atm_112",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 200 Burrard Street",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -5075,7 +5075,7 @@
       },
       "properties": {
         "id": "atm_113",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 1610 Davie Street",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -5119,7 +5119,7 @@
       },
       "properties": {
         "id": "atm_114",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 1641 Davie Street",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -5163,7 +5163,7 @@
       },
       "properties": {
         "id": "atm_115",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 104—1199 W Pender St",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -5209,7 +5209,7 @@
       },
       "properties": {
         "id": "atm_116",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 1177 West Hastings Street",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -5255,7 +5255,7 @@
       },
       "properties": {
         "id": "atm_117",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Vancity Credit Union — 2360 West 4th Ave",
         "bank_code": "vancity",
         "bank_full_name": "Vancity Credit Union",
@@ -5297,7 +5297,7 @@
       },
       "properties": {
         "id": "atm_118",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 1650 Davie St",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -5341,7 +5341,7 @@
       },
       "properties": {
         "id": "atm_119",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 1669 Davie Street",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -5387,7 +5387,7 @@
       },
       "properties": {
         "id": "atm_120",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 2315 West 4th Avenue",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -5431,7 +5431,7 @@
       },
       "properties": {
         "id": "atm_121",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 4255 Arbutus Street #108",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -5473,7 +5473,7 @@
       },
       "properties": {
         "id": "atm_122",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 2388 West 4th Avenue",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -5517,7 +5517,7 @@
       },
       "properties": {
         "id": "atm_123",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 1690 Davie Street",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -5566,7 +5566,7 @@
       },
       "properties": {
         "id": "atm_124",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 2395 4th Ave W",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -5615,7 +5615,7 @@
       },
       "properties": {
         "id": "atm_125",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "PC Financial ATM — 1030 Denman Street",
         "bank_code": "pc-financial",
         "bank_full_name": "PC Financial ATM",
@@ -5659,7 +5659,7 @@
       },
       "properties": {
         "id": "atm_126",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "PC Financial ATM — 1030 Denman Street",
         "bank_code": "pc-financial",
         "bank_full_name": "PC Financial ATM",
@@ -5703,7 +5703,7 @@
       },
       "properties": {
         "id": "atm_127",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 1311 Clark Drive",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -5747,7 +5747,7 @@
       },
       "properties": {
         "id": "atm_128",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — Canada — 1289 E Broadway",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -5791,7 +5791,7 @@
       },
       "properties": {
         "id": "atm_129",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Vancity Credit Union — 1798 Robson Street",
         "bank_code": "vancity",
         "bank_full_name": "Vancity Credit Union",
@@ -5835,7 +5835,7 @@
       },
       "properties": {
         "id": "atm_130",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "National Bank of Canada — 3190 West Broadway",
         "bank_code": "national-bank",
         "bank_full_name": "National Bank of Canada",
@@ -5877,7 +5877,7 @@
       },
       "properties": {
         "id": "atm_131",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 1040 Denman Street",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -5921,7 +5921,7 @@
       },
       "properties": {
         "id": "atm_132",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 1055 Denman St",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -5967,7 +5967,7 @@
       },
       "properties": {
         "id": "atm_133",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Beem Credit Union — 1055 Denman Street",
         "bank_code": "beem",
         "bank_full_name": "Beem Credit Union",
@@ -6011,7 +6011,7 @@
       },
       "properties": {
         "id": "atm_134",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Canadian Imperial Bank of Commerce (CIBC) — 1720 Robson Street",
         "bank_code": "cibc",
         "bank_full_name": "Canadian Imperial Bank of Commerce (CIBC)",
@@ -6057,7 +6057,7 @@
       },
       "properties": {
         "id": "atm_135",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 958 Denman Street",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -6102,7 +6102,7 @@
       },
       "properties": {
         "id": "atm_136",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 945 Denman Street",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -6151,7 +6151,7 @@
       },
       "properties": {
         "id": "atm_137",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Canadian Imperial Bank of Commerce (CIBC) — 5636 Cambie Street",
         "bank_code": "cibc",
         "bank_full_name": "Canadian Imperial Bank of Commerce (CIBC)",
@@ -6199,7 +6199,7 @@
       },
       "properties": {
         "id": "atm_138",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 1766 Robson Street",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -6243,7 +6243,7 @@
       },
       "properties": {
         "id": "atm_139",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 5594 Cambie Street",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -6288,7 +6288,7 @@
       },
       "properties": {
         "id": "atm_140",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 5680 Oak St W",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -6334,7 +6334,7 @@
       },
       "properties": {
         "id": "atm_141",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 2733 West Broadway",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -6378,7 +6378,7 @@
       },
       "properties": {
         "id": "atm_142",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 511 West 41st Avenue",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -6427,7 +6427,7 @@
       },
       "properties": {
         "id": "atm_143",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 650 West 41st Avenue",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -6476,7 +6476,7 @@
       },
       "properties": {
         "id": "atm_144",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 2798 West Broadway",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -6520,7 +6520,7 @@
       },
       "properties": {
         "id": "atm_145",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 1503 41St Ave W",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -6564,7 +6564,7 @@
       },
       "properties": {
         "id": "atm_146",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 2490 MacDonald Street",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -6613,7 +6613,7 @@
       },
       "properties": {
         "id": "atm_147",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 650 West 41st Avenue #103",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -6658,7 +6658,7 @@
       },
       "properties": {
         "id": "atm_148",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 5812 Cambie Street",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -6700,7 +6700,7 @@
       },
       "properties": {
         "id": "atm_149",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 5688 Granville Street",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -6748,7 +6748,7 @@
       },
       "properties": {
         "id": "atm_150",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 2823 West 4th Avenue",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -6792,7 +6792,7 @@
       },
       "properties": {
         "id": "atm_151",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 5702 Granville St",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -6838,7 +6838,7 @@
       },
       "properties": {
         "id": "atm_152",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Canadian Imperial Bank of Commerce (CIBC) — 1427 Kingsway",
         "bank_code": "cibc",
         "bank_full_name": "Canadian Imperial Bank of Commerce (CIBC)",
@@ -6886,7 +6886,7 @@
       },
       "properties": {
         "id": "atm_153",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 1435 Cedar Cottage Mews",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -6935,7 +6935,7 @@
       },
       "properties": {
         "id": "atm_154",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 2501 Commercial Drive",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -6977,7 +6977,7 @@
       },
       "properties": {
         "id": "atm_155",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 1576 West 41st Avenue",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -7019,7 +7019,7 @@
       },
       "properties": {
         "id": "atm_156",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 1695 East Broadway",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -7063,7 +7063,7 @@
       },
       "properties": {
         "id": "atm_157",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Manulife Bank ATM — 2601 Commercial Drive",
         "bank_code": "manulife-bank",
         "bank_full_name": "Manulife Bank ATM",
@@ -7107,7 +7107,7 @@
       },
       "properties": {
         "id": "atm_158",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 1715 Commercial Drive",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -7155,7 +7155,7 @@
       },
       "properties": {
         "id": "atm_159",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 625 West 45th Avenue",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -7199,7 +7199,7 @@
       },
       "properties": {
         "id": "atm_160",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Canadian Imperial Bank of Commerce (CIBC) — 2896 West Broadway",
         "bank_code": "cibc",
         "bank_full_name": "Canadian Imperial Bank of Commerce (CIBC)",
@@ -7248,7 +7248,7 @@
       },
       "properties": {
         "id": "atm_161",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Vancity Credit Union — 1675 Commercial Drive",
         "bank_code": "vancity",
         "bank_full_name": "Vancity Credit Union",
@@ -7291,7 +7291,7 @@
       },
       "properties": {
         "id": "atm_162",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Beem Credit Union — 2941 West Broadway",
         "bank_code": "beem",
         "bank_full_name": "Beem Credit Union",
@@ -7333,7 +7333,7 @@
       },
       "properties": {
         "id": "atm_163",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Vancity Credit Union — 2610 Victoria Drive",
         "bank_code": "vancity",
         "bank_full_name": "Vancity Credit Union",
@@ -7377,7 +7377,7 @@
       },
       "properties": {
         "id": "atm_164",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 1780 East Broadway Store, # 189",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -7421,7 +7421,7 @@
       },
       "properties": {
         "id": "atm_165",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "National Bank of Canada — 3190 W Broadway",
         "bank_code": "national-bank",
         "bank_full_name": "National Bank of Canada",
@@ -7465,7 +7465,7 @@
       },
       "properties": {
         "id": "atm_166",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — Canada — 1390 E 33rd Ave",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -7509,7 +7509,7 @@
       },
       "properties": {
         "id": "atm_167",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 2102 West 41st Avenue",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -7554,7 +7554,7 @@
       },
       "properties": {
         "id": "atm_168",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 4894 Knight St",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -7599,7 +7599,7 @@
       },
       "properties": {
         "id": "atm_169",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 2091 W 42nd Ave",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -7643,7 +7643,7 @@
       },
       "properties": {
         "id": "atm_170",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 6525 Oak Street",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -7687,7 +7687,7 @@
       },
       "properties": {
         "id": "atm_171",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 6525 Oak St",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -7733,7 +7733,7 @@
       },
       "properties": {
         "id": "atm_172",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 2207 41 Ave W",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -7779,7 +7779,7 @@
       },
       "properties": {
         "id": "atm_173",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Vancity Credit Union — 3395 West Broadway",
         "bank_code": "vancity",
         "bank_full_name": "Vancity Credit Union",
@@ -7821,7 +7821,7 @@
       },
       "properties": {
         "id": "atm_174",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 2198 West 41st Avenue",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -7870,7 +7870,7 @@
       },
       "properties": {
         "id": "atm_175",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 3396 West Broadway W",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -7919,7 +7919,7 @@
       },
       "properties": {
         "id": "atm_176",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 2208 West 41st Avenue",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -7968,7 +7968,7 @@
       },
       "properties": {
         "id": "atm_177",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Vancity Credit Union — 2380 West 41st Avenue",
         "bank_code": "vancity",
         "bank_full_name": "Vancity Credit Union",
@@ -8010,7 +8010,7 @@
       },
       "properties": {
         "id": "atm_178",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 465 Victoria Drive, Vancouver, BC V5L 4C9 Victoria Drive, Vancouver",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -8054,7 +8054,7 @@
       },
       "properties": {
         "id": "atm_179",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Canadian Imperial Bank of Commerce (CIBC) — 2288 West 41st Avenue",
         "bank_code": "cibc",
         "bank_full_name": "Canadian Imperial Bank of Commerce (CIBC)",
@@ -8103,7 +8103,7 @@
       },
       "properties": {
         "id": "atm_180",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 1995 Kingsway",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -8152,7 +8152,7 @@
       },
       "properties": {
         "id": "atm_181",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "ALLPOINT — Eleven",
         "bank_code": "allpoint",
         "bank_full_name": "ALLPOINT",
@@ -8197,7 +8197,7 @@
       },
       "properties": {
         "id": "atm_182",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Beem Credit Union — 2380 W.41st Avenue",
         "bank_code": "beem",
         "bank_full_name": "Beem Credit Union",
@@ -8241,7 +8241,7 @@
       },
       "properties": {
         "id": "atm_183",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 6509 Main St",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -8289,7 +8289,7 @@
       },
       "properties": {
         "id": "atm_184",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Canadian Imperial Bank of Commerce (CIBC) — 6204 Fraser Street",
         "bank_code": "cibc",
         "bank_full_name": "Canadian Imperial Bank of Commerce (CIBC)",
@@ -8338,7 +8338,7 @@
       },
       "properties": {
         "id": "atm_185",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Beem Credit Union — 6332 Fraser St",
         "bank_code": "beem",
         "bank_full_name": "Beem Credit Union",
@@ -8382,7 +8382,7 @@
       },
       "properties": {
         "id": "atm_186",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 3515 W 4th Ave",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -8426,7 +8426,7 @@
       },
       "properties": {
         "id": "atm_187",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 2008 Kingsway",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -8470,7 +8470,7 @@
       },
       "properties": {
         "id": "atm_188",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 2396 East Broadway",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -8519,7 +8519,7 @@
       },
       "properties": {
         "id": "atm_189",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "ALLPOINT — Eleven",
         "bank_code": "allpoint",
         "bank_full_name": "ALLPOINT",
@@ -8564,7 +8564,7 @@
       },
       "properties": {
         "id": "atm_190",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 1396 41St Ave E",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -8608,7 +8608,7 @@
       },
       "properties": {
         "id": "atm_191",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 6391 Fraser Street",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -8653,7 +8653,7 @@
       },
       "properties": {
         "id": "atm_192",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 1609 Nanaimo St",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -8698,7 +8698,7 @@
       },
       "properties": {
         "id": "atm_193",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 6498 Fraser Street",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -8742,7 +8742,7 @@
       },
       "properties": {
         "id": "atm_194",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Beem Credit Union — 2199 Kingsway",
         "bank_code": "beem",
         "bank_full_name": "Beem Credit Union",
@@ -8785,7 +8785,7 @@
       },
       "properties": {
         "id": "atm_195",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 6499 Fraser Street",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -8834,7 +8834,7 @@
       },
       "properties": {
         "id": "atm_196",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 6505 Fraser Street",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -8883,7 +8883,7 @@
       },
       "properties": {
         "id": "atm_197",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Vancity Credit Union — 6288 Fraser Street",
         "bank_code": "vancity",
         "bank_full_name": "Vancity Credit Union",
@@ -8927,7 +8927,7 @@
       },
       "properties": {
         "id": "atm_198",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 3695 West 4th Avenue",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -8971,7 +8971,7 @@
       },
       "properties": {
         "id": "atm_199",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 531 West 57th Avenue",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -9014,7 +9014,7 @@
       },
       "properties": {
         "id": "atm_200",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 3695 10Th Ave. W",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -9060,7 +9060,7 @@
       },
       "properties": {
         "id": "atm_201",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 4402 Dunbar Street",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -9107,7 +9107,7 @@
       },
       "properties": {
         "id": "atm_202",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 2381 East Hastings Street",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -9155,7 +9155,7 @@
       },
       "properties": {
         "id": "atm_203",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — Canada — 2277 Kingsway",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -9199,7 +9199,7 @@
       },
       "properties": {
         "id": "atm_204",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 4200 Dunbar Street",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -9245,7 +9245,7 @@
       },
       "properties": {
         "id": "atm_205",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Vancity Credit Union — 2510 East Hastings Street",
         "bank_code": "vancity",
         "bank_full_name": "Vancity Credit Union",
@@ -9287,7 +9287,7 @@
       },
       "properties": {
         "id": "atm_206",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Beem Credit Union — 608 W 58th Avenue",
         "bank_code": "beem",
         "bank_full_name": "Beem Credit Union",
@@ -9330,7 +9330,7 @@
       },
       "properties": {
         "id": "atm_207",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 2497 East Hastings Street",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -9379,7 +9379,7 @@
       },
       "properties": {
         "id": "atm_208",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 4395 Dunbar Street",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -9423,7 +9423,7 @@
       },
       "properties": {
         "id": "atm_209",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Vancity Credit Union — 5672 Victoria Drive",
         "bank_code": "vancity",
         "bank_full_name": "Vancity Credit Union",
@@ -9466,7 +9466,7 @@
       },
       "properties": {
         "id": "atm_210",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 2320 Kingsway",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -9514,7 +9514,7 @@
       },
       "properties": {
         "id": "atm_211",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 5639 Victoria Dr",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -9558,7 +9558,7 @@
       },
       "properties": {
         "id": "atm_212",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 4588 Dunbar Street",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -9602,7 +9602,7 @@
       },
       "properties": {
         "id": "atm_213",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 2590 East Hastings Street",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -9647,7 +9647,7 @@
       },
       "properties": {
         "id": "atm_214",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Canadian Imperial Bank of Commerce (CIBC) — 2602 East Hastings Street",
         "bank_code": "cibc",
         "bank_full_name": "Canadian Imperial Bank of Commerce (CIBC)",
@@ -9692,7 +9692,7 @@
       },
       "properties": {
         "id": "atm_215",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Canadian Imperial Bank of Commerce (CIBC) — 5705 Victoria Drive",
         "bank_code": "cibc",
         "bank_full_name": "Canadian Imperial Bank of Commerce (CIBC)",
@@ -9740,7 +9740,7 @@
       },
       "properties": {
         "id": "atm_216",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 5710 Victoria Dr",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -9785,7 +9785,7 @@
       },
       "properties": {
         "id": "atm_217",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 2725 East Hastings Street",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -9829,7 +9829,7 @@
       },
       "properties": {
         "id": "atm_218",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Canadian Imperial Bank of Commerce (CIBC) — 2890 Grandview Highway",
         "bank_code": "cibc",
         "bank_full_name": "Canadian Imperial Bank of Commerce (CIBC)",
@@ -9875,7 +9875,7 @@
       },
       "properties": {
         "id": "atm_219",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 1716 Renfrew Street",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -9924,7 +9924,7 @@
       },
       "properties": {
         "id": "atm_220",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 2800 East 1st Avenue #244",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -9970,7 +9970,7 @@
       },
       "properties": {
         "id": "atm_221",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 5505 Dunbar Street",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -10014,7 +10014,7 @@
       },
       "properties": {
         "id": "atm_222",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "PC Financial ATM — 3185 Grandview Hwy.",
         "bank_code": "pc-financial",
         "bank_full_name": "PC Financial ATM",
@@ -10058,7 +10058,7 @@
       },
       "properties": {
         "id": "atm_223",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — Canada — 2890 E Hastings St",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -10102,7 +10102,7 @@
       },
       "properties": {
         "id": "atm_224",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 3596 West 41 Ave",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -10146,7 +10146,7 @@
       },
       "properties": {
         "id": "atm_225",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 489 Sw Marine Drive",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -10195,7 +10195,7 @@
       },
       "properties": {
         "id": "atm_226",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 6490 Victoria Drive",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -10244,7 +10244,7 @@
       },
       "properties": {
         "id": "atm_227",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 8005 Granville ST",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -10293,7 +10293,7 @@
       },
       "properties": {
         "id": "atm_228",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 8191 Cambie Street",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -10339,7 +10339,7 @@
       },
       "properties": {
         "id": "atm_229",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Canadian Imperial Bank of Commerce (CIBC) — 496 Southwest Marine Drive",
         "bank_code": "cibc",
         "bank_full_name": "Canadian Imperial Bank of Commerce (CIBC)",
@@ -10385,7 +10385,7 @@
       },
       "properties": {
         "id": "atm_230",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 8118 Granville Street",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -10429,7 +10429,7 @@
       },
       "properties": {
         "id": "atm_231",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 123 Carrie Cates Court",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -10473,7 +10473,7 @@
       },
       "properties": {
         "id": "atm_232",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 7282 Knight St.",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -10519,7 +10519,7 @@
       },
       "properties": {
         "id": "atm_233",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 480 Southwest Marine Drive",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -10564,7 +10564,7 @@
       },
       "properties": {
         "id": "atm_234",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "PC Financial Pavilion — 3185 Grandview Highway",
         "bank_code": "pc-financial",
         "bank_full_name": "PC Financial Pavilion",
@@ -10608,7 +10608,7 @@
       },
       "properties": {
         "id": "atm_235",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 446 SW Marine Dr SW",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -10657,7 +10657,7 @@
       },
       "properties": {
         "id": "atm_236",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 4314 West 10 Ave",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -10701,7 +10701,7 @@
       },
       "properties": {
         "id": "atm_237",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Canadian Imperial Bank of Commerce (CIBC) — 8450 Granville Street",
         "bank_code": "cibc",
         "bank_full_name": "Canadian Imperial Bank of Commerce (CIBC)",
@@ -10747,7 +10747,7 @@
       },
       "properties": {
         "id": "atm_238",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "PC Financial ATM — 350 Southeast Marine Drive",
         "bank_code": "pc-financial",
         "bank_full_name": "PC Financial ATM",
@@ -10791,7 +10791,7 @@
       },
       "properties": {
         "id": "atm_239",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 8377 Granville Street",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -10835,7 +10835,7 @@
       },
       "properties": {
         "id": "atm_240",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 6904 Victoria Dr.",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -10881,7 +10881,7 @@
       },
       "properties": {
         "id": "atm_241",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 688 Se Marine Dr",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -10927,7 +10927,7 @@
       },
       "properties": {
         "id": "atm_242",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 3290 Grandview Highway",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -10970,7 +10970,7 @@
       },
       "properties": {
         "id": "atm_243",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — Canada — 710 Se Marine Dr",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -11014,7 +11014,7 @@
       },
       "properties": {
         "id": "atm_244",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — Canada — 1675 Rupert St",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -11058,7 +11058,7 @@
       },
       "properties": {
         "id": "atm_245",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 8686 Granville Street",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -11102,7 +11102,7 @@
       },
       "properties": {
         "id": "atm_246",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "PC Financial Pavilion — 350 Southeast Marine Drive",
         "bank_code": "pc-financial",
         "bank_full_name": "PC Financial Pavilion",
@@ -11146,7 +11146,7 @@
       },
       "properties": {
         "id": "atm_247",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 8585 Granville Street",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -11195,7 +11195,7 @@
       },
       "properties": {
         "id": "atm_248",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 3312 Grandview Hwy",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -11241,7 +11241,7 @@
       },
       "properties": {
         "id": "atm_249",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Canadian Imperial Bank of Commerce (CIBC) — 4489 West 10th Avenue",
         "bank_code": "cibc",
         "bank_full_name": "Canadian Imperial Bank of Commerce (CIBC)",
@@ -11288,7 +11288,7 @@
       },
       "properties": {
         "id": "atm_250",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 4501 West 10th Avenue",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -11335,7 +11335,7 @@
       },
       "properties": {
         "id": "atm_251",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 4502 West 10th Avenue",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -11380,7 +11380,7 @@
       },
       "properties": {
         "id": "atm_252",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 2689 East 49th Avenue",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -11424,7 +11424,7 @@
       },
       "properties": {
         "id": "atm_253",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Beem Credit Union — 108 108 — 3585 Graveley Street Graveley St St",
         "bank_code": "beem",
         "bank_full_name": "Beem Credit Union",
@@ -11468,7 +11468,7 @@
       },
       "properties": {
         "id": "atm_254",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Canadian Imperial Bank of Commerce (CIBC) — 3585 Grandview Hwy",
         "bank_code": "cibc",
         "bank_full_name": "Canadian Imperial Bank of Commerce (CIBC)",
@@ -11512,7 +11512,7 @@
       },
       "properties": {
         "id": "atm_255",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 4597 West 10th Avenue",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -11560,7 +11560,7 @@
       },
       "properties": {
         "id": "atm_256",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Canadian Imperial Bank of Commerce (CIBC) — 3297 Kingsway",
         "bank_code": "cibc",
         "bank_full_name": "Canadian Imperial Bank of Commerce (CIBC)",
@@ -11608,7 +11608,7 @@
       },
       "properties": {
         "id": "atm_257",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Vancity Credit Union — 3305 Kingsway",
         "bank_code": "vancity",
         "bank_full_name": "Vancity Credit Union",
@@ -11650,7 +11650,7 @@
       },
       "properties": {
         "id": "atm_258",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Vancity Credit Union — 3304 Kingsway",
         "bank_code": "vancity",
         "bank_full_name": "Vancity Credit Union",
@@ -11694,7 +11694,7 @@
       },
       "properties": {
         "id": "atm_259",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 3304 Kingsway",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -11739,7 +11739,7 @@
       },
       "properties": {
         "id": "atm_260",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 3502 East Hastings St",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -11785,7 +11785,7 @@
       },
       "properties": {
         "id": "atm_261",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "PC Financial ATM — 3410 Kingsway St.",
         "bank_code": "pc-financial",
         "bank_full_name": "PC Financial ATM",
@@ -11829,7 +11829,7 @@
       },
       "properties": {
         "id": "atm_262",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 3363 Kingsway",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -11878,7 +11878,7 @@
       },
       "properties": {
         "id": "atm_263",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 3366 Kingsway",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -11925,7 +11925,7 @@
       },
       "properties": {
         "id": "atm_264",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 3318 Kingsway",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -11974,7 +11974,7 @@
       },
       "properties": {
         "id": "atm_265",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "PC Financial ATM — 7190 Kerr Street",
         "bank_code": "pc-financial",
         "bank_full_name": "PC Financial ATM",
@@ -12018,7 +12018,7 @@
       },
       "properties": {
         "id": "atm_266",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "PC Financial ATM — 7190 Kerr Street",
         "bank_code": "pc-financial",
         "bank_full_name": "PC Financial ATM",
@@ -12062,7 +12062,7 @@
       },
       "properties": {
         "id": "atm_267",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 7150 Kerr Street",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -12107,7 +12107,7 @@
       },
       "properties": {
         "id": "atm_268",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 3114 49Th Ave E",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -12151,7 +12151,7 @@
       },
       "properties": {
         "id": "atm_269",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Vancity Credit Union — 3308 Wesbrook Mall",
         "bank_code": "vancity",
         "bank_full_name": "Vancity Credit Union",
@@ -12195,7 +12195,7 @@
       },
       "properties": {
         "id": "atm_270",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 5905 Berton Avenue",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -12243,7 +12243,7 @@
       },
       "properties": {
         "id": "atm_271",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 2142 Western Parkway #105",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -12285,7 +12285,7 @@
       },
       "properties": {
         "id": "atm_272",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 3308 Shrum Lane",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -12332,7 +12332,7 @@
       },
       "properties": {
         "id": "atm_273",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Coast Capital Savings — 8586 River District Crossing",
         "bank_code": "coast-capital",
         "bank_full_name": "Coast Capital Savings",
@@ -12374,7 +12374,7 @@
       },
       "properties": {
         "id": "atm_274",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Canadian Imperial Bank of Commerce (CIBC) — 5796 University Boulevard",
         "bank_code": "cibc",
         "bank_full_name": "Canadian Imperial Bank of Commerce (CIBC)",
@@ -12419,7 +12419,7 @@
       },
       "properties": {
         "id": "atm_275",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 8502 River District Crossing",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -12466,7 +12466,7 @@
       },
       "properties": {
         "id": "atm_276",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 3498 Sawmill Crescent",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -12510,7 +12510,7 @@
       },
       "properties": {
         "id": "atm_277",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 3405 Sawmill Crescent",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -12554,7 +12554,7 @@
       },
       "properties": {
         "id": "atm_278",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 6133 University Boulevard",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -12598,7 +12598,7 @@
       },
       "properties": {
         "id": "atm_279",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 5960 University Blvd",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -12644,7 +12644,7 @@
       },
       "properties": {
         "id": "atm_280",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 6000 Student Union Blvd",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -12689,7 +12689,7 @@
       },
       "properties": {
         "id": "atm_281",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "PC Financial ATM — 5959 Student Union Bld.",
         "bank_code": "pc-financial",
         "bank_full_name": "PC Financial ATM",
@@ -12733,7 +12733,7 @@
       },
       "properties": {
         "id": "atm_282",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 2332 Main Mall",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -12778,7 +12778,7 @@
       },
       "properties": {
         "id": "atm_283",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Royal Bank of Canada (RBC) — 6133 University Blvd—Unit 1401",
         "bank_code": "rbc",
         "bank_full_name": "Royal Bank of Canada (RBC)",
@@ -12821,7 +12821,7 @@
       },
       "properties": {
         "id": "atm_284",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "TD Canada Trust — 3500 — 6133 University Blvd",
         "bank_code": "td",
         "bank_full_name": "TD Canada Trust",
@@ -12865,7 +12865,7 @@
       },
       "properties": {
         "id": "atm_285",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "PC Financial ATM — 2033 Main Mall",
         "bank_code": "pc-financial",
         "bank_full_name": "PC Financial ATM",
@@ -12909,7 +12909,7 @@
       },
       "properties": {
         "id": "atm_286",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 6200 University Blvd",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -12954,7 +12954,7 @@
       },
       "properties": {
         "id": "atm_287",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "PC Financial ATM — 1460 East Hastings Street",
         "bank_code": "pc-financial",
         "bank_full_name": "PC Financial ATM",
@@ -12998,7 +12998,7 @@
       },
       "properties": {
         "id": "atm_288",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Bank of Montreal — 8655 Boundary Road",
         "bank_code": "bmo",
         "bank_full_name": "Bank of Montreal",
@@ -13042,7 +13042,7 @@
       },
       "properties": {
         "id": "atm_289",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "PC Financial ATM — 1460 East Hastings Street",
         "bank_code": "pc-financial",
         "bank_full_name": "PC Financial ATM",
@@ -13086,7 +13086,7 @@
       },
       "properties": {
         "id": "atm_290",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 1408 Continental Street",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -13132,7 +13132,7 @@
       },
       "properties": {
         "id": "atm_291",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 2208 Kingsway",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -13177,7 +13177,7 @@
       },
       "properties": {
         "id": "atm_292",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 2208 Kingsway",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",
@@ -13222,7 +13222,7 @@
       },
       "properties": {
         "id": "atm_293",
-        "facility_type": "atm",
+        "facility_type": "banks",
         "name": "Scotiabank — 1408 Continental Street",
         "bank_code": "scotiabank",
         "bank_full_name": "Scotiabank",

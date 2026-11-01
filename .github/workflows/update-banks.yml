@@ -21,7 +21,7 @@ jobs:
         run: |
           mkdir -p backend/data frontend/public
           git fetch origin data:refs/remotes/origin/data 2>/dev/null || true
-          git checkout origin/data -- backend/data/vancouver_atm.geojson frontend/public/vancouver_atm.geojson 2>/dev/null || true
+          git checkout origin/data -- backend/data/vancouver_banks.geojson frontend/public/vancouver_banks.geojson 2>/dev/null || true
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -41,7 +41,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add backend/data/vancouver_atm.geojson frontend/public/vancouver_atm.geojson
+          git add backend/data/vancouver_banks.geojson frontend/public/vancouver_banks.geojson
           if git diff --staged --quiet; then
             echo "No changes detected"
             echo "has_changes=false" >> $GITHUB_OUTPUT
