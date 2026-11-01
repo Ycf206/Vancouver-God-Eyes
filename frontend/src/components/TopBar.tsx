@@ -53,7 +53,7 @@ export default function TopBar() {
         ];
         const targetCats = [
           'bus_route', 'bus_stop', 'skytrain', 'seabus', 'bcferries', 'ferry_terminal',
-          'transit', 'airports', 'marine_terminals', 'maritimeShipping', 'flights'
+          'transit', 'airports', 'marine_terminals', 'maritimeShipping', 'flights', 'maritime_vessel'
         ];
         return (item.layer_key && targetKeys.includes(item.layer_key as string)) ||
           targetCats.includes(item.category) ||
@@ -100,7 +100,7 @@ export default function TopBar() {
           'garbageCollection', 'litterContainers', 'homelessShelters'
         ];
         const targetCats = [
-          'schools', 'libraries', 'community_centres', 'atm', 'aed', 'canada_post',
+          'schools', 'libraries', 'community_centres', 'atm', 'aed', 'canada_post', 'fedex', 'purolator',
           'post_offices', 'public_art', 'museums', 'food_vendors', 'food_banks',
           'recycling', 'garbage_collection', 'litter_containers', 'homeless_shelters'
         ];
@@ -256,9 +256,12 @@ export default function TopBar() {
     // 迅速呈現搜尋建議 (Debounce 降至 120ms 並搭配 AbortController 避免慢速競態)
     const handler = setTimeout(() => {
       fetch(`${apiUrl}/api/search?q=${encodeURIComponent(trimmed)}`, { signal: controller.signal })
-        .then(res => res.json())
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return res.json();
+        })
         .then(data => {
-          const list = Array.isArray(data) ? data : (data.results || []);
+          const list = Array.isArray(data) ? data : (data?.results || []);
           searchCacheRef.current.set(trimmed, list);
           setResults(list);
           setDisplayLimit(40);

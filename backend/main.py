@@ -2203,14 +2203,6 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
         q_tokens = [t for t in normalize_search_str(q_clean).split() if t]
         results = []
 
-    # 確保點狀圖層資料庫同步（僅初次檢查，避免每次即時搜尋重複觸發 DB 查詢）
-    if not _curated_points_synced:
-        try:
-            sync_curated_point_types(db)
-            _curated_points_synced = True
-        except Exception as e:
-            print(f"Error ensuring curated sync in search: {e}")
-
     # 0. 搜尋大眾運輸巴士路線 (Transit Bus Routes)
     try:
         gtfs_meta = get_gtfs_metadata()
@@ -2510,74 +2502,75 @@ def search_layer_items(q: str = "", db: Session = Depends(database.get_db)):
     except Exception as e:
         print(f"Error searching bikeways: {e}")
 
-        # 8. 搜尋溫哥華官方門牌地址 (Property Addresses API - 具備本機快取與短超時防護)
-        if len(q_clean) >= 2:
-            if q_clean in _addr_search_cache:
-                results.extend(_addr_search_cache[q_clean])
+    # 8. 搜尋溫哥華官方門牌地址 (Property Addresses API - 具備本機快取與短超時防護)
+    if len(q_clean) >= 2:
+        if q_clean in _addr_search_cache:
+            results.extend(_addr_search_cache[q_clean])
+        else:
+            try:
+                addr_url = "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/property-addresses/records"
+                params = {
+                    "where": f'search(*, "{q_clean}")',
+                    "limit": 10
+                }
+                addr_resp = requests.get(addr_url, params=params, timeout=0.8)
+                if addr_resp.status_code == 200:
+                    addr_data = addr_resp.json()
+                    addr_matches = []
+                    for rec in addr_data.get("results", []):
+                        c_num = rec.get("civic_number") or ""
+                        street = rec.get("std_street") or ""
+                        area = rec.get("geo_local_area") or "Vancouver"
+                        coords = rec.get("geo_point_2d") or {}
+                        p_lon = coords.get("lon")
+                        p_lat = coords.get("lat")
+                        if p_lon is not None and p_lat is not None:
+                            full_addr = f"{c_num} {street}".strip()
+                            addr_matches.append({
+                                "id": f"addr_{rec.get('site_id') or rec.get('pcoord') or full_addr}",
+                                "title": full_addr,
+                                "subtitle": f"{area}, Vancouver (門牌地址)",
+                                "category": "address",
+                                "badge": "地址",
+                                "icon": "📍",
+                                "lon": float(p_lon),
+                                "lat": float(p_lat),
+                                "zoom": 17,
+                                "layer_key": None,
+                                "meta": {
+                                    "civic_number": c_num,
+                                    "street": street,
+                                    "local_area": area,
+                                    "full_address": full_addr
+                                }
+                            })
+                    if len(_addr_search_cache) > 500:
+                        _addr_search_cache.clear()
+                    _addr_search_cache[q_clean] = addr_matches
+                    results.extend(addr_matches)
+            except Exception:
+                pass
+
+    if is_category_query:
+        cat_matches = []
+        other_matches = []
+        for r in results:
+            cat = r.get("category", "")
+            bdg = (r.get("badge") or "").lower()
+            if cat in ("canada_post", "fedex", "purolator") and q_clean in ("canada post", "post", "郵寄", "郵局", "fedex", "purolator", "快遞"):
+                cat_matches.append(r)
+            elif q_clean in bdg or q_clean == cat:
+                cat_matches.append(r)
             else:
-                try:
-                    addr_url = "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/property-addresses/records"
-                    params = {
-                        "where": f'search(*, "{q_clean}")',
-                        "limit": 10
-                    }
-                    addr_resp = requests.get(addr_url, params=params, timeout=0.8)
-                    if addr_resp.status_code == 200:
-                        addr_data = addr_resp.json()
-                        addr_matches = []
-                        for rec in addr_data.get("results", []):
-                            c_num = rec.get("civic_number") or ""
-                            street = rec.get("std_street") or ""
-                            area = rec.get("geo_local_area") or "Vancouver"
-                            coords = rec.get("geo_point_2d") or {}
-                            p_lon = coords.get("lon")
-                            p_lat = coords.get("lat")
-                            if p_lon is not None and p_lat is not None:
-                                full_addr = f"{c_num} {street}".strip()
-                                addr_matches.append({
-                                    "id": f"addr_{rec.get('site_id') or rec.get('pcoord') or full_addr}",
-                                    "title": full_addr,
-                                    "subtitle": f"{area}, Vancouver (門牌地址)",
-                                    "category": "address",
-                                    "badge": "地址",
-                                    "icon": "📍",
-                                    "lon": float(p_lon),
-                                    "lat": float(p_lat),
-                                    "zoom": 17,
-                                    "layer_key": None,
-                                    "meta": {
-                                        "civic_number": c_num,
-                                        "street": street,
-                                        "local_area": area,
-                                        "full_address": full_addr
-                                    }
-                                })
-                        if len(_addr_search_cache) > 500:
-                            _addr_search_cache.clear()
-                        _addr_search_cache[q_clean] = addr_matches
-                        results.extend(addr_matches)
-                except Exception:
-                    pass
+                other_matches.append(r)
+        results = cat_matches + other_matches
 
-        if is_category_query:
-            cat_matches = []
-            other_matches = []
-            for r in results:
-                cat = r.get("category", "")
-                bdg = (r.get("badge") or "").lower()
-                if cat in ("canada_post", "fedex") and q_clean in ("canada post", "post", "郵寄", "郵局", "fedex", "快遞"):
-                    cat_matches.append(r)
-                elif q_clean in bdg or q_clean == cat:
-                    cat_matches.append(r)
-                else:
-                    other_matches.append(r)
-            results = cat_matches + other_matches
-
-        final_results = results[:150]
+    final_results = results[:150]
+    with _search_lock:
         if len(_search_query_cache) > 500:
             _search_query_cache.clear()
         _search_query_cache[q_clean] = final_results
-        return {"results": final_results}
+    return {"results": final_results}
 
 from html.parser import HTMLParser
 
