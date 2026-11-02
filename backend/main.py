@@ -20,11 +20,25 @@ import os
 import uuid
 import hashlib
 import logging
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from typing import Optional
 from search_engine import search_engine
 
 logger = logging.getLogger(__name__)
+
+try:
+    from zoneinfo import ZoneInfo
+    _tz_candidate = ZoneInfo("America/Vancouver")
+    datetime.now(_tz_candidate)
+    VANCOUVER_TZ = _tz_candidate
+except Exception:
+    VANCOUVER_TZ = timezone(timedelta(hours=-7))
+
+def get_vancouver_now() -> datetime:
+    return datetime.now(VANCOUVER_TZ)
+
+def get_vancouver_today_str() -> str:
+    return get_vancouver_now().strftime("%Y-%m-%d")
 
 # ==========================================
 # 🔒 執行緒安全與原子寫檔輔助工具 (Crash & Corruption Guard)
@@ -602,13 +616,7 @@ async def fetch_bcferries_realtime():
 
             vehicles = []
             
-            import datetime
-            try:
-                from zoneinfo import ZoneInfo
-                now = datetime.datetime.now(ZoneInfo("America/Vancouver"))
-            except ImportError:
-                now = datetime.datetime.utcnow() - datetime.timedelta(hours=7)
-            
+            now = get_vancouver_now()
             now_naive = now.replace(tzinfo=None)
 
             capacity_routes = data.get('capacityRoutes', [])
@@ -648,14 +656,14 @@ async def fetch_bcferries_realtime():
                     
                     try:
                         if time_str and arr_time_str and time_str.lower() != 'variable' and arr_time_str.lower() != 'variable':
-                            dep_time = datetime.datetime.strptime(time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower(), '%I:%M %p')
+                            dep_time = datetime.strptime(time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower(), '%I:%M %p')
                             dep_time = now_naive.replace(hour=dep_time.hour, minute=dep_time.minute, second=0, microsecond=0)
                             
-                            arr_time = datetime.datetime.strptime(arr_time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower(), '%I:%M %p')
+                            arr_time = datetime.strptime(arr_time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower(), '%I:%M %p')
                             arr_time = now_naive.replace(hour=arr_time.hour, minute=arr_time.minute, second=0, microsecond=0)
                             
                             if arr_time < dep_time:
-                                arr_time += datetime.timedelta(days=1)
+                                arr_time += timedelta(days=1)
                             
                             if dep_time <= now_naive <= arr_time:
                                 is_sailing = True
@@ -1525,12 +1533,7 @@ async def get_ferry_terminal_schedule(terminal_code: str):
             cached_bcferries_raw_data = {"timestamp": now_ts, "data": data}
         
         schedule = []
-        import datetime
-        try:
-            from zoneinfo import ZoneInfo
-            now = datetime.datetime.now(ZoneInfo("America/Vancouver"))
-        except ImportError:
-            now = datetime.datetime.utcnow() - datetime.timedelta(hours=7)
+        now = get_vancouver_now()
         now_naive = now.replace(tzinfo=None)
         
         # We should use a dict to avoid duplicates. Key: (destination, time)
@@ -1551,14 +1554,14 @@ async def get_ferry_terminal_schedule(terminal_code: str):
                     # Calculate status based on time to ensure past/current/future are always accurate
                     if time_str and arr_time_str and time_str.lower() != 'variable' and arr_time_str.lower() != 'variable':
                         try:
-                            dep_time = datetime.datetime.strptime(time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower(), '%I:%M %p')
+                            dep_time = datetime.strptime(time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower(), '%I:%M %p')
                             dep_time = now_naive.replace(hour=dep_time.hour, minute=dep_time.minute, second=0, microsecond=0)
                             
-                            arr_time = datetime.datetime.strptime(arr_time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower(), '%I:%M %p')
+                            arr_time = datetime.strptime(arr_time_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower(), '%I:%M %p')
                             arr_time = now_naive.replace(hour=arr_time.hour, minute=arr_time.minute, second=0, microsecond=0)
                             
                             if arr_time < dep_time:
-                                arr_time += datetime.timedelta(days=1)
+                                arr_time += timedelta(days=1)
                                 
                             if now_naive > arr_time:
                                 status = 'past'
@@ -1598,11 +1601,11 @@ async def get_ferry_terminal_schedule(terminal_code: str):
         # Sort by time
         def parse_time(t_str):
             if not t_str or t_str.lower() == 'variable' or t_str.lower() == 'cancelled':
-                return datetime.datetime(2000, 1, 1) # put at top
+                return datetime(2000, 1, 1) # put at top
             try:
-                return datetime.datetime.strptime(t_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower(), '%I:%M %p')
+                return datetime.strptime(t_str.strip().replace('a.m.', 'am').replace('p.m.', 'pm').lower(), '%I:%M %p')
             except:
-                return datetime.datetime(2000, 1, 1)
+                return datetime(2000, 1, 1)
                 
         schedule.sort(key=lambda x: parse_time(x['time']))
         return {"terminal": terminal_code, "schedule": schedule}
@@ -4099,7 +4102,10 @@ def _refresh_single_oci_service(sid: str) -> tuple[int | None, str]:
     if sid == "fuel_prices":
         import fuel_service
         fuel_service._fuel_cache["timestamp"] = 0
-        stations = fuel_service.get_live_fuel_prices()
+        if hasattr(fuel_service, "get_live_fuel_prices"):
+            stations = fuel_service.get_live_fuel_prices()
+        else:
+            stations = fuel_service.load_vancouver_stations()
         return (len(stations) if stations else None, "OCI 伺服器已即時更新大溫哥華地區油站即時油價快取。")
     if sid in ("aurora_forecast", "aurora_swpc"):
         import aurora_service
@@ -5350,6 +5356,8 @@ _stats_lock = threading.Lock()
 _pv_mem_cache: dict | None = None
 _pv_last_flush_ts: float = 0.0
 
+# VANCOUVER_TZ and get_vancouver_today_str are defined at module top level
+
 def _get_pv_stats():
     global _pv_mem_cache
     if _pv_mem_cache is not None:
@@ -5369,7 +5377,7 @@ def _get_pv_stats():
 def _save_pv_stats(data, force: bool = False):
     global _pv_last_flush_ts
     now_m = time.monotonic()
-    if not force and (now_m - _pv_last_flush_ts < 30.0):
+    if not force and (now_m - _pv_last_flush_ts < 10.0):
         return
     try:
         daily = data.get("daily_pv", {})
@@ -5384,9 +5392,9 @@ def _save_pv_stats(data, force: bool = False):
 
 @app.post("/api/stats/visit")
 @app.get("/api/stats/visit")
-def record_page_visit():
-    """記錄網頁瀏覽次數 (Page View - 記憶體累加，最多每 30 秒原子寫入磁碟一次)"""
-    today_str = datetime.utcnow().strftime("%Y-%m-%d")
+def record_page_visit(today: Optional[str] = None):
+    """記錄網頁瀏覽次數 (Page View - 溫哥華本地日期累加，真實記錄每筆瀏覽)"""
+    today_str = today if (today and len(today) == 10) else get_vancouver_today_str()
     with _stats_lock:
         data = _get_pv_stats()
         daily = data.get("daily_pv", {})
@@ -5405,18 +5413,19 @@ def record_page_visit():
 def get_admin_analytics(db: Session = Depends(database.get_db)):
     """
     提供後台統計數據分頁：
-    8.1 本日瀏覽次數
-    8.2 目前在線人數
+    8.1 本日瀏覽次數 (按溫哥華本地時區統計)
+    8.2 目前在線人數 (即時 WebSocket 連線數，無連線時真實顯示 0)
     8.3 問題回報數量
     """
-    today_str = datetime.utcnow().strftime("%Y-%m-%d")
+    today_str = get_vancouver_today_str()
     with _stats_lock:
         pv_data = _get_pv_stats()
         today_pv = pv_data.get("daily_pv", {}).get(today_str, 0)
         total_pv = pv_data.get("total_pv", 0)
+        _save_pv_stats(pv_data, force=True)
 
-    # 在線人數 (WebSocket 即時連線數，最低為 1 避免顯示 0)
-    online_count = len(active_connections) if len(active_connections) > 0 else 1
+    # 在線人數 (真實 WebSocket 連線數，無連線時真實呈現 0)
+    online_count = len(active_connections)
 
     # 問題回報數量
     issue_count = 0

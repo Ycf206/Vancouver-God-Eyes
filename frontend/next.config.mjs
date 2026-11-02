@@ -20,7 +20,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: process.env.INTERNAL_BACKEND_URL || 'http://backend:8000/api/:path*',
+        destination: process.env.INTERNAL_BACKEND_URL || (process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:8000/api/:path*' : 'http://backend:8000/api/:path*'),
       },
     ];
   },

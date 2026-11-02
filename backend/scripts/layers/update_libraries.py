@@ -27,20 +27,20 @@ def update_libraries():
 
     if not closures:
         closures = [
-            f"Thursday, January 1, {current_year}: Closed (New Year's Day)",
-            f"Monday, February 16, {current_year}: Closed (Family Day)",
-            f"Friday, April 3, {current_year}: Closed (Good Friday)",
-            f"Monday, April 6, {current_year}: Closed (Easter Monday)",
-            f"Monday, May 18, {current_year}: Closed (Victoria Day)",
-            f"Wednesday, July 1, {current_year}: Closed (Canada Day)",
-            f"Monday, August 3, {current_year}: Closed (BC Day)",
-            f"Monday, September 7, {current_year}: Closed (Labour Day)",
-            f"Wednesday, September 30, {current_year}: Closed (National Day for Truth and Reconciliation)",
-            f"Monday, October 12, {current_year}: Closed (Thanksgiving)",
-            f"Wednesday, November 11, {current_year}: Closed (Remembrance Day)",
-            f"Thursday, December 24, {current_year}: 9:30 am – 5:00 pm (Closing early for Christmas Eve)",
-            f"Friday, December 25, {current_year}: Closed (Christmas Day)",
-            f"Saturday, December 26, {current_year}: Closed (Boxing Day)"
+            f"{current_year}-01-01 (New Year's Day)",
+            f"{current_year}-02-16 (Family Day)",
+            f"{current_year}-04-03 (Good Friday)",
+            f"{current_year}-04-06 (Easter Monday)",
+            f"{current_year}-05-18 (Victoria Day)",
+            f"{current_year}-07-01 (Canada Day)",
+            f"{current_year}-08-03 (BC Day)",
+            f"{current_year}-09-07 (Labour Day)",
+            f"{current_year}-09-30 (National Day for Truth and Reconciliation)",
+            f"{current_year}-10-12 (Thanksgiving)",
+            f"{current_year}-11-11 (Remembrance Day)",
+            f"{current_year}-12-24: 9:30 am – 5:00 pm (Christmas Eve)",
+            f"{current_year}-12-25 (Christmas Day)",
+            f"{current_year}-12-26 (Boxing Day)"
         ]
 
     for feat in features:

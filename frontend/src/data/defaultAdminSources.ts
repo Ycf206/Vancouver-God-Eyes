@@ -27,7 +27,7 @@ export interface AdminSourceItem {
 export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   {
     "id": "traffic_conditions",
-    "name": "TomTom 即時交通路況",
+    "name": "路況",
     "type": "api",
     "cron_expr": "*/2 * * * *",
     "schedule_interval": "每 2 分鐘",
@@ -49,7 +49,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "traffic_cameras",
-    "name": "DriveBC & 市府交通攝影機",
+    "name": "交通攝影機",
     "type": "api",
     "cron_expr": "*/5 * * * *",
     "schedule_interval": "每 5 分鐘",
@@ -71,7 +71,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "translink_realtime",
-    "name": "TransLink 大眾運輸即時動態",
+    "name": "天車與巴士",
     "type": "api",
     "cron_expr": "*/30 * * * * *",
     "schedule_interval": "每 30 秒",
@@ -101,7 +101,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "weather_monitoring",
-    "name": "加拿大環境部 ECCC 氣象與雷達",
+    "name": "天氣",
     "type": "api",
     "cron_expr": "*/10 * * * *",
     "schedule_interval": "每 10 分鐘",
@@ -123,7 +123,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "tides_hydrometric",
-    "name": "CHS 加拿大海洋潮位與水文站",
+    "name": "潮汐水位",
     "type": "api",
     "cron_expr": "*/15 * * * *",
     "schedule_interval": "每 15 分鐘",
@@ -145,7 +145,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "beach_water",
-    "name": "Metro Vancouver 泳灘水質監測",
+    "name": "泳灘水質",
     "type": "api",
     "cron_expr": "0 0 1 * *",
     "schedule_interval": "每月 1 號 00:00",
@@ -167,7 +167,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "ski_resorts",
-    "name": "溫哥華三大滑雪場即時雪報",
+    "name": "滑雪場",
     "type": "api",
     "cron_expr": "*/15 * * * *",
     "schedule_interval": "每 15 分鐘",
@@ -189,7 +189,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "fuel_prices",
-    "name": "大溫地區即時油價情報",
+    "name": "油站",
     "type": "api",
     "cron_expr": "0 */1 * * *",
     "schedule_interval": "每 1 小時",
@@ -211,7 +211,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "flight_schedules",
-    "name": "YVR 溫哥華國際機場航班",
+    "name": "航班",
     "type": "api",
     "cron_expr": "*/2 * * * *",
     "schedule_interval": "每 2 分鐘",
@@ -233,7 +233,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "maritime_shipping",
-    "name": "AIS 溫哥華港船舶與海運動態",
+    "name": "海運船舶",
     "type": "api",
     "cron_expr": "*/1 * * * *",
     "schedule_interval": "每 1 分鐘",
@@ -255,7 +255,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "impark_parking",
-    "name": "ImPark 私營停車場情報",
+    "name": "私人停車場",
     "type": "api",
     "cron_expr": "0 0 1 * *",
     "schedule_interval": "每月 1 號 00:00",
@@ -278,7 +278,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "border_wait_times",
-    "name": "美加邊境通關等候時間",
+    "name": "邊境關卡",
     "type": "api",
     "cron_expr": "*/5 * * * *",
     "schedule_interval": "每 5 分鐘",
@@ -300,7 +300,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "aurora_forecast",
-    "name": "NOAA 空間天氣極光指數",
+    "name": "極光預報",
     "type": "api",
     "cron_expr": "0 */2 * * *",
     "schedule_interval": "每 2 小時",
@@ -322,7 +322,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "vancouver_news",
-    "name": "大溫即時新聞快訊 (News Feeds)",
+    "name": "新聞",
     "type": "api",
     "cron_expr": "*/5 * * * *",
     "schedule_interval": "每 5 分鐘",
@@ -356,7 +356,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "public_events",
-    "name": "溫哥華活動情報與節慶 (Events)",
+    "name": "活動",
     "type": "api",
     "cron_expr": "*/30 * * * *",
     "schedule_interval": "每 30 分鐘",
@@ -386,7 +386,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "schools",
-    "name": "學校及教育設施",
+    "name": "學校",
     "type": "geojson",
     "cron_expr": "0 0 1 */6 *",
     "schedule_interval": "每半年",
@@ -412,7 +412,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "libraries",
-    "name": "公共圖書館",
+    "name": "圖書館",
     "type": "geojson",
     "cron_expr": "0 0 1 */6 *",
     "schedule_interval": "每半年",
@@ -434,7 +434,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "parks",
-    "name": "都會與社區公園",
+    "name": "公園",
     "type": "geojson",
     "cron_expr": "0 0 1 */6 *",
     "schedule_interval": "每半年",
@@ -456,7 +456,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "community_centres",
-    "name": "社區活動中心",
+    "name": "社區中心",
     "type": "geojson",
     "cron_expr": "0 0 1 */6 *",
     "schedule_interval": "每半年",
@@ -482,7 +482,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "public_art",
-    "name": "公共藝術展品",
+    "name": "公共藝術",
     "type": "geojson",
     "cron_expr": "0 0 1 */3 *",
     "schedule_interval": "每季 (3 個月)",
@@ -504,7 +504,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "museums",
-    "name": "歷史博物館與藝廊",
+    "name": "博物館",
     "type": "geojson",
     "cron_expr": "0 0 1 1 *",
     "schedule_interval": "每年 1 月 1 日",
@@ -526,7 +526,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "garbage_collection",
-    "name": "廢物回收分區",
+    "name": "垃圾回收",
     "type": "geojson",
     "cron_expr": "0 0 1 */6 *",
     "schedule_interval": "每半年",
@@ -548,7 +548,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "recycling",
-    "name": "環保廢物分類回收站",
+    "name": "廢物分類",
     "type": "geojson",
     "cron_expr": "0 0 1 1 *",
     "schedule_interval": "每年 1 月 1 日",
@@ -570,7 +570,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "homeless_shelters",
-    "name": "無家者庇護所",
+    "name": "庇護所",
     "type": "geojson",
     "cron_expr": "0 0 1 */6 *",
     "schedule_interval": "每半年",
@@ -592,7 +592,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "food_banks",
-    "name": "食物援助銀行",
+    "name": "食物銀行",
     "type": "geojson",
     "cron_expr": "0 0 1 */6 *",
     "schedule_interval": "每半年",
@@ -614,7 +614,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "food_vendors",
-    "name": "市區街頭熟食攤販",
+    "name": "街頭餐車",
     "type": "geojson",
     "cron_expr": "0 0 * * *",
     "schedule_interval": "每日 00:00",
@@ -636,7 +636,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "aed",
-    "name": "自動體外心臟去顫器",
+    "name": "AED",
     "type": "geojson",
     "cron_expr": "0 0 1 */3 *",
     "schedule_interval": "每季 (3 個月)",
@@ -658,7 +658,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "zoning_districts",
-    "name": "土地規劃分區",
+    "name": "土地規劃",
     "type": "geojson",
     "cron_expr": "0 0 1 */6 *",
     "schedule_interval": "每半年",
@@ -680,7 +680,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "parking_meters",
-    "name": "路邊停車收費錶",
+    "name": "停車收費錶",
     "type": "geojson",
     "cron_expr": "0 0 1 * *",
     "schedule_interval": "每月 1 號 00:00",
@@ -702,7 +702,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "motorcycle_parking",
-    "name": "摩托車專屬車位",
+    "name": "電單車位",
     "type": "geojson",
     "cron_expr": "0 0 1 * *",
     "schedule_interval": "每月 1 號 00:00",
@@ -724,7 +724,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "bikeways",
-    "name": "單車專用徑道路網",
+    "name": "單車徑",
     "type": "geojson",
     "cron_expr": "0 0 1 */6 *",
     "schedule_interval": "每半年",
@@ -746,7 +746,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "public_trees",
-    "name": "市區街道樹木",
+    "name": "街道樹木",
     "type": "geojson",
     "cron_expr": "0 0 1 1 *",
     "schedule_interval": "每年 1 月 1 日",
@@ -768,7 +768,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "fire_hydrants",
-    "name": "市政消防栓位置",
+    "name": "消防栓",
     "type": "geojson",
     "cron_expr": "0 0 1 1 *",
     "schedule_interval": "每年 1 月 1 日",
@@ -790,7 +790,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "drinking_fountains",
-    "name": "公共飲水台",
+    "name": "飲水機",
     "type": "geojson",
     "cron_expr": "0 0 1 */6 *",
     "schedule_interval": "每半年",
@@ -812,7 +812,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "public_washrooms",
-    "name": "公共洗手間",
+    "name": "洗手間",
     "type": "geojson",
     "cron_expr": "0 0 1 */6 *",
     "schedule_interval": "每半年",
@@ -834,7 +834,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "street_lighting",
-    "name": "路燈燈桿",
+    "name": "路燈",
     "type": "geojson",
     "cron_expr": "0 0 1 1 *",
     "schedule_interval": "每年 1 月 1 日",
@@ -856,7 +856,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "street_lighting_conduits",
-    "name": "路燈電網管道",
+    "name": "路燈管道",
     "type": "geojson",
     "cron_expr": "0 0 1 1 *",
     "schedule_interval": "每年 1 月 1 日",
@@ -878,7 +878,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "water_distribution_mains",
-    "name": "自來水主配水管道",
+    "name": "自來水管",
     "type": "geojson",
     "cron_expr": "0 0 1 1 *",
     "schedule_interval": "每年 1 月 1 日",
@@ -900,7 +900,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "sewer_mains",
-    "name": "市區下水道與排水分流管線",
+    "name": "下水道管",
     "type": "geojson",
     "cron_expr": "0 0 1 1 *",
     "schedule_interval": "每年 1 月 1 日",
@@ -922,7 +922,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "traffic_speed_limits",
-    "name": "全路網限速路段",
+    "name": "速限路段",
     "type": "geojson",
     "cron_expr": "0 0 1 */6 *",
     "schedule_interval": "每半年",
@@ -944,7 +944,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "traffic_crosswalks",
-    "name": "行人斑馬線過路處",
+    "name": "行人過路處",
     "type": "geojson",
     "cron_expr": "0 0 1 1 *",
     "schedule_interval": "每年 1 月 1 日",
@@ -966,7 +966,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "litter_containers",
-    "name": "公共垃圾桶與回收箱",
+    "name": "垃圾桶",
     "type": "geojson",
     "cron_expr": "0 0 1 */6 *",
     "schedule_interval": "每半年",
@@ -988,7 +988,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "one_way_streets",
-    "name": "市區單程道路段",
+    "name": "單程路",
     "type": "geojson",
     "cron_expr": "0 0 1 1 *",
     "schedule_interval": "每年 1 月 1 日",
@@ -1010,7 +1010,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "snow_removal_routes",
-    "name": "冬季市政優先鏟雪路線",
+    "name": "鏟雪路線",
     "type": "geojson",
     "cron_expr": "0 0 1 1 *",
     "schedule_interval": "每年 1 月 1 日",
@@ -1032,7 +1032,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "contours",
-    "name": "等高線地形高程",
+    "name": "等高線",
     "type": "geojson",
     "cron_expr": "0 0 1 */6 *",
     "schedule_interval": "每半年",
@@ -1062,7 +1062,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "ev_charging",
-    "name": "電動車充電站點",
+    "name": "充電站",
     "type": "geojson",
     "cron_expr": "0 0 1 * *",
     "schedule_interval": "每月 1 號 00:00",
@@ -1084,7 +1084,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "canada_post",
-    "name": "Canada Post 郵政據點",
+    "name": "加拿大郵政",
     "type": "api",
     "cron_expr": "0 0 1 */3 *",
     "schedule_interval": "每季 (3 個月)",
@@ -1110,7 +1110,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "property_addresses",
-    "name": "全市門牌地址索引 (搜尋專用)",
+    "name": "門牌地址",
     "type": "api",
     "cron_expr": "0 0 1 */6 *",
     "schedule_interval": "每半年",
@@ -1132,7 +1132,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "banks",
-    "name": "銀行 (Banks)",
+    "name": "銀行",
     "type": "geojson",
     "cron_expr": "0 0 1 * *",
     "schedule_interval": "每月 1 號 00:00",
@@ -1155,7 +1155,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "shared_bikes",
-    "name": "Mobi 共享單車",
+    "name": "共享單車",
     "type": "geojson",
     "cron_expr": "0 * * * *",
     "schedule_interval": "每 1 小時",
@@ -1183,7 +1183,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "escooter",
-    "name": "Lime 共享滑板車",
+    "name": "共享滑板車",
     "type": "geojson",
     "cron_expr": "0 * * * *",
     "schedule_interval": "每 1 小時",
@@ -1211,7 +1211,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "truck_routes",
-    "name": "法定貨車路線 (Truck Routes)",
+    "name": "貨車路線",
     "type": "geojson",
     "cron_expr": "0 0 1 1 *",
     "schedule_interval": "每年 1 月 1 日",
@@ -1234,7 +1234,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "traffic_signals",
-    "name": "交通燈 (Traffic Signals)",
+    "name": "交通燈",
     "type": "geojson",
     "cron_expr": "0 0 1 */6 *",
     "schedule_interval": "每半年",
@@ -1257,7 +1257,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "turn_restrictions",
-    "name": "轉向限制 (Turn Restrictions)",
+    "name": "轉向限制",
     "type": "geojson",
     "cron_expr": "0 0 1 1 *",
     "schedule_interval": "每年 1 月 1 日",
@@ -1280,7 +1280,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "service_requests_311",
-    "name": "3-1-1 市政服務請求",
+    "name": "3-1-1",
     "type": "api",
     "cron_expr": "0 8 * * *",
     "schedule_interval": "每日 08:00",
@@ -1302,7 +1302,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "tnt_eflyers",
-    "name": "大統華 T&T 超市每週特價海報",
+    "name": "大統華T&T",
     "type": "api",
     "cron_expr": "0 9 * * 5",
     "schedule_interval": "每週五 09:00",
@@ -1324,7 +1324,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "vancouver_railways",
-    "name": "溫哥華鐵路網絡圖資",
+    "name": "鐵路網",
     "type": "geojson",
     "cron_expr": "0 0 1 1 *",
     "schedule_interval": "每年 1 月 1 日",
@@ -1346,7 +1346,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "fedex",
-    "name": "FedEx 門市與自取據點",
+    "name": "FedEx",
     "type": "geojson",
     "cron_expr": "0 4 1 * *",
     "schedule_interval": "每月 1 號 04:00",
@@ -1368,7 +1368,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "purolator",
-    "name": "Purolator 門市與自取據點",
+    "name": "Purolator",
     "type": "geojson",
     "cron_expr": "0 4 1 * *",
     "schedule_interval": "每月 1 號 04:00",
@@ -1390,7 +1390,7 @@ export const DEFAULT_ADMIN_SOURCES: AdminSourceItem[] = [
   },
   {
     "id": "vancouver_crashes",
-    "name": "大溫哥華車禍事故統計熱點",
+    "name": "車禍熱點",
     "type": "geojson",
     "cron_expr": "0 4 1 1 *",
     "schedule_interval": "每年 1 月 1 日",

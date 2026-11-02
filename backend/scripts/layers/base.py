@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import time
 import tempfile
 import requests
 from datetime import datetime, timezone
@@ -153,12 +154,14 @@ def update_admin_source_metadata(source_id: str, record_count: int = None, updat
         with open(cfg_path, "r", encoding="utf-8") as f:
             cfg = json.load(f)
         changed = False
+        src_name = source_id
         for src in cfg.get("sources", []):
             if src.get("id") == source_id:
                 src["last_updated"] = ts
                 src["status"] = "healthy"
                 if isinstance(record_count, int) and record_count > 0:
                     src["record_count"] = record_count
+                src_name = src.get("name", source_id)
                 changed = True
                 break
         if changed:
@@ -173,6 +176,30 @@ def update_admin_source_metadata(source_id: str, record_count: int = None, updat
                         os.remove(tmp_path)
                     except OSError:
                         pass
+        # 寫入系統運作日誌與調度歷史
+        try:
+            if BACKEND_DIR not in sys.path:
+                sys.path.append(BACKEND_DIR)
+            from system_log_service import system_log_service
+            cnt_info = f"，共載入 {record_count:,} 筆記錄" if isinstance(record_count, int) and record_count > 0 else ""
+            system_log_service.add_system_log(
+                level="INFO",
+                file=f"backend/scripts/layers/update_{source_id}.py",
+                action="LAYER_DATA_SYNC",
+                message=f"圖層 [{src_name}] 資料同步完成{cnt_info}",
+                details={"source_id": source_id, "source_name": src_name, "count": record_count, "timestamp": ts}
+            )
+            system_log_service.append_schedule_log({
+                "id": f"sync-{int(time.time()*1000)}-{source_id}",
+                "timestamp": ts,
+                "action": "LAYER_DATA_SYNC",
+                "source_name": src_name,
+                "runner": "local_or_oci",
+                "status": "success",
+                "detail": f"圖層 [{src_name}] 資料同步完成{cnt_info}。"
+            })
+        except Exception:
+            pass
     except Exception as e:
         print(f"  ⚠️ 無法同步更新 admin_sources_config.json [{source_id}]: {e}")
 

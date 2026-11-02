@@ -1,4 +1,8 @@
 {
   "type": "FeatureCollection",
+  "generator": "VancouverGodsEye-TomTomIncidents",
+  "updated_at": "2026-11-02T12:53:18.216408+00:00",
+  "update_interval": "每 5 分鐘自動更新 (TomTom & DriveBC)",
+  "total_count": 0,
   "features": []
 }

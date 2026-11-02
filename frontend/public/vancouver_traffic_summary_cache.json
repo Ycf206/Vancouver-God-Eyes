@@ -1,12 +1,16 @@
 {
-  "source": "TomTom Real-Time Traffic & DriveBC Open511",
-  "source_url": "https://plan.tomtom.com/",
-  "updated_at": "2026-10-18T02:36:18.039237+00:00",
-  "overall_congestion_score": 18,
-  "overall_status": "全區大致暢通 (Free Flow)",
-  "total_jams": 19,
+  "source": "TomTom Real-Time Traffic & DriveBC",
+  "source_url": "https://plan.tomtom.com/en/?p=49.24943,-123.12845,11.71z",
+  "has_tomtom_key": false,
+  "updated_at": "2026-11-02T12:53:18.216408+00:00",
+  "overall_congestion_score": 0,
+  "overall_status": "全線暢通",
+  "freeflow_roads_count": 71,
+  "total_roads_count": 71,
+  "severe_roads_count": 0,
+  "total_jams": 0,
   "total_incidents": 0,
-  "worst_corridor": "全區 7 大主要幹道與跨海橋隧車流順暢",
+  "worst_corridor": "",
   "corridors": [
     {
       "id": "hwy1",
@@ -18,10 +22,10 @@
         -123.015,
         49.258
       ],
-      "zoom": 12.5,
+      "zoom": 13.5,
       "status": "暢通無阻",
       "status_color": "emerald",
-      "current_speed_kmh": 83,
+      "current_speed_kmh": 90,
       "freeflow_speed_kmh": 90,
       "delay_min": 0,
       "trend": "stable",
@@ -29,20 +33,20 @@
         {
           "name": "東向 (往本拿比/高貴林/Port Mann)",
           "delay_min": 0,
-          "speed_kmh": 84,
+          "speed_kmh": 90,
           "level": 0,
           "color": "#10b981"
         },
         {
           "name": "西向 (往溫哥華市區/卡西爾隧道)",
-          "delay_min": 3,
-          "speed_kmh": 67,
-          "level": 1,
-          "color": "#eab308"
+          "delay_min": 0,
+          "speed_kmh": 90,
+          "level": 0,
+          "color": "#10b981"
         }
       ],
-      "incidents_count": 2,
-      "key_bottleneck": "全線車流順暢，無明顯延誤",
+      "incidents_count": 0,
+      "key_bottleneck": "雙向車流順暢正常",
       "coordinates": [
         [
           -123.033597,
@@ -2364,10 +2368,10 @@
         -123.076,
         49.124
       ],
-      "zoom": 12.5,
+      "zoom": 14.0,
       "status": "暢通無阻",
       "status_color": "emerald",
-      "current_speed_kmh": 74,
+      "current_speed_kmh": 80,
       "freeflow_speed_kmh": 80,
       "delay_min": 0,
       "trend": "stable",
@@ -2375,201 +2379,21 @@
         {
           "name": "南向 (往 Delta / Surrey / 美加邊境)",
           "delay_min": 0,
-          "speed_kmh": 78,
+          "speed_kmh": 80,
           "level": 0,
           "color": "#10b981"
         },
         {
           "name": "北向 (往 Richmond / Vancouver 市區)",
-          "delay_min": 5,
-          "speed_kmh": 52,
-          "level": 2,
-          "color": "#f97316"
+          "delay_min": 0,
+          "speed_kmh": 80,
+          "level": 0,
+          "color": "#10b981"
         }
       ],
-      "incidents_count": 1,
-      "key_bottleneck": "全線車流順暢，無明顯延誤",
+      "incidents_count": 0,
+      "key_bottleneck": "隧道雙向車流順暢",
       "coordinates": [
-        [
-          -123.086499,
-          49.134911
-        ],
-        [
-          -123.086507,
-          49.134966
-        ],
-        [
-          -123.086513,
-          49.135355
-        ],
-        [
-          -123.08665,
-          49.136167
-        ],
-        [
-          -123.08665,
-          49.137499
-        ],
-        [
-          -123.086566,
-          49.154099
-        ],
-        [
-          -123.086537,
-          49.157121
-        ],
-        [
-          -123.086531,
-          49.160892
-        ],
-        [
-          -123.086507,
-          49.163222
-        ],
-        [
-          -123.0865,
-          49.163889
-        ],
-        [
-          -123.086416,
-          49.164241
-        ],
-        [
-          -123.086349,
-          49.164873
-        ],
-        [
-          -123.086305,
-          49.165404
-        ],
-        [
-          -123.086314,
-          49.167098
-        ],
-        [
-          -123.086304,
-          49.16751
-        ],
-        [
-          -123.086224,
-          49.168187
-        ],
-        [
-          -123.086194,
-          49.168319
-        ],
-        [
-          -123.086192,
-          49.168327
-        ],
-        [
-          -123.086161,
-          49.168467
-        ],
-        [
-          -123.086127,
-          49.168721
-        ],
-        [
-          -123.086111,
-          49.169023
-        ],
-        [
-          -123.086122,
-          49.169265
-        ],
-        [
-          -123.086253,
-          49.170125
-        ],
-        [
-          -123.086254,
-          49.170172
-        ],
-        [
-          -123.086257,
-          49.170208
-        ],
-        [
-          -123.0864,
-          49.170348
-        ],
-        [
-          -123.086555,
-          49.170347
-        ],
-        [
-          -123.086682,
-          49.170347
-        ],
-        [
-          -123.087473,
-          49.170346
-        ],
-        [
-          -123.087595,
-          49.170279
-        ],
-        [
-          -123.087661,
-          49.170214
-        ],
-        [
-          -123.087623,
-          49.16996
-        ],
-        [
-          -123.0875,
-          49.169636
-        ],
-        [
-          -123.086938,
-          49.168156
-        ],
-        [
-          -123.086864,
-          49.167834
-        ],
-        [
-          -123.086801,
-          49.167554
-        ],
-        [
-          -123.086716,
-          49.167343
-        ],
-        [
-          -123.086715,
-          49.1669
-        ],
-        [
-          -123.086718,
-          49.166059
-        ],
-        [
-          -123.086718,
-          49.164734
-        ],
-        [
-          -123.086835,
-          49.141404
-        ],
-        [
-          -123.086853,
-          49.137835
-        ],
-        [
-          -123.086838,
-          49.136375
-        ],
-        [
-          -123.086871,
-          49.135525
-        ],
-        [
-          -123.086874,
-          49.135301
-        ],
         [
           -123.0869,
           49.13447
@@ -2673,6 +2497,10 @@
         [
           -123.078446,
           49.124076
+        ],
+        [
+          -123.0752,
+          49.1214
         ],
         [
           -123.07196,
@@ -2829,874 +2657,6 @@
         [
           -123.057083,
           49.1068
-        ],
-        [
-          -123.056967,
-          49.106762
-        ],
-        [
-          -123.056911,
-          49.10676
-        ],
-        [
-          -123.056809,
-          49.106774
-        ],
-        [
-          -123.056701,
-          49.106805
-        ],
-        [
-          -123.056575,
-          49.10687
-        ],
-        [
-          -123.056444,
-          49.106954
-        ],
-        [
-          -123.056202,
-          49.107169
-        ],
-        [
-          -123.055825,
-          49.107521
-        ],
-        [
-          -123.05541,
-          49.107927
-        ],
-        [
-          -123.055018,
-          49.108282
-        ],
-        [
-          -123.054694,
-          49.108603
-        ],
-        [
-          -123.05455,
-          49.108756
-        ],
-        [
-          -123.054523,
-          49.108785
-        ],
-        [
-          -123.054409,
-          49.108898
-        ],
-        [
-          -123.054229,
-          49.109078
-        ],
-        [
-          -123.054173,
-          49.109149
-        ],
-        [
-          -123.053817,
-          49.109568
-        ],
-        [
-          -123.053703,
-          49.109687
-        ],
-        [
-          -123.052054,
-          49.111285
-        ],
-        [
-          -123.051754,
-          49.111425
-        ],
-        [
-          -123.051366,
-          49.111622
-        ],
-        [
-          -123.051128,
-          49.111704
-        ],
-        [
-          -123.050838,
-          49.111771
-        ],
-        [
-          -123.050537,
-          49.111827
-        ],
-        [
-          -123.050234,
-          49.111877
-        ],
-        [
-          -123.050428,
-          49.111901
-        ],
-        [
-          -123.050595,
-          49.111933
-        ],
-        [
-          -123.050778,
-          49.111987
-        ],
-        [
-          -123.051026,
-          49.112072
-        ],
-        [
-          -123.051089,
-          49.112093
-        ],
-        [
-          -123.051253,
-          49.112148
-        ],
-        [
-          -123.051398,
-          49.112093
-        ],
-        [
-          -123.051561,
-          49.111949
-        ],
-        [
-          -123.052339,
-          49.111196
-        ],
-        [
-          -123.053144,
-          49.11037
-        ],
-        [
-          -123.053801,
-          49.109721
-        ],
-        [
-          -123.053979,
-          49.109553
-        ],
-        [
-          -123.054229,
-          49.109316
-        ],
-        [
-          -123.05433,
-          49.109251
-        ],
-        [
-          -123.054393,
-          49.109209
-        ],
-        [
-          -123.054453,
-          49.109155
-        ],
-        [
-          -123.054516,
-          49.109095
-        ],
-        [
-          -123.054737,
-          49.108908
-        ],
-        [
-          -123.05488,
-          49.108797
-        ],
-        [
-          -123.055046,
-          49.108702
-        ],
-        [
-          -123.055115,
-          49.108663
-        ],
-        [
-          -123.055315,
-          49.108588
-        ],
-        [
-          -123.055543,
-          49.108521
-        ],
-        [
-          -123.055756,
-          49.108481
-        ],
-        [
-          -123.055983,
-          49.108456
-        ],
-        [
-          -123.056226,
-          49.108454
-        ],
-        [
-          -123.056471,
-          49.108478
-        ],
-        [
-          -123.056699,
-          49.108521
-        ],
-        [
-          -123.056959,
-          49.108594
-        ],
-        [
-          -123.057261,
-          49.108717
-        ],
-        [
-          -123.057426,
-          49.108734
-        ],
-        [
-          -123.058399,
-          49.109164
-        ],
-        [
-          -123.058674,
-          49.109266
-        ],
-        [
-          -123.058968,
-          49.109327
-        ],
-        [
-          -123.060732,
-          49.110114
-        ],
-        [
-          -123.061056,
-          49.110271
-        ],
-        [
-          -123.061354,
-          49.110444
-        ],
-        [
-          -123.061725,
-          49.1107
-        ],
-        [
-          -123.061926,
-          49.110863
-        ],
-        [
-          -123.061972,
-          49.110901
-        ],
-        [
-          -123.062244,
-          49.111124
-        ],
-        [
-          -123.063202,
-          49.111908
-        ],
-        [
-          -123.064255,
-          49.112726
-        ],
-        [
-          -123.064728,
-          49.113059
-        ],
-        [
-          -123.065988,
-          49.114097
-        ],
-        [
-          -123.066703,
-          49.114666
-        ],
-        [
-          -123.067616,
-          49.115403
-        ],
-        [
-          -123.068777,
-          49.116335
-        ],
-        [
-          -123.070255,
-          49.117538
-        ],
-        [
-          -123.071865,
-          49.118843
-        ],
-        [
-          -123.077351,
-          49.123286
-        ],
-        [
-          -123.078374,
-          49.124114
-        ],
-        [
-          -123.079718,
-          49.125213
-        ],
-        [
-          -123.080227,
-          49.125631
-        ],
-        [
-          -123.08127,
-          49.12647
-        ],
-        [
-          -123.083222,
-          49.128104
-        ],
-        [
-          -123.083504,
-          49.128349
-        ],
-        [
-          -123.08443,
-          49.129142
-        ],
-        [
-          -123.085292,
-          49.129883
-        ],
-        [
-          -123.085781,
-          49.130302
-        ],
-        [
-          -123.0858,
-          49.130401
-        ],
-        [
-          -123.085993,
-          49.130617
-        ],
-        [
-          -123.086097,
-          49.130764
-        ],
-        [
-          -123.086155,
-          49.130895
-        ],
-        [
-          -123.086161,
-          49.131009
-        ],
-        [
-          -123.086146,
-          49.131127
-        ],
-        [
-          -123.086126,
-          49.131238
-        ],
-        [
-          -123.08605,
-          49.131387
-        ],
-        [
-          -123.085957,
-          49.131522
-        ],
-        [
-          -123.085849,
-          49.13163
-        ],
-        [
-          -123.085716,
-          49.131734
-        ],
-        [
-          -123.085534,
-          49.131872
-        ],
-        [
-          -123.085394,
-          49.131959
-        ],
-        [
-          -123.085107,
-          49.132129
-        ],
-        [
-          -123.08491,
-          49.13224
-        ],
-        [
-          -123.084799,
-          49.132318
-        ],
-        [
-          -123.084721,
-          49.132376
-        ],
-        [
-          -123.084647,
-          49.132441
-        ],
-        [
-          -123.084588,
-          49.132512
-        ],
-        [
-          -123.084541,
-          49.132593
-        ],
-        [
-          -123.084514,
-          49.1327
-        ],
-        [
-          -123.084506,
-          49.132785
-        ],
-        [
-          -123.084508,
-          49.13288
-        ],
-        [
-          -123.084525,
-          49.13297
-        ],
-        [
-          -123.084585,
-          49.133132
-        ],
-        [
-          -123.084711,
-          49.133355
-        ],
-        [
-          -123.084732,
-          49.133387
-        ],
-        [
-          -123.084797,
-          49.133459
-        ],
-        [
-          -123.084834,
-          49.13349
-        ],
-        [
-          -123.084928,
-          49.133546
-        ],
-        [
-          -123.084985,
-          49.133565
-        ],
-        [
-          -123.085066,
-          49.133581
-        ],
-        [
-          -123.085198,
-          49.13359
-        ],
-        [
-          -123.085868,
-          49.13358
-        ],
-        [
-          -123.086304,
-          49.133575
-        ],
-        [
-          -123.087222,
-          49.133559
-        ],
-        [
-          -123.087489,
-          49.13355
-        ],
-        [
-          -123.088135,
-          49.133515
-        ],
-        [
-          -123.088168,
-          49.133513
-        ],
-        [
-          -123.088214,
-          49.133511
-        ],
-        [
-          -123.088355,
-          49.133503
-        ],
-        [
-          -123.088468,
-          49.133496
-        ],
-        [
-          -123.088454,
-          49.133392
-        ],
-        [
-          -123.088442,
-          49.133321
-        ],
-        [
-          -123.088427,
-          49.133292
-        ],
-        [
-          -123.088417,
-          49.133272
-        ],
-        [
-          -123.088379,
-          49.133228
-        ],
-        [
-          -123.088316,
-          49.133192
-        ],
-        [
-          -123.087872,
-          49.133035
-        ],
-        [
-          -123.087523,
-          49.132874
-        ],
-        [
-          -123.087428,
-          49.132833
-        ],
-        [
-          -123.087342,
-          49.132786
-        ],
-        [
-          -123.08725,
-          49.132731
-        ],
-        [
-          -123.087198,
-          49.132678
-        ],
-        [
-          -123.087116,
-          49.132575
-        ],
-        [
-          -123.087091,
-          49.132528
-        ],
-        [
-          -123.087067,
-          49.132488
-        ],
-        [
-          -123.087055,
-          49.132438
-        ],
-        [
-          -123.087024,
-          49.132355
-        ],
-        [
-          -123.087,
-          49.132251
-        ],
-        [
-          -123.086988,
-          49.132166
-        ],
-        [
-          -123.086974,
-          49.13205
-        ],
-        [
-          -123.08697,
-          49.131992
-        ],
-        [
-          -123.086954,
-          49.13191
-        ],
-        [
-          -123.086925,
-          49.131832
-        ],
-        [
-          -123.086895,
-          49.131754
-        ],
-        [
-          -123.08688,
-          49.131649
-        ],
-        [
-          -123.086864,
-          49.131544
-        ],
-        [
-          -123.086839,
-          49.131438
-        ],
-        [
-          -123.086798,
-          49.131278
-        ],
-        [
-          -123.086777,
-          49.131208
-        ],
-        [
-          -123.08675,
-          49.13114
-        ],
-        [
-          -123.086681,
-          49.130985
-        ],
-        [
-          -123.086592,
-          49.130834
-        ],
-        [
-          -123.086541,
-          49.130751
-        ],
-        [
-          -123.086486,
-          49.130671
-        ],
-        [
-          -123.086427,
-          49.130587
-        ],
-        [
-          -123.086365,
-          49.130512
-        ],
-        [
-          -123.086318,
-          49.130449
-        ],
-        [
-          -123.086035,
-          49.13016
-        ],
-        [
-          -123.085702,
-          49.129847
-        ],
-        [
-          -123.085129,
-          49.129377
-        ],
-        [
-          -123.083857,
-          49.12841
-        ],
-        [
-          -123.083012,
-          49.127744
-        ],
-        [
-          -123.082066,
-          49.126983
-        ],
-        [
-          -123.081367,
-          49.126421
-        ],
-        [
-          -123.080327,
-          49.125579
-        ],
-        [
-          -123.079818,
-          49.125166
-        ],
-        [
-          -123.078446,
-          49.124076
-        ],
-        [
-          -123.07196,
-          49.118805
-        ],
-        [
-          -123.070346,
-          49.117487
-        ],
-        [
-          -123.069658,
-          49.116937
-        ],
-        [
-          -123.069541,
-          49.116842
-        ],
-        [
-          -123.067734,
-          49.115367
-        ],
-        [
-          -123.066799,
-          49.114618
-        ],
-        [
-          -123.066278,
-          49.114184
-        ],
-        [
-          -123.066121,
-          49.11406
-        ],
-        [
-          -123.065961,
-          49.113847
-        ],
-        [
-          -123.065371,
-          49.113329
-        ],
-        [
-          -123.065158,
-          49.11313
-        ],
-        [
-          -123.065075,
-          49.113032
-        ],
-        [
-          -123.06501,
-          49.112944
-        ],
-        [
-          -123.064958,
-          49.112842
-        ],
-        [
-          -123.064925,
-          49.112752
-        ],
-        [
-          -123.064881,
-          49.112606
-        ],
-        [
-          -123.064878,
-          49.112492
-        ],
-        [
-          -123.064898,
-          49.112387
-        ],
-        [
-          -123.064932,
-          49.112257
-        ],
-        [
-          -123.064997,
-          49.112133
-        ],
-        [
-          -123.065074,
-          49.112034
-        ],
-        [
-          -123.065144,
-          49.111963
-        ],
-        [
-          -123.065548,
-          49.11157
-        ],
-        [
-          -123.066507,
-          49.110678
-        ],
-        [
-          -123.067093,
-          49.110148
-        ],
-        [
-          -123.067456,
-          49.109712
-        ],
-        [
-          -123.068221,
-          49.108792
-        ],
-        [
-          -123.068227,
-          49.108786
-        ],
-        [
-          -123.068747,
-          49.108224
-        ],
-        [
-          -123.06931,
-          49.107595
-        ],
-        [
-          -123.069882,
-          49.106926
-        ],
-        [
-          -123.071378,
-          49.105451
-        ],
-        [
-          -123.071772,
-          49.104964
-        ],
-        [
-          -123.072021,
-          49.104658
-        ],
-        [
-          -123.072322,
-          49.104291
-        ],
-        [
-          -123.072385,
-          49.104214
-        ],
-        [
-          -123.072517,
-          49.104072
-        ],
-        [
-          -123.072873,
-          49.10369
-        ],
-        [
-          -123.073348,
-          49.10318
-        ],
-        [
-          -123.073526,
-          49.103018
-        ],
-        [
-          -123.073684,
-          49.102904
-        ],
-        [
-          -123.075802,
-          49.10157
-        ],
-        [
-          -123.077827,
-          49.099909
         ]
       ]
     },
@@ -3710,31 +2670,31 @@
         -123.0782,
         49.204
       ],
-      "zoom": 12.5,
+      "zoom": 14.5,
       "status": "暢通無阻",
       "status_color": "emerald",
-      "current_speed_kmh": 64,
+      "current_speed_kmh": 70,
       "freeflow_speed_kmh": 70,
       "delay_min": 0,
       "trend": "stable",
       "segments": [
         {
           "name": "北向 (往溫哥華東南區)",
-          "delay_min": 2,
-          "speed_kmh": 58,
-          "level": 1,
-          "color": "#eab308"
+          "delay_min": 0,
+          "speed_kmh": 70,
+          "level": 0,
+          "color": "#10b981"
         },
         {
           "name": "南向 (往列治文/91號公路)",
           "delay_min": 0,
-          "speed_kmh": 65,
+          "speed_kmh": 70,
           "level": 0,
           "color": "#10b981"
         }
       ],
-      "incidents_count": 1,
-      "key_bottleneck": "全線車流順暢，無明顯延誤",
+      "incidents_count": 0,
+      "key_bottleneck": "橋面雙向車流順暢",
       "coordinates": [
         [
           -123.077334,
@@ -4684,10 +3644,10 @@
         -123.1384,
         49.3145
       ],
-      "zoom": 12.5,
+      "zoom": 14.5,
       "status": "暢通無阻",
       "status_color": "emerald",
-      "current_speed_kmh": 55,
+      "current_speed_kmh": 60,
       "freeflow_speed_kmh": 60,
       "delay_min": 0,
       "trend": "stable",
@@ -4695,20 +3655,20 @@
         {
           "name": "北向 (往北溫/西溫/海天公路)",
           "delay_min": 0,
-          "speed_kmh": 56,
+          "speed_kmh": 60,
           "level": 0,
           "color": "#10b981"
         },
         {
           "name": "南向 (往溫哥華市中心/史丹利公園)",
-          "delay_min": 4,
-          "speed_kmh": 41,
-          "level": 1,
-          "color": "#eab308"
+          "delay_min": 0,
+          "speed_kmh": 60,
+          "level": 0,
+          "color": "#10b981"
         }
       ],
-      "incidents_count": 1,
-      "key_bottleneck": "全線車流順暢，無明顯延誤",
+      "incidents_count": 0,
+      "key_bottleneck": "跨海橋面雙向暢通",
       "coordinates": [
         [
           -123.133453,
@@ -5850,31 +4810,31 @@
         -123.0255,
         49.297
       ],
-      "zoom": 12.5,
+      "zoom": 14.0,
       "status": "暢通無阻",
       "status_color": "emerald",
-      "current_speed_kmh": 74,
+      "current_speed_kmh": 80,
       "freeflow_speed_kmh": 80,
       "delay_min": 0,
       "trend": "stable",
       "segments": [
         {
-          "name": "南向 (往溫哥華/喜士定街)",
-          "delay_min": 3,
-          "speed_kmh": 62,
-          "level": 1,
-          "color": "#eab308"
+          "name": "南向 (往溫哥華/卡西爾隧道)",
+          "delay_min": 0,
+          "speed_kmh": 80,
+          "level": 0,
+          "color": "#10b981"
         },
         {
           "name": "北向 (往北溫哥華/Main St)",
           "delay_min": 0,
-          "speed_kmh": 76,
+          "speed_kmh": 80,
           "level": 0,
           "color": "#10b981"
         }
       ],
       "incidents_count": 0,
-      "key_bottleneck": "全線車流順暢，無明顯延誤",
+      "key_bottleneck": "大橋與隧道雙向順暢",
       "coordinates": [
         [
           -123.028,
@@ -7160,10 +6120,10 @@
         -123.125,
         49.195
       ],
-      "zoom": 12.5,
+      "zoom": 14.5,
       "status": "暢通無阻",
       "status_color": "emerald",
-      "current_speed_kmh": 64,
+      "current_speed_kmh": 70,
       "freeflow_speed_kmh": 70,
       "delay_min": 0,
       "trend": "stable",
@@ -7171,20 +6131,20 @@
         {
           "name": "南向 (往列治文/機場 YVR)",
           "delay_min": 0,
-          "speed_kmh": 64,
+          "speed_kmh": 70,
           "level": 0,
           "color": "#10b981"
         },
         {
           "name": "北向 (往溫哥華市區)",
-          "delay_min": 4,
-          "speed_kmh": 48,
-          "level": 1,
-          "color": "#eab308"
+          "delay_min": 0,
+          "speed_kmh": 70,
+          "level": 0,
+          "color": "#10b981"
         }
       ],
       "incidents_count": 0,
-      "key_bottleneck": "全線車流順暢，無明顯延誤",
+      "key_bottleneck": "橋面與機場支線暢通",
       "coordinates": [
         [
           -123.128501,
@@ -8089,7 +7049,6 @@
       ]
     }
   ],
-  "top_alerts": [],
   "major_roads": [
     {
       "id": "mrn_georgia_se",
@@ -8097,31 +7056,21 @@
       "english_name": "Georgia Street (southeast to Main St)",
       "route": "Downtown",
       "badge": "Major Road Network - Downtown",
+      "group": "Major Road Network - Downtown",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
       "current_speed_kmh": 50,
       "freeflow_speed_kmh": 50,
       "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Georgia Street (southeast to Main St))",
+      "length_km": 1.6,
+      "trend": "stable",
       "center": [
-        -123.105,
-        49.2775
+        -123.111,
+        49.2785
       ],
       "zoom": 12.5,
-      "coordinates": [
-        [
-          -123.1125,
-          49.2785
-        ],
-        [
-          -123.105,
-          49.2775
-        ],
-        [
-          -123.0995,
-          49.2765
-        ]
-      ],
       "segments": [
         {
           "name": "北向 (Northbound)",
@@ -8137,7 +7086,22 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
+      ],
+      "coordinates": [
+        [
+          -123.1125,
+          49.2785
+        ],
+        [
+          -123.105,
+          49.2775
+        ],
+        [
+          -123.0995,
+          49.2765
+        ]
+      ],
+      "key_bottleneck": "Normal flow along arterial"
     },
     {
       "id": "mrn_howe",
@@ -8145,17 +7109,37 @@
       "english_name": "Howe Street",
       "route": "Downtown",
       "badge": "Major Road Network - Downtown",
+      "group": "Major Road Network - Downtown",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
       "current_speed_kmh": 50,
       "freeflow_speed_kmh": 50,
       "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Howe Street)",
+      "length_km": 1.8,
+      "trend": "stable",
       "center": [
-        -123.1225,
-        49.2805
+        -123.1255,
+        49.278
       ],
       "zoom": 12.5,
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
+      ],
       "coordinates": [
         [
           -123.1145,
@@ -8178,6 +7162,29 @@
           49.2745
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "mrn_nelson",
+      "name": "Nelson Street (northwest to Howe St)",
+      "english_name": "Nelson Street (northwest to Howe St)",
+      "route": "Downtown",
+      "badge": "Major Road Network - Downtown",
+      "group": "Major Road Network - Downtown",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 1.4,
+      "trend": "stable",
+      "center": [
+        -123.122,
+        49.2785
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "北向 (Northbound)",
@@ -8193,25 +7200,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "mrn_nelson",
-      "name": "Nelson Street (northwest to Howe St)",
-      "english_name": "Nelson Street (northwest to Howe St)",
-      "route": "Downtown",
-      "badge": "Major Road Network - Downtown",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Nelson Street (northwest to Howe St))",
-      "center": [
-        -123.1225,
-        49.2785
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.1305,
@@ -8230,6 +7219,29 @@
           49.2745
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "mrn_seymour",
+      "name": "Seymour Street",
+      "english_name": "Seymour Street",
+      "route": "Downtown",
+      "badge": "Major Road Network - Downtown",
+      "group": "Major Road Network - Downtown",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 1.8,
+      "trend": "stable",
+      "center": [
+        -123.12,
+        49.28
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "北向 (Northbound)",
@@ -8245,25 +7257,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "mrn_seymour",
-      "name": "Seymour Street",
-      "english_name": "Seymour Street",
-      "route": "Downtown",
-      "badge": "Major Road Network - Downtown",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Seymour Street)",
-      "center": [
-        -123.1205,
-        49.2798
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.1128,
@@ -8286,6 +7280,29 @@
           49.274
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "mrn_smithe",
+      "name": "Smithe Street (northwest to Howe St)",
+      "english_name": "Smithe Street (northwest to Howe St)",
+      "route": "Downtown",
+      "badge": "Major Road Network - Downtown",
+      "group": "Major Road Network - Downtown",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 1.4,
+      "trend": "stable",
+      "center": [
+        -123.1205,
+        49.2775
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "北向 (Northbound)",
@@ -8301,25 +7318,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "mrn_smithe",
-      "name": "Smithe Street (northwest to Howe St)",
-      "english_name": "Smithe Street (northwest to Howe St)",
-      "route": "Downtown",
-      "badge": "Major Road Network - Downtown",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Smithe Street (northwest to Howe St))",
-      "center": [
-        -123.1205,
-        49.2775
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.129,
@@ -8338,22 +7337,7 @@
           49.2735
         ]
       ],
-      "segments": [
-        {
-          "name": "北向 (Northbound)",
-          "delay_min": 0,
-          "speed_kmh": 50,
-          "level": 0,
-          "color": "#10b981"
-        },
-        {
-          "name": "南向 (Southbound)",
-          "delay_min": 0,
-          "speed_kmh": 50,
-          "level": 0,
-          "color": "#10b981"
-        }
-      ]
+      "key_bottleneck": "Normal flow along arterial"
     },
     {
       "id": "mrn_hastings",
@@ -8361,17 +7345,37 @@
       "english_name": "Hastings Street (west to Burrard St)",
       "route": "East–west",
       "badge": "Major Road Network - East–west",
+      "group": "Major Road Network - East–west",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
       "current_speed_kmh": 50,
       "freeflow_speed_kmh": 50,
       "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Hastings Street (west to Burrard St))",
+      "length_km": 5.8,
+      "trend": "stable",
       "center": [
-        -123.056,
+        -123.08,
         49.2812
       ],
       "zoom": 12.5,
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
+      ],
       "coordinates": [
         [
           -123.115,
@@ -8398,6 +7402,29 @@
           49.2812
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "mrn_mcgill",
+      "name": "McGill Street (west to Nanaimo St)",
+      "english_name": "McGill Street (west to Nanaimo St)",
+      "route": "East–west",
+      "badge": "Major Road Network - East–west",
+      "group": "Major Road Network - East–west",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 1.5,
+      "trend": "stable",
+      "center": [
+        -123.051,
+        49.2865
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -8413,25 +7440,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "mrn_mcgill",
-      "name": "McGill Street (west to Nanaimo St)",
-      "english_name": "McGill Street (west to Nanaimo St)",
-      "route": "East–west",
-      "badge": "Major Road Network - East–west",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (McGill Street (west to Nanaimo St))",
-      "center": [
-        -123.044,
-        49.2865
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.056,
@@ -8446,6 +7455,29 @@
           49.2865
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "mrn_dundas",
+      "name": "Dundas Street (east to Nanaimo St)",
+      "english_name": "Dundas Street (east to Nanaimo St)",
+      "route": "East–west",
+      "badge": "Major Road Network - East–west",
+      "group": "Major Road Network - East–west",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 1.8,
+      "trend": "stable",
+      "center": [
+        -123.056,
+        49.2835
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -8461,25 +7493,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "mrn_dundas",
-      "name": "Dundas Street (east to Nanaimo St)",
-      "english_name": "Dundas Street (east to Nanaimo St)",
-      "route": "East–west",
-      "badge": "Major Road Network - East–west",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Dundas Street (east to Nanaimo St))",
-      "center": [
-        -123.067,
-        49.2835
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.078,
@@ -8494,6 +7508,29 @@
           49.2835
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "mrn_powell",
+      "name": "Powell Street (west to Hawks Ave)",
+      "english_name": "Powell Street (west to Hawks Ave)",
+      "route": "East–west",
+      "badge": "Major Road Network - East–west",
+      "group": "Major Road Network - East–west",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 2.2,
+      "trend": "stable",
+      "center": [
+        -123.09,
+        49.283
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -8509,25 +7546,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "mrn_powell",
-      "name": "Powell Street (west to Hawks Ave)",
-      "english_name": "Powell Street (west to Hawks Ave)",
-      "route": "East–west",
-      "badge": "Major Road Network - East–west",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Powell Street (west to Hawks Ave))",
-      "center": [
-        -123.09,
-        49.283
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.1035,
@@ -8542,6 +7561,29 @@
           49.283
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "mrn_east_1st",
+      "name": "East 1st Avenue",
+      "english_name": "East 1st Avenue",
+      "route": "East–west",
+      "badge": "Major Road Network - East–west",
+      "group": "Major Road Network - East–west",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 4.5,
+      "trend": "stable",
+      "center": [
+        -123.065,
+        49.269
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -8557,25 +7599,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "mrn_east_1st",
-      "name": "East 1st Avenue",
-      "english_name": "East 1st Avenue",
-      "route": "East–west",
-      "badge": "Major Road Network - East–west",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (East 1st Avenue)",
-      "center": [
-        -122.966622,
-        49.253459
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.0995,
@@ -8610,6 +7634,29 @@
           49.2718
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "mrn_terminal",
+      "name": "Terminal Avenue",
+      "english_name": "Terminal Avenue",
+      "route": "East–west",
+      "badge": "Major Road Network - East–west",
+      "group": "Major Road Network - East–west",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 2.4,
+      "trend": "stable",
+      "center": [
+        -123.09,
+        49.273
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -8625,25 +7672,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "mrn_terminal",
-      "name": "Terminal Avenue",
-      "english_name": "Terminal Avenue",
-      "route": "East–west",
-      "badge": "Major Road Network - East–west",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Terminal Avenue)",
-      "center": [
-        -123.088,
-        49.273
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.0995,
@@ -8658,6 +7687,29 @@
           49.273
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "mrn_broadway",
+      "name": "Broadway",
+      "english_name": "Broadway",
+      "route": "East–west",
+      "badge": "Major Road Network - East–west",
+      "group": "Major Road Network - East–west",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 7.8,
+      "trend": "stable",
+      "center": [
+        -123.125,
+        49.2635
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -8673,25 +7725,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "mrn_broadway",
-      "name": "Broadway",
-      "english_name": "Broadway",
-      "route": "East–west",
-      "badge": "Major Road Network - East–west",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Broadway)",
-      "center": [
-        -123.124154,
-        49.264281
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.185877,
@@ -10206,6 +9240,29 @@
           49.262005
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "mrn_west_10th",
+      "name": "West 10th Avenue (east to Alma St)",
+      "english_name": "West 10th Avenue (east to Alma St)",
+      "route": "East–west",
+      "badge": "Major Road Network - East–west",
+      "group": "Major Road Network - East–west",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 2.6,
+      "trend": "stable",
+      "center": [
+        -123.19,
+        49.2625
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -10221,25 +9278,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "mrn_west_10th",
-      "name": "West 10th Avenue (east to Alma St)",
-      "english_name": "West 10th Avenue (east to Alma St)",
-      "route": "East–west",
-      "badge": "Major Road Network - East–west",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (West 10th Avenue (east to Alma St))",
-      "center": [
-        -123.139,
-        49.2625
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.186,
@@ -10270,22 +9309,7 @@
           49.2625
         ]
       ],
-      "segments": [
-        {
-          "name": "東向 (Eastbound)",
-          "delay_min": 0,
-          "speed_kmh": 50,
-          "level": 0,
-          "color": "#10b981"
-        },
-        {
-          "name": "西向 (Westbound)",
-          "delay_min": 0,
-          "speed_kmh": 50,
-          "level": 0,
-          "color": "#10b981"
-        }
-      ]
+      "key_bottleneck": "Normal flow along arterial"
     },
     {
       "id": "mrn_grandview",
@@ -10293,17 +9317,37 @@
       "english_name": "Grandview Highway (west to Nanaimo St)",
       "route": "East–west",
       "badge": "Major Road Network - East–west",
+      "group": "Major Road Network - East–west",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
       "current_speed_kmh": 60,
       "freeflow_speed_kmh": 60,
       "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Grandview Highway (west to Nanaimo St))",
+      "length_km": 3.6,
+      "trend": "stable",
       "center": [
-        -123.044,
+        -123.045,
         49.2575
       ],
       "zoom": 12.5,
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 60,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 60,
+          "level": 0,
+          "color": "#10b981"
+        }
+      ],
       "coordinates": [
         [
           -123.0774,
@@ -10358,22 +9402,7 @@
           49.2564
         ]
       ],
-      "segments": [
-        {
-          "name": "東向 (Eastbound)",
-          "delay_min": 0,
-          "speed_kmh": 60,
-          "level": 0,
-          "color": "#10b981"
-        },
-        {
-          "name": "西向 (Westbound)",
-          "delay_min": 0,
-          "speed_kmh": 60,
-          "level": 0,
-          "color": "#10b981"
-        }
-      ]
+      "key_bottleneck": "Normal flow along arterial"
     },
     {
       "id": "mrn_41st_ave",
@@ -10381,17 +9410,37 @@
       "english_name": "41st Avenue",
       "route": "East–west",
       "badge": "Major Road Network - East–west",
+      "group": "Major Road Network - East–west",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
       "current_speed_kmh": 50,
       "freeflow_speed_kmh": 50,
       "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (41st Avenue)",
+      "length_km": 8.5,
+      "trend": "stable",
       "center": [
-        -123.116,
+        -123.125,
         49.2335
       ],
       "zoom": 12.5,
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
+      ],
       "coordinates": [
         [
           -123.195,
@@ -10438,6 +9487,29 @@
           49.2335
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "mrn_70th_ave",
+      "name": "70th Avenue",
+      "english_name": "70th Avenue",
+      "route": "East–west",
+      "badge": "Major Road Network - East–west",
+      "group": "Major Road Network - East–west",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 2.8,
+      "trend": "stable",
+      "center": [
+        -123.135,
+        49.2085
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -10453,25 +9525,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "mrn_70th_ave",
-      "name": "70th Avenue",
-      "english_name": "70th Avenue",
-      "route": "East–west",
-      "badge": "Major Road Network - East–west",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (70th Avenue)",
-      "center": [
-        -123.1285,
-        49.2085
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.145,
@@ -10490,6 +9544,29 @@
           49.2085
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "mrn_boundary",
+      "name": "Boundary Road (north to Hastings St)",
+      "english_name": "Boundary Road (north to Hastings St)",
+      "route": "North–south",
+      "badge": "Major Road Network - North–south",
+      "group": "Major Road Network - North–south",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 7.2,
+      "trend": "stable",
+      "center": [
+        -123.0235,
+        49.265
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -10505,25 +9582,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "mrn_boundary",
-      "name": "Boundary Road (north to Hastings St)",
-      "english_name": "Boundary Road (north to Hastings St)",
-      "route": "North–south",
-      "badge": "Major Road Network - North–south",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Boundary Road (north to Hastings St))",
-      "center": [
-        -123.0235,
-        49.2565
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.0235,
@@ -10562,22 +9621,7 @@
           49.2
         ]
       ],
-      "segments": [
-        {
-          "name": "東向 (Eastbound)",
-          "delay_min": 0,
-          "speed_kmh": 50,
-          "level": 0,
-          "color": "#10b981"
-        },
-        {
-          "name": "西向 (Westbound)",
-          "delay_min": 0,
-          "speed_kmh": 50,
-          "level": 0,
-          "color": "#10b981"
-        }
-      ]
+      "key_bottleneck": "Normal flow along arterial"
     },
     {
       "id": "mrn_clark",
@@ -10585,17 +9629,37 @@
       "english_name": "Clark Drive (north to Powell St)",
       "route": "North–south",
       "badge": "Major Road Network - North–south",
+      "group": "Major Road Network - North–south",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
       "current_speed_kmh": 50,
       "freeflow_speed_kmh": 50,
       "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Clark Drive (north to Powell St))",
+      "length_km": 3.0,
+      "trend": "stable",
       "center": [
         -123.078,
-        49.2665
+        49.272
       ],
       "zoom": 12.5,
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
+      ],
       "coordinates": [
         [
           -123.078,
@@ -10622,6 +9686,29 @@
           49.2585
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "mrn_knight",
+      "name": "Knight Street",
+      "english_name": "Knight Street",
+      "route": "North–south",
+      "badge": "Major Road Network - North–south",
+      "group": "Major Road Network - North–south",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 5.4,
+      "trend": "stable",
+      "center": [
+        -123.078,
+        49.23
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "北向 (Northbound)",
@@ -10637,25 +9724,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "mrn_knight",
-      "name": "Knight Street",
-      "english_name": "Knight Street",
-      "route": "North–south",
-      "badge": "Major Road Network - North–south",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Knight Street)",
-      "center": [
-        -123.0775,
-        49.226
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.0775,
@@ -10690,6 +9759,29 @@
           49.182
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "mrn_main_st",
+      "name": "Main Street (between Broadway & Georgia St)",
+      "english_name": "Main Street (between Broadway & Georgia St)",
+      "route": "North–south",
+      "badge": "Major Road Network - North–south",
+      "group": "Major Road Network - North–south",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 2.2,
+      "trend": "stable",
+      "center": [
+        -123.1,
+        49.27
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "北向 (Northbound)",
@@ -10705,25 +9797,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "mrn_main_st",
-      "name": "Main Street (between Broadway & Georgia St)",
-      "english_name": "Main Street (between Broadway & Georgia St)",
-      "route": "North–south",
-      "badge": "Major Road Network - North–south",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Main Street (between Broadway & Georgia St))",
-      "center": [
-        -123.1005,
-        49.2485
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.1005,
@@ -10770,6 +9844,29 @@
           49.208
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "mrn_oak_st",
+      "name": "Oak Street (north to Broadway)",
+      "english_name": "Oak Street (north to Broadway)",
+      "route": "North–south",
+      "badge": "Major Road Network - North–south",
+      "group": "Major Road Network - North–south",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 4.8,
+      "trend": "stable",
+      "center": [
+        -123.1285,
+        49.245
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "北向 (Northbound)",
@@ -10785,25 +9882,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "mrn_oak_st",
-      "name": "Oak Street (north to Broadway)",
-      "english_name": "Oak Street (north to Broadway)",
-      "route": "North–south",
-      "badge": "Major Road Network - North–south",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Oak Street (north to Broadway))",
-      "center": [
-        -123.1285,
-        49.226
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.1285,
@@ -10850,6 +9929,29 @@
           49.18
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "mrn_cambie",
+      "name": "Cambie Street",
+      "english_name": "Cambie Street",
+      "route": "North–south",
+      "badge": "Major Road Network - North–south",
+      "group": "Major Road Network - North–south",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 6.2,
+      "trend": "stable",
+      "center": [
+        -123.1155,
+        49.245
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "北向 (Northbound)",
@@ -10865,25 +9967,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "mrn_cambie",
-      "name": "Cambie Street",
-      "english_name": "Cambie Street",
-      "route": "North–south",
-      "badge": "Major Road Network - North–south",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Cambie Street)",
-      "center": [
-        -123.1152,
-        49.2565
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.115806,
@@ -11154,6 +10238,29 @@
           49.266015
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "mrn_granville",
+      "name": "Granville Street",
+      "english_name": "Granville Street",
+      "route": "North–south",
+      "badge": "Major Road Network - North–south",
+      "group": "Major Road Network - North–south",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 7.5,
+      "trend": "stable",
+      "center": [
+        -123.1385,
+        49.245
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "北向 (Northbound)",
@@ -11169,25 +10276,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "mrn_granville",
-      "name": "Granville Street",
-      "english_name": "Granville Street",
-      "route": "North–south",
-      "badge": "Major Road Network - North–south",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Granville Street)",
-      "center": [
-        -123.139,
-        49.2565
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.129026,
@@ -11578,22 +10667,7 @@
           49.255998
         ]
       ],
-      "segments": [
-        {
-          "name": "北向 (Northbound)",
-          "delay_min": 0,
-          "speed_kmh": 50,
-          "level": 0,
-          "color": "#10b981"
-        },
-        {
-          "name": "南向 (Southbound)",
-          "delay_min": 0,
-          "speed_kmh": 50,
-          "level": 0,
-          "color": "#10b981"
-        }
-      ]
+      "key_bottleneck": "Normal flow along arterial"
     },
     {
       "id": "mrn_kingsway",
@@ -11601,17 +10675,37 @@
       "english_name": "Kingsway",
       "route": "Other",
       "badge": "Major Road Network - Other",
+      "group": "Major Road Network - Other",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
       "current_speed_kmh": 55,
       "freeflow_speed_kmh": 55,
       "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Kingsway)",
+      "length_km": 6.8,
+      "trend": "stable",
       "center": [
-        -123.015726,
-        49.232844
+        -123.065,
+        49.245
       ],
       "zoom": 12.5,
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 55,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 55,
+          "level": 0,
+          "color": "#10b981"
+        }
+      ],
       "coordinates": [
         [
           -123.099002,
@@ -14086,22 +13180,7 @@
           49.213223
         ]
       ],
-      "segments": [
-        {
-          "name": "北向 (Northbound)",
-          "delay_min": 0,
-          "speed_kmh": 55,
-          "level": 0,
-          "color": "#10b981"
-        },
-        {
-          "name": "南向 (Southbound)",
-          "delay_min": 0,
-          "speed_kmh": 55,
-          "level": 0,
-          "color": "#10b981"
-        }
-      ]
+      "key_bottleneck": "Normal flow along arterial"
     },
     {
       "id": "mrn_marine_dr",
@@ -14109,17 +13188,37 @@
       "english_name": "Marine Drive",
       "route": "Other",
       "badge": "Major Road Network - Other",
+      "group": "Major Road Network - Other",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
       "current_speed_kmh": 60,
       "freeflow_speed_kmh": 60,
       "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Marine Drive)",
+      "length_km": 10.5,
+      "trend": "stable",
       "center": [
-        -123.078637,
-        49.210236
+        -123.115,
+        49.21
       ],
       "zoom": 12.5,
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 60,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 60,
+          "level": 0,
+          "color": "#10b981"
+        }
+      ],
       "coordinates": [
         [
           -123.138725,
@@ -15846,22 +14945,7 @@
           49.201978
         ]
       ],
-      "segments": [
-        {
-          "name": "北向 (Northbound)",
-          "delay_min": 0,
-          "speed_kmh": 60,
-          "level": 0,
-          "color": "#10b981"
-        },
-        {
-          "name": "南向 (Southbound)",
-          "delay_min": 0,
-          "speed_kmh": 60,
-          "level": 0,
-          "color": "#10b981"
-        }
-      ]
+      "key_bottleneck": "Normal flow along arterial"
     },
     {
       "id": "oth_burrard",
@@ -15869,17 +14953,37 @@
       "english_name": "Burrard Street",
       "route": "Downtown",
       "badge": "Other Major Thoroughfare - Downtown",
+      "group": "Other Major Thoroughfare - Downtown",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
       "current_speed_kmh": 50,
       "freeflow_speed_kmh": 50,
       "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Burrard Street)",
+      "length_km": 2.5,
+      "trend": "stable",
       "center": [
-        -123.13308,
-        49.27673
+        -123.1235,
+        49.2835
       ],
       "zoom": 12.5,
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
+      ],
       "coordinates": [
         [
           -123.130928,
@@ -16114,6 +15218,29 @@
           49.27193
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "oth_cordova",
+      "name": "Cordova Street",
+      "english_name": "Cordova Street",
+      "route": "Downtown",
+      "badge": "Other Major Thoroughfare - Downtown",
+      "group": "Other Major Thoroughfare - Downtown",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 2.0,
+      "trend": "stable",
+      "center": [
+        -123.108,
+        49.283
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "北向 (Northbound)",
@@ -16129,25 +15256,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "oth_cordova",
-      "name": "Cordova Street",
-      "english_name": "Cordova Street",
-      "route": "Downtown",
-      "badge": "Other Major Thoroughfare - Downtown",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Cordova Street)",
-      "center": [
-        -123.108,
-        49.2845
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.1145,
@@ -16162,22 +15271,7 @@
           49.283
         ]
       ],
-      "segments": [
-        {
-          "name": "北向 (Northbound)",
-          "delay_min": 0,
-          "speed_kmh": 50,
-          "level": 0,
-          "color": "#10b981"
-        },
-        {
-          "name": "南向 (Southbound)",
-          "delay_min": 0,
-          "speed_kmh": 50,
-          "level": 0,
-          "color": "#10b981"
-        }
-      ]
+      "key_bottleneck": "Normal flow along arterial"
     },
     {
       "id": "oth_davie",
@@ -16185,17 +15279,37 @@
       "english_name": "Davie Street",
       "route": "Downtown",
       "badge": "Other Major Thoroughfare - Downtown",
+      "group": "Other Major Thoroughfare - Downtown",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
       "current_speed_kmh": 40,
       "freeflow_speed_kmh": 40,
       "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Davie Street)",
+      "length_km": 1.6,
+      "trend": "stable",
       "center": [
-        -123.1292,
-        49.2762
+        -123.131,
+        49.279
       ],
       "zoom": 12.5,
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 40,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 40,
+          "level": 0,
+          "color": "#10b981"
+        }
+      ],
       "coordinates": [
         [
           -123.1435,
@@ -16218,6 +15332,29 @@
           49.273
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "oth_denman",
+      "name": "Denman Street",
+      "english_name": "Denman Street",
+      "route": "Downtown",
+      "badge": "Other Major Thoroughfare - Downtown",
+      "group": "Other Major Thoroughfare - Downtown",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 40,
+      "freeflow_speed_kmh": 40,
+      "delay_min": 0,
+      "length_km": 1.4,
+      "trend": "stable",
+      "center": [
+        -123.138,
+        49.29
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "北向 (Northbound)",
@@ -16233,25 +15370,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "oth_denman",
-      "name": "Denman Street",
-      "english_name": "Denman Street",
-      "route": "Downtown",
-      "badge": "Other Major Thoroughfare - Downtown",
-      "current_speed_kmh": 40,
-      "freeflow_speed_kmh": 40,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Denman Street)",
-      "center": [
-        -123.136,
-        49.293
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.1425,
@@ -16270,22 +15389,7 @@
           49.296
         ]
       ],
-      "segments": [
-        {
-          "name": "北向 (Northbound)",
-          "delay_min": 0,
-          "speed_kmh": 40,
-          "level": 0,
-          "color": "#10b981"
-        },
-        {
-          "name": "南向 (Southbound)",
-          "delay_min": 0,
-          "speed_kmh": 40,
-          "level": 0,
-          "color": "#10b981"
-        }
-      ]
+      "key_bottleneck": "Normal flow along arterial"
     },
     {
       "id": "oth_dunsmuir",
@@ -16293,17 +15397,37 @@
       "english_name": "Dunsmuir Street",
       "route": "Downtown",
       "badge": "Other Major Thoroughfare - Downtown",
+      "group": "Other Major Thoroughfare - Downtown",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
       "current_speed_kmh": 50,
       "freeflow_speed_kmh": 50,
       "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Dunsmuir Street)",
+      "length_km": 1.5,
+      "trend": "stable",
       "center": [
-        -123.1145,
-        49.282
+        -123.117,
+        49.2825
       ],
       "zoom": 12.5,
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
+      ],
       "coordinates": [
         [
           -123.118,
@@ -16318,6 +15442,29 @@
           49.2795
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "oth_georgia_dw",
+      "name": "Georgia Street (Downtown)",
+      "english_name": "Georgia Street (Downtown)",
+      "route": "Downtown",
+      "badge": "Other Major Thoroughfare - Downtown",
+      "group": "Other Major Thoroughfare - Downtown",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 2.2,
+      "trend": "stable",
+      "center": [
+        -123.12,
+        49.284
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "北向 (Northbound)",
@@ -16333,25 +15480,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "oth_georgia_dw",
-      "name": "Georgia Street (Downtown)",
-      "english_name": "Georgia Street (Downtown)",
-      "route": "Downtown",
-      "badge": "Other Major Thoroughfare - Downtown",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Georgia Street (Downtown))",
-      "center": [
-        -123.1211,
-        49.2844
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.1375,
@@ -16374,6 +15503,29 @@
           49.2785
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "oth_pacific_blvd",
+      "name": "Pacific Boulevard",
+      "english_name": "Pacific Boulevard",
+      "route": "Downtown",
+      "badge": "Other Major Thoroughfare - Downtown",
+      "group": "Other Major Thoroughfare - Downtown",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 2.8,
+      "trend": "stable",
+      "center": [
+        -123.12,
+        49.273
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "北向 (Northbound)",
@@ -16389,25 +15541,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "oth_pacific_blvd",
-      "name": "Pacific Boulevard",
-      "english_name": "Pacific Boulevard",
-      "route": "Downtown",
-      "badge": "Other Major Thoroughfare - Downtown",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Pacific Boulevard)",
-      "center": [
-        -123.11735,
-        49.27422
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.13938,
@@ -16794,22 +15928,7 @@
           49.27681
         ]
       ],
-      "segments": [
-        {
-          "name": "北向 (Northbound)",
-          "delay_min": 0,
-          "speed_kmh": 50,
-          "level": 0,
-          "color": "#10b981"
-        },
-        {
-          "name": "南向 (Southbound)",
-          "delay_min": 0,
-          "speed_kmh": 50,
-          "level": 0,
-          "color": "#10b981"
-        }
-      ]
+      "key_bottleneck": "Normal flow along arterial"
     },
     {
       "id": "oth_robson",
@@ -16817,17 +15936,37 @@
       "english_name": "Robson Street",
       "route": "Downtown",
       "badge": "Other Major Thoroughfare - Downtown",
+      "group": "Other Major Thoroughfare - Downtown",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
       "current_speed_kmh": 40,
       "freeflow_speed_kmh": 40,
       "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Robson Street)",
+      "length_km": 2.0,
+      "trend": "stable",
       "center": [
         -123.124,
-        49.2825
+        49.284
       ],
       "zoom": 12.5,
+      "segments": [
+        {
+          "name": "北向 (Northbound)",
+          "delay_min": 0,
+          "speed_kmh": 40,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "南向 (Southbound)",
+          "delay_min": 0,
+          "speed_kmh": 40,
+          "level": 0,
+          "color": "#10b981"
+        }
+      ],
       "coordinates": [
         [
           -123.1405,
@@ -16850,6 +15989,29 @@
           49.277
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "oth_thurlow",
+      "name": "Thurlow Street",
+      "english_name": "Thurlow Street",
+      "route": "Downtown",
+      "badge": "Other Major Thoroughfare - Downtown",
+      "group": "Other Major Thoroughfare - Downtown",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 40,
+      "freeflow_speed_kmh": 40,
+      "delay_min": 0,
+      "length_km": 1.5,
+      "trend": "stable",
+      "center": [
+        -123.128,
+        49.2845
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "北向 (Northbound)",
@@ -16865,25 +16027,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "oth_thurlow",
-      "name": "Thurlow Street",
-      "english_name": "Thurlow Street",
-      "route": "Downtown",
-      "badge": "Other Major Thoroughfare - Downtown",
-      "current_speed_kmh": 40,
-      "freeflow_speed_kmh": 40,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Thurlow Street)",
-      "center": [
-        -123.129,
-        49.2815
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.1195,
@@ -16902,22 +16046,7 @@
           49.2765
         ]
       ],
-      "segments": [
-        {
-          "name": "北向 (Northbound)",
-          "delay_min": 0,
-          "speed_kmh": 40,
-          "level": 0,
-          "color": "#10b981"
-        },
-        {
-          "name": "南向 (Southbound)",
-          "delay_min": 0,
-          "speed_kmh": 40,
-          "level": 0,
-          "color": "#10b981"
-        }
-      ]
+      "key_bottleneck": "Normal flow along arterial"
     },
     {
       "id": "oth_4th_ave",
@@ -16925,17 +16054,37 @@
       "english_name": "4th Avenue",
       "route": "Westside",
       "badge": "Other Major Thoroughfare - Westside",
+      "group": "Other Major Thoroughfare - Westside",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
       "current_speed_kmh": 50,
       "freeflow_speed_kmh": 50,
       "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (4th Avenue)",
+      "length_km": 4.5,
+      "trend": "stable",
       "center": [
-        -123.1678,
+        -123.16,
         49.268
       ],
       "zoom": 12.5,
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
+      ],
       "coordinates": [
         [
           -123.215,
@@ -16958,6 +16107,29 @@
           49.268
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "oth_12th_ave_w",
+      "name": "12th Avenue (West)",
+      "english_name": "12th Avenue (West)",
+      "route": "Westside",
+      "badge": "Other Major Thoroughfare - Westside",
+      "group": "Other Major Thoroughfare - Westside",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 3.8,
+      "trend": "stable",
+      "center": [
+        -123.14,
+        49.2605
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -16973,25 +16145,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "oth_12th_ave_w",
-      "name": "12th Avenue (West)",
-      "english_name": "12th Avenue (West)",
-      "route": "Westside",
-      "badge": "Other Major Thoroughfare - Westside",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (12th Avenue (West))",
-      "center": [
-        -123.115,
-        49.2605
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.139,
@@ -17010,6 +16164,29 @@
           49.2605
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "oth_16th_ave_w",
+      "name": "16th Avenue (West)",
+      "english_name": "16th Avenue (West)",
+      "route": "Westside",
+      "badge": "Other Major Thoroughfare - Westside",
+      "group": "Other Major Thoroughfare - Westside",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 5.2,
+      "trend": "stable",
+      "center": [
+        -123.145,
+        49.2565
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -17025,25 +16202,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "oth_16th_ave_w",
-      "name": "16th Avenue (West)",
-      "english_name": "16th Avenue (West)",
-      "route": "Westside",
-      "badge": "Other Major Thoroughfare - Westside",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (16th Avenue (West))",
-      "center": [
-        -123.139,
-        49.2565
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.215,
@@ -17070,6 +16229,29 @@
           49.2565
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "oth_king_edward_w",
+      "name": "King Edward Avenue (West)",
+      "english_name": "King Edward Avenue (West)",
+      "route": "Westside",
+      "badge": "Other Major Thoroughfare - Westside",
+      "group": "Other Major Thoroughfare - Westside",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 4.6,
+      "trend": "stable",
+      "center": [
+        -123.14,
+        49.2485
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -17085,25 +16267,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "oth_king_edward_w",
-      "name": "King Edward Avenue (West)",
-      "english_name": "King Edward Avenue (West)",
-      "route": "Westside",
-      "badge": "Other Major Thoroughfare - Westside",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (King Edward Avenue (West))",
-      "center": [
-        -123.139,
-        49.2485
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.199,
@@ -17130,6 +16294,29 @@
           49.2485
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "oth_33rd_ave_w",
+      "name": "33rd Avenue (West)",
+      "english_name": "33rd Avenue (West)",
+      "route": "Westside",
+      "badge": "Other Major Thoroughfare - Westside",
+      "group": "Other Major Thoroughfare - Westside",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 4.2,
+      "trend": "stable",
+      "center": [
+        -123.14,
+        49.241
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -17145,25 +16332,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "oth_33rd_ave_w",
-      "name": "33rd Avenue (West)",
-      "english_name": "33rd Avenue (West)",
-      "route": "Westside",
-      "badge": "Other Major Thoroughfare - Westside",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (33rd Avenue (West))",
-      "center": [
-        -123.139,
-        49.241
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.185,
@@ -17186,6 +16355,29 @@
           49.241
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "oth_41st_ave_hwy99",
+      "name": "41st Avenue (part of Hwy 99)",
+      "english_name": "41st Avenue (part of Hwy 99)",
+      "route": "Westside",
+      "badge": "Other Major Thoroughfare - Westside",
+      "group": "Other Major Thoroughfare - Westside",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 4.0,
+      "trend": "stable",
+      "center": [
+        -123.155,
+        49.2335
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -17201,25 +16393,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "oth_41st_ave_hwy99",
-      "name": "41st Avenue (part of Hwy 99)",
-      "english_name": "41st Avenue (part of Hwy 99)",
-      "route": "Westside",
-      "badge": "Other Major Thoroughfare - Westside",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (41st Avenue (part of Hwy 99))",
-      "center": [
-        -123.116,
-        49.2335
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.195,
@@ -17266,6 +16440,29 @@
           49.2335
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "oth_49th_ave_w",
+      "name": "49th Avenue (West)",
+      "english_name": "49th Avenue (West)",
+      "route": "Westside",
+      "badge": "Other Major Thoroughfare - Westside",
+      "group": "Other Major Thoroughfare - Westside",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 5.0,
+      "trend": "stable",
+      "center": [
+        -123.14,
+        49.226
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -17281,25 +16478,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "oth_49th_ave_w",
-      "name": "49th Avenue (West)",
-      "english_name": "49th Avenue (West)",
-      "route": "Westside",
-      "badge": "Other Major Thoroughfare - Westside",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (49th Avenue (West))",
-      "center": [
-        -123.1005,
-        49.226
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.21,
@@ -17334,6 +16513,29 @@
           49.226
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "oth_57th_ave_w",
+      "name": "57th Avenue (West)",
+      "english_name": "57th Avenue (West)",
+      "route": "Westside",
+      "badge": "Other Major Thoroughfare - Westside",
+      "group": "Other Major Thoroughfare - Westside",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 4.8,
+      "trend": "stable",
+      "center": [
+        -123.14,
+        49.2185
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -17349,25 +16551,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "oth_57th_ave_w",
-      "name": "57th Avenue (West)",
-      "english_name": "57th Avenue (West)",
-      "route": "Westside",
-      "badge": "Other Major Thoroughfare - Westside",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (57th Avenue (West))",
-      "center": [
-        -123.1285,
-        49.2185
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.155,
@@ -17390,6 +16574,29 @@
           49.2185
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "oth_alma",
+      "name": "Alma Street",
+      "english_name": "Alma Street",
+      "route": "Westside",
+      "badge": "Other Major Thoroughfare - Westside",
+      "group": "Other Major Thoroughfare - Westside",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 2.2,
+      "trend": "stable",
+      "center": [
+        -123.186,
+        49.26
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -17405,25 +16612,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "oth_alma",
-      "name": "Alma Street",
-      "english_name": "Alma Street",
-      "route": "Westside",
-      "badge": "Other Major Thoroughfare - Westside",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Alma Street)",
-      "center": [
-        -123.186,
-        49.2625
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.186,
@@ -17442,22 +16631,7 @@
           49.2565
         ]
       ],
-      "segments": [
-        {
-          "name": "北向 (Northbound)",
-          "delay_min": 0,
-          "speed_kmh": 50,
-          "level": 0,
-          "color": "#10b981"
-        },
-        {
-          "name": "南向 (Southbound)",
-          "delay_min": 0,
-          "speed_kmh": 50,
-          "level": 0,
-          "color": "#10b981"
-        }
-      ]
+      "key_bottleneck": "Normal flow along arterial"
     },
     {
       "id": "oth_arbutus",
@@ -17465,17 +16639,37 @@
       "english_name": "Arbutus Street / West Boulevard",
       "route": "Westside",
       "badge": "Other Major Thoroughfare - Westside",
+      "group": "Other Major Thoroughfare - Westside",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
       "current_speed_kmh": 50,
       "freeflow_speed_kmh": 50,
       "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Arbutus Street / West Boulevard)",
+      "length_km": 5.8,
+      "trend": "stable",
       "center": [
         -123.153,
-        49.241
+        49.245
       ],
       "zoom": 12.5,
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
+      ],
       "coordinates": [
         [
           -123.153,
@@ -17510,22 +16704,7 @@
           49.2085
         ]
       ],
-      "segments": [
-        {
-          "name": "北向 (Northbound)",
-          "delay_min": 0,
-          "speed_kmh": 50,
-          "level": 0,
-          "color": "#10b981"
-        },
-        {
-          "name": "南向 (Southbound)",
-          "delay_min": 0,
-          "speed_kmh": 50,
-          "level": 0,
-          "color": "#10b981"
-        }
-      ]
+      "key_bottleneck": "Normal flow along arterial"
     },
     {
       "id": "oth_macdonald",
@@ -17533,17 +16712,37 @@
       "english_name": "Macdonald Street",
       "route": "Westside",
       "badge": "Other Major Thoroughfare - Westside",
+      "group": "Other Major Thoroughfare - Westside",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
       "current_speed_kmh": 50,
       "freeflow_speed_kmh": 50,
       "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Macdonald Street)",
+      "length_km": 3.6,
+      "trend": "stable",
       "center": [
-        -123.1678,
-        49.2565
+        -123.168,
+        49.255
       ],
       "zoom": 12.5,
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
+      ],
       "coordinates": [
         [
           -123.1678,
@@ -17570,22 +16769,7 @@
           49.241
         ]
       ],
-      "segments": [
-        {
-          "name": "北向 (Northbound)",
-          "delay_min": 0,
-          "speed_kmh": 50,
-          "level": 0,
-          "color": "#10b981"
-        },
-        {
-          "name": "南向 (Southbound)",
-          "delay_min": 0,
-          "speed_kmh": 50,
-          "level": 0,
-          "color": "#10b981"
-        }
-      ]
+      "key_bottleneck": "Normal flow along arterial"
     },
     {
       "id": "oth_prior_venables",
@@ -17593,31 +16777,21 @@
       "english_name": "Prior Street / Venables Street",
       "route": "Eastside",
       "badge": "Other Major Thoroughfare - Eastside",
+      "group": "Other Major Thoroughfare - Eastside",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
       "current_speed_kmh": 50,
       "freeflow_speed_kmh": 50,
       "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Prior Street / Venables Street)",
+      "length_km": 2.8,
+      "trend": "stable",
       "center": [
-        -123.088,
+        -123.08,
         49.2765
       ],
       "zoom": 12.5,
-      "coordinates": [
-        [
-          -123.0995,
-          49.2765
-        ],
-        [
-          -123.088,
-          49.2765
-        ],
-        [
-          -123.078,
-          49.2765
-        ]
-      ],
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -17633,7 +16807,22 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
+      ],
+      "coordinates": [
+        [
+          -123.0995,
+          49.2765
+        ],
+        [
+          -123.088,
+          49.2765
+        ],
+        [
+          -123.078,
+          49.2765
+        ]
+      ],
+      "key_bottleneck": "Normal flow along arterial"
     },
     {
       "id": "oth_2nd_gt_northern",
@@ -17641,17 +16830,37 @@
       "english_name": "2nd Ave / Great Northern Way / 6th Ave",
       "route": "Eastside",
       "badge": "Other Major Thoroughfare - Eastside",
+      "group": "Other Major Thoroughfare - Eastside",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
       "current_speed_kmh": 50,
       "freeflow_speed_kmh": 50,
       "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (2nd Ave / Great Northern Way / 6th Ave)",
+      "length_km": 3.4,
+      "trend": "stable",
       "center": [
-        -123.0995,
+        -123.09,
         49.2665
       ],
       "zoom": 12.5,
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
+      ],
       "coordinates": [
         [
           -123.145,
@@ -17670,22 +16879,7 @@
           49.2665
         ]
       ],
-      "segments": [
-        {
-          "name": "東向 (Eastbound)",
-          "delay_min": 0,
-          "speed_kmh": 50,
-          "level": 0,
-          "color": "#10b981"
-        },
-        {
-          "name": "西向 (Westbound)",
-          "delay_min": 0,
-          "speed_kmh": 50,
-          "level": 0,
-          "color": "#10b981"
-        }
-      ]
+      "key_bottleneck": "Normal flow along arterial"
     },
     {
       "id": "oth_12th_ave_e",
@@ -17693,17 +16887,37 @@
       "english_name": "12th Avenue (East)",
       "route": "Eastside",
       "badge": "Other Major Thoroughfare - Eastside",
+      "group": "Other Major Thoroughfare - Eastside",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
       "current_speed_kmh": 50,
       "freeflow_speed_kmh": 50,
       "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (12th Avenue (East))",
+      "length_km": 4.0,
+      "trend": "stable",
       "center": [
-        -123.056,
+        -123.085,
         49.2605
       ],
       "zoom": 12.5,
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
+      ],
       "coordinates": [
         [
           -123.1005,
@@ -17722,22 +16936,7 @@
           49.2605
         ]
       ],
-      "segments": [
-        {
-          "name": "東向 (Eastbound)",
-          "delay_min": 0,
-          "speed_kmh": 50,
-          "level": 0,
-          "color": "#10b981"
-        },
-        {
-          "name": "西向 (Westbound)",
-          "delay_min": 0,
-          "speed_kmh": 50,
-          "level": 0,
-          "color": "#10b981"
-        }
-      ]
+      "key_bottleneck": "Normal flow along arterial"
     },
     {
       "id": "oth_16th_ave_e",
@@ -17745,17 +16944,37 @@
       "english_name": "16th Avenue (East)",
       "route": "Eastside",
       "badge": "Other Major Thoroughfare - Eastside",
+      "group": "Other Major Thoroughfare - Eastside",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
       "current_speed_kmh": 50,
       "freeflow_speed_kmh": 50,
       "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (16th Avenue (East))",
+      "length_km": 4.2,
+      "trend": "stable",
       "center": [
-        -123.056,
+        -123.085,
         49.2565
       ],
       "zoom": 12.5,
+      "segments": [
+        {
+          "name": "東向 (Eastbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        },
+        {
+          "name": "西向 (Westbound)",
+          "delay_min": 0,
+          "speed_kmh": 50,
+          "level": 0,
+          "color": "#10b981"
+        }
+      ],
       "coordinates": [
         [
           -123.1005,
@@ -17774,6 +16993,29 @@
           49.2565
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "oth_22nd_ave",
+      "name": "22nd Avenue (west to Nanaimo St)",
+      "english_name": "22nd Avenue (west to Nanaimo St)",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "group": "Other Major Thoroughfare - Eastside",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 2.0,
+      "trend": "stable",
+      "center": [
+        -123.06,
+        49.251
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -17789,25 +17031,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "oth_22nd_ave",
-      "name": "22nd Avenue (west to Nanaimo St)",
-      "english_name": "22nd Avenue (west to Nanaimo St)",
-      "route": "Eastside",
-      "badge": "Other Major Thoroughfare - Eastside",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (22nd Avenue (west to Nanaimo St))",
-      "center": [
-        -123.044,
-        49.251
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.0775,
@@ -17826,6 +17050,29 @@
           49.251
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "oth_29th_ave",
+      "name": "29th Avenue (west to Nanaimo St)",
+      "english_name": "29th Avenue (west to Nanaimo St)",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "group": "Other Major Thoroughfare - Eastside",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 2.2,
+      "trend": "stable",
+      "center": [
+        -123.055,
+        49.2445
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -17841,25 +17088,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "oth_29th_ave",
-      "name": "29th Avenue (west to Nanaimo St)",
-      "english_name": "29th Avenue (west to Nanaimo St)",
-      "route": "Eastside",
-      "badge": "Other Major Thoroughfare - Eastside",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (29th Avenue (west to Nanaimo St))",
-      "center": [
-        -123.044,
-        49.2445
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.0775,
@@ -17878,6 +17107,29 @@
           49.2445
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "oth_33rd_ave_e",
+      "name": "33rd Avenue (East)",
+      "english_name": "33rd Avenue (East)",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "group": "Other Major Thoroughfare - Eastside",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 4.0,
+      "trend": "stable",
+      "center": [
+        -123.085,
+        49.241
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -17893,25 +17145,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "oth_33rd_ave_e",
-      "name": "33rd Avenue (East)",
-      "english_name": "33rd Avenue (East)",
-      "route": "Eastside",
-      "badge": "Other Major Thoroughfare - Eastside",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (33rd Avenue (East))",
-      "center": [
-        -123.056,
-        49.241
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.1005,
@@ -17930,6 +17164,29 @@
           49.241
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "oth_king_edward_e",
+      "name": "King Edward Avenue (East)",
+      "english_name": "King Edward Avenue (East)",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "group": "Other Major Thoroughfare - Eastside",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 4.2,
+      "trend": "stable",
+      "center": [
+        -123.085,
+        49.2485
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -17945,25 +17202,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "oth_king_edward_e",
-      "name": "King Edward Avenue (East)",
-      "english_name": "King Edward Avenue (East)",
-      "route": "Eastside",
-      "badge": "Other Major Thoroughfare - Eastside",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (King Edward Avenue (East))",
-      "center": [
-        -123.0775,
-        49.2485
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.1005,
@@ -17982,6 +17221,29 @@
           49.2485
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "oth_41st_ave_e",
+      "name": "41st Avenue (east to Kingsway)",
+      "english_name": "41st Avenue (east to Kingsway)",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "group": "Other Major Thoroughfare - Eastside",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 3.2,
+      "trend": "stable",
+      "center": [
+        -123.065,
+        49.2335
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -17997,25 +17259,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "oth_41st_ave_e",
-      "name": "41st Avenue (east to Kingsway)",
-      "english_name": "41st Avenue (east to Kingsway)",
-      "route": "Eastside",
-      "badge": "Other Major Thoroughfare - Eastside",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (41st Avenue (east to Kingsway))",
-      "center": [
-        -123.116,
-        49.2335
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.195,
@@ -18062,6 +17306,29 @@
           49.2335
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "oth_49th_ave_e",
+      "name": "49th Avenue (East)",
+      "english_name": "49th Avenue (East)",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "group": "Other Major Thoroughfare - Eastside",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 4.8,
+      "trend": "stable",
+      "center": [
+        -123.085,
+        49.226
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -18077,25 +17344,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "oth_49th_ave_e",
-      "name": "49th Avenue (East)",
-      "english_name": "49th Avenue (East)",
-      "route": "Eastside",
-      "badge": "Other Major Thoroughfare - Eastside",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (49th Avenue (East))",
-      "center": [
-        -123.1005,
-        49.226
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.21,
@@ -18130,6 +17379,29 @@
           49.226
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "oth_54th_ave",
+      "name": "54th Avenue (east to Tyne St)",
+      "english_name": "54th Avenue (east to Tyne St)",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "group": "Other Major Thoroughfare - Eastside",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 2.4,
+      "trend": "stable",
+      "center": [
+        -123.035,
+        49.2215
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -18145,25 +17417,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "oth_54th_ave",
-      "name": "54th Avenue (east to Tyne St)",
-      "english_name": "54th Avenue (east to Tyne St)",
-      "route": "Eastside",
-      "badge": "Other Major Thoroughfare - Eastside",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (54th Avenue (east to Tyne St))",
-      "center": [
-        -123.035,
-        49.2215
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.05,
@@ -18178,6 +17432,29 @@
           49.2215
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "oth_57th_ave_e",
+      "name": "57th Avenue (east to Argyle Dr)",
+      "english_name": "57th Avenue (east to Argyle Dr)",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "group": "Other Major Thoroughfare - Eastside",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 2.6,
+      "trend": "stable",
+      "center": [
+        -123.065,
+        49.2185
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -18193,25 +17470,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "oth_57th_ave_e",
-      "name": "57th Avenue (east to Argyle Dr)",
-      "english_name": "57th Avenue (east to Argyle Dr)",
-      "route": "Eastside",
-      "badge": "Other Major Thoroughfare - Eastside",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (57th Avenue (east to Argyle Dr))",
-      "center": [
-        -123.0775,
-        49.2185
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.1005,
@@ -18226,6 +17485,29 @@
           49.2185
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "oth_main_st_e",
+      "name": "Main Street",
+      "english_name": "Main Street",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "group": "Other Major Thoroughfare - Eastside",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 5.2,
+      "trend": "stable",
+      "center": [
+        -123.1,
+        49.25
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -18241,25 +17523,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "oth_main_st_e",
-      "name": "Main Street",
-      "english_name": "Main Street",
-      "route": "Eastside",
-      "badge": "Other Major Thoroughfare - Eastside",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Main Street)",
-      "center": [
-        -123.1005,
-        49.2485
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.1005,
@@ -18306,6 +17570,29 @@
           49.208
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "oth_fraser",
+      "name": "Fraser Street",
+      "english_name": "Fraser Street",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "group": "Other Major Thoroughfare - Eastside",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 6.0,
+      "trend": "stable",
+      "center": [
+        -123.09,
+        49.24
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -18321,25 +17608,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "oth_fraser",
-      "name": "Fraser Street",
-      "english_name": "Fraser Street",
-      "route": "Eastside",
-      "badge": "Other Major Thoroughfare - Eastside",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Fraser Street)",
-      "center": [
-        -123.0895,
-        49.2335
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.0895,
@@ -18370,6 +17639,29 @@
           49.208
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "oth_windsor",
+      "name": "Windsor Street",
+      "english_name": "Windsor Street",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "group": "Other Major Thoroughfare - Eastside",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 4.0,
+      "trend": "stable",
+      "center": [
+        -123.085,
+        49.245
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -18385,25 +17677,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "oth_windsor",
-      "name": "Windsor Street",
-      "english_name": "Windsor Street",
-      "route": "Eastside",
-      "badge": "Other Major Thoroughfare - Eastside",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Windsor Street)",
-      "center": [
-        -123.085,
-        49.2485
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.085,
@@ -18426,6 +17700,29 @@
           49.2335
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "oth_commercial_vic",
+      "name": "Commercial Drive / Victoria Drive",
+      "english_name": "Commercial Drive / Victoria Drive",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "group": "Other Major Thoroughfare - Eastside",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 5.6,
+      "trend": "stable",
+      "center": [
+        -123.068,
+        49.26
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -18441,25 +17738,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "oth_commercial_vic",
-      "name": "Commercial Drive / Victoria Drive",
-      "english_name": "Commercial Drive / Victoria Drive",
-      "route": "Eastside",
-      "badge": "Other Major Thoroughfare - Eastside",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Commercial Drive / Victoria Drive)",
-      "center": [
-        -123.0655,
-        49.241
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.0695,
@@ -18498,6 +17777,29 @@
           49.207
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "oth_nanaimo",
+      "name": "Nanaimo Street",
+      "english_name": "Nanaimo Street",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "group": "Other Major Thoroughfare - Eastside",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 5.5,
+      "trend": "stable",
+      "center": [
+        -123.056,
+        49.245
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -18513,25 +17815,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "oth_nanaimo",
-      "name": "Nanaimo Street",
-      "english_name": "Nanaimo Street",
-      "route": "Eastside",
-      "badge": "Other Major Thoroughfare - Eastside",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Nanaimo Street)",
-      "center": [
-        -123.056,
-        49.251
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.056,
@@ -18570,6 +17854,29 @@
           49.226
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "oth_renfrew",
+      "name": "Renfrew Street",
+      "english_name": "Renfrew Street",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "group": "Other Major Thoroughfare - Eastside",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 4.8,
+      "trend": "stable",
+      "center": [
+        -123.044,
+        49.25
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -18585,25 +17892,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "oth_renfrew",
-      "name": "Renfrew Street",
-      "english_name": "Renfrew Street",
-      "route": "Eastside",
-      "badge": "Other Major Thoroughfare - Eastside",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Renfrew Street)",
-      "center": [
-        -123.044,
-        49.2575
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.044,
@@ -18634,6 +17923,29 @@
           49.2335
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "oth_rupert_kerr",
+      "name": "Rupert Street / Kerr Street",
+      "english_name": "Rupert Street / Kerr Street",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "group": "Other Major Thoroughfare - Eastside",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 6.2,
+      "trend": "stable",
+      "center": [
+        -123.033,
+        49.235
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -18649,25 +17961,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "oth_rupert_kerr",
-      "name": "Rupert Street / Kerr Street",
-      "english_name": "Rupert Street / Kerr Street",
-      "route": "Eastside",
-      "badge": "Other Major Thoroughfare - Eastside",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Rupert Street / Kerr Street)",
-      "center": [
-        -123.0325,
-        49.251
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.0325,
@@ -18706,6 +18000,29 @@
           49.205
         ]
       ],
+      "key_bottleneck": "Normal flow along arterial"
+    },
+    {
+      "id": "oth_joyce",
+      "name": "Joyce Street",
+      "english_name": "Joyce Street",
+      "route": "Eastside",
+      "badge": "Other Major Thoroughfare - Eastside",
+      "group": "Other Major Thoroughfare - Eastside",
+      "status": "Free Flow",
+      "status_zh": "暢通無阻",
+      "status_color": "emerald",
+      "color": "#10b981",
+      "current_speed_kmh": 50,
+      "freeflow_speed_kmh": 50,
+      "delay_min": 0,
+      "length_km": 3.0,
+      "trend": "stable",
+      "center": [
+        -123.028,
+        49.237
+      ],
+      "zoom": 12.5,
       "segments": [
         {
           "name": "東向 (Eastbound)",
@@ -18721,25 +18038,7 @@
           "level": 0,
           "color": "#10b981"
         }
-      ]
-    },
-    {
-      "id": "oth_joyce",
-      "name": "Joyce Street",
-      "english_name": "Joyce Street",
-      "route": "Eastside",
-      "badge": "Other Major Thoroughfare - Eastside",
-      "current_speed_kmh": 50,
-      "freeflow_speed_kmh": 50,
-      "delay_min": 0,
-      "status": "順暢 (Free Flow)",
-      "trend": "steady",
-      "key_bottleneck": "全線車流順暢 (Joyce Street)",
-      "center": [
-        -123.028,
-        49.237
       ],
-      "zoom": 12.5,
       "coordinates": [
         [
           -123.028,
@@ -18762,25 +18061,8 @@
           49.2295
         ]
       ],
-      "segments": [
-        {
-          "name": "東向 (Eastbound)",
-          "delay_min": 0,
-          "speed_kmh": 50,
-          "level": 0,
-          "color": "#10b981"
-        },
-        {
-          "name": "西向 (Westbound)",
-          "delay_min": 0,
-          "speed_kmh": 50,
-          "level": 0,
-          "color": "#10b981"
-        }
-      ]
+      "key_bottleneck": "Normal flow along arterial"
     }
   ],
-  "total_roads_count": 71,
-  "freeflow_roads_count": 71,
-  "severe_roads_count": 0
+  "top_alerts": []
 }

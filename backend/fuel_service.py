@@ -3,6 +3,7 @@ import json
 import math
 import time
 import logging
+import asyncio
 from typing import List, Dict, Any, Optional
 
 logger = logging.getLogger(__name__)
@@ -214,3 +215,51 @@ async def get_fuel_stations_data(user_lat: Optional[float] = None, user_lon: Opt
         stations.sort(key=lambda s: s["best_score"])
         
     return stations
+
+
+def get_live_fuel_prices(force: bool = True) -> List[Dict[str, Any]]:
+    """
+    同步取得大溫地區油站資料與即時油價快取（供 OCI 手動與定時更新呼叫）。
+    """
+    global _fuel_cache
+    if force:
+        _fuel_cache["timestamp"] = 0
+    raw_stations = load_vancouver_stations()
+    live_prices = {}
+    try:
+        try:
+            loop = asyncio.get_event_loop()
+            if loop.is_running():
+                import concurrent.futures
+                with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+                    live_prices = executor.submit(asyncio.run, fetch_gasbuddy_prices_live()).result(timeout=10)
+            else:
+                live_prices = loop.run_until_complete(fetch_gasbuddy_prices_live())
+        except RuntimeError:
+            live_prices = asyncio.run(fetch_gasbuddy_prices_live())
+    except Exception as e:
+        logger.warning(f"Error fetching live gas prices in sync runner: {e}")
+
+    enriched = []
+    for st in raw_stations:
+        brand = st.get("brand", "油站")
+        addr = st.get("address", "")
+        key = f"{brand}_{addr}".lower()
+        if key in live_prices:
+            prices = live_prices[key]
+            source = "GasBuddy Live"
+        else:
+            prices = generate_base_prices(st["id"], brand)
+            source = "Vancouver Market Live"
+        enriched.append({
+            **st,
+            "prices": prices,
+            "source": source,
+            "updated_at": "剛更新"
+        })
+    _fuel_cache = {
+        "timestamp": time.time(),
+        "stations": enriched
+    }
+    return enriched
+

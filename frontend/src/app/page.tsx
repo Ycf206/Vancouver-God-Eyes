@@ -1,7 +1,11 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import TopBar from '@/components/TopBar';
-import LayerPanel from '@/components/LayerPanel';
-import FlightScheduleModal from '@/components/FlightScheduleModal';
+
+const TopBar = dynamic(() => import('@/components/TopBar'), { ssr: false });
+const LayerPanel = dynamic(() => import('@/components/LayerPanel'), { ssr: false });
+const FlightScheduleModal = dynamic(() => import('@/components/FlightScheduleModal'), { ssr: false });
 
 const AppMap = dynamic(() => import('@/components/Map'), { 
   ssr: false,
@@ -9,11 +13,21 @@ const AppMap = dynamic(() => import('@/components/Map'), {
 });
 
 export default function Home() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <main className="fixed inset-0 w-full h-full overflow-hidden bg-[#161719] text-white font-sans selection:bg-emerald-500/30">
-      <TopBar />
-      <LayerPanel />
-      <FlightScheduleModal />
+      {mounted && (
+        <>
+          <TopBar />
+          <LayerPanel />
+          <FlightScheduleModal />
+        </>
+      )}
       <AppMap />
     </main>
   );

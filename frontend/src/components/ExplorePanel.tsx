@@ -7911,9 +7911,6 @@ function ExploreContent() {
                       <span className="text-emerald-400 font-medium">
                         ✓ 資料可信度 {alert.confidence_pct ?? (alert.confidence ? (alert.confidence <= 5 ? alert.confidence * 20 : alert.confidence) : 95)}%
                       </span>
-                      <span className="text-cyan-400 group-hover:underline flex items-center gap-0.5">
-                        在地圖查看圖釘 →
-                      </span>
                     </div>
                   </div>
                 ))

@@ -528,11 +528,84 @@ const FEDEX_SERVICE_ZH_MAP: Record<string, string> = {
   'Direct to Locker': '智慧儲物櫃自取',
 };
 
+interface TerminalWebcamItem {
+  id: string;
+  name: string;
+  url: string;
+}
+
+const FERRY_TERMINAL_NAMES: Record<string, string> = {
+  'SWB': '維多利亞 (Swartz Bay)',
+  'TSA': '溫哥華 (Tsawwassen)',
+  'HSB': '馬蹄灣 (Horseshoe Bay)',
+  'DUK': '納奈莫 (Duke Point)',
+  'NAN': '納奈莫 (Departure Bay)',
+  'LNG': '陽光海岸 (Langdale)',
+  'BOW': '寶雲島 (Bowen Island / Snug Cove)',
+  'FUL': '鹽泉島 (Fulford Harbour)',
+  'SGI': '南部海灣群島 (Southern Gulf Islands)',
+  'PLH': '加利亞諾島 (Galiano / Sturdies Bay)',
+  'POB': '潘德島 (Pender / Otter Bay)',
+  'PSB': '梅恩島 (Mayne / Village Bay)',
+  'PVB': '薩圖納島 (Saturna / Lyall Harbour)',
+  'PST': '鹽泉島 (Long Harbour)',
+  'CMX': '科莫克斯 (Comox)',
+  'PRR': '鮑威爾河 (Powell River)',
+  'TEX': '特克薩達島 (Texada Island)',
+  'GAB': '加布里奧拉島 (Gabriola Island)',
+  'DNE': '登曼島 (Denman Island)',
+  'HRN': '霍恩比島 (Hornby Island)',
+  'CHT': '夏洛特皇后群島 (Haida Gwaii)',
+  'PPR': '魯珀特王子港 (Prince Rupert)',
+  'KLE': '克萊姆圖 (Klemtu)',
+  'BLA': '貝拉貝拉 (Bella Bella)',
+  'BCO': '貝拉庫拉 (Bella Coola)',
+  'POF': '波特哈迪 (Port Hardy)'
+};
+
+const FERRY_TERMINAL_WEBCAMS: Record<string, TerminalWebcamItem[]> = {
+  // 4.1 Nanaimo (Duke Point) terminal
+  'DUK': [
+    { id: 'cam1_DUK', name: '碼頭現場車流 (Traffic at the terminal)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam1_DUK.jpg' },
+    { id: 'cam2_DUK', name: '開往溫哥華 (Traffic to Tsawwassen)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam2_DUK.jpg' },
+  ],
+  // 4.2 Nanaimo (Departure Bay) terminal
+  'NAN': [
+    { id: 'cam1_NAN', name: '碼頭現場車流 (Traffic at the terminal)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam1_NAN.jpg' },
+    { id: 'cam2_NAN', name: '開往溫哥華 (Traffic to Horseshoe Bay)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam2_NAN.jpg' },
+  ],
+  // 4.3 Vancouver (Tsawwassen) terminal
+  'TSA': [
+    { id: 'cam1_TSA', name: '碼頭現場車流 (Traffic at the terminal)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam1_TSA.jpg' },
+    { id: 'cam2_TSA', name: '開往維多利亞 (Traffic to Victoria / Swartz Bay)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam2_TSA.jpg' },
+    { id: 'cam3_TSA', name: '開往納奈莫 (Traffic to Nanaimo / Duke Point)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam3_TSA.jpg' },
+    { id: 'cam4_TSA', name: '開往南部海灣群島 (Traffic to Southern Gulf Islands)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam4_TSA.jpg' },
+  ],
+  // 4.4 Sunshine Coast (Langdale) terminal
+  'LNG': [
+    { id: 'cam1_LNG', name: '碼頭現場車流 (Traffic at the terminal)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam1_LNG.jpg' },
+    { id: 'cam2_LNG', name: '開往溫哥華 (Traffic to Horseshoe Bay)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam2_LNG.jpg' },
+  ],
+  // 4.5 Victoria (Swartz Bay) terminal
+  'SWB': [
+    { id: 'cam1_SWB', name: '碼頭現場車流 (Traffic at the terminal)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam1_SWB.jpg' },
+    { id: 'cam2_SWB', name: '開往溫哥華 (Traffic to Vancouver / Tsawwassen)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam2_SWB.jpg' },
+    { id: 'cam3_SWB', name: '開往南部海灣群島與鹽泉島 (Traffic to Gulf Islands & Fulford Harbour)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam3_SWB.jpg' },
+  ],
+  // Horseshoe Bay terminal
+  'HSB': [
+    { id: 'cam1_HSB', name: '碼頭現場車流 (Traffic at the terminal)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam1_HSB.jpg' },
+    { id: 'cam2_HSB', name: '開往納奈莫 (Traffic to Departure Bay)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam2_HSB.jpg' },
+    { id: 'cam3_HSB', name: '開往陽光海岸 (Traffic to Langdale)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam3_HSB.jpg' },
+    { id: 'cam4_HSB', name: '開往寶雲島 (Traffic to Bowen Island)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam4_HSB.jpg' },
+  ]
+};
+
 export default function AppMap() {
   const { 
     layers, mapStyleType, searchTarget, setSearchTarget, isLayerPanelOpen, 
     contourInterval, timeFormat, distanceUnit, temperatureUnit, userLocation, setUserLocation, setExploreOpen,
-    isExploreOpen, exploreTab, weatherSubTab, setExploreTab, openExploreTab, openExploreTabs, setSettingsModalOpen,
+    isExploreOpen, exploreTab, weatherSubTab, setExploreTab, openExploreTab, openExploreTabs, setOpenExploreTabs, setSettingsModalOpen,
     parkingMeterFilter, setParkingMeterFilter,
     motorcycleParkingFilter, setMotorcycleParkingFilter,
     radiusExploration, setRadiusExploration,
@@ -580,7 +653,8 @@ export default function AppMap() {
   // 4. 正式開始執行後台統計資料：每次進入地圖頁面觸發一次造訪統計計數
   useEffect(() => {
     try {
-      fetch('/api/stats/visit', { method: 'POST', keepalive: true }).catch(() => {});
+      const apiUrl = getApiUrl();
+      fetch(`${apiUrl}/api/stats/visit`, { method: 'POST', keepalive: true }).catch(() => {});
     } catch {
       // ignore
     }
@@ -690,7 +764,7 @@ export default function AppMap() {
     evCharger: boolean;
     companies: {
       impark: boolean;
-      easyPark: boolean;
+      easyPark?: boolean;
     };
   }>({
     hourly: true,
@@ -698,7 +772,6 @@ export default function AppMap() {
     evCharger: false,
     companies: {
       impark: true,
-      easyPark: false,
     }
   });
   const [courierLegendOpen, setCourierLegendOpen] = useState(true);
@@ -849,7 +922,8 @@ export default function AppMap() {
     }
   }, [isExploreOpen, exploreTab, searchTarget]);
 
-  const [skytrainDetailTab, setSkytrainDetailTab] = useState<'departures' | 'schedules' | 'facilities'>('departures');
+  const [skytrainDetailTab, setSkytrainDetailTab] = useState<'departures' | 'schedules' | 'fares' | 'facilities'>('departures');
+  const [isFareZoneMapModalOpen, setIsFareZoneMapModalOpen] = useState(false);
   const [currentZoom, setCurrentZoom] = useState<number>(11);
   const [loadingHeavyLayers, setLoadingHeavyLayers] = useState<{ [key: string]: string }>({});
   const [zoomNotification, setZoomNotification] = useState<{
@@ -1160,6 +1234,31 @@ export default function AppMap() {
   const [selectedTerminal, setSelectedTerminal] = useState<{geometry: {coordinates: number[]}, properties: {name?: string, code: string}} | null>(null);
   const [terminalSchedule, setTerminalSchedule] = useState<Array<{destination: string, time: string, arrival_time: string, vessel_name: string, status: string, fill: number}>>([]);
   const [loadingSchedule, setLoadingSchedule] = useState(false);
+  const [isTerminalWebcamModalOpen, setIsTerminalWebcamModalOpen] = useState(false);
+  const [terminalWebcamTerminalCode, setTerminalWebcamTerminalCode] = useState<string>('TSA');
+  const [terminalWebcamRefreshKey, setTerminalWebcamRefreshKey] = useState<number>(Date.now());
+  const [terminalWebcamSecondsAgo, setTerminalWebcamSecondsAgo] = useState<number>(0);
+
+  // BC Ferries 碼頭攝影機自動更新計時器 (每 1 分鐘自動更新，打開時立即更新)
+  useEffect(() => {
+    if (!isTerminalWebcamModalOpen) return;
+    setTerminalWebcamSecondsAgo(0);
+    setTerminalWebcamRefreshKey(Date.now());
+
+    const secInterval = setInterval(() => {
+      setTerminalWebcamSecondsAgo(s => s + 1);
+    }, 1000);
+
+    const minInterval = setInterval(() => {
+      setTerminalWebcamRefreshKey(Date.now());
+      setTerminalWebcamSecondsAgo(0);
+    }, 60000);
+
+    return () => {
+      clearInterval(secInterval);
+      clearInterval(minInterval);
+    };
+  }, [isTerminalWebcamModalOpen]);
   const [selectedFerry, setSelectedFerry] = useState<FerryVehicle | null>(null);
   const [selectedFacility, setSelectedFacility] = useState<RoadFacilityInfo | null>(null);
 
@@ -8044,16 +8143,36 @@ export default function AppMap() {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="text-[11px] font-bold text-gray-600">今日班次</h4>
-                  <a
-                    href="https://www.bcferries.com/web_image/h90/h4b/9089486028830.pdf"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-blue-50 hover:bg-blue-100 text-[#0060a9] text-[10.5px] font-semibold transition-colors border border-blue-200/50"
-                    title="前往卑詩渡輪官方收費表 (PDF)"
-                  >
-                    <span>卑詩渡輪收費表</span>
-                    <ExternalLink className="w-3 h-3 text-[#0060a9]" />
-                  </a>
+                  <div className="flex items-center gap-1.5">
+                    {/* 4. 碼頭即時路況攝影機按鈕 */}
+                    {Boolean(FERRY_TERMINAL_WEBCAMS[selectedTerminal.properties.code]?.length) && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setTerminalWebcamTerminalCode(selectedTerminal.properties.code);
+                          setTerminalWebcamRefreshKey(Date.now());
+                          setTerminalWebcamSecondsAgo(0);
+                          setIsTerminalWebcamModalOpen(true);
+                        }}
+                        className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-sky-50 hover:bg-sky-100 text-[#0060a9] text-[10.5px] font-semibold transition-colors border border-sky-200/60 cursor-pointer shadow-2xs"
+                        title="查看碼頭現場即時路況攝影機"
+                      >
+                        <Camera className="w-3 h-3 text-[#0060a9]" />
+                        <span>碼頭攝影機</span>
+                      </button>
+                    )}
+                    {/* 2. 收費表按鈕 (已刪除卑詩渡輪) */}
+                    <a
+                      href="https://www.bcferries.com/web_image/h90/h4b/9089486028830.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-blue-50 hover:bg-blue-100 text-[#0060a9] text-[10.5px] font-semibold transition-colors border border-blue-200/50"
+                      title="官方收費表 (PDF)"
+                    >
+                      <span>收費表</span>
+                      <ExternalLink className="w-3 h-3 text-[#0060a9]" />
+                    </a>
+                  </div>
                 </div>
                 
                 {loadingSchedule ? (
@@ -8087,7 +8206,9 @@ export default function AppMap() {
                       </div>
                       <div className="flex justify-between items-center text-gray-600 mt-0.5">
                         <span className="font-medium text-gray-800 truncate max-w-[130px] sm:max-w-[160px]">{sailing.vessel_name || '渡輪 (航線營運中)'}</span>
-                        <span className="bg-white border border-gray-200 text-gray-600 px-1.5 py-0.5 rounded text-[10px] font-medium">開往 {sailing.destination}</span>
+                        <span className="bg-white border border-gray-200 text-gray-600 px-1.5 py-0.5 rounded text-[10px] font-medium" title={sailing.destination}>
+                          開往 {FERRY_TERMINAL_NAMES[sailing.destination] || sailing.destination}
+                        </span>
                       </div>
                       {sailing.fill > 0 && (
                         <div className="mt-1 pt-1 border-t border-gray-100">
@@ -12748,7 +12869,6 @@ export default function AppMap() {
                           </div>
                           <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/85 via-black/45 to-transparent p-1.5 pt-3 text-[10.5px] font-medium text-white flex items-center justify-between z-20">
                             <span>{selectedFacility.properties.direction || selectedFacility.properties.highway || 'Highway 1'}</span>
-                            <span className="font-mono text-cyan-300 text-[10px]">每 15 分鐘自動更新</span>
                           </div>
                         </div>
 
@@ -13559,6 +13679,26 @@ export default function AppMap() {
                   ? upcomingClosures[0] 
                   : (typeof upcomingClosures === 'string' ? upcomingClosures : null);
 
+                // 閉館日格式化為統一 yyyy-MM-dd，並刪去英文 Closed
+                const formatClosureDate = (raw: string | null): string => {
+                  if (!raw || typeof raw !== 'string') return '';
+                  const cleaned = raw.replace(/:\s*Closed\b/gi, '').replace(/\bClosed\b/gi, '').trim();
+                  const parenIdx = cleaned.indexOf('(');
+                  if (/^\d{4}-\d{2}-\d{2}/.test(cleaned)) {
+                    return cleaned;
+                  }
+                  const dateStr = parenIdx !== -1 ? cleaned.slice(0, parenIdx).replace(/:$/, '').trim() : cleaned;
+                  const note = parenIdx !== -1 ? cleaned.slice(parenIdx).trim() : '';
+                  const d = new Date(dateStr);
+                  if (!isNaN(d.getTime())) {
+                    const yyyy = d.getFullYear();
+                    const mm = String(d.getMonth() + 1).padStart(2, '0');
+                    const dd = String(d.getDate()).padStart(2, '0');
+                    return note ? `${yyyy}-${mm}-${dd} ${note}` : `${yyyy}-${mm}-${dd}`;
+                  }
+                  return cleaned;
+                };
+
                 return (
                   <div className="flex flex-col gap-2 text-xs">
                     <div className="bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/25 flex items-center gap-1.5 text-[11px] font-medium text-amber-950 leading-relaxed">
@@ -13579,7 +13719,7 @@ export default function AppMap() {
                       {upcomingClosure && (
                         <div className={`flex justify-between items-start text-gray-600 ${todayHoursStr ? 'pt-1.5 border-t border-gray-100' : ''} gap-2`}>
                           <span className="shrink-0">閉館日</span>
-                          <span className="text-gray-800 text-right font-medium leading-snug">{upcomingClosure}</span>
+                          <span className="text-gray-800 text-right font-medium leading-snug">{formatClosureDate(upcomingClosure)}</span>
                         </div>
                       )}
 
@@ -16478,7 +16618,14 @@ export default function AppMap() {
                   <button
                     key={t.id}
                     onClick={() => {
-                      openExploreTab(t.id as any);
+                      if (isExploreOpen && exploreTab === t.id) {
+                        if (openExploreTabs && openExploreTabs.length > 1) {
+                          setOpenExploreTabs([t.id as any]);
+                        }
+                        setExploreOpen(false);
+                      } else {
+                        openExploreTab(t.id as any);
+                      }
                       setIsExploreSearchActive(false);
                       setExploreSearchInput('');
                     }}
@@ -16567,6 +16714,9 @@ export default function AppMap() {
                 key={tab.id}
                 onClick={() => {
                   if (isExploreOpen && exploreTab === tab.id) {
+                    if (openExploreTabs && openExploreTabs.length > 1) {
+                      setOpenExploreTabs([tab.id as any]);
+                    }
                     setExploreOpen(false);
                   } else {
                     openExploreTab(tab.id as any);
@@ -18009,16 +18159,6 @@ export default function AppMap() {
                     <span className={`w-2 h-2 rounded-full ${imparkFilter.companies?.impark ? 'bg-red-500' : 'bg-gray-600'}`} />
                     <span>ImPark</span>
                   </button>
-
-                  <button
-                    type="button"
-                    disabled
-                    className="flex-1 flex items-center justify-center gap-1.5 py-1 px-2 rounded border border-gray-800 bg-[#141720] text-gray-500 text-xs font-medium cursor-not-allowed opacity-60"
-                    title="即將支援"
-                  >
-                    <span className="w-2 h-2 rounded-full bg-gray-600" />
-                    <span>EasyPark (即將支援)</span>
-                  </button>
                 </div>
               </div>
 
@@ -18575,6 +18715,16 @@ export default function AppMap() {
               首末班與頻率
             </button>
             <button
+              onClick={() => setSkytrainDetailTab('fares')}
+              className={`flex-1 py-1.5 text-center font-medium border-b-2 transition-all ${
+                skytrainDetailTab === 'fares'
+                  ? 'border-blue-400 text-blue-400 font-bold'
+                  : 'border-transparent text-gray-400 hover:text-gray-200'
+              }`}
+            >
+              車票
+            </button>
+            <button
               onClick={() => setSkytrainDetailTab('facilities')}
               className={`flex-1 py-1.5 text-center font-medium border-b-2 transition-all ${
                 skytrainDetailTab === 'facilities'
@@ -18764,7 +18914,138 @@ export default function AppMap() {
             </div>
           )}
 
-          {/* Tab 3: 車站出入口地圖與設施指引 */}
+          {/* Tab 3: 車票 (收費分區與各類票價) */}
+          {skytrainDetailTab === 'fares' && (
+            <div className="overflow-y-auto flex-1 flex flex-col gap-2.5 pr-1 text-xs [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
+              {/* 收費分區地圖縮圖 */}
+              <div className="bg-[#10131a] rounded-lg border border-[#232836] p-2 flex flex-col gap-1.5 shadow-sm">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-white text-xs flex items-center gap-1.5">
+                    <span>🗺️</span> 收費分區地圖
+                  </span>
+                </div>
+                
+                <div 
+                  onClick={() => setIsFareZoneMapModalOpen(true)}
+                  className="relative cursor-pointer overflow-hidden rounded-md border border-[#2a3040] bg-black/40 aspect-[16/9] flex items-center justify-center hover:border-blue-500/50 transition-colors"
+                >
+                  <img
+                    src="/ct_fare_zone_map.png"
+                    alt="收費分區地圖"
+                    className="w-full h-full object-contain"
+                    loading="lazy"
+                  />
+                </div>
+              </div>
+
+              {/* 單程票價表 */}
+              <div className="bg-[#10131a] rounded-lg border border-[#232836] p-2.5 flex flex-col gap-2 shadow-sm">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-white text-xs flex items-center gap-1.5">
+                    <span>💳</span> 單程票價 (90 分鐘內有效)
+                  </span>
+                  <span className="text-[10px] text-gray-400">現金 / 儲值卡</span>
+                </div>
+
+                <div className="overflow-x-auto [scrollbar-width:thin]">
+                  <table className="w-full text-left text-[11px] border-collapse">
+                    <thead>
+                      <tr className="border-b border-[#232836] text-gray-400 text-[10px]">
+                        <th className="pb-1 font-semibold">分區</th>
+                        <th className="pb-1 text-right font-semibold">現金 / 感應支付</th>
+                        <th className="pb-1 text-right font-semibold text-blue-400">儲值卡</th>
+                        <th className="pb-1 text-right font-semibold text-emerald-400">優惠票</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#1e2330] font-mono">
+                      <tr>
+                        <td className="py-1.5 font-sans font-medium text-gray-200">1 區</td>
+                        <td className="py-1.5 text-right text-gray-300">$3.25</td>
+                        <td className="py-1.5 text-right text-blue-300 font-bold">$2.60</td>
+                        <td className="py-1.5 text-right text-emerald-300">$2.10</td>
+                      </tr>
+                      <tr>
+                        <td className="py-1.5 font-sans font-medium text-gray-200">2 區</td>
+                        <td className="py-1.5 text-right text-gray-300">$4.65</td>
+                        <td className="py-1.5 text-right text-blue-300 font-bold">$3.85</td>
+                        <td className="py-1.5 text-right text-emerald-300">$3.05</td>
+                      </tr>
+                      <tr>
+                        <td className="py-1.5 font-sans font-medium text-gray-200">3 區</td>
+                        <td className="py-1.5 text-right text-gray-300">$6.35</td>
+                        <td className="py-1.5 text-right text-blue-300 font-bold">$4.90</td>
+                        <td className="py-1.5 text-right text-emerald-300">$4.25</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* 月票與日票 */}
+              <div className="bg-[#10131a] rounded-lg border border-[#232836] p-2.5 flex flex-col gap-2 shadow-sm">
+                <span className="font-bold text-white text-xs flex items-center gap-1.5">
+                  <span>🎫</span> 月票與日票
+                </span>
+
+                <div className="grid grid-cols-2 gap-2 text-[11px]">
+                  {/* 月票 */}
+                  <div className="bg-[#151923] p-2 rounded border border-[#242c3d] flex flex-col gap-1">
+                    <span className="text-[10.5px] font-bold text-blue-300">月票</span>
+                    <div className="flex items-center justify-between text-gray-300 font-mono text-[10.5px]">
+                      <span>1 區</span>
+                      <strong className="text-white">$107.30</strong>
+                    </div>
+                    <div className="flex items-center justify-between text-gray-300 font-mono text-[10.5px]">
+                      <span>2 區</span>
+                      <strong className="text-white">$143.50</strong>
+                    </div>
+                    <div className="flex items-center justify-between text-gray-300 font-mono text-[10.5px]">
+                      <span>3 區</span>
+                      <strong className="text-white">$193.80</strong>
+                    </div>
+                    <div className="flex items-center justify-between text-emerald-400 font-mono text-[10px] pt-1 border-t border-[#232836]">
+                      <span>優惠月票 (全區)</span>
+                      <strong>$60.50</strong>
+                    </div>
+                  </div>
+
+                  {/* 一日票 */}
+                  <div className="bg-[#151923] p-2 rounded border border-[#242c3d] flex flex-col gap-1 justify-between">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-[10.5px] font-bold text-amber-300">一日通票</span>
+                      <span className="text-[9.5px] text-gray-400">當日全區天車/公車/渡輪無限次搭乘</span>
+                    </div>
+                    <div className="flex flex-col gap-1 pt-1 border-t border-[#232836]">
+                      <div className="flex items-center justify-between text-gray-300 font-mono text-[11px]">
+                        <span>成人票 (全區)</span>
+                        <strong className="text-white font-bold">$11.65</strong>
+                      </div>
+                      <div className="flex items-center justify-between text-emerald-400 font-mono text-[10.5px]">
+                        <span>優惠票 (全區)</span>
+                        <strong className="font-bold">$9.00</strong>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 票價規則須知 */}
+              <div className="bg-blue-950/20 border border-blue-500/25 p-2.5 rounded-lg text-[10.5px] text-blue-200/90 flex flex-col gap-1.5 shadow-sm">
+                <span className="font-bold flex items-center gap-1.5 text-blue-300 text-xs">
+                  <Info className="w-3.5 h-3.5 text-blue-400" />
+                  票價重要規則
+                </span>
+                <ul className="list-disc pl-4 space-y-1 text-gray-300 text-[10.5px] leading-relaxed">
+                  <li><strong className="text-amber-300">平日晚間與假日特惠：</strong>平日 18:30 後及週末、國定假日全天，跨全線各區皆統一按 1 區票價 ($2.60 / $3.25) 計費。</li>
+                  <li><strong className="text-blue-300">公車全線單一費率：</strong>搭乘所有公車不分跨區，全線均以 1 區票價計費。</li>
+                  <li><strong className="text-emerald-300">90 分鐘自由轉乘：</strong>所有單程票自第一次拍卡起 90 分鐘內，可無限制轉乘公車、天車或海上巴士。</li>
+                  <li><strong className="text-gray-300">優惠票資格：</strong>適用於 5-18 歲兒童青少年及 65 歲以上長者；12 歲及以下兒童全網免費搭乘。</li>
+                </ul>
+              </div>
+            </div>
+          )}
+
+          {/* Tab 4: 車站出入口地圖與設施指引 */}
           {skytrainDetailTab === 'facilities' && (
             <div className="overflow-y-auto flex-1 flex flex-col gap-2.5 pr-1 text-xs [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2e3446] [&::-webkit-scrollbar-thumb]:rounded-full">
               {/* TransLink 官方車站出入口地圖 */}
@@ -19300,6 +19581,246 @@ export default function AppMap() {
               >
                 關閉
               </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* 大溫天車收費分區地圖 Modal */}
+      {isFareZoneMapModalOpen && typeof document !== 'undefined' && createPortal(
+        <div 
+          className="fixed inset-0 z-[99999] bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 pt-16 sm:pt-20 pb-4 animate-in fade-in duration-200"
+          onClick={() => setIsFareZoneMapModalOpen(false)}
+        >
+          <div 
+            className="relative max-w-5xl w-full bg-[#161922] border border-blue-500/50 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[88vh]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-4 py-3 bg-[#1e2330] border-b border-gray-700/60 shrink-0">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <span className="p-1 rounded bg-blue-500/20 text-blue-400 shrink-0">
+                  <Train className="w-4 h-4" />
+                </span>
+                <div className="flex flex-col min-w-0">
+                  <h4 className="text-sm font-bold text-gray-100 truncate">
+                    大溫天車收費分區地圖
+                  </h4>
+                  <div className="flex items-center gap-2 text-[11px] text-gray-400">
+                    <span className="text-blue-300 font-medium">大溫捷運網絡</span>
+                    <span>·</span>
+                    <span>博覽線 / 千禧線 / 加拿大線 / 海上巴士</span>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <a
+                  href="/ct_fare_zone_map.png"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download="TransLink_Fare_Zone_Map.png"
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-blue-300 hover:bg-white/10 transition-colors flex items-center gap-1 text-xs"
+                  title="於新分頁開啟原始高清圖片"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+                <button
+                  onClick={() => setIsFareZoneMapModalOpen(false)}
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                  title="關閉 (Esc)"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Body / Image */}
+            <div className="p-2 sm:p-4 flex items-center justify-center bg-black/95 overflow-auto flex-1 min-h-0">
+              <img
+                src="/ct_fare_zone_map.png"
+                alt="收費分區地圖"
+                className="max-h-[70vh] w-auto object-contain rounded shadow-lg"
+              />
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-4 py-2.5 bg-[#1a1e29] border-t border-gray-800 flex items-center justify-between text-xs shrink-0">
+              <span className="text-gray-400 text-[11px]">
+                資料來源：官方收費分區與計費系統
+              </span>
+              <a
+                href="https://www.translink.ca/transit-fares/pricing-and-fare-zones"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-blue-400 hover:text-blue-300 hover:underline font-medium text-[11px]"
+              >
+                <span>前往官方票價與分區頁面</span>
+                <span>→</span>
+              </a>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* 4. BC Ferries 碼頭現場路況攝影機 Modal */}
+      {isTerminalWebcamModalOpen && typeof document !== 'undefined' && createPortal(
+        <div 
+          className="fixed inset-0 z-[99999] bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 pt-16 sm:pt-20 pb-4 animate-in fade-in duration-200"
+          onClick={() => setIsTerminalWebcamModalOpen(false)}
+        >
+          <div 
+            className="relative max-w-5xl w-full bg-[#161922] border border-sky-500/50 rounded-2xl overflow-hidden shadow-2xl flex flex-col max-h-[88vh]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-4 py-3 bg-[#1e2330] border-b border-gray-700/60 shrink-0">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <span className="p-1.5 rounded-lg bg-sky-500/20 text-sky-400 shrink-0">
+                  <Camera className="w-4 h-4" />
+                </span>
+                <div className="flex flex-col min-w-0">
+                  <h4 className="text-sm font-bold text-gray-100 truncate flex items-center gap-2">
+                    <span>{FERRY_TERMINAL_NAMES[terminalWebcamTerminalCode] || selectedTerminal?.properties.name || terminalWebcamTerminalCode}</span>
+                    <span className="text-xs font-normal text-sky-400/90">即時路況攝影機</span>
+                  </h4>
+                  <div className="flex items-center gap-2 text-[11px] text-gray-400">
+                    <span className="inline-flex items-center gap-1 text-emerald-400 font-medium">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                      每 1 分鐘自動更新
+                    </span>
+                    <span>·</span>
+                    <span>{terminalWebcamSecondsAgo < 3 ? '剛剛已更新' : `${terminalWebcamSecondsAgo} 秒前更新`}</span>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setTerminalWebcamRefreshKey(Date.now());
+                    setTerminalWebcamSecondsAgo(0);
+                  }}
+                  className="p-1.5 px-2.5 rounded-lg bg-sky-600/30 hover:bg-sky-600/50 text-sky-300 border border-sky-500/30 transition-colors flex items-center gap-1.5 text-xs font-medium cursor-pointer"
+                  title="立即重新整理攝影機影像"
+                >
+                  <RotateCw className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">立即更新</span>
+                </button>
+                <a
+                  href="https://www.bcferries.com/current-conditions/webcams"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-sky-300 hover:bg-white/10 transition-colors flex items-center gap-1 text-xs"
+                  title="前往 BC Ferries 官方攝影機網頁"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+                <button
+                  onClick={() => setIsTerminalWebcamModalOpen(false)}
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                  title="關閉 (Esc)"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Terminal Switcher Tabs */}
+            <div className="px-4 py-2 bg-[#12151e] border-b border-gray-800/80 flex items-center gap-1.5 overflow-x-auto shrink-0 scrollbar-thin">
+              {Object.keys(FERRY_TERMINAL_WEBCAMS).map((code) => {
+                const isActive = code === terminalWebcamTerminalCode;
+                const terminalName = FERRY_TERMINAL_NAMES[code] || code;
+                return (
+                  <button
+                    key={code}
+                    onClick={() => {
+                      setTerminalWebcamTerminalCode(code);
+                      setTerminalWebcamRefreshKey(Date.now());
+                      setTerminalWebcamSecondsAgo(0);
+                    }}
+                    className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all shrink-0 cursor-pointer ${
+                      isActive 
+                        ? 'bg-sky-600 text-white shadow-sm shadow-sky-900/40' 
+                        : 'bg-[#1a1f2c] text-gray-400 hover:text-gray-200 hover:bg-[#22293a]'
+                    }`}
+                  >
+                    {terminalName}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Modal Body / Cameras Grid */}
+            <div className="p-3 sm:p-5 flex-1 min-h-0 overflow-y-auto bg-black/95">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                {(FERRY_TERMINAL_WEBCAMS[terminalWebcamTerminalCode] || []).map((cam) => {
+                  const camUrlWithT = `${cam.url}?t=${terminalWebcamRefreshKey}`;
+                  return (
+                    <div
+                      key={cam.id}
+                      className="group bg-[#161a24] rounded-xl border border-gray-800/80 hover:border-sky-500/60 transition-all overflow-hidden flex flex-col shadow-lg"
+                    >
+                      {/* Camera Header */}
+                      <div className="px-3 py-2 bg-[#1b202e] border-b border-gray-800/70 flex items-center justify-between text-xs">
+                        <span className="font-semibold text-gray-200 truncate flex items-center gap-1.5" title={cam.name}>
+                          <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
+                          {cam.name}
+                        </span>
+                        <span className="text-[10px] text-gray-400 shrink-0 font-mono">
+                          {cam.id}
+                        </span>
+                      </div>
+
+                      {/* Camera Image (Clickable for full lightbox) */}
+                      <div
+                        onClick={() => {
+                          setEnlargedCameraImage({
+                            src: camUrlWithT,
+                            directSrc: cam.url,
+                            alt: cam.name,
+                            title: `${FERRY_TERMINAL_NAMES[terminalWebcamTerminalCode] || terminalWebcamTerminalCode} 碼頭即時影像`,
+                            direction: cam.name
+                          });
+                        }}
+                        className="relative aspect-[16/10] bg-black cursor-zoom-in overflow-hidden flex items-center justify-center"
+                        title="點擊放大全螢幕檢視"
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={camUrlWithT}
+                          alt={cam.name}
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <span className="px-2.5 py-1 rounded bg-black/70 backdrop-blur text-white text-xs font-medium flex items-center gap-1.5 shadow-md">
+                            <ZoomIn className="w-3.5 h-3.5 text-sky-400" />
+                            點擊放大
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-4 py-2.5 bg-[#1a1e29] border-t border-gray-800 flex items-center justify-between text-xs shrink-0">
+              <span className="text-gray-400 text-[11px]">
+                點擊任一照片可全螢幕高清放大檢視 · 畫面由 BC Ferries 卑詩渡輪官方即時提供
+              </span>
+              <a
+                href="https://www.bcferries.com/current-conditions/webcams"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-sky-400 hover:text-sky-300 hover:underline font-medium text-[11px]"
+              >
+                <span>前往 BC Ferries 官方網頁</span>
+                <span>→</span>
+              </a>
             </div>
           </div>
         </div>,

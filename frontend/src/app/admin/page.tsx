@@ -173,7 +173,85 @@ const SCHEDULE_PRESETS: { label: string; cron: string; interval: string }[] = [
   { label: '1 year', cron: '0 0 1 1 *', interval: '每年' },
 ];
 
+function cronToChineseInterval(cronStr: string): string {
+  const c = (cronStr || '').trim();
+  if (!c) return '';
+
+  const direct = SCHEDULE_PRESETS.find(p => p.cron === c);
+  if (direct) return direct.interval;
+
+  const parts = c.split(/\s+/);
+
+  // 6 欄位表達式 (含秒數): */N * * * * *
+  if (parts.length === 6) {
+    const secMatch = parts[0].match(/^\*\/(\d+)$/);
+    if (secMatch && parts.slice(1).every(p => p === '*')) {
+      return `每 ${secMatch[1]} 秒`;
+    }
+  }
+
+  // 5 欄位標準表達式: 分 時 日 月 星期
+  if (parts.length === 5) {
+    const [min, hour, dom, mon, dow] = parts;
+
+    // 每 N 分鐘
+    const minStep = min.match(/^\*\/(\d+)$/);
+    if (minStep && hour === '*' && dom === '*' && mon === '*' && dow === '*') {
+      return `每 ${minStep[1]} 分鐘`;
+    }
+
+    // 每 N 小時
+    const hourStep = hour.match(/^\*\/(\d+)$/);
+    if ((min === '0' || min === '*') && hourStep && dom === '*' && mon === '*' && dow === '*') {
+      return `每 ${hourStep[1]} 小時`;
+    }
+
+    const pad = (n: string | number) => String(n).padStart(2, '0');
+    const isNum = (s: string) => /^\d+$/.test(s);
+
+    // 每日固定時間
+    if (isNum(min) && isNum(hour) && dom === '*' && mon === '*' && dow === '*') {
+      if (min === '0' && hour === '0') return '每日';
+      return `每日 ${pad(hour)}:${pad(min)}`;
+    }
+
+    // 每週固定星期與時間
+    if (isNum(min) && isNum(hour) && dom === '*' && mon === '*' && isNum(dow)) {
+      const days = ['週日', '週一', '週二', '週三', '週四', '週五', '週六', '週日'];
+      const dayName = days[parseInt(dow, 10)] || `週${dow}`;
+      return `每${dayName} ${pad(hour)}:${pad(min)}`;
+    }
+
+    // 每月固定日期與時間
+    if (isNum(min) && isNum(hour) && isNum(dom) && mon === '*' && dow === '*') {
+      if (min === '0' && hour === '0' && dom === '1') return '每月';
+      return `每月${dom}號 ${pad(hour)}:${pad(min)}`;
+    }
+
+    // 每 N 個月
+    const monStep = mon.match(/^\*\/(\d+)$/);
+    if (isNum(min) && isNum(hour) && isNum(dom) && monStep && dow === '*') {
+      const step = parseInt(monStep[1], 10);
+      if (step === 3) return '每季 (3 個月)';
+      if (step === 6) return '每半年';
+      return `每 ${step} 個月`;
+    }
+
+    // 每年固定月份與時間
+    if (isNum(min) && isNum(hour) && isNum(dom) && isNum(mon) && dow === '*') {
+      if (min === '0' && hour === '0' && dom === '1' && mon === '1') return '每年';
+      return `每年${mon}月${dom}日 ${pad(hour)}:${pad(min)}`;
+    }
+  }
+
+  return '';
+}
+
 function formatScheduleInterval(interval?: string, cron?: string): string {
+  if (cron) {
+    const fromCron = cronToChineseInterval(cron);
+    if (fromCron) return fromCron;
+  }
   if (!interval) return '未設定';
   const norm = interval.toLowerCase().trim();
   if (norm === '6 months' || norm === '6months' || norm.includes('6 month')) return '每半年';
@@ -295,6 +373,7 @@ export default function AdminPage() {
   const [systemLogs, setSystemLogs] = useState<any[]>([]);
   const [loadingSystemLogs, setLoadingSystemLogs] = useState(false);
   const [systemRetentionDays, setSystemRetentionDays] = useState<number>(30);
+  const [systemRetentionInput, setSystemRetentionInput] = useState<string>('30');
   const [systemLogLevelFilter, setSystemLogLevelFilter] = useState<string>('all');
   const [systemLogSearch, setSystemLogSearch] = useState<string>('');
   const [systemLogPage, setSystemLogPage] = useState<number>(1);
@@ -303,6 +382,7 @@ export default function AdminPage() {
 
   // 11.5 排程歷史保留期限
   const [scheduleRetentionDays, setScheduleRetentionDays] = useState<number>(30);
+  const [scheduleRetentionInput, setScheduleRetentionInput] = useState<string>('30');
   
   // --- Analytics & Stats states (正式開始執行後台統計資料) ---
   const [stats, setStats] = useState<{
@@ -315,7 +395,7 @@ export default function AdminPage() {
   }>({
     today_page_views: 0,
     total_page_views: 0,
-    online_users: 1,
+    online_users: 0,
     issue_reports_count: 0,
     status_note: '實時統計運作中',
     daily_pv: {}
@@ -359,7 +439,7 @@ export default function AdminPage() {
         setStats({
           today_page_views: resStats.data.today_page_views ?? 0,
           total_page_views: resStats.data.total_page_views ?? 0,
-          online_users: resStats.data.online_users ?? resStats.data.active_online_users ?? 1,
+          online_users: resStats.data.online_users ?? resStats.data.active_online_users ?? 0,
           issue_reports_count: resStats.data.issue_reports_count ?? resStats.data.total_issue_reports ?? 0,
           status_note: resStats.data.status_note ?? '實時統計運作中',
           daily_pv: resStats.data.daily_pv || {}
@@ -513,6 +593,7 @@ export default function AdminPage() {
         setSystemLogs(Array.isArray(res.data.logs) ? res.data.logs : []);
         if (typeof res.data.retention_days === 'number') {
           setSystemRetentionDays(res.data.retention_days);
+          setSystemRetentionInput(String(res.data.retention_days));
         }
       }
     } catch (err) {
@@ -522,12 +603,14 @@ export default function AdminPage() {
     }
   };
 
-  // 11.4 設定系統日誌保留期限
+  // 11.4 設定系統日誌保留期限 (自定義天數)
   const handleSystemRetentionChange = async (days: number) => {
-    setSystemRetentionDays(days);
+    const safeDays = Math.max(0, Math.floor(isNaN(days) ? 0 : days));
+    setSystemRetentionDays(safeDays);
+    setSystemRetentionInput(String(safeDays));
     await adminApiFetch('/api/admin/system-logs/retention', {
       method: 'POST',
-      body: JSON.stringify({ retention_days: days })
+      body: JSON.stringify({ retention_days: safeDays })
     });
     await fetchSystemLogs();
   };
@@ -550,12 +633,14 @@ export default function AdminPage() {
     downloadAnchor.remove();
   };
 
-  // 11.5 設定排程歷史保留期限
+  // 11.5 設定排程歷史保留期限 (自定義天數)
   const handleScheduleRetentionChange = async (days: number) => {
-    setScheduleRetentionDays(days);
+    const safeDays = Math.max(0, Math.floor(isNaN(days) ? 0 : days));
+    setScheduleRetentionDays(safeDays);
+    setScheduleRetentionInput(String(safeDays));
     await adminApiFetch('/api/admin/schedule-history/retention', {
       method: 'POST',
-      body: JSON.stringify({ retention_days: days })
+      body: JSON.stringify({ retention_days: safeDays })
     });
     await fetchAdminData();
   };
@@ -1036,13 +1121,16 @@ export default function AdminPage() {
     }
     setIsSavingSchedule(true);
     try {
+      const targetCron = editCron || source.cron_expr;
+      const targetInterval = cronToChineseInterval(targetCron) || editInterval || source.schedule_interval;
+
       const res = await adminApiFetch<{ status: string; message: string; detail?: string }>('/api/admin/sources/schedule', {
         method: 'POST',
         body: JSON.stringify({
           source_id: source.id,
           name: editName || source.name,
-          cron_expr: editCron || source.cron_expr,
-          schedule_interval: editInterval || source.schedule_interval,
+          cron_expr: targetCron,
+          schedule_interval: targetInterval,
           enabled: source.enabled !== false
         })
       });
@@ -1259,7 +1347,6 @@ export default function AdminPage() {
                 admin.vangodseye.fyi
               </span>
             </div>
-            <p className="text-[11px] text-gray-400">數據管線排程與即時服務控制台 · 獨立安全子網域</p>
           </div>
         </div>
 
@@ -1322,7 +1409,7 @@ export default function AdminPage() {
       {/* 瀏覽器分頁風格導航列 (Chrome / Arc Tab Bar Style) */}
       <div className="bg-[#0b0e14] border-b border-[#232a3b] px-3 sm:px-6 pt-2 flex items-center justify-between overflow-x-auto select-none">
         <div className="flex items-center gap-1.5 min-w-max">
-          {/* 分頁 1: 數據圖資與更新管線 */}
+          {/* 分頁 1: 資料管線控制 */}
           <button
             onClick={() => setMainTab('sources')}
             className={`group relative flex items-center gap-2 px-4 py-2 rounded-t-xl text-xs font-semibold transition-all cursor-pointer ${
@@ -1332,7 +1419,7 @@ export default function AdminPage() {
             }`}
           >
             <Sliders className={`w-3.5 h-3.5 ${mainTab === 'sources' ? 'text-indigo-400' : 'text-gray-500 group-hover:text-gray-400'}`} />
-            <span>數據圖資與更新管線</span>
+            <span>資料管線控制</span>
             <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
               mainTab === 'sources' ? 'bg-indigo-500/20 text-indigo-300' : 'bg-black/30 text-gray-500'
             }`}>
@@ -1343,7 +1430,7 @@ export default function AdminPage() {
             )}
           </button>
 
-          {/* 分頁 2: 系統調度歷史日誌 */}
+          {/* 分頁 2: 資料更新日誌 */}
           <button
             onClick={() => setMainTab('logs')}
             className={`group relative flex items-center gap-2 px-4 py-2 rounded-t-xl text-xs font-semibold transition-all cursor-pointer ${
@@ -1353,7 +1440,7 @@ export default function AdminPage() {
             }`}
           >
             <FileText className={`w-3.5 h-3.5 ${mainTab === 'logs' ? 'text-amber-400' : 'text-gray-500 group-hover:text-gray-400'}`} />
-            <span>系統調度歷史日誌</span>
+            <span>資料更新日誌</span>
             <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
               mainTab === 'logs' ? 'bg-amber-500/20 text-amber-300' : 'bg-black/30 text-gray-500'
             }`}>
@@ -1364,7 +1451,7 @@ export default function AdminPage() {
             )}
           </button>
 
-          {/* 11.4 分頁 3: 系統運作與錯誤日誌 (System Logs) */}
+          {/* 分頁 3: 系統日誌 */}
           <button
             onClick={() => setMainTab('system_logs')}
             className={`group relative flex items-center gap-2 px-4 py-2 rounded-t-xl text-xs font-semibold transition-all cursor-pointer ${
@@ -1385,9 +1472,7 @@ export default function AdminPage() {
             )}
           </button>
 
-          
-
-          {/* 分頁 3: 系統統計與分析 (正式執行中) */}
+          {/* 分頁 4: 統計數據 */}
           <button
             onClick={() => setMainTab('analytics')}
             className={`group relative flex items-center gap-2 px-4 py-2 rounded-t-xl text-xs font-semibold transition-all cursor-pointer ${
@@ -1407,7 +1492,28 @@ export default function AdminPage() {
             )}
           </button>
 
-          {/* 分頁 4: 回報問題 */}
+          {/* 分頁 5: 系統維護 */}
+          <button
+            onClick={() => setMainTab('maintenance')}
+            className={`group relative flex items-center gap-2 px-4 py-2 rounded-t-xl text-xs font-semibold transition-all cursor-pointer ${
+              mainTab === 'maintenance'
+                ? 'bg-[#141822] text-white border-t-2 border-t-amber-500 border-x border-[#232a3b] shadow-sm z-10'
+                : 'bg-[#0f131a] text-gray-400 hover:text-gray-200 hover:bg-[#161c27] border-t-2 border-transparent'
+            }`}
+          >
+            <Wrench className={`w-3.5 h-3.5 ${mainTab === 'maintenance' ? 'text-amber-400' : 'text-gray-500 group-hover:text-gray-400'}`} />
+            <span>系統維護</span>
+            {maintenanceEnabled && (
+              <span className="text-[10px] px-1.5 py-0.2 rounded-full font-mono bg-amber-500/20 text-amber-300 animate-pulse">
+                維護中
+              </span>
+            )}
+            {mainTab === 'maintenance' && (
+              <span className="absolute bottom-[-1px] left-0 right-0 h-[1px] bg-[#141822]" />
+            )}
+          </button>
+
+          {/* 分頁 6: 回報問題 */}
           <button
             onClick={() => setMainTab('issues')}
             className={`group relative flex items-center gap-2 px-4 py-2 rounded-t-xl text-xs font-semibold transition-all cursor-pointer ${
@@ -1424,27 +1530,6 @@ export default function AdminPage() {
               {issueReports.length}
             </span>
             {mainTab === 'issues' && (
-              <span className="absolute bottom-[-1px] left-0 right-0 h-[1px] bg-[#141822]" />
-            )}
-          </button>
-
-          {/* 分頁 5: 系統維護與還原 */}
-          <button
-            onClick={() => setMainTab('maintenance')}
-            className={`group relative flex items-center gap-2 px-4 py-2 rounded-t-xl text-xs font-semibold transition-all cursor-pointer ${
-              mainTab === 'maintenance'
-                ? 'bg-[#141822] text-white border-t-2 border-t-amber-500 border-x border-[#232a3b] shadow-sm z-10'
-                : 'bg-[#0f131a] text-gray-400 hover:text-gray-200 hover:bg-[#161c27] border-t-2 border-transparent'
-            }`}
-          >
-            <Wrench className={`w-3.5 h-3.5 ${mainTab === 'maintenance' ? 'text-amber-400' : 'text-gray-500 group-hover:text-gray-400'}`} />
-            <span>系統維護與還原</span>
-            {maintenanceEnabled && (
-              <span className="text-[10px] px-1.5 py-0.2 rounded-full font-mono bg-amber-500/20 text-amber-300 animate-pulse">
-                維護中
-              </span>
-            )}
-            {mainTab === 'maintenance' && (
               <span className="absolute bottom-[-1px] left-0 right-0 h-[1px] bg-[#141822]" />
             )}
           </button>
@@ -1635,7 +1720,7 @@ export default function AdminPage() {
                       </th>
                       <th onClick={() => handleSort('schedule_interval')} className="py-2.5 px-2 w-[130px] cursor-pointer hover:text-white transition-colors">
                         <div className="flex items-center gap-1">
-                          <span>排程週期 (Cron)</span>
+                          <span>排程週期</span>
                           {sortField === 'schedule_interval' ? (sortDirection === 'asc' ? <ArrowUp className="w-3 h-3 text-indigo-400" /> : <ArrowDown className="w-3 h-3 text-indigo-400" />) : <ArrowUpDown className="w-2.5 h-2.5 text-gray-500" />}
                         </div>
                       </th>
@@ -1783,13 +1868,18 @@ export default function AdminPage() {
                                         type="text"
                                         value={editCron}
                                         onChange={(e) => {
-                                          setEditCron(e.target.value);
-                                          const matched = SCHEDULE_PRESETS.find(p => p.cron === e.target.value);
+                                          const val = e.target.value;
+                                          setEditCron(val);
+                                          const matched = SCHEDULE_PRESETS.find(p => p.cron === val);
                                           if (matched) {
                                             setSelectedSchedulePreset(matched.label);
                                             setEditInterval(matched.interval);
                                           } else {
                                             setSelectedSchedulePreset('custom');
+                                            const autoInterval = cronToChineseInterval(val);
+                                            if (autoInterval) {
+                                              setEditInterval(autoInterval);
+                                            }
                                           }
                                         }}
                                         placeholder="Cron 表達式"
@@ -2085,7 +2175,7 @@ export default function AdminPage() {
                                     ? 'hover:bg-[#252d3d] text-gray-400 hover:text-gray-100 cursor-pointer'
                                     : 'text-gray-700 cursor-not-allowed'
                                 }`}
-                                title="修改排程週期與 Cron"
+                                title="修改排程週期"
                               >
                                 <Sliders className="w-3.5 h-3.5" />
                               </button>
@@ -2163,22 +2253,45 @@ export default function AdminPage() {
               </div>
 
               <div className="flex items-center gap-3 flex-wrap">
-                {/* 11.5 排程歷史保留期限設定 */}
-                <div className="flex items-center gap-1.5 text-xs text-gray-300">
-                  <span className="text-gray-400 text-[11px]">保留期限:</span>
-                  <select
-                    value={scheduleRetentionDays}
-                    onChange={(e) => handleScheduleRetentionChange(Number(e.target.value))}
-                    className="bg-[#121620] text-xs text-gray-200 border border-[#2c374d] rounded-lg px-2 py-1 focus:outline-none focus:border-amber-500 cursor-pointer"
+                {/* 11.5 排程歷史保留期限自定義設定 (自定義天數，不用下拉清單) */}
+                <div className="flex items-center gap-1.5 text-xs text-gray-300 bg-[#121620] border border-[#2c374d] rounded-lg px-2.5 py-1">
+                  <span className="text-gray-400 text-[11px] whitespace-nowrap">保留期限:</span>
+                  <div className="flex items-center gap-1">
+                    <input
+                      type="number"
+                      min={0}
+                      max={9999}
+                      value={scheduleRetentionInput}
+                      onChange={(e) => setScheduleRetentionInput(e.target.value)}
+                      onBlur={() => {
+                        const parsed = parseInt(scheduleRetentionInput, 10);
+                        handleScheduleRetentionChange(isNaN(parsed) ? 30 : parsed);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          const parsed = parseInt(scheduleRetentionInput, 10);
+                          handleScheduleRetentionChange(isNaN(parsed) ? 30 : parsed);
+                        }
+                      }}
+                      placeholder="天數"
+                      className="w-14 bg-[#181d28] border border-[#3b475e] focus:border-amber-500 rounded px-1.5 py-0.5 text-xs text-amber-300 font-mono text-center outline-none"
+                    />
+                    <span className="text-gray-400 text-[11px]">天</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const parsed = parseInt(scheduleRetentionInput, 10);
+                      handleScheduleRetentionChange(isNaN(parsed) ? 30 : parsed);
+                    }}
+                    className="text-[10.5px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 border border-amber-500/30 font-medium transition-colors cursor-pointer"
+                    title="儲存並套用保留天數"
                   >
-                    <option value={7}>7 天</option>
-                    <option value={14}>14 天</option>
-                    <option value={30}>30 天</option>
-                    <option value={90}>90 天</option>
-                    <option value={180}>180 天 (半年)</option>
-                    <option value={365}>365 天 (1 年)</option>
-                    <option value={0}>永久保留</option>
-                  </select>
+                    套用
+                  </button>
+                  <span className="text-[10px] text-gray-500 ml-0.5 hidden sm:inline">
+                    ({scheduleRetentionDays === 0 ? '0 為永久保留' : `保留近 ${scheduleRetentionDays} 天`})
+                  </span>
                 </div>
 
                 <button
@@ -2272,22 +2385,45 @@ export default function AdminPage() {
               </div>
 
               <div className="flex items-center gap-2 flex-wrap">
-                {/* 保留期限設定 */}
-                <div className="flex items-center gap-1.5 text-xs text-gray-300">
-                  <span className="text-gray-400 text-[11px]">保留期限:</span>
-                  <select
-                    value={systemRetentionDays}
-                    onChange={(e) => handleSystemRetentionChange(Number(e.target.value))}
-                    className="bg-[#121620] text-xs text-gray-200 border border-[#2c374d] rounded-lg px-2 py-1 focus:outline-none focus:border-sky-500 cursor-pointer"
+                {/* 保留期限自定義設定 (自定義天數，不用下拉清單) */}
+                <div className="flex items-center gap-1.5 text-xs text-gray-300 bg-[#121620] border border-[#2c374d] rounded-lg px-2.5 py-1">
+                  <span className="text-gray-400 text-[11px] whitespace-nowrap">保留期限:</span>
+                  <div className="flex items-center gap-1">
+                    <input
+                      type="number"
+                      min={0}
+                      max={9999}
+                      value={systemRetentionInput}
+                      onChange={(e) => setSystemRetentionInput(e.target.value)}
+                      onBlur={() => {
+                        const parsed = parseInt(systemRetentionInput, 10);
+                        handleSystemRetentionChange(isNaN(parsed) ? 30 : parsed);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          const parsed = parseInt(systemRetentionInput, 10);
+                          handleSystemRetentionChange(isNaN(parsed) ? 30 : parsed);
+                        }
+                      }}
+                      placeholder="天數"
+                      className="w-14 bg-[#181d28] border border-[#3b475e] focus:border-sky-500 rounded px-1.5 py-0.5 text-xs text-sky-300 font-mono text-center outline-none"
+                    />
+                    <span className="text-gray-400 text-[11px]">天</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const parsed = parseInt(systemRetentionInput, 10);
+                      handleSystemRetentionChange(isNaN(parsed) ? 30 : parsed);
+                    }}
+                    className="text-[10.5px] px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 hover:bg-sky-500/30 border border-sky-500/30 font-medium transition-colors cursor-pointer"
+                    title="儲存並套用保留天數"
                   >
-                    <option value={7}>7 天</option>
-                    <option value={14}>14 天</option>
-                    <option value={30}>30 天</option>
-                    <option value={90}>90 天</option>
-                    <option value={180}>180 天 (半年)</option>
-                    <option value={365}>365 天 (1 年)</option>
-                    <option value={0}>永久保留</option>
-                  </select>
+                    套用
+                  </button>
+                  <span className="text-[10px] text-gray-500 ml-0.5 hidden sm:inline">
+                    ({systemRetentionDays === 0 ? '0 為永久保留' : `保留近 ${systemRetentionDays} 天`})
+                  </span>
                 </div>
 
                 {/* 等級篩選 */}

@@ -3,6 +3,7 @@ import json
 import time
 import tempfile
 import threading
+import logging
 from datetime import datetime, timezone, timedelta
 from typing import List, Dict, Any, Optional
 
@@ -68,59 +69,30 @@ class SystemLogService:
             except Exception:
                 pass
 
-        # 3. Seed System Logs if empty
+        # 3. Ensure System Logs file exists (No fake mock sample logs, default to empty list)
         if not os.path.exists(SYSTEM_LOGS_FILE) or os.path.getsize(SYSTEM_LOGS_FILE) == 0:
-            now = datetime.now(timezone.utc)
-            sample_logs = [
-                {
-                    "id": f"syslog_{int(time.time()*1000)}_1",
-                    "timestamp": (now - timedelta(minutes=2)).isoformat(),
-                    "level": "INFO",
-                    "file": "backend/scripts/layers/update_food_vendors.py",
-                    "action": "FETCH_VENDORS",
-                    "message": "成功整合溫哥華市政府開放資料與街頭餐車資料庫，共載入 91 筆食品攤販合法營業點",
-                    "details": {"count": 91, "source": "City of Vancouver Open Data API"}
-                },
-                {
-                    "id": f"syslog_{int(time.time()*1000)}_2",
-                    "timestamp": (now - timedelta(minutes=15)).isoformat(),
-                    "level": "INFO",
-                    "file": "backend/skytrain_service.py",
-                    "action": "GTFS_RT_SYNC",
-                    "message": "TransLink 天車即時列車位置與抵達站點預測時間串流同步正常（時間格式標準化）",
-                    "details": {"lines": ["Expo", "Millennium", "Canada Line"], "status": "active"}
-                },
-                {
-                    "id": f"syslog_{int(time.time()*1000)}_3",
-                    "timestamp": (now - timedelta(minutes=30)).isoformat(),
-                    "level": "INFO",
-                    "file": "backend/events_service.py",
-                    "action": "EVENTS_REFRESH",
-                    "message": "溫哥華探索-活動爬蟲成功更新 Daily Hive 與 Eventbrite 即時同城節慶活動",
-                    "details": {"sources": ["daily_hive", "eventbrite"], "count": 42}
-                },
-                {
-                    "id": f"syslog_{int(time.time()*1000)}_4",
-                    "timestamp": (now - timedelta(hours=1)).isoformat(),
-                    "level": "INFO",
-                    "file": "backend/tomtom_service.py",
-                    "action": "TRAFFIC_INCIDENTS",
-                    "message": "TomTom 交通路況監控與事故通報快取刷新完畢（修復快取目錄路徑）",
-                    "details": {"status": "ok"}
-                },
-                {
-                    "id": f"syslog_{int(time.time()*1000)}_5",
-                    "timestamp": (now - timedelta(hours=2)).isoformat(),
-                    "level": "SUCCESS",
-                    "file": "backend/main.py",
-                    "action": "SYSTEM_STARTUP",
-                    "message": "Vancouver God's Eye 後台核心服務啟動，持久化日誌與排程歷史管理系統就緒",
-                    "details": {"version": "2.4.0", "env": "production"}
-                }
-            ]
             try:
                 with open(SYSTEM_LOGS_FILE, 'w', encoding='utf-8') as f:
-                    json.dump(sample_logs, f, ensure_ascii=False, indent=2)
+                    json.dump([], f, ensure_ascii=False, indent=2)
+            except Exception:
+                pass
+        else:
+            # Purge any legacy sample mock logs (e.g. syslog_..._1 to _5)
+            try:
+                with open(SYSTEM_LOGS_FILE, 'r', encoding='utf-8') as f:
+                    existing_logs = json.load(f)
+                if isinstance(existing_logs, list):
+                    filtered_logs = [
+                        lg for lg in existing_logs
+                        if not (
+                            isinstance(lg, dict) and
+                            str(lg.get("id", "")).startswith("syslog_") and
+                            str(lg.get("id", "")).endswith(("_1", "_2", "_3", "_4", "_5")) and
+                            lg.get("action") in ("FETCH_VENDORS", "GTFS_RT_SYNC", "EVENTS_REFRESH", "TRAFFIC_INCIDENTS", "SYSTEM_STARTUP")
+                        )
+                    ]
+                    if len(filtered_logs) != len(existing_logs):
+                        _atomic_write_json(SYSTEM_LOGS_FILE, filtered_logs)
             except Exception:
                 pass
 
@@ -303,4 +275,58 @@ class SystemLogService:
             except Exception:
                 pass
 
+
+class SystemLogCaptureHandler(logging.Handler):
+    """
+    自動系統日誌攔截處理器：
+    自動攔截後端所有服務、定時任務與伺服器內部發生的 WARNING / ERROR / CRITICAL 事件，
+    即使用戶尚未開啟管理後台頁面，也會自動持久化至 data/system_logs.json 中。
+    """
+    def __init__(self, service: SystemLogService, min_level: int = logging.WARNING):
+        super().__init__(level=min_level)
+        self.service = service
+        self._in_emit = False
+
+    def emit(self, record: logging.LogRecord):
+        if self._in_emit:
+            return
+        # 避免循環日誌與過多內部雜訊
+        if record.name.startswith("system_log_service"):
+            return
+        self._in_emit = True
+        try:
+            msg = self.format(record) if self.formatter else record.getMessage()
+            details = {}
+            if record.exc_info and record.exc_text:
+                details["traceback"] = str(record.exc_text)[:1000]
+            elif record.exc_info and record.exc_info[1]:
+                details["exception"] = str(record.exc_info[1])[:500]
+            if getattr(record, "args", None):
+                try:
+                    details["args"] = str(record.args)[:300]
+                except Exception:
+                    pass
+            self.service.add_system_log(
+                level=record.levelname,
+                file=f"{record.filename}:{record.lineno}",
+                action=record.funcName or record.name,
+                message=msg,
+                details=details if details else None
+            )
+        except Exception:
+            pass
+        finally:
+            self._in_emit = False
+
+
+def setup_automatic_system_logging(min_level: int = logging.WARNING):
+    """將自動日誌保存處理器掛載至 root logger 與關鍵模組"""
+    handler = SystemLogCaptureHandler(system_log_service, min_level=min_level)
+    logging.getLogger().addHandler(handler)
+    for name in ("uvicorn.error", "fastapi"):
+        logging.getLogger(name).addHandler(handler)
+
+
 system_log_service = SystemLogService()
+setup_automatic_system_logging(logging.WARNING)
+

@@ -203,6 +203,28 @@ def main():
             cfg_logs.insert(0, entry)
             existing_ids.add(log_id)
 
+            # 同步寫入系統運作日誌
+            try:
+                if BACKEND_DIR not in sys.path:
+                    sys.path.append(BACKEND_DIR)
+                from system_log_service import system_log_service
+                system_log_service.add_system_log(
+                    level="INFO",
+                    file=f".github/workflows/{args.workflow}" if args.workflow else f"backend/scripts/layers/update_{sid}.py",
+                    action="GITHUB_WORKFLOW_SYNC",
+                    message=f"GitHub Actions [{src_name}] 同步完成：{change_note}{count_note}。",
+                    details={
+                        "source_id": sid,
+                        "source_name": src_name,
+                        "count": rec_count,
+                        "has_changes": has_changes,
+                        "run_id": args.run_id,
+                        "workflow": args.workflow
+                    }
+                )
+            except Exception:
+                pass
+
     cfg["logs"] = cfg_logs[:150]
     if updated_any or source_ids:
         _atomic_write_json(CONFIG_FILE, cfg)
