@@ -6,6 +6,8 @@ import dynamic from 'next/dynamic';
 const TopBar = dynamic(() => import('@/components/TopBar'), { ssr: false });
 const LayerPanel = dynamic(() => import('@/components/LayerPanel'), { ssr: false });
 const FlightScheduleModal = dynamic(() => import('@/components/FlightScheduleModal'), { ssr: false });
+const FerryScheduleModal = dynamic(() => import('@/components/FerryScheduleModal'), { ssr: false });
+const MaritimeScheduleModal = dynamic(() => import('@/components/MaritimeScheduleModal'), { ssr: false });
 
 const AppMap = dynamic(() => import('@/components/Map'), { 
   ssr: false,
@@ -26,6 +28,8 @@ export default function Home() {
           <TopBar />
           <LayerPanel />
           <FlightScheduleModal />
+          <FerryScheduleModal />
+          <MaritimeScheduleModal />
         </>
       )}
       <AppMap />

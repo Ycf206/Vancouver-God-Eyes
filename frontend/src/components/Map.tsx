@@ -13,12 +13,14 @@ import FacilityWeeklyHoursSchedule from '@/components/WeeklyHoursSchedule';
 import { formatTitleCase, formatPhoneNumber } from '@/utils/text';
 import { getSkytrainStationMapUrls } from '@/utils/skytrainMaps';
 import skytrainStationsData from '@/data/skytrainStations.json';
+import { BUS_EXCHANGES, BusExchange } from '@/data/busExchanges';
 import { 
   LocateFixed, Train, Compass, ZoomIn, X, Copy, Check, 
   Navigation, ExternalLink, Clock, Bike, Car, Info, 
   ChevronDown, ChevronUp, SlidersHorizontal, Fuel, Zap, Wifi, Waves, Play, Pause, CloudRain,
   RotateCcw, RotateCw, MapPin, Crosshair, Activity, Ban, Cone, Lightbulb, Ship,
-  Camera, Gauge, Footprints, ArrowRight, Mail, AlertCircle, Radio, Anchor, CreditCard, Landmark, Truck, Map as MapIcon, Briefcase, PhoneCall, ShoppingBag, Search, AlertTriangle, ShieldAlert
+  Camera, Gauge, Footprints, ArrowRight, Mail, AlertCircle, Radio, Anchor, CreditCard, Landmark, Truck, Map as MapIcon, Briefcase, PhoneCall, ShoppingBag, Search, AlertTriangle, ShieldAlert,
+  CircleDollarSign
 } from 'lucide-react';
 
 function formatJobDateTime(isoStr?: string, timeFormat: '12h' | '24h' = '24h', timeZone: string = 'America/Vancouver'): string {
@@ -561,6 +563,64 @@ const FERRY_TERMINAL_NAMES: Record<string, string> = {
   'BLA': '貝拉貝拉 (Bella Bella)',
   'BCO': '貝拉庫拉 (Bella Coola)',
   'POF': '波特哈迪 (Port Hardy)'
+};
+
+const FERRY_TERMINAL_NAMES_EN: Record<string, string> = {
+  'SWB': 'Swartz Bay (Victoria)',
+  'TSA': 'Tsawwassen (Vancouver)',
+  'HSB': 'Horseshoe Bay (West Vancouver)',
+  'DUK': 'Duke Point (Nanaimo)',
+  'NAN': 'Departure Bay (Nanaimo)',
+  'LNG': 'Langdale (Sunshine Coast)',
+  'BOW': 'Bowen Island (Snug Cove)',
+  'FUL': 'Fulford Harbour (Salt Spring Island)',
+  'SGI': 'Southern Gulf Islands',
+  'PLH': 'Sturdies Bay (Galiano Island)',
+  'POB': 'Otter Bay (Pender Island)',
+  'PSB': 'Village Bay (Mayne Island)',
+  'PVB': 'Lyall Harbour (Saturna Island)',
+  'PST': 'Long Harbour (Salt Spring Island)',
+  'CMX': 'Comox',
+  'PRR': 'Powell River',
+  'TEX': 'Texada Island',
+  'GAB': 'Gabriola Island',
+  'DNE': 'Denman Island',
+  'HRN': 'Hornby Island',
+  'CHT': 'Haida Gwaii',
+  'PPR': 'Prince Rupert',
+  'KLE': 'Klemtu',
+  'BLA': 'Bella Bella',
+  'BCO': 'Bella Coola',
+  'POF': 'Port Hardy'
+};
+
+const FERRY_TERMINAL_SHORT_NAMES_EN: Record<string, string> = {
+  'TSA': 'Tsawwassen',
+  'SWB': 'Swartz Bay',
+  'DUK': 'Duke Point',
+  'NAN': 'Departure Bay',
+  'LNG': 'Langdale',
+  'HSB': 'Horseshoe Bay',
+  'BOW': 'Bowen Island',
+  'FUL': 'Fulford Harbour',
+  'SGI': 'Southern Gulf Islands',
+  'PLH': 'Sturdies Bay',
+  'POB': 'Otter Bay',
+  'PSB': 'Village Bay',
+  'PVB': 'Lyall Harbour',
+  'PST': 'Long Harbour',
+  'CMX': 'Comox',
+  'PRR': 'Powell River',
+  'TEX': 'Texada Island',
+  'GAB': 'Gabriola Island',
+  'DNE': 'Denman Island',
+  'HRN': 'Hornby Island',
+  'CHT': 'Haida Gwaii',
+  'PPR': 'Prince Rupert',
+  'KLE': 'Klemtu',
+  'BLA': 'Bella Bella',
+  'BCO': 'Bella Coola',
+  'POF': 'Port Hardy'
 };
 
 const FERRY_TERMINAL_WEBCAMS: Record<string, TerminalWebcamItem[]> = {
@@ -1232,6 +1292,8 @@ export default function AppMap() {
   const [arrivals, setArrivals] = useState<any[]>([]);
   const [loadingArrivals, setLoadingArrivals] = useState(false);
   const [selectedTerminal, setSelectedTerminal] = useState<{geometry: {coordinates: number[]}, properties: {name?: string, code: string}} | null>(null);
+  const [terminalDetailTab, setTerminalDetailTab] = useState<'schedule' | 'webcams'>('schedule');
+  const [selectedBusExchange, setSelectedBusExchange] = useState<BusExchange | null>(null);
   const [terminalSchedule, setTerminalSchedule] = useState<Array<{destination: string, time: string, arrival_time: string, vessel_name: string, status: string, fill: number}>>([]);
   const [loadingSchedule, setLoadingSchedule] = useState(false);
   const [isTerminalWebcamModalOpen, setIsTerminalWebcamModalOpen] = useState(false);
@@ -1241,7 +1303,8 @@ export default function AppMap() {
 
   // BC Ferries 碼頭攝影機自動更新計時器 (每 1 分鐘自動更新，打開時立即更新)
   useEffect(() => {
-    if (!isTerminalWebcamModalOpen) return;
+    const isWebcamActive = isTerminalWebcamModalOpen || (Boolean(selectedTerminal) && terminalDetailTab === 'webcams');
+    if (!isWebcamActive) return;
     setTerminalWebcamSecondsAgo(0);
     setTerminalWebcamRefreshKey(Date.now());
 
@@ -1258,7 +1321,7 @@ export default function AppMap() {
       clearInterval(secInterval);
       clearInterval(minInterval);
     };
-  }, [isTerminalWebcamModalOpen]);
+  }, [isTerminalWebcamModalOpen, selectedTerminal, terminalDetailTab]);
   const [selectedFerry, setSelectedFerry] = useState<FerryVehicle | null>(null);
   const [selectedFacility, setSelectedFacility] = useState<RoadFacilityInfo | null>(null);
 
@@ -1511,6 +1574,9 @@ export default function AppMap() {
         setSearchTarget(null);
       }
     }
+    if (selectedBusExchange && !layers.busExchanges) {
+      setSelectedBusExchange(null);
+    }
 
     // 4. 巴士與海上巴士 (全域圖層關閉時僅清除選取的車輛，不影響獨立搜尋的巴士路線與半徑探索)
     if (selectedBus && !searchedBusRoute) {
@@ -1597,7 +1663,7 @@ export default function AppMap() {
         setSearchTarget(null);
       }
     }
-  }, [layers, selectedFacility, selectedAirport, selectedTerminal, selectedFerry, selectedMaritimeVessel, selectedBus, searchedBusRoute, selectedStop, selectedTrain, selectedSkytrainStation, searchTarget, setSearchTarget, isExploreOpen, exploreTab, openExploreTabs, radiusExploration, explorationSelectedFacility, courierFilter]);
+  }, [layers, selectedFacility, selectedAirport, selectedTerminal, selectedBusExchange, selectedFerry, selectedMaritimeVessel, selectedBus, searchedBusRoute, selectedStop, selectedTrain, selectedSkytrainStation, searchTarget, setSearchTarget, isExploreOpen, exploreTab, openExploreTabs, radiusExploration, explorationSelectedFacility, courierFilter]);
 
 
   const fetchSkytrainStationSchedule = React.useCallback((stopId: string, stopName?: string, lon?: number, lat?: number) => {
@@ -1605,6 +1671,7 @@ export default function AppMap() {
     setSelectedStop(null);
     setSelectedFacility(null);
     setSelectedTerminal(null);
+    setSelectedBusExchange(null);
     setSelectedFerry(null);
     setSelectedFlight(null);
     setSelectedAirport(null);
@@ -7568,12 +7635,12 @@ export default function AppMap() {
                   title={`SeaBus 跨海渡輪${v.destination ? ` 往 ${v.destination}` : ''}`}
                 >
                   <Ship className="w-4 h-4 text-white drop-shadow-sm" />
-                  {v.bearing !== undefined && (
+                  {v.bearing !== undefined && v.bearing >= 0 && (
                     <div 
-                      className="absolute -top-1 w-2 h-2 pointer-events-none"
+                      className="absolute inset-0 flex items-center justify-center pointer-events-none transition-transform duration-300"
                       style={{ transform: `rotate(${v.bearing}deg)` }}
                     >
-                      <div className="w-1.5 h-1.5 bg-amber-300 rotate-45 mx-auto shadow-xs border-[0.5px] border-white"></div>
+                      <div className="w-0 h-0 -translate-y-[19px] border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-b-[9px] border-b-cyan-400 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]" />
                     </div>
                   )}
                 </div>
@@ -7606,6 +7673,14 @@ export default function AppMap() {
                   title={`巴士 ${busNum}${v.destination ? ` 往 ${v.destination}` : ''}`}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/></svg>
+                  {v.bearing !== undefined && v.bearing >= 0 && (
+                    <div 
+                      className="absolute inset-0 flex items-center justify-center pointer-events-none transition-transform duration-300"
+                      style={{ transform: `rotate(${v.bearing}deg)` }}
+                    >
+                      <div className="w-0 h-0 -translate-y-[13px] border-l-[3.5px] border-l-transparent border-r-[3.5px] border-r-transparent border-b-[6px] border-b-emerald-400 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]" />
+                    </div>
+                  )}
                 </div>
               </Marker>
             );
@@ -7626,6 +7701,14 @@ export default function AppMap() {
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M2 12h20"/><path d="M6 12l2-4h8l2 4"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
               </svg>
+              {v.bearing !== undefined && v.bearing >= 0 && (
+                <div 
+                  className="absolute inset-0 flex items-center justify-center pointer-events-none transition-transform duration-300"
+                  style={{ transform: `rotate(${v.bearing}deg)` }}
+                >
+                  <div className="w-0 h-0 -translate-y-[19px] border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-b-[9px] border-b-sky-300 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]" />
+                </div>
+              )}
             </div>
           </Marker>
         ))}
@@ -7722,6 +7805,14 @@ export default function AppMap() {
                 title={`${train.line_name} 往 ${(train.destination || '').replace(/\s*Station$/i, '').replace(/\s*站$/, '').trim() + ' Station'} (${train.status})`}
               >
                 <span className="text-[12px] leading-none select-none">🚆</span>
+                {train.bearing !== undefined && train.bearing >= 0 && (
+                  <div 
+                    className="absolute inset-0 flex items-center justify-center pointer-events-none transition-transform duration-300"
+                    style={{ transform: `rotate(${train.bearing}deg)` }}
+                  >
+                    <div className="w-0 h-0 -translate-y-[16px] border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-b-[8px] border-b-amber-400 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]" />
+                  </div>
+                )}
               </div>
             </Marker>
           );
@@ -8047,7 +8138,7 @@ export default function AppMap() {
             <div className="flex flex-col items-center cursor-pointer select-none">
               <div 
                 className="w-6 h-6 bg-[#0060a9] rounded-md flex items-center justify-center border-[1.5px] border-white shadow-md hover:bg-[#004080] transition-colors tooltip"
-                title={t.properties?.name || 'Ferry Terminal'}
+                title={FERRY_TERMINAL_NAMES_EN[t.properties?.code] || t.properties?.name || 'Ferry Terminal'}
                 onClick={(e) => {
                   e.stopPropagation();
                   lastInteractiveItemClickRef.current = Date.now();
@@ -8055,7 +8146,10 @@ export default function AppMap() {
                   setSelectedFacility(null);
                   setSelectedFerry(null);
                   setSelectedAirport(null);
+                  setSelectedBusExchange(null);
+                  setSelectedSkytrainStation(null);
                   setSelectedTerminal(t);
+                  setTerminalDetailTab('schedule');
                   setLoadingSchedule(true);
                   const apiUrl = getApiUrl();
                   fetch(`${apiUrl}/api/ferries/terminals/${t.properties.code}/schedule`)
@@ -8076,50 +8170,95 @@ export default function AppMap() {
                   <path d="M5 12H2a10 10 0 0 0 20 0h-3"/>
                 </svg>
               </div>
-              {currentZoom >= 10 && t.properties?.name && (
+              {currentZoom >= 10 && (
                 <span 
                   className="mt-1 text-[11px] font-semibold text-white px-1.5 py-0.5 rounded bg-[#0a121e]/90 border border-sky-400/40 shadow-sm whitespace-nowrap pointer-events-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]"
                 >
-                  {t.properties.name}
+                  {FERRY_TERMINAL_SHORT_NAMES_EN[t.properties.code] || t.properties.name?.replace(/Ferry Terminal/i, '').trim() || t.properties.code}
                 </span>
               )}
             </div>
           </Marker>
         ))}
 
+        {/* 🚏 巴士轉乘站 (Bus Exchanges & Loops) */}
+        {layers.busExchanges && BUS_EXCHANGES.map((exc) => (
+          <Marker
+            key={`exc-${exc.id}`}
+            longitude={exc.lon}
+            latitude={exc.lat}
+            anchor="center"
+          >
+            <div
+              className="flex flex-col items-center cursor-pointer select-none group"
+              onClick={(e) => {
+                e.stopPropagation();
+                lastInteractiveItemClickRef.current = Date.now();
+                setSelectedStop(null);
+                setSelectedFacility(null);
+                setSelectedFerry(null);
+                setSelectedAirport(null);
+                setSelectedTerminal(null);
+                setSelectedSkytrainStation(null);
+                setSelectedBusExchange(exc);
+              }}
+            >
+              <div 
+                className="w-7 h-7 bg-gradient-to-tr from-emerald-700 via-emerald-600 to-teal-500 rounded-full flex items-center justify-center border-2 border-white shadow-lg group-hover:scale-125 transition-transform"
+                title={`${exc.name_en} (${exc.name})`}
+              >
+                <span className="text-[12px] leading-none select-none">🚏</span>
+              </div>
+              {currentZoom >= 11 && (
+                <span className="mt-1 text-[10.5px] font-bold text-white px-1.5 py-0.2 rounded bg-[#0a1b14]/90 border border-emerald-400/60 shadow whitespace-nowrap pointer-events-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+                  {exc.name_en}
+                </span>
+              )}
+            </div>
+          </Marker>
+        ))}
 
-        {/* Terminal Popup */}
-        {selectedTerminal && (
+        {/* 🚏 巴士轉乘站 Popup */}
+        {selectedBusExchange && (
           <Popup
-            longitude={selectedTerminal.geometry.coordinates[0]}
-            latitude={selectedTerminal.geometry.coordinates[1]}
+            longitude={selectedBusExchange.lon}
+            latitude={selectedBusExchange.lat}
             anchor="bottom"
             onClose={() => {
-              setSelectedTerminal(null);
-              setSearchTarget(null);
+              setSelectedBusExchange(null);
             }}
             closeOnClick={false}
             closeButton={false}
             className="z-50"
-            offset={[0, -10]}
+            offset={[0, -12]}
             maxWidth="none"
           >
-            <div className="p-3.5 w-[300px] sm:w-[335px] max-w-[calc(100vw-32px)] overflow-hidden">
+            <div className="p-3.5 w-[320px] sm:w-[360px] max-w-[calc(100vw-32px)] max-h-[78vh] overflow-y-auto [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full text-gray-800">
+              {/* Header */}
               <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
                 <div className="flex items-start gap-2 pt-0.5 min-w-0 flex-1 pr-2">
-                  <span className="w-2.5 h-2.5 bg-[#0060a9] rounded-full flex-shrink-0 mt-1.5 shadow-sm"></span>
-                  <h3 className="font-bold text-gray-900 text-base leading-snug break-words">{selectedTerminal.properties?.name}</h3>
+                  <div className="w-7 h-7 rounded-lg bg-emerald-100 border border-emerald-200 flex items-center justify-center text-emerald-800 shrink-0">
+                    <span className="text-sm">🚏</span>
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-bold text-gray-900 text-sm leading-snug break-words">
+                      {selectedBusExchange.name_en}
+                    </h3>
+                    <div className="text-[11px] text-gray-500 font-medium">
+                      {selectedBusExchange.name}
+                    </div>
+                  </div>
                 </div>
                 <div className="flex items-center gap-1 shrink-0 -mt-0.5 -mr-0.5">
                   <button
-                    onClick={() => copyCoordinatesToClipboard(selectedTerminal.geometry.coordinates[1], selectedTerminal.geometry.coordinates[0])}
+                    onClick={() => copyCoordinatesToClipboard(selectedBusExchange.lat, selectedBusExchange.lon)}
                     className="p-1 rounded-md text-gray-500 hover:text-cyan-600 hover:bg-cyan-50 transition-colors flex items-center justify-center shadow-xs border border-gray-100"
                     title="複製坐標"
                   >
                     <Copy className="w-3.5 h-3.5" />
                   </button>
                   <a
-                    href={getGoogleNavUrl(selectedTerminal.geometry.coordinates[1], selectedTerminal.geometry.coordinates[0])}
+                    href={getGoogleNavUrl(selectedBusExchange.lat, selectedBusExchange.lon)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-1 rounded-md text-sky-600 hover:text-sky-700 hover:bg-sky-50 transition-colors flex items-center justify-center shadow-xs border border-sky-100"
@@ -8127,136 +8266,115 @@ export default function AppMap() {
                   >
                     <Navigation className="w-3.5 h-3.5 text-sky-600" />
                   </a>
-                  <button 
-                    onClick={() => {
-                      setSelectedTerminal(null);
-                      setSearchTarget(null);
-                    }} 
-                    className="text-gray-400 hover:text-gray-700 text-2xl font-light leading-none px-1 py-0.5 rounded transition-colors focus:outline-none ml-0.5"
+                  <button
+                    onClick={() => setSelectedBusExchange(null)}
+                    className="text-gray-400 hover:text-gray-700 text-xl font-light leading-none px-1 py-0.5 rounded transition-colors focus:outline-none ml-0.5"
                     title="關閉"
                   >
                     &times;
                   </button>
                 </div>
               </div>
-              
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className="text-[11px] font-bold text-gray-600">今日班次</h4>
-                  <div className="flex items-center gap-1.5">
-                    {/* 4. 碼頭即時路況攝影機按鈕 */}
-                    {Boolean(FERRY_TERMINAL_WEBCAMS[selectedTerminal.properties.code]?.length) && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setTerminalWebcamTerminalCode(selectedTerminal.properties.code);
-                          setTerminalWebcamRefreshKey(Date.now());
-                          setTerminalWebcamSecondsAgo(0);
-                          setIsTerminalWebcamModalOpen(true);
-                        }}
-                        className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-sky-50 hover:bg-sky-100 text-[#0060a9] text-[10.5px] font-semibold transition-colors border border-sky-200/60 cursor-pointer shadow-2xs"
-                        title="查看碼頭現場即時路況攝影機"
-                      >
-                        <Camera className="w-3 h-3 text-[#0060a9]" />
-                        <span>碼頭攝影機</span>
-                      </button>
-                    )}
-                    {/* 2. 收費表按鈕 (已刪除卑詩渡輪) */}
-                    <a
-                      href="https://www.bcferries.com/web_image/h90/h4b/9089486028830.pdf"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-blue-50 hover:bg-blue-100 text-[#0060a9] text-[10.5px] font-semibold transition-colors border border-blue-200/50"
-                      title="官方收費表 (PDF)"
-                    >
-                      <span>收費表</span>
-                      <ExternalLink className="w-3 h-3 text-[#0060a9]" />
-                    </a>
+
+              {/* Location info */}
+              <div className="text-[11px] text-gray-500 mb-2.5 flex items-center gap-1">
+                <MapPin className="w-3 h-3 text-emerald-600 shrink-0" />
+                <span className="truncate">{selectedBusExchange.location}</span>
+              </div>
+
+              {/* Exchange Layout Map Image */}
+              {selectedBusExchange.image && (
+                <div className="mb-3">
+                  <div className="text-[11px] font-bold text-gray-700 mb-1 flex items-center justify-between">
+                    <span>轉乘站路線配置圖</span>
+                    <span className="text-[10px] text-emerald-600 font-normal">點擊放大檢視</span>
+                  </div>
+                  <div
+                    onClick={() => setEnlargedCameraImage({
+                      src: selectedBusExchange.image,
+                      directSrc: selectedBusExchange.image,
+                      alt: selectedBusExchange.name_en,
+                      title: `${selectedBusExchange.name_en} 路線配置圖`,
+                      direction: selectedBusExchange.location
+                    })}
+                    className="relative w-full aspect-[16/10] bg-gray-100 rounded-lg overflow-hidden border border-gray-200 cursor-zoom-in group shadow-xs"
+                  >
+                    <img
+                      src={selectedBusExchange.image}
+                      alt={selectedBusExchange.name_en}
+                      className="w-full h-full object-contain bg-white group-hover:scale-105 transition-transform duration-200"
+                    />
+                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <span className="bg-black/75 backdrop-blur-xs text-white text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1 shadow-md">
+                        <ZoomIn className="w-3 h-3 text-emerald-300" />
+                        <span>點擊放大</span>
+                      </span>
+                    </div>
                   </div>
                 </div>
-                
-                {loadingSchedule ? (
-                  <div className="flex flex-col items-center justify-center py-6 text-gray-500 text-xs gap-2">
-                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-[#0060a9] border-t-transparent"></div>
-                    載入班次中...
-                  </div>
-                ) : terminalSchedule.length === 0 ? (
-                  <div className="text-xs text-gray-500 py-4 text-center bg-gray-50 rounded-lg">目前沒有即將開航的班次。</div>
-                ) : (() => {
-                  const activeSailings = terminalSchedule.filter(s => s.status !== 'past');
-                  const pastSailings = terminalSchedule.filter(s => s.status === 'past');
+              )}
 
-                  const renderSailingCard = (sailing: any, i: number, isDimmed = false) => (
-                    <div key={i} className={`flex flex-col gap-1 text-xs p-2.5 rounded-lg border transition-colors ${
-                      isDimmed 
-                        ? 'bg-gray-100/70 border-gray-200 text-gray-500' 
-                        : 'bg-gray-50/80 border-gray-200/60 shadow-xs hover:border-gray-300'
-                    }`}>
-                      <div className="flex justify-between items-center">
-                        <span className={`font-bold text-sm tracking-tight ${isDimmed ? 'text-gray-600' : 'text-[#0060a9]'}`}>
-                          {formatTimePreference(sailing.time, timeFormat)} {sailing.arrival_time ? `➝ ${formatTimePreference(sailing.arrival_time, timeFormat)}` : ""}
-                        </span>
-                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
-                          sailing.status === 'past' ? 'bg-gray-100 text-gray-500' : 
-                          sailing.status === 'current' ? 'bg-emerald-100 text-emerald-800 font-bold animate-pulse' : 
-                          'bg-blue-100/80 text-blue-800'
-                        }`}>
-                          {sailing.status === 'past' ? '已抵達' : sailing.status === 'current' ? '航行中' : '即將開航'}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center text-gray-600 mt-0.5">
-                        <span className="font-medium text-gray-800 truncate max-w-[130px] sm:max-w-[160px]">{sailing.vessel_name || '渡輪 (航線營運中)'}</span>
-                        <span className="bg-white border border-gray-200 text-gray-600 px-1.5 py-0.5 rounded text-[10px] font-medium" title={sailing.destination}>
-                          開往 {FERRY_TERMINAL_NAMES[sailing.destination] || sailing.destination}
-                        </span>
-                      </div>
-                      {sailing.fill > 0 && (
-                        <div className="mt-1 pt-1 border-t border-gray-100">
-                          <div className="flex justify-between items-center text-[10px] text-gray-500 mb-0.5">
-                            <span>車位載車率</span>
-                            <span className="font-semibold text-gray-700">{sailing.fill}%</span>
-                          </div>
-                          <div className="w-full bg-gray-200/80 rounded-full h-1.5 overflow-hidden">
-                            <div 
-                              className={`h-1.5 rounded-full transition-all duration-300 ${sailing.fill >= 80 ? 'bg-amber-500' : 'bg-[#0060a9]'}`} 
-                              style={{ width: `${Math.min(100, Math.max(0, sailing.fill))}%` }}
-                            ></div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-
-                  return (
-                    <div className="flex flex-col gap-2 max-h-[320px] overflow-y-auto pr-1">
-                      {activeSailings.length === 0 ? (
-                        <div className="text-xs text-gray-500 py-3 text-center bg-gray-50 rounded-lg">
-                          今日目前無即將開航的班次。
-                        </div>
-                      ) : (
-                        activeSailings.map((sailing, i) => renderSailingCard(sailing, i))
-                      )}
-
-                      {pastSailings.length > 0 && (
-                        <details className="group mt-1 border-t border-gray-200/70 pt-2">
-                          <summary className="flex justify-between items-center text-[11px] text-gray-500 hover:text-gray-800 cursor-pointer list-none select-none py-1 px-1 rounded hover:bg-gray-100/50">
-                            <span className="font-medium flex items-center gap-1.5">
-                              <span>已抵達班次</span>
-                              <span className="px-1.5 py-0.2 rounded-full bg-gray-200 text-gray-600 text-[9.5px] font-mono">
-                                {pastSailings.length}
-                              </span>
-                            </span>
-                            <span className="text-[9px] text-gray-400 group-open:rotate-180 transition-transform">▼</span>
-                          </summary>
-                          <div className="flex flex-col gap-1.5 mt-2 opacity-85">
-                            {pastSailings.map((sailing, i) => renderSailingCard(sailing, i + 100, true))}
-                          </div>
-                        </details>
-                      )}
-                    </div>
-                  );
-                })()}
+              {/* Bus Routes List */}
+              <div className="mb-2">
+                <div className="text-[11px] font-bold text-gray-700 mb-1.5 flex items-center justify-between">
+                  <span>行經巴士路線</span>
+                  <span className="text-[10px] text-gray-400">點擊在地圖上顯示路線</span>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {selectedBusExchange.routes.map((rt) => (
+                    <button
+                      key={rt}
+                      onClick={() => {
+                        setSelectedBusExchange(null);
+                        setSearchTarget({
+                          id: `route_${rt}`,
+                          title: `巴士 ${rt}`,
+                          category: 'bus_route',
+                          icon: '🚌',
+                          lon: selectedBusExchange.lon,
+                          lat: selectedBusExchange.lat,
+                          meta: { route_id: rt }
+                        });
+                      }}
+                      className="px-2.5 py-1 rounded-md bg-emerald-50 hover:bg-emerald-600 text-emerald-800 hover:text-white font-bold text-xs border border-emerald-300 hover:border-emerald-600 transition-colors shadow-2xs cursor-pointer flex items-center gap-1"
+                      title={`在地圖上追蹤巴士路線 ${rt}`}
+                    >
+                      <span>🚌</span>
+                      <span>{rt}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
+
+              {/* Bays Breakdown Details */}
+              {selectedBusExchange.bays && selectedBusExchange.bays.length > 0 && (
+                <details className="mt-2.5 border-t border-gray-100 pt-2 group">
+                  <summary className="flex items-center justify-between text-[11px] font-semibold text-gray-600 cursor-pointer list-none select-none py-0.5 hover:text-gray-900">
+                    <span className="flex items-center gap-1">
+                      <span>月台停靠詳情 (Bays)</span>
+                      <span className="px-1.5 py-0.2 rounded-full bg-gray-100 text-gray-600 text-[9.5px] font-mono">
+                        {selectedBusExchange.bays.length}
+                      </span>
+                    </span>
+                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 group-open:rotate-180 transition-transform" />
+                  </summary>
+                  <div className="flex flex-col gap-1.5 mt-2">
+                    {selectedBusExchange.bays.map((bay, bIdx) => (
+                      <div key={bIdx} className="p-2 rounded bg-gray-50 border border-gray-150 text-[11px] flex flex-col gap-0.5">
+                        <div className="flex items-center justify-between font-bold text-gray-800">
+                          <span className="text-emerald-700">{bay.bay}</span>
+                          {bay.stop_id && (
+                            <span className="text-[10px] text-gray-400 font-mono">#{bay.stop_id}</span>
+                          )}
+                        </div>
+                        {bay.description && (
+                          <div className="text-gray-600 text-[10.5px]">{bay.description}</div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </details>
+              )}
             </div>
           </Popup>
         )}
@@ -16610,8 +16728,6 @@ export default function AppMap() {
                 { id: 'traffic', label: '路況', icon: Activity, color: 'text-amber-400' },
                 { id: 'crashes', label: '意外', icon: AlertTriangle, color: 'text-rose-400' },
                 { id: 'border', label: '關口', icon: Compass, color: 'text-blue-400' },
-                { id: 'ferry', label: '渡輪', icon: Ship, color: 'text-sky-400' },
-                { id: 'cargo', label: '航運', icon: Ship, color: 'text-teal-400' },
               ].filter(t => !exploreSearchInput.trim() || t.label.includes(exploreSearchInput.trim()) || t.id.includes(exploreSearchInput.trim().toLowerCase())).map(t => {
                 const TabIcon = t.icon;
                 return (
@@ -16704,8 +16820,6 @@ export default function AppMap() {
             { id: 'traffic', label: '路況', icon: Activity, color: 'text-amber-400' },
             { id: 'crashes', label: '意外', icon: AlertTriangle, color: 'text-rose-400' },
             { id: 'border', label: '關口', icon: Compass, color: 'text-blue-400' },
-            { id: 'ferry', label: '渡輪', icon: Ship, color: 'text-sky-400' },
-            { id: 'cargo', label: '航運', icon: Ship, color: 'text-teal-400' },
           ].filter(t => !exploreSearchInput.trim() || t.label.includes(exploreSearchInput.trim()) || t.id.includes(exploreSearchInput.trim().toLowerCase())).map((tab) => {
             const isActive = isExploreOpen && exploreTab === tab.id;
             const Icon = tab.icon;
@@ -19128,6 +19242,284 @@ export default function AppMap() {
         </div>
       )}
 
+      {/* BC Ferries 碼頭停靠浮動面板 (仿天車站點面板) */}
+      {selectedTerminal && (
+        <div className="fixed top-[72px] right-4 z-40 w-[390px] sm:w-[430px] max-w-[calc(100vw-32px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-200 select-none">
+          {/* Header */}
+          <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-[#262b38] shrink-0 gap-2">
+            <div className="flex items-start gap-2.5 min-w-0 flex-1">
+              <div className="w-8 h-8 rounded-lg bg-sky-500/20 border border-sky-500/40 flex items-center justify-center text-sky-400 shrink-0 mt-0.5 shadow-sm">
+                <Ship className="w-4 h-4 text-sky-400" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <h3 className="font-bold text-white text-[15px] leading-snug tracking-tight break-words">
+                  {FERRY_TERMINAL_SHORT_NAMES_EN[selectedTerminal.properties.code] || selectedTerminal.properties.code} Terminal
+                </h3>
+                <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                  <span className="text-[9.5px] font-semibold px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-300 border border-sky-500/40">
+                    BC Ferries
+                  </span>
+                  <span className="text-[10px] text-gray-400 font-mono">
+                    Code: {selectedTerminal.properties.code}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* 右側按鈕組：第一行坐標、導航、關閉；關閉按鈕下方為收費表 (錢 SVG) 及官方網站連結 */}
+            <div className="flex flex-col items-end gap-1.5 shrink-0">
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => copyCoordinatesToClipboard(selectedTerminal.geometry.coordinates[1], selectedTerminal.geometry.coordinates[0])}
+                  className="text-gray-400 hover:text-cyan-300 p-1.5 rounded-lg hover:bg-cyan-500/20 transition-colors"
+                  title="複製碼頭坐標"
+                >
+                  <Copy className="w-4 h-4 text-cyan-400" />
+                </button>
+                <a
+                  href={getGoogleNavUrl(selectedTerminal.geometry.coordinates[1], selectedTerminal.geometry.coordinates[0])}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-white p-1.5 rounded-lg hover:bg-sky-500/20 hover:text-sky-400 transition-colors"
+                  title="Google Map 導航至此"
+                >
+                  <Navigation className="w-4 h-4 text-sky-400" />
+                </a>
+                <button
+                  onClick={() => {
+                    setSelectedTerminal(null);
+                    setSearchTarget(null);
+                  }}
+                  className="text-gray-400 hover:text-white p-1.5 rounded-lg hover:bg-[#252a38] transition-colors"
+                  title="關閉"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* 關閉按鈕下方：收費表 (錢 SVG) 放在連結圖示左方 */}
+              <div className="flex items-center gap-1.5 pr-0.5">
+                <a
+                  href="https://www.bcferries.com/web_image/h90/h4b/9089486028830.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-1 rounded-md text-amber-400 hover:text-amber-300 hover:bg-amber-500/20 transition-colors flex items-center justify-center border border-amber-500/30 shadow-2xs"
+                  title="官方收費表 (Fares PDF)"
+                >
+                  <CircleDollarSign className="w-3.5 h-3.5 text-amber-400" />
+                </a>
+                <a
+                  href="https://www.bcferries.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-1 rounded-md text-sky-400 hover:text-sky-300 hover:bg-sky-500/20 transition-colors flex items-center justify-center border border-sky-500/30 shadow-2xs"
+                  title="前往 BC Ferries 官方網頁"
+                >
+                  <ExternalLink className="w-3.5 h-3.5 text-sky-400" />
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* 導覽分頁 (Tabs) */}
+          <div className="flex border-b border-[#262b38] mb-2.5 shrink-0 text-xs">
+            <button
+              onClick={() => setTerminalDetailTab('schedule')}
+              className={`flex-1 py-1.5 text-center font-medium border-b-2 transition-all ${
+                terminalDetailTab === 'schedule'
+                  ? 'border-sky-400 text-sky-400 font-bold'
+                  : 'border-transparent text-gray-400 hover:text-gray-200'
+              }`}
+            >
+              班次
+            </button>
+            {Boolean(FERRY_TERMINAL_WEBCAMS[selectedTerminal.properties.code]?.length) && (
+              <button
+                onClick={() => setTerminalDetailTab('webcams')}
+                className={`flex-1 py-1.5 text-center font-medium border-b-2 transition-all ${
+                  terminalDetailTab === 'webcams'
+                    ? 'border-sky-400 text-sky-400 font-bold'
+                    : 'border-transparent text-gray-400 hover:text-gray-200'
+                }`}
+              >
+                碼頭攝影機
+              </button>
+            )}
+          </div>
+
+          {/* 分頁內容 */}
+          <div className="flex-1 overflow-y-auto pr-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#2a2f3d] [&::-webkit-scrollbar-thumb]:rounded-full">
+            {terminalDetailTab === 'schedule' && (
+              <div className="flex flex-col gap-2">
+                {loadingSchedule ? (
+                  <div className="flex flex-col items-center justify-center py-8 text-gray-400 text-xs gap-2">
+                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-sky-400 border-t-transparent"></div>
+                    載入今日渡輪班次中...
+                  </div>
+                ) : terminalSchedule.length === 0 ? (
+                  <div className="text-xs text-gray-400 py-6 text-center bg-[#1c202d] rounded-lg border border-[#262b38]">
+                    今日目前沒有即將開航的班次。
+                  </div>
+                ) : (() => {
+                  const activeSailings = terminalSchedule.filter(s => s.status !== 'past');
+                  const pastSailings = terminalSchedule.filter(s => s.status === 'past');
+
+                  const renderSailingCard = (sailing: any, i: number, isDimmed = false) => (
+                    <div 
+                      key={i} 
+                      className={`flex flex-col gap-1.5 text-xs p-2.5 rounded-lg border transition-colors ${
+                        isDimmed 
+                          ? 'bg-[#181c26]/60 border-[#242936] text-gray-400 opacity-75' 
+                          : 'bg-[#1e2330] border-[#2c3345] shadow-xs hover:border-sky-500/50'
+                      }`}
+                    >
+                      <div className="flex justify-between items-center">
+                        <span className={`font-bold text-sm tracking-tight ${isDimmed ? 'text-gray-400' : 'text-sky-300 font-mono'}`}>
+                          {formatTimePreference(sailing.time, timeFormat)} {sailing.arrival_time ? `➝ ${formatTimePreference(sailing.arrival_time, timeFormat)}` : ""}
+                        </span>
+                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                          sailing.status === 'past' ? 'bg-gray-800 text-gray-400 border border-gray-700' : 
+                          sailing.status === 'current' ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 font-bold animate-pulse' : 
+                          'bg-sky-950/80 text-sky-300 border border-sky-500/40'
+                        }`}>
+                          {sailing.status === 'past' ? '已抵達' : sailing.status === 'current' ? '航行中' : '即將開航'}
+                        </span>
+                      </div>
+                      
+                      {/* 渡輪名稱與下方英文目的地 */}
+                      <div className="flex flex-col gap-0.5 mt-0.5">
+                        <span className="font-semibold text-gray-200 truncate">
+                          {sailing.vessel_name || 'BC Ferries (In Service)'}
+                        </span>
+                        <div className="text-[11px] text-sky-400 flex items-center gap-1 font-medium">
+                          <span className="text-gray-400 text-[10px]">To:</span>
+                          <span>{FERRY_TERMINAL_NAMES_EN[sailing.destination] || sailing.destination}</span>
+                        </div>
+                      </div>
+
+                      {sailing.fill > 0 && (
+                        <div className="mt-1 pt-1 border-t border-[#262b38]/60">
+                          <div className="flex justify-between items-center text-[10px] text-gray-400 mb-0.5">
+                            <span>車位載車率</span>
+                            <span className="font-semibold text-gray-200">{sailing.fill}%</span>
+                          </div>
+                          <div className="w-full bg-gray-800 rounded-full h-1.5 overflow-hidden">
+                            <div 
+                              className={`h-1.5 rounded-full transition-all duration-300 ${sailing.fill >= 80 ? 'bg-amber-400' : 'bg-sky-400'}`} 
+                              style={{ width: `${Math.min(100, Math.max(0, sailing.fill))}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+
+                  return (
+                    <div className="flex flex-col gap-2">
+                      {activeSailings.length === 0 ? (
+                        <div className="text-xs text-gray-400 py-4 text-center bg-[#1c202d] rounded-lg border border-[#262b38]">
+                          今日目前無即將開航的班次。
+                        </div>
+                      ) : (
+                        activeSailings.map((sailing, i) => renderSailingCard(sailing, i))
+                      )}
+
+                      {pastSailings.length > 0 && (
+                        <details className="group mt-1 border-t border-[#262b38] pt-2">
+                          <summary className="flex justify-between items-center text-[11px] text-gray-400 hover:text-gray-200 cursor-pointer list-none select-none py-1 px-1 rounded hover:bg-[#1f2432]">
+                            <span className="font-medium flex items-center gap-1.5">
+                              <span>已抵達班次</span>
+                              <span className="px-1.5 py-0.2 rounded-full bg-gray-800 text-gray-300 text-[9.5px] font-mono">
+                                {pastSailings.length}
+                              </span>
+                            </span>
+                            <ChevronDown className="w-3.5 h-3.5 text-gray-400 group-open:rotate-180 transition-transform" />
+                          </summary>
+                          <div className="flex flex-col gap-1.5 mt-2">
+                            {pastSailings.map((sailing, i) => renderSailingCard(sailing, i + 100, true))}
+                          </div>
+                        </details>
+                      )}
+                    </div>
+                  );
+                })()}
+              </div>
+            )}
+
+            {terminalDetailTab === 'webcams' && (
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center justify-between text-[11px] text-gray-400 px-0.5">
+                  <span className="inline-flex items-center gap-1 text-emerald-400 font-medium">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    每 1 分鐘自動更新
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTerminalWebcamRefreshKey(Date.now());
+                      setTerminalWebcamSecondsAgo(0);
+                    }}
+                    className="p-1 px-2 rounded bg-sky-600/30 hover:bg-sky-600/50 text-sky-300 border border-sky-500/30 transition-colors flex items-center gap-1 text-[10.5px] cursor-pointer"
+                  >
+                    <RotateCw className="w-3 h-3" />
+                    <span>立即更新</span>
+                  </button>
+                </div>
+
+                {((FERRY_TERMINAL_WEBCAMS[selectedTerminal.properties.code] || [])).length === 0 ? (
+                  <div className="text-xs text-gray-400 py-6 text-center bg-[#1c202d] rounded-lg border border-[#262b38]">
+                    此碼頭暫無路況攝影機畫面。
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-3">
+                    {(FERRY_TERMINAL_WEBCAMS[selectedTerminal.properties.code] || []).map((cam) => {
+                      const camUrl = `${cam.url}?t=${terminalWebcamRefreshKey}`;
+                      return (
+                        <div key={cam.id} className="bg-[#1b202e] rounded-xl border border-gray-800 overflow-hidden shadow-md flex flex-col">
+                          <div className="px-2.5 py-1.5 bg-[#212738] border-b border-gray-800/80 flex items-center justify-between text-xs">
+                            <span className="font-semibold text-gray-200 text-[11px] truncate" title={cam.name}>
+                              {cam.name}
+                            </span>
+                            <span className="text-[9.5px] text-gray-400 font-mono shrink-0">
+                              {cam.id}
+                            </span>
+                          </div>
+                          <div
+                            onClick={() => setEnlargedCameraImage({
+                              src: camUrl,
+                              directSrc: cam.url,
+                              alt: cam.name,
+                              title: `${FERRY_TERMINAL_SHORT_NAMES_EN[selectedTerminal.properties.code] || selectedTerminal.properties.code} Terminal Webcam`,
+                              direction: cam.name
+                            })}
+                            className="relative aspect-[16/10] bg-black cursor-zoom-in group flex items-center justify-center overflow-hidden"
+                            title="點擊放大檢視"
+                          >
+                            <img
+                              src={camUrl}
+                              alt={cam.name}
+                              referrerPolicy="no-referrer"
+                              crossOrigin="anonymous"
+                              className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-200"
+                            />
+                            <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                              <span className="bg-black/75 backdrop-blur-xs text-white text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1 shadow-md">
+                                <ZoomIn className="w-3 h-3 text-sky-400" />
+                                <span>點擊放大</span>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* 系統與 API 初始載入畫面 (API Data & Image Preloading Screen) */}
       {isInitialApiLoading && (
         <div className="fixed inset-0 z-[100] bg-[#0c0e14]/90 backdrop-blur-md flex flex-col items-center justify-center select-none transition-opacity duration-300">
@@ -19682,8 +20074,8 @@ export default function AppMap() {
                 </span>
                 <div className="flex flex-col min-w-0">
                   <h4 className="text-sm font-bold text-gray-100 truncate flex items-center gap-2">
-                    <span>{FERRY_TERMINAL_NAMES[terminalWebcamTerminalCode] || selectedTerminal?.properties.name || terminalWebcamTerminalCode}</span>
-                    <span className="text-xs font-normal text-sky-400/90">即時路況攝影機</span>
+                    <span>{FERRY_TERMINAL_SHORT_NAMES_EN[terminalWebcamTerminalCode] || terminalWebcamTerminalCode}</span>
+                    <span className="text-xs font-normal text-sky-400/90">Webcams</span>
                   </h4>
                   <div className="flex items-center gap-2 text-[11px] text-gray-400">
                     <span className="inline-flex items-center gap-1 text-emerald-400 font-medium">
@@ -19708,15 +20100,6 @@ export default function AppMap() {
                   <RotateCw className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline">立即更新</span>
                 </button>
-                <a
-                  href="https://www.bcferries.com/current-conditions/webcams"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-1.5 rounded-lg text-gray-400 hover:text-sky-300 hover:bg-white/10 transition-colors flex items-center gap-1 text-xs"
-                  title="前往 BC Ferries 官方攝影機網頁"
-                >
-                  <ExternalLink className="w-4 h-4" />
-                </a>
                 <button
                   onClick={() => setIsTerminalWebcamModalOpen(false)}
                   className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
@@ -19731,7 +20114,7 @@ export default function AppMap() {
             <div className="px-4 py-2 bg-[#12151e] border-b border-gray-800/80 flex items-center gap-1.5 overflow-x-auto shrink-0 scrollbar-thin">
               {Object.keys(FERRY_TERMINAL_WEBCAMS).map((code) => {
                 const isActive = code === terminalWebcamTerminalCode;
-                const terminalName = FERRY_TERMINAL_NAMES[code] || code;
+                const terminalName = FERRY_TERMINAL_SHORT_NAMES_EN[code] || code;
                 return (
                   <button
                     key={code}
@@ -19780,7 +20163,7 @@ export default function AppMap() {
                             src: camUrlWithT,
                             directSrc: cam.url,
                             alt: cam.name,
-                            title: `${FERRY_TERMINAL_NAMES[terminalWebcamTerminalCode] || terminalWebcamTerminalCode} 碼頭即時影像`,
+                            title: `${FERRY_TERMINAL_SHORT_NAMES_EN[terminalWebcamTerminalCode] || terminalWebcamTerminalCode} Terminal Webcam`,
                             direction: cam.name
                           });
                         }}
@@ -19791,6 +20174,8 @@ export default function AppMap() {
                         <img
                           src={camUrlWithT}
                           alt={cam.name}
+                          referrerPolicy="no-referrer"
+                          crossOrigin="anonymous"
                           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
                           loading="lazy"
                         />
@@ -19812,15 +20197,6 @@ export default function AppMap() {
               <span className="text-gray-400 text-[11px]">
                 點擊任一照片可全螢幕高清放大檢視 · 畫面由 BC Ferries 卑詩渡輪官方即時提供
               </span>
-              <a
-                href="https://www.bcferries.com/current-conditions/webcams"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-sky-400 hover:text-sky-300 hover:underline font-medium text-[11px]"
-              >
-                <span>前往 BC Ferries 官方網頁</span>
-                <span>→</span>
-              </a>
             </div>
           </div>
         </div>,

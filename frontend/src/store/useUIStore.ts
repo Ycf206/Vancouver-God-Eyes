@@ -30,6 +30,7 @@ export interface UIState {
     traffic: boolean;
     bus: boolean;
     busRoutes: boolean;
+    busExchanges: boolean;
     busStops: boolean;
     skytrainTrains: boolean;
     skytrainRoutes: boolean;
@@ -230,6 +231,12 @@ export interface UIState {
   isFlightScheduleOpen: boolean;
   toggleFlightSchedule: () => void;
   setFlightScheduleOpen: (open: boolean) => void;
+  isFerryScheduleOpen: boolean;
+  toggleFerrySchedule: () => void;
+  setFerryScheduleOpen: (open: boolean) => void;
+  isMaritimeScheduleOpen: boolean;
+  toggleMaritimeSchedule: () => void;
+  setMaritimeScheduleOpen: (open: boolean) => void;
   selectedFlightId: string | null;
   setSelectedFlightId: (id: string | null) => void;
   selectedCrash: { location: string; count: number; lat: number; lon: number } | null;
@@ -259,6 +266,7 @@ export const useUIStore = create<UIState>()(
         traffic: true,
         bus: true,
         busRoutes: true,
+        busExchanges: true,
         busStops: true,
         skytrainTrains: true,
         skytrainRoutes: true,
@@ -679,6 +687,12 @@ export const useUIStore = create<UIState>()(
       isFlightScheduleOpen: false,
       toggleFlightSchedule: () => set((state) => ({ isFlightScheduleOpen: !state.isFlightScheduleOpen })),
       setFlightScheduleOpen: (open) => set({ isFlightScheduleOpen: open }),
+      isFerryScheduleOpen: false,
+      toggleFerrySchedule: () => set((state) => ({ isFerryScheduleOpen: !state.isFerryScheduleOpen })),
+      setFerryScheduleOpen: (open) => set({ isFerryScheduleOpen: open }),
+      isMaritimeScheduleOpen: false,
+      toggleMaritimeSchedule: () => set((state) => ({ isMaritimeScheduleOpen: !state.isMaritimeScheduleOpen })),
+      setMaritimeScheduleOpen: (open) => set({ isMaritimeScheduleOpen: open }),
       selectedFlightId: null,
       setSelectedFlightId: (id) => set({ selectedFlightId: id }),
       selectedCrash: null,
@@ -731,6 +745,7 @@ export const useUIStore = create<UIState>()(
             ...currentState.layers,
             ...(persistedState?.layers || {}),
             contours: contourInterval !== 'off',
+            busExchanges: persistedState?.layers?.busExchanges ?? true,
             localAreaBoundary: persistedState?.layers?.localAreaBoundary || false,
             fuel: persistedState?.layers?.fuel || false,
             tesla: persistedState?.layers?.tesla || false,

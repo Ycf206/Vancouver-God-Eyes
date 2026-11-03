@@ -78,10 +78,13 @@ const SEARCHABLE_LAYERS: Array<{
   { id: 'seabusRoutes', name: '海上巴士路線', category: '交通', keywords: ['seabus', '航線', '海上巴士路線'], icon: Route },
   { id: 'bcferriesVehicles', name: '卑詩渡輪車輛', category: '交通', keywords: ['bc ferries', 'ferry', '渡輪', '卑詩渡輪'], icon: Ship },
   { id: 'bcferriesRoutes', name: '卑詩渡輪路線', category: '交通', keywords: ['ferry route', '渡輪航線', '航線'], icon: Route },
+  { id: 'ferrySchedule', name: '卑詩渡輪班次', category: '交通', keywords: ['bc ferries', 'ferry schedule', '卑詩渡輪班次', '渡輪時刻', '船班'], icon: Calendar, isSpecialAction: true },
   { id: 'maritimeShipping', name: '航運船舶', category: '交通', keywords: ['ship', 'marine', 'ais', '船舶', '貨輪'], icon: Ship },
   { id: 'marineTerminals', name: '航運碼頭', category: '交通', keywords: ['terminal', 'port', '碼頭', '港口'], icon: Anchor },
+  { id: 'maritimeSchedule', name: '船運班次', category: '交通', keywords: ['shipping', 'cargo', 'maritime schedule', '船運班次', '商船班次', '航運'], icon: Calendar, isSpecialAction: true },
   { id: 'airports', name: '機場', category: '交通', keywords: ['airport', 'yvr', '機場', '起降'], icon: PlaneTakeoff },
   { id: 'flightSchedule', name: '機場起降時刻', category: '交通', keywords: ['flight', 'schedule', '航班', '時刻表', '飛機'], icon: Calendar, isSpecialAction: true },
+  { id: 'busExchanges', name: '巴士轉車站', category: '交通', keywords: ['bus exchange', 'loop', '巴士轉車站', '轉車站', '轉運站'], icon: Landmark },
   { id: 'skytrainStations', name: '天車站', category: '交通', keywords: ['station', 'skytrain station', '車站', '天車站'], icon: Landmark },
   { id: 'bikeway', name: '單車道', category: '交通', keywords: ['bike', 'bikeway', 'bicycle', '自行車', '單車道'], icon: Bike },
   { id: 'parkingMeters', name: '咪錶車位', category: '交通', keywords: ['parking', 'meter', '咪錶', '停車位', '泊車'], icon: CircleDollarSign },
@@ -144,6 +147,7 @@ export default function LayerPanel() {
   const { 
     mapStyleType, setMapStyleType, layers, toggleLayer, resetAllLayers,
     isLayerPanelOpen, toggleLayerPanel, toggleFlightSchedule, isFlightScheduleOpen,
+    toggleFerrySchedule, isFerryScheduleOpen, toggleMaritimeSchedule, isMaritimeScheduleOpen,
     contourInterval, setContourInterval, hiddenLayersInPanel
   } = useUIStore();
 
@@ -229,7 +233,7 @@ export default function LayerPanel() {
 
     return {
       styles: 1,
-      transport: count(transportKeys) + (isFlightScheduleOpen ? 1 : 0),
+      transport: count(transportKeys) + (isFlightScheduleOpen ? 1 : 0) + (isFerryScheduleOpen ? 1 : 0) + (isMaritimeScheduleOpen ? 1 : 0),
       road: count(roadKeys),
       lifestyle: count(lifestyleKeys),
       nature: count(natureKeys),
@@ -237,7 +241,7 @@ export default function LayerPanel() {
       utilities: count(utilitiesKeys),
       geography: count(geographyKeys) + (contourInterval !== 'off' ? 1 : 0),
     };
-  }, [layers, isFlightScheduleOpen, contourInterval]);
+  }, [layers, isFlightScheduleOpen, isFerryScheduleOpen, isMaritimeScheduleOpen, contourInterval]);
 
   // Helper component for Style buttons (Icon only)
   const StyleButton = ({ type, icon: Icon, title }: { type: MapStyleType, icon: React.ElementType, title: string }) => {
@@ -453,7 +457,7 @@ export default function LayerPanel() {
                 matchedLayers.map(item => {
                   const Icon = item.icon;
                   const isLayerActive = item.isSpecialAction 
-                    ? isFlightScheduleOpen 
+                    ? (item.id === 'flightSchedule' ? isFlightScheduleOpen : item.id === 'ferrySchedule' ? isFerryScheduleOpen : isMaritimeScheduleOpen)
                     : !!(layers as any)[item.id];
 
                   return (
@@ -462,7 +466,9 @@ export default function LayerPanel() {
                       type="button"
                       onClick={() => {
                         if (item.isSpecialAction) {
-                          toggleFlightSchedule();
+                          if (item.id === 'flightSchedule') toggleFlightSchedule();
+                          else if (item.id === 'ferrySchedule') toggleFerrySchedule();
+                          else if (item.id === 'maritimeSchedule') toggleMaritimeSchedule();
                         } else {
                           toggleLayer(item.id as any);
                         }
@@ -503,47 +509,79 @@ export default function LayerPanel() {
           {!collapsedCategories['transport'] && (
             <div className="flex flex-col gap-1 animate-in fade-in duration-150">
               {/* 巴士 */}
-              <div className="grid grid-cols-[52px_1fr_1fr] gap-1 items-center">
+              <div className="grid grid-cols-[48px_1fr_1fr_1fr] gap-1 items-center">
                 <span className="text-[11px] font-medium text-emerald-400 pl-0.5">巴士</span>
                 <LayerButton layerKey="bus" label="車輛" title="巴士車輛" icon={Bus} iconOnly colorClass="text-emerald-400" activeBg="bg-[#1a2e23]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
                 <LayerButton layerKey="busRoutes" label="路線" title="巴士路線" icon={Route} iconOnly colorClass="text-emerald-400" activeBg="bg-[#1a2e23]" activeBorder="border-emerald-500/50" />
+                <LayerButton layerKey="busExchanges" label="轉車站" title="巴士轉車站" icon={Landmark} iconOnly colorClass="text-emerald-400" activeBg="bg-[#1a2e23]" activeBorder="border-emerald-500/50" activeShadow="shadow-[0_0_6px_rgba(16,185,129,0.15)]" />
               </div>
 
               {/* 天車 */}
-              <div className="grid grid-cols-[52px_1fr_1fr] gap-1 items-center">
+              <div className="grid grid-cols-[48px_1fr_1fr] gap-1 items-center">
                 <span className="text-[11px] font-medium text-blue-400 pl-0.5">天車</span>
                 <LayerButton layerKey="skytrainTrains" label="列車 (推算)" title="天車列車 (推算)" icon={Train} iconOnly colorClass="text-blue-400" activeBg="bg-[#1a2436]" activeBorder="border-blue-500/50" activeShadow="shadow-[0_0_6px_rgba(59,130,246,0.15)]" />
                 <LayerButton layerKey="skytrainRoutes" label="路線" title="天車路線" icon={Route} iconOnly colorClass="text-blue-400" activeBg="bg-[#1a2436]" activeBorder="border-blue-500/50" />
               </div>
 
               {/* 海上巴士 */}
-              <div className="grid grid-cols-[52px_1fr_1fr] gap-1 items-center">
+              <div className="grid grid-cols-[48px_1fr_1fr] gap-1 items-center">
                 <span className="text-[11px] font-medium text-[#d8baaa] pl-0.5">海上巴士</span>
                 <LayerButton layerKey="seabusVehicles" label="船隻" title="海上巴士船隻" icon={Ship} iconOnly colorClass="text-[#d8baaa]" activeBg="bg-[#2a221f]" activeBorder="border-[#8b786d]/50" activeShadow="shadow-[0_0_6px_rgba(139,120,109,0.2)]" />
                 <LayerButton layerKey="seabusRoutes" label="路線" title="海上巴士路線" icon={Route} iconOnly colorClass="text-[#d8baaa]" activeBg="bg-[#2a221f]" activeBorder="border-[#8b786d]/50" />
               </div>
 
               {/* 卑詩渡輪 */}
-              <div className="grid grid-cols-[52px_1fr_1fr] gap-1 items-center">
+              <div className="grid grid-cols-[48px_1fr_1fr_1fr] gap-1 items-center">
                 <span className="text-[11px] font-medium text-[#3399ff] pl-0.5">卑詩渡輪</span>
                 <LayerButton layerKey="bcferriesVehicles" label="船隻" title="卑詩渡輪船隻" icon={Ship} iconOnly colorClass="text-[#3399ff]" activeBg="bg-[#0f1b2e]" activeBorder="border-[#0060a9]/50" activeShadow="shadow-[0_0_6px_rgba(0,96,169,0.2)]" />
                 <LayerButton layerKey="bcferriesRoutes" label="路線" title="卑詩渡輪航線" icon={Route} iconOnly colorClass="text-[#3399ff]" activeBg="bg-[#0f1b2e]" activeBorder="border-[#0060a9]/50" />
+                <button
+                  type="button"
+                  onClick={() => toggleFerrySchedule()}
+                  className={`group relative flex items-center justify-center h-7 rounded border text-[10.5px] transition-all duration-150 select-none cursor-pointer ${
+                    isFerryScheduleOpen
+                      ? 'bg-[#0f1b2e] border-sky-500/50 text-[#3399ff] shadow-[0_0_6px_rgba(0,96,169,0.25)] font-semibold'
+                      : 'bg-[#1c1d21] border-[#2d2e32] text-gray-400 hover:bg-[#25262b] hover:text-white font-normal'
+                  }`}
+                  title="卑詩渡輪班次"
+                >
+                  <Calendar className={`w-3.5 h-3.5 shrink-0 ${isFerryScheduleOpen ? 'text-[#3399ff]' : 'text-gray-500 group-hover:text-white'}`} />
+                  <span className="pointer-events-none absolute bottom-full mb-1.5 hidden group-hover:flex items-center px-2 py-0.5 rounded bg-gray-900 border border-gray-700 text-white text-[10px] whitespace-nowrap shadow-lg z-50">
+                    卑詩渡輪班次
+                  </span>
+                </button>
               </div>
 
               {/* 船運 */}
-              <div className="grid grid-cols-[52px_1fr_1fr] gap-1 items-center">
+              <div className="grid grid-cols-[48px_1fr_1fr_1fr] gap-1 items-center">
                 <span className="text-[11px] font-medium text-cyan-400 pl-0.5">船運</span>
                 <LayerButton layerKey="maritimeShipping" label="船隻" title="船運船隻" icon={Ship} iconOnly colorClass="text-cyan-400" activeBg="bg-[#0e2730]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.2)]" />
                 <LayerButton layerKey="marineTerminals" label="碼頭" title="船運碼頭" icon={Anchor} iconOnly colorClass="text-cyan-400" activeBg="bg-[#0e2730]" activeBorder="border-cyan-500/50" activeShadow="shadow-[0_0_6px_rgba(6,182,212,0.2)]" />
+                <button
+                  type="button"
+                  onClick={() => toggleMaritimeSchedule()}
+                  className={`group relative flex items-center justify-center h-7 rounded border text-[10.5px] transition-all duration-150 select-none cursor-pointer ${
+                    isMaritimeScheduleOpen
+                      ? 'bg-[#0e2730] border-cyan-500/50 text-cyan-400 shadow-[0_0_6px_rgba(6,182,212,0.25)] font-semibold'
+                      : 'bg-[#1c1d21] border-[#2d2e32] text-gray-400 hover:bg-[#25262b] hover:text-white font-normal'
+                  }`}
+                  title="船運班次"
+                >
+                  <Calendar className={`w-3.5 h-3.5 shrink-0 ${isMaritimeScheduleOpen ? 'text-cyan-400' : 'text-gray-500 group-hover:text-white'}`} />
+                  <span className="pointer-events-none absolute bottom-full mb-1.5 hidden group-hover:flex items-center px-2 py-0.5 rounded bg-gray-900 border border-gray-700 text-white text-[10px] whitespace-nowrap shadow-lg z-50">
+                    船運班次
+                  </span>
+                </button>
               </div>
 
               {/* 航空 */}
-              <div className="grid grid-cols-[52px_1fr_1fr] gap-1 items-center">
+              <div className="grid grid-cols-[48px_1fr_1fr] gap-1 items-center">
                 <span className="text-[11px] font-medium text-sky-400 pl-0.5">航空</span>
                 <LayerButton layerKey="airports" label="機場" title="機場" icon={PlaneTakeoff} iconOnly colorClass="text-sky-400" activeBg="bg-[#102336]" activeBorder="border-sky-500/50" activeShadow="shadow-[0_0_6px_rgba(56,189,248,0.15)]" />
                 <button
+                  type="button"
                   onClick={() => toggleFlightSchedule()}
-                  className={`group relative flex items-center justify-center h-7 rounded border text-[10.5px] transition-all duration-150 select-none ${
+                  className={`group relative flex items-center justify-center h-7 rounded border text-[10.5px] transition-all duration-150 select-none cursor-pointer ${
                     isFlightScheduleOpen
                       ? 'bg-[#102336] border-sky-500/50 text-sky-400 shadow-[0_0_6px_rgba(56,189,248,0.15)] font-semibold'
                       : 'bg-[#1c1d21] border-[#2d2e32] text-gray-400 hover:bg-[#25262b] hover:text-white font-normal'
