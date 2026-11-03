@@ -893,6 +893,8 @@ def _compute_vehicle_stop_progress(variant: dict, stop_id: str, stop_seq: int, l
             "next_stop_time": next_stop_time_str,
             "next_stop_minutes": base_next_min,
             "next_stop_index": next_idx,
+            "next_stop_lat": next_stop_obj.get("lat"),
+            "next_stop_lon": next_stop_obj.get("lon"),
             "stops": [],
         }
 
@@ -934,12 +936,15 @@ def _compute_vehicle_stop_progress(variant: dict, stop_id: str, stop_seq: int, l
         "next_stop_time": next_stop_time_str,
         "next_stop_minutes": base_next_min,
         "next_stop_index": next_idx,
+        "next_stop_lat": next_stop_obj.get("lat"),
+        "next_stop_lon": next_stop_obj.get("lon"),
         "stops": enriched_stops,
     }
 
 
 _cached_db_route_ids = None
 _cached_db_seabus_ids = None
+_bus_prev_locations: dict[str, tuple[float, float, float]] = {}
 
 async def fetch_translink_realtime():
     """Fetches VehiclePositions and enriches with GTFS static bus numbers, origins, destinations & next stops."""
@@ -999,8 +1004,29 @@ async def fetch_translink_realtime():
                         route_name = variant.get("route_name", "") if variant else f"{route_number} {rmeta.get('long_name', '')}".strip()
                         operator = variant.get("operator", "TransLink (CMBC 岸山巴士)") if variant else "TransLink (CMBC 岸山巴士)"
 
+                        v_id = v.vehicle.id or v.vehicle.label
+                        is_sb = route_id in seabus_ids
+                        v_bearing = v.position.bearing if (v.position.HasField('bearing') and v.position.bearing > 0.0) else 0.0
+                        if is_sb:
+                            calc_bearing = 195.0 if direction_id == "1" else 15.0
+                        else:
+                            calc_bearing = v_bearing
+                            prev_loc = _bus_prev_locations.get(v_id)
+                            if prev_loc:
+                                prev_lat, prev_lon, prev_b = prev_loc
+                                d_km = math.hypot((lat - prev_lat) * 111.0, (lon - prev_lon) * 73.0)
+                                if d_km >= 0.012:
+                                    calc_bearing = calculate_bearing([prev_lon, prev_lat], [lon, lat])
+                                elif prev_b > 0.0:
+                                    calc_bearing = prev_b
+                            
+                            if calc_bearing <= 0.0 and prog.get("next_stop_lat") and prog.get("next_stop_lon"):
+                                calc_bearing = calculate_bearing([lon, lat], [prog["next_stop_lon"], prog["next_stop_lat"]])
+                            
+                            _bus_prev_locations[v_id] = (lat, lon, calc_bearing)
+
                         vehicles.append({
-                            "id": v.vehicle.id or v.vehicle.label,
+                            "id": v_id,
                             "route_id": route_id,
                             "route_number": route_number,
                             "route_name": route_name,
@@ -1014,10 +1040,10 @@ async def fetch_translink_realtime():
                             "next_stop_name": prog["next_stop_name"],
                             "next_stop_time": prog["next_stop_time"],
                             "next_stop_minutes": prog["next_stop_minutes"],
-                            "is_seabus": route_id in seabus_ids,
+                            "is_seabus": is_sb,
                             "lat": lat,
                             "lon": lon,
-                            "bearing": v.position.bearing,
+                            "bearing": calc_bearing,
                         })
             
             seabus_simulated = []

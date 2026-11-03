@@ -13,7 +13,7 @@ import FacilityWeeklyHoursSchedule from '@/components/WeeklyHoursSchedule';
 import { formatTitleCase, formatPhoneNumber } from '@/utils/text';
 import { getSkytrainStationMapUrls } from '@/utils/skytrainMaps';
 import skytrainStationsData from '@/data/skytrainStations.json';
-import { BUS_EXCHANGES, BusExchange } from '@/data/busExchanges';
+import { BUS_EXCHANGES, BusExchange, BusExchangeBay } from '@/data/busExchanges';
 import { 
   LocateFixed, Train, Compass, ZoomIn, X, Copy, Check, 
   Navigation, ExternalLink, Clock, Bike, Car, Info, 
@@ -1294,6 +1294,7 @@ export default function AppMap() {
   const [selectedTerminal, setSelectedTerminal] = useState<{geometry: {coordinates: number[]}, properties: {name?: string, code: string}} | null>(null);
   const [terminalDetailTab, setTerminalDetailTab] = useState<'schedule' | 'webcams'>('schedule');
   const [selectedBusExchange, setSelectedBusExchange] = useState<BusExchange | null>(null);
+  const [selectedExchangeBay, setSelectedExchangeBay] = useState<BusExchangeBay | null>(null);
   const [terminalSchedule, setTerminalSchedule] = useState<Array<{destination: string, time: string, arrival_time: string, vessel_name: string, status: string, fill: number}>>([]);
   const [loadingSchedule, setLoadingSchedule] = useState(false);
   const [isTerminalWebcamModalOpen, setIsTerminalWebcamModalOpen] = useState(false);
@@ -2897,6 +2898,30 @@ export default function AppMap() {
           console.error(err);
           setLoadingArrivals(false);
         });
+    } else if (searchTarget.category === 'bus_exchange') {
+      setSelectedTerminal(null);
+      setSelectedFacility(null);
+      setSelectedFerry(null);
+      setSelectedFlight(null);
+      setSelectedAirport(null);
+      setSelectedBus(null);
+      setSearchedBusRoute(null);
+      setSelectedStop(null);
+      setSelectedTrain(null);
+      setSelectedSkytrainStation(null);
+      const excId = searchTarget.meta?.exchange_id || searchTarget.id.replace('bus_exchange_', '');
+      const exc = BUS_EXCHANGES.find(e => e.id === excId || searchTarget.id.includes(e.id) || searchTarget.title.includes(e.name_en));
+      if (exc) {
+        setSelectedBusExchange(exc);
+        setSelectedExchangeBay(null);
+      }
+      if (mapRef.current) {
+        mapRef.current.flyTo({
+          center: [searchTarget.lon, searchTarget.lat],
+          zoom: 17,
+          duration: 1200
+        });
+      }
     } else if (searchTarget.category === 'airports') {
       setSelectedTerminal(null);
       setSelectedStop(null);
@@ -7640,7 +7665,9 @@ export default function AppMap() {
                       className="absolute inset-0 flex items-center justify-center pointer-events-none transition-transform duration-300"
                       style={{ transform: `rotate(${v.bearing}deg)` }}
                     >
-                      <div className="w-0 h-0 -translate-y-[19px] border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-b-[9px] border-b-cyan-400 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]" />
+                      <svg className="w-4 h-4 -translate-y-[20px] text-cyan-300 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]" viewBox="0 0 24 24" fill="currentColor">
+                        <polygon points="12,2 22,22 12,17 2,22"/>
+                      </svg>
                     </div>
                   )}
                 </div>
@@ -7678,7 +7705,9 @@ export default function AppMap() {
                       className="absolute inset-0 flex items-center justify-center pointer-events-none transition-transform duration-300"
                       style={{ transform: `rotate(${v.bearing}deg)` }}
                     >
-                      <div className="w-0 h-0 -translate-y-[13px] border-l-[3.5px] border-l-transparent border-r-[3.5px] border-r-transparent border-b-[6px] border-b-emerald-400 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]" />
+                      <svg className="w-3.5 h-3.5 -translate-y-[13px] text-emerald-400 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]" viewBox="0 0 24 24" fill="currentColor">
+                        <polygon points="12,2 22,22 12,17 2,22"/>
+                      </svg>
                     </div>
                   )}
                 </div>
@@ -7706,7 +7735,9 @@ export default function AppMap() {
                   className="absolute inset-0 flex items-center justify-center pointer-events-none transition-transform duration-300"
                   style={{ transform: `rotate(${v.bearing}deg)` }}
                 >
-                  <div className="w-0 h-0 -translate-y-[19px] border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-b-[9px] border-b-sky-300 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]" />
+                  <svg className="w-4 h-4 -translate-y-[20px] text-sky-300 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="12,2 22,22 12,17 2,22"/>
+                  </svg>
                 </div>
               )}
             </div>
@@ -7810,7 +7841,9 @@ export default function AppMap() {
                     className="absolute inset-0 flex items-center justify-center pointer-events-none transition-transform duration-300"
                     style={{ transform: `rotate(${train.bearing}deg)` }}
                   >
-                    <div className="w-0 h-0 -translate-y-[16px] border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-b-[8px] border-b-amber-400 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]" />
+                    <svg className="w-3.5 h-3.5 -translate-y-[17px] text-amber-400 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]" viewBox="0 0 24 24" fill="currentColor">
+                      <polygon points="12,2 22,22 12,17 2,22"/>
+                    </svg>
                   </div>
                 )}
               </div>
@@ -8181,203 +8214,83 @@ export default function AppMap() {
           </Marker>
         ))}
 
-        {/* 🚏 巴士轉乘站 (Bus Exchanges & Loops) */}
-        {layers.busExchanges && BUS_EXCHANGES.map((exc) => (
-          <Marker
-            key={`exc-${exc.id}`}
-            longitude={exc.lon}
-            latitude={exc.lat}
-            anchor="center"
-          >
-            <div
-              className="flex flex-col items-center cursor-pointer select-none group"
-              onClick={(e) => {
-                e.stopPropagation();
-                lastInteractiveItemClickRef.current = Date.now();
-                setSelectedStop(null);
-                setSelectedFacility(null);
-                setSelectedFerry(null);
-                setSelectedAirport(null);
-                setSelectedTerminal(null);
-                setSelectedSkytrainStation(null);
-                setSelectedBusExchange(exc);
-              }}
+        {/* 🚏 巴士轉乘站 (Bus Exchanges & Loops - 地圖小圓點樣式) */}
+        {layers.busExchanges && BUS_EXCHANGES.map((exc) => {
+          const isSelected = selectedBusExchange?.id === exc.id;
+          return (
+            <Marker
+              key={`exc-${exc.id}`}
+              longitude={exc.lon}
+              latitude={exc.lat}
+              anchor="center"
             >
-              <div 
-                className="w-7 h-7 bg-gradient-to-tr from-emerald-700 via-emerald-600 to-teal-500 rounded-full flex items-center justify-center border-2 border-white shadow-lg group-hover:scale-125 transition-transform"
-                title={`${exc.name_en} (${exc.name})`}
+              <div
+                className="flex items-center gap-1.5 cursor-pointer select-none group"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  lastInteractiveItemClickRef.current = Date.now();
+                  setSelectedStop(null);
+                  setSelectedFacility(null);
+                  setSelectedFerry(null);
+                  setSelectedAirport(null);
+                  setSelectedTerminal(null);
+                  setSelectedSkytrainStation(null);
+                  setSelectedBusExchange(exc);
+                  setSelectedExchangeBay(null);
+                }}
               >
-                <span className="text-[12px] leading-none select-none">🚏</span>
+                <div 
+                  className={`w-3.5 h-3.5 rounded-full bg-white border-[2.5px] border-emerald-600 shadow-md group-hover:scale-125 transition-transform ${
+                    isSelected ? 'ring-4 ring-emerald-400 bg-emerald-500 scale-125' : ''
+                  }`}
+                  title={`${exc.name_en} (${exc.name})`}
+                />
+                {currentZoom >= 11 && (
+                  <span className="text-[10px] font-bold text-white px-1.5 py-0.5 rounded bg-[#0a1b14]/90 border border-emerald-400/60 shadow whitespace-nowrap pointer-events-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+                    {exc.name_en}
+                  </span>
+                )}
               </div>
-              {currentZoom >= 11 && (
-                <span className="mt-1 text-[10.5px] font-bold text-white px-1.5 py-0.2 rounded bg-[#0a1b14]/90 border border-emerald-400/60 shadow whitespace-nowrap pointer-events-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
-                  {exc.name_en}
-                </span>
-              )}
-            </div>
-          </Marker>
-        ))}
+            </Marker>
+          );
+        })}
 
-        {/* 🚏 巴士轉乘站 Popup */}
-        {selectedBusExchange && (
-          <Popup
-            longitude={selectedBusExchange.lon}
-            latitude={selectedBusExchange.lat}
-            anchor="bottom"
-            onClose={() => {
-              setSelectedBusExchange(null);
-            }}
-            closeOnClick={false}
-            closeButton={false}
-            className="z-50"
-            offset={[0, -12]}
-            maxWidth="none"
-          >
-            <div className="p-3.5 w-[320px] sm:w-[360px] max-w-[calc(100vw-32px)] max-h-[78vh] overflow-y-auto [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full text-gray-800">
-              {/* Header */}
-              <div className="flex items-start justify-between pb-2 mb-2 border-b border-gray-100">
-                <div className="flex items-start gap-2 pt-0.5 min-w-0 flex-1 pr-2">
-                  <div className="w-7 h-7 rounded-lg bg-emerald-100 border border-emerald-200 flex items-center justify-center text-emerald-800 shrink-0">
-                    <span className="text-sm">🚏</span>
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h3 className="font-bold text-gray-900 text-sm leading-snug break-words">
-                      {selectedBusExchange.name_en}
-                    </h3>
-                    <div className="text-[11px] text-gray-500 font-medium">
-                      {selectedBusExchange.name}
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-1 shrink-0 -mt-0.5 -mr-0.5">
-                  <button
-                    onClick={() => copyCoordinatesToClipboard(selectedBusExchange.lat, selectedBusExchange.lon)}
-                    className="p-1 rounded-md text-gray-500 hover:text-cyan-600 hover:bg-cyan-50 transition-colors flex items-center justify-center shadow-xs border border-gray-100"
-                    title="複製坐標"
-                  >
-                    <Copy className="w-3.5 h-3.5" />
-                  </button>
-                  <a
-                    href={getGoogleNavUrl(selectedBusExchange.lat, selectedBusExchange.lon)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-1 rounded-md text-sky-600 hover:text-sky-700 hover:bg-sky-50 transition-colors flex items-center justify-center shadow-xs border border-sky-100"
-                    title="Google Map 導航至此"
-                  >
-                    <Navigation className="w-3.5 h-3.5 text-sky-600" />
-                  </a>
-                  <button
-                    onClick={() => setSelectedBusExchange(null)}
-                    className="text-gray-400 hover:text-gray-700 text-xl font-light leading-none px-1 py-0.5 rounded transition-colors focus:outline-none ml-0.5"
-                    title="關閉"
-                  >
-                    &times;
-                  </button>
-                </div>
+        {/* 🚏 選中巴士轉車站時，在地圖上顯示各月台坐標點 */}
+        {selectedBusExchange && selectedBusExchange.bays.map((bay) => {
+          const isBaySelected = selectedExchangeBay?.bay === bay.bay;
+          const bayNameCn = bay.bay.replace(/^Bay\s*/i, '月台 ');
+          return (
+            <Marker
+              key={`bay-marker-${selectedBusExchange.id}-${bay.bay}`}
+              longitude={bay.lon}
+              latitude={bay.lat}
+              anchor="center"
+            >
+              <div
+                className="flex flex-col items-center cursor-pointer select-none group"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedExchangeBay(bay);
+                  mapRef.current?.flyTo({
+                    center: [bay.lon, bay.lat],
+                    zoom: 18,
+                    duration: 800,
+                    essential: true
+                  });
+                }}
+              >
+                <div className={`w-3 h-3 rounded-full border border-white shadow transition-transform ${
+                  isBaySelected ? 'bg-amber-400 ring-4 ring-amber-300 scale-125' : 'bg-emerald-500 hover:scale-125'
+                }`} />
+                {currentZoom >= 15 && (
+                  <span className="mt-0.5 text-[9px] font-semibold text-emerald-200 px-1 py-0.2 rounded bg-black/80 whitespace-nowrap shadow">
+                    {bayNameCn}
+                  </span>
+                )}
               </div>
-
-              {/* Location info */}
-              <div className="text-[11px] text-gray-500 mb-2.5 flex items-center gap-1">
-                <MapPin className="w-3 h-3 text-emerald-600 shrink-0" />
-                <span className="truncate">{selectedBusExchange.location}</span>
-              </div>
-
-              {/* Exchange Layout Map Image */}
-              {selectedBusExchange.image && (
-                <div className="mb-3">
-                  <div className="text-[11px] font-bold text-gray-700 mb-1 flex items-center justify-between">
-                    <span>轉乘站路線配置圖</span>
-                    <span className="text-[10px] text-emerald-600 font-normal">點擊放大檢視</span>
-                  </div>
-                  <div
-                    onClick={() => setEnlargedCameraImage({
-                      src: selectedBusExchange.image,
-                      directSrc: selectedBusExchange.image,
-                      alt: selectedBusExchange.name_en,
-                      title: `${selectedBusExchange.name_en} 路線配置圖`,
-                      direction: selectedBusExchange.location
-                    })}
-                    className="relative w-full aspect-[16/10] bg-gray-100 rounded-lg overflow-hidden border border-gray-200 cursor-zoom-in group shadow-xs"
-                  >
-                    <img
-                      src={selectedBusExchange.image}
-                      alt={selectedBusExchange.name_en}
-                      className="w-full h-full object-contain bg-white group-hover:scale-105 transition-transform duration-200"
-                    />
-                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <span className="bg-black/75 backdrop-blur-xs text-white text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1 shadow-md">
-                        <ZoomIn className="w-3 h-3 text-emerald-300" />
-                        <span>點擊放大</span>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Bus Routes List */}
-              <div className="mb-2">
-                <div className="text-[11px] font-bold text-gray-700 mb-1.5 flex items-center justify-between">
-                  <span>行經巴士路線</span>
-                  <span className="text-[10px] text-gray-400">點擊在地圖上顯示路線</span>
-                </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {selectedBusExchange.routes.map((rt) => (
-                    <button
-                      key={rt}
-                      onClick={() => {
-                        setSelectedBusExchange(null);
-                        setSearchTarget({
-                          id: `route_${rt}`,
-                          title: `巴士 ${rt}`,
-                          category: 'bus_route',
-                          icon: '🚌',
-                          lon: selectedBusExchange.lon,
-                          lat: selectedBusExchange.lat,
-                          meta: { route_id: rt }
-                        });
-                      }}
-                      className="px-2.5 py-1 rounded-md bg-emerald-50 hover:bg-emerald-600 text-emerald-800 hover:text-white font-bold text-xs border border-emerald-300 hover:border-emerald-600 transition-colors shadow-2xs cursor-pointer flex items-center gap-1"
-                      title={`在地圖上追蹤巴士路線 ${rt}`}
-                    >
-                      <span>🚌</span>
-                      <span>{rt}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Bays Breakdown Details */}
-              {selectedBusExchange.bays && selectedBusExchange.bays.length > 0 && (
-                <details className="mt-2.5 border-t border-gray-100 pt-2 group">
-                  <summary className="flex items-center justify-between text-[11px] font-semibold text-gray-600 cursor-pointer list-none select-none py-0.5 hover:text-gray-900">
-                    <span className="flex items-center gap-1">
-                      <span>月台停靠詳情 (Bays)</span>
-                      <span className="px-1.5 py-0.2 rounded-full bg-gray-100 text-gray-600 text-[9.5px] font-mono">
-                        {selectedBusExchange.bays.length}
-                      </span>
-                    </span>
-                    <ChevronDown className="w-3.5 h-3.5 text-gray-400 group-open:rotate-180 transition-transform" />
-                  </summary>
-                  <div className="flex flex-col gap-1.5 mt-2">
-                    {selectedBusExchange.bays.map((bay, bIdx) => (
-                      <div key={bIdx} className="p-2 rounded bg-gray-50 border border-gray-150 text-[11px] flex flex-col gap-0.5">
-                        <div className="flex items-center justify-between font-bold text-gray-800">
-                          <span className="text-emerald-700">{bay.bay}</span>
-                          {bay.stop_id && (
-                            <span className="text-[10px] text-gray-400 font-mono">#{bay.stop_id}</span>
-                          )}
-                        </div>
-                        {bay.description && (
-                          <div className="text-gray-600 text-[10.5px]">{bay.description}</div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </details>
-              )}
-            </div>
-          </Popup>
-        )}
+            </Marker>
+          );
+        })}
 
         {/* Ferry Popup */}
         {selectedFerry && (
@@ -19516,6 +19429,221 @@ export default function AppMap() {
                 )}
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* 🚏 巴士轉乘站停靠浮動面板 (仿天車站點面板，位於地圖右方) */}
+      {selectedBusExchange && (
+        <div className="fixed top-[72px] right-4 z-40 w-[390px] sm:w-[460px] max-w-[calc(100vw-32px)] bg-[#161922]/95 backdrop-blur-md text-gray-100 rounded-xl p-3.5 shadow-2xl border border-[#2a2f3d] flex flex-col max-h-[calc(100vh-90px)] animate-in fade-in slide-in-from-right-4 duration-200 select-none">
+          {/* Header */}
+          <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-[#262b38] shrink-0 gap-2">
+            <div className="flex items-start gap-2.5 min-w-0 flex-1">
+              <div className="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5 shadow-sm">
+                <span className="text-base leading-none">🚏</span>
+              </div>
+              <div className="min-w-0 flex-1">
+                <h3 className="font-bold text-white text-[15px] leading-snug tracking-tight break-words">
+                  {selectedBusExchange.name_en}
+                </h3>
+                <div className="text-[11.5px] text-gray-300 font-medium truncate mt-0.5">
+                  {selectedBusExchange.name}
+                </div>
+                <div className="flex items-center gap-1 text-[10.5px] text-gray-400 mt-0.5 truncate">
+                  <MapPin className="w-3 h-3 text-emerald-400 shrink-0" />
+                  <span className="truncate">{selectedBusExchange.location}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* 右側按鈕組：第一行坐標、導航、關閉；關閉按鈕下方為檢視轉車站地圖按鈕 */}
+            <div className="flex flex-col items-end gap-1.5 shrink-0">
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => copyCoordinatesToClipboard(selectedBusExchange.lat, selectedBusExchange.lon)}
+                  className="text-gray-400 hover:text-cyan-300 p-1.5 rounded-lg hover:bg-cyan-500/20 transition-colors"
+                  title="複製轉車站坐標"
+                >
+                  <Copy className="w-4 h-4" />
+                </button>
+                <a
+                  href={getGoogleNavUrl(selectedBusExchange.lat, selectedBusExchange.lon)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sky-400 hover:text-sky-300 p-1.5 rounded-lg hover:bg-sky-500/20 transition-colors"
+                  title="Google Maps 導航至此"
+                >
+                  <Navigation className="w-4 h-4" />
+                </a>
+                <button
+                  onClick={() => {
+                    setSelectedBusExchange(null);
+                    setSelectedExchangeBay(null);
+                  }}
+                  className="text-gray-400 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-colors"
+                  title="關閉"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* 關閉按鈕下方：檢視轉車站地圖按鈕 */}
+              {selectedBusExchange.image && (
+                <button
+                  onClick={() => setEnlargedCameraImage({
+                    src: selectedBusExchange.image,
+                    directSrc: selectedBusExchange.image,
+                    alt: selectedBusExchange.name_en,
+                    title: `${selectedBusExchange.name_en} 轉車站路線地圖`,
+                    direction: selectedBusExchange.location
+                  })}
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 hover:text-white text-[11px] font-medium transition-all shadow-sm"
+                  title="檢視轉車站地圖"
+                >
+                  <MapIcon className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>檢視轉車站地圖</span>
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* 總覽行經路線標籤列 */}
+          <div className="pb-2 mb-2 border-b border-[#262b38]/80 shrink-0">
+            <div className="text-[11px] text-gray-400 mb-1 flex items-center justify-between">
+              <span className="font-semibold text-gray-300">行經巴士路線 ({selectedBusExchange.routes.length})</span>
+              <span className="text-[10px] text-emerald-400/90">點擊路線在地圖追蹤</span>
+            </div>
+            <div className="flex flex-wrap gap-1.5 max-h-[64px] overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:bg-gray-700">
+              {selectedBusExchange.routes.map(rt => {
+                const isRapid = ['R1', 'R2', 'R3', 'R4', 'R5', 'R6', '99'].includes(rt);
+                return (
+                  <button
+                    key={`rt-${rt}`}
+                    onClick={() => {
+                      setSearchTarget({
+                        id: `route_${rt}`,
+                        title: `巴士 ${rt}`,
+                        category: 'bus_route',
+                        icon: '🚌',
+                        lon: selectedBusExchange.lon,
+                        lat: selectedBusExchange.lat,
+                        meta: { route_id: rt }
+                      });
+                    }}
+                    className={`px-2 py-0.5 rounded text-xs font-bold transition-all cursor-pointer shadow-xs ${
+                      isRapid
+                        ? 'bg-blue-600/30 hover:bg-blue-600 text-blue-300 hover:text-white border border-blue-500/50'
+                        : 'bg-[#202533] hover:bg-emerald-600 text-emerald-300 hover:text-white border border-emerald-500/30 hover:border-emerald-500'
+                    }`}
+                    title={`在地圖追蹤巴士路線 ${rt}`}
+                  >
+                    {rt}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* 左右分欄月台與路線用途列表 */}
+          {/* 左方是月台 (點擊跳轉至該月台坐標)，右方是月台的路線或用途說明 */}
+          <div className="flex-1 overflow-y-auto pr-1 space-y-1.5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-700 [&::-webkit-scrollbar-thumb]:rounded-full">
+            <div className="text-[11px] text-gray-400 font-semibold mb-1 flex items-center justify-between px-0.5">
+              <span>月台 (點擊跳轉定位)</span>
+              <span>路線與用途說明</span>
+            </div>
+            {selectedBusExchange.bays.map((bay) => {
+              const bayNameCn = bay.bay.replace(/^Bay\s*/i, '月台 ');
+              const isBaySelected = selectedExchangeBay?.bay === bay.bay;
+              return (
+                <div
+                  key={`bay-row-${bay.bay}`}
+                  className={`flex items-start gap-2.5 p-2 rounded-lg border transition-all ${
+                    isBaySelected
+                      ? 'bg-emerald-950/40 border-emerald-500/80 ring-1 ring-emerald-500/50 shadow-md'
+                      : 'bg-[#1a1f2c]/70 hover:bg-[#202636] border-[#262c3c]'
+                  }`}
+                >
+                  {/* 左方：月台按鈕 */}
+                  <button
+                    onClick={() => {
+                      setSelectedExchangeBay(bay);
+                      mapRef.current?.flyTo({
+                        center: [bay.lon, bay.lat],
+                        zoom: 18,
+                        pitch: 0,
+                        bearing: 0,
+                        duration: 1000,
+                        essential: true
+                      });
+                    }}
+                    className={`shrink-0 min-w-[74px] px-2.5 py-1.5 rounded-md font-bold text-xs flex flex-col items-center justify-center transition-all cursor-pointer shadow-xs ${
+                      isBaySelected
+                        ? 'bg-emerald-600 text-white border border-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.5)]'
+                        : 'bg-[#252c3d] hover:bg-emerald-600 text-gray-200 hover:text-white border border-[#343e56] hover:border-emerald-500'
+                    }`}
+                    title={`跳轉至 ${bayNameCn} (${bay.lat.toFixed(5)}, ${bay.lon.toFixed(5)})`}
+                  >
+                    <div className="flex items-center gap-1">
+                      <MapPin className="w-3 h-3 text-emerald-300" />
+                      <span>{bayNameCn}</span>
+                    </div>
+                    {bay.stop_id && (
+                      <span className="text-[9px] opacity-75 font-mono">#{bay.stop_id}</span>
+                    )}
+                  </button>
+
+                  {/* 右方：月台的路線 (或用途 如 Unloading only...) */}
+                  <div className="flex-1 min-w-0 pt-0.5">
+                    {bay.routes && bay.routes.length > 0 && (
+                      <div className="flex flex-wrap items-center gap-1 mb-1">
+                        {bay.routes.map((rt) => {
+                          const isRapid = ['R1', 'R2', 'R3', 'R4', 'R5', 'R6', '99'].includes(rt);
+                          return (
+                            <button
+                              key={`bay-rt-${bay.bay}-${rt}`}
+                              onClick={() => {
+                                setSearchTarget({
+                                  id: `route_${rt}`,
+                                  title: `巴士 ${rt}`,
+                                  category: 'bus_route',
+                                  icon: '🚌',
+                                  lon: bay.lon,
+                                  lat: bay.lat,
+                                  meta: { route_id: rt }
+                                });
+                              }}
+                              className={`px-1.5 py-0.2 rounded text-[11px] font-bold transition-colors cursor-pointer ${
+                                isRapid
+                                  ? 'bg-blue-600/30 hover:bg-blue-600 text-blue-300 hover:text-white border border-blue-500/50'
+                                  : 'bg-emerald-500/20 hover:bg-emerald-600 text-emerald-300 hover:text-white border border-emerald-500/40'
+                              }`}
+                              title={`在地圖追蹤路線 ${rt}`}
+                            >
+                              {rt}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                    {bay.description ? (
+                      <div className="text-xs text-gray-300 leading-snug break-words">
+                        {bay.description.toLowerCase().includes('unloading') ? (
+                          <span className="text-amber-300 font-medium">
+                            {bay.description}
+                          </span>
+                        ) : (
+                          bay.description
+                        )}
+                      </div>
+                    ) : (
+                      <div className="text-[11px] text-gray-500 italic">
+                        一般停靠月台
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}

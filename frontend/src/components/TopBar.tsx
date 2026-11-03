@@ -12,6 +12,7 @@ import ChangelogModal from '@/components/ChangelogModal';
 import AuthModal from '@/components/AuthModal';
 import { getApiUrl } from '@/utils/api';
 import { formatClock, formatDateWithTimezone } from '@/utils/time';
+import { BUS_EXCHANGES } from '@/data/busExchanges';
 
 const RECENT_SEARCHES_KEY = 'vangodseye_recent_searches_v1';
 const MAX_RECENT_SEARCHES = 6;
@@ -106,7 +107,7 @@ type QuickGroupTab = 'all' | 'poi' | 'transit' | 'road' | 'area';
 function inferUiGroup(item: SearchTarget): Exclude<QuickGroupTab, 'all'> {
   if (item.ui_group) return item.ui_group;
   const c = item.category;
-  if (['skytrain', 'seabus', 'bus_route', 'bus_stop', 'ferry_terminal', 'ferry_vehicle', 'airports', 'maritime_vessel', 'marine_terminals', 'railways'].includes(c)) {
+  if (['skytrain', 'seabus', 'bus_route', 'bus_stop', 'bus_exchange', 'ferry_terminal', 'ferry_vehicle', 'airports', 'maritime_vessel', 'marine_terminals', 'railways'].includes(c)) {
     return 'transit';
   }
   if (['address', 'coordinate', 'local_area_boundary', 'postal_code_fsa', 'zoning_districts', 'garbage_collection', 'crime_areas'].includes(c)) {
@@ -154,12 +155,12 @@ export default function TopBar() {
       iconColor: 'text-emerald-400',
       matcher: (item: SearchTarget) => {
         const targetKeys = [
-          'bus', 'busRoutes', 'busStops', 'skytrainTrains', 'skytrainRoutes', 'skytrainStops',
+          'bus', 'busRoutes', 'busStops', 'busExchanges', 'skytrainTrains', 'skytrainRoutes', 'skytrainStops',
           'seabusVehicles', 'seabusRoutes', 'seabusStops', 'bcferriesVehicles', 'bcferriesRoutes',
           'bcferriesTerminals', 'maritimeShipping', 'marineTerminals', 'airports', 'railways'
         ];
         const targetCats = [
-          'bus_route', 'bus_stop', 'skytrain', 'seabus', 'bcferries', 'ferry_terminal',
+          'bus_route', 'bus_stop', 'bus_exchange', 'skytrain', 'seabus', 'bcferries', 'ferry_terminal',
           'ferry_vehicle', 'transit', 'airports', 'marine_terminals', 'maritimeShipping', 'flights', 'maritime_vessel', 'railways'
         ];
         return (item.layer_key && targetKeys.includes(item.layer_key as string)) ||
@@ -476,10 +477,34 @@ export default function TopBar() {
     const refLon = userLocation?.lon ?? mapCenter?.lon ?? -123.1207;
     const cacheKey = `${trimmed.toLowerCase()}|${refLat.toFixed(3)}|${refLon.toFixed(3)}`;
 
+    const qLower = trimmed.toLowerCase();
+    const matchedExchanges: SearchTarget[] = BUS_EXCHANGES.filter(exc => 
+      exc.name.toLowerCase().includes(qLower) || 
+      exc.name_en.toLowerCase().includes(qLower) || 
+      exc.location.toLowerCase().includes(qLower) ||
+      exc.routes.some(r => r.toLowerCase() === qLower || `巴士 ${r}`.toLowerCase().includes(qLower)) ||
+      (qLower.includes('轉乘') || qLower.includes('轉車') || qLower.includes('exchange') || qLower.includes('loop'))
+    ).map(exc => ({
+      id: `bus_exchange_${exc.id}`,
+      title: `${exc.name_en} (${exc.name})`,
+      subtitle: `巴士轉乘站 · ${exc.location} · 路線: ${exc.routes.join(', ')}`,
+      category: 'bus_exchange',
+      badge: '巴士轉乘站',
+      icon: '🚏',
+      lon: exc.lon,
+      lat: exc.lat,
+      zoom: 17,
+      layer_key: 'busExchanges',
+      ui_group: 'transit',
+      meta: { exchange_id: exc.id }
+    }));
+
     // 0ms 快取命中：已搜尋過的字詞立即呈現建議清單
     if (searchCacheRef.current.has(cacheKey)) {
       const cached = searchCacheRef.current.get(cacheKey)!;
-      setResults(cached);
+      const seenIds = new Set(matchedExchanges.map(m => m.id));
+      const mergedCached = [...matchedExchanges, ...cached.filter(item => !seenIds.has(item.id))];
+      setResults(mergedCached);
       lastServerResultsRef.current = cached;
       setDisplayLimit(40);
       setIsLoading(false);
@@ -488,16 +513,14 @@ export default function TopBar() {
     }
 
     // 0ms 樂觀本機快顯：若前次結果非空，先依子字串即時縮減以提供無縫輸入體驗
-    if (lastServerResultsRef.current.length > 0) {
-      const qLower = trimmed.toLowerCase();
+    if (lastServerResultsRef.current.length > 0 || matchedExchanges.length > 0) {
       const optimistic = lastServerResultsRef.current.filter(item => 
         item.title.toLowerCase().includes(qLower) || 
         (item.subtitle && item.subtitle.toLowerCase().includes(qLower)) ||
         (item.badge && item.badge.toLowerCase().includes(qLower))
       );
-      if (optimistic.length > 0) {
-        setResults(optimistic);
-      }
+      const seenIds = new Set(matchedExchanges.map(m => m.id));
+      setResults([...matchedExchanges, ...optimistic.filter(item => !seenIds.has(item.id))]);
     }
 
     setIsLoading(true);
@@ -521,7 +544,9 @@ export default function TopBar() {
           }
           searchCacheRef.current.set(cacheKey, list);
           lastServerResultsRef.current = list;
-          setResults(list);
+          const seenIds = new Set(matchedExchanges.map(m => m.id));
+          const mergedList = [...matchedExchanges, ...list.filter(item => !seenIds.has(item.id))];
+          setResults(mergedList);
           setDisplayLimit(40);
           setIsLoading(false);
           setIsOpen(true);
