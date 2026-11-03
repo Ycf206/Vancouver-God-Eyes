@@ -1015,7 +1015,7 @@ async def fetch_translink_realtime():
                             if prev_loc:
                                 prev_lat, prev_lon, prev_b = prev_loc
                                 d_km = math.hypot((lat - prev_lat) * 111.0, (lon - prev_lon) * 73.0)
-                                if d_km >= 0.012:
+                                if d_km >= 0.003:
                                     calc_bearing = calculate_bearing([prev_lon, prev_lat], [lon, lat])
                                 elif prev_b > 0.0:
                                     calc_bearing = prev_b
@@ -1023,7 +1023,9 @@ async def fetch_translink_realtime():
                             if calc_bearing <= 0.0 and prog.get("next_stop_lat") and prog.get("next_stop_lon"):
                                 calc_bearing = calculate_bearing([lon, lat], [prog["next_stop_lon"], prog["next_stop_lat"]])
                             
-                            _bus_prev_locations[v_id] = (lat, lon, calc_bearing)
+                            final_b = calc_bearing if calc_bearing > 0.0 else (prev_loc[2] if prev_loc and prev_loc[2] > 0.0 else 0.0)
+                            _bus_prev_locations[v_id] = (lat, lon, final_b)
+                            calc_bearing = final_b
 
                         vehicles.append({
                             "id": v_id,

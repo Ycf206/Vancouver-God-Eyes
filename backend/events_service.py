@@ -294,11 +294,6 @@ class EventsService:
         else:
             events = self.cached_by_source.get("eventbrite", [])
             
-        # 若仍為空，提供預載真實即時活動以確保 Eventbrite 分頁永不為空
-        if not events:
-            events = self.get_eventbrite_fallback_events()
-            self.cached_by_source["eventbrite"] = events
-
         return events
 
     def fetch_destination_vancouver_events(self) -> List[Dict[str, Any]]:
@@ -401,11 +396,6 @@ class EventsService:
             print(f"[EventsService] Destination Vancouver fetch warning: {e}")
             events = self.cached_by_source.get("destination_vancouver", [])
 
-        # 備用保證有指標性未來亮點
-        if not events:
-            events = self.get_destination_vancouver_fallback_events()
-            self.cached_by_source["destination_vancouver"] = events
-
         return events
 
     def get_latest_events(self, force_refresh: bool = False) -> Dict[str, Any]:
@@ -479,218 +469,10 @@ class EventsService:
             }
 
     def get_eventbrite_fallback_events(self) -> List[Dict[str, Any]]:
-        now_ts = int(time.time() * 1000)
-        return [
-            {
-                "id": "eb_fb_1",
-                "title": "2026 Winter Extreme Ski & Board Sale Vancouver",
-                "url": "https://www.eventbrite.ca/d/canada--vancouver/all-events/",
-                "source": "Eventbrite",
-                "source_id": "eventbrite",
-                "start_date": "2026-10-17 10:00",
-                "end_date": "2026-10-17 18:00",
-                "start_ts": now_ts + 24 * 3600 * 1000,
-                "end_ts": now_ts + 32 * 3600 * 1000,
-                "is_ongoing": False,
-                "location_name": "Capilano Mall (935 Marine Drive)",
-                "category": "戶外運動",
-                "description": "每年冬季必訪滑雪裝備年度大展與特賣會，匯聚各大知名品牌。",
-                "image_url": None,
-                "timestamp": now_ts + 24 * 3600 * 1000
-            },
-            {
-                "id": "eb_fb_2",
-                "title": "2026 Vancouver Leadership Convention",
-                "url": "https://www.eventbrite.ca/d/canada--vancouver/all-events/",
-                "source": "Eventbrite",
-                "source_id": "eventbrite",
-                "start_date": "2026-10-15 09:00",
-                "end_date": "2026-10-18 17:00",
-                "start_ts": now_ts - 3600 * 1000,
-                "end_ts": now_ts + 72 * 3600 * 1000,
-                "is_ongoing": True,
-                "location_name": "Vancouver Convention Centre (West)",
-                "category": "商業峰會",
-                "description": "大溫頂尖商業領袖與創新者峰會，探討領導力與永續科技發展。",
-                "image_url": None,
-                "timestamp": now_ts
-            },
-            {
-                "id": "eb_fb_3",
-                "title": "Van Jazz 26' - Amy Winehouse Tribute",
-                "url": "https://www.eventbrite.ca/d/canada--vancouver/all-events/",
-                "source": "Eventbrite",
-                "source_id": "eventbrite",
-                "start_date": "2026-10-17 20:00",
-                "end_date": "2026-10-17 23:00",
-                "start_ts": now_ts + 36 * 3600 * 1000,
-                "end_ts": now_ts + 40 * 3600 * 1000,
-                "is_ongoing": False,
-                "location_name": "Commodore Ballroom · 868 Granville St",
-                "category": "音樂演出",
-                "description": "傳奇靈魂爵士歌后 Amy Winehouse 經典致敬紀念音樂會。",
-                "image_url": None,
-                "timestamp": now_ts + 36 * 3600 * 1000
-            },
-            {
-                "id": "eb_fb_4",
-                "title": "Vancouver Tech Unconference 2026",
-                "url": "https://www.eventbrite.ca/d/canada--vancouver/all-events/",
-                "source": "Eventbrite",
-                "source_id": "eventbrite",
-                "start_date": "2026-11-08 09:30",
-                "end_date": "2026-11-08 17:00",
-                "start_ts": now_ts + 5 * 86400 * 1000,
-                "end_ts": now_ts + 5 * 86400 * 1000 + 8 * 3600 * 1000,
-                "is_ongoing": False,
-                "location_name": "UBC Robson Square · 800 Robson St",
-                "category": "工作坊講座",
-                "description": "大溫軟體開發者、AI 創業者與開源技術同好非正式年度交流大會。",
-                "image_url": None,
-                "timestamp": now_ts + 5 * 86400 * 1000
-            },
-            {
-                "id": "eb_fb_5",
-                "title": "LSBC Annual Invest in BC Conference 2026",
-                "url": "https://www.eventbrite.ca/d/canada--vancouver/all-events/",
-                "source": "Eventbrite",
-                "source_id": "eventbrite",
-                "start_date": "2026-11-05 08:30",
-                "end_date": "2026-11-05 18:00",
-                "start_ts": now_ts + 3 * 86400 * 1000,
-                "end_ts": now_ts + 3 * 86400 * 1000 + 9 * 3600 * 1000,
-                "is_ongoing": False,
-                "location_name": "Fairmont Hotel Vancouver · 900 W Georgia St",
-                "category": "商業峰會",
-                "description": "卑詩生技醫療與天使投資人高峰論壇，匯集生命科學領域最新突破。",
-                "image_url": None,
-                "timestamp": now_ts + 3 * 86400 * 1000
-            },
-            {
-                "id": "eb_fb_6",
-                "title": "Vancouver International Wine & Craft Beer Tasting",
-                "url": "https://www.eventbrite.ca/d/canada--vancouver/all-events/",
-                "source": "Eventbrite",
-                "source_id": "eventbrite",
-                "start_date": "2026-11-12 18:00",
-                "end_date": "2026-11-12 22:00",
-                "start_ts": now_ts + 9 * 86400 * 1000,
-                "end_ts": now_ts + 9 * 86400 * 1000 + 4 * 3600 * 1000,
-                "is_ongoing": False,
-                "location_name": "The Pipe Shop · 115 Victory Ship Way, North Van",
-                "category": "美食體驗",
-                "description": "品嚐大溫頂級在地精釀啤酒、奧肯那根酒莊佳釀與主廚特製小點。",
-                "image_url": None,
-                "timestamp": now_ts + 9 * 86400 * 1000
-            },
-            {
-                "id": "eb_fb_7",
-                "title": "Gastown Comedy Underground Live Showcase",
-                "url": "https://www.eventbrite.ca/d/canada--vancouver/all-events/",
-                "source": "Eventbrite",
-                "source_id": "eventbrite",
-                "start_date": "2026-11-07 20:30",
-                "end_date": "2026-11-07 22:30",
-                "start_ts": now_ts + 4 * 86400 * 1000,
-                "end_ts": now_ts + 4 * 86400 * 1000 + 2 * 3600 * 1000,
-                "is_ongoing": False,
-                "location_name": "Guilt & Company · 1 Alexander St",
-                "category": "藝文娛樂",
-                "description": "煤氣鎮地下單口喜劇脫口秀之夜，邀請加拿大全國知名喜劇演員輪番登場。",
-                "image_url": None,
-                "timestamp": now_ts + 4 * 86400 * 1000
-            },
-            {
-                "id": "eb_fb_8",
-                "title": "Autumn Stanley Park 10K & Half-Marathon Fun Run",
-                "url": "https://www.eventbrite.ca/d/canada--vancouver/all-events/",
-                "source": "Eventbrite",
-                "source_id": "eventbrite",
-                "start_date": "2026-11-15 08:00",
-                "end_date": "2026-11-15 12:00",
-                "start_ts": now_ts + 12 * 86400 * 1000,
-                "end_ts": now_ts + 12 * 86400 * 1000 + 4 * 3600 * 1000,
-                "is_ongoing": False,
-                "location_name": "Stanley Park Pavilion · Vancouver",
-                "category": "戶外運動",
-                "description": "沿著史丹利公園海堤步道奔馳，飽覽溫哥華港灣秋日美景的公益路跑。",
-                "image_url": None,
-                "timestamp": now_ts + 12 * 86400 * 1000
-            },
-            {
-                "id": "eb_fb_9",
-                "title": "Vancouver Makers & Artisans Holiday Market",
-                "url": "https://www.eventbrite.ca/d/canada--vancouver/all-events/",
-                "source": "Eventbrite",
-                "source_id": "eventbrite",
-                "start_date": "2026-11-20 11:00",
-                "end_date": "2026-11-22 17:00",
-                "start_ts": now_ts + 17 * 86400 * 1000,
-                "end_ts": now_ts + 19 * 86400 * 1000,
-                "is_ongoing": False,
-                "location_name": "Heritage Hall · 3102 Main St",
-                "category": "節慶慶典",
-                "description": "精選大溫 80+ 位獨立設計師手作工藝、陶藝、文創飾品與暖冬烘焙。",
-                "image_url": None,
-                "timestamp": now_ts + 17 * 86400 * 1000
-            },
-            {
-                "id": "eb_fb_10",
-                "title": "AI in Creative Design & Production Summit",
-                "url": "https://www.eventbrite.ca/d/canada--vancouver/all-events/",
-                "source": "Eventbrite",
-                "source_id": "eventbrite",
-                "start_date": "2026-11-18 13:00",
-                "end_date": "2026-11-18 18:30",
-                "start_ts": now_ts + 15 * 86400 * 1000,
-                "end_ts": now_ts + 15 * 86400 * 1000 + 5 * 3600 * 1000,
-                "is_ongoing": False,
-                "location_name": "Emily Carr University · 520 E 1st Ave",
-                "category": "工作坊講座",
-                "description": "探討生成式 AI 在電影視覺特效、遊戲開發與當代數位藝術創作的應用實務。",
-                "image_url": None,
-                "timestamp": now_ts + 15 * 86400 * 1000
-            }
-        ]
+        return []
 
     def get_destination_vancouver_fallback_events(self) -> List[Dict[str, Any]]:
-        now_ts = int(time.time() * 1000)
-        return [
-            {
-                "id": "dv_fb_1",
-                "title": "Cirque du Soleil Luzia",
-                "url": "https://www.destinationvancouver.com/events/listings/cirque-du-soleil-luzia-2611041900",
-                "source": "Destination Vancouver",
-                "source_id": "destination_vancouver",
-                "start_date": "2026-11-04 19:00",
-                "end_date": "2026-11-04 22:00",
-                "start_ts": now_ts + 20 * 86400 * 1000,
-                "end_ts": now_ts + 20 * 86400 * 1000 + 3 * 3600 * 1000,
-                "is_ongoing": False,
-                "location_name": "Concord Pacific Place · 大黃白帳篷",
-                "category": "藝文展演",
-                "description": "太陽馬戲團經典奇幻巡演《LUZIA》，以光影與雨水為靈感的墨西哥超現實夢境。",
-                "image_url": None,
-                "timestamp": now_ts + 20 * 86400 * 1000
-            },
-            {
-                "id": "dv_fb_2",
-                "title": "RUSH Fifty Something Tour",
-                "url": "https://www.destinationvancouver.com/events/listings/RUSH-Fifty-Something-2612151830",
-                "source": "Destination Vancouver",
-                "source_id": "destination_vancouver",
-                "start_date": "2026-12-15 18:30",
-                "end_date": "2026-12-15 22:30",
-                "start_ts": now_ts + 60 * 86400 * 1000,
-                "end_ts": now_ts + 60 * 86400 * 1000 + 3 * 3600 * 1000,
-                "is_ongoing": False,
-                "location_name": "Rogers Arena",
-                "category": "音樂演唱會",
-                "description": "加拿大傳奇搖滾天團 RUSH 巡迴演唱會溫哥華站。",
-                "image_url": None,
-                "timestamp": now_ts + 60 * 86400 * 1000
-            }
-        ]
+        return []
 
 events_service = EventsService()
 

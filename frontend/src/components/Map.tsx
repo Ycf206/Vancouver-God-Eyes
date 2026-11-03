@@ -651,13 +651,6 @@ const FERRY_TERMINAL_WEBCAMS: Record<string, TerminalWebcamItem[]> = {
     { id: 'cam1_SWB', name: '碼頭現場車流 (Traffic at the terminal)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam1_SWB.jpg' },
     { id: 'cam2_SWB', name: '開往溫哥華 (Traffic to Vancouver / Tsawwassen)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam2_SWB.jpg' },
     { id: 'cam3_SWB', name: '開往南部海灣群島與鹽泉島 (Traffic to Gulf Islands & Fulford Harbour)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam3_SWB.jpg' },
-  ],
-  // Horseshoe Bay terminal
-  'HSB': [
-    { id: 'cam1_HSB', name: '碼頭現場車流 (Traffic at the terminal)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam1_HSB.jpg' },
-    { id: 'cam2_HSB', name: '開往納奈莫 (Traffic to Departure Bay)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam2_HSB.jpg' },
-    { id: 'cam3_HSB', name: '開往陽光海岸 (Traffic to Langdale)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam3_HSB.jpg' },
-    { id: 'cam4_HSB', name: '開往寶雲島 (Traffic to Bowen Island)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam4_HSB.jpg' },
   ]
 };
 
@@ -2069,8 +2062,12 @@ export default function AppMap() {
     };
   }, [selectedTrain]);
 
+  // 記錄巴士歷史位置供前端自適應計算航向與平滑轉向
+  const prevBusPositionsRef = useRef<Record<string, { lat: number; lon: number; bearing: number }>>({});
+
   // 當搜尋特定路線時，整合該路線即時在途車輛清單 (無論是否開啟全域巴士圖層均可顯示)
   const displayVehicles = useMemo<Vehicle[]>(() => {
+    let rawList: Vehicle[] = [];
     if (searchedBusRoute) {
       const vDict: Record<string, Vehicle> = {};
       // 1. 先加入 route API 回傳之該路線在途車輛
@@ -2086,9 +2083,49 @@ export default function AppMap() {
           vDict[String(v.id)] = v;
         }
       });
-      return Object.values(vDict);
+      rawList = Object.values(vDict);
+    } else {
+      rawList = vehicles;
     }
-    return vehicles;
+
+    // 前端自適應航向計算與補償
+    return rawList.map(v => {
+      let b = v.bearing;
+      const vKey = String(v.id || v.trip_id);
+      const prev = prevBusPositionsRef.current[vKey];
+      if (prev) {
+        const dLat = v.lat - prev.lat;
+        const dLon = (v.lon - prev.lon) * Math.cos((v.lat * Math.PI) / 180);
+        const dist = Math.hypot(dLat, dLon);
+        if (dist >= 0.00003) {
+          const rad = Math.atan2(dLon, dLat);
+          b = Math.round(((rad * 180 / Math.PI) + 360) % 360 * 10) / 10;
+        } else if (prev.bearing && prev.bearing > 0) {
+          b = prev.bearing;
+        }
+      }
+      if ((b === undefined || b <= 0) && searchedBusRoute && searchedBusRoute.stops && searchedBusRoute.stops.length >= 2) {
+        let minDist = 1e9;
+        let nextStop = null;
+        for (const st of searchedBusRoute.stops) {
+          const d = Math.hypot(st.lat - v.lat, st.lon - v.lon);
+          if (d < minDist) {
+            minDist = d;
+            nextStop = st;
+          }
+        }
+        if (nextStop && (nextStop.lat !== v.lat || nextStop.lon !== v.lon)) {
+          const dLat = nextStop.lat - v.lat;
+          const dLon = (nextStop.lon - v.lon) * Math.cos((v.lat * Math.PI) / 180);
+          const rad = Math.atan2(dLon, dLat);
+          b = Math.round(((rad * 180 / Math.PI) + 360) % 360 * 10) / 10;
+        }
+      }
+      if (b && b > 0) {
+        prevBusPositionsRef.current[vKey] = { lat: v.lat, lon: v.lon, bearing: b };
+      }
+      return { ...v, bearing: b || 0 };
+    });
   }, [vehicles, searchedBusRoute]);
 
   // Initial System API & Map Data Loading Screen States (預留額外緩衝時間取得 API 與圖層資料)
@@ -2768,24 +2805,47 @@ export default function AppMap() {
         .then(data => {
           setSearchedBusRoute(data);
           setLoadingSearchedRoute(false);
-          // 搜尋完畢後不自動彈出 popup，僅平滑移動至路線視野供使用者查看與自由點選車輛
-          if (data.buses && data.buses.length > 0) {
-            const midBus = data.buses[Math.floor(data.buses.length / 2)];
-            if (mapRef.current) {
-              mapRef.current.flyTo({
-                center: [midBus.lon, midBus.lat],
-                zoom: 13.5,
-                duration: 1200
-              });
+          // 搜尋完畢後計算整條路線邊界，縮放至呈現完整路線全貌比例
+          const allCoords: [number, number][] = [];
+          if (Array.isArray(data.shape_coords) && data.shape_coords.length > 0) {
+            data.shape_coords.forEach((pt: any) => {
+              if (Array.isArray(pt) && pt.length >= 2 && !isNaN(pt[0]) && !isNaN(pt[1])) {
+                allCoords.push([Number(pt[0]), Number(pt[1])]);
+              }
+            });
+          }
+          if (allCoords.length === 0 && Array.isArray(data.stops) && data.stops.length > 0) {
+            data.stops.forEach((st: any) => {
+              if (st && !isNaN(st.lon) && !isNaN(st.lat)) {
+                allCoords.push([Number(st.lon), Number(st.lat)]);
+              }
+            });
+          }
+          if (allCoords.length === 0 && Array.isArray(data.buses) && data.buses.length > 0) {
+            data.buses.forEach((b: any) => {
+              if (b && !isNaN(b.lon) && !isNaN(b.lat)) {
+                allCoords.push([Number(b.lon), Number(b.lat)]);
+              }
+            });
+          }
+
+          if (allCoords.length > 0 && mapRef.current) {
+            let minLon = 180, maxLon = -180, minLat = 90, maxLat = -90;
+            for (const [lon, lat] of allCoords) {
+              if (lon < minLon) minLon = lon;
+              if (lon > maxLon) maxLon = lon;
+              if (lat < minLat) minLat = lat;
+              if (lat > maxLat) maxLat = lat;
             }
-          } else if (data.stops && data.stops.length > 0) {
-            const midIdx = Math.floor(data.stops.length / 2);
-            if (mapRef.current) {
-              mapRef.current.flyTo({
-                center: [data.stops[midIdx].lon, data.stops[midIdx].lat],
-                zoom: 13,
-                duration: 1200
-              });
+            if (minLon < maxLon && minLat < maxLat) {
+              mapRef.current.fitBounds(
+                [[minLon, minLat], [maxLon, maxLat]],
+                {
+                  padding: { top: 80, bottom: 80, left: 80, right: 460 },
+                  duration: 1200,
+                  essential: true
+                }
+              );
             }
           }
         })
@@ -7660,12 +7720,20 @@ export default function AppMap() {
                   title={`SeaBus 跨海渡輪${v.destination ? ` 往 ${v.destination}` : ''}`}
                 >
                   <Ship className="w-4 h-4 text-white drop-shadow-sm" />
-                  {v.bearing !== undefined && v.bearing >= 0 && (
+                  {v.bearing !== undefined && v.bearing > 0 && (
                     <div 
-                      className="absolute inset-0 flex items-center justify-center pointer-events-none transition-transform duration-300"
-                      style={{ transform: `rotate(${v.bearing}deg)` }}
+                      className="absolute inset-0 flex items-center justify-center pointer-events-none transition-transform duration-500 ease-out"
+                      style={{ 
+                        transform: `rotate(${v.bearing}deg)`,
+                        transformOrigin: 'center center'
+                      }}
                     >
-                      <svg className="w-4 h-4 -translate-y-[20px] text-cyan-300 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]" viewBox="0 0 24 24" fill="currentColor">
+                      <svg 
+                        className="w-4 h-4 text-cyan-300 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]" 
+                        style={{ transform: 'translateY(-20px)' }}
+                        viewBox="0 0 24 24" 
+                        fill="currentColor"
+                      >
                         <polygon points="12,2 22,22 12,17 2,22"/>
                       </svg>
                     </div>
@@ -7700,12 +7768,20 @@ export default function AppMap() {
                   title={`巴士 ${busNum}${v.destination ? ` 往 ${v.destination}` : ''}`}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/></svg>
-                  {v.bearing !== undefined && v.bearing >= 0 && (
+                  {v.bearing !== undefined && v.bearing > 0 && (
                     <div 
-                      className="absolute inset-0 flex items-center justify-center pointer-events-none transition-transform duration-300"
-                      style={{ transform: `rotate(${v.bearing}deg)` }}
+                      className="absolute inset-0 flex items-center justify-center pointer-events-none transition-transform duration-500 ease-out"
+                      style={{ 
+                        transform: `rotate(${v.bearing}deg)`,
+                        transformOrigin: 'center center'
+                      }}
                     >
-                      <svg className="w-3.5 h-3.5 -translate-y-[13px] text-emerald-400 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]" viewBox="0 0 24 24" fill="currentColor">
+                      <svg 
+                        className="w-3.5 h-3.5 text-emerald-400 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]" 
+                        style={{ transform: 'translateY(-13px)' }}
+                        viewBox="0 0 24 24" 
+                        fill="currentColor"
+                      >
                         <polygon points="12,2 22,22 12,17 2,22"/>
                       </svg>
                     </div>
@@ -7730,12 +7806,20 @@ export default function AppMap() {
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M2 12h20"/><path d="M6 12l2-4h8l2 4"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
               </svg>
-              {v.bearing !== undefined && v.bearing >= 0 && (
+              {v.bearing !== undefined && v.bearing > 0 && (
                 <div 
-                  className="absolute inset-0 flex items-center justify-center pointer-events-none transition-transform duration-300"
-                  style={{ transform: `rotate(${v.bearing}deg)` }}
+                  className="absolute inset-0 flex items-center justify-center pointer-events-none transition-transform duration-500 ease-out"
+                  style={{ 
+                    transform: `rotate(${v.bearing}deg)`,
+                    transformOrigin: 'center center'
+                  }}
                 >
-                  <svg className="w-4 h-4 -translate-y-[20px] text-sky-300 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]" viewBox="0 0 24 24" fill="currentColor">
+                  <svg 
+                    className="w-4 h-4 text-sky-300 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]" 
+                    style={{ transform: 'translateY(-20px)' }}
+                    viewBox="0 0 24 24" 
+                    fill="currentColor"
+                  >
                     <polygon points="12,2 22,22 12,17 2,22"/>
                   </svg>
                 </div>
@@ -7836,12 +7920,20 @@ export default function AppMap() {
                 title={`${train.line_name} 往 ${(train.destination || '').replace(/\s*Station$/i, '').replace(/\s*站$/, '').trim() + ' Station'} (${train.status})`}
               >
                 <span className="text-[12px] leading-none select-none">🚆</span>
-                {train.bearing !== undefined && train.bearing >= 0 && (
+                {train.bearing !== undefined && train.bearing > 0 && (
                   <div 
-                    className="absolute inset-0 flex items-center justify-center pointer-events-none transition-transform duration-300"
-                    style={{ transform: `rotate(${train.bearing}deg)` }}
+                    className="absolute inset-0 flex items-center justify-center pointer-events-none transition-transform duration-500 ease-out"
+                    style={{ 
+                      transform: `rotate(${train.bearing}deg)`,
+                      transformOrigin: 'center center'
+                    }}
                   >
-                    <svg className="w-3.5 h-3.5 -translate-y-[17px] text-amber-400 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]" viewBox="0 0 24 24" fill="currentColor">
+                    <svg 
+                      className="w-3.5 h-3.5 text-amber-400 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]" 
+                      style={{ transform: 'translateY(-17px)' }}
+                      viewBox="0 0 24 24" 
+                      fill="currentColor"
+                    >
                       <polygon points="12,2 22,22 12,17 2,22"/>
                     </svg>
                   </div>
@@ -8243,13 +8335,8 @@ export default function AppMap() {
                   className={`w-3.5 h-3.5 rounded-full bg-white border-[2.5px] border-emerald-600 shadow-md group-hover:scale-125 transition-transform ${
                     isSelected ? 'ring-4 ring-emerald-400 bg-emerald-500 scale-125' : ''
                   }`}
-                  title={`${exc.name_en} (${exc.name})`}
+                  title={`${exc.name} (${exc.name_en})`}
                 />
-                {currentZoom >= 11 && (
-                  <span className="text-[10px] font-bold text-white px-1.5 py-0.5 rounded bg-[#0a1b14]/90 border border-emerald-400/60 shadow whitespace-nowrap pointer-events-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
-                    {exc.name_en}
-                  </span>
-                )}
               </div>
             </Marker>
           );
@@ -8293,98 +8380,126 @@ export default function AppMap() {
         })}
 
         {/* Ferry Popup */}
-        {selectedFerry && (
-          <Popup
-            longitude={selectedFerry.lon}
-            latitude={selectedFerry.lat}
-            anchor="bottom"
-            onClose={() => {
-              setSelectedFerry(null);
-              setSearchTarget(null);
-            }}
-            closeOnClick={false}
-            closeButton={false}
-            className="z-50"
-            offset={[0, -14]}
-            maxWidth="none"
-          >
-            <div className="p-3.5 w-[320px] sm:w-[365px] max-w-[calc(100vw-32px)] text-gray-800">
-              <div className="flex items-start justify-between pb-2 mb-2.5 border-b border-gray-100">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 bg-[#0060a9] rounded-lg flex items-center justify-center text-white shadow-sm flex-shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M2 12h20"/><path d="M6 12l2-4h8l2 4"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-gray-900 text-sm leading-tight">{selectedFerry.vessel_name || 'BC Ferries'}</h3>
-                    <div className="text-[10px] text-emerald-600 font-semibold flex items-center gap-1 mt-0.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                      航行中 (In Transit)
+        {selectedFerry && (() => {
+          const ferryEtaMinutes = (() => {
+            if (!selectedFerry.arrival_time) return null;
+            const parts = selectedFerry.arrival_time.split(':');
+            if (parts.length >= 2) {
+              const arrH = parseInt(parts[0], 10);
+              const arrM = parseInt(parts[1], 10);
+              if (!isNaN(arrH) && !isNaN(arrM)) {
+                const now = new Date();
+                let diffMins = (arrH * 60 + arrM) - (now.getHours() * 60 + now.getMinutes());
+                if (diffMins < 0 && diffMins > -120) return null;
+                if (diffMins < 0) diffMins += 24 * 60;
+                if (diffMins > 0 && diffMins <= 360) return diffMins;
+              }
+            }
+            return null;
+          })();
+
+          return (
+            <Popup
+              longitude={selectedFerry.lon}
+              latitude={selectedFerry.lat}
+              anchor="bottom"
+              onClose={() => {
+                setSelectedFerry(null);
+                setSearchTarget(null);
+              }}
+              closeOnClick={false}
+              closeButton={false}
+              className="z-50"
+              offset={[0, -14]}
+              maxWidth="none"
+            >
+              <div className="p-3.5 w-[320px] sm:w-[365px] max-w-[calc(100vw-32px)] text-gray-800">
+                <div className="flex items-start justify-between pb-2 mb-2.5 border-b border-gray-100">
+                  <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                    <span className="px-2.5 py-1 rounded-full bg-[#0060a9]/10 text-[#0060a9] border border-[#0060a9]/30 text-xs font-bold shrink-0">
+                      卑詩渡輪
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-bold text-gray-900 text-sm leading-tight truncate">
+                        {selectedFerry.vessel_name || '卑詩渡輪'}
+                      </h3>
+                      <div className="text-[10.5px] text-emerald-600 font-semibold flex items-center gap-1 mt-0.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                        航行中
+                      </div>
                     </div>
                   </div>
+                  <button 
+                    onClick={() => {
+                      setSelectedFerry(null);
+                      setSearchTarget(null);
+                    }} 
+                    className="text-gray-400 hover:text-gray-700 text-2xl font-light leading-none px-1 py-0.5 rounded transition-colors focus:outline-none -mt-1 ml-2"
+                  >
+                    &times;
+                  </button>
                 </div>
-                <button 
-                  onClick={() => {
-                    setSelectedFerry(null);
-                    setSearchTarget(null);
-                  }} 
-                  className="text-gray-400 hover:text-gray-700 text-2xl font-light leading-none px-1 py-0.5 rounded transition-colors focus:outline-none -mt-1"
-                >
-                  &times;
-                </button>
+
+                <div className="bg-gray-50/90 p-2.5 rounded-lg border border-gray-200/60 mb-2.5 flex flex-col gap-2">
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="text-gray-500 text-xs font-semibold">航線</span>
+                    <span className="font-bold text-[#0060a9]">{selectedFerry.route_id}</span>
+                  </div>
+                  <div className="text-xs text-gray-700 flex items-center justify-between gap-1.5 bg-white p-2 rounded border border-gray-100">
+                    <span className="font-medium flex-1 text-left leading-snug break-words">{selectedFerry.dep_name || selectedFerry.dep_code}</span>
+                    <span className="text-gray-400 font-bold shrink-0 px-1">➝</span>
+                    <span className="font-medium flex-1 text-right leading-snug break-words">{selectedFerry.arr_name || selectedFerry.arr_code}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-xs pt-1 border-t border-gray-200/50">
+                    <span className="text-gray-500">預計時間</span>
+                    <span className="font-bold text-gray-900">
+                      {formatTimePreference(selectedFerry.departure_time, timeFormat)} {selectedFerry.arrival_time ? `➝ ${formatTimePreference(selectedFerry.arrival_time, timeFormat)}` : ''}
+                    </span>
+                  </div>
+                </div>
+
+                {/* 3.2.1 車位載車率 放在航程進度上方 */}
+                {selectedFerry.fill !== undefined && selectedFerry.fill > 0 && (
+                  <div className="mb-2">
+                    <div className="flex justify-between items-center text-[10.5px] text-gray-600 mb-1">
+                      <span>車位載車率</span>
+                      <span className="font-bold text-gray-800">{selectedFerry.fill}%</span>
+                    </div>
+                    <div className="w-full bg-gray-200/80 rounded-full h-1.5 overflow-hidden">
+                      <div 
+                        className={`h-1.5 rounded-full transition-all duration-300 ${selectedFerry.fill >= 80 ? 'bg-amber-500' : 'bg-[#0060a9]'}`} 
+                        style={{ width: `${Math.min(100, Math.max(0, selectedFerry.fill))}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 3.2.1 航程進度 (刪除英文) 及抵達剩餘時間 */}
+                {selectedFerry.progress !== undefined && (
+                  <div className="mb-1">
+                    <div className="flex justify-between items-center text-[10.5px] text-gray-600 mb-1">
+                      <div className="flex items-center gap-1.5">
+                        <span>航程進度</span>
+                        {ferryEtaMinutes !== null && (
+                          <span className="text-[10px] text-emerald-700 font-semibold bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
+                            約 {ferryEtaMinutes} 分鐘抵達
+                          </span>
+                        )}
+                      </div>
+                      <span className="font-bold text-emerald-700">{selectedFerry.progress}%</span>
+                    </div>
+                    <div className="w-full bg-gray-200/80 rounded-full h-1.5 overflow-hidden">
+                      <div 
+                        className="bg-emerald-500 h-1.5 rounded-full transition-all duration-500" 
+                        style={{ width: `${selectedFerry.progress}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                )}
               </div>
-
-              <div className="bg-gray-50/90 p-2.5 rounded-lg border border-gray-200/60 mb-2.5 flex flex-col gap-2">
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-gray-400 text-[10px] uppercase font-bold tracking-wider">航線 (Route)</span>
-                  <span className="font-bold text-[#0060a9]">{selectedFerry.route_id}</span>
-                </div>
-                <div className="text-xs text-gray-700 flex items-center justify-between gap-1.5 bg-white p-2 rounded border border-gray-100">
-                  <span className="font-medium flex-1 text-left leading-snug break-words">{selectedFerry.dep_name || selectedFerry.dep_code}</span>
-                  <span className="text-gray-400 font-bold shrink-0 px-1">➝</span>
-                  <span className="font-medium flex-1 text-right leading-snug break-words">{selectedFerry.arr_name || selectedFerry.arr_code}</span>
-                </div>
-                <div className="flex justify-between items-center text-xs pt-1 border-t border-gray-200/50">
-                  <span className="text-gray-500">預計時間</span>
-                  <span className="font-bold text-gray-900">
-                    {formatTimePreference(selectedFerry.departure_time, timeFormat)} {selectedFerry.arrival_time ? `➝ ${formatTimePreference(selectedFerry.arrival_time, timeFormat)}` : ''}
-                  </span>
-                </div>
-              </div>
-
-              {selectedFerry.progress !== undefined && (
-                <div className="mb-2">
-                  <div className="flex justify-between items-center text-[10px] text-gray-500 mb-1">
-                    <span>航程進度 (Sailing Progress)</span>
-                    <span className="font-bold text-emerald-700">{selectedFerry.progress}%</span>
-                  </div>
-                  <div className="w-full bg-gray-200/80 rounded-full h-1.5 overflow-hidden">
-                    <div 
-                      className="bg-emerald-500 h-1.5 rounded-full transition-all duration-500" 
-                      style={{ width: `${selectedFerry.progress}%` }}
-                    ></div>
-                  </div>
-                </div>
-              )}
-
-              {selectedFerry.fill !== undefined && selectedFerry.fill > 0 && (
-                <div>
-                  <div className="flex justify-between items-center text-[10px] text-gray-500 mb-1">
-                    <span>車位載車率</span>
-                    <span className="font-bold text-gray-800">{selectedFerry.fill}%</span>
-                  </div>
-                  <div className="w-full bg-gray-200/80 rounded-full h-1.5 overflow-hidden">
-                    <div 
-                      className={`h-1.5 rounded-full transition-all duration-300 ${selectedFerry.fill >= 80 ? 'bg-amber-500' : 'bg-[#0060a9]'}`} 
-                      style={{ width: `${Math.min(100, Math.max(0, selectedFerry.fill))}%` }}
-                    ></div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </Popup>
-        )}
+            </Popup>
+          );
+        })()}
 
         {/* 🚢 Maritime Shipping Vessel Popup (港口船運商船彈出卡) */}
         {selectedMaritimeVessel && (
@@ -19277,55 +19392,80 @@ export default function AppMap() {
                   const activeSailings = terminalSchedule.filter(s => s.status !== 'past');
                   const pastSailings = terminalSchedule.filter(s => s.status === 'past');
 
-                  const renderSailingCard = (sailing: any, i: number, isDimmed = false) => (
-                    <div 
-                      key={i} 
-                      className={`flex flex-col gap-1.5 text-xs p-2.5 rounded-lg border transition-colors ${
-                        isDimmed 
-                          ? 'bg-[#181c26]/60 border-[#242936] text-gray-400 opacity-75' 
-                          : 'bg-[#1e2330] border-[#2c3345] shadow-xs hover:border-sky-500/50'
-                      }`}
-                    >
-                      <div className="flex justify-between items-center">
-                        <span className={`font-bold text-sm tracking-tight ${isDimmed ? 'text-gray-400' : 'text-sky-300 font-mono'}`}>
-                          {formatTimePreference(sailing.time, timeFormat)} {sailing.arrival_time ? `➝ ${formatTimePreference(sailing.arrival_time, timeFormat)}` : ""}
-                        </span>
-                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
-                          sailing.status === 'past' ? 'bg-gray-800 text-gray-400 border border-gray-700' : 
-                          sailing.status === 'current' ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 font-bold animate-pulse' : 
-                          'bg-sky-950/80 text-sky-300 border border-sky-500/40'
-                        }`}>
-                          {sailing.status === 'past' ? '已抵達' : sailing.status === 'current' ? '航行中' : '即將開航'}
-                        </span>
-                      </div>
-                      
-                      {/* 渡輪名稱與下方英文目的地 */}
-                      <div className="flex flex-col gap-0.5 mt-0.5">
-                        <span className="font-semibold text-gray-200 truncate">
-                          {sailing.vessel_name || 'BC Ferries (In Service)'}
-                        </span>
-                        <div className="text-[11px] text-sky-400 flex items-center gap-1 font-medium">
-                          <span className="text-gray-400 text-[10px]">To:</span>
-                          <span>{FERRY_TERMINAL_NAMES_EN[sailing.destination] || sailing.destination}</span>
-                        </div>
-                      </div>
+                  const renderSailingCard = (sailing: any, i: number, isDimmed = false) => {
+                    const matchVessel = ferryVehicles.find(v => 
+                      (sailing.vessel_name && v.vessel_name && (
+                        v.vessel_name.toLowerCase().includes(sailing.vessel_name.toLowerCase()) ||
+                        sailing.vessel_name.toLowerCase().includes(v.vessel_name.toLowerCase())
+                      ))
+                    );
 
-                      {sailing.fill > 0 && (
-                        <div className="mt-1 pt-1 border-t border-[#262b38]/60">
-                          <div className="flex justify-between items-center text-[10px] text-gray-400 mb-0.5">
-                            <span>車位載車率</span>
-                            <span className="font-semibold text-gray-200">{sailing.fill}%</span>
+                    return (
+                      <div 
+                        key={i} 
+                        onClick={() => {
+                          if (matchVessel) {
+                            setSelectedFerry(matchVessel);
+                            mapRef.current?.flyTo({
+                              center: [matchVessel.lon, matchVessel.lat],
+                              zoom: 13,
+                              duration: 1200
+                            });
+                          }
+                        }}
+                        className={`flex items-center justify-between p-2 rounded-lg border transition-all cursor-pointer ${
+                          matchVessel ? 'hover:border-sky-400 hover:bg-[#202738]' : 'hover:border-gray-600 hover:bg-[#1a1f2b]'
+                        } ${
+                          isDimmed 
+                            ? 'bg-[#181c26]/60 border-[#242936] text-gray-400 opacity-75' 
+                            : 'bg-[#1e2330] border-[#2c3345] shadow-xs'
+                        }`}
+                        title={matchVessel ? `點擊跳轉至渡輪「${sailing.vessel_name}」位置` : `渡輪「${sailing.vessel_name || 'BC Ferries'}」`}
+                      >
+                        {/* 左方：時間與渡輪名稱/目的地 (緊湊清單式) */}
+                        <div className="flex flex-col gap-0.5 min-w-0 flex-1 pr-2">
+                          <div className="flex items-center gap-2">
+                            <span className={`font-bold text-xs tracking-tight ${isDimmed ? 'text-gray-400' : 'text-sky-300 font-mono'}`}>
+                              {formatTimePreference(sailing.time, timeFormat)} {sailing.arrival_time ? `➝ ${formatTimePreference(sailing.arrival_time, timeFormat)}` : ""}
+                            </span>
+                            {matchVessel && (
+                              <span className="inline-flex items-center gap-0.5 text-[9px] text-emerald-400 font-semibold bg-emerald-950/60 px-1 rounded border border-emerald-500/30">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                                在途
+                              </span>
+                            )}
                           </div>
-                          <div className="w-full bg-gray-800 rounded-full h-1.5 overflow-hidden">
-                            <div 
-                              className={`h-1.5 rounded-full transition-all duration-300 ${sailing.fill >= 80 ? 'bg-amber-400' : 'bg-sky-400'}`} 
-                              style={{ width: `${Math.min(100, Math.max(0, sailing.fill))}%` }}
-                            ></div>
+                          <div className="flex items-center gap-1.5 text-xs truncate">
+                            <span className="font-semibold text-gray-200 truncate">
+                              {sailing.vessel_name || 'BC Ferries'}
+                            </span>
+                            <span className="text-gray-500 text-[10px]">往</span>
+                            <span className="text-sky-400 text-[11px] truncate font-medium">
+                              {FERRY_TERMINAL_NAMES_EN[sailing.destination] || sailing.destination}
+                            </span>
                           </div>
                         </div>
-                      )}
-                    </div>
-                  );
+
+                        {/* 右方：狀態與載車率徽章 */}
+                        <div className="flex flex-col items-end gap-1 shrink-0">
+                          <span className={`text-[9.5px] font-semibold px-2 py-0.5 rounded-full ${
+                            sailing.status === 'past' ? 'bg-gray-800 text-gray-400 border border-gray-700' : 
+                            sailing.status === 'current' ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-500/40 font-bold animate-pulse' : 
+                            'bg-sky-950/80 text-sky-300 border border-sky-500/40'
+                          }`}>
+                            {sailing.status === 'past' ? '已抵達' : sailing.status === 'current' ? '航行中' : '即將開航'}
+                          </span>
+                          {sailing.fill > 0 && (
+                            <span className={`text-[9px] font-mono font-bold px-1.5 py-0.2 rounded ${
+                              sailing.fill >= 80 ? 'bg-amber-950/60 text-amber-300 border border-amber-500/30' : 'bg-sky-950/60 text-sky-300 border border-sky-500/30'
+                            }`}>
+                              載車 {sailing.fill}%
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  };
 
                   return (
                     <div className="flex flex-col gap-2">
@@ -19411,8 +19551,6 @@ export default function AppMap() {
                             <img
                               src={camUrl}
                               alt={cam.name}
-                              referrerPolicy="no-referrer"
-                              crossOrigin="anonymous"
                               className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-200"
                             />
                             <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -19444,12 +19582,9 @@ export default function AppMap() {
               </div>
               <div className="min-w-0 flex-1">
                 <h3 className="font-bold text-white text-[15px] leading-snug tracking-tight break-words">
-                  {selectedBusExchange.name_en}
-                </h3>
-                <div className="text-[11.5px] text-gray-300 font-medium truncate mt-0.5">
                   {selectedBusExchange.name}
-                </div>
-                <div className="flex items-center gap-1 text-[10.5px] text-gray-400 mt-0.5 truncate">
+                </h3>
+                <div className="flex items-center gap-1 text-[11px] text-gray-400 mt-0.5 truncate">
                   <MapPin className="w-3 h-3 text-emerald-400 shrink-0" />
                   <span className="truncate">{selectedBusExchange.location}</span>
                 </div>
@@ -19493,8 +19628,8 @@ export default function AppMap() {
                   onClick={() => setEnlargedCameraImage({
                     src: selectedBusExchange.image,
                     directSrc: selectedBusExchange.image,
-                    alt: selectedBusExchange.name_en,
-                    title: `${selectedBusExchange.name_en} 轉車站路線地圖`,
+                    alt: selectedBusExchange.name,
+                    title: `${selectedBusExchange.name} 路線地圖`,
                     direction: selectedBusExchange.location
                   })}
                   className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 hover:text-white text-[11px] font-medium transition-all shadow-sm"
@@ -19544,11 +19679,10 @@ export default function AppMap() {
             </div>
           </div>
 
-          {/* 左右分欄月台與路線用途列表 */}
-          {/* 左方是月台 (點擊跳轉至該月台坐標)，右方是月台的路線或用途說明 */}
+          {/* 5.3 月台清單 (整行按鈕點擊跳轉至該月台坐標) */}
           <div className="flex-1 overflow-y-auto pr-1 space-y-1.5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-700 [&::-webkit-scrollbar-thumb]:rounded-full">
             <div className="text-[11px] text-gray-400 font-semibold mb-1 flex items-center justify-between px-0.5">
-              <span>月台 (點擊跳轉定位)</span>
+              <span>月台 (點擊整行跳轉定位)</span>
               <span>路線與用途說明</span>
             </div>
             {selectedBusExchange.bays.map((bay) => {
@@ -19557,32 +19691,30 @@ export default function AppMap() {
               return (
                 <div
                   key={`bay-row-${bay.bay}`}
-                  className={`flex items-start gap-2.5 p-2 rounded-lg border transition-all ${
+                  onClick={() => {
+                    setSelectedExchangeBay(bay);
+                    mapRef.current?.flyTo({
+                      center: [bay.lon, bay.lat],
+                      zoom: 18,
+                      pitch: 0,
+                      bearing: 0,
+                      duration: 1000,
+                      essential: true
+                    });
+                  }}
+                  className={`w-full text-left flex items-start gap-2.5 p-2 rounded-lg border transition-all cursor-pointer ${
                     isBaySelected
                       ? 'bg-emerald-950/40 border-emerald-500/80 ring-1 ring-emerald-500/50 shadow-md'
                       : 'bg-[#1a1f2c]/70 hover:bg-[#202636] border-[#262c3c]'
                   }`}
+                  title={`跳轉至 ${bayNameCn}`}
                 >
-                  {/* 左方：月台按鈕 */}
-                  <button
-                    onClick={() => {
-                      setSelectedExchangeBay(bay);
-                      mapRef.current?.flyTo({
-                        center: [bay.lon, bay.lat],
-                        zoom: 18,
-                        pitch: 0,
-                        bearing: 0,
-                        duration: 1000,
-                        essential: true
-                      });
-                    }}
-                    className={`shrink-0 min-w-[74px] px-2.5 py-1.5 rounded-md font-bold text-xs flex flex-col items-center justify-center transition-all cursor-pointer shadow-xs ${
-                      isBaySelected
-                        ? 'bg-emerald-600 text-white border border-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.5)]'
-                        : 'bg-[#252c3d] hover:bg-emerald-600 text-gray-200 hover:text-white border border-[#343e56] hover:border-emerald-500'
-                    }`}
-                    title={`跳轉至 ${bayNameCn} (${bay.lat.toFixed(5)}, ${bay.lon.toFixed(5)})`}
-                  >
+                  {/* 月台徽章標籤 */}
+                  <div className={`shrink-0 min-w-[70px] px-2 py-1.5 rounded-md font-bold text-xs flex flex-col items-center justify-center transition-all ${
+                    isBaySelected
+                      ? 'bg-emerald-600 text-white border border-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.5)]'
+                      : 'bg-[#252c3d] text-gray-200 border border-[#343e56]'
+                  }`}>
                     <div className="flex items-center gap-1">
                       <MapPin className="w-3 h-3 text-emerald-300" />
                       <span>{bayNameCn}</span>
@@ -19590,50 +19722,32 @@ export default function AppMap() {
                     {bay.stop_id && (
                       <span className="text-[9px] opacity-75 font-mono">#{bay.stop_id}</span>
                     )}
-                  </button>
+                  </div>
 
-                  {/* 右方：月台的路線 (或用途 如 Unloading only...) */}
+                  {/* 路線與用途說明 */}
                   <div className="flex-1 min-w-0 pt-0.5">
                     {bay.routes && bay.routes.length > 0 && (
                       <div className="flex flex-wrap items-center gap-1 mb-1">
                         {bay.routes.map((rt) => {
                           const isRapid = ['R1', 'R2', 'R3', 'R4', 'R5', 'R6', '99'].includes(rt);
                           return (
-                            <button
+                            <span
                               key={`bay-rt-${bay.bay}-${rt}`}
-                              onClick={() => {
-                                setSearchTarget({
-                                  id: `route_${rt}`,
-                                  title: `巴士 ${rt}`,
-                                  category: 'bus_route',
-                                  icon: '🚌',
-                                  lon: bay.lon,
-                                  lat: bay.lat,
-                                  meta: { route_id: rt }
-                                });
-                              }}
-                              className={`px-1.5 py-0.2 rounded text-[11px] font-bold transition-colors cursor-pointer ${
+                              className={`px-1.5 py-0.2 rounded text-[11px] font-bold ${
                                 isRapid
-                                  ? 'bg-blue-600/30 hover:bg-blue-600 text-blue-300 hover:text-white border border-blue-500/50'
-                                  : 'bg-emerald-500/20 hover:bg-emerald-600 text-emerald-300 hover:text-white border border-emerald-500/40'
+                                  ? 'bg-blue-600/30 text-blue-300 border border-blue-500/50'
+                                  : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
                               }`}
-                              title={`在地圖追蹤路線 ${rt}`}
                             >
                               {rt}
-                            </button>
+                            </span>
                           );
                         })}
                       </div>
                     )}
                     {bay.description ? (
                       <div className="text-xs text-gray-300 leading-snug break-words">
-                        {bay.description.toLowerCase().includes('unloading') ? (
-                          <span className="text-amber-300 font-medium">
-                            {bay.description}
-                          </span>
-                        ) : (
-                          bay.description
-                        )}
+                        {bay.description}
                       </div>
                     ) : (
                       <div className="text-[11px] text-gray-500 italic">
