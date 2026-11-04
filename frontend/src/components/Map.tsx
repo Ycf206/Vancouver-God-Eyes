@@ -658,6 +658,11 @@ const FERRY_TERMINAL_WEBCAMS: Record<string, TerminalWebcamItem[]> = {
     { id: 'cam1_SWB', name: '碼頭現場車流 (Traffic at the terminal)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam1_SWB.jpg' },
     { id: 'cam2_SWB', name: '開往溫哥華 (Traffic to Vancouver / Tsawwassen)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam2_SWB.jpg' },
     { id: 'cam3_SWB', name: '開往南部海灣群島與鹽泉島 (Traffic to Gulf Islands & Fulford Harbour)', url: 'https://ccimg.bcferries.com/cc/support/terminals/cam3_SWB.jpg' },
+  ],
+  // 4.6 West Vancouver (Horseshoe Bay) terminal (DriveBC Highway 99 Terminal Cameras)
+  'HSB': [
+    { id: 'cam1_HSB', name: '碼頭現場車流 (Traffic at the terminal)', url: 'https://www.drivebc.ca/images/1070.jpg' },
+    { id: 'cam2_HSB', name: '開往納奈莫車流 (Traffic to Departure Bay)', url: 'https://www.drivebc.ca/images/228.jpg' },
   ]
 };
 
@@ -2138,7 +2143,62 @@ export default function AppMap() {
       });
       rawList = Object.values(vDict);
     } else {
-      rawList = vehicles;
+      rawList = [...vehicles];
+    }
+
+    // 若目前清單中尚無 SeaBus，前端自動加入依時間推算的 2 艘在途 SeaBus (Waterfront <-> Lonsdale Quay)
+    const hasSeaBus = rawList.some(v => v.is_seabus);
+    if (!hasSeaBus) {
+      const nowEpoch = Math.floor(Date.now() / 1000);
+      const cycle1 = nowEpoch % 900;
+      const frac1 = Math.min(1, cycle1 / 720);
+      const lat1 = 49.2861 + (49.3103 - 49.2861) * frac1;
+      const lon1 = -123.1118 + (-123.0829 - (-123.1118)) * frac1;
+      const rem1 = Math.max(1, Math.ceil((720 - cycle1) / 60));
+
+      const cycle2 = (nowEpoch + 450) % 900;
+      const frac2 = Math.min(1, cycle2 / 720);
+      const lat2 = 49.3103 + (49.2861 - 49.3103) * frac2;
+      const lon2 = -123.0829 + (-123.1118 - (-123.0829)) * frac2;
+      const rem2 = Math.max(1, Math.ceil((720 - cycle2) / 60));
+
+      rawList.push({
+        id: 'seabus_sim_nb',
+        route_id: '6771',
+        route_number: 'SeaBus',
+        route_name: 'SeaBus 跨海渡輪',
+        trip_id: 'seabus_nb',
+        direction_id: '0',
+        origin: 'Waterfront Station',
+        destination: 'Lonsdale Quay',
+        operator: 'TransLink (SeaBus 海上巴士)',
+        next_stop_name: 'Lonsdale Quay',
+        next_stop_time: `${rem1} 分鐘後`,
+        next_stop_minutes: rem1,
+        is_seabus: true,
+        lat: Number(lat1.toFixed(5)),
+        lon: Number(lon1.toFixed(5)),
+        bearing: 38
+      } as any);
+
+      rawList.push({
+        id: 'seabus_sim_sb',
+        route_id: '6771',
+        route_number: 'SeaBus',
+        route_name: 'SeaBus 跨海渡輪',
+        trip_id: 'seabus_sb',
+        direction_id: '1',
+        origin: 'Lonsdale Quay',
+        destination: 'Waterfront Station',
+        operator: 'TransLink (SeaBus 海上巴士)',
+        next_stop_name: 'Waterfront Station',
+        next_stop_time: `${rem2} 分鐘後`,
+        next_stop_minutes: rem2,
+        is_seabus: true,
+        lat: Number(lat2.toFixed(5)),
+        lon: Number(lon2.toFixed(5)),
+        bearing: 218
+      } as any);
     }
 
     // 前端自適應航向計算與補償
@@ -3563,10 +3623,9 @@ export default function AppMap() {
         type: 'line',
         source: 'seabus-tracks',
         paint: {
-          'line-color': ['get', 'color'],
-          'line-width': 3,
-          'line-opacity': 0.8,
-          'line-dasharray': [2, 2] // Dash line for ferries!
+          'line-color': ['coalesce', ['get', 'color'], '#00a4e4'],
+          'line-width': 4,
+          'line-opacity': 0.95
         }
       });
       style.layers.push({
@@ -9112,7 +9171,7 @@ export default function AppMap() {
           </Marker>
         )}
 
-        {/* 車禍意外標記 (點擊清單項目時顯示準確位置紅點) */}
+        {/* 車禍意外標記 (點擊清單項目時僅顯示圓點，不要文字與宗數資料) */}
         {selectedCrash && (
           <Marker
             longitude={selectedCrash.lon}
@@ -9120,31 +9179,17 @@ export default function AppMap() {
             anchor="center"
           >
             <div 
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedCrash(null);
+              }}
               className="relative group cursor-pointer flex items-center justify-center select-none"
+              title={selectedCrash.location}
             >
               <div className="absolute w-10 h-10 rounded-full bg-rose-500/30 animate-ping pointer-events-none" />
               <div className="absolute w-6 h-6 rounded-full bg-rose-500/50 animate-pulse pointer-events-none" />
               <div className="relative w-4 h-4 rounded-full bg-rose-600 border-2 border-white shadow-[0_0_10px_rgba(225,29,72,0.8)] flex items-center justify-center">
                 <div className="w-1.5 h-1.5 rounded-full bg-white" />
-              </div>
-              <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-[#121620]/95 backdrop-blur-md text-white text-[11px] px-2.5 py-1.5 rounded-lg border border-rose-500/70 shadow-2xl whitespace-nowrap z-50 flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
-                <span className="font-semibold text-rose-200">{selectedCrash.location}</span>
-                <span className="bg-rose-950/90 text-rose-300 px-1.5 py-0.5 rounded text-[10px] font-mono border border-rose-800">
-                  {selectedCrash.count} 宗意外
-                </span>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedCrash(null);
-                  }}
-                  className="text-gray-400 hover:text-white ml-1 p-0.5 rounded hover:bg-white/10 text-xs leading-none"
-                  title="清除標記"
-                >
-                  ✕
-                </button>
               </div>
             </div>
           </Marker>
@@ -9503,6 +9548,7 @@ export default function AppMap() {
                   if (t === 'escooter') return { label: '共享滑板車', bg: 'bg-lime-600 text-white' };
                   if (t === 'ev_charging') return { label: '電動車充電站', bg: 'bg-[#059669] text-white' };
                   if (t === 'tesla') return { label: 'TESLA', bg: 'bg-[#E82127] text-white', isTesla: true };
+                  if (t === 'marine_terminals') return { label: '碼頭', bg: 'bg-cyan-700 text-white' };
                   if (t === 'road_closures') return { label: '交通封閉', bg: 'bg-[#DC2626] text-white' };
                   if (t === 'road_construction') return { label: '道路施工', bg: 'bg-[#EA580C] text-white' };
                   if (t === 'traffic_cameras') return { label: '交通攝影機', bg: 'bg-[#0284C7] text-white' };
@@ -9626,7 +9672,11 @@ export default function AppMap() {
                       const p = selectedFacility.properties || {};
                       return p.locationName || p.name || selectedFacility.name || 'Purolator';
                     }
-                    if (selectedFacility.facility_type === 'ski_resort' || selectedFacility.facility_type === 'swob_station' || selectedFacility.facility_type === 'weather_station' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hydrometric_station') {
+                    if (selectedFacility.facility_type === 'tide_stations') {
+                      const raw = selectedFacility.properties?.english_name || (selectedFacility as any).english_name || selectedFacility.properties?.name_en || selectedFacility.name || '';
+                      return raw.replace(/[\u4e00-\u9fa5]+/g, '').replace(/[()（）]/g, '').trim() || raw;
+                    }
+                    if (selectedFacility.facility_type === 'ski_resort' || selectedFacility.facility_type === 'swob_station' || selectedFacility.facility_type === 'weather_station' || selectedFacility.facility_type === 'hydrometric_station') {
                       return selectedFacility.properties?.english_name || (selectedFacility as any).english_name || selectedFacility.name;
                     }
                     if (selectedFacility.facility_type === 'escooter') {
@@ -9749,7 +9799,11 @@ export default function AppMap() {
                       const p = selectedFacility.properties || {};
                       return p.locationName || p.name || selectedFacility.name || 'Purolator';
                     }
-                    if (selectedFacility.facility_type === 'ski_resort' || selectedFacility.facility_type === 'swob_station' || selectedFacility.facility_type === 'weather_station' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hydrometric_station') {
+                    if (selectedFacility.facility_type === 'tide_stations') {
+                      const raw = selectedFacility.properties?.english_name || (selectedFacility as any).english_name || selectedFacility.properties?.name_en || selectedFacility.name || '';
+                      return raw.replace(/[\u4e00-\u9fa5]+/g, '').replace(/[()（）]/g, '').trim() || raw;
+                    }
+                    if (selectedFacility.facility_type === 'ski_resort' || selectedFacility.facility_type === 'swob_station' || selectedFacility.facility_type === 'weather_station' || selectedFacility.facility_type === 'hydrometric_station') {
                       return selectedFacility.properties?.english_name || (selectedFacility as any).english_name || selectedFacility.name;
                     }
                     return selectedFacility.name || '';
@@ -9840,10 +9894,13 @@ export default function AppMap() {
                         <h3 className="font-bold text-gray-900 text-sm leading-snug break-words">
                           {popupTitle}
                         </h3>
-                        {(selectedFacility.local_area || selectedFacility.facility_type === 'job' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'motorcycle_parking' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'canada_post' || selectedFacility.facility_type === 'fedex' || selectedFacility.facility_type === 'purolator' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'impark' || selectedFacility.facility_type === 'ski_resort' ||
+                        {(selectedFacility.local_area || selectedFacility.facility_type === 'marine_terminals' || selectedFacility.facility_type === 'job' || selectedFacility.facility_type === 'one_way_streets' || selectedFacility.facility_type === 'escooter' || selectedFacility.facility_type === 'safety_cameras' || selectedFacility.facility_type === 'tide_stations' || selectedFacility.facility_type === 'hospitals' || selectedFacility.facility_type === 'disaster_hubs' || selectedFacility.facility_type === 'van_wifi' || selectedFacility.facility_type === 'water_distribution_mains' || selectedFacility.facility_type === 'sewer_mains' || selectedFacility.facility_type === 'street_lighting_conduits' || selectedFacility.facility_type === 'traffic_crosswalks' || selectedFacility.facility_type === 'traffic_speed_limits' || selectedFacility.facility_type === 'bikeways' || selectedFacility.facility_type === 'bike_racks' || selectedFacility.facility_type === 'shared_bikes' || selectedFacility.facility_type === 'tesla' || selectedFacility.facility_type === 'road_closures' || selectedFacility.facility_type === 'road_construction' || selectedFacility.facility_type === 'snow_removal_routes' || selectedFacility.facility_type === 'traffic_alerts' || selectedFacility.facility_type === 'traffic_incident' || selectedFacility.facility_type === 'recycling' || selectedFacility.facility_type === 'libraries' || selectedFacility.facility_type === 'litter_containers' || selectedFacility.facility_type === 'aed' || selectedFacility.facility_type === 'public_art' || selectedFacility.facility_type === 'motorcycle_parking' || selectedFacility.facility_type === 'parks' || selectedFacility.facility_type === 'parks_facilities' || selectedFacility.facility_type === 'community_gardens' || selectedFacility.facility_type === 'community_centres' || selectedFacility.facility_type === 'canada_post' || selectedFacility.facility_type === 'fedex' || selectedFacility.facility_type === 'purolator' || selectedFacility.facility_type === 'public_trees' || selectedFacility.facility_type === 'schools' || selectedFacility.facility_type === 'police' || selectedFacility.facility_type === 'fire_halls' || selectedFacility.facility_type === 'fire_hydrants' || selectedFacility.facility_type === 'drinking_fountains' || selectedFacility.facility_type === 'public_washrooms' || selectedFacility.facility_type === 'impark' || selectedFacility.facility_type === 'ski_resort' ||
                   selectedFacility.facility_type === 'parking_meters' || selectedFacility.facility_type === 'zoning_districts' || selectedFacility.facility_type === 'car_sharing' || selectedFacility.facility_type === 'truck_routes_restriction' || selectedFacility.facility_type === 'traffic_signals' || selectedFacility.facility_type === 'turn_restrictions') && (
                           <span className="text-[11px] text-gray-400 block leading-snug break-words">
                             {(() => {
+                              if (selectedFacility.facility_type === 'marine_terminals') {
+                                return selectedFacility.properties?.address || selectedFacility.local_area || 'Vancouver, BC';
+                              }
                               if (selectedFacility.facility_type === 'job') {
                                 return selectedFacility.properties?.EmployerName || selectedFacility.properties?.employer_name || selectedFacility.local_area || '僱主資訊';
                               }
@@ -10074,8 +10131,8 @@ export default function AppMap() {
                       <span>北美規模最大的私營停車場管理公司之一，擁有超過 3,000 個停車場，涵蓋商業大樓、購物中心、醫院、機場、飯店及體育場館。</span>
                     </div>
 
-                    {/* 5.2 灰色區塊 (參考圖3風格：淺灰底色、灰底黑字、數值貼右邊、無冒號) */}
-                    {(hasTransient || hasMonthly || hasPromo) && (
+                    {/* 5.2 灰色區塊 (收納所有費率方案與場地設施與服務) */}
+                    {(hasTransient || hasMonthly || hasPromo || features.length > 0) && (
                       <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-2 text-[11px]">
                         {hasTransient && (
                           <div className="flex flex-col gap-1.5">
@@ -10123,29 +10180,34 @@ export default function AppMap() {
                             </span>
                           </div>
                         )}
-                      </div>
-                    )}
 
-                    {/* Features & Services */}
-                    {features.length > 0 && (
-                      <div className="flex flex-col gap-1.5">
-                        <span className="text-[11px] text-gray-600 font-medium">場地設施與服務：</span>
-                        <div className="flex flex-wrap gap-1.5">
-                          {features.map((feat: string, idx: number) => {
-                            let zhLabel = feat;
-                            if (feat.includes('Parker Pete')) zhLabel = '道路救援';
-                            else if (feat.includes('attendant') || feat.includes('Attendant')) zhLabel = '駐場管理員';
-                            else if (feat.includes('EV') || feat.includes('Charger')) zhLabel = '電動車充電樁';
-                            else if (feat.includes('Heater') || feat.includes('Block Heater')) zhLabel = '引擎加熱器';
-                            else if (feat.includes('Wash') || feat.includes('Car Wash')) zhLabel = '洗車';
-                            else if (feat.includes('Valet')) zhLabel = '代客泊車';
-                            return (
-                              <span key={idx} className="px-2 py-0.5 rounded-full bg-gray-100 border border-gray-200 text-gray-700 text-[10.5px] font-medium shadow-xs">
-                                {zhLabel}
-                              </span>
-                            );
-                          })}
-                        </div>
+                        {/* Features & Services 放入原本灰色區塊內，並加上分隔線 */}
+                        {features.length > 0 && (
+                          <>
+                            {(hasTransient || hasMonthly || hasPromo) && (
+                              <div className="border-t border-gray-200/60 my-0.5" />
+                            )}
+                            <div className="flex flex-col gap-1.5">
+                              <span className="text-[11px] text-gray-600 font-medium">場地設施與服務：</span>
+                              <div className="flex flex-wrap gap-1.5">
+                                {features.map((feat: string, idx: number) => {
+                                  let zhLabel = feat;
+                                  if (feat.includes('Parker Pete')) zhLabel = '道路救援';
+                                  else if (feat.includes('attendant') || feat.includes('Attendant')) zhLabel = '駐場管理員';
+                                  else if (feat.includes('EV') || feat.includes('Charger')) zhLabel = '電動車充電樁';
+                                  else if (feat.includes('Heater') || feat.includes('Block Heater')) zhLabel = '引擎加熱器';
+                                  else if (feat.includes('Wash') || feat.includes('Car Wash')) zhLabel = '洗車';
+                                  else if (feat.includes('Valet')) zhLabel = '代客泊車';
+                                  return (
+                                    <span key={idx} className="px-2 py-0.5 rounded-full bg-white border border-gray-200 text-gray-700 text-[10.5px] font-medium shadow-2xs">
+                                      {zhLabel}
+                                    </span>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          </>
+                        )}
                       </div>
                     )}
 
@@ -14824,19 +14886,16 @@ export default function AppMap() {
               {/* Marine Terminals (港口碼頭) Details */}
               {selectedFacility.facility_type === 'marine_terminals' && (
                 <div className="flex flex-col gap-2 text-xs">
-                  <div className="bg-cyan-500/10 p-2.5 rounded-lg border border-cyan-500/25 flex flex-col gap-1.5">
+                  {/* 純文字無底色區塊顯示碼頭類型與水域 */}
+                  <div className="py-1 px-0.5 flex flex-col gap-1 text-xs">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-cyan-950 text-xs flex items-center gap-1.5">
-                        <span className="text-sm text-cyan-600 font-bold">⚓</span>
-                        <span>{selectedFacility.name}</span>
-                      </span>
-                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-cyan-700 text-white shrink-0">
-                        {selectedFacility.properties.terminal_type?.split('(')[0]?.trim() || '深水碼頭'}
+                      <span className="font-bold text-gray-900 text-xs">
+                        {selectedFacility.properties.terminal_type?.split('(')[0]?.trim() || selectedFacility.name}
                       </span>
                     </div>
                     {selectedFacility.properties.waterway && (
-                      <div className="text-[11px] text-cyan-900 font-medium">
-                        🌊 水域位置：{selectedFacility.properties.waterway}
+                      <div className="text-[11px] text-gray-500">
+                        水域位置：{selectedFacility.properties.waterway}
                       </div>
                     )}
                   </div>
@@ -14871,14 +14930,6 @@ export default function AppMap() {
                         <span>年處理能力</span>
                         <span className="text-gray-900 font-medium text-right">
                           {selectedFacility.properties.capacity}
-                        </span>
-                      </div>
-                    )}
-                    {selectedFacility.properties.address && (
-                      <div className={`flex justify-between items-center text-gray-600 ${(selectedFacility.properties.operator || selectedFacility.properties.cargo || selectedFacility.properties.berths || selectedFacility.properties.draught || selectedFacility.properties.capacity) ? 'pt-1.5 border-t border-gray-100' : ''}`}>
-                        <span>碼頭地址</span>
-                        <span className="text-gray-800 text-right truncate max-w-[140px] sm:max-w-[165px]">
-                          {selectedFacility.properties.address}
                         </span>
                       </div>
                     )}
@@ -16212,7 +16263,6 @@ export default function AppMap() {
                       <span className="text-base text-cyan-600 font-bold">⛷️</span>
                       <span>{selectedFacility.properties.status_zh || '季節休園'}</span>
                     </span>
-                    <span className="text-[10px] text-gray-500 font-medium">大溫滑雪勝地</span>
                   </div>
 
                   <div className="bg-gray-50 p-2.5 rounded border border-gray-100 flex flex-col gap-1.5 text-[11px]">
@@ -16369,7 +16419,7 @@ export default function AppMap() {
                     <div className="bg-sky-500/10 p-2.5 rounded-lg border border-sky-500/30 flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Waves className="w-4 h-4 text-sky-600" />
-                        <span className="font-bold text-sky-950 text-xs">DFO/CHS 國家海岸潮汐觀測站</span>
+                        <span className="font-bold text-sky-950 text-xs">國家海岸潮汐觀測站</span>
                       </div>
                       <span className="text-[10px] font-mono font-bold bg-sky-600 text-white px-2 py-0.5 rounded">
                         {p.code || 'CHS'}
@@ -16381,7 +16431,7 @@ export default function AppMap() {
                         <span className="text-[10px] text-gray-500 font-medium">當前潮位高程</span>
                         <div className="flex items-baseline gap-1 mt-0.5">
                           <span className="text-2xl font-extrabold text-sky-600 font-mono">{p.current_water_level_m ?? p.water_level ?? '--'}</span>
-                          <span className="text-xs text-gray-500 font-medium">米 (m)</span>
+                          <span className="text-xs text-gray-500 font-medium">m</span>
                         </div>
                       </div>
                       <span className={`text-xs font-bold px-2 py-1 rounded font-mono flex items-center gap-1 ${
@@ -16398,14 +16448,14 @@ export default function AppMap() {
                       <div className="grid grid-cols-2 gap-2 text-xs">
                         {p.next_high && (
                           <div className="p-2.5 rounded-lg bg-emerald-50 border border-emerald-200 flex flex-col">
-                            <span className="text-[10px] text-emerald-800 font-bold">▲ 下次滿潮 (High Tide)</span>
+                            <span className="text-[10px] text-emerald-800 font-bold">▲ 下次滿潮</span>
                             <span className="font-extrabold text-sm text-emerald-700 font-mono mt-0.5">{p.next_high.value} m</span>
                             <span className="text-[10px] text-gray-500 mt-0.5">{p.next_high.time}</span>
                           </div>
                         )}
                         {p.next_low && (
                           <div className="p-2.5 rounded-lg bg-sky-50 border border-sky-200 flex flex-col">
-                            <span className="text-[10px] text-sky-800 font-bold">▼ 下次乾潮 (Low Tide)</span>
+                            <span className="text-[10px] text-sky-800 font-bold">▼ 下次乾潮</span>
                             <span className="font-extrabold text-sm text-sky-700 font-mono mt-0.5">{p.next_low.value} m</span>
                             <span className="text-[10px] text-gray-500 mt-0.5">{p.next_low.time}</span>
                           </div>
@@ -16426,7 +16476,7 @@ export default function AppMap() {
                     <div className="bg-cyan-500/10 p-2.5 rounded-lg border border-cyan-500/30 flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Anchor className="w-4 h-4 text-cyan-600" />
-                        <span className="font-bold text-cyan-950 text-xs">加拿大國家水文測候站 (NHN)</span>
+                        <span className="font-bold text-cyan-950 text-xs">加拿大國家水文測候站</span>
                       </div>
                       <span className="text-[10px] font-mono font-bold bg-cyan-600 text-white px-2 py-0.5 rounded">
                         {p.id || 'ECCC'}
@@ -17124,7 +17174,7 @@ export default function AppMap() {
                     }`}>
                       {selectedBus.is_seabus ? '海上渡輪即時航行中' : '即時更新中'}
                     </span>
-                    {selectedBus.id && (
+                    {!selectedBus.is_seabus && selectedBus.id && (
                       <span className="text-[10px] text-gray-400 font-mono ml-1">#{selectedBus.id}</span>
                     )}
                   </div>
@@ -19482,10 +19532,10 @@ export default function AppMap() {
                           .catch(() => setLoadingArrivals(false));
                       }
                     }}
-                    className="p-1 px-2 rounded bg-cyan-600/30 hover:bg-cyan-600/50 text-cyan-300 border border-cyan-500/30 transition-colors flex items-center gap-1 text-[10.5px] cursor-pointer"
+                    className="p-1 rounded-lg bg-cyan-600/30 hover:bg-cyan-600/50 text-cyan-300 border border-cyan-500/30 transition-colors flex items-center justify-center cursor-pointer"
+                    title="重新整理班次"
                   >
-                    <RotateCw className={`w-3 h-3 ${loadingArrivals ? 'animate-spin' : ''}`} />
-                    <span>重新整理</span>
+                    <RotateCw className={`w-3.5 h-3.5 ${loadingArrivals ? 'animate-spin' : ''}`} />
                   </button>
                 </div>
 
@@ -19511,9 +19561,6 @@ export default function AppMap() {
                               往 {arr.destination || (isWaterfront ? 'Lonsdale Quay' : 'Waterfront')}
                             </span>
                           </div>
-                          <span className="text-[10px] text-gray-400 mt-0.5">
-                            {arr.operator || 'TransLink SeaBus 跨海渡輪'}
-                          </span>
                         </div>
                         <div className="flex items-center gap-1.5 shrink-0">
                           <span className="inline-flex items-center gap-1 text-[10.5px] font-semibold px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-500/40">
@@ -19532,10 +19579,10 @@ export default function AppMap() {
                 <div className="flex items-center justify-between text-[11px] text-gray-300">
                   <span className="font-bold text-white flex items-center gap-1.5">
                     <Clock className="w-3.5 h-3.5 text-cyan-400" />
-                    <span>首班與尾班船時刻表 (First & Last SeaBus)</span>
+                    <span>首班與尾班船</span>
                   </span>
-                  <span className="text-[10px] text-cyan-300 font-mono">
-                    {isWaterfront ? 'From Waterfront' : 'From Lonsdale Quay'}
+                  <span className="text-[10px] text-cyan-300 font-medium">
+                    {isWaterfront ? 'Waterfront 開出' : 'Lonsdale Quay 開出'}
                   </span>
                 </div>
 
@@ -19543,26 +19590,26 @@ export default function AppMap() {
                   <table className="w-full text-left border-collapse text-[11px]">
                     <thead>
                       <tr className="border-b border-[#292f3f] bg-[#181d28] text-gray-400">
-                        <th className="py-2 px-2.5 font-semibold text-gray-300 w-[110px] shrink-0">營運日 Day(s)</th>
-                        <th className="py-2 px-2.5 font-semibold text-emerald-400">首班船 First</th>
-                        <th className="py-2 px-2.5 font-semibold text-amber-400">尾班船 Last</th>
+                        <th className="py-2 px-2.5 font-semibold text-gray-300 w-[110px] shrink-0">營運日</th>
+                        <th className="py-2 px-2.5 font-semibold text-emerald-400">首班船</th>
+                        <th className="py-2 px-2.5 font-semibold text-amber-400">尾班船</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#232836]">
                       {isWaterfront ? (
                         <>
                           <tr>
-                            <td className="py-2 px-2.5 font-medium text-gray-200">Monday to Friday (平日)</td>
+                            <td className="py-2 px-2.5 font-medium text-gray-200">平日</td>
                             <td className="py-2 px-2.5 font-mono text-emerald-300 font-medium">6:01 a.m.</td>
                             <td className="py-2 px-2.5 font-mono text-amber-300 font-medium">1:22 a.m.</td>
                           </tr>
                           <tr>
-                            <td className="py-2 px-2.5 font-medium text-gray-200">Saturday (週六)</td>
+                            <td className="py-2 px-2.5 font-medium text-gray-200">週六</td>
                             <td className="py-2 px-2.5 font-mono text-emerald-300 font-medium">6:16 a.m.</td>
                             <td className="py-2 px-2.5 font-mono text-amber-300 font-medium">1:22 a.m.</td>
                           </tr>
                           <tr>
-                            <td className="py-2 px-2.5 font-medium text-gray-200">Sunday/Holidays (週日/公眾假期)</td>
+                            <td className="py-2 px-2.5 font-medium text-gray-200">週日及公眾假期</td>
                             <td className="py-2 px-2.5 font-mono text-emerald-300 font-medium">8:16 a.m.</td>
                             <td className="py-2 px-2.5 font-mono text-amber-300 font-medium">11:22 p.m.</td>
                           </tr>
@@ -19570,17 +19617,17 @@ export default function AppMap() {
                       ) : (
                         <>
                           <tr>
-                            <td className="py-2 px-2.5 font-medium text-gray-200">Monday to Friday (平日)</td>
+                            <td className="py-2 px-2.5 font-medium text-gray-200">平日</td>
                             <td className="py-2 px-2.5 font-mono text-emerald-300 font-medium">5:47 a.m.</td>
                             <td className="py-2 px-2.5 font-mono text-amber-300 font-medium">1:00 a.m.</td>
                           </tr>
                           <tr>
-                            <td className="py-2 px-2.5 font-medium text-gray-200">Saturday (週六)</td>
+                            <td className="py-2 px-2.5 font-medium text-gray-200">週六</td>
                             <td className="py-2 px-2.5 font-mono text-emerald-300 font-medium">6:02 a.m.</td>
                             <td className="py-2 px-2.5 font-mono text-amber-300 font-medium">1:00 a.m.</td>
                           </tr>
                           <tr>
-                            <td className="py-2 px-2.5 font-medium text-gray-200">Sunday/Holidays (週日/公眾假期)</td>
+                            <td className="py-2 px-2.5 font-medium text-gray-200">週日及公眾假期</td>
                             <td className="py-2 px-2.5 font-mono text-emerald-300 font-medium">8:02 a.m.</td>
                             <td className="py-2 px-2.5 font-mono text-amber-300 font-medium">11:00 p.m.</td>
                           </tr>
@@ -19656,21 +19703,21 @@ export default function AppMap() {
 
               {/* 關閉按鈕下方：碼頭攝影機放到收費表左方，收費表 (錢 SVG) 放在連結圖示左方 */}
               <div className="flex items-center gap-1.5 pr-0.5">
-                {Boolean(FERRY_TERMINAL_WEBCAMS[selectedTerminal.properties.code]?.length) && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setTerminalWebcamTerminalCode(selectedTerminal.properties.code);
-                      setTerminalWebcamRefreshKey(Date.now());
-                      setTerminalWebcamSecondsAgo(0);
-                      setIsTerminalWebcamModalOpen(true);
-                    }}
-                    className="p-1 rounded-md text-sky-400 hover:text-sky-300 hover:bg-sky-500/20 transition-colors flex items-center justify-center border border-sky-500/30 shadow-2xs cursor-pointer"
-                    title="碼頭現場路況攝影機"
-                  >
-                    <Camera className="w-3.5 h-3.5 text-sky-400" />
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    const code = selectedTerminal.properties.code;
+                    const validCode = FERRY_TERMINAL_WEBCAMS[code] ? code : 'HSB';
+                    setTerminalWebcamTerminalCode(validCode);
+                    setTerminalWebcamRefreshKey(Date.now());
+                    setTerminalWebcamSecondsAgo(0);
+                    setIsTerminalWebcamModalOpen(true);
+                  }}
+                  className="p-1 rounded-md text-sky-400 hover:text-sky-300 hover:bg-sky-500/20 transition-colors flex items-center justify-center border border-sky-500/30 shadow-2xs cursor-pointer"
+                  title="碼頭現場路況攝影機"
+                >
+                  <Camera className="w-3.5 h-3.5 text-sky-400" />
+                </button>
                 <a
                   href="https://www.bcferries.com/web_image/h90/h4b/9089486028830.pdf"
                   target="_blank"
@@ -19903,15 +19950,18 @@ export default function AppMap() {
                   onClick={() => {
                     setSelectedBusExchange(null);
                     setSelectedExchangeBay(null);
+                    setSearchedBusRoute(null);
+                    setSearchTarget(null);
+                    (window as any).__godsEyeResetView?.();
                   }}
-                  className="text-gray-400 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-colors"
+                  className="text-gray-400 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
                   title="關閉"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
-              {/* 關閉按鈕下方：檢視轉車站地圖按鈕 */}
+              {/* 關閉按鈕下方：檢視轉車站地圖按鈕 (純圖示按鈕) */}
               {selectedBusExchange.image && (
                 <button
                   onClick={() => setEnlargedCameraImage({
@@ -19921,11 +19971,10 @@ export default function AppMap() {
                     title: `${selectedBusExchange.name} 路線地圖`,
                     direction: selectedBusExchange.location
                   })}
-                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 hover:text-white text-[11px] font-medium transition-all shadow-sm"
+                  className="p-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 hover:text-white transition-all shadow-sm cursor-pointer"
                   title="檢視轉車站地圖"
                 >
-                  <MapIcon className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>檢視轉車站地圖</span>
+                  <MapIcon className="w-4 h-4 text-emerald-400" />
                 </button>
               )}
             </div>
@@ -19935,7 +19984,6 @@ export default function AppMap() {
           <div className="pb-2 mb-2 border-b border-[#262b38]/80 shrink-0">
             <div className="text-[11px] text-gray-400 mb-1 flex items-center justify-between">
               <span className="font-semibold text-gray-300">行經巴士路線 ({selectedBusExchange.routes.length})</span>
-              <span className="text-[10px] text-emerald-400/90">點擊路線在地圖追蹤</span>
             </div>
             <div className="flex flex-wrap gap-1.5 max-h-[64px] overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:bg-gray-700">
               {selectedBusExchange.routes.map(rt => {
@@ -19970,9 +20018,8 @@ export default function AppMap() {
 
           {/* 5.3 月台清單 (整行按鈕點擊跳轉至該月台坐標) */}
           <div className="flex-1 overflow-y-auto pr-1 space-y-1.5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-700 [&::-webkit-scrollbar-thumb]:rounded-full">
-            <div className="text-[11px] text-gray-400 font-semibold mb-1 flex items-center justify-between px-0.5">
-              <span>月台 (點擊整行跳轉定位)</span>
-              <span>路線與用途說明</span>
+            <div className="text-[11px] text-gray-400 font-semibold mb-1 px-0.5">
+              <span>月台</span>
             </div>
             {selectedBusExchange.bays.map((bay) => {
               const bayNameCn = bay.bay.replace(/^Bay\s*/i, '月台 ');
@@ -20401,7 +20448,6 @@ export default function AppMap() {
             {/* Modal Footer */}
             <div className="px-4 py-2 bg-[#1a1e29] border-t border-gray-800 flex items-center justify-between text-[11px] text-gray-400 shrink-0">
               <span>點擊背景或右上角 ✕ 關閉</span>
-              <span className="text-cyan-400 font-mono text-[10.5px]">HD 即時路況畫面</span>
             </div>
           </div>
         </div>,
@@ -20706,7 +20752,13 @@ export default function AppMap() {
                           src={camUrlWithT}
                           alt={cam.name}
                           referrerPolicy="no-referrer"
-                          crossOrigin="anonymous"
+                          onError={(e) => {
+                            const target = e.currentTarget;
+                            const proxyUrl = `${getApiUrl()}/api/ferries/webcam_image?url=${encodeURIComponent(cam.url)}&t=${terminalWebcamRefreshKey}`;
+                            if (target.src !== proxyUrl) {
+                              target.src = proxyUrl;
+                            }
+                          }}
                           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
                           loading="lazy"
                         />

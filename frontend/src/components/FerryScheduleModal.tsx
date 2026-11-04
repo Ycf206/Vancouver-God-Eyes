@@ -219,9 +219,6 @@ export default function FerryScheduleModal() {
             <div className="min-w-0">
               <h3 className="font-bold text-white text-base leading-snug flex items-center gap-2">
                 <span>卑詩渡輪班次</span>
-                <span className="text-xs font-mono text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded-md border border-sky-500/20">
-                  BC Ferries Schedule
-                </span>
               </h3>
             </div>
           </div>

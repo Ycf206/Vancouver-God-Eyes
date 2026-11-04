@@ -394,11 +394,10 @@ export default function FlightScheduleModal() {
             <button
               onClick={fetchSchedules}
               disabled={loading}
-              className="p-2 rounded-xl bg-[#1b1f28] hover:bg-[#252a36] text-gray-300 hover:text-white transition-colors border border-[#2b313f] flex items-center gap-1.5 text-xs"
+              className="p-2 rounded-xl bg-[#1b1f28] hover:bg-[#252a36] text-gray-300 hover:text-white transition-colors border border-[#2b313f] flex items-center justify-center text-xs"
               title="重新整理航班"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-sky-400' : ''}`} />
-              <span className="hidden sm:inline">重新整理</span>
             </button>
             <button
               onClick={() => setFlightScheduleOpen(false)}
@@ -424,7 +423,7 @@ export default function FlightScheduleModal() {
                 }`}
               >
                 <PlaneLanding className="w-4 h-4 text-emerald-400" />
-                <span>抵達航班 (Arrivals)</span>
+                <span>抵達航班</span>
                 {data && (
                   <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-emerald-500/20 text-emerald-300 font-mono">
                     {data.arrivals.length}
@@ -440,7 +439,7 @@ export default function FlightScheduleModal() {
                 }`}
               >
                 <PlaneTakeoff className="w-4 h-4 text-amber-400" />
-                <span>出發航班 (Departures)</span>
+                <span>出發航班</span>
                 {data && (
                   <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-amber-500/20 text-amber-300 font-mono">
                     {data.departures.length}
@@ -491,7 +490,7 @@ export default function FlightScheduleModal() {
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="搜尋航班號 (AC116, CX888, DLH476)、航空公司、機場代碼 (YYZ, NRT, MUC)、城市 (Toronto, Munich)、閘口..."
+              placeholder="搜尋航班號、航空公司或目的地城市..."
               className="w-full pl-10 pr-12 py-1.5 bg-[#0f1116] border border-[#262a35] rounded-xl text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-sky-500 transition-colors"
             />
             {searchTerm && (
@@ -773,8 +772,6 @@ export default function FlightScheduleModal() {
                 ? data.source.replace(/\s*\(官方[^\)]*排程\)/g, '').replace(/\s*\(官方[^\)]*計畫\)/g, '').trim()
                 : 'FlightAware AeroAPI'}
             </span>
-            <span className="text-gray-500">·</span>
-            <span className="text-gray-400">系統即時倒數更新</span>
           </div>
         </div>
       </div>

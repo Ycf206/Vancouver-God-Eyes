@@ -757,18 +757,13 @@ function ExploreContent() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [satelliteModalOpen, enlargedAuroraImage]);
 
-  // 重設探索視圖與標記輔助函數 (針對天氣、泳灘、工作、3-1-1、油站、充電站、路況、意外等分頁)
-  const handleResetExplorationMapState = (tabId?: ExploreTabType) => {
-    const targetTabs: ExploreTabType[] = [
-      'weather', 'beach', 'jobs', '311', 'fuel', 'charging', 'ev', 'traffic', 'crashes'
-    ];
-    if (!tabId || targetTabs.includes(tabId)) {
-      setSearchTarget(null);
-      setSelectedCrash(null);
-      if (typeof window !== 'undefined') {
-        (window as any).__godsEyeCloseFacilityPopup?.();
-        (window as any).__godsEyeResetView?.();
-      }
+  // 重設探索視圖與標記輔助函數 (對所有探索分頁生效，包含滑雪、海灘、新聞、活動等)
+  const handleResetExplorationMapState = (_tabId?: ExploreTabType) => {
+    setSearchTarget(null);
+    setSelectedCrash(null);
+    if (typeof window !== 'undefined') {
+      (window as any).__godsEyeCloseFacilityPopup?.();
+      (window as any).__godsEyeResetView?.();
     }
   };
 
@@ -3390,7 +3385,7 @@ function ExploreContent() {
     weather: { label: '天氣資訊', icon: CloudSun, color: 'text-sky-400' },
     news: { label: '新聞快訊', icon: Newspaper, color: 'text-amber-400' },
     events: { label: '活動情報', icon: CalendarDays, color: 'text-purple-400' },
-    beach: { label: '泳灘水質', icon: Droplets, color: 'text-teal-300' },
+    beach: { label: '海灘水質', icon: Droplets, color: 'text-teal-300' },
     ski: { label: '滑雪場現況', icon: MountainSnow, color: 'text-cyan-400' },
     aurora: { label: '極光觀測', icon: Sparkles, color: 'text-fuchsia-400' },
     jobs: { label: '工作職位', icon: Briefcase, color: 'text-indigo-400' },
@@ -3401,7 +3396,7 @@ function ExploreContent() {
     fuel: { label: '油站', icon: Fuel, color: 'text-amber-500' },
     charging: { label: '充電站', icon: Zap, color: 'text-emerald-400' },
     ev: { label: '充電站', icon: Zap, color: 'text-emerald-400' },
-    alerts: { label: '即時通報', icon: AlertTriangle, color: 'text-rose-400' },
+    alerts: { label: '通報', icon: AlertTriangle, color: 'text-rose-400' },
     traffic: { label: '即時路況', icon: Activity, color: 'text-orange-400' },
     crashes: { label: '車禍意外', icon: ShieldAlert, color: 'text-rose-400' },
     border: { label: '美加邊境關口', icon: Flag, color: 'text-blue-400' },
@@ -3415,7 +3410,7 @@ function ExploreContent() {
     weather: '天氣',
     news: '新聞',
     events: '活動',
-    beach: '泳灘',
+    beach: '海灘',
     ski: '滑雪',
     aurora: '極光',
     jobs: '工作',
@@ -4277,7 +4272,6 @@ function ExploreContent() {
                             <div className="flex flex-col min-w-0 flex-1 pr-2">
                               <div className="flex items-center gap-1.5 min-w-0">
                                 <span className="font-bold text-gray-200 truncate">{st.englishName}</span>
-                                <span className="text-[9.5px] font-mono text-emerald-400 bg-emerald-950/70 border border-emerald-800/40 px-1 rounded shrink-0">{st.id}</span>
                               </div>
                               <span className="text-[11px] text-gray-400 mt-0.5 truncate">{st.zhName}</span>
                             </div>
@@ -4488,13 +4482,6 @@ function ExploreContent() {
                         <h4 className="text-xs font-bold text-white tracking-wide">
                           海岸潮汐水位站
                         </h4>
-                        <button
-                          onClick={() => enableLayer('tideStations')}
-                          className="p-1.5 rounded-lg border bg-[#1e2330] text-gray-300 hover:text-white hover:bg-[#282f40] border-[#2d3547] transition-all cursor-pointer"
-                          title="開啟潮汐圖層"
-                        >
-                          <Layers className="w-3.5 h-3.5" />
-                        </button>
                       </div>
 
                       <span className="text-[10px] text-blue-300 bg-blue-950/70 border border-blue-800/50 px-2 py-0.5 rounded font-mono font-bold">
@@ -4728,10 +4715,10 @@ function ExploreContent() {
                         </div>
                         <div className="flex flex-col min-w-0">
                           <h4 className="text-sm font-bold text-white tracking-wide truncate group-hover:text-cyan-300 transition-colors">
-                            {resort.name}
+                            {resort.english_name}
                           </h4>
                           <span className="text-[11px] text-gray-400 truncate">
-                            {resort.english_name}
+                            {resort.name}
                           </span>
                         </div>
                       </div>
@@ -4975,7 +4962,7 @@ function ExploreContent() {
                 <div className="bg-[#0b121e]/80 p-2.5 rounded-lg border border-[#1e2c3e] flex flex-col gap-1 relative z-10">
                   <div className="flex items-center justify-between">
                     <span className="text-[11px] font-bold text-gray-200 flex items-center gap-1">
-                      <span>🍁 溫哥華觀測等級：</span>
+                      <span>溫哥華觀測等級：</span>
                       <span className="text-emerald-400 font-semibold">
                         {(auroraData.latest?.visibility?.level || '不可見').replace(/\s*\([A-Za-z\s]+\)/g, '').trim()}
                       </span>
@@ -5115,7 +5102,7 @@ function ExploreContent() {
                 </div>
 
                 <div className="text-[10px] text-gray-400 leading-relaxed bg-[#0c1017] p-2 rounded-lg border border-[#1b2230]">
-                  <span className="text-gray-300 font-semibold">💡 觀測線說明：</span>
+                  <span className="text-gray-300 font-semibold">觀測線說明：</span>
                   紅色實線為極光預估南界觀測線。當紅線向南推移並涵蓋溫哥華（約北緯 49°）以南時，代表該晚極光可見機率大幅增加。
                 </div>
               </div>
@@ -6314,7 +6301,7 @@ function ExploreContent() {
           {/* 2 欄式清單 */}
           <div className="flex-1 overflow-auto border border-[#263147] rounded-xl bg-[#121620]">
             <div className="sticky top-0 z-10 grid grid-cols-12 bg-[#181e2b] border-b border-[#263147] px-3 py-2 text-[11px] font-bold text-gray-400 shadow-sm">
-              <span className="col-span-9 sm:col-span-10">位置 (Location)</span>
+              <span className="col-span-9 sm:col-span-10">位置</span>
               <span className="col-span-3 sm:col-span-2 text-right">宗數</span>
             </div>
 
@@ -6785,14 +6772,14 @@ function ExploreContent() {
         </div>
       )}
 
-      {/* ==================== 大溫沙灘水質分頁 (Beach Water Quality) ==================== */}
+      {/* ==================== 大溫海灘水質分頁 (Beach Water Quality) ==================== */}
       {activeTab === 'beach' && (
         <div className="flex-1 flex flex-col min-h-0 space-y-2.5 overflow-hidden">
           {/* Header Controls: Title, Monthly update indicator & manual refresh button */}
           <div className="flex items-center justify-between gap-1.5 shrink-0 pt-0.5">
             <span className="text-xs font-bold text-white flex items-center gap-1.5">
               <Droplets className="w-4 h-4 text-teal-400" />
-              <span>沙灘水質</span>
+              <span>海灘水質</span>
             </span>
 
             <div className="flex items-center gap-1.5">
@@ -6837,13 +6824,14 @@ function ExploreContent() {
 
             <button
               onClick={handleToggleBeachLayer}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold shrink-0 transition-all shadow-sm flex items-center gap-1.5 ${
+              className={`p-2 rounded-lg text-xs font-semibold shrink-0 transition-all shadow-sm flex items-center justify-center cursor-pointer ${
                 layers?.beachWaterQuality
-                  ? 'bg-teal-600/80 hover:bg-teal-500 text-white border border-teal-400/50'
+                  ? 'bg-teal-600 hover:bg-teal-500 text-white border border-teal-400/50'
                   : 'bg-[#1a2332] hover:bg-[#232f44] text-teal-300 border border-teal-600/40'
               }`}
+              title={layers?.beachWaterQuality ? '圖層已開啟 (點擊隱藏)' : '開啟海灘水質圖層'}
             >
-              <span>{layers?.beachWaterQuality ? '圖層已開啟' : '開啟海灘水質圖層'}</span>
+              <Layers className="w-4 h-4" />
             </button>
           </div>
 
@@ -7074,6 +7062,15 @@ function ExploreContent() {
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${loadingTransitAlerts ? 'animate-spin text-rose-400' : ''}`} />
               </button>
+              <a
+                href="https://www.translink.ca/alerts"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-1 hover:bg-[#252a38] text-gray-400 hover:text-rose-400 rounded transition-colors"
+                title="前往 TransLink 官方警報詳情"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
             </div>
           </div>
 
@@ -7332,10 +7329,10 @@ function ExploreContent() {
                             href={item.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-rose-400 hover:text-rose-300 flex items-center gap-0.5 hover:underline"
+                            className="p-1 rounded text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors flex items-center justify-center"
+                            title="官方警報詳情"
                           >
-                            <span>官方警報詳情</span>
-                            <ExternalLink className="w-2.5 h-2.5" />
+                            <ExternalLink className="w-3.5 h-3.5" />
                           </a>
                         )}
                       </div>
@@ -7503,7 +7500,6 @@ function ExploreContent() {
                             </span>
                             <div className="flex items-center gap-1.5 text-gray-500 text-[10px]">
                               {timeStr && <span className="font-mono">{timeStr}</span>}
-                              <ExternalLink className="w-3 h-3 text-gray-500 group-hover:text-amber-400 transition-colors shrink-0" />
                             </div>
                           </div>
 
@@ -7661,13 +7657,7 @@ function ExploreContent() {
                                   🔥 進行中
                                 </span>
                               )}
-                              {event.category && (
-                                <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-800 text-gray-300 border border-gray-700 font-medium">
-                                  {event.category}
-                                </span>
-                              )}
                             </div>
-                            <ExternalLink className="w-3 h-3 text-gray-500 group-hover:text-purple-400 transition-colors shrink-0" />
                           </div>
 
                           <h3 className="text-xs font-bold text-white group-hover:text-purple-300 transition-colors line-clamp-2 leading-snug">

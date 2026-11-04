@@ -3107,6 +3107,47 @@ def get_stops_geojson(group: str, db: Session = Depends(database.get_db)):
     return result_fc
 
 
+@app.get("/api/seabus/vehicles")
+def get_seabus_vehicles():
+    """Returns currently active / simulated SeaBus vessels."""
+    sb_list = [v for v in cached_translink_vehicles if v.get("is_seabus")]
+    return {"vehicles": sb_list}
+
+
+@app.get("/api/ferries/webcam_image")
+def get_ferry_webcam_image(url: str):
+    """Proxy ferry & highway webcam images to prevent CORS and hotlinking blocks."""
+    import urllib.request
+    from fastapi.responses import Response
+
+    parsed = urllib.parse.urlparse(url)
+    allowed_hosts = {"ccimg.bcferries.com", "www.drivebc.ca", "drivebc.ca", "images.drivebc.ca"}
+    if parsed.netloc not in allowed_hosts:
+        return Response(status_code=400, content="Host not allowed")
+
+    try:
+        req = urllib.request.Request(
+            url,
+            headers={
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+                "Referer": f"{parsed.scheme}://{parsed.netloc}/"
+            }
+        )
+        with urllib.request.urlopen(req, timeout=8) as resp:
+            content = resp.read()
+            content_type = resp.headers.get("Content-Type", "image/jpeg")
+            return Response(
+                content=content,
+                media_type=content_type,
+                headers={
+                    "Cache-Control": "public, max-age=30",
+                    "Access-Control-Allow-Origin": "*"
+                }
+            )
+    except Exception as e:
+        return Response(status_code=502, content=f"Failed to fetch image: {str(e)}")
+
+
 _stops_geojson_cache: dict = {}
 _tracks_geojson_cache: dict = {}
 
@@ -3171,12 +3212,18 @@ def get_tracks_geojson(group: str, db: Session = Depends(database.get_db)):
                 "type": "Feature",
                 "geometry": {
                     "type": "LineString",
-                    "coordinates": [[-123.1118, 49.2861], [-123.0829, 49.3103]]
+                    "coordinates": [
+                        [-123.1118, 49.2861],
+                        [-123.1095, 49.2925],
+                        [-123.1005, 49.3015],
+                        [-123.0829, 49.3103]
+                    ]
                 },
                 "properties": {
                     "shape_id": "seabus_track",
                     "route_id": "6771",
-                    "color": "#8b786d"
+                    "route_number": "SeaBus",
+                    "color": "#00a4e4"
                 }
             })
         elif group == 'bus':
